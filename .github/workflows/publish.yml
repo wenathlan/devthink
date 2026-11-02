@@ -42,7 +42,7 @@ name: DevThink Publish
 # carry; the vhe lanes answer the same release law (the saddle container
 # law): the resolver, the security gate, the multi-arch registry push, the
 # published-image verify and the container archive lane fire with the
-# family publish wave, while the deep validation lane (the twelve-leg
+# family publish wave, while the deep validation lane (the thirty-three-leg
 # firecracker matrix) keeps its dispatch-only shape. The saddle lanes read
 # the saddle application folder and stamp the version their own manifest
 # declares - the family release tag carries the assets.
@@ -131,7 +131,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -568,7 +568,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -922,7 +922,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the jar embeds
@@ -1192,7 +1192,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the content package carries
@@ -2288,7 +2288,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
 
       # the reality gate: the binary sources of the merged repository. the
       # lane always builds (no detect-and-skip: the sources the product
@@ -2521,7 +2521,7 @@ jobs:
         # pnpm invocations that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
 
       - name: setup rust
         # the saddle lane rides the stable channel (the family runtime
@@ -2912,7 +2912,7 @@ jobs:
         # pnpm invocations that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
@@ -3279,7 +3279,7 @@ jobs:
         # pnpm invocations that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
 
       - name: build the static workbench
         shell: bash
@@ -3440,7 +3440,7 @@ jobs:
         # pnpm invocations that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
 
       - name: build the static workbench
         shell: bash
@@ -3768,7 +3768,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
 
       # the reality gate: the flat interface files answer at the
       # web root (the dead folder gate of the
@@ -3946,7 +3946,7 @@ jobs:
         if: steps.selected.outputs.enabled == 'true'
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
       - name: Set up Node
         if: steps.selected.outputs.enabled == 'true'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -4207,7 +4207,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.2
           cache: false
 
       - name: install dependencies
@@ -4359,8 +4359,9 @@ jobs:
     # firecracker matrix and the saddle docker contexts) stays a
     # dispatch-shaped probe (the saddle container law opens the publish
     # chain - the resolver, the scan, the registry push, the verify and
-    # the archive - to the release wave; the twelve-leg validation matrix
-    # answers the maintenance dispatch alone, where its cost belongs).
+    # the archive - to the release wave; the thirty-three-leg validation
+    # matrix (PR15b: 3 profiles x 11 architectures) answers the
+    # maintenance dispatch alone, where its cost belongs).
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     defaults:
@@ -4382,9 +4383,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 3 profiles x 4 architectures = 12 validation legs; every profile
-        # is built and probed on every architecture the registry ships.
-        platform: [linux/amd64, linux/arm64, linux/ppc64le, linux/s390x]
+        # THE ELEVEN-ARCH CONTAINER LAW (PR15b): 3 profiles x 11
+        # architectures = 33 validation legs; every profile is built and
+        # probed on every architecture the registry ships - the complete
+        # linux platform surface buildx/docker carries (amd64, amd64/v2,
+        # arm64, arm/v7, arm/v6, ppc64le, s390x, riscv64, 386, mips64le,
+        # loong64; amd64 and amd64/v2 build native, the other nine legs
+        # ride QEMU emulation).
+        platform: [linux/amd64, linux/amd64/v2, linux/arm64, linux/arm/v7, linux/arm/v6, linux/ppc64le, linux/s390x, linux/riscv64, linux/386, linux/mips64le, linux/loong64]
         profile: [max, balanced, lite]
         include:
           - profile: max
@@ -4475,10 +4481,13 @@ jobs:
           echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
           echo "mesa ${tarball}: ${sha} (resolved at build time)"
 
-      - name: Set up QEMU (arm64, ppc64le and s390x user-mode emulation)
+      - name: Set up QEMU (the nine emulated legs of the eleven-arch index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # the eleven-arch index minus the two native amd64 legs: every
+          # platform the amd64 runner cannot execute installs its binfmt
+          # handler here (the family pin - only the emulated legs).
+          platforms: linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -4822,10 +4831,13 @@ jobs:
         with:
           ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
 
-      - name: Set up QEMU (multi-arch emulation)
+      - name: Set up QEMU (the nine emulated legs of the eleven-arch index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # the eleven-arch index minus the two native amd64 legs: every
+          # platform the amd64 runner cannot execute installs its binfmt
+          # handler here (the family pin - only the emulated legs).
+          platforms: linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -4893,19 +4905,21 @@ jobs:
           exit-code: '1'
 
   saddle-vhe-publish:
-    name: Publish saddle vhe ${{ matrix.profile }} image to GHCR (4-arch)
+    name: Publish saddle vhe ${{ matrix.profile }} image to GHCR (11-arch)
     needs: [saddle-vhe-resolve, saddle-vhe-scan]
     if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-    # 330 min: the four-arch leg builds three architectures under QEMU
-    # and mesa compiles from source - the cold-cache publish legs ran past
-    # the old 180-minute ceiling and were killed by the timeout. 5.5h
-    # stays under the 6h hosted-runner job cap with headroom for mirror
-    # races; the warm registry cache completes the legs in ~10-25 min per
-    # profile.
+    # 330 min: the eleven-arch leg (PR15b) builds nine emulated
+    # architectures under QEMU and mesa compiles from source - the
+    # cold-cache publish legs ran past the old 180-minute ceiling and
+    # were killed by the timeout. 5.5h stays under the 6h hosted-runner
+    # job cap with headroom for mirror races; the warm registry cache
+    # completes the legs in ~10-25 min per profile (a cold-cache
+    # nine-leg QEMU pass can still redden on the 6h hosted cap - the
+    # registry cache the rerun answers completes the leg).
     timeout-minutes: 330
     permissions:
       contents: read
@@ -4915,12 +4929,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # All three profiles ship all four architectures; each carries a
-        # single version tag (max -> :<version>-vhe, balanced/lite carry
-        # the profile suffix). One tag per version, no rolling aliases.
+        # THE ELEVEN-ARCH CONTAINER LAW (PR15b): all three profiles ship
+        # all eleven architectures (the complete linux platform surface
+        # buildx/docker carries: amd64, amd64/v2, arm64, arm/v7, arm/v6,
+        # ppc64le, s390x, riscv64, 386, mips64le, loong64); each carries
+        # a single version tag (max -> :<version>-vhe, balanced/lite
+        # carry the profile suffix). One tag per version, no rolling
+        # aliases.
         include:
           - profile: max
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -4929,7 +4947,7 @@ jobs:
             profilegpus: 8
             expectcpu: EPYC 9965
           - profile: balanced
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -4938,7 +4956,7 @@ jobs:
             profilegpus: 2
             expectcpu: 9995WX
           - profile: lite
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -4952,10 +4970,13 @@ jobs:
         with:
           ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
 
-      - name: Set up QEMU (multi-arch emulation)
+      - name: Set up QEMU (the nine emulated legs of the eleven-arch index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # the eleven-arch index minus the two native amd64 legs: every
+          # platform the amd64 runner cannot execute installs its binfmt
+          # handler here (the family pin - only the emulated legs).
+          platforms: linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -5082,17 +5103,20 @@ jobs:
         run: |
           set -euo pipefail
           image_ref="${IMAGE,,}:${VERSION}${SUFFIX}"
-          # Every published profile index must carry the four-arch
-          # registry surface: amd64, arm64, ppc64le and s390x.
+          # Every published profile index must carry the eleven-arch
+          # registry surface (PR15b: the complete linux platform list the
+          # publish legs build - amd64, amd64/v2, arm64, arm/v7, arm/v6,
+          # ppc64le, s390x, riscv64, 386, mips64le, loong64; the variant
+          # legs assert through their arch/variant pair).
           echo "inspecting ${image_ref}"
           docker buildx imagetools inspect --raw "${image_ref}" | jq -e '
             [
               .manifests[]
               | select(.platform.os == "linux")
-              | .platform.architecture
+              | if .platform.variant then "\(.platform.architecture)/\(.platform.variant)" else .platform.architecture end
             ]
             | sort
-            | . == ["amd64", "arm64", "ppc64le", "s390x"]
+            | . == ["386", "amd64", "amd64/v2", "arm/v6", "arm/v7", "arm64", "loong64", "mips64le", "ppc64le", "riscv64", "s390x"]
           '
           docker pull --quiet --platform linux/amd64 "${image_ref}"
           actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
@@ -5102,7 +5126,7 @@ jobs:
             bash -lc 'grep -m1 "model name" /proc/cpuinfo')"
           echo "${cpuinfo}"
           grep -q "${EXPECTCPU}" <<< "${cpuinfo}"
-          echo "published ${image_ref} verified: 4-arch index (${PROFILE}), version label ${VERSION}, spoofing layer active (${EXPECTCPU})"
+          echo "published ${image_ref} verified: 11-arch index (${PROFILE}), version label ${VERSION}, spoofing layer active (${EXPECTCPU})"
 
   saddle-vhe-cleanup:
     name: Clean the saddle vhe run caches

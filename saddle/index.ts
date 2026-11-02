@@ -1400,11 +1400,10 @@ export function planlint(candidate: plan): readonly string[] {
  * lavapipe, node 26 runtime surface, ai workload planners, wasm canary,
  * wasi:gfx, chatops, gpu ebpf telemetry, ai migration predictor). */
 export * from './compute.js';
-/** Re-exports the media pipeline and transcode domain (24-stage
- * pipeline, ffmpeg 7.1 NVENC p1-p7 command synthesis, createoptimal
- * encoder policy, passage ed25519+chacha20-poly1305 channel, 30
- * transcode modes). */
-export * from './media.js';
+/* the media pipeline and transcode domain moved to devthink (the saddle
+ * ownership law, wave a, actions 108-112: the master virtualization engine
+ * keeps only the sandbox/vm/runner/vgpu/vcpu/ports/hardware-virtual
+ * modalities — the media lane rides its new owner). */
 export {
   bellstate,
   deutsch,
@@ -1462,14 +1461,17 @@ export * from './virtualmemory.js';
 
 /* ── Section 2: the saddle domain routing barrel ── */
 
-export * from './automation.js';
+/* the workflow automation and AI intelligence domains moved to devthink
+ * (the saddle ownership law, wave a, actions 108-112: the master
+ * virtualization engine keeps only the sandbox/vm/runner/vgpu/vcpu/ports/
+ * hardware-virtual modalities — the automation and intelligence lanes ride
+ * their new owner). */
 export * from './browser.js';
 export * from './communication.js';
 export * from './distribution.js';
 export * from './execution.js';
 export * from './foundation.js';
 export * from './integration.js';
-export * from './intelligence.js';
 export * from './isolation.js';
 /** Re-exports the sandbox modality registry — the catalog the join
  * resolver reads (the spine of the sandbox modalities the engine opens). */

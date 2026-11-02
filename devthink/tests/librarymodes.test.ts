@@ -464,7 +464,11 @@ describe("the library modes of 1.1.81", () => {
     /* the forge rides outside the application container: the image builds from the application tree alone */
     if (!existsSync(join(repoRoot, ".github/workflows/verify.yml"))) return;
     const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8");
-    const bunminimum = (packagejson.engines.bun ?? "").match(/>=([\d.]+)/)?.[1];
+    /* the floor derivation walks both floor spellings the family manifests
+     * carry: the caret form (^1.4.2, the envelope convention) and the
+     * bounded form (>=1.4.2), so the workflow pin answers the engines
+     * floor whichever spelling the manifest stamps */
+    const bunminimum = (packagejson.engines.bun ?? "").match(/[>=^]+\s*([\d.]+)/)?.[1];
     expect(verifyworkflow).toContain(`bun-version: ${bunminimum}`);
     expect(verifyworkflow).toContain("denoland/setup-deno");
     const denojson = JSON.parse(await readFile("deno.json", "utf8")) as {

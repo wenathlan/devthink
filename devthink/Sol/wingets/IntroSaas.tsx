@@ -46,11 +46,11 @@ import { SaasAdvisor, SaasCadria, SaasDebonair, SaasExplorer, SaasFooter } from 
 import { SaasCreators, SaasHero, SaasStudioFlow, SaasWorkspace } from "./IntroSaassections.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
-/** The reference voice: the Urbanist stylesheet of the Google Fonts CDN,
- * injected once per document at import time (the reference @import). Where
- * the frozen CSP of a target keeps the remote face from loading (the
- * extension pages), the tier stacks of sol.css fall back to the house
- * Inter Variable voice — the face never blanks. */
+/** The reference voice: the Urbanist stylesheet, injected once per
+ * document at import time (the reference @import). Where the frozen CSP
+ * of a target keeps the remote face from loading (the extension pages),
+ * the tier stacks of sol.css fall back to the house Inter Variable voice
+ * — the face never blanks. */
 const SAAS_FONT_CSS = "@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800&display=swap');";
 
 let saasCssReady = false;

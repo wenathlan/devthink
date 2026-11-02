@@ -7,18 +7,17 @@
 
 import { WindowConsoleRegular } from "@fluentui/react-icons";
 import { catalogcommands, exitclasses, globalflags } from "../../commandcatalog.ts";
+import { osText } from "../../oslabels.ts";
 
 export function ConsoleReference({ running, onrun }: { running: boolean; onrun: (id: string) => void }) {
   return (
     <section className="dtw-card">
       <h2 className="dtw-cardtitle">
         <WindowConsoleRegular fontSize={15} aria-hidden="true" />
-        Command reference
+        {osText("console.section.reference")}
         <span className="dtw-navrow__count">{catalogcommands.length}</span>
       </h2>
-      <p className="dtw-copy">
-        Every command with its usage and flags. Enter runs one entry in the terminal.
-      </p>
+      <p className="dtw-copy">{osText("console.reference.lede")}</p>
       <ul className="dtw-console__refs">
         {catalogcommands.map((command) => (
           <li key={command.id}>
@@ -37,7 +36,7 @@ export function ConsoleReference({ running, onrun }: { running: boolean; onrun: 
           </li>
         ))}
       </ul>
-      <h3 className="dtw-console__subhead">Global flags</h3>
+      <h3 className="dtw-console__subhead">{osText("console.reference.flags")}</h3>
       <ul className="dtw-rows">
         {globalflags.map((flag) => (
           <li key={flag.flag} className="dtw-row">
@@ -46,7 +45,7 @@ export function ConsoleReference({ running, onrun }: { running: boolean; onrun: 
           </li>
         ))}
       </ul>
-      <h3 className="dtw-console__subhead">Exit codes</h3>
+      <h3 className="dtw-console__subhead">{osText("console.reference.exits")}</h3>
       <ul className="dtw-rows">
         {exitclasses.map((entry) => (
           <li key={entry.exitclass} className="dtw-row">

@@ -191,8 +191,14 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
       profilegpu: "rtx5090",
       profilegpus: 1,
     });
-    /* every profile ships the four-architecture family standard. */
-    for (const leg of profiles) expect(leg.platforms).toBe("linux/amd64,linux/arm64,linux/ppc64le,linux/s390x");
+    /* every profile ships the eleven-architecture family standard (the
+     * complete linux platform surface buildx/docker carries — the saddle
+     * arch law). */
+    for (const leg of profiles) {
+      expect(leg.platforms).toBe(
+        "linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64",
+      );
+    }
   });
 
   it("the dockerfile defaults bake the max profile and never hardcode a digest", async () => {
@@ -228,9 +234,9 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     ]);
   });
 
-  it("the published vhe index answers the four architectures and the spoofing probe", async () => {
+  it("the published vhe index answers the eleven architectures and the spoofing probe", async () => {
     const publish = await readworkflow("publish.yml");
-    expect(publish).toContain('| . == ["amd64", "arm64", "ppc64le", "s390x"]');
+    expect(publish).toContain('| . == ["386", "amd64", "amd64/v2", "arm/v6", "arm/v7", "arm64", "loong64", "mips64le", "ppc64le", "riscv64", "s390x"]');
     expect(publish).toContain('grep -q "${EXPECTCPU}" <<< "${cpuinfo}"');
     expect(publish).toContain('test "${actual_version}" = "${VERSION}"');
   });
@@ -507,9 +513,10 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
    * the saddle envelope declare — the set every publish lane must compile
    * and assert before the envelope touches a registry (the source and
    * config targets ship as the files field carries them; the dist targets
-   * need the engine build). */
+   * need the engine build). the automation seat retired with the ownership
+   * wave — the lane moved to the os (devthink/automation.ts) and the
+   * saddle envelope no longer declares it. */
   const EXPORTDISTTARGETS = [
-    "dist/automation.js",
     "dist/browser.js",
     "dist/distribution.js",
     "dist/execution.js",

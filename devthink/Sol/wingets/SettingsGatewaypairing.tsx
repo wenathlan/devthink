@@ -22,6 +22,12 @@ type GatewayPairingProps = {
   local?: BrowserStoreSummary;
 };
 
+/** fills the {slot} holes of one copy row — the template grammar the
+ * settings face rides (an unknown slot stays loud, never silent). */
+function fill(key: string, slots: Record<string, string>): string {
+  return copy(key).replace(/\{(\w+)\}/g, (hole, name: string) => slots[name] ?? hole);
+}
+
 /** GatewayPairing — the gateway & pairing category body. */
 export function GatewayPairing({ paired, snapshot, local }: GatewayPairingProps) {
   return (
@@ -34,18 +40,25 @@ export function GatewayPairing({ paired, snapshot, local }: GatewayPairingProps)
             <ArrowSyncRegular fontSize={15} aria-hidden="true" />
             {copy("settings.gateway.sync")}
           </h2>
-          <SettingsRow label="state" value="paired" />
-          <SettingsRow label="cli" value={snapshot.database.persistence} />
+          <SettingsRow label={copy("settings.gateway.row.state")} value={copy("settings.gateway.state.paired")} />
+          <SettingsRow label={copy("settings.gateway.row.cli")} value={snapshot.database.persistence} />
           <SettingsRow
-            label="browser"
-            value={`${local?.database || "devthink.db"} with ${local?.messages || 0} cached messages`}
+            label={copy("settings.gateway.row.browser")}
+            value={fill("settings.gateway.row.browser.value", {
+              database: local?.database || "devthink.db",
+              messages: String(local?.messages || 0),
+            })}
           />
-          <SettingsRow label="remote adapter" value="not configured" />
           <SettingsRow
-            label="provider"
-            value={`${snapshot.provider.activeProvider || "not configured"} with ${
-              snapshot.provider.activeModel || "model not configured"
-            }`}
+            label={copy("settings.gateway.row.adapter")}
+            value={copy("settings.gateway.notConfigured")}
+          />
+          <SettingsRow
+            label={copy("settings.gateway.row.provider")}
+            value={fill("settings.gateway.row.provider.value", {
+              provider: snapshot.provider.activeProvider || copy("settings.gateway.notConfigured"),
+              model: snapshot.provider.activeModel || copy("settings.gateway.model.notConfigured"),
+            })}
           />
         </section>
       ) : (
@@ -54,7 +67,7 @@ export function GatewayPairing({ paired, snapshot, local }: GatewayPairingProps)
             <ArrowSyncRegular fontSize={15} aria-hidden="true" />
             {copy("settings.gateway.sync")}
           </h2>
-          <SettingsRow label="state" value="local-only" />
+          <SettingsRow label={copy("settings.gateway.row.state")} value={copy("settings.gateway.state.local")} />
           <p className="dtw-settings__carddesc">{copy("settings.gateway.sync.pairhint")}</p>
         </section>
       )}

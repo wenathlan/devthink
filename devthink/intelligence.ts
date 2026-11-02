@@ -1,16 +1,22 @@
 /**
- * intelligence.ts — AI planning, provenance, retrieval and observable metrics.
+ * intelligence.ts — the AI planning, provenance, retrieval and metrics
+ * domain of the devthink family (the saddle ownership law, wave a,
+ * actions 108-112: the intelligence domain moved out of the saddle
+ * engine — the master virtualization engine keeps only the
+ * virtualization modalities, and every workload feature that is not
+ * sandbox/vm/runner/vgpu/vcpu/ports/hardware-virtual rides its new
+ * owner; devthink answers the intelligence lane).
  *
  * This file is the v2.0.0 grand-merge consolidation of the former nested
  * folders of the repository (ai) into the single
- * root-level domain file of the saddle family standard: one optimized
- * TypeScript file per correlated domain, ordinal sections, JSDoc on every
- * block, intra-domain imports dissolved, cross-domain imports rewritten to
- * ./<domain>.js. Every capability of every source file is preserved here;
- * the pure re-export barrels (none in this domain) folded their surface into this file directly.
+ * root-level domain file: one optimized TypeScript file per correlated
+ * domain, ordinal sections, JSDoc on every block, intra-domain imports
+ * dissolved. Every capability of every source file is preserved here;
+ * the pure re-export barrels (none in this domain) folded their surface
+ * into this file directly. Zero runtime imports: the domain stays
+ * browser-pure (the crypto.subtle digest the rag manifest hashes ride
+ * degrades to the deterministic byte fallback under hosts without it).
  */
-
-
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: ai/provenance.ts — context provenance links retrieved chunks to source, query and transformation metadata. */
@@ -97,8 +103,8 @@ async function hashtext(text) { const bytes = new TextEncoder().encode(String(te
  * llms text generation creates compact absolute links for agent consumption.
  */
 export function llmstxt(options = {}) {
-  const title = options.title ?? "saddle";
-  const description = options.description ?? "binary computing engine and browser automation library";
+  const title = options.title ?? "devthink";
+  const description = options.description ?? "the reasoning workspace of the devthink family";
   const pages = (options.pages ?? []).filter((page) => page?.url && /^https:\/\//.test(page.url)).slice(0, options.limit ?? 100);
   const lines = [`# ${title}`, `> ${description}`, "", "## pages", "", ...pages.map((page) => `- [${page.title ?? page.url}](${page.url}): ${(page.description ?? "").slice(0, 100)}`)];
   return `${lines.join("\n")}\n`;

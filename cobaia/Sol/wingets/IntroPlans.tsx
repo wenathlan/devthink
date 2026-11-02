@@ -1,13 +1,16 @@
 /**
  * intro.plans.tsx — the plans zone of the intro: the real offer, read from
  * the one checkoutlinks table the pricing page reads — never restated, never
- * rounded, never invented. A configured checkout href renders a live anchor;
- * an empty one renders the disabled button with the honest note "checkout
- * not configured yet" — the not-configured state stays honest, exactly like
- * /pricing. The studio plan leads raised, the same lead law the pricing page
- * carries. The section rides a ladder band (the surface rung s0) and the
- * cb-in stagger under the second; zero network calls — the links are plain
- * hrefs the visitor chooses to follow.
+ * rounded, never invented. The billing values (ids, prices, links) answer
+ * from checkoutlinks and every plan sentence (name, blurb, features) rides
+ * the label store — zero hardcoded copy in the winget. A configured
+ * checkout href renders a live anchor; an empty one renders the disabled
+ * button with the honest note "checkout not configured yet" — the
+ * not-configured state stays honest, exactly like /pricing. The studio plan
+ * leads raised, the same lead law the pricing page carries. The section
+ * rides a ladder band (the surface rung s0) and the cb-in stagger under the
+ * second; zero network calls — the links are plain hrefs the visitor
+ * chooses to follow.
  */
 
 import type { CSSProperties } from "react";
@@ -21,14 +24,14 @@ function PlanAction({ plan }: { plan: checkoutplan }) {
   if (isconfigured(plan.href)) {
     return (
       <a className="cb-btn" href={plan.href} rel="noreferrer">
-        {labelfill("intro.plans.choose", { name: plan.name })}
+        {labelfill("intro.plans.choose", { name: label(plan.nameKey) })}
       </a>
     );
   }
   return (
     <>
       <button className="cb-btn" type="button" disabled>
-        {labelfill("intro.plans.choose", { name: plan.name })}
+        {labelfill("intro.plans.choose", { name: label(plan.nameKey) })}
       </button>
       <p className="cb-note">{label("intro.plans.notConfigured")}</p>
     </>
@@ -56,18 +59,18 @@ export function IntroPlans() {
               key={plan.id}
               className={plan.id === "studio" ? "cb-plan cb-plan--lead cb-in" : "cb-plan cb-in"}
               style={{ "--cb-d": index + 1 } as CSSProperties}
-              aria-label={labelfill("pricing.card.planAria", { name: plan.name })}
+              aria-label={labelfill("pricing.card.planAria", { name: label(plan.nameKey) })}
             >
-              <p className="cb-planname">{plan.name}</p>
+              <p className="cb-planname">{label(plan.nameKey)}</p>
               <p className="cb-planprice">
                 ${plan.priceusd}
-                <span className="cb-planper"> / {plan.per}</span>
+                <span className="cb-planper"> / {label(plan.perKey)}</span>
               </p>
-              <p className="cb-planblurb">{plan.blurb}</p>
+              <p className="cb-planblurb">{label(plan.blurbKey)}</p>
               <ul className="cb-planfeats">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="cb-planfeat">
-                    {feature}
+                {plan.featureKeys.map((featureKey) => (
+                  <li key={featureKey} className="cb-planfeat">
+                    {label(featureKey)}
                   </li>
                 ))}
               </ul>

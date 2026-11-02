@@ -8,13 +8,19 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'vitest';
 import {
+  backlogCount,
   buildvmcrdmanifest,
+  p2pcontentaddress,
+  partykitchannelbuilder,
   planfederatedquota,
   plannputiles,
   planopfsstorage,
   planrayvllmcluster,
   planwebcodecspipeline,
   planwebtransportendpoint,
+  roadmapbacklog,
+  statevectorsync,
+  tailscaleendpointplanner,
 } from '../compute.js';
 import { planfluxgitops } from '../orchestrator.js';
 import { rlautoscaler, vmconfigcrdt } from '../scheduler.js';
@@ -313,5 +319,38 @@ describe('the features contract', () => {
     assert.ok(plan.bootstrapargv.some((arg) => arg.includes('--prune=true')));
     assert.equal(plan.syncpolicy.interval, '1m');
     assert.throws(() => planfluxgitops({ clusters: ['staging', 'staging'] }), /duplicate/);
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* compute.ts: the portal surfaces and the roadmap ledger (the pair   */
+  /* tests/media.test.ts carried beside the media battery — the media   */
+  /* domain moved to devthink with the saddle ownership law, wave a,    */
+  /* actions 108-112, and the compute portal surfaces stayed with the   */
+  /* engine, so their battery rides this file now).                     */
+  /* ------------------------------------------------------------------ */
+
+  it('portal absorption: partykit, statevector, p2p addressing and tailscale guards', () => {
+    const party = new partykitchannelbuilder().room('Sandbox 42 GPU 0');
+    assert.equal(party.room, 'sandbox-42-gpu-0');
+    assert.ok(party.url.startsWith('wss://'));
+    const a = new statevectorsync();
+    const b = new statevectorsync();
+    a.set('k1', 'a');
+    b.set('k2', 'b');
+    const roundtrip = a.roundtrip(b);
+    assert.equal(roundtrip.converged, true);
+    const artifact = p2pcontentaddress(new TextEncoder().encode('e2ugh artifact'));
+    assert.ok(artifact.cidv1raw.startsWith('bafk'));
+    assert.ok(artifact.magnet.startsWith('magnet:?xt=urn:btih:'));
+    const planner = new tailscaleendpointplanner();
+    assert.equal(planner.iscgnat('100.100.1.1'), true);
+    assert.equal(planner.iscgnat('8.8.8.8'), false);
+    assert.throws(() => planner.plan('node', '8.8.8.8'), /CGNAT/);
+  });
+
+  it('the v4 roadmap backlog ledger carries 13 items', () => {
+    assert.equal(backlogCount(), 13);
+    assert.equal(roadmapbacklog[0]?.title, 'AMX tile real support');
+    assert.equal(roadmapbacklog[12]?.title, 'Nix flakes hermetic builds');
   });
 });

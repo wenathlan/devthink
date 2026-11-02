@@ -12,9 +12,11 @@ import { releaseartifactmatrix } from "../distribution.js";
 /* The transport-neutral graph of the grand merge: the flat domain files
    bundle full-stack sections, so the browser-loadable surface is the curated
    set of domains whose whole import closure stays free of Node-only modules
-   (foundation, intelligence, automation). The node-only capabilities keep
-   their deep exports (./memory-*, ./sessions-file, ./release-*, ...). */
-const transportneutral = ["dist/foundation.js", "dist/intelligence.js", "dist/automation.js"];
+   (foundation and the modality registry — the saddle ownership law, wave a,
+   actions 108-112 moved the intelligence and automation domains to devthink,
+   so their seats retire here). The node-only capabilities keep their deep
+   exports (./memory-*, ./sessions-file, ./release-*, ...). */
+const transportneutral = ["dist/foundation.js", "dist/modalityregistry.js"];
 
 describe("the package surface", () => {
 it("imports every declared package export target in Node", async () => {
@@ -45,7 +47,11 @@ it("declares runtime metadata and an optional browser provider peer", async () =
   const nodepin = (await readFile(resolve(root, "../.nvmrc"), "utf8")).trim();
   const nodemajor = Number(nodepin.split(".")[0]);
   assert.equal(packagejson.engines.node, `>=${nodepin} <${nodemajor + 1}`);
-  assert.equal(packagejson.packageManager, "npm@12.0.2");
+  /* the family pin law: every manifest in the tree answers to the same
+     pnpm rung the envelope stamps (the ten sibling apps and the engine
+     carry pnpm@12.3.4), so the surface test pins the manifest to the
+     family rung instead of the npm rung the old lane carried */
+  assert.equal(packagejson.packageManager, "pnpm@12.3.4");
   assert.equal(packagejson.peerDependencies.playwright, "^1.63.0");
   assert.equal(packagejson.peerDependenciesMeta.playwright.optional, true);
   assert.equal(packagejson.exports["./browser-playwright"], "./dist/browser.js");
@@ -69,7 +75,7 @@ it("keeps transport-neutral export graphs free of Node-only imports", async () =
     }
   }
   assert.equal(seen.has(resolve(root, "..", "dist/foundation.js")), true);
-  assert.equal(seen.has(resolve(root, "..", "dist/automation.js")), true);
+  assert.equal(seen.has(resolve(root, "..", "dist/modalityregistry.js")), true);
 });
 
 it("creates the expanded release matrix without vendor coupling", () => {
