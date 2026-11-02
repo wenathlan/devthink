@@ -436,7 +436,7 @@
     "check:metadata": "node release.ts check",
     "check:secrets": "bun run checksecrets.ts",
     "check:web": "tsc --noEmit",
-    "db:generate": "prisma generate --schema schema.prisma && prisma generate --config ../getry/prismaconfig.ts",
+    "db:generate": "prisma generate --schema schema.prisma",
     "db:push": "prisma db push --schema schema.prisma --url \"${DEVTHINK_DATABASE_URL:-${DATABASE_URL:-file:./devthink.db}}\"",
     "dependency:updates": "node dependencyupdates.ts sync",
     "dev": "bun --watch run devthink.ts",
