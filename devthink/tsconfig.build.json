@@ -9,6 +9,9 @@
     "outDir": "dist",
     "rootDir": ".",
     "paths": {
+      "z-ai-web-dev-sdk": [
+        "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
+      ],
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       /* the getry declaration face bridges of the ownership wave
