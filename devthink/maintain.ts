@@ -24,7 +24,7 @@ const [npmregistry, pnpmregistry, bunregistry, nodeindex] = await Promise.all([
   fetch("https://registry.npmjs.org/bun/latest").then((response) =>
     response.ok ? response.json() : Promise.reject(new Error(`npm registry returned ${response.status}`)),
   ),
-  fetch("https://nodejs.org/build/index.json").then((response) =>
+  fetch("https://nodejs.org/dist/index.json").then((response) =>
     response.ok ? response.json() : Promise.reject(new Error(`Node release index returned ${response.status}`)),
   ),
 ]);
