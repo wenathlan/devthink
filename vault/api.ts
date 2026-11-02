@@ -107,6 +107,7 @@ import {
   usageOf,
 } from "./objectsledger.ts";
 import { type QuotaVerdict, quotaLimitFrom, quotaVerdict, readQuota, setQuota } from "./quota.ts";
+import { routes } from "./routes.ts";
 import { ensureuicopyingested, uistoreget, uistorelist } from "./uistore.ts";
 
 /** @section auth */
@@ -297,21 +298,8 @@ function peerOf(req: IncomingMessage): string {
 
 /** @section routes */
 
-/** the route catalog of the vault http surface (health kept verbatim from the declaration it grew from). */
-export const routes = {
-  health: "/api/health",
-  uicopy: "/api/v1/ui/copy",
-  signup: "/api/v1/auth/signup",
-  signin: "/api/v1/auth/signin",
-  databases: "/api/v1/databases",
-  query: "/v2/query",
-  protocols: "/api/v1/protocols",
-  projects: "/api/v1/storage/projects",
-  objects: "/api/v1/storage/objects",
-  quota: "/api/v1/storage/quota",
-  usage: "/api/v1/storage/usage",
-  sweep: "/api/v1/storage/sweep",
-} as const;
+/** the route catalog re-exported from the client-safe module: the catalog lives in routes.ts (no engine imports, no storage singletons — any face may ride it), and the family sites answer the same strings through the published deep specifier ("@wenathlan/vault/routes"), so the route strings are never duplicated inside an app. */
+export { routes };
 
 /** the whole route count the domain serves: the base catalog plus one
  * static-safe route per protocol row (the protocols pillar — above one

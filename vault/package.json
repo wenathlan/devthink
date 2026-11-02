@@ -128,6 +128,11 @@
       "import": "./retention.ts",
       "default": "./retention.ts"
     },
+    "./routes": {
+      "types": "./routes.ts",
+      "import": "./routes.ts",
+      "default": "./routes.ts"
+    },
     "./sha": {
       "types": "./sha.ts",
       "import": "./sha.ts",
@@ -178,6 +183,7 @@
     "onboardingstate.ts",
     "quota.ts",
     "retention.ts",
+    "routes.ts",
     "sha.ts",
     "storage.ts",
     "utils.ts",

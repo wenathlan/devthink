@@ -23,6 +23,20 @@ export default defineConfig({
        * the mechanism is never duplicated inside foundry. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+
+      /** the route catalog bridge of the ownership law: the app's http
+       * surface rides the vault route catalog through the published
+       * library specifier ("@wenathlan/vault/routes"), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the route strings are never duplicated inside foundry. */
+      "@wenathlan/vault/routes": path.resolve(import.meta.dirname, "../vault/routes.ts"),
+
+      /** the shared helpers bridge of the ownership law: the app's word
+       * splitter rides the vault helper module through the published
+       * library specifier ("@wenathlan/vault/utils"), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the helper is never duplicated inside foundry. */
+      "@wenathlan/vault/utils": path.resolve(import.meta.dirname, "../vault/utils.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
   },
