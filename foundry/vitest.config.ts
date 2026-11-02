@@ -21,6 +21,20 @@ export default defineConfig({
        * storage lane. */
       "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
 
+      /** the route catalog bridge of the ownership law: the app's http
+       * surface rides the vault route catalog through the published
+       * library specifier ("@wenathlan/vault/routes"), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the route strings are never duplicated inside foundry. */
+      "@wenathlan/vault/routes": path.resolve(import.meta.dirname, "../vault/routes.ts"),
+
+      /** the shared helpers bridge of the ownership law: the app's word
+       * splitter rides the vault helper module through the published
+       * library specifier ("@wenathlan/vault/utils"), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the helper is never duplicated inside foundry. */
+      "@wenathlan/vault/utils": path.resolve(import.meta.dirname, "../vault/utils.ts"),
+
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published
        * library specifier ("@wenathlan/saddle/workloadlaw"), and this

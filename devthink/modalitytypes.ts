@@ -1,15 +1,17 @@
 /**
- * modalityregistrytypes.ts — the ambient declaration of the saddle engine's
+ * modalitytypes.ts — the ambient declaration of the saddle engine's
  * modality registry for the declaration build. The os consumes the
- * ninety-modality catalog as a library (the ownership law: the engine owns
- * the registry, the os never duplicates it), and the runtime bundle inlines
- * the owner's source through the config bridges (the base tsconfig paths
- * the vite, vitest and esbuild resolutions carry) — the declaration build
- * resolves the specifier here so the tsc program never leaves the
- * application root and the emitted declarations keep referencing the owner
- * library specifier. Retires the day the published saddle envelope carries
- * the built registry (dist/modalityregistry.js), exactly the way the
- * getry thinking bridge documents the same ladder for its own owner.
+ * ninety-modality catalog as a library (the ownership law: saddle owns the
+ * sandbox lane), and the runtime bundle inlines the owner's source through
+ * the vite/vitest config bridges (../saddle/modalityregistry.ts) — the
+ * declaration build resolves the specifier here so the tsc program never
+ * leaves the application root (rootDir "." keeps the emitted declarations
+ * flat under the outDir) and the emitted declarations keep referencing the
+ * owner library specifier. The surface mirrors the engine's type-only
+ * bridge (saddle/modalityregistrytypes.ts) one for one; it retires the day
+ * the published saddle envelope carries the ./modalityregistry export,
+ * exactly the way the getry thinking bridge (thinkingtypes.ts) documents
+ * the same ladder for its own owner.
  */
 declare module "@wenathlan/saddle/modalityregistry" {
   /** the boot cost classes the ladder measures. */
@@ -98,8 +100,8 @@ declare module "@wenathlan/saddle/modalityregistry" {
   }
 
   /**
-   * planreport — the honest census of the registry: the counts per state and
-   * the plan verdict, computed from the records (never hardcoded).
+   * planreport — the honest census of the registry: the counts per state
+   * and the plan verdict, computed from the records (never hardcoded).
    *
    * @returns the census of the catalog.
    */
@@ -125,8 +127,8 @@ declare module "@wenathlan/saddle/modalityregistry" {
   }
 
   /**
-   * resolves the modality join for a request: the records that satisfy every
-   * demand, ordered by boot cost then isolation depth.
+   * resolves the modality join for a request: the records that satisfy
+   * every demand, ordered by boot cost then isolation depth.
    *
    * @param request the workload demands.
    * @returns the modality records that satisfy the join, best candidate first.

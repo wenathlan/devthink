@@ -52,6 +52,9 @@
     "versawaserender.ts",
     "versawasescheduler.ts",
     "versawaseslices.ts",
+    "versawasegen.ts",
+    "versawaseshaders.ts",
+    "versawasecomposition.ts",
     "shadercomp.ts",
     "visualize.ts",
     "visualizemesh.ts",
@@ -112,6 +115,21 @@
       "types": "./versawaseslices.ts",
       "import": "./versawaseslices.ts",
       "default": "./versawaseslices.ts"
+    },
+    "./versawasegen": {
+      "types": "./versawasegen.ts",
+      "import": "./versawasegen.ts",
+      "default": "./versawasegen.ts"
+    },
+    "./versawaseshaders": {
+      "types": "./versawaseshaders.ts",
+      "import": "./versawaseshaders.ts",
+      "default": "./versawaseshaders.ts"
+    },
+    "./versawasecomposition": {
+      "types": "./versawasecomposition.ts",
+      "import": "./versawasecomposition.ts",
+      "default": "./versawasecomposition.ts"
     },
     "./shadercomp": {
       "types": "./shadercomp.ts",
@@ -286,7 +304,6 @@
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/outfit": "^5.3.0",
-    "@fontsource-variable/urbanist": "^5.3.0",
     "@hono/node-server": "^2.1.5",
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",

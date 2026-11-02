@@ -20,6 +20,8 @@ export * from "./HomePlanstable.tsx";
 export { default as HomePlanstable } from "./HomePlanstable.tsx";
 export * from "./HomeReveal.tsx";
 export { default as HomeReveal } from "./HomeReveal.tsx";
+export * from "./HomeSignupgate.tsx";
+export { default as HomeSignupgate } from "./HomeSignupgate.tsx";
 export * from "./HomeSkeleton.tsx";
 export { default as HomeSkeleton } from "./HomeSkeleton.tsx";
 export * from "./HomeTabs.tsx";

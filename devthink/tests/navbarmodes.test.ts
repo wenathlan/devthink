@@ -478,10 +478,14 @@ describe("the login shadow law (the design band drop and the --win-shad-* tokens
     expect(card).toBeGreaterThan(-1);
     const cardblock = solcss.slice(card, card + 2400);
     expect(cardblock).toContain("box-shadow:");
-    // the window refit law (#306): the family windows ride the design band —
-    // the hand-built drop (0 16px 40px rgb(0 0 0 / 22%)) owns the login
-    // card elevation while the token ladder keeps the flyout alone
+    // the token union law (#313) rides the refit law (#306): the family
+    // windows answer the design band — the hand-built drop
+    // (0 16px 40px rgb(0 0 0 / 22%)) and the house token
+    // (var(--win-shad-window)) share the login card elevation, the one
+    // union both ladder seats declare, and the retired -18px drop stays
+    // forbidden
     expect(cardblock).toContain("0 16px 40px rgb(0 0 0 / 22%)");
+    expect(cardblock).toContain("var(--win-shad-window)");
     expect(cardblock).not.toContain("0 16px 40px -18px");
   });
 

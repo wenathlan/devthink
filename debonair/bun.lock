@@ -11,7 +11,6 @@
         "@fontsource-variable/inter": "^5.3.0",
         "@fontsource-variable/jetbrains-mono": "^5.3.0",
         "@fontsource-variable/outfit": "^5.3.0",
-        "@fontsource-variable/urbanist": "^5.3.0",
         "@hono/node-server": "^2.1.5",
         "@libsql/client": "^0.18.0",
         "@prisma/adapter-libsql": "^7.10.1",
@@ -303,8 +302,6 @@
     "@fontsource-variable/jetbrains-mono": ["@fontsource-variable/jetbrains-mono@5.3.0", "", {}, "sha512-F32xpS2NsGYoQi2ADSkKTgpJj7ozajsGgDJ8woTnqjmIB+dxDIqImjl4pXZVEExu8UFZ2ndhmX18EBS/hdz3Lw=="],
 
     "@fontsource-variable/outfit": ["@fontsource-variable/outfit@5.3.0", "", {}, "sha512-fPb5XnYK0k7SbR++HEmm4+ZqDszmLKQ+sPRUr8oQ/KNC0vy6r6hazJFe8iYozv4cqlHbvJ/JECkJWrfDodUMVQ=="],
-
-    "@fontsource-variable/urbanist": ["@fontsource-variable/urbanist@5.3.0", "", {}, "sha512-riHbcRgoOhEdCwVw3n3R1JLEwvRD1N9GlXtBcwl/UJ2KabfyDBuryE2Yq10308QJgbXw3F/IFF+VoMuuqwVfIA=="],
 
     "@griffel/core": ["@griffel/core@1.21.4", "", { "dependencies": { "@emotion/hash": "^0.9.0", "@griffel/style-types": "^1.4.3", "csstype": "^3.2.3", "rtl-css-js": "^1.16.1", "stylis": "^4.4.0", "tslib": "^2.1.0" } }, "sha512-Pt6tjaBCOYYC76L7U5yl3r+UqOGXEbeskvYuqUsUzaVQR2ueoMErA2+bRjvVPFr8NvvhPVU+QNBqd9Deg5st2A=="],
 

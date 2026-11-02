@@ -7,10 +7,12 @@
  * dials out until the operator adds an address and turns its opt-in toggle
  * on by hand. The safeurl boundary refuses localhost, loopback and private
  * or reserved hosts before a row ever reaches storage, and the registry
- * stores the name of a credential, never the secret itself. Loose
- * component of the settings page, riding the dtw kit.
+ * stores the name of a credential, never the secret itself. Every string
+ * the card renders rides the copy store (copy.ts). Loose component of the
+ * settings page, riding the dtw kit.
  */
 import { type FormEvent, useMemo, useState } from "react";
+import { copy } from "../../copy";
 import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../mcpregistry";
 
 /** the one localStorage key the registry rides (mcpregistry.ts contract). */
@@ -42,7 +44,7 @@ export function AutomationMcp() {
       refresh();
       return true;
     }
-    setReason(answer.reason ?? "The change was not accepted.");
+    setReason(answer.reason ?? copy("settings.automation.refused"));
     return false;
   }
 
@@ -88,26 +90,23 @@ export function AutomationMcp() {
   }
 
   return (
-    <section className="dtw-card" aria-label="Automation and MCP">
-      <h2 className="dtw-cardtitle">Automation</h2>
-      <p className="dtw-copy">
-        Off by default. Any connected assistant controls the apps that opt in, and requests go out only to public
-        internet addresses. Only the credential name is kept — never the secret itself.
-      </p>
+    <section className="dtw-card" aria-label={copy("settings.automation.aria")}>
+      <h2 className="dtw-cardtitle">{copy("settings.automation.title")}</h2>
+      <p className="dtw-copy">{copy("settings.automation.lede")}</p>
       {reason ? (
         <small className="dtw-settings__error" role="alert">
           {reason}
         </small>
       ) : null}
 
-      <h3 className="dtw-console__subhead">MCP endpoints</h3>
+      <h3 className="dtw-console__subhead">{copy("settings.automation.endpoints.title")}</h3>
       <table className="dtw-settings__table">
         <thead>
           <tr>
-            <th>Endpoint</th>
-            <th>Url</th>
-            <th>Opt-in</th>
-            <th>Actions</th>
+            <th>{copy("settings.automation.endpoints.col.endpoint")}</th>
+            <th>{copy("settings.automation.endpoints.col.url")}</th>
+            <th>{copy("settings.automation.col.optin")}</th>
+            <th>{copy("settings.automation.col.actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -120,7 +119,7 @@ export function AutomationMcp() {
                       className="dtw-settings__input"
                       value={editing.label}
                       onChange={(event) => setEditing({ ...editing, label: event.target.value })}
-                      aria-label="endpoint label"
+                      aria-label={copy("settings.automation.endpoints.edit.label.aria")}
                     />
                   </td>
                   <td>
@@ -128,17 +127,17 @@ export function AutomationMcp() {
                       className="dtw-settings__input"
                       value={editing.url}
                       onChange={(event) => setEditing({ ...editing, url: event.target.value })}
-                      aria-label="endpoint url"
+                      aria-label={copy("settings.automation.endpoints.edit.url.aria")}
                     />
                   </td>
-                  <td>{row.enabled ? "On" : "Off"}</td>
+                  <td>{row.enabled ? copy("settings.automation.on") : copy("settings.automation.off")}</td>
                   <td>
                     <div className="dtw-settings__cellbtns">
                       <button type="submit" form="automation-mcp-edit" className="dtw-btn">
-                        Save
+                        {copy("settings.automation.save")}
                       </button>
                       <button type="button" className="dtw-btn" onClick={() => setEditing(null)}>
-                        Cancel
+                        {copy("settings.automation.cancel")}
                       </button>
                     </div>
                   </td>
@@ -160,7 +159,7 @@ export function AutomationMcp() {
                       <span className="dtw-settings__switchtrack" aria-hidden="true">
                         <span className="dtw-settings__switchthumb" />
                       </span>
-                      {row.enabled ? "On" : "Off"}
+                      {row.enabled ? copy("settings.automation.on") : copy("settings.automation.off")}
                     </label>
                   </td>
                   <td>
@@ -170,10 +169,10 @@ export function AutomationMcp() {
                         className="dtw-btn"
                         onClick={() => setEditing({ id: row.id, label: row.label, url: row.url })}
                       >
-                        Edit
+                        {copy("settings.automation.edit")}
                       </button>
                       <button type="button" className="dtw-btn" onClick={() => removeEndpoint(row.id)}>
-                        Remove
+                        {copy("settings.automation.remove")}
                       </button>
                     </div>
                   </td>
@@ -182,7 +181,7 @@ export function AutomationMcp() {
             )
           ) : (
             <tr>
-              <td colSpan={4}>No MCP endpoint is connected yet, so tools stay off for assistants.</td>
+              <td colSpan={4}>{copy("settings.automation.endpoints.empty")}</td>
             </tr>
           )}
         </tbody>
@@ -195,32 +194,32 @@ export function AutomationMcp() {
           className="dtw-settings__input"
           value={endpointDraft.label}
           onChange={(event) => setEndpointDraft({ ...endpointDraft, label: event.target.value })}
-          placeholder="label"
-          aria-label="new endpoint label"
+          placeholder={copy("settings.automation.endpoints.label.ph")}
+          aria-label={copy("settings.automation.endpoints.label.aria")}
         />
         <input
           className="dtw-settings__input"
           value={endpointDraft.url}
           onChange={(event) => setEndpointDraft({ ...endpointDraft, url: event.target.value })}
-          placeholder="https://mcp.example.com"
-          aria-label="new endpoint url"
+          placeholder={copy("settings.automation.endpoints.url.ph")}
+          aria-label={copy("settings.automation.endpoints.url.aria")}
           spellCheck={false}
           autoComplete="off"
         />
         <button type="submit" className="dtw-btn dtw-btn--primary">
-          Add endpoint
+          {copy("settings.automation.endpoints.add")}
         </button>
       </form>
 
-      <h3 className="dtw-console__subhead">Custom providers</h3>
+      <h3 className="dtw-console__subhead">{copy("settings.automation.providers.title")}</h3>
       <table className="dtw-settings__table">
         <thead>
           <tr>
-            <th>Provider</th>
-            <th>Base url</th>
-            <th>Credential</th>
-            <th>Opt-in</th>
-            <th>Actions</th>
+            <th>{copy("settings.automation.providers.col.provider")}</th>
+            <th>{copy("settings.automation.providers.col.baseurl")}</th>
+            <th>{copy("settings.automation.providers.col.credential")}</th>
+            <th>{copy("settings.automation.col.optin")}</th>
+            <th>{copy("settings.automation.col.actions")}</th>
           </tr>
         </thead>
         <tbody>
@@ -233,7 +232,7 @@ export function AutomationMcp() {
                       className="dtw-settings__input"
                       value={editing.label}
                       onChange={(event) => setEditing({ ...editing, label: event.target.value })}
-                      aria-label="provider label"
+                      aria-label={copy("settings.automation.providers.edit.label.aria")}
                     />
                   </td>
                   <td>
@@ -241,7 +240,7 @@ export function AutomationMcp() {
                       className="dtw-settings__input"
                       value={editing.baseUrl}
                       onChange={(event) => setEditing({ ...editing, baseUrl: event.target.value })}
-                      aria-label="provider base url"
+                      aria-label={copy("settings.automation.providers.edit.url.aria")}
                     />
                   </td>
                   <td>
@@ -249,17 +248,17 @@ export function AutomationMcp() {
                       className="dtw-settings__input"
                       value={editing.keyref}
                       onChange={(event) => setEditing({ ...editing, keyref: event.target.value })}
-                      aria-label="provider credential name"
+                      aria-label={copy("settings.automation.providers.edit.credential.aria")}
                     />
                   </td>
-                  <td>{row.enabled ? "On" : "Off"}</td>
+                  <td>{row.enabled ? copy("settings.automation.on") : copy("settings.automation.off")}</td>
                   <td>
                     <div className="dtw-settings__cellbtns">
                       <button type="submit" form="automation-mcp-edit" className="dtw-btn">
-                        Save
+                        {copy("settings.automation.save")}
                       </button>
                       <button type="button" className="dtw-btn" onClick={() => setEditing(null)}>
-                        Cancel
+                        {copy("settings.automation.cancel")}
                       </button>
                     </div>
                   </td>
@@ -284,7 +283,7 @@ export function AutomationMcp() {
                       <span className="dtw-settings__switchtrack" aria-hidden="true">
                         <span className="dtw-settings__switchthumb" />
                       </span>
-                      {row.enabled ? "On" : "Off"}
+                      {row.enabled ? copy("settings.automation.on") : copy("settings.automation.off")}
                     </label>
                   </td>
                   <td>
@@ -296,10 +295,10 @@ export function AutomationMcp() {
                           setEditing({ id: row.id, label: row.label, baseUrl: row.baseUrl, keyref: row.keyref })
                         }
                       >
-                        Edit
+                        {copy("settings.automation.edit")}
                       </button>
                       <button type="button" className="dtw-btn" onClick={() => removeProvider(row.id)}>
-                        Remove
+                        {copy("settings.automation.remove")}
                       </button>
                     </div>
                   </td>
@@ -308,7 +307,7 @@ export function AutomationMcp() {
             )
           ) : (
             <tr>
-              <td colSpan={5}>No custom provider is connected yet, so no personal model serves the apps.</td>
+              <td colSpan={5}>{copy("settings.automation.providers.empty")}</td>
             </tr>
           )}
         </tbody>
@@ -319,15 +318,15 @@ export function AutomationMcp() {
           className="dtw-settings__input"
           value={providerDraft.label}
           onChange={(event) => setProviderDraft({ ...providerDraft, label: event.target.value })}
-          placeholder="label"
-          aria-label="new provider label"
+          placeholder={copy("settings.automation.providers.label.ph")}
+          aria-label={copy("settings.automation.providers.label.aria")}
         />
         <input
           className="dtw-settings__input"
           value={providerDraft.baseUrl}
           onChange={(event) => setProviderDraft({ ...providerDraft, baseUrl: event.target.value })}
-          placeholder="https://api.example.com/v1"
-          aria-label="new provider base url"
+          placeholder={copy("settings.automation.providers.url.ph")}
+          aria-label={copy("settings.automation.providers.url.aria")}
           spellCheck={false}
           autoComplete="off"
         />
@@ -335,13 +334,13 @@ export function AutomationMcp() {
           className="dtw-settings__input"
           value={providerDraft.keyref}
           onChange={(event) => setProviderDraft({ ...providerDraft, keyref: event.target.value })}
-          placeholder="credential name"
-          aria-label="new provider credential name"
+          placeholder={copy("settings.automation.providers.credential.ph")}
+          aria-label={copy("settings.automation.providers.credential.aria")}
           spellCheck={false}
           autoComplete="off"
         />
         <button type="submit" className="dtw-btn dtw-btn--primary">
-          Add provider
+          {copy("settings.automation.providers.add")}
         </button>
       </form>
     </section>

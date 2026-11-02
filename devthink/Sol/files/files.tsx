@@ -41,7 +41,8 @@
  * (clear the selection), the hover lifts the tile with the soft wash, the
  * selection paints the accent underline, the items stagger in at 40ms
  * steps under motion-reduce guards and the view crossfades on every
- * navigation. English text only — the gtx translation runs at runtime.
+ * navigation. English text only — the display translation owns the other
+ * languages at runtime.
  */
 import {
   ArrowLeftRegular as ChevronLeft,

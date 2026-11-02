@@ -7,22 +7,15 @@
     "stripInternal": true,
     "isolatedModules": true,
     "outDir": "dist",
+    "rootDir": ".",
     "paths": {
-      "@/*": [
-        "./Sol/*",
-        "./*"
-      ],
-      "@wenathlan/saddle/sandbox": [
-        "../saddle/sandbox.ts"
-      ],
-      "@wenathlan/devthink/server": [
-        "./server.ts"
-      ]
+      "@/*": ["./Sol/*", "./*"],
+      "@wenathlan/devthink/server": ["./server.ts"]
     }
   },
   "include": [
     "thinkingtypes.ts",
-    "modalityregistrytypes.ts",
+    "modalitytypes.ts",
     "index.ts",
     "types.ts",
     "policy.ts",

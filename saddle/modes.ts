@@ -114,7 +114,10 @@ export async function withmode(options, operation) { if (typeof operation !== "f
  * deploy surface exposes artifact planning without performing provider mutations.
  */
 export { publishplan, registrymanifest } from "./distribution.js";
-export { surfacemanifest, surfacebundle } from "./automation.js";
+/* the packaging surface pair (surfacemanifest, surfacebundle) moved to
+ * devthink with the automation domain (the saddle ownership law, wave a,
+ * actions 108-112 — the deploy surface keeps the artifact planning pair
+ * the engine owns). */
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 5: modes/targets.ts — target profiles keep platform packaging open and describe capability boundaries. */

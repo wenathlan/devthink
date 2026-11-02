@@ -49,8 +49,10 @@
     "analyze.ts",
     "hpss.ts",
     "ingest.ts",
+    "ingestrecon.ts",
     "patternminer.ts",
     "patternenums.ts",
+    "reconpayload.ts",
     "composer.ts",
     "coverpalette.ts",
     "audioengine.ts",
@@ -124,6 +126,16 @@
       "types": "./ingest.ts",
       "import": "./ingest.ts",
       "default": "./ingest.ts"
+    },
+    "./ingestrecon": {
+      "types": "./ingestrecon.ts",
+      "import": "./ingestrecon.ts",
+      "default": "./ingestrecon.ts"
+    },
+    "./reconpayload": {
+      "types": "./reconpayload.ts",
+      "import": "./reconpayload.ts",
+      "default": "./reconpayload.ts"
     },
     "./patternminer": {
       "types": "./patternminer.ts",
@@ -253,7 +265,6 @@
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/outfit": "^5.3.0",
-    "@fontsource-variable/urbanist": "^5.3.0",
     "@hono/node-server": "^2.1.5",
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
