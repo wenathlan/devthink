@@ -1279,8 +1279,12 @@ class firecrackerruntime extends runtimestrategy {
  * the class also absorbs spawnqemu from the Meta source: the vm plane
  * launches qemu with monitor and qmp unix sockets, a numa pin line,
  * vfio devices for every gpu assignment, extra args from qemu.config
- * and, when the binary is absent (CI), a "sleep 3600" stand-in process
- * so scheduling and lifecycle still exercise end to end.
+ * and — the honest-boot law of the engine-real rung — when the qemu
+ * binary is absent the spawn refuses with ERR_QEMU_ABSENT (the error
+ * names the binary the host must carry) so a vm record never claims
+ * running over a stand-in process: scheduling and lifecycle still
+ * exercise end to end in CI through the argv builders and the create /
+ * destroy planes, never through a faked boot.
  */
 class qemuruntime extends runtimestrategy {
   override readonly name: sandboxruntime = 'qemu';
@@ -1346,13 +1350,24 @@ class qemuruntime extends runtimestrategy {
 
   /**
    * builds the vm plane argv: strategy flags plus the name/uuid, dual
-   * unix sockets, virtio balloon, the per-numa bridge netdev, the numa
-   * pin line and one vfio-pci device per assigned gpu.
+   * unix sockets, virtio balloon, the numa pin line and one vfio-pci
+   * device per assigned gpu. the netdev answers the honest network law:
+   * the per-numa bridge (br-vhe-N) rides when the interface exists on
+   * the host (the privileged deployments the bridge plane owns), and a
+   * host without the interface rides user-mode networking (slirp) — a
+   * real qemu network mode that needs no privilege — so the argv a host
+   * without the bridge answers is a bootable argv, never a bridge the
+   * kernel would refuse.
    */
   buildvmcommand(vm: vmrecord, assignments: readonly gpuassignment[]): readonly string[] {
     const kvm = kvmavailable();
     const accel = vm.accel === 'kvm' && kvm ? 'kvm' : 'tcg,thread=multi,tb-size=1024';
     const sockets = this.socketsfor(vm.id);
+    const bridgename = `br-vhe-${vm.numanode}`;
+    const bridgeonhost = existsSync(`/sys/class/net/${bridgename}`);
+    const netdev = bridgeonhost
+      ? `bridge,br=${bridgename},id=net0`
+      : 'user,id=net0';
     const args: string[] = [
       vm.qemubinary,
       '-machine',
@@ -1372,7 +1387,7 @@ class qemuruntime extends runtimestrategy {
       '-device',
       'virtio-balloon-pci,id=balloon0',
       '-netdev',
-      `bridge,br=br-vhe-${vm.numanode},id=net0`,
+      netdev,
       '-device',
       'virtio-net-pci,netdev=net0',
       '-display',
@@ -1394,8 +1409,12 @@ class qemuruntime extends runtimestrategy {
 
   /**
    * spawns qemu for a vm record; when the binary does not exist the
-   * method spawns "sleep 3600" instead so CI environments without qemu
-   * still run the scheduling and lifecycle paths (spawnqemu merge).
+   * method refuses with ERR_QEMU_ABSENT — the honest-boot law of the
+   * engine-real rung: a host without the qemu binary never answers a
+   * stand-in process, the vm record never claims running over a sleep
+   * (startvm catches the refusal, marks the vm failed and publishes the
+   * error, so CI exercises the argv builders and the create / destroy
+   * planes instead of a faked boot).
    */
   async spawn(
     vm: vmrecord,
@@ -1404,14 +1423,23 @@ class qemuruntime extends runtimestrategy {
   ): Promise<qemuprocess> {
     try {
       const sockets = this.socketsfor(vm.id);
-      const argv = [...this.buildvmcommand(vm, assignments), '-daemonize'];
+      // the socket seats must exist before the guest opens its servers —
+      // qemu creates the socket files itself, never the parent directory
+      mkdirSync(path.dirname(sockets.qmp), { recursive: true });
+      // the foreground law of the honest-boot rung: the tracked child is
+      // the process that lives as long as the vm — the daemonize flag
+      // would fork the daemon and exit the parent at once (the vm would
+      // read stopped over a live machine), so the spawn rides the
+      // foreground argv the exit callback can own
+      const argv = this.buildvmcommand(vm, assignments);
       const [bin, ...rest] = argv;
-      let child: ChildProcess;
-      if (existsSync(bin)) {
-        child = spawn(bin, rest, { stdio: 'ignore', detached: false });
-      } else {
-        child = spawn('sleep', ['3600'], { stdio: 'ignore', detached: false });
+      if (!existsSync(bin)) {
+        throw new orchestratorerror(
+          `qemu spawn refused for ${vm.id}: the binary ${bin} is absent from the engine host (the honest-boot law — a vm never runs over a stand-in process)`,
+          'ERR_QEMU_ABSENT',
+        );
       }
+      const child: ChildProcess = spawn(bin, rest, { stdio: 'ignore', detached: false });
       const pid = child.pid ?? randomInt(1000, 11000);
       const processinfo: qemuprocess = {
         vmid: vm.id,
@@ -1426,6 +1454,12 @@ class qemuruntime extends runtimestrategy {
       });
       return processinfo;
     } catch (error) {
+      // the honest-boot refusal rides through untouched — the code the
+      // law answers (ERR_QEMU_ABSENT) is the code startvm and the vm
+      // record read, never the generic spawn wrap
+      if (error instanceof orchestratorerror) {
+        throw error;
+      }
       throw new orchestratorerror(
         `qemu spawn failed for ${vm.id}: ${errormessage(error)}`,
         'ERR_QEMU_SPAWN',

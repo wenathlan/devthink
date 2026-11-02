@@ -388,6 +388,22 @@ jobs:
       - name: Checkout the DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # the honest-boot law of the engine-real rung: the saddle leg carries
+      # a real qemu binary so the vm lifecycle battery (snapshot, restore,
+      # restart over a real child process) answers its real lane on the
+      # runner — a host without the binary never fakes a boot, the tests
+      # skip with the documented reason instead (the version the apt lane
+      # answers sits below the 11.1.0 catalog pin, so the version mismatch
+      # event fires exactly like the catalog law describes)
+      - name: Carry the real qemu binary for the vm lifecycle battery
+        if: matrix.app == 'saddle'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86
+          qemu-system-x86_64 -version | head -n 1
+
       - name: Set up Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
