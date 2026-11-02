@@ -1,6 +1,14 @@
 # syntax=docker/dockerfile:1
 # saddle v2.0.0 grand merge — THE ONE CONTAINER FILE.
 #
+# build context: this file COPYs from two trees (saddle/ and the
+# engine-ownership sibling vault/), so every build runs from the
+# repository root with an explicit -f: docker build -f saddle/Dockerfile .
+# (add --target saddle-runtime for the node service or --target
+# qemu-runtime for the guest runner). building from inside saddle/
+# breaks the vault COPY - the sibling rides the context beside this
+# directory, never inside it.
+#
 # this Dockerfile carries BOTH container surfaces of the merged repository:
 #   1. the saddle virtual-hardware engine image (the five stages below:
 #      builder, python-bridge, qemu, qemu-runtime, runtime) — the default
@@ -94,7 +102,7 @@
 #     -v vmdata:/data/vmdata -v webdata:/data/web \
 #     -v ./vm.config.json:/engine/vm.config.json:ro \
 #     -e PORT=8080 -e NODE_ENV=production -p 31280:8080 \
-#     ghcr.io/wenathlan/saddle:vhe-2.1.6
+#     ghcr.io/wenathlan/saddle:vhe-2.0.154
 #
 #   vheqemu (the guest runner; build it first with
 #   docker build --target qemu-runtime -t saddle/qemu:11.1.0 . because the
@@ -128,7 +136,7 @@
 #     -e VHE_GPU_PROFILE=b200 -e VHE_GPUS=8 -e VHE_MIG=1 \
 #     -e VHE_SMI_DRIVER=575.57.08 -e VHE_SMI_CUDA=12.9 \
 #     -e VHE_SMI_INTERVAL=30 -e VHE_SKIP_XVFB=1 -e VHE_SKIP_VALIDATE=1 \
-#     ghcr.io/wenathlan/saddle:vhe-2.1.6 /bin/bash -c '
+#     ghcr.io/wenathlan/saddle:vhe-2.0.154 /bin/bash -c '
 #       while true; do
 #         /usr/local/bin/nvidia-smi "$VHE_GPU_PROFILE" "$VHE_GPUS" || true
 #         sleep "$VHE_SMI_INTERVAL"
@@ -145,7 +153,7 @@
 #     -v qemudata:/data/qemudata \
 #     -v ./qemubridge.py:/engine/qemubridge.py:ro \
 #     -e QMP_SOCKET=/run/vhe/vm.qmp -e PYTHONUNBUFFERED=1 \
-#     ghcr.io/wenathlan/saddle:vhe-2.1.6 \
+#     ghcr.io/wenathlan/saddle:vhe-2.0.154 \
 #     python3 /engine/qemubridge.py --socket /run/vhe/vm.qmp status
 #
 #   saddle-node (the node-engine service, the former compose.yml
@@ -159,7 +167,7 @@
 #     --log-driver json-file --log-opt max-size=50m --log-opt max-file=5 \
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e SADDLE_MEMORY_ENGINE=ram -e SBOT_PLATFORM= -e SBOT_CDN_URL= \
-#     ghcr.io/wenathlan/saddle:2.1.6 \
+#     ghcr.io/wenathlan/saddle:2.0.154 \
 #     node dist/cli.js plan
 #
 #   observability (the former prometheus scraper of the full profile)
@@ -656,9 +664,9 @@ ENTRYPOINT ["/usr/bin/tini", "--", "qemu-system-x86_64"]
 # run it under QEMU. The base rides the family tag contract (tags only,
 # never a @sha256: digest - a single digest cannot serve the
 # four-architecture matrix the registry resolves per platform).
-FROM --platform=$BUILDPLATFORM node:26.8.1-slim AS saddle-build
+FROM --platform=$BUILDPLATFORM node:26.13.0-slim AS saddle-build
 
-ARG SADDLE_VERSION
+ARG SADDLE_VERSION=2.0.154
 WORKDIR /app
 
 ENV NPM_CONFIG_LEGACY_PEER_DEPS=true
@@ -916,7 +924,13 @@ COPY --from=python-bridge /bridge/qemubridge.py /engine/qemubridge.py
 # keeps that a single COPY layer).
 COPY saddle/*.ts saddle/package.json saddle/tsconfig.json saddle/biome.jsonc saddle/jsdom.d.ts /engine/
 COPY saddle/processors.json saddle/gpus.json saddle/cores.json saddle/boards.json saddle/vm.config.json saddle/virtualhardware.json /engine/
-COPY saddle/qemu.config saddle/mttg.config saddle/passage.config saddle/docker.config saddle/mime.types /engine/
+COPY saddle/qemu.config saddle/mttg.config saddle/passage.config docker.config saddle/mime.types /engine/
+# the engine-ownership sibling: db.ts pulls labels.ts whose
+# ../vault/labelstore.ts import resolves at /vault - the vault source
+# rides the context beside the saddle and lands at /vault where the
+# import resolves (the same family context fix as the saddle-build
+# stage), so the engine webserver below finds the label store.
+COPY vault/labelstore.ts /vault/labelstore.ts
 
 # the web node ships inside the main container: the mesh edition (auth,
 # sqlite database, dashboard and the browser sandbox pages) runs from the
@@ -1295,7 +1309,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --start-interval=5s 
 # OCI labels for registry introspection.
 LABEL org.opencontainers.image.title="saddle virtual-hardware engine (the grand merge)" \
       org.opencontainers.image.description="100% software virtual hardware: per-profile CPU/memory spoofing via LD_PRELOAD (max/balanced/lite), mesa 26.2.1 llvmpipe/lavapipe/rusticl, QEMU 11.1.0 TCG/MTTCG, virtual nvidia-smi adapter + NVML/CUDA shims, node 26.7.0, python bridge" \
-      org.opencontainers.image.version="2.1.6" \
+      org.opencontainers.image.version="2.0.154" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://github.com/wenathlan/saddle" \
       org.opencontainers.image.documentation="https://github.com/wenathlan/saddle/blob/main/README.md" \
@@ -1326,6 +1340,14 @@ VOLUME /data /cache/mesa_shader_cache
 # pid 1.
 ENTRYPOINT ["/entrypoint.sh"]
 
+# the engine service command: without a CMD the entrypoint exec "$@"
+# fell back to /bin/bash and the engine recipe (host 31280 -> container
+# 8080) bound nothing. the webserver is the console server the COPY
+# above landed at /engine: the default command starts it, and the
+# entrypoint exports PORT (8080 unless -e PORT overrides) before the
+# exec, so the service answers on 8080 out of the box.
+CMD ["node", "/engine/webserver.ts"]
+
 # ══════════════════════════════════════════════════════════════════════
 # saddle node-engine stages — the storage/compute node service of the
 # grand merge (folded verbatim from the former dockerfile.saddle: the
@@ -1334,9 +1356,9 @@ ENTRYPOINT ["/entrypoint.sh"]
 #   docker build --target saddle-runtime -t saddle:<version> .
 # ══════════════════════════════════════════════════════════════════════
 
-FROM node:26.8.1-slim AS saddle-runtime
+FROM node:26.13.0-slim AS saddle-runtime
 
-ARG SADDLE_VERSION
+ARG SADDLE_VERSION=2.0.154
 LABEL org.opencontainers.image.title="Saddle" \
       org.opencontainers.image.description="Storage-backed browser and compute engine (the grand-merge node service)" \
       org.opencontainers.image.source="https://github.com/wenathlan/saddle" \
@@ -1388,13 +1410,24 @@ RUN apt-get update \
     && find node_modules -type f -name Dockerfile -delete
 COPY --from=saddle-build /app/dist ./dist
 # the web service surface (self-hosted console): the staged spa plus the
-# pure-node server stack (webserver.ts, db.ts, labels.ts, auth.ts,
-# mesh.ts, sandbox.ts, sandboxprofile.ts, sandboxenvprofile.ts,
-# sandboxquota.ts, mime.types, init.sql, schema.prisma) - zero npm
-# dependencies, the node 26 runtime carries everything (node:sqlite,
-# node:crypto, native type stripping for the .ts sources).
+# pure-node server stack - zero npm dependencies, the node 26 runtime
+# carries everything (node:sqlite, node:crypto, native type stripping
+# for the .ts sources). the console set closes the whole import graph:
+# webserver.ts pulls modalityregistry.ts, edgeplane.ts and
+# workloadlaw.ts; edgeplane.ts pulls foundation.ts and the edgelandes
+# family (edgelandes.ts, edgelandes.host.ts, edgelandes.inproc.ts,
+# edgelandes.virtual.ts, edgelandes.ninety.ts); db.ts pulls labels.ts
+# whose ../vault/labelstore.ts import resolves at /vault (the family
+# context fix - the vault source lands beside /app the same way the
+# saddle-build stage lands it). with the graph closed, node
+# webserver.ts starts clean; before the fix the container crashed at
+# boot with module-not-found.
 # run the console with: docker run saddle:<version> node webserver.ts
-COPY --from=saddle-build /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/sandboxprofile.ts /app/sandboxenvprofile.ts /app/sandboxquota.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+COPY --from=saddle-build /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/sandboxprofile.ts /app/sandboxenvprofile.ts /app/sandboxquota.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/edgelandes.host.ts /app/edgelandes.inproc.ts /app/edgelandes.virtual.ts /app/edgelandes.ninety.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+# the label store of the console stack: labels.ts (pulled by db.ts)
+# resolves ../vault/labelstore.ts at /vault - the same family context
+# fix the saddle-build stage applies.
+COPY --from=saddle-build /vault/labelstore.ts /vault/labelstore.ts
 COPY --from=saddle-build /out/spa ./
 
 USER node
