@@ -145,12 +145,15 @@ export const heavyweightlaneids: readonly string[] = Object.freeze(heavyweightla
 /* Section 5: the merged tables — the one surface the plane reads. */
 /* ════════════════════════════════════════════════════════════════════ */
 
-/** the merged lane spec table of the plane: the sixteen base lanes, the
- * twenty-five host binary lanes, the nineteen in-process lanes, the seven
- * virtual hardware lanes and the six heavyweight probes — sixty-three
- * lanes, every modality the ninety plan wires through the plane. the
- * order pins the base lanes first (the contract the existing tests read),
- * then the groups in their file order, then the heavyweight probes. */
+/** the merged lane spec table of the plane: beside the sixteen base
+ * lanes of the plane contract, the thirty-seven host binary lanes (the
+ * twenty-five of the first wave, the twelve host seats of the wiring
+ * wave), the twenty-four in-process lanes (the nineteen of the first
+ * wave, the five seats of the wiring wave), the seven virtual hardware
+ * lanes and the six heavyweight probes — seventy-four merged lanes, the
+ * ninety the plan wires through the plane in total (sixty-six live,
+ * twenty-four host), every modality the ninety plan answers. the order
+ * walks the groups in their file order, then the heavyweight probes. */
 export const edgelanespecsall: readonly (HeavyweightLaneSpec & { kind: "live" | "host" })[] = Object.freeze([
   ...hostlanespecs,
   ...inproclanespecs,

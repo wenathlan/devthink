@@ -1,10 +1,11 @@
 // # ninetylaw.test — the forty live law of the ninety modality plan
 // (wave w2 b1, rebased onto the ninety wave): the ten promotions this
 // law wired live still ride the registry live and carry their executors
-// — and the ninety wave that merged after widened the same truth to the
-// full plan (the census answers 81 live, 9 host and 0 planned of the
-// ninety the owner charged, the lane table answers 61 live and 12 host
-// lanes), so the battery pins the post-merge truth. each promoted lane
+// — and the waves that merged after widened the same truth to the full
+// plan (the census answers 81 live, 9 host and 0 planned of the ninety
+// the owner charged, the lane table answers 66 live and 24 host lanes
+// — the wiring wave closed the last seventeen gaps), so the battery
+// pins the post-merge truth. each promoted lane
 // refuses honestly when its runtime or its configuration is absent —
 // the error names the requirement (the clr lane names the assembly
 // signature and the dotnet runtime, the profile lanes and the ghcr lane
@@ -19,7 +20,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { edgelaneexecutors } from "../edgelandes.ts";
 import { edgelanes, runonedge } from "../edgeplane.ts";
-import { MODALITIES, MODALITYPLANCOUNT, getmodality, planreport } from "../modalityregistry.ts";
+import { getmodality, MODALITIES, MODALITYPLANCOUNT, planreport } from "../modalityregistry.ts";
 
 /** the ten promotions of the forty live law (wave w2 b1): the ids the
  * registry flipped live and the edge plane wired lanes for. */
@@ -54,7 +55,10 @@ type LaneAnswer = {
 async function runvaultlane(modality: string, code: string): Promise<LaneAnswer> {
   const executor = edgelaneexecutors[modality];
   if (executor === undefined) {
-    return { status: "failed", error: { code: "LANE_EXECUTOR_ABSENT", message: `the lane ${modality} carries no vault executor` } };
+    return {
+      status: "failed",
+      error: { code: "LANE_EXECUTOR_ABSENT", message: `the lane ${modality} carries no vault executor` },
+    };
   }
   try {
     const output = await executor(code, undefined, 20000);
@@ -115,10 +119,11 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
       assert.equal(typeof lane.present, "boolean", `the lane ${id} answers its presence honestly`);
     }
     // the table counts the same census the registry declares — the
-    // ninety wave merged the full wiring, so the live set answers 61
-    // lanes beside the 12 host seats
-    assert.equal(lanes.filter((lane) => lane.kind === "live").length, 61);
-    assert.equal(lanes.filter((lane) => lane.kind === "host").length, 12);
+    // ninety wave merged the full wiring and the wiring wave closed the
+    // last seventeen gaps, so the live set answers 66 lanes beside the
+    // 24 host seats
+    assert.equal(lanes.filter((lane) => lane.kind === "live").length, 66);
+    assert.equal(lanes.filter((lane) => lane.kind === "host").length, 24);
   });
 
   it("refuses the clr lane on bytes that carry no assembly signature", async () => {
@@ -133,39 +138,35 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     assert.ok(invalid.error?.message.includes("assembly"), "the message names the assembly law");
   });
 
-  it(
-    "names the dotnet runtime when the clr lane carries honest pe bytes",
-    async () => {
-      // the mz signature the runtime demands, over bytes that are no real
-      // assembly: the lane rides exactly as far as the host runtime answers
-      // (the probe deadline below exceeds the suite default, so the test
-      // carries its own ceiling that covers the honest deadline a cold
-      // runner needs — the lane answers before either clock dies)
-      const bytes = Buffer.concat([Buffer.from([0x4d, 0x5a]), Buffer.alloc(64, 0)]);
-      const result = await runonedge({
-        modality: "runtime-clr",
-        code: bytes.toString("base64"),
-        deadlinems: 20000,
-      });
-      // an absent dotnet answers host-runtime-absent, a present dotnet
-      // refuses the stub honestly, and a cold runner's dotnet can ride
-      // past the probe ceiling — the deadline kill is the third honest
-      // answer the deadline law documents (the lane names the clock it
-      // rode when the runtime outruns it)
-      assert.equal(result.status, "failed");
-      assert.ok(
-        result.error?.code === "HOST_RUNTIME_ABSENT" ||
-          result.error?.code === "RUN_EXITED_NONZERO" ||
-          result.error?.code === "RUN_DEADLINE_EXCEEDED",
-        `the clr refusal stays honest: ${result.error?.code}`,
-      );
-      assert.ok(
-        result.error?.code === "RUN_DEADLINE_EXCEEDED" || result.error?.message.includes("dotnet"),
-        "the message names the runtime",
-      );
-    },
-    30000,
-  );
+  it("names the dotnet runtime when the clr lane carries honest pe bytes", async () => {
+    // the mz signature the runtime demands, over bytes that are no real
+    // assembly: the lane rides exactly as far as the host runtime answers
+    // (the probe deadline below exceeds the suite default, so the test
+    // carries its own ceiling that covers the honest deadline a cold
+    // runner needs — the lane answers before either clock dies)
+    const bytes = Buffer.concat([Buffer.from([0x4d, 0x5a]), Buffer.alloc(64, 0)]);
+    const result = await runonedge({
+      modality: "runtime-clr",
+      code: bytes.toString("base64"),
+      deadlinems: 20000,
+    });
+    // an absent dotnet answers host-runtime-absent, a present dotnet
+    // refuses the stub honestly, and a cold runner's dotnet can ride
+    // past the probe ceiling — the deadline kill is the third honest
+    // answer the deadline law documents (the lane names the clock it
+    // rode when the runtime outruns it)
+    assert.equal(result.status, "failed");
+    assert.ok(
+      result.error?.code === "HOST_RUNTIME_ABSENT" ||
+        result.error?.code === "RUN_EXITED_NONZERO" ||
+        result.error?.code === "RUN_DEADLINE_EXCEEDED",
+      `the clr refusal stays honest: ${result.error?.code}`,
+    );
+    assert.ok(
+      result.error?.code === "RUN_DEADLINE_EXCEEDED" || result.error?.message.includes("dotnet"),
+      "the message names the runtime",
+    );
+  }, 30000);
 
   it("names docker when the profile lanes meet an absent daemon", async () => {
     for (const profile of ["max", "lite"] as const) {

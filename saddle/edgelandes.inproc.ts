@@ -1,8 +1,11 @@
 // # edgelandes.inproc.ts — the in-process modality lanes of the ninety
-// modalities wave (group b): the ram recipes, the delivery wire frames,
+// modalities waves (group b): the ram recipes, the delivery wire frames,
 // the storage wire handshakes, the webcontainer seat and the local
-// opt-in gate — nineteen registry modalities wired as honest pure
-// typescript execution lanes that run inside the engine process itself.
+// opt-in gate of the first wave plus the five seats of the wiring wave
+// (the serverless runner, the git objects vfs, the sqlite vault and the
+// dns and doh resolvers) — twenty-four registry modalities wired as
+// honest pure typescript execution lanes that run inside the engine
+// process itself.
 // No host binary is spawned and no network socket is opened: the code
 // field is the program or payload the lane interprets (a ram recipe
 // manifest, a wire payload, a sql manifest, a javascript module) and the
@@ -63,6 +66,12 @@ const storagemime = "application/vnd.devthink.storage+json";
 const browsermime = "application/vnd.devthink.browser+json";
 /** the artifact mime of the local family (the registry record declares it). */
 const localmime = "application/vnd.devthink.local+json";
+/** the artifact mime of the runner family (the registry record declares it). */
+const runmime = "application/vnd.devthink.run+json";
+/** the artifact mime of the fs family (the registry record declares it). */
+const vfsmime = "application/vnd.devthink.vfs+json";
+/** the artifact mime of the network family (the registry record declares it). */
+const netmime = "application/vnd.devthink.net+json";
 /** the default ram byte ceiling of the oom guard: 64 mb. */
 const defaultbudgetmb = 64;
 /** the bytes of one megabyte (the oom guard's unit). */
@@ -1062,7 +1071,274 @@ async function localoptinlane(_code: string, inputs: unknown, _deadline: number)
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
-/* Section 7: the lane tables — the specs, the executors and the ids. */
+/* Section 7: the wiring wave seats — the serverless runner, the git    */
+/* objects vfs, the sqlite vault and the network resolvers.             */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** the git object types the loose-object header law names. */
+const gitobjecttypes: readonly string[] = Object.freeze(["blob", "tree", "commit", "tag"]);
+
+/** the fixed sqlite version number the page-one header carries
+ * (3.45.0 — the deterministic planner constant, never a live probe). */
+const sqliteversionnumber = 3045000;
+
+/** the rfc1035 qtype codes the resolver lanes speak (the subset the
+ * planners compose — deterministic, fixed). */
+const dnsqtypecodes: Readonly<Record<string, number>> = Object.freeze({
+  A: 1,
+  NS: 2,
+  CNAME: 5,
+  MX: 15,
+  TXT: 16,
+  AAAA: 28,
+});
+
+/** builds the rfc1035 query message the dns and doh lanes plan from:
+ * the fnv-1a transaction id, the standard-query flags with recursion
+ * desired (0x0100), one question, the qname labels (each length
+ * prefixed, one to sixty-three octets, the empty name refused), the
+ * qtype code and the class IN — deterministic, no socket ever opens. */
+function dnsquerymessage(lane: string, name: string, qtype: string): { id: number; flags: number; query: Uint8Array } {
+  const qtypecode = dnsqtypecodes[qtype];
+  if (qtypecode === undefined) {
+    throw edgelaneerror(
+      "INVALID_LANE_PAYLOAD",
+      `the lane ${lane} requires a known qtype (A, NS, CNAME, MX, TXT, AAAA) in the manifest field qtype`,
+    );
+  }
+  const trimmed = name.endsWith(".") ? name.slice(0, -1) : name;
+  const labels = trimmed.split(".");
+  let questionbytes = 1 + 4;
+  for (const label of labels) {
+    const bytes = utf8.encode(label);
+    if (bytes.byteLength === 0 || bytes.byteLength > 63) {
+      throw edgelaneerror(
+        "INVALID_LANE_PAYLOAD",
+        `the lane ${lane} requires dns labels of 1 to 63 octets in the manifest field name`,
+      );
+    }
+    questionbytes += 1 + bytes.byteLength;
+  }
+  const query = new Uint8Array(12 + questionbytes);
+  const view = new DataView(query.buffer);
+  view.setUint16(0, Number.parseInt(fnv1a(`${trimmed}|${qtype}`), 16) & 0xffff);
+  view.setUint16(2, 0x0100);
+  view.setUint16(4, 1);
+  let offset = 12;
+  for (const label of labels) {
+    const bytes = utf8.encode(label);
+    query[offset] = bytes.byteLength;
+    offset += 1;
+    query.set(bytes, offset);
+    offset += bytes.byteLength;
+  }
+  query[offset] = 0;
+  view.setUint16(offset + 1, qtypecode);
+  view.setUint16(offset + 3, 1);
+  return { id: view.getUint16(0), flags: 0x0100, query };
+}
+
+/** runner-serverless: the v8 isolates lane. The code field is the
+ * isolate manifest {"isolate":"<name>","module":"<js module text>"}: the
+ * lane cold-starts one fresh node:vm context per run (the isolate
+ * carries only the frozen console and inputs surfaces — no fs, no host
+ * globals, the cpu quota rides the caller's deadline), runs the module
+ * through the same export-rewrite pass as the webcontainer seat and
+ * answers the exports report beside the deterministic module
+ * fingerprint (the fnv-1a of the module text). A module that throws
+ * answers VM_MODULE_FAILED — the isolate never fakes a run. */
+async function runnerserverlesslane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (typeof vm.runInNewContext !== "function") {
+    throw edgelaneerror(
+      "HOST_RUNTIME_ABSENT",
+      "the node:vm surface is absent from this engine host (the v8 isolate seat never fakes a module run)",
+    );
+  }
+  const manifest = parsemanifest("runner-serverless", code);
+  const isolate = manifesttext("runner-serverless", manifest.isolate, "isolate");
+  const moduletext = manifesttext("runner-serverless", manifest.module, "module");
+  const stdoutlines: string[] = [];
+  const stderrlines: string[] = [];
+  const push =
+    (target: string[]) =>
+    (...values: unknown[]) => {
+      target.push(values.map((value) => (typeof value === "string" ? value : encodeline(value))).join(" "));
+    };
+  const consolesurface = Object.freeze({
+    log: push(stdoutlines),
+    info: push(stdoutlines),
+    debug: push(stdoutlines),
+    warn: push(stderrlines),
+    error: push(stderrlines),
+  });
+  const sandbox = { console: consolesurface, inputs: inputs === undefined ? null : Object.freeze(inputs as object) };
+  const script = [
+    '"use strict";',
+    "const module = Object.freeze({ exports: {} });",
+    "(function (module, exports) {",
+    rewriteexports(moduletext),
+    "})(module, module.exports);",
+    "module.exports;",
+  ].join("\n");
+  let exportsobject: unknown;
+  try {
+    exportsobject = vm.runInNewContext(script, sandbox, { timeout: deadline, displayErrors: true });
+  } catch (error) {
+    throw edgelaneerror("VM_MODULE_FAILED", `the serverless isolate failed to run: ${errormessage(error)}`, {
+      stderr: stderrlines.join("\n"),
+    });
+  }
+  const exportsrecord: Record<string, unknown> = {};
+  if (typeof exportsobject === "object" && exportsobject !== null) {
+    for (const [name, value] of Object.entries(exportsobject)) exportsrecord[name] = exportencoding(value);
+  }
+  const report = {
+    isolate,
+    fingerprint: fnv1a(moduletext),
+    modulebytes: utf8.encode(moduletext).byteLength,
+    exports: exportsrecord,
+  };
+  const output: EdgeLaneOutput = {
+    stdout: [...stdoutlines, encodeline(report)].join("\n"),
+    artifact: { mime: runmime, bytes: utf8.encode(JSON.stringify(report)) },
+  };
+  if (stderrlines.length > 0) output.stderr = stderrlines.join("\n");
+  return output;
+}
+
+/** fs-gitobjects: the git objects vfs lane. The code field is the
+ * object manifest {"repo":"<name>","objects":[{"type":"blob","data":"<hex>"},...]}:
+ * the lane composes each object's git loose-object header ("<type> <len>\0"),
+ * addresses it by the deterministic fnv-1a content hash and mounts the
+ * bytes into the repo's objects tree under the git fan-out law (the
+ * first two hex chars of the address name the shard directory) — an
+ * in-process vfs mount, the host filesystem is never touched, and a
+ * repeated address answers the last write (the hash table law). */
+async function fsgitobjectslane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifest("fs-gitobjects", code);
+  const repo = manifesttext("fs-gitobjects", manifest.repo, "repo");
+  if (!Array.isArray(manifest.objects)) {
+    throw edgelaneerror("INVALID_LANE_PAYLOAD", "the fs-gitobjects lane requires an objects array in the manifest");
+  }
+  const files: Record<string, string> = {};
+  for (const entry of manifest.objects) {
+    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
+      throw edgelaneerror("INVALID_LANE_PAYLOAD", "the fs-gitobjects lane requires {type, data} object entries");
+    }
+    const record = entry as Record<string, unknown>;
+    const type = manifesttext("fs-gitobjects", record.type, "objects type");
+    if (!gitobjecttypes.includes(type)) {
+      throw edgelaneerror(
+        "INVALID_LANE_PAYLOAD",
+        `the fs-gitobjects object type ${type} is not one of the git object types (blob, tree, commit, tag)`,
+      );
+    }
+    const bytes = fromhex("fs-gitobjects", record.data, "objects data");
+    const address = fnv1a(`${type} ${bytes.byteLength}\0${tohex(bytes)}`);
+    files[`${repo}/objects/${address.slice(0, 2)}/${address.slice(2)}`] = tohex(bytes);
+  }
+  const paths = Object.keys(files).sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
+  return lanereport(
+    vfsmime,
+    { repo, objects: manifest.objects.length, shards: new Set(paths.map((path) => path.split("/")[2])).size, paths },
+    { repo, files },
+  );
+}
+
+/** storage-sqlite: the sqlite vault lane. The code field is the query
+ * manifest {"sql":"select ...","pagesize":4096}: the lane is the page-one
+ * PLANNER — it composes the deterministic 100-byte sqlite database header
+ * (the "SQLite format 3\0" magic, the page size big-endian at offset 16,
+ * legacy write and read versions, the change counter and the
+ * version-valid-for carrying the fnv-1a statement id of the sql text,
+ * the database size of one page) beside the query envelope; the daemon
+ * connection rides the host lane, this lane never opens a file. */
+async function storagesqlitelane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifest("storage-sqlite", code);
+  const sql = manifesttext("storage-sqlite", manifest.sql, "sql");
+  const pagesize = manifestuint("storage-sqlite", manifest.pagesize, "pagesize");
+  if (pagesize < 512 || pagesize > 65536 || (pagesize & (pagesize - 1)) !== 0) {
+    throw edgelaneerror(
+      "INVALID_LANE_PAYLOAD",
+      "the storage-sqlite pagesize must be a power of two between 512 and 65536 (the page size law)",
+    );
+  }
+  const statementid = fnv1a(sql);
+  const counter = Number.parseInt(statementid, 16) >>> 0;
+  const header = new Uint8Array(100);
+  header.set(utf8.encode("SQLite format 3\0"), 0);
+  const view = new DataView(header.buffer);
+  view.setUint16(16, pagesize === 65536 ? 1 : pagesize);
+  header[18] = 1;
+  header[19] = 1;
+  view.setUint32(24, counter);
+  view.setUint32(28, 1);
+  view.setUint32(92, counter);
+  view.setUint32(96, sqliteversionnumber);
+  const envelope = { dialect: "sqlite", sql, statementid, pagesize };
+  return lanereport(
+    storagemime,
+    { statementid, pagesize, sqlbytes: utf8.encode(sql).byteLength, headerbytes: header.byteLength },
+    {
+      dialect: "sqlite",
+      sql,
+      statementid,
+      pagesize,
+      headerhex: tohex(header),
+      envelopebytes: utf8.encode(JSON.stringify(envelope)).byteLength,
+    },
+  );
+}
+
+/** network-dns: the dns resolver lane. The code field is the query
+ * manifest {"name":"example.dev","qtype":"A"}: the lane is the resolver
+ * PLANNER — it composes the real rfc1035 query message (the fnv-1a
+ * transaction id, the standard-query flags with recursion desired, the
+ * qname labels, the qtype and the class IN) and answers the query bytes;
+ * the socket ride stays with the sandbox seat, this lane never opens
+ * one. */
+async function networkdnslane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifest("network-dns", code);
+  const name = manifesttext("network-dns", manifest.name, "name");
+  const qtype = manifesttext("network-dns", manifest.qtype, "qtype");
+  const { id, flags, query } = dnsquerymessage("network-dns", name, qtype);
+  return lanereport(
+    netmime,
+    { name, qtype, querybytes: query.byteLength, id },
+    { id, flags, name, qtype, queryhex: tohex(query) },
+  );
+}
+
+/** network-doh: the dns over https lane. The code field is the request
+ * manifest {"resolver":"https://.../dns-query","name":"example.dev","qtype":"AAAA"}:
+ * the lane is the doh PLANNER — it composes the same rfc1035 query and
+ * rides it base64url (rfc 8484, unpadded) as the ?dns= parameter of the
+ * GET request under the application/dns-message accept; the https ride
+ * stays with the sandbox seat, this lane never opens a socket, and a
+ * plaintext resolver answers the honest refusal. */
+async function networkdohlane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifest("network-doh", code);
+  const resolver = manifesttext("network-doh", manifest.resolver, "resolver");
+  if (!resolver.startsWith("https://")) {
+    throw edgelaneerror(
+      "INVALID_LANE_PAYLOAD",
+      "the network-doh resolver must be an https url (the doh law refuses plaintext resolvers)",
+    );
+  }
+  const name = manifesttext("network-doh", manifest.name, "name");
+  const qtype = manifesttext("network-doh", manifest.qtype, "qtype");
+  const { query } = dnsquerymessage("network-doh", name, qtype);
+  const wire = Buffer.from(query).toString("base64url");
+  const url = `${resolver}?dns=${wire}`;
+  return lanereport(
+    netmime,
+    { resolver, name, qtype, urlbytes: utf8.encode(url).byteLength },
+    { resolver, url, dns: wire, accept: "application/dns-message" },
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 8: the lane tables — the specs, the executors and the ids. */
 /* ════════════════════════════════════════════════════════════════════ */
 
 /** the in-process lane specs: one row per wired modality, the source of
@@ -1099,10 +1375,24 @@ export const inproclanespecs: readonly InprocLaneSpec[] = Object.freeze([
   },
   // the local family: the explicit consent gate
   { modality: "local-optin", kind: "live", runtime: "pure-ts", present: () => true },
+  // the wiring wave seats: the serverless runner, the git objects vfs,
+  // the sqlite vault and the dns and doh resolvers (every one live —
+  // the seats execute in-process, deterministic and seeded)
+  {
+    modality: "runner-serverless",
+    kind: "live",
+    runtime: "node:vm",
+    present: () => typeof vm.runInNewContext === "function",
+  },
+  { modality: "fs-gitobjects", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "storage-sqlite", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "network-dns", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "network-doh", kind: "live", runtime: "pure-ts", present: () => true },
 ]);
 
 /** the in-process executor table: every lane of the group b contract,
- * keyed by modality id — the dispatcher refuses to boot over a lane it
+ * keyed by modality id — the nineteen of the first wave beside the five
+ * of the wiring wave; the dispatcher refuses to boot over a lane it
  * cannot wire. */
 export const edgelaneexecutorsinproc: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
   "ram-tmpfs": ramtmpfslane,
@@ -1124,6 +1414,11 @@ export const edgelaneexecutorsinproc: Readonly<Record<string, EdgeLaneExecutor>>
   "storage-s3": storages3lane,
   "browser-webcontainer": browserwebcontainerlane,
   "local-optin": localoptinlane,
+  "runner-serverless": runnerserverlesslane,
+  "fs-gitobjects": fsgitobjectslane,
+  "storage-sqlite": storagesqlitelane,
+  "network-dns": networkdnslane,
+  "network-doh": networkdohlane,
 });
 
 /** the wired lane ids in spec order — the pinned contract the parallel

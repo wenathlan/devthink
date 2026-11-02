@@ -1,11 +1,11 @@
 // # edgeplane.test — the edge execution plane answers the visitor law:
-// the lane table declares the ten live lanes and the six host lanes
-// exactly, the visitor guard refuses any browser-shaped scope, every
-// in-process and host lane executes server-side (node:vm, webassembly,
-// babel, bun, bash, python3, java), the artifact commits through the
-// caller's storage adapter, and the refusals stay honest (a planned
-// modality answers modality-not-live, an absent host runtime answers
-// host-runtime-absent). runnable with vitest:
+// the lane table declares the sixty-six live lanes and the twenty-four
+// host lanes exactly, the visitor guard refuses any browser-shaped
+// scope, every in-process and host lane executes server-side (node:vm,
+// webassembly, babel, bun, bash, python3, java), the artifact commits
+// through the caller's storage adapter, and the refusals stay honest
+// (a planned modality answers modality-not-live, an absent host runtime
+// answers host-runtime-absent). runnable with vitest:
 // pnpm vitest run tests/edgeplane.test.ts
 import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
@@ -17,7 +17,11 @@ import { assertvisitorfree, edgelandesreport, edgelanes, runonedge } from "../ed
 import { getmodality } from "../modalityregistry.ts";
 import { localstorage } from "../virtual.ts";
 
-/** the ten live lane ids the pinned contract charges (parallel waves read these exactly). */
+/** the sixty-six live lane ids the pinned contract charges (parallel
+ * waves read these exactly): the twenty-five first wave host binary
+ * lanes, the twenty-four in-process lanes (the nineteen of the first
+ * wave beside the five wiring wave seats), the seven virtual hardware
+ * lanes and the ten base live lanes. */
 const LIVELANES = [
   "sandbox-bubblewrap",
   "sandbox-nsjail",
@@ -63,6 +67,11 @@ const LIVELANES = [
   "storage-s3",
   "browser-webcontainer",
   "local-optin",
+  "runner-serverless",
+  "fs-gitobjects",
+  "storage-sqlite",
+  "network-dns",
+  "network-doh",
   "virtual-full",
   "virtual-vgpu",
   "virtual-screen",
@@ -82,8 +91,22 @@ const LIVELANES = [
   "language-java",
 ] as const;
 
-/** the six host lane ids the pinned contract charges. */
+/** the twenty-four host lane ids the pinned contract charges: the
+ * twelve wiring wave host binary seats in alphabetical order, the six
+ * heavyweight probes and the six base host lanes. */
 const HOSTLANES = [
+  "build-make",
+  "build-ninja",
+  "language-cargo",
+  "language-dotnet",
+  "language-lua",
+  "language-nim",
+  "language-php",
+  "language-rust",
+  "language-v",
+  "language-zig",
+  "runner-deno",
+  "runner-wasi",
   "browser-server",
   "mobile-capacitor",
   "mobile-postmarketos",
@@ -109,7 +132,7 @@ const WASMMODULEBYTES = new Uint8Array([
 ]);
 
 describe("the edge plane answers the visitor law", () => {
-  it("declares the ten live lanes and the six host lanes exactly", () => {
+  it("declares the sixty-six live lanes and the twenty-four host lanes exactly", () => {
     const lanes = edgelanes();
     const liveids = lanes.filter((lane) => lane.kind === "live").map((lane) => lane.modality);
     const hostids = lanes.filter((lane) => lane.kind === "host").map((lane) => lane.modality);
@@ -281,18 +304,22 @@ describe("the edge plane answers the visitor law", () => {
     assert.ok(jail.status === "succeeded" || jail.error?.code === "HOST_RUNTIME_ABSENT", JSON.stringify(jail.error));
   });
 
-  it("never lies about a live modality another engine surface drives", async () => {
-    // the registry drives modalities live through other engine surfaces
-    // (the envelope sandbox lane): this plane wires no lane for them and
-    // the refusal names the state honestly instead of claiming the
-    // modality is not live. runner-deno rides the live set of the
-    // registry while the edge plane table carries no lane for it.
+  it("wires the wave four lanes into the plane honestly (a real run or the coded absence)", async () => {
+    // the wiring wave closed the last gap: runner-deno rode the live set
+    // of the registry while the plane carried no lane for it — the lane
+    // now rides the table, so the honest answer is the runtime's own: a
+    // real run on a deno-carrying host, the coded absence naming deno on
+    // a host without it
     const record = getmodality("runner-deno");
     if (record?.state !== "live") return; // the registry census moved again — nothing to prove here
-    const refusal = await runonedge({ modality: "runner-deno", code: "1" });
-    assert.equal(refusal.status, "failed");
-    assert.equal(refusal.error?.code, "LANE_NOT_WIRED_IN_PLANE");
-    assert.ok(refusal.error?.message.includes("live"), "the message names the live state");
+    const run = await runonedge({ modality: "runner-deno", code: "console.log('deno lane:' + (6 * 7))" });
+    if (run.status === "succeeded") {
+      assert.equal(run.lane, "deno");
+      assert.ok(run.stdout?.includes("deno lane:42"), "the deno run answers its program");
+    } else {
+      assert.equal(run.error?.code, "HOST_RUNTIME_ABSENT");
+      assert.ok(run.error?.message.includes("deno"), "the refusal names the runtime");
+    }
   });
 
   it("reports the absent host runtime of a host lane honestly", async () => {

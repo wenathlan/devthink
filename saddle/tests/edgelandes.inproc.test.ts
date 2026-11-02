@@ -1,5 +1,5 @@
 // # edgelandes.inproc.test — the in-process lane battery of the ninety
-// modalities wave (group b): the nineteen lanes of edgelandes.inproc.ts
+// modalities wave (group b): the twenty-four lanes of edgelandes.inproc.ts
 // answer the group b contract — the frozen lane tables agree with the
 // executor map, every lane is deterministic (the same payload answers
 // the same stdout and artifact bytes twice), the oom guard refuses every
@@ -12,7 +12,10 @@
 // seat runs modules through node:vm and fails honestly, the local
 // opt-in gate refuses every run without the declared consent, every
 // json lane refuses a non-json payload and every artifact answers the
-// mime its registry record declares. runnable with vitest:
+// mime its registry record declares. The wiring wave seats answer the
+// same laws: the serverless isolate, the git fan-out, the sqlite
+// page-one header, the rfc1035 question bytes and the rfc8484
+// base64url ride. runnable with vitest:
 // pnpm vitest run tests/edgelandes.inproc.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
@@ -22,7 +25,8 @@ import { getmodality } from "../modalityregistry.ts";
 /** the hard deadline every lane test rides under. */
 const DEADLINEMS = 5000;
 
-/** the nineteen lane ids in spec order (the pinned group b contract). */
+/** the twenty-four lane ids in spec order (the pinned group b contract):
+ * the nineteen of the first wave, then the five seats of the wiring wave. */
 const LANES = [
   "ram-tmpfs",
   "ram-mmap",
@@ -43,6 +47,11 @@ const LANES = [
   "storage-s3",
   "browser-webcontainer",
   "local-optin",
+  "runner-serverless",
+  "fs-gitobjects",
+  "storage-sqlite",
+  "network-dns",
+  "network-doh",
 ] as const;
 
 /** the ram lanes: every one answers the oom guard law. */
@@ -57,8 +66,20 @@ const RAMLANES = [
   "ram-swapfile",
 ] as const;
 
-/** the json manifest lanes: every one refuses non-json payloads. */
-const JSONLANES = [...RAMLANES, "delivery-cdn", "storage-libsql", "storage-s3"] as const;
+/** the json manifest lanes: every one refuses non-json payloads (the
+ * first wave json seats beside the five manifest seats of the wiring
+ * wave). */
+const JSONLANES = [
+  ...RAMLANES,
+  "delivery-cdn",
+  "storage-libsql",
+  "storage-s3",
+  "runner-serverless",
+  "fs-gitobjects",
+  "storage-sqlite",
+  "network-dns",
+  "network-doh",
+] as const;
 
 /** one deterministic sample payload per lane (the determinism and mime laws run every lane). */
 const SAMPLES: Record<string, { code: string; inputs?: unknown }> = {
@@ -81,6 +102,13 @@ const SAMPLES: Record<string, { code: string; inputs?: unknown }> = {
   "storage-s3": { code: '{"method":"GET","bucket":"vault","key":"edge/report.json","payload":""}' },
   "browser-webcontainer": { code: "export const answer = 42;" },
   "local-optin": { code: "", inputs: { consent: true } },
+  "runner-serverless": { code: '{"isolate":"ninety","module":"export const answer = 6 * 7;"}' },
+  "fs-gitobjects": {
+    code: '{"repo":"vault","objects":[{"type":"blob","data":"48656c6c6f"},{"type":"tree","data":"aabb"}]}',
+  },
+  "storage-sqlite": { code: '{"sql":"select 1 as answer","pagesize":4096}' },
+  "network-dns": { code: '{"name":"example.dev","qtype":"A"}' },
+  "network-doh": { code: '{"resolver":"https://dns.devthink.test/dns-query","name":"example.dev","qtype":"AAAA"}' },
 };
 
 /** runs one lane under the test deadline. */
@@ -166,13 +194,13 @@ function decodestoredzlib(stream: Uint8Array): Uint8Array {
 }
 
 describe("the in-process lanes answer the group b contract", () => {
-  it("declares the nineteen in-process lanes exactly with frozen tables", () => {
-    assert.equal(inproclaneids.length, 19);
+  it("declares the twenty-four in-process lanes exactly with frozen tables", () => {
+    assert.equal(inproclaneids.length, 24);
     const specids = inproclanespecs.map((spec) => spec.modality);
     assert.deepEqual([...inproclaneids], [...LANES]);
     assert.deepEqual(specids, [...LANES]);
     assert.deepEqual(Object.keys(edgelaneexecutorsinproc), [...LANES]);
-    assert.equal(new Set(specids).size, 19, "the lane ids are unique");
+    assert.equal(new Set(specids).size, 24, "the lane ids are unique");
     assert.ok(Object.isFrozen(inproclaneids), "the id table is frozen");
     assert.ok(Object.isFrozen(inproclanespecs), "the spec table is frozen");
     assert.ok(Object.isFrozen(edgelaneexecutorsinproc), "the executor table is frozen");
@@ -388,6 +416,102 @@ describe("the in-process lanes answer the group b contract", () => {
       () => runlane("delivery-cdn", JSON.stringify({ assets: ["a.js"] })),
       refuses("INVALID_LANE_PAYLOAD"),
       "a mirror manifest without an origin refuses",
+    );
+  });
+
+  it("answers the wave four seat laws (the isolate, the fan-out, the page and the resolvers)", async () => {
+    // serverless: the cold isolate answers its exports beside the fingerprint
+    const serverless = await runlane("runner-serverless", SAMPLES["runner-serverless"].code);
+    const serverlessreport = JSON.parse(serverless.stdout.split("\n").at(-1) ?? "{}") as {
+      isolate: string;
+      fingerprint: string;
+      modulebytes: number;
+      exports: Record<string, unknown>;
+    };
+    assert.equal(serverlessreport.isolate, "ninety", "the isolate manifest names the seat");
+    assert.match(serverlessreport.fingerprint, /^[0-9a-f]{8}$/, "the module fingerprint is fnv-1a");
+    assert.equal(serverlessreport.exports.answer, 42, "the module exports answer the report");
+    assert.deepEqual(artifactof(serverless).exports, { answer: 42 }, "the artifact carries the exports");
+    // the frozen inputs surface reaches the module through the same seat
+    const seated = await runlane(
+      "runner-serverless",
+      '{"isolate":"seated","module":"export const seen = inputs.probe;"}',
+      { probe: "x" },
+    );
+    const seatedreport = JSON.parse(seated.stdout.split("\n").at(-1) ?? "{}") as { exports: Record<string, unknown> };
+    assert.equal(seatedreport.exports.seen, "x", "the frozen inputs surface reaches the module");
+    // a module that throws answers the honest coded refusal
+    await assert.rejects(
+      () => runlane("runner-serverless", '{"isolate":"boom","module":"throw new Error(\'boom\')"}'),
+      refuses("VM_MODULE_FAILED"),
+    );
+    // git objects: the loose-object header law and the fan-out shards
+    const git = artifactof(await runlane("fs-gitobjects", SAMPLES["fs-gitobjects"].code));
+    const gitpaths = Object.keys(git.files as Record<string, string>);
+    assert.equal(gitpaths.length, 2, "one path per object");
+    assert.equal(git.repo, "vault", "the repo manifest names the tree");
+    for (const path of gitpaths) {
+      assert.match(path, /^vault\/objects\/[0-9a-f]{2}\/[0-9a-f]{6}$/, `the git fan-out address ${path}`);
+    }
+    assert.deepEqual(
+      Object.values(git.files as Record<string, string>).sort(),
+      ["48656c6c6f", "aabb"],
+      "the object bytes ride the shards",
+    );
+    // an object type outside the git law refuses honestly
+    await assert.rejects(
+      () => runlane("fs-gitobjects", '{"repo":"vault","objects":[{"type":"delta","data":"aabb"}]}'),
+      refuses("INVALID_LANE_PAYLOAD"),
+      "a non-git object type refuses",
+    );
+    // sqlite: the page-one header law
+    const sqlite = artifactof(await runlane("storage-sqlite", SAMPLES["storage-sqlite"].code));
+    const header = decodehex(sqlite.headerhex as string);
+    assert.equal(header.byteLength, 100, "the hundred-byte header");
+    assert.equal(astext(header.subarray(0, 16)), "SQLite format 3\0", "the magic string");
+    const pagesize = (header[16] << 8) | header[17];
+    assert.equal(pagesize, 4096, "the big-endian page size at offset 16");
+    assert.equal(header[18], 1, "the legacy write version");
+    // a page size outside the power-of-two law refuses honestly
+    await assert.rejects(
+      () => runlane("storage-sqlite", '{"sql":"select 1","pagesize":3000}'),
+      refuses("INVALID_LANE_PAYLOAD"),
+      "a non power-of-two page size refuses",
+    );
+    // dns: the rfc1035 question bytes
+    const dns = artifactof(await runlane("network-dns", SAMPLES["network-dns"].code));
+    const query = decodehex(dns.queryhex as string);
+    assert.equal(query.byteLength, 12 + 1 + 7 + 1 + 3 + 1 + 4, "the header, the labels, the root and the tail");
+    assert.equal((query[0] << 8) | query[1], dns.id as number, "the transaction id rides the header");
+    assert.equal(query[2], 0x01, "the standard-query flags high byte");
+    assert.equal(query[5], 1, "one question");
+    assert.deepEqual(
+      [...query.slice(12, 24)],
+      [7, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 3, 0x64, 0x65, 0x76],
+      "the qname labels length-prefixed (example.dev)",
+    );
+    assert.equal(query[24], 0, "the root label");
+    assert.equal((query[25] << 8) | query[26], 1, "the qtype A");
+    assert.equal((query[27] << 8) | query[28], 1, "the class IN");
+    // an unknown qtype refuses honestly
+    await assert.rejects(
+      () => runlane("network-dns", '{"name":"example.dev","qtype":"SOA"}'),
+      refuses("INVALID_LANE_PAYLOAD"),
+      "an unknown qtype refuses",
+    );
+    // doh: the rfc8484 base64url ride over the same question bytes
+    const doh = artifactof(await runlane("network-doh", SAMPLES["network-doh"].code));
+    assert.ok((doh.url as string).startsWith("https://dns.devthink.test/dns-query?dns="), "the request line");
+    assert.equal(doh.accept, "application/dns-message", "the accept header");
+    const wire = new Uint8Array(Buffer.from(doh.dns as string, "base64url"));
+    assert.equal(wire.byteLength, query.byteLength, "the base64url ride decodes back to one query");
+    assert.equal((wire[25] << 8) | wire[26], 28, "the qtype AAAA of the doh sample");
+    // a plaintext resolver refuses honestly
+    await assert.rejects(
+      () =>
+        runlane("network-doh", '{"resolver":"http://dns.devthink.test/dns-query","name":"example.dev","qtype":"A"}'),
+      refuses("INVALID_LANE_PAYLOAD"),
+      "a plaintext resolver refuses",
     );
   });
 
