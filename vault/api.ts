@@ -8,6 +8,13 @@
 // the standardized { error: { code, message } } shape, bigint pointers
 // travel as decimal strings, and every fallible path is guarded.
 //
+// The container doctrine adds the site face: when a static root answers
+// (VAULT_STATIC_DIR, default ./dist), the same server serves the built
+// site beside the storage routes — real files with real content types, the
+// spa fallback the platform lanes ride, and the faun seal held again (a
+// database file never answers from the static lane, not even a stray one
+// inside the root).
+//
 // The faun lesson owns the door: the storage truth is the network database
 // of the family, and no request reaches it without the bearer the operator
 // pinned (VAULT_TOKEN). The health probe stays open so the platform can
@@ -20,10 +27,13 @@
 // @section routes — the route catalog
 // @section server — the node:http server and its boot
 // @section handlers — the storage surface
+// @section static — the dist lane (the container doctrine)
 
 import { createHash, timingSafeEqual } from "node:crypto";
+import { readFileSync, statSync } from "node:fs";
 import type { IncomingMessage, Server, ServerResponse } from "node:http";
 import { createServer } from "node:http";
+import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { storage, storageDriverKind } from "./drizzle.ts";
@@ -127,10 +137,12 @@ export const routes = {
 /** @section server */
 
 /**
- * Creates the vault http server — pure node:http, no framework, no static
- * hosting (the platform gateway owns the site surface; this server owns the
- * storage truth). Every request is answered with the standardized json or
- * byte shapes.
+ * Creates the vault http server — pure node:http, no framework. The server
+ * owns the storage truth, and — when a static root answers on the host —
+ * the built site face beside it (the container doctrine: one process, one
+ * port, the platform gateway may keep owning the site lane on the static
+ * hosts by simply not mounting a static root). Every request is answered
+ * with the standardized json or byte shapes.
  *
  * @returns the server, not yet listening.
  */
@@ -203,6 +215,18 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
       }
       sendJson(res, 200, row);
       return;
+    }
+    /* the site face lane (the container doctrine): when a static root
+     * answers, every non-api GET (and HEAD) resolves against it — real
+     * files with real content types, the spa entry for the extensionless
+     * routes, and the sealed database faces refuse outright. The lane is
+     * public the way the platform hosts serve the same dist tree (the
+     * token gate owns the storage truth, never the static face), and the
+     * api surface keeps precedence: a static root never shadows /api/*. */
+    if ((method === "GET" || method === "HEAD") && !pathname.startsWith("/api/")) {
+      if (serveStatic(res, pathname, method === "HEAD")) {
+        return;
+      }
     }
     /* the faun lesson door: every route past the health probe demands the
      * honest bearer — the sealed and the refused answers ride the same
@@ -504,6 +528,170 @@ function sweepRoute(res: ServerResponse): void {
   sendJson(res, 200, { chunks: answer.chunks, bytes: answer.bytes.toString(), tombstones: answer.tombstones });
 }
 
+/** @section static */
+
+/* ------------------------------------------------------------------ */
+/* the dist lane — the container doctrine                              */
+/* ------------------------------------------------------------------ */
+
+/** the extension → media type table of the site faces (the mime.types
+ * doctrine of the app root carried here, so the engine owns its content
+ * types with zero boot reads — the text faces declare their utf-8 the way
+ * the built pages carry it). */
+const STATIC_MIME: Readonly<Record<string, string>> = Object.freeze({
+  css: "text/css; charset=utf-8",
+  htm: "text/html; charset=utf-8",
+  html: "text/html; charset=utf-8",
+  ico: "image/x-icon",
+  jpeg: "image/jpeg",
+  jpg: "image/jpeg",
+  js: "text/javascript; charset=utf-8",
+  json: "application/json; charset=utf-8",
+  map: "application/json; charset=utf-8",
+  mjs: "text/javascript; charset=utf-8",
+  png: "image/png",
+  svg: "image/svg+xml",
+  txt: "text/plain; charset=utf-8",
+  wasm: "application/wasm",
+  webmanifest: "application/manifest+json",
+  woff: "font/woff",
+  woff2: "font/woff2",
+  xml: "application/xml; charset=utf-8",
+});
+
+/** the database faces the static lane never serves (the faun seal — even a
+ * stray store inside the static root answers 404, never bytes: the wal and
+ * the shm sidecars refuse with their file). */
+const SEALED_FACES = [".db", ".db-journal", ".db-shm", ".db-wal"] as const;
+
+/**
+ * Resolves the static root of the site face — VAULT_STATIC_DIR (the
+ * container pins it to the dist volume), defaulting to ./dist beside the
+ * working directory.
+ *
+ * @returns the configured static root.
+ */
+function staticRoot(): string {
+  return process.env.VAULT_STATIC_DIR ?? "./dist";
+}
+
+/**
+ * Serves the static lane of one request: when the static root exists on
+ * this host, every non-api path resolves inside it — a real file answers
+ * with its content type and the shared security headers, the extensionless
+ * routes fall back to the spa entry (the same rewrite the pages, netlify
+ * and vercel lanes ride), and a missing asset answers an honest 404. The
+ * database faces refuse before the filesystem is ever consulted. A host
+ * without a static root (the library seats, the tests) keeps the plain
+ * route answers.
+ *
+ * @param res the response to answer.
+ * @param pathname the raw url pathname.
+ * @param head true when the request is a HEAD.
+ * @returns true when this lane answered (false falls through to the route surface).
+ */
+function serveStatic(res: ServerResponse, pathname: string, head: boolean): boolean {
+  const root = path.resolve(staticRoot());
+  if (!statSync(root, { throwIfNoEntry: false })?.isDirectory()) {
+    return false;
+  }
+  if (sealedFace(pathname)) {
+    sendError(res, 404, "VAULT_STATIC", "a database file never answers from the static lane — the faun seal holds");
+    return true;
+  }
+  const candidate = staticCandidate(root, pathname);
+  if (candidate !== undefined && sealedFace(candidate)) {
+    sendError(res, 404, "VAULT_STATIC", "a database file never answers from the static lane — the faun seal holds");
+    return true;
+  }
+  if (candidate !== undefined && statSync(candidate, { throwIfNoEntry: false })?.isFile()) {
+    sendStaticFile(res, candidate, head);
+    return true;
+  }
+  if (isSpaRoute(pathname)) {
+    const entry = path.join(root, "index.html");
+    if (statSync(entry, { throwIfNoEntry: false })?.isFile()) {
+      sendStaticFile(res, entry, head);
+      return true;
+    }
+  }
+  sendError(res, 404, "VAULT_STATIC", `no static face answers ${pathname}`);
+  return true;
+}
+
+/**
+ * Answers whether one pathname is a database face the lane refuses (case
+ * insensitive — the sidecars ride the same seal as the store file).
+ *
+ * @param pathname the raw url pathname.
+ * @returns true when the pathname names a database face.
+ */
+function sealedFace(pathname: string): boolean {
+  const lower = pathname.toLowerCase();
+  return SEALED_FACES.some((face) => lower.endsWith(face));
+}
+
+/**
+ * Resolves one pathname inside the static root — the traversal attempts
+ * (encoded or plain) never explore outside the root.
+ *
+ * @param root the resolved static root.
+ * @param pathname the raw url pathname.
+ * @returns the absolute candidate, or undefined when the path escapes the root.
+ */
+function staticCandidate(root: string, pathname: string): string | undefined {
+  const decoded = safeDecode(pathname);
+  if (decoded.includes("\0")) {
+    return undefined;
+  }
+  const relative = path.posix.normalize(decoded).replace(/^\/+/, "");
+  if (relative.split("/").includes("..")) {
+    return undefined;
+  }
+  const resolved = path.resolve(root, relative);
+  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
+    return undefined;
+  }
+  return resolved;
+}
+
+/**
+ * Answers whether one pathname is an spa route — the entry rewrites it the
+ * way the platform lanes do: the root, or any path whose last segment
+ * carries no extension. A file-like miss (a broken hashed face, a missing
+ * icon) stays an honest 404 instead of the entry.
+ *
+ * @param pathname the raw url pathname.
+ * @returns true when the spa fallback owns the path.
+ */
+function isSpaRoute(pathname: string): boolean {
+  const segment = pathname.split("/").filter(Boolean).pop() ?? "";
+  return !segment.includes(".");
+}
+
+/**
+ * Answers one static file — its content type off the extension table, its
+ * byte length, and the security headers the _headers doctrine stamps on
+ * the platform lanes (the engine carries the same trio when it serves the
+ * face itself).
+ *
+ * @param res the response to answer.
+ * @param file the resolved file inside the static root.
+ * @param head true when the request is a HEAD (the headers ride, the bytes never).
+ */
+function sendStaticFile(res: ServerResponse, file: string, head: boolean): void {
+  const bytes = readFileSync(file);
+  const extension = file.slice(file.lastIndexOf(".") + 1);
+  res.writeHead(200, {
+    "content-type": STATIC_MIME[extension] ?? "application/octet-stream",
+    "content-length": String(bytes.length),
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "strict-origin-when-cross-origin",
+  });
+  res.end(head ? undefined : bytes);
+}
+
 /* ------------------------------------------------------------------ */
 /* the json and http plumbing                                          */
 /* ------------------------------------------------------------------ */
@@ -599,13 +787,19 @@ function sendError(res: ServerResponse, status: number, code: string, message: s
   sendJson(res, status, { error: { code, message } });
 }
 
-/* the direct boot — `node api.ts` serves the storage truth on the resolved port. */
+/* the direct boot — `node api.ts` serves the storage truth (and the built
+ * site face when a static root answers) on the resolved port. */
 const invokedDirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokedDirectly) {
   const server = createVaultServer();
   const port = await listenVault(server);
   const authState = vaultTokenConfigured() ? "token gate armed" : "SEALED — set VAULT_TOKEN to open the storage routes";
-  console.log(`vault api listening on port ${port} (storage driver: ${storageDriverKind()}, auth: ${authState})`);
+  const staticState = statSync(path.resolve(staticRoot()), { throwIfNoEntry: false })?.isDirectory()
+    ? `serving the site face from ${path.resolve(staticRoot())}`
+    : "no static root (set VAULT_STATIC_DIR to serve the built site beside the engine)";
+  console.log(
+    `vault api listening on port ${port} (storage driver: ${storageDriverKind()}, auth: ${authState}, site: ${staticState})`,
+  );
   process.once("SIGINT", () => {
     server.close();
   });
