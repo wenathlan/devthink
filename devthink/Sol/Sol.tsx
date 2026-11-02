@@ -44,7 +44,7 @@ import VideoAnchor from "./video/video.tsx";
 /*
  * The display language preference rides the machine profile: the authored
  * surface is english and the settings card owns the choice — zero external
- * translation lanes (the gtx module retired with the owner law).
+ * translation lanes.
  */
 
 /**

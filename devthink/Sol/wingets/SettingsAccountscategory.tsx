@@ -97,8 +97,8 @@ export function AccountsCategory({
               <PersonRegular fontSize={15} aria-hidden="true" />
               {copy("settings.accounts.identity")}
             </h2>
-            <SettingsRow label="user id" value={snapshot.identity.userId} />
-            <SettingsRow label="device" value={snapshot.identity.deviceId} />
+            <SettingsRow label={copy("settings.accounts.row.user")} value={snapshot.identity.userId} />
+            <SettingsRow label={copy("settings.accounts.row.device")} value={snapshot.identity.deviceId} />
             <div className="dtw-settings__field">
               <span className="dtw-settings__fieldlabel">
                 <strong>{copy("settings.accounts.identity.id")}</strong>

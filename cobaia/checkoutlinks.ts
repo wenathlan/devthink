@@ -7,68 +7,79 @@
  * Until then every href ships empty and the interface renders the honest
  * empty state — "checkout not configured yet" — instead of pretending.
  *
+ * The words never ride here: every plan sentence (name, billing period,
+ * blurb, features) answers from the label store (labels.ts — the manifest
+ * the seed carries into the site database), so the pricing cards and the
+ * intro plans zone read their prose through the typed accessor and this
+ * file keeps only the billing values — ids, prices and links.
+ *
  * No network call ever happens here: the links are plain hrefs the visitor
  * chooses to follow, no key is committed (not even a placeholder that looks
  * real) and no script is loaded. The prices are placeholders (US$0 / 5 / 19
  * per month) until the billing platform decision lands.
  */
 
-/** one plan row of the pricing page: the honest offer and its config link. */
+import type { LabelKey } from "./labels.ts";
+
+/** one plan row of the pricing page: the billing values and the label keys
+ * of the plan prose (the store answers the words, this row answers the
+ * numbers and the link). */
 export type checkoutplan = {
   /** the stable plan id used by the interface and the tests */
   id: string;
-  /** the display name of the plan */
-  name: string;
   /** the placeholder monthly price in us dollars */
   priceusd: number;
-  /** the billing period the price reads against */
-  per: string;
-  /** the one-line honest promise of the plan */
-  blurb: string;
-  /** the concrete features the plan includes */
-  features: readonly string[];
+  /** the label key of the display name of the plan */
+  nameKey: LabelKey;
+  /** the label key of the billing period the price reads against */
+  perKey: LabelKey;
+  /** the label key of the one-line honest promise of the plan */
+  blurbKey: LabelKey;
+  /** the label keys of the concrete features the plan includes */
+  featureKeys: readonly LabelKey[];
   /** the payment link href — empty until the owner configures billing */
   href: string;
 };
 
-/** the pricing table of the /pricing page, in display order. */
+/** the pricing table of the /pricing page, in display order (the prose
+ * answers from the label store — only the billing values live here). */
 export const PLANS: readonly checkoutplan[] = [
   {
     id: "free",
-    name: "Free",
     priceusd: 0,
-    per: "month",
-    blurb: "every app's core surface, for as long as the family is up.",
-    features: [
-      "the core surface of all ten applications",
-      "no ads inside the apps, ever",
-      "community support through the public issue tracker",
+    nameKey: "pricing.plan.free.name",
+    perKey: "pricing.plan.free.per",
+    blurbKey: "pricing.plan.free.blurb",
+    featureKeys: [
+      "pricing.plan.free.feat.1",
+      "pricing.plan.free.feat.2",
+      "pricing.plan.free.feat.3",
     ],
     href: "",
   },
   {
     id: "pro",
-    name: "Pro",
     priceusd: 5,
-    per: "month",
-    blurb: "one app and its pro features, billed per application.",
-    features: [
-      "the pro features of one chosen application",
-      "priority routes on the shared gateway",
-      "early access to that app's new surfaces",
+    nameKey: "pricing.plan.pro.name",
+    perKey: "pricing.plan.pro.per",
+    blurbKey: "pricing.plan.pro.blurb",
+    featureKeys: [
+      "pricing.plan.pro.feat.1",
+      "pricing.plan.pro.feat.2",
+      "pricing.plan.pro.feat.3",
     ],
     href: "",
   },
   {
     id: "studio",
-    name: "Studio",
     priceusd: 19,
-    per: "month",
-    blurb: "the whole family at once, for people who live in the tools.",
-    features: [
-      "the pro features of every application in the family",
-      "early access across the family",
-      "a direct line to the maintainer for feature requests",
+    nameKey: "pricing.plan.studio.name",
+    perKey: "pricing.plan.studio.per",
+    blurbKey: "pricing.plan.studio.blurb",
+    featureKeys: [
+      "pricing.plan.studio.feat.1",
+      "pricing.plan.studio.feat.2",
+      "pricing.plan.studio.feat.3",
     ],
     href: "",
   },

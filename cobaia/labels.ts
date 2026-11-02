@@ -13,11 +13,13 @@
  * into the local cache.
  *
  * data stays data: the app roster (apps.roster.ts — slugs, accents, the
- * roles each app declares in its own devthink.toml), the plan table and
- * the support hrefs (checkoutlinks.ts), the ad slot registry (adsconfig.ts
- * — the fixed ad contract label and note ride there, pinned by the tests),
- * the blog posts (posts.ts) and the route hrefs keep flowing from the data
- * modules; the prose and the affordances around them ride here.
+ * roles each app declares in its own devthink.toml), the plan billing
+ * values and the support hrefs (checkoutlinks.ts — ids, prices, checkout
+ * links; the plan prose itself rides here), the ad slot registry
+ * (adsconfig.ts — the fixed ad contract label and note ride there, pinned
+ * by the tests), the blog posts (posts.ts) and the route hrefs keep
+ * flowing from the data modules; the prose and the affordances around
+ * them ride here.
  */
 
 import { createLabelStore } from "@wenathlan/vault/labelstore";
@@ -25,7 +27,7 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 3;
+export const LABEL_REVISION = 4;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -115,6 +117,27 @@ export const LABEL_MANIFEST = {
     "the family runs on about us$15 a month of domains and free static hosting. the paid plans cover that floor first, then the higher tiers. there are no ads inside the applications — the ad slots live only on this site's content pages, and they are labeled and reserved.",
   "pricing.section.moneyNote":
     "billing decision pending: stripe payment links or paddle (merchant of record). the checkout hrefs are configuration at the app root — never code, never a committed key.",
+  // the plan prose of the pricing cards and the intro plans zone (the
+  // billing values — ids, prices, hrefs — stay in checkoutlinks.ts; the
+  // words ride here so the store answers every plan sentence)
+  "pricing.plan.free.name": "Free",
+  "pricing.plan.free.per": "month",
+  "pricing.plan.free.blurb": "every app's core surface, for as long as the family is up.",
+  "pricing.plan.free.feat.1": "the core surface of all ten applications",
+  "pricing.plan.free.feat.2": "no ads inside the apps, ever",
+  "pricing.plan.free.feat.3": "community support through the public issue tracker",
+  "pricing.plan.pro.name": "Pro",
+  "pricing.plan.pro.per": "month",
+  "pricing.plan.pro.blurb": "one app and its pro features, billed per application.",
+  "pricing.plan.pro.feat.1": "the pro features of one chosen application",
+  "pricing.plan.pro.feat.2": "priority routes on the shared gateway",
+  "pricing.plan.pro.feat.3": "early access to that app's new surfaces",
+  "pricing.plan.studio.name": "Studio",
+  "pricing.plan.studio.per": "month",
+  "pricing.plan.studio.blurb": "the whole family at once, for people who live in the tools.",
+  "pricing.plan.studio.feat.1": "the pro features of every application in the family",
+  "pricing.plan.studio.feat.2": "early access across the family",
+  "pricing.plan.studio.feat.3": "a direct line to the maintainer for feature requests",
   // the support page anchor (the channels)
   "support.action.notConfigured": "link not configured yet",
   "support.aria.hero": "cobaia support",

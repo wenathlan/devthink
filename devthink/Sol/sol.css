@@ -12031,7 +12031,7 @@ span[data-tile] {
   background-blend-mode: normal, soft-light;
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--color-veil) 24%, transparent),
-    0 16px 40px rgb(0 0 0 / 22%);
+    var(--win-shad-window);
   -webkit-backdrop-filter: blur(30px) saturate(1.35);
   backdrop-filter: blur(30px) saturate(1.35);
   animation: dtwloginpane 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
