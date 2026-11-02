@@ -33,8 +33,8 @@
     </resources>
     <plugins><plugin><groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId><version>3.6.1</version><executions>
       <execution><id>attach-extension-zip</id><phase>package</phase><goals><goal>attach-artifact</goal></goals><configuration><artifacts>
-        <artifact><file>${project.basedir}/dist/devthink${project.version}.zip</file><type>zip</type><classifier>extension</classifier></artifact>
-        <artifact><file>${project.basedir}/dist/devthink-declarations-${project.version}.zip</file><type>zip</type><classifier>declarations</classifier></artifact>
+        <artifact><file>${project.basedir}/build/devthink${project.version}.zip</file><type>zip</type><classifier>extension</classifier></artifact>
+        <artifact><file>${project.basedir}/build/devthink-declarations-${project.version}.zip</file><type>zip</type><classifier>declarations</classifier></artifact>
       </artifacts></configuration></execution>
     </executions></plugin></plugins>
   </build>
