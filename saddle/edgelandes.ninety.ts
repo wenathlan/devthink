@@ -11,6 +11,18 @@
 // self-check never loads a gap. the visitor law holds everywhere: the
 // heavyweight lanes probe server-side surfaces only, the visitor browser,
 // gpu, cpu and storage are never touched.
+//
+// the dispatch reality law (the engine-real rung): the merged executor
+// table prefers the real surfaces first — the host binary lanes and the
+// base wire lanes (the s3 sigv4 signer, the libsql and mysql wire
+// clients, the tmpfs / zram / swapfile kernel recipes) win over the
+// in-process rehearsal lanes for every id they share, so a dispatched
+// storage or ram lane answers the honest wire verdict (the configured
+// roundtrip or the host-runtime-absent refusal that names its
+// requirement) and never the composed rehearsal report. the in-process
+// lanes remain the engine's deterministic rehearsal surface — importable
+// directly (the battery drives their own map) and wired into the merged
+// table only for the ids no real lane owns.
 
 import { existsSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -158,15 +170,23 @@ export const edgelanespecsall: readonly (HeavyweightLaneSpec & { kind: "live" | 
   ...heavyweightlanespecs,
 ]);
 
-/** the merged executor table of the plane: the base executors plus the
- * three group tables plus the heavyweight probes — the dispatch law
- * demands an executor for every lane and this table answers it. */
+/** the merged executor table of the plane: the dispatch reality law rides
+ * the spread order — the rehearsal lanes spread first (they fill only the
+ * ids no real lane owns), the virtual composition and the heavyweight
+ * probes next, then the base wire executors and the host binary executors
+ * last so every shared id answers its real surface: the storage and ram
+ * ids carry the wire signers and the kernel recipes of the base table
+ * (never the in-process rehearsal composer), the container and clr ids
+ * carry the host binary lanes (the hardened docker run and the dotnet
+ * compile) over the base profile documents. the dispatch law demands an
+ * executor for every lane and this table answers it with the real seat
+ * first, the rehearsal seat only where no real seat exists. */
 export const edgelaneexecutorsall: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
-  ...edgelaneexecutors,
-  ...edgelaneexecutorshost,
   ...edgelaneexecutorsinproc,
   ...edgelaneexecutorsvirtual,
   ...edgelaneexecutorsheavy,
+  ...edgelaneexecutors,
+  ...edgelaneexecutorshost,
 });
 
 /** the base lane ids of the plane contract (the sixteen lanes the base

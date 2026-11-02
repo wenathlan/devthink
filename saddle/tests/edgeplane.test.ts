@@ -255,14 +255,26 @@ describe("the edge plane answers the visitor law", () => {
   });
 
   it("dispatches the ninety wave lanes through the plane honestly", async () => {
-    // the in-process lanes ride the plane server-side: ram-tmpfs composes
-    // the in-memory tree from its manifest and answers the report
+    // the dispatch reality law: the ram-tmpfs dispatch rides the real
+    // kernel recipe lane (never the in-process rehearsal composer), so a
+    // host without the mount privilege answers the honest refusal that
+    // names the tmpfs requirement — and a privileged host answers the
+    // roundtripped ramdisk report (the rehearsal map stays importable
+    // directly, the dispatch never substitutes it for the real lane)
     const ramrun = await runonedge({
       modality: "ram-tmpfs",
       code: '{"mount":"tmpfs","files":{"lane.txt":"68656c6c6f"}}',
     });
-    assert.equal(ramrun.status, "succeeded", JSON.stringify(ramrun.error));
-    assert.ok(ramrun.stdout.includes("tmpfs"));
+    if (ramrun.status === "failed") {
+      assert.ok(
+        ramrun.error?.code === "HOST_RUNTIME_ABSENT" ||
+          ramrun.error?.code === "HOST_PRIVILEGE_ABSENT" ||
+          ramrun.error?.code === "RUN_EXITED_NONZERO",
+        `the tmpfs dispatch refusal stays honest: ${JSON.stringify(ramrun.error)}`,
+      );
+    } else {
+      assert.ok(ramrun.stdout.includes("tmpfs"), "the real recipe run names the tmpfs mount");
+    }
     // the consent gate refuses without the declared consent — the visitor
     // machine law the local-optin lane guards
     const refused = await runonedge({ modality: "local-optin", code: "{}" });
@@ -279,6 +291,42 @@ describe("the edge plane answers the visitor law", () => {
     // the host binary lanes name their runtime when absent
     const jail = await runonedge({ modality: "sandbox-bubblewrap", code: "echo hi" });
     assert.ok(jail.status === "succeeded" || jail.error?.code === "HOST_RUNTIME_ABSENT", JSON.stringify(jail.error));
+  });
+
+  it("answers the dispatch reality law: the real wire seat wins the shared ids", async () => {
+    // the merged executor table prefers the real surfaces: the storage
+    // and ram ids the in-process rehearsal map also declares carry the
+    // base wire executors (the sigv4 signer, the wire clients and the
+    // kernel recipes), and the container and clr ids carry the host
+    // binary lanes (the hardened docker run and the dotnet compile)
+    const { edgelaneexecutorsall } = await import("../edgelandes.ninety.ts");
+    const { edgelaneexecutors } = await import("../edgelandes.ts");
+    const { edgelaneexecutorshost } = await import("../edgelandes.host.ts");
+    for (const id of [
+      "storage-s3",
+      "storage-libsql",
+      "storage-mysql",
+      "ram-tmpfs",
+      "ram-zram",
+      "ram-swapfile",
+    ]) {
+      assert.strictEqual(
+        edgelaneexecutorsall[id],
+        edgelaneexecutors[id as keyof typeof edgelaneexecutors],
+        `the shared id ${id} dispatches the real wire executor`,
+      );
+    }
+    for (const id of ["runtime-clr", "container-max", "container-lite", "container-ghcr"]) {
+      assert.strictEqual(
+        edgelaneexecutorsall[id],
+        edgelaneexecutorshost[id as keyof typeof edgelaneexecutorshost],
+        `the shared id ${id} dispatches the host binary executor`,
+      );
+    }
+    // the rehearsal map stays whole and directly importable — the law
+    // moves the default, it never deletes the rehearsal surface
+    const { edgelaneexecutorsinproc } = await import("../edgelandes.inproc.ts");
+    assert.equal(Object.keys(edgelaneexecutorsinproc).length, 19, "the rehearsal map keeps its nineteen lanes");
   });
 
   it("never lies about a live modality another engine surface drives", async () => {

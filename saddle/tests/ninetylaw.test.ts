@@ -10,10 +10,11 @@
 // signature and the dotnet runtime, the profile lanes and the ghcr lane
 // name docker, the storage lanes name their configuration keys, the ram
 // lanes name the kernel privilege) — while the plan count stays pinned
-// at ninety. the merged dispatch prefers the in-process signer and
-// speaker lanes for the storage ids, so the vault-lane refusal surface
-// rides the executors directly (the engine exports both maps and the
-// battery pins the surface each one owns). runnable with vitest:
+// at ninety. the dispatch reality law (the engine-real rung) flipped the
+// merged table: the real wire seat now wins the shared storage and ram
+// ids, so this battery's direct executor drives pin the same surface the
+// dispatch answers (the engine still exports both maps and the battery
+// pins the surface each one owns). runnable with vitest:
 // bunx vitest run tests/ninetylaw.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
