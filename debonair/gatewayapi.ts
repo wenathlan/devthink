@@ -1,19 +1,21 @@
 // # gatewayapi — the http route table of the debonair gateway lane (root
-// layer, waves PV1.003 + PV1.006 + PV2.001 + PV3.004 + PV4.004 + PV6.001):
-// the seventeen routes the family gateway serves — the ingest job lane
-// (the upload that queues a job, the progress query the bench polls, the
-// document shelf, the document read, the document removal), the blob
+// layer, waves PV1.003 + PV1.006 + PV2.001 + PV3.004 + PV4.004 + PV6.001 +
+// W16b): the nineteen routes the family gateway serves — the ingest job
+// lane (the upload that queues a job, the progress query the bench polls,
+// the document shelf, the document read, the document removal), the blob
 // stream, the miner lane (the genre profile mine that queues a job, the
 // vitrine profile list, the profile read), the render lane (the plan
 // queue the generate page posts, the render job the meter polls), the
-// tracks lane (the publish that moves a rendered track row onto the
-// vitrine, the vitrine list that serves the generated takes beside the
-// ingested references, one grammar) and the generate lane's own four
-// spellings (the render queue, the render job poll, the track publish
-// and the vitrine surface the automation seats ride — the mcplane agent
-// and the getry lane speak this vocabulary; the same lanes under their
-// generate-spelled paths, zero duplication of the walk law) — pure
-// typescript over an injected
+// recon lane (the reconstruction queue the player's ladder posts — the
+// inline debonair.recon/3 document or the stored reference's documentId,
+// the job poll the ladder waits on), the tracks lane (the publish that
+// moves a rendered track row onto the vitrine, the vitrine list that
+// serves the generated takes beside the ingested references, one grammar)
+// and the generate lane's own four spellings (the render queue, the render
+// job poll, the track publish and the vitrine surface the automation
+// seats ride — the mcplane agent and the getry lane speak this vocabulary;
+// the same lanes under their generate-spelled paths, zero duplication of
+// the walk law) — pure typescript over an injected
 // environment, the same framework-agnostic discipline vault/api.ts rides:
 // the route table sits at the top (method + path pattern + handler name),
 // the handlers stay pure over the seats, and every answer is the typed
@@ -90,6 +92,7 @@ import type { BlobPointer, BlobResult, BlobStore } from "./blobstore.ts";
 import { blobidvalid } from "./blobstore.ts";
 import { matchGenre } from "./genrematrix.ts";
 import type { IngestDocument } from "./ingest.ts";
+import { reconOf } from "./ingestrecon.ts";
 import type {
   IngestDbHandle,
   IngestJobErrorCode,
@@ -99,10 +102,14 @@ import type {
   IngestStampRow,
   IngestStemsManifest,
 } from "./ingestworker.ts";
-import { INGEST_STEMS_SCHEMA_VERSION, runIngestJob } from "./ingestworker.ts";
+import { INGEST_STEMS_SCHEMA_VERSION, parseWav, runIngestJob } from "./ingestworker.ts";
 import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern, validatePatternProject } from "./patternenums.ts";
 import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./patternminer.ts";
 import { classifyDocument, mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./patternminer.ts";
+import type { ReconDocument } from "./reconpayload.ts";
+import { serializeRecon, validateRecon } from "./reconpayload.ts";
+import type { ReconChecksums, ReconRunErrorCode } from "./reconworker.ts";
+import { startReconJob as runReconWalk } from "./reconworker.ts";
 import {
   type RenderJobRow,
   type RenderJobSeat,
@@ -131,6 +138,8 @@ export type GatewayHandlerName =
   | "getProfile"
   | "queueRender"
   | "getRenderJob"
+  | "queueRecon"
+  | "getReconJob"
   | "publishTrack"
   | "listTracks"
   | "queueGenerateRender"
@@ -150,18 +159,19 @@ export interface RouteSpec {
   handler: GatewayHandlerName;
 }
 
-/** The route catalog of the debonair gateway lane — the seventeen routes
+/** The route catalog of the debonair gateway lane — the nineteen routes
  * the family gateway serves: the ingest job lane (the upload, the
  * progress query, the shelf, the read, the removal), the blob stream,
  * the miner lane (the profile mine, the vitrine list, the profile read),
  * the render lane (the plan queue the generate page posts, the render
- * job the meter polls), the tracks lane (the publish, the vitrine list)
- * and the generate lane's own four spellings (the render queue, the job
- * poll, the track publish by id and the vitrine surface the automation
- * seats — the mcplane agent, the getry lane — ride). The more specific
- * rows ride first (the jobs route before the document :id route, the
- * mine route before the profile :genre route) — the first match wins and
- * the table order is the law. */
+ * job the meter polls), the recon lane (the reconstruction queue and the
+ * job poll the player's ladder rides), the tracks lane (the publish, the
+ * vitrine list) and the generate lane's own four spellings (the render
+ * queue, the job poll, the track publish by id and the vitrine surface
+ * the automation seats — the mcplane agent, the getry lane — ride). The
+ * more specific rows ride first (the jobs route before the document :id
+ * route, the mine route before the profile :genre route) — the first
+ * match wins and the table order is the law. */
 export const routes: readonly RouteSpec[] = [
   { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
   { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
@@ -174,6 +184,8 @@ export const routes: readonly RouteSpec[] = [
   { method: "GET", path: "/api/v1/profiles/:genre", handler: "getProfile" },
   { method: "POST", path: "/api/v1/render", handler: "queueRender" },
   { method: "GET", path: "/api/v1/render/jobs/:id", handler: "getRenderJob" },
+  { method: "POST", path: "/api/v1/recon", handler: "queueRecon" },
+  { method: "GET", path: "/api/v1/recon/jobs/:id", handler: "getReconJob" },
   { method: "POST", path: "/api/v1/tracks", handler: "publishTrack" },
   { method: "GET", path: "/api/v1/tracks", handler: "listTracks" },
   { method: "POST", path: "/api/v1/generate/render", handler: "queueGenerateRender" },
@@ -622,6 +634,28 @@ export interface RenderRunValue {
   durationSeconds: number;
   /** The track row the walk stamped (null when the lane ran store-only). */
   trackId: string | null;
+}
+
+/** The value one landed reconstruction run answers — the rebuild facts the
+ * caller lane hands the player's ladder: the wav pointer (the blob rung the
+ * playback lane resolves), the byte count, the duration, the seed and the
+ * identity checksums (the anti-fake triple — the render hash identifies
+ * this synthesis, it never alleges reproduction of the analyzed source). */
+export interface ReconRunValue {
+  /** The job that ran. */
+  jobId: string;
+  /** The landed state (a failed run answers the typed err instead). */
+  state: "done";
+  /** The blob id of the reconstructed wav. */
+  wavPointer: string;
+  /** The byte count of the wav. */
+  bytes: number;
+  /** The reconstructed duration in seconds. */
+  durationSeconds: number;
+  /** The seed the reconstruction rng rode (deterministic from the document). */
+  seed: string;
+  /** The identity checksums (identifies, never verifies — the anti-fake law). */
+  checksums: ReconChecksums;
 }
 
 /** One row of the vitrine list — the streaming shelf the owner described:
@@ -1175,6 +1209,214 @@ async function getRenderJob(
   return ok(renderjobwire(row));
 }
 
+/** @section handlers — the recon lane (the reconstruction queue the ladder posts) */
+
+/** The typed verdict of the documentId resolution — the stored reference the
+ * queue rebuilds a document from, or the machine code of the refusing lane. */
+type ReconDocumentResolution =
+  | { ok: true; document: ReconDocument; ownerId: string }
+  | { ok: false; code: GatewayErrorCode; status: number; message: string };
+
+/**
+ * Resolves the recon document one queued reconstruction rides — the two
+ * payload lanes of the ladder: the inline document (the payload rung — the
+ * caller's own debonair.recon/3, validated and canonically serialized
+ * before any row lands, exactly the contract gate the render queue's plan
+ * rides) or the stored reference (the blob rung — the documentId of an
+ * ingested shelf row whose stored mix wav becomes the document through the
+ * descriptor lane: one decode, one separation, the same reconOf the bench
+ * rides). The inline lane needs no owner — a reconstruction answers to the
+ * take it rebuilds, not to a visitor; the stored lane carries the shelf
+ * row's own owner pointer (the ledger row stamps it).
+ *
+ * @param env the gateway environment.
+ * @param request the queue request (the json body).
+ * @returns the document beside its owner seat, or the machine-coded refusal.
+ */
+async function resolveReconDocument(env: GatewayEnv, request: GatewayRequest): Promise<ReconDocumentResolution> {
+  const json = request.json;
+  if (json === null) {
+    return {
+      ok: false,
+      code: "bad-request",
+      status: 400,
+      message: "the recon needs the json body (the inline document or the documentId of a stored reference)",
+    };
+  }
+  const ownerField = json.ownerId;
+  if (ownerField !== undefined && (typeof ownerField !== "string" || !blobidvalid(ownerField))) {
+    return {
+      ok: false,
+      code: "bad-owner",
+      status: 400,
+      message: "the owner pointer must ride the minted decimal form",
+    };
+  }
+  const documentField = json.document;
+  const documentIdField = json.documentId;
+  if (documentField !== undefined && documentIdField !== undefined) {
+    return {
+      ok: false,
+      code: "bad-request",
+      status: 400,
+      message: "the recon carries one payload lane — the inline document or the documentId, never both",
+    };
+  }
+  if (documentField !== undefined) {
+    if (typeof documentField !== "object" || documentField === null || Array.isArray(documentField)) {
+      return {
+        ok: false,
+        code: "bad-request",
+        status: 400,
+        message: "the document field must be a debonair.recon/3 payload",
+      };
+    }
+    const checked = validateRecon(documentField);
+    if (!checked.ok) {
+      return {
+        ok: false,
+        code: "bad-request",
+        status: 400,
+        message: `the document failed the recon contract (${checked.code}): ${checked.message}`,
+      };
+    }
+    let canonical: string;
+    try {
+      canonical = serializeRecon(checked.doc);
+    } catch (error) {
+      return {
+        ok: false,
+        code: "bad-request",
+        status: 400,
+        message: `the document refused its canonical serialization: ${errmsgof(error)}`,
+      };
+    }
+    return {
+      ok: true,
+      document: JSON.parse(canonical) as ReconDocument,
+      ownerId: typeof ownerField === "string" ? ownerField : "",
+    };
+  }
+  if (typeof documentIdField !== "string" || documentIdField.length === 0) {
+    return {
+      ok: false,
+      code: "bad-request",
+      status: 400,
+      message: "the recon needs the document (the debonair.recon/3 payload) or the documentId (the stored reference)",
+    };
+  }
+  let row: IngestStampRow | null;
+  try {
+    row = await env.db.getstampedrow(documentIdField);
+  } catch (error) {
+    return { ok: false, code: "db-failed", status: 500, message: `the shelf refused the read: ${errmsgof(error)}` };
+  }
+  if (row === null) {
+    return { ok: false, code: "not-found", status: 404, message: `no document answers ${documentIdField}` };
+  }
+  let got: BlobResult;
+  try {
+    got = await env.store.get(row.mixPointer);
+  } catch (error) {
+    return { ok: false, code: "store-failed", status: 500, message: `the blob store threw: ${errmsgof(error)}` };
+  }
+  if (!got.ok) {
+    const missing = got.code === "not-found" ? "not-found" : "store-failed";
+    const status = got.code === "not-found" ? 404 : 500;
+    return { ok: false, code: missing, status, message: `the stored mix refused the resolution: ${got.message}` };
+  }
+  if (got.data === null) {
+    return {
+      ok: false,
+      code: "store-failed",
+      status: 500,
+      message: `the stored mix ${row.mixPointer} answered no bytes`,
+    };
+  }
+  const decoded = parseWav(got.data);
+  if (!decoded.ok) {
+    return {
+      ok: false,
+      code: "bad-request",
+      status: 400,
+      message: `the stored mix refused the wav decode (${decoded.code}): ${decoded.message}`,
+    };
+  }
+  const mono = new Float32Array(decoded.frames);
+  for (let frame = 0; frame < decoded.frames; frame++) {
+    let sample = 0;
+    for (const channel of decoded.pcm) sample += channel[frame] ?? 0;
+    mono[frame] = sample / decoded.channels;
+  }
+  const document = reconOf(mono, decoded.sampleRate, { name: row.name });
+  return { ok: true, document, ownerId: ownerField ?? row.ownerId };
+}
+
+/**
+ * POST /api/v1/recon — queues one reconstruction job: the body carries the
+ * inline debonair.recon/3 document (the payload rung) or the documentId of
+ * a stored reference (the blob rung resolves it through the descriptor
+ * lane before any row lands), the canonical bytes register on the render
+ * ledger — the same table the render walk rides, the recon walk's own
+ * phase vocabulary (reconstruct, encode, store) telling the lanes apart —
+ * and the mint answers the job id. The owner pointer is optional on this
+ * lane: a reconstruction is a pure function of the document (deterministic
+ * — the same document always answers the same wav), so the job answers to
+ * the take it rebuilds, not to a visitor; a carried owner pointer (the
+ * family law) or the stored reference's own owner seats the ledger row.
+ */
+async function queueRecon(env: GatewayEnv, request: GatewayRequest): Promise<GatewayAnswer<{ jobId: string }>> {
+  const resolved = await resolveReconDocument(env, request);
+  if (!resolved.ok) return err(resolved.code, resolved.status, resolved.message);
+  let canonical: string;
+  try {
+    canonical = serializeRecon(resolved.document);
+  } catch (error) {
+    return err("bad-request", 400, `the document refused the canonical serialize: ${errmsgof(error)}`);
+  }
+  const jobId = env.mint();
+  const row: RenderJobRow = {
+    id: jobId,
+    owner_id: resolved.ownerId,
+    state: "queued",
+    phase: null,
+    fraction: 0,
+    error: null,
+    plan_json: canonical,
+    wav_pointer: null,
+    track_pointer: null,
+    created_at: env.now(),
+    finished_at: null,
+  };
+  try {
+    env.renderJobs.putjob(row);
+  } catch (error) {
+    return err("db-failed", 500, `the render ledger refused the registration: ${errmsgof(error)}`);
+  }
+  return ok({ jobId }, 201);
+}
+
+/**
+ * GET /api/v1/recon/jobs/:id — the reconstruction job row (the walk the
+ * player's ladder polls: the state, the phase, the fraction, the honest
+ * failure, the landed wav pointer — the blob rung the playback lane
+ * resolves through the blob route — and the instants).
+ */
+async function getReconJob(
+  env: GatewayEnv,
+  _request: GatewayRequest,
+  params: Record<string, string>,
+): Promise<GatewayAnswer<RenderJobValue>> {
+  let row: RenderJobRow | null;
+  try {
+    row = env.renderJobs.getjob(params.id);
+  } catch (error) {
+    return err("db-failed", 500, `the render ledger refused the read: ${errmsgof(error)}`);
+  }
+  if (row === null) return err("not-found", 404, `no recon job answers ${params.id}`);
+  return ok(renderjobwire(row));
+}
+
 /** The vitrine row of one rendered track — the generated take's face. */
 function renderwire(row: RenderTrackRow): VitrineTrackValue {
   return {
@@ -1463,6 +1705,8 @@ const handlers: Record<GatewayHandlerName, GatewayHandler> = {
   getProfile,
   queueRender,
   getRenderJob,
+  queueRecon,
+  getReconJob,
   publishTrack,
   listTracks,
   queueGenerateRender,
@@ -1795,3 +2039,60 @@ export async function startRenderLaneJob(env: GatewayEnv, jobId: string): Promis
  * vocabularies the merged route table serves. */
 export const startRenderJob: (env: GatewayEnv, jobId: string) => Promise<GatewayAnswer<RenderRunValue>> =
   startRenderLaneJob;
+
+/** @section startreconlanejob — the reconstruction run the caller loop drives */
+
+/** Maps a recon walk failure code onto the gateway code of its lane — the
+ * ledger codes ride their own lanes (not-found the 404 shape, conflict the
+ * 409 shape, ledger-failed the db lane), the store code the store lane,
+ * and the document codes (bad-document, render-failed) the bad-request
+ * lane: the document was the caller's, exactly the mapcode law the ingest
+ * and render lanes ride. */
+function reconmapcode(code: ReconRunErrorCode): { code: GatewayErrorCode; status: number } {
+  if (code === "not-found") return { code: "not-found", status: 404 };
+  if (code === "conflict") return { code: "conflict", status: 409 };
+  if (code === "store-failed") return { code: "store-failed", status: 500 };
+  if (code === "ledger-failed") return { code: "db-failed", status: 500 };
+  return { code: "bad-request", status: 400 };
+}
+
+/**
+ * Starts one queued reconstruction job — the recon lane's mirror of
+ * startRenderLaneJob: the caller lane (the gateway worker loop) hands the
+ * queued job id and this function walks the recon worker end to end
+ * (reconstruct → encode → store — the wav lands in the blob store, the
+ * ledger row rides along through the walk's own seats, the track lane
+ * stays null: a reconstruction is not a new take). Never a throw; every
+ * refusal answers the typed err; a re-run of a landed job answers
+ * conflict (the walk is one-shot — a fresh reconstruction queues a fresh
+ * job, though the same document always answers the same wav, the recon
+ * determinism law).
+ *
+ * @param env the injected environment.
+ * @param jobId the queued recon job the route registered.
+ * @returns the landed reconstruction (the wav pointer, the bytes, the
+ *   duration, the seed, the checksums), or the typed err of the refusing lane.
+ */
+export async function startReconLaneJob(env: GatewayEnv, jobId: string): Promise<GatewayAnswer<ReconRunValue>> {
+  const result = await runReconWalk(
+    {
+      store: env.store,
+      jobs: env.renderJobs,
+      now: env.now,
+    },
+    jobId,
+  );
+  if (!result.ok) {
+    const mapped = reconmapcode(result.code);
+    return err(mapped.code, mapped.status, `${result.code}: ${result.message}`);
+  }
+  return ok({
+    jobId: result.jobId,
+    state: "done",
+    wavPointer: result.wavPointer,
+    bytes: result.bytes,
+    durationSeconds: result.durationSeconds,
+    seed: result.seed,
+    checksums: result.checksums,
+  });
+}

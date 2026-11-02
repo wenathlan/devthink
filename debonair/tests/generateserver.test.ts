@@ -224,15 +224,15 @@ afterAll(async () => {
   await Promise.all(dirs.map((dir) => rm(dir, { recursive: true, force: true })));
 });
 
-describe("the route table (the seventeen rows)", () => {
-  it("carries the four generate rows beside the thirteen standing ones", () => {
+describe("the route table (the nineteen rows)", () => {
+  it("carries the four generate rows beside the thirteen standing ones and the recon lane's two", () => {
     assert.equal(
       routes.length,
-      17,
-      "the seventeen-route table (the thirteen standing + the generate lane's four spellings)",
+      19,
+      "the nineteen-route table (the thirteen standing + the generate lane's four spellings + the recon lane's two)",
     );
     const paths = routes.map((row) => `${row.method} ${row.path}`);
-    assert.deepEqual(paths.slice(13), [
+    assert.deepEqual(paths.slice(15), [
       "POST /api/v1/generate/render",
       "GET /api/v1/generate/jobs/:id",
       "POST /api/v1/tracks/:id/publish",
