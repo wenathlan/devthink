@@ -45,7 +45,18 @@ const TOKEN_HEADER = "x-vault-token";
 const LANE_TIMEOUT_MS = 4000;
 
 /** reads the configured engine origin: VITE_VAULT_URL answers the deployed
- * api (the https public-host discipline the platform lanes ride). */
+ * api (the https public-host discipline the platform lanes ride).
+ *
+ * the wiring this env rides (the production lane): the engine runs as
+ * the node service the vault Dockerfile/compose pair boots, and the
+ * face bakes this value at build time — the deploy configs (vercel,
+ * netlify, wrangler, docker-compose) declare it pointing at the engine
+ * public origin, or at the face's own origin when the nginx /api/*
+ * proxy lane carries the calls same-origin. there is NO localhost
+ * fallback, by law: hostallowed refuses http, localhost, loopback and
+ * private hosts, so a dev origin never passes — until a public https
+ * origin answers, the away lane keeps the declared rehearsal (never a
+ * blank, never an invented number). */
 function readEnvOrigin(): string {
   const env = (import.meta as ImportMeta & { env?: { VITE_VAULT_URL?: string } }).env;
   return stripTrailingSlashes((typeof env?.VITE_VAULT_URL === "string" ? env.VITE_VAULT_URL : "").trim());

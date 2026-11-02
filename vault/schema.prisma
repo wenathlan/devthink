@@ -1,7 +1,8 @@
 // vault prisma schema — the self-hosted database of the supabase clone:
-// projects, accounts and the storage engine (ledger objects, the 256KB
-// chunk catalog, the ordered chunk references and the user-defined quotas),
-// all served over https by the drizzle executor.
+// projects, accounts (the identity pass: signup, sessions, project api
+// keys) and the storage engine (ledger objects, the 256KB chunk catalog,
+// the ordered chunk references and the user-defined quotas), all served
+// over https by the drizzle executor.
 //
 // family sync contract (devthink master): a table of the same kind carries
 // the same columns and the same pointers in every application that holds
@@ -23,23 +24,65 @@ datasource db {
 }
 
 model Project {
-  id        String         @id @default(cuid())
-  name      String
-  region    String         @default("local")
-  createdAt DateTime       @default(now())
-  objects   StorageObject[]
-  quota     Quota?
+  id             String         @id @default(cuid())
+  name           String
+  region         String         @default("local")
+  /// the owning account — null while the operator bootstrap owns the scope
+  ownerAccountId String?        @map("owner_account_id")
+  owner          Account?       @relation(fields: [ownerAccountId], references: [id])
+  createdAt      DateTime       @default(now())
+  objects        StorageObject[]
+  apiKeys        ApiKey[]
+  quota          Quota?
 
   @@map("projects")
 }
 
+/// the person identity of the vault — the supabase law: a person signs up,
+/// signs in and registers applications. the password rides scrypt (the
+/// stored shape "scrypt$salt$hash"), the createdAt pointer is bigint epoch
+/// milliseconds (the runtime drizzle cell is INTEGER ms).
 model Account {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  role      String   @default("owner")
-  createdAt DateTime @default(now())
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  role          String    @default("owner")
+  createdAt     BigInt    @map("created_at")
+  sessions      Session[]
+  ownedProjects Project[]
 
   @@map("accounts")
+}
+
+/// one signed-in person row — only the sha-256 hash of the cookie token
+/// lands (token_hash), the raw token answers once in the httpOnly
+/// vaultsession cookie and never rides the database. expires_at is bigint
+/// epoch milliseconds; the login sweep collects the expired rows.
+model Session {
+  tokenHash String  @id @map("token_hash")
+  accountId String  @map("account_id")
+  account   Account @relation(fields: [accountId], references: [id])
+  expiresAt BigInt  @map("expires_at")
+  createdAt BigInt  @map("created_at")
+
+  @@map("sessions")
+}
+
+/// one project api key — the application lane: the row keeps the sha-256 of
+/// the raw key (answered once at issuance), the readable prefix the console
+/// shows, the last-use instant and the revocation instant (a revoked key
+/// refuses without erasing its history).
+model ApiKey {
+  id         String   @id @default(cuid())
+  projectId  String   @map("project_id")
+  project    Project  @relation(fields: [projectId], references: [id])
+  keyHash    String   @unique @map("key_hash")
+  prefix     String
+  lastUsedAt BigInt?  @map("last_used_at")
+  revokedAt  BigInt?  @map("revoked_at")
+  createdAt  BigInt   @map("created_at")
+
+  @@map("apikeys")
 }
 
 /// one ledger row per stored object — the path, the mime, the real sha-256

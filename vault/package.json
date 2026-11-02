@@ -18,6 +18,11 @@
       "import": "./index.ts",
       "default": "./index.ts"
     },
+    "./accounts": {
+      "types": "./accounts.ts",
+      "import": "./accounts.ts",
+      "default": "./accounts.ts"
+    },
     "./api": {
       "types": "./api.ts",
       "import": "./api.ts",
@@ -124,6 +129,7 @@
     "tests",
     "README.md",
     "index.ts",
+    "accounts.ts",
     "api.ts",
     "buckets.ts",
     "chunks.ts",
@@ -184,6 +190,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check .",
+    "engine": "node --experimental-strip-types api.ts",
+    "engine:check": "VAULT_STORAGE_URL=file:./tests/tmp/engine-check-storage.db VAULT_UISTORE_DB=./tests/tmp/engine-check-uistore.db node --experimental-strip-types --input-type=module -e 'const { createVaultServer, listenVault } = await import(\"./api.ts\"); const server = createVaultServer(); const port = await listenVault(server, { port: 0, host: \"127.0.0.1\" }); const answer = await fetch(`http://127.0.0.1:${port}/api/health`); const body = await answer.json(); server.close(); if (answer.status !== 200 || body.ok !== true) { console.error(\"the vault engine check refused:\", body); process.exit(1); } console.log(`vault engine check ok — the health lane answered on port ${port}`);'",
     "restore:entry": "node -e \"const{readFileSync}=require('node:fs');const{execSync}=require('node:child_process');const script=/script[^>]*App\\.tsx/;const triad=/family=Inter[\\s\\S]*Geist\\+Mono/;const face=(h)=>script.test(h)&&triad.test(h);if(face(readFileSync('index.html','utf8'))){console.log('index.html already rides the source face');process.exit(0)}if(!face(execSync('git show HEAD:./index.html',{encoding:'utf8'}))){console.error('refusing: HEAD index.html is not the canonical source face yet (script App.tsx + the font triad) - land the source-face fix first; nothing was touched');process.exit(1)}execSync('git checkout -- index.html',{stdio:'inherit'});console.log('index.html restored from HEAD (the source face)')\""
   },
   "dependencies": {

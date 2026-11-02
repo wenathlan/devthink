@@ -4,5 +4,10 @@
   "framework": "vite",
   "buildCommand": "pnpm build",
   "outputDirectory": ".",
+  "build": {
+    "env": {
+      "VITE_VAULT_URL": "https://vault-engine.example.org"
+    }
+  },
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

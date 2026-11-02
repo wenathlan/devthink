@@ -7,11 +7,15 @@
 // re-verify every digest — one moved byte answers corrupt, never a shrug.
 // Removal soft-deletes the row, detaches the chunk references and lets the
 // sweep collect the orphans. The quota gate runs inside the write
-// transaction: over the limit nothing lands at all. Nothing rides the
-// person's browser — the ledger, the catalog and the verdicts live on the
-// vault infrastructure only.
+// transaction: over the limit nothing lands at all. The faun lesson owns
+// both doors of the database file: the put refuses it (the deny-list of
+// extensions and mimes) and the read re-verifies the policy — a .db never
+// rides the download lane, not even a legacy row that slipped past the put.
+// Nothing rides the person's browser — the ledger, the catalog and the
+// verdicts live on the vault infrastructure only.
 //
 // @section validation — the identity, path and mime gates
+// @section dblock — the faun lesson deny-list (put refuses, get re-verifies)
 // @section projects — the owner scope and its quota floor
 // @section put — the deposit pipeline (digest, chunks, manifest, refs)
 // @section get — the verified read path (reassemble, re-digest, refuse)
@@ -79,6 +83,62 @@ export function mimeValid(mime: string): boolean {
   return /^[a-z0-9!#$&^_.+-]+\/[a-z0-9!#$&^_.+-]+$/i.test(mime) && mime.length <= 255;
 }
 
+/** @section dblock */
+
+/** the faun lesson refusal code the routes translate — the download lane never serves a database file. */
+export const VAULT_DB_LOCKED = "VAULT_DB_LOCKED";
+
+/** the message the db lock answers — the faun lesson in one honest line. */
+export const DB_LOCKED_MESSAGE = "the faun lesson: database files never ride the download lane";
+
+/** the database extensions the download lane never serves — the fa1.db lesson the owner pinned. */
+const DB_LOCKED_EXTENSIONS: ReadonlySet<string> = new Set(["db", "sqlite", "sqlite3", "db-wal"]);
+
+/** the database mimes the download lane never serves. */
+const DB_LOCKED_MIMES: ReadonlySet<string> = new Set([
+  "application/x-sqlite3",
+  "application/x-sqlite",
+  "application/vnd.sqlite3",
+]);
+
+/**
+ * The extension deny-list of the moment — the pinned four plus whatever the
+ * operator declared in VAULT_DB_LOCKLIST (a csv of extra extensions, default
+ * empty). Read per call so a test or a redeploy never reboots the policy.
+ *
+ * @returns every extension the download lane refuses.
+ */
+export function dbLockExtensions(): ReadonlySet<string> {
+  const declared = process.env.VAULT_DB_LOCKLIST;
+  if (declared === undefined || declared.trim() === "") {
+    return DB_LOCKED_EXTENSIONS;
+  }
+  const widened = new Set(DB_LOCKED_EXTENSIONS);
+  for (const raw of declared.split(",")) {
+    const extension = raw.trim().toLowerCase();
+    widened.add(extension.startsWith(".") ? extension.slice(1) : extension);
+  }
+  return widened;
+}
+
+/**
+ * The db-lock verdict of one deposit or read: the extension of the final
+ * path segment (case-insensitive, the dot never part of the answer) or the
+ * mime answers locked — the faun lesson owns both doors.
+ *
+ * @param objectPath the repository-relative absolute path of the object.
+ * @param mime the content type the object serves as.
+ * @returns true when the download lane refuses this ride.
+ */
+export function dbDownloadLocked(objectPath: string, mime: string): boolean {
+  const segment = objectPath.slice(objectPath.lastIndexOf("/") + 1).toLowerCase();
+  const dot = segment.lastIndexOf(".");
+  if (dot >= 0 && dbLockExtensions().has(segment.slice(dot + 1))) {
+    return true;
+  }
+  return DB_LOCKED_MIMES.has(mime.trim().toLowerCase());
+}
+
 /** @section projects */
 
 /** One project of the ledger with its quota row attached. */
@@ -89,6 +149,8 @@ export interface ProjectRow {
   name: string;
   /** the region the project serves from */
   region: string;
+  /** the owning account — null while the operator bootstrap owns the scope */
+  ownerAccountId: string | null;
   /** the creation datetime */
   createdAt: string;
   /** the quota row — the user-defined limit, null = unlimited */
@@ -100,19 +162,27 @@ const PROJECT_COLUMNS = {
   id: projects.id,
   name: projects.name,
   region: projects.region,
+  ownerAccountId: projects.ownerAccountId,
   createdAt: projects.createdAt,
 };
 
 /**
  * Creates one project — the owner scope — with the 900MB quota floor laid
  * down beside it (the user redefines or removes the limit afterwards).
- * Idempotent: an existing project answers its row untouched.
+ * Idempotent: an existing project answers its row untouched. The owner
+ * account pointer lands when the identity lane registers the application;
+ * the operator bootstrap keeps the null owner it always rode.
  *
  * @param id the project identity.
  * @param name the human name (defaults to the id).
+ * @param ownerAccountId the owning account, when the person door registers the scope.
  * @returns the project with its quota, or the honest refusal.
  */
-export function createProject(id: string, name = id): { project?: ProjectRow; refusal?: LedgerRefusal } {
+export function createProject(
+  id: string,
+  name = id,
+  ownerAccountId?: string,
+): { project?: ProjectRow; refusal?: LedgerRefusal } {
   if (!projectIdValid(id)) {
     return {
       refusal: {
@@ -121,13 +191,26 @@ export function createProject(id: string, name = id): { project?: ProjectRow; re
       },
     };
   }
-  storage.insert(projects).values({ id, name }).onConflictDoNothing().run();
+  storage
+    .insert(projects)
+    .values({ id, name, ...(ownerAccountId === undefined ? {} : { ownerAccountId }) })
+    .onConflictDoNothing()
+    .run();
   const quota = ensureQuota(storage, id);
   const row = storage.select(PROJECT_COLUMNS).from(projects).where(eq(projects.id, id)).get();
   if (row === undefined) {
     throw new Error(`the project row "${id}" did not land`);
   }
-  return { project: { id: row.id, name: row.name, region: row.region, createdAt: row.createdAt, quota } };
+  return {
+    project: {
+      id: row.id,
+      name: row.name,
+      region: row.region,
+      ownerAccountId: row.ownerAccountId ?? null,
+      createdAt: row.createdAt,
+      quota,
+    },
+  };
 }
 
 /** @section put */
@@ -170,6 +253,7 @@ export interface LedgerObject {
 export type LedgerRefusal =
   | { kind: "invalid"; why: string }
   | { kind: "quota"; verdict: QuotaVerdict; why: string }
+  | { kind: "dblocked"; why: string }
   | { kind: "absent"; why: string }
   | { kind: "corrupt"; why: string; position?: number; digest?: string };
 
@@ -195,6 +279,12 @@ export function putObject(input: PutInput): PutAnswer {
   }
   if (!mimeValid(input.mime)) {
     return { refusal: { kind: "invalid", why: "the mime must be a type/subtype pair" } };
+  }
+  /* the faun lesson door of the deposit: a database file never rides the
+   * download lane — the extension and the mime both answer to the deny-list
+   * before one byte of the pipeline moves (nothing lands, nothing chunks). */
+  if (dbDownloadLocked(input.path, input.mime)) {
+    return { refusal: { kind: "dblocked", why: DB_LOCKED_MESSAGE } };
   }
   const size = BigInt(input.bytes.length);
   const digest = sha256Hex(input.bytes);
@@ -280,6 +370,12 @@ export function getObject(id: string): GetAnswer {
   const row = liveObjectById(storage, id);
   if (row === undefined) {
     return { refusal: { kind: "absent", why: `the object "${id}" is not in the ledger` } };
+  }
+  /* the faun lesson door of the read, re-verified: a row that slipped past
+   * the put (a legacy deposit, a direct seed) never rides the download lane
+   * either — the policy answers at both doors, defense in depth. */
+  if (dbDownloadLocked(row.path, row.mime)) {
+    return { refusal: { kind: "dblocked", why: DB_LOCKED_MESSAGE } };
   }
   const manifest = row.manifest;
   const ordered = storage
@@ -373,6 +469,23 @@ export function getObject(id: string): GetAnswer {
     };
   }
   return { bytes: whole, object: ledgerObjectOf(row), verified: true };
+}
+
+/**
+ * Answers the owning project of one live object — the scope gate the object
+ * routes read before any byte travels (the identity pass: an api key or a
+ * session only reaches the scopes it answers for).
+ *
+ * @param id the ledger identity of the object.
+ * @returns the owning project id, or undefined when no live object answers.
+ */
+export function objectProjectOf(id: string): string | undefined {
+  const row = storage
+    .select({ projectId: storageObjects.projectId })
+    .from(storageObjects)
+    .where(and(eq(storageObjects.id, id), isNull(storageObjects.deletedAt)))
+    .get();
+  return row?.projectId;
 }
 
 /** @section delete */

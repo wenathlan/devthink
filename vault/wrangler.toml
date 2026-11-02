@@ -1,7 +1,26 @@
 # Cloudflare/Workers config (deploy, bindings, domain routes)
+#
+# vault on cloudflare — the static face beside the engine door: the
+# assets deploy serves the SPA only, the storage engine (api.ts) runs as
+# the node service the docker-compose.yml beside this file boots, so the
+# face needs the PUBLIC https origin of the engine baked at build time.
+# VITE_VAULT_URL below is that door: vaultclient.ts reads it (and the
+# house https law it must pass — http, localhost and private hosts are
+# refused), and the placeholder must be replaced with the real origin of
+# the engine deploy. one honest caveat: [vars] are worker-runtime
+# bindings, while vite bakes VITE_* values at BUILD time — set the same
+# value in the build environment of the deploy lane (the dashboard env
+# or the ci step) so the bundle and the config declare one origin. an
+# empty value keeps the honest away lane (the declared rehearsal
+# answers), and the browser lanes also ride VITE_VAULT_TOKEN (the
+# x-vault-token bearer) and VITE_VAULT_PROJECT beside it.
+
 name = "vault"
 main = "index.html"
 compatibility_date = "2026-09-29"
+
+[vars]
+VITE_VAULT_URL = "https://vault-engine.example.org"
 
 [assets]
 directory = "."

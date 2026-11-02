@@ -3,7 +3,11 @@
 // declarations over the node-native sqlite driver (better-sqlite3 — WAL,
 // foreign keys, patient locks, the same discipline db.ts rides), and the
 // boot DDL lays them down idempotently on first open: no .sql files in the
-// repo, migrations stay CI-only. The family sync law holds on every table:
+// repo, migrations stay CI-only. Beside the storage truth the schema now
+// carries the identity pass — accounts, sessions and apikeys — the person
+// door the supabase law promises (signup, login, the httpOnly session and
+// the per-project api keys; the raw tokens never land, only their sha-256
+// hashes do). The family sync law holds on every table:
 // identity pointers are text, counts are 32-bit ints, time is datetime, and
 // byte-scale pointers (sizes, limits, chunk ids) are 64-bit bigint — the
 // sqlite cells are integer (64-bit), the drizzle mapping widens them to
@@ -25,14 +29,30 @@ import type { ObjectManifest } from "./chunks.ts";
 
 /** @section tables */
 
+/** the accounts table — the person identity of the vault (the supabase-like lane): one row per signed-up person, the password riding scrypt, never the browser. */
+export const accounts = sqliteTable("accounts", {
+  /** the account identity (text pointer, ledger-issued "acc-" + nanoid) */
+  id: text("id").primaryKey(),
+  /** the login email — unique, normalized lowercase at the door */
+  email: text("email").notNull().unique(),
+  /** the stored scrypt shape ("scrypt$salt$hash" — the raw password never lands) */
+  passwordHash: text("password_hash").notNull(),
+  /** the role — "owner" while the single-person law holds */
+  role: text("role").notNull().default("owner"),
+  /** the creation instant — a 64-bit bigint pointer in epoch milliseconds */
+  createdAt: numeric("created_at", { mode: "bigint" }).notNull(),
+});
+
 /** the projects table — the owner scope every object and quota hangs from. */
 export const projects = sqliteTable("projects", {
-  /** the project identity (text pointer, the owner names it) */
+  /** the project identity (text pointer, the owner names it — or the vault issues [a-z0-9]{12}) */
   id: text("id").primaryKey(),
   /** the human name of the project */
   name: text("name").notNull(),
   /** the region the project serves from */
   region: text("region").notNull().default("local"),
+  /** the owning account — null while the operator bootstrap owns the scope (text pointer) */
+  ownerAccountId: text("owner_account_id").references(() => accounts.id),
   /** the creation datetime of the row */
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -113,18 +133,69 @@ export const quotas = sqliteTable("quotas", {
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
 
+/** the sessions table — the signed-in person lane: only the sha-256 hash of the cookie token lands, the raw token answers once and never again. */
+export const sessions = sqliteTable("sessions", {
+  /** the sha-256 hex of the session token (the raw token never touches the row) */
+  tokenHash: text("token_hash").primaryKey(),
+  /** the signed-in account (text pointer) */
+  accountId: text("account_id")
+    .notNull()
+    .references(() => accounts.id),
+  /** the expiry instant — a 64-bit bigint pointer in epoch milliseconds */
+  expiresAt: numeric("expires_at", { mode: "bigint" }).notNull(),
+  /** the creation instant — a 64-bit bigint pointer in epoch milliseconds */
+  createdAt: numeric("created_at", { mode: "bigint" }).notNull(),
+});
+
+/** the apikeys table — the project application lane: one row per issued key, only the sha-256 hash lands, the readable prefix keeps the console honest, revoked_at retires a key without erasing its history. */
+export const apiKeys = sqliteTable("apikeys", {
+  /** the key identity (text pointer, ledger-issued "key-" + nanoid) */
+  id: text("id").primaryKey(),
+  /** the project the key unlocks (text pointer) */
+  projectId: text("project_id")
+    .notNull()
+    .references(() => projects.id),
+  /** the sha-256 hex of the raw key (the raw key answers once, at issuance) */
+  keyHash: text("key_hash").notNull().unique(),
+  /** the readable prefix the console shows afterwards ("vk_xxxxxxxx") */
+  prefix: text("prefix").notNull(),
+  /** the last use instant — a 64-bit bigint pointer in epoch milliseconds, null until first use */
+  lastUsedAt: numeric("last_used_at", { mode: "bigint" }),
+  /** the revocation instant — null while the key lives */
+  revokedAt: numeric("revoked_at", { mode: "bigint" }),
+  /** the creation instant — a 64-bit bigint pointer in epoch milliseconds */
+  createdAt: numeric("created_at", { mode: "bigint" }).notNull(),
+});
+
 /** the storage tables the boot DDL lays down (the runtime catalog of the engine). */
-export const storageTables = ["projects", "storage_objects", "chunks", "chunk_refs", "quotas"] as const;
+export const storageTables = [
+  "projects",
+  "storage_objects",
+  "chunks",
+  "chunk_refs",
+  "quotas",
+  "accounts",
+  "sessions",
+  "apikeys",
+] as const;
 
 /** @section boot */
 
 /** The schema statements the boot lays down once per fresh file — idempotent, no .sql anywhere. */
 const BOOT_DDL: readonly string[] = [
+  `CREATE TABLE IF NOT EXISTS accounts (
+     id            TEXT PRIMARY KEY,
+     email         TEXT NOT NULL UNIQUE,
+     password_hash TEXT NOT NULL,
+     role          TEXT NOT NULL DEFAULT 'owner',
+     created_at    INTEGER NOT NULL DEFAULT (CAST(strftime('%s','now') AS INTEGER) * 1000)
+   )`,
   `CREATE TABLE IF NOT EXISTS projects (
-     id         TEXT PRIMARY KEY,
-     name       TEXT NOT NULL,
-     region     TEXT NOT NULL DEFAULT 'local',
-     created_at TEXT NOT NULL DEFAULT (datetime('now'))
+     id               TEXT PRIMARY KEY,
+     name             TEXT NOT NULL,
+     region           TEXT NOT NULL DEFAULT 'local',
+     owner_account_id TEXT REFERENCES accounts(id),
+     created_at       TEXT NOT NULL DEFAULT (datetime('now'))
    )`,
   `CREATE TABLE IF NOT EXISTS storage_objects (
      id         TEXT PRIMARY KEY,
@@ -164,6 +235,23 @@ const BOOT_DDL: readonly string[] = [
      limit_bytes INTEGER,
      updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
    )`,
+  `CREATE TABLE IF NOT EXISTS sessions (
+     token_hash TEXT PRIMARY KEY,
+     account_id TEXT NOT NULL REFERENCES accounts(id),
+     expires_at INTEGER NOT NULL,
+     created_at INTEGER NOT NULL DEFAULT (CAST(strftime('%s','now') AS INTEGER) * 1000)
+   )`,
+  `CREATE INDEX IF NOT EXISTS sessions_account ON sessions(account_id)`,
+  `CREATE TABLE IF NOT EXISTS apikeys (
+     id           TEXT PRIMARY KEY,
+     project_id   TEXT NOT NULL REFERENCES projects(id),
+     key_hash     TEXT NOT NULL UNIQUE,
+     prefix       TEXT NOT NULL,
+     last_used_at INTEGER,
+     revoked_at   INTEGER,
+     created_at   INTEGER NOT NULL DEFAULT (CAST(strftime('%s','now') AS INTEGER) * 1000)
+   )`,
+  `CREATE INDEX IF NOT EXISTS apikeys_project ON apikeys(project_id)`,
 ];
 
 /** The executing storage connection: drizzle over better-sqlite3, the raw client reachable through $client. */
@@ -182,6 +270,15 @@ export type StorageExecutor = StorageDatabase | Parameters<Parameters<StorageDat
 export function ensureStorageSchema(database: StorageDatabase): void {
   for (const statement of BOOT_DDL) {
     database.run(sql.raw(statement));
+  }
+  /* the owner column of the identity pass: a projects file laid down before
+   * this pass answers without owner_account_id — CREATE IF NOT EXISTS never
+   * touches an existing table, so the idempotent bring-up adds the nullable
+   * pointer in place (a bring-up, never a rewrite: the bootstrap rows keep
+   * their null owner and answer the operator lane exactly as before). */
+  const columns = database.all<{ name: string }>(sql`SELECT name FROM pragma_table_info('projects')`);
+  if (!columns.some((column) => column.name === "owner_account_id")) {
+    database.run(sql.raw("ALTER TABLE projects ADD COLUMN owner_account_id TEXT REFERENCES accounts(id)"));
   }
 }
 

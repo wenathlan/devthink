@@ -1,9 +1,27 @@
+# vault on netlify — the static face beside the engine door.
+#
+# this deploy serves the SPA only: the storage engine (api.ts — the
+# node:http surface the docker-compose.yml beside this file boots as the
+# `engine` service) never rides a serverless lane, so the face needs the
+# PUBLIC https origin of the engine baked at build time. VITE_VAULT_URL
+# below is exactly that door: vaultclient.ts reads it (and the house
+# https law it must pass — http, localhost and private hosts are
+# refused), and the placeholder must be replaced with the real origin of
+# the engine deploy (or the face's own origin when the nginx proxy lane
+# of the container pair carries the calls same-origin). an empty value
+# keeps the honest away lane: the declared rehearsal answers, never a
+# blank and never an invented figure. the browser lanes also ride
+# VITE_VAULT_TOKEN (the x-vault-token bearer) and VITE_VAULT_PROJECT —
+# set them beside this one in the netlify environment when the console
+# lane goes live.
+
 [build]
   command = "pnpm build"
   publish = "."
 
 [build.environment]
-  NODE_VERSION = "26.8.2"
+  NODE_VERSION = "26.13.0"
+  VITE_VAULT_URL = "https://vault-engine.example.org"
 
 [[redirects]]
   from = "/*"

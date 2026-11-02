@@ -24,6 +24,8 @@
 
 /* ── the storage engine — the real pipeline the siblings borrow ── */
 
+/** the identity lane: signup, login, the httpOnly sessions and the project api keys (the person door). */
+export * from "./accounts.ts";
 /** the vault http surface: the token gate (the faun lesson) and the storage routes over pure node:http. */
 export * from "./api.ts";
 /** the 256KB chunk pipeline: split, encode (raw first, brotli only when it wins), the manifest law. */
