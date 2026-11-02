@@ -355,7 +355,7 @@
   },
   "engines": {
     "bare": "^1.18.0",
-    "bun": "^1.4.2",
+    "bun": ">=1.4.4 <2",
     "cargo": ">=1.85.0",
     "chrome": "^16.0.912",
     "cnpm": "^9.4.0",
@@ -368,7 +368,7 @@
     "iojs": "^1.0.0",
     "java": ">=17",
     "node": ">=26.13.0 <27",
-    "npm": "^12.1.0",
+    "npm": ">=12.2.1 <13",
     "pnpm": "^12.6.0",
     "python": ">=3.11.0",
     "rust": ">=1.85.0",
@@ -455,5 +455,5 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
-  "packageManager": "pnpm@12.3.4"
+  "packageManager": "pnpm@12.16.1"
 }
