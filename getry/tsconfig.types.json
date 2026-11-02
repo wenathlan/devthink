@@ -8,9 +8,12 @@
     "stripInternal": true,
     "isolatedModules": true,
     "outDir": "dist/types",
-    "rootDir": ".."
+    "rootDir": "..",
+    "types": ["node"],
+    "typeRoots": ["../devthink/node_modules/@types"]
   },
   "include": [
+    "typeface.ts",
     "thinking.ts",
     "engine.ts",
     "llm.ts",
