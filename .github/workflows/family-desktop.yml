@@ -117,10 +117,12 @@ jobs:
             *) pnpm --dir "$APP" install --frozen-lockfile ;;
           esac
       - name: build and stage the web surface
-        # the build answers straight at the application root: the staging
-        # copies the entry and the hashed bundles into build/web, the folder
-        # the tauri scaffold aims its frontendDist at (the runner-side
-        # toolchain area, never committed).
+        # the build answers straight at the application root (the vault
+        # answers from dist — its deploy-safety law keeps the runtime
+        # sqlite stores of the engine out of every publishable surface):
+        # the staging copies the entry and the hashed bundles into
+        # build/web, the folder the tauri scaffold aims its frontendDist at
+        # (the runner-side toolchain area, never committed).
         shell: bash
         run: |
           set -euo pipefail
@@ -130,11 +132,15 @@ jobs:
             saddle) npm run web:build:pages ;;
             *) pnpm run build ;;
           esac
-          test -f index.html
+          # the emit dir the app declares: the vault answers from dist (the
+          # deploy-safety law), every other family app from its root
+          emit="."
+          if [ "${{ matrix.app }}" = "vault" ]; then emit="dist"; fi
+          test -f "${emit}/index.html"
           mkdir -p build/web
-          cp index.html build/web/
+          cp "${emit}/index.html" build/web/
           for kind in js css webmanifest xml txt svg png ico woff woff2; do
-            cp *.${kind} build/web/ 2>/dev/null || true
+            cp "${emit}"/*.${kind} build/web/ 2>/dev/null || true
           done
           test -f build/web/index.html
       - name: install the rust toolchain

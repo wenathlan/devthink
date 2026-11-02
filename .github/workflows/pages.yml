@@ -9,8 +9,11 @@ name: Family Pages
 # Every vite
 # theme installs from its committed lockfile through the package manager its
 # manifest pins (the matrix carries the manager per application) and builds
-# straight at the application root — the hashed bundles emit flat beside the
-# entry html, with no dist, no public and no assets folder — under the
+# at the application root — the hashed bundles emit flat beside the entry
+# html, with no public and no assets folder — EXCEPT the vault, whose
+# deploy-safety law emits into dist (the engine's runtime sqlite stores
+# live at the vault app root and must never ride a publishable surface);
+# the vault leg reads its emit out of dist. All legs build under the
 # VITE_BASE_PATH the subpath dictates. The staging copies the delivered web
 # surface (the entry, the fallback, the hashed bundles and the static web
 # files) out of the root by type. The devthink leg keeps the boot smoke and
@@ -138,7 +141,10 @@ jobs:
         if: matrix.pm == 'pnpm'
         # the theme root is the application root: one package.json, the entry
         # html at the folder root, the build answering at the root beside the
-        # engine logic the vite build reads.
+        # engine logic the vite build reads — except the vault, whose
+        # deploy-safety law emits into dist (the engine's runtime sqlite
+        # stores live at the app root and must never ride a publishable
+        # surface).
         run: |
           set -euo pipefail
           pnpm --dir "${{ matrix.app }}" install --frozen-lockfile --ignore-scripts
@@ -147,8 +153,12 @@ jobs:
           # build and to the wouter router (a relative base leaves the
           # router baseless and every subroute falls to the 404 catch-all)
           VITE_BASE_PATH="/${{ github.event.repository.name }}/${{ matrix.app }}/" pnpm --dir "${{ matrix.app }}" run build
-          test -f "${{ matrix.app }}/index.html"
-          test -n "$(ls "${{ matrix.app }}"/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at the application root"; exit 1; }
+          # the emit dir the app declares: the vault answers from dist (the
+          # deploy-safety law), every other family app from its root
+          emit="${{ matrix.app }}"
+          if [ "${{ matrix.app }}" = "vault" ]; then emit="${{ matrix.app }}/dist"; fi
+          test -f "${emit}/index.html"
+          test -n "$(ls "${emit}"/*.js 2>/dev/null)" || { echo "::error::the build emitted no hashed bundle at ${emit}"; exit 1; }
       - name: Install and build the theme (npm leg)
         if: matrix.pm == 'npm'
         # the application pins npm: the install reads the committed
@@ -198,11 +208,17 @@ jobs:
             done
             touch staging/.nojekyll
           else
+            # the emit dir the app declares: the vault answers from dist
+            # (the deploy-safety law — the runtime sqlite stores of the
+            # engine live at its app root), every other family app from
+            # its root
+            emit="${app}"
+            if [ "${app}" = "vault" ]; then emit="${app}/dist"; fi
             mkdir -p "staging/${app}"
-            cp "${app}/index.html" "staging/${app}/"
+            cp "${emit}/index.html" "staging/${app}/"
             cp "${app}/404.html" "staging/${app}/" 2>/dev/null || true
             for kind in js css webmanifest xml txt svg png ico woff woff2 webp; do
-              cp "${app}"/*."${kind}" "staging/${app}/" 2>/dev/null || true
+              cp "${emit}"/*."${kind}" "staging/${app}/" 2>/dev/null || true
             done
             # the static asset folder the theme references by relative path
             # (the folder rides beside the sources; only the applications that

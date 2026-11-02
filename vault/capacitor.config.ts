@@ -4,10 +4,12 @@
  * `npx cap add`/`npx cap sync` from the app root and every path below — webDir
  * above all — resolves relative to that cwd.
  *
- * the theme build (the hashed bundles that vite emits straight at the app root)
- * is the single application source of every platform: the browser, github
- * pages, vercel, netlify, the tv and the android wrapper all render the same
- * web bundle. the native shells
+ * the theme build (the hashed bundles vite emits into the dist tree — the
+ * deploy safety law: the application root carries the engine's runtime
+ * sqlite stores and never rides a native shell) is the single application
+ * source of every platform: the browser, github pages, vercel, netlify,
+ * the tv and the android wrapper all render the same web bundle. the
+ * native shells
  * stay runner-side toolchain output (generated on the mobile workflow into
  * android/ and ios/, never committed).
  *
@@ -30,8 +32,10 @@ const config: CapacitorConfigShape = {
   /** the vault mobile identity — the id the mobile lane stamps onto the generated shells. */
   appId: "im.vault.app",
   appName: "Vault",
-  /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
-  webDir: ".",
+  /** the vite build of the theme: pnpm build emits the hashed bundles into
+   * the dist tree (the deploy safety law — the app root, where the engine
+   * drops its runtime sqlite stores, never ships inside a shell). */
+  webDir: "dist",
   bundledWebRuntime: false,
   server: {
     androidScheme: "https",
