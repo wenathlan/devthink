@@ -45,7 +45,11 @@ it("declares runtime metadata and an optional browser provider peer", async () =
   const nodepin = (await readFile(resolve(root, "../.nvmrc"), "utf8")).trim();
   const nodemajor = Number(nodepin.split(".")[0]);
   assert.equal(packagejson.engines.node, `>=${nodepin} <${nodemajor + 1}`);
-  assert.equal(packagejson.packageManager, "npm@12.0.2");
+  /* the family pin law: every manifest in the tree answers to the same
+     pnpm rung the envelope stamps (the ten sibling apps and the engine
+     carry pnpm@12.3.4), so the surface test pins the manifest to the
+     family rung instead of the npm rung the old lane carried */
+  assert.equal(packagejson.packageManager, "pnpm@12.3.4");
   assert.equal(packagejson.peerDependencies.playwright, "^1.63.0");
   assert.equal(packagejson.peerDependenciesMeta.playwright.optional, true);
   assert.equal(packagejson.exports["./browser-playwright"], "./dist/browser.js");
