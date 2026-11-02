@@ -404,3 +404,5 @@ saddle/*.woff2
 # artifacts/ folder — anchored so the typed gate records the tests village
 # carries and the foundry/Sol/artifacts/ theme folder stay untouched)
 /artifacts/
+getry/*.d.ts
+getry/*.d.ts.map
