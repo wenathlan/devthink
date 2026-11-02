@@ -17,7 +17,7 @@
   <build>
     <resources>
       <resource>
-        <directory>dist</directory>
+        <directory>build</directory>
         <includes>
           <include>index.js</include>
           <include>index.cjs</include>
