@@ -21,25 +21,25 @@
 // lower rungs own theirs. Pure and multi-mode — the browser and node agree.
 
 import { SILENCE_RMS } from "./analyze.ts";
+import { resample } from "./audiodecode.ts";
 import { onsetEnvelope } from "./audiorhythm.ts";
 import { bpmOverTime } from "./audiorhythmbeat.ts";
+import { spectralFlux } from "./audiospectrum.ts";
 import { brightness, mfcc, rolloffSharpness, spectralSlope, warmthIndex } from "./audiotimbre.ts";
 import { rmsEnvelope } from "./audiotimbreenv.ts";
-import { resample } from "./audiodecode.ts";
-import { spectralFlux } from "./audiospectrum.ts";
 import { type StemPair, separate } from "./hpss.ts";
 import { decompose, type IngestDocument, type IngestSegment, onsetSecondsOf, pcmhash, segmentsof } from "./ingest.ts";
-import { PATTERN_SCALES, PATTERN_SCALE_NAMES } from "./patternenums.ts";
+import { PATTERN_SCALE_NAMES, PATTERN_SCALES } from "./patternenums.ts";
 import {
+  fnv1aNumbers,
+  RECON_LAYERS,
+  RECON_SAMPLE_RATE,
+  RECON_SCHEMA_VERSION,
   type ReconCorrelations,
   type ReconDocument,
   type ReconFrame,
   type ReconHeader,
   type ReconLayerFrame,
-  RECON_LAYERS,
-  RECON_SAMPLE_RATE,
-  RECON_SCHEMA_VERSION,
-  fnv1aNumbers,
 } from "./reconpayload.ts";
 import { FFT_SIZE, frameSpectrum, keyOf } from "./spectrum.ts";
 
@@ -846,4 +846,47 @@ export function trackStreamOf(doc: ReconDocument, layerId: number): { spectralPe
     midiNotes.push(...layer.midiNotes);
   }
   return { spectralPeaks, midiNotes };
+}
+
+// ---------------------------------------------------------------------------
+// the statistical header audits (the mode and series laws of §4)
+// ---------------------------------------------------------------------------
+
+/**
+ * The statistical mode of the per-second scaleType seats over the sounding
+ * seconds — the audit twin of the header's mostUsedScaleId: recomputing the
+ * mode from the frames must answer the seat the header carries (never a
+ * pinned global — the V7 ban). The dictionary answers the name twin
+ * (reconScaleName) — the payload never carries both sides of one fact.
+ *
+ * @param frames the per-second frames (the active seats decide the sounding seconds).
+ * @returns the prevailing scale id 0..47 (ties keep the lowest id).
+ */
+export function reconScaleModeOf(frames: ReadonlyArray<Pick<ReconFrame, "active" | "scaleType">>): number {
+  return modeIdOf(frames.filter((frame) => frame.active > 0).map((frame) => frame.scaleType));
+}
+
+/**
+ * The statistical mode of the per-second scaleRoot seats over the sounding
+ * seconds — the audit twin of the header's mostUsedKeyId (the same mode
+ * law, the dictionary answering the name twin through reconRootName).
+ *
+ * @param frames the per-second frames (the active seats decide the sounding seconds).
+ * @returns the prevailing root id 0..11 (ties keep the lowest id).
+ */
+export function reconRootModeOf(frames: ReadonlyArray<Pick<ReconFrame, "active" | "scaleRoot">>): number {
+  return modeIdOf(frames.filter((frame) => frame.active > 0).map((frame) => frame.scaleRoot));
+}
+
+/**
+ * The per-second bpm series of a recon document — the tempo law's own view:
+ * one bpm per second (the sliding-window estimates the frames seat), never
+ * one global value; the header's bpmMedian and bpm seats are this series'
+ * median and mean, the two honest summaries beside the series itself.
+ *
+ * @param doc the recon document.
+ * @returns one bpm per second, the frames' own order.
+ */
+export function reconBpmSeriesOf(doc: ReconDocument): number[] {
+  return doc.frames.map((frame) => frame.bpm);
 }

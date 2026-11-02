@@ -48,6 +48,7 @@ const ingestworkermodule = await import("@wenathlan/debonair/ingestworker");
 const patternenumsmodule = await import("@wenathlan/debonair/patternenums");
 const patternminermodule = await import("@wenathlan/debonair/patternminer");
 const renderworkermodule = await import("@wenathlan/debonair/renderworker");
+const reconworkermodule = await import("@wenathlan/debonair/reconworker");
 const reverseingestmodule = await import("@wenathlan/debonair/reverseingest");
 const speechalignmodule = await import("@wenathlan/debonair/speechalign");
 const stemsmodule = await import("@wenathlan/debonair/stems");
@@ -85,6 +86,7 @@ const SUBPATHS = [
   "stems",
   "ingestworker",
   "renderworker",
+  "reconworker",
   "gatewayapi",
 ] as const;
 
@@ -128,6 +130,7 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   stems: stemsmodule,
   ingestworker: ingestworkermodule,
   renderworker: renderworkermodule,
+  reconworker: reconworkermodule,
   gatewayapi: gatewayapimodule,
 };
 
@@ -190,6 +193,9 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     RECON_BPM_WINDOW_MS: "number",
     RECON_BASS_MIDI_MAX: "number",
     RECON_GUITAR_MIDI_MAX: "number",
+    reconScaleModeOf: "function",
+    reconRootModeOf: "function",
+    reconBpmSeriesOf: "function",
   },
   reconpayload: {
     reconIdOf: "function",
@@ -522,6 +528,17 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     RENDER_WORKER_MODALITY: "string",
     VOICE_BUS_FADER_DB: "number",
   },
+  reconworker: {
+    renderRecon: "function",
+    renderReconPcm: "function",
+    renderReconPlan: "function",
+    reconSeedOf: "function",
+    startReconJob: "function",
+    RECON_RENDER_SAMPLE_RATE: "number",
+    RECON_RENDER_BIT_DEPTH: "number",
+    RECON_WAV_KIND: "string",
+    RECON_PHASES: "object",
+  },
   gatewayapi: {
     dispatch: "function",
     matchpath: "function",
@@ -530,6 +547,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     startMinerJob: "function",
     startRenderLaneJob: "function",
     startRenderJob: "function",
+    startReconLaneJob: "function",
     MINER_PHASES: "object",
     routes: "object",
   },

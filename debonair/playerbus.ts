@@ -20,10 +20,22 @@
 // with the same clock law the TakeEngine rides. The honest typed errors —
 // blob-missing, decode-failed, unsupported-mime — surface through the
 // snapshot beside the message.
+//
+// The recon ladder (wave 16b): a recon take — a debonair.recon/3 document
+// with no stored pcm — climbs the honest escada of docs/recon.spec.md §6:
+// (1) the memory cache (a reconstruction this tab already landed), (2) the
+// blob lane (a stored reconstruction the take carries a pointer to), (3)
+// the recon gateway lane (POST /api/v1/recon with the document, the job
+// poll, the wav the blob route answers), (4) the typed refusal
+// recon-unavailable when no lane answers — never a fake, never a
+// placeholder. The reconstruction plays through the reference transport
+// (decoded audio — the same clock, the same singleton law: one audible
+// transport, the plan engine hushing beside it).
 
 import { planTake, type TakePlan } from "./arranger.ts";
 import { TakeEngine, TransportError } from "./audioengine.ts";
 import { gatewayblobstore, sessionblobstore } from "./blobstore.ts";
+import type { ReconDocument } from "./reconpayload.ts";
 import { findTakeRecord, loadTakeRecords, type StorageLike, sessionStorageOrMemory } from "./takestore.ts";
 
 /** The demo take the bus always carries (the studio's own demo seed). */
@@ -73,9 +85,30 @@ export interface ReferenceTake {
  * from). */
 export type ReferenceOrigin = "bench" | "render";
 
-/** Every take the bus shelf carries: the generated plans and the ingested
- * references — one grammar, the row decides by kind. */
-export type BusTake = TakePlan | ReferenceTake;
+/** Every take the bus shelf carries: the generated plans, the ingested
+ * references and the recon documents — one grammar, the row decides by kind. */
+export type BusTake = TakePlan | ReferenceTake | ReconTake;
+
+/**
+ * One recon take on the bus shelf: a debonair.recon/3 document the ladder
+ * renders back into sound — the payload rung of docs/recon.spec.md §6. The
+ * document carries everything the reconstruction needs (the 82 seats); the
+ * optional wav blob pointer names a stored reconstruction (the blob rung —
+ * a landed render the ladder resolves before it queues a fresh job).
+ */
+export interface ReconTake {
+  /** The take kind — the recon lane (the discriminant of the union). */
+  kind: "recon";
+  /** The stable id of the take (the bus dedupes and caches on it). */
+  id: string;
+  /** The display name (the analyzed take's name). */
+  name: string;
+  /** The recon document (the debonair.recon/3 payload the ladder renders from). */
+  document: ReconDocument;
+  /** The blob pointer of a stored reconstruction wav, when one landed (the
+   * blob rung — resolved before the gateway rung climbs). */
+  wavBlobId?: string;
+}
 
 /**
  * Reads the reference discriminant of any shelf take.
@@ -88,13 +121,24 @@ export function isReferenceTake(take: BusTake): take is ReferenceTake {
 }
 
 /**
+ * Reads the recon discriminant of any shelf take.
+ *
+ * @param take the shelf take.
+ * @returns true when the take rides the recon lane.
+ */
+export function isReconTake(take: BusTake): take is ReconTake {
+  return "kind" in take && take.kind === "recon";
+}
+
+/**
  * The duration of any shelf take (the bus clock law: the plan answers its
- * own field, the reference answers its source's).
+ * own field, the reference its source's, the recon its document's header).
  *
  * @param take the shelf take.
  * @returns the duration in seconds.
  */
 export function durationOfTake(take: BusTake): number {
+  if (isReconTake(take)) return take.document.header.durationSeconds;
   return isReferenceTake(take) ? take.source.durationSeconds : take.durationSeconds;
 }
 
@@ -115,6 +159,14 @@ export interface DecodedReference {
  * this bus plays), the decoder last (the bytes are audio but refused). */
 export type ReferencePlayCode = "blob-missing" | "decode-failed" | "unsupported-mime";
 
+/** The honest typed failure of the recon lane: no rung of the ladder
+ * answered — the memory cache empty, the blob lane missing, the gateway
+ * lane offline. The bus refuses with this code; it never fakes a render. */
+export type ReconPlayCode = "recon-unavailable";
+
+/** Every typed notice code the snapshot can carry (empty while healthy). */
+export type BusNoticeCode = ReferencePlayCode | ReconPlayCode | "";
+
 /** The fetch-bytes seam answer: the bytes and the mime the lane honored,
  * or the typed missing-blob failure. */
 export type FetchBytesAnswer =
@@ -127,10 +179,11 @@ export type DecodeBytesAnswer =
   | { ok: false; code: "decode-failed" | "unsupported-mime"; message: string };
 
 /** The resolution answer the bus plays or renders (the seam pair collapsed
- * into one typed result). */
+ * into one typed result — the error arm carries the reference codes and the
+ * recon lane's typed refusal, the honest unions the ladder answers). */
 export type ResolveReferenceAnswer =
   | { ok: true; audio: DecodedReference }
-  | { ok: false; code: ReferencePlayCode; message: string };
+  | { ok: false; code: ReferencePlayCode | ReconPlayCode; message: string };
 
 /** The seam pair the reference lane rides, injectable so the tests pin the
  * contract and a deploy can redirect the lanes (the defaults follow the
@@ -277,6 +330,239 @@ export async function resolveReferenceAudio(
   } catch (error) {
     return { ok: false, code: "decode-failed", message: `the decode seam refused the bytes: ${errmsg(error)}` };
   }
+}
+
+// ---- the recon ladder (memory -> blob -> gateway -> the honest refuse) ----
+
+/** The queue answer of the recon gateway seam: the job id, or the typed
+ * unavailable refusal (an offline lane, a refused document — never a fake
+ * job id). */
+export type ReconQueueAnswer = { ok: true; jobId: string } | { ok: false; code: ReconPlayCode; message: string };
+
+/** The poll answer of the recon gateway seam: the walk state, the landed wav
+ * pointer and the honest failure, or the typed unavailable refusal. */
+export type ReconPollAnswer =
+  | { ok: true; state: "queued" | "rendering" | "done" | "failed"; wavPointer: string | null; error: string | null }
+  | { ok: false; code: ReconPlayCode; message: string };
+
+/** The gateway seam pair the recon rung rides, injectable so the tests pin
+ * the contract and a deploy can redirect the lane (the defaults follow the
+ * house law: the configured gateway origin, never a hardcoded domain). */
+export interface ReconGatewaySeams {
+  /** Queues one reconstruction of the document (POST /api/v1/recon). */
+  queueRecon(document: ReconDocument): Promise<ReconQueueAnswer>;
+  /** Polls one queued reconstruction job (GET /api/v1/recon/jobs/:id). */
+  pollReconJob(jobId: string): Promise<ReconPollAnswer>;
+}
+
+/** The poll cadence of the ladder's wait, in ms (the first poll rides
+ * immediately; the attempts after breathe this interval). */
+const RECON_POLL_INTERVAL_MS = 120;
+
+/** The poll attempt budget (interval * attempts ≈ the honest wait window
+ * before the ladder answers the typed refusal). */
+const RECON_POLL_ATTEMPTS = 100;
+
+/** The memory-cache ceiling — the reconstructions this tab keeps decoded
+ * (the oldest evicts; the ladder's first rung, bounded like the session
+ * mirror the blob lane rides). */
+const RECON_CACHE_TAKES = 4;
+
+/**
+ * The default queue seam: the configured gateway origin under the house
+ * https law — POST {origin}/api/v1/recon with the document on the json
+ * lane. A host with no configured origin answers the typed refusal (the
+ * offline lane never fakes a job); a refused document or an unreachable
+ * lane maps onto the same honest code with the readable reason.
+ *
+ * @param document the recon document the ladder renders.
+ * @returns the job id, or the typed unavailable refusal.
+ */
+async function defaultQueueRecon(document: ReconDocument): Promise<ReconQueueAnswer> {
+  const origin = gatewayOrigin();
+  if (!origin) {
+    return { ok: false, code: "recon-unavailable", message: "no gateway lane answers the reconstruction" };
+  }
+  try {
+    const response = await fetch(`${origin}/api/v1/recon`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ document }),
+    });
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      return {
+        ok: false,
+        code: "recon-unavailable",
+        message: `the recon lane refused the document (${response.status}): ${detail.slice(0, 160)}`,
+      };
+    }
+    const value = (await response.json()) as { jobId?: unknown };
+    if (typeof value.jobId !== "string" || value.jobId.length === 0) {
+      return { ok: false, code: "recon-unavailable", message: "the recon lane answered no job id" };
+    }
+    return { ok: true, jobId: value.jobId };
+  } catch (error) {
+    return { ok: false, code: "recon-unavailable", message: `the recon lane is unreachable: ${errmsg(error)}` };
+  }
+}
+
+/**
+ * The default poll seam: GET {origin}/api/v1/recon/jobs/:id — the walk the
+ * ladder waits on (the state, the landed wav pointer, the honest failure).
+ *
+ * @param jobId the queued reconstruction job.
+ * @returns the walk state, or the typed unavailable refusal.
+ */
+async function defaultPollReconJob(jobId: string): Promise<ReconPollAnswer> {
+  const origin = gatewayOrigin();
+  if (!origin) {
+    return { ok: false, code: "recon-unavailable", message: "no gateway lane answers the reconstruction" };
+  }
+  try {
+    const response = await fetch(`${origin}/api/v1/recon/jobs/${encodeURIComponent(jobId)}`);
+    if (!response.ok) {
+      return { ok: false, code: "recon-unavailable", message: `the recon job poll refused (${response.status})` };
+    }
+    const value = (await response.json()) as { state?: unknown; wavPointer?: unknown; error?: unknown };
+    if (value.state !== "queued" && value.state !== "rendering" && value.state !== "done" && value.state !== "failed") {
+      return { ok: false, code: "recon-unavailable", message: "the recon job poll answered an unknown state" };
+    }
+    return {
+      ok: true,
+      state: value.state,
+      wavPointer: typeof value.wavPointer === "string" ? value.wavPointer : null,
+      error: typeof value.error === "string" ? value.error : null,
+    };
+  } catch (error) {
+    return { ok: false, code: "recon-unavailable", message: `the recon job poll is unreachable: ${errmsg(error)}` };
+  }
+}
+
+/** The default recon seam pair (the house laws above). */
+const defaultReconSeams: ReconGatewaySeams = { queueRecon: defaultQueueRecon, pollReconJob: defaultPollReconJob };
+
+/** The injected recon seam pair (null rides the defaults). */
+let injectedReconSeams: ReconGatewaySeams | null = null;
+
+/**
+ * Injects (or restores) the recon gateway seams — the door the tests and a
+ * deploy redirect the lane through.
+ *
+ * @param seams the seam pair, or null to ride the defaults.
+ * @returns nothing.
+ */
+export function busSetReconSeams(seams: ReconGatewaySeams | null): void {
+  injectedReconSeams = seams;
+}
+
+/**
+ * Reads the active recon gateway seams (the injected pair or the defaults).
+ *
+ * @returns the seam pair the recon rung rides.
+ */
+export function busReconSeams(): ReconGatewaySeams {
+  return injectedReconSeams ?? defaultReconSeams;
+}
+
+/** The memory cache of landed reconstructions — the ladder's first rung:
+ * the decoded audio this tab already rendered, keyed by take id, the oldest
+ * evicted at the ceiling. */
+const reconCache = new Map<string, DecodedReference>();
+
+/** Caches one landed reconstruction (the first rung of the next climb). */
+function cacheReconstruction(takeId: string, audio: DecodedReference): void {
+  if (reconCache.size >= RECON_CACHE_TAKES && !reconCache.has(takeId)) {
+    const oldest = reconCache.keys().next();
+    if (!oldest.done) reconCache.delete(oldest.value);
+  }
+  reconCache.set(takeId, audio);
+}
+
+/** One honest wait step between poll attempts (the first poll rides free). */
+function reconPollDelay(attempt: number): Promise<void> {
+  if (attempt === 0) return Promise.resolve();
+  return new Promise((resolve) => setTimeout(resolve, RECON_POLL_INTERVAL_MS));
+}
+
+/**
+ * Resolves one recon take into decoded audio — the honest escada of
+ * docs/recon.spec.md §6, one rung at a time, never a fake:
+ *
+ * 1. the memory cache — a reconstruction this tab already landed answers
+ *    without a lane;
+ * 2. the blob lane — a stored reconstruction the take carries a pointer to
+ *    resolves through the reference bytes+decode seams (a miss climbs);
+ * 3. the recon gateway lane — the document queues (POST /api/v1/recon),
+ *    the job poll waits inside the attempt budget, the landed wav resolves
+ *    through the blob route and decodes;
+ * 4. the typed refusal — recon-unavailable, the honest message of the last
+ *    refusing rung, never a placeholder render.
+ *
+ * A landed reconstruction seats the memory cache (the next climb answers at
+ * the first rung). Pure over the seams — the bus and the tests call it alike.
+ *
+ * @param take the recon take.
+ * @param seams the reference seam pair (the blob rung rides them).
+ * @param reconSeams the recon gateway seam pair.
+ * @returns the decoded audio, or the typed failure.
+ */
+export async function resolveReconAudio(
+  take: ReconTake,
+  seams: ReferenceSeams = busReferenceSeams(),
+  reconSeams: ReconGatewaySeams = busReconSeams(),
+): Promise<ResolveReferenceAnswer> {
+  // rung 1 — the memory cache
+  const cached = reconCache.get(take.id);
+  if (cached) return { ok: true, audio: cached };
+  // rung 2 — the blob lane (a stored reconstruction)
+  if (take.wavBlobId !== undefined) {
+    const stored = await resolveReferenceAudio(
+      { blobId: take.wavBlobId, mime: "audio/wav", name: take.name, durationSeconds: durationOfTake(take) },
+      seams,
+    );
+    if (stored.ok) {
+      cacheReconstruction(take.id, stored.audio);
+      return stored;
+    }
+    // a miss climbs — the ladder never stops at a missing rung
+  }
+  // rung 3 — the recon gateway lane
+  const queued = await reconSeams.queueRecon(take.document);
+  if (!queued.ok) return { ok: false, code: "recon-unavailable", message: queued.message };
+  for (let attempt = 0; attempt < RECON_POLL_ATTEMPTS; attempt++) {
+    await reconPollDelay(attempt);
+    const polled = await reconSeams.pollReconJob(queued.jobId);
+    if (!polled.ok) return { ok: false, code: "recon-unavailable", message: polled.message };
+    if (polled.state === "failed") {
+      return {
+        ok: false,
+        code: "recon-unavailable",
+        message: polled.error ?? "the reconstruction job failed",
+      };
+    }
+    if (polled.state === "done" && polled.wavPointer !== null) {
+      const landed = await resolveReferenceAudio(
+        { blobId: polled.wavPointer, mime: "audio/wav", name: take.name, durationSeconds: durationOfTake(take) },
+        seams,
+      );
+      if (landed.ok) {
+        cacheReconstruction(take.id, landed.audio);
+        return landed;
+      }
+      return {
+        ok: false,
+        code: "blob-missing",
+        message: `the reconstruction landed but the wav ${polled.wavPointer} did not answer`,
+      };
+    }
+  }
+  // rung 4 — the honest refusal (never a fake)
+  return {
+    ok: false,
+    code: "recon-unavailable",
+    message: `the reconstruction of ${take.id} did not land inside the wait window`,
+  };
 }
 
 // ---- the session reference shelf ---------------------------------------------
@@ -498,9 +784,9 @@ export interface PlayerSnapshot {
   duration: number;
   /** The typed transport failure (empty while healthy). */
   notice: string;
-  /** The typed reference-lane failure code (empty while healthy or when the
-   * refusal is a plain transport error). */
-  noticeCode: ReferencePlayCode | "";
+  /** The typed reference-lane or recon-lane failure code (empty while
+   * healthy or when the refusal is a plain transport error). */
+  noticeCode: BusNoticeCode;
 }
 
 /** The subscriber callback shape. */
@@ -517,7 +803,7 @@ let index = 0;
 let playing = false;
 let position = 0;
 let notice = "";
-let noticeCode: ReferencePlayCode | "" = "";
+let noticeCode: BusNoticeCode = "";
 let frame = 0;
 let loadedId = "";
 const listeners = new Set<Listener>();
@@ -551,11 +837,12 @@ function emit(): void {
 }
 
 /** The transport of the current take — the plan engine or the reference
- * transport, decided by the take's own kind. */
+ * transport (the decoded-audio lane the references and the recon
+ * reconstructions both ride), decided by the take's own kind. */
 function liveTransport(): TransportClock | null {
   const current = takes[index];
   if (!current) return null;
-  return isReferenceTake(current) ? referenceEngine : engine;
+  return isReferenceTake(current) || isReconTake(current) ? referenceEngine : engine;
 }
 
 /**
@@ -601,7 +888,7 @@ function arm(): void {
   if (index >= takes.length) index = 0;
   if (engineFailed || !engine) return;
   const current = takes[index];
-  if (!current || isReferenceTake(current)) return;
+  if (!current || isReferenceTake(current) || isReconTake(current)) return;
   engine
     .load(current)
     .then(() => {
@@ -759,6 +1046,47 @@ function playReference(current: ReferenceTake, from: number): void {
 }
 
 /**
+ * Plays the current recon take: the ladder's own play path (a loaded take
+ * starts directly, a fresh one climbs the escada — memory, blob, gateway,
+ * the typed refusal), the landed reconstruction loading onto the reference
+ * transport (the same decoded-audio lane the references ride, the same
+ * singleton law), then the same start law the plan lane rides. Every
+ * ladder failure answers the typed code through the snapshot — the bus
+ * never fakes a render.
+ *
+ * @param current the recon take.
+ * @param from the playhead second to start at.
+ * @returns nothing.
+ */
+function playRecon(current: ReconTake, from: number): void {
+  if (loadedId === current.id && referenceEngine) {
+    startReference(referenceEngine, from);
+    return;
+  }
+  resolveReconAudio(current)
+    .then((answer) => {
+      if (!answer.ok) {
+        notice = answer.message;
+        noticeCode = answer.code;
+        playing = false;
+        emit();
+        return;
+      }
+      const transport = ensureReferenceTransport();
+      if (!transport) return;
+      transport.load(answer.audio);
+      loadedId = current.id;
+      startReference(transport, from);
+    })
+    .catch((error: unknown) => {
+      notice = error instanceof Error ? error.message : "the recon lane refused this take";
+      noticeCode = "recon-unavailable";
+      playing = false;
+      emit();
+    });
+}
+
+/**
  * Plays the current take from the given second (the shelf arms on demand,
  * the lane is the take's own kind, and the other lane hushes — one audible
  * transport at a time).
@@ -770,6 +1098,11 @@ export function busPlay(from = position): void {
   if (takes.length === 0) arm();
   const current = takes[index];
   if (!current) return;
+  if (isReconTake(current)) {
+    if (engine) engine.stop();
+    playRecon(current, from);
+    return;
+  }
   if (isReferenceTake(current)) {
     if (engine) engine.stop();
     playReference(current, from);

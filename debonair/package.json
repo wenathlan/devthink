@@ -60,6 +60,7 @@
     "blobstore.ts",
     "ingestworker.ts",
     "renderworker.ts",
+    "reconworker.ts",
     "gatewayapi.ts",
     "audioattributes.ts",
     "audiodecode.ts",
@@ -241,6 +242,11 @@
       "types": "./renderworker.ts",
       "import": "./renderworker.ts",
       "default": "./renderworker.ts"
+    },
+    "./reconworker": {
+      "types": "./reconworker.ts",
+      "import": "./reconworker.ts",
+      "default": "./reconworker.ts"
     },
     "./gatewayapi": {
       "types": "./gatewayapi.ts",

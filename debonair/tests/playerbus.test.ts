@@ -17,30 +17,40 @@ import { afterAll, afterEach, beforeAll, describe, it, vi } from "vitest";
 import { planTake } from "../arranger.ts";
 import { mintid } from "../bigintids.ts";
 import { sessionblobstore } from "../blobstore.ts";
+import { reconOf } from "../ingestrecon.ts";
 import {
   busFeature,
   busPause,
   busPlay,
+  busReconSeams,
   busReferenceSeams,
   busSeek,
   busSelect,
+  busSetReconSeams,
   busSetReferenceSeams,
   busSubscribe,
   type DecodedReference,
   durationOfTake,
   type FetchBytesAnswer,
+  isReconTake,
   isReferenceTake,
   loadReferenceRecords,
   type PlayerSnapshot,
   REFERENCE_STORE_KEY,
+  type ReconGatewaySeams,
+  type ReconPollAnswer,
+  type ReconQueueAnswer,
+  type ReconTake,
   type ReferenceSeams,
   type ReferenceSource,
   type ReferenceTake,
   referenceMimePlayable,
   removeReferenceTake,
+  resolveReconAudio,
   resolveReferenceAudio,
   saveReferenceTake,
 } from "../playerbus.ts";
+import type { ReconDocument } from "../reconpayload.ts";
 import { memoryStorage } from "../takestore.ts";
 import { HEADER_LAYOUT, writeWav16 } from "../wavwriter.ts";
 
@@ -128,6 +138,7 @@ afterEach(() => {
   vi.unstubAllEnvs();
   vi.restoreAllMocks();
   busSetReferenceSeams(null);
+  busSetReconSeams(null);
 });
 
 /** Flushes every captured rAF frame (the playhead clock advances one tick). */
@@ -493,6 +504,196 @@ describe("the bus surface parity", () => {
     assert.ok(latest);
     assert.equal(latest.takes[latest.index]?.id, take.id);
     assert.equal(latest.duration, take.source.durationSeconds);
+  });
+});
+
+// ---- the recon ladder (memory -> blob -> gateway -> the honest refuse) -------------
+
+/** One lawful recon document fixture — the descriptor lane's answer over a
+ * one-second synthetic take (the same law take the wave's battery rides).
+ * Built once at collection; the ladder passes it through to the seams. */
+const RECON_DOCUMENT: ReconDocument = (() => {
+  const mono = new Float32Array(8000);
+  for (let i = 0; i < mono.length; i++) mono[i] = 0.4 * Math.sin((2 * Math.PI * 220 * i) / 8000);
+  return reconOf(mono, 8000, { name: "ladder fixture" });
+})();
+
+/** Builds one recon take fixture (the payload rung of the ladder). */
+function reconTake(id: string, wavBlobId?: string): ReconTake {
+  return { kind: "recon", id, name: `recon ${id}`, document: RECON_DOCUMENT, wavBlobId };
+}
+
+/** The recon seam recorder — the queue/poll counters beside the answers the
+ * tests pin (the contract double of the gateway lane). */
+function reconSeams(
+  queue: ReconQueueAnswer,
+  polls: ReconPollAnswer[],
+): ReconGatewaySeams & { queued: number; polled: number } {
+  const state = { queued: 0, polled: 0 };
+  return {
+    queueRecon: async (document) => {
+      state.queued += 1;
+      assert.equal(document, RECON_DOCUMENT, "the seam sees the very document the take carries");
+      return queue;
+    },
+    pollReconJob: async () => {
+      const answer = polls[Math.min(state.polled, polls.length - 1)] ?? polls[polls.length - 1];
+      state.polled += 1;
+      return answer;
+    },
+    get queued() {
+      return state.queued;
+    },
+    get polled() {
+      return state.polled;
+    },
+  };
+}
+
+describe("the recon ladder", () => {
+  it("seats the recon take shape on the shelf grammar (the discriminant and the clock)", () => {
+    const take = reconTake("recon-shape");
+    assert.equal(isReconTake(take), true);
+    assert.equal(isReconTake(referenceTake("x")), false);
+    assert.equal(isReconTake(planTake({ prompt: "p", seed: "s" })), false);
+    assert.equal(isReferenceTake(take), false);
+    assert.equal(
+      durationOfTake(take),
+      RECON_DOCUMENT.header.durationSeconds,
+      "the document's header answers the clock",
+    );
+  });
+
+  it("climbs to the gateway rung when no stored wav rides (queue → poll → blob → decode)", async () => {
+    const take = reconTake("recon-gateway-rung");
+    const wavBlob = mintid();
+    const seams = reconSeams({ ok: true, jobId: "job-1" }, [
+      { ok: true, state: "rendering", wavPointer: null, error: null },
+      { ok: true, state: "done", wavPointer: wavBlob, error: null },
+    ]);
+    const seenFetch: string[] = [];
+    const reference: ReferenceSeams = {
+      fetchBytes: async (source) => {
+        seenFetch.push(source.blobId);
+        return { ok: true, bytes: new Uint8Array([3, 1, 4]), mime: "audio/wav" };
+      },
+      decodeAudio: async () => ({ ok: true, audio: decodedFixture(2, 8000) }),
+    };
+    const answer = await resolveReconAudio(take, reference, seams);
+    assert.equal(answer.ok, true, answer.ok ? "" : answer.message);
+    assert.equal(seams.queued, 1, "the document queued exactly once");
+    assert.equal(seams.polled, 2, "the poll waited the walk out");
+    assert.deepEqual(seenFetch, [wavBlob], "the blob rung resolved the landed wav pointer");
+  });
+
+  it("answers the stored reconstruction at the blob rung before the gateway climbs", async () => {
+    const stored = mintid();
+    const take = reconTake("recon-blob-rung", stored);
+    const seams = reconSeams({ ok: true, jobId: "never" }, []);
+    const seenFetch: string[] = [];
+    const reference: ReferenceSeams = {
+      fetchBytes: async (source) => {
+        seenFetch.push(source.blobId);
+        return { ok: true, bytes: new Uint8Array([1, 2]), mime: "audio/wav" };
+      },
+      decodeAudio: async () => ({ ok: true, audio: decodedFixture(1, 8000) }),
+    };
+    const answer = await resolveReconAudio(take, reference, seams);
+    assert.equal(answer.ok, true);
+    assert.deepEqual(seenFetch, [stored], "the blob rung answers the stored reconstruction");
+    assert.equal(seams.queued, 0, "the gateway never climbed — the lower rung answered");
+  });
+
+  it("seats the memory cache — the second climb answers at the first rung", async () => {
+    const take = reconTake("recon-memory-rung");
+    const seams = reconSeams({ ok: true, jobId: "job-2" }, [
+      { ok: true, state: "done", wavPointer: mintid(), error: null },
+    ]);
+    const reference: ReferenceSeams = {
+      fetchBytes: async () => ({ ok: true, bytes: new Uint8Array([7]), mime: "audio/wav" }),
+      decodeAudio: async () => ({ ok: true, audio: decodedFixture(1, 8000) }),
+    };
+    const first = await resolveReconAudio(take, reference, seams);
+    assert.equal(first.ok, true);
+    const second = await resolveReconAudio(take, reference, seams);
+    assert.equal(second.ok, true);
+    assert.equal(seams.queued, 1, "the second climb never left the memory cache");
+  });
+
+  it("refuses with the typed recon-unavailable when the lane is offline — never a fake", async () => {
+    const take = reconTake("recon-offline");
+    const offline = reconSeams({ ok: false, code: "recon-unavailable", message: "no gateway answers" }, []);
+    const reference: ReferenceSeams = {
+      fetchBytes: async () => ({ ok: false, code: "blob-missing", message: "no blob" }),
+      decodeAudio: async () => ({ ok: true, audio: decodedFixture() }),
+    };
+    const answer = await resolveReconAudio(take, reference, offline);
+    assert.deepEqual(answer, { ok: false, code: "recon-unavailable", message: "no gateway answers" });
+    // the failed walk answers the same typed refusal with the honest error
+    const failed = reconSeams({ ok: true, jobId: "job-3" }, [
+      { ok: true, state: "failed", wavPointer: null, error: "bad-document: the contract refused" },
+    ]);
+    const refused = await resolveReconAudio(take, reference, failed);
+    assert.equal(refused.ok, false);
+    if (!refused.ok) {
+      assert.equal(refused.code, "recon-unavailable");
+      assert.match(refused.message, /bad-document/);
+    }
+  });
+
+  it("answers the honest typed refusal on the default seams when no origin is configured", async () => {
+    vi.stubEnv("VITE_DEBONAIR_URL", "");
+    const queue = await busReconSeams().queueRecon(RECON_DOCUMENT);
+    assert.equal(queue.ok, false);
+    assert.equal(queue.ok ? "" : queue.code, "recon-unavailable");
+    const poll = await busReconSeams().pollReconJob("42");
+    assert.equal(poll.ok, false);
+    assert.equal(poll.ok ? "" : poll.code, "recon-unavailable");
+  });
+
+  it("plays a recon take through the reference transport (the singleton law holds)", async () => {
+    const audio = decodedFixture(3, 8000);
+    busSetReferenceSeams(happySeams(audio));
+    busSetReconSeams(
+      reconSeams({ ok: true, jobId: "job-4" }, [{ ok: true, state: "done", wavPointer: mintid(), error: null }]),
+    );
+    const take = reconTake("recon-play");
+    busFeature(take);
+    assert.ok(latest);
+    assert.equal(latest.takes[latest.index]?.id, take.id);
+    assert.equal(isReconTake(latest.takes[latest.index]), true);
+    assert.equal(latest.duration, RECON_DOCUMENT.header.durationSeconds);
+    busPlay(0);
+    await settle();
+    assert.ok(latest);
+    assert.equal(latest.playing, true, "the reconstruction plays through the bus");
+    assert.equal(latest.notice, "");
+    assert.equal(latest.noticeCode, "");
+    // the playhead rides the reference transport's clock (the shared lane —
+    // the fake context's clock advanced through the earlier tests, so the
+    // step rides relative to wherever it stands)
+    assert.ok(FakeAudioContext.instance);
+    FakeAudioContext.instance.currentTime += 0.75;
+    rideFrames();
+    assert.ok(latest);
+    assert.ok(latest.position >= 0.6 && latest.position <= 0.9, `the clock rides the context (got ${latest.position})`);
+    busPause();
+    assert.ok(latest);
+    assert.equal(latest.playing, false);
+  });
+
+  it("surfaces the typed refusal through the bus snapshot (the notice the bar renders)", async () => {
+    busSetReferenceSeams(happySeams(decodedFixture()));
+    busSetReconSeams(reconSeams({ ok: false, code: "recon-unavailable", message: "the recon lane is offline" }, []));
+    const take = reconTake("recon-refused");
+    busFeature(take);
+    busPlay(0);
+    await settle();
+    assert.ok(latest);
+    assert.equal(latest.playing, false);
+    assert.equal(latest.notice, "the recon lane is offline");
+    assert.equal(latest.noticeCode, "recon-unavailable");
+    assert.equal(latest.duration, RECON_DOCUMENT.header.durationSeconds, "the shelf still answers the clock");
   });
 });
 

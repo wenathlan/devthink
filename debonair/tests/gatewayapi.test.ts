@@ -51,7 +51,15 @@ import type {
   RenderRunValue,
   VitrineTrackValue,
 } from "../gatewayapi.ts";
-import { dispatch, matchpath, matchroute, routes, startJob, startRenderLaneJob } from "../gatewayapi.ts";
+import {
+  dispatch,
+  matchpath,
+  matchroute,
+  routes,
+  startJob,
+  startReconLaneJob,
+  startRenderLaneJob,
+} from "../gatewayapi.ts";
 import { INGEST_SCHEMA_VERSION, ingestPcm } from "../ingest.ts";
 import {
   getjob,
@@ -63,11 +71,13 @@ import {
   saveGenreProfile,
   updatejob,
 } from "../ingestdb.ts";
+import { reconOf } from "../ingestrecon.ts";
 import type { IngestStampRow } from "../ingestworker.ts";
 import { parseWav } from "../ingestworker.ts";
 import { serializePattern } from "../patternenums.ts";
 import type { GenreProfile } from "../patternminer.ts";
-import { renderjobseat, rendertrackseat } from "../renderjobs.ts";
+import { parseRecon, type ReconDocument } from "../reconpayload.ts";
+import { getrenderjob, renderjobseat, rendertrackseat } from "../renderjobs.ts";
 import { encodeWav, wavInfo } from "../wavwriter.ts";
 
 /** The source rate of the synthetic take (a rate the writer's band carries). */
@@ -492,7 +502,7 @@ describe("the route table and the matcher", () => {
   });
   afterAll(() => database.close());
 
-  it("carries the seventeen routes of the law in the family shape (the thirteen + the generate lane's four spellings)", () => {
+  it("carries the nineteen routes of the law in the family shape (the thirteen + the generate lane's four spellings + the recon lane's two)", () => {
     assert.deepEqual(routes, [
       { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
       { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
@@ -505,6 +515,8 @@ describe("the route table and the matcher", () => {
       { method: "GET", path: "/api/v1/profiles/:genre", handler: "getProfile" },
       { method: "POST", path: "/api/v1/render", handler: "queueRender" },
       { method: "GET", path: "/api/v1/render/jobs/:id", handler: "getRenderJob" },
+      { method: "POST", path: "/api/v1/recon", handler: "queueRecon" },
+      { method: "GET", path: "/api/v1/recon/jobs/:id", handler: "getReconJob" },
       { method: "POST", path: "/api/v1/tracks", handler: "publishTrack" },
       { method: "GET", path: "/api/v1/tracks", handler: "listTracks" },
       { method: "POST", path: "/api/v1/generate/render", handler: "queueGenerateRender" },
@@ -527,6 +539,8 @@ describe("the route table and the matcher", () => {
       ["GET", "/api/v1/profiles/techno", "getProfile"],
       ["POST", "/api/v1/render", "queueRender"],
       ["GET", "/api/v1/render/jobs/9", "getRenderJob"],
+      ["POST", "/api/v1/recon", "queueRecon"],
+      ["GET", "/api/v1/recon/jobs/9", "getReconJob"],
       ["POST", "/api/v1/tracks", "publishTrack"],
       ["GET", "/api/v1/tracks", "listTracks"],
       ["POST", "/api/v1/generate/render", "queueGenerateRender"],
@@ -1104,6 +1118,161 @@ describe("the render and the publish lane (the vitrine answers)", () => {
     );
     assert.equal(answer.status, 400);
     assert.equal(answer.error.code, "bad-request");
+  });
+});
+
+describe("the recon lane (the reconstruction queue the ladder posts)", () => {
+  const OWNER_E = mintid();
+  let database: Database;
+  let env: GatewayEnv;
+  let store: MemoryBlobStore;
+  let jobId = "";
+  let run: { wavPointer: string; bytes: number; durationSeconds: number; seed: string } | null = null;
+
+  /** One lawful recon document fixture — the descriptor lane's own answer
+   * over a one-second synthetic take (sine over click, at the cd canon). */
+  function reconFixture(): ReconDocument {
+    const mono = new Float32Array(44100);
+    for (let i = 0; i < mono.length; i++) {
+      const t = i / 44100;
+      mono[i] = Math.max(-1, Math.min(1, 0.35 * Math.sin(2 * Math.PI * 440 * t) + (t % 0.5 < 0.015 ? 0.5 : 0)));
+    }
+    return reconOf(mono, 44100, { name: "recon lane fixture" });
+  }
+
+  beforeAll(async () => {
+    database = await newdatabase();
+    ({ env, store } = gatewayenv(database));
+    // the loop closes: the inline document queues, the walk reconstructs,
+    // the wav lands in the blob store
+    const queued = valueof<{ jobId: string }>(
+      await dispatch(env, request("POST", "/api/v1/recon", {}, { document: reconFixture(), ownerId: OWNER_E })),
+    );
+    jobId = queued.jobId;
+    const landed = await startReconLaneJob(env, jobId);
+    const take = valueof(landed);
+    run = { wavPointer: take.wavPointer, bytes: take.bytes, durationSeconds: take.durationSeconds, seed: take.seed };
+  });
+  afterAll(() => database.close());
+
+  it("queues the inline document under the contract gate and walks it to the wav", async () => {
+    assert.match(jobId, /^[1-9]\d{0,19}$/);
+    assert.ok(run);
+    const row = getrenderjob(jobId, database);
+    assert.ok(row, "the queued row lands on the shared render ledger");
+    assert.equal(row.owner_id, OWNER_E);
+    assert.equal(row.state, "done");
+    assert.equal(row.phase, "store", "the recon vocabulary's last phase");
+    assert.equal(row.fraction, 1);
+    assert.equal(row.wav_pointer, run?.wavPointer);
+    assert.equal(row.track_pointer, null, "a reconstruction is not a new take");
+    const parsed = parseRecon(row.plan_json);
+    assert.ok(parsed.ok, "the queued payload is the canonical recon document");
+    if (parsed.ok) assert.equal(parsed.doc.header.schema, "debonair.recon/3");
+  });
+
+  it("answers the poll route with the walk and streams the wav from the blob route", async () => {
+    const polled = valueof<RenderJobValue>(await dispatch(env, request("GET", `/api/v1/recon/jobs/${jobId}`)));
+    assert.equal(polled.state, "done");
+    assert.equal(polled.phase, "store");
+    assert.equal(polled.fraction, 1);
+    assert.equal(polled.wavPointer, run?.wavPointer);
+    assert.equal(polled.error, null);
+    assert.ok(polled.finishedAt);
+    const missing = errof(await dispatch(env, request("GET", "/api/v1/recon/jobs/999")));
+    assert.equal(missing.status, 404);
+    assert.equal(missing.error.code, "not-found");
+    // the download lane: the blob route answers the reconstruction's wav
+    const stream = valueof<BlobStreamValue>(await dispatch(env, request("GET", `/api/v1/blob/${run?.wavPointer}`)));
+    assert.equal(stream.mime, "audio/wav");
+    assert.equal(stream.bytes.length, run?.bytes);
+    const info = wavInfo(stream.bytes);
+    assert.equal(info.sampleRate, 44100, "the reconstruction rides the cd canon");
+    assert.equal(info.channels, 1);
+    assert.ok(Math.abs(info.durationSeconds - (run?.durationSeconds ?? 0)) < 0.01);
+  });
+
+  it("answers the same wav for a second job over the same document (the recon law)", async () => {
+    const queued = valueof<{ jobId: string }>(
+      await dispatch(env, request("POST", "/api/v1/recon", {}, { document: reconFixture() })),
+    );
+    assert.match(queued.jobId, /^[1-9]\d{0,19}$/);
+    const again = valueof(await startReconLaneJob(env, queued.jobId));
+    assert.equal(again.wavPointer !== run?.wavPointer, true, "a fresh job mints a fresh blob");
+    assert.equal(again.seed, run?.seed, "the same document answers the same seed");
+    const first = await store.get(run?.wavPointer ?? "");
+    const second = await store.get(again.wavPointer);
+    assert.ok(first.ok && second.ok && first.data && second.data);
+    assert.deepEqual(
+      Array.from(second.data as Uint8Array),
+      Array.from(first.data as Uint8Array),
+      "the same document always answers the same wav bytes — the reconstruction is deterministic",
+    );
+    // the owner lane is optional: a document without an owner pointer seats the empty owner
+    const ownerless = getrenderjob(queued.jobId, database);
+    assert.equal(ownerless?.owner_id, "", "the reconstruction answers to the take it rebuilds, not to a visitor");
+  });
+
+  it("resolves the documentId lane through the stored reference (the blob rung)", async () => {
+    // one stamped shelf row whose stored mix blob holds a real wav
+    const mono = new Float32Array(8000);
+    for (let i = 0; i < mono.length; i++) mono[i] = 0.4 * Math.sin((2 * Math.PI * 440 * i) / 8000);
+    const wav = encodeWav([mono], { sampleRate: 8000, bitDepth: 16 });
+    const put = await store.put(wav, "audio/wav");
+    assert.ok(put.ok);
+    if (!put.ok) return;
+    const documentId = "recon-stored-reference";
+    await env.db.puttingestrow({
+      ...stamprow(documentId, OWNER_E, "private"),
+      mixPointer: put.pointer.id,
+    });
+    const queued = valueof<{ jobId: string }>(
+      await dispatch(env, request("POST", "/api/v1/recon", {}, { documentId })),
+    );
+    const walked = valueof(await startReconLaneJob(env, queued.jobId));
+    assert.ok(walked.bytes > 44, "the resolved document reconstructed real frames");
+    const row = getrenderjob(queued.jobId, database);
+    assert.ok(row);
+    assert.equal(row.owner_id, OWNER_E, "the stored lane seats the shelf row's own owner");
+    const parsed = parseRecon(row.plan_json);
+    assert.ok(parsed.ok, "the resolved payload is a lawful recon document");
+    if (parsed.ok) {
+      assert.equal(parsed.doc.header.name, `vis ${documentId}`, "the document carries the reference's name");
+      assert.equal(parsed.doc.header.sampleRate, 44100, "the resolution walked the canon resample");
+    }
+  });
+
+  it("refuses the honest lanes: no body, both lanes, a broken document, a missing reference", async () => {
+    const nobody = errof(await dispatch(env, request("POST", "/api/v1/recon")));
+    assert.equal(nobody.status, 400);
+    assert.equal(nobody.error.code, "bad-request");
+    const both = errof(
+      await dispatch(env, request("POST", "/api/v1/recon", {}, { document: reconFixture(), documentId: "x" })),
+    );
+    assert.equal(both.status, 400);
+    assert.equal(both.error.code, "bad-request");
+    const broken = errof(
+      await dispatch(env, request("POST", "/api/v1/recon", {}, { document: { schema: "debonair.recon/9" } })),
+    );
+    assert.equal(broken.status, 400);
+    assert.equal(broken.error.code, "bad-request");
+    assert.match(broken.error.message, /recon contract/);
+    const badOwner = errof(
+      await dispatch(env, request("POST", "/api/v1/recon", {}, { document: reconFixture(), ownerId: "nope" })),
+    );
+    assert.equal(badOwner.status, 400);
+    assert.equal(badOwner.error.code, "bad-owner");
+    const missingReference = errof(
+      await dispatch(env, request("POST", "/api/v1/recon", {}, { documentId: "no-such-document" })),
+    );
+    assert.equal(missingReference.status, 404);
+    assert.equal(missingReference.error.code, "not-found");
+  });
+
+  it("refuses a second walk of the landed job (the one-shot law)", async () => {
+    const answer = errof(await startReconLaneJob(env, jobId));
+    assert.equal(answer.status, 409);
+    assert.equal(answer.error.code, "conflict");
   });
 });
 
