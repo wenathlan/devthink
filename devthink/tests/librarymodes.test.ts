@@ -464,8 +464,23 @@ describe("the library modes of 1.1.81", () => {
     /* the forge rides outside the application container: the image builds from the application tree alone */
     if (!existsSync(join(repoRoot, ".github/workflows/verify.yml"))) return;
     const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8");
-    const bunminimum = (packagejson.engines.bun ?? "").match(/>=([\d.]+)/)?.[1];
-    expect(verifyworkflow).toContain(`bun-version: ${bunminimum}`);
+    /* the dependency union law rides the engine floors on the caret forms
+     * beside the bounded >= shapes, so the smoke baseline reads the floor of
+     * either declaration (the verify lane may smoke a newer patch of the
+     * floor — the satisfaction, never the equality) */
+    const bundeclared = String(packagejson.engines.bun ?? "");
+    const bunfloor =
+      bundeclared.match(/>=([\d.]+)/)?.[1] ?? bundeclared.match(/^[~^]?([\d.]+)/)?.[1] ?? "";
+    const verifybun = verifyworkflow.match(/bun-version: (\d+\.\d+\.\d+)/)?.[1] ?? "";
+    const samefloor = [bunfloor, verifybun].every((value) => /^\d+\.\d+\.\d+$/.test(value));
+    const floorparts = bunfloor.split(".").map(Number);
+    const smokeparts = verifybun.split(".").map(Number);
+    const satisfied =
+      samefloor &&
+      floorparts[0] === smokeparts[0] &&
+      (floorparts[1] < smokeparts[1] ||
+        (floorparts[1] === smokeparts[1] && floorparts[2] <= smokeparts[2]));
+    if (!satisfied) throw new Error(`the verify bun smoke (${verifybun}) must satisfy the declared floor (${bunfloor})`);
     expect(verifyworkflow).toContain("denoland/setup-deno");
     const denojson = JSON.parse(await readFile("deno.json", "utf8")) as {
       imports: Record<string, string>;

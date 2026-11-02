@@ -12029,9 +12029,12 @@ span[data-tile] {
     radial-gradient(140% 100% at 50% 0%, color-mix(in oklab, var(--color-veil) 10%, transparent), transparent 58%),
     var(--noise);
   background-blend-mode: normal, soft-light;
+  /* the contained shadow law: the drop rides the house token — the
+   * hand-built drop (0 16px 40px) that could leak past the face retired
+   * with the design login law, the token owns the elevation alone */
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--color-veil) 24%, transparent),
-    0 16px 40px rgb(0 0 0 / 22%);
+    var(--win-shad-window);
   -webkit-backdrop-filter: blur(30px) saturate(1.35);
   backdrop-filter: blur(30px) saturate(1.35);
   animation: dtwloginpane 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
