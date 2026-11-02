@@ -391,11 +391,18 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     /* the site face lane (the container doctrine): when a static root
      * answers, every non-api GET (and HEAD) resolves against it — real
      * files with real content types, the spa entry for the extensionless
-     * routes, and the sealed database faces refuse outright. The lane is
-     * public the way the platform hosts serve the same dist tree (the
-     * token gate owns the storage truth, never the static face), and the
-     * api surface keeps precedence: a static root never shadows /api/*. */
+     * routes, and the sealed database faces refuse outright. The internal
+     * root owns the surface first when the deployable unit pins it
+     * (VAULT_INTERNAL_ROOT — the wave D lane with its own faun law and the
+     * registry mimes), and the token gate owns the storage truth, never
+     * the static face. The api surface keeps precedence either way: a
+     * static root never shadows /api/*. */
     if ((method === "GET" || method === "HEAD") && !pathname.startsWith("/api/")) {
+      const internalPinned =
+        typeof process.env.VAULT_INTERNAL_ROOT === "string" && process.env.VAULT_INTERNAL_ROOT.length > 0;
+      if (internalPinned && serveInternal(res, method, safeDecode(pathname))) {
+        return;
+      }
       if (serveStatic(res, pathname, method === "HEAD")) {
         return;
       }

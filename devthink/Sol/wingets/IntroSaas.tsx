@@ -46,19 +46,21 @@ import { SaasAdvisor, SaasCadria, SaasDebonair, SaasExplorer, SaasFooter } from 
 import { SaasCreators, SaasHero, SaasStudioFlow, SaasWorkspace } from "./IntroSaassections.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
-/** The reference voice: the Urbanist stylesheet, injected once per
- * document at import time (the reference @import). Where the frozen CSP
- * of a target keeps the remote face from loading (the extension pages),
- * the tier stacks of sol.css fall back to the house Inter Variable voice
- * — the face never blanks. */
-const SAAS_FONT_CSS = "@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800&display=swap');";
+/** The SaaS voice rides the house ladder: the self-hosted law retired the
+ * remote Urbanist stylesheet (the sweep forbids the hardcoded origin), and
+ * the intro now speaks with the local Inter Variable face sol.css ships
+ * beside the entry — the same woff2 every other surface reads, zero
+ * network font fetches, the face never blanks under a frozen CSP. */
+const SAAS_FONT_CSS = "";
 
 let saasCssReady = false;
 
-/** Injects the Urbanist stylesheet exactly once per document, at import time. */
+/** Injects the SaaS style seat exactly once per document, at import time
+ * (empty today — the seat stays for the faces a future pass may pin). */
 function ensureSaasCss(): void {
   if (saasCssReady || typeof document === "undefined") return;
   saasCssReady = true;
+  if (!SAAS_FONT_CSS) return;
   const tag = document.createElement("style");
   tag.setAttribute("data-dt-saas", "");
   tag.textContent = SAAS_FONT_CSS;

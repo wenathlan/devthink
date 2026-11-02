@@ -288,6 +288,19 @@
   --win-shadow-window: var(--shadow-window);
   --win-shadow-flyout: var(--shadow-flyout);
 
+  /* the win shell doctrine tokens (the token union law — the master's
+     numbers): taskbar 48px over the saturate(3) blur(20px) acrylic bed,
+     tint rgb(32 32 32 / 75%) dark / rgb(243 243 243 / 85%) light; the side
+     panel curve cubic-bezier(0.62,0,0.32,1), the start curve
+     cubic-bezier(0.79,0.14,0.15,0.86), the window curve
+     cubic-bezier(0.85,0.14,0.14,0.85) under the family union name */
+  --win-taskbar-h: 48px;
+  --win-taskbar-tint: rgb(32 32 32 / 75%);
+  --win-taskbar-filter: saturate(3) blur(20px);
+  --win-ease-panel: cubic-bezier(0.62, 0, 0.32, 1);
+  --win-ease-start: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  --win-ease-window: var(--ease-window);
+
   /* the argan identity — the jade story survives only in the drawn brand
      mark; the accent poles answer the white sun (the one Sol) */
   --arg-jade: var(--color-signal);
@@ -358,6 +371,9 @@
   --win-wash: rgb(0 0 0 / 4%);
   --win-wash-strong: rgb(0 0 0 / 8%);
   --win-bar: rgb(243 243 243 / 85%);
+  /* the taskbar tint flips with the face (the token union law: the master's
+     light bed) */
+  --win-taskbar-tint: rgb(243 243 243 / 85%);
   --sol-btn-tone: inset 0 1.2px 0 0 rgb(255 255 255 / 55%), inset 0 8px 14px -6px rgb(255 255 255 / 25%);
   --sol-btn-tone-hover: inset 0 1.2px 0 0 rgb(255 255 255 / 75%), inset 0 8px 14px -6px rgb(255 255 255 / 35%);
   --sol-ring: var(--color-hairline);

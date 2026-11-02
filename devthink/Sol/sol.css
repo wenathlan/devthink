@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* The variable fonts the trylle ruler rides: the woff2 faces captured from
+   the reference (cdn.trylle.com marketing assets) live in the theme's
+   fonts folder beside the sheet — the root-level woff2 faces stay ignored
+   as build residue, the Sol/fonts sources ship with the tree. font-display
+   swap answers the system ladder (Segoe UI Variable → Selawik) while the
+   bytes arrive, and the weight range 100 900 serves the whole voice
+   without synthetic bold. */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/inter-latin-wght-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Geist Mono Variable";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/geist-mono-latin-wght-normal.woff2") format("woff2-variations");
+}
+
 /* DevThink Sol — the supreme OS theme, rebuilt from zero (the 8-d
    foundation pass). Tailwind-first: the @theme block below is the one source
    of truth and Tailwind 4 generates the utilities the components compose
@@ -277,7 +299,16 @@
   --mica-local: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat;
   --acrylic: rgb(32 34 38 / 78%);
   --acrylic-strong: rgb(43 45 50 / 88%);
-  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23w)' opacity='0.06'/%3E%3C/svg%3E");
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23w)' opacity='0.04'/%3E%3C/svg%3E");
+  /* the mica of the box: the card bed a floating card paints over the wall
+     (the acrylicmica card pair — #232734db dark, #f7f9fcdb light on the flip
+     below; the mica-card rides the same material family as the --mica wall,
+     one step smaller) */
+  --mica-card: #232734db;
+  /* the acrylic box shadow: the elevation a card floats on (the fluentacrylic
+     card shadow — the 25.6/57.6 drop beside the 16.4 halo, the same alpha
+     pair the flyout ladder carries one step larger) */
+  --shadow-acrylic: 0 25.6px 57.6px rgb(0 0 0 / 14%), 0 0 16.4px rgb(0 0 0 / 12%);
 
   /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · menu 60 ·
      overlay 100 · dock 150 · modal 200 · toast 300 · tooltip 400 */
@@ -300,6 +331,17 @@
   --shell-gutter: 12px;
   --shell-handle: 4px;
   --shell-radius: 8px;
+
+  /* the spacing scale: the Seelen ladder the family composes (Seelen-UI
+     spacing.ts — the named seats 2xs→2xl; the 4px base the pin rail, the
+     gutters and the respiro ride, the same numbers the master pins) */
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-s: 12px;
+  --spacing-m: 16px;
+  --spacing-l: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
 
   color: var(--color-ink);
   background: var(--color-canvas);
@@ -474,6 +516,10 @@
   --win-signal: var(--color-signal);
   --win-signal-wash: rgb(255 255 255 / 10%);
   --win-ease: var(--ease-window);
+  /* the family union name of the same window curve (the 0.85,0.14,0.14,0.85
+     the satellites carry as --win-ease-window): the alias keeps the eleven
+     sheets speaking one token name for the same motion */
+  --win-ease-window: var(--ease-window);
   --os-acrylic: var(--acrylic-strong);
 
   /* ---- the win shell doctrine layer: the exact Windows 11 shell numbers
@@ -578,6 +624,9 @@
   --shadow-label: 0 1px 2px rgb(255 255 255 / 85%), 0 0 10px rgb(255 255 255 / 70%);
   --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
   --mica-local: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat;
+  /* the mica of the box flips with the face (the acrylicmica card pair —
+     the light #f7f9fcdb beside the dark #232734db above) */
+  --mica-card: #f7f9fcdb;
   --acrylic: rgb(243 243 244 / 82%);
   --acrylic-strong: rgb(248 248 249 / 92%);
   --win-hover: rgb(0 0 0 / 6%);
@@ -22170,8 +22219,13 @@ button.dtc-recents__row {
 
 :root {
   /* the doctrine boot spec: the fullscreen #010001 canvas (win11React
-     .bootscreen) — the one fixed value the boot face carries, as a token */
+     .bootscreen) — the one fixed value the boot face carries, as a token.
+     The boot ink carries the same #010001 under the family union name
+     (the win11React back.scss near-black the bootscreen paints): the
+     documented seat of the boot ink, the .boot-screen face answers
+     --win-boot above it, the two never drift apart */
   --win-boot: #010001;
+  --boot-ink: #010001;
 }
 
 .boot-screen {

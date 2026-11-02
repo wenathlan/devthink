@@ -400,6 +400,17 @@
   --win-page-wash: var(--wash-soft);
   --win-scroll: var(--scrollbar-thumb);
   --win-titlebar-h: 30px;
+  /* the win shell doctrine tokens (the token union law — the master's
+     numbers): taskbar 48px over the saturate(3) blur(20px) acrylic bed,
+     tint rgb(32 32 32 / 75%) dark / rgb(243 243 243 / 85%) light; the side
+     panel curve cubic-bezier(0.62,0,0.32,1) beside the start curve
+     cubic-bezier(0.79,0.14,0.15,0.86) — the window curve already rides
+     --win-ease-window above */
+  --win-taskbar-h: 48px;
+  --win-taskbar-tint: rgb(32 32 32 / 75%);
+  --win-taskbar-filter: saturate(3) blur(20px);
+  --win-ease-panel: cubic-bezier(0.62, 0, 0.32, 1);
+  --win-ease-start: cubic-bezier(0.79, 0.14, 0.15, 0.86);
 }
 
 /* the light theme: one flip on the same ladder — the devthink daylight
@@ -438,6 +449,9 @@
   --shadow-lt: 0 1px 1px rgb(0 0 0 / 12%);
   --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
   --mica-local: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat;
+  /* the taskbar tint flips with the face (the token union law: the master's
+     light bed) */
+  --win-taskbar-tint: rgb(243 243 243 / 85%);
   --acrylic: rgb(243 243 244 / 82%);
   --acrylic-strong: rgb(248 248 249 / 92%);
   --scrollbar-thumb: rgb(0 0 0 / 35%);

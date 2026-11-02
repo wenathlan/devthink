@@ -224,8 +224,10 @@
                 inset 0 1.2px 0 0 rgb(255 255 255 / 45%), inset 0 8px 14px -6px rgb(255 255 255 / 22%);
         --sol-btn-inset-hover:
                 inset 0 1.2px 0 0 rgb(255 255 255 / 55%), inset 0 8px 14px -6px rgb(255 255 255 / 30%);
-        /* chrome material: the canvas, the feTurbulence grain, the acrylic floors */
-        --mica: #0a0a0b;
+        /* chrome material: the canvas, the feTurbulence grain, the acrylic floors
+           (the token union law: the mica wall rides the master's radial bed,
+           the #202020/#1a1f35 gradient the doctrine always named) */
+        --mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
         --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
         --bar: rgb(23 23 23 / 78%);
         --panel: rgb(30 30 30 / 85%);
@@ -320,6 +322,19 @@
         --win-shadow-window: var(--shadow-window);
         --win-shadow-flyout: var(--shadow-flyout);
         --win-ease-window: var(--ease-window);
+        /* the win shell doctrine tokens (the token union law — the master's
+           numbers): taskbar 48px over the saturate(3) blur(20px) acrylic bed,
+           tint rgb(32 32 32 / 75%) dark / rgb(243 243 243 / 85%) light; the
+           side panel curve cubic-bezier(0.62,0,0.32,1) beside the start curve
+           cubic-bezier(0.79,0.14,0.15,0.86) — the window curve already rides
+           --win-ease-window above; the close red rides the --color-close seat
+           the ladder already carries */
+        --win-taskbar-h: 48px;
+        --win-taskbar-tint: rgb(32 32 32 / 75%);
+        --win-taskbar-filter: saturate(3) blur(20px);
+        --win-ease-panel: cubic-bezier(0.62, 0, 0.32, 1);
+        --win-ease-start: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+        --win-close: var(--color-close);
         font-size: 16px;
         color-scheme: dark;
 }
@@ -351,6 +366,11 @@ html:not(.dark) {
         --color-signal-ink: #fefefe;
         --win-accent: #0067c0;
         --win-accent-ink: #ffffff;
+        /* the windows accent seat flips with the face (the token union law:
+           the master's light block — the --color-win ladder the family law
+           reads, beside the --win-accent chrome seat above) */
+        --color-win: #0067c0;
+        --color-win-ink: #fefefe;
         --ok: #15803d;
         --err: #be123c;
         --warn: #9a6b00;
@@ -363,7 +383,10 @@ html:not(.dark) {
         --sol-hi: rgb(255 255 255 / 60%);
         --shadow-window: 0 24px 48px rgb(0 0 0 / 14%), 0 0 6px rgb(0 0 0 / 8%);
         --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 6%);
-        --mica: #f4f4f5;
+        --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+        /* the taskbar tint flips with the face (the token union law: the
+           master's light bed) */
+        --win-taskbar-tint: rgb(243 243 243 / 85%);
         --bar: rgb(244 244 245 / 82%);
         --panel: rgb(252 252 252 / 88%);
         --win-tip: rgb(56 56 56 / 92%);
