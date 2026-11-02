@@ -5,7 +5,7 @@
 | Version | `package.json` is canonical; manifest, protocol, Maven descriptor, NuGet descriptor, README, popup label, version-bearing gate text and isolated release notes are synchronized before the immutable tag is created. | Completed for immutable tag `v1.1.30`. |
 | Permissions | The MV3 manifest excludes broad host access and high-risk capability lists. | Required in validation. |
 | Consent | Tests reject unapproved plans, cross-origin navigation and expired sessions. | Required in validation. |
-| Artifact | Build produces `extension/dist`, `dist/devthink2.1.7.zip`, `dist/index.js` and `dist/index.d.ts` without tracked archives. | Completed locally and in the release runner. |
+| Artifact | Build produces `build/extension`, `build/devthink2.1.7.zip`, `build/index.js` and `build/index.d.ts` without tracked archives. | Completed locally and in the release runner. |
 | License | GPL-3.0-only remains the root license; no third-party code was imported. | Manual review required. |
 | Dependencies | Direct dependencies, lockfile and production audit are checked in the normal verification/security chains. | Completed under the declared Node, npm, pnpm and Bun baselines in verify and security. |
 | Publication | A single workflow validates, publishes GitHub Packages npm/Maven/NuGet, npmjs and GHCR, then attaches all truthful output files to the GitHub Release. | Completed by `v1.1.30`. |
