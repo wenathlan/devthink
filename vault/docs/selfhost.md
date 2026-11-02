@@ -74,11 +74,14 @@ instead of the quiet 503s). The environment the container answers:
 
 | Variable | Default | What it owns |
 | --- | --- | --- |
-| `VAULT_TOKEN` | — (required) | the bearer every `/api/v1/*` data route demands (`Authorization: Bearer …` or `x-vault-token`) |
+| `VAULT_TOKEN` | — (required) | the total admin bearer every `/api/v1/*` data route accepts (`Authorization: Bearer …` or `x-vault-token`) |
 | `VAULT_PORT` / `VAULT_HOST` | `3210` / `0.0.0.0` | the listen surface of the engine |
 | `VAULT_STORAGE_URL` | `file:/app/data/vault-storage.db` | the storage truth (sqlite, WAL) |
 | `VAULT_UISTORE_DB` | `/app/data/uistore.db` | the interface copy store |
 | `VAULT_STATIC_DIR` | `/app/dist` | the site face root — unset it when a platform gateway owns the site lane |
+| `VAULT_SESSION_SECRET` | derived from `VAULT_TOKEN` | the HMAC key that signs the `vs_` session bearers — pin your own to decouple the account door from the operator token (rotating it retires every standing session) |
+| `VAULT_SESSION_TTL` | `604800` (one week) | the session lifetime in seconds |
+| `VAULT_AUTH_RATE_MAX` | `30` | the signup/signin ceiling per peer per minute (429 `VAULT_RATE` past it) |
 
 The runtime state lives under `/app/data` (mount it as a volume — the
 engine creates the stores on first boot) and never inside the served tree.
@@ -97,14 +100,31 @@ The routes the engine answers (the catalog lives in `api.ts`):
 | --- | --- |
 | `GET /api/health` | the open health probe (no bearer) |
 | `GET /api/v1/ui/copy` · `GET /api/v1/ui/copy/:key` | the interface copy (open — the words carry no secret) |
-| `POST /api/v1/storage/projects` | create the owner scope (quota floor 900MB) |
+| `POST /api/v1/auth/signup` | the public account door — `{ email, password }`, 201 with the account id, the password only as its scrypt digest (rate limited per peer) |
+| `POST /api/v1/auth/signin` | the public password door — 200 with the signed `vs_` session bearer (the answer is the token alone; nothing saves in a browser) |
+| `POST` · `GET /api/v1/storage/projects` | create the owner scope (quota floor 900MB) / list the scopes paginated (`?limit=&offset=` — a session sees its own only) |
+| `POST` · `GET /api/v1/storage/projects/:id/keys` · `DELETE /api/v1/storage/projects/:id/keys/:keyid` | mint one `vk_` key (the secret answers once), list labels + last-used, revoke |
 | `POST /api/v1/storage/objects` | the deposit — raw body bytes, `x-project-id` / `x-object-path` / `x-object-mime` headers |
 | `GET /api/v1/storage/objects?project=` | the live rows of one project |
 | `GET` · `DELETE /api/v1/storage/objects/:id` | the verified bytes back / the soft delete |
 | `GET` · `POST /api/v1/storage/quota?project=` | the usage and the user-defined limit |
 | `GET /api/v1/storage/usage?project=` | the usage census |
-| `POST /api/v1/storage/sweep` | the orphan sweep |
+| `POST /api/v1/storage/sweep` | the orphan sweep (the operator token alone — it walks the whole catalog) |
 
-Every data route answers `401 VAULT_AUTH` without an honest bearer and
-`503 VAULT_AUTH` while `VAULT_TOKEN` never landed in the environment (fail
-closed, never fail open).
+### The three doors of the data gate
+
+Every data route accepts one of three bearers, each one scoped (the
+`Authorization: Bearer` or `x-vault-token` lanes both work):
+
+1. **The operator token** (`VAULT_TOKEN`) — total admin, every project and
+   every lane (the retrocompatible door: standing callers keep riding).
+2. **A project key** (`vk_…`) — authorizes its own project only; the gate
+   stamps `last_used_at` on every ride, and a revoked key answers 401.
+3. **A session token** (`vs_…`, from the signin) — authorizes the projects
+   of the signed-in account (the ones it minted).
+
+A route that names a project outside the caller's scope answers
+`403 VAULT_FORBIDDEN`; the sweep answers the operator token alone. Every
+data route answers `401 VAULT_AUTH` without an honest bearer and `503
+VAULT_AUTH` while no door is configured at all (fail closed, never fail
+open).

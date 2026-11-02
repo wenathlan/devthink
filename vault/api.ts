@@ -16,14 +16,26 @@
 // inside the root).
 //
 // The faun lesson owns the door: the storage truth is the network database
-// of the family, and no request reaches it without the bearer the operator
-// pinned (VAULT_TOKEN). The health probe stays open so the platform can
-// watch the service; every data route — the deposits, the listings, the
-// verified reads, the removals, the quotas, the usage and the sweep —
-// answers 401 without an honest bearer and 503 while the token never
-// landed in the environment (fail closed, never fail open).
+// of the family, and no request reaches it without an honest bearer. The
+// health probe stays open so the platform can watch the service; every
+// data route — the deposits, the listings, the verified reads, the
+// removals, the quotas, the usage and the sweep — refuses without one and
+// stays sealed (503, fail closed) while no door is configured at all.
 //
-// @section auth — the token gate (the faun lesson)
+// The accounts wave widens the door honestly: the operator bearer
+// (VAULT_TOKEN) stays the total admin — every standing caller keeps
+// riding — while two more bearers answer beside it, each scoped: the vk_
+// project key authorizes its own project only (the gate stamps its
+// last-used), and the vs_ session token authorizes the projects of its
+// account. A route that names a project (or serves an object of one)
+// answers 403 VAULT_FORBIDDEN when the caller's scope does not hold it.
+// The account doors themselves — the signup and the signin — stay public:
+// no operator token, only the per-peer rate counter and the fail-closed
+// session secret (VAULT_SESSION_SECRET, or the derivation of VAULT_TOKEN).
+// The signin answer is the signed bearer alone — nothing ever saves in a
+// browser, the client owns where the token lives.
+//
+// @section auth — the token gate and the three doors (the faun lesson)
 // @section routes — the route catalog
 // @section server — the node:http server and its boot
 // @section handlers — the storage surface
@@ -36,6 +48,22 @@ import { createServer } from "node:http";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
+import {
+  authRateVerdict,
+  createAccount,
+  createProjectKey,
+  issueSession,
+  KEY_PREFIX,
+  listProjectKeys,
+  projectOwnedBy,
+  projectOwner,
+  resolveProjectKey,
+  revokeProjectKey,
+  SESSION_PREFIX,
+  sessionSecretConfigured,
+  verifyCredentials,
+  verifySession,
+} from "./accounts.ts";
 import { storage, storageDriverKind } from "./drizzle.ts";
 import {
   createProject,
@@ -43,6 +71,8 @@ import {
   getObject,
   type LedgerObject,
   listObjects,
+  listProjects,
+  objectProjectOf,
   putObject,
   storageCensus,
   sweepOrphans,
@@ -121,12 +151,130 @@ export function tokenVerdict(req: IncomingMessage): "open" | "refused" | "sealed
   return digest.length === vaultTokenDigest.length && timingSafeEqual(digest, vaultTokenDigest) ? "open" : "refused";
 }
 
+/** the token verdicts the request auth resolves from (the faun gate answer). */
+type TokenVerdict = "open" | "refused" | "sealed";
+
+/**
+ * The request auth of the data gate — the three doors in order, each one
+ * scoped: the operator bearer stays total (admin), the vk_ key authorizes
+ * its own project only, the vs_ session authorizes the projects of its
+ * account. The "none" answer refuses (401); the "sealed" answer keeps the
+ * fail-closed law — no door configured at all seals the whole surface.
+ */
+type RequestAuth =
+  | { kind: "admin" }
+  | { kind: "key"; keyId: string; projectId: string }
+  | { kind: "session"; accountId: string }
+  | { kind: "none" }
+  | { kind: "sealed" };
+
+/**
+ * Resolves the request auth — the token verdict rides in (the faun gate
+ * answers exactly once per request), then the two scoped doors read the
+ * presented bearer: a vk_ secret resolves through its sha-256 digest (the
+ * gate stamps last-used on the ride), a vs_ bearer verifies its HMAC and
+ * its clock. The sealed verdict only stands when neither the operator
+ * token nor the session secret is configured at all.
+ *
+ * @param req the incoming request.
+ * @param verdict the token verdict of the same request.
+ * @returns the resolved auth the route dispatch enforces.
+ */
+function requestAuth(req: IncomingMessage, verdict: TokenVerdict): RequestAuth {
+  if (verdict === "open") {
+    return { kind: "admin" };
+  }
+  const presented = presentedToken(req);
+  if (presented.startsWith(KEY_PREFIX)) {
+    const key = resolveProjectKey(presented);
+    if (key !== undefined) {
+      return { kind: "key", keyId: key.keyId, projectId: key.projectId };
+    }
+  }
+  if (presented.startsWith(SESSION_PREFIX)) {
+    const session = verifySession(presented);
+    if (session !== undefined) {
+      return { kind: "session", accountId: session.accountId };
+    }
+  }
+  return verdict === "sealed" && !sessionSecretConfigured() ? { kind: "sealed" } : { kind: "none" };
+}
+
+/**
+ * Answers whether the request auth may touch one project — the
+ * authorization matrix of the data lanes: the admin rides total, the key
+ * its own scope, the session the scopes of its account.
+ *
+ * @param auth the resolved request auth.
+ * @param projectId the project the route names.
+ * @returns true when the caller's scope holds the project.
+ */
+function authorizeProject(auth: RequestAuth, projectId: string): boolean {
+  if (auth.kind === "admin") {
+    return true;
+  }
+  if (auth.kind === "key") {
+    return auth.projectId === projectId;
+  }
+  if (auth.kind === "session") {
+    return projectOwnedBy(auth.accountId, projectId);
+  }
+  return false;
+}
+
+/**
+ * Answers whether the request auth may run the key lane of one project —
+ * the mint, the list and the revoke answer the admin and the owning
+ * session only (a project key never mints keys).
+ *
+ * @param auth the resolved request auth.
+ * @param projectId the project the key lane names.
+ * @returns true when the caller may manage the keys.
+ */
+function authorizeKeyLane(auth: RequestAuth, projectId: string): boolean {
+  if (auth.kind === "admin") {
+    return true;
+  }
+  return auth.kind === "session" && projectOwnedBy(auth.accountId, projectId);
+}
+
+/**
+ * Answers the standardized forbidden refusal of a foreign project — the
+ * honest why per lane (the key's scope, the session's ownership).
+ *
+ * @param res the response to answer.
+ * @param auth the resolved request auth.
+ * @param projectId the project the caller may not touch.
+ */
+function sendProjectForbidden(res: ServerResponse, auth: RequestAuth, projectId: string): void {
+  const why =
+    auth.kind === "key"
+      ? `the project key authorizes its own project only — "${projectId}" is out of its scope`
+      : auth.kind === "session"
+        ? `the signed-in account does not own the project "${projectId}"`
+        : `the caller may not touch the project "${projectId}"`;
+  sendError(res, 403, "VAULT_FORBIDDEN", why);
+}
+
+/**
+ * The peer address the public-door counter keys on — the socket answer,
+ * "unknown" when the platform hides it (the counter never crashes a door).
+ *
+ * @param req the incoming request.
+ * @returns the peer key of the rate counter.
+ */
+function peerOf(req: IncomingMessage): string {
+  return req.socket.remoteAddress ?? "unknown";
+}
+
 /** @section routes */
 
 /** the route catalog of the vault http surface (health kept verbatim from the declaration it grew from). */
 export const routes = {
   health: "/api/health",
   uicopy: "/api/v1/ui/copy",
+  signup: "/api/v1/auth/signup",
+  signin: "/api/v1/auth/signin",
   projects: "/api/v1/storage/projects",
   objects: "/api/v1/storage/objects",
   quota: "/api/v1/storage/quota",
@@ -228,43 +376,97 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
         return;
       }
     }
-    /* the faun lesson door: every route past the health probe demands the
-     * honest bearer — the sealed and the refused answers ride the same
-     * standardized error shape the rest of the surface speaks. */
-    const verdict = tokenVerdict(req);
-    if (verdict === "sealed") {
-      sendError(
-        res,
-        503,
-        "VAULT_AUTH",
-        "the vault token is not configured — set VAULT_TOKEN before the storage truth answers",
-      );
-      return;
-    }
-    if (verdict === "refused") {
-      sendError(
-        res,
-        401,
-        "VAULT_AUTH",
-        "the storage truth demands the vault token (Authorization: Bearer or x-vault-token)",
-      );
-      return;
-    }
-    if (pathname === routes.projects) {
+    /* the account lane — the public doors of the person surface: the
+     * signup and the signin demand no operator bearer (they are how a
+     * stranger becomes a caller), but the per-peer counter owns the door
+     * and the session secret must answer before anything signs — a sealed
+     * environment seals these doors too (fail closed, never fail open). */
+    if (pathname === routes.signup) {
       if (method !== "POST") {
         sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
         return;
       }
-      await postProject(req, res);
+      await postSignup(req, res);
       return;
     }
-    if (pathname === routes.objects) {
+    if (pathname === routes.signin) {
+      if (method !== "POST") {
+        sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+        return;
+      }
+      await postSignin(req, res);
+      return;
+    }
+    /* the faun lesson door: every data route past the health probe and the
+     * public account doors demands an honest bearer — the operator token
+     * (total), a project key (its scope) or a session (its account). The
+     * sealed and the refused answers ride the same standardized error
+     * shape the rest of the surface speaks. */
+    const verdict = tokenVerdict(req);
+    const auth = requestAuth(req, verdict);
+    if (auth.kind === "sealed") {
+      sendError(
+        res,
+        503,
+        "VAULT_AUTH",
+        "the vault token is not configured — set VAULT_TOKEN (or VAULT_SESSION_SECRET for the account door) before the storage truth answers",
+      );
+      return;
+    }
+    if (auth.kind === "none") {
+      sendError(
+        res,
+        401,
+        "VAULT_AUTH",
+        "the storage truth demands an honest bearer (the operator token, a project key or a session token)",
+      );
+      return;
+    }
+    if (pathname === routes.projects) {
       if (method === "POST") {
-        await postObject(req, res);
+        await postProject(req, res, auth);
         return;
       }
       if (method === "GET") {
-        listObjectsRoute(res, url);
+        listProjectsRoute(res, url, auth);
+        return;
+      }
+      sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+      return;
+    }
+    if (pathname.startsWith(`${routes.projects}/`)) {
+      const segments = safeDecode(pathname.slice(routes.projects.length + 1))
+        .split("/")
+        .filter((segment) => segment !== "");
+      if (segments.length === 2 && segments[1] === "keys") {
+        const projectId = segments[0];
+        if (method === "POST") {
+          await postProjectKey(req, res, projectId, auth);
+          return;
+        }
+        if (method === "GET") {
+          listProjectKeysRoute(res, projectId, auth);
+          return;
+        }
+        sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+        return;
+      }
+      if (segments.length === 3 && segments[1] === "keys") {
+        if (method === "DELETE") {
+          revokeProjectKeyRoute(res, segments[0], segments[2], auth);
+          return;
+        }
+        sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+        return;
+      }
+    }
+    if (pathname === routes.objects) {
+      if (method === "POST") {
+        await postObject(req, res, auth);
+        return;
+      }
+      if (method === "GET") {
+        listObjectsRoute(res, url, auth);
         return;
       }
       sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
@@ -273,11 +475,11 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     if (pathname.startsWith(`${routes.objects}/`)) {
       const id = safeDecode(pathname.slice(routes.objects.length + 1));
       if (method === "GET") {
-        getObjectRoute(res, id);
+        getObjectRoute(res, id, auth);
         return;
       }
       if (method === "DELETE") {
-        deleteObjectRoute(res, id);
+        deleteObjectRoute(res, id, auth);
         return;
       }
       sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
@@ -285,11 +487,11 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     }
     if (pathname === routes.quota) {
       if (method === "GET") {
-        getQuotaRoute(res, url);
+        getQuotaRoute(res, url, auth);
         return;
       }
       if (method === "POST") {
-        await postQuota(req, res, url);
+        await postQuota(req, res, url, auth);
         return;
       }
       sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
@@ -300,7 +502,7 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
         sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
         return;
       }
-      usageRoute(res, url);
+      usageRoute(res, url, auth);
       return;
     }
     if (pathname === routes.sweep) {
@@ -308,7 +510,7 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
         sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
         return;
       }
-      sweepRoute(res);
+      sweepRoute(res, auth);
       return;
     }
     sendError(res, 404, "VAULT_ROUTE", `no route answers ${pathname}`);
@@ -348,13 +550,120 @@ async function readBody(req: IncomingMessage): Promise<Buffer> {
   return Buffer.concat(parts);
 }
 
-/** POST /api/v1/storage/projects — creates the owner scope with its 900MB quota floor. */
-async function postProject(req: IncomingMessage, res: ServerResponse): Promise<void> {
+/** POST /api/v1/auth/signup — the public account door: the row lands with the scrypt digest only, never the plaintext. */
+async function postSignup(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const rate = authRateVerdict(peerOf(req));
+  if (!rate.allowed) {
+    sendError(
+      res,
+      429,
+      "VAULT_RATE",
+      "too many attempts from this address — the account door rests until the window rolls",
+      {
+        "retry-after": String(rate.retryAfterSeconds),
+      },
+    );
+    return;
+  }
+  if (!sessionSecretConfigured()) {
+    sendError(
+      res,
+      503,
+      "VAULT_AUTH",
+      "the session secret is not configured — set VAULT_SESSION_SECRET (or VAULT_TOKEN) before the account door answers",
+    );
+    return;
+  }
+  try {
+    const body = await readJson(req);
+    const email = typeof body.email === "string" ? body.email : "";
+    const password = typeof body.password === "string" ? body.password : "";
+    const answer = createAccount(email, password);
+    if (answer.account !== undefined) {
+      sendJson(res, 201, { account: answer.account });
+      return;
+    }
+    sendError(
+      res,
+      answer.refusal?.kind === "taken" ? 409 : 400,
+      "VAULT_AUTH",
+      answer.refusal?.why ?? "the account was refused",
+    );
+  } catch (error) {
+    if (error instanceof BadBodyError) {
+      sendError(res, 400, "VAULT_BODY", error.message);
+      return;
+    }
+    throw error;
+  }
+}
+
+/** POST /api/v1/auth/signin — the public password door: the signed session bearer answers once, nothing ever saves in a browser. */
+async function postSignin(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const rate = authRateVerdict(peerOf(req));
+  if (!rate.allowed) {
+    sendError(
+      res,
+      429,
+      "VAULT_RATE",
+      "too many attempts from this address — the account door rests until the window rolls",
+      {
+        "retry-after": String(rate.retryAfterSeconds),
+      },
+    );
+    return;
+  }
+  if (!sessionSecretConfigured()) {
+    sendError(
+      res,
+      503,
+      "VAULT_AUTH",
+      "the session secret is not configured — set VAULT_SESSION_SECRET (or VAULT_TOKEN) before the account door answers",
+    );
+    return;
+  }
+  try {
+    const body = await readJson(req);
+    const email = typeof body.email === "string" ? body.email : "";
+    const password = typeof body.password === "string" ? body.password : "";
+    const answer = verifyCredentials(email, password);
+    if (answer === undefined) {
+      sendError(res, 401, "VAULT_AUTH", "the email and the password do not match an account");
+      return;
+    }
+    const session = issueSession(answer.id);
+    sendJson(res, 200, {
+      account: { id: answer.id, email: answer.email },
+      token: session.token,
+      expiresAt: session.expiresAt,
+    });
+  } catch (error) {
+    if (error instanceof BadBodyError) {
+      sendError(res, 400, "VAULT_BODY", error.message);
+      return;
+    }
+    throw error;
+  }
+}
+
+/** POST /api/v1/storage/projects — creates the owner scope with its 900MB quota floor (a session-minted scope lands owned). */
+async function postProject(req: IncomingMessage, res: ServerResponse, auth: RequestAuth): Promise<void> {
+  if (auth.kind === "key") {
+    sendError(res, 403, "VAULT_FORBIDDEN", "a project key authorizes its own project only — it mints no scopes");
+    return;
+  }
   try {
     const body = await readJson(req);
     const id = typeof body.id === "string" ? body.id : "";
     const name = typeof body.name === "string" ? body.name : id;
-    const answer = createProject(id, name);
+    if (auth.kind === "session") {
+      const owner = projectOwner(id);
+      if (owner !== undefined && owner !== auth.accountId) {
+        sendError(res, 403, "VAULT_FORBIDDEN", `the project "${id}" already answers to another owner`);
+        return;
+      }
+    }
+    const answer = createProject(id, name, auth.kind === "session" ? auth.accountId : undefined);
     if (answer.project !== undefined) {
       sendJson(res, 201, { project: jsonOfProject(answer.project) });
       return;
@@ -369,13 +678,114 @@ async function postProject(req: IncomingMessage, res: ServerResponse): Promise<v
   }
 }
 
+/** the page bounds of the project list — a default of fifty, a ceiling of five hundred, a non-negative offset. */
+const PROJECT_PAGE_DEFAULT = 50;
+const PROJECT_PAGE_MAX = 500;
+
+/** parses one page limit (the default answers a malformed or absent value). */
+function pageLimitOf(raw: string | null): number {
+  if (raw === null || raw === "") {
+    return PROJECT_PAGE_DEFAULT;
+  }
+  const parsed = Number(raw);
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    return PROJECT_PAGE_DEFAULT;
+  }
+  return Math.min(parsed, PROJECT_PAGE_MAX);
+}
+
+/** parses one page offset (zero answers a malformed or negative value). */
+function pageOffsetOf(raw: string | null): number {
+  if (raw === null || raw === "") {
+    return 0;
+  }
+  const parsed = Number(raw);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 0;
+}
+
+/** GET /api/v1/storage/projects — the owner scopes, paginated: the admin walks every row, a session walks its own only. */
+function listProjectsRoute(res: ServerResponse, url: URL, auth: RequestAuth): void {
+  if (auth.kind === "key") {
+    sendError(res, 403, "VAULT_FORBIDDEN", "a project key authorizes its own project only — it lists no scopes");
+    return;
+  }
+  const limit = pageLimitOf(url.searchParams.get("limit"));
+  const offset = pageOffsetOf(url.searchParams.get("offset"));
+  const page = listProjects({ accountId: auth.kind === "session" ? auth.accountId : undefined, limit, offset });
+  sendJson(res, 200, {
+    projects: page.rows.map(jsonOfProjectSummary),
+    total: page.total,
+    limit,
+    offset,
+  });
+}
+
+/** POST /api/v1/storage/projects/:id/keys — mints one vk_ bearer: the secret answers exactly once, only its digest lands. */
+async function postProjectKey(
+  req: IncomingMessage,
+  res: ServerResponse,
+  projectId: string,
+  auth: RequestAuth,
+): Promise<void> {
+  if (!authorizeKeyLane(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
+    return;
+  }
+  try {
+    const body = await readJson(req);
+    const label = typeof body.label === "string" ? body.label : "key";
+    const answer = createProjectKey(projectId, label);
+    if (answer.key !== undefined && answer.secret !== undefined) {
+      sendJson(res, 201, { key: answer.key, secret: answer.secret });
+      return;
+    }
+    if (answer.refusal?.kind === "absent") {
+      sendError(res, 404, "VAULT_PROJECT", answer.refusal.why);
+      return;
+    }
+    sendError(res, 400, "VAULT_INVALID", answer.refusal?.why ?? "the key was refused");
+  } catch (error) {
+    if (error instanceof BadBodyError) {
+      sendError(res, 400, "VAULT_BODY", error.message);
+      return;
+    }
+    throw error;
+  }
+}
+
+/** GET /api/v1/storage/projects/:id/keys — the labels and the last-used stamps, never a secret. */
+function listProjectKeysRoute(res: ServerResponse, projectId: string, auth: RequestAuth): void {
+  if (!authorizeKeyLane(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
+    return;
+  }
+  sendJson(res, 200, { keys: listProjectKeys(projectId) });
+}
+
+/** DELETE /api/v1/storage/projects/:id/keys/:keyid — the revocation: a revoked secret answers 401 on its next ride. */
+function revokeProjectKeyRoute(res: ServerResponse, projectId: string, keyId: string, auth: RequestAuth): void {
+  if (!authorizeKeyLane(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
+    return;
+  }
+  if (revokeProjectKey(projectId, keyId)) {
+    sendJson(res, 200, { revoked: true, id: keyId });
+    return;
+  }
+  sendError(res, 404, "VAULT_ABSENT", `the key "${keyId}" is not on the project "${projectId}"`);
+}
+
 /** POST /api/v1/storage/objects — the deposit: raw body bytes, path and mime from the headers. */
-async function postObject(req: IncomingMessage, res: ServerResponse): Promise<void> {
+async function postObject(req: IncomingMessage, res: ServerResponse, auth: RequestAuth): Promise<void> {
   const projectId = headerOf(req, "x-project-id");
   const objectPath = safeDecode(headerOf(req, "x-object-path"));
   const mime = headerOf(req, "x-object-mime") || "application/octet-stream";
   if (projectId === "" || objectPath === "") {
     sendError(res, 400, "VAULT_INVALID", "the deposit needs the x-project-id and x-object-path headers");
+    return;
+  }
+  if (!authorizeProject(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
     return;
   }
   const bytes = await readBody(req);
@@ -394,19 +804,28 @@ async function postObject(req: IncomingMessage, res: ServerResponse): Promise<vo
 }
 
 /** GET /api/v1/storage/objects — the live rows of one project, newest first. */
-function listObjectsRoute(res: ServerResponse, url: URL): void {
+function listObjectsRoute(res: ServerResponse, url: URL, auth: RequestAuth): void {
   const projectId = url.searchParams.get("project") ?? "";
   if (projectId === "") {
     sendError(res, 400, "VAULT_INVALID", "the list needs the project query parameter");
     return;
   }
+  if (!authorizeProject(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
+    return;
+  }
   sendJson(res, 200, { objects: listObjects(projectId).map(jsonOfObject) });
 }
 
-/** GET /api/v1/storage/objects/:id — the verified bytes back, served as the stored mime. */
-function getObjectRoute(res: ServerResponse, id: string): void {
+/** GET /api/v1/storage/objects/:id — the verified bytes back, served as the stored mime (the project verdict runs first). */
+function getObjectRoute(res: ServerResponse, id: string, auth: RequestAuth): void {
   if (id === "") {
     sendError(res, 400, "VAULT_INVALID", "the object id is empty");
+    return;
+  }
+  const projectId = objectProjectOf(id);
+  if (projectId !== undefined && !authorizeProject(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
     return;
   }
   const answer = getObject(id);
@@ -429,10 +848,15 @@ function getObjectRoute(res: ServerResponse, id: string): void {
   sendError(res, 404, "VAULT_ABSENT", answer.refusal.why);
 }
 
-/** DELETE /api/v1/storage/objects/:id — the soft delete with the refcount detach. */
-function deleteObjectRoute(res: ServerResponse, id: string): void {
+/** DELETE /api/v1/storage/objects/:id — the soft delete with the refcount detach (the project verdict runs first). */
+function deleteObjectRoute(res: ServerResponse, id: string, auth: RequestAuth): void {
   if (id === "") {
     sendError(res, 400, "VAULT_INVALID", "the object id is empty");
+    return;
+  }
+  const projectId = objectProjectOf(id);
+  if (projectId !== undefined && !authorizeProject(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
     return;
   }
   const answer = deleteObject(id);
@@ -444,10 +868,14 @@ function deleteObjectRoute(res: ServerResponse, id: string): void {
 }
 
 /** GET /api/v1/storage/quota — the usage, the user-defined limit and the verdict state. */
-function getQuotaRoute(res: ServerResponse, url: URL): void {
+function getQuotaRoute(res: ServerResponse, url: URL, auth: RequestAuth): void {
   const projectId = url.searchParams.get("project") ?? "";
   if (projectId === "") {
     sendError(res, 400, "VAULT_INVALID", "the quota needs the project query parameter");
+    return;
+  }
+  if (!authorizeProject(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
     return;
   }
   const quota = readQuota(storage, projectId);
@@ -469,10 +897,14 @@ function getQuotaRoute(res: ServerResponse, url: URL): void {
 }
 
 /** POST /api/v1/storage/quota?project= — sets the user-defined limit: decimal bytes or unlimited. */
-async function postQuota(req: IncomingMessage, res: ServerResponse, url: URL): Promise<void> {
+async function postQuota(req: IncomingMessage, res: ServerResponse, url: URL, auth: RequestAuth): Promise<void> {
   const projectId = url.searchParams.get("project") ?? "";
   if (projectId === "") {
     sendError(res, 400, "VAULT_INVALID", "the quota needs the project query parameter");
+    return;
+  }
+  if (!authorizeProject(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
     return;
   }
   try {
@@ -503,10 +935,14 @@ async function postQuota(req: IncomingMessage, res: ServerResponse, url: URL): P
 }
 
 /** GET /api/v1/storage/usage — the project usage and the catalog census behind it. */
-function usageRoute(res: ServerResponse, url: URL): void {
+function usageRoute(res: ServerResponse, url: URL, auth: RequestAuth): void {
   const projectId = url.searchParams.get("project") ?? "";
   if (projectId === "") {
     sendError(res, 400, "VAULT_INVALID", "the usage needs the project query parameter");
+    return;
+  }
+  if (!authorizeProject(auth, projectId)) {
+    sendProjectForbidden(res, auth, projectId);
     return;
   }
   const usage = usageOf(projectId);
@@ -522,8 +958,12 @@ function usageRoute(res: ServerResponse, url: URL): void {
   });
 }
 
-/** POST /api/v1/storage/sweep — collects the orphan chunks and the tombstones. */
-function sweepRoute(res: ServerResponse): void {
+/** POST /api/v1/storage/sweep — collects the orphan chunks and the tombstones (the operator lane alone: the sweep walks the whole catalog). */
+function sweepRoute(res: ServerResponse, auth: RequestAuth): void {
+  if (auth.kind !== "admin") {
+    sendError(res, 403, "VAULT_FORBIDDEN", "the sweep walks the whole catalog — the operator token owns it");
+    return;
+  }
   const answer = sweepOrphans();
   sendJson(res, 200, { chunks: answer.chunks, bytes: answer.bytes.toString(), tombstones: answer.tombstones });
 }
@@ -731,6 +1171,17 @@ function jsonOfProject(project: {
   };
 }
 
+/** the json projection of one project list row — the lean shape with the owner pointer. */
+function jsonOfProjectSummary(row: {
+  id: string;
+  name: string;
+  region: string;
+  accountId: string | null;
+  createdAt: string;
+}): Record<string, unknown> {
+  return { id: row.id, name: row.name, region: row.region, accountId: row.accountId, createdAt: row.createdAt };
+}
+
 /** the json projection of one quota verdict. */
 function jsonOfVerdict(verdict: QuotaVerdict): Record<string, unknown> {
   return {
@@ -782,9 +1233,22 @@ function sendJson(res: ServerResponse, status: number, body: unknown): void {
   res.end(payload);
 }
 
-/** answers one standardized failure — { error: { code, message } }. */
-function sendError(res: ServerResponse, status: number, code: string, message: string): void {
-  sendJson(res, status, { error: { code, message } });
+/** answers one standardized failure — { error: { code, message } } (the
+ * extra headers ride the writeHead, the rate lane's retry-after among them). */
+function sendError(
+  res: ServerResponse,
+  status: number,
+  code: string,
+  message: string,
+  headers: Record<string, string> = {},
+): void {
+  const payload = JSON.stringify({ error: { code, message } });
+  res.writeHead(status, {
+    "content-type": "application/json",
+    "content-length": String(Buffer.byteLength(payload, "utf8")),
+    ...headers,
+  });
+  res.end(payload);
 }
 
 /* the direct boot — `node api.ts` serves the storage truth (and the built
@@ -793,7 +1257,11 @@ const invokedDirectly = process.argv[1] !== undefined && import.meta.url === pat
 if (invokedDirectly) {
   const server = createVaultServer();
   const port = await listenVault(server);
-  const authState = vaultTokenConfigured() ? "token gate armed" : "SEALED — set VAULT_TOKEN to open the storage routes";
+  const authState = vaultTokenConfigured()
+    ? "token gate armed"
+    : sessionSecretConfigured()
+      ? "account door armed (no operator token — set VAULT_TOKEN for the admin lane)"
+      : "SEALED — set VAULT_TOKEN to open the storage routes";
   const staticState = statSync(path.resolve(staticRoot()), { throwIfNoEntry: false })?.isDirectory()
     ? `serving the site face from ${path.resolve(staticRoot())}`
     : "no static root (set VAULT_STATIC_DIR to serve the built site beside the engine)";

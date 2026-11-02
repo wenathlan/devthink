@@ -18,6 +18,11 @@
       "import": "./index.ts",
       "default": "./index.ts"
     },
+    "./accounts": {
+      "types": "./accounts.ts",
+      "import": "./accounts.ts",
+      "default": "./accounts.ts"
+    },
     "./api": {
       "types": "./api.ts",
       "import": "./api.ts",
@@ -124,6 +129,7 @@
     "tests",
     "README.md",
     "index.ts",
+    "accounts.ts",
     "api.ts",
     "buckets.ts",
     "chunks.ts",
