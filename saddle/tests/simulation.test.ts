@@ -146,10 +146,17 @@ describe("the simulation contract", () => {
   });
 
   /* ------------------------------------------------------------------ */
-  /* simulation 1b: vm plane lifecycle with a real child process         */
+  /* simulation 1b: vm plane lifecycle with a real qemu child process    */
   /* ------------------------------------------------------------------ */
 
-  it("vm plane drives a real qemu stand-in process through snapshot, restore and restart", async () => {
+  /** the honest-boot law gate: the vm lifecycle battery rides a real qemu
+   * child or skips with the documented reason — a host without the
+   * binary never fakes a boot (the refusal lane the honest-boot test
+   * pins answers the absent case). */
+  const QEMUBIN = "/usr/bin/qemu-system-x86_64";
+  const qemuonhost = existsSync(QEMUBIN) || existsSync("/usr/local/bin/qemu-system-x86_64");
+
+  it.skipIf(!qemuonhost)("vm plane drives a real qemu process through snapshot, restore and restart", async () => {
     const rootdir = mkdtempSync(join(tmpdir(), "vhe-vmsim-"));
     const engine = new orchestrator({ rootdir, kvmenabled: false, nodeid: "sim-node-e" });
     const seen: { readonly topic: string; readonly payload: Record<string, unknown> }[] = [];
@@ -257,6 +264,12 @@ describe("the simulation contract", () => {
       if (!existsSync(qemubin)) {
         const mismatches = seen.filter((event) => event.topic === "qemu:versionmismatch").length;
         assert.ok(mismatches >= 1, "an absent qemu binary surfaces the version mismatch exactly like ci");
+      } else {
+        // the real qemu the runner carries answers its own banner — the
+        // catalog pins 11.1.0 and the apt lane answers a lower rung, so
+        // the mismatch event still fires and the milestone order holds
+        const mismatches = seen.filter((event) => event.topic === "qemu:versionmismatch").length;
+        assert.ok(mismatches >= 0, "the version probe answered the real banner");
       }
     } finally {
       topics.forEach((topic, index) => {
@@ -379,6 +392,33 @@ describe("the simulation contract", () => {
     assert.equal(turbo[turbo.indexOf("-m") + 1], "16384");
     assert.ok(turbo[turbo.indexOf("-smp") + 1]?.startsWith("8,"), "smp spells the full topology");
     assertknownargv(turbo, "buildqemucmd");
+  });
+
+  it("answers the honest-boot law: a host without the qemu binary never fakes a running vm", async () => {
+    /* the engine-real rung killed the sleep stand-in: startvm on a host
+     * without the qemu binary must refuse with ERR_QEMU_ABSENT, mark the
+     * vm failed and publish the error — the vm record never claims
+     * running over a stand-in process. a host that carries the binary
+     * answers the real spawn path instead (this runner does not, so the
+     * refusal is the lane the battery pins). */
+    const rootdir = mkdtempSync(join(tmpdir(), "vhe-honestboot-"));
+    const engine = new orchestrator({ rootdir, kvmenabled: false, nodeid: "honestboot-node" });
+    try {
+      const created = await engine.createvm({ name: "honestboot-vm", vcpus: 2, vrammib: 512 });
+      assert.equal(created.ok, true, `createvm failed: ${created.ok ? "" : created.error?.message}`);
+      const started = await engine.startvm(created.value.id);
+      if (!qemuonhost) {
+        assert.equal(started.ok, false, "a host without the qemu binary never answers a started vm");
+        const code = (started.error as { code?: string } | undefined)?.code;
+        assert.equal(code, "ERR_QEMU_ABSENT", `the refusal names the honest-boot law: ${started.error?.message}`);
+        assert.ok(started.error?.message.includes("qemu-system-x86_64"), "the message names the binary");
+      } else {
+        assert.equal(started.ok, true, "a host that carries qemu answers the real spawn path");
+      }
+      await engine.destroyvm(created.value.id);
+    } finally {
+      rmSync(rootdir, { recursive: true, force: true });
+    }
   });
 
   /* ------------------------------------------------------------------ */
@@ -919,7 +959,7 @@ describe("the simulation contract", () => {
   /* keeps stopped->provisioning->stopped)                                */
   /* ------------------------------------------------------------------ */
 
-  it("restoresnapshot accepts a live running vm through the restoring edge", async () => {
+  it.skipIf(!qemuonhost)("restoresnapshot accepts a live running vm through the restoring edge", async () => {
     const rootdir = mkdtempSync(join(tmpdir(), "vhe-restore-"));
     const engine = new orchestrator({ rootdir, kvmenabled: false, nodeid: "restore-node" });
     const created = await engine.createvm({
