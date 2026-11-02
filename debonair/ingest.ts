@@ -343,6 +343,37 @@ export function ingestPcm(mono: Float32Array, sampleRate: number, options: Inges
 }
 
 /**
+ * Decomposes one mono pcm into the mix-lane ingest document — the hpss
+ * separation deliberately left out: the mix report and the mix segments
+ * over the same analyzers the full walk rides, the stems seat empty. The
+ * corpus lane (genrecorpus.ts) reads the mix lane only (the miner's own
+ * documented read — mineGenre never touches the stems), so its reference
+ * takes train through this lighter walk; the library's pre-training keeps
+ * the full ingestPcm (the stems are the audition lane's). Deterministic
+ * beside its sibling: the same pcm answers the same mix lane bit-for-bit.
+ *
+ * @param mono the rendered pcm (any sample rate; the document records it).
+ * @param sampleRate the sample rate of the pcm.
+ * @param options the name and optional instant.
+ * @returns the mix-lane ingest document (stems: []).
+ */
+export function ingestMixPcm(mono: Float32Array, sampleRate: number, options: IngestOptions): IngestDocument {
+  const report = analyze(Array.from(mono), sampleRate, { fingerprint: false });
+  const onsets = onsetSecondsOf(mono, sampleRate);
+  return {
+    schema: INGEST_SCHEMA_VERSION,
+    name: options.name,
+    ingestedAt: options.at ?? new Date().toISOString(),
+    sampleRate,
+    durationSeconds: mono.length / sampleRate,
+    mix: report,
+    segments: segmentsof(mono, sampleRate, onsets),
+    pcmhash: pcmhash(mono),
+    stems: [],
+  };
+}
+
+/**
  * Builds the ingest document over a separation the caller owns (the one
  * constructor the decompose and ingestPcm lanes share).
  *

@@ -42,6 +42,8 @@ import {
   VOICE_RECIPES,
 } from "./audioengine.ts";
 import { mintid } from "./bigintids.ts";
+import { type FormantEvent, renderFormantPhrase, type Vowel } from "./formant.ts";
+import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { MASTERING, trackNameFromPrompt } from "./katexis.ts";
 import { limitTruePeak } from "./limiter.ts";
 import { dbToLinear } from "./mixergraph.ts";
@@ -57,6 +59,7 @@ import {
 import type { WorkerModality } from "./sandboxmodality.ts";
 import type { NoteEvent } from "./takeevents.ts";
 import { midiToHz } from "./tuning.ts";
+import { sungLineOf } from "./vocalsynth.ts";
 import { encodeWav } from "./wavwriter.ts";
 
 // ---------------------------------------------------------------------------
@@ -618,6 +621,85 @@ export function renderPatternMix(schedule: PatternSchedule, seedSource: string):
 }
 
 // ---------------------------------------------------------------------------
+// the voice seat (the formant lane of the bounce — the second rung)
+// ---------------------------------------------------------------------------
+
+/** The voice bus fader the bounce's vocal seat rides (db) — its own strip
+ * beside the desk's role seats (the lead bus carries the instrumental
+ * melody, the voice bus carries the sung line through the formant bank). */
+export const VOICE_BUS_FADER_DB = -6;
+
+/** The vowel seats the seeded vocal line draws from (the bounce sings
+ * without lyrics — the syllable lane's own text-to-vowel law answers when
+ * a lyric rides; the seed decides here, the same take identity law every
+ * lane rides). */
+const VOWEL_SEATS: readonly Vowel[] = ["a", "e", "i", "o", "u"];
+
+/**
+ * Builds the formant events of a plan's sung line — the glue between the
+ * pattern grammar and the formant lane: the sung line (sungLineOf, the
+ * melody seat and the seeded phrase breathing the syllable lane owns)
+ * folds onto the phrase events at the pattern's own step law (the same
+ * stepSeconds the schedule bridge rides), the vowels drawn from the take
+ * identity's seeded stream. Deterministic: the same plan and seed always
+ * answer the same vocal line.
+ *
+ * @param plan the composed plan.
+ * @param seed the take identity the sung line and the vowels ride.
+ * @returns the formant events (empty when the plan carries no melody).
+ */
+export function formantEventsOf(plan: PatternProject, seed: string): FormantEvent[] {
+  const sung = sungLineOf(plan, seed);
+  if (sung.length === 0) return [];
+  const stepSeconds = 60 / (plan.bpm * 4);
+  const rng = mulberry32(hashSeed(`formant:${seed}`));
+  return sung.map((note) => ({
+    start: note.step * stepSeconds,
+    duration: note.dur * stepSeconds,
+    velocity: note.vel,
+    vowels: [VOWEL_SEATS[Math.floor(rng() * VOWEL_SEATS.length)] ?? "a"],
+    midi: note.pitch,
+    voiced: true,
+  }));
+}
+
+/**
+ * Renders the bounce's vocal pcm — the sung line through the formant
+ * source-filter lane at the house rate, under the voice bus fader and the
+ * master law (the bus feeds the master like the role buses, the same
+ * linear master gain the mix rides). The seat the renderPlan voice option
+ * adds onto the linear mix before the mastering close.
+ *
+ * @param plan the composed plan.
+ * @param seed the take identity.
+ * @returns the vocal pcm, the mix's own length, zeroed when no line sings.
+ */
+export function renderVoiceMix(plan: PatternProject, seed: string): Float32Array {
+  const events = formantEventsOf(plan, seed);
+  const frames = Math.ceil((schedulePattern(plan).duration + RENDER_TAIL_S) * RENDER_SAMPLE_RATE);
+  const out = new Float32Array(frames);
+  if (events.length === 0) return out;
+  const phrase = renderFormantPhrase(events, { sampleRate: RENDER_SAMPLE_RATE }).samples;
+  const masterGain = dbToLinear(DEFAULT_MIX_LAW.masterDb) * DEFAULT_MIX_LAW.masterTrim;
+  const voiceGain = dbToLinear(VOICE_BUS_FADER_DB) * masterGain;
+  for (let i = 0; i < frames && i < phrase.length; i++) out[i] = (phrase[i] ?? 0) * voiceGain;
+  return out;
+}
+
+/** The options the render orchestrator accepts. */
+export interface RenderPlanOptions {
+  /** Sings the plan's own melody line through the formant bank under the
+   * voice bus (the second rung the syllable lane always named): the sung
+   * line renders node-side through formant.ts's source-filter lane and
+   * adds onto the linear mix before the mastering close. Hand the
+   * instrumental plan — a plan singPattern already answered carries the
+   * sung line on the airy lead seat too, and both buses would sound (the
+   * caller owns the plan it hands). Default off: the plan's own voices
+   * only, the byte-stable bounce the tests pin. */
+  voice?: boolean;
+}
+
+// ---------------------------------------------------------------------------
 // the orchestrator (schedule -> render -> encode -> store)
 // ---------------------------------------------------------------------------
 
@@ -637,17 +719,20 @@ function planerr(code: RenderErrorCode, message: string): RenderPlanResult {
  * render-failed with the validator's reason), the schedule (the flat
  * event list; a plan with no drum hits and no notes answers empty-plan),
  * the offline render through the engine's recipes at the mastering rate
- * closed by the true-peak limiter (the −1 dBTP mastering law), the wav
- * encode (mono pcm 16), the blob store put under audio/wav. every
- * failure answers the typed result with a machine code — never a throw.
- * deterministic: the same plan and seed answer the same bytes on every
- * machine (the seeded noise rides the take identity, the dsp is pure).
+ * (with the optional formant voice bus riding its own strip under the
+ * master law), closed by the true-peak limiter (the −1 dBTP mastering
+ * law), the wav encode (mono pcm 16), the blob store put under audio/wav.
+ * every failure answers the typed result with a machine code — never a
+ * throw. deterministic: the same plan and seed answer the same bytes on
+ * every machine (the seeded noise rides the take identity, the dsp is
+ * pure).
  *
  * @param plan the composed plan (the composer's PatternProject).
  * @param seed the take identity — the seed the noise rng rides (the same
  *   plan with a fresh seed answers a fresh take).
  * @param store the blob store the wav lands in.
  * @param onProgress the optional progress sink (one report per completed phase).
+ * @param options the render options (the formant voice bus, opt-in).
  * @returns the pointer, the bytes and the duration, or the machine code.
  */
 export async function renderPlan(
@@ -655,6 +740,7 @@ export async function renderPlan(
   seed: string,
   store: RenderBlobStore,
   onProgress?: RenderProgressCallback,
+  options: RenderPlanOptions = {},
 ): Promise<RenderPlanResult> {
   const report = (phase: RenderPhase): void => {
     if (!onProgress) return;
@@ -675,12 +761,18 @@ export async function renderPlan(
   report("schedule");
 
   // phase: render — the engine's recipes, sample-accurate at the house
-  // rate, then the mastering close: the linear master mix rides the
+  // rate, the optional formant voice bus riding its own strip under the
+  // master law, then the mastering close: the linear master mix rides the
   // deterministic true-peak limiter (the −1 dBTP law the stage card
   // promises) before the wav writer ever sees a sample
   let pcm: Float32Array;
   try {
-    pcm = limitTruePeak(renderPatternMix(schedule, `noise:${seed}:${checked.doc.prompt}`), RENDER_SAMPLE_RATE);
+    const mix = renderPatternMix(schedule, `noise:${seed}:${checked.doc.prompt}`);
+    if (options.voice) {
+      const voice = renderVoiceMix(checked.doc, seed);
+      for (let i = 0; i < mix.length && i < voice.length; i++) mix[i] += voice[i] ?? 0;
+    }
+    pcm = limitTruePeak(mix, RENDER_SAMPLE_RATE);
   } catch (error) {
     return planerr("render-failed", `the render lane faulted: ${errmsgof(error)}`);
   }

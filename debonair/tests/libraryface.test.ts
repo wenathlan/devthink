@@ -36,6 +36,9 @@ const beatgridmodule = await import("@wenathlan/debonair/beatgrid");
 const blobstoremodule = await import("@wenathlan/debonair/blobstore");
 const composermodule = await import("@wenathlan/debonair/composer");
 const coverpalettemodule = await import("@wenathlan/debonair/coverpalette");
+const demixmodule = await import("@wenathlan/debonair/demix");
+const formantmodule = await import("@wenathlan/debonair/formant");
+const genrecorpusmodule = await import("@wenathlan/debonair/genrecorpus");
 const gatewayapimodule = await import("@wenathlan/debonair/gatewayapi");
 const hpssmodule = await import("@wenathlan/debonair/hpss");
 const ingestmodule = await import("@wenathlan/debonair/ingest");
@@ -43,8 +46,10 @@ const ingestworkermodule = await import("@wenathlan/debonair/ingestworker");
 const patternenumsmodule = await import("@wenathlan/debonair/patternenums");
 const patternminermodule = await import("@wenathlan/debonair/patternminer");
 const renderworkermodule = await import("@wenathlan/debonair/renderworker");
+const reverseingestmodule = await import("@wenathlan/debonair/reverseingest");
 const speechalignmodule = await import("@wenathlan/debonair/speechalign");
 const stemsmodule = await import("@wenathlan/debonair/stems");
+const timestretchmodule = await import("@wenathlan/debonair/timestretch");
 const wavwritermodule = await import("@wenathlan/debonair/wavwriter");
 
 /** The engine subpaths the library publishes, in the map's own order: the
@@ -56,6 +61,11 @@ const SUBPATHS = [
   "hpss",
   "ingest",
   "patternminer",
+  "demix",
+  "formant",
+  "genrecorpus",
+  "reverseingest",
+  "timestretch",
   "patternenums",
   "composer",
   "coverpalette",
@@ -95,6 +105,11 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   patternenums: patternenumsmodule,
   composer: composermodule,
   coverpalette: coverpalettemodule,
+  demix: demixmodule,
+  formant: formantmodule,
+  genrecorpus: genrecorpusmodule,
+  reverseingest: reverseingestmodule,
+  timestretch: timestretchmodule,
   audioengine: audioenginemodule,
   wavwriter: wavwritermodule,
   blobstore: blobstoremodule,
@@ -139,6 +154,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
   },
   ingest: {
     decompose: "function",
+    ingestMixPcm: "function",
     ingestPcm: "function",
     onsetSecondsOf: "function",
     pcmhash: "function",
@@ -157,6 +173,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     ProfileError: "function",
     BPM_BUCKETS: "number",
     CHROMA_BINS: "number",
+    GENRE_CORPUS_WEIGHTS: "object",
     GENRE_SEAT_WEIGHTS: "object",
     ONSET_CURVE_BINS: "number",
     SEGMENT_DIM: "number",
@@ -215,6 +232,61 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     coverPaletteFromStats: "function",
     coverPaletteFromPcm: "function",
     plateAccents: "function",
+  },
+  demix: {
+    demix: "function",
+    demixToWavs: "function",
+    DemixError: "function",
+    DEMIX_STEM_NAMES: "object",
+    DEMIX_BASS_HZ: "object",
+    DEMIX_VOCAL_HZ: "object",
+  },
+  formant: {
+    vowelBank: "function",
+    glideBank: "function",
+    glottalSaw: "function",
+    rosenbergPulse: "function",
+    formantResonator: "function",
+    applyBandpass: "function",
+    renderFormantPhrase: "function",
+    VOWEL_FORMANTS: "object",
+    UPPER_FORMANT_HZ: "object",
+    UPPER_FORMANT_BW: "object",
+    UPPER_FORMANT_GAINS: "object",
+    FORMANT_VIBRATO_HZ: "number",
+    FORMANT_VIBRATO_SEMITONES: "number",
+    DEFAULT_SPEECH_HZ: "number",
+    FORMANT_CONSONANT_S: "number",
+    FORMANT_CONTROL_HOP: "number",
+    FORMANT_TARGET_PEAK: "number",
+    FORMANT_ENVELOPE: "object",
+  },
+  genrecorpus: {
+    trainGenreCorpus: "function",
+    validateGenreCorpus: "function",
+    serializeCorpus: "function",
+    parseCorpus: "function",
+    corpusSeatOf: "function",
+    defaultGenreCorpus: "function",
+    seedProfileOf: "function",
+    CorpusError: "function",
+    CORPUS_SCHEMA_VERSION: "string",
+    CORPUS_ERROR_CODES: "object",
+    CORPUS_DEFAULT_REFERENCES: "number",
+    CORPUS_DEFAULT_BARS: "number",
+    CORPUS_INSTANT: "string",
+  },
+  reverseingest: {
+    reverseIngestPayload: "function",
+    timelineEvents: "function",
+    shapeTimelineLoudness: "function",
+    ReverseIngestError: "function",
+  },
+  timestretch: {
+    stretchPcm: "function",
+    StretchError: "function",
+    STRETCH_RATIO_MIN: "number",
+    STRETCH_RATIO_MAX: "number",
   },
   audioengine: {
     renderTakeOffline: "function",
@@ -370,11 +442,14 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     renderPlan: "function",
     schedulePattern: "function",
     startRenderJob: "function",
+    formantEventsOf: "function",
+    renderVoiceMix: "function",
     RENDER_BIT_DEPTH: "number",
     RENDER_SAMPLE_RATE: "number",
     RENDER_PHASES: "object",
     RENDER_WAV_KIND: "string",
     RENDER_WORKER_MODALITY: "string",
+    VOICE_BUS_FADER_DB: "number",
   },
   gatewayapi: {
     dispatch: "function",

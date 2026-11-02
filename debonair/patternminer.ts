@@ -431,6 +431,116 @@ const TIMBRE_HIGH: ReadonlySet<string> = new Set([
   "plucks",
 ]);
 
+/* ============================================================ *
+ * the trained corpus seat — the classifier's trained lane: the
+ * corpus wave (genrecorpus.ts) trains one feature vector per style
+ * over real audio rendered through the engine's own dsp lanes and
+ * hands the rows through this structural seat, so the ONE verdict
+ * entry point answers from trained data when a corpus rides and
+ * from the style-law seats when it does not (zero feature loss:
+ * the no-corpus call keeps its pinned ranking bit-for-bit). every
+ * seat the trained score reads is a number MEASURED off real
+ * reference takes — the 22-seat segment centroid (the same
+ * similarity space the profile rides), the bpm median, the lufs
+ * target and the twelve-bin chroma profile — never a dictionary
+ * constant. a genre the seat does not train keeps the style law
+ * (the seat covers what it covered, the dictionary covers the rest).
+ * ============================================================ */
+
+/** One trained style row the corpus seat answers — structural, the
+ * corpus lane (genrecorpus.ts) satisfies it with the profiles its
+ * reference takes trained. */
+export interface TrainedStyleVector {
+  /** the stable genre id of the style dictionary. */
+  genreId: string;
+  /** the human label of the genre. */
+  label: string;
+  /** the trained 22-seat segment centroid (the similarity space's own
+   * normalization law, measured over the reference takes). */
+  vector: readonly number[];
+  /** the trained bpm median (measured over the reference takes). */
+  bpm: number;
+  /** the trained loudness target (measured LUFS over the reference takes). */
+  lufs: number;
+  /** the trained chroma profile (twelve normalized bins, measured). */
+  chroma: readonly number[];
+}
+
+/** The trained corpus seat the classifier rides — structural: the corpus
+ * lane hands the trained style rows, the classifier never imports it (no
+ * cycle, the seam law the render lane's stores ride). */
+export interface TrainedCorpusSeat {
+  /** One row per trained style (a genre absent from the rows keeps the
+   * style-law seats). */
+  styles: readonly TrainedStyleVector[];
+}
+
+/** the weight each trained seat carries in the corpus verdict (the sum is
+ * one — the same law the style seats ride). the vector seat leads (the
+ * full 22-seat similarity), the bpm seat carries the tempo the segment
+ * space lacks (the composer's own documented gap), the loudness and the
+ * chroma seats close the field. */
+export const GENRE_CORPUS_WEIGHTS: Readonly<Record<"vector" | "bpm" | "lufs" | "chroma", number>> = {
+  vector: 0.35,
+  bpm: 0.3,
+  lufs: 0.15,
+  chroma: 0.2,
+};
+
+/** One trained style row the seat carries, indexed by genre id. */
+function styleIndex(seat: TrainedCorpusSeat): Map<string, TrainedStyleVector> {
+  const index = new Map<string, TrainedStyleVector>();
+  for (const style of seat.styles) {
+    if (!index.has(style.genreId)) index.set(style.genreId, style);
+  }
+  return index;
+}
+
+/** The mean normalized chroma of a document's mix segments (the same
+ * mean-normalization law the profile's chroma profile rides: every
+ * silent second sits the mean out). */
+function documentChroma(doc: IngestDocument): number[] {
+  const sums = new Array<number>(CHROMA_BINS).fill(0);
+  let owners = 0;
+  for (const segment of Array.isArray(doc.segments) ? doc.segments : []) {
+    const chroma = Array.isArray(segment.chroma) ? segment.chroma : [];
+    const bins: number[] = [];
+    let sum = 0;
+    for (let pc = 0; pc < CHROMA_BINS; pc++) {
+      const value = fin(chroma[pc] ?? 0);
+      bins.push(value);
+      sum += value;
+    }
+    if (sum <= 0) continue;
+    owners++;
+    for (let pc = 0; pc < CHROMA_BINS; pc++) sums[pc] += (bins[pc] ?? 0) / sum;
+  }
+  if (owners === 0) return new Array<number>(CHROMA_BINS).fill(0);
+  return sums.map((sum) => sum / owners);
+}
+
+/** The trained score of one style row against the document's measured
+ * seats: the weighted sum of the four corpus seats, every number
+ * measured off real reference takes. */
+function trainedScore(
+  style: TrainedStyleVector,
+  seats: { vector: readonly number[]; bpm: number; lufs: number; chroma: readonly number[] },
+): number {
+  const vectorSeat = cosine(seats.vector, style.vector);
+  const bpmSeat = gaussian(Math.abs(seats.bpm - style.bpm), BPM_SIGMA);
+  const lufsSeat = gaussian(Math.abs(seats.lufs - style.lufs), LUFS_SIGMA);
+  const chromaSeat = cosine(seats.chroma, style.chroma);
+  return round4(
+    Math.max(
+      0,
+      GENRE_CORPUS_WEIGHTS.vector * vectorSeat +
+        GENRE_CORPUS_WEIGHTS.bpm * bpmSeat +
+        GENRE_CORPUS_WEIGHTS.lufs * lufsSeat +
+        GENRE_CORPUS_WEIGHTS.chroma * chromaSeat,
+    ),
+  );
+}
+
 /** one ranked verdict of the style-law classifier. */
 export interface GenreVerdict {
   /** the stable genre id of the style dictionary ("trap"). */
@@ -497,17 +607,27 @@ function modeAffinity(genre: (typeof GENRES)[number], mode: "major" | "minor"): 
  * report measured, the winner first with its share of the field as the
  * confidence. Every score derives from the document's measured numbers
  * (the bpm, the key mode, the loudness and the mean band balance) — never
- * from the name. Deterministic: the same document answers the same
- * ranking bit-for-bit; a damaged report coerces through the analysis
- * layer's own total law.
+ * from the name. When a trained corpus seat rides, the trained lane
+ * takes over: every genre the seat trained answers its measured distance
+ * (the 22-seat centroid cosine, the bpm gaussian, the loudness gaussian,
+ * the chroma cosine — the trained data, never the dictionary constants)
+ * and the genres the seat does not train keep the style law. Deterministic:
+ * the same document answers the same ranking bit-for-bit; a damaged
+ * report coerces through the analysis layer's own total law.
  *
  * @param doc one ingest document (the mix lane is the read).
+ * @param seat the optional trained corpus seat (the corpus lane's rows).
  * @returns the fifteen verdicts ranked descending by score.
  */
-export function classifyDocument(doc: IngestDocument): GenreVerdict[] {
+export function classifyDocument(doc: IngestDocument, seat?: TrainedCorpusSeat): GenreVerdict[] {
   const bpm = fin(doc.mix.rhythm.bpm);
   const mode: "major" | "minor" = doc.mix.key.mode === "minor" ? "minor" : "major";
   const lufs = fin(doc.mix.loudness.integrated);
+  const trained = seat === undefined ? undefined : styleIndex(seat);
+  const trainedSeats =
+    trained === undefined || trained.size === 0
+      ? undefined
+      : { vector: documentVector(doc), bpm, lufs, chroma: documentChroma(doc) };
   const segments = Array.isArray(doc.segments) ? doc.segments : [];
   let low = 0;
   let mid = 0;
@@ -528,6 +648,12 @@ export function classifyDocument(doc: IngestDocument): GenreVerdict[] {
   const balance: [number, number, number] =
     owners > 0 ? [low / owners, mid / owners, high / owners] : [1 / 3, 1 / 3, 1 / 3];
   const scored = GENRES.map((genre) => {
+    // the trained lane first: a style the corpus trained answers its
+    // measured distance, never the dictionary constants
+    const trainedStyle = trained?.get(genre.id);
+    if (trainedStyle !== undefined && trainedSeats !== undefined) {
+      return { genreId: genre.id, label: genre.label, score: trainedScore(trainedStyle, trainedSeats) };
+    }
     const bpmDistance = bpm < genre.bpmin ? genre.bpmin - bpm : bpm > genre.bpmax ? bpm - genre.bpmax : 0;
     const bpmSeat = gaussian(bpmDistance, BPM_SIGMA);
     const modeSeat = modeAffinity(genre, mode);
