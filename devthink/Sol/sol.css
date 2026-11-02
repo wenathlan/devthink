@@ -12031,7 +12031,7 @@ span[data-tile] {
   background-blend-mode: normal, soft-light;
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--color-veil) 24%, transparent),
-    var(--win-shad-window);
+    0 16px 40px rgb(0 0 0 / 22%);
   -webkit-backdrop-filter: blur(30px) saturate(1.35);
   backdrop-filter: blur(30px) saturate(1.35);
   animation: dtwloginpane 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
@@ -12233,9 +12233,7 @@ span[data-tile] {
   color: var(--color-win-ink);
   font: 600 13px var(--font-sans, var(--dt-sans));
   cursor: pointer;
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklab, var(--color-veil) 32%, transparent),
-    0 8px 20px -10px color-mix(in oklab, var(--color-win) 55%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--color-veil) 32%, transparent);
   transition: background 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
     border-color 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)),
     transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
