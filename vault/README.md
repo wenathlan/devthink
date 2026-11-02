@@ -8,11 +8,12 @@ House tree: one folder per app, no src/ — the app root carries only the loose 
 
 Vault is the storage library of the family, and storage answers the family ownership law as a published library: any consumer — a sibling app, an embedder, a script — imports the engine through `@wenathlan/vault` subpaths instead of ever reimplementing a store. The package.json exports map answers one subpath per root module with the family publish shape (the `types`/`import`/`default` conditions over the root source files, the same source doctrine `@wenathlan/getry/thinking` and the debonair engine ride — no build step, the source is the library, the node 26 pin runs the erasable-typescript sources natively), the npm files array packs every exported module with its local import closure, and `tests/package.test.ts` pins the whole contract: every declared target exists, imports in Node, ships in the files list, and the barrel carries the engine.
 
-The boot law of the map: `./db` and `./drizzle` open their self-hosted sqlite connections at import time (`DATABASE_URL` and `VAULT_STORAGE_URL`, both overridable, both defaulting to a file: store beside the working directory), and `./api`, `./objectsledger` and `./quota` ride `./drizzle` transitively — so the barrel `@wenathlan/vault` boots the engine. A consumer that wants the pure surfaces without the connections rides the deep specifiers instead: `./storage`, `./sha`, `./chunks`, `./objects`, `./buckets`, `./retention`, `./labels`, `./onboardingstate`, `./family`, `./familyurl`, `./hometypes`, `./utils`.
+The boot law of the map: `./db` and `./drizzle` open their self-hosted sqlite connections at import time (`DATABASE_URL` and `VAULT_STORAGE_URL`, both overridable, both defaulting to a file: store beside the working directory), and `./api`, `./accounts`, `./objectsledger` and `./quota` ride `./drizzle` transitively — so the barrel `@wenathlan/vault` boots the engine. A consumer that wants the pure surfaces without the connections rides the deep specifiers instead: `./storage`, `./sha`, `./chunks`, `./objects`, `./buckets`, `./retention`, `./labels`, `./onboardingstate`, `./family`, `./familyurl`, `./hometypes`, `./utils`.
 
 | Subpath | What it answers |
 | --- | --- |
 | `@wenathlan/vault` | the barrel — the whole public surface in one import (boots the engine) |
+| `@wenathlan/vault/accounts` | the account lane — `createAccount`, `verifyCredentials`, the HMAC `issueSession`/`verifySession`, the vk_ project keys and the per-peer rate counter |
 | `@wenathlan/vault/api` | the http surface — `createVaultServer`, `listenVault`, the token gate `tokenVerdict` and the storage `routes` over pure node:http |
 | `@wenathlan/vault/buckets` | the bucket shelf — the retention groups, their policies and the per-bucket census |
 | `@wenathlan/vault/chunks` | the 256KB chunk pipeline — `split`/`reassemble`, `encodeChunk`/`decodeChunk`, the manifest law, `CHUNK_BYTES` and the `VaultChannel` contract |
@@ -47,7 +48,7 @@ import { split } from "@wenathlan/vault/chunks";
 
 # Vault Sol
 
-Vault is the storage library of the DevThink family: the self-hosted supabase clone holding projects, accounts and storage objects served over https. This Sol theme is its web surface — a Vite + React SPA rendering the storage inventory from the same sqlite database that `schema.prisma` and `drizzle.config.ts` describe.
+Vault is the storage library of the DevThink family: the self-hosted supabase clone holding projects, accounts, per-project api keys and storage objects served over https. This Sol theme is its web surface — a Vite + React SPA rendering the storage inventory from the same sqlite database that `schema.prisma` and `drizzle.config.ts` describe.
 
 ```bash
 pnpm install

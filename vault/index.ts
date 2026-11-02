@@ -24,6 +24,8 @@
 
 /* ── the storage engine — the real pipeline the siblings borrow ── */
 
+/** the account lane of the clone: the scrypt accounts, the HMAC-signed sessions, the vk_ project keys and the per-peer rate counter. */
+export * from "./accounts.ts";
 /** the vault http surface: the token gate (the faun lesson) and the storage routes over pure node:http. */
 export * from "./api.ts";
 /** the 256KB chunk pipeline: split, encode (raw first, brotli only when it wins), the manifest law. */
@@ -52,12 +54,12 @@ export * from "./retention.ts";
 
 /** the self-hosted site store: the better-sqlite3 bootstrap and the parameterized helpers (boots at import). */
 export * from "./db.ts";
-/** the storage lane: the shared sqlite mechanism of the family — the factory the siblings open (no boot; SqlParam keeps flowing through the db star, the deep specifier carries it for the bridged siblings). */
-export { openStorageLane, PRAGMA_BOOTSTRAP, type StorageLane, type StorageLaneOptions } from "./storagelane.ts";
 /** the copy law: the label manifest, the typed accessor and the seed. */
 export * from "./labels.ts";
 /** the entry-flow accessor: the seen flags of the visitor, one writer only. */
 export * from "./onboardingstate.ts";
+/** the storage lane: the shared sqlite mechanism of the family — the factory the siblings open (no boot; SqlParam keeps flowing through the db star, the deep specifier carries it for the bridged siblings). */
+export { openStorageLane, PRAGMA_BOOTSTRAP, type StorageLane, type StorageLaneOptions } from "./storagelane.ts";
 /** the ui store: the uicopy seed, the accessor chain and the sqlite lane. */
 export * from "./uistore.ts";
 
