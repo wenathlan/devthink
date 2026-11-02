@@ -11,6 +11,12 @@ import { copy } from "../../copy";
 import { SettingsRow } from "./SettingsRow";
 import type { SettingsSnapshot } from "./Settingstypes";
 
+/** fills the {slot} holes of one copy row — the template grammar the
+ * settings face rides (an unknown slot stays loud, never silent). */
+function fill(key: string, slots: Record<string, string>): string {
+  return copy(key).replace(/\{(\w+)\}/g, (hole, name: string) => slots[name] ?? hole);
+}
+
 type AboutSettingsProps = {
   /** paired gateways answer the gateway database ledger */
   paired: boolean;
@@ -31,12 +37,15 @@ export function AboutSettings({ paired, snapshot, local, localIdentity }: AboutS
           <SettingsRegular fontSize={15} aria-hidden="true" />
           {copy("settings.about.database.paired")}
         </h2>
-        <SettingsRow label="owner" value={snapshot.database.ownerUserId} />
-        <SettingsRow label="device" value={snapshot.identity.deviceId} />
-        <SettingsRow label="persistence" value={snapshot.database.persistence} />
-        <SettingsRow label="workspaces" value={String(snapshot.database.workspaces)} />
-        <SettingsRow label="sessions" value={String(snapshot.database.sessions)} />
-        <SettingsRow label="browser store" value={local?.database || "devthink.db"} />
+        <SettingsRow label={copy("settings.about.row.owner")} value={snapshot.database.ownerUserId} />
+        <SettingsRow label={copy("settings.about.row.device")} value={snapshot.identity.deviceId} />
+        <SettingsRow label={copy("settings.about.row.persistence")} value={snapshot.database.persistence} />
+        <SettingsRow label={copy("settings.about.row.workspaces")} value={String(snapshot.database.workspaces)} />
+        <SettingsRow label={copy("settings.about.row.sessions")} value={String(snapshot.database.sessions)} />
+        <SettingsRow
+          label={copy("settings.about.row.browserstore")}
+          value={local?.database || "devthink.db"}
+        />
       </section>
     );
 
@@ -46,14 +55,22 @@ export function AboutSettings({ paired, snapshot, local, localIdentity }: AboutS
         <InfoRegular fontSize={15} aria-hidden="true" />
         {copy("settings.about.database")}
       </h2>
-      <SettingsRow label="database" value={local?.database || "devthink.db"} />
-      <SettingsRow label="owner" value={localIdentity?.userId || "initializing"} />
-      <SettingsRow label="device" value={localIdentity?.deviceId || "initializing"} />
+      <SettingsRow label={copy("settings.about.row.database")} value={local?.database || "devthink.db"} />
       <SettingsRow
-        label="records"
-        value={`${local?.workspaces || 0} workspaces, ${local?.sessions || 0} sessions, ${
-          local?.messages || 0
-        } messages`}
+        label={copy("settings.about.row.owner")}
+        value={localIdentity?.userId || copy("settings.about.row.initializing")}
+      />
+      <SettingsRow
+        label={copy("settings.about.row.device")}
+        value={localIdentity?.deviceId || copy("settings.about.row.initializing")}
+      />
+      <SettingsRow
+        label={copy("settings.about.row.records")}
+        value={fill("settings.about.row.records.value", {
+          workspaces: String(local?.workspaces || 0),
+          sessions: String(local?.sessions || 0),
+          messages: String(local?.messages || 0),
+        })}
       />
     </section>
   );

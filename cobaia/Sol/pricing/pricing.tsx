@@ -7,12 +7,13 @@
  *
  * The pricing table of the cobaia content site: three honest plans (free,
  * pro, studio — us$0 / 5 / 19 a month, placeholders until billing lands).
- * The buttons read their checkout href from the pure config at the app root
- * (checkoutlinks.ts): a configured link renders a real anchor, an empty one
- * renders the disabled button with the honest note "checkout not configured
- * yet". No checkout page carries an ad — the ad slots live only on the
- * content pages. Zero network calls: the links are plain hrefs the visitor
- * chooses to follow.
+ * The billing values answer from the pure config at the app root
+ * (checkoutlinks.ts — ids, prices, checkout hrefs) and every plan sentence
+ * (name, blurb, features) rides the label store: a configured link renders
+ * a real anchor, an empty one renders the disabled button with the honest
+ * note "checkout not configured yet". No checkout page carries an ad — the
+ * ad slots live only on the content pages. Zero network calls: the links
+ * are plain hrefs the visitor chooses to follow.
  */
 import type { CSSProperties } from "react";
 import { PLANS, isconfigured, type checkoutplan } from "../../checkoutlinks";
@@ -24,14 +25,14 @@ function PlanAction({ plan }: { plan: checkoutplan }) {
   if (isconfigured(plan.href)) {
     return (
       <a className="cb-btn" href={plan.href} rel="noreferrer">
-        {labelfill("pricing.action.choose", { name: plan.name })}
+        {labelfill("pricing.action.choose", { name: label(plan.nameKey) })}
       </a>
     );
   }
   return (
     <>
       <button className="cb-btn" type="button" disabled>
-        {labelfill("pricing.action.choose", { name: plan.name })}
+        {labelfill("pricing.action.choose", { name: label(plan.nameKey) })}
       </button>
       <p className="cb-note">{label("pricing.action.notConfigured")}</p>
     </>
@@ -60,18 +61,18 @@ export function Pricing() {
               key={plan.id}
               className={plan.id === "studio" ? "cb-plan cb-plan--lead cb-in" : "cb-plan cb-in"}
               style={{ "--cb-d": index + 1 } as CSSProperties}
-              aria-label={labelfill("pricing.card.planAria", { name: plan.name })}
+              aria-label={labelfill("pricing.card.planAria", { name: label(plan.nameKey) })}
             >
-              <p className="cb-planname">{plan.name}</p>
+              <p className="cb-planname">{label(plan.nameKey)}</p>
               <p className="cb-planprice">
                 ${plan.priceusd}
-                <span className="cb-planper"> / {plan.per}</span>
+                <span className="cb-planper"> / {label(plan.perKey)}</span>
               </p>
-              <p className="cb-planblurb">{plan.blurb}</p>
+              <p className="cb-planblurb">{label(plan.blurbKey)}</p>
               <ul className="cb-planfeats">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="cb-planfeat">
-                    {feature}
+                {plan.featureKeys.map((featureKey) => (
+                  <li key={featureKey} className="cb-planfeat">
+                    {label(featureKey)}
                   </li>
                 ))}
               </ul>

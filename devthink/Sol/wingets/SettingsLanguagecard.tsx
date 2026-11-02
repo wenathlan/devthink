@@ -2,9 +2,8 @@
  * languagecard.tsx — the Language card of the Personalization page: the
  * display preference of the machine, native names per the windows grammar.
  * The authored surface is english and the picker persists the choice on
- * the machine profile — zero external lanes, zero infra copy (the gtx
- * module retired with the owner law). The picker itself rides the
- * notranslate wall and never becomes its own subject.
+ * the machine profile — zero external lanes, zero infra copy. The picker
+ * itself rides the notranslate wall and never becomes its own subject.
  * Loose component of the settings page, riding the dtw kit.
  */
 import { LocalLanguageRegular } from "@fluentui/react-icons";

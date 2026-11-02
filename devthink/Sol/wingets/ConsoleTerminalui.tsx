@@ -3,6 +3,7 @@ import { Box, render, Text, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
 import { getIdentity, pairingStatus } from "../../account.js";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
+import { osText } from "../../oslabels.ts";
 import { listProviders } from "../../providers.js";
 import { listSessions, readPreferences, type Session, savePreference } from "../../storage.js";
 import type { ChatEvent } from "../../streaming.js";
@@ -411,8 +412,8 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
           ))
         ) : (
           <Box flexDirection="column" alignItems="center">
-            <Text color="#4b4842">Nothing is active yet.</Text>
-            <Text color="#625c54">Describe the next feature, bug or piece of work below.</Text>
+            <Text color="#4b4842">{osText("console.terminal.empty.title")}</Text>
+            <Text color="#625c54">{osText("console.terminal.empty.lede")}</Text>
             <Box marginTop={2}>
               <Text color="#ff5f00" bold>
                 DEVTHINK
@@ -428,8 +429,10 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
           {clip(
             draft ||
               (view === "chat"
-                ? `Ask DevThink about ${active === "all" ? "the work..." : `${active}...`}`
-                : `Type /view chat to return...`),
+                ? active === "all"
+                  ? osText("console.terminal.ask.all")
+                  : osText("console.terminal.ask.category").replace("{category}", active)
+                : osText("console.terminal.return")),
             Math.max(12, terminalWidth - 20),
           )}
         </Text>
@@ -437,7 +440,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
         <Text color="#ff5f00"> [run]</Text> |
       </Text>
       <Text color="#282724">+{"-".repeat(Math.max(16, terminalWidth - 2))}+</Text>
-      <Text color="#746f66">up/down destinations, left/right categories, /help commands, v{version}, esc exits</Text>
+      <Text color="#746f66">{osText("console.terminal.help").replace("{version}", version)}</Text>
     </Box>
   );
 }

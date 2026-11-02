@@ -1,7 +1,7 @@
 /**
  * Planstable.tsx — the plans surface of the product face: the four bucket
- * plans of the safe as one dense table (the Supabase-grade plan sheet) —
- * plan name in mono, retention window, sealed rows and bytes in tabular
+ * plans of the safe as one dense table (the plan sheet of the product
+ * face) — plan name in mono, retention window, sealed rows and bytes in tabular
  * numerals, the lfs share as a hairline bar, the policy note riding the
  * featured row. Every number answers from the REAL rehearsal engines
  * (seedRules, shelfOf — buckets.ts over the sealed objects of objects.ts);

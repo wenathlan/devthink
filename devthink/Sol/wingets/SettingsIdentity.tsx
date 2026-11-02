@@ -4,11 +4,13 @@
  * display name as a stored preference. The os entry never asks for it —
  * the panel resolves it silently — and this section is the single honest
  * place where a person sees and edits it. It is a settings page, never a
- * login screen. Loose component of the settings page, riding the dtw kit.
+ * login screen. Every string the card renders rides the copy store
+ * (copy.ts). Loose component of the settings page, riding the dtw kit.
  */
 import {PersonRegular} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { copy } from "../../copy";
 import {
   type BrowserIdentity,
   browserIdentity,
@@ -63,9 +65,9 @@ export function LocalAccount() {
       if (next) await saveBrowserPreference(NAME_KEY, next);
       setSavedName(next);
       setName(next);
-      toast(next ? "The display name was saved in this browser." : "The display name was cleared.");
+      toast(next ? copy("settings.identity.toast.saved") : copy("settings.identity.toast.cleared"));
     } catch {
-      toast("The local database is unavailable in this browser; the name was not saved.");
+      toast(copy("settings.identity.toast.unavailable"));
     } finally {
       setBusy(false);
     }
@@ -74,12 +76,12 @@ export function LocalAccount() {
   const dirty = name.trim() !== savedName;
 
   return (
-    <section className="dtw-card" aria-label="Local account">
+    <section className="dtw-card" aria-label={copy("settings.identity.aria")}>
       <h2 className="dtw-cardtitle">
         <PersonRegular fontSize={15} aria-hidden="true" />
-        Local account
+        {copy("settings.identity.title")}
       </h2>
-      <p className="dtw-copy">One local identity, kept in this browser. Nothing leaves the machine.</p>
+      <p className="dtw-copy">{copy("settings.identity.lede")}</p>
       <form
         className="dtw-settings__form"
         onSubmit={(event) => {
@@ -88,31 +90,41 @@ export function LocalAccount() {
         }}
       >
         <label className="dtw-settings__field">
-          <span>Display name</span>
+          <span>{copy("settings.identity.name")}</span>
           <input
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder="Your display name"
+            placeholder={copy("settings.identity.name.ph")}
             maxLength={40}
             autoComplete="nickname"
             spellCheck={false}
-            aria-label="Display name"
+            aria-label={copy("settings.identity.name")}
             className="dtw-settings__input"
           />
         </label>
         <button type="submit" disabled={busy || !dirty} aria-busy={busy || undefined} className="dtw-btn">
-          {busy ? "Saving" : "Save name"}
+          {busy ? copy("settings.identity.saving") : copy("settings.identity.save")}
         </button>
         {savedName ? <small className="dtw-settings__base">{savedName}</small> : null}
       </form>
       <div>
-        <IdRow label="user id" value={identity?.userId ?? "initializing"} />
-        <IdRow label="device id" value={identity?.deviceId ?? "initializing"} />
         <IdRow
-          label="created"
-          value={identity?.createdAt ? new Date(identity.createdAt).toLocaleDateString() : "initializing"}
+          label={copy("settings.identity.row.user")}
+          value={identity?.userId ?? copy("settings.identity.row.initializing")}
         />
-        <IdRow label="storage" value="this browser only" />
+        <IdRow
+          label={copy("settings.identity.row.device")}
+          value={identity?.deviceId ?? copy("settings.identity.row.initializing")}
+        />
+        <IdRow
+          label={copy("settings.identity.row.created")}
+          value={
+            identity?.createdAt
+              ? new Date(identity.createdAt).toLocaleDateString()
+              : copy("settings.identity.row.initializing")
+          }
+        />
+        <IdRow label={copy("settings.identity.row.storage")} value={copy("settings.identity.row.storage.value")} />
       </div>
     </section>
   );
