@@ -27,6 +27,11 @@ RUN apk add --no-cache python3 make g++ \
  && pnpm install --frozen-lockfile
 COPY app/ .
 COPY debonair/ /src/debonair/
+# The vault sibling every site home rides beside the engine sibling: the
+# copy law answers the @wenathlan/vault/labelstore bridge through the
+# ../vault vite aliases, so the label store sources land at /src/vault
+# where the bridge resolves inside the container.
+COPY vault/ /src/vault/
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6

@@ -2129,6 +2129,17 @@ jobs:
         # container and the cadria container build died on the vite step
         # (the only cross-app consumption the family ships today; the map
         # below is the single place a new sibling registers).
+        #
+        # The 2.0.154 vault sibling fix: the copy law is the second
+        # source-level sibling the site homes consume - every labels.ts
+        # imports @wenathlan/vault/labelstore and the vite aliases resolve
+        # ../vault/*, so the vault sources ride every family context beside
+        # the app. The app-only context the lane staged before left the
+        # label store bridge unloadable inside the container and the build
+        # died on the vite step ([UNLOADABLE_DEPENDENCY] Could not load
+        # ../vault/labelstore.ts) - the vault sibling stages for all three
+        # site homes, not a per-app case entry, because the copy law is the
+        # one consumption every family app shares.
         if: steps.published.outputs.skip != 'true'
         shell: bash
         run: |
@@ -2137,6 +2148,16 @@ jobs:
           mkdir -p familybuildctx/app
           cp -a "${{ matrix.package }}/." familybuildctx/app/
           printf '\nminimumReleaseAge: 0\n' >> familybuildctx/app/pnpm-workspace.yaml
+          # the copy-law sibling every site home rides: the vault label
+          # store answers the @wenathlan/vault/labelstore bridge through
+          # the ../vault vite aliases, so the sibling sources ride every
+          # family context (sources only - the build never installs it,
+          # the aliases read the .ts files directly)
+          mkdir -p familybuildctx/vault
+          cp -a vault/. familybuildctx/vault/
+          rm -rf familybuildctx/vault/node_modules \
+                 familybuildctx/vault/dist \
+                 familybuildctx/vault/build
           case "${{ matrix.package }}" in
             cadria)
               # the engine-ownership sibling map: cadria resolves the

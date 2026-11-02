@@ -46,11 +46,21 @@ const READ_TIMEOUT_MS = 2500;
 /** module memory: the flags of the session, consulted before any i/o. */
 let memory: VisitorOnboarding | null = null;
 
+/**
+ * Linear-time trailing-slash strip (regex-free; safe on uncontrolled input —
+ * the former /\/+$/.replace was polynomial and flagged as ReDoS-prone).
+ */
+function stripTrailingSlashes(value: string): string {
+  let end = value.length;
+  while (end > 0 && value.charCodeAt(end - 1) === 47 /* "/" */) end--;
+  return end === value.length ? value : value.slice(0, end);
+}
+
 /** Reads the platform base off the vite env without leaning on the vite client types. */
 function readEnvBase(): string {
   try {
     const env = (import.meta as ImportMeta & { env?: { VITE_ONBOARDING_URL?: string } }).env;
-    return (typeof env?.VITE_ONBOARDING_URL === "string" ? env.VITE_ONBOARDING_URL : "").trim().replace(/\/+$/, "");
+    return stripTrailingSlashes((typeof env?.VITE_ONBOARDING_URL === "string" ? env.VITE_ONBOARDING_URL : "").trim());
   } catch {
     return "";
   }
