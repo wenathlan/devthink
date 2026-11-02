@@ -166,6 +166,10 @@ describe("the library face", () => {
 
   it("answers the family lockstep on the manifest version", async () => {
     const packagejson = await readPackage();
-    assert.match(packagejson.version, /^2\.0\./, "the cadria envelope rides the family rung");
+    /* the 2.1.7 supply-chain rung climbed the family above the stale
+     * standalone saddle line (2.1.6 of the pre-family era) so the caret
+     * ranges resolve the current build — the lockstep pattern reads the
+     * family major the rung carries, never one frozen minor line */
+    assert.match(packagejson.version, /^2\.\d+\./, "the cadria envelope rides the family rung");
   });
 });

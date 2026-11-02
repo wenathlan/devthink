@@ -131,7 +131,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -568,7 +568,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -922,7 +922,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the jar embeds
@@ -1192,7 +1192,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the content package carries
@@ -2288,7 +2288,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
 
       # the reality gate: the binary sources of the merged repository. the
       # lane always builds (no detect-and-skip: the sources the product
@@ -2521,7 +2521,7 @@ jobs:
         # pnpm invocations that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
 
       - name: setup rust
         # the saddle lane rides the stable channel (the family runtime
@@ -2912,7 +2912,7 @@ jobs:
         # pnpm invocations that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
@@ -3279,7 +3279,7 @@ jobs:
         # pnpm invocations that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
 
       - name: build the static workbench
         shell: bash
@@ -3440,7 +3440,7 @@ jobs:
         # pnpm invocations that touch it delegate to this exact bun build.
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
 
       - name: build the static workbench
         shell: bash
@@ -3768,7 +3768,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
 
       # the reality gate: the flat interface files answer at the
       # web root (the dead folder gate of the
@@ -3946,7 +3946,7 @@ jobs:
         if: steps.selected.outputs.enabled == 'true'
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
       - name: Set up Node
         if: steps.selected.outputs.enabled == 'true'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -4207,7 +4207,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.4
           cache: false
 
       - name: install dependencies

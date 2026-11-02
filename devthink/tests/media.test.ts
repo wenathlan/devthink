@@ -18,6 +18,7 @@ import {
   mediapipeline,
   mediapipelineerror,
   type mediaprobe,
+  type stageid,
   nvencpresets,
   passagesecurechannel,
   probefromname,
@@ -49,8 +50,10 @@ const demojob: mediajob = {
   priority: 1,
 };
 
-/** resolves one stage name from the live catalog by its index. */
-function stagename(index: number): string {
+/** resolves one stage name from the live catalog by its index — the
+ * catalog rows already carry the stageid literals, so the helper answers
+ * the branded type the metrics' stage field compares against. */
+function stagename(index: number): stageid {
   const entry = stagecatalog.find((stage) => stage.index === index);
   assert.ok(entry !== undefined, `the stage catalog must carry index ${index}`);
   return entry.name;

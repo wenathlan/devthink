@@ -25,19 +25,55 @@
  * context provenance links retrieved chunks to source, query and transformation metadata.
  */
 
+/** one retrieved chunk a provenance record carries (the loose input form:
+ * every field answers a sensible default the record normalizes). */
+export interface provenancechunkinput {
+  id?: string | number;
+  contenthash?: string;
+  score?: number;
+  headingpath?: string;
+  tokencount?: number;
+  citation?: string;
+}
+
+/** the provenance call shape: a source or a source url names the record,
+ * the chunks and the metadata ride beside them. */
+export interface provenanceinput {
+  source?: string;
+  sourceurl?: string;
+  documentid?: string;
+  query?: string;
+  retrievedat?: number;
+  chunks?: provenancechunkinput[];
+  metadata?: Record<string, unknown>;
+}
+
+/** the serializable retrieval record provenance answers (the normalized
+ * form the merge lane and the context readers consume). */
+export interface provenancerecord {
+  version: number;
+  source: string;
+  sourceurl?: string;
+  documentid?: string;
+  query?: string;
+  retrievedat: number;
+  chunks: Array<{ id: string; contenthash?: string; score?: number; headingpath?: string; tokencount?: number; citation?: string }>;
+  metadata: Record<string, unknown>;
+}
+
 /** Creates a serializable retrieval record for an agent context result. */
-export function provenance(input = {}) {
+export function provenance(input: provenanceinput = {}) {
   if (!input.source && !input.sourceurl) throw new TypeError("provenance requires a source");
-  return { version: 1, source: input.source ?? input.sourceurl, sourceurl: input.sourceurl, documentid: input.documentid, query: input.query, retrievedat: Number(input.retrievedat ?? Date.now()), chunks: Array.isArray(input.chunks) ? input.chunks.map((chunk, index) => ({ id: String(chunk.id ?? index), contenthash: chunk.contenthash, score: chunk.score === undefined ? undefined : Number(chunk.score), headingpath: chunk.headingpath, tokencount: chunk.tokencount, citation: chunk.citation ?? input.sourceurl })) : [], metadata: { ...(input.metadata ?? {}) } };
+  return { version: 1, source: (input.source ?? input.sourceurl) as string, sourceurl: input.sourceurl, documentid: input.documentid, query: input.query, retrievedat: Number(input.retrievedat ?? Date.now()), chunks: Array.isArray(input.chunks) ? input.chunks.map((chunk: any, index: any) => ({ id: String(chunk.id ?? index), contenthash: chunk.contenthash, score: chunk.score === undefined ? undefined : Number(chunk.score), headingpath: chunk.headingpath, tokencount: chunk.tokencount, citation: chunk.citation ?? input.sourceurl })) : [], metadata: { ...(input.metadata ?? {}) } } satisfies provenancerecord;
 }
 
 /** Merges provenance records while deduplicating chunk identifiers. */
-export function mergeprovenance(records = []) {
+export function mergeprovenance(records: provenancerecord[] = []) {
   const valid = records.filter(Boolean);
-  const chunks = [];
+  const chunks: any[] = [];
   const seen = new Set();
   for (const record of valid) for (const chunk of record.chunks ?? []) { const key = `${record.documentid ?? record.source}:${chunk.id}`; if (seen.has(key)) continue; seen.add(key); chunks.push({ ...chunk, source: record.source, documentid: record.documentid }); }
-  return { version: 1, sources: [...new Set(valid.map((record) => record.source))], chunks, mergedat: Date.now() };
+  return { version: 1, sources: [...new Set(valid.map((record: any) => record.source))], chunks, mergedat: Date.now() };
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -48,10 +84,10 @@ export function mergeprovenance(records = []) {
  */
 const ratios = Object.freeze({ default: 4, gpt: 3.5, claude: 3.2, gemini: 3.5 });
 
-export function estimatetokens(text, model = "default") { const ratio = ratios[model] ?? ratios.default; return Math.ceil(String(text ?? "").length / ratio); }
-export function fitscontext(text, context, model = "default") { return estimatetokens(text, model) <= context; }
-export function tokenbudget(text, options = {}) { const tokens = estimatetokens(text, options.model); return { tokens, context: options.context ?? null, fits: options.context == null ? true : tokens <= options.context, remaining: options.context == null ? null : Math.max(0, options.context - tokens) }; }
-export function settokenratios(values = {}) { Object.assign(ratios, values); return { ...ratios }; }
+export function estimatetokens(text: any, model = "default") { const ratio = (ratios as Record<string, number>)[model] ?? ratios.default; return Math.ceil(String(text ?? "").length / ratio); }
+export function fitscontext(text: any, context: any, model = "default") { return estimatetokens(text, model) <= context; }
+export function tokenbudget(text: any, options: Record<string, any> = {}) { const tokens = estimatetokens(text, options.model); return { tokens, context: options.context ?? null, fits: options.context == null ? true : tokens <= options.context, remaining: options.context == null ? null : Math.max(0, options.context - tokens) }; }
+export function settokenratios(values: Record<string, any> = {}) { Object.assign(ratios, values); return { ...ratios }; }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 3: ai/chunk.ts — markdown chunking preserves heading paths and uses paragraph boundaries before hard cuts. */
@@ -60,22 +96,22 @@ export function settokenratios(values = {}) { Object.assign(ratios, values); ret
  * markdown chunking preserves heading paths and uses paragraph boundaries before hard cuts.
  */
 
-export function chunkmarkdown(markdown, options = {}) {
+export function chunkmarkdown(markdown: any, options: Record<string, any> = {}) {
   const maxtokens = options.maxtokens ?? 512;
   const overlap = options.overlaptokens ?? 50;
   const lines = String(markdown ?? "").split(/\r?\n/);
-  const chunks = [];
-  let headingpath = [];
-  let buffer = [];
+  const chunks: any[] = [];
+  let headingpath: any[] = [];
+  let buffer: string[] = [];
   function flush() { if (!buffer.length) return; const content = buffer.join("\n").trim(); if (content) chunks.push({ content, headingpath: [...headingpath], tokencount: estimatetokens(content, options.model) }); buffer = []; }
   for (const line of lines) {
     const heading = line.match(/^(#{1,6})[ \t]+(\S.*)$/);
     if (heading) { flush(); const level = heading[1].length; headingpath = headingpath.slice(0, level - 1); headingpath[level - 1] = heading[2].trim(); buffer.push(line); continue; }
     buffer.push(line);
-    if (estimatetokens(buffer.join("\n"), options.model) > maxtokens) { const last = buffer.pop(); flush(); const overlaptext = buffer.slice(-overlap).join("\n"); buffer = overlaptext ? [overlaptext, last] : [last]; }
+    if (estimatetokens(buffer.join("\n"), options.model) > maxtokens) { const last: any = buffer.pop(); flush(); const overlaptext = buffer.slice(-overlap).join("\n"); buffer = overlaptext ? [overlaptext, last] : [last]; }
   }
   flush();
-  return chunks.map((chunk, index) => ({ ...chunk, id: `chunk${index}` }));
+  return chunks.map((chunk: any, index: any) => ({ ...chunk, id: `chunk${index}` }));
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -84,17 +120,17 @@ export function chunkmarkdown(markdown, options = {}) {
 /**
  * rag manifests connect chunks to embedding stores without forcing a vendor client.
  */
-export async function ragmanifest(input = {}) {
+export async function ragmanifest(input: Record<string, any> = {}) {
   const chunks = input.chunks ?? [];
   const unique = [];
   const hashes = new Set();
   for (const chunk of chunks) { const hash = await hashtext(chunk.content); if (hashes.has(hash)) continue; hashes.add(hash); unique.push({ ...chunk, contenthash: hash, documentid: hash.slice(0, 16), metadata: { ...(input.metadata ?? {}), ...(chunk.metadata ?? {}) } }); }
-  return { documentid: (await hashtext(input.source ?? unique.map((chunk) => chunk.content).join("\n"))).slice(0, 16), source: input.source, chunks: unique, embeddingmodel: input.embeddingmodel, embeddingdimensions: input.embeddingdimensions, createdat: Date.now() };
+  return { documentid: (await hashtext(input.source ?? unique.map((chunk: any) => chunk.content).join("\n"))).slice(0, 16), source: input.source, chunks: unique, embeddingmodel: input.embeddingmodel, embeddingdimensions: input.embeddingdimensions, createdat: Date.now() };
 }
 
-export function vectorrecord(chunk, vector, options = {}) { return { id: `${chunk.documentid}-${chunk.id}`, vector, metadata: { headingpath: chunk.headingpath, contenthash: chunk.contenthash, sourceurl: options.sourceurl, tokencount: chunk.tokencount, contenttype: options.contenttype ?? "text", language: options.language ?? "en", embeddingmodel: options.embeddingmodel, embeddingdimensions: vector?.length } }; }
+export function vectorrecord(chunk: any, vector: any, options: Record<string, any> = {}) { return { id: `${chunk.documentid}-${chunk.id}`, vector, metadata: { headingpath: chunk.headingpath, contenthash: chunk.contenthash, sourceurl: options.sourceurl, tokencount: chunk.tokencount, contenttype: options.contenttype ?? "text", language: options.language ?? "en", embeddingmodel: options.embeddingmodel, embeddingdimensions: vector?.length } }; }
 
-async function hashtext(text) { const bytes = new TextEncoder().encode(String(text)); if (globalThis.crypto?.subtle) { const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes); return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join(""); } return Array.from(bytes).map((value) => value.toString(16).padStart(2, "0")).join("").slice(0, 64).padEnd(64, "0"); }
+async function hashtext(text: any) { const bytes = new TextEncoder().encode(String(text)); if (globalThis.crypto?.subtle) { const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes); return [...new Uint8Array(digest)].map((value: any) => value.toString(16).padStart(2, "0")).join(""); } return Array.from(bytes).map((value: any) => value.toString(16).padStart(2, "0")).join("").slice(0, 64).padEnd(64, "0"); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 5: ai/llmstxt.ts — llms text generation creates compact absolute links for agent consumption. */
@@ -102,15 +138,15 @@ async function hashtext(text) { const bytes = new TextEncoder().encode(String(te
 /**
  * llms text generation creates compact absolute links for agent consumption.
  */
-export function llmstxt(options = {}) {
+export function llmstxt(options: Record<string, any> = {}) {
   const title = options.title ?? "devthink";
   const description = options.description ?? "the reasoning workspace of the devthink family";
-  const pages = (options.pages ?? []).filter((page) => page?.url && /^https:\/\//.test(page.url)).slice(0, options.limit ?? 100);
-  const lines = [`# ${title}`, `> ${description}`, "", "## pages", "", ...pages.map((page) => `- [${page.title ?? page.url}](${page.url}): ${(page.description ?? "").slice(0, 100)}`)];
+  const pages = (options.pages ?? []).filter((page: any) => page?.url && /^https:\/\//.test(page.url)).slice(0, options.limit ?? 100);
+  const lines = [`# ${title}`, `> ${description}`, "", "## pages", "", ...pages.map((page: any) => `- [${page.title ?? page.url}](${page.url}): ${(page.description ?? "").slice(0, 100)}`)];
   return `${lines.join("\n")}\n`;
 }
 
-export function llmsfull(options = {}) { return (options.pages ?? []).filter((page) => page?.url && /^https:\/\//.test(page.url)).map((page) => `# ${page.title ?? page.url}\n\nsource: ${page.url}\n\n${page.content ?? ""}`).join("\n\n---\n\n"); }
+export function llmsfull(options: Record<string, any> = {}) { return (options.pages ?? []).filter((page: any) => page?.url && /^https:\/\//.test(page.url)).map((page: any) => `# ${page.title ?? page.url}\n\nsource: ${page.url}\n\n${page.content ?? ""}`).join("\n\n---\n\n"); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 6: ai/metrics.ts — metrics keeps low-cardinality counters and durations without requiring a telemetry vendor. */
@@ -120,14 +156,14 @@ export function llmsfull(options = {}) { return (options.pages ?? []).filter((pa
  */
 
 /** Creates an in-memory metric collector with bounded names and labels. */
-export function metricstore(options = {}) {
+export function metricstore(options: Record<string, any> = {}) {
   const maxnames = Number(options.maxnames ?? 256);
   const values = new Map();
   const durations = new Map();
-  function key(name, labels = {}) { const sorted = Object.entries(labels).slice(0, 8).sort(([left], [right]) => left.localeCompare(right)); return `${String(name)}|${JSON.stringify(sorted)}`; }
-  function count(name, amount = 1, labels = {}) { if (values.size >= maxnames && !values.has(key(name, labels))) throw new Error("metric cardinality limit reached"); const metric = key(name, labels); values.set(metric, (values.get(metric) ?? 0) + Number(amount)); return values.get(metric); }
-  function observe(name, milliseconds, labels = {}) { const metric = key(name, labels); const list = durations.get(metric) ?? []; if (list.length < 1000) list.push(Number(milliseconds)); durations.set(metric, list); return Number(milliseconds); }
-  function snapshot() { return { counters: Object.fromEntries(values), durations: Object.fromEntries([...durations].map(([name, list]) => [name, { count: list.length, total: list.reduce((sum, value) => sum + value, 0), max: Math.max(0, ...list) }])) }; }
+  function key(name: any, labels: Record<string, any> = {}) { const sorted = Object.entries(labels).slice(0, 8).sort(([left], [right]) => left.localeCompare(right)); return `${String(name)}|${JSON.stringify(sorted)}`; }
+  function count(name: any, amount = 1, labels: Record<string, any> = {}) { if (values.size >= maxnames && !values.has(key(name, labels))) throw new Error("metric cardinality limit reached"); const metric = key(name, labels); values.set(metric, (values.get(metric) ?? 0) + Number(amount)); return values.get(metric); }
+  function observe(name: any, milliseconds: any, labels: Record<string, any> = {}) { const metric = key(name, labels); const list = durations.get(metric) ?? []; if (list.length < 1000) list.push(Number(milliseconds)); durations.set(metric, list); return Number(milliseconds); }
+  function snapshot() { return { counters: Object.fromEntries(values), durations: Object.fromEntries([...durations].map(([name, list]) => [name, { count: list.length, total: list.reduce((sum: any, value: any) => sum + value, 0), max: Math.max(0, ...list) }])) }; }
   function reset() { values.clear(); durations.clear(); }
   return { count, observe, snapshot, reset };
 }

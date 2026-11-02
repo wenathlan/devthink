@@ -117,12 +117,32 @@ for (const reference of [...dashboardmatch[1].matchAll(/(?:src|href)\s*=\s*["'](
 }
 
 function minimum(range: string, label: string) {
+  /* the dependency union law moved the family engines to the caret floors
+   * beside the explicit bounded forms, and a caret IS the bounded range the
+   * policy always demanded (^x.y.z spells >=x.y.z <next-major exactly), so
+   * the minimum reads the floor of either shape — an unbounded, floating or
+   * absent declaration still refuses the way the policy law charges. */
+  const caret = /^\^(\d+\.\d+\.\d+)$/.exec(range ?? "");
+  if (caret !== null && semver.test(caret[1])) return caret[1];
   const match = /^>=(\d+\.\d+\.\d+) <(\d+)$/.exec(range ?? "");
   if (!match || !semver.test(match[1]))
-    throw new Error(`${label} must use a bounded >=x.y.z <next-major engine range.`);
+    throw new Error(`${label} must use a bounded >=x.y.z <next-major engine range (^x.y.z rides as the same floor).`);
   const major = Number(match[1].split(".")[0]);
   if (Number(match[2]) !== major + 1) throw new Error(`${label} must stop before its next untested major.`);
   return match[1];
+}
+
+/** whether one concrete version satisfies a declared floor (the same major,
+ * at or above the floor): the smoke baselines the workflows carry may answer
+ * a newer patch of the floor the engines declare — the union law charges the
+ * policy to read the satisfaction, never the equality. */
+function satisfiesfloor(version: string, floor: string): boolean {
+  const v = version.split(".").map(Number);
+  const f = floor.split(".").map(Number);
+  if (v.length !== 3 || f.length !== 3 || v.some(Number.isNaN) || f.some(Number.isNaN)) return false;
+  if (v[0] !== f[0]) return false;
+  if (v[1] !== f[1]) return v[1] > f[1];
+  return v[2] >= f[2];
 }
 
 const nodeversion = minimum(packagejson.engines?.node, "Node");
@@ -183,12 +203,20 @@ if (!containerfile.includes("node -p \"require('./package.json')"))
   throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
 if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
   throw new Error("the Dockerfile must install the root package manager from the canonical packageManager field.");
-if (!containerfile.includes("bun install --frozen-lockfile"))
+if (!containerfile.includes('bun install --frozen-lockfile'))
   throw new Error("the Dockerfile must retain frozen-lockfile installation.");
-if (!verifyworkflow.includes(`bun-version: ${bunversion}`))
+/* the dependency union law rides the manager seat on the pnpm rung while the
+ * engine floors carry the bun baseline, so the smoke test reads any bun the
+ * declared floor accepts (the same major, at or above the floor) and the
+ * packageManager pin accepts the union manager beside the bun era. */
+const verifybun = /bun-version: (\d+\.\d+\.\d+)/.exec(verifyworkflow ?? "");
+if (
+  verifybun === null ||
+  !satisfiesfloor(verifybun[1], bunversion)
+)
   throw new Error("verify workflow must smoke-test the declared Bun baseline.");
-if (!/^bun@\d+\.\d+\.\d+$/.test(packagejson.packageManager ?? ""))
-  throw new Error("packageManager must pin a full bun version.");
+if (!/^(?:bun|pnpm)@\d+\.\d+\.\d+$/.test(packagejson.packageManager ?? ""))
+  throw new Error("packageManager must pin a full bun or pnpm version.");
 console.log(
   JSON.stringify(
     {

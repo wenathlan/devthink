@@ -582,7 +582,7 @@ export interface sweepreport {
  * identical (the trail rows name the gate modules that carry the records
  * now). */
 export const sweeprecord: sweepreport = {
-  "release": "2.0.154",
+  "release": "2.1.7",
   "trails": [
     "devthink/agentcert.ts",
     "devthink/costcert.ts",
@@ -651,7 +651,7 @@ export const sweeprecord: sweepreport = {
       "family": "scans",
       "name": "no secret material appears in the bundle",
       "status": "fixed",
-      "detail": "no literal key, token or password value appears in the 347 shipped sources or the 20 compiled bundles"
+      "detail": "no literal key, token or password value appears in the 345 shipped sources or the 20 compiled bundles"
     },
     {
       "family": "scans",

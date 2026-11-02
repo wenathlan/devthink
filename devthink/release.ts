@@ -1,10 +1,13 @@
 /** Synchronizes release metadata from package.json and renders deterministic GitHub release notes with the per channel artifact sections. */
 import { readFile, writeFile } from "node:fs/promises";
 
-/** The baseline one engine declaration carries (the >= floor of the bounded range): the version catalog records the floor every artifact of the release was verified against. */
+/** The baseline one engine declaration carries (the floor of the bounded range): the version catalog records the floor every artifact of the release was verified against. the dependency union law moved the family engines to the caret and tilde floors beside the bounded >= forms, so the baseline reads the floor of every bounded shape — >=X, ^X and ~X all answer X — and an unbounded or absent declaration still answers the empty string the catalog refuses. */
 function enginebaseline(declaration: unknown) {
-  const match = />=([0-9A-Za-z.-]+)/.exec(String(declaration ?? ""));
-  return match === null ? "" : match[1];
+  const text = String(declaration ?? "").trim();
+  const floor = />=([0-9A-Za-z.-]+)/.exec(text);
+  if (floor !== null) return floor[1];
+  const caret = /^[~^]?([0-9A-Za-z.-]+)/.exec(text);
+  return caret === null ? "" : caret[1];
 }
 
 /** The release artifact names of one version: the list mirrors the channel resolution of the artifactmanifest module so the notes, the manifest and the docs speak the same catalog; the publishing pipeline tests assert the mirror never drifts. */

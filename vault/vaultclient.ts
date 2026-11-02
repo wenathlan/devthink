@@ -759,3 +759,30 @@ export function useVaultUsage(): { live: UsageAnswer | null; lane: "live" | "awa
   }, []);
   return state;
 }
+
+/**
+ * useVaultQuota — the mount hook of the plans lane: it loads the quota
+ * verdict of the pinned project once per mount when the engine lane
+ * answers, so the plans table renders the user-defined limit the
+ * database holds above the declared rehearsal (the away lane keeps the
+ * seed — never a blank, never an invented figure).
+ *
+ * @returns the live quota verdict when the lane answered (null otherwise).
+ */
+export function useVaultQuota(): { live: QuotaAnswer | null } {
+  const [state, setState] = useState<{ live: QuotaAnswer | null }>({ live: null });
+  useEffect(() => {
+    let alive = true;
+    const project = vaultproject();
+    if (project === "") return;
+    const client = vaultclient();
+    void client.getQuota(project).then((answer) => {
+      if (!alive) return;
+      if (answer.ok) setState({ live: answer });
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return state;
+}

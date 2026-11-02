@@ -7,7 +7,7 @@
  * compiles the theme stylesheet's `@import "tailwindcss"` head (the @theme
  * source of truth + the light/hcf custom variants). */
 
-import { copyFileSync } from "node:fs";
+import { copyFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -27,14 +27,17 @@ function pagesBasePath(value: string | undefined): string {
  * surface. */
 const DEPLOY_FACES = ["_headers", "_redirects", "favicon.svg", "icon.svg", "robots.txt", "sitemap.xml"] as const;
 
-/** the dist copy of the deploy faces (closeBundle answers after the emit
- * landed, so the outDir always exists when the copy rides). */
+/** the dist copy of the deploy faces (the writeBundle hook answers only
+ * after the emit landed the files on disk — the rolldown vite v8 lane
+ * closes the bundle before the write, so the closeBundle seat never saw
+ * the outDir; the mkdir keeps the copy lawful under every lane). */
 function copyDeployFaces(): Plugin {
   const root = import.meta.dirname;
   return {
     name: "vault-deploy-faces",
-    closeBundle() {
+    writeBundle() {
       const outDir = path.resolve(root, "dist");
+      mkdirSync(outDir, { recursive: true });
       for (const face of DEPLOY_FACES) {
         copyFileSync(path.resolve(root, face), path.join(outDir, face));
       }

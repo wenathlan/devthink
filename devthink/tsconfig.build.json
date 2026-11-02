@@ -10,6 +10,7 @@
     "rootDir": ".",
     "paths": {
       "@/*": ["./Sol/*", "./*"],
+      "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/devthink/server": ["./server.ts"]
     }
   },

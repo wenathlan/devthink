@@ -36,3 +36,5 @@ minimumReleaseAgeExclude:
   - '@wenathlan/vault@2.0.153 || 2.0.154'
   - '@wenathlan/getry@2.0.154'
   - hono@4.13.16
+  - '@wenathlan/cadria@2.0.154'
+  - '@wenathlan/debonair@2.0.154'

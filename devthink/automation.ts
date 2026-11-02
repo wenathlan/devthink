@@ -33,12 +33,12 @@ export const triggernames = Object.freeze(["manual", "dispatch", "webhook", "sch
 /** Validates and normalizes a trigger declaration. */
 export function workflowtriggers(value = ["manual"]) {
   const list = Array.isArray(value) ? value : [value];
-  if (list.length === 0 || list.some((name) => !triggernames.includes(name))) throw new TypeError("workflow trigger is unsupported");
+  if (list.length === 0 || list.some((name: any) => !triggernames.includes(name))) throw new TypeError("workflow trigger is unsupported");
   return [...new Set(list)];
 }
 
 /** Matches a workflow trigger against an incoming event without executing it. */
-export function triggermatch(manifest, event = {}) {
+export function triggermatch(manifest: any, event: Record<string, any> = {}) {
   const triggers = workflowtriggers(manifest?.trigger);
   const type = String(event.type ?? "manual");
   if (!triggers.includes(type)) return { matched: false, type, reason: "trigger-not-declared" };
@@ -49,14 +49,14 @@ export function triggermatch(manifest, event = {}) {
 }
 
 /** Validates and normalizes caller-supplied workflow inputs against a manifest schema. */
-export function validateworkflowinputs(manifest, values = {}) {
-  const schema = manifest?.inputs ?? {};
+export function validateworkflowinputs(manifest: any, values: Record<string, any> = {}) {
+  const schema: Record<string, any> = manifest?.inputs ?? {};
   const source = values && typeof values === "object" && !Array.isArray(values) ? values : {};
   const errors = [];
-  const normalized = {};
+  const normalized: Record<string, any> = {};
   for (const name of Object.keys(source)) if (!Object.hasOwn(schema, name)) errors.push({ name, reason: "unknown-input" });
   for (const [name, declaration] of Object.entries(schema)) {
-    const rule = typeof declaration === "string" ? { type: declaration } : declaration ?? {};
+    const rule: Record<string, any> = typeof declaration === "string" ? { type: declaration } : (declaration as Record<string, any>) ?? {};
     let value = source[name];
     if (value === undefined && rule.default !== undefined) value = rule.default;
     if (value === undefined) {
@@ -74,14 +74,14 @@ export function validateworkflowinputs(manifest, values = {}) {
 /** Keeps trigger declarations and produces deterministic matching results. */
 export function triggerregistry() {
   const values = new Map();
-  function register(manifest) { if (!manifest?.name) throw new TypeError("trigger manifest requires name"); const normalized = { ...manifest, trigger: workflowtriggers(manifest.trigger) }; values.set(normalized.name, normalized); return normalized; }
-  function get(name) { return values.get(name); }
-  function match(name, event) { const manifest = get(name); if (!manifest) throw new Error(`workflow not found: ${name}`); return triggermatch(manifest, event); }
-  function list() { return [...values.values()].map((manifest) => ({ ...manifest, trigger: [...manifest.trigger] })); }
+  function register(manifest: any) { if (!manifest?.name) throw new TypeError("trigger manifest requires name"); const normalized = { ...manifest, trigger: workflowtriggers(manifest.trigger) }; values.set(normalized.name, normalized); return normalized; }
+  function get(name: any) { return values.get(name); }
+  function match(name: any, event: any) { const manifest = get(name); if (!manifest) throw new Error(`workflow not found: ${name}`); return triggermatch(manifest, event); }
+  function list() { return [...values.values()].map((manifest: any) => ({ ...manifest, trigger: [...manifest.trigger] })); }
   return { register, get, match, list };
 }
 
-function convertinput(value, type) {
+function convertinput(value: any, type: any) {
   if (type === "string") return { value: String(value) };
   if (type === "number") { const number = typeof value === "number" ? value : Number(value); return Number.isFinite(number) ? { value: number } : { error: "number" }; }
   if (type === "boolean") { if (value === true || value === "true") return { value: true }; if (value === false || value === "false") return { value: false }; return { error: "boolean" }; }
@@ -89,9 +89,9 @@ function convertinput(value, type) {
   return { error: "type" };
 }
 
-function stablevalue(value) {
+function stablevalue(value: any): string {
   if (Array.isArray(value)) return `[${value.map(stablevalue).join(",")}]`;
-  if (value && typeof value === "object") return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stablevalue(value[key])}`).join(",")}}`;
+  if (value && typeof value === "object") return `{${Object.keys(value).sort().map((key: any) => `${JSON.stringify(key)}:${stablevalue(value[key])}`).join(",")}}`;
   return JSON.stringify(value);
 }
 
@@ -103,13 +103,13 @@ function stablevalue(value) {
  */
 
 /** Creates a command guard from caller supplied command and scope policies. */
-export function commandguard(options = {}) {
+export function commandguard(options: Record<string, any> = {}) {
   const policies = options.policies ?? {};
-  function check(input = {}) {
+  function check(input: Record<string, any> = {}) {
     const command = String(input.command ?? "");
     const policy = policies[command] ?? { scopes: [] };
     const scopes = input.scopes ?? [];
-    const missing = (policy.scopes ?? []).filter((scope) => !scopes.includes(scope));
+    const missing = (policy.scopes ?? []).filter((scope: any) => !scopes.includes(scope));
     return { allowed: missing.length === 0, command, missing, platform: input.platform };
   }
   return { check };
@@ -121,10 +121,10 @@ export function commandguard(options = {}) {
 /**
  * command parsing keeps the bot surface serializable and platform neutral.
  */
-export function parsecommand(input) {
+export function parsecommand(input: any) {
   const tokens = tokenize(String(input ?? ""));
   const command = tokens.shift() ?? "help";
-  const flags = {};
+  const flags: Record<string, any> = {};
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
     if (!token.startsWith("--")) continue;
@@ -135,7 +135,7 @@ export function parsecommand(input) {
   return { command: command.toLowerCase(), flags };
 }
 
-function tokenize(input) { return input.match(/(?:[^\s"]+|"[^"]*")+/g)?.map((value) => value.replace(/^"|"$/g, "")) ?? []; }
+function tokenize(input: any) { return input.match(/(?:[^\s"]+|"[^"]*")+/g)?.map((value: any) => value.replace(/^"|"$/g, "")) ?? []; }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 4: automation/adapter.ts — platform adapters expose only the operations a bot needs. */
@@ -143,7 +143,7 @@ function tokenize(input) { return input.match(/(?:[^\s"]+|"[^"]*")+/g)?.map((val
 /**
  * platform adapters expose only the operations a bot needs.
  */
-export function platformadapter(methods) {
+export function platformadapter(methods: any) {
   const required = ["authenticate", "listrepos", "createwebhook", "executebot"];
   for (const name of required) if (typeof methods?.[name] !== "function") throw new TypeError(`platform adapter requires ${name}`);
   return methods;
@@ -157,7 +157,7 @@ export function platformadapter(methods) {
  */
 export const forgeprofiles = Object.freeze(["github", "forgejo", "gitea", "woodpecker", "gitlab"]);
 
-export function workflowmanifest(options = {}) {
+export function workflowmanifest(options: Record<string, any> = {}) {
   if (!options.name || !options.command) throw new TypeError("workflow manifest requires name and command");
   return {
     name: options.name,
@@ -172,7 +172,7 @@ export function workflowmanifest(options = {}) {
   };
 }
 
-export function workflowinputs(manifest) { return { name: manifest.name, command: manifest.command, timeoutminutes: manifest.timeoutminutes, artifacts: manifest.artifacts.join(",") }; }
+export function workflowinputs(manifest: any) { return { name: manifest.name, command: manifest.command, timeoutminutes: manifest.timeoutminutes, artifacts: manifest.artifacts.join(",") }; }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 6: automation/workflowtemplates.ts — workflow templates use explicit environment names and keep provider secrets external. */
@@ -181,17 +181,17 @@ export function workflowinputs(manifest) { return { name: manifest.name, command
  * workflow templates use explicit environment names and keep provider secrets external.
  */
 
-export function githubworkflow(manifest) {
+export function githubworkflow(manifest: any) {
   const input = workflowinputs(manifest);
   return `name: ${manifest.name}\non:\n  workflow_dispatch:\n    inputs:\n      jobid:\n        required: true\n        type: string\n      command:\n        required: true\n        type: string\n        default: ${manifest.command}\n  repository_dispatch:\n    types: [saddle-job]\npermissions:\n  contents: read\njobs:\n  process:\n    runs-on: ubuntu-latest\n    timeout-minutes: ${input.timeoutminutes}\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 26.12.0\n      - run: npm ci\n      - run: \${{ github.event.inputs.command || '${manifest.command}' }}\n        env:\n          SBOT_JOB_ID: \${{ github.event.inputs.jobid || github.event.client_payload.jobid }}\n      - uses: actions/upload-artifact@v4\n        name: saddle-results\n        path: ${manifest.artifacts.join("\n            ")}\n          if-no-files-found: ignore\n`;
 }
 
-export function forgejoworkflow(manifest) { return genericworkflow(manifest, "forgejo"); }
-export function giteaworkflow(manifest) { return genericworkflow(manifest, "gitea"); }
-export function woodpeckerworkflow(manifest) { return `when:\n  - event: push\n  - event: manual\nsteps:\n  process:\n    image: node:26.12.0\n    commands:\n      - npm ci\n      - ${manifest.command}\n`; }
-export function gitlabworkflow(manifest) { return `stages:\n  - process\nprocess:\n  stage: process\n  image: node:26.12.0\n  script:\n    - npm ci\n    - ${manifest.command}\n  artifacts:\n    when: always\n    paths:\n${manifest.artifacts.map((item) => `      - ${item}`).join("\n")}\n`; }
+export function forgejoworkflow(manifest: any) { return genericworkflow(manifest, "forgejo"); }
+export function giteaworkflow(manifest: any) { return genericworkflow(manifest, "gitea"); }
+export function woodpeckerworkflow(manifest: any) { return `when:\n  - event: push\n  - event: manual\nsteps:\n  process:\n    image: node:26.12.0\n    commands:\n      - npm ci\n      - ${manifest.command}\n`; }
+export function gitlabworkflow(manifest: any) { return `stages:\n  - process\nprocess:\n  stage: process\n  image: node:26.12.0\n  script:\n    - npm ci\n    - ${manifest.command}\n  artifacts:\n    when: always\n    paths:\n${manifest.artifacts.map((item: any) => `      - ${item}`).join("\n")}\n`; }
 
-function genericworkflow(manifest, name) { return `name: ${manifest.name}\non:\n  workflow_dispatch:\njobs:\n  process:\n    runs-on: ubuntu-latest\n    timeout-minutes: ${manifest.timeoutminutes}\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 26.12.0\n      - run: npm ci\n      - run: ${manifest.command}\n`; }
+function genericworkflow(manifest: any, name: any) { return `name: ${manifest.name}\non:\n  workflow_dispatch:\njobs:\n  process:\n    runs-on: ubuntu-latest\n    timeout-minutes: ${manifest.timeoutminutes}\n    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n        with:\n          node-version: 26.12.0\n      - run: npm ci\n      - run: ${manifest.command}\n`; }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 7: automation/workflowregistry.ts — workflow registry stores generated manifests and templates for later dispatch. */
@@ -202,11 +202,11 @@ function genericworkflow(manifest, name) { return `name: ${manifest.name}\non:\n
 
 export function workflowregistry() {
   const manifests = new Map();
-  const renderers = { github: githubworkflow, forgejo: forgejoworkflow, gitea: giteaworkflow, woodpecker: woodpeckerworkflow, gitlab: gitlabworkflow };
+  const renderers: Record<string, (manifest: any) => string> = { github: githubworkflow, forgejo: forgejoworkflow, gitea: giteaworkflow, woodpecker: woodpeckerworkflow, gitlab: gitlabworkflow };
   return {
-    register(manifest) { manifests.set(manifest.name, manifest); return manifest; },
-    get(name) { return manifests.get(name) ?? null; },
-    render(name, forge) { if (!renderers[forge] || !forgeprofiles.includes(forge)) throw new TypeError(`unsupported forge: ${forge}`); const manifest = manifests.get(name); if (!manifest) throw new Error(`workflow not found: ${name}`); return renderers[forge](manifest); },
+    register(manifest: any) { manifests.set(manifest.name, manifest); return manifest; },
+    get(name: any) { return manifests.get(name) ?? null; },
+    render(name: any, forge: any) { if (!renderers[forge] || !forgeprofiles.includes(forge)) throw new TypeError(`unsupported forge: ${forge}`); const manifest = manifests.get(name); if (!manifest) throw new Error(`workflow not found: ${name}`); return renderers[forge](manifest); },
     list() { return [...manifests.values()]; }
   };
 }
@@ -218,14 +218,14 @@ export function workflowregistry() {
  * saddlebot unifies commands without owning a platform credential or scheduler.
  */
 
-export function saddlebot(options = {}) {
-  const adapters = new Map(Object.entries(options.adapters ?? {}));
-  const tasks = new Map();
+export function saddlebot(options: Record<string, any> = {}) {
+  const adapters = new Map<string, any>(Object.entries(options.adapters ?? {}));
+  const tasks = new Map<string, any>();
   const guard = options.guard;
-  const keys = new Map();
-  const state = { status: "stopped", startedat: undefined, commands: 0 };
-  const timers = new Set();
-  async function executecommand(input, context = {}) {
+  const keys = new Map<string, any>();
+  const state: { status: string; startedat?: number; commands: number } = { status: "stopped", startedat: undefined, commands: 0 };
+  const timers = new Set<ReturnType<typeof setTimeout>>();
+  async function executecommand(input: any, context: Record<string, any> = {}) {
     const parsed = typeof input === "string" ? parsecommand(input) : input;
     state.commands += 1;
     if (parsed.command === "status") return getstatus();
@@ -234,7 +234,7 @@ export function saddlebot(options = {}) {
     const adapter = adapters.get(platform);
     if (!adapter) throw new Error(`no adapter registered for ${platform ?? "command"}`);
     const permission = guard?.check({ command: parsed.command, platform, scopes: context.scopes ?? [] });
-    if (permission && !permission.allowed) { const error = new Error(`bot command is not authorized: ${parsed.command}`); error.code = "BOT_COMMAND_UNAUTHORIZED"; error.missing = permission.missing; throw error; }
+    if (permission && !permission.allowed) { const error: any = new Error(`bot command is not authorized: ${parsed.command}`); error.code = "BOT_COMMAND_UNAUTHORIZED"; error.missing = permission.missing; throw error; }
     const key = context.idempotencykey;
     if (key && keys.has(key)) return keys.get(key);
     const result = await adapter.executebot({ command: parsed.command, flags: parsed.flags, context });
@@ -243,12 +243,12 @@ export function saddlebot(options = {}) {
   }
   function getstatus() { return { ...state, adapters: [...adapters.keys()], tasks: [...tasks.keys()] }; }
   return {
-    register(name, adapter) { adapters.set(name, adapter); return this; },
+    register(name: any, adapter: any) { adapters.set(name, adapter); return this; },
     async start() { state.status = "running"; state.startedat = Date.now(); return getstatus(); },
     async stop() { for (const timer of timers) clearTimeout(timer); timers.clear(); state.status = "stopped"; return getstatus(); },
     executecommand,
-    async handlewebhook(platform, event) { const adapter = adapters.get(platform); if (!adapter) throw new Error(`no adapter registered for ${platform}`); return adapter.executebot({ command: "webhook", event }); },
-    scheduletask(name, task, delay) { if (typeof task !== "function" || !Number.isFinite(delay)) throw new TypeError("schedule requires task and delay"); const timer = setTimeout(async () => { tasks.delete(name); await task(); }, delay); timers.add(timer); tasks.set(name, { name, delay, scheduledat: Date.now() }); return tasks.get(name); },
+    async handlewebhook(platform: any, event: any) { const adapter = adapters.get(platform); if (!adapter) throw new Error(`no adapter registered for ${platform}`); return adapter.executebot({ command: "webhook", event }); },
+    scheduletask(name: any, task: any, delay: any) { if (typeof task !== "function" || !Number.isFinite(delay)) throw new TypeError("schedule requires task and delay"); const timer = setTimeout(async () => { tasks.delete(name); await task(); }, delay); timers.add(timer); tasks.set(name, { name, delay, scheduledat: Date.now() }); return tasks.get(name); },
     getstatus
   };
 }
@@ -259,27 +259,27 @@ export function saddlebot(options = {}) {
 /**
  * n8n node metadata keeps workflow automation as a packaging surface.
  */
-export function n8nnode(options = {}) {
+export function n8nnode(options: Record<string, any> = {}) {
   const triggers = normalize(options.triggers ?? n8ntriggers);
   const actions = normalize(options.actions ?? n8nactions);
-  return { name: options.name ?? "saddle", displayname: options.displayname ?? "Saddle", description: options.description ?? "Saddle engine operation", version: 1, inputs: options.inputs ?? ["main"], outputs: options.outputs ?? ["main"], triggers, actions, properties: options.properties ?? [{ displayname: "trigger", name: "trigger", type: "options", options: triggers.map((value) => ({ name: value, value })) }, { displayname: "command", name: "command", type: "options", options: actions.map((value) => ({ name: value, value })), default: "status" }] };
+  return { name: options.name ?? "saddle", displayname: options.displayname ?? "Saddle", description: options.description ?? "Saddle engine operation", version: 1, inputs: options.inputs ?? ["main"], outputs: options.outputs ?? ["main"], triggers, actions, properties: options.properties ?? [{ displayname: "trigger", name: "trigger", type: "options", options: triggers.map((value: any) => ({ name: value, value })) }, { displayname: "command", name: "command", type: "options", options: actions.map((value: any) => ({ name: value, value })), default: "status" }] };
 }
 
 export const n8ntriggers = Object.freeze(["manual", "dispatch", "webhook", "schedule", "retry", "heartbeat"]);
 export const n8nactions = Object.freeze(["status", "browser", "memory", "sync"]);
 
 /** Matches an incoming event against the trigger declarations of a node. */
-export function n8nmatch(node, event = {}) { const type = String(event.type ?? "manual"); return { matched: Boolean(node?.triggers?.includes(type)), type, requestid: event.requestid ?? `${node?.name ?? "saddle"}/${type}` }; }
+export function n8nmatch(node: any, event: Record<string, any> = {}) { const type = String(event.type ?? "manual"); return { matched: Boolean(node?.triggers?.includes(type)), type, requestid: event.requestid ?? `${node?.name ?? "saddle"}/${type}` }; }
 
 /** Executes a declared n8n action through a caller-owned handler. */
-export async function n8nexecute(node, input, handler) {
+export async function n8nexecute(node: any, input: any, handler: any) {
   if (typeof handler !== "function") throw new TypeError("n8n handler is required");
   const action = String(input?.action ?? input?.command ?? "status");
   if (!node?.actions?.includes(action)) throw new TypeError(`unsupported n8n action: ${action}`);
-  try { return await handler({ node, input: { ...(input ?? {}), action } }); } catch (error) { const failure = new Error(`n8n action failed: ${errormessage(error)}`, { cause: error }); failure.code = String(error?.code ?? "N8N_ACTION_FAILED"); throw failure; }
+  try { return await handler({ node, input: { ...(input ?? {}), action } }); } catch (error) { const failure: any = new Error(`n8n action failed: ${errormessage(error)}`, { cause: error }); failure.code = String((error as any)?.code ?? "N8N_ACTION_FAILED"); throw failure; }
 }
 
-function normalize(values) { const list = Array.isArray(values) ? values : [values]; if (!list.length || list.some((value) => typeof value !== "string" || !value)) throw new TypeError("n8n declarations are invalid"); return [...new Set(list)]; }
+function normalize(values: any) { const list = Array.isArray(values) ? values : [values]; if (!list.length || list.some((value: any) => typeof value !== "string" || !value)) throw new TypeError("n8n declarations are invalid"); return [...new Set(list)]; }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 10: automation/surfacemanifest.ts — surface manifests describe repackaging targets without adding target code to the engine. */
@@ -308,25 +308,25 @@ export const surfaceformats = Object.freeze({
   n8n: Object.freeze(["node", "json"])
 });
 
-export function surfacemanifest(options = {}) {
+export function surfacemanifest(options: Record<string, any> = {}) {
   const target = options.target ?? "library";
   if (!surfaces.includes(target)) throw new TypeError(`unsupported surface: ${target}`);
-  return { target, name: options.name ?? "saddle", entry: options.entry ?? "dist/index.js", runtime: options.runtime ?? "caller", formats: [...(options.formats ?? surfaceformats[target] ?? [])], permissions: options.permissions ?? [], capabilities: options.capabilities ?? ["memory", "workflow"], metadata: options.metadata ?? {} };
+  return { target, name: options.name ?? "saddle", entry: options.entry ?? "dist/index.js", runtime: options.runtime ?? "caller", formats: [...(options.formats ?? (surfaceformats as Record<string, readonly string[]>)[target] ?? [])], permissions: options.permissions ?? [], capabilities: options.capabilities ?? ["memory", "workflow"], metadata: options.metadata ?? {} };
 }
 
 /** Creates a desktop surface manifest with caller-selected packaging formats. */
-export function desktopmanifest(options = {}) { return surfacemanifest({ ...options, target: "desktop", formats: options.formats ?? surfaceformats.desktop }); }
+export function desktopmanifest(options: Record<string, any> = {}) { return surfacemanifest({ ...options, target: "desktop", formats: options.formats ?? surfaceformats.desktop }); }
 
 /** Creates a mobile surface manifest with caller-selected packaging formats. */
-export function mobilemanifest(options = {}) { return surfacemanifest({ ...options, target: "mobile", formats: options.formats ?? surfaceformats.mobile }); }
+export function mobilemanifest(options: Record<string, any> = {}) { return surfacemanifest({ ...options, target: "mobile", formats: options.formats ?? surfaceformats.mobile }); }
 
 /** Creates a caller-owned target manifest for any supported surface. */
-export function applicationmanifest(options = {}) { return surfacemanifest({ ...options, target: options.target ?? "application" }); }
+export function applicationmanifest(options: Record<string, any> = {}) { return surfacemanifest({ ...options, target: options.target ?? "application" }); }
 
 /** Describes installation without performing a package or platform mutation. */
-export function surfacebundle(manifest) {
+export function surfacebundle(manifest: any) {
   if (!manifest?.target || !surfaces.includes(manifest.target)) throw new TypeError("surface bundle requires a valid manifest");
-  const install = { n8n: "n8n import", browser: "import by url", extension: "load unpacked", desktop: "caller desktop bundle", mobile: "caller mobile bundle" }[manifest.target] ?? "npm install";
+  const install = ({ n8n: "n8n import", browser: "import by url", extension: "load unpacked", desktop: "caller desktop bundle", mobile: "caller mobile bundle" } as Record<string, string>)[manifest.target] ?? "npm install";
   return { ...manifest, files: [...new Set([manifest.entry, ...(manifest.files ?? [])])], install };
 }
 
@@ -343,17 +343,17 @@ const profiles = Object.freeze({
 });
 
 /** Creates a transport-neutral adapter contract for a desktop or mobile surface. */
-export function surfaceadapter(options = {}) {
+export function surfaceadapter(options: Record<string, any> = {}) {
   const target = String(options.target ?? "");
-  const profile = profiles[target];
+  const profile: any = (profiles as Record<string, any>)[target];
   if (!profile) throw new TypeError(`unsupported surface adapter: ${target}`);
   const operations = [...new Set(options.operations ?? ["open", "close", "invoke", "status"])]
-    .map((operation) => String(operation));
-  if (!operations.length || operations.some((operation) => !/^[a-z][a-z0-9]*$/.test(operation))) throw new TypeError("surface adapter operations are invalid");
+    .map((operation: any) => String(operation));
+  if (!operations.length || operations.some((operation: any) => !/^[a-z][a-z0-9]*$/.test(operation))) throw new TypeError("surface adapter operations are invalid");
   const handlers = { ...(options.handlers ?? {}) };
   for (const [operation, handler] of Object.entries(handlers)) if (typeof handler !== "function") throw new TypeError(`surface handler is not callable: ${operation}`);
 
-  async function invoke(operation, input, context = {}) {
+  async function invoke(operation: any, input: any = undefined, context: Record<string, any> = {}) {
     const name = String(operation ?? "");
     if (!operations.includes(name)) throw new TypeError(`unsupported surface operation: ${name}`);
     const handler = handlers[name];
@@ -361,7 +361,7 @@ export function surfaceadapter(options = {}) {
     try {
       return { target, operation: name, supported: true, result: await handler(input, context) };
     } catch (error) {
-      return { target, operation: name, supported: true, ok: false, code: String(error?.code ?? "SURFACE_OPERATION_FAILED"), message: errormessage(error) };
+      return { target, operation: name, supported: true, ok: false, code: String((error as any)?.code ?? "SURFACE_OPERATION_FAILED"), message: errormessage(error) };
     }
   }
 
@@ -377,10 +377,10 @@ export function surfaceadapter(options = {}) {
 }
 
 /** Creates a desktop adapter contract with caller-owned handlers. */
-export function desktopadapter(options = {}) { return surfaceadapter({ ...options, target: "desktop" }); }
+export function desktopadapter(options: Record<string, any> = {}) { return surfaceadapter({ ...options, target: "desktop" }); }
 
 /** Creates a mobile adapter contract with caller-owned handlers. */
-export function mobileadapter(options = {}) { return surfaceadapter({ ...options, target: "mobile" }); }
+export function mobileadapter(options: Record<string, any> = {}) { return surfaceadapter({ ...options, target: "mobile" }); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 12: automation/surfacecontrols.ts — control surfaces provide an operator contract for jobs, sessions, storage, runners, permissions, logs and artifacts. */
@@ -392,14 +392,34 @@ export function mobileadapter(options = {}) { return surfaceadapter({ ...options
 export const controlresources = Object.freeze(["jobs", "sessions", "storage", "runners", "permissions", "logs", "artifacts"]);
 export const controloperations = Object.freeze(["list", "get", "create", "update", "cancel", "retry", "delete", "check"]);
 
+/** the caller-owned resource adapter surface: one object of operation
+ * handlers per control resource (the input rides the caller's own shape,
+ * the context carries the request identity the audit reads). */
+export type controladapter = Record<string, (input: any, context: any) => unknown>;
+
+/** the control surface call shape (the adapters and the optional audit
+ * recorder stay caller-owned — the surface owns the routing alone). */
+export interface controlsurfaceinput {
+  adapters?: Record<string, controladapter>;
+  audit?: (event: unknown) => void;
+}
+
+/** one operator control request (the loose wire form every lane sends). */
+export interface controlrequest {
+  resource?: string;
+  operation?: string;
+  requestid?: string;
+  input?: unknown;
+}
+
 /** Creates a caller-owned operator surface with resource handlers and optional audit recording. */
-export function controlsurface(options = {}) {
+export function controlsurface(options: controlsurfaceinput = {}) {
   const adapters = { ...(options.adapters ?? {}) };
   const audit = options.audit;
   if (audit !== undefined && typeof audit !== "function") throw new TypeError("control audit must be callable");
   for (const resource of Object.keys(adapters)) if (!controlresources.includes(resource) || !adapters[resource] || typeof adapters[resource] !== "object") throw new TypeError(`unsupported control resource: ${resource}`);
 
-  async function execute(request = {}) {
+  async function execute(request: controlrequest = {}) {
     const resource = String(request.resource ?? "");
     const operation = String(request.operation ?? "");
     if (!controlresources.includes(resource) || !controloperations.includes(operation)) throw new TypeError("control request is invalid");
@@ -410,11 +430,11 @@ export function controlsurface(options = {}) {
       const result = await handler(request.input ?? {}, context);
       return respond({ ok: true, result, context, audit });
     } catch (error) {
-      return respond({ ok: false, code: String(error?.code ?? "CONTROL_FAILED"), message: errormessage(error), context, audit });
+      return respond({ ok: false, code: String((error as any)?.code ?? "CONTROL_FAILED"), message: errormessage(error), context, audit });
     }
   }
 
-  return { version: 1, resources: [...controlresources], operations: [...controloperations], execute, describe: () => ({ version: 1, resources: [...controlresources], configured: Object.keys(adapters).filter((resource) => controlresources.includes(resource)) }) };
+  return { version: 1, resources: [...controlresources], operations: [...controloperations], execute, describe: () => ({ version: 1, resources: [...controlresources], configured: Object.keys(adapters).filter((resource: any) => controlresources.includes(resource)) }) };
 }
 
 /** The message a caught value carries for the wire: an Error answers its message only (a property read the exposure model clears), and every other shape answers the fallback — the caught value as a whole never rides the payload, not even a thrown string (the object taint the exposure flow pinned walked exactly that lane). */
@@ -423,7 +443,7 @@ const errormessage = (error: unknown, fallback = "operation failed"): string => 
   return fallback;
 };
 
-async function respond({ ok, result, code, message, context, audit }) {
+async function respond({ ok, result, code, message, context, audit }: any) {
   const response = { version: 1, ok, ...context, ...(ok ? { result } : { code, message }) };
   if (audit) try { await audit(response); } catch (error) { response.auditerror = errormessage(error); }
   return response;
@@ -439,10 +459,10 @@ async function respond({ ok, result, code, message, context, audit }) {
 export const operationmetrics = Object.freeze(["latency", "retries", "queuedepth", "runnerselection", "storagebytes", "failures"]);
 
 /** Binds the standard operational metric names to an injected metric collector. */
-export function operationsmetrics(options = {}) {
+export function operationsmetrics(options: Record<string, any> = {}) {
   const collector = options.collector;
   if (!collector || typeof collector.count !== "function" || typeof collector.observe !== "function" || typeof collector.snapshot !== "function") throw new TypeError("operations metrics requires a collector");
-  function record(name, value = 1, labels = {}) {
+  function record(name: any, value = 1, labels: Record<string, any> = {}) {
     if (!operationmetrics.includes(name)) throw new TypeError(`unsupported operation metric: ${name}`);
     return name === "latency" ? collector.observe(name, value, labels) : collector.count(name, value, labels);
   }
@@ -450,30 +470,41 @@ export function operationsmetrics(options = {}) {
 }
 
 /** Creates a deterministic retention policy for caller-owned records. */
-export function retentionpolicy(options = {}) {
+export function retentionpolicy(options: Record<string, any> = {}) {
   const days = Number(options.days ?? 30);
   const maxbytes = Number(options.maxbytes ?? Number.POSITIVE_INFINITY);
   if (!Number.isFinite(days) || days < 0 || !Number.isFinite(maxbytes) || maxbytes < 0) throw new TypeError("retention policy limits are invalid");
-  return { days, maxbytes, cutoff(now = Date.now()) { return Number(now) - days * 86400000; }, keeps(record, now = Date.now()) { return Number(record?.updatedat ?? record?.createdat ?? 0) >= this.cutoff(now) && Number(record?.bytes ?? 0) <= maxbytes; } };
+  return { days, maxbytes, cutoff(now = Date.now()) { return Number(now) - days * 86400000; }, keeps(record: any, now: any = Date.now()) { return Number(record?.updatedat ?? record?.createdat ?? 0) >= this.cutoff(now) && Number(record?.bytes ?? 0) <= maxbytes; } };
+}
+
+/** the caller-owned backup/restore handler shape: the input record rides
+ * the caller's own type, the plan passes it through untouched. */
+export type planhandler = (input: any) => unknown;
+
+/** the backup plan call shape (the handlers stay optional — the capability
+ * error answers the missing seat, never a silent fallback). */
+export interface backupplaninput {
+  backup?: planhandler;
+  restore?: planhandler;
 }
 
 /** Defines caller-owned backup and restore functions with explicit capability errors. */
-export function backupplan(options = {}) {
+export function backupplan(options: backupplaninput = {}) {
   const backup = options.backup;
   const restore = options.restore;
-  return { version: 1, backup: async (input) => execute(backup, input, "backup"), restore: async (input) => execute(restore, input, "restore") };
+  return { version: 1, backup: async (input: any) => execute(backup, input, "backup"), restore: async (input: any) => execute(restore, input, "restore") };
 }
 
 /** Records the security boundary and prevents the core from claiming threat coverage it does not own. */
-export function threatmodel(options = {}) {
+export function threatmodel(options: Record<string, any> = {}) {
   const boundaries = [...new Set((options.boundaries ?? ["credentials", "network", "permissions", "persistence"]).map(String))];
   if (!boundaries.length) throw new TypeError("threat model requires boundaries");
   return { version: 1, boundaries, owner: options.owner ?? "caller", controls: [...new Set((options.controls ?? []).map(String))], disclaimer: "The caller remains responsible for deployment, credentials, service terms and abuse response." };
 }
 
-async function execute(handler, input, name) {
-  if (typeof handler !== "function") { const error = new Error(`${name} handler is not configured`); error.code = "UNSUPPORTED_OPERATION"; throw error; }
-  try { return await handler(input); } catch (error) { const failure = new Error(`${name} failed: ${errormessage(error)}`, { cause: error }); failure.code = String(error?.code ?? "OPERATION_FAILED"); throw failure; }
+async function execute(handler: planhandler | undefined, input: any, name: string) {
+  if (typeof handler !== "function") { const error: any = new Error(`${name} handler is not configured`); error.code = "UNSUPPORTED_OPERATION"; throw error; }
+  try { return await handler(input); } catch (error) { const failure: any = new Error(`${name} failed: ${errormessage(error)}`, { cause: error }); failure.code = String((error as any)?.code ?? "OPERATION_FAILED"); throw failure; }
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -484,7 +515,7 @@ async function execute(handler, input, name) {
  */
 
 /** Creates a Mini App plan that requires caller-owned origin and validation. */
-export function miniappplan(input = {}) {
+export function miniappplan(input: Record<string, any> = {}) {
   if ("token" in input || "bottoken" in input || "secret" in input) throw new TypeError("Mini App credentials must not be supplied to the library plan");
   const origin = publichttps(input.origin, "Mini App origin");
   const validation = nonempty(input.validation, "Mini App validation");
@@ -492,7 +523,7 @@ export function miniappplan(input = {}) {
 }
 
 /** Creates a DNS and HTTPS requirement record without a registrar or DNS operation. */
-export function dnsplan(input = {}) {
+export function dnsplan(input: Record<string, any> = {}) {
   const hostname = hostnamevalue(input.hostname);
   const dnssec = input.dnssec === true;
   const https = input.https === true;
@@ -500,10 +531,10 @@ export function dnsplan(input = {}) {
 }
 
 /** Maps declared application surfaces without selecting a runtime vendor. */
-export function applicationbridge(input = {}) {
+export function applicationbridge(input: Record<string, any> = {}) {
   if (!Array.isArray(input.surfaces) || input.surfaces.length === 0) throw new TypeError("application bridge surfaces are required");
   const ids = new Set();
-  const surfaces = input.surfaces.map((value) => {
+  const surfaces = input.surfaces.map((value: any) => {
     const id = nonempty(value?.id, "application bridge surface id");
     if (ids.has(id)) throw new TypeError(`application bridge surface id is duplicated: ${id}`);
     ids.add(id);
@@ -515,7 +546,7 @@ export function applicationbridge(input = {}) {
 }
 
 const targets = new Set(["browser", "desktop", "mobile", "extension", "miniapp"]);
-function publichttps(value, name) { const output = String(value ?? ""); let url; try { url = new URL(output); } catch { throw new TypeError(`${name} is invalid`); } if (url.protocol !== "https:" || !url.hostname) throw new TypeError(`${name} must use HTTPS`); return url.toString(); }
-function hostnamevalue(value) { const output = String(value ?? "").toLowerCase(); if (!/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(output)) throw new TypeError("DNS hostname is invalid"); return output; }
-function nonempty(value, name) { const output = String(value ?? ""); if (!output) throw new TypeError(`${name} is required`); return output; }
-function unique(values) { if (!Array.isArray(values)) throw new TypeError("surface capabilities must be an array"); return [...new Set(values.map((value) => nonempty(value, "surface capability")))].sort(); }
+function publichttps(value: any, name: any) { const output = String(value ?? ""); let url; try { url = new URL(output); } catch { throw new TypeError(`${name} is invalid`); } if (url.protocol !== "https:" || !url.hostname) throw new TypeError(`${name} must use HTTPS`); return url.toString(); }
+function hostnamevalue(value: any) { const output = String(value ?? "").toLowerCase(); if (!/^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(output)) throw new TypeError("DNS hostname is invalid"); return output; }
+function nonempty(value: any, name: any) { const output = String(value ?? ""); if (!output) throw new TypeError(`${name} is required`); return output; }
+function unique(values: any) { if (!Array.isArray(values)) throw new TypeError("surface capabilities must be an array"); return [...new Set(values.map((value: any) => nonempty(value, "surface capability")))].sort(); }

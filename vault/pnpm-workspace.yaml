@@ -81,3 +81,7 @@ minimumReleaseAgeExclude:
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0
   - '@fluentui/react-icons@2.0.345'
   - hono@4.13.16
+  - '@wenathlan/cadria@2.0.154'
+  - '@wenathlan/debonair@2.0.154'
+  - '@wenathlan/getry@2.0.154'
+  - '@wenathlan/vault@2.0.154'

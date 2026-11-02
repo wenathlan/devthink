@@ -47,7 +47,7 @@ describe("the automation contract (the saddle ownership transfer, wave a)", () =
   it("parses bot commands and executes through a platform adapter", async () => {
     const parsed = parsecommand("deploy --platform forge --ref main");
     assert.deepEqual(parsed, { command: "deploy", flags: { platform: "forge", ref: "main" } });
-    const bot = saddlebot({ adapters: { forge: { executebot: async (input) => input } } });
+    const bot = saddlebot({ adapters: { forge: { executebot: async (input: any) => input } } });
     await bot.start();
     const result = await bot.executecommand("deploy --platform forge --ref main");
     assert.equal(result.command, "deploy");
@@ -63,7 +63,7 @@ describe("the automation contract (the saddle ownership transfer, wave a)", () =
     });
     await assert.rejects(
       () => bot.executecommand("deploy --platform forge", { scopes: [] }),
-      (error) => error.code === "BOT_COMMAND_UNAUTHORIZED",
+      (error: any) => error.code === "BOT_COMMAND_UNAUTHORIZED",
     );
     const first = await bot.executecommand("deploy --platform forge", { scopes: ["deploy"], idempotencykey: "cmd1" });
     const second = await bot.executecommand("deploy --platform forge", { scopes: ["deploy"], idempotencykey: "cmd1" });
@@ -115,7 +115,7 @@ describe("the automation contract (the saddle ownership transfer, wave a)", () =
     const manifest = surfacemanifest({ target: "n8n", capabilities: ["memory"] });
     assert.equal(surfacebundle(manifest).install, "n8n import");
     const node = n8nnode({ name: "saddle" });
-    const output = await n8nexecute(node, { command: "status" }, async ({ input }) => input.command);
+    const output = await n8nexecute(node, { command: "status" }, async ({ input }: any) => input.command);
     assert.equal(output, "status");
   });
 
