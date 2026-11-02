@@ -58,6 +58,7 @@ debonair/
 ├─ blobstore.ts            # the content-addressed blob store — put/get streams, the hand-rolled sha256, the minted ids, the shard layout the vault serves (pv1 · #224)
 ├─ ingestdb.ts             # the node/sqlite half — the reference columns (owner, kind, visibility, blob addresses), the job ledger, parameter binding only (pv1 · #221/#228)
 ├─ ingestworker.ts         # the server ingest worker — decode → separate → analyze → segment → store, the wavs per stem + mix: the pipeline outside the visitor machine (pv1 · #226)
+├─ ingestpayload.ts        # the structured payload lane — the debonair.soundpayload/1 document: the container probe (wav walk, mp3 frame header, ogg ident + granule scan), the 100 ms energy chunks, the beats block, the embedded ingest document, and reconstructWav — the reverse ingest that rebuilds wav bytes from the vectors through seeded synthesis (T4-E · PR17, the v1 pattern — docs/kathesisresearch.md)
 ├─ ingestclient.ts         # the typed client of the ingest lane — ok/err with machine codes, the https house law before any byte leaves, the owner identity seat (pv1 · #233)
 ├─ ialane.ts               # the system ia ingest lane — the service identity, the reference kind, the vitrine visibility: the library grows without a human (pv1 · #233)
 ├─ gatewayapi.ts           # the http route table — the nine routes (the ingest upload/jobs/shelf/read/delete, the blob stream, the miner mine/list/read), the nine-column ledger, the visibility law (pv1/pv3 · #228/#231)
@@ -66,7 +67,7 @@ debonair/
 ├─ renderworker.ts         # the server render job — the engine's own voice recipes sample-accurate at 48 khz, mono pcm 16, determinism total (pv4 · #232)
 ├─ renderjobs.ts           # the render ledger + the tracks table seat — the walk queued → rendering → done, the pointer chain (pv4 · #232)
 ├─ Sol/                    # the surface tree — the shell (the rail, the footer, the shared player bar), the pages (home, generate, ingest, library, studio, settings, intro, onboarding, 404), the wingets (the cover art, the entry gate, the genre card, the song card, the player bar, the studio fader/piano roll/spectrum/stage stepper/timeline/vu meter) and sol.css — the os face of the design reform, the embedded/standalone seat law (pv5 · #225)
-└─ tests/                  # vitest — 44 files, 644 tests green: the battery the D20 verification pass recorded (the suite inventory in debonair/tests/ — the pattern enums 49 rows, the blob store, the gateway contract, the miner, the composer, the render lane, the player bus, the sol css pin, the family battery)
+└─ tests/                  # vitest — 63 files, 934 tests green at the T4-E pass: the D20 battery, the later waves' rows and the payload lane's 19 (the suite inventory in debonair/tests/ — the pattern enums 49 rows, the blob store, the gateway contract, the miner, the composer, the render lane, the player bus, the sol css pin, the family battery, the structured payload round trip)
 ```
 
 ## the seam (imported, never forked)
@@ -96,6 +97,7 @@ kathesis b3 (landed)       # pianoroll, arrangement, timelinemodel edits, wavwri
 pv0 (landed)               # hpss, ingest, ingeststore, the /ingest bench — the decomposition pipeline and the debonair.ingest/1 document
 pv1-pv4 (landed)           # bigintids, patternenums, blobstore, ingestdb, ingeststore, ingestworker, ingestclient, ialane, gatewayapi, patternminer, composer, renderworker, renderjobs, playerbus — the reconstruction's fourteen (the ingest lane, the miner, the composer, the render lane)
 pv5 (landed)               # the design reform (the os face) + the design verification (docs/designverification.md — every route walked, the sol debt cleared)
+t4-e (landed)              # the structured payload lane — ingestpayload.ts + tests/ingestpayload.test.ts + docs/kathesisresearch.md: the v1 pattern of the outros.debonair corpus (decompose to the per-second json payload, reconstruct playable wav from the vectors) rebuilt on the honest laws, the container probe for wav/mp3/ogg, the sandbox declaration, the suite 934 green across 63 files (PR17)
 b4 backlog (open)          # viz/waveform, viz/spectrogram, viz/realtime, ml/onnx — the realtime and tier-2 upgrade path, gated behind the quality targets
 pv tail (open prs)         # #235 the vitrine publish (generateclient, the tracks routes, the visibility column, the with-voice key), #236 the npm face (the exports map, the module closure), #237 the family integration (the getry lane mount, vaultblobstore, sandboxmodality, mcplane) — pending merge, the state docs/worklog.md records
 ```

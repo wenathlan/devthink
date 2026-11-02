@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/cadria",
-  "version": "2.0.154",
+  "version": "2.0.155",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -52,6 +52,9 @@
     "versawaserender.ts",
     "versawasescheduler.ts",
     "versawaseslices.ts",
+    "versawasegen.ts",
+    "versawaseshaders.ts",
+    "versawasecomposition.ts",
     "shadercomp.ts",
     "visualize.ts",
     "visualizemesh.ts",
@@ -112,6 +115,21 @@
       "types": "./versawaseslices.ts",
       "import": "./versawaseslices.ts",
       "default": "./versawaseslices.ts"
+    },
+    "./versawasegen": {
+      "types": "./versawasegen.ts",
+      "import": "./versawasegen.ts",
+      "default": "./versawasegen.ts"
+    },
+    "./versawaseshaders": {
+      "types": "./versawaseshaders.ts",
+      "import": "./versawaseshaders.ts",
+      "default": "./versawaseshaders.ts"
+    },
+    "./versawasecomposition": {
+      "types": "./versawasecomposition.ts",
+      "import": "./versawasecomposition.ts",
+      "default": "./versawasecomposition.ts"
     },
     "./shadercomp": {
       "types": "./shadercomp.ts",
