@@ -98,6 +98,7 @@ export const chmodSync = (_path: string, _mode: number): undefined => undefined;
 export const unlinkSync = (_path: string): undefined => undefined;
 export const statSync = (_path: string): never => absent("node:fs statSync");
 export const readFileSync = (_path: string): never => absent("node:fs readFileSync");
+export const truncateSync = (_path: string, _len?: number): never => absent("node:fs truncateSync");
 export const readdirSync = (_path: string): string[] => [];
 
 export const mkdir = (_path: string): Promise<undefined> => Promise.resolve(undefined);
