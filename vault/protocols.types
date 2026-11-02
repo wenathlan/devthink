@@ -1,0 +1,1349 @@
+# the protocol catalog of the vault — the https protocols pillar (the wave D growth).
+# One row per wire the domain serves static-safe: scheme|name|port|spec under a
+# group head (the curated mesh rows carry security|state as the fifth and sixth
+# fields). Generated programmatically from the family mesh of the argan gateway
+# (231 curated rows with their governing specs and security postures) and the
+# live IANA service name and transport protocol port number registry (the
+# system port range 0-1023, the tcp preference over udp, descriptions and
+# references verbatim).
+# Every row answers one static-safe route on the domain: GET
+# /api/v1/protocols/<scheme> serves the row — read-only, no storage truth, no
+# query execution.
+# web
+coap|CoAP|5683/UDP|RFC 7252|cleartext|opt-in
+coaps|CoAP over DTLS|5684/UDP|RFC 7252 · 6347|encrypted|opt-in
+gemini|Gemini|1965|the gemini spec|encrypted|opt-in
+graphql-ws|GraphQL subscriptions over wss|443|the graphql-transport-ws spec|encrypted|live
+h2|HTTP/2 over TLS|443|RFC 9113|encrypted|live
+h2c|HTTP/2 cleartext upgrade|80|RFC 9113|cleartext|opt-in
+h3|HTTP/3 over QUIC|443/UDP|RFC 9114|encrypted|live
+http|HTTP/1.1|80|RFC 9110 · 9112|cleartext|live
+https|HTTP/1.1 over TLS|443|RFC 9110 · 8446|encrypted|live
+longpoll|HTTP long polling|80/443|the keep-alive pattern|opportunistic|live
+spdy|SPDY/3.1|443|the spdy draft|encrypted|legacy
+sse|Server-Sent Events|443|text/event-stream · WHATWG|encrypted|live
+webcodecs|WebCodecs|—|W3C WebCodecs|encrypted|live
+webrtc|WebRTC (DTLS-SRTP)|ephemeral/UDP|W3C WebRTC 1.0 · RFC 8825|encrypted|live
+webtransport|WebTransport|443/UDP|W3C WebTransport · RFC 9114|encrypted|live
+ws|WebSocket|80|RFC 6455|cleartext|live
+wss|WebSocket Secure|443|RFC 6455|encrypted|live
+# api
+acme|ACME certificate orders|443|RFC 8555|encrypted|live
+activitypub|ActivityPub|443|W3C ActivityPub|encrypted|live
+atproto|AT Protocol|443|the atproto spec|encrypted|opt-in
+capnproto|Cap'n Proto RPC|—|the cap'n proto rpc spec|opportunistic|opt-in
+certificate-transparency|Certificate Transparency|443|RFC 6962|opportunistic|live
+grpc|gRPC over HTTP/2|50051|the grpc spec|opportunistic|live
+grpc-web|gRPC-Web|443|the grpc-web spec|encrypted|live
+grpcs|gRPC over TLS|443|the grpc spec · RFC 8446|encrypted|live
+jsonrpc|JSON-RPC 2.0|80/443|the json-rpc 2.0 spec|opportunistic|live
+matrix|Matrix federation|8448|the matrix spec|encrypted|live
+micropub|Micropub|443|W3C Micropub|encrypted|opt-in
+msgpack-rpc|MessagePack-RPC|—|the msgpack-rpc spec|opportunistic|opt-in
+ocsp|OCSP|80/443|RFC 6960|opportunistic|live
+oembed|oEmbed|443|the oembed 1.0 spec|encrypted|live
+ohttp|Oblivious HTTP|443|RFC 9458|encrypted|opt-in
+openid-connect|OpenID Connect|443|the oidc core 1.0|encrypted|live
+pingback|Pingback|80/443|the pingback 1.0 spec|opportunistic|legacy
+soap|SOAP 1.2|443|W3C SOAP 1.2|opportunistic|live
+thrift|Apache Thrift RPC|9090|the thrift protocol|opportunistic|live
+webfinger|WebFinger|443|RFC 7033|encrypted|live
+webmention|Webmention|443|W3C Webmention|encrypted|opt-in
+webpush|Web Push|443|RFC 8030 · 8291|encrypted|live
+xmlrpc|XML-RPC|80/443|the xml-rpc spec|opportunistic|live
+# collab
+caldav|CalDAV|80/443|RFC 4791|opportunistic|live
+carddav|CardDAV|80/443|RFC 6352|opportunistic|live
+webdav|WebDAV|80/443|RFC 4918|opportunistic|live
+webdavs|WebDAV over TLS|443|RFC 4918 · 8446|encrypted|live
+# mail
+imap|IMAP4rev2|143|RFC 9051|opportunistic|live
+imaps|IMAP over TLS|993|RFC 8314|encrypted|live
+jmap|JMAP|443|RFC 8620 · 8621|encrypted|live
+lmtp|LMTP|—|RFC 2033|opportunistic|live
+pop3|POP3|110|RFC 1939|opportunistic|live
+pop3s|POP3 over TLS|995|RFC 8314|encrypted|live
+sieve|ManageSieve|4190|RFC 5804|opportunistic|opt-in
+smtp|SMTP relay|25|RFC 5321|cleartext|live
+smtps|SMTP over implicit TLS|465|RFC 8314|encrypted|live
+submission|Mail submission (STARTTLS)|587|RFC 6409|opportunistic|live
+# dns
+axfr|AXFR full zone transfer|53|RFC 5936|cleartext|live
+dns|Classic DNS (UDP + TCP)|53|RFC 1035 · 7766|cleartext|live
+dns-sd|DNS-SD|5353/UDP|RFC 6763|cleartext|live
+dnscrypt|DNSCrypt v2|443|the dnscrypt v2 spec|encrypted|opt-in
+doh|DNS over HTTPS|443|RFC 8484|encrypted|preferred
+doh-json|DoH JSON (/resolve)|443|the json resolver draft|encrypted|panel · debug
+doq|DNS over QUIC|853/UDP|RFC 9250|encrypted|planned
+dot|DNS over TLS|853|RFC 7858 · 8310|encrypted|live
+ixfr|IXFR incremental transfer|53|RFC 1995|cleartext|live
+llmnr|LLMNR|5355/UDP|RFC 4795|cleartext|legacy
+mdns|Multicast DNS|5353/UDP|RFC 6762|cleartext|live
+odoh|Oblivious DoH|443|RFC 9230|encrypted|planned
+# file
+9p|Plan 9 filesystem|564|9P2000|cleartext|opt-in
+afs|AFS|7000|the rx protocol|cleartext|legacy
+cifs|CIFS|445|MS-CIFS|opportunistic|legacy
+ftp|FTP|21|RFC 959|cleartext|legacy
+ftp-data|FTP data channel|20|RFC 959|cleartext|legacy
+ftps|FTP over TLS|990|RFC 4217|encrypted|opt-in
+git|Git native protocol|9418|the git protocol v2|cleartext|live
+git-http|Git smart HTTP|80/443|the git http-protocol|opportunistic|live
+hg|Mercurial wire|8000|the mercurial wire protocol|cleartext|legacy
+nfs|NFSv4.2|2049|RFC 7862|cleartext|live
+rsync|rsync delta transfer|873|the rsync protocol|cleartext|live
+scp|SCP|22|the scp dialect|encrypted|legacy
+sftp|SFTP|22|the sftp v3 dialect|encrypted|live
+smb|SMB|445|MS-SMB2|opportunistic|live
+svn|Subversion svn://|3690|the ra_svn protocol|opportunistic|legacy
+tftp|TFTP|69/UDP|RFC 1350|cleartext|opt-in
+# remote
+mosh|Mosh roaming shell|60000/UDP|the mosh protocol|encrypted|live
+rdp|RDP|3389|MS-RDPBCGR|encrypted|live
+rlogin|rlogin|513|RFC 1282|cleartext|legacy
+rsh|rsh|514|the berkeley rsh|cleartext|legacy
+spice|SPICE|5900+|the spice protocol|opportunistic|opt-in
+ssh|SSH|22|RFC 4253|encrypted|live
+telnet|Telnet|23|RFC 854|cleartext|legacy
+vnc|VNC (RFB)|5900|the rfb protocol|opportunistic|live
+x11|X11|6000|the x11 protocol|cleartext|legacy
+# messaging
+amqp|AMQP 1.0|5672|OASIS AMQP 1.0|cleartext|live
+amqps|AMQP over TLS|5671|OASIS AMQP 1.0|encrypted|live
+h323|H.323|1720|ITU-T H.323|opportunistic|legacy
+iax|IAX2|4569/UDP|the iax2 protocol|cleartext|opt-in
+irc|IRC|6667|RFC 1459 · 2812|cleartext|live
+ircs|IRC over TLS|6697|RFC 7194|encrypted|live
+kafka|Kafka log protocol|9092|the kafka protocol|opportunistic|live
+mgcp|MGCP|2427/UDP|RFC 3435|cleartext|legacy
+mqtt|MQTT 5|1883|the mqtt 5.0 spec|cleartext|live
+mqtt-sn|MQTT-SN|1884/UDP|the mqtt-sn 1.2 spec|cleartext|opt-in
+mqtts|MQTT over TLS|8883|the mqtt 5.0 spec|encrypted|live
+msrp|MSRP|—|RFC 4975|opportunistic|opt-in
+msrps|MSRP over TLS|—|RFC 4975|encrypted|opt-in
+nanomsg|nanomsg SP|—|the nanomsg sp spec|opportunistic|opt-in
+nats|NATS|4222|the nats protocol|opportunistic|live
+nostr|Nostr relays|443|NIP-01|encrypted|opt-in
+openwire|OpenWire|61616|the openwire spec|opportunistic|opt-in
+sccp|SCCP (Skinny)|2000|the sccp protocol|cleartext|legacy
+sip|SIP|5060|RFC 3261|opportunistic|live
+sips|SIPS|5061|RFC 3261|encrypted|live
+smpp|SMPP|2775|the smpp 5.0 spec|cleartext|live
+stomp|STOMP 1.2|61613|the stomp 1.2 spec|opportunistic|opt-in
+xmpp|XMPP|5222|RFC 6120 · 6121|opportunistic|live
+xmpps|XMPP over TLS|5223|RFC 6120|encrypted|legacy
+zeromq|ZeroMQ (ZMTP 3.0)|—|the zmtp 3.0 spec|opportunistic|live
+# stream
+dash|MPEG-DASH segments|80/443|the mpeg-dash spec|opportunistic|live
+hls|HTTP Live Streaming|80/443|RFC 8216|opportunistic|live
+mss|Smooth Streaming|80/443|MS-SSTR|opportunistic|legacy
+osc|Open Sound Control|—|the osc 1.0 spec|cleartext|opt-in
+rist|RIST|—|the rist profile|opportunistic|opt-in
+rtcp|RTCP|—|RFC 3550|cleartext|live
+rtmfp|RTMFP|1935/UDP|the rtmfp spec|encrypted|legacy
+rtmp|RTMP|1935|the rtmp spec|cleartext|live
+rtmpe|RTMPE|1935|the rtmpe variant|encrypted|legacy
+rtmps|RTMPS|443|the rtmps variant|encrypted|live
+rtp|RTP (AVP profile)|—|RFC 3550|cleartext|live
+rtsp|RTSP 2.0|554|RFC 7826|opportunistic|live
+rtsps|RTSP over TLS|322|RFC 8341|encrypted|live
+srt|SRT|—|the srt protocol|encrypted|live
+srtp|SRTP|—|RFC 3711|encrypted|live
+# tunnel
+dccp|DCCP|—|RFC 4340|cleartext|legacy
+dtls|DTLS 1.3|—|RFC 9147|encrypted|live
+enet|ENet|—|the enet protocol|cleartext|opt-in
+esp|IPsec ESP|50|RFC 4303|encrypted|live
+geneve|GENEVE|6081/UDP|RFC 8926|cleartext|opt-in
+gre|GRE|47|RFC 2784|cleartext|legacy
+ike|IKEv2|500/4500|RFC 7296|encrypted|live
+ipsec|IPsec tunnel|50/4500|RFC 4301|encrypted|live
+kcp|KCP|—|the kcp protocol|opportunistic|opt-in
+l2tp|L2TP|1701/UDP|RFC 3931|cleartext|legacy
+masque|MASQUE (CONNECT-UDP)|443/UDP|RFC 9484|encrypted|planned
+mptcp|Multipath TCP|—|RFC 8684|cleartext|opt-in
+openvpn|OpenVPN|1194/UDP|the openvpn protocol|encrypted|live
+pptp|PPTP|1723|RFC 2637|opportunistic|legacy
+quic|QUIC|443/UDP|RFC 9000|encrypted|live
+raknet|RakNet|—|the raknet protocol|cleartext|opt-in
+sctp|SCTP|132|RFC 4960|cleartext|opt-in
+socks4|SOCKS4|1080|the socks4 protocol|cleartext|legacy
+socks5|SOCKS5|1080|RFC 1928|opportunistic|live
+socks5h|SOCKS5 with remote DNS|1080|RFC 1928|opportunistic|live
+tinc|tinc mesh vpn|655|the tinc protocol|encrypted|opt-in
+tls|TLS 1.3 record layer|—|RFC 8446|encrypted|live
+vxlan|VXLAN|4789/UDP|RFC 7348|cleartext|live
+wireguard|WireGuard|51820/UDP|the wireguard protocol|encrypted|live
+zerotier|ZeroTier|9993/UDP|the zerotier protocol|encrypted|opt-in
+# overlay
+bittorrent|BitTorrent|6881|BEP 3 · BEP 10|opportunistic|live
+cjdns|Cjdns|—|the cjdns protocol|encrypted|opt-in
+dat|Dat|—|the dat protocol|encrypted|legacy
+devp2p|devp2p|30303/UDP|the devp2p spec|encrypted|opt-in
+dht|Mainline DHT (KRPC)|6881/UDP|BEP 5|cleartext|live
+filecoin|Filecoin|—|the filecoin spec|encrypted|opt-in
+hypercore|Hypercore|—|the hypercore protocol|encrypted|opt-in
+i2p|I2P|—|the i2p protocol|encrypted|opt-in
+ipfs|IPFS|4001|the ipfs spec|opportunistic|opt-in
+ipns|IPNS|4001|the ipns spec|opportunistic|opt-in
+libp2p|libp2p|4001|the libp2p spec|encrypted|opt-in
+ssb|Secure Scuttlebutt|8008|the ssb protocol|encrypted|opt-in
+tor|Tor onion services v3|—|the tor dirspec|encrypted|opt-in
+yggdrasil|Yggdrasil|—|the yggdrasil protocol|encrypted|opt-in
+# data
+cassandra|Cassandra native transport|9042|the cql binary protocol|opportunistic|live
+clickhouse|ClickHouse native|9000|the clickhouse wire|opportunistic|opt-in
+memcached|Memcached|11211|the memcached protocol|cleartext|live
+mongodb|MongoDB (OP_MSG)|27017|the mongodb wire|opportunistic|live
+mysql|MySQL client protocol|3306|the mysql protocol|opportunistic|live
+postgresql|PostgreSQL v3 protocol|5432|the pg v3 protocol|opportunistic|live
+redis|Redis RESP3|6379|RESP3|opportunistic|live
+# service
+chargen|Character Generator|19/tcp|RFC 864
+daytime|Daytime|13/tcp|RFC 867
+discard|Discard|9/tcp|RFC 863
+echo|Echo|7/tcp|RFC 862
+ipfix|IPFIX|4739/UDP|RFC 7011
+netflow|NetFlow v9|2055/UDP|the netflow spec
+ntp|NTPv4|123/UDP|RFC 5905
+openmetrics|OpenMetrics scrape|443/tcp|the openmetrics spec
+ptp|PTP|319/UDP|IEEE 1588
+sflow|sFlow v5|6343/UDP|the sflow spec
+snmp|SNMPv3|161/UDP|RFC 3411
+snmptrap|SNMP traps|162/UDP|RFC 3416
+syslog|Syslog|514/UDP|RFC 5424
+syslog-tls|Syslog over TLS|6514/tcp|RFC 5425
+# directory
+dict|DICT|2628|RFC 2229|cleartext|legacy
+kerberos|Kerberos V5|88|RFC 4120|encrypted|live
+kpasswd|Kerberos password change|464|the kpasswd dialect|opportunistic|live
+ldap|LDAPv3|389|RFC 4511|opportunistic|live
+ldaps|LDAP over TLS|636|RFC 4513|encrypted|live
+radius|RADIUS|1812/UDP|RFC 2865|cleartext|live
+radsec|RADIUS over TLS|2083|RFC 6614|encrypted|live
+rdap|RDAP|443|RFC 9082 · 9083|encrypted|live
+tacacs|TACACS|49|RFC 8907|cleartext|legacy
+tacacs+|TACACS+|49|RFC 8907|opportunistic|live
+z39.50|Z39.50|210|ANSI/NISO Z39.50|cleartext|legacy
+# legacy
+aprs|APRS packet radio|14580/UDP|the aprs spec|cleartext|opt-in
+arp|ARP|—|RFC 826|cleartext|live
+bfd|BFD|3784/UDP|RFC 5880|cleartext|live
+bgp|BGP-4|179|RFC 4271|cleartext|live
+binkp|BinkP|24554|the binkp protocol|opportunistic|legacy
+dtn|Bundle Protocol v7|—|RFC 9171|opportunistic|opt-in
+eigrp|EIGRP|—|RFC 7868|cleartext|legacy
+finger|Finger|79|RFC 1288|cleartext|legacy
+gopher|Gopher|70|RFC 1436|cleartext|legacy
+gophers|Gopher over TLS|70|the gophers extension|encrypted|legacy
+gtp|GTP (the telco bearer)|2152/UDP|3GPP TS 29.281|cleartext|live
+icmp|ICMP|—|RFC 792|cleartext|live
+icmpv6|ICMPv6|—|RFC 4443|cleartext|live
+ident|Ident|113|RFC 1413|cleartext|legacy
+igmp|IGMP|—|RFC 3376|cleartext|live
+isis|IS-IS|—|ISO 10589 · RFC 1195|cleartext|live
+modbus|Modbus TCP|502|the modbus spec|cleartext|live
+ndmp|NDMP|10000|the ndmp protocol|cleartext|legacy
+netbios|NetBIOS|137-139|RFC 1001 · 1002|cleartext|legacy
+nntp|NNTP|119|RFC 3977|cleartext|legacy
+nntps|NNTP over TLS|563|RFC 4642|encrypted|legacy
+opc-ua|OPC UA|4840|IEC 62541|opportunistic|opt-in
+ospf|OSPF|—|RFC 2328|cleartext|live
+rip|RIP2|520/UDP|RFC 2453|cleartext|legacy
+slp|SLP|427|RFC 2609|cleartext|legacy
+ssdp|SSDP|1900/UDP|the upnp uda spec|cleartext|live
+uucp|UUCP|540|the uucp protocol|cleartext|legacy
+whois|WHOIS|43|RFC 3912|cleartext|live
+wsdd|WS-Discovery|3702/UDP|the ws-discovery spec|cleartext|live
+# service
+3com-amp3|3Com AMP3|629/tcp|the IANA service registry
+3com-tsmux|3COM-TSMUX|106/tcp|the IANA service registry
+7ksonar|Teledyne Marine 7k Sonar Protocol|0/tcp|the IANA service registry
+914c-g|Texas Instruments 914C/G Terminal|211/tcp|the IANA service registry
+9pfs|plan 9 file service|564/tcp|the IANA service registry
+ab-secure|AB Secure Protocol|0/tcp|the IANA service registry
+acap|ACAP|674/tcp|the IANA service registry
+acas|ACA Services|62/tcp|the IANA service registry
+accessbuilder|AccessBuilder|888/tcp|the IANA service registry
+accessnetwork|Access Network|699/tcp|the IANA service registry
+aci|Application Communication Interface|187/tcp|the IANA service registry
+acmaint-dbd|IANA assigned this well-formed service name as a replacement for acmaint_dbd.|774/udp|the IANA service registry
+acmaint-transd|IANA assigned this well-formed service name as a replacement for acmaint_transd.|775/udp|the IANA service registry
+acp|Aeolon Core Protocol|599/tcp|the IANA service registry
+acr-nema|ACR-NEMA Digital Imag. & Comm. 300|104/tcp|the IANA service registry
+acs-ctl-ds|Access Control Device|0/tcp|the IANA service registry
+acs-ctl-gw|Access Control Gateway|0/tcp|the IANA service registry
+acsp-server|AXIS Camera Station Pro Server|0/tcp|the IANA service registry
+adamhall|Adam Hall network control and monitoring|0/tcp|the IANA service registry
+adaptive-rn|ARN (Adaptive Routing Notification) is a protocol designed to enable dynamic routing adjustments by sharing network status information between nodes in data center networks, improving efficiency and fault tolerance.|0/tcp|the IANA service registry
+addressbooksrv|Address Book Server used for contacts and calendar synchronisation|0/tcp|the IANA service registry
+adobe-shadow|Adobe Shadow Server|0/tcp|the IANA service registry
+ae-control|Acoustics Engineering network device control|0/tcp|the IANA service registry
+aed-512|AED 512 Emulation Service|149/tcp|the IANA service registry
+aerohive-proxy|Aerohive Proxy Configuration Service|0/tcp|the IANA service registry
+affinity-cntent|Affinity content sharing|0/tcp|the IANA service registry
+affinity-docs0|Affinity Designer document sharing|0/tcp|the IANA service registry
+affinity-docs1|Affinity Photo document sharing|0/tcp|the IANA service registry
+affinity-docs2|Affinity Publisher document sharing|0/tcp|the IANA service registry
+afpovertcp|AFP over TCP|548/tcp|the IANA service registry
+agentx|AgentX|705/tcp|the IANA service registry
+ai-adp|AI Agent Discovery Protocol (ADP)|0/tcp|draft-pro-adp-agent-discovery-00
+ai-gateway|AI Gateway Local Discovery|0/tcp|draft-su-ai-gateway-discovery-00
+airdrop|Airdrop|0/tcp|the IANA service registry
+airmate|Airmate interworking protocol|0/tcp|the IANA service registry
+airplay|Protocol for streaming of audio/video content|0/tcp|the IANA service registry
+airpreview|Coda AirPreview|0/tcp|the IANA service registry
+alazartech-atn|Alazar Technologies ATN Communication Protocol|0/tcp|the IANA service registry
+aloe-gwp|Aloe Gateway Protocol|0/tcp|the IANA service registry
+aloe-pp|Aloe Pairing Protocol|0/tcp|the IANA service registry
+alpacadiscovery|ASCOM Alpaca Device Discovery|0/udp|the IANA service registry
+alpes|alpes|463/tcp|the IANA service registry
+amazon-expiscor|Device discovery for Amazon|0/udp|the IANA service registry
+amba-cam|Ambarella Cameras|0/udp|the IANA service registry
+ampr-rcmd|ampr-rcmd|459/tcp|the IANA service registry
+anet|ATEXSSTR|212/tcp|the IANA service registry
+ansanotify|ANSA REX Notify|116/tcp|the IANA service registry
+ansatrader|ANSA REX Trader|124/tcp|the IANA service registry
+antrmai|ANT Galio web services|0/tcp|the IANA service registry
+anyremote|remote control of Linux PCs from Android and J2ME|0/tcp|the IANA service registry
+aodv|AODV|654/tcp|the IANA service registry
+apertus-ldp|Apertus Technologies Load Determination|539/tcp|the IANA service registry
+apex-edge|APEX endpoint-relay service|913/tcp|RFC 3340
+apex-mesh|APEX relay-relay service|912/tcp|the IANA service registry
+apple-midi|Apple MIDI|0/udp|the IANA service registry
+apple-mobdev|Apple Mobile Device Protocol|0/tcp|the IANA service registry
+appleqtc|apple quick time|458/tcp|the IANA service registry
+appleqtcsrvr|appleqtcsrvr|545/tcp|the IANA service registry
+applix|Applix ac|999/udp|the IANA service registry
+arcisdms|Arcisdms|262/tcp|the IANA service registry
+arcnet|Arcturus Networks Inc. Hardware Services|0/udp|the IANA service registry
+ariel1|Ariel 1|419/tcp|the IANA service registry
+ariel2|Ariel 2|421/tcp|the IANA service registry
+ariel3|Ariel 3|422/tcp|the IANA service registry
+arn|Active Registry Network for distribution of values and streams|0/tcp|the IANA service registry
+arns|A Remote Network Server System|384/tcp|the IANA service registry
+as-servermap|AS Server Mapper|449/tcp|the IANA service registry
+asa|ASA Message Router Object Def.|386/tcp|the IANA service registry
+asam-cmp|ASAM Capture Module Protocol|0/udp|the IANA service registry
+aseba|protocol for an event-based architecture for distributed control of mobile robots|0/tcp|the IANA service registry
+asf-rmcp|ASF Remote Management and Control Protocol|623/udp|the IANA service registry
+asf-secure-rmcp|ASF Secure Remote Management and Control Protocol|664/udp|the IANA service registry
+asia|ASIA|626/tcp|the IANA service registry
+asip-webadmin|AppleShare IP WebAdmin|311/tcp|the IANA service registry
+asipregistry|asipregistry|687/tcp|the IANA service registry
+astnotify|Asterisk Caller-ID Notification Service|0/udp|the IANA service registry
+at-3|AppleTalk Unused|203/tcp|the IANA service registry
+at-5|AppleTalk Unused|205/tcp|the IANA service registry
+at-7|AppleTalk Unused|207/tcp|the IANA service registry
+at-8|AppleTalk Unused|208/tcp|the IANA service registry
+at-echo|AppleTalk Echo|204/tcp|the IANA service registry
+at-nbp|AppleTalk Name Binding|202/tcp|the IANA service registry
+at-rtmp|AppleTalk Routing Maintenance|201/tcp|the IANA service registry
+at-zis|AppleTalk Zone Information|206/tcp|the IANA service registry
+atnet|AT protocol over IP|0/udp|the IANA service registry
+attero-ad|Attero Tech Audio Device|0/tcp|the IANA service registry
+audirvana-ap|Audirvana Remote Access Protocol|0/tcp|the IANA service registry
+audit|Unisys Audit SITP|182/tcp|the IANA service registry
+auditd|Digital Audit Daemon|48/tcp|the IANA service registry
+aurora-cmgr|Aurora CMGR|364/tcp|the IANA service registry
+aurp|Appletalk Update-Based Routing Pro.|387/tcp|the IANA service registry
+auth|Authentication Service|113/tcp|the IANA service registry
+autosendimages|automatic sending Image data protocol|0/tcp|the IANA service registry
+autotargets-ap|Access Point for AutoTargets system|0/tcp|the IANA service registry
+autotunnel|IPSEC VPN tunnel over UDP|0/udp|RFC 6281
+av-chat-ring-01|TCP SpyChat Stream Message Exchange|0/tcp|the IANA service registry
+avatars|Libravatar federated avatar hosting service.|0/tcp|the IANA service registry
+avatars-sec|Libravatar federated avatar hosting service.|0/tcp|the IANA service registry
+avian|avian|486/tcp|the IANA service registry
+axis-nvr|Axis Network Video Recorders|0/tcp|the IANA service registry
+bandhelper-rc|Remote Control for BandHelper app|0/tcp|the IANA service registry
+bandhelper-ss|Screen sharing for BandHelper app|0/tcp|the IANA service registry
+banyan-rpc|banyan-rpc|567/tcp|the IANA service registry
+banyan-vip|banyan-vip|573/tcp|the IANA service registry
+barroomcomedy|Peer to peer file sharing for a media player application|0/tcp|the IANA service registry
+bcloud-server|Buddycloud Server Delegation|0/tcp|the IANA service registry
+bdp|Bundle Discovery Protocol|581/tcp|the IANA service registry
+beatsdirect|Beats Direct allows for the discovery and control of devices|0/tcp|the IANA service registry
+behnke-cc|Behnke doorphones / emergency phones|0/tcp|the IANA service registry
+behnke-station|Behnke audio / video intercom systems|0/tcp|the IANA service registry
+behnke-video|Behnke doorphones / video intercoms|0/tcp|the IANA service registry
+beyondidentity|Beyond Identity Platform Authenticator S|0/tcp|the IANA service registry
+bftp|Background File Transfer Program|152/tcp|the IANA service registry
+bgmp|BGMP|264/tcp|the IANA service registry
+bgs-nsi|bgs-nsi|482/tcp|the IANA service registry
+bh611|bh611|354/tcp|the IANA service registry
+bhevent|bhevent|357/tcp|the IANA service registry
+bhfhs|bhfhs|248/tcp|the IANA service registry
+bhipc|Becker & Hickl Inter Process Communication|0/tcp|the IANA service registry
+bhmds|bhmds|310/tcp|the IANA service registry
+bhoedap4|bhoedap4|352/tcp|the IANA service registry
+bhoetty|bhoetty|351/tcp|the IANA service registry
+bidib|Model Railway Control via netBiDiB|0/tcp|the IANA service registry
+biff|used by mail system to notify users of new mail received; currently receives messages only from processes on the same machine|512/udp|the IANA service registry
+biosonics|BioSonics Echosounders|0/tcp|the IANA service registry
+bitflit|Data transfer service|0/tcp|the IANA service registry
+bl-idm|Britton-Lee IDM|142/tcp|the IANA service registry
+bluevertise|BlueVertise Network Protocol (BNP)|0/udp|the IANA service registry
+bmpp|bmpp|632/tcp|the IANA service registry
+bnet|BNet|415/tcp|the IANA service registry
+boardgame|Two-player board game play|0/tcp|https://github.com/chentianren0/MiniXiangqi/blob/main/docs/boardgame-protocol.md
+boardplus|board plus application transfer protocol|0/tcp|the IANA service registry
+booked-sync|Booked communication protocol - Sharing And Sync Service|0/tcp|the IANA service registry
+bootpc|Bootstrap Protocol Client|68/tcp|the IANA service registry
+bootps|Bootstrap Protocol Server|67/tcp|RFC 951
+bootstrap|Bootstrap service discovery|0/tcp|the IANA service registry
+borland-dsj|Borland DSJ|707/tcp|the IANA service registry
+boundaryscan|Proprietary|0/udp|the IANA service registry
+boutfitness|Bout Fitness Synchronization Service|0/tcp|the IANA service registry
+boxraysrvr|Boxray Devices Host Server|0/tcp|the IANA service registry
+bq-cromo|bq Cromo protocol|0/tcp|the IANA service registry
+breas|Breas|0/tcp|the IANA service registry
+bridgeprotocol|JSON RPC Bridge Protocol|0/tcp|the IANA service registry
+brocoli-concert|brocoliconcert telecom|0/tcp|the IANA service registry
+brski-pledge|The Bootstrapping Remote Secure Key Infrastructure Pledge|0/tcp|RFC-ietf-anima-brski-prm-23
+brski-proxy|The Bootstrapping Remote Secure Key Infrastructure Proxy|0/tcp|RFC 8995
+brski-reg-cmp|Bootstrapping Remote Secure Key Infrastructure|0/tcp|the IANA service registry
+brski-registrar|The Bootstrapping Remote Secure Key Infrastructure Registrar|0/tcp|RFC 8995
+btp|Beats Transfer Protocol allows for the discovery and control of devices|0/tcp|the IANA service registry
+buddycloud-api|buddycloud API|0/tcp|the IANA service registry
+busboy|busboy|998/tcp|the IANA service registry
+buzzer|Service for opening electric doors|0/tcp|the IANA service registry
+cab-protocol|CAB Protocol|595/tcp|the IANA service registry
+cableport-ax|Cable Port A/X|282/tcp|the IANA service registry
+cadlock|cadlock|770/tcp|the IANA service registry
+cadlock2|cadlock2|1000/tcp|the IANA service registry
+cadview-3d|Cadview-3d - streaming 3d models over the internet|649/tcp|the IANA service registry
+cailic|Computer Associates Int'l License Server|216/tcp|the IANA service registry
+cal|CAL|588/tcp|the IANA service registry
+caldavs|Calendaring Extensions to WebDAV (CalDAV) - over TLS|0/tcp|RFC 6764
+canon-chmp|Canon HTTP Management Protocol|0/tcp|the IANA service registry
+carddavs|vCard Extensions to WebDAV (CardDAV) - over TLS|0/tcp|RFC 6352
+carousel|Carousel Player Protocol|0/tcp|the IANA service registry
+cdc|Certificate Distribution Center|223/tcp|the IANA service registry
+cddbp|CD Database Protocol|888/tcp|the IANA service registry
+cerebra|Control the Cerebra Aquarium Controller|0/tcp|the IANA service registry
+certificates|Server for S/MIME and PGP certificates|0/tcp|draft-bhjl-x509-srv-01
+cfdptkt|CFDPTKT|120/tcp|the IANA service registry
+chshell|chcmd|562/tcp|the IANA service registry
+ciao|Ciao Arduino Protocol|0/tcp|the IANA service registry
+cimplex|CIMPLEX|673/tcp|the IANA service registry
+cisco-fna|cisco FNATIVE|130/tcp|the IANA service registry
+cisco-sys|cisco SYSMAINT|132/tcp|the IANA service registry
+cisco-tdp|Cisco TDP|711/tcp|the IANA service registry
+cisco-tna|cisco TNATIVE|131/tcp|the IANA service registry
+citadel|citadel|504/tcp|the IANA service registry
+cl-1|Network Innovations CL/1|172/tcp|the IANA service registry
+clearcase|Clearcase|371/tcp|the IANA service registry
+clique|Clique Link-Local Multicast Chat Room|0/udp|the IANA service registry
+cloanto-net-1|Cloanto Net 1|356/tcp|the IANA service registry
+cmip-agent|CMIP/TCP Agent|164/tcp|the IANA service registry
+cmip-man|CMIP/TCP Manager|163/tcp|the IANA service registry
+codaauth2|codaauth2|370/tcp|the IANA service registry
+collabio|Collabio|0/tcp|the IANA service registry
+collaborator|Collaborator|622/tcp|the IANA service registry
+commerce|commerce|542/tcp|the IANA service registry
+commfort|A client-server chat for LAN or Internet with video chat support|0/tcp|the IANA service registry
+compaq-evm|Compaq EVM|619/tcp|the IANA service registry
+compressnet|Management Utility/Compression Process|0/tcp|the IANA service registry
+comsat|comsat|512/udp|the IANA service registry
+comscm|comscm|437/tcp|the IANA service registry
+con|con|759/tcp|the IANA service registry
+conecube|DNS SRV service for smarthome server|0/udp|the IANA service registry
+conference|chat|531/tcp|the IANA service registry
+connendp|almanid Connection Endpoint|693/tcp|the IANA service registry
+contentserver|ContentServer|454/tcp|the IANA service registry
+controllerplus|game controller forwarding protocol|0/tcp|the IANA service registry
+convert|0-RTT TCP Convert Protocol|0/tcp|RFC 8803
+coolanetaudio|Coolatoola Network Audio|0/tcp|the IANA service registry
+corba-iiop|CORBA IIOP|683/tcp|the IANA service registry
+corba-iiop-ssl|CORBA IIOP SSL|684/tcp|the IANA service registry
+core-rd|Resource Directory accessed using CoAP over TCP|0/tcp|RFC 9176
+core-rd-dtls|Resource Directory accessed using CoAP over DTLS|0/udp|RFC 9176
+core-rd-tls|Resource Directory accessed using CoAP over TLS|0/tcp|RFC 9176
+corerjd|corerjd|284/tcp|the IANA service registry
+cosir|Computer Op System Information Report|0/tcp|the IANA service registry
+courier|rpc|530/tcp|the IANA service registry
+covia|Communications Integrator (CI)|64/tcp|the IANA service registry
+coviot|Service for coviot branded devices|0/tcp|the IANA service registry
+creativepartnr|CreativePartnr|455/tcp|the IANA service registry
+creativeserver|CreativeServer|453/tcp|the IANA service registry
+crs|crs|507/tcp|the IANA service registry
+cryptoadmin|Crypto Admin|624/tcp|the IANA service registry
+csi-mmws|Canfield Scientific Inc - Mirror Mobile Web Services|0/tcp|the IANA service registry
+csi-sgwp|Cabletron Management Protocol|348/tcp|the IANA service registry
+csnet-ns|Mailbox Name Nameserver|105/tcp|the IANA service registry
+cso|CCSO name server protocol|105/tcp|the IANA service registry
+ctf|Common Trace Facility|84/tcp|the IANA service registry
+custix|Customer IXChange|528/tcp|the IANA service registry
+cvc-hostd|cvc_hostd|442/tcp|the IANA service registry
+cybercash|cybercash|551/tcp|RFC 1898
+cycleserv|cycleserv|763/tcp|the IANA service registry
+cycleserv2|cycleserv2|772/tcp|the IANA service registry
+darkhorsetimer|Timer LAN service|0/tcp|the IANA service registry
+dasp|dasp|439/tcp|the IANA service registry
+datasurfsrv|DataRampSrv|461/tcp|the IANA service registry
+datasurfsrvsec|DataRampSrvSec|462/tcp|the IANA service registry
+datex-asn|DATEX-ASN|355/tcp|the IANA service registry
+dbase|dBASE Unix|217/tcp|the IANA service registry
+dbaudio|d&b audiotechnik remote network|0/tcp|the IANA service registry
+dcp|Device Control Protocol|93/tcp|the IANA service registry
+dctp|DCTP|675/tcp|the IANA service registry
+ddm-dfm|DDM-Distributed File Management|447/tcp|the IANA service registry
+ddm-rdb|DDM-Remote Relational Database Access|446/tcp|the IANA service registry
+ddm-ssl|DDM-Remote DB Access Using Secure Sockets|448/tcp|the IANA service registry
+dec-dlm|DEC DLM|625/tcp|the IANA service registry
+decap|decap|403/tcp|the IANA service registry
+decauth|decAuth|316/tcp|the IANA service registry
+decbsrv|decbsrv|579/tcp|the IANA service registry
+decladebug|DECLadebug Remote Debug Protocol|410/tcp|the IANA service registry
+decvms-sysmgt|decvms-sysmgt|441/tcp|the IANA service registry
+dei-icda|DEI-ICDA|618/tcp|the IANA service registry
+dell-soo-ds|Spotlight on Oracle Diagnostic Server|0/tcp|the IANA service registry
+dell-soss-ds-w|Spotlight on SQL Server Diagnostic Server HTTP|0/tcp|the IANA service registry
+dell-ssms-ds|Spotlight SSMS Plugin Diagnostic Server|0/tcp|the IANA service registry
+demoncamremote|Peer-to-peer real-time video streaming|0/tcp|the IANA service registry
+deos|Distributed External Object Store|76/tcp|the IANA service registry
+device|device|801/tcp|the IANA service registry
+devonsync|DEVONthink synchronization protocol|0/tcp|the IANA service registry
+devshr-nts|DeviceShare|552/tcp|the IANA service registry
+dhanda-g|DHANDAg is going for a site|0/tcp|the IANA service registry
+dhcp-failover|DHCP Failover|647/tcp|RFC 8156
+dhcp-failover2|dhcp-failover 2|847/tcp|the IANA service registry
+dhcpv6-client|DHCPv6 Client|546/tcp|the IANA service registry
+dhcpv6-server|DHCPv6 Server|547/tcp|RFC 5460
+digital-vrc|digital-vrc|466/tcp|the IANA service registry
+digitalelectric|Digital Electricity Transmitter|0/tcp|the IANA service registry
+direct|Direct|242/tcp|the IANA service registry
+disclose|campaign contribution disclosures - SDR Technologies|667/tcp|the IANA service registry
+displaysrc|Wi-Fi Alliance Display Source service|0/tcp|the IANA service registry
+dixie|DIXIE Protocol Specification|96/tcp|the IANA service registry
+dlep|Dynamic Link Exchange Protocol (DLEP)|854/tcp|RFC 8175
+dlpx-sp|Delphix Session Protocol|0/tcp|the IANA service registry
+dls|Directory Location Service|197/tcp|the IANA service registry
+dls-mon|Directory Location Service Monitor|198/tcp|the IANA service registry
+dltimesync|Local Area Dynamic Time Synchronisation Protocol|0/udp|the IANA service registry
+dn6-nlm-aud|DNSIX Network Level Module Audit|195/tcp|the IANA service registry
+dn6-smm-red|DNSIX Session Mgt Module Audit Redir|196/tcp|the IANA service registry
+dna-cml|DNA-CML|436/tcp|the IANA service registry
+dns-llq-tls|DNS Long-Lived Queries over TLS|0/tcp|RFC 6281
+dns-push-tls|DNS Push Notification Service Type|0/tcp|RFC 8765, Section 6.1
+dns-query-tls|DNS queries to the authoritative server over TLS|0/tcp|the IANA service registry
+dns-update|DNS Dynamic Update Service|0/tcp|the IANA service registry
+dns-update-tls|DNS Dynamic Update Service over TLS|0/tcp|RFC 6281
+dnsix|DNSIX Securit Attribute Token Map|90/tcp|the IANA service registry
+dnssd-srp|DNS-Based Service Discovery|0/tcp|RFC 9665
+dnssd-srp-tls|DNS-Based Service Discovery (TLS)|0/tcp|RFC 9665
+domain|Domain Name Server|53/tcp|the IANA service registry
+domain-s|DNS query-response protocol run over TLS|853/tcp|RFC 7858
+doom|doom Id Software|666/tcp|the IANA service registry
+dots-call-home|DOTS Signal Channel Call Home Protocol.|0/tcp|the IANA service registry
+dots-data|DOTS Data Channel Protocol.|0/tcp|the IANA service registry
+dpsi|DPSI|315/tcp|the IANA service registry
+dsetos|NEC Corporation|378/tcp|the IANA service registry
+dsf|dsf|555/tcp|the IANA service registry
+dsfgw|dsfgw|438/tcp|the IANA service registry
+dsp|Display Support Protocol|33/tcp|the IANA service registry
+dsp3270|Display Systems Protocol|246/tcp|the IANA service registry
+dtag-ste-sb|DTAG|352/tcp|the IANA service registry
+dtk|DTK|365/tcp|the IANA service registry
+duckrace|A communication protocol that allows a school teacher to set work activities to students over a LAN.|0/tcp|the IANA service registry
+dwr|dwr|644/tcp|the IANA service registry
+easyspndlg-sync|Sync service for the Easy Spend Log app|0/tcp|the IANA service registry
+eb-sync|Easy Books App data sync helper for Mac OS X and iOS|0/tcp|the IANA service registry
+edcp|LaCie Ethernet Disk Configuration Protocol|0/udp|the IANA service registry
+edge1|Edge1 Base Station|0/tcp|the IANA service registry
+edsservice|Provides resolution of EDS services available on a given network|0/tcp|the IANA service registry
+eeg|EEG System Discovery across local and wide area networks|0/tcp|the IANA service registry
+efkon-elite|EFKON Lightweight Interface to Traffic Events|0/tcp|the IANA service registry
+efs|extended file name server|520/tcp|the IANA service registry
+elcsd|errlog copy/server daemon|704/tcp|the IANA service registry
+embl-ndt|EMBL Nucleic Data Transfer|394/tcp|the IANA service registry
+emfis-cntl|EMFIS Control Service|141/tcp|the IANA service registry
+emfis-data|EMFIS Data Service|140/tcp|the IANA service registry
+enphase-envoy|Enphase Energy Envoy|0/tcp|the IANA service registry
+entomb|entomb|775/tcp|the IANA service registry
+entrust-aaas|entrust-aaas|680/tcp|the IANA service registry
+entrust-aams|entrust-aams|681/tcp|the IANA service registry
+entrust-ash|Entrust Administration Service Handler|710/tcp|the IANA service registry
+entrust-kmsh|Entrust Key Management Service Handler|709/tcp|the IANA service registry
+entrust-sps|entrust-sps|640/tcp|the IANA service registry
+entrusttime|EntrustTime|309/tcp|the IANA service registry
+epmap|DCE endpoint resolution|135/tcp|the IANA service registry
+epp|Extensible Provisioning Protocol|700/tcp|RFC 5734
+erpc|Encore Expedited Remote Pro.Call|121/tcp|the IANA service registry
+escp-ip|ESCP|621/tcp|the IANA service registry
+esiur|Esiur distributed resource protocol|0/tcp|the IANA service registry
+esro-emsdp|ESRO-EMSDP V1.3|642/tcp|the IANA service registry
+esro-gen|Efficient Short Remote Operations|259/tcp|the IANA service registry
+est|Enrollment Over Secure Transport|0/tcp|the IANA service registry
+est-coaps|EST over secure CoAP (EST-coaps)|0/udp|the IANA service registry
+eudora-set|Eudora Set|592/tcp|the IANA service registry
+evp|EvP - Generic EVENT protocol|0/tcp|the IANA service registry
+ewelink|eWeLink devices supporting LAN Control|0/tcp|the IANA service registry
+exec|remote process execution; authentication performed using passwords and UNIX login names|512/tcp|the IANA service registry
+exp1|RFC3692-style Experiment 1|1021/tcp|1][RFC 4727]; [RFC 6335
+exp2|RFC3692-style Experiment 2|1022/tcp|1][RFC 4727]; [RFC 6335
+eyelink|EyeLink|589/tcp|the IANA service registry
+fatserv|Fatmen Server|347/tcp|the IANA service registry
+fcp|FirstClass Protocol|510/tcp|the IANA service registry
+fcp-udp|FCP|810/tcp|the IANA service registry
+feldwesen|proprietary|0/tcp|the IANA service registry
+fisk|Fiscalization service of Click.al|0/tcp|the IANA service registry
+fl-purr|FilmLight Cluster Power Control Service|0/udp|the IANA service registry
+flexlm|Flexible License Manager|744/tcp|the IANA service registry
+flightdmp|Flight Data Monitoring Protocol|0/tcp|the IANA service registry
+flir-ircam|FLIR Infrared Camera|0/tcp|the IANA service registry
+fln-spx|Berkeley rlogind with SPX auth|221/tcp|the IANA service registry
+ftp-agent|FTP Software Agent System|574/tcp|the IANA service registry
+ftps-data|ftp protocol, data, over TLS/SSL|989/tcp|the IANA service registry
+fujitsu-dev|Fujitsu Device Control|747/tcp|the IANA service registry
+fv-cert|Fairview Certificate|0/udp|the IANA service registry
+fv-key|Fairview Key|0/udp|the IANA service registry
+fv-time|Fairview Time/Date|0/udp|the IANA service registry
+fxp|FXP Communication|286/tcp|the IANA service registry
+g2metric-lynx|Used for the Lynx System|0/tcp|the IANA service registry
+gacp|Gateway Access Control Protocol|190/tcp|the IANA service registry
+garcon|garcon|999/tcp|the IANA service registry
+gdoi|GDOI|848/tcp|RFC 3547
+gdomap|gdomap|538/tcp|the IANA service registry
+genie|Genie Protocol|402/tcp|the IANA service registry
+genrad-mux|GENRAD-MUX|176/tcp|the IANA service registry
+ggf-ncp|GNU Generation Foundation NCP|678/tcp|the IANA service registry
+giffer|gif collection browsing|0/tcp|the IANA service registry
+ginad|ginad|634/tcp|the IANA service registry
+gist|Q-mode encapsulation for GIST messages|270/udp|RFC 5971
+go-login|go-login|491/tcp|the IANA service registry
+googexpeditions|Service related to Google Expeditions which is a technology for enabling multi-participant virtual fieldtrip experiences over a local wireless network. See http://g.co/expeditions for more details|0/tcp|the IANA service registry
+googlecast|Service related to Google Cast which is a technology for enabling multi-screen experiences. See developers.google.com/cast for more details|0/tcp|the IANA service registry
+goorstop|For iOS Application named GoOrStop|0/tcp|the IANA service registry
+gopro-wake|GoPro proprietary protocol to wake devices|0/udp|the IANA service registry
+gopro-web|GoPro proprietary protocol for devices|0/udp|the IANA service registry
+gotit|Network name Got It!|0/tcp|the IANA service registry
+gppitnp|Genesis Point-to-Point Trans Net|103/tcp|the IANA service registry
+graphics|Graphics|41/tcp|the IANA service registry
+groovesquid|Groovesquid Democratic Music Control Protocol|0/tcp|the IANA service registry
+groupthink|Mobile device cluster|0/tcp|the IANA service registry
+gsremotecontrol|GS Labs set-top box remote control|0/tcp|the IANA service registry
+gss-http|gss-http|488/tcp|the IANA service registry
+gss-xlicen|GSS X License Verification|128/tcp|the IANA service registry
+gucam-http|Image Data Transfer API for Wi-Fi Camera Devices over HTTP|0/tcp|the IANA service registry
+ha-cluster|ha-cluster|694/tcp|the IANA service registry
+hap|HAP|661/tcp|the IANA service registry
+hassle|Hassle|375/tcp|the IANA service registry
+hbbtv-ait|HbbTV Application Information Table|0/tcp|the IANA service registry
+hcp-wismar|Hardware Control Protocol Wismar|686/tcp|the IANA service registry
+hdap|HDAP|263/tcp|the IANA service registry
+hello-port|HELLO_PORT|652/tcp|the IANA service registry
+hems|HEMS|151/tcp|the IANA service registry
+hmmp-ind|HMMP Indication|612/tcp|the IANA service registry
+hmmp-op|HMMP Operation|613/tcp|the IANA service registry
+hola|An application to communicate with other|0/tcp|the IANA service registry
+home-assistant|Home Assistant|0/tcp|the IANA service registry
+homeconnect|Home Connect Protocol|0/tcp|the IANA service registry
+homekit|Protocol for home hub communication|0/tcp|the IANA service registry
+homewizard|HomeWizard Local API|0/tcp|the IANA service registry
+honeywell-vid|Honeywell Video Systems|0/udp|the IANA service registry
+hostname|NIC Host Name Server|101/tcp|the IANA service registry
+hp-alarm-mgr|hp performance data alarm manager|383/tcp|the IANA service registry
+hp-collector|hp performance data collector|381/tcp|the IANA service registry
+hp-managed-node|hp performance data managed node|382/tcp|the IANA service registry
+hpdeviceinfo|The service provides information about connected HP devices|0/tcp|the IANA service registry
+http-alt|FileMaker, Inc. - HTTP Alternate (see Port 80)|591/tcp|the IANA service registry
+http-mgmt|http-mgmt|280/tcp|the IANA service registry
+http-rpc-epmap|HTTP RPC Ep Map|593/tcp|the IANA service registry
+htvncconf|HomeTouch Vnc Configuration|0/udp|the IANA service registry
+hue|Philips hue protocol|0/tcp|the IANA service registry
+huesync|Philips Hue Sync control protocol|0/tcp|the IANA service registry
+hybrid-pop|hybrid-pop|473/tcp|the IANA service registry
+hyper-g|Hyper-G|418/tcp|the IANA service registry
+hyperwave-isp|Hyperwave-ISP|692/tcp|the IANA service registry
+iafdbase|iafdbase|480/tcp|the IANA service registry
+iafserver|iafserver|479/tcp|the IANA service registry
+iasd|IASD|432/tcp|the IANA service registry
+iaudit|Braemar Inventory audit|0/tcp|the IANA service registry
+ibm-app|IBM Application|385/tcp|the IANA service registry
+ibm-db2|IBM-DB2|523/tcp|the IANA service registry
+icad-el|ICAD|425/tcp|the IANA service registry
+iclcnet-locate|ICL coNETion locate server|886/tcp|the IANA service registry
+iclcnet-svinfo|ICL coNETion server info|887/tcp|the IANA service registry
+icontrolbox|A Remote Control Application service used to control Computers on a Local Area Network|0/tcp|the IANA service registry
+ideafarm-door|self documenting Telnet Door|902/tcp|the IANA service registry
+ideafarm-panic|self documenting Telnet Panic Door|903/tcp|the IANA service registry
+ideaquest|IDEAQUEST Safety Monitoring System|0/tcp|the IANA service registry
+idfp|IDFP|549/tcp|the IANA service registry
+idxp|IDXP|603/tcp|RFC 4767
+ieee-mms|IEEE MMS|651/tcp|the IANA service registry
+ieee-mms-ssl|IEEE-MMS-SSL|695/tcp|the IANA service registry
+igmpv3lite|IGMP over UDP for SSM|465/udp|the IANA service registry
+iiop|iiop|535/tcp|the IANA service registry
+iip|Tool to get infos about a host|0/udp|the IANA service registry
+im|Instant Messaging|0/tcp|RFC 3861
+imagescal|ImagesCal App Data Sharing|0/tcp|the IANA service registry
+imap3|Interactive Mail Access Protocol v3|220/tcp|the IANA service registry
+imgsync|Protocol synchronizing Image data|0/tcp|the IANA service registry
+ims-ni|Noise Inspector|0/tcp|the IANA service registry
+imsp|Interactive Mail Support Protocol|406/tcp|the IANA service registry
+inbusiness|inbusiness|244/tcp|the IANA service registry
+infboard|InfBoard interactive whiteboard protocol|0/tcp|the IANA service registry
+informacast|Listing Singlewire InformaCast servers|0/tcp|the IANA service registry
+infoseek|InfoSeek|414/tcp|the IANA service registry
+ingres-net|INGRES-NET Service|134/tcp|the IANA service registry
+innergroup|Service for a Communications App|0/tcp|the IANA service registry
+intecourier|intecourier|495/tcp|the IANA service registry
+integra-sme|Integra Software Management Environment|484/tcp|the IANA service registry
+intrinsa|Intrinsa|503/tcp|the IANA service registry
+iot|Internet-of-things (IoT) JSON telegram service|0/tcp|the IANA service registry
+iota|iotaMed medical records server|0/tcp|the IANA service registry
+ipcd|ipcd|576/tcp|the IANA service registry
+ipcserver|Sun IPC server|600/tcp|the IANA service registry
+ipdd|ipdd|578/tcp|the IANA service registry
+iperfd|Network socket performance test|0/tcp|the IANA service registry
+ipp|IPP (Internet Printing Protocol)|631/tcp|RFC 8011
+ipps|Internet Printing Protocol over HTTPS|631/tcp|RFC 8011
+ipx|IPX|213/tcp|the IANA service registry
+iqp|Control protocol for Phase One devices|0/tcp|the IANA service registry
+ir-hvac-000|HVAC SMIL Server|0/tcp|the IANA service registry
+irc-iot|The universal protocol for building IoT|0/tcp|the IANA service registry
+irc-serv|IRC-SERV|529/tcp|the IANA service registry
+iris-beep|IRIS over BEEP|702/tcp|RFC 3983
+iris-lwz|IRIS-LWZ|715/tcp|RFC 4993
+iris-xpc|IRIS over XPC|713/tcp|the IANA service registry
+iris-xpcs|IRIS over XPCS|714/tcp|RFC 4992
+irobotmcs|iRobot Monitor and Control Service|0/tcp|the IANA service registry
+iroid-sd|Iroid Data Service Discovery|0/tcp|the IANA service registry
+irradiatd-iclip|iClip clipboard transfer|0/tcp|the IANA service registry
+irt-sharing|Image Resizer Toolbox preview sharing service|0/tcp|the IANA service registry
+is99c|TIA/EIA/IS-99 modem client|379/tcp|the IANA service registry
+is99s|TIA/EIA/IS-99 modem server|380/tcp|the IANA service registry
+isakmp|isakmp|500/tcp|the IANA service registry
+iscsi|iSCSI|860/tcp|RFC 7143
+isi-gl|ISI Graphics Language|55/tcp|the IANA service registry
+iso-ill|ISO ILL Protocol|499/tcp|the IANA service registry
+iso-ip|ISO-IP|147/tcp|the IANA service registry
+iso-tp0|ISO-IP0|146/tcp|the IANA service registry
+iso-tsap|ISO-TSAP Class 0|102/tcp|the IANA service registry
+iso-tsap-c2|ISO Transport Class 2 Non-Control over TCP|399/tcp|the IANA service registry
+isynchronize|iSynchronize data synchronization protocol|0/tcp|the IANA service registry
+itap-publish|iTap Publishing Service|0/tcp|the IANA service registry
+itm-mcell-s|itm-mcell-s|828/tcp|the IANA service registry
+izira|Integrated Business Data Exchange|0/tcp|the IANA service registry
+jargon|Jargon|148/tcp|the IANA service registry
+jnx-kcsync|jollys keychain cloud sync protocol|0/tcp|the IANA service registry
+jukebox|Jukebox Request Service|0/tcp|the IANA service registry
+jukejoint|Music sharing protocol|0/tcp|the IANA service registry
+k-block|K-BLOCK|287/tcp|the IANA service registry
+kerberos-adm|kerberos administration|749/tcp|the IANA service registry
+kerberos-iv|kerberos version iv|750/udp|the IANA service registry
+keynoteaccess|KeynoteAccess is used for sending remote requests/responses when controlling a slideshow with Keynote Remote|0/tcp|the IANA service registry
+keynotepairing|KeynotePairing is used to pair Keynote Remote with Keynote|0/tcp|the IANA service registry
+keyserver|Key Server|584/tcp|the IANA service registry
+kink|Kerberized Internet Negotiation of Keys (KINK)|910/tcp|RFC 4430
+kis|KIS Protocol|186/tcp|the IANA service registry
+kiwin|Topology Discovery|0/tcp|the IANA service registry
+klogin|klogin|543/tcp|the IANA service registry
+knet-cmp|KNET/VM Command/Message Protocol|157/tcp|the IANA service registry
+knx|KNX Discovery Protocol|0/tcp|the IANA service registry
+kryptolan|Kryptolan|398/tcp|the IANA service registry
+kshell|krcmd|544/tcp|the IANA service registry
+kyma|Symbolic Sound Kyma Service Discovery|0/tcp|the IANA service registry
+labyrinth|Labyrinth local multiplayer protocol|0/udp|the IANA service registry
+lanserver|lanserver|637/tcp|the IANA service registry
+larvaio-control|Larva IP Controller|0/tcp|the IANA service registry
+ldp|LDP|646/tcp|the IANA service registry
+legent-1|Legent Corporation|373/tcp|the IANA service registry
+legent-2|Legent Corporation|374/tcp|the IANA service registry
+link|LINK|245/tcp|the IANA service registry
+ljk-login|ljk-login|472/tcp|the IANA service registry
+lmp|Link Management Protocol (LMP)|701/tcp|RFC 4204
+loadav|loadav|750/udp|the IANA service registry
+locus-con|Locus PC-Interface Conn Server|127/tcp|the IANA service registry
+locus-map|Locus PC-Interface Net Map Ser|125/tcp|the IANA service registry
+logicnode|Logic Pro Distributed Audio|0/udp|the IANA service registry
+login|remote login a la telnet; automatic authentication performed based on priviledged port numbers and distributed data bases which identify authentication domains|513/tcp|the IANA service registry
+logsheetserver|logSheet Server Synchronization Server|0/tcp|the IANA service registry
+lumiere|A protocol to remotely control DMX512 devices over the network|0/tcp|the IANA service registry
+lumis-lca|Lumis Cache Appliance Protocol|0/tcp|the IANA service registry
+m30s1pt|Moritz30-Project Standard protocol 1 Plain Text|0/tcp|the IANA service registry
+mac-srvr-admin|MacOS Server Admin|660/tcp|the IANA service registry
+macfoh-audio|MacFOH audio stream|0/udp|the IANA service registry
+macfoh-data|MacFOH realtime data|0/udp|the IANA service registry
+macfoh-events|MacFOH show control events|0/udp|the IANA service registry
+macon-tcp|macon-tcp|456/tcp|the IANA service registry
+macon-udp|macon-udp|456/udp|the IANA service registry
+magenta-logic|Magenta Logic|313/tcp|the IANA service registry
+mailbox-lm|mailbox-lm|505/tcp|the IANA service registry
+mailq|MAILQ|174/tcp|the IANA service registry
+maitrd|maitrd|997/tcp|the IANA service registry
+manet|MANET Protocols|269/tcp|RFC 5498
+mas|Pravala Mobility and Aggregation Service|0/tcp|the IANA service registry
+masqdialer|masqdialer|224/tcp|the IANA service registry
+matip-type-a|MATIP Type A|350/tcp|RFC 2351
+matip-type-b|MATIP Type B|351/tcp|RFC 2351
+matterc|Matter Commissionable Node Discovery|0/tcp|the IANA service registry
+matterd|Matter Commissioner Discovery|0/tcp|the IANA service registry
+mavlink|MAVLink Micro Air Vehicle Communication Protocol|0/tcp|the IANA service registry
+mazepseudo-game|Peer to peer communication between instances of the Maze Pseudo game.|0/udp|the IANA service registry
+mbap|Modbus Application Protocol|502/tcp|the IANA service registry
+mbap-s|Modbus Application Protocol Secure|802/tcp|the IANA service registry
+mcidas|McIDAS Data Transmission Protocol|112/tcp|the IANA service registry
+mcns-sec|mcns-sec|638/tcp|the IANA service registry
+mdbs-daemon|IANA assigned this well-formed service name as a replacement for mdbs_daemon.|800/tcp|the IANA service registry
+mdc-portmapper|MDC Port Mapper|685/tcp|the IANA service registry
+mdqs|mdqs|666/tcp|the IANA service registry
+mecomm|MeComm|668/tcp|the IANA service registry
+mediatap|Mediatap streaming protocol|0/tcp|the IANA service registry
+mercurydock|Mercury Dock Assistant|0/tcp|the IANA service registry
+meregister|MeRegister|669/tcp|the IANA service registry
+meshcop|Thread Mesh Commissioning|0/udp|the IANA service registry
+meshcop-e|Thread Mesh Commissioning Ephemeral-key|0/udp|the IANA service registry
+meta5|Meta5|393/tcp|the IANA service registry
+metagram|Metagram Relay|99/tcp|the IANA service registry
+meter|demon|570/tcp|the IANA service registry
+mfcobol|Micro Focus Cobol|86/tcp|the IANA service registry
+mftp|mftp|349/tcp|the IANA service registry
+micom-pfs|micom-pfs|490/tcp|the IANA service registry
+microdeep|A protocol for controlling a microscope|0/tcp|the IANA service registry
+microsoft-ds|Microsoft-DS|445/tcp|the IANA service registry
+midi2|MIDI 2.0 Device Discovery|0/udp|the IANA service registry
+mieleacs|Protocol for connected accessories|0/tcp|the IANA service registry
+mieleathome|Miele@home Protocol|0/tcp|the IANA service registry
+mieleprof|Miele protocol for prof. appliances|0/tcp|the IANA service registry
+mielesemiprof|Miele protocol for semi prof. appliances|0/tcp|the IANA service registry
+mist|A Medical Interoperability Service Type, used to identify medical devices providing network interfaces.|0/tcp|the IANA service registry
+mit-dov|MIT Dover Spooler|91/tcp|the IANA service registry
+mit-ml-dev|MIT ML Device|83/tcp|the IANA service registry
+mles|Mles is a client-server data distribution protocol targeted to serve as a lightweight and reliable distributed publish/subscribe database service.|0/tcp|the IANA service registry
+mmm|Provides a client with access to the Mathematical Mesh, a user-focused PKI.|0/tcp|the IANA service registry
+mms-edgerouter|Maritime Messaging Service Edge Router|0/tcp|the IANA service registry
+mn-passage|A Remote Control Application service used to control Computers on a Local Area Network|0/tcp|the IANA service registry
+mobileip-agent|MobileIP-Agent|434/tcp|the IANA service registry
+mobilip-mn|MobilIP-MN|435/tcp|the IANA service registry
+mogeneti-auth|Authentication service for Mogeneti Software Applications|0/tcp|the IANA service registry
+moncon|Sonnox MCON monitor controller protocol|0/udp|the IANA service registry
+mondex|Mondex|471/tcp|the IANA service registry
+monitor|monitor|561/tcp|the IANA service registry
+mortgageware|MortgageWare|367/tcp|the IANA service registry
+mpm|Message Processing Module [recv]|45/tcp|the IANA service registry
+mpm-flags|MPM FLAGS Protocol|44/tcp|the IANA service registry
+mpm-snd|MPM [default send]|46/tcp|the IANA service registry
+mpp|Netix Message Posting Protocol|218/tcp|the IANA service registry
+mptn|Multi Protocol Trans. Net.|397/tcp|the IANA service registry
+mrm|MRM|679/tcp|the IANA service registry
+ms-rome|microsoft rome|569/tcp|the IANA service registry
+ms-shuttle|microsoft shuttle|568/tcp|the IANA service registry
+msdp|MSDP|639/tcp|the IANA service registry
+msexch-routing|MS Exchange Routing|691/tcp|the IANA service registry
+msg-auth|MSG Authentication|31/tcp|the IANA service registry
+msg-icp|MSG ICP|29/tcp|the IANA service registry
+msp|Message Send Protocol (historic)|18/tcp|the IANA service registry
+multiling-http|Multiling HTTP|777/tcp|the IANA service registry
+multiplex|Network Innovations Multiplex|171/tcp|the IANA service registry
+mumps|Plus Five's MUMPS|188/tcp|the IANA service registry
+mylex-mapd|mylex-mapd|467/tcp|the IANA service registry
+naio|NetAcquire server input/output protocol|0/tcp|the IANA service registry
+name|Host Name Server|42/tcp|the IANA service registry
+nameserver|Host Name Server|42/tcp|the IANA service registry
+namp|NAMP|167/tcp|the IANA service registry
+nas|Netnews Administration System|991/tcp|RFC 4707
+nasmon|Proprietary communication protocol for NAS Monitor|0/tcp|the IANA service registry
+nasunifiler|This DNS-SD service is used by mobile clients to locate the Nasuni Filer (a storage product) for a given company.|0/tcp|the IANA service registry
+nced|nced|404/tcp|the IANA service registry
+ncld|ncld|405/tcp|the IANA service registry
+ncount-issuer|The issuer service in the n-Count electronic value transfer system|0/tcp|the IANA service registry
+ncp|NCP|524/tcp|the IANA service registry
+ndi|IP based video discovery and usage|0/tcp|the IANA service registry
+ndsauth|NDSAUTH|353/tcp|the IANA service registry
+nedap-aepu|Nedap AEOS processing unit|0/tcp|the IANA service registry
+neoriders|NeoRiders Client Discovery Protocol|0/udp|the IANA service registry
+nest-protocol|nest-protocol|489/tcp|the IANA service registry
+netbios-dgm|NETBIOS Datagram Service|138/tcp|the IANA service registry
+netbios-ns|NETBIOS Name Service|137/tcp|the IANA service registry
+netbios-ssn|NETBIOS Session Service|139/tcp|the IANA service registry
+netconf-ssh|NETCONF over SSH|830/tcp|RFC 6242
+netcp|NetScout Control Protocol|395/tcp|the IANA service registry
+netgw|netGW|741/tcp|the IANA service registry
+netnews|readnews|532/tcp|the IANA service registry
+netrcs|Network based Rev. Cont. Sys.|742/tcp|the IANA service registry
+netready|UpdateLogic NetReady Device Identification|0/tcp|the IANA service registry
+netrjs-1|Remote Job Service|71/tcp|the IANA service registry
+netrjs-2|Remote Job Service|72/tcp|the IANA service registry
+netrjs-3|Remote Job Service|73/tcp|the IANA service registry
+netrjs-4|Remote Job Service|74/tcp|the IANA service registry
+netsc-dev|NETSC|155/tcp|the IANA service registry
+netsc-prod|NETSC|154/tcp|the IANA service registry
+netviewdm1|IBM NetView DM/6000 Server/Client|729/tcp|the IANA service registry
+netviewdm2|IBM NetView DM/6000 send/tcp|730/tcp|the IANA service registry
+netviewdm3|IBM NetView DM/6000 receive/tcp|731/tcp|the IANA service registry
+netvu-video|AD Group NetVu Connected Video|0/tcp|the IANA service registry
+netwall|for emergency broadcasts|533/tcp|the IANA service registry
+netware-ip|Novell Netware over IP|396/tcp|the IANA service registry
+new-rwho|new-who|550/tcp|n/a
+nextcap|Proprietary communication protocol for NextCap capture solution|0/tcp|the IANA service registry
+nextstep|NextStep Window Server|178/tcp|the IANA service registry
+nfs-domainroot|NFS service for the domain root, the root of an organization's published file namespace.|0/tcp|RFC 6641
+ngr-keydist|NGR Key Distribution|0/tcp|the IANA service registry
+ni|National Instruments Network Device|0/tcp|the IANA service registry
+ni-ftp|NI FTP|0/tcp|the IANA service registry
+ni-mail|NI MAIL|0/tcp|the IANA service registry
+ni-rt|National Instruments Real-Time Target|0/tcp|the IANA service registry
+ni-sysapi|National Instruments System API Service|0/tcp|the IANA service registry
+nicname|Who Is|43/tcp|the IANA service registry
+nip|Amiga Envoy Network Inquiry Protocol|376/tcp|the IANA service registry
+nlogin|nlogin|758/tcp|the IANA service registry
+nmap|NMAP|689/tcp|the IANA service registry
+nmsp|Networked Media Streaming Protocol|537/tcp|the IANA service registry
+nnsp|NNTP for transit servers (NNSP)|433/tcp|RFC 3977
+nodel|Lightweight event based control protocol utilising JavaScript Object Notation|0/tcp|the IANA service registry
+noonien|noonien peer-to-peer memory replication|0/tcp|the IANA service registry
+notify|notify|773/udp|the IANA service registry
+novastorbakcup|Novastor Backup|308/tcp|the IANA service registry
+npmp-gui|npmp-gui|611/tcp|the IANA service registry
+npmp-local|npmp-local|610/tcp|the IANA service registry
+npmp-trap|npmp-trap|609/tcp|the IANA service registry
+npp|Network Printing Protocol|92/tcp|the IANA service registry
+nq|Network Quality test server endpoint|0/tcp|the IANA service registry
+nqs|nqs|607/tcp|the IANA service registry
+ns|ns|760/tcp|the IANA service registry
+nsiiops|IIOP Name Service over TLS/SSL|261/tcp|the IANA service registry
+nss-routing|NSS-Routing|159/tcp|the IANA service registry
+nsw-fe|NSW User System FE|27/tcp|the IANA service registry
+ntalk|ntalk|518/tcp|the IANA service registry
+ntx|Tenasys|0/udp|the IANA service registry
+nusdp|Nuance Unity Service Discovery Protocol|0/tcp|the IANA service registry
+nxedit|NXEdit|126/tcp|the IANA service registry
+oak|Oak Device Services|0/tcp|the IANA service registry
+obex|OBEX|650/tcp|the IANA service registry
+objcall|Tivoli Object Dispatcher|94/tcp|the IANA service registry
+oca|Insecure OCP.1 protocol, which is the insecure TCP/IP implementation of the Object Control Architecture|0/tcp|the IANA service registry
+ocasec|Secure OCP.1 protocol, which is the secure TCP/IP implementation of the Object Control Architecture|0/tcp|the IANA service registry
+ocaws|Insecure OCP.1 hosted on a WebSocket|0/tcp|the IANA service registry
+ocbinder|OCBinder|183/tcp|the IANA service registry
+ocs-amu|OCS_AMU|429/tcp|the IANA service registry
+ocs-cmu|OCS_CMU|428/tcp|the IANA service registry
+ocserver|OCServer|184/tcp|the IANA service registry
+odmr|ODMR|366/tcp|the IANA service registry
+ohimsrv|ohimsrv|506/tcp|the IANA service registry
+ok-connect|Peer-to-peer nearby audio communication|0/tcp|the IANA service registry
+ok-control|Peer control and application data|0/tcp|the IANA service registry
+ola|Web Interface for the Open Lighting Architecture Software|0/tcp|the IANA service registry
+olpc-activity1|One Laptop per Child activity|0/udp|the IANA service registry
+olsr|OLSR|698/tcp|the IANA service registry
+omadm-bootstrap|Open Mobile Alliance (OMA) Device Management (DM) Bootstrap Server Discovery Service|0/tcp|the IANA service registry
+omginitialrefs|OMG Initial Refs|900/tcp|the IANA service registry
+omnistate|Resource state update notifications|0/tcp|the IANA service registry
+omserv|omserv|764/tcp|the IANA service registry
+onenet-info|OneNet Application Information Service|0/tcp|the IANA service registry
+onenet-pairing|OneNet Pairing|0/tcp|the IANA service registry
+onenet-pgn|OneNet PGN Transport Service|0/udp|the IANA service registry
+onmux|Onmux|417/tcp|the IANA service registry
+oob-ws-http|DMTF out-of-band web services management protocol|623/tcp|the IANA service registry
+oob-ws-https|DMTF out-of-band secure web services management protocol|664/tcp|the IANA service registry
+opalis-rdv|opalis-rdv|536/tcp|the IANA service registry
+opalis-robot|Opalis Robot|314/tcp|the IANA service registry
+opc-job-start|IBM Operations Planning and Control Start|423/tcp|the IANA service registry
+opc-job-track|IBM Operations Planning and Control Track|424/tcp|the IANA service registry
+opencu|Conferencing Protocol|0/udp|the IANA service registry
+openpath|Discovery of OpenPath appliances|0/tcp|the IANA service registry
+openport|Openport|260/tcp|the IANA service registry
+openvms-sysipc|openvms-sysipc|557/tcp|the IANA service registry
+oro|ORO Core server REST configuration and control API|0/tcp|the IANA service registry
+osb-sd|Oracle Secure Backup|400/tcp|the IANA service registry
+oscit|Open Sound Control Interface Transfer|0/udp|the IANA service registry
+osu-nms|OSU Network Monitoring System|192/tcp|the IANA service registry
+owamp-control|OWAMP-Control|861/tcp|RFC 4656
+owamp-test|OWAMP-Test|861/udp|RFC 8545
+p2pchat|Peer-to-Peer Chat (Sample Java Bonjour application)|0/udp|the IANA service registry
+p2pstorage-sec|DataBOND p2p storage|0/tcp|the IANA service registry
+pairandshare|Pair & Share data protocol|0/tcp|the IANA service registry
+pana|PANA Messages|716/udp|RFC 5191
+panoply|Panoply multimedia composite transfer protocol|0/tcp|the IANA service registry
+parabay-p2p|Parabay P2P protocol|0/tcp|the IANA service registry
+parity|PA-R-I-Ty (Public Address - Radio - Intercom - Telefony)|0/tcp|the IANA service registry
+passgo|PassGo|511/tcp|the IANA service registry
+passgo-tivoli|PassGo Tivoli|627/tcp|the IANA service registry
+password-chg|Password Change|586/tcp|the IANA service registry
+pawserv|Perf Analysis Workbench|345/tcp|the IANA service registry
+payload-app|Local and remote file transfers|0/tcp|the IANA service registry
+pblr|Peblar EV charger|0/tcp|the IANA service registry
+pcmail-srv|PCMail Server|158/tcp|the IANA service registry
+pdap|Prospero Data Access Protocol|344/tcp|the IANA service registry
+personal-link|Personal Link|281/tcp|the IANA service registry
+pftp|PFTP|662/tcp|the IANA service registry
+ph|Ph service|481/tcp|the IANA service registry
+philips-vc|Philips Video-Conferencing|583/tcp|the IANA service registry
+phonebook|phone|767/tcp|the IANA service registry
+photoshow|Show Photos over TCP|0/tcp|the IANA service registry
+photosmithsync|Photosmith's iPad to Lightroom sync protocol|0/tcp|the IANA service registry
+photuris|proturis|468/tcp|the IANA service registry
+pim-rp-disc|PIM-RP-DISC|496/tcp|the IANA service registry
+pip|PIP|321/tcp|the IANA service registry
+pipedal|Pi Pedal Web Interface|0/tcp|the IANA service registry
+pirp|pirp|553/tcp|the IANA service registry
+pkix-3-ca-ra|PKIX-3 CA/RA|829/tcp|the IANA service registry
+pkix-timestamp|PKIX TimeStamp|318/tcp|the IANA service registry
+pochi|A presenter to audience transfer service|0/tcp|the IANA service registry
+podcastproxy|Protocol for communication between Podcast|0/tcp|the IANA service registry
+pop2|Post Office Protocol - Version 2|109/tcp|the IANA service registry
+pov-ray|POV-Ray|494/tcp|the IANA service registry
+powerburst|Air Soft Power Burst|485/tcp|the IANA service registry
+pres|Presence|0/tcp|RFC 3861
+print-srv|Network PostScript|170/tcp|the IANA service registry
+printer|spooler|515/tcp|the IANA service registry
+printopia|Printopia Server|0/tcp|the IANA service registry
+prm-nm|Prospero Resource Manager Node Man.|409/tcp|the IANA service registry
+prm-sm|Prospero Resource Manager Sys. Man.|408/tcp|the IANA service registry
+profile|PROFILE Naming System|136/tcp|the IANA service registry
+prospero|Prospero Directory Service|191/tcp|the IANA service registry
+psap|Progal Service Advertising Protocol|0/udp|the IANA service registry
+pssc|PSSC|645/tcp|the IANA service registry
+pstmailsync|File synchronization protocol for Pst Mail Sync|0/tcp|the IANA service registry
+pstmailsync-ssl|Secured file synchronization protocol for Pst Mail Sync|0/tcp|the IANA service registry
+pt-tls|IETF Network Endpoint Assessment (NEA) Posture Transport Protocol over TLS (PT-TLS)|271/tcp|RFC 6876
+ptcnameservice|PTC Name Service|597/tcp|the IANA service registry
+ptp-event|PTP Event|319/tcp|the IANA service registry
+ptp-general|PTP General|320/tcp|the IANA service registry
+ptp-init|Picture Transfer Protocol(PTP) Initiator|0/tcp|the IANA service registry
+pulsar|Network service for Pulsar messaging and data sharing mobile app|0/tcp|the IANA service registry
+pump|pump|751/tcp|the IANA service registry
+puparp|puparp|998/udp|the IANA service registry
+puprouter|puprouter|999/tcp|the IANA service registry
+purenoise|PureNoise|663/tcp|the IANA service registry
+pvaccess|Experimental Physics and Industrial Control System|0/tcp|the IANA service registry
+pwdgen|Password Generator Protocol|129/tcp|the IANA service registry
+qbikgdp|QbikGDP|368/tcp|the IANA service registry
+qft|Queued File Transport|189/tcp|the IANA service registry
+qmqp|QMQP|628/tcp|the IANA service registry
+qmtp|The Quick Mail Transfer Protocol|209/tcp|the IANA service registry
+qotd|Quote of the Day|17/tcp|the IANA service registry
+qrh|qrh|752/tcp|the IANA service registry
+quad|Distributed Game Data|0/tcp|the IANA service registry
+quotad|quotad|762/tcp|the IANA service registry
+qwady-peer|Encrypted nearby Peer media exchange|0/tcp|the IANA service registry
+qwizcollab|Broadcast of Qwizdom Presentation sessions for joining by a client, such as Qwizdom Notes+.|0/tcp|the IANA service registry
+radioport|RadioPort Message Service|0/tcp|the IANA service registry
+radiusdtls|Authentication, Accounting, and Dynamic Authorization via the RADIUS protocol. This service name is used to construct the SRV service label _radiusdtls for discovery of RADIUS/DTLS servers.|0/udp|RFC 7585
+radiustls|Authentication, Accounting, and Dynamic Authorization via the RADIUS protocol. This service name is used to construct the SRV service label _radiustls for discovery of RADIUS/TLS servers.|0/tcp|RFC 7585
+railduino|Model Railroad Messaging|0/tcp|the IANA service registry
+rap|Route Access Protocol|38/tcp|the IANA service registry
+rapta|Industrial IOT self-discovery network|0/tcp|the IANA service registry
+rcp|Radio Control Protocol|469/tcp|the IANA service registry
+rda|RDA|630/tcp|the IANA service registry
+re-mail-ck|Remote Mail Checking Protocol|50/tcp|the IANA service registry
+realm-rusd|ApplianceWare managment protocol|688/tcp|the IANA service registry
+recipe-box|The Recipe Box Exchange|0/tcp|the IANA service registry
+recipe-sharing|Recipe Sharing Protocol|0/tcp|the IANA service registry
+recolive-cc|Remote Camera Control|0/tcp|the IANA service registry
+recordit-itp|Recordit Image Transport Protocol|0/tcp|the IANA service registry
+remote-kis|Remote-KIS|185/tcp|the IANA service registry
+remotebuddy|Remote Buddy remote control software command and data exchange|0/tcp|the IANA service registry
+remotefs|rfs server|556/tcp|the IANA service registry
+repcmd|repcmd|641/tcp|the IANA service registry
+repscmd|RepCmd|653/tcp|the IANA service registry
+rescap|rescap|283/tcp|the IANA service registry
+retrospect|Retrospect backup and restore service|497/tcp|the IANA service registry
+rfile|rfile|750/tcp|the IANA service registry
+rgb|RGB Spectrum Device Discovery|0/tcp|the IANA service registry
+rift-lies|Routing in Fat Trees Link Information Element|914/udp|RFC 9692
+rift-ties|Routing in Fat Trees Topology Information Element|915/udp|RFC 9692
+ripng|ripng|521/tcp|the IANA service registry
+ris|Intergraph|180/tcp|the IANA service registry
+ris-cm|Russell Info Sci Calendar Manager|748/tcp|the IANA service registry
+rje|Remote Job Entry|5/tcp|the IANA service registry
+rlp|Resource Location Protocol|39/tcp|the IANA service registry
+rlzdbase|RLZ DBase|635/tcp|the IANA service registry
+rmc|RMC|657/tcp|the IANA service registry
+rmonitor|rmonitord|560/tcp|the IANA service registry
+rmt|Remote MT Protocol|411/tcp|the IANA service registry
+rndc|BIND9 remote name daemon controller|953/tcp|the IANA service registry
+roambot|Roambot communication|0/tcp|the IANA service registry
+robustirc|Like ircu ([RFC 1459]), but failure tolerant due to strong consistency among n>=3 servers|0/tcp|the IANA service registry
+roomcast-capi|RoomCast Control Protocol|0/tcp|the IANA service registry
+roomcast-mapi|RoomCast Management Protocol|0/tcp|the IANA service registry
+router|local routing process (on site); uses variant of Xerox NS routing information protocol - RIP|520/udp|the IANA service registry
+rpasswd|rpasswd|774/tcp|the IANA service registry
+rpc2portmap|rpc2portmap|369/tcp|the IANA service registry
+rpki-rtr|Resource PKI to Router Protocol|323/tcp|RFC 6810
+rpki-rtr-tls|Resource PKI to Router Protocol over TLS|324/tcp|RFC 6810
+rradict|Ruckus Radio Access Device, Installation, Commissioning and Troubleshooting service.|0/tcp|the IANA service registry
+rrh|rrh|753/tcp|the IANA service registry
+rrp|Registry Registrar Protocol (RRP)|648/tcp|the IANA service registry
+rsh-spx|Berkeley rshd with SPX auth|222/tcp|the IANA service registry
+rsvd|RSVD|168/tcp|the IANA service registry
+rsvp-tunnel|RSVP Tunnel|363/tcp|the IANA service registry
+rtelnet|Remote Telnet Service|107/tcp|the IANA service registry
+rtip|rtip|771/tcp|the IANA service registry
+rushd|RUSHD|696/tcp|the IANA service registry
+rxe|rxe|761/tcp|the IANA service registry
+rxxmiele|Miele protocol robot cleaners|0/tcp|the IANA service registry
+rym-rrc|Raymarine remote control protocol|0/tcp|the IANA service registry
+s-net|Sirius Systems|166/tcp|the IANA service registry
+s2connect|S2 Connect energy management protocol|0/tcp|the IANA service registry
+saft|saft Simple Asynchronous File Transfer|487/tcp|the IANA service registry
+sanity|SANity|643/tcp|the IANA service registry
+savagesoft|Proprietary Client Server Protocol|0/tcp|the IANA service registry
+scc-security|SCC Security|582/tcp|the IANA service registry
+schdca|schindler internal messaging service|0/tcp|the IANA service registry
+schims|schindler internal messaging service|0/tcp|the IANA service registry
+schlog|logging service|0/tcp|the IANA service registry
+schmpp|Schindler maintenance portal protocol|0/tcp|the IANA service registry
+schoms|schindler object messaging system|0/tcp|the IANA service registry
+schsap|Schindler service authentication portal|0/tcp|the IANA service registry
+schsrmp|Schindler internal messaging service|0/tcp|the IANA service registry
+schvpp|schindler internal messaging service|0/tcp|the IANA service registry
+sco-dtmgr|SCO Desktop Administration Server|617/tcp|the IANA service registry
+sco-inetmgr|Internet Configuration Manager|615/tcp|the IANA service registry
+sco-sysmgr|SCO System Administration Server|616/tcp|the IANA service registry
+sco-websrvrmg3|SCO Web Server Manager 3|598/tcp|the IANA service registry
+sco-websrvrmgr|SCO WebServer Manager|620/tcp|the IANA service registry
+scohelp|scohelp|457/tcp|the IANA service registry
+scoi2odialog|scoi2odialog|360/tcp|the IANA service registry
+scoop-sftp|The service name is used by the SFTP protocol to upload log files from vehicles to road side units in a securely way in a cooperative intelligent transportation system.|0/tcp|the IANA service registry
+scx-proxy|scx-proxy|470/tcp|the IANA service registry
+sdnskmp|SDNSKMP|558/tcp|the IANA service registry
+secugen-connect|SecuGen Connect local biometric bridge|0/tcp|https://connect.secugen.com/dev-guide-doc/bridge-api-contract
+semantix|Semantix|361/tcp|the IANA service registry
+send|SEND|169/tcp|the IANA service registry
+servstat|Service Status update (Sterling Software)|633/tcp|the IANA service registry
+set|Secure Electronic Transaction|257/tcp|the IANA service registry
+setlistmaker-rc|Remote Control for Set List Maker app|0/tcp|the IANA service registry
+setlistmaker-ss|Screen sharing for Set List Maker app|0/tcp|the IANA service registry
+sfs-config|Cray SFS config server|452/tcp|the IANA service registry
+sfs-smp-net|Cray Network Semaphore server|451/tcp|the IANA service registry
+sgcp|sgcp|440/tcp|the IANA service registry
+sgmp|SGMP|153/tcp|the IANA service registry
+sgmp-traps|SGMP-TRAPS|160/tcp|the IANA service registry
+shell|cmd like exec, but automatic authentication is performed as for login server|514/tcp|the IANA service registry
+ship|SHIP (Smart Home IP)|0/tcp|the IANA service registry
+shippairing|Authenticated SHIP pairing request|0/tcp|the IANA service registry
+shots-sync|The protocol is used to sync database among iOS devices and Mac OS X computers.|0/udp|the IANA service registry
+shrinkwrap|Shrinkwrap|358/tcp|the IANA service registry
+siam|siam|498/tcp|the IANA service registry
+sift-uft|Sender-Initiated/Unsolicited File Transfer|608/tcp|the IANA service registry
+silc|SILC|706/tcp|the IANA service registry
+silverplatter|Silverplatter|416/tcp|the IANA service registry
+siminsufflator|Simulated insufflator synchronisation protocol|0/tcp|the IANA service registry
+skillscapture|The protocol is used to transfer database records between an iOS device to a Mac OS X computer|0/tcp|the IANA service registry
+skronk|skronk|460/tcp|the IANA service registry
+sleep-proxy|Sleep Proxy Server|0/udp|the IANA service registry
+sleeptracker|Sleeptracker(R) The loT Smartbed Platform|0/tcp|the IANA service registry
+slpda|Remote Service Discovery in the Service Location|0/tcp|RFC 3832
+smag|terminal access to laundry appliances|0/tcp|the IANA service registry
+smaho|Smart Home Device Setup|0/tcp|the IANA service registry
+smakynet|SMAKYNET|122/tcp|the IANA service registry
+smartsdp|smartsdp|426/tcp|the IANA service registry
+smartsocket|home control|0/tcp|the IANA service registry
+smimeca|Domain signing certificate for S/MIME keys|0/tcp|draft-bhjl-x509-srv-01
+smpnameres|SMPNAMERES|901/tcp|the IANA service registry
+smpte|SMPTE|420/tcp|the IANA service registry
+smsd|SMSD|596/tcp|the IANA service registry
+smsp|Storage Management Services Protocol|413/tcp|the IANA service registry
+smux|SMUX|199/tcp|the IANA service registry
+snagas|SNA Gateway Access Server|108/tcp|the IANA service registry
+snare|snare|509/tcp|the IANA service registry
+snif-cln|SNIF End-to-End TLS Relay Client Connection|0/tcp|draft-zubov-snif-05, Section 4.5
+snif-fifo|SNIF End-to-End TLS Relay Cluster|0/tcp|draft-zubov-snif-05, Section 4.6
+snif-srv|SNIF End-to-End TLS Relay Service Connection|0/tcp|draft-zubov-snif-05, Section 4.3
+snpp|Simple Network Paging Protocol|444/tcp|RFC 1568
+sntp-heartbeat|SNTP HEARTBEAT|580/tcp|the IANA service registry
+soap-beep|SOAP over BEEP|605/tcp|RFC 4227
+soda|Secure On Device API|0/tcp|the IANA service registry
+softpc|Insignia Solutions|215/tcp|the IANA service registry
+sonar|sonar|572/tcp|the IANA service registry
+spidap|Sierra Photonics Inc. data protocol|0/tcp|the IANA service registry
+spiderelectron|Binary message passing protocol|0/tcp|the IANA service registry
+split-dns64|DNS64 in split configuration|0/tcp|the IANA service registry
+spmp|SPMP|656/tcp|the IANA service registry
+spres|SongPresenter|0/tcp|the IANA service registry
+spsc|spsc|478/tcp|the IANA service registry
+spx-hmp|SpinetiX HMP|0/tcp|the IANA service registry
+sql-net|Oracle SQL*NET|66/tcp|the IANA service registry
+sqlserv|SQL Services|118/tcp|the IANA service registry
+sqlsrv|SQL Service|156/tcp|the IANA service registry
+sqp|Square Connect Control Protocol|0/tcp|the IANA service registry
+src|IBM System Resource Controller|200/tcp|the IANA service registry
+srmp|Spider Remote Monitoring Protocol|193/tcp|the IANA service registry
+srssend|SRS Send|362/tcp|the IANA service registry
+ss-sign|Samsung Smart Interaction for Group Network|0/tcp|the IANA service registry
+ss-sign-disc|Samsung Smart Interaction for Group Network Discovery|0/udp|the IANA service registry
+ss7ns|ss7ns|477/tcp|the IANA service registry
+ssd-audio|Studio Six Digital Wireless Audio|0/tcp|the IANA service registry
+sshell|SSLshell|614/tcp|the IANA service registry
+sst|SCSI on ST|266/tcp|the IANA service registry
+startrecapp|Remote Controlled Multimedia Recorder Network|0/tcp|the IANA service registry
+statsrv|Statistics Service|133/tcp|the IANA service registry
+stingray-remote|Stingray remote control|0/tcp|the IANA service registry
+stingray-rpc|Stingray Remote Procedure Call|0/tcp|the IANA service registry
+stmf|STMF|501/tcp|the IANA service registry
+stotp|One Time Pad Synchronisation|0/tcp|the IANA service registry
+streettalk|streettalk|566/tcp|the IANA service registry
+strobe-sync|Strobe Synchronization|0/tcp|the IANA service registry
+stx|Stock IXChange|527/tcp|the IANA service registry
+su-mit-tg|SU/MIT Telnet Gateway|89/tcp|the IANA service registry
+submissions|Message Submission over TLS protocol|465/tcp|RFC 8314
+submit|submit|773/tcp|the IANA service registry
+subntbcst-tftp|SUBNTBCST_TFTP|247/tcp|the IANA service registry
+sugarlock-rcp|Remote control protocol for Sugarlock consumer electronics devices|0/tcp|the IANA service registry
+sun-dr|Sun DR|665/tcp|the IANA service registry
+sunrpc|SUN Remote Procedure Call|111/tcp|the IANA service registry
+supdup|SUPDUP|95/tcp|the IANA service registry
+sur-meas|Survey Measurement|243/tcp|the IANA service registry
+surf|surf|1010/tcp|the IANA service registry
+svrloc|Server Location|427/tcp|the IANA service registry
+swift-rvf|Swift Remote Virtural File Protocol|97/tcp|the IANA service registry
+synclavier|Remote control of Synclavier Digital Audio Workstation over local area network.|0/tcp|the IANA service registry
+synoptics-trap|Trap Convention Port|412/tcp|the IANA service registry
+synotics-broker|SynOptics Port Broker Port|392/tcp|the IANA service registry
+synotics-relay|SynOptics SNMP Relay Port|391/tcp|the IANA service registry
+syslog-conn|Reliable Syslog Service|601/tcp|RFC 3195
+systat|Active Users|11/tcp|the IANA service registry
+sztp|This service name is used to construct the|0/tcp|the IANA service registry
+tacacs-ds|TACACS-Database Service|65/tcp|the IANA service registry
+tacacss|TLS Secure Login Host Protocol (TACACSS)|300/tcp|RFC 9887
+tacnews|TAC News|98/tcp|the IANA service registry
+talk|like tenex link, but across machine - unfortunately, doesn't use link protocol (this is actually just a rendezvous port from which a tcp connection is established)|517/tcp|the IANA service registry
+tbrpf|TBRPF|712/tcp|RFC 3684
+tcpmux|TCP Port Service Multiplexer|1/tcp|the IANA service registry
+tcpnethaspsrv|tcpnethaspsrv|475/tcp|the IANA service registry
+td-replica|Tobit David Replica|268/tcp|the IANA service registry
+td-service|Tobit David Service Layer|267/tcp|the IANA service registry
+ted|Teddington Controls|0/udp|the IANA service registry
+teedtap|TEEDTAP|559/tcp|the IANA service registry
+teleport|teleport|0/udp|the IANA service registry
+tell|send|754/tcp|the IANA service registry
+telnets|telnet protocol over TLS/SSL|992/tcp|the IANA service registry
+tempo|newdate|526/tcp|the IANA service registry
+tenfold|TenFold|658/tcp|the IANA service registry
+tenir-rc|Proprietary|0/tcp|the IANA service registry
+test-ok|Test Controller Card|0/tcp|the IANA service registry
+texar|Texar Security Port|333/tcp|the IANA service registry
+thing|Internet of things service discovery|0/tcp|the IANA service registry
+tic-tac-toe|Tic Tac Toe game|0/tcp|the IANA service registry
+ticf-1|Transport Independent Convergence for FNA|492/tcp|the IANA service registry
+ticf-2|Transport Independent Convergence for FNA|493/tcp|the IANA service registry
+timbuktu|Timbuktu|407/tcp|the IANA service registry
+time|Time|37/tcp|the IANA service registry
+timed|timeserver|525/tcp|the IANA service registry
+timezone|Time Zone Data Distribution Service - non-TLS|0/tcp|RFC 7808
+timezones|Time Zone Data Distribution Service - over TLS|0/tcp|RFC 7808
+tivo-device|TiVo Device Protocol|0/tcp|the IANA service registry
+tivo-mindrpc|TiVo RPC Protocol|0/tcp|the IANA service registry
+tmsensor|Teledyne Marine Sensor|0/tcp|the IANA service registry
+tn-tl-fd1|tn-tl-fd1|476/tcp|the IANA service registry
+tn-tl-w1|tn-tl-w1|474/tcp|the IANA service registry
+tn-tl-w2|tn-tl-w2|474/udp|the IANA service registry
+tnetos|NEC Corporation|377/tcp|the IANA service registry
+tns-cml|TNS CML|590/tcp|the IANA service registry
+tokenlens|AI token usage and billing metering|0/tcp|the IANA service registry
+tpip|TPIP|594/tcp|the IANA service registry
+tptx-console|Coordination service for client users of the TotalPraisTrax iPad application|0/tcp|the IANA service registry
+transmitr|Service discovery and media transfer for peer to peer mobile media transfer app|0/tcp|the IANA service registry
+trel|Thread Radio Encapsulation Link|0/udp|the IANA service registry
+tsbiis|The Social Broadband Interference Information Sharing|0/tcp|the IANA service registry
+tserver|Computer Supported Telecomunication Applications|450/tcp|the IANA service registry
+tunnel|TUNNEL|604/tcp|RFC 3620
+tvm|Vogel's TV mount control|0/tcp|the IANA service registry
+twamp-control|TWAMP-Control|862/tcp|RFC 5357
+twamp-test|TWAMP-Test Receiver Port|862/udp|RFC 8545
+twiline-disc|Discovery for Twiline systems|0/tcp|the IANA service registry
+twinlevel|detect sanitary product|0/tcp|the IANA service registry
+twosnakes|Service to enable multiplayer game called two snakes.|0/tcp|the IANA service registry
+tyba|Tyba control|0/tcp|the IANA service registry
+tzrpc|TZ-Software remote procedure call based synchronization protocol|0/tcp|the IANA service registry
+uaac|UAAC Protocol|145/tcp|the IANA service registry
+uarps|Unisys ARPs|219/tcp|the IANA service registry
+ucdynamics-tuc|Tactical Unified Communicator|0/udp|the IANA service registry
+uis|UIS|390/tcp|the IANA service registry
+ulistproc|ListProcessor|372/tcp|the IANA service registry
+ulp|ULP|522/tcp|the IANA service registry
+ulpnet|ulpnet|483/tcp|the IANA service registry
+uma|Universal Management Architecture|144/tcp|the IANA service registry
+unidata-ldm|Unidata LDM|388/tcp|the IANA service registry
+unify|Unify|181/tcp|the IANA service registry
+ups|Uninterruptible Power Supply|401/tcp|the IANA service registry
+urd|URL Rendezvous Directory for SSM|465/tcp|the IANA service registry
+urm|Cray Unified Resource Manager|606/tcp|the IANA service registry
+usp-agt-coap|USP discovery|0/udp|http://www.broadband-forum.org/assignments
+usp-agt-http|USP discovery|0/tcp|http://www.broadband-forum.org/assignments
+usp-agt-mqtt|USP discovery|0/tcp|http://www.broadband-forum.org/assignments
+usp-agt-stomp|USP discovery|0/tcp|http://www.broadband-forum.org/assignments
+usp-agt-ws|USP discovery|0/tcp|http://www.broadband-forum.org/assignments
+usp-ctr-coap|USP discovery|0/udp|http://www.broadband-forum.org/assignments
+usp-ctr-http|USP discovery|0/tcp|http://www.broadband-forum.org/assignments
+usp-ctr-mqtt|USP discovery|0/tcp|http://www.broadband-forum.org/assignments
+usp-ctr-stomp|USP discovery|0/tcp|http://www.broadband-forum.org/assignments
+usp-ctr-ws|USP discovery|0/tcp|http://www.broadband-forum.org/assignments
+utime|unixtime|519/tcp|the IANA service registry
+utmpcd|UTMPCD|431/tcp|the IANA service registry
+utmpsd|UTMPSD|430/tcp|the IANA service registry
+uucp-path|UUCP Path Service|117/tcp|the IANA service registry
+uucp-rlogin|uucp-rlogin|541/tcp|the IANA service registry
+uuidgen|UUIDGEN|697/tcp|the IANA service registry
+vacdsm-app|VACDSM-APP|671/tcp|the IANA service registry
+vacdsm-sws|VACDSM-SWS|670/tcp|the IANA service registry
+vapix-http|Indicator for VAPIX support over HTTP|0/tcp|the IANA service registry
+vapix-https|Indicator for VAPIX support over HTTPS|0/tcp|the IANA service registry
+vatp|Velneo Application Transfer Protocol|690/tcp|the IANA service registry
+vedabase|Application specific synchronization protocol|0/tcp|the IANA service registry
+vemmi|VEMMI|575/tcp|the IANA service registry
+vettcp|vettcp|78/tcp|the IANA service registry
+vhusb|USB over IP Sharing System|0/tcp|the IANA service registry
+vid|vid|769/tcp|the IANA service registry
+videotex|videotex|516/tcp|the IANA service registry
+vmnet|VMNET|175/tcp|the IANA service registry
+vmpwscs|VM PWSCS|214/tcp|the IANA service registry
+vnas|vnas|577/tcp|the IANA service registry
+voalte2|Server location via DNS-SD|0/tcp|the IANA service registry
+voalte3|Server location via DNS-SD|0/tcp|the IANA service registry
+volterio|Internal Communication Service|0/tcp|the IANA service registry
+voxidahmp|RTP Mixer/Summation Resource|0/tcp|the IANA service registry
+vpp|Virtual Presence Protocol|677/tcp|the IANA service registry
+vpps-qua|VPPS-QUA|672/tcp|the IANA service registry
+vpps-via|VPPS Via|676/tcp|the IANA service registry
+vrmg-p2p|Verimag mobile class protocol over P2P|0/tcp|the IANA service registry
+vsinet|vsinet|996/tcp|the IANA service registry
+vslmp|VSLMP|312/tcp|the IANA service registry
+wakeywakey|Proprietary|0/tcp|the IANA service registry
+wchr|Powered wheelchair command protocol|0/udp|the IANA service registry
+wd-2go|NAS Service Protocol|0/tcp|the IANA service registry
+wdp|Windows Device Portal|0/tcp|the IANA service registry
+web-xi|HTTP-based protocol for DAQ devices|0/tcp|the IANA service registry
+webex|Cisco WebEx serials products will release Bonjour based service|0/tcp|the IANA service registry
+webster|webster|765/tcp|the IANA service registry
+who|maintains data bases showing who's logged in to machines on a local net and the load average of the machine|513/udp|the IANA service registry
+whoami|whoami|565/tcp|the IANA service registry
+whoispp|whois++|63/tcp|the IANA service registry
+wico|Session-based protocol for embedded unit|0/tcp|the IANA service registry
+wicop|WiFi Control Platform|0/udp|the IANA service registry
+wifile|System for transferring files between mobile device and computer in a local network|0/tcp|the IANA service registry
+windream|windream Admin|534/tcp|the IANA service registry
+wot|W3C WoT Thing Description or Directory|0/tcp|the IANA service registry
+wpages|wpages|776/tcp|the IANA service registry
+wpgs|wpgs|780/tcp|the IANA service registry
+wpl-ers-http|World Programming repository server|0/tcp|the IANA service registry
+wpl-ers-zmq|World Programming repository server|0/tcp|the IANA service registry
+www|World Wide Web HTTP|80/tcp|RFC 9110
+www-http|World Wide Web HTTP|80/tcp|the IANA service registry
+x-bone-ctl|X-Bone CTL|265/tcp|the IANA service registry
+x-plane9|x-plane9|0/udp|the IANA service registry
+x510|Security service to protocols|0/tcp|the IANA service registry
+xact-backup|xact-backup|911/tcp|the IANA service registry
+xdmcp|X Display Manager Control Protocol|177/tcp|the IANA service registry
+xential|xential document creation services|0/tcp|the IANA service registry
+xfer|XFER Utility|82/tcp|the IANA service registry
+xfr|XFR|682/tcp|the IANA service registry
+xmiserver|XMI Systems home terminal local connection|0/tcp|the IANA service registry
+xmlrpc-beep|XML-RPC over BEEP|602/tcp|RFC 3529
+xns-auth|XNS Authentication|56/tcp|the IANA service registry
+xns-ch|XNS Clearinghouse|54/tcp|the IANA service registry
+xns-courier|Xerox|165/tcp|the IANA service registry
+xns-mail|XNS Mail|58/tcp|the IANA service registry
+xns-time|XNS Time Protocol|52/tcp|the IANA service registry
+xvttp|xvttp|508/tcp|the IANA service registry
+xyplex-mux|Xyplex|173/tcp|the IANA service registry
+yakumo|Yakumo iPhone OS Device Control Protocol|0/udp|the IANA service registry
+z-wave|Z-Wave Service Discovery|0/tcp|the IANA service registry
+z39-50|ANSI Z39.50|210/tcp|the IANA service registry
+zannet|Zannet|317/tcp|the IANA service registry
+zigbee-bridge|ZigBee Bridge device|0/tcp|the IANA service registry
+zigbee-gateway|ZigBee IP Gateway|0/tcp|the IANA service registry
+zserv|Zebra server|346/tcp|the IANA service registry

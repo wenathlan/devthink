@@ -63,6 +63,31 @@
       "import": "./hometypes.ts",
       "default": "./hometypes.ts"
     },
+    "./internalroot": {
+      "types": "./internalroot.ts",
+      "import": "./internalroot.ts",
+      "default": "./internalroot.ts"
+    },
+    "./mimetypes": {
+      "types": "./mimetypes.ts",
+      "import": "./mimetypes.ts",
+      "default": "./mimetypes.ts"
+    },
+    "./protocols": {
+      "types": "./protocols.ts",
+      "import": "./protocols.ts",
+      "default": "./protocols.ts"
+    },
+    "./querylane": {
+      "types": "./querylane.ts",
+      "import": "./querylane.ts",
+      "default": "./querylane.ts"
+    },
+    "./signup": {
+      "types": "./signup.ts",
+      "import": "./signup.ts",
+      "default": "./signup.ts"
+    },
     "./labels": {
       "types": "./labels.ts",
       "import": "./labels.ts",
@@ -138,8 +163,15 @@
     "family.ts",
     "familyurl.ts",
     "hometypes.ts",
+    "internalroot.ts",
     "labels.ts",
     "labelstore.ts",
+    "mime.types",
+    "mimetypes.ts",
+    "protocols.types",
+    "protocols.ts",
+    "querylane.ts",
+    "signup.ts",
     "storagelane.ts",
     "objects.ts",
     "objectsledger.ts",

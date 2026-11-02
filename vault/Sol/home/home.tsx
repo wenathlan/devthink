@@ -34,6 +34,7 @@ import {
   Objectbrowse,
   Planstable,
   Reveal,
+  Signupgate,
   Tabs,
   toast,
 } from "../wingets";
@@ -400,6 +401,9 @@ export function HomeSurface(props: HomeProps) {
             </div>
             <div className="vc-cell vc-cell--wide" data-reveal="true">
               <Objectbrowse />
+            </div>
+            <div className="vc-cell vc-cell--wide" data-reveal="true">
+              <Signupgate />
             </div>
           </div>
         </Reveal>

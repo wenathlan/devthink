@@ -15,6 +15,16 @@
 // database file never answers from the static lane, not even a stray one
 // inside the root).
 //
+// The wave D rewire (the supabase-law storage engine): beside the operator
+// gate the vault answers the person's door — the signup lane (an account,
+// a registered database, an api key shown exactly once, stored hashed),
+// the helix-style /v2/query lane (bearer plus database-id headers over the
+// per-database sqlite files of the better-sqlite3 core), the protocols
+// pillar (every wire of the catalog answers its own static-safe route) and
+// the internal root (the static site surface with the correct content type
+// for every file type — and the faun law enforced: the raw .db never rides
+// the static root, database data flows only through these api lanes).
+//
 // The faun lesson owns the door: the storage truth is the network database
 // of the family, and no request reaches it without an honest bearer. The
 // health probe stays open so the platform can watch the service; every
@@ -40,6 +50,7 @@
 // @section server — the node:http server and its boot
 // @section handlers — the storage surface
 // @section static — the dist lane (the container doctrine)
+// @section doors — the signup, database and query lanes (the person's door)
 
 import { createHash, timingSafeEqual } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";
@@ -64,6 +75,23 @@ import {
   verifyCredentials,
   verifySession,
 } from "./accounts.ts";
+import { internalRootDir, serveInternal } from "./internalroot.ts";
+import { PROTOCOL_ROUTE_COUNT, PROTOCOLS, protocolRouteOf, type ProtocolRow } from "./protocols.ts";
+import { queryVerdict, runQuery } from "./querylane.ts";
+import {
+  accountVerified,
+  apiKeyLookup,
+  databaseOf,
+  databasesOfAccount,
+  databasesOfEmail,
+  ensurePersonAccount,
+  issueApiKey,
+  registerDatabase,
+  revokeApiKey,
+  setDatabaseQuota,
+  signinAccount,
+  signupAccount,
+} from "./signup.ts";
 import { storage, storageDriverKind } from "./drizzle.ts";
 import {
   createProject,
@@ -275,12 +303,20 @@ export const routes = {
   uicopy: "/api/v1/ui/copy",
   signup: "/api/v1/auth/signup",
   signin: "/api/v1/auth/signin",
+  databases: "/api/v1/databases",
+  query: "/v2/query",
+  protocols: "/api/v1/protocols",
   projects: "/api/v1/storage/projects",
   objects: "/api/v1/storage/objects",
   quota: "/api/v1/storage/quota",
   usage: "/api/v1/storage/usage",
   sweep: "/api/v1/storage/sweep",
 } as const;
+
+/** the whole route count the domain serves: the base catalog plus one
+ * static-safe route per protocol row (the protocols pillar — above one
+ * thousand on the wave D catalog). */
+export const routeCount = Object.keys(routes).length + PROTOCOL_ROUTE_COUNT;
 
 /** @section server */
 
@@ -376,6 +412,19 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
         return;
       }
     }
+    /* the internal root — the static site surface the deployable unit
+     * answers when the platform gateway delegates the domain: the correct
+     * content type for every file type from the mimetypes registry, the
+     * faun law enforced (the raw .db never rides the static root — database
+     * data flows only through the api lanes below) and the read-only law
+     * (every write method answers its 405). The container-doctrine static
+     * face above answered first when it holds the tree; this lane answers
+     * the internal root the deployable unit carries, and the api surface
+     * keeps precedence (an unknown /api/* path answers the route 404, never
+     * a static face). */
+    if (!pathname.startsWith("/api/") && pathname !== "/api" && serveInternal(res, method, safeDecode(pathname))) {
+      return;
+    }
     /* the account lane — the public doors of the person surface: the
      * signup and the signin demand no operator bearer (they are how a
      * stranger becomes a caller), but the per-peer counter owns the door
@@ -395,6 +444,66 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
         return;
       }
       await postSignin(req, res);
+      return;
+    }
+    /* the protocols pillar — every wire of the catalog answers its own
+     * static-safe route: the list lane and the one-handler-per-row scheme
+     * lane (read-only, no storage truth, no query execution — the registry
+     * rows carry no secret, the same open law the copy lane rides). */
+    if (method === "GET" && pathname === routes.protocols) {
+      sendJson(res, 200, { protocols: PROTOCOLS.map(jsonOfProtocol), count: PROTOCOLS.length });
+      return;
+    }
+    if (method === "GET" && pathname.startsWith(`${routes.protocols}/`)) {
+      const row = protocolRouteOf(pathname);
+      if (row === undefined) {
+        sendError(res, 404, "VAULT_PROTOCOL", `no protocol route answers ${pathname}`);
+        return;
+      }
+      sendJson(res, 200, jsonOfProtocol(row));
+      return;
+    }
+    /* the person's door onto the network database — the register lane
+     * (verified credentials, the database id and the api key shown exactly
+     * once), the database reads, the key lanes and the quota lanes, each
+     * answering its own bearer door (the api key digest gate). */
+    if (pathname === routes.databases) {
+      if (method !== "POST") {
+        sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+        return;
+      }
+      await postDatabases(req, res);
+      return;
+    }
+    if (pathname.startsWith(`${routes.databases}/`)) {
+      const rest = safeDecode(pathname.slice(routes.databases.length + 1));
+      const [databaseId, tail] = rest.split("/", 2);
+      if (tail === "keys" || tail === "quota") {
+        await databaseSubroute(req, res, method, databaseId, tail);
+        return;
+      }
+      if (tail !== undefined) {
+        sendError(res, 404, "VAULT_ROUTE", `no route answers ${pathname}`);
+        return;
+      }
+      if (method === "GET") {
+        getDatabaseRoute(req, res, databaseId);
+        return;
+      }
+      sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+      return;
+    }
+    /* the helix-style query lane — bearer plus database-id headers over the
+     * per-database sqlite files: the key-hash gate answers (the operator
+     * token or an issued api key, both compared as digests), the query body
+     * rides the better-sqlite3 core, the json answer carries the rows or the
+     * change counters. */
+    if (pathname === routes.query) {
+      if (method !== "POST") {
+        sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+        return;
+      }
+      await postQuery(req, res);
       return;
     }
     /* the faun lesson door: every data route past the health probe and the
@@ -513,6 +622,9 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
       sweepRoute(res, auth);
       return;
     }
+    /* the api surface keeps precedence over the static lanes above: an
+     * unknown /api/* path answers the route 404 (past the gate) instead of
+     * any static face. */
     sendError(res, 404, "VAULT_ROUTE", `no route answers ${pathname}`);
   } catch (error) {
     sendError(res, 500, "VAULT_FAULT", error instanceof Error ? error.message : "the vault faulted");
@@ -636,6 +748,7 @@ async function postSignin(req: IncomingMessage, res: ServerResponse): Promise<vo
       account: { id: answer.id, email: answer.email },
       token: session.token,
       expiresAt: session.expiresAt,
+      databases: databasesOfEmail(answer.email).map(jsonOfDatabase),
     });
   } catch (error) {
     if (error instanceof BadBodyError) {
@@ -966,6 +1079,291 @@ function sweepRoute(res: ServerResponse, auth: RequestAuth): void {
   }
   const answer = sweepOrphans();
   sendJson(res, 200, { chunks: answer.chunks, bytes: answer.bytes.toString(), tombstones: answer.tombstones });
+}
+
+/** @section doors — the signup, database and query lanes (the person's door) */
+
+/** the bearer door of the database lanes: the operator token opens any
+ * database (the master door), an issued api key opens its own database —
+ * both compared as digests, never plaintext. */
+function databaseDoor(
+  req: IncomingMessage,
+  databaseId: string,
+): { open: true; operator: boolean } | { refusal: { status: number; code: string; why: string } } {
+  if (tokenVerdict(req) === "open") {
+    return { open: true, operator: true };
+  }
+  const bearer = presentedBearerOf(req);
+  if (bearer.length > 0) {
+    const lookup = apiKeyLookup(bearer);
+    if ("refusal" in lookup) {
+      return { refusal: { status: 401, code: "VAULT_KEY", why: lookup.refusal.why } };
+    }
+    if (lookup.database.id !== databaseId) {
+      return {
+        refusal: {
+          status: 403,
+          code: "VAULT_KEY_SCOPE",
+          why: `the key answers the database ${lookup.database.id}, not ${databaseId}`,
+        },
+      };
+    }
+    return { open: true, operator: false };
+  }
+  return {
+    refusal: {
+      status: 401,
+      code: "VAULT_KEY",
+      why: "the database lane demands the bearer (operator token or api key)",
+    },
+  };
+}
+
+/** reads the presented bearer off one request (the api's token-gate seat). */
+function presentedBearerOf(req: IncomingMessage): string {
+  const value = req.headers.authorization;
+  const authorization = Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
+  if (authorization.toLowerCase().startsWith("bearer ")) {
+    return authorization.slice("bearer ".length).trim();
+  }
+  const header = req.headers["x-vault-token"];
+  return (Array.isArray(header) ? (header[0] ?? "") : (header ?? "")).trim();
+}
+
+/** POST /api/v1/databases — the register lane (the person's door: the api key shown exactly once). */
+async function postDatabases(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  try {
+    const body = await readJson(req);
+    const email = typeof body.email === "string" ? body.email : "";
+    const password = typeof body.password === "string" ? body.password : "";
+    const name = typeof body.name === "string" ? body.name : "";
+    const quotaBytes =
+      body.quotaBytes === null || body.quotaBytes === undefined
+        ? undefined
+        : BigInt(String(body.quotaBytes));
+    let answer = registerDatabase(email, password, name, quotaBytes);
+    if (answer.refusal?.kind === "credentials") {
+      /* the two doors answer one person: a caller the accounts door
+       * verified (the operator surface) provisions the person row on
+       * first use, so the register lane always finds the credential. */
+      if (verifyCredentials(email, password) !== undefined) {
+        ensurePersonAccount(email, password);
+        answer = registerDatabase(email, password, name, quotaBytes);
+      }
+    }
+    if (answer.answer !== undefined) {
+      sendJson(res, 201, {
+        database: jsonOfDatabase(answer.answer.database),
+        key: answer.answer.key,
+        keyId: answer.answer.keyId,
+        shown: "once",
+      });
+      return;
+    }
+    const status = answer.refusal?.kind === "credentials" ? 401 : 400;
+    sendError(res, status, "VAULT_REGISTER", answer.refusal?.why ?? "the registration was refused");
+  } catch (error) {
+    if (error instanceof BadBodyError) {
+      sendError(res, 400, "VAULT_BODY", error.message);
+      return;
+    }
+    if (error instanceof SyntaxError || (error instanceof Error && error.message.startsWith("Cannot convert"))) {
+      sendError(res, 400, "VAULT_REGISTER", "the quota must ride decimal bytes or null");
+      return;
+    }
+    throw error;
+  }
+}
+
+/** GET /api/v1/databases/:id — the database row with its honest usage (the bearer door). */
+async function getDatabaseRoute(req: IncomingMessage, res: ServerResponse, databaseId: string): Promise<void> {
+  if (databaseId === "") {
+    sendError(res, 400, "VAULT_INVALID", "the database id is empty");
+    return;
+  }
+  const door = databaseDoor(req, databaseId);
+  if ("refusal" in door) {
+    sendError(res, door.refusal.status, door.refusal.code, door.refusal.why);
+    return;
+  }
+  const database = databaseOf(databaseId);
+  if (database === undefined) {
+    sendError(res, 404, "VAULT_DATABASE", `the database ${databaseId} never registered`);
+    return;
+  }
+  sendJson(res, 200, { database: jsonOfDatabase(database) });
+}
+
+/** the database subroutes — /keys (issue another key, shown once) and /quota
+ * (the per-bucket quota lane: read the row, set the limit). The account
+ * credentials open the door beside the bearer lanes (the owner's word). */
+async function databaseSubroute(
+  req: IncomingMessage,
+  res: ServerResponse,
+  method: string,
+  databaseId: string,
+  tail: "keys" | "quota",
+): Promise<void> {
+  if (databaseId === "") {
+    sendError(res, 400, "VAULT_INVALID", "the database id is empty");
+    return;
+  }
+  try {
+    const body = method === "POST" ? await readJson(req) : {};
+    const email = typeof body.email === "string" ? body.email : "";
+    const password = typeof body.password === "string" ? body.password : "";
+    const account = email !== "" && password !== "" ? accountVerified(email, password) : undefined;
+    const ownerVerified =
+      account !== undefined && account.id === databaseOf(databaseId)?.accountId ? true : undefined;
+    const door = ownerVerified ? ({ open: true, operator: false } as const) : databaseDoor(req, databaseId);
+    if ("refusal" in door) {
+      sendError(res, door.refusal.status, door.refusal.code, door.refusal.why);
+      return;
+    }
+    if (tail === "keys") {
+      if (method !== "POST") {
+        sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${routes.databases}/${databaseId}/keys`);
+        return;
+      }
+      const label = typeof body.label === "string" && body.label.length > 0 ? body.label : "a key";
+      const issued = issueApiKey(databaseId, label);
+      if (issued === undefined) {
+        sendError(res, 404, "VAULT_DATABASE", `the database ${databaseId} never registered`);
+        return;
+      }
+      sendJson(res, 201, { key: issued.key, keyId: issued.keyId, shown: "once" });
+      return;
+    }
+    if (method === "GET") {
+      const database = databaseOf(databaseId);
+      if (database === undefined) {
+        sendError(res, 404, "VAULT_DATABASE", `the database ${databaseId} never registered`);
+        return;
+      }
+      sendJson(res, 200, { database: jsonOfDatabase(database) });
+      return;
+    }
+    if (method === "POST") {
+      const raw = body.limitBytes === null || body.limitBytes === undefined ? "unlimited" : String(body.limitBytes);
+      const parsed = quotaLimitFrom(raw);
+      if ("refusal" in parsed) {
+        sendError(res, 400, "VAULT_INVALID", parsed.refusal);
+        return;
+      }
+      const database = setDatabaseQuota(databaseId, parsed.limitBytes);
+      if (database === undefined) {
+        sendError(res, 404, "VAULT_DATABASE", `the database ${databaseId} never registered`);
+        return;
+      }
+      sendJson(res, 200, { database: jsonOfDatabase(database) });
+      return;
+    }
+    sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${routes.databases}/${databaseId}/quota`);
+  } catch (error) {
+    if (error instanceof BadBodyError) {
+      sendError(res, 400, "VAULT_BODY", error.message);
+      return;
+    }
+    throw error;
+  }
+}
+
+/** POST /v2/query — the helix-style lane: bearer plus database-id headers,
+ * the query body over the per-database sqlite core, the json answer. */
+async function postQuery(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  try {
+    const body = await readJson(req);
+    const sql = typeof body.query === "string" ? body.query : "";
+    const params = Array.isArray(body.params) ? body.params : [];
+    const bodyDatabaseId = typeof body.databaseId === "string" ? body.databaseId : "";
+    const headerDatabaseId = headerOf(req, "x-database-id").trim() || bodyDatabaseId;
+    const verdict = queryVerdict(req, headerDatabaseId);
+    if (verdict.kind === "refused") {
+      sendError(res, 401, "VAULT_QUERY_AUTH", verdict.why);
+      return;
+    }
+    if (verdict.kind === "scope") {
+      sendError(res, 403, "VAULT_QUERY_SCOPE", verdict.why);
+      return;
+    }
+    if (verdict.kind === "absent") {
+      sendError(res, 404, "VAULT_DATABASE", verdict.why);
+      return;
+    }
+    const answer = runQuery({ databaseId: verdict.databaseId, sql, params });
+    if ("refusal" in answer) {
+      if (answer.refusal.kind === "quota") {
+        sendJson(res, 413, {
+          error: {
+            code: "VAULT_QUOTA",
+            message: answer.refusal.why,
+            quota: answer.refusal.quotaBytes === null ? null : answer.refusal.quotaBytes.toString(),
+            usage: answer.refusal.usageBytes.toString(),
+          },
+        });
+        return;
+      }
+      if (answer.refusal.kind === "absent") {
+        sendError(res, 404, "VAULT_DATABASE", answer.refusal.why);
+        return;
+      }
+      sendError(res, 400, answer.refusal.kind === "sql" ? "VAULT_SQL" : "VAULT_QUERY_BODY", answer.refusal.why);
+      return;
+    }
+    if (answer.kind === "read") {
+      sendJson(res, 200, {
+        databaseId: answer.databaseId,
+        kind: "read",
+        columns: answer.columns,
+        rows: answer.rows,
+        elapsedMs: answer.elapsedMs,
+      });
+      return;
+    }
+    sendJson(res, 200, {
+      databaseId: answer.databaseId,
+      kind: "write",
+      changes: answer.changes,
+      lastInsertRowid: answer.lastInsertRowid,
+      elapsedMs: answer.elapsedMs,
+    });
+  } catch (error) {
+    if (error instanceof BadBodyError) {
+      sendError(res, 400, "VAULT_BODY", error.message);
+      return;
+    }
+    throw error;
+  }
+}
+
+/** the json projection of one protocol row (the static-safe route answer). */
+function jsonOfProtocol(row: ProtocolRow): Record<string, unknown> {
+  return {
+    scheme: row.scheme,
+    name: row.name,
+    port: row.port,
+    spec: row.spec,
+    group: row.group,
+    ...(row.security !== undefined ? { security: row.security } : {}),
+    ...(row.state !== undefined ? { state: row.state } : {}),
+  };
+}
+
+/** the json projection of one database row (bigint pointers as decimal strings). */
+function jsonOfDatabase(database: {
+  id: string;
+  accountId: string;
+  name: string;
+  quotaBytes: bigint | null;
+  createdAt: string;
+}): Record<string, unknown> {
+  return {
+    id: database.id,
+    accountId: database.accountId,
+    name: database.name,
+    quotaBytes: database.quotaBytes === null ? null : database.quotaBytes.toString(),
+    createdAt: database.createdAt,
+  };
 }
 
 /** @section static */

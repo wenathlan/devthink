@@ -41,6 +41,19 @@ export * from "./sha.ts";
 /** the storage contracts of the clone: the LFS pointer law, the record gate and the channel chooser. */
 export * from "./storage.ts";
 
+/* ── the wave D rewire — the supabase-law storage engine ── */
+
+/** the mimetypes pillar: the registry corpus the internal root answers every file type with (reads mime.types beside the module at import). */
+export * from "./mimetypes.ts";
+/** the protocols pillar: the protocol catalog, one static-safe route per wire (reads protocols.types beside the module at import). */
+export * from "./protocols.ts";
+/** the internal root: the static site surface with the correct content type — and the faun law: the raw .db never rides it. */
+export * from "./internalroot.ts";
+/** the signup lane: the person's door — an account, a registered database, an api key shown exactly once (stored hashed; boots the site store at import). */
+export * from "./signup.ts";
+/** the /v2/query lane: bearer plus database-id headers over the per-database sqlite files of the better-sqlite3 core. */
+export * from "./querylane.ts";
+
 /* ── the rehearsal shelf — the pure, deterministic page cores ── */
 
 /** the bucket shelf: the retention groups, their policies and the per-bucket census. */

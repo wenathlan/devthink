@@ -103,6 +103,30 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "face.toast.pickTitle": "bucket opened",
   "face.toast.pickBody": "{bucket} · {rows} rows · {bytes} in the drawer.",
   "face.toast.dismiss": "dismiss the notice",
+  /* -------------------------- signup gate ----------------------------- */
+  "face.signup.aria": "the signup gate of the vault",
+  "face.signup.head": "open your database",
+  "face.signup.lede":
+    "sign up, register an app database and the vault answers your database id with an api key shown exactly once — the key is hashed the moment it lands, so the one display is the only display.",
+  "face.signup.email": "email",
+  "face.signup.emailAria": "the email of the account",
+  "face.signup.password": "password",
+  "face.signup.passwordAria": "the password of the account (stored only as its salted digest)",
+  "face.signup.name": "database name",
+  "face.signup.nameAria": "the name of the app database",
+  "face.signup.cta": "open the database",
+  "face.signup.busy": "opening the database…",
+  "face.signup.away": "the engine lane is away — the signup gate needs the configured origin before it can open a database.",
+  "face.signup.failure": "the gate refused: {message}",
+  "face.signup.once.title": "your database is open",
+  "face.signup.once.warning": "shown exactly once — the vault stores only the sha-256 digest of this key; copy it now, it never answers again.",
+  "face.signup.once.databaseId": "database id",
+  "face.signup.once.key": "api key (shown once)",
+  "face.signup.once.copy": "copy the key",
+  "face.signup.once.copied": "copied — store it somewhere safe, the vault cannot show it again",
+  /* --------------------------- plans live ------------------------------ */
+  "face.plans.liveQuota": "live {state} · {usage} sealed of {limit} — the engine answered",
+  "face.plans.liveQuotaAria": "the live quota verdict of the pinned project",
   /* ----------------------------- skeleton ---------------------------- */
   "face.skeleton.aria": "loading the ledger",
 });
