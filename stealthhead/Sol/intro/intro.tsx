@@ -2,8 +2,10 @@
  * intro.tsx — the opening splash of the APPLICATION (the flow contract of the
  * reform): the app announces itself before the window — the deep trylle
  * canvas, the drawn mark landing with the Akash spring (the overshoot curve
- * cubic-bezier(.34,1.56,.64,1)), the name rising with the backOut lift and
- * the honest role line fading in under the 1.6s hold. The exit slides the
+ * cubic-bezier(.34,1.56,.64,1)), the name rising with the backOut lift, the
+ * honest role line fading in under the 1.6s hold and the quiet construction
+ * chip pulsing under it (the game is in development — the splash keeps the
+ * identity and wears the notice). The exit slides the
  * whole stage up over 0.8s (cubic-bezier(0.76,0,0.24,1)) and hands the
  * surface DIRECTLY to the onboarding at /onboarding. No loading dots, no
  * spinner: the mark speaks. A click or any key skips; prefers-reduced-motion
@@ -77,6 +79,10 @@ export default function Intro() {
         </span>
         <h1 className="winintro__name">{label("intro.name")}</h1>
         <p className="winintro__role">{label("intro.role")}</p>
+        <p className="winintro__build">
+          <span className="winintro__builddot" aria-hidden="true" />
+          {label("intro.construction")}
+        </p>
       </div>
       <p className="winintro__skip" aria-hidden="true">
         {label("intro.skip")}

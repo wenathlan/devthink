@@ -240,7 +240,7 @@ export async function rundocchecksuite(): Promise<doccheckreport> {
     if (!new RegExp(`^##\\s+${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`, "m").test(changelogtext))
       changelogproblems.push(`the released version ${version} documents nowhere in the changelog`);
   }
-  const roadmaptext = await text("docs/13.evolutionroadmap.md");
+  const roadmaptext = await text("docs/evolutionroadmap.md");
   if (!roadmaptext.includes("## 2.0.0")) roadmapproblems.push("the roadmap carries no 2.0.0 section");
   if (!roadmaptext.includes("1.1.31 to 2.0.0"))
     roadmapproblems.push("the roadmap title no longer spans the full chain");

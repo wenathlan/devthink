@@ -25,7 +25,7 @@ The zip ships six icon sizes — `icons/16.png`, `icons/19.png`, `icons/32.png`,
 
 ## the permission justification rows
 
-The frozen permission set of the 2.0.x submission, with one justification row per permission mirroring [01.extensionpermissions.md](01.extensionpermissions.md):
+The frozen permission set of the 2.0.x submission, with one justification row per permission mirroring [extensionpermissions.md](extensionpermissions.md):
 
 | Permission | Set | Justification |
 | --- | --- | --- |

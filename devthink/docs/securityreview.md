@@ -50,7 +50,7 @@ The bundle audit over the sixteen built extension bundles found `eval(` nowhere,
 | 1.1.88 | the manifest moves from `extension/manifest.json` to the root `manifest.json` (no permission change) | The repository consolidation — the permission set stayed byte identical through the move. |
 | 1.1.95 | clean — zero added, zero removed, none reordered | The security hardening release adds no permission at all: the optional permission set gains no new entries and the host permissions stay limited to the active tab and the granted origins. |
 
-Every permission addition since the baseline sits in the optional set, carries its justification row in the permdiff justification table of `docs/01.extensionpermissions.md`, and the audit trail records the permission set hash of each release beside the permdiff of each installed update (the transparency page lists them and the transparency export carries the history for the incident reviews).
+Every permission addition since the baseline sits in the optional set, carries its justification row in the permdiff justification table of `docs/extensionpermissions.md`, and the audit trail records the permission set hash of each release beside the permdiff of each installed update (the transparency page lists them and the transparency export carries the history for the incident reviews).
 
 ## Residual risks and their owners
 

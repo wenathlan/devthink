@@ -50,7 +50,7 @@
   - tsconfig.json ES2022 ESNext bundler strict declaration sourceMap
   - README.md bilingual EN/PT full installation OAuth multi-account dual quota models 2026 troubleshooting MCP comparison ToS MIT structure research ondas
   - LICENSE MIT
-  - antigravity.schema.json Draft-07
+  - antigravityschema.json Draft-07
   - .gitignore .npmignore
 - Validação: tsc --noEmit (check), estrutura root-first no src confirmada, todos .ts no root, nome curto minúsculo blindado /mnt/data/auth
 - Zip nível 9 máximo: /mnt/data/auth.zip completo

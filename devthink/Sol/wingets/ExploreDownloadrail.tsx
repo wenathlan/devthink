@@ -32,7 +32,7 @@ type ChannelCard = {
 };
 
 /** the release channels of the immutable tag (the asset names are the ones
- * the reviewed release workflow assembles — docs/19.distribution.md) */
+ * the reviewed release workflow assembles — docs/distribution.md) */
 const CHANNELS: ReadonlyArray<ChannelCard> = [
   {
     icon: Puzzle,

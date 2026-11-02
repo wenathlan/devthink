@@ -16,6 +16,6 @@ const rows = unique.map((url, index) => {
   return `| ${index + 1} | ${slug} | ${identifier} | [Listing](${url}) | manifest inventory retained separately |`;
 });
 
-const output = `# User Provided Chrome Web Store Catalog\n\nThis source index extracts the Chrome Web Store URLs supplied by the user. A listing proves that a product page was referenced; it does not prove open-source availability or grant permission to copy code, branding or data.\n\n| No. | Listing label | Chrome extension ID | Source | Review state |\n| --- | --- | --- | --- | --- |\n${rows.join("\n")}\n\nThe companion [artifact inventory](08.artifactinventory.md) records the evidence-only manifest and file-list review performed where a public CRX payload was available. Third-party package code is never added to this repository.\n`;
-await writeFile(join(sourcedirectory, "06.userstorecatalog.md"), output);
+const output = `# User Provided Chrome Web Store Catalog\n\nThis source index extracts the Chrome Web Store URLs supplied by the user. A listing proves that a product page was referenced; it does not prove open-source availability or grant permission to copy code, branding or data.\n\n| No. | Listing label | Chrome extension ID | Source | Review state |\n| --- | --- | --- | --- | --- |\n${rows.join("\n")}\n\nThe companion [artifact inventory](artifactinventory.md) records the evidence-only manifest and file-list review performed where a public CRX payload was available. Third-party package code is never added to this repository.\n`;
+await writeFile(join(sourcedirectory, "userstorecatalog.md"), output);
 console.log(JSON.stringify({ unique: unique.length }, null, 2));

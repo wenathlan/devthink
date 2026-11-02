@@ -262,7 +262,7 @@ export async function runmatrixverifysuite() {
     runcells("poolaudit.ts"),
   );
   await cell({ family: "gates", name: "the api freeze gate runs green over the frozen contract" }, async () =>
-    runcells("apifreeze.gate.ts"),
+    runcells("apifreezegate.ts"),
   );
   await cell({ family: "gates", name: "the csp audit gate runs green over the content security policy" }, async () =>
     runcells("cspaudit.ts"),

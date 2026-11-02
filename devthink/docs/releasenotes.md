@@ -51,7 +51,7 @@ The vs code package ships as a pure zip-based vsix the operator installs from th
 
 - `devthink-firefox-2.0.154.xpi`
 
-The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
+The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/browsercoverage.md.
 
 ### safari channel
 

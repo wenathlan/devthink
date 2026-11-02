@@ -92,7 +92,7 @@ describe("loadconfig — .mjs consumer configs", () => {
     const original = cwd();
     try {
       writeFileSync(
-        join(dir, "gateway.config.mjs"),
+        join(dir, "gatewayconfig.mjs"),
         [
           "export const config = {",
           '  name: "mjs consumer",',

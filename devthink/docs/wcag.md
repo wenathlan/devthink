@@ -53,4 +53,4 @@ The sweep is static analysis of the surface templates, the embedded stylesheet, 
 | 9 | 1.3.1 | generated markup | The generated markup classes resolve to real stylesheet rules: every template class, every runtime state class the view scripts toggle and every shared vocabulary class resolves to a declared rule. |
 | 10 | 2.4.3 | report | The sweep report records every check and the exit answers the failures: the report carries the executed checks with their outcomes, details and success criterion references and the gate sets its nonzero exit the moment any failed check lands in the artifact. |
 
-The interface surfaces the templates render live in `docs/18.interfacesurfaces.md`, the site surface contract lives in `docs/14.servercontract.md`, and the release gate row that lands this walkthrough lives in `docs/releasegates.md`.
+The interface surfaces the templates render live in `docs/interfacesurfaces.md`, the site surface contract lives in `docs/servercontract.md`, and the release gate row that lands this walkthrough lives in `docs/releasegates.md`.

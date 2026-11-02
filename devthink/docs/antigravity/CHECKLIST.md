@@ -40,7 +40,7 @@ Date: 25/08/2026 — specialist third-person observer mode
 19. package.json — name maene version 2.0.0 description exata main/types plugin.ts bin maene cli.ts peerDeps @opencode-ai/plugin scripts build keywords antigravity gemini opencode auth bypass license MIT author repo files engine node >=18 antigravity section client_id secret UA metadata fallback
 20. tsconfig.json — ES2022 ESNext bundler strict esModuleInterop skipLibCheck outDir dist rootDir . include .ts declaration sourceMap
 21. README.md — bilingual EN/PT installation OAuth PKCE multi-account dual quota models 2026 troubleshooting MCP comparação concorrentes ToS warning
-22. antigravity.schema.json — JSON Schema
+22. antigravityschema.json — JSON Schema
 23. LICENSE MIT
 24. .gitignore + .npmignore
 

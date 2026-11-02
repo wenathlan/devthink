@@ -92,7 +92,7 @@ function channelsectionsof(version: string) {
     channel(
       "firefox channel",
       [`devthink-firefox-${version}.xpi`],
-      `The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.`,
+      `The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/browsercoverage.md.`,
     ),
     "",
     channel(
@@ -145,7 +145,7 @@ function notesof(version: string, section: string, chain: string) {
 
 /** The chain section of the notes assembly: the phase groups of the roadmap declare the chain every release from the 1.1.31 base to the candidate builds on, so the assembly reads the roadmap headings, groups the released versions into their phases and appends the migration steps, the frozen protocol guarantees, the certified scenarios, the performance budget results and the security review summary the candidate carries. */
 async function chainsectionsof(changelog: string) {
-  const roadmap = await readFile("docs/13.evolutionroadmap.md", "utf8");
+  const roadmap = await readFile("docs/evolutionroadmap.md", "utf8");
   const titles = new Map<string, string>();
   for (const match of roadmap.matchAll(/^##\s+(\d+\.\d+\.\d+(?:-rc\.\d+)?)\s+(.+)$/gm))
     titles.set(match[1], match[2].trim());

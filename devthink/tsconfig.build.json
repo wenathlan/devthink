@@ -9,14 +9,14 @@
     "outDir": "dist",
     "paths": {
       "@/*": ["./Sol/*", "./*"],
-      "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.d.ts"],
+      "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistrytypes.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
-      "@wenathlan/getry/thinking": ["../getry/thinking.d.ts"],
+      "@wenathlan/getry/thinking": ["../getry/thinkingtypes.ts"],
       "@wenathlan/devthink/server": ["./server.ts"]
     }
   },
   "include": [
-    "thinking.d.ts",
+    "thinkingtypes.ts",
     "index.ts",
     "types.ts",
     "policy.ts",

@@ -15216,7 +15216,7 @@ span[data-tile] {
    chips and the streaming caret, the solbot mark motion states, the
    welcome recents row, the rail search with pin and date ladder, the
    session inspector memory, instructions and export. every block answers
-   the design.chat.spec.md decisions; every motion inert under the
+   the designchatspec.md decisions; every motion inert under the
    reduced-motion guards at the close.
    ========================================================================== */
 
@@ -22411,4 +22411,384 @@ button.dtc-recents__row {
 }
 [data-motion="reduced"] .dt-start__allpage[data-allapps="true"] {
   transform: none;
+}
+
+/* ==========================================================================
+   9. THE LANDING MATERIALS — the nine-section reference face restored
+   (PR8 P1). The SaaS landing of the intro rides these exact campaign
+   values: the Urbanist three-tier voice (400/600/800 with the reference
+   tracking), the tactile keys with their double shadows and inset rims,
+   the scooped-era surfaces, the obsidian grid of the workspace fan deck,
+   the sawtooth ribbon, the swing and float idles, the rank numerals and
+   the fan-deck clay. The chrome rules (selection, focus, drag) scope to
+   .saas-root — the landing root owns them — while the material classes
+   stay global like the reference sheet. Nothing here removes or demotes
+   a class another page renders (the 8-d doctrine holds); the Google Fonts
+   stylesheet for the Urbanist voice rides the face injection of
+   IntroSaas.tsx and the stack falls back to the house Inter Variable
+   where the network or the frozen CSP keeps the remote face from loading.
+   ========================================================================== */
+
+/* the voice of the landing: Urbanist over the house stack */
+.saas-root {
+  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.015em;
+}
+.saas-root ::selection {
+  background: #4f46e5;
+  color: #ffffff;
+}
+.saas-root button:focus,
+.saas-root input:focus {
+  outline: none;
+}
+.saas-root button:focus-visible {
+  outline: 2px solid rgba(99, 102, 241, 0.65);
+  outline-offset: 2px;
+}
+.saas-root img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* the three tiers of the reference voice */
+.font-thin-tier {
+  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.45;
+}
+.font-medium-tier {
+  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  line-height: 1.25;
+}
+.font-bold-tier {
+  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+/* the tactile keys: the dark gradient with the double drop and the inset
+   rims (the reference indigo hover is the one sanctioned glow of the face) */
+.btn-tactile-3d {
+  background: linear-gradient(180deg, #243047 0%, #090d16 100%);
+  box-shadow:
+    0 14px 28px -8px rgba(9, 13, 22, 0.55),
+    0 4px 10px -2px rgba(9, 13, 22, 0.35),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.42),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s ease;
+}
+.btn-tactile-3d:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 20px 34px -8px rgba(79, 70, 229, 0.45),
+    inset 0 2px 3px rgba(255, 255, 255, 0.55),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.75);
+}
+.btn-tactile-3d:active {
+  transform: translateY(0) scale(0.96);
+  transition-duration: 0.08s;
+  box-shadow:
+    0 8px 18px -8px rgba(9, 13, 22, 0.55),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.32),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.55);
+}
+.icon-frame-3d {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  box-shadow:
+    0 8px 18px -6px rgba(15, 23, 42, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 1);
+  /* the reference ease over the three props the hover moves — the house
+     doctrine bans the all keyword, so the frame names its properties */
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+.icon-frame-3d:hover {
+  transform: translateY(-1.5px);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow:
+    0 12px 22px -6px rgba(79, 70, 229, 0.18),
+    inset 0 1px 2px rgba(255, 255, 255, 1);
+}
+.icon-frame-3d-active {
+  background: #ffffff;
+  border: 1px solid rgba(99, 102, 241, 0.6);
+  box-shadow:
+    0 10px 22px -6px rgba(79, 70, 229, 0.24),
+    inset 0 1px 2px rgba(255, 255, 255, 1);
+}
+
+/* the era surfaces: the card, the stat tile and the indigo slab */
+.surface-card {
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 16px 36px -14px rgba(15, 23, 42, 0.1);
+}
+.stat-tile {
+  background: #f4f6fb;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+.indigo-tactile-surface {
+  background: linear-gradient(145deg, #4f46e5 0%, #3730a3 58%, #312e81 100%);
+  box-shadow:
+    0 22px 44px -12px rgba(55, 48, 163, 0.5),
+    inset 0 2px 5px rgba(255, 255, 255, 0.32),
+    inset 0 -5px 10px rgba(15, 23, 42, 0.4);
+}
+
+/* the hero engine switch: the four-stop drift of the reference */
+.hero-inline-switch {
+  background: linear-gradient(125deg, #60a5fa 0%, #a855f7 48%, #ec4899 78%, #f97316 100%);
+  box-shadow:
+    0 12px 26px -6px rgba(168, 85, 247, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.55);
+}
+.hero-switch-thumb {
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f1f5f9 70%, #cbd5e1 100%);
+  box-shadow:
+    -3px 4px 10px rgba(15, 23, 42, 0.35),
+    inset 0 2px 3px rgba(255, 255, 255, 1);
+}
+
+/* the gaussian shader field of the hero bottom: five radiais, blur 56 */
+@keyframes shaderPulse {
+  0%,
+  100% {
+    transform: scale(1) translate(0px, 0px);
+  }
+  50% {
+    transform: scale(1.05) translate(10px, -8px);
+  }
+}
+.hero-gaussian-shader {
+  background:
+    radial-gradient(circle at 14% 70%, rgba(56, 189, 248, 0.82) 0%, transparent 48%),
+    radial-gradient(circle at 36% 80%, rgba(99, 102, 241, 0.78) 0%, transparent 50%),
+    radial-gradient(circle at 58% 65%, rgba(168, 85, 247, 0.78) 0%, transparent 48%),
+    radial-gradient(circle at 78% 75%, rgba(236, 72, 153, 0.78) 0%, transparent 48%),
+    radial-gradient(circle at 92% 65%, rgba(251, 146, 60, 0.82) 0%, transparent 45%);
+  filter: blur(56px) saturate(165%);
+  animation: shaderPulse 9s ease-in-out infinite;
+}
+
+/* the conic rainbow ring of the creator avatars */
+.conic-rainbow-ring {
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    #ec4899 0deg,
+    #8b5cf6 72deg,
+    #3b82f6 144deg,
+    #38bdf8 216deg,
+    #f59e0b 288deg,
+    #ec4899 360deg
+  );
+  padding: 2.5px;
+}
+
+/* the obsidian grid of the workspace section: 60px cells */
+.obsidian-grid-bg {
+  background-color: #08080c;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.032) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.032) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* the swing and float idles of the decks */
+@keyframes cardSwingLeft {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(-0.7deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.5deg);
+  }
+}
+@keyframes cardSwingCenter {
+  0%,
+  100% {
+    transform: translateY(10px) rotate(0.5deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(-0.5deg);
+  }
+}
+@keyframes cardSwingRight {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0.7deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(-0.5deg);
+  }
+}
+@keyframes subtleFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.swing-card-1 {
+  animation: cardSwingLeft 5s ease-in-out infinite;
+}
+.swing-card-2 {
+  animation: cardSwingCenter 5.6s ease-in-out infinite;
+}
+.swing-card-3 {
+  animation: cardSwingRight 5.2s ease-in-out infinite;
+}
+.animate-float-card {
+  animation: subtleFloat 6s ease-in-out infinite;
+}
+.animate-float-card-delayed {
+  animation: subtleFloat 6.6s ease-in-out 1.2s infinite;
+}
+
+/* the rank numerals of the cadria rail: the stroked ghost numbers */
+.netflix-rank-num {
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.35);
+  color: rgba(15, 23, 42, 0.75);
+}
+
+/* the spinning explorer badge: 18s per turn */
+@keyframes spinBadgeSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-badge-slow {
+  animation: spinBadgeSlow 18s linear infinite;
+}
+
+/* the sawtooth ribbon and its whitewash center */
+.ribbon-sawtooth-divider {
+  height: 30px;
+  width: 100%;
+  background-image:
+    linear-gradient(135deg, rgba(15, 23, 42, 0.92) 25%, transparent 25%),
+    linear-gradient(225deg, rgba(99, 102, 241, 0.75) 25%, transparent 25%),
+    linear-gradient(45deg, rgba(56, 189, 248, 0.45) 25%, transparent 25%),
+    linear-gradient(315deg, rgba(200, 75, 17, 0.75) 25%, #f9f6f0 25%);
+  background-position:
+    15px 0,
+    15px 0,
+    0 0,
+    0 0;
+  background-size: 30px 30px;
+  background-repeat: repeat-x;
+}
+.ribbon-whitewash-center {
+  width: min(320px, 80vw);
+  height: 100%;
+  background: #f9f6f0;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+}
+@media (min-width: 640px) {
+  .ribbon-whitewash-center {
+    width: min(392px, 84vw);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 42px, #000 calc(100% - 42px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 42px, #000 calc(100% - 42px), transparent 100%);
+  }
+}
+
+/* the fan deck: the swap, the clay and the sheen */
+@keyframes fanSwap {
+  from {
+    opacity: 0;
+    transform: translateY(3px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+.fan-swap {
+  animation: fanSwap 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.urbanist-frosted-blur {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(100, 116, 139, 0.12) 65%, rgba(15, 23, 42, 0.35) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+.fan-clay {
+  box-shadow:
+    inset 0 1.5px 3px rgba(255, 255, 255, 0.65),
+    inset 0 -10px 18px rgba(15, 23, 42, 0.1),
+    0 12px 24px -12px rgba(15, 23, 42, 0.28);
+}
+.fan-sheen {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.06) 32%,
+    transparent 55%,
+    rgba(15, 23, 42, 0.08) 100%
+  );
+}
+
+/* the rails: the edge fade and the hidden bar */
+.mask-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent);
+}
+.rail-scroll::-webkit-scrollbar {
+  display: none;
+}
+.rail-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* the brand gradient word: indigo to sky, the reference pair */
+.text-gradient-brand {
+  background: linear-gradient(92deg, #6366f1 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* the motion guards of the restored face: the idles and the shader die
+   under reduced motion and park under the pause hook — the same law the
+   rest of sol.css obeys */
+@media (prefers-reduced-motion: reduce) {
+  .saas-root .hero-gaussian-shader,
+  .saas-root .spin-badge-slow,
+  .saas-root .swing-card-1,
+  .saas-root .swing-card-2,
+  .saas-root .swing-card-3,
+  .saas-root .animate-float-card,
+  .saas-root .animate-float-card-delayed,
+  .saas-root .fan-swap {
+    animation: none;
+  }
+  .saas-root .btn-tactile-3d,
+  .saas-root .icon-frame-3d,
+  .saas-root .hero-switch-thumb {
+    transition: none;
+  }
+}
+[data-anim-paused] .saas-root .hero-gaussian-shader,
+[data-anim-paused] .saas-root .spin-badge-slow,
+[data-anim-paused] .saas-root .swing-card-1,
+[data-anim-paused] .saas-root .swing-card-2,
+[data-anim-paused] .saas-root .swing-card-3,
+[data-anim-paused] .saas-root .animate-float-card,
+[data-anim-paused] .saas-root .animate-float-card-delayed {
+  animation-play-state: paused;
 }

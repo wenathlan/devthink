@@ -109,7 +109,7 @@ jobs:
       - name: Validate every tracked JSON document of the metadata family
         run: cd devthink && node jsongate.ts
       - name: Verify the protocolv2 api freeze of the frozen contracts
-        run: cd devthink && node apifreeze.gate.ts
+        run: cd devthink && node apifreezegate.ts
       - name: Run the penetration test checklist of the security hardening release
         run: cd devthink && node pentest.ts
       - name: Audit every content security policy of the extension surfaces
@@ -148,7 +148,7 @@ jobs:
         run: cd devthink && node maintain.ts check
       # The release metadata lockstep drifted to the maintenance lane alone
       # after the merge; the verify chain now asserts the drift stays zero
-      # (docs/13.evolutionroadmap.md, CHANGELOG.md and the version catalog
+      # (docs/evolutionroadmap.md, CHANGELOG.md and the version catalog
       # answer package.json in lockstep).
       - name: Check the release metadata lockstep of the version catalog
         run: cd devthink && node release.ts check
@@ -502,10 +502,10 @@ jobs:
           cd /tmp/devthink-consumer-smoke/consumer
           mkdir -p prisma
           cp "$GITHUB_WORKSPACE/devthink/schema.prisma" prisma/schema.prisma
-          cp "$GITHUB_WORKSPACE/devthink/prisma.config.ts" prisma.config.ts
+          cp "$GITHUB_WORKSPACE/devthink/prismaconfig.ts" prismaconfig.ts
           npm install --no-save prisma@7.10.0
-          npx prisma db push
-          npx prisma generate
+          npx prisma db push --config prismaconfig.ts
+          npx prisma generate --config prismaconfig.ts
           DEVTHINK_CONSUMER_DB=1 node consumersmoke.mts
       - name: Remove the consumer scratch directory after the smoke
         if: always()

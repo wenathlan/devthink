@@ -4415,7 +4415,7 @@ export const reposwebextension = `[
 ]
 `;
 
-/** The public open source project catalog — the derived markdown document (the licensed project sample table, the method and limitations section and the references) the catalog build writes from the search exports; the exact text of the former 04.publicprojectcatalog.md. */
+/** The public open source project catalog — the derived markdown document (the licensed project sample table, the method and limitations section and the references) the catalog build writes from the search exports; the exact text of the former publicprojectcatalog.md. */
 export const publicprojectcatalog = `# Public Open Source Project Catalog
 
 This catalog is derived from GitHub public-search metadata collected on 2026-08-27. It is an intake list, not an endorsement and not proof that every repository is safe, maintained, or legally reusable. The implementation review phase must confirm the license and inspect only the files needed for interoperability, security and behavior mapping.
@@ -4487,7 +4487,7 @@ The catalog combines public GitHub searches for browser automation extensions, b
 [2]: https://github.com/topics/ai-browser-agent "GitHub Topic — AI browser agent"
 `;
 
-/** The comparative feature and flow matrix — the derived markdown document (the evidence scoped matrix of public feature signals and flow hypotheses with the reading guide and the references) the catalog build writes beside the catalog; the exact text of the former 07.featureflowmatrix.md. */
+/** The comparative feature and flow matrix — the derived markdown document (the evidence scoped matrix of public feature signals and flow hypotheses with the reading guide and the references) the catalog build writes beside the catalog; the exact text of the former featureflowmatrix.md. */
 export const featureflowmatrix = `# Comparative Feature and Flow Matrix
 
 This matrix is intentionally evidence-scoped. Each row represents a public GitHub repository result with a declared license. Feature labels are extracted from public names and descriptions; they are discovery signals, not verified implementation claims. Flow entries are explicit hypotheses to validate in a source or artifact review. No third-party code, branding or private behavior is copied into Devthink.

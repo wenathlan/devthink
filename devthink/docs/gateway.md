@@ -54,7 +54,7 @@ git clone https://<token>@github.com/wenathlan/devthink.git devthink
 cp -r devthink/getry/src/app/v{1,2,3,4,5} /home/z/my-project/src/app/
 cp devthink/getry/src/app/{page.tsx,layout.tsx,globals.css} /home/z/my-project/src/app/
 cp devthink/getry/src/lib/{db.ts,ui.ts} /home/z/my-project/src/lib/
-cp devthink/getry/prisma/schema.prisma devthink/getry/prisma.config.ts /home/z/my-project/
+cp devthink/getry/prisma/schema.prisma devthink/getry/prismaconfig.ts /home/z/my-project/
 cp -r devthink/getry/scripts /home/z/my-project/
 ```
 
@@ -200,7 +200,7 @@ Cada chat novo do Z.ai que receber esta skill vira UMA cópia independente
 4. **`.manustask` é binário** → não ler como texto, não grep conteúdo.
 5. **Contexto binário UXP** → tratar como binário (não descompactar/parsear
    como texto); usar somente os arquivos de contexto textuais.
-6. **Prisma config object** → `prisma.config.ts` obrigatório; datasource SEM
+6. **Prisma config object** → `prismaconfig.ts` obrigatório; datasource SEM
    `url`, generator SEM `output`; adapter `PrismaLibSql`; `db.ts` nunca cria
    PrismaClient em module-load (lazy proxy); PIN prisma `7.10.0`
    (`latest` = 8.0.0-rc, quebra).

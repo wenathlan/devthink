@@ -27,7 +27,7 @@ The readiness gate of the 2.0.154 platform release walked every release gate of 
 | the changelog covers every version from 1.1.31 | green | the changelog carries every version of the chain from 1.1.31 through 2.0.154 |
 | the migration guide covers every supported path | green | docs/migrationguide.md documents the version one, automa, selenium, ui vision and tabular migration paths |
 | the release notes cover the user facing changes of the release | green | docs/releasenotes.md carries the release notes of the platform release |
-| the roadmap chain rules held through every release | green | docs/13.evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release |
+| the roadmap chain rules held through every release | green | docs/evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release |
 | the release pipeline dry run passed end to end | green | the release workflow carries the draft, verify and publish chain: the draft release assembles, the verification step downloads every asset and checks the checksums, and the publish step flips the release live |
 | the capability manifests carry the release version pins | green | the 7 capability manifests of dist/caps pin the release 2.0.154 |
 | the soak run keeps a long workflow alive across the retention window without drift | green | soak.ts: 9 soak entries, 0 failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs |

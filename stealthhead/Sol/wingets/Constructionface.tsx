@@ -2,24 +2,31 @@
  * Constructionface.tsx — the in-construction face of the stealthhead pages:
  * the honest surface every game page renders while the game is in
  * development (home, match, ranking, weapons, world — the ledger faces of
- * the old pass are retired). the face keeps the tactical beauty of the app
- * — the one coral scope light over the deep canvas, the breathing wrench
- * glyph on its glass tile, the mono eyebrow of the route, the display
- * title, one honest line and the two ways on (home, or the opening splash
- * again) — while the root game logics (match, physics, netcode, ranking,
- * world) keep riding their own files untouched under the hood: only the
- * page faces changed, nothing was deleted.
+ * the old pass are retired). the owner's law was literal: leave "game in
+ * construction", clean everything, ONE component — never a dry text
+ * notice — so the face answers as a drawn SCENE: the game's own brand mark
+ * (the coral squircle with the scope glyph, its flow band riding inside
+ * the strokes) seated on the glass panel, the drawn scope reticle hanging
+ * as a faint hologram behind it (the tactical identity of the platform,
+ * slow-sweeping ±2° like the landing it retired), the coral scope light
+ * over the deep canvas, the mono eyebrow of the route, the game title, a
+ * pulsing construction chip, ONE short line and the two ways on (home, or
+ * the opening splash again). the root game logics (match, physics,
+ * netcode, ranking, world) keep riding their own files untouched under
+ * the hood: only the page faces changed, nothing was deleted.
  *
  * the face is one component with one voice: the route owns the eyebrow, the
  * copy rides the label store (a hardcoded string inside a widget is a
  * defect), the reveal stagger answers the shared observer, and the
  * reduced-motion hard stop of the stylesheet stills every pass.
  */
-import {HomeRegular, WrenchSettingsRegular} from "@fluentui/react-icons";
-import {useEffect} from "react";
-import {Link} from "wouter";
-import {label} from "../../labels";
-import {observeReveals} from "../../reveal";
+import { HomeRegular } from "@fluentui/react-icons";
+import { useEffect } from "react";
+import { Link } from "wouter";
+import { label } from "../../labels";
+import { observeReveals } from "../../reveal";
+import { BrandMark } from "./ShellBrandmark.tsx";
+import { Scope } from "./HomeScope.tsx";
 
 /**
  * the one face of the in-development game page — see the header comment.
@@ -36,12 +43,19 @@ export function Constructionface({ eyebrow }: { eyebrow: string }) {
   return (
     <section className="shconstr grain" aria-label={label("construction.aria")}>
       <span className="shconstr__light" aria-hidden="true" />
+      <span className="shconstr__reticle" aria-hidden="true">
+        <Scope />
+      </span>
       <div className="shconstr__panel glass card">
-        <span className="shconstr__glyph reveal" aria-hidden="true">
-          <WrenchSettingsRegular fontSize={30} strokeWidth={1.7} />
+        <span className="shconstr__mark reveal">
+          <BrandMark size={88} flow />
         </span>
         <p className="eyebrow reveal">{eyebrow}</p>
         <h1 className="shconstr__title reveal">{label("construction.title")}</h1>
+        <p className="shconstr__chip reveal">
+          <span className="shconstr__pulsedot" aria-hidden="true" />
+          {label("construction.status")}
+        </p>
         <p className="shconstr__lede reveal">{label("construction.subtitle")}</p>
         <div className="shconstr__actions reveal">
           <Link href="/" className="btn press">

@@ -155,7 +155,7 @@ Utilities 6109. Bloco completo: «onda4a-devthink.md § FEATURES F-DTK».
 
 F-DTK-300. Manifesto npm único `devthink` v10.0.0 — 21.817 dependencies + 43.636 devDependencies + engines de 16 runtimes (shipped) [v10.0.0] «package.10 (10).txt:1-3;6;21824-21840;65464-65481»
 F-DTK-301. Catálogo de use-cases DevThink em 40 categorias com 21.818 pacotes (shipped) [v10.0.0] «package.10.case.txt:1-45»
-F-DTK-302. Mapa de provenance pkg→repo upstream com 19.691 entradas GitHub/GitLab (shipped) [v10.0.0] «package.10.repos (2).txt:1-300;19400-19691»
+F-DTK-302. Mapa de provenance pkg→repo upstream com 19.691 entradas GitHub/GitLab (shipped) [v10.0.0] «package10.repos (2).txt:1-300;19400-19691»
 
 ### v10.0.0 — Categorias como capacidades (planned)
 
@@ -254,7 +254,7 @@ F-DTK-388. Validação — zod ^4.6.5, ajv ^8.20.0, joi ^18.2.9 (planned) [v10.0
 F-DTK-389. Auth/segurança HTTP — helmet ^8.3.0, bcryptjs ^3.0.3, jsonwebtoken ^9.0.3, xml-crypto ^6.3.2, 2captcha ^1.3.9 (planned) [v10.0.0] «package.10.descricoes (2).txt:12604;8421;13656;21622;37»
 F-DTK-390. Workbench web — react ^19.3.0 + next ^16.3.6 + tailwindcss ^4.3.3 (planned) [v10.0.0] «package.10.descricoes (2).txt:17349;15369;19595»
 F-DTK-391. 3D e charts — three ^0.186.1, d3 ^7.9.0, echarts ^6.1.0 (planned) [v10.0.0] «package.10.descricoes (2).txt:19806;9975;10616»
-F-DTK-392. Desktop — electron ^44.4.5 + monaco-editor ^0.57.0 + terminal xterm (upstream xtermjs/xterm.js) (planned) [v10.0.0] «package.10.descricoes (2).txt:10662;15082; package.10.repos (2).txt:19400-19691»
+F-DTK-392. Desktop — electron ^44.4.5 + monaco-editor ^0.57.0 + terminal xterm (upstream xtermjs/xterm.js) (planned) [v10.0.0] «package.10.descricoes (2).txt:10662;15082; package10.repos (2).txt:19400-19691»
 F-DTK-393. CLI toolkit — commander ^15.0.0, inquirer ^14.2.2, chalk ^6.0.0, ora ^9.4.1, execa ^10.0.1, zx ^8.8.5, figlet ^1.11.4 (planned) [v10.0.0] «package.10.descricoes (2).txt:9466;13048;9022;15991;11233;21816;11551»
 F-DTK-394. FS/arquivos — chokidar ^5.0.0, glob ^13.0.6, fs-extra ^11.4.1, rimraf ^6.1.3, adm-zip ^0.6.1, semver ^7.8.5, uuid ^14.0.2 (planned) [v10.0.0] «package.10.descricoes (2).txt:9100;12134;11850;18091;7494;18532;20767»
 F-DTK-395. Conteúdo — marked ^18.0.14, remark ^15.0.1, turndown ^7.2.4, cheerio ^1.2.0 (planned) [v10.0.0] «package.10.descricoes (2).txt:14519;17873;20294;9083»

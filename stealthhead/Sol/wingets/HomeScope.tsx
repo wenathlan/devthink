@@ -1,19 +1,20 @@
 /**
- * scope.tsx — the hero object of the stealthhead landing (campaign v3 ·
- * r3-stealthhead): ONE drawn scope reticle, the machined crosshair of the
- * platform. A pure SVG drawing (no raster, no randomness): the outer rim,
- * the signal arc that plays the rim light, the inner ring, the cardinal
- * ticks, the minor diagonal ticks, the hairline dashed cross and the center
- * dot. The idle motion is the SWEEP — the whole reticle rocks ±2° over 5s
- * (transform only, the campaign ease, guarded by the stylesheet for
- * prefers-reduced-motion). Mark discipline: the reticle is the ONE mark of
- * the landing zone — the title-bar mark rests while it owns the stage
- * (data-landing, see Shell.tsx and the r3-stealthhead section of sol.css).
+ * scope.tsx — the drawn scope reticle of the platform: ONE machined
+ * crosshair, the tactical identity of the FPS. A pure SVG drawing (no
+ * raster, no randomness): the outer rim, the signal arc that plays the rim
+ * light, the inner ring, the cardinal ticks, the minor diagonal ticks, the
+ * hairline dashed cross and the center dot. The idle motion is the SWEEP —
+ * the whole reticle rocks ±2° over 5s (transform only, the campaign ease,
+ * guarded by the stylesheet for prefers-reduced-motion). Born the hero
+ * object of the retired landing stage, it now hangs behind the
+ * Constructionface panel as the faint hologram of the in-development pass
+ * — the same drawing, the same sweep, seated at construction opacity (see
+ * the shconstr section of sol.css).
  */
 
 import { label } from "../../labels";
 
-/** the drawn scope reticle of the landing stage. the drawing carries no
+/** the drawn scope reticle of the platform. the drawing carries no
  * text of its own: the svg title rides the label accessor. */
 export function Scope() {
   return (
