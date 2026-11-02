@@ -24,9 +24,11 @@ import {
   busSeek,
   busSelect,
   busSubscribe,
+  isReconTake,
   isReferenceTake,
   type PlayerSnapshot,
 } from "../../playerbus.ts";
+import { reconRootName, reconScaleName } from "../../reconpayload.ts";
 import { CoverArt } from "./HomeCoverart.tsx";
 
 /**
@@ -45,15 +47,19 @@ export function Playerbar() {
   const progress = view.duration > 0 ? Math.min(100, (view.position / view.duration) * 100) : 0;
   // the row shape decides by kind: a generated take answers the genre line,
   // a rendered wav answers the render line, an ingested reference answers
-  // the blob line — the same bar either way
-  const artist = isReferenceTake(current)
-    ? labelfill(current.origin === "render" ? "shell.playerbar.renderLine" : "shell.playerbar.referenceLine", {
-        mime: current.source.mime.replace("audio/", ""),
-        clock: formatClock(view.duration),
-      })
-    : `${current.genreLabel} · ${current.keyLabel} · ${current.bpm} bpm`;
-  const openHref = isReferenceTake(current) ? "/ingest" : "/studio";
-  const openTitle = isReferenceTake(current)
+  // the blob line, a recon document answers the analysis line (the statistical
+  // header's own facts — the prevailing key and scale, the median tempo) —
+  // the same bar either way
+  const artist = isReconTake(current)
+    ? `${reconRootName(current.document.header.mostUsedKeyId)} ${reconScaleName(current.document.header.mostUsedScaleId)} · ${Math.round(current.document.header.bpmMedian)} bpm · recon`
+    : isReferenceTake(current)
+      ? labelfill(current.origin === "render" ? "shell.playerbar.renderLine" : "shell.playerbar.referenceLine", {
+          mime: current.source.mime.replace("audio/", ""),
+          clock: formatClock(view.duration),
+        })
+      : `${current.genreLabel} · ${current.keyLabel} · ${current.bpm} bpm`;
+  const openHref = isReferenceTake(current) || isReconTake(current) ? "/ingest" : "/studio";
+  const openTitle = isReferenceTake(current) || isReconTake(current)
     ? labelfill("shell.playerbar.openBenchTitle", { name: current.name })
     : labelfill("shell.playerbar.openTitle", { name: current.name });
 

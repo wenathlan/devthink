@@ -465,9 +465,12 @@ describe("the library modes of 1.1.81", () => {
     if (!existsSync(join(repoRoot, ".github/workflows/verify.yml"))) return;
     const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8");
     /* the dependency union law rides the engine floors on the caret forms
-     * beside the bounded >= shapes, so the smoke baseline reads the floor of
-     * either declaration (the verify lane may smoke a newer patch of the
-     * floor — the satisfaction, never the equality) */
+     * beside the bounded >= shapes: the floor derivation walks both floor
+     * spellings the family manifests carry (the caret form ^1.4.2, the
+     * envelope convention, and the bounded form >=1.4.4), so the smoke
+     * baseline reads the floor of either declaration (the verify lane may
+     * smoke a newer patch of the floor — the satisfaction, never the
+     * equality) */
     const bundeclared = String(packagejson.engines.bun ?? "");
     const bunfloor =
       bundeclared.match(/>=([\d.]+)/)?.[1] ?? bundeclared.match(/^[~^]?([\d.]+)/)?.[1] ?? "";

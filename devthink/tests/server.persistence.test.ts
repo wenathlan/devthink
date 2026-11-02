@@ -32,11 +32,7 @@ beforeAll(async () => {
   // village keeps this suite inside the devthink app folder, so the two
   // commands target the application directory one hop up).
   const appdir = join(import.meta.dirname, "..");
-  // the two commands ride the repository config the same way the db:generate
-  // and db:push scripts do (prismaconfig.ts carries the universal datasource
-  // url fallback, so a bare `prisma db push` without --config never finds a
-  // datasource and the push lane refuses to run)
-  await exec("bunx", ["prisma", "generate", "--config", "prismaconfig.ts"], {
+  await exec("bunx", ["prisma", "generate"], {
     cwd: appdir,
     timeout: 120000,
   });
