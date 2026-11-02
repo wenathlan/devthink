@@ -182,6 +182,8 @@
   },
   "scripts": {
     "dev": "vite --host",
+    "engine": "node --experimental-strip-types api.ts",
+    "engine:check": "node --experimental-strip-types -e \"process.env.VAULT_PORT='0'; process.env.VAULT_TOKEN='check'; await import('./api.ts').then(async (m) => { const srv = m.createVaultServer?.() ?? null; if (!srv) { console.error('engine boot failed'); process.exit(1); } setTimeout(() => { process.exit(0); }, 400); })\"",
     "build": "vite build",
     "start": "vite preview --host",
     "preview": "vite preview --host",

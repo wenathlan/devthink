@@ -1,0 +1,113 @@
+# vault docker-compose — the two-service production deploy of the storage
+# truth. until this file the container was the static face only: the
+# engine (api.ts — the http surface the battery boots on every run)
+# never rode a deploy, and every storage call of the face answered the
+# away rehearsal. this file wires both targets of the one Dockerfile:
+#
+#   engine  the node 26 storage engine (target engine): the real routes
+#           over pure node:http, the sealed ledger on better-sqlite3 and
+#           drizzle, the faun-lesson token gate. the databases
+#           (vault-storage.db, uistore.db — and vault.db the site-store
+#           lane would open) live on the named vaultdata volume under
+#           /data — NEVER inside the image — so a redeploy never
+#           orphans the truth.
+#   face    the nginx surface (target face): the built SPA beside the
+#           /api/* proxy lane to the engine upstream (nginx-face.conf),
+#           the spa rewrite as try_files, port 80 published on 8080.
+#
+# boot the whole product from this directory:
+#
+#   VAULT_TOKEN=<the operator bearer> docker compose up -d --build
+#
+# the engine door of the face is a BUILD-time value: VITE_VAULT_URL is
+# what vaultclient.ts bakes into the bundle, and the house https law
+# (hostallowed) refuses http, localhost and private hosts — a local
+# http origin never passes, by design. two honest wirings answer:
+#
+#   same-origin (the proxy lane): point VITE_VAULT_URL at the PUBLIC
+#     https origin of this face (the tls terminator in front of it) and
+#     the /api/* proxy carries every call to the engine:
+#       VITE_VAULT_URL=https://vault.example.org \
+#         VAULT_TOKEN=<bearer> docker compose up -d --build
+#
+#   direct engine lane: publish the engine port behind your own tls
+#     terminator (uncomment the ports below) and point VITE_VAULT_URL at
+#     its public https origin — the api answers cors * (the saddle
+#     gateway precedent), so the cross-origin lane rides clean.
+#
+# an empty VITE_VAULT_URL keeps the honest away lane: the face renders
+# the declared rehearsal, never a blank and never an invented figure.
+# the browser lanes also read VITE_VAULT_TOKEN (the x-vault-token
+# bearer the storage routes demand) and VITE_VAULT_PROJECT (the project
+# the console lane queries) — both optional, both baked at build time.
+
+services:
+  engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: engine
+      args:
+        VAULT_VERSION: "${VAULT_VERSION:-2.0.154}"
+    image: "ghcr.io/wenathlan/vault-engine:${VAULT_VERSION:-2.0.154}"
+    # the engine never publishes a port by default: the face proxies it
+    # on the private compose network. uncomment to serve the engine lane
+    # directly (behind your own tls terminator — the house https law
+    # refuses anything less):
+    # ports:
+    #   - "8080:8080"
+    environment:
+      # the port the engine binds and the nginx upstream expects — the
+      # healthcheck of the image expands the same value.
+      VAULT_PORT: "8080"
+      VAULT_HOST: "0.0.0.0"
+      # the faun lesson door: without a pinned bearer the engine boots
+      # SEALED (the health lane answers, every storage route refuses
+      # 503 — fail closed, never open). pass a long random value.
+      VAULT_TOKEN: "${VAULT_TOKEN:-}"
+      # the storage truth on the named volume (the faun lesson: the db
+      # files never ride the image layers). the lane reads DATABASE_URL
+      # (the storagelane contract) and the face dist rides the engine
+      # static seat (VAULT_STATIC_DIR — the deploy seal law).
+      DATABASE_URL: "file:/data/vault-storage.db"
+      VAULT_UISTORE_DB: "/data/uistore.db"
+    volumes:
+      - vaultdata:/data
+    # init reaps zombies as pid 1 (the family docker run discipline) and
+    # the restart policy keeps the storage truth answering across host
+    # reboots.
+    init: true
+    restart: unless-stopped
+    # the healthcheck rides the image (curl /api/health) — the face
+    # gates on it below.
+
+  face:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: face
+      args:
+        VAULT_VERSION: "${VAULT_VERSION:-2.0.154}"
+        # the engine door baked at build time (see the header): the
+        # public https origin the browser lanes call — the proxy lane
+        # answers same-origin when this points at the face itself.
+        VITE_VAULT_URL: "${VITE_VAULT_URL:-}"
+        VITE_VAULT_TOKEN: "${VITE_VAULT_TOKEN:-}"
+        VITE_VAULT_PROJECT: "${VITE_VAULT_PROJECT:-}"
+    image: "ghcr.io/wenathlan/vault-face:${VAULT_VERSION:-2.0.154}"
+    depends_on:
+      # the face starts only when the engine health lane answered — the
+      # proxy upstream is live before the first /api/* call arrives.
+      engine:
+        condition: service_healthy
+    ports:
+      # the public door: host 80 → the unprivileged nginx on 8080.
+      # remap freely ("8081:8080") when another service owns the host.
+      - "80:8080"
+    restart: unless-stopped
+
+volumes:
+  # the state home of the storage truth (mounted at /data): the ledger,
+  # the ui copy table and the sqlite WAL files live here, surviving
+  # every redeploy of both services.
+  vaultdata:
