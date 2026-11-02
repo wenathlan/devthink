@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { fetchtransport, transportresponse } from "../http.js";
+import type { fetchtransport, transportresponse } from "@wenathlan/devthink/http";
 import {
   addusage,
   budgetcheck,
@@ -23,7 +23,7 @@ import {
   toolbriefof,
   usagetotals,
 } from "../llm.js";
-import { buildtoolcatalog } from "../tools.js";
+import { buildtoolcatalog } from "@wenathlan/devthink/tools";
 import type { modelmessage, parseguard, plandraft, providerconfig, usagerecord } from "../types.js";
 
 const now = 1_800_000_000_000;

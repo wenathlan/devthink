@@ -168,6 +168,14 @@ describe("the library on every runtime", () => {
 
   it("emits declaration files for every entry point of the matrix", async () => {
     const outdir = await mkdtemp(join(tmpdir(), "devthink-types-"));
+    /* the gateway declaration face regenerates before the pass: the ownership wave
+     * (wave/ownership.getry) moved the gateway modules to the getry owner, and the
+     * build config resolves every @wenathlan/getry/* specifier to the owner's
+     * generated declaration face (getry/dist/types, the emit of the owner's
+     * tsconfig.types.json) — a fresh checkout or ci lane that skipped the build
+     * still lands the face before the declaration pass reads it (idempotent,
+     * the same self-heal law the persistence suite applies to the prisma client). */
+    await execute(resolvetsc(), ["-p", join(repoRoot, "getry", "tsconfig.types.json")]);
     await execute(resolvetsc(), ["-p", "tsconfig.build.json", "--outDir", outdir]);
     for (const entry of [
       "index",

@@ -112,13 +112,11 @@ import {
   type imagebatch,
   type mediarecord,
   type memorytrend,
-  type modeloutput,
   type mutationevent,
   type navstate,
   type netlogrecord,
   type observation,
   type pausestate,
-  type plandraft,
   protocolversion,
   type provenancerecord,
   type quarantineentry,
@@ -142,6 +140,7 @@ import {
   type watchexpression,
   type wizardstate,
 } from "../types.js";
+import type { modeloutput, plandraft } from "@wenathlan/getry/types";
 
 describe("protocol", () => {
   it("turns a valid proposal into a pending local review", () => {

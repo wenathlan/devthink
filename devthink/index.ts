@@ -11,7 +11,7 @@ export * from "./workflow.js";
 export * from "./environments.js";
 export * from "./http.js";
 export * from "./security.js";
-export * from "./llm.js";
+export * from "@wenathlan/getry/llm";
 export * from "./memory.js";
 export * from "./mcp.js";
 export * from "./serve.js";

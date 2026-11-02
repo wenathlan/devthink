@@ -20,14 +20,97 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * workload law. */
       "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
+
+      /** the modality registry bridge of the ownership wave
+       * (wave/ownership.getry), mirrored from the devthink side: the moved
+       * engine graph leans on the os server seam
+       * ("@wenathlan/devthink/server") whose sandbox lane reads the
+       * ninety-modality catalog through the published library specifier
+       * ("@wenathlan/saddle/modalityregistry"), and the installed 2.1.6
+       * envelope carries no ./modalityregistry export surface — this bridge
+       * resolves the specifier to the monorepo source the saddle engine
+       * carries, so the node-side tests answer the same module the devthink
+       * runner serves. retires when saddle 2.1.7 publishes the export
+       * entry. */
+      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
+
+      /** the devthink module bridges of the ownership wave
+       * (wave/ownership.getry), mirrored from vite.config.ts: the moved
+       * gateway modules lean on the os-owned seams they grew beside
+       * (config, constants, core, the http/memory/policy/protocol/security
+       * lane, server, storage, tools and the data surface) through the
+       * published library specifiers ("@wenathlan/devthink/http" and
+       * siblings), and these bridges resolve every specifier to the
+       * monorepo source the sibling app carries — the node-side tests
+       * answer the same modules the dev server serves and the seams keep
+       * one owner. the entries retire when the published devthink envelope
+       * carries the export surfaces the moved graph consumes. */
+      "@wenathlan/devthink/config": path.resolve(import.meta.dirname, "../devthink/config.ts"),
+      "@wenathlan/devthink/constants": path.resolve(import.meta.dirname, "../devthink/constants.ts"),
+      "@wenathlan/devthink/core": path.resolve(import.meta.dirname, "../devthink/core.ts"),
+      "@wenathlan/devthink/data": path.resolve(import.meta.dirname, "../devthink/data.ts"),
+      "@wenathlan/devthink/http": path.resolve(import.meta.dirname, "../devthink/http.ts"),
+      "@wenathlan/devthink/memory": path.resolve(import.meta.dirname, "../devthink/memory.ts"),
+      "@wenathlan/devthink/policy": path.resolve(import.meta.dirname, "../devthink/policy.ts"),
+      "@wenathlan/devthink/protocol": path.resolve(import.meta.dirname, "../devthink/protocol.ts"),
+      "@wenathlan/devthink/security": path.resolve(import.meta.dirname, "../devthink/security.ts"),
+      "@wenathlan/devthink/server": path.resolve(import.meta.dirname, "../devthink/server.ts"),
+      "@wenathlan/devthink/storage": path.resolve(import.meta.dirname, "../devthink/storage.ts"),
+      "@wenathlan/devthink/tools": path.resolve(import.meta.dirname, "../devthink/tools.ts"),
+
+      /** the getry self bridges of the ownership wave
+       * (wave/ownership.getry), mirrored from the devthink side: the os
+       * sources the moved graph consumes through the devthink bridges above
+       * (server, policy, protocol and siblings) import the gateway modules
+       * back through the published specifiers ("@wenathlan/getry/engine"
+       * and siblings), and the published envelope still answers from the
+       * 2.0.154 face that carries only ./thinking — so every gateway
+       * specifier resolves to this app's own source here (the one owner of
+       * the moved modules) until the published envelope carries the export
+       * surfaces the wave added. */
+      "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "thinking.ts"),
+      "@wenathlan/getry/engine": path.resolve(import.meta.dirname, "engine.ts"),
+      "@wenathlan/getry/llm": path.resolve(import.meta.dirname, "llm.ts"),
+      "@wenathlan/getry/streaming": path.resolve(import.meta.dirname, "streaming.ts"),
+      "@wenathlan/getry/models": path.resolve(import.meta.dirname, "models.ts"),
+      "@wenathlan/getry/request": path.resolve(import.meta.dirname, "request.ts"),
+      "@wenathlan/getry/providers": path.resolve(import.meta.dirname, "providers.ts"),
+      "@wenathlan/getry/antigravity": path.resolve(import.meta.dirname, "antigravity.ts"),
+      "@wenathlan/getry/oauth": path.resolve(import.meta.dirname, "oauth.ts"),
+      "@wenathlan/getry/accounts": path.resolve(import.meta.dirname, "accounts.ts"),
+      "@wenathlan/getry/project": path.resolve(import.meta.dirname, "project.ts"),
+      "@wenathlan/getry/quota": path.resolve(import.meta.dirname, "quota.ts"),
+      "@wenathlan/getry/recovery": path.resolve(import.meta.dirname, "recovery.ts"),
+      "@wenathlan/getry/fingerprint": path.resolve(import.meta.dirname, "fingerprint.ts"),
+      "@wenathlan/getry/search": path.resolve(import.meta.dirname, "search.ts"),
+      "@wenathlan/getry/utils": path.resolve(import.meta.dirname, "utils.ts"),
+      "@wenathlan/getry/versionregistry": path.resolve(import.meta.dirname, "versionregistry.ts"),
+      "@wenathlan/getry/intelligence": path.resolve(import.meta.dirname, "intelligence.ts"),
+      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
+      "@wenathlan/getry/jsonpolicy": path.resolve(import.meta.dirname, "jsonpolicy.ts"),
+      "@wenathlan/getry/jsonschema": path.resolve(import.meta.dirname, "jsonschema.ts"),
+      "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "gatewayconfig.ts"),
+      "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "gatewayviewconfig.ts"),
+      "@wenathlan/getry/gatewayprobe": path.resolve(import.meta.dirname, "gatewayprobe.ts"),
+      "@wenathlan/getry/gatewaysmoke": path.resolve(import.meta.dirname, "gatewaysmoke.ts"),
+      "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "nodeshim.ts"),
+      "@wenathlan/getry/types": path.resolve(import.meta.dirname, "types.ts"),
+      "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "constants.ts"),
+      "@wenathlan/getry/tests/researchfixtures": path.resolve(import.meta.dirname, "tests/researchfixtures.ts"),
     },
   },
   test: {
     include: ["tests/*.test.ts"],
     environment: "node",
-    /* the timeout stays five seconds on every native runner and scales through the env the emulated arm64 container leg sets (a qemu-interpreted second answers the same green suite many times slower), so an emulated runner never fails a test a native runner passed */
-    testTimeout: Number(process.env.GETRY_TEST_TIMEOUT_MS ?? 5000),
-    hookTimeout: Number(process.env.GETRY_TEST_TIMEOUT_MS ?? 10000),
+    /* the timeout floor moves to thirty seconds with the ownership wave
+     * (wave/ownership.getry): the moved gateway battery (the property walks
+     * of fast-check, the torture lanes and the gatewayserver suites) ran
+     * under the devthink floor of thirty seconds and a cold or emulated
+     * runner never fails a test a native runner passed — every fast test
+     * keeps answering in milliseconds while the subprocess-spawning lanes
+     * ride past the five second floor the house carried before the move */
+    testTimeout: Number(process.env.GETRY_TEST_TIMEOUT_MS ?? 30000),
+    hookTimeout: Number(process.env.GETRY_TEST_TIMEOUT_MS ?? 30000),
     coverage: { enabled: false },
   },
 });

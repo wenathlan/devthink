@@ -241,6 +241,46 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js",
       "default": "./dist/server.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js",
+      "default": "./dist/config.js"
+    },
+    "./constants": {
+      "types": "./dist/constants.d.ts",
+      "import": "./dist/constants.js",
+      "default": "./dist/constants.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "default": "./dist/core.js"
+    },
+    "./data": {
+      "types": "./dist/data.d.ts",
+      "import": "./dist/data.js",
+      "default": "./dist/data.js"
+    },
+    "./storage": {
+      "types": "./dist/storage.d.ts",
+      "import": "./dist/storage.js",
+      "default": "./dist/storage.js"
+    },
+    "./security": {
+      "types": "./dist/security.d.ts",
+      "import": "./dist/security.js",
+      "default": "./dist/security.js"
+    },
+    "./tools": {
+      "types": "./dist/tools.d.ts",
+      "import": "./dist/tools.js",
+      "default": "./dist/tools.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js",
+      "default": "./dist/types.js"
     }
   },
   "bin": {
@@ -279,7 +319,7 @@
         "owner": "getry",
         "source": "library",
         "library": "@wenathlan/getry",
-        "role": "the gateway inference routes, imported to serve the meta-model over the real models; the 7-level thinking ladder is consumed through @wenathlan/getry/thinking."
+        "role": "the universal gateway: the engine (engine.ts), the llm family, the streaming parser, the model catalog, the provider surface, the request helpers, the auth family and the json family — the os imports every family through the published library specifiers (@wenathlan/getry/engine and siblings) and derives its thinking budgets from the owner's ladder through @wenathlan/getry/thinking."
       },
       {
         "name": "argan",
@@ -303,25 +343,11 @@
         "role": "the monetization engine, imported for plans, quotas and billing surfaces."
       },
       {
-        "name": "engine",
-        "owner": "devthink",
-        "source": "root",
-        "module": "engine.ts",
-        "role": "the universal gateway: one gatewayconfig produces the seven route handlers; the thinking budgets derive from the getry ladder, never a local copy."
-      },
-      {
         "name": "graphrunner",
         "owner": "devthink",
         "source": "root",
         "module": "graphrunner.ts",
         "role": "the hierarchical graphs and nodes runner, stages walked in deterministic waves."
-      },
-      {
-        "name": "streamparse",
-        "owner": "devthink",
-        "source": "root",
-        "module": "streaming.ts",
-        "role": "the streaming parser: provider events decoded into one typed chunk flow."
       },
       {
         "name": "queue",
@@ -410,8 +436,8 @@
     "check:metadata": "node release.ts check",
     "check:secrets": "bun run checksecrets.ts",
     "check:web": "tsc --noEmit",
-    "db:generate": "prisma generate --config prismaconfig.ts",
-    "db:push": "prisma db push --config prismaconfig.ts",
+    "db:generate": "prisma generate --schema schema.prisma && prisma generate --config ../getry/prismaconfig.ts",
+    "db:push": "prisma db push --schema schema.prisma --url \"${DEVTHINK_DATABASE_URL:-${DATABASE_URL:-file:./devthink.db}}\"",
     "dependency:updates": "node dependencyupdates.ts sync",
     "dev": "bun --watch run devthink.ts",
     "dev:web": "vite --host",

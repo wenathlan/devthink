@@ -1,16 +1,27 @@
-// devthink gateway prisma schema for prisma 7 with driver adapter
-// datasource url provided by prismaconfig.ts and adapter in database.ts
-// model names pascalcase so prisma generates camelcase accessors db.chatMessage db.nvidiaKey
+// devthink os prisma schema for prisma 7 with driver adapter
+// datasource url provided by the prisma config and adapter in database.ts
+// model names pascalcase so prisma generates camelcase accessors
 // lives at the application root: the prisma resolver reads schema.prisma
 // first (the prisma folder and the Sol folder stay as honored candidates)
 //
-// family sync contract (this is the master): a table of the same kind
-// carries the same columns and the same pointers in every application
-// that holds the kind — identity pointers are text, counts are 32-bit
-// ints, time is datetime or iso text, and byte-scale pointers (sizes,
-// lengths, offsets) are 64-bit BigInt, the pointer that holds terabytes.
-// The sqlite autoincrement rowid is 64-bit by the engine contract. The
-// family schemas mirror this contract; a kind born here propagates.
+// family sync contract: a table of the same kind carries the same columns
+// and the same pointers in every application that holds the kind — identity
+// pointers are text, counts are 32-bit ints, time is datetime or iso text,
+// and byte-scale pointers (sizes, lengths, offsets) are 64-bit BigInt, the
+// pointer that holds terabytes. The sqlite autoincrement rowid is 64-bit by
+// the engine contract. The family schemas mirror this contract; a kind born
+// here propagates.
+//
+// wave/ownership.getry: the gateway kinds (ChatMessage, NvidiaKey, TownKey,
+// ApiKey) moved to getry/schema.prisma — the gateway owns its own sqlite
+// datasource beside the engine that writes it. this schema keeps the os
+// kinds (OnboardingState, CopyRow, PlanState) AND mirrors the gateway kinds
+// the os storage lane still persists (the engine seam writes ChatMessage
+// through devthink/storage.ts and the key resolution reads the key tables
+// through the same lazy client — one client serves the lane), per the
+// family sync contract: the mirrored tables carry the same columns and the
+// same pointers getry/schema.prisma declares. the mirror retires the day
+// the storage lane's gateway persistence answers from the getry owner.
 
 generator client {
   provider = "prisma-client-js"
@@ -25,7 +36,56 @@ datasource db {
   provider = "sqlite"
 }
 
-/// every interaction log across v1 zai v2 babel v3 nvidia v4 opencode kilo v5 openrouter
+/// the catalogued visitor state of the entry flow: one row per visitor
+/// carrying the seen flags of the opening (intro) and the frame-a-frame
+/// onboarding tour — the flags the /api/v1/onboarding route serves
+model OnboardingState {
+  id             Int      @id @default(autoincrement())
+  visitor        String   @unique
+  introseen      Boolean  @default(false)
+  onboardingseen Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+
+  @@index([onboardingseen])
+}
+
+/// the copy table: every user-visible string the components render, one
+/// row per dotted key — the components are stubs loading by id through
+/// /api/v1/copy, the build seed ingests here and the db is the living
+/// config of the copy (the build never ships the table itself)
+model CopyRow {
+  key       String   @id
+  text      String
+  updatedAt DateTime @updatedAt
+}
+
+/// the visual gate of the os: the plan the visitor selected (the engines
+/// carry no limits — this row only stamps the badge the identity wears
+/// and the enterprise custom megabytes the person defined)
+model PlanState {
+  id        Int      @id @default(autoincrement())
+  visitor   String   @unique
+  tier      String   @default("free")
+  storagemb BigInt?
+  rammib    BigInt?
+  since     DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tier])
+}
+
+// ---------------------------------------------------------------------------
+// the gateway-kind mirrors of the ownership wave (wave/ownership.getry): the
+// columns and the pointers copy getry/schema.prisma verbatim per the family
+// sync contract — the master surface lives at the gateway owner; these
+// tables exist only because the os storage lane still persists the engine
+// seam's ChatMessage rows and the db keysource still reads the key tables
+// through this app's own lazy client (one client serves the lane). the
+// mirror retires the day the storage lane's gateway persistence answers
+// from the getry owner.
+// ---------------------------------------------------------------------------
+
+/// every interaction log across v1 zai v2 babel v3 nvidia v4 opencode kilo v5 openrouter (mirror of the getry master)
 model ChatMessage {
   id                  String  @id @default(cuid())
   active              Boolean @default(true)
@@ -114,7 +174,7 @@ model ChatMessage {
   @@index([createdat])
 }
 
-/// nvidia api key management with rotation
+/// nvidia api key management with rotation (mirror of the getry master)
 model NvidiaKey {
   id              String   @id @default(cuid())
   keyValue        String   @unique
@@ -138,7 +198,7 @@ model NvidiaKey {
   @@index([status])
 }
 
-/// babel town key management
+/// babel town key management (mirror of the getry master)
 model TownKey {
   id              String   @id @default(cuid())
   keyValue        String   @unique
@@ -160,7 +220,7 @@ model TownKey {
   @@index([status])
 }
 
-/// api key management for other providers
+/// api key management for other providers (mirror of the getry master)
 model ApiKey {
   id              String   @id @default(cuid())
   keyValue        String   @unique
@@ -182,43 +242,5 @@ model ApiKey {
   @@index([provider])
   @@index([active])
   @@index([status])
-}
-
-/// the catalogued visitor state of the entry flow: one row per visitor
-/// carrying the seen flags of the opening (intro) and the frame-a-frame
-/// onboarding tour — the flags the /api/v1/onboarding route serves
-model OnboardingState {
-  id             Int      @id @default(autoincrement())
-  visitor        String   @unique
-  introseen      Boolean  @default(false)
-  onboardingseen Boolean  @default(false)
-  updatedAt      DateTime @updatedAt
-
-  @@index([onboardingseen])
-}
-
-/// the copy table: every user-visible string the components render, one
-/// row per dotted key — the components are stubs loading by id through
-/// /api/v1/copy, the build seed ingests here and the db is the living
-/// config of the copy (the build never ships the table itself)
-model CopyRow {
-  key       String   @id
-  text      String
-  updatedAt DateTime @updatedAt
-}
-
-/// the visual gate of the os: the plan the visitor selected (the engines
-/// carry no limits — this row only stamps the badge the identity wears
-/// and the enterprise custom megabytes the person defined)
-model PlanState {
-  id        Int      @id @default(autoincrement())
-  visitor   String   @unique
-  tier      String   @default("free")
-  storagemb BigInt?
-  rammib    BigInt?
-  since     DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([tier])
 }
 

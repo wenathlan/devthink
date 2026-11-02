@@ -1,7 +1,7 @@
 import { access, readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import type { fetchtransport, transportresponse } from "../http.js";
+import type { fetchtransport, transportresponse } from "@wenathlan/devthink/http";
 import { providerfixtures } from "./providerfixtures.ts";
 import {
   adapterof,
@@ -39,18 +39,20 @@ import {
   usagetotals,
   validategatewayconfig,
 } from "../llm.js";
-import { gatewaybaseurlgate, gatewayconsentgate, gatewaykeyconsentgate, gatewayretrycapvalid } from "../policy.js";
-import { gatewaycallreport } from "../protocol.js";
-import { inmemoryvault } from "../security.js";
-import { buildtoolcatalog } from "../tools.js";
+import { gatewaybaseurlgate, gatewayconsentgate, gatewaykeyconsentgate, gatewayretrycapvalid } from "@wenathlan/devthink/policy";
+import { gatewaycallreport } from "@wenathlan/devthink/protocol";
+import { inmemoryvault } from "@wenathlan/devthink/security";
+import { buildtoolcatalog } from "@wenathlan/devthink/tools";
 import type {
   baseurlconfig,
   gatewaychattoken,
   localmodelconfig,
   modelroute,
   providerconfig,
-  tooldef,
 } from "../types.js";
+/* the mcp tooldef kind stays an os-owned devthink type imported through the
+ * published specifier — never copied into the gateway. */
+import type { tooldef } from "@wenathlan/devthink/types";
 import { startgatewayfixtureserver } from "./gatewayserver.ts";
 
 const now = 1_800_000_000_000;
@@ -849,19 +851,18 @@ describe("gateway prompt template library of the per task templates", () => {
 describe("hardcoded provider url scan of the source tree", () => {
   it("asserts no provider endpoint literal and no default cloud url in the shipped sources", async () => {
     const root = process.cwd();
-    /* the gateway lineage keeps every remote default empty: the scan covers the gateway family sources the doctrine governs — the engine, the embedded gateway, the standalone http server, the auth and config loaders, the transport, the usage accounting and the mcp surface. the workbench provider catalog (providers.ts) and the antigravity provider lineages (config constants and the provider oauth family) talk to user configured cloud endpoints by design, and the shared types carry their documentation examples, so they sit outside this scan while the gateway family stays default empty */
-    const gatewaysources = [
-      "engine.ts",
-      "llm.ts",
-      "http.ts",
-      "mcp.ts",
-      "server.ts",
-      "crossbrowser.ts",
-      "auth.ts",
-      "bridge.ts",
-      "memory.ts",
-      "runtime.ts",
-    ];
+    /* the gateway lineage keeps every remote default empty: after the
+     * wave/ownership.getry split the scan covers the gateway family sources
+     * this app owns — the engine and the llm family it gates (the os-side
+     * gate sources the old list carried — http, mcp, server, crossbrowser,
+     * auth, bridge, memory, runtime — stayed devthink property and the os
+     * keeps its own copy of the gate there). the workbench provider catalog
+     * (providers.ts) and the antigravity provider lineages (the constants
+     * and the provider oauth family) talk to user configured cloud
+     * endpoints by design, and the shared types carry their documentation
+     * examples, so they sit outside this scan while the gateway family
+     * stays default empty */
+    const gatewaysources = ["engine.ts", "llm.ts"];
     const files: string[] = gatewaysources.map((name) => join(root, name));
     for (const path of files) await access(path);
 
@@ -877,14 +878,16 @@ describe("hardcoded provider url scan of the source tree", () => {
      * tests-village helper outside the provider catalog exceptions — the
      * workbench catalog (providers.ts, gatewayviewconfig.ts) and the
      * shared types carry their documentation examples by design, while
-     * the gateway family stays default empty. */
+     * the gateway family stays default empty. the file floor rides the
+     * getry tree after the ownership split: the app root carries the
+     * gateway sources the wave moved in beside the theme lanes. */
     const outsidescan = new Set([...gatewaysources, "providers.ts", "gatewayviewconfig.ts", "types.ts"]);
     for (const entry of await readdir(root))
       if (entry.endsWith(".ts") && !outsidescan.has(entry)) files.push(join(root, entry));
     for (const entry of await readdir(join(root, "tests")))
       if (entry.endsWith(".ts") && !entry.endsWith(".test.ts") && entry !== "reviewedorigins.ts")
         files.push(join(root, "tests", entry));
-    expect(files.length).toBeGreaterThan(50);
+    expect(files.length).toBeGreaterThan(40);
     const providerhosts = [
       /api\.openai\.com/,
       /api\.anthropic\.com/,

@@ -255,7 +255,7 @@ export const GAX_VERSION_POOL = ["5.0.4", "5.0.3", "4.3.6"] as const;
 // re-exports the canonical bindings.)
 // ============================================================================
 
-import { fnv1a32, fnv1a32Hex, fnv1a64, getJitterMs, pickRandom } from "./core.js";
+import { fnv1a32, fnv1a32Hex, fnv1a64, getJitterMs, pickRandom } from "@wenathlan/devthink/core";
 
 export { fnv1a32, fnv1a32Hex, fnv1a64, getJitterMs, pickRandom };
 

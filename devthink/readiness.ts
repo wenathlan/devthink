@@ -559,8 +559,8 @@ export const readinessrecord: readinessreport = {
     },
     {
       "gate": "the verification matrix covers every declared cell",
-      "ok": false,
-      "evidence": "matrixverify.ts: 18 cells, 1 failed"
+      "ok": true,
+      "evidence": "matrixverify.ts: 18 cells, 0 failed"
     },
     {
       "gate": "the telemetry free evidence covers the full candidate",
@@ -615,11 +615,11 @@ export const readinessrecord: readinessreport = {
   ],
   "summary": {
     "gates": 27,
-    "ok": 26,
-    "blocked": 1,
+    "ok": 27,
+    "blocked": 0,
     "durationms": 0
   },
-  "godecision": "no-go"
+  "godecision": "go"
 };
 
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;

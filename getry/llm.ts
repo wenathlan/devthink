@@ -25,18 +25,22 @@ import type {
   modelroute,
   parseguard,
   plandraft,
-  policyevaluation,
   prompttemplate,
   providerconfig,
   protocolstyle,
   reflectnote,
   replanrecord,
-  secretvaultentry,
   tokenstream,
   toolbrief,
-  tooldef,
   usagerecord,
 } from "./types.js";
+/* the os-owned contracts the llm family still consumes (the plan policy
+ * evaluation, the secret vault entry and the mcp tool definition) stay
+ * devthink types imported through the published specifier — never copied
+ * into the gateway; the apikeyref kind moved to the gateway types with the
+ * wave/ownership.getry split because every consumer of the kind is a
+ * gateway module. */
+import type { policyevaluation, secretvaultentry, tooldef } from "@wenathlan/devthink/types";
 import {
   planlint,
   egressconsentgate,
@@ -46,10 +50,10 @@ import {
   gatewaykeyconsentgate,
   gatewayprefixgate,
   gatewayretrycapvalid,
-} from "./policy.js";
-import { sendfetch, type fetchtransport, type transportresponse } from "./http.js";
-import { randomid } from "./memory.js";
-import { secretleakscan, vaultdelete, vaultstore, vaultvaluefor } from "./security.js";
+} from "@wenathlan/devthink/policy";
+import { sendfetch, type fetchtransport, type transportresponse } from "@wenathlan/devthink/http";
+import { randomid } from "@wenathlan/devthink/memory";
+import { secretleakscan, vaultdelete, vaultstore, vaultvaluefor } from "@wenathlan/devthink/security";
 
 /**
  * Llm integration logics of the 1.1.57 family.

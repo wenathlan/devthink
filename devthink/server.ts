@@ -29,7 +29,7 @@ import {
   verifyaccount,
   verifyaccountsession,
 } from "./account.js";
-import { type ChatMessage, listModels, listProviders, streamChat } from "./providers.js";
+import { type ChatMessage, listModels, listProviders, streamChat } from "@wenathlan/getry/providers";
 import {
   appendMessage,
   createSession,
@@ -490,7 +490,7 @@ export async function startServer(options: ServerOptions): Promise<ServerHandle>
 }
 
 /* ── Merged: the grand merge section ── the correlated embedded gateway http transport logics of the merged repository interned here, one surface without duplicate variations. ── */
-import { corsheaders, ctndjson, ctsse, safejsonparse, safestringify } from "./utils.ts";
+import { corsheaders, ctndjson, ctsse, safejsonparse, safestringify } from "@wenathlan/getry/utils";
 
 /** ka ms — keepalive interval milliseconds 200ms */
 export const kams = 200;
@@ -939,7 +939,7 @@ import {
   upsertcopyrows,
   usagefor,
 } from "./storage.ts";
-import { createversion } from "./engine.ts";
+import { createversion } from "@wenathlan/getry/engine";
 import {
   createsandboxsession,
   hostmodalityreport,
@@ -1473,8 +1473,8 @@ async function main(): Promise<void> {
 export { createserver, main, main as runserver };
 
 /* ── Merged: the grand merge section ── the correlated embedded gateway request auth and key resolution logics of the merged repository interned here, one surface without duplicate variations. ── */
-import type { authconfig, resolvedkey } from "./types.ts";
-import { genid } from "./utils.ts";
+import type { authconfig, resolvedkey } from "@wenathlan/getry/types";
+import { genid } from "@wenathlan/getry/utils";
 
 // ---------------------------------------------------------------------------
 // inbound extractors — read credentials from client requests
@@ -2589,11 +2589,11 @@ export { getversion, listversions, loadconfig, reloadconfig, validateconfig } fr
 // database — prisma persistence (the storage family)
 export { db, getsession, getsessionmessages, savemsg } from "./storage.js";
 // engine — the universal request pipeline
-export { createversion, engineinternals } from "./engine.js";
+export { createversion, engineinternals } from "@wenathlan/getry/engine";
 // types — the configuration surface
+export type { authmethod } from "./types.js";
 export type {
   authconfig,
-  authmethod,
   bodybuildconfig,
   contextconfig,
   dbconfig,
@@ -2617,7 +2617,7 @@ export type {
   transporttype,
   upstreamdef,
   versionhandlers,
-} from "./types.js";
+} from "@wenathlan/getry/types";
 
 // utils — shared helpers
 export {
@@ -2644,7 +2644,7 @@ export {
   safestringify,
   thinkingbudget,
   truncatemessages,
-} from "./utils.js";
+} from "@wenathlan/getry/utils";
 
 /* the grand-merge guard: when this module is imported as a library surface by
    the devthink router (dynamic import), the module-load main must not fire —
@@ -2696,10 +2696,12 @@ if (serverDirectEntry || serverBunEntry) void consolemain();
  *           dir and the default model.
  *   - cli(6).ts contained nothing unique (strict subset) - deleted.
  *
- *  Sibling modules are consumed from their deduplicated base files only:
- *  ./oauth.js (the provider oauth family) ./accounts.js
+ *  Sibling modules are consumed from their one owner only:
+ *  @wenathlan/getry/oauth (the provider oauth family) @wenathlan/getry/accounts
+ *  @wenathlan/getry/quota @wenathlan/getry/models @wenathlan/getry/versionregistry
+ *  (the ownership wave: the gateway family answers from the getry root)
  *  ./config.js (v2.1.14: validate.ts + system.ts consolidated into it)
- *  ./constants.js ./quota.js ./version.js ./models.js ./system.js (shim)
+ *  ./constants.js ./system.js (shim) — the os-local families stay at the os root
  *
  *  Bypass constants (documented):
  *   client_id=681255809395-oo8f…b135j (.apps.googleusercontent.com)
@@ -2722,13 +2724,14 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { stdin as input, stdout as output } from "node:process";
 import * as readline from "node:readline/promises";
-import * as accountsMod from "./accounts.js";
+import * as accountsMod from "@wenathlan/getry/accounts";
 import * as configMod from "./config.js";
 import * as constantsMod from "./constants.js";
 // v2.1.16 single-owner fix: raw values come from constants.js, identity
 // snapshots from fingerprint.js and model identification from models.js via
 // static named imports (the namespace interop wrappers below stay for the
 // historical CJS/ESM fallback chains — the local literal copies are gone).
+import { FETCH_TIMEOUT_MS } from "./constants.js";
 import {
   ANTIGRAVITY_VERSION_FALLBACK,
   ANTIGRAVITY_VERSION_MIN_SUPPORTED,
@@ -2737,17 +2740,19 @@ import {
   CLOUDCODE_DAILY_BASE,
   CODE_ASSIST_PATH_MAP,
   ENDPOINTS,
-  FETCH_TIMEOUT_MS,
+  FALLBACK_PROJECT_ID as GATEWAY_FALLBACK_PROJECT_ID,
+  FILE_PATHS as GATEWAY_FILE_PATHS,
   GEMINI_CLI_SCOPES,
   GEMINI_CLI_USER_AGENT,
   OAUTH_REVOKE_URL,
   OAUTH_TOKEN_URL,
+  PLUGIN_VERSION as GATEWAY_PLUGIN_VERSION,
   PROJECT_FALLBACK,
-} from "./constants.js";
+} from "@wenathlan/getry/constants";
 import * as systemMod from "./core.js";
-import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import type { ModelCatalogEntry } from "./models.js";
-import * as modelsMod from "./models.js";
+import { X_GOOG_API_CLIENT_GEMINI_CLI } from "@wenathlan/getry/fingerprint";
+import type { ModelCatalogEntry } from "@wenathlan/getry/models";
+import * as modelsMod from "@wenathlan/getry/models";
 import {
   ENDPOINT_ORDER,
   MODEL_BY_ID,
@@ -2755,15 +2760,15 @@ import {
   DEFAULT_MODEL as MODELS_DEFAULT_MODEL,
   DEFAULT_MODEL_ID as MODELS_DEFAULT_MODEL_ID,
   SEARCH_MODEL_PREVIEW,
-} from "./models.js";
+} from "@wenathlan/getry/models";
 // ---------------------------------------------------------------------------
 // Local module imports (ESM .js extension for Node resolver, source is .ts).
 // Import from deduplicated base modules ONLY - never from "(N)" copies.
 // ---------------------------------------------------------------------------
-import * as oauthMod from "./oauth.js";
-import * as authMod from "./oauth.js";
-import * as quotaMod from "./quota.js";
-import * as versionMod from "./versionregistry.js";
+import * as oauthMod from "@wenathlan/getry/oauth";
+import * as authMod from "@wenathlan/getry/oauth";
+import * as quotaMod from "@wenathlan/getry/quota";
+import * as versionMod from "@wenathlan/getry/versionregistry";
 
 // Resolve interop (CJS/ESM dual): pick default if exists or namespace
 const oauth: any = (oauthMod as any).default ?? oauthMod;
@@ -2777,10 +2782,10 @@ const modelsPkg: any = (modelsMod as any).default ?? modelsMod;
 const systemPkg: any = (systemMod as any).default ?? systemMod;
 
 // Destructure needed APIs with fallback to namespace exports
-const authenticate = oauth.authenticate as typeof import("./oauth.js").authenticate;
-const GEMINI_OAUTH_CLIENT_ID = (oauth.CLIENT_ID as string) ?? (constantsMod.GEMINI_CLI_OAUTH_CLIENT_ID as string);
+const authenticate = oauth.authenticate as typeof import("@wenathlan/getry/oauth").authenticate;
+const GEMINI_OAUTH_CLIENT_ID = (oauth.CLIENT_ID as string) ?? (GEMINI_CLI_OAUTH_CLIENT_ID as string);
 const GEMINI_OAUTH_CLIENT_SECRET =
-  (oauth.CLIENT_SECRET as string) ?? (constantsMod.GEMINI_CLI_OAUTH_CLIENT_SECRET as string);
+  (oauth.CLIENT_SECRET as string) ?? (GEMINI_CLI_OAUTH_CLIENT_SECRET as string);
 
 const AccountManagerClass = (accountsMod.AccountManager as any) ?? (accountsPkg as any);
 // v2.1.15 Phase A: ALL_MODELS_2026 lives in models.ts (model identification
@@ -2807,7 +2812,7 @@ const getConfigPath = (configMod.getConfigPath as any) ?? (() => path.join(resol
 
 // constants
 const ALL_MODELS_2026: ReadonlyArray<any> = (modelsMod.ALL_MODELS_2026 as any) ?? ALL_MODELS_FALLBACK;
-const FILE_PATHS = (constantsMod.FILE_PATHS as any) ?? {
+const FILE_PATHS = (GATEWAY_FILE_PATHS as any) ?? {
   get baseDir() {
     return resolveBaseDir();
   },
@@ -2817,8 +2822,8 @@ const FILE_PATHS = (constantsMod.FILE_PATHS as any) ?? {
 };
 // v2.1.16 single-owner fix: the fallback literal comes from constants.js
 // (PROJECT_FALLBACK owner) instead of a local copy.
-const FALLBACK_PROJECT_ID = (constantsMod.FALLBACK_PROJECT_ID as string) ?? PROJECT_FALLBACK;
-const PLUGIN_VERSION_FALLBACK = (constantsMod.PLUGIN_VERSION as string) ?? "1.0.0";
+const FALLBACK_PROJECT_ID = (GATEWAY_FALLBACK_PROJECT_ID as string) ?? PROJECT_FALLBACK;
+const PLUGIN_VERSION_FALLBACK = (GATEWAY_PLUGIN_VERSION as string) ?? "1.0.0";
 // Ported from cli(2).ts: antigravity UA/version fallbacks (constants first, models.ts backup)
 // v2.1.16 single-owner fix: the "1.19.2" literal comes from constants.js
 // (ANTIGRAVITY_VERSION_FALLBACK owner) instead of a local copy.
@@ -5745,17 +5750,17 @@ export const providercli = {
  * so every historical import path keeps resolving.
  */
 
-export * as Accounts from "./accounts.js";
+export * as Accounts from "@wenathlan/getry/accounts";
 export * as Constants from "./constants.js";
 export * as Core from "./core.js";
-export * as Fingerprint from "./fingerprint.js";
+export * as Fingerprint from "@wenathlan/getry/fingerprint";
 // the provider oauth family answers the OAuth namespace (the grand merge
 // consolidation interned the family in oauth.ts — node surface).
-export * as OAuth from "./oauth.js";
+export * as OAuth from "@wenathlan/getry/oauth";
 // the provider oauth family answers the AntigravityCli compat namespace.
-export * as AntigravityCli from "./oauth.js";
+export * as AntigravityCli from "@wenathlan/getry/oauth";
 // merged group additions: auth/core/system/models namespaces
-export * as Auth from "./oauth.js";
+export * as Auth from "@wenathlan/getry/oauth";
 
 /** System — the v2.1.14 system utilities surface: config.ts absorbed the
  * system module (cfgDir, the version fallback chain, atomic writes, the
@@ -5794,28 +5799,28 @@ export const System = {
   logsDir,
   redactSecrets,
 };
-export * as PluginModule from "./antigravity.js";
+export * as PluginModule from "@wenathlan/getry/antigravity";
 // default plugin export for opencode compatibility (the antigravity plugin family)
-export { default as opencodePluginModule, getPlugin, plugin } from "./antigravity.js";
+export { default as opencodePluginModule, getPlugin, plugin } from "@wenathlan/getry/antigravity";
 export * as Config from "./config.js";
 export * as Debug from "./core.js";
-export * as Models from "./models.js";
-export * as Models2026 from "./models.js";
-export * as Project from "./project.js";
-export * as Quota from "./quota.js";
-export * as Recovery from "./recovery.js";
+export * as Models from "@wenathlan/getry/models";
+export * as Models2026 from "@wenathlan/getry/models";
+export * as Project from "@wenathlan/getry/project";
+export * as Quota from "@wenathlan/getry/quota";
+export * as Recovery from "@wenathlan/getry/recovery";
 // v2.1.14: request-helpers.ts was consolidated into request.ts; namespace kept for compat.
-export * as RequestHelpers from "./request.js";
-export * as Request from "./request.js";
-export * as Search from "./search.js";
+export * as RequestHelpers from "@wenathlan/getry/request";
+export * as Request from "@wenathlan/getry/request";
+export * as Search from "@wenathlan/getry/search";
 export * as CLI from "./server.js";
-export * as Streaming from "./streaming.js";
-export * as Version from "./versionregistry.js";
+export * as Streaming from "@wenathlan/getry/streaming";
+export * as Version from "@wenathlan/getry/versionregistry";
 
 // v2.1.16 single-owner doctrine: VERSION derives from constants.js
 // PLUGIN_VERSION (raw value owner) and the two bypass aggregates assemble
 // every value from its owner module instead of locally-reassembled literals.
-import { GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, PLUGIN_VERSION } from "./constants.js";
+import { GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, PLUGIN_VERSION } from "@wenathlan/getry/constants";
 import {
   CLIENT_ID as ANTIGRAVITY_CLI_CLIENT_ID,
   CLIENT_SECRET as ANTIGRAVITY_CLI_CLIENT_SECRET,
@@ -5823,7 +5828,7 @@ import {
   ANTIGRAVITY_CLI_OAUTH_SCOPES,
   ANTIGRAVITY_CLI_REDIRECT_OFFICIAL,
   ANTIGRAVITY_CLI_VERSION_LATEST,
-} from "./oauth.js";
+} from "@wenathlan/getry/oauth";
 /* the identity snapshot import rides the account console cli section above — one declaration per binding */
 
 // version / identity
@@ -5831,7 +5836,7 @@ export const VERSION: string = PLUGIN_VERSION;
 export const PLUGIN_ID = "devthink" as const;
 
 // headline model catalog re-exports
-export { ALL_MODELS_2026, MODEL_BY_ID, MODEL_ROUTING } from "./models.js";
+export { ALL_MODELS_2026, MODEL_BY_ID, MODEL_ROUTING } from "@wenathlan/getry/models";
 
 /**
  * Gemini CLI bypass aggregate: exact identification the official Gemini CLI
@@ -5904,7 +5909,7 @@ export const ANTIGRAVITY_CLI_BYPASS = {
  * library consumers keep importing from the package root (plugin.ts).
  */
 
-import { buildOpencodeAuthHook, opencodeServer } from "./antigravity.js";
+import { buildOpencodeAuthHook, opencodeServer } from "@wenathlan/getry/antigravity";
 
 /**
  * The main provider plugin instance: chat.headers identification spoof,

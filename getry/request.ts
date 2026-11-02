@@ -98,7 +98,7 @@ import {
   PLUGIN_VERSION,
   PROJECT_FALLBACK,
 } from "./constants.js";
-import { fnv1a32, fnv1a32Hex, getJitter, isRetryableStatus } from "./core.js";
+import { fnv1a32, fnv1a32Hex, getJitter, isRetryableStatus } from "@wenathlan/devthink/core";
 
 const MODELS_2026_SET = new Set<string>(FETCH_AVAILABLE_MODELS_2026 as readonly string[]);
 export const TOOL_NAME_MAX_LENGTH = 64 as const;

@@ -12,7 +12,7 @@
 // engine → consumers. Every official app declares its engine here, no
 // engine ever carries two owners, and every consumer row is an official
 // app slug that is not the owner itself. The vitest gate
-// (tests/devthink.engineowners.test.ts) walks this table and refuses the
+// (tests/engineowners.test.ts) walks this table and refuses the
 // drift before any pipeline runs. Pure data, zero imports: the manifest
 // never depends on the engines it describes.
 
@@ -57,7 +57,7 @@ export const ENGINEOWNERS: readonly engineownerrow[] = [
   {
     owner: "devthink",
     engine: "the os envelope",
-    module: "engine.ts",
+    module: "graphrunner.ts",
     library: "@wenathlan/devthink",
     consumers: [
       "argan",
@@ -72,7 +72,7 @@ export const ENGINEOWNERS: readonly engineownerrow[] = [
       "vault",
     ],
     role:
-      "the supreme operating system, the monorepo envelope and the native page suite: the maestro (devthink.ts) commands the root engines — the universal gateway pipeline (engine.ts), the graph runner, the streaming parser, the queue family, the mcp registry — and every family app rides the envelope.",
+      "the supreme operating system, the monorepo envelope and the native page suite: the maestro (devthink.ts) commands the root engines — the graph runner (graphrunner.ts), the queue family (queue.ts) and the mcp registry (mcpregistry.ts, the os protocol serving its own tools) — while the universal gateway pipeline and the streaming parser answer from the getry owner as imported libraries, and every family app rides the envelope.",
   },
   {
     owner: "argan",
@@ -129,11 +129,11 @@ export const ENGINEOWNERS: readonly engineownerrow[] = [
   {
     owner: "getry",
     engine: "getry",
-    module: "thinking.ts",
+    module: "engine.ts",
     library: "@wenathlan/getry",
     consumers: ["devthink"],
     role:
-      "the universal ai gateway: five providers, thirty-five routes, the 7-level reasoning ladder — devthink imports the thinking ladder (thinking.ts) through the library specifier @wenathlan/getry/thinking and derives its default budget map from the owner's THINKINGLEVELS, never from a local copy.",
+      "the universal ai gateway: five providers, thirty-five routes, the 7-level reasoning ladder and the whole gateway pipeline the family rides as one library — the engine (engine.ts), the llm family, the streaming parser, the model catalog, the provider surface, the request helpers, the auth family (oauth, accounts), the json family (json, jsonpolicy, jsonschema) and the intelligence store — the os imports every family through the published library specifiers (@wenathlan/getry/engine, /llm, /streaming, /models, /providers, /request, /oauth, /accounts, /json, /jsonschema, /intelligence) and derives its default budget map from the owner's THINKINGLEVELS through @wenathlan/getry/thinking, never from a local copy.",
     debt:
       "getry/streamfallback.ts still reimplements the devthink retry.backoff discipline (doubling backoff, ±20% jitter, retry-after hint — the file header says 'reimplemented here, never imported across apps'). migration path: getry consumes the published @wenathlan/devthink queue export (the request queue family owns the retry backoff) and streamfallback keeps only the omniroute verdict vocabulary; the local backoff copy retires the day the gateway app rides the library like the os already rides getry.",
   },

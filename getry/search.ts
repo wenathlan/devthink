@@ -59,13 +59,14 @@ import {
   ANTIGRAVITY_VERSION_FALLBACK,
   DEFAULT_TIMEOUT_MS,
   GENERATE_CONTENT_ENDPOINT,
-  JITTER_MAX_MS,
-  JITTER_MIN_MS,
   PLUGIN_VERSION,
   STREAM_GENERATE_ENDPOINT,
-  FETCH_TIMEOUT_MS,
 } from "./constants.js";
-import { fnv1a32, getJitter, isRetryableStatus } from "./core.js";
+/* the os leaf constants (the fetch timeout and the jitter pair) stay
+ * devthink-owned behind the published specifier — never copied into the
+ * gateway. */
+import { FETCH_TIMEOUT_MS, JITTER_MAX_MS, JITTER_MIN_MS } from "@wenathlan/devthink/constants";
+import { fnv1a32, getJitter, isRetryableStatus } from "@wenathlan/devthink/core";
 import {
   buildAntagravityHeaders,
   getDynamicUserAgent,

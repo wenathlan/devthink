@@ -1,7 +1,6 @@
 import type {
   capabilityprobe,
   featuredowngrade,
-  gatewaykind,
   platformtarget,
   portableruleset,
   runtimeadapterdeclaration,
@@ -30,11 +29,9 @@ import type {
   conflictwriter,
   connectallowentry,
   consentwindow,
-  costbudget,
   criticreview,
   deeplinkpattern,
   depthlimit,
-  draftstep,
   environmentkind,
   environmentrequirement,
   escalationrecord,
@@ -44,17 +41,13 @@ import type {
   lazymoddescriptor,
   lockkind,
   mergerule,
-  modeloutput,
   nativecallclass,
   ocrregion,
   origincheckverdict,
   originprofile,
   perfrecord,
   phishverdict,
-  plandraft,
   preconnecttarget,
-  providerconfig,
-  replanrecord,
   resourcelock,
   resultreport,
   reviewrequest,
@@ -133,6 +126,7 @@ import type {
   scanverdict,
   syncsettings,
 } from "./types.js";
+import type { costbudget, draftstep, gatewaykind, modeloutput, plandraft, providerconfig, replanrecord } from "@wenathlan/getry/types";
 import { allowlistcheck, missingclassconsents, profilegrade, sensitiveclassesof, windowgatesstep } from "./security.js";
 import { sensitivememoryclasses } from "./memory.js";
 import { reservedagentnames } from "./agent.js";

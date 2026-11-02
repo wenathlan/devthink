@@ -17,7 +17,54 @@
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
+      "@wenathlan/getry/engine": ["../getry/engine.ts"],
+      "@wenathlan/getry/llm": ["../getry/llm.ts"],
+      "@wenathlan/getry/streaming": ["../getry/streaming.ts"],
+      "@wenathlan/getry/models": ["../getry/models.ts"],
+      "@wenathlan/getry/request": ["../getry/request.ts"],
+      "@wenathlan/getry/providers": ["../getry/providers.ts"],
+      "@wenathlan/getry/antigravity": ["../getry/antigravity.ts"],
+      "@wenathlan/getry/oauth": ["../getry/oauth.ts"],
+      "@wenathlan/getry/accounts": ["../getry/accounts.ts"],
+      "@wenathlan/getry/project": ["../getry/project.ts"],
+      "@wenathlan/getry/quota": ["../getry/quota.ts"],
+      "@wenathlan/getry/recovery": ["../getry/recovery.ts"],
+      "@wenathlan/getry/fingerprint": ["../getry/fingerprint.ts"],
+      "@wenathlan/getry/search": ["../getry/search.ts"],
+      "@wenathlan/getry/utils": ["../getry/utils.ts"],
+      "@wenathlan/getry/versionregistry": ["../getry/versionregistry.ts"],
+      "@wenathlan/getry/intelligence": ["../getry/intelligence.ts"],
+      "@wenathlan/getry/json": ["../getry/json.ts"],
+      "@wenathlan/getry/jsonpolicy": ["../getry/jsonpolicy.ts"],
+      "@wenathlan/getry/jsonschema": ["../getry/jsonschema.ts"],
+      "@wenathlan/getry/gatewayconfig": ["../getry/gatewayconfig.ts"],
+      "@wenathlan/getry/gatewayviewconfig": ["../getry/gatewayviewconfig.ts"],
+      "@wenathlan/getry/gatewayprobe": ["../getry/gatewayprobe.ts"],
+      "@wenathlan/getry/gatewaysmoke": ["../getry/gatewaysmoke.ts"],
+      "@wenathlan/getry/nodeshim": ["../getry/nodeshim.ts"],
+      "@wenathlan/getry/types": ["../getry/types.ts"],
+      "@wenathlan/getry/constants": ["../getry/constants.ts"],
+      "@wenathlan/getry/tests/researchfixtures": ["../getry/tests/researchfixtures.ts"],
+      /* the devthink self bridges of the ownership wave
+       * (wave/ownership.getry), mirrored from the getry side: the moved
+       * gateway graph leans on the os-owned seams it grew beside (config,
+       * constants, core, the http/memory/policy/security lane, storage and
+       * the shared types surface) through the published library specifiers
+       * ("@wenathlan/devthink/config" and siblings), and the app itself is
+       * the package those specifiers name — no node_modules copy exists to
+       * answer them — so every self specifier resolves to this app's own
+       * source here. the entries retire when the published devthink
+       * envelope carries the export surfaces the moved graph consumes. */
+      "@wenathlan/devthink/config": ["./config.ts"],
+      "@wenathlan/devthink/constants": ["./constants.ts"],
+      "@wenathlan/devthink/core": ["./core.ts"],
+      "@wenathlan/devthink/http": ["./http.ts"],
+      "@wenathlan/devthink/memory": ["./memory.ts"],
+      "@wenathlan/devthink/policy": ["./policy.ts"],
+      "@wenathlan/devthink/security": ["./security.ts"],
       "@wenathlan/devthink/server": ["./server.ts"],
+      "@wenathlan/devthink/storage": ["./storage.ts"],
+      "@wenathlan/devthink/types": ["./types.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
     }
   },

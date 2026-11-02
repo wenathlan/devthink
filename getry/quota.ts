@@ -52,8 +52,6 @@ import {
   QUOTA_CACHE_TTL_MIN_MS,
   QUOTA_CACHE_TTL_MS,
   QUOTA_TIMEOUT_MS,
-  JITTER_MIN_MS,
-  JITTER_MAX_MS,
   ANTIGRAVITY_VERSION_FALLBACK,
   ANTIGRAVITY_USER_AGENT_FALLBACK,
   ANTIGRAVITY_CLIENT_ID_IS_BLINDED,
@@ -64,7 +62,10 @@ import {
   PROJECT_ID_FALLBACK,
   PROJECT_NAME_FALLBACK,
 } from "./constants.js";
-import { fnv1a32, isRetryableStatus } from "./core.js";
+/* the os leaf jitter pair stays devthink-owned behind the published
+ * specifier — never copied into the gateway. */
+import { JITTER_MIN_MS, JITTER_MAX_MS } from "@wenathlan/devthink/constants";
+import { fnv1a32, isRetryableStatus } from "@wenathlan/devthink/core";
 import { getXGoogApiClient } from "./fingerprint.js";
 import type { QuotaGroup } from "./constants.js";
 import { ANTIGRAVITY_VERSION_MIN, isGeminiCLIOnlyModel, MODELS_2026_LEGACY, UA_DEFAULT_MODEL } from "./models.js";

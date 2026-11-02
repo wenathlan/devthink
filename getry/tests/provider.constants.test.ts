@@ -16,7 +16,10 @@
 
 import assert from "node:assert/strict";
 import { it as test } from "vitest";
-import { JITTER_MAX_MS, OAUTH_CALLBACK_HOST, OAUTH_CALLBACK_PATH, PROJECT_FALLBACK } from "../constants.js";
+/* the os leaf jitter ceiling stays devthink-owned behind the published
+ * specifier — never copied into the gateway. */
+import { JITTER_MAX_MS } from "@wenathlan/devthink/constants";
+import { OAUTH_CALLBACK_HOST, OAUTH_CALLBACK_PATH, PROJECT_FALLBACK } from "../constants.js";
 import {
   ALL_MODELS_2026,
   ANTIGRAVITY_MODEL_IDS_2026,

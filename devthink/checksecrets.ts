@@ -28,7 +28,10 @@ function productFiles(root: string): string[] {
   visit(join(root, "devthink.ts"));
   for (const name of [
     "config.ts",
-    "providers.ts",
+    /* the provider registry moved to the getry owner with the ownership
+     * wave (wave/ownership.getry): the secrets scan covers the shipped
+     * source wherever the owner carries it. */
+    "../getry/providers.ts",
     "session.ts",
     "memory.ts",
     "modes.ts",

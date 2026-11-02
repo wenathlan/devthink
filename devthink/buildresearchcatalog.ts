@@ -4,12 +4,17 @@
  * never downloads or executes repository code, and the two derived markdown
  * documents (the public project catalog and the comparative feature and flow
  * matrix) land back inside the researchfixtures module the corpus ships.
+ * The ownership wave (wave/ownership.getry) moved the corpus fixtures to the
+ * gateway owner: the import rides the library specifier
+ * @wenathlan/getry/tests/researchfixtures (bridged to the monorepo source) and
+ * the in-place rewrite targets the getry copy — the corpus is never duplicated
+ * inside devthink.
  */
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { reposources } from "./tests/researchfixtures.ts";
+import { reposources } from "@wenathlan/getry/tests/researchfixtures";
 
-const modulepath = join(process.cwd(), "tests", "researchfixtures.ts");
+const modulepath = join(process.cwd(), "..", "getry", "tests", "researchfixtures.ts");
 const sourcefiles = Object.keys(reposources)
   .filter((name) => /^repos.*\.json$/i.test(name))
   .sort();

@@ -4,7 +4,13 @@ import type { baseurlconfig } from "./types.ts";
 
 const server = await startgatewayfixtureserver();
 try {
-  const gateway = await import("./dist/llm.js");
+  /* the smoke loads the BUILT gateway module — dist/llm.js is a container
+   * build artifact a fresh checkout never carries, so the specifier rides a
+   * variable (tsc never fails on the absent artifact while the runtime
+   * keeps loading the built face) and the cast pins the module to the
+   * source contract that sits beside it. */
+  const builtpath = "./dist/llm.js";
+  const gateway = (await import(builtpath)) as typeof import("./llm.ts");
   const config: baseurlconfig = {
     providerid: "smoke",
     kind: "openaicompat",

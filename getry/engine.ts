@@ -19,10 +19,14 @@
  *   8 response building — chat completion anthropic message response formats
  */
 
-import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./server.js";
-import { getsessionmessages, savemsg } from "./storage.ts";
+/* the os seams of the wave/ownership.getry split: the request helpers of the
+ * devthink server and the session persistence of the devthink storage stay
+ * os-owned libraries the engine imports through the published specifiers —
+ * never duplicated beside the gateway. */
+import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "@wenathlan/devthink/server";
+import { getsessionmessages, savemsg } from "@wenathlan/devthink/storage";
 import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
-import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
+import { makechunk, makefinalchunk, makestreamresponse } from "@wenathlan/devthink/server";
 import type {
   gatewayconfig,
   modeldef,

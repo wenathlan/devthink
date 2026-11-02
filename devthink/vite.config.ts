@@ -226,8 +226,13 @@ function nodebuiltinshim(): Plugin {
       "export default { createInterface };",
     ].join("\n"),
   };
-  const shimpath = path.resolve(import.meta.dirname, "nodeshim.ts");
-  const prismashimpath = path.resolve(import.meta.dirname, "prismashim.ts");
+  /* the ownership wave (wave/ownership.getry) moved the shim sources to the
+   * getry engine root: the browser stubs (nodeshim.ts) and the neutral
+   * prisma shim (prismashim.ts) are gateway-owned modules now, so the
+   * browser bundle resolves the same monorepo sources the sibling app
+   * carries — the shims are never duplicated inside devthink. */
+  const shimpath = path.resolve(import.meta.dirname, "../getry/nodeshim.ts");
+  const prismashimpath = path.resolve(import.meta.dirname, "../getry/prismashim.ts");
   const shimmed = new Set(Object.keys(shims));
   return {
     name: "devthink-node-builtin-shim",
@@ -309,6 +314,68 @@ export default defineConfig({
        * is never duplicated inside devthink, the engine answers from its one
        * owner (see engines.ts, the ownership manifest). */
       "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "../getry/thinking.ts"),
+      /** the getry engine module bridges of the ownership wave
+       * (wave/ownership.getry): the gateway pipeline sources (engine, llm,
+       * streaming, models, request, providers, antigravity, oauth, accounts,
+       * project, quota, recovery, fingerprint, search, utils,
+       * versionregistry, intelligence, the json family, the gateway config
+       * family, the smoke and probe lanes, the node shim and the shared
+       * types/constants surfaces) moved from the devthink root to the getry
+       * owner root, and the consumers speak them through the published
+       * library specifiers ("@wenathlan/getry/engine" and siblings) — these
+       * bridges resolve every specifier to the monorepo source the sibling
+       * app carries, so the gateway logic is never duplicated inside
+       * devthink and every module answers from its one owner (see
+       * engines.ts, the ownership manifest). the installed 2.0.154 envelope
+       * carries none of these export surfaces yet, so the bridge is the
+       * resolution of record until the published envelope catches up. */
+      "@wenathlan/getry/engine": path.resolve(import.meta.dirname, "../getry/engine.ts"),
+      "@wenathlan/getry/llm": path.resolve(import.meta.dirname, "../getry/llm.ts"),
+      "@wenathlan/getry/streaming": path.resolve(import.meta.dirname, "../getry/streaming.ts"),
+      "@wenathlan/getry/models": path.resolve(import.meta.dirname, "../getry/models.ts"),
+      "@wenathlan/getry/request": path.resolve(import.meta.dirname, "../getry/request.ts"),
+      "@wenathlan/getry/providers": path.resolve(import.meta.dirname, "../getry/providers.ts"),
+      "@wenathlan/getry/antigravity": path.resolve(import.meta.dirname, "../getry/antigravity.ts"),
+      "@wenathlan/getry/oauth": path.resolve(import.meta.dirname, "../getry/oauth.ts"),
+      "@wenathlan/getry/accounts": path.resolve(import.meta.dirname, "../getry/accounts.ts"),
+      "@wenathlan/getry/project": path.resolve(import.meta.dirname, "../getry/project.ts"),
+      "@wenathlan/getry/quota": path.resolve(import.meta.dirname, "../getry/quota.ts"),
+      "@wenathlan/getry/recovery": path.resolve(import.meta.dirname, "../getry/recovery.ts"),
+      "@wenathlan/getry/fingerprint": path.resolve(import.meta.dirname, "../getry/fingerprint.ts"),
+      "@wenathlan/getry/search": path.resolve(import.meta.dirname, "../getry/search.ts"),
+      "@wenathlan/getry/utils": path.resolve(import.meta.dirname, "../getry/utils.ts"),
+      "@wenathlan/getry/versionregistry": path.resolve(import.meta.dirname, "../getry/versionregistry.ts"),
+      "@wenathlan/getry/intelligence": path.resolve(import.meta.dirname, "../getry/intelligence.ts"),
+      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "../getry/json.ts"),
+      "@wenathlan/getry/jsonpolicy": path.resolve(import.meta.dirname, "../getry/jsonpolicy.ts"),
+      "@wenathlan/getry/jsonschema": path.resolve(import.meta.dirname, "../getry/jsonschema.ts"),
+      "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "../getry/gatewayconfig.ts"),
+      "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "../getry/gatewayviewconfig.ts"),
+      "@wenathlan/getry/gatewayprobe": path.resolve(import.meta.dirname, "../getry/gatewayprobe.ts"),
+      "@wenathlan/getry/gatewaysmoke": path.resolve(import.meta.dirname, "../getry/gatewaysmoke.ts"),
+      "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "../getry/nodeshim.ts"),
+      "@wenathlan/getry/types": path.resolve(import.meta.dirname, "../getry/types.ts"),
+      "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "../getry/constants.ts"),
+      /** the devthink self bridges of the ownership wave
+       * (wave/ownership.getry), mirrored from vitest.config.ts: the moved
+       * gateway graph leans on the os-owned seams it grew beside (config,
+       * constants, core, the http/memory/policy/security lane, server,
+       * storage and the shared types surface) through the published library
+       * specifiers, and this app is the package those specifiers name — no
+       * node_modules copy exists to answer them — so every self specifier
+       * resolves to this app's own source on the dev server and the web
+       * build. the entries retire when the published devthink envelope
+       * carries the export surfaces the moved graph consumes. */
+      "@wenathlan/devthink/config": path.resolve(import.meta.dirname, "config.ts"),
+      "@wenathlan/devthink/constants": path.resolve(import.meta.dirname, "constants.ts"),
+      "@wenathlan/devthink/core": path.resolve(import.meta.dirname, "core.ts"),
+      "@wenathlan/devthink/http": path.resolve(import.meta.dirname, "http.ts"),
+      "@wenathlan/devthink/memory": path.resolve(import.meta.dirname, "memory.ts"),
+      "@wenathlan/devthink/policy": path.resolve(import.meta.dirname, "policy.ts"),
+      "@wenathlan/devthink/security": path.resolve(import.meta.dirname, "security.ts"),
+      "@wenathlan/devthink/server": path.resolve(import.meta.dirname, "server.ts"),
+      "@wenathlan/devthink/storage": path.resolve(import.meta.dirname, "storage.ts"),
+      "@wenathlan/devthink/types": path.resolve(import.meta.dirname, "types.ts"),
       /** the sibling engine's own self-alias, armed for the family dev
        * bridge: the saddle pages import their isolation lane through the
        * "@saddle/isolation" specifier their own config declares, and the

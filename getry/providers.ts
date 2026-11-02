@@ -11,9 +11,27 @@
  * transport retries ride retryDelay backoff (3 attempts, 5xx only).
  */
 
-import { type ProviderProtocol, redactProviderError, retryDelay } from "./gateway.js";
-import { type DevThinkConfig, type DevThinkPaths, resolveCredential } from "./config.js";
+/* the ownership seam of the wave/ownership.getry split: the provider
+ * protocol surface and the retry/redact helpers are gateway-domain
+ * concerns this owner carries beside the provider transport (they moved
+ * with the wave — never duplicated inside the os gateway client), while
+ * the os config credential resolver stays the devthink seam the adapter
+ * imports through the published specifier. */
+import { type DevThinkConfig, type DevThinkPaths, resolveCredential } from "@wenathlan/devthink/config";
 import { type ChatEvent, parseEventStream } from "./streaming.js";
+
+/** Identifies the public wire formats normalized by the gateway. */
+export type ProviderProtocol = "openai" | "anthropic" | "google";
+
+/** Returns bounded exponential retry timing for a transient request failure. */
+export function retryDelay(attempt: number, baseMs = 250, maximumMs = 4_000): number {
+  return Math.min(maximumMs, baseMs * 2 ** Math.max(0, attempt));
+}
+
+/** Removes a bearer value from an error message before it reaches a terminal or browser surface. */
+export function redactProviderError(message: string): string {
+  return message.replace(/bearer\s+[^\s]+/gi, "bearer [redacted]").slice(0, 500);
+}
 
 export type ChatRole = "system" | "user" | "assistant";
 
