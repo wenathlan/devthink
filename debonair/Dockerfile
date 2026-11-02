@@ -20,6 +20,13 @@ RUN apk add --no-cache python3 make g++ \
  && npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
  && pnpm install --frozen-lockfile
 COPY app/ .
+# The vault sibling of the copy law: labels.ts imports the label store
+# through the @wenathlan/vault/labelstore bridge and the vite alias
+# resolves the specifier to ../vault/labelstore.ts, so the sibling
+# sources land at /src/vault where that bridge answers inside the
+# container (the app-only context left the import unloadable and the
+# vite step died on labels.ts).
+COPY vault/ /src/vault/
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6

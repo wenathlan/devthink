@@ -24,6 +24,16 @@
 import { useEffect, useState } from "react";
 import { hostallowed } from "./onboardingstate.ts";
 
+/**
+ * Linear-time trailing-slash strip (regex-free; safe on uncontrolled input —
+ * the former /\/+$/.replace was polynomial and flagged as ReDoS-prone).
+ */
+function stripTrailingSlashes(value: string): string {
+  let end = value.length;
+  while (end > 0 && value.charCodeAt(end - 1) === 47 /* "/" */) end--;
+  return end === value.length ? value : value.slice(0, end);
+}
+
 /* ------------------------------------------------------------------ */
 /* @section 1 — origin: the engine origin under the https law          */
 /* ------------------------------------------------------------------ */
@@ -38,7 +48,7 @@ const LANE_TIMEOUT_MS = 4000;
  * api (the https public-host discipline the platform lanes ride). */
 function readEnvOrigin(): string {
   const env = (import.meta as ImportMeta & { env?: { VITE_VAULT_URL?: string } }).env;
-  return (typeof env?.VITE_VAULT_URL === "string" ? env.VITE_VAULT_URL : "").trim().replace(/\/+$/, "");
+  return stripTrailingSlashes((typeof env?.VITE_VAULT_URL === "string" ? env.VITE_VAULT_URL : "").trim());
 }
 
 const ORIGIN = readEnvOrigin();
@@ -227,7 +237,7 @@ export function vaultclient(options: VaultClientOptions = {}): {
   ): Promise<{ ok: true; project: string; limitBytes: bigint | null; updatedAt: string } | LaneRefusal | LaneAway>;
   sweep(): Promise<SweepAnswer | LaneRefusal | LaneAway>;
 } {
-  const origin = (options.origin ?? vaultorigin()).trim().replace(/\/+$/, "");
+  const origin = stripTrailingSlashes((options.origin ?? vaultorigin()).trim());
   const fetchImpl = options.fetchImpl ?? (typeof fetch === "function" ? globalThis.fetch : undefined);
   const token = options.token ?? TOKEN;
   const timeoutMs = options.timeoutMs ?? LANE_TIMEOUT_MS;
