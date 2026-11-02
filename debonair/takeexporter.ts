@@ -14,14 +14,23 @@
 // header documents; the loudness engine judges the bounce afterwards).
 
 import type { TakePlan } from "./arranger.ts";
+import { renderTakeOffline } from "./audioengine.ts";
+import { reconOf } from "./ingestrecon.ts";
 import { buildTracksFromSchedule, validateMidi, writeMidi } from "./midiwriter.ts";
+import type { ReconDocument } from "./reconpayload.ts";
+import { serializeRecon } from "./reconpayload.ts";
+import { reconSeedOf } from "./reconworker.ts";
 import { planStems, stemsManifest } from "./stems.ts";
 import type { TakeSchedule } from "./takeevents.ts";
 import { writeWav16, writeWav24 } from "./wavwriter.ts";
-import { renderTakeOffline } from "./audioengine.ts";
 
 /** The export actions the desk offers. */
-export type ExportKind = "wav16" | "wav24" | "midi" | "stems";
+export type ExportKind = "wav16" | "wav24" | "midi" | "stems" | "recon";
+
+/** The schema literal of the compact seed export — the recon lane's own
+ * envelope around the canonical debonair.recon/3 document (the seed, the
+ * identity checksums and the document ride; never wav bytes, never base64). */
+export const RECON_SEED_SCHEMA_VERSION = "debonair.reconseed/1";
 
 /** One file the export hands to the browser's save dialog. */
 export interface ExportFile {
@@ -39,6 +48,7 @@ export const EXPORT_LABELS: Record<ExportKind, string> = {
   wav24: "wav 24",
   midi: "midi",
   stems: "stems",
+  recon: "recon seed",
 };
 
 /** The blob part the encoders hand over (a private copy, TS 5.9-safe). */
@@ -47,17 +57,79 @@ function blobPart(bytes: Uint8Array): ArrayBuffer {
 }
 
 /**
+ * Builds the compact seed export of one recon document — the honest size
+ * answer of the recon lane (docs/recon.spec.md §5-7): the canonical
+ * debonair.recon/3 document (serializeRecon — the same bytes always), the
+ * seed the reconstruction rng rides and the document's identity checksums,
+ * in one json file. NO wav, NO base64, NO open pcm arrays — the bytes the
+ * document names live in the blob lane, never in the payload; the label
+ * declares the honest size (kilobytes against the megabytes the pcm would
+ * weigh). A checksum identifies, never alleges reproduction — the seed
+ * rebuilds a take in the spirit of the analysis (strategy three), and the
+ * label says exactly that.
+ *
+ * @param doc the recon document (the canonical serializer gates it — a
+ *   broken document throws ReconError honestly).
+ * @param name the file stem (the take id).
+ * @returns the export file (json, application/json).
+ */
+export function reconSeedFile(doc: ReconDocument, name: string): ExportFile {
+  const seed = reconSeedOf(doc);
+  const payload = JSON.stringify({
+    schema: RECON_SEED_SCHEMA_VERSION,
+    name,
+    seed,
+    checksums: {
+      pcmhash: doc.header.pcmhash,
+      spectralPeaksHash: doc.header.spectralPeaksHash,
+      midiNotesHash: doc.header.midiNotesHash,
+    },
+    document: JSON.parse(serializeRecon(doc)),
+  });
+  const bytes = new TextEncoder().encode(payload);
+  return {
+    name: `${name}-recon-seed.json`,
+    blob: new Blob([blobPart(bytes)], { type: "application/json" }),
+    label: `seed + checksums · ${(bytes.length / 1024).toFixed(1)} kb · no pcm (the rebuild rides the seed)`,
+  };
+}
+
+/**
  * Bounces one export of the take. Every kind renders on demand — a wav is a
  * full offline bounce, a stem set is one bounce per voiced role, the midi is
- * pure bytes of the validated tracks.
+ * pure bytes of the validated tracks, and the recon seed is the compact
+ * rung: the recon document of the take (the caller's analysis when it
+ * carries one, else one real bounce analyzed on the spot — the same desk
+ * graph, the same law "every export a real render") serialized with its
+ * seed and checksums, never the pcm bytes.
  *
  * @param kind the export action.
  * @param plan the plan the take answers to (naming and mastering rate).
  * @param schedule the schedule to bounce (the desk's edited one rides in).
+ * @param recon the recon document of the take, when the caller analyzed one
+ *   (the seed export's payload rung; without it the lane bounces and
+ *   analyzes — never a placeholder).
  * @returns the files the action produced (stems carry one per voiced role plus the manifest).
  * @throws Error with the refusal line when the render or the encode fails.
  */
-export async function exportTake(kind: ExportKind, plan: TakePlan, schedule: TakeSchedule): Promise<ExportFile[]> {
+export async function exportTake(
+  kind: ExportKind,
+  plan: TakePlan,
+  schedule: TakeSchedule,
+  recon?: ReconDocument,
+): Promise<ExportFile[]> {
+  if (kind === "recon") {
+    let document = recon;
+    if (!document) {
+      // the studio lane: one real bounce through the desk's own graph, then
+      // the descriptor lane over the mono mix — the ladder's payload rung
+      // answered on demand (the same law every wav export rides)
+      const buffer = await renderTakeOffline(plan, schedule);
+      document = reconOf(mixToMono(buffer), buffer.sampleRate, { name: plan.id });
+    }
+    return [reconSeedFile(document, plan.id)];
+  }
+
   if (kind === "midi") {
     const tracks = buildTracksFromSchedule(schedule, plan, plan.bpm);
     const problems = validateMidi(tracks);
