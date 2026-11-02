@@ -347,7 +347,7 @@ stealthhead/manifest-*.webmanifest
 stealthhead/icon-*.png
 stealthhead/apple-touch-icon*.png
 stealthhead/*.woff2
-vault/index-*.js
+vault/*.js
 vault/index-*.css
 vault/favicon-*.svg
 vault/favicon-*.png

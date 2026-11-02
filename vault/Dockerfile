@@ -2,22 +2,25 @@
 #
 # The family container doctrine in the engine shape: the container IS the
 # vault engine, not a static mirror of the source tree. Stage one (solbuild)
-# installs the locked pnpm tree and runs the vite build into dist; stage two
-# (enginedeps) installs the production-only dependency tree (the compiled
-# better-sqlite3 seat the engine rides); stage three runs the engine itself
-# — `node api.ts` serves the token-gated storage truth AND the built site
-# face from /app/dist (one process, one port, zero proxies: the api.ts
-# static lane owns the content types and the spa fallback). The version
-# rides the ARG the metadata lockstep stamps and the OCI labels declare —
-# the registry lanes pass it at build time, nothing is hardcoded beside the
+# installs the locked pnpm tree, runs the vite build at the application root
+# (the family law — the hashed bundles land flat beside the entry) and
+# assembles the served faces into /site; stage two (enginedeps) installs the
+# production-only dependency tree (the compiled better-sqlite3 seat the
+# engine rides); stage three runs the engine itself — `node api.ts` serves
+# the token-gated storage truth AND the assembled site face from /app/site
+# (one process, one port, zero proxies: the api.ts static lane owns the
+# content types, the spa fallback and the face allowlist). The version rides
+# the ARG the metadata lockstep stamps and the OCI labels declare — the
+# registry lanes pass it at build time, nothing is hardcoded beside the
 # stamp.
 #
-# THE FAUN SEAL (the deploy safety wave): the http surface only ever serves
-# the dist tree — the source root, the node_modules and the runtime sqlite
-# stores (VAULT_STORAGE_URL and VAULT_UISTORE_DB, pinned under /app/data)
-# never answer over http, and the api.ts static lane refuses a database
-# file outright. The container refuses to boot without VAULT_TOKEN (fail
-# closed, the same law the engine rides: no token, no storage truth).
+# THE FAUN SEAL (the root-emit wave): the http surface only ever serves the
+# assembled /site tree — the source root, the node_modules and the runtime
+# sqlite stores (VAULT_STORAGE_URL and VAULT_UISTORE_DB, pinned under
+# /app/data) never answer over http, and the api.ts static lane refuses a
+# database file and every non-face extension outright. The container refuses
+# to boot without VAULT_TOKEN (fail closed, the same law the engine rides:
+# no token, no storage truth).
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
 
@@ -29,7 +32,8 @@ RUN apk add --no-cache python3 make g++ \
  && npm install -g --no-fund --no-audit pnpm@12.3.4 \
  && pnpm install --frozen-lockfile
 COPY . .
-RUN pnpm build
+RUN pnpm build \
+ && sh -c 'mkdir /site && for f in index.html *.js *.css *.webmanifest *.svg *.ico *.png *.woff2 _headers _redirects robots.txt sitemap.xml; do cp "$f" /site/ 2>/dev/null || true; done' 
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS enginedeps
 
@@ -57,9 +61,9 @@ LABEL org.opencontainers.image.title="vault" \
 
 WORKDIR /app
 
-# the site face — the ONLY tree the http surface ever serves (the build
-# output, never the source root: the faun seal).
-COPY --from=solbuild /src/dist/ /app/dist/
+# the site face — the ONLY tree the http surface ever serves (the built
+# faces the solbuild stage assembled, never the source root: the faun seal).
+COPY --from=solbuild /site/ /app/site/
 
 # the engine: the erasable-typescript sources the node 26 pin runs natively
 # (the source-is-the-library doctrine — api.ts and its import closure) and
@@ -80,7 +84,7 @@ USER node
 # the engine doors: the static face, the storage url, the ui store and the
 # listen port. VAULT_TOKEN stays unpinned — the operator injects it and the
 # entrypoint refuses to boot without it (fail closed).
-ENV VAULT_STATIC_DIR=/app/dist \
+ENV VAULT_STATIC_DIR=/app/site \
     VAULT_STORAGE_URL=file:/app/data/vault-storage.db \
     VAULT_UISTORE_DB=/app/data/uistore.db \
     VAULT_HOST=0.0.0.0 \

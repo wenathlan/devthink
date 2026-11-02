@@ -14,7 +14,7 @@
 // root.
 
 import assert from "node:assert/strict";
-import { type Dirent, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { type Dirent, existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "vitest";
@@ -94,44 +94,49 @@ function dbFacesUnder(dir: string): string[] {
   return found;
 }
 
-describe("the build emits into dist, never the app root", () => {
-  it("declares the dedicated outDir and resets it on every build", () => {
-    assert.match(VITE, /outDir: path\.resolve\(import\.meta\.dirname, "dist"\)/, "the outDir is the dist tree");
+describe("the build emits at the application root (the family law)", () => {
+  it("declares the root outDir and keeps the committed faces", () => {
+    assert.match(VITE, /outDir: path\.resolve\(import\.meta\.dirname, "\."\)/, "the outDir is the application root");
     assert.doesNotMatch(
       VITE,
-      /outDir: path\.resolve\(import\.meta\.dirname, "\."\)/,
-      "the app root is never the outDir",
+      /outDir: path\.resolve\(import\.meta\.dirname, "dist"\)/,
+      "no dedicated dist tree rides the build",
     );
-    assert.match(VITE, /emptyOutDir: true/, "the dedicated outDir resets on every build");
+    assert.match(VITE, /emptyOutDir: false/, "the root emit keeps the committed faces beside the bundles");
   });
 
-  it("carries the deploy faces into the build output (the publish lanes read them there)", () => {
-    for (const face of ["_headers", "_redirects", "favicon.svg", "icon.svg", "robots.txt", "sitemap.xml"]) {
-      assert.ok(VITE.includes(`"${face}"`), `the build must carry ${face} into dist`);
+  it("carries the deploy faces beside the bundles (the container assembles the served site)", () => {
+    const assembles: Record<string, string> = {
+      "_headers": "_headers",
+      "_redirects": "_redirects",
+      "favicon.svg": "*.svg",
+      "icon.svg": "*.svg",
+      "robots.txt": "robots.txt",
+      "sitemap.xml": "sitemap.xml",
+    };
+    for (const [face, token] of Object.entries(assembles)) {
+      assert.ok(existsSync(join(APPROOT, face)), `the deploy face ${face} stays committed at the root`);
+      assert.ok(DOCKERFILE.includes(token), `the container site assembly carries ${face}`);
     }
   });
 });
 
-describe("every publish lane mounts the build output only", () => {
-  it("netlify, vercel and workers publish dist, never the application root", () => {
-    assert.match(NETLIFY, /publish\s*=\s*"dist"/, "netlify publishes dist");
-    assert.doesNotMatch(NETLIFY, /publish\s*=\s*"\."/);
-    assert.match(VERCEL, /"outputDirectory"\s*:\s*"dist"/, "vercel mounts dist");
-    assert.doesNotMatch(VERCEL, /"outputDirectory"\s*:\s*"\."/);
-    assert.match(WRANGLER, /directory\s*=\s*"dist"/, "workers mount dist");
-    assert.doesNotMatch(WRANGLER, /directory\s*=\s*"\."/);
+describe("every publish lane mounts the application root (the family law)", () => {
+  it("netlify, vercel and workers mount the root the ten siblings ride", () => {
+    assert.match(NETLIFY, /publish\s*=\s*"\."\s*$/m, "netlify publishes the application root");
+    assert.match(VERCEL, /"outputDirectory"\s*:\s*"\."\s*,?\s*$/m, "vercel mounts the application root");
+    assert.match(WRANGLER, /directory\s*=\s*"\."\s*$/m, "workers mount the application root");
   });
 
-  it("no database file answers from any publish dir the configs declare", () => {
-    const dirs = publishDirs();
-    assert.ok(dirs.length >= 1, "the deploy configs declare their publish dirs");
-    for (const dir of dirs) {
-      assert.notEqual(dir, ".", "a publish dir never resolves to the application root");
-      assert.notEqual(dir, "./", "a publish dir never resolves to the application root");
-      const publish = join(APPROOT, dir);
-      if (!readdirSyncSafe(publish)) continue; // the lane never built here: nothing to seal
-      const faces = dbFacesUnder(publish);
-      assert.deepEqual(faces, [], `${dir} carries database faces — the faun vector: ${faces.join(", ")}`);
+  it("the runtime stores never ride the publish tree (the gitignore seal holds)", () => {
+    /* every publish lane mounts the git tree (pages, netlify, vercel,
+     * workers), so the seal the faun vector answers is the ignore law:
+     * the store spellings and their wal/shm sidecars never enter the
+     * repository, and the http seals (the _headers rules, the static-lane
+     * face allowlist) refuse them on every host that ever rides one. */
+    const gitignore = readFileSync(join(APPROOT, "..", ".gitignore"), "utf8");
+    for (const pattern of [/^\*\.db$/m, /^\*\.db-shm$/m, /^\*\.db-wal$/m]) {
+      assert.ok(pattern.test(gitignore), `the root gitignore carries the store seal ${pattern.source}`);
     }
   });
 });
@@ -159,8 +164,9 @@ describe("the _headers seal", () => {
 
 describe("the container builds the engine, never a source tree mirror", () => {
   it("copies only the build output into the served tree", () => {
-    assert.match(DOCKERFILE, /COPY --from=solbuild \/src\/dist\/ \/app\/dist\//, "the served tree carries dist only");
+    assert.match(DOCKERFILE, /COPY --from=solbuild \/site\/ \/app\/site\//, "the served tree carries the assembled site faces only");
     assert.doesNotMatch(DOCKERFILE, /COPY --from=\S+ \/src\/\s/, "no stage mirrors the source root into the image");
+    assert.match(DOCKERFILE, /VAULT_STATIC_DIR=\/app\/site/, "the engine door pins the assembled site tree");
   });
 
   it("runs the engine behind the token door with the open health probe", () => {
@@ -179,6 +185,8 @@ describe("the engine static lane (the container doctrine)", () => {
     writeFileSync(join(staging, "index.html"), "<!doctype html><title>vault</title>");
     writeFileSync(join(staging, "index-a1b2c3d4.js"), "console.log('vault');");
     writeFileSync(join(staging, "vault-storage.db"), "the faun bytes");
+    writeFileSync(join(staging, "api.ts"), "the engine source bytes");
+    writeFileSync(join(staging, "package.json"), "the manifest bytes");
     process.env.VAULT_STATIC_DIR = staging;
     try {
       const { createVaultServer, listenVault } = await import("../api.ts");
@@ -216,6 +224,14 @@ describe("the engine static lane (the container doctrine)", () => {
           const refusal = await fetch(`${base}/${sealed}`);
           assert.equal(refusal.status, 404, `${sealed} must never answer bytes`);
           assert.equal(((await refusal.json()) as { error: { code: string } }).error.code, "VAULT_STATIC");
+        }
+        // the root-emit seal: the engine sources and the manifests never
+        // answer bytes from the static lane, even when they sit inside the
+        // static root beside the built faces
+        for (const sealedSource of ["api.ts", "package.json"]) {
+          const sourceRefusal = await fetch(`${base}/${sealedSource}`);
+          assert.equal(sourceRefusal.status, 404, `${sealedSource} must never answer bytes`);
+          assert.equal(((await sourceRefusal.json()) as { error: { code: string } }).error.code, "VAULT_STATIC");
         }
         // the file-like miss stays an honest 404 (never the spa entry)
         const miss = await fetch(`${base}/missing-a1b2c3d4.js`);

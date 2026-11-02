@@ -1397,15 +1397,55 @@ const STATIC_MIME: Readonly<Record<string, string>> = Object.freeze({
  * the shm sidecars refuse with their file). */
 const SEALED_FACES = [".db", ".db-journal", ".db-shm", ".db-wal"] as const;
 
+/** The built faces the static lane serves — the extension allowlist of the
+ * family build (the hashed bundles, the deploy faces, the fonts). Every
+ * other extension refuses before the filesystem is ever consulted: the
+ * engine sources (.ts), the manifests (.json), the runtime stores and any
+ * stray file inside the static root never answer bytes — the faun seal of
+ * the root-emit build. */
+const STATIC_FACES = [
+  ".html",
+  ".js",
+  ".mjs",
+  ".css",
+  ".svg",
+  ".png",
+  ".ico",
+  ".webmanifest",
+  ".xml",
+  ".txt",
+  ".woff",
+  ".woff2",
+  ".webp",
+  ".map",
+] as const;
+
+/**
+ * Answers whether one pathname names a servable static face — the allowlist
+ * verdict of the root-emit seal: an extensionless path stays a spa route
+ * (the entry rewrite answers it), a face extension answers its file, every
+ * other extension refuses outright.
+ *
+ * @param pathname the raw url pathname.
+ * @returns true when the pathname may resolve inside the static lane.
+ */
+function servableFace(pathname: string): boolean {
+  const name = (pathname.split("/").pop() ?? "").toLowerCase();
+  if (!name.includes(".")) return true;
+  return STATIC_FACES.some((extension) => name.endsWith(extension));
+}
+
 /**
  * Resolves the static root of the site face — VAULT_STATIC_DIR (the
- * container pins it to the dist volume), defaulting to ./dist beside the
- * working directory.
+ * container pins it to the assembled site volume), defaulting to the
+ * application root itself (the family build law: the hashed bundles land
+ * flat beside the entry, so the root IS the built tree — the face
+ * allowlist below keeps every non-face extension out of the lane).
  *
  * @returns the configured static root.
  */
 function staticRoot(): string {
-  return process.env.VAULT_STATIC_DIR ?? "./dist";
+  return process.env.VAULT_STATIC_DIR ?? ".";
 }
 
 /**
@@ -1430,6 +1470,10 @@ function serveStatic(res: ServerResponse, pathname: string, head: boolean): bool
   }
   if (sealedFace(pathname)) {
     sendError(res, 404, "VAULT_STATIC", "a database file never answers from the static lane — the faun seal holds");
+    return true;
+  }
+  if (!servableFace(pathname)) {
+    sendError(res, 404, "VAULT_STATIC", "a non-face path never answers from the static lane — the root-emit seal holds");
     return true;
   }
   const candidate = staticCandidate(root, pathname);
