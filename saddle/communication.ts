@@ -10,8 +10,115 @@
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
 
-import { controlsurface } from "./automation.js";
 import { constanttimeequal, hmacsha256 } from "./foundation.js";
+
+/* ══════════════════════════════════════════════════════════════════ */
+/* Section 0: api/controlsurface.ts — the operator control surface the */
+/* control service defaults to (the saddle ownership law, wave a,     */
+/* actions 108-112: the workflow automation domain moved to devthink, */
+/* and the api contracts carry their own default surface — the same   */
+/* resource and operation vocabulary, the same audit law).            */
+/* ══════════════════════════════════════════════════════════════════ */
+
+/** the operator resources the control surface answers. */
+export const controlresources = Object.freeze([
+  "jobs",
+  "sessions",
+  "storage",
+  "runners",
+  "permissions",
+  "logs",
+  "artifacts",
+]);
+
+/** the operator operations the control surface answers. */
+export const controloperations = Object.freeze([
+  "list",
+  "get",
+  "create",
+  "update",
+  "cancel",
+  "retry",
+  "delete",
+  "check",
+]);
+
+/** the message a caught value carries for the wire: an Error answers its
+ * message only and every other shape answers the fallback (the caught
+ * value as a whole never rides the payload). */
+const controlerrormessage = (error: unknown, fallback = "operation failed"): string => {
+  if (error instanceof Error) return error.message;
+  return fallback;
+};
+
+/** answers one control response and rides the optional audit hook. */
+async function controlrespond({ ok, result, code, message, context, audit }) {
+  const response = { version: 1, ok, ...context, ...(ok ? { result } : { code, message }) };
+  if (audit)
+    try {
+      await audit(response);
+    } catch (error) {
+      response.auditerror = controlerrormessage(error);
+    }
+  return response;
+}
+
+/** Creates a caller-owned operator surface with resource handlers and
+ * optional audit recording — the default surface the control service
+ * mounts when the caller sends adapters without a prebuilt surface. */
+export function controlsurface(options = {}) {
+  const adapters = { ...(options.adapters ?? {}) };
+  const audit = options.audit;
+  if (audit !== undefined && typeof audit !== "function") throw new TypeError("control audit must be callable");
+  for (const resource of Object.keys(adapters))
+    if (!controlresources.includes(resource) || !adapters[resource] || typeof adapters[resource] !== "object")
+      throw new TypeError(`unsupported control resource: ${resource}`);
+
+  async function execute(request = {}) {
+    const resource = String(request.resource ?? "");
+    const operation = String(request.operation ?? "");
+    if (!controlresources.includes(resource) || !controloperations.includes(operation))
+      throw new TypeError("control request is invalid");
+    const handler = adapters[resource]?.[operation];
+    const context = {
+      requestid: String(request.requestid ?? `control${Date.now().toString(36)}`),
+      resource,
+      operation,
+    };
+    if (typeof handler !== "function")
+      return controlrespond({
+        ok: false,
+        code: "UNSUPPORTED_CONTROL",
+        message: `${resource}.${operation} is not configured`,
+        context,
+        audit,
+      });
+    try {
+      const result = await handler(request.input ?? {}, context);
+      return controlrespond({ ok: true, result, context, audit });
+    } catch (error) {
+      return controlrespond({
+        ok: false,
+        code: String(error?.code ?? "CONTROL_FAILED"),
+        message: controlerrormessage(error),
+        context,
+        audit,
+      });
+    }
+  }
+
+  return {
+    version: 1,
+    resources: [...controlresources],
+    operations: [...controloperations],
+    execute,
+    describe: () => ({
+      version: 1,
+      resources: [...controlresources],
+      configured: Object.keys(adapters).filter((resource) => controlresources.includes(resource)),
+    }),
+  };
+}
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: api/auth.ts — api authorization delegates token verification to the caller and never stores credentials. */

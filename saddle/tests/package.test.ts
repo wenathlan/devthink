@@ -12,9 +12,11 @@ import { releaseartifactmatrix } from "../distribution.js";
 /* The transport-neutral graph of the grand merge: the flat domain files
    bundle full-stack sections, so the browser-loadable surface is the curated
    set of domains whose whole import closure stays free of Node-only modules
-   (foundation, intelligence, automation). The node-only capabilities keep
-   their deep exports (./memory-*, ./sessions-file, ./release-*, ...). */
-const transportneutral = ["dist/foundation.js", "dist/intelligence.js", "dist/automation.js"];
+   (foundation and the modality registry — the saddle ownership law, wave a,
+   actions 108-112 moved the intelligence and automation domains to devthink,
+   so their seats retire here). The node-only capabilities keep their deep
+   exports (./memory-*, ./sessions-file, ./release-*, ...). */
+const transportneutral = ["dist/foundation.js", "dist/modalityregistry.js"];
 
 describe("the package surface", () => {
 it("imports every declared package export target in Node", async () => {
@@ -73,7 +75,7 @@ it("keeps transport-neutral export graphs free of Node-only imports", async () =
     }
   }
   assert.equal(seen.has(resolve(root, "..", "dist/foundation.js")), true);
-  assert.equal(seen.has(resolve(root, "..", "dist/automation.js")), true);
+  assert.equal(seen.has(resolve(root, "..", "dist/modalityregistry.js")), true);
 });
 
 it("creates the expanded release matrix without vendor coupling", () => {

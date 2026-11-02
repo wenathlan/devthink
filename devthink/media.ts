@@ -1,7 +1,12 @@
 /**
- * media.ts — media pipeline and transcode domain for saddle v6.
+ * media.ts — the media pipeline and transcode domain of the devthink
+ * family (the saddle ownership law, wave a, actions 108-112: the media
+ * pipeline moved out of the saddle engine — the master virtualization
+ * engine keeps only the virtualization modalities, and every workload
+ * feature that is not sandbox/vm/runner/vgpu/vcpu/ports/hardware-virtual
+ * rides its new owner; devthink answers the media lane).
  *
- * the module absorbs the media-facing halves of the pool
+ * the module carries the media-facing halves of the pool
  * pipelinememorypassage.ts (saddle v6 orchestrator) and
  * src_pipeline_memory_passage.ts (saddle v5 mttg pipeline) that were
  * still unique after the v3 consolidation:
@@ -21,18 +26,22 @@
  * - the passage secure channel contract: transport vsock+virtio-serial,
  *   ed25519 signatures over chacha20-poly1305 sealed frames, MTU
  *   65536, 10000 Mbps rate limit, 256 concurrent streams, 150 us
- *   latency target
+ *   latency target — the AEAD pair (chachaseal/chachaopen) rides this
+ *   module as its own local section (the saddle security.ts helpers
+ *   stayed with the engine; the moved lane carries its own seal, the
+ *   same rfc 8439 law)
  * - the ~30 transcode mode taxonomy of the library-first surface
  *
  * the memory-modularizer half of the same pool files (zram, hugepages,
- * CXL type-3 tiering, CCD-aware vCPU pinning) is already absorbed in
- * virtualmemory.ts (memorymodularizer) and is intentionally not
+ * CXL type-3 tiering, CCD-aware vCPU pinning) stayed with the saddle
+ * engine (absorbed in virtualmemory.ts) and is intentionally not
  * duplicated here; the pipeline consumes a plan digest only.
  *
  * provenance: pool:pipelinememorypassage.ts [S6 v6, 24 stages],
  * pool:src_pipeline_memory_passage.ts [V5 src_mttg_pipeline ordering],
  * pool:mttg.config transcode section (ffmpeg 7.1.1, nvenc sdk 13.0.19),
- * pool:src_virtualization_core.cpp create_optimal (encoder policy).
+ * pool:src_virtualization_core.cpp create_optimal (encoder policy),
+ * saddle:media.ts [the ownership transfer, wave a actions 108-112].
  *
  * rules: lowercase identifiers, english jsdoc third person, no emoji,
  * try/catch catcher on every fallible path, node:* built-ins first,
@@ -41,13 +50,61 @@
  */
 
 import {
+  createCipheriv,
+  createDecipheriv,
   createHash,
   sign as cryptosign,
   verify as cryptoverify,
   generateKeyPairSync,
+  type CipherGCM,
+  type DecipherGCM,
   type KeyObject,
 } from 'node:crypto';
-import { chachaopen, chachaseal } from './security.js';
+
+/* ------------------------------------------------------------------ */
+/* context: chachapoly AEAD (RFC 8439, the moved lane's own seal)      */
+/* ------------------------------------------------------------------ */
+
+/** seals plaintext with ChaCha20-Poly1305; the 16-byte tag is appended. */
+function chachaseal(
+  key: Buffer,
+  nonce: Buffer,
+  plaintext: Buffer,
+  aad: Buffer | null = null,
+): Buffer {
+  try {
+    const cipher = createCipheriv('chacha20-poly1305', key, nonce, {
+      authTagLength: 16,
+    }) as CipherGCM;
+    if (aad !== null) {
+      cipher.setAAD(aad);
+    }
+    return Buffer.concat([cipher.update(plaintext), cipher.final(), cipher.getAuthTag()]);
+  } catch (error) {
+    throw new Error(`chacha20-poly1305 seal failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+/** opens a ChaCha20-Poly1305 sealed buffer (tag appended). */
+function chachaopen(key: Buffer, nonce: Buffer, sealed: Buffer, aad: Buffer | null = null): Buffer {
+  try {
+    if (sealed.length < 16) {
+      throw new Error('sealed buffer is shorter than the 16-byte poly1305 tag');
+    }
+    const tag = sealed.subarray(sealed.length - 16);
+    const body = sealed.subarray(0, sealed.length - 16);
+    const decipher = createDecipheriv('chacha20-poly1305', key, nonce, {
+      authTagLength: 16,
+    }) as DecipherGCM;
+    decipher.setAuthTag(tag);
+    if (aad !== null) {
+      decipher.setAAD(aad);
+    }
+    return Buffer.concat([decipher.update(body), decipher.final()]);
+  } catch (error) {
+    throw new Error(`chacha20-poly1305 open failed: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
 
 /* ------------------------------------------------------------------ */
 /* context: version anchors (media toolchain, date-first 2026-08-22)   */
@@ -884,10 +941,11 @@ export interface passageframe {
 
 /**
  * the secure passage channel of stage 20: every message is sealed with
- * ChaCha20-Poly1305 (RFC 8439, reusing the security.ts AEAD helpers)
- * and signed with a per-channel ed25519 key pair; frames larger than
- * the 65536 MTU are split and marked truncated so the peer can
- * reassemble over the 256-stream budget.
+ * ChaCha20-Poly1305 (RFC 8439, the local AEAD helpers this module
+ * carries since the ownership transfer) and signed with a per-channel
+ * ed25519 key pair; frames larger than the 65536 MTU are split and
+ * marked truncated so the peer can reassemble over the 256-stream
+ * budget.
  */
 export class passagesecurechannel {
   readonly settings: passagechannelsettings;

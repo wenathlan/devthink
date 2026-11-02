@@ -28,7 +28,6 @@ import { executiondecision, executionhandoff, executionrequest, internalapi } fr
 import { virtualbrowserdecision, virtualbrowserhandoff, virtualbrowserreceipt, virtualbrowserrequest } from "../browser.js";
 import { artifacthandoff, cancellationplan, providerchain, renderdispatch } from "../execution.js";
 import { cdncapabilities, deliverymanifest, pwaplan, verifydelivery } from "../distribution.js";
-import { applicationbridge, dnsplan, miniappplan } from "../automation.js";
 import { validatesession } from "../foundation.js";
 import { sessionstore } from "../execution.js";
 import { externalmemory, internalmemory, vectorizedmemory } from "../virtual.js";
@@ -43,9 +42,6 @@ import { workflowdispatch } from "../execution.js";
 import { replay } from "../execution.js";
 import { distributionmanifest, binaryplan, containerplan } from "../distribution.js";
 import { forgejoadapter } from "../integration.js";
-import { parsecommand } from "../automation.js";
-import { saddlebot } from "../automation.js";
-import { commandguard } from "../automation.js";
 import { appregistry } from "../integration.js";
 import { jsonencode, jsondecode } from "../communication.js";
 import { ndjsonencode, ndjsondecode } from "../communication.js";
@@ -54,10 +50,6 @@ import { blockstream } from "../communication.js";
 import { sqlpersistence, mysql2persistence } from "../virtual.js";
 import { drizzlepersistence } from "../virtual.js";
 import { prismapersistence } from "../virtual.js";
-import { workflowmanifest } from "../automation.js";
-import { triggerregistry, triggermatch, workflowtriggers, validateworkflowinputs } from "../automation.js";
-import { githubworkflow, gitlabworkflow, woodpeckerworkflow } from "../automation.js";
-import { workflowregistry } from "../automation.js";
 import { memoryengine } from "../virtual.js";
 import { targetfactory, targeturi } from "../virtual.js";
 import { filesessions } from "../execution.js";
@@ -67,20 +59,9 @@ import { deadline } from "../execution.js";
 import { publishplan, registrymanifest } from "../distribution.js";
 import { fingerprintfor, fingerprintvalidate } from "../browser.js";
 import { browsersession } from "../browser.js";
-import { estimatetokens, fitscontext, tokenbudget } from "../intelligence.js";
-import { chunkmarkdown } from "../intelligence.js";
-import { ragmanifest, vectorrecord } from "../intelligence.js";
-import { mergeprovenance, provenance } from "../intelligence.js";
-import { metricstore } from "../intelligence.js";
-import { llmstxt, llmsfull } from "../intelligence.js";
 import { webhooksig, webhookverify } from "../communication.js";
 import { webhookreceiver } from "../communication.js";
 import { deliveryqueue } from "../communication.js";
-import { desktopmanifest, mobilemanifest, surfacemanifest, surfacebundle } from "../automation.js";
-import { desktopadapter, mobileadapter } from "../automation.js";
-import { controlsurface } from "../automation.js";
-import { backupplan, operationsmetrics, retentionpolicy, threatmodel } from "../automation.js";
-import { n8nactions, n8nmatch, n8nnode, n8nexecute } from "../automation.js";
 import { browseragent } from "../browser.js";
 import { actionbatch, actionfailure, actionresult } from "../browser.js";
 import { browsercontext } from "../browser.js";
@@ -395,26 +376,10 @@ it("keeps multiforge adapters injectable", async () => {
   assert.equal(result.body.authorization, "Bearer token");
 });
 
-it("parses bot commands and executes through a platform adapter", async () => {
-  const parsed = parsecommand("deploy --platform forge --ref main");
-  assert.deepEqual(parsed, { command: "deploy", flags: { platform: "forge", ref: "main" } });
-  const bot = saddlebot({ adapters: { forge: { executebot: async (input) => input } } });
-  await bot.start();
-  const result = await bot.executecommand("deploy --platform forge --ref main");
-  assert.equal(result.command, "deploy");
-  assert.equal(bot.getstatus().status, "running");
-  await bot.stop();
-});
-
-it("enforces bot command scopes and keeps idempotent results", async () => {
-  let calls = 0;
-  const bot = saddlebot({ guard: commandguard({ policies: { deploy: { scopes: ["deploy"] } } }), adapters: { forge: { executebot: async () => { calls += 1; return { ok: true }; } } } });
-  await assert.rejects(() => bot.executecommand("deploy --platform forge", { scopes: [] }), (error) => error.code === "BOT_COMMAND_UNAUTHORIZED");
-  const first = await bot.executecommand("deploy --platform forge", { scopes: ["deploy"], idempotencykey: "cmd1" });
-  const second = await bot.executecommand("deploy --platform forge", { scopes: ["deploy"], idempotencykey: "cmd1" });
-  assert.deepEqual(second, first);
-  assert.equal(calls, 1);
-});
+/* the bot command pair (parsecommand/saddlebot, commandguard) moved to
+ * devthink with the automation domain (the saddle ownership law, wave a,
+ * actions 108-112 — the moved lane keeps its battery at
+ * devthink/tests/automation.test.ts). */
 
 it("tracks app installation scopes and revocation", () => {
   const registry = appregistry();
@@ -473,36 +438,10 @@ it("accepts drizzle repositories and prisma delegates", async () => {
   assert.equal((await prisma.getjob("job1")).where.id, "job1");
 });
 
-it("renders multiforge workflow manifests", () => {
-  const manifest = workflowmanifest({ name: "process", command: "npm test", platforms: ["github", "gitlab"] });
-  const registry = workflowregistry();
-  registry.register(manifest);
-  assert.equal(registry.render("process", "github").includes("workflow_dispatch"), true);
-  assert.equal(gitlabworkflow(manifest).includes("image: node:26.12.0"), true);
-  assert.equal(woodpeckerworkflow(manifest).includes("npm test"), true);
-});
-
-it("normalizes workflow triggers and matches due events", () => {
-  assert.deepEqual(workflowtriggers(["manual", "webhook", "manual"]), ["manual", "webhook"]);
-  const manifest = workflowmanifest({ name: "triggered", command: "npm test", trigger: ["webhook", "schedule"] });
-  assert.equal(triggermatch(manifest, { type: "webhook", requestid: "event1" }).matched, true);
-  assert.equal(triggermatch(manifest, { type: "schedule", at: Date.now() + 10000 }).reason, "not-due");
-  const registry = triggerregistry();
-  registry.register(manifest);
-  assert.equal(registry.match("triggered", { type: "webhook" }).matched, true);
-});
-
-it("validates workflow inputs and produces deterministic trigger identities", () => {
-  const manifest = workflowmanifest({ name: "typed", command: "npm test", trigger: "dispatch", inputs: { count: { type: "number", required: true }, dryrun: { type: "boolean", default: false }, mode: { type: "string", choices: ["safe", "fast"] } } });
-  const valid = validateworkflowinputs(manifest, { count: "2", mode: "safe" });
-  assert.deepEqual(valid.values, { count: 2, dryrun: false, mode: "safe" });
-  assert.equal(valid.valid, true);
-  assert.equal(validateworkflowinputs(manifest, { count: "invalid", mode: "unsafe" }).valid, false);
-  const first = triggermatch(manifest, { type: "dispatch", inputs: { count: "2", mode: "safe" } });
-  const second = triggermatch(manifest, { type: "dispatch", inputs: { mode: "safe", count: "2" } });
-  assert.equal(first.matched, true);
-  assert.equal(first.requestid, second.requestid);
-});
+/* the workflow manifest trio (workflowmanifest, the trigger registry and
+ * the renderer pair) moved to devthink with the automation domain (the
+ * saddle ownership law, wave a, actions 108-112 — the moved lanes keep
+ * their battery at devthink/tests/automation.test.ts). */
 
 it("resumes a remote run through legal transitions and preserves history", async () => {
   const calls = [];
@@ -650,35 +589,11 @@ it("keeps a coherent browser fingerprint bound to a session", () => {
   assert.equal(session.events().length, 1);
 });
 
-it("chunks markdown and builds a deduplicated rag manifest", async () => {
-  const markdown = "# Intro\n\nSaddle engine content.\n\n## Detail\n\nMore content.";
-  const chunks = chunkmarkdown(markdown, { maxtokens: 20 });
-  assert.equal(chunks[0].headingpath[0], "Intro");
-  const manifest = await ragmanifest({ source: "https://example.com/doc", chunks: [...chunks, ...chunks], embeddingmodel: "test" });
-  assert.equal(manifest.chunks.length, chunks.length);
-  assert.equal(vectorrecord(manifest.chunks[0], [0.1, 0.2]).vector.length, 2);
-});
-
-it("keeps retrieval provenance and low-cardinality metrics", () => {
-  const first = provenance({ sourceurl: "https://example.com/a", documentid: "a", chunks: [{ id: "1", score: 0.9 }] });
-  const second = provenance({ sourceurl: "https://example.com/b", documentid: "b", chunks: [{ id: "1", score: 0.8 }] });
-  const merged = mergeprovenance([first, second, first]);
-  assert.equal(merged.sources.length, 2);
-  assert.equal(merged.chunks.length, 2);
-  const metrics = metricstore();
-  metrics.count("engine.completed", 1, { source: "test" });
-  metrics.observe("engine.latency", 4, { source: "test" });
-  assert.equal(metrics.snapshot().counters['engine.completed|[["source","test"]]'], 1);
-});
-
-it("estimates token budgets and generates llms text", () => {
-  assert.equal(estimatetokens("1234"), 1);
-  assert.equal(fitscontext("1234", 1), true);
-  assert.equal(tokenbudget("12345678", { context: 1 }).fits, false);
-  const pages = [{ title: "Docs", url: "https://example.com/docs", description: "API docs", content: "Saddle API" }];
-  assert.match(llmstxt({ title: "Saddle", pages }), /^# Saddle\n> [^\n]*\n\n## pages\n\n- \[Docs\]\(https:\/\/example\.com\/docs\): API docs\n$/);
-  assert.match(llmsfull({ pages }), /^# Docs\n\nsource: https:\/\/example\.com\/docs\n\nSaddle API$/);
-});
+/* the retrieval trio (chunkmarkdown/ragmanifest, the provenance pair and
+ * the metrics store) and the token budget trio moved to devthink with the
+ * intelligence domain (the saddle ownership law, wave a, actions 108-112 —
+ * the moved lanes keep their battery at
+ * devthink/tests/intelligence.test.ts). */
 
 it("verifies signed webhooks and drops duplicate deliveries", async () => {
   let calls = 0;
@@ -691,54 +606,12 @@ it("verifies signed webhooks and drops duplicate deliveries", async () => {
   assert.equal(calls, 1);
 });
 
-it("creates packaging surfaces for n8n and browser targets", async () => {
-  const manifest = surfacemanifest({ target: "n8n", capabilities: ["memory"] });
-  assert.equal(surfacebundle(manifest).install, "n8n import");
-  const node = n8nnode({ name: "saddle" });
-  const output = await n8nexecute(node, { command: "status" }, async ({ input }) => input.command);
-  assert.equal(output, "status");
-});
-
-it("defines caller-owned desktop mobile and n8n surface contracts", async () => {
-  const desktop = desktopmanifest({ formats: ["custom"] });
-  const mobile = mobilemanifest();
-  assert.deepEqual(desktop.formats, ["custom"]);
-  assert.equal(mobile.formats.includes("apk"), true);
-  assert.equal(surfacebundle(desktop).install, "caller desktop bundle");
-  const adapter = desktopadapter({ handlers: { status: async () => ({ ready: true }) } });
-  assert.deepEqual((await adapter.invoke("status")).result, { ready: true });
-  assert.equal((await mobileadapter().invoke("status")).supported, false);
-  const node = n8nnode({ triggers: ["webhook"], actions: ["browser"] });
-  assert.equal(n8nmatch(node, { type: "webhook" }).matched, true);
-  assert.equal(n8nactions.includes("scrape"), false);
-  assert.equal(n8nactions.includes("crawl"), false);
-  assert.equal(n8nactions.includes("browser"), true);
-  await assert.rejects(() => n8nexecute(node, { command: "status" }, async () => "no"), /unsupported n8n action/);
-});
-
-it("exposes auditable operator controls for core resources", async () => {
-  const events = [];
-  const controls = controlsurface({ adapters: { jobs: { list: async () => [{ id: "job1" }] }, permissions: { check: async (input) => ({ allowed: input.scope === "read" }) } }, audit: async (event) => events.push(event) });
-  assert.equal((await controls.execute({ resource: "jobs", operation: "list", requestid: "req1" })).result[0].id, "job1");
-  assert.equal((await controls.execute({ resource: "permissions", operation: "check", input: { scope: "read" } })).result.allowed, true);
-  assert.equal((await controls.execute({ resource: "logs", operation: "list" })).code, "UNSUPPORTED_CONTROL");
-  assert.equal(events.length, 3);
-  assert.equal(controls.describe().resources.includes("artifacts"), true);
-});
-
-it("defines bounded operational metrics recovery and policy boundaries", async () => {
-  const metrics = operationsmetrics({ collector: metricstore() });
-  metrics.record("queuedepth", 2, { queue: "sandbox" });
-  metrics.record("latency", 12, { operation: "boot" });
-  assert.equal(metrics.snapshot().counters['queuedepth|[["queue","sandbox"]]'], 2);
-  const policy = retentionpolicy({ days: 1, maxbytes: 100 });
-  assert.equal(policy.keeps({ updatedat: Date.now(), bytes: 50 }), true);
-  assert.equal(policy.keeps({ updatedat: Date.now(), bytes: 101 }), false);
-  const plan = backupplan({ backup: async (input) => ({ saved: input.id }), restore: async (input) => ({ restored: input.id }) });
-  assert.deepEqual(await plan.backup({ id: "snapshot1" }), { saved: "snapshot1" });
-  assert.equal(threatmodel({ controls: ["url validation"] }).owner, "caller");
-  await assert.rejects(() => backupplan().restore({}), /restore handler is not configured/);
-});
+/* the packaging surface quartet (surfacemanifest/surfacebundle, the
+ * desktop and mobile adapter pair, the n8n quartet) and the operations
+ * quartet (controlsurface, operationsmetrics, retentionpolicy,
+ * backupplan, threatmodel) moved to devthink with the automation domain
+ * (the saddle ownership law, wave a, actions 108-112 — the moved lanes
+ * keep their battery at devthink/tests/automation.test.ts). */
 
 it("serves operator controls through web request and response contracts", async () => {
   const service = controlservice({ verify: async (token) => token === "ok" ? { subject: "operator" } : null, adapters: { jobs: { list: async () => [{ id: "job1" }] } } });
@@ -1210,12 +1083,8 @@ it("keeps PWA registration declarative and capability gated", () => {
   assert.deepEqual(cdncapabilities({ immutable: true, range: true, integrityheaders: true, cors: true }), { version: 1, immutable: true, purge: false, range: true, integrityheaders: true, cors: true, visibility: "public", state: "caller-reports" });
 });
 
-it("keeps Mini App validation and DNS mutation caller-owned", () => {
-  const miniapp = miniappplan({ origin: "https://app.example/", validation: "signed-init-data", capabilities: ["open-link"] });
-  assert.equal(miniapp.state, "caller-validates");
-  assert.throws(() => miniappplan({ origin: "https://app.example/", validation: "signed-init-data", token: "forbidden" }), /credentials/);
-  assert.equal(dnsplan({ hostname: "app.example", owner: "team", dnssec: true, https: true }).state, "caller-configures");
-  const bridge = applicationbridge({ surfaces: [{ id: "web", target: "browser", capabilities: ["fetch"] }, { id: "mobile", target: "mobile", capabilities: ["storage"] }] });
-  assert.equal(bridge.surfaces.length, 2);
-});
+/* the mini app surface pair (miniappplan, dnsplan) and the application
+ * bridge moved to devthink with the automation domain (the saddle
+ * ownership law, wave a, actions 108-112 — the moved lanes keep their
+ * battery at devthink/tests/automation.test.ts). */
 });

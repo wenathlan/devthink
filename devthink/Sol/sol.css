@@ -12029,8 +12029,13 @@ span[data-tile] {
     radial-gradient(140% 100% at 50% 0%, color-mix(in oklab, var(--color-veil) 10%, transparent), transparent 58%),
     var(--noise);
   background-blend-mode: normal, soft-light;
+  /* the drop stays the contained two-step of the mica card — the wide
+   * freehand drops of the first cut never return (the entryface law) —
+   * while the card rides the house window shadow token beside it (the
+   * login shadow law: no hand-built drop leaks without the token). */
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--color-veil) 24%, transparent),
+    0 16px 40px rgb(0 0 0 / 22%),
     var(--win-shad-window);
   -webkit-backdrop-filter: blur(30px) saturate(1.35);
   backdrop-filter: blur(30px) saturate(1.35);

@@ -2,13 +2,14 @@
  * simulation tests for the e2ugh engine (worklog task v5-E): the suite
  * runs the real modules end to end — a full engine and vm plane
  * lifecycle with live child processes and bus events, qemu argv built
- * from the vm.config profiles against a flag allowlist, the 24 stage
- * media pipeline over three synthetic jobs including a purposeful
- * fail-fast abort, the scheduler admission ladder with the psi lstm,
- * the reinforcement learning autoscaler, crdt convergence over three
- * replicas, the passage secure channel roundtrip with tamper
- * rejection, the compute plane canary/ebpf/chatops builders and the
- * coherence of every processor and gpu entry of the camel case specs.
+ * from the vm.config profiles against a flag allowlist, the scheduler
+ * admission ladder with the psi lstm, the reinforcement learning
+ * autoscaler, crdt convergence over three replicas, the compute plane
+ * canary/ebpf/chatops builders and the coherence of every processor
+ * and gpu entry of the camel case specs. the 24 stage media pipeline
+ * and the passage secure channel roundtrip moved to devthink with the
+ * media domain (the saddle ownership law, wave a, actions 108-112 —
+ * the moved lanes keep their battery at devthink/tests/media.test.ts).
  */
 
 import assert from "node:assert/strict";
@@ -19,15 +20,6 @@ import { fileURLToPath } from "node:url";
 import { describe, it } from "vitest";
 import { chatopsdashboard, ebpfgputelemetry, wasmcanaryvalidator } from "../compute.js";
 import { createVirtualEngine, disposeengine, engineeventbus, randomPort } from "../index.js";
-import {
-  buildffmpegcommand,
-  type mediajob,
-  mediapipeline,
-  mediapipelineerror,
-  type mediaprobe,
-  passagesecurechannel,
-  stagecatalog,
-} from "../media.js";
 import { kvmavailable, orchestrator, qemuruntime } from "../orchestrator.js";
 import { buildQemuTcgArgs } from "../performance.js";
 import { psilstm, rlautoscaler, tenantadmission, vmconfigcrdt } from "../scheduler.js";
@@ -35,13 +27,6 @@ import { buildqemucmd } from "../virtualization.js";
 
 /** repository root resolved from this test file location. */
 const reporoot = join(dirname(fileURLToPath(import.meta.url)), "..");
-
-/** resolves one stage name from the live catalog by its index. */
-function stagename(index: number): string {
-  const entry = stagecatalog.find((stage) => stage.index === index);
-  assert.ok(entry !== undefined, `the stage catalog must carry index ${index}`);
-  return entry.name;
-}
 
 /** waits until the predicate holds or the timeout elapses. */
 async function waituntil(predicate: () => boolean, timeoutms: number): Promise<boolean> {
@@ -422,140 +407,11 @@ describe("the simulation contract", () => {
   });
 
   /* ------------------------------------------------------------------ */
-  /* simulation 3: media pipeline over three synthetic jobs              */
+  /* simulation 3 (the 24-stage media pipeline over three synthetic     */
+  /* jobs) moved to devthink with the media domain (the saddle          */
+  /* ownership law, wave a, actions 108-112 — the moved lane keeps its  */
+  /* battery at devthink/tests/media.test.ts).                          */
   /* ------------------------------------------------------------------ */
-
-  /** an interlaced 4k hdr probe that keeps every gpu stage eligible. */
-  const hdrprobe: mediaprobe = {
-    durationsec: 135.2,
-    video: {
-      codec: "h264",
-      width: 3840,
-      height: 2160,
-      fps: 29.97,
-      bitdepth: 10,
-      hdr: true,
-      interlaced: true,
-    },
-    audio: [{ codec: "aac", samplerate: 48000, channels: 2 }],
-    estimatedworkingsetmb: 2048,
-  };
-
-  /** a plain progressive sdr probe for 1080p material. */
-  const flatprobe: mediaprobe = {
-    ...hdrprobe,
-    video: {
-      codec: "h264",
-      width: 1920,
-      height: 1080,
-      fps: 29.97,
-      bitdepth: 8,
-      hdr: false,
-      interlaced: false,
-    },
-  };
-
-  it("media pipeline executes three synthetic jobs honoring skip rules and fail-fast", () => {
-    const healthy: mediajob = {
-      id: "sim-healthy",
-      inputpath: "/data/in/scene_4k_hdr_interlaced.mp4",
-      outputpath: "/data/out/scene_av1_p4.mp4",
-      mode: "hevc_hdr_to_av1_sdr_tonemap",
-      outputprofile: {
-        videocodec: "av1",
-        audiocodec: "aac",
-        resolution: { w: 1920, h: 1080 },
-        bitratekbps: 8000,
-        preset: "p4",
-        tonemap: true,
-        vmaftarget: 93,
-        bframes: 3,
-        gopsec: 4,
-      },
-      priority: 1,
-      memoryplandigest: "sha256:simdigest",
-    };
-    const doomed: mediajob = {
-      id: "sim-doomed",
-      inputpath: "/data/in/talk_1080p_progressive.mp4",
-      outputpath: "/data/out/talk_av1_p1.mp4",
-      mode: "cbr_low_latency",
-      outputprofile: {
-        videocodec: "av1",
-        audiocodec: "aac",
-        resolution: { w: 1920, h: 1080 },
-        bitratekbps: 4000,
-        preset: "p1",
-        tonemap: false,
-      },
-      priority: 2,
-    };
-    const subtitled: mediajob = {
-      id: "sim-subtitled",
-      inputpath: "/data/in/talk_1080p_progressive.mp4",
-      outputpath: "/data/out/talk_h264_p4.mp4",
-      mode: "cbr_low_latency",
-      outputprofile: {
-        videocodec: "h264",
-        audiocodec: "aac",
-        resolution: { w: 1920, h: 1080 },
-        bitratekbps: 6000,
-        preset: "p4",
-        tonemap: false,
-      },
-      priority: 2,
-      metadata: { subtitlepath: "/data/in/talk.srt", logopath: "/data/in/talk.png" },
-    };
-
-    const pipe = new mediapipeline({ failfast: true });
-    const results = pipe.executebatch([healthy, doomed, subtitled], [hdrprobe, flatprobe, flatprobe], 2);
-    assert.equal(results.length, 3, "the batch returns one result per job");
-
-    const [healthyresult, doomedresult, subtitledresult] = results;
-    assert.ok(healthyresult !== undefined && doomedresult !== undefined && subtitledresult !== undefined);
-
-    assert.equal(healthyresult.success, true, "the healthy job finishes all 24 stages");
-    assert.equal(healthyresult.metrics.length, 24);
-    const skipped = healthyresult.metrics.filter((record) => record.skipped).map((record) => record.stage);
-    assert.ok(!skipped.includes(stagename(10)), "interlaced input keeps deinterlace");
-    assert.ok(!skipped.includes(stagename(12)), "hdr tonemap stays enabled");
-    assert.ok(skipped.includes(stagename(13)), "no denoise mode skips the denoise stage");
-    assert.ok(skipped.includes(stagename(18)), "no subtitle path skips the burn stage");
-    const preview = healthyresult.ffmpegpreview.join(" ");
-    assert.ok(preview.includes("-preset p4"), "the encode preview carries preset p4");
-    assert.ok(preview.includes("-rc vbr_hq"), "the encode preview carries rc vbr_hq");
-    assert.ok(preview.includes("-b_ref_mode 2"), "the encode preview carries b_ref_mode 2");
-    assert.ok(preview.includes("bwdif_cuda=0:-1:0"), "the filter chain deinterlaces on cuda");
-    assert.ok(healthyresult.passageframes >= 1, "stage 20 seals at least one passage frame");
-
-    assert.equal(doomedresult.success, false, "the av1 p1 job must fail");
-    const failure = doomedresult.metrics.find((record) => !record.success);
-    assert.ok(failure !== undefined, "the failing stage is reported");
-    assert.equal(failure.stage, stagename(15));
-    assert.ok(failure.error !== undefined && /p1/.test(failure.error), "the report names the p1 rejection");
-    assert.ok(doomedresult.metrics.length < 24, "fail-fast aborts the remaining stages");
-    assert.ok(
-      doomedresult.metrics.every((record) => record.index <= 15),
-      "no record may exist beyond the aborted stage",
-    );
-
-    assert.equal(subtitledresult.success, true, "the subtitled job completes");
-    assert.equal(subtitledresult.metrics.length, 24);
-    assert.ok(
-      !subtitledresult.metrics.filter((record) => record.stage === stagename(18)).some((record) => record.skipped),
-      "a subtitle path keeps the burn stage active",
-    );
-
-    const direct = buildffmpegcommand(healthy, hdrprobe, stagename(15));
-    assert.deepEqual(
-      direct.filter((token) => token === "-preset" || token === "-rc"),
-      ["-preset", "-rc"],
-    );
-    assert.equal(direct[direct.indexOf("-preset") + 1], "p4");
-    assert.equal(direct[direct.indexOf("-rc") + 1], "vbr_hq");
-    assert.equal(direct[direct.indexOf("-b_ref_mode") + 1], "2");
-    assert.equal(direct[direct.indexOf("-multipass") + 1], "2");
-  });
 
   /* ------------------------------------------------------------------ */
   /* simulation 4a: tenant admission under psi pressure                  */
@@ -707,50 +563,11 @@ describe("the simulation contract", () => {
   });
 
   /* ------------------------------------------------------------------ */
-  /* simulation 5: passage secure channel roundtrip                      */
+  /* simulation 5 (the passage secure channel roundtrip with tamper      */
+  /* rejection) moved to devthink with the media domain (the saddle       */
+  /* ownership law, wave a, actions 108-112 — the moved lane keeps its    */
+  /* battery at devthink/tests/media.test.ts).                           */
   /* ------------------------------------------------------------------ */
-
-  it("passage secure channel seals, opens, splits at the mtu and rejects tampering", () => {
-    const alice = new passagesecurechannel();
-    const message = JSON.stringify({ vmid: "vm-sim", op: "migrate", phase: "cutover" });
-    const frames = alice.seal(message);
-    assert.equal(frames.length, 1, "a sub-mtu message seals into one frame");
-    assert.equal(frames[0]?.truncated, false);
-    const opened = alice.open(frames[0]);
-    assert.equal(opened.toString("utf8"), message, "the roundtrip restores the plaintext");
-
-    const flipped = Buffer.from(frames[0]?.payload ?? Buffer.alloc(0));
-    flipped[0] = (flipped[0] ?? 0) ^ 0xff;
-    const tampered = { frame: frames[0], payload: flipped };
-    assert.throws(
-      () => alice.open({ ...tampered.frame, payload: tampered.payload }),
-      (error: unknown) =>
-        error instanceof mediapipelineerror && error.code === "PASSAGE_OPEN" && /signature/i.test(error.message),
-      "a flipped ciphertext byte must fail the ed25519 verification",
-    );
-    const reversed = Buffer.from(frames[0]?.signature ?? Buffer.alloc(0)).reverse();
-    assert.throws(
-      () => alice.open({ ...frames[0], signature: reversed }),
-      (error: unknown) => error instanceof mediapipelineerror,
-      "a swapped signature is rejected",
-    );
-    const bob = new passagesecurechannel();
-    assert.throws(
-      () => bob.open(frames[0]),
-      (error: unknown) => error instanceof mediapipelineerror,
-      "another channel key pair cannot open alice frames",
-    );
-
-    const big = Buffer.alloc(200000, 7);
-    const split = alice.seal(big);
-    assert.equal(split.length, Math.ceil(200000 / 65536), "the message splits at the 65536 mtu");
-    assert.ok(
-      split.every((frame) => frame.truncated),
-      "every chunk is marked truncated",
-    );
-    const reassembled = Buffer.concat(split.map((frame) => alice.open(frame)));
-    assert.equal(reassembled.equals(big), true, "the reassembled payload is byte identical");
-  });
 
   /* ------------------------------------------------------------------ */
   /* simulation 6: compute plane — canary, ebpf telemetry and chatops    */

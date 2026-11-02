@@ -21,8 +21,12 @@ import { join } from "node:path";
  */
 
 /* the grand-merge layout: the public logic surface is the flat set of root
-   domain TypeScript files; the formatting contract checks each of them. */
-const domains = ["index", "foundation", "isolation", "virtual", "execution", "browser", "communication", "integration", "automation", "intelligence", "distribution", "modes", "cli", "server", "format", "alternatives", "compute", "media", "orchestrator", "performance", "quantum", "render", "scheduler", "security", "tiers", "virtualcpu", "virtualgpu", "virtualization", "virtualmemory"];
+   domain TypeScript files; the formatting contract checks each of them. the
+   automation, intelligence and media domains moved to devthink (the saddle
+   ownership law, wave a, actions 108-112 — the master virtualization engine
+   keeps only the sandbox/vm/runner/vgpu/vcpu/ports/hardware-virtual
+   modalities). */
+const domains = ["index", "foundation", "isolation", "virtual", "execution", "browser", "communication", "integration", "distribution", "modes", "cli", "server", "format", "alternatives", "compute", "orchestrator", "performance", "quantum", "render", "scheduler", "security", "tiers", "virtualcpu", "virtualgpu", "virtualization", "virtualmemory"];
 
 /** Finds domain files that do not follow the skill formatting contract. */
 export async function formatissues(root = process.cwd()) {
