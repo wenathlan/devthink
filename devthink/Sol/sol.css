@@ -12029,12 +12029,9 @@ span[data-tile] {
     radial-gradient(140% 100% at 50% 0%, color-mix(in oklab, var(--color-veil) 10%, transparent), transparent 58%),
     var(--noise);
   background-blend-mode: normal, soft-light;
-  /* the contained shadow law: the drop rides the house token — the
-   * hand-built drop (0 16px 40px) that could leak past the face retired
-   * with the design login law, the token owns the elevation alone */
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--color-veil) 24%, transparent),
-    var(--win-shad-window);
+    0 16px 40px rgb(0 0 0 / 22%);
   -webkit-backdrop-filter: blur(30px) saturate(1.35);
   backdrop-filter: blur(30px) saturate(1.35);
   animation: dtwloginpane 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
@@ -22426,15 +22423,16 @@ button.dtc-recents__row {
    the fan-deck clay. The chrome rules (selection, focus, drag) scope to
    .saas-root — the landing root owns them — while the material classes
    stay global like the reference sheet. Nothing here removes or demotes
-   a class another page renders (the 8-d doctrine holds); the Google Fonts
-   stylesheet for the Urbanist voice rides the face injection of
-   IntroSaas.tsx and the stack falls back to the house Inter Variable
-   where the network or the frozen CSP keeps the remote face from loading.
+   a class another page renders (the 8-d doctrine holds); the Urbanist
+   variable voice rides the offline fontsource import of
+   IntroSaas.tsx (the #270 offline law — no cdn origin ever names the
+   sources) and the stack falls back to the house Inter Variable
+   wherever the target never loaded the winget.
    ========================================================================== */
 
 /* the voice of the landing: Urbanist over the house stack */
 .saas-root {
-  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.015em;
 }
 .saas-root ::selection {
@@ -22456,19 +22454,19 @@ button.dtc-recents__row {
 
 /* the three tiers of the reference voice */
 .font-thin-tier {
-  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   letter-spacing: -0.005em;
   line-height: 1.45;
 }
 .font-medium-tier {
-  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   font-weight: 600;
   letter-spacing: -0.018em;
   line-height: 1.25;
 }
 .font-bold-tier {
-  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.02;

@@ -264,7 +264,7 @@ RUN set -eux; \
     done; \
     test "$apt_update_tries" -gt 0; \
     rm -rf /var/lib/apt/lists/*; \
-    bunversion="$(node -p "require('./package.json').engines.bun.replace(/^[~^]/,'')")"; \
+    bunversion="$(node -p "require('./package.json').engines.bun.match(/>=?\s*(\d+\.\d+\.\d+[^\s>]*)/)?.[1] ?? require('./package.json').engines.bun.replace(/^[~^]/,'')")"; \
     test "${bunversion}" != ""; \
     npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
@@ -321,7 +321,7 @@ RUN set -eux; \
     done; \
     test "$apt_update_tries" -gt 0; \
     rm -rf /var/lib/apt/lists/*; \
-    bunversion="$(node -p "require('./package.json').engines.bun.replace(/^[~^]/,'')")"; \
+    bunversion="$(node -p "require('./package.json').engines.bun.match(/>=?\s*(\d+\.\d+\.\d+[^\s>]*)/)?.[1] ?? require('./package.json').engines.bun.replace(/^[~^]/,'')")"; \
     test "${bunversion}" != ""; \
     npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"

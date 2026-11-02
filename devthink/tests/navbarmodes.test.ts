@@ -22,7 +22,8 @@
  * - the css ladder of sol.css (the floating pad with the rounded corners,
  *   the docked rails with the side indicator ladder and the body
  *   reservation, the gsap handover, the reduced-motion guard) beside the
- *   login shadow law (the --win-shad-* tokens, clipped by the login face).
+ *   login shadow law (the design band drop and the --win-shad-* tokens,
+ *   clipped by the login face).
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -472,12 +473,15 @@ describe("the css ladder of the two modes (the sol.css pins)", () => {
   });
 });
 
-describe("the login shadow law (the --win-shad-* tokens, clipped by the login face)", () => {  it("the sign-in card rides the house window shadow token — no hand-built drop leaks", () => {
+describe("the login shadow law (the design band drop and the --win-shad-* tokens, clipped by the login face)", () => {  it("the sign-in card rides the design band drop the window refit law stamped", () => {
     const card = solcss.indexOf(".dtw-login__card {");
     expect(card).toBeGreaterThan(-1);
     const cardblock = solcss.slice(card, card + 2400);
     expect(cardblock).toContain("box-shadow:");
-    expect(cardblock).toContain("var(--win-shad-window)");
+    // the window refit law (#306): the family windows ride the design band —
+    // the hand-built drop (0 16px 40px rgb(0 0 0 / 22%)) owns the login
+    // card elevation while the token ladder keeps the flyout alone
+    expect(cardblock).toContain("0 16px 40px rgb(0 0 0 / 22%)");
     expect(cardblock).not.toContain("0 16px 40px -18px");
   });
 

@@ -37,8 +37,12 @@ beforeAll(async () => {
     timeout: 120000,
   });
   // push the repo schema into the isolated database (the same command the
-  // consumer runs after init — verifies the schema loads under prisma 7)
-  await exec("bunx", ["prisma", "db", "push"], {
+  // consumer runs after init — verifies the schema loads under prisma 7).
+  // the config rides the explicit --config flag: the prisma 7 resolver
+  // auto-discovers prisma.config.ts alone, and the repository names its
+  // config prismaconfig.ts (the flat keyword law), so the bare db push
+  // never finds the datasource url without the flag
+  await exec("bunx", ["prisma", "db", "push", "--config", "prismaconfig.ts"], {
     cwd: appdir,
     env: { ...process.env, DEVTHINK_DATABASE_URL: process.env.DEVTHINK_DATABASE_URL },
     timeout: 120000,

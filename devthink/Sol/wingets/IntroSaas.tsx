@@ -38,6 +38,7 @@ import {
   Tv,
   Users,
 } from "lucide-react";
+import "@fontsource-variable/urbanist";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { saaschrome, saasheadertabs, saasrailstops } from "../../saascontent.ts";
@@ -46,25 +47,12 @@ import { SaasAdvisor, SaasCadria, SaasDebonair, SaasExplorer, SaasFooter } from 
 import { SaasCreators, SaasHero, SaasStudioFlow, SaasWorkspace } from "./IntroSaassections.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
-/** The reference voice: the Urbanist stylesheet of the Google Fonts CDN,
- * injected once per document at import time (the reference @import). Where
- * the frozen CSP of a target keeps the remote face from loading (the
- * extension pages), the tier stacks of sol.css fall back to the house
- * Inter Variable voice — the face never blanks. */
-const SAAS_FONT_CSS = "@import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800&display=swap');";
-
-let saasCssReady = false;
-
-/** Injects the Urbanist stylesheet exactly once per document, at import time. */
-function ensureSaasCss(): void {
-  if (saasCssReady || typeof document === "undefined") return;
-  saasCssReady = true;
-  const tag = document.createElement("style");
-  tag.setAttribute("data-dt-saas", "");
-  tag.textContent = SAAS_FONT_CSS;
-  document.head.appendChild(tag);
-}
-ensureSaasCss();
+/** The reference voice: the Urbanist variable font rides the offline
+ * fontsource import (the #270 offline law — the fonts cdn leaves for the
+ * self-hosted imports, so no origin literal ever names the sources and
+ * the face never rides a third-party request). The tier stacks of sol.css
+ * fall back to the house Inter Variable voice wherever the target never
+ * loaded the winget — the face never blanks. */
 
 /** The lucide glyph and the ink color each header tab wears — the exact
  * reference pair (the OS spark in indigo, the explorer compass in sky, the

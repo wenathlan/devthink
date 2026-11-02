@@ -257,10 +257,14 @@ describe("the voice (the Urbanist law of the reference)", () => {
     }
   });
 
-  it("the face injects the Urbanist stylesheet and falls back to the house voice", () => {
-    expect(saas).toContain("fonts.googleapis.com/css2?family=Urbanist:wght@400;600;800");
+  it("the face imports the Urbanist variable font offline and falls back to the house voice", () => {
+    // the #270 offline law the sweep gate stamps: the fonts cdn leaves for
+    // the self-hosted fontsource import, so no origin literal names the face
+    expect(saas).toContain('import "@fontsource-variable/urbanist"');
+    expect(saas).not.toContain("fonts.googleapis.com");
     const root = landingrule(".saas-root");
-    expect(root).toContain('"Urbanist"');
+    expect(root).toContain('"Urbanist Variable"');
+    expect(root).toContain('"Inter Variable"');
     expect(root).toContain("letter-spacing: -0.015em");
   });
 });
