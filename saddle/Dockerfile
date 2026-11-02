@@ -922,7 +922,7 @@ COPY --from=python-bridge /bridge/qemubridge.py /engine/qemubridge.py
 # the engine sources and the specification files consumed at runtime
 # (docker.config "final" stage copies the whole tree; the flat layout
 # keeps that a single COPY layer).
-COPY saddle/*.ts saddle/package.json saddle/tsconfig.json saddle/biome.jsonc saddle/jsdom.d.ts /engine/
+COPY saddle/*.ts saddle/package.json saddle/tsconfig.json saddle/biome.jsonc saddle/jsdomtypes.ts /engine/
 COPY saddle/processors.json saddle/gpus.json saddle/cores.json saddle/boards.json saddle/vm.config.json saddle/virtualhardware.json /engine/
 COPY saddle/qemu.config saddle/mttg.config saddle/passage.config docker.config saddle/mime.types /engine/
 # the engine-ownership sibling: db.ts pulls labels.ts whose
@@ -1415,15 +1415,15 @@ COPY --from=saddle-build /app/dist ./dist
 # for the .ts sources). the console set closes the whole import graph:
 # webserver.ts pulls modalityregistry.ts, edgeplane.ts and
 # workloadlaw.ts; edgeplane.ts pulls foundation.ts and the edgelandes
-# family (edgelandes.ts, edgelandes.host.ts, edgelandes.inproc.ts,
-# edgelandes.virtual.ts, edgelandes.ninety.ts); db.ts pulls labels.ts
+# family (edgelandes.ts, edgelandeshost.ts, edgelandesinproc.ts,
+# edgelandesvirtual.ts, edgelandesninety.ts); db.ts pulls labels.ts
 # whose ../vault/labelstore.ts import resolves at /vault (the family
 # context fix - the vault source lands beside /app the same way the
 # saddle-build stage lands it). with the graph closed, node
 # webserver.ts starts clean; before the fix the container crashed at
 # boot with module-not-found.
 # run the console with: docker run saddle:<version> node webserver.ts
-COPY --from=saddle-build /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/sandboxprofile.ts /app/sandboxenvprofile.ts /app/sandboxquota.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/edgelandes.host.ts /app/edgelandes.inproc.ts /app/edgelandes.virtual.ts /app/edgelandes.ninety.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+COPY --from=saddle-build /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/sandboxprofile.ts /app/sandboxenvprofile.ts /app/sandboxquota.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/edgelandeshost.ts /app/edgelandesinproc.ts /app/edgelandesvirtual.ts /app/edgelandesninety.ts /app/mime.types /app/init.sql /app/schema.prisma ./
 # the label store of the console stack: labels.ts (pulled by db.ts)
 # resolves ../vault/labelstore.ts at /vault - the same family context
 # fix the saddle-build stage applies.

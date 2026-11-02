@@ -7,7 +7,7 @@
  * drives a unique temp database so the runs stay isolated.
  */
 
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -27,6 +27,17 @@ import {
 // the db home of this run: the env is read at open time (the first store
 // call), never at import, so pointing it here isolates the run
 process.env.VAULT_UISTORE_DB = join(mkdtempSync(join(tmpdir(), "vault-uistore-")), "uistore.db");
+
+// the route lane below boots the engine itself (api.ts evaluates the
+// storage singleton of drizzle.ts at import), so the storage truth routes
+// into the throwaway store of the os tmpdir BEFORE the dynamic import
+// evaluates (the quotaisolation precedent) — the run never drops a
+// vault-storage.db beside the sources (the faun seal of the deploy wave).
+const storageThrowaway = join(tmpdir(), `vault-uistore-${process.pid}.storage.db`);
+process.env.VAULT_STORAGE_URL = `file:${storageThrowaway}`;
+for (const suffix of ["", "-wal", "-shm"]) {
+  rmSync(`${storageThrowaway}${suffix}`, { force: true });
+}
 
 describe("uistore seed", () => {
   it("carries the product-face copy verbatim — nothing invented, nothing dropped", () => {

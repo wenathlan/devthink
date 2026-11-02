@@ -8,7 +8,7 @@
  *
  * optional persistence block: set DEVTHINK_CONSUMER_DB=1 after provisioning
  * the prisma context the library documents (the schema.prisma and
- * prisma.config.ts of the repository beside the consumer, npm install
+ * prismaconfig.ts of the repository beside the consumer, npm install
  * prisma, db push and generate) — the engine write path must land real
  * rows in the pushed database
  */

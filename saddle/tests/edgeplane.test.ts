@@ -322,9 +322,9 @@ describe("the edge plane answers the visitor law", () => {
     // base wire executors (the sigv4 signer, the wire clients and the
     // kernel recipes), and the container and clr ids carry the host
     // binary lanes (the hardened docker run and the dotnet compile)
-    const { edgelaneexecutorsall } = await import("../edgelandes.ninety.ts");
+    const { edgelaneexecutorsall } = await import("../edgelandesninety.ts");
     const { edgelaneexecutors } = await import("../edgelandes.ts");
-    const { edgelaneexecutorshost } = await import("../edgelandes.host.ts");
+    const { edgelaneexecutorshost } = await import("../edgelandeshost.ts");
     for (const id of [
       "storage-s3",
       "storage-libsql",
@@ -350,7 +350,7 @@ describe("the edge plane answers the visitor law", () => {
     // moves the default, it never deletes the rehearsal surface. the
     // wiring wave seated five more rehearsal lanes: the map rides at
     // twenty-four
-    const { edgelaneexecutorsinproc } = await import("../edgelandes.inproc.ts");
+    const { edgelaneexecutorsinproc } = await import("../edgelandesinproc.ts");
     assert.equal(Object.keys(edgelaneexecutorsinproc).length, 24, "the rehearsal map keeps its twenty-four lanes");
   });
 

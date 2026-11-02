@@ -892,7 +892,7 @@ export const seedOsGatewayStructure = `devthink/
     console/                # the cli design page
     capacitor.config.ts     # the android wrapper — same interface
     vercel.json netlify.toml # platform manifests — deploy from here
-  prisma.config.ts          # prisma 7 config (datasource url, client output)
+  prismaconfig.ts           # prisma 7 config (datasource url, client output)
   Dockerfile                # the one container file
   .github/workflows/        # ci release publish npm maven nuget ghcr security maintenance
   tests/                    # vitest tests flat *.test.ts

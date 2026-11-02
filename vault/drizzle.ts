@@ -11,6 +11,12 @@
 // the same declarations — when MYSQL_URL answers, the engine refuses loudly
 // until that rung lands (see storageDriverKind).
 //
+// The accounts wave adds the person lane: the accounts table (the password
+// only as its scrypt digest) and the project_keys table (the vk_ bearers
+// only as their sha-256 digests), with the owner pointer on projects — a
+// store opened before the wave keeps its rows and climbs the pragma-guarded
+// column ladder on the next boot.
+//
 // @section tables — the drizzle declarations
 // @section boot — the idempotent DDL and the connection
 // @section seam — the mysql2 rung
@@ -25,6 +31,18 @@ import type { ObjectManifest } from "./chunks.ts";
 
 /** @section tables */
 
+/** the accounts table — the person lane of the clone: one row per account, the password only as its salted scrypt digest. */
+export const accounts = sqliteTable("accounts", {
+  /** the account identity (text pointer, ledger-issued) */
+  id: text("id").primaryKey(),
+  /** the unique email the account answers to (normalized: trimmed, lowered) */
+  email: text("email").notNull().unique(),
+  /** the scrypt digest of the password — `salthex:digesthex`, never the plaintext */
+  passwordHash: text("password_hash").notNull(),
+  /** the creation datetime of the row */
+  createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+});
+
 /** the projects table — the owner scope every object and quota hangs from. */
 export const projects = sqliteTable("projects", {
   /** the project identity (text pointer, the owner names it) */
@@ -33,6 +51,8 @@ export const projects = sqliteTable("projects", {
   name: text("name").notNull(),
   /** the region the project serves from */
   region: text("region").notNull().default("local"),
+  /** the owning account (text pointer, null when the operator token minted the scope) */
+  accountId: text("account_id").references(() => accounts.id),
   /** the creation datetime of the row */
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
 });
@@ -113,17 +133,54 @@ export const quotas = sqliteTable("quotas", {
   updatedAt: text("updated_at").notNull().default(sql`(datetime('now'))`),
 });
 
+/** the project_keys table — the vk_ bearers: one row per issued api key, the secret only as its sha-256 digest. */
+export const projectKeys = sqliteTable(
+  "project_keys",
+  {
+    /** the key identity (text pointer, ledger-issued) */
+    id: text("id").primaryKey(),
+    /** the project the key authorizes (text pointer) */
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id),
+    /** the sha-256 digest of the vk_ secret — the raw key never lands */
+    keyHash: text("key_hash").notNull().unique(),
+    /** the human label of the key (what the list lane answers) */
+    label: text("label").notNull(),
+    /** the creation datetime of the row */
+    createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
+    /** the last use datetime — null until the key first rides the gate */
+    lastUsedAt: text("last_used_at"),
+  },
+  (table) => [index("project_keys_project").on(table.projectId, table.createdAt)],
+);
+
 /** the storage tables the boot DDL lays down (the runtime catalog of the engine). */
-export const storageTables = ["projects", "storage_objects", "chunks", "chunk_refs", "quotas"] as const;
+export const storageTables = [
+  "accounts",
+  "projects",
+  "storage_objects",
+  "chunks",
+  "chunk_refs",
+  "quotas",
+  "project_keys",
+] as const;
 
 /** @section boot */
 
 /** The schema statements the boot lays down once per fresh file — idempotent, no .sql anywhere. */
 const BOOT_DDL: readonly string[] = [
+  `CREATE TABLE IF NOT EXISTS accounts (
+     id            TEXT PRIMARY KEY,
+     email         TEXT NOT NULL UNIQUE,
+     password_hash TEXT NOT NULL,
+     created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+   )`,
   `CREATE TABLE IF NOT EXISTS projects (
      id         TEXT PRIMARY KEY,
      name       TEXT NOT NULL,
      region     TEXT NOT NULL DEFAULT 'local',
+     account_id TEXT REFERENCES accounts(id),
      created_at TEXT NOT NULL DEFAULT (datetime('now'))
    )`,
   `CREATE TABLE IF NOT EXISTS storage_objects (
@@ -164,7 +221,36 @@ const BOOT_DDL: readonly string[] = [
      limit_bytes INTEGER,
      updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
    )`,
+  `CREATE TABLE IF NOT EXISTS project_keys (
+     id           TEXT PRIMARY KEY,
+     project_id   TEXT NOT NULL REFERENCES projects(id),
+     key_hash     TEXT NOT NULL UNIQUE,
+     label        TEXT NOT NULL,
+     created_at   TEXT NOT NULL DEFAULT (datetime('now')),
+     last_used_at TEXT
+   )`,
+  `CREATE INDEX IF NOT EXISTS project_keys_project
+     ON project_keys(project_id, created_at DESC)`,
 ];
+
+/**
+ * Adds one column to an existing table when it never landed — the accounts
+ * wave ladder: sqlite answers no ADD COLUMN IF NOT EXISTS, so the pragma
+ * guard keeps the climb idempotent (a fresh file carries the column in the
+ * CREATE, a store opened before the wave gains it on the next boot).
+ *
+ * @param database the executing connection.
+ * @param table the table to climb.
+ * @param column the column the ladder adds.
+ * @param ddl the ALTER statement the climb runs.
+ */
+function ensureColumn(database: StorageDatabase, table: string, column: string, ddl: string): void {
+  const rows = database.all<{ name: string }>(sql.raw(`PRAGMA table_info(${table})`));
+  if (rows.some((row) => row.name === column)) {
+    return;
+  }
+  database.run(sql.raw(ddl));
+}
 
 /** The executing storage connection: drizzle over better-sqlite3, the raw client reachable through $client. */
 export type StorageDatabase = ReturnType<typeof drizzle>;
@@ -183,6 +269,15 @@ export function ensureStorageSchema(database: StorageDatabase): void {
   for (const statement of BOOT_DDL) {
     database.run(sql.raw(statement));
   }
+  /* the accounts wave ladder: a store opened before the wave keeps its
+   * projects table (CREATE IF NOT EXISTS never rewrites a standing table),
+   * so the owner pointer climbs on the first boot after the upgrade. */
+  ensureColumn(
+    database,
+    "projects",
+    "account_id",
+    "ALTER TABLE projects ADD COLUMN account_id TEXT REFERENCES accounts(id)",
+  );
 }
 
 /**

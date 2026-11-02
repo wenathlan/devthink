@@ -122,11 +122,11 @@ describe("cli init", () => {
     expect(stdout).toContain("init");
     expect(existsSync(join(workdir, "config.mjs"))).toBe(true);
     expect(existsSync(join(workdir, "schema.prisma"))).toBe(true);
-    expect(existsSync(join(workdir, "prisma.config.ts"))).toBe(true);
+    expect(existsSync(join(workdir, "prismaconfig.ts"))).toBe(true);
     expect(existsSync(join(workdir, ".env.example"))).toBe(true);
     expect(stdout).toContain("config.mjs");
     expect(stdout).toContain("schema.prisma");
-    expect(stdout).toContain("prisma.config.ts");
+    expect(stdout).toContain("prismaconfig.ts");
   });
 
   it("the scaffold is .mjs — loadable by plain node in a typeless package", () => {
@@ -152,7 +152,7 @@ describe("cli init", () => {
   });
 
   it("the prisma config resolves the schema and datasource url", () => {
-    const prismaconfig = readFileSync(join(workdir, "prisma.config.ts"), "utf8");
+    const prismaconfig = readFileSync(join(workdir, "prismaconfig.ts"), "utf8");
     expect(prismaconfig).toContain("schema.prisma");
     expect(prismaconfig).toContain("DEVTHINK_DATABASE_URL");
   });

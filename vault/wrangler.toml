@@ -4,4 +4,7 @@ main = "index.html"
 compatibility_date = "2026-09-29"
 
 [assets]
-directory = "."
+# the deploy safety law: the workers lane mounts the build output only —
+# the application root carries the engine's runtime sqlite stores and must
+# never ship as assets.
+directory = "dist"

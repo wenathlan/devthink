@@ -1,4 +1,4 @@
-// # vocalsynth — the formant voice of the katexis engine (root layer): the
+// # vocalsynth — the syllable voice of the katexis engine (root layer): the
 // sample-accurate vowel synthesizer the engine corpus documents (doc 16 of
 // outros.debonair). A glottal saw source rides a three-formant bandpass bank
 // (the vowel table), syllables land on the grid, vibrato is seeded so the
@@ -13,25 +13,26 @@
 // top line (the highest note at every step, the bass sitting out — every
 // pattern note is a melodic note of the score), and the phrase breathing
 // is seeded (a phrase sings, a breath rests — the same plan and seed
-// answer the same sung line). the SECOND RUNG — the formant render itself
-// (renderVoice's vowel bank mixed into the offline bounce under its own
-// voice bus) — is the deeper integration the next wave rides; this rung
-// keeps the loop closing without it.
+// answer the same sung line). the SECOND RUNG landed with the formant
+// wave: formant.ts owns the source-filter resonator law and the formant
+// table (this lane re-exports the table it always published and rides
+// the same bandpass through the exported helper — one implementation
+// home), sungLineOf hands the sung line to any render lane, and the
+// offline bounce's voice option (renderworker) sings it through the
+// full formant bank under its own voice bus — the flute seat of the
+// first rung stays the plan grammar, the formant render is the bounce's
+// own honest voice.
 
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
+import { applyBandpass, type Vowel, VOWEL_FORMANTS } from "./formant.ts";
 import { type PatternNoteEvent, type PatternProject, validatePatternProject } from "./patternenums.ts";
 
-/** The five-vowel formant table (hz), F1/F2/F3 per vowel. */
-export const VOWEL_FORMANTS: Readonly<Record<Vowel, readonly [number, number, number]>> = {
-  a: [730, 1090, 2440],
-  e: [530, 1840, 2480],
-  i: [270, 2290, 3010],
-  o: [570, 840, 2410],
-  u: [300, 870, 2240],
-};
-
-/** The vowel id the syllables carry. */
-export type Vowel = "a" | "e" | "i" | "o" | "u";
+// the formant table and the vowel id live in their one home, formant.ts
+// (the source-filter lane owns the resonator law and the poles); the
+// public surface this lane always carried re-exports them so the pinned
+// contracts keep reading the same seats through the same names.
+export { VOWEL_FORMANTS } from "./formant.ts";
+export type { Vowel } from "./formant.ts";
 
 /** The vibrato rate the corpus prescribes (hz). */
 export const VIBRATO_HZ = 5;
@@ -80,30 +81,6 @@ function midiToHz(midi: number): number {
   return 440 * 2 ** ((midi - 69) / 12);
 }
 
-/** Applies one RBJ bandpass biquad in place over the samples. */
-function bandpass(samples: Float32Array, f0: number, q: number, sampleRate: number): void {
-  const w0 = (2 * Math.PI * f0) / sampleRate;
-  const alpha = Math.sin(w0) / (2 * q);
-  const b0 = alpha;
-  const b2 = -alpha;
-  const a0 = 1 + alpha;
-  const a1 = -2 * Math.cos(w0);
-  const a2 = 1 - alpha;
-  let x1 = 0;
-  let x2 = 0;
-  let y1 = 0;
-  let y2 = 0;
-  for (let i = 0; i < samples.length; i++) {
-    const x0 = samples[i];
-    const y0 = (b0 / a0) * x0 + (b2 / a0) * x2 - (a1 / a0) * y1 - (a2 / a0) * y2;
-    x2 = x1;
-    x1 = x0;
-    y2 = y1;
-    y1 = y0;
-    samples[i] = y0;
-  }
-}
-
 /**
  * Renders one syllable into a fresh buffer: glottal saw with seeded vibrato,
  * the three formant bandpasses, the consonant burst, the envelope.
@@ -131,7 +108,7 @@ function renderSyllable(syllable: Syllable, options: VoiceRenderOptions): Float3
   }
   const formants = VOWEL_FORMANTS[syllable.vowel];
   for (let f = 0; f < formants.length; f++) {
-    bandpass(buffer, formants[f], 9 - f * 2, options.sampleRate);
+    applyBandpass(buffer, formants[f], 9 - f * 2, options.sampleRate);
   }
   if (syllable.consonant) {
     const burst = Math.min(CONSONANT_SAMPLES, length);
@@ -276,8 +253,32 @@ function melodyOf(plan: PatternProject): PatternNoteEvent[] {
  * @returns the sung plan (validatePatternProject ok).
  */
 export function singPattern(plan: PatternProject, seed: string): PatternProject {
+  const sung = sungLineOf(plan, seed);
+  if (sung.length === 0) return plan;
+  const sungdoc: PatternProject = { ...plan, notes: [...plan.notes, ...sung] };
+  const checked = validatePatternProject(sungdoc);
+  return checked.ok ? checked.doc : plan;
+}
+
+/**
+ * sungLineOf — the sung line of one composed plan, the law singPattern
+ * rides: the melody notes (the top note at every step, the bass sitting
+ * the line out) lifted an octave into the vocal register, the syllable
+ * velocity law riding the velocity, and the seeded phrase breathing
+ * deciding which notes sing — a phrase of one to three notes, a breath of
+ * one to two. Exported for the bounce's own voice seat (renderworker's
+ * vocal option renders THIS line through the formant bank under its own
+ * voice bus — the second rung), so the sung line a plan carries has one
+ * home and both render lanes read it. Deterministic: the same plan and
+ * seed always answer the same line.
+ *
+ * @param plan the composed plan (the composer's PatternProject).
+ * @param seed the take identity the phrase breathing rides.
+ * @returns the sung line (empty when the plan carries no melody).
+ */
+export function sungLineOf(plan: PatternProject, seed: string): PatternNoteEvent[] {
   const melody = melodyOf(plan);
-  if (melody.length === 0) return plan;
+  if (melody.length === 0) return [];
   const rng = mulberry32(hashSeed(`voice:${seed}`));
   const sung: PatternNoteEvent[] = [];
   let at = 0;
@@ -296,7 +297,5 @@ export function singPattern(plan: PatternProject, seed: string): PatternProject 
     }
     at += 1 + Math.floor(rng() * 2); // a breath rests one to two notes
   }
-  const sungdoc: PatternProject = { ...plan, notes: [...plan.notes, ...sung] };
-  const checked = validatePatternProject(sungdoc);
-  return checked.ok ? checked.doc : plan;
+  return sung;
 }

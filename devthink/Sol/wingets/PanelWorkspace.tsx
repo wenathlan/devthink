@@ -39,7 +39,15 @@ import {
 import { pushrecentapp } from "../../recentapps.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";
 import { WindowBodySurface } from "../../useismobile.ts";
-import { SPAWN_TOP_OFFSET, spawnfit, type WindowEntry, windowcatalog, windowspawn } from "../../window.ts";
+import {
+  SPAWN_TOP_OFFSET,
+  spawnfit,
+  type SpawnFit,
+  type WindowEntry,
+  windowapp,
+  windowcatalog,
+  windowspawn,
+} from "../../window.ts";
 import { isWorkspaceDestination, type WorkspaceDestination } from "../../workspace.ts";
 import AudioAnchor from "../audio/audio.tsx";
 import CalculatorAnchor from "../calculator/calculator.tsx";
@@ -57,7 +65,13 @@ import VideoAnchor from "../video/video.tsx";
 import ChatBody from "./ChatBody.tsx";
 import { DesktopSurface } from "./PanelDesktop.tsx";
 import { DesktopLock } from "./PanelDesktoplock.tsx";
-import { frameScale, WindowFrame, type WindowSnapshot } from "./PanelWindowframe.tsx";
+import {
+  frameScale,
+  WINDOW_MIN_HEIGHT,
+  WINDOW_MIN_WIDTH,
+  WindowFrame,
+  type WindowSnapshot,
+} from "./PanelWindowframe.tsx";
 import { type AltTabCard, AltTabSwitcher } from "./ShellAlttabswitcher.tsx";
 import { ShellChrome } from "./Shellchrome.tsx";
 import { FamilyFrame } from "./ShellFamilyframe.tsx";
@@ -157,28 +171,33 @@ function appById(id: string): DesktopApp {
   return DESKTOP_APPS.find((app) => app.id === id) || DESKTOP_APPS[0];
 }
 
+/** the live spawn verdict of one windowed app against the screen the
+ * visitor carries right now — the viewport divided by the interface zoom
+ * (the geometry answers css pixels: the zoom renders each one wider, so
+ * the clamp the visitor SEES is the clamp the screen applies — a 1280px
+ * band opens 1600 rendered pixels on a 125% os and lands cut otherwise) */
+function livefit(id: string): SpawnFit {
+  const scale = frameScale(document.querySelector("main.shell-os"));
+  /* the verdict of the root window logic: the floating bounds clamped
+     to the real desktop band (the .shell-desktop measure — the viewport
+     over the height minus the taskbar), or the full snap when the family
+     band the app answers cannot fit the screen — the window opens
+     already maximized so the app answers the viewport the direct url
+     answers instead of a cut of it (the PR12 bug: apps opened cut inside
+     the windows while the direct url answered them whole) */
+  return spawnfit(id, {
+    width: Math.round(window.innerWidth / scale),
+    height: Math.round(window.innerHeight / scale),
+  });
+}
+
 /** default floating snapshot for a freshly opened window (the daedalOS
  * cascade offset — each new window lands 26px down-right of the last; the
  * spawn geometry comes from the root window logic when the app declares
  * one) */
 function defaultSnapshot(id: string, title: string, openCount: number): WindowSnapshot {
   const cascade = (openCount % 4) * 26;
-  /* the geometry answers css pixels: the interface zoom renders each one
-     wider, so the spawn measures the viewport divided by the live scale —
-     the clamp the visitor SEES is the clamp the screen applies (a 1280px
-     band opens 1600 rendered pixels on a 125% os and lands cut otherwise) */
-  const scale = frameScale(document.querySelector("main.shell-os"));
-  /* the opening verdict of the root window logic: the floating bounds
-     clamped to the real desktop band (the .shell-desktop measure — the
-     viewport over the height minus the taskbar), or the full snap when
-     the family band the app answers cannot fit the screen — the window
-     opens already maximized so the app answers the viewport the direct
-     url answers instead of a cut of it (the PR12 bug: apps opened cut
-     inside the windows while the direct url answered them whole) */
-  const fit = spawnfit(id, {
-    width: Math.round(window.innerWidth / scale),
-    height: Math.round(window.innerHeight / scale),
-  });
+  const fit = livefit(id);
   return {
     id,
     title,
@@ -206,10 +225,101 @@ function loadWindows(): WindowSnapshot[] {
     const parsed = JSON.parse(raw) as WindowSnapshot[];
     return parsed
       .filter((win) => typeof win.id === "string" && win.id !== "" && windowApp(win.id) !== undefined)
-      .map((win, index) => ({ ...win, z: Z_BASE + index }));
+      // the stored geometry re-fits the live screen before it renders: a
+      // layout saved on another screen — or in the era before the family
+      // band — never hydrates cut (the cut-window law answers at the
+      // hydrate door too, never only at the spawn)
+      .map((win, index) => ({ ...refitsnapshot(win), z: Z_BASE + index }));
   } catch {
     return [];
   }
+}
+
+/** clamps one floating bounds pair into the live desktop band — never
+ * wider or taller than the band, never under the doctrine minimum, never
+ * parked past the right or bottom edge. non-destructive in band: a pair
+ * the band already carries comes back untouched, so the live re-fit never
+ * moves a window the visitor placed (the shell clips at its box and the
+ * taskbar covers the rest of it — an out-of-band window IS a cut window) */
+function clampbounds(
+  bounds: { x: number; y: number; width: number; height: number },
+  fit: SpawnFit,
+): { x: number; y: number; width: number; height: number } {
+  const width = Math.min(
+    Math.max(WINDOW_MIN_WIDTH, Math.round(bounds.width)),
+    Math.max(WINDOW_MIN_WIDTH, fit.desktopWidth),
+  );
+  const height = Math.min(
+    Math.max(WINDOW_MIN_HEIGHT, Math.round(bounds.height)),
+    Math.max(WINDOW_MIN_HEIGHT, fit.desktopHeight),
+  );
+  return {
+    width,
+    height,
+    x: Math.min(Math.max(0, Math.round(bounds.x)), Math.max(0, fit.desktopWidth - width)),
+    y: Math.min(Math.max(0, Math.round(bounds.y)), Math.max(0, fit.desktopHeight - height)),
+  };
+}
+
+/** true when two bounds pairs answer the same numbers — the no-op guard
+ * of the live re-fit (an in-band window never re-renders on a resize) */
+function samebounds(
+  a: { x: number; y: number; width: number; height: number } | undefined,
+  b: { x: number; y: number; width: number; height: number } | undefined,
+): boolean {
+  if (!a || !b) return a === b;
+  return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+}
+
+/** re-fits one stored snapshot against the live screen — the cut-window
+ * law of PR12 answered at the hydrate door. the persisted layout rides
+ * localStorage, so a snapshot stored on a bigger screen — or in the era
+ * before the family band — would hydrate verbatim and render the app cut:
+ * past the clipped shell box, under the taskbar, or under the 961px+
+ * breakpoints of the standalone tree (a family window stored at 940px
+ * answers the narrow design the direct url never shows). the refit clamps
+ * the floating bounds into the live band, lifts a family window stored
+ * under its design band back to the band (the stored size never
+ * downgrades the design the window renders), and answers the full snap
+ * when the band cannot fit the screen — the app inside always opens the
+ * way the direct url answers, never a cut of it. */
+function refitsnapshot(win: WindowSnapshot): WindowSnapshot {
+  const fit = livefit(win.id);
+  const bounds = { x: win.x, y: win.y, width: win.width, height: win.height };
+  if (windowapp(win.id)?.kind === "family") {
+    // the band the family window answers on this screen: a stored size
+    // under it rides the pre-law era or a smaller screen — the band is
+    // the law, the size heals up to it
+    bounds.width = Math.max(bounds.width, fit.width);
+    bounds.height = Math.max(bounds.height, fit.height);
+  }
+  const clamped = clampbounds(bounds, fit);
+  const float = win.float ? clampbounds(win.float, fit) : undefined;
+  const next: WindowSnapshot = { ...win, ...clamped, float };
+  if (!fit.maximized) return next;
+  // the family band cannot fit the live screen: every floating pose of
+  // the window answers the full snap — the hydrate, the restore and the
+  // un-minimize never land the app cut
+  const floating =
+    win.state === "normal" || (win.state === "minimized" && (win.restoredState ?? "normal") === "normal");
+  if (!floating) return next;
+  const keep = float ?? clamped;
+  return win.state === "minimized"
+    ? { ...next, float: keep, restoredState: "maximized" }
+    : { ...next, float: keep, state: "maximized" };
+}
+
+/** clamps one live snapshot into the current desktop band — the resize
+ * answer (a monitor swap, a smaller browser window, the devtools
+ * opening): the pose the visitor chose stays (the family verdict belongs
+ * to the open and the hydrate doors), the bounds never outlive the band
+ * they ride in */
+function clampsnapshot(win: WindowSnapshot): WindowSnapshot {
+  const fit = livefit(win.id);
+  const clamped = clampbounds(win, fit);
+  const float = win.float ? clampbounds(win.float, fit) : undefined;
+  if (samebounds(clamped, win) && samebounds(float, win.float)) return win;
+  return { ...win, ...clamped, float };
 }
 
 export function ShellWorkspace({
@@ -295,6 +405,37 @@ export function ShellWorkspace({
       // storage unavailable: the layout lives for this mount only
     }
   }, [windows]);
+
+  // the live band re-fit: the browser viewport changed (a monitor swap, a
+  // smaller browser window, the devtools opening) — every open window
+  // re-clamps into the live desktop band so nothing renders past the
+  // clipped shell box or under the taskbar (the cut-window law holds at
+  // every screen the visitor carries, never only at the spawn). the
+  // resize never fires for the internal drags and resizes — those own
+  // their bounds — this answers the screen itself changing, and the
+  // no-op guard keeps an in-band layout untouched
+  useEffect(() => {
+    const onResize = () => {
+      applyWindows((current) => {
+        const next = current.map((win) => clampsnapshot(win));
+        return next.some((win, index) => win !== current[index]) ? next : current;
+      });
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [applyWindows]);
+
+  // the mount re-fit: the hydrate pass answered before this tree mounted
+  // (no shell-os element lived yet, so the interface zoom read as 1) — one
+  // pass after the mount re-asks the verdict with the live zoom, so a
+  // zoomed panel never carries a window the zoom renders cut. one pass
+  // only: the resize listener above owns every later change
+  useEffect(() => {
+    applyWindows((current) => {
+      const next = current.map((win) => refitsnapshot(win));
+      return next.some((win, index) => win !== current[index]) ? next : current;
+    });
+  }, [applyWindows]);
 
   const focusWindow = useCallback(
     (id: string) => {

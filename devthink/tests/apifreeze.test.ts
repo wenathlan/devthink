@@ -278,7 +278,7 @@ describe("the protocolv2 api freeze of 1.1.91", () => {
     /* the freeze baseline stamps the release: a stale stamp regenerates from the built tree before the assertions read it */
     if (storedbaseline.release !== packagejson.version) {
       await new Promise<void>((resolve, reject) => {
-        execFile(process.execPath, ["apifreeze.gate.ts", "sync"], (error) => (error ? reject(error) : resolve()));
+        execFile(process.execPath, ["apifreezegate.ts", "sync"], (error) => (error ? reject(error) : resolve()));
       });
     }
     const artifact = await readbaseline();

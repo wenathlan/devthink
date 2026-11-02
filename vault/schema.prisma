@@ -1,7 +1,8 @@
 // vault prisma schema — the self-hosted database of the supabase clone:
-// projects, accounts and the storage engine (ledger objects, the 256KB
-// chunk catalog, the ordered chunk references and the user-defined quotas),
-// all served over https by the drizzle executor.
+// projects, accounts, the per-project api keys and the storage engine
+// (ledger objects, the 256KB chunk catalog, the ordered chunk references
+// and the user-defined quotas), all served over https by the drizzle
+// executor.
 //
 // family sync contract (devthink master): a table of the same kind carries
 // the same columns and the same pointers in every application that holds
@@ -26,20 +27,44 @@ model Project {
   id        String         @id @default(cuid())
   name      String
   region    String         @default("local")
+  /// the owning account — null when the operator token minted the scope
+  accountId String?        @map("account_id")
+  account   Account?       @relation(fields: [accountId], references: [id])
   createdAt DateTime       @default(now())
   objects   StorageObject[]
   quota     Quota?
+  keys      ProjectKey[]
 
   @@map("projects")
 }
 
+/// the person lane of the clone — the password never lands, only its
+/// salted scrypt digest (`salthex:digesthex`, the runtime column), and
+/// the signin answers a signed session bearer instead of any cookie.
 model Account {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  role      String   @default("owner")
-  createdAt DateTime @default(now())
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String        @map("password_hash")
+  createdAt    DateTime      @default(now())
+  projects     Project[]
+  keys         ProjectKey[]
 
   @@map("accounts")
+}
+
+/// one api key of one project — the vk_ bearer the data gate accepts for
+/// its project alone: the secret answers once at mint time and only its
+/// sha-256 digest lands (key_hash). last_used_at stamps every gate ride.
+model ProjectKey {
+  id         String    @id @default(cuid())
+  projectId  String    @map("project_id")
+  project    Project   @relation(fields: [projectId], references: [id])
+  keyHash    String    @unique @map("key_hash")
+  label      String
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime? @map("last_used_at")
+
+  @@map("project_keys")
 }
 
 /// one ledger row per stored object — the path, the mime, the real sha-256

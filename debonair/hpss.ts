@@ -16,8 +16,10 @@ export const HARMONIC_KERNEL = 17;
 /** The median window across frequency for the percussive broadband (odd bins). */
 export const PERCUSSIVE_KERNEL = 17;
 
-/** One complex spectrum of the stft: full fft-size bins (re, im interleaved by array pair). */
-interface Stft {
+/** One complex spectrum of the stft: full fft-size bins (re, im interleaved by array pair).
+ * Exported for the sibling dsp lanes the spectrum rides (the demix builds
+ * its band-refined masks over the same framing — one stft law per engine). */
+export interface Stft {
   /** The real part per frame, frame × fftSize. */
   re: Float32Array[];
   /** The imaginary part per frame, frame × fftSize. */

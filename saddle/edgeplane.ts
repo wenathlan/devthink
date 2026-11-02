@@ -17,7 +17,7 @@
 // foundation modules directly and leaves the root domain graph
 // (virtual.ts and its .js specifiers) to the lazy lane loads.
 
-import { edgelaneexecutorsall, edgelanespecsall } from "./edgelandes.ninety.ts";
+import { edgelaneexecutorsall, edgelanespecsall } from "./edgelandesninety.ts";
 import { probedocker, probehostbinary, probemodule, probenodevm, probevirtualmodule, probewasm } from "./edgelandes.ts";
 import { idfactory } from "./foundation.ts";
 import { getmodality } from "./modalityregistry.ts";
@@ -119,7 +119,7 @@ interface LaneSpec {
 /** the lane table of the edge plane: the ten live lanes (the execution
  * lanes the engine drives today) and the six host lanes (the runtimes
  * the engine probes) of the base contract, then the seventy-four lanes
- * of the ninety modalities waves merged in through edgelandes.ninety.ts
+ * of the ninety modalities waves merged in through edgelandesninety.ts
  * (the thirty-seven host binary lanes — the twenty-five live of the
  * first wave and the twelve host seats of the wiring wave, the
  * twenty-four in-process lanes, the seven virtual hardware lanes and

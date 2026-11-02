@@ -422,7 +422,7 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
   });
 
   it("the next conversion walks the ten applications with the ten-asset grammar", async () => {
-    const convert = await readFile(join(repoRoot, "devthink", "scripts.nextconvert.ts"), "utf8");
+    const convert = await readFile(join(repoRoot, "devthink", "scriptsnextconvert.ts"), "utf8");
     /* the CONVERT list: every site application of the monorepo, the os
      * included. */
     const list = /const CONVERT = \[([^\]]+)\]/.exec(convert)?.[1] ?? "";
@@ -576,7 +576,7 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     expect(scripts["pack:check"]).toContain("npm run check");
     expect(scripts.check).toContain("build:engine");
     expect(scripts.check).toContain("node --check dist/index.js");
-    expect(scripts["build:engine"]).toContain("scripts.buildengine.ts");
+    expect(scripts["build:engine"]).toContain("scriptsbuildengine.ts");
     expect(scripts.build).toBe("npm run build:engine");
   });
 

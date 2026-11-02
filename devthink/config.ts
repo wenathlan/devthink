@@ -945,7 +945,7 @@ export const ANTIGRAVITY_CONFIG_JSON_SCHEMA = {
       format: "uri",
       description: "JSON schema pointer",
       default: "https://json-schema.org/draft-07/schema#",
-      examples: ["https://json-schema.org/draft-07/schema#", "./antigravity.schema.json"],
+      examples: ["https://json-schema.org/draft-07/schema#", "./antigravityschema.json"],
     },
     version: {
       type: "integer",
@@ -3000,7 +3000,7 @@ export const atomicWrite = (p: string, c: string): void => {
  *
  * resolution order:
  *   1 config.mjs in cwd — the scaffolded standard location
- *   2 gateway.config.ts in cwd — user placed config at project root
+ *   2 gatewayconfig.ts in cwd — user placed config at project root
  *   3 Sol/config.mjs — the legacy theme-folder location (still honored)
  *   4 builtin default — the shipped v1 v5 example configs
  *
@@ -3060,9 +3060,9 @@ export async function loadconfig(): Promise<gatewaydefinition> {
     "Sol/config.mjs",
     "Sol/config.ts",
     "Sol/config.js",
-    "gateway.config.mjs",
-    "gateway.config.ts",
-    "gateway.config.js",
+    "gatewayconfig.mjs",
+    "gatewayconfig.ts",
+    "gatewayconfig.js",
   ];
   for (const base of searchbases()) {
     for (const name of names) {

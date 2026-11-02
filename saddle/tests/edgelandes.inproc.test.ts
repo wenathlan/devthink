@@ -1,5 +1,5 @@
 // # edgelandes.inproc.test — the in-process lane battery of the ninety
-// modalities wave (group b): the twenty-four lanes of edgelandes.inproc.ts
+// modalities wave (group b): the twenty-four lanes of edgelandesinproc.ts
 // answer the group b contract — the frozen lane tables agree with the
 // executor map, every lane is deterministic (the same payload answers
 // the same stdout and artifact bytes twice), the oom guard refuses every
@@ -19,7 +19,7 @@
 // pnpm vitest run tests/edgelandes.inproc.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { edgelaneexecutorsinproc, inproclaneids, inproclanespecs } from "../edgelandes.inproc.ts";
+import { edgelaneexecutorsinproc, inproclaneids, inproclanespecs } from "../edgelandesinproc.ts";
 import { getmodality } from "../modalityregistry.ts";
 
 /** the hard deadline every lane test rides under. */

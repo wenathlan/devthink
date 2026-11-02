@@ -10,8 +10,8 @@ import { promisify } from "node:util";
 const execute = promisify(execFile);
 const root = process.cwd();
 const artifacts = join(root, "tests", "artifacts");
-const output = join(root, "docs", "08.artifactinventory.md");
-const index = await readFile(join(root, "docs", "06.userstorecatalog.md"), "utf8");
+const output = join(root, "docs", "artifactinventory.md");
+const index = await readFile(join(root, "docs", "userstorecatalog.md"), "utf8");
 const identifiers = [...new Set([...index.matchAll(/\| \d+ \| .*? \| ([a-z]{32}) \|/g)].map((match) => match[1]))];
 const requestedlimit = Number.parseInt(
   process.argv.find((argument) => argument.startsWith("--limit="))?.split("=")[1] ?? String(identifiers.length),
@@ -226,7 +226,7 @@ const featurerows = aggregate(
   .map(([name, count]) => `| ${name} | ${count} |`)
   .join("\n");
 const staticmetrics = `# Aggregate CRX Static Signals\n\nThis aggregate counts declared permissions and non-executing script-text signals across the ${records.length} reviewed CRX entries. A count shows declaration or textual reference, not a confirmed runtime feature.\n\n## Declared permissions\n\n| Permission | Packages declaring it |\n| --- | ---: |\n${permissionrows}\n\n## Browser API namespaces\n\n| Namespace | Packages with a static reference |\n| --- | ---: |\n${apirows}\n\n## Derived feature signals\n\n| Signal | Packages with a static reference |\n| --- | ---: |\n${featurerows}\n\n## Design conclusion\n\nThe reviewed market frequently asks for broad tab, debugger, cookie, navigation and all-sites capabilities. Devthink will not inherit that permission surface. Its default package remains active-tab, storage and side-panel only; the user can grant a narrowly scoped HTTPS origin for a reviewed session.\n`;
-await writeFile(join(root, "docs", "09.artifactstaticmetrics.md"), staticmetrics);
+await writeFile(join(root, "docs", "artifactstaticmetrics.md"), staticmetrics);
 const transportrows = records
   .map(
     (record) =>
@@ -234,7 +234,7 @@ const transportrows = records
   )
   .join("\n");
 const transportmatrix = `# Per Artifact Transport and Boundary Matrix\n\nThis matrix completes the artifact review without treating static signals as runtime facts. Transport labels are detected from public package declarations and non-executing script-text inspection. A missing signal means only that the reviewed files did not expose one.\n\n| Extension ID | Review status | Message transport signals | Local or remote boundary | Source and license availability |\n| --- | --- | --- | --- | --- |\n${transportrows}\n\n## Interpretation\n\nAn extension runtime message means communication inside the browser extension. A tab or content bridge indicates a potential path between privileged extension code and a selected page; it does not establish that an agent can act without consent. Native-host labels indicate an installed companion program is needed. Network labels only show a code-level hint that network transport appears; they do not establish the destination, data content or remote execution semantics.\n\nDevthink will implement only a session-scoped extension bridge. Any endpoint is configured by the user, every incoming command is schema-validated and tied to an approved tab and origin, and sensitive tasks require an explicit decision in the extension UI.\n`;
-await writeFile(join(root, "docs", "10.artifacttransportmatrix.md"), transportmatrix);
+await writeFile(join(root, "docs", "artifacttransportmatrix.md"), transportmatrix);
 const report = `# Public CRX Artifact Inventory\n\nThis report was generated from the Chrome update service for the user-supplied extension IDs. Each downloaded CRX was treated as untrusted data: the inspection read only the archive directory and manifest.json, did not execute any script, and deleted the raw archive immediately after the report was generated. A manifest is technical evidence of declared scope, not authorization to reuse source code, branding, UI or proprietary protocols.\n\n## Summary\n\n| Reviewed IDs | Manifest verified | Unavailable or invalid |\n| ---: | ---: | ---: |\n| ${records.length} | ${records.filter((record) => record.status === "manifest verified").length} | ${records.filter((record) => record.status !== "manifest verified").length} |\n\n## Manifest evidence\n\n| Extension ID | Status | Declared name | Version | Required permissions | Host scope |\n| --- | --- | --- | --- | --- | --- |\n${rows.join("\n")}\n\n${details}\n\n## Interpretation\n\nThe report distinguishes manifest-verified facts from all other claims. It does not assert runtime behavior from a file name, and it does not execute, decompile, republish or vendor any third-party artifact. Feature comparison remains based on public listings and openly licensed source reviewed under its license terms.\n\n## References\n\n[1]: https://developer.chrome.com/docs/webstore/update/ "Chrome Web Store — Update protocol"\n[2]: https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions "Chrome Extensions — Declare permissions"\n`;
 await writeFile(output, report);
 console.log(

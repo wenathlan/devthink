@@ -1007,7 +1007,7 @@ async function createserver(): Promise<Hono> {
     }),
   );
 
-  // load the user config — config.mjs/config.ts or gateway.config.ts
+  // load the user config — config.mjs/config.ts or gatewayconfig.ts
   const definition = await loadconfig();
   const problems = validateconfig(definition);
 
@@ -1849,9 +1849,9 @@ const confignames = [
   "Sol/config.mjs",
   "Sol/config.ts",
   "Sol/config.js",
-  "gateway.config.mjs",
-  "gateway.config.ts",
-  "gateway.config.js",
+  "gatewayconfig.mjs",
+  "gatewayconfig.ts",
+  "gatewayconfig.js",
 ];
 
 /** config path — the scaffold target: config.mjs in cwd (the legacy Sol/config.mjs location stays a load candidate) */
@@ -1925,7 +1925,7 @@ function jsontopretty(value: unknown, indent = 0): string {
 // ---------------------------------------------------------------------------
 // schema template — the prisma schema scaffolded for new users
 // (prisma 7 style: no url in the schema — the datasource url lives in
-// prisma.config.ts, scaffolded below)
+// prismaconfig.ts, scaffolded below)
 // ---------------------------------------------------------------------------
 
 const schematemplate = `generator client {
@@ -2105,8 +2105,8 @@ async function cmdinit(): Promise<void> {
   // write prisma config — prisma 7 carries the datasource url here (out of
   // the schema file), and the default matches the library runtime fallback
   // so db push and serve agree on one sqlite with zero configuration
-  writeFileSync(join(targetdir, "prisma.config.ts"), prismaconfigtemplate);
-  console.log(`${colors.green}created${colors.reset} prisma.config.ts`);
+  writeFileSync(join(targetdir, "prismaconfig.ts"), prismaconfigtemplate);
+  console.log(`${colors.green}created${colors.reset} prismaconfig.ts`);
 
   // write env example
   const envpath = join(targetdir, ".env.example");
@@ -2131,7 +2131,7 @@ async function cmdinit(): Promise<void> {
   console.log("  1. edit config.mjs to tune your configuration");
   console.log("  2. register keys:      npx @wenathlan/devthink gateway keys <version>");
   console.log("  3. install prisma:     npm i -D prisma");
-  console.log("  4. push + generate:    npx prisma db push && npx prisma generate");
+  console.log("  4. push + generate:    npx prisma db push --config prismaconfig.ts && npx prisma generate --config prismaconfig.ts");
   console.log("  5. start the server:   npx @wenathlan/devthink gateway serve");
   console.log("");
 }

@@ -4,14 +4,23 @@
 // seed rows the offline build answers) — the engine (the http api over the
 // sealed ledger) ran real but nothing in the face ever called it. The
 // client owns the wire: every route the api serves (the health probe, the
-// usage census, the object deposit and list, the verified read and the
-// soft delete, the quota verdicts and the orphan sweep), each answer a
-// typed branch — never a throw, never a silent fallback to invented
-// numbers. The honest rehearsal law rides the lane door: when the engine
-// is away (no configured origin, the host refusing the house https law,
-// the fetch seam absent, the timeout past) the call answers the away lane
-// and the winget keeps rendering the declared rehearsal — the swap is
+// account doors — the signup and the signin — the project list, the key
+// lanes, the usage census, the object deposit and list, the verified read
+// and the soft delete, the quota verdicts and the orphan sweep), each
+// answer a typed branch — never a throw, never a silent fallback to
+// invented numbers. The honest rehearsal law rides the lane door: when the
+// engine is away (no configured origin, the host refusing the house https
+// law, the fetch seam absent, the timeout past) the call answers the away
+// lane and the winget keeps rendering the declared rehearsal — the swap is
 // loud, the seed never pretends to be live.
+//
+// The auth law of the client: the token the operator pins rides every
+// gated call through the one header (x-vault-token) — the operator token,
+// a vs_ session bearer or a vk_ project key all ride the same lane, the
+// gate tells them apart. The public doors (signup, signin) carry no bearer
+// at all, and the signin answer is the signed token alone: nothing saves
+// in a browser here, the caller owns where the session lives (the client
+// may be rebuilt around the returned token through the options).
 //
 // The wire law mirrors the family precedent the audio app's blob lane
 // carries (the typed error translation, the token headers, the abort
@@ -162,6 +171,56 @@ export interface SweepAnswer {
   tombstones: number;
 }
 
+/** the account answer the signup door carries — never the password digest. */
+export interface AccountAnswer {
+  ok: true;
+  accountId: string;
+  email: string;
+  createdAt: string;
+}
+
+/** the signin answer: the signed session bearer answers once, the caller owns where it lives. */
+export interface SignInAnswer {
+  ok: true;
+  accountId: string;
+  email: string;
+  token: string;
+  expiresAt: number;
+}
+
+/** one project row of the list lane (the lean shape with the owner pointer). */
+export interface ProjectRow {
+  id: string;
+  name: string;
+  region: string;
+  accountId: string | null;
+  createdAt: string;
+}
+
+/** the project list answer: the page rows, the filtered total and the window. */
+export interface ListProjectsAnswer {
+  ok: true;
+  rows: ProjectRow[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+/** one key row the list lane answers — the secret never rides the list. */
+export interface KeyRow {
+  id: string;
+  label: string;
+  createdAt: string;
+  lastUsedAt: string | null;
+}
+
+/** the key mint answer: the row beside the one-time secret. */
+export interface CreateKeyAnswer {
+  ok: true;
+  key: KeyRow;
+  secret: string;
+}
+
 /** the typed refusal every lane answers on a non-2xx wire. */
 export interface LaneRefusal {
   ok: false;
@@ -183,7 +242,9 @@ export interface LaneAway {
 export type FetchSeam = typeof globalThis.fetch;
 
 /** the client options the battery injects (the origin override the
- * battery rides beside the seam, the window and the token). */
+ * battery rides beside the seam, the window and the token — the operator
+ * token, a vs_ session bearer or a vk_ project key all ride the same
+ * header). */
 export interface VaultClientOptions {
   origin?: string;
   fetchImpl?: FetchSeam;
@@ -228,6 +289,15 @@ function away(message: string): LaneAway {
  */
 export function vaultclient(options: VaultClientOptions = {}): {
   health(): Promise<HealthAnswer | LaneRefusal | LaneAway>;
+  signup(email: string, password: string): Promise<AccountAnswer | LaneRefusal | LaneAway>;
+  signin(email: string, password: string): Promise<SignInAnswer | LaneRefusal | LaneAway>;
+  listProjects(page?: { limit?: number; offset?: number }): Promise<ListProjectsAnswer | LaneRefusal | LaneAway>;
+  createKey(project: string, label: string): Promise<CreateKeyAnswer | LaneRefusal | LaneAway>;
+  listKeys(project: string): Promise<{ ok: true; rows: KeyRow[] } | LaneRefusal | LaneAway>;
+  revokeKey(
+    project: string,
+    keyId: string,
+  ): Promise<{ ok: true; revoked: boolean; id: string } | LaneRefusal | LaneAway>;
   usage(project: string): Promise<UsageAnswer | LaneRefusal | LaneAway>;
   listObjects(project: string): Promise<{ ok: true; rows: ObjectRow[] } | LaneRefusal | LaneAway>;
   getQuota(project: string): Promise<QuotaAnswer | LaneRefusal | LaneAway>;
@@ -242,11 +312,13 @@ export function vaultclient(options: VaultClientOptions = {}): {
   const token = options.token ?? TOKEN;
   const timeoutMs = options.timeoutMs ?? LANE_TIMEOUT_MS;
 
-  /** One lane call: the https law, the abort window, the typed translation. */
+  /** One lane call: the https law, the abort window, the typed translation
+   * (the public doors ride anonymous — no bearer on the signup and the
+   * signin wires). */
   async function call(
     method: string,
     path: string,
-    init: { headers?: Record<string, string>; body?: Uint8Array<ArrayBuffer> } = {},
+    init: { headers?: Record<string, string>; body?: Uint8Array<ArrayBuffer>; anonymous?: boolean } = {},
   ): Promise<{ ok: true; response: Response } | LaneRefusal | LaneAway> {
     if (origin === "" || !hostallowed(origin)) {
       return away("the vault engine origin is not configured under the house https law");
@@ -255,7 +327,7 @@ export function vaultclient(options: VaultClientOptions = {}): {
       return away("no fetch seam on this host");
     }
     const headers: Record<string, string> = { ...init.headers };
-    if (token.length > 0) headers[TOKEN_HEADER] = token;
+    if (!init.anonymous && token.length > 0) headers[TOKEN_HEADER] = token;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -308,6 +380,196 @@ export function vaultclient(options: VaultClientOptions = {}): {
             authRequired: auth.required === true,
             authConfigured: auth.configured === true,
           };
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async signup(email, password) {
+      const body = JSON.stringify({ email, password });
+      const answer = await call("POST", "/api/v1/auth/signup", {
+        headers: { "content-type": "application/json" },
+        body: new TextEncoder().encode(body) as Uint8Array<ArrayBuffer>,
+        anonymous: true,
+      });
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const account = (parsed as Record<string, unknown>).account as Record<string, unknown> | undefined;
+          if (
+            typeof account === "object" &&
+            account !== null &&
+            typeof account.id === "string" &&
+            typeof account.email === "string" &&
+            typeof account.createdAt === "string"
+          ) {
+            return { ok: true, accountId: account.id, email: account.email, createdAt: account.createdAt };
+          }
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async signin(email, password) {
+      const body = JSON.stringify({ email, password });
+      const answer = await call("POST", "/api/v1/auth/signin", {
+        headers: { "content-type": "application/json" },
+        body: new TextEncoder().encode(body) as Uint8Array<ArrayBuffer>,
+        anonymous: true,
+      });
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const row = parsed as Record<string, unknown>;
+          const account = typeof row.account === "object" && row.account !== null ? row.account : {};
+          const id = (account as Record<string, unknown>).id;
+          const mail = (account as Record<string, unknown>).email;
+          if (
+            typeof row.token === "string" &&
+            typeof row.expiresAt === "number" &&
+            typeof id === "string" &&
+            typeof mail === "string"
+          ) {
+            return { ok: true, accountId: id, email: mail, token: row.token, expiresAt: row.expiresAt };
+          }
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async listProjects(page = {}) {
+      const params: string[] = [];
+      if (page.limit !== undefined) params.push(`limit=${encodeURIComponent(String(page.limit))}`);
+      if (page.offset !== undefined) params.push(`offset=${encodeURIComponent(String(page.offset))}`);
+      const query = params.length === 0 ? "" : `?${params.join("&")}`;
+      const answer = await call("GET", `/api/v1/storage/projects${query}`);
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (
+          typeof parsed === "object" &&
+          parsed !== null &&
+          Array.isArray((parsed as Record<string, unknown>).projects)
+        ) {
+          const row = parsed as Record<string, unknown>;
+          const rows: ProjectRow[] = [];
+          for (const standing of row.projects as unknown[]) {
+            if (typeof standing !== "object" || standing === null) continue;
+            const project = standing as Record<string, unknown>;
+            if (typeof project.id !== "string") continue;
+            rows.push({
+              id: project.id,
+              name: typeof project.name === "string" ? project.name : "",
+              region: typeof project.region === "string" ? project.region : "",
+              accountId: typeof project.accountId === "string" ? project.accountId : null,
+              createdAt: typeof project.createdAt === "string" ? project.createdAt : "",
+            });
+          }
+          return {
+            ok: true,
+            rows,
+            total: typeof row.total === "number" ? row.total : rows.length,
+            limit: typeof row.limit === "number" ? row.limit : 0,
+            offset: typeof row.offset === "number" ? row.offset : 0,
+          };
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async createKey(project, label) {
+      const body = JSON.stringify({ label });
+      const answer = await call("POST", `/api/v1/storage/projects/${encodeURIComponent(project)}/keys`, {
+        headers: { "content-type": "application/json" },
+        body: new TextEncoder().encode(body) as Uint8Array<ArrayBuffer>,
+      });
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const row = parsed as Record<string, unknown>;
+          const key =
+            typeof row.key === "object" && row.key !== null ? (row.key as Record<string, unknown>) : undefined;
+          if (key !== undefined && typeof row.secret === "string" && typeof key.id === "string") {
+            return {
+              ok: true,
+              key: {
+                id: key.id,
+                label: typeof key.label === "string" ? key.label : "",
+                createdAt: typeof key.createdAt === "string" ? key.createdAt : "",
+                lastUsedAt: typeof key.lastUsedAt === "string" ? key.lastUsedAt : null,
+              },
+              secret: row.secret,
+            };
+          }
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async listKeys(project) {
+      const answer = await call("GET", `/api/v1/storage/projects/${encodeURIComponent(project)}/keys`);
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null && Array.isArray((parsed as Record<string, unknown>).keys)) {
+          const rows: KeyRow[] = [];
+          for (const standing of (parsed as Record<string, unknown>).keys as unknown[]) {
+            if (typeof standing !== "object" || standing === null) continue;
+            const key = standing as Record<string, unknown>;
+            if (typeof key.id !== "string") continue;
+            rows.push({
+              id: key.id,
+              label: typeof key.label === "string" ? key.label : "",
+              createdAt: typeof key.createdAt === "string" ? key.createdAt : "",
+              lastUsedAt: typeof key.lastUsedAt === "string" ? key.lastUsedAt : null,
+            });
+          }
+          return { ok: true, rows };
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async revokeKey(project, keyId) {
+      const answer = await call(
+        "DELETE",
+        `/api/v1/storage/projects/${encodeURIComponent(project)}/keys/${encodeURIComponent(keyId)}`,
+      );
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const row = parsed as Record<string, unknown>;
+          if (row.revoked === true && typeof row.id === "string") {
+            return { ok: true, revoked: true, id: row.id };
+          }
         }
       } catch {
         /* the parse fall lands in the refusal lane */

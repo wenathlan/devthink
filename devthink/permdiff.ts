@@ -1,4 +1,4 @@
-/** Compares the permission set of the manifest against the versioned baseline of the previous release so the permission set never grows silently: the gate extracts every required, optional and optional host permission of the current root manifest, diffs them against the checked-in permission baseline of the permbaseline module — the container builds and the fresh checkouts carry no git history, so the versioned baseline stays the source the gate trusts — cross-checks the baseline against the git tag of the release it records whenever a repository is present, reports every added, removed and reordered permission, requires a written justification row in the permdiff justification table of docs/01.extensionpermissions.md for every addition, blocks the release when an unjustified permission appears or the set drifts inside the release the baseline stamps, and rewrites the baseline module in sync mode after the justification review. */
+/** Compares the permission set of the manifest against the versioned baseline of the previous release so the permission set never grows silently: the gate extracts every required, optional and optional host permission of the current root manifest, diffs them against the checked-in permission baseline of the permbaseline module — the container builds and the fresh checkouts carry no git history, so the versioned baseline stays the source the gate trusts — cross-checks the baseline against the git tag of the release it records whenever a repository is present, reports every added, removed and reordered permission, requires a written justification row in the permdiff justification table of docs/extensionpermissions.md for every addition, blocks the release when an unjustified permission appears or the set drifts inside the release the baseline stamps, and rewrites the baseline module in sync mode after the justification review. */
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
@@ -10,7 +10,7 @@ const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
 const baselinepath = "tests/permbaseline.ts";
-const justificationdoc = "docs/01.extensionpermissions.md";
+const justificationdoc = "docs/extensionpermissions.md";
 const tableheading = "## permdiff justification table";
 const failures: string[] = [];
 
@@ -163,7 +163,7 @@ const baselineset = baselinesetof(baseline);
 /* the added, removed and reordered permissions against the baseline. */
 const { added, removed, reordered } = diffpermissionsets(current, baselineset);
 
-/* the justification table of docs/01.extensionpermissions.md: every added permission needs its written justification row before the release ships. */
+/* the justification table of docs/extensionpermissions.md: every added permission needs its written justification row before the release ships. */
 const justificationtext = await readFile(justificationdoc, "utf8").catch(() => undefined);
 if (justificationtext === undefined)
   refuse(`The permdiff justification table lives in ${justificationdoc}; the document is missing.`);

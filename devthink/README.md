@@ -138,11 +138,11 @@ The public `docs/` directory contains compact `category.ts.md` collections. Lega
 
 | Collection | Focus |
 | --- | --- |
-| `auth.ts.md` | Official credential shapes and inert examples. |
-| `providers.ts.md` | Protocol adapters, retry and error redaction. |
-| `gateway.ts.md` | Local gateway request and origin contract. |
-| `storage.ts.md` | Credential-free local persistence and sync boundary. |
-| `web.ts.md` | Static base-path and addressable route contract. |
+| `authts.md` | Official credential shapes and inert examples. |
+| `providersts.md` | Protocol adapters, retry and error redaction. |
+| `gatewayts.md` | Local gateway request and origin contract. |
+| `storagets.md` | Credential-free local persistence and sync boundary. |
+| `webts.md` | Static base-path and addressable route contract. |
 
 ## Validation and release
 
@@ -231,4 +231,4 @@ The `devthink.db` database keeps belonging to the CLI and to a single local publ
 
 ## Design system
 
-The visual direction lives in [`../docs/ideas.md`](../docs/ideas.md), the deployment in [`../docs/deployment.ts.md`](../docs/deployment.ts.md) and the parity between CLI, Ink, gateway and web in [`../docs/v1.1.15.capability.matrix.md`](../docs/v1.1.15.capability.matrix.md). The workbench joins the tab language of a browser with charcoal surfaces, the signature orange and the connection blue. The brand is the canonical ANSI composition of [`../docs/logo.md`](../docs/logo.md), rendered in compact form by the interface.
+The visual direction lives in [`../docs/ideas.md`](../docs/ideas.md), the deployment in [`../docs/deploymentts.md`](../docs/deploymentts.md) and the parity between CLI, Ink, gateway and web in [`../docs/v1115capabilitymatrix.md`](../docs/v1115capabilitymatrix.md). The workbench joins the tab language of a browser with charcoal surfaces, the signature orange and the connection blue. The brand is the canonical ANSI composition of [`../docs/logo.md`](../docs/logo.md), rendered in compact form by the interface.

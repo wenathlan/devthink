@@ -1,9 +1,13 @@
 /**
- * saaskit.tsx — the surface kit of the SaaS face: the studio tile marks
- * and the saddle bridges that stitch the header, the rail and the section
- * heads into the palco. Presentation only — every shape here is the
- * approved look of the landing, no state, no fetch.
+ * saaskit.tsx — the surface kit of the SaaS face: the studio tile marks,
+ * the scooped card, and the saddle bridges (down and up) that stitch the
+ * header, the rail and the section heads into the palco. Presentation
+ * only — the scooped card carries its own live measurement so the clip
+ * path follows the face, but no fetch, no copy: every shape here is the
+ * approved look of the landing restored by PR8 P1.
  */
+
+import { useEffect, useRef, useState } from "react";
 
 /** The studio ids the tile marks draw. */
 export type studiomarkid = "cadria" | "debonair" | "saddle" | "getry" | "vault" | "doo";
@@ -300,6 +304,144 @@ export function VerticalSaddleBridge({ fillColor, children, className = "" }: Br
       >
         <path d="M0 76 V0 H56 C10 18 4 46 0 76 Z" fill={fillColor} />
       </svg>
+    </div>
+  );
+}
+
+/** The upward saddle bridge: the same scooped wings rising instead of
+ *  falling — the bottom handoff of the workspace section into the studio
+ *  flow bed (the reference curve of the fan deck exit). */
+export function SaddleTabBridgeUp({ fillColor, children, className = "" }: BridgeProps) {
+  return (
+    <div className={`relative inline-flex items-center justify-center ${className}`}>
+      <svg
+        className="pointer-events-none -mr-[1px] h-full w-[56px] shrink-0 select-none sm:w-[76px]"
+        viewBox="0 0 76 60"
+        preserveAspectRatio="none"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path d="M0 60 H76 V0 C36 0 40 60 0 60 Z" fill={fillColor} />
+      </svg>
+      <div style={{ backgroundColor: fillColor }} className="flex h-full items-center justify-center">
+        {children}
+      </div>
+      <svg
+        className="pointer-events-none -ml-[1px] h-full w-[56px] shrink-0 select-none sm:w-[76px]"
+        viewBox="0 0 76 60"
+        preserveAspectRatio="none"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path d="M76 60 H0 V0 C40 0 36 60 76 60 Z" fill={fillColor} />
+      </svg>
+    </div>
+  );
+}
+
+/** builds the scooped clip path of one card face: the corner radius r, the
+ *  scoop fillets rf and the scoop insets ri — the true transparent cutout
+ *  of the era (a real clip, never a fake border patch). */
+function buildscoopedclip(w: number, h: number, hastr: boolean, trwide: boolean, hasbr: boolean): string {
+  if (w <= 0 || h <= 0) return "none";
+  const r = 32;
+  const rf = 20;
+  const ri = 26;
+  const trw = trwide ? 108 : 68;
+  const trh = 60;
+  const brw = 68;
+  const brh = 64;
+  const c = [`M ${r} 0`];
+  if (hastr && w > trw + rf + r) {
+    c.push(`L ${w - trw - rf} 0`);
+    c.push(`A ${rf} ${rf} 0 0 1 ${w - trw} ${rf}`);
+    c.push(`L ${w - trw} ${trh - ri}`);
+    c.push(`A ${ri} ${ri} 0 0 0 ${w - trw + ri} ${trh}`);
+    c.push(`L ${w - rf} ${trh}`);
+    c.push(`A ${rf} ${rf} 0 0 1 ${w} ${trh + rf}`);
+  } else {
+    c.push(`L ${w - r} 0`);
+    c.push(`A ${r} ${r} 0 0 1 ${w} ${r}`);
+  }
+  if (hasbr && w > brw + rf + r) {
+    c.push(`L ${w} ${h - brh - rf}`);
+    c.push(`A ${rf} ${rf} 0 0 1 ${w - rf} ${h - brh}`);
+    c.push(`L ${w - brw + ri} ${h - brh}`);
+    c.push(`A ${ri} ${ri} 0 0 0 ${w - brw} ${h - brh + ri}`);
+    c.push(`L ${w - brw} ${h - rf}`);
+    c.push(`A ${rf} ${rf} 0 0 1 ${w - brw - rf} ${h}`);
+  } else {
+    c.push(`L ${w} ${h - r}`);
+    c.push(`A ${r} ${r} 0 0 1 ${w - r} ${h}`);
+  }
+  c.push(`L ${r} ${h}`);
+  c.push(`A ${r} ${r} 0 0 1 0 ${h - r}`);
+  c.push(`L 0 ${r}`);
+  c.push(`A ${r} ${r} 0 0 1 ${r} 0`);
+  c.push("Z");
+  return `path('${c.join(" ")}')`;
+}
+
+type ScoopedCardProps = {
+  children: React.ReactNode;
+  topRightContent?: React.ReactNode;
+  topRightWide?: boolean;
+  bottomRightContent?: React.ReactNode;
+  surfaceClassName?: string;
+  className?: string;
+};
+
+/** The true scooped card of the reference landing: a real transparent
+ *  cutout via clip path — the corner scoops measured live through a
+ *  ResizeObserver so the path follows the card at every width, with the
+ *  two dock notches carrying their own floating content. */
+export function ScoopedCard({
+  children,
+  topRightContent,
+  topRightWide = false,
+  bottomRightContent,
+  surfaceClassName = "bg-white",
+  className = "",
+}: ScoopedCardProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const up = () => {
+      const rc = el.getBoundingClientRect();
+      setSize({ w: Math.round(rc.width), h: Math.round(rc.height) });
+    };
+    up();
+    const ob = new ResizeObserver(up);
+    ob.observe(el);
+    window.addEventListener("resize", up);
+    return () => {
+      ob.disconnect();
+      window.removeEventListener("resize", up);
+    };
+  }, []);
+  const clip = buildscoopedclip(size.w, size.h, Boolean(topRightContent), topRightWide, Boolean(bottomRightContent));
+  return (
+    <div ref={ref} className={`drop-shadow-[0_20px_40px_rgba(15,23,42,0.10)] relative ${className}`}>
+      <div
+        style={{ clipPath: size.w > 0 ? clip : undefined, WebkitClipPath: size.w > 0 ? clip : undefined }}
+        className={`h-full w-full rounded-[32px] ${surfaceClassName}`}
+      >
+        {children}
+      </div>
+      {topRightContent ? (
+        <div
+          className={`absolute top-0 right-0 z-20 flex h-[52px] items-center justify-end gap-2 pr-1.5 pt-1 ${topRightWide ? "w-[100px]" : "w-[60px]"}`}
+        >
+          {topRightContent}
+        </div>
+      ) : null}
+      {bottomRightContent ? (
+        <div className="absolute right-0 bottom-0 z-20 flex h-[56px] w-[60px] items-end justify-end pr-1.5 pb-1">
+          {bottomRightContent}
+        </div>
+      ) : null}
     </div>
   );
 }

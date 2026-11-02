@@ -24,7 +24,7 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABELREVISION = 3;
+export const LABELREVISION = 4;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -61,15 +61,16 @@ export const LABELMANIFEST = {
   "shell.chip.name": "stealthhead",
   // the construction face (the in-development notice every game page wears)
   "construction.aria": "stealthhead is in construction",
-  "construction.title": "In construction",
-  "construction.subtitle":
-    "The game is in development — this surface is being rebuilt with the family design system. The physics and the match logic stay under the hood.",
+  "construction.title": "stealthhead",
+  "construction.status": "in construction",
+  "construction.subtitle": "The FPS platform is in construction.",
   "construction.action": "back to home",
   "construction.replay": "watch the opening again",
   // the intro page anchor (the splash)
   "intro.aria": "stealthhead is opening",
   "intro.name": "stealthhead",
   "intro.role": "the FPS game platform of the wenathlan family",
+  "intro.construction": "in construction",
   "intro.skip": "click or press any key to skip",
   // the onboarding page anchor (the first-run frames)
   "onboarding.aria": "stealthhead first run",

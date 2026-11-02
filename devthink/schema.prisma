@@ -1,5 +1,5 @@
 // devthink gateway prisma schema for prisma 7 with driver adapter
-// datasource url provided by prisma.config.ts and adapter in database.ts
+// datasource url provided by prismaconfig.ts and adapter in database.ts
 // model names pascalcase so prisma generates camelcase accessors db.chatMessage db.nvidiaKey
 // lives at the application root: the prisma resolver reads schema.prisma
 // first (the prisma folder and the Sol folder stay as honored candidates)

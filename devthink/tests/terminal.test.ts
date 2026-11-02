@@ -7,7 +7,7 @@
  * - the dpi tokens (density.ts): the web dpr ladder, the terminal character
  *   cell, the tv 10-foot factor and the android dp buckets — one spacing
  *   rhythm, four densities, never a second design;
- * - the conversion map (build.terminal.ts): the css token chain resolves to
+ * - the conversion map (buildterminal.ts): the css token chain resolves to
  *   rgb (color-mix blends over the canvas), the rgb quantizes down the ansi
  *   ladder (truecolor → 256 → 16 → plain), the flexbox folds to rows and
  *   columns, the gap counts cells, the hairlines and shadows become
@@ -28,7 +28,7 @@ import {
   cssColorToRgb,
   parseCssTokens,
   parseJsxRoot,
-} from "../build.terminal.ts";
+} from "../buildterminal.ts";
 import {
   DENSITY_PLATFORMS,
   TERMINAL_COLUMNS,
@@ -46,10 +46,10 @@ import {
   rgbToAnsi16,
   rgbToAnsi256,
   type IrNode,
-} from "../runtime.terminal.ts";
-import { ChipTerminal } from "../chip.terminal.ts";
-import { KbdTerminal } from "../kbd.terminal.ts";
-import { ControlShellTerminal } from "../shell.terminal.ts";
+} from "../runtimeterminal.ts";
+import { ChipTerminal } from "../chipterminal.ts";
+import { KbdTerminal } from "../kbdterminal.ts";
+import { ControlShellTerminal } from "../shellterminal.ts";
 
 const approot = join(import.meta.dirname, "..");
 const solcss = readFileSync(join(approot, "Sol", "sol.css"), "utf8");

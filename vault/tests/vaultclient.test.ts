@@ -206,6 +206,76 @@ describe("the engine door", () => {
     }
   });
 
+  it("rides the public account doors anonymous — signup and signin carry no bearer", async () => {
+    const { fetch, calls } = seam([
+      jsonanswer(201, { account: { id: "acct-1", email: "a@family.test", createdAt: "2026-01-01T00:00:00Z" } }),
+      jsonanswer(200, {
+        account: { id: "acct-1", email: "a@family.test" },
+        token: `vs_acct-1.1794188607445.${"a".repeat(64)}`,
+        expiresAt: 1794188607445,
+      }),
+    ]);
+    const client = vaultclient({ origin: ORIGIN, fetchImpl: fetch, token: "the-operator-token" });
+    const created = await client.signup("a@family.test", "the-honest-password");
+    assert.equal(created.ok, true);
+    if (created.ok) {
+      assert.equal(created.accountId, "acct-1");
+      assert.equal(created.email, "a@family.test");
+    }
+    assert.equal("x-vault-token" in calls[0].headers, false, "the signup wire carries no bearer");
+    assert.equal(calls[0].url, `${ORIGIN}/api/v1/auth/signup`);
+    const signed = await client.signin("a@family.test", "the-honest-password");
+    assert.equal(signed.ok, true);
+    if (signed.ok) {
+      assert.equal(signed.token, `vs_acct-1.1794188607445.${"a".repeat(64)}`);
+      assert.equal(signed.expiresAt, 1794188607445);
+    }
+    assert.equal("x-vault-token" in calls[1].headers, false, "the signin wire carries no bearer");
+  });
+
+  it("rides the project list and the key lanes with the token header", async () => {
+    const { fetch, calls } = seam([
+      jsonanswer(200, {
+        projects: [{ id: "p1", name: "the scope", region: "local", accountId: "acct-1", createdAt: "2026-01-01" }],
+        total: 1,
+        limit: 1,
+        offset: 0,
+      }),
+      jsonanswer(201, {
+        key: { id: "pk-1", label: "ci", createdAt: "2026-01-01", lastUsedAt: null },
+        secret: `vk_${"b".repeat(64)}`,
+      }),
+      jsonanswer(200, { keys: [{ id: "pk-1", label: "ci", createdAt: "2026-01-01", lastUsedAt: "2026-01-02" }] }),
+      jsonanswer(200, { revoked: true, id: "pk-1" }),
+    ]);
+    const client = vaultclient({ origin: ORIGIN, fetchImpl: fetch, token: "the-operator-token" });
+    const page = await client.listProjects({ limit: 1, offset: 0 });
+    assert.equal(page.ok, true);
+    if (page.ok) {
+      assert.equal(page.total, 1);
+      assert.equal(page.rows[0]?.id, "p1");
+      assert.equal(page.rows[0]?.accountId, "acct-1");
+    }
+    assert.equal(calls[0].url, `${ORIGIN}/api/v1/storage/projects?limit=1&offset=0`);
+    const mint = await client.createKey("p1", "ci");
+    assert.equal(mint.ok, true);
+    if (mint.ok) {
+      assert.equal(mint.key.id, "pk-1");
+      assert.equal(mint.secret, `vk_${"b".repeat(64)}`);
+    }
+    const keys = await client.listKeys("p1");
+    assert.equal(keys.ok, true);
+    if (keys.ok) {
+      assert.equal(keys.rows[0]?.lastUsedAt, "2026-01-02");
+      assert.equal("secret" in keys.rows[0], false, "the list never carries the secret");
+    }
+    const revoked = await client.revokeKey("p1", "pk-1");
+    assert.equal(revoked.ok, true);
+    if (revoked.ok) assert.equal(revoked.id, "pk-1");
+    assert.equal(calls[3].method, "DELETE");
+    assert.equal(calls[3].headers["x-vault-token"], "the-operator-token", "the gated lanes carry the bearer");
+  });
+
   it("answers the timeout lane when the engine keeps silent past the window", async () => {
     const { fetch } = seam([new Error("the lane refused")]);
     const client = vaultclient({ origin: ORIGIN, fetchImpl: fetch, timeoutMs: 10 });

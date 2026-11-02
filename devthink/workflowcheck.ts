@@ -49,7 +49,7 @@ const checks = {
     "oven-sh/setup-bun@",
     "bun dist/cli.js manifest",
     "bun run check",
-    "node apifreeze.gate.ts",
+    "node apifreezegate.ts",
     "node pentest.ts",
     "node cspaudit.ts",
     "node permdiff.ts",

@@ -2,7 +2,7 @@
 // wave PV6.004): the automation surface an external agent drives — the
 // same gateway lanes the browser bench rides, under the agent's own
 // identity. the tool list mirrors the family mcp contract
-// (devthink/docs/16.mcpserver.md): every tool name carries its domain
+// (devthink/docs/mcpserver.md): every tool name carries its domain
 // prefix (debonair.*) so colliding base names stay unambiguous, every
 // tool maps its inputs to a json schema of typed properties with the
 // required list, carries its version, its risk class and its consent

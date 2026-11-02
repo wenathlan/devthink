@@ -2,3 +2,33 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
+
+# the faun seal of the deploy lanes: the engine keeps its runtime sqlite
+# stores beside the working directory (vault-storage.db, uistore.db, the
+# wal and shm sidecars), so a publish lane that mounts the application root
+# would ship the whole store over https. The seal is layered — the publish
+# dir is the build output only (netlify, vercel and workers mount dist; the
+# container serves /app/dist through the api.ts static lane, which refuses
+# a database file outright), and even a stray database face inside this
+# publish tree answers sealed: never cached at the edge, never indexed,
+# never rendered inline.
+/*.db
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.db-shm
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.db-wal
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.db-journal
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment

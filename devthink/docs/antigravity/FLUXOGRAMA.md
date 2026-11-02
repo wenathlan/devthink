@@ -97,7 +97,7 @@ verifica: escreve tudo direitinho — data expiracao expiry, data criacao create
 
 ## verifica esquema antigrvity e user agent respeitando
 
-- antigravity.schema.json draft-07, properties cli_first boolean, google_search_enabled boolean|string, quota_refresh_interval_minutes number, rotation_strategy round-robin|sticky, soft_quota_threshold_percent number, claude_tool_hardening boolean, keep_thinking boolean — schema certo
+- antigravityschema.json draft-07, properties cli_first boolean, google_search_enabled boolean|string, quota_refresh_interval_minutes number, rotation_strategy round-robin|sticky, soft_quota_threshold_percent number, claude_tool_hardening boolean, keep_thinking boolean — schema certo
 - user agent: antigravity/1.19.2 {os}/{arch} — respeitando, dynamic version fetch chain remote api auto-updater, npm, github, fallback 1.19.2, pesquisas 9router omniroute gemini-cli usam mesmo
 - X-Goog-Api-Client: antigravity/{ver} gl-node/{node} gccl/1.0.0 gax/1.0.0 — Google Cloud SDK style, como Gemini CLI age, researches confirm
 - fingerprint minimal: only User-Agent on content requests per fix align fingerprint headers to match AM behavior, remove X-Goog-QuotaUser X-Client-Device-Id X-Goog-Api-Client Client-Metadata from fingerprint headers (AM only User-Agent)

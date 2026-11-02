@@ -11,6 +11,11 @@
 // person's browser — the ledger, the catalog and the verdicts live on the
 // vault infrastructure only.
 //
+// The accounts wave adds the ownership edges: a project may land with the
+// account pointer that minted it, the list lane pages the scopes (an
+// account sees its own only), and the object project read answers the
+// authorization check the routes run before any byte serves.
+//
 // @section validation — the identity, path and mime gates
 // @section projects — the owner scope and its quota floor
 // @section put — the deposit pipeline (digest, chunks, manifest, refs)
@@ -106,13 +111,21 @@ const PROJECT_COLUMNS = {
 /**
  * Creates one project — the owner scope — with the 900MB quota floor laid
  * down beside it (the user redefines or removes the limit afterwards).
- * Idempotent: an existing project answers its row untouched.
+ * Idempotent: an existing project answers its row untouched, whatever
+ * owner pointer it carries. The accounts wave adds the owner bind: a
+ * session-minted scope lands with its account pointer, an operator-minted
+ * one stays unowned (null).
  *
  * @param id the project identity.
  * @param name the human name (defaults to the id).
+ * @param accountId the owning account when a session minted the scope (omitted for the operator lane).
  * @returns the project with its quota, or the honest refusal.
  */
-export function createProject(id: string, name = id): { project?: ProjectRow; refusal?: LedgerRefusal } {
+export function createProject(
+  id: string,
+  name = id,
+  accountId?: string,
+): { project?: ProjectRow; refusal?: LedgerRefusal } {
   if (!projectIdValid(id)) {
     return {
       refusal: {
@@ -121,13 +134,87 @@ export function createProject(id: string, name = id): { project?: ProjectRow; re
       },
     };
   }
-  storage.insert(projects).values({ id, name }).onConflictDoNothing().run();
+  storage
+    .insert(projects)
+    .values(accountId === undefined ? { id, name } : { id, name, accountId })
+    .onConflictDoNothing()
+    .run();
   const quota = ensureQuota(storage, id);
   const row = storage.select(PROJECT_COLUMNS).from(projects).where(eq(projects.id, id)).get();
   if (row === undefined) {
     throw new Error(`the project row "${id}" did not land`);
   }
   return { project: { id: row.id, name: row.name, region: row.region, createdAt: row.createdAt, quota } };
+}
+
+/** One project row of the list lane — the lean projection (the quota rides its own route). */
+export interface ProjectListRow {
+  /** the project identity */
+  id: string;
+  /** the human name */
+  name: string;
+  /** the region the project serves from */
+  region: string;
+  /** the owning account — null when the operator token minted the scope */
+  accountId: string | null;
+  /** the creation datetime */
+  createdAt: string;
+}
+
+/** One page of the project list — the rows plus the whole-filter total. */
+export interface ProjectPage {
+  /** the page rows, newest first */
+  rows: ProjectListRow[];
+  /** the total row count behind the filter (every page of the walk) */
+  total: number;
+}
+
+/** the explicit column projection the project list answers (no select *). */
+const PROJECT_LIST_COLUMNS = {
+  id: projects.id,
+  name: projects.name,
+  region: projects.region,
+  accountId: projects.accountId,
+  createdAt: projects.createdAt,
+};
+
+/**
+ * Lists the projects — newest first, paginated, optionally scoped to one
+ * account (the session lane's own-scopes filter). The total answers the
+ * whole filtered set, so the caller may walk every page honestly.
+ *
+ * @param page the account filter (optional) and the limit/offset window.
+ * @returns the page rows and the filtered total.
+ */
+export function listProjects(page: { accountId?: string; limit: number; offset: number }): ProjectPage {
+  const filter = page.accountId === undefined ? undefined : eq(projects.accountId, page.accountId);
+  const rows = storage
+    .select(PROJECT_LIST_COLUMNS)
+    .from(projects)
+    .where(filter)
+    .orderBy(desc(projects.createdAt), desc(projects.id))
+    .limit(page.limit)
+    .offset(page.offset)
+    .all();
+  const counted = storage.select({ count: sql<number>`COUNT(*)` }).from(projects).where(filter).get();
+  return { rows, total: Number(counted?.count ?? 0) };
+}
+
+/**
+ * Answers the project of one live object — the authorization edge the
+ * routes check before any byte serves: an absent or tombstoned row answers
+ * undefined and keeps the honest 404 flow untouched.
+ *
+ * @param id the ledger identity of the object.
+ * @returns the owning project, or undefined when no live row answers.
+ */
+export function objectProjectOf(id: string): string | undefined {
+  const row = storage
+    .select({ projectId: storageObjects.projectId })
+    .from(storageObjects)
+    .where(and(eq(storageObjects.id, id), isNull(storageObjects.deletedAt)))
+    .get();
+  return row?.projectId;
 }
 
 /** @section put */

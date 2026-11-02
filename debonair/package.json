@@ -76,6 +76,12 @@
     "beatgrid.ts",
     "speechalign.ts",
     "stems.ts",
+    "demix.ts",
+    "formant.ts",
+    "genrecorpus.ts",
+    "reverseingest.ts",
+    "timestretch.ts",
+    "vocalsynth.ts",
     "arranger.ts",
     "bigintids.ts",
     "fingerprint.ts",
@@ -123,6 +129,31 @@
       "types": "./patternminer.ts",
       "import": "./patternminer.ts",
       "default": "./patternminer.ts"
+    },
+    "./demix": {
+      "types": "./demix.ts",
+      "import": "./demix.ts",
+      "default": "./demix.ts"
+    },
+    "./formant": {
+      "types": "./formant.ts",
+      "import": "./formant.ts",
+      "default": "./formant.ts"
+    },
+    "./genrecorpus": {
+      "types": "./genrecorpus.ts",
+      "import": "./genrecorpus.ts",
+      "default": "./genrecorpus.ts"
+    },
+    "./reverseingest": {
+      "types": "./reverseingest.ts",
+      "import": "./reverseingest.ts",
+      "default": "./reverseingest.ts"
+    },
+    "./timestretch": {
+      "types": "./timestretch.ts",
+      "import": "./timestretch.ts",
+      "default": "./timestretch.ts"
     },
     "./patternenums": {
       "types": "./patternenums.ts",

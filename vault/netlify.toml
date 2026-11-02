@@ -1,6 +1,10 @@
 [build]
   command = "pnpm build"
-  publish = "."
+  # the deploy safety law: the publish lane mounts the build output only —
+  # the application root carries the engine's runtime sqlite stores and
+  # must never answer over https (the build copies the deploy faces — this
+  # file included — into dist itself).
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "26.8.2"

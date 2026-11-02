@@ -9,7 +9,7 @@
 // npx vitest run tests/edgelandes.virtual.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { edgelaneexecutorsvirtual, virtuallaneids, virtuallanespecs } from "../edgelandes.virtual.ts";
+import { edgelaneexecutorsvirtual, virtuallaneids, virtuallanespecs } from "../edgelandesvirtual.ts";
 import { getmodality } from "../modalityregistry.ts";
 import { kvmcapnames } from "../virtualization.ts";
 
