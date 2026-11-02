@@ -507,10 +507,10 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*; \
     version="${NODE_RUNTIME_VERSION}"; \
     case "${TARGETARCH}" in \
-        amd64) nodearch="x64"; build="https://nodejs.org/build" ;; \
-        arm64|aarch64) nodearch="arm64"; build="https://nodejs.org/build" ;; \
-        ppc64le) nodearch="ppc64le"; build="https://nodejs.org/build" ;; \
-        s390x) nodearch="s390x"; build="https://nodejs.org/build" ;; \
+        amd64) nodearch="x64"; build="https://nodejs.org/dist" ;; \
+        arm64|aarch64) nodearch="arm64"; build="https://nodejs.org/dist" ;; \
+        ppc64le) nodearch="ppc64le"; build="https://nodejs.org/dist" ;; \
+        s390x) nodearch="s390x"; build="https://nodejs.org/dist" ;; \
         riscv64) nodearch="riscv64-pointer-compression"; build="https://unofficial-builds.nodejs.org/download/release" ;; \
         *) echo "the five-architecture family index does not carry TARGETARCH ${TARGETARCH}" >&2; exit 1 ;; \
     esac; \
