@@ -13,7 +13,7 @@
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { tmpdir } from "node:os";
-import { artifactmanifest, artifactnotfound, sha256, syncresult, validationerror, workingset } from "./foundation.js";
+import { artifactmanifest, artifactnotfound, sha256, syncresult, validationerror, workingset } from "./foundation.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 2: memory/objects.ts — memory objects and compute results are serializable contracts between storage and runtime. */

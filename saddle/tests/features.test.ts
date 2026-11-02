@@ -21,15 +21,15 @@ import {
   roadmapbacklog,
   statevectorsync,
   tailscaleendpointplanner,
-} from '../compute.js';
-import { planfluxgitops } from '../orchestrator.js';
-import { rlautoscaler, vmconfigcrdt } from '../scheduler.js';
+} from '../compute.ts';
+import { planfluxgitops } from '../orchestrator.ts';
+import { rlautoscaler, vmconfigcrdt } from '../scheduler.ts';
 import {
   buildp4skeleton,
   buildtsnschedule,
   plancxltype3,
   planznszones,
-} from '../virtualization.js';
+} from '../virtualization.ts';
 
 /* ------------------------------------------------------------------ */
 /* virtualization.ts: cxl type-3, zns/fdp, p4, tsn                      */

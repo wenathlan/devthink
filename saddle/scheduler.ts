@@ -44,7 +44,7 @@ import {
   schedextinfo,
   tenantcgroupbuilder,
   tenantqosmap,
-} from './virtualization.js';
+} from './virtualization.ts';
 
 /** stable short sha256 digest for cache keys and reload detection. */
 function digest(input: string | Uint8Array): string {

@@ -24,7 +24,7 @@ import {
   removeVirtualCpu,
   solvetopology,
   validateCpuCount,
-} from '../virtualcpu.js';
+} from '../virtualcpu.ts';
 
 /* ------------------------------------------------------------------ */
 /* processor bank                                                      */

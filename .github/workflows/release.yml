@@ -995,22 +995,19 @@ jobs:
         run: |
           set -euo pipefail
           npm --prefix saddle ci --ignore-scripts
-          npm --prefix saddle run build
-          test -f saddle/dist/index.js
-          test -f saddle/dist/index.d.ts
-          test -f saddle/dist/cli.js
-          test -f saddle/dist/automation.js
-          test -f saddle/dist/browser.js
-          test -f saddle/dist/distribution.js
-          test -f saddle/dist/execution.js
-          test -f saddle/dist/foundation.js
-          test -f saddle/dist/isolation.js
-          test -f saddle/dist/modalityregistry.js
-          test -f saddle/dist/modes.js
-          test -f saddle/dist/sandbox.js
-          test -f saddle/dist/server.js
-          test -f saddle/dist/virtual.js
-          test -f saddle/dist/workloadlaw.js
+          test -f saddle/index.ts
+          test -f saddle/cli.ts
+          test -f saddle/browser.ts
+          test -f saddle/distribution.ts
+          test -f saddle/execution.ts
+          test -f saddle/foundation.ts
+          test -f saddle/isolation.ts
+          test -f saddle/modalityregistry.ts
+          test -f saddle/modes.ts
+          test -f saddle/sandbox.ts
+          test -f saddle/server.ts
+          test -f saddle/virtual.ts
+          test -f saddle/workloadlaw.ts
       - name: Pack every family envelope beside the application tarball
         run: |
           set -euo pipefail

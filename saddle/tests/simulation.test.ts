@@ -18,12 +18,12 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "vitest";
-import { chatopsdashboard, ebpfgputelemetry, wasmcanaryvalidator } from "../compute.js";
-import { createVirtualEngine, disposeengine, engineeventbus, randomPort } from "../index.js";
-import { kvmavailable, orchestrator, qemuruntime } from "../orchestrator.js";
-import { buildQemuTcgArgs } from "../performance.js";
-import { psilstm, rlautoscaler, tenantadmission, vmconfigcrdt } from "../scheduler.js";
-import { buildqemucmd } from "../virtualization.js";
+import { chatopsdashboard, ebpfgputelemetry, wasmcanaryvalidator } from "../compute.ts";
+import { createVirtualEngine, disposeengine, engineeventbus, randomPort } from "../index.ts";
+import { kvmavailable, orchestrator, qemuruntime } from "../orchestrator.ts";
+import { buildQemuTcgArgs } from "../performance.ts";
+import { psilstm, rlautoscaler, tenantadmission, vmconfigcrdt } from "../scheduler.ts";
+import { buildqemucmd } from "../virtualization.ts";
 
 /** repository root resolved from this test file location. */
 const reporoot = join(dirname(fileURLToPath(import.meta.url)), "..");

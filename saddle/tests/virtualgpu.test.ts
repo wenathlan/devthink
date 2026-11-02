@@ -9,7 +9,7 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'vitest';
-import { defaultgpuregistry, smiadapterbuilder } from '../render.js';
+import { defaultgpuregistry, smiadapterbuilder } from '../render.ts';
 import {
   composemigcatalog,
   fullpciid,
@@ -20,7 +20,7 @@ import {
   MIGLAYOUTBLACKWELL,
   pciIds,
   validatedensity,
-} from '../virtualgpu.js';
+} from '../virtualgpu.ts';
 
 /* ------------------------------------------------------------------ */
 /* verified identity bank                                              */

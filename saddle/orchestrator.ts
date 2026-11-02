@@ -68,8 +68,8 @@ import { cpus, freemem, networkInterfaces, tmpdir, totalmem } from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 import { setTimeout as sleep } from 'node:timers/promises';
-import type { enginetopicname, enginetopics } from './index.js';
-import { enginebus, MetricsStore } from './index.js';
+import type { enginetopicname, enginetopics } from './index.ts';
+import { enginebus, MetricsStore } from './index.ts';
 
 /* ------------------------------------------------------------------ */
 /* context: runtime catalog (verified 2026-08-22)                       */

@@ -26,8 +26,8 @@ import { Buffer } from "node:buffer";
 import { chmodSync } from "node:fs";
 import { createRequire } from "node:module";
 import { DatabaseSync } from "node:sqlite";
-import { artifactmanifest, artifactnotfound, idfactory, saddleerror, sha256, systemclock } from "./foundation.js";
-import { collectbytes, storageadapter } from "./virtual.js";
+import { artifactmanifest, artifactnotfound, idfactory, saddleerror, sha256, systemclock } from "./foundation.ts";
+import { collectbytes, storageadapter } from "./virtual.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* context: rowtypes — the typed projections of the handoff store      */

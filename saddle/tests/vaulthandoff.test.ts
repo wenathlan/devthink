@@ -20,8 +20,8 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "vitest";
-import { assertvisitorstorefree, faunblock, faunblockroutes, vaultsink } from "../vaulthandoff.js";
-import { storageadapter } from "../virtual.js";
+import { assertvisitorstorefree, faunblock, faunblockroutes, vaultsink } from "../vaulthandoff.ts";
+import { storageadapter } from "../virtual.ts";
 
 describe("the vaulthandoff contract", () => {
   it("putartifact and getartifact roundtrip an edge artifact through the vault store", () => {
