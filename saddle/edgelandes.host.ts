@@ -1,9 +1,11 @@
 // # edgelandes.host.ts — the host binary lane executors of the ninety
-// modalities wave, group a: twenty-five planned sandbox modalities
-// wired as honest host-binary execution lanes — the sandbox jails, the
-// container extensions, the runtimes, the screens, the mobile seat, the
-// builds, the ci runners, the network tunnels and the storage daemons
-// the engine host may carry. Every lane follows the spawn pattern of
+// modalities waves, group a: the twenty-five sandbox modalities of the
+// first wave (the sandbox jails, the container extensions, the runtimes,
+// the screens, the mobile seat, the builds, the ci runners, the network
+// tunnels and the storage daemons the engine host may carry) plus the
+// twelve lanes of the wiring wave (the language toolchains, the runner
+// seats and the build tail), every one wired as an honest host-binary
+// execution lane. Every lane follows the spawn pattern of
 // edgelandes.ts: the runtime is probed first (an absent runtime answers
 // the coded HOST_RUNTIME_ABSENT naming the runtime — a lane never fakes
 // a run), the code field lands in a private temp directory, the inputs
@@ -15,9 +17,11 @@
 // touched, and no lane leaves bytes behind on the host). The shared
 // helpers are local on purpose: edgelandes.ts exports its contract
 // pieces only, so this file carries its own spawn, deadline and temp
-// surface — the same law with its own seat. All twenty-five lanes are
-// kind live: the executor exists and drives the runtime when present,
-// exactly like language-ruby rides live though a host may not carry it.
+// surface — the same law with its own seat. The twenty-five lanes of
+// the first wave are kind live and the twelve of the wiring wave are
+// kind host (the runtime probe rung of the table): every executor
+// exists and drives the runtime when the host carries it, exactly like
+// language-ruby rides live though a host may not carry it.
 
 import { type ChildProcess, spawn } from "node:child_process";
 import { existsSync } from "node:fs";
@@ -39,7 +43,11 @@ import { type EdgeLaneExecutor, type EdgeLaneOutput, edgelaneerror, probehostbin
 export interface HostLaneSpec {
   /** the modality id the lane wires (the registry id). */
   modality: string;
-  /** live lanes execute, host lanes probe (all twenty-five are live). */
+  /** the wiring kind: the twenty-five first wave lanes ride live (the
+   * executor drives the runtime when the host carries it), the twelve
+   * wiring wave lanes ride host (the runtime probe rung — the plane
+   * probes the runtime, the executor drives it when present, the honest
+   * absence answers when it is not). */
   kind: "live" | "host";
   /** the runtime surface the lane rides ("bwrap", "docker", "tor"...). */
   runtime: string;
@@ -1196,13 +1204,274 @@ async function storagegaragelane(code: string, inputs: unknown, deadline: number
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
-/* Section 12: the lane table — the specs, the executors, the ids. */
+/* Section 12: the wiring wave lanes — the language toolchains, the    */
+/* runner seats and the build tail (the twelve that close the plane).  */
 /* ════════════════════════════════════════════════════════════════════ */
 
-/** the host lane table of the ninety modalities wave, group a: the
- * twenty-five host binary lanes, every one kind live — the executor
- * exists and drives the runtime when the host carries it. The ids are
- * pinned — the dispatcher merge and the api surface read them exactly. */
+/** runner-deno: the deno runner lane. The program rides a temp main.ts
+ * executed by `deno run` with the read permission scoped to the inputs
+ * file and DENO_DIR pointed inside the private tree (the module cache
+ * never touches the host home) — the inputs ride the env surface, and
+ * an absent deno answers the coded absence, never a faked module run. */
+async function runnerdenolane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("deno")) {
+    absentruntime("runner-deno", "deno");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "main.ts"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("deno", ["run", "--allow-read=inputs.json", "main.ts"], {
+      cwd: dir,
+      deadline,
+      env: { ...inputenv, DENO_DIR: join(dir, "denodir") },
+    });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** language-rust: the rustc toolchain lane. The program rides a temp
+ * main.rs compiled by rustc into the private tree (the -O seat, the
+ * binary never leaves the temp dir) and executed under the same
+ * deadline — the compile answers honestly, the run answers its own
+ * streams. */
+async function languagerustlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("rustc")) {
+    absentruntime("language-rust", "rustc");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "main.rs"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    await runhostprocess("rustc", ["-O", "-o", "lanebin", "main.rs"], { cwd: dir, deadline, env: inputenv });
+    const run = await runhostprocess("./lanebin", [], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** language-cargo: the cargo build lane. A minimal Cargo.toml plus
+ * src/main.rs (the code field) run through `cargo run --quiet` with
+ * CARGO_HOME and the target dir inside the private tree — the registry
+ * caches the host may own are never touched, nothing leaks outside the
+ * temp dir. */
+async function languagecargolane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("cargo")) {
+    absentruntime("language-cargo", "cargo");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(
+      join(dir, "Cargo.toml"),
+      [
+        "# the saddle edge cargo lane: one binary, zero dependencies,",
+        "# the home, the caches and the target tree stay inside the dir.",
+        "[package]",
+        'name = "saddle-edge-lane"',
+        'version = "0.0.0"',
+        'edition = "2021"',
+        "",
+        "[dependencies]",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    await mkdir(join(dir, "src"), { recursive: true });
+    await writeFile(join(dir, "src", "main.rs"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("cargo", ["run", "--quiet"], {
+      cwd: dir,
+      deadline,
+      env: { ...inputenv, CARGO_HOME: join(dir, "cargohome"), CARGO_TARGET_DIR: join(dir, "target") },
+    });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** language-v: the v compiler lane. The program rides a temp main.v run
+ * through `v run` (the compile and the run answer inside the same
+ * deadline) with HOME pointed at the private dir so the v cache never
+ * leaves the temp tree. */
+async function languagevlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("v")) {
+    absentruntime("language-v", "v");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "main.v"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("v", ["run", "main.v"], {
+      cwd: dir,
+      deadline,
+      env: { ...inputenv, HOME: dir },
+    });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** language-dotnet: the dotnet runtime lane of the language family. The
+ * program rides a temp Program.cs inside one minimal net8.0 console
+ * csproj (ImplicitUsings and Nullable disabled — the program owns its
+ * own usings), run through `dotnet run` with DOTNET_CLI_HOME, the nuget
+ * package dir and the telemetry opt-out pointed inside the private tree
+ * — the first-run caches the host may own are never touched. */
+async function languagedotnetlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("dotnet")) {
+    absentruntime("language-dotnet", "dotnet");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "Program.cs"), code, "utf8");
+    await writeFile(
+      join(dir, "lane.csproj"),
+      [
+        '<Project Sdk="Microsoft.NET.Sdk">',
+        "  <PropertyGroup>",
+        "    <OutputType>Exe</OutputType>",
+        "    <TargetFramework>net8.0</TargetFramework>",
+        "    <ImplicitUsings>disable</ImplicitUsings>",
+        "    <Nullable>disable</Nullable>",
+        "  </PropertyGroup>",
+        "</Project>",
+        "",
+      ].join("\n"),
+      "utf8",
+    );
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("dotnet", ["run", "--project", "lane.csproj"], {
+      cwd: dir,
+      deadline,
+      env: {
+        ...inputenv,
+        DOTNET_CLI_HOME: dir,
+        NUGET_PACKAGES: join(dir, "nuget"),
+        DOTNET_CLI_TELEMETRY_OPTOUT: "1",
+      },
+    });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** language-php: the php interpreter lane. The program rides a temp
+ * main.php executed by the php cli with the inputs surface riding the
+ * env — an honest spawn, nothing else. */
+async function languagephplane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("php")) {
+    absentruntime("language-php", "php");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "main.php"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("php", ["main.php"], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** language-lua: the lua interpreter lane. The same honest spawn law —
+ * the program rides a temp main.lua through the lua cli. */
+async function languagelualane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("lua")) {
+    absentruntime("language-lua", "lua");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "main.lua"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("lua", ["main.lua"], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** language-zig: the zig toolchain lane. The program rides a temp
+ * main.zig run through `zig run` (the compile and the run answer inside
+ * the same deadline) with the global cache pointed inside the private
+ * tree — the local cache dies with the temp dir. */
+async function languageziglane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("zig")) {
+    absentruntime("language-zig", "zig");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "main.zig"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("zig", ["run", "main.zig"], {
+      cwd: dir,
+      deadline,
+      env: { ...inputenv, ZIG_GLOBAL_CACHE_DIR: join(dir, "zigcache") },
+    });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** language-nim: the nim compiler lane. The program rides a temp main.nim
+ * run through `nim r` with the nimcache inside the private tree — the
+ * build artifacts die with the temp dir. */
+async function languagenimlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("nim")) {
+    absentruntime("language-nim", "nim");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "main.nim"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("nim", ["r", `--nimcache:${join(dir, "nimcache")}`, "main.nim"], {
+      cwd: dir,
+      deadline,
+      env: inputenv,
+    });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** build-make: the make lane. The code field is the Makefile itself:
+ * the lane writes it inside the private dir and runs the default goal
+ * through `make` — the recipe answers its own streams, the inputs ride
+ * the env surface. */
+async function buildmakelane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("make")) {
+    absentruntime("build-make", "make");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "Makefile"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("make", [], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** build-ninja: the ninja lane. The code field is the build.ninja file
+ * itself: the lane writes it inside the private dir and runs the default
+ * targets through `ninja` — the build graph answers its own streams. */
+async function buildninjalane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("ninja")) {
+    absentruntime("build-ninja", "ninja");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "build.ninja"), code, "utf8");
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("ninja", [], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** runner-wasi: the wasi preview lane. The code field is the base64 wasm
+ * module (the runner-wasm precedent): the lane decodes it into
+ * module.wasm inside the private tree and runs it through `wasmtime
+ * run` — a module wasmtime refuses answers its own honest exit, an
+ * absent wasmtime answers the coded absence, never a faked boot. */
+async function runnerwasilane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("wasmtime")) {
+    absentruntime("runner-wasi", "wasmtime");
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "module.wasm"), Buffer.from(String(code), "base64"));
+    const inputenv = await writeinputsfile(dir, inputs);
+    const run = await runhostprocess("wasmtime", ["run", "module.wasm"], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 13: the lane table — the specs, the executors, the ids. */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** the host lane table of the ninety modalities waves, group a: the
+ * thirty-seven host binary lanes — the twenty-five of the first wave
+ * ride kind live and the twelve of the wiring wave ride kind host (the
+ * runtime probe rung — the executor exists and drives the runtime when
+ * the host carries it). The ids are pinned — the dispatcher merge and
+ * the api surface read them exactly. */
 export const hostlanespecs: readonly HostLaneSpec[] = Object.freeze([
   { modality: "sandbox-bubblewrap", kind: "live", runtime: "bwrap", present: () => probehostbinary("bwrap") },
   { modality: "sandbox-nsjail", kind: "live", runtime: "nsjail", present: () => probehostbinary("nsjail") },
@@ -1244,11 +1513,27 @@ export const hostlanespecs: readonly HostLaneSpec[] = Object.freeze([
   { modality: "network-wireguard", kind: "live", runtime: "wg", present: () => probehostbinary("wg") },
   { modality: "storage-minio", kind: "live", runtime: "mc", present: () => probehostbinary("mc") },
   { modality: "storage-garage", kind: "live", runtime: "garage", present: () => probehostbinary("garage") },
+  // the wiring wave lanes: the language toolchains, the runner seats and
+  // the build tail — kind host (the runtime probe rung), the executors
+  // drive the runtimes when the hosts carry them
+  { modality: "build-make", kind: "host", runtime: "make", present: () => probehostbinary("make") },
+  { modality: "build-ninja", kind: "host", runtime: "ninja", present: () => probehostbinary("ninja") },
+  { modality: "language-cargo", kind: "host", runtime: "cargo", present: () => probehostbinary("cargo") },
+  { modality: "language-dotnet", kind: "host", runtime: "dotnet", present: () => probehostbinary("dotnet") },
+  { modality: "language-lua", kind: "host", runtime: "lua", present: () => probehostbinary("lua") },
+  { modality: "language-nim", kind: "host", runtime: "nim", present: () => probehostbinary("nim") },
+  { modality: "language-php", kind: "host", runtime: "php", present: () => probehostbinary("php") },
+  { modality: "language-rust", kind: "host", runtime: "rustc", present: () => probehostbinary("rustc") },
+  { modality: "language-v", kind: "host", runtime: "v", present: () => probehostbinary("v") },
+  { modality: "language-zig", kind: "host", runtime: "zig", present: () => probehostbinary("zig") },
+  { modality: "runner-deno", kind: "host", runtime: "deno", present: () => probehostbinary("deno") },
+  { modality: "runner-wasi", kind: "host", runtime: "wasmtime", present: () => probehostbinary("wasmtime") },
 ]);
 
 /** the host lane executor table: one executor per lane id, keyed by the
- * modality id in the same order as the spec table; the dispatch plane
- * refuses to boot over a lane it cannot wire. */
+ * modality id in the same order as the spec table — the twenty-five of
+ * the first wave beside the twelve of the wiring wave; the dispatch
+ * plane refuses to boot over a lane it cannot wire. */
 export const edgelaneexecutorshost: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
   "sandbox-bubblewrap": sandboxbubblewraplane,
   "sandbox-nsjail": sandboxnsjaillane,
@@ -1275,6 +1560,18 @@ export const edgelaneexecutorshost: Readonly<Record<string, EdgeLaneExecutor>> =
   "network-wireguard": networkwireguardlane,
   "storage-minio": storageminiolane,
   "storage-garage": storagegaragelane,
+  "build-make": buildmakelane,
+  "build-ninja": buildninjalane,
+  "language-cargo": languagecargolane,
+  "language-dotnet": languagedotnetlane,
+  "language-lua": languagelualane,
+  "language-nim": languagenimlane,
+  "language-php": languagephplane,
+  "language-rust": languagerustlane,
+  "language-v": languagevlane,
+  "language-zig": languageziglane,
+  "runner-deno": runnerdenolane,
+  "runner-wasi": runnerwasilane,
 });
 
 /** the host lane ids in the spec order — the pinned contract the

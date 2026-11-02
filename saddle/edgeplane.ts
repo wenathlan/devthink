@@ -46,7 +46,9 @@ export type EdgeRequest = {
 export type EdgeLaneReport = {
   /** the modality id the lane wires. */
   modality: string;
-  /** live lanes execute, host lanes probe the runtime (the next rung). */
+  /** live lanes execute, host lanes ride host runtimes the plane probes
+   * first (the wiring wave seats drive the runtime when the host carries
+   * it, the heavyweight seats stay probe-only — the next rung). */
   kind: "live" | "host";
   /** the runtime surface the lane rides ("node:vm", "bun", "docker"...). */
   runtime: string;
@@ -116,12 +118,14 @@ interface LaneSpec {
 
 /** the lane table of the edge plane: the ten live lanes (the execution
  * lanes the engine drives today) and the six host lanes (the runtimes
- * the engine probes, the execution wiring the next rung) of the base
- * contract, then the sixty-three lanes of the ninety modalities wave
- * merged in through edgelandes.ninety.ts (the twenty-five host binary
- * lanes, the nineteen in-process lanes, the seven virtual hardware
- * lanes and the six heavyweight probes). The ids are pinned — parallel
- * waves and the api routes read them exactly. */
+ * the engine probes) of the base contract, then the seventy-four lanes
+ * of the ninety modalities waves merged in through edgelandes.ninety.ts
+ * (the thirty-seven host binary lanes — the twenty-five live of the
+ * first wave and the twelve host seats of the wiring wave, the
+ * twenty-four in-process lanes, the seven virtual hardware lanes and
+ * the six heavyweight probes) — ninety lanes in total, sixty-six live
+ * and twenty-four host, every modality of the ninety plan wired. The
+ * ids are pinned — parallel waves and the api routes read them exactly. */
 const EDGELANES: readonly LaneSpec[] = Object.freeze([
   ...edgelanespecsall,
   // the live lanes: the engine executes through these today
@@ -203,10 +207,7 @@ const VISITORMARKERS: readonly string[] = Object.freeze([
  * seats (localStorage and sessionStorage) are the ones a node runtime
  * defines on its own globalThis, so the exemption below is scoped to
  * exactly them. */
-const STORAGEMARKERS: readonly string[] = Object.freeze([
-  "localStorage",
-  "sessionStorage",
-]);
+const STORAGEMARKERS: readonly string[] = Object.freeze(["localStorage", "sessionStorage"]);
 
 /** whether the inspected scope is the globalThis of a live node server
  * process: the runtime identity the exemption rides on (the versions

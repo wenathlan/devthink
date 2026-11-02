@@ -1,10 +1,11 @@
 // # edgelandes.host.test — the host binary lanes of the ninety
-// modalities wave, group a, answer the honesty law: the twenty-five
+// modalities wave, group a, answer the honesty law: the thirty-seven
 // pinned lane ids wire a spec, an executor and an id exactly (frozen,
-// unique, all live), a lane whose runtime this host does not carry
-// answers the coded host-runtime-absent naming the runtime (the probe
-// rides probehostbinary inside this test — the lane never fakes a
-// run), a lane whose runtime is present answers a real run or an
+// unique — the twenty-five of the first wave kind live, the twelve of
+// the wiring wave kind host), a lane whose runtime this host does not
+// carry answers the coded host-runtime-absent naming the runtime (the
+// probe rides probehostbinary inside this test — the lane never fakes
+// a run), a lane whose runtime is present answers a real run or an
 // honest coded refusal, no lane leaves a saddleedge temp directory
 // behind, and a sleeping program dies at the deadline. The tests stay
 // green on a host with zero host runtimes (the honest refusals) and on
@@ -17,8 +18,10 @@ import { describe, it } from "vitest";
 import { edgelaneexecutorshost, hostlaneids, hostlanespecs } from "../edgelandes.host.ts";
 import { probehostbinary } from "../edgelandes.ts";
 
-/** the twenty-five host binary lane ids the pinned contract charges
- * (parallel waves and the dispatcher merge read these exactly). */
+/** the thirty-seven host binary lane ids the pinned contract charges
+ * (parallel waves and the dispatcher merge read these exactly): the
+ * twenty-five of the first wave in their spec order, then the twelve
+ * of the wiring wave in alphabetical order. */
 const HOSTBINLANES = [
   "sandbox-bubblewrap",
   "sandbox-nsjail",
@@ -45,7 +48,56 @@ const HOSTBINLANES = [
   "network-wireguard",
   "storage-minio",
   "storage-garage",
+  "build-make",
+  "build-ninja",
+  "language-cargo",
+  "language-dotnet",
+  "language-lua",
+  "language-nim",
+  "language-php",
+  "language-rust",
+  "language-v",
+  "language-zig",
+  "runner-deno",
+  "runner-wasi",
 ] as const;
+
+/** the twelve wiring wave lanes ride the host rung of the table (kind
+ * host — the plane probes the runtime and the executor drives it when
+ * the host carries it) while the twenty-five first wave lanes stay
+ * kind live. */
+const HOSTSEATLANES: readonly string[] = [
+  "build-make",
+  "build-ninja",
+  "language-cargo",
+  "language-dotnet",
+  "language-lua",
+  "language-nim",
+  "language-php",
+  "language-rust",
+  "language-v",
+  "language-zig",
+  "runner-deno",
+  "runner-wasi",
+];
+
+/** the minimal wasi smoke module the runner-wasi lane runs: one
+ * wasi_snapshot_preview1 fd_write import, one page of memory, the
+ * "smoke:42\n" payload at offset 8, the iovec at 0 and a _start that
+ * writes the payload to stdout (fd 1) — hand-assembled (header, type,
+ * import, function, memory, export, code and data sections for one
+ * printing-and-returning command), verified by the fixture self-check
+ * inside the smoke test below. */
+const WASISMOKEBYTES = new Uint8Array([
+  0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x0c, 0x02, 0x60, 0x00, 0x00, 0x60, 0x04, 0x7f, 0x7f, 0x7f,
+  0x7f, 0x01, 0x7f, 0x02, 0x23, 0x01, 0x16, 0x77, 0x61, 0x73, 0x69, 0x5f, 0x73, 0x6e, 0x61, 0x70, 0x73, 0x68, 0x6f,
+  0x74, 0x5f, 0x70, 0x72, 0x65, 0x76, 0x69, 0x65, 0x77, 0x31, 0x08, 0x66, 0x64, 0x5f, 0x77, 0x72, 0x69, 0x74, 0x65,
+  0x00, 0x01, 0x03, 0x02, 0x01, 0x00, 0x05, 0x03, 0x01, 0x00, 0x01, 0x07, 0x13, 0x02, 0x06, 0x6d, 0x65, 0x6d, 0x6f,
+  0x72, 0x79, 0x02, 0x00, 0x06, 0x5f, 0x73, 0x74, 0x61, 0x72, 0x74, 0x00, 0x01, 0x0a, 0x1d, 0x01, 0x1b, 0x00, 0x41,
+  0x00, 0x41, 0x08, 0x36, 0x02, 0x00, 0x41, 0x04, 0x41, 0x09, 0x36, 0x02, 0x00, 0x41, 0x01, 0x41, 0x00, 0x41, 0x01,
+  0x41, 0x14, 0x10, 0x00, 0x1a, 0x0b, 0x0b, 0x0f, 0x01, 0x00, 0x41, 0x08, 0x0b, 0x09, 0x73, 0x6d, 0x6f, 0x6b, 0x65,
+  0x3a, 0x34, 0x32, 0x0a,
+]);
 
 /** the coded lane error of an unknown thrown value: undefined when the
  * throw carried no machine code — the uncoded crash these tests refuse. */
@@ -55,11 +107,26 @@ const laneerrorcode = (error: unknown): string | undefined => {
 };
 
 /** the trivial smoke program per lane: bash-shaped by default (most
- * host lanes ride a shell script), the odd runtimes get their own seat. */
+ * host lanes ride a shell script or a manifest file), the odd runtimes
+ * get their own seat (the wiring wave languages each answer their own
+ * source shape, the wasi seat answers the base64 module bytes). */
 const smokeprogram = (id: string): string => {
   if (id === "runtime-clr") return 'Console.WriteLine("smoke:42");';
   if (id === "runtime-workerd") return 'export default { fetch: () => new Response("smoke:42") };';
   if (id === "network-wireguard") return "";
+  if (id === "runner-deno") return 'console.log("smoke:42");';
+  if (id === "runner-wasi") return Buffer.from(WASISMOKEBYTES).toString("base64");
+  if (id === "language-rust" || id === "language-cargo") return 'fn main() { println!("smoke:42"); }';
+  if (id === "language-v") return 'fn main() { println("smoke:42") }';
+  if (id === "language-dotnet") return 'class Program { static void Main() { System.Console.WriteLine("smoke:42"); } }';
+  if (id === "language-php") return '<?php echo "smoke:42";';
+  if (id === "language-lua") return 'print("smoke:42")';
+  if (id === "language-zig") {
+    return 'const std = @import("std");\npub fn main() !void {\n    try std.io.getStdOut().writeAll("smoke:42\\n");\n}';
+  }
+  if (id === "language-nim") return 'echo "smoke:42"';
+  if (id === "build-make") return "all:\n\t@echo smoke:42";
+  if (id === "build-ninja") return "rule cmd\n  command = echo smoke:42\nbuild smoke: cmd\n";
   return "echo smoke:42";
 };
 
@@ -71,8 +138,8 @@ const saddleedgetmpentries = async (): Promise<string[]> => {
 };
 
 describe("the host binary lanes answer the honesty law", () => {
-  it("wires exactly the twenty-five pinned lanes (specs, executors and ids agree)", () => {
-    assert.equal(hostlanespecs.length, 25, "the spec table carries twenty-five lanes");
+  it("wires exactly the thirty-seven pinned lanes (specs, executors and ids agree)", () => {
+    assert.equal(hostlanespecs.length, 37, "the spec table carries thirty-seven lanes");
     assert.deepStrictEqual([...hostlaneids], [...HOSTBINLANES]);
     assert.deepStrictEqual(
       hostlanespecs.map((lane) => lane.modality),
@@ -80,7 +147,11 @@ describe("the host binary lanes answer the honesty law", () => {
     );
     assert.deepStrictEqual(Object.keys(edgelaneexecutorshost), [...HOSTBINLANES]);
     for (const spec of hostlanespecs) {
-      assert.equal(spec.kind, "live", `the lane ${spec.modality} is live (the executor drives the runtime)`);
+      assert.equal(
+        spec.kind,
+        HOSTSEATLANES.includes(spec.modality) ? "host" : "live",
+        `the lane ${spec.modality} rides the pinned kind (the executor drives the runtime when the host carries it)`,
+      );
       assert.ok(spec.runtime.length > 0, `the lane ${spec.modality} names its runtime`);
       assert.equal(typeof spec.present, "function", `the lane ${spec.modality} carries its presence probe`);
       assert.equal(typeof spec.present(), "boolean", `the probe of ${spec.modality} answers a boolean`);
@@ -91,7 +162,7 @@ describe("the host binary lanes answer the honesty law", () => {
     assert.equal(Object.isFrozen(edgelaneexecutorshost), true);
     assert.equal(Object.isFrozen(hostlanespecs), true);
     assert.equal(Object.isFrozen(hostlaneids), true);
-    assert.equal(new Set(hostlaneids).size, 25, "no lane id rides the table twice");
+    assert.equal(new Set(hostlaneids).size, 37, "no lane id rides the table twice");
     assert.throws(
       () => {
         (edgelaneexecutorshost as Record<string, unknown>)["not-a-lane"] = () => undefined;
@@ -129,6 +200,10 @@ describe("the host binary lanes answer the honesty law", () => {
   });
 
   it("runs the real smoke on every runtime this host carries (a real run or an honest coded refusal)", async () => {
+    // the wasi smoke fixture self-check: the engine webassembly itself
+    // must agree the bytes are a valid module (the imports stay
+    // unresolved — the wasmtime host resolves them at run time)
+    assert.doesNotThrow(() => new WebAssembly.Module(WASISMOKEBYTES), "the wasi smoke module is a valid module");
     const present = hostlanespecs.filter((lane) => lane.present());
     let realruns = 0;
     for (const spec of present) {

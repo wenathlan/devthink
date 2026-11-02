@@ -106,3 +106,76 @@ planned-only lanes, and the batteries say so.
 - the six heavyweight lanes stay host (probe only): the execution
   wiring of a confidential compute seat or a pod session is the next
   rung, and the registry says so.
+
+## the wiring wave (wave four, pr15 — branch wave/ninety.wiring)
+
+the wiring wave closed the last gap of the ninety plan: the registry
+carried the ninety records with 81 live and 9 host while the plane
+drove only 73 lanes — seventeen registry-live modalities waited without
+a lane. the wave wired all seventeen, honestly, and the plane table
+now answers the full plan: **90 lanes, 66 live, 24 host.**
+
+### the state the wave found
+
+- the plane: 73 lanes (61 live, 12 host); the registry live set ahead
+  of the lane table by seventeen ids — runner-deno, runner-serverless,
+  language-rust, language-cargo, language-v, language-dotnet,
+  language-php, language-lua, language-zig, language-nim, runner-wasi,
+  fs-gitobjects, storage-sqlite, network-dns, network-doh, build-make
+  and build-ninja, every one already live in the registry.
+
+### the wiring the wave answered
+
+- **edgelandes.host.ts** (group a, +12 lanes): the language toolchains
+  (rustc with the compile-then-run seat, cargo with CARGO_HOME and the
+  target tree inside the private dir, v with HOME at the temp dir,
+  dotnet with the csproj seat and DOTNET_CLI_HOME inside, php, lua, zig
+  with the global cache inside, nim with the nimcache inside), the
+  runner seats (deno with the scoped read permission and DENO_DIR
+  inside, wasi through wasmtime with the base64 module bytes) and the
+  build tail (make with the Makefile as the code field, ninja with the
+  build.ninja as the code field). every lane probes its binary, runs
+  under the hard deadline in the private temp dir and answers the coded
+  absence when the host carries no runtime — the twelve ride kind host
+  (the runtime probe rung), the twenty-five of the first wave stay kind
+  live.
+- **edgelandes.inproc.ts** (group b, +5 lanes): the serverless runner
+  (the v8 isolate manifest — one fresh node:vm context per run, the
+  module fingerprint fnv-1a, the frozen inputs surface), the git
+  objects vfs (the loose-object header law and the two-hex-char
+  fan-out), the sqlite vault (the hundred-byte page-one header with the
+  fnv-1a statement id as the change counter) and the network resolvers
+  (the rfc1035 question bytes of dns, the rfc8484 base64url ride of
+  doh under the https-only resolver law) — pure ts, deterministic,
+  seeded, in-process.
+- **edgelandes.ninety.ts / edgeplane.ts**: the stale sixty-three
+  comments now state the post-wiring truth — ninety lanes, sixty-six
+  live, twenty-four host.
+- **the pinned tests**: the host battery 25 → 37 (the twelve wave ids
+  in alphabetical order, kind host), the inproc battery 19 → 24 with
+  the five samples and the wave four seat laws (the isolate, the
+  fan-out, the page and the resolvers), the plane table 61/12 → 66/24,
+  and the runner-deno refusal test rewired to the wired truth (a real
+  run or the coded absence — the gap it proved is closed).
+
+### the verification the wave recorded
+
+- saddle: 30 files / **437 tests green** (436 base + 1 seat law test)
+- the build green, dist carrying both lane files
+- biome zero findings on every file the wave touched
+- the live proof: the plane table answers 66 live and 24 host of 90 —
+  /api/v1/edge/lanes now reports the ninety probed lanes
+
+### the honest notes
+
+- the twelve host seats ride kind host with real executors: the plane
+  probes the runtime and the executor drives it when the host carries
+  it — an absent runtime answers HOST_RUNTIME_ABSENT naming the runtime,
+  exactly like the live seats of the first wave (the kind answers the
+  rung the table reports, the executor answers the run).
+- the inproc seats stay deterministic: fixed fnv-1a addresses, rfc1035
+  big-endian fields and stored hex — no clock, no randomness, the same
+  payload answers the same bytes every run.
+- this engine host carries make only: the eleven other runtimes answer
+  the coded absence here while the make lane proves a real run — the
+  batteries stay green on both kinds of host.
