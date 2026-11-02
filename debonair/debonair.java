@@ -10,7 +10,7 @@ package io.github.wenathlan.debonair;
  */
 final class Debonair {
   /** The version of the debonair envelope (the family five-package wave). */
-  public static final String VERSION = "2.0.154";
+  public static final String VERSION = "2.1.7";
   private Debonair() {
   }
 }

@@ -45,7 +45,11 @@ it("declares runtime metadata and an optional browser provider peer", async () =
   const nodepin = (await readFile(resolve(root, "../.nvmrc"), "utf8")).trim();
   const nodemajor = Number(nodepin.split(".")[0]);
   assert.equal(packagejson.engines.node, `>=${nodepin} <${nodemajor + 1}`);
-  assert.equal(packagejson.packageManager, "npm@12.0.2");
+  /* the dependency union law rides the twelve manifests on one set: the
+     package manager of the family climbed to the pnpm rung (the engine
+     floors beside it walk the caret union), so the assertion pins the
+     union's manager seat the way the rung stamps it */
+  assert.equal(packagejson.packageManager, "pnpm@12.3.4");
   assert.equal(packagejson.peerDependencies.playwright, "^1.63.0");
   assert.equal(packagejson.peerDependenciesMeta.playwright.optional, true);
   assert.equal(packagejson.exports["./browser-playwright"], "./dist/browser.js");

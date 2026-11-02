@@ -1,6 +1,6 @@
-# Devthink 2.0.154
+# Devthink 2.1.7
 
-This release is the ownership and security rung of the ladder: the cross-app engine laws complete their ownership arc — the label store law (#273) lands the vault factory as the single owner of the copy mechanism with the eleven apps importing the store, the storage lane law (#277) answers the same ownership for the sqlite seat (the vault storagelane factory owns the mechanism and the seven siblings open the lane), and the cadria library face (#278) publishes the engine so the audio app imports it the registry way. The security rung heals the publish ladder the container demanded: the trivy gate law (#275) climbs the frozen npm carriers to the fresh cures (brace-expansion rides 5.0.11 and undici rides 6.29.1 in both the builder fixdep tree and the runtime npm tree with the asserted swap), the visitor law exempts the webstorage globals the node server defines on its own globalThis (#274, the node 26 experimental surface never marks the visitor machine so the sixteen edge plane and ninety law seats answer green on the release runners), and the family context law lands twice over — the family-ghcr cadria lane stages the debonair sibling beside the nested app (#276, the engine-ownership price the vite aliases charge inside the container) and the saddle vhe lanes carry the vault sibling in their staged context (#279, the label store import resolving inside the image both at build and at runtime). The mesa mirror the container law healed serves the resolver through tier one, and this rung carries every law so the publish ladder completes with the saddle container landing on the registry beside every sibling. The metadata family stamps 2.0.154 with the battery artifacts re-stamped.
+This release is the supply-chain realignment rung of the ladder: the family climbs above the stale standalone line so the published consumption answers the source the repository carries. The registry still served the september saddle tarball (the 2.1.6 of the pre-family era) to every caret range the manifests declared — the family rungs had walked backwards under it, so the eleven apps resolved an engine months older than the repository while the tests rode the local aliases — and the rung answers by climbing the whole family to 2.1.7, above the poisoned line, so every caret range resolves the current build the moment this release publishes. The rung carries the engine-real arc the climb publishes: the dispatch reality law (#292) makes the merged seat prefer the real wire lanes over the rehearsal composer (the storage and ram ids ride the sigv4 signer, the wire clients and the kernel recipes), the ninety wiring (#294) seats the seventeen registered modalities that answered no executor (twelve host runtimes from deno to wasmtime, five inproc seats from isolates to dns, the census at sixty-six live and twenty-four host), the saddle script law (#297) answers the interpreter lanes the product door demanded, the saddle container law lands the nine missing lanes inside the engine image, the ghcr context law carries the vault sibling through the family build context with the polynomial trailing-slash healed, the dependency union law rides the twelve manifests on the same set with the engines climbing to the v 0.5.2 catalog, the design login law kills the leaking halo on the login card and retires the blue glow from the creation surfaces, and the qemu honest-boot law (#293) kills the sleep stand-in so a vm record never claims running over a process that was never a machine (the absent binary refuses with ERR_QEMU_ABSENT, the foreground child owns the lifecycle, the ci saddle leg carries a real qemu so the snapshot restore restart battery rides a live guest). The getry rung ladder (#295) walks the gateway dependency to the fresh family stamp so the drift gate answers green for every open wave. The metadata family stamps 2.1.7 with the battery artifacts re-stamped.
 
 ## Distribution channels
 
@@ -8,22 +8,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.154.tgz`
+- `wenathlan-devthink-2.1.7.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.154.nupkg`
+- `devthink.2.1.7.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.154.pom`
-- `devthink-2.0.154.jar`
-- `devthink2.0.154.zip`
-- `devthink-declarations-2.0.154.zip`
+- `devthink-2.1.7.pom`
+- `devthink-2.1.7.jar`
+- `devthink2.1.7.zip`
+- `devthink-declarations-2.1.7.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -37,77 +37,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.154.gem`
+- `devthink-2.1.7.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.154.vsix`
+- `devthink-vscode-2.1.7.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.154.xpi`
+- `devthink-firefox-2.1.7.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/18.browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.154.zip`
+- `devthink-safari-2.1.7.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.154.zip`
-- `devthink-2.0.154-source.tar.xz`
-- `devthink-nativehost-2.0.154.template.json`
+- `devthink2.1.7.zip`
+- `devthink-2.1.7-source.tar.xz`
+- `devthink-nativehost-2.1.7.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.154.zip`
+- `devthink-site-2.1.7.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.154.zip`
+- `devthink-declarations-2.1.7.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.154.json`
-- `devthink-attestations-2.0.154.json`
-- `devthink-artifactmanifest-2.0.154.json`
+- `devthink-sbom-2.1.7.json`
+- `devthink-attestations-2.1.7.json`
+- `devthink-artifactmanifest-2.1.7.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.154.tgz`
-- `devthink.2.0.154.nupkg`
-- `devthink-2.0.154.pom`
-- `devthink-2.0.154.jar`
-- `devthink-2.0.154.gem`
+- `wenathlan-devthink-2.1.7.tgz`
+- `devthink.2.1.7.nupkg`
+- `devthink-2.1.7.pom`
+- `devthink-2.1.7.jar`
+- `devthink-2.1.7.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.154.vsix`
-- `devthink-firefox-2.0.154.xpi`
-- `devthink-safari-2.0.154.zip`
-- `devthink2.0.154.zip`
-- `devthink-2.0.154-source.tar.xz`
-- `devthink-nativehost-2.0.154.template.json`
-- `devthink-site-2.0.154.zip`
-- `devthink-declarations-2.0.154.zip`
-- `devthink-sbom-2.0.154.json`
-- `devthink-attestations-2.0.154.json`
-- `devthink-artifactmanifest-2.0.154.json`
+- `devthink-vscode-2.1.7.vsix`
+- `devthink-firefox-2.1.7.xpi`
+- `devthink-safari-2.1.7.zip`
+- `devthink2.1.7.zip`
+- `devthink-2.1.7-source.tar.xz`
+- `devthink-nativehost-2.1.7.template.json`
+- `devthink-site-2.1.7.zip`
+- `devthink-declarations-2.1.7.zip`
+- `devthink-sbom-2.1.7.json`
+- `devthink-attestations-2.1.7.json`
+- `devthink-artifactmanifest-2.1.7.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
@@ -115,7 +115,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 149 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 150 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 
