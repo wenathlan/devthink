@@ -7,7 +7,9 @@
     "moduleResolution": "bundler",
     "paths": {
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
-      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"]
+      "@wenathlan/vault/routes": ["../vault/routes.ts"],
+      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
+      "@wenathlan/vault/utils": ["../vault/utils.ts"]
     },
     "strict": true,
     "lib": ["esnext", "dom", "dom.iterable"],
