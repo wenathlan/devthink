@@ -20,6 +20,17 @@ import { engine, inprocess, scheduler } from "./execution.js";
 import { mcpserver } from "./integration.js";
 import { modecatalog } from "./modes.js";
 import { creategrid, defaultplan, dockerrun, multiplex, planlint, plantoml, qemucommand, type plan } from "./index.js";
+import {
+  compilewithbabel,
+  dockerdescriptor,
+  interpretsh,
+  interpretyaml,
+  interpretyml,
+  runscript,
+  runscriptbackground,
+  scriptRunStatus,
+  type ScriptPlan,
+} from "./scriptlanes.js";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: cli/main.ts — the saddle command-line entry point (the bin "saddle" resolves to dist/cli.js after the grand merge; the file is executable through the bin entry, not a shebang). */
@@ -32,7 +43,7 @@ import { creategrid, defaultplan, dockerrun, multiplex, planlint, plantoml, qemu
 export async function main(args = argv.slice(2)) {
   const command = args[0] ?? "help";
   /* Help stays short and lists only stable local commands. */
-  if (["help", "--help", "-h"].includes(command)) { console.log("saddle <command>\n\ncommands\n  help\n  modes\n  plan [qemu|docker|toml]\n  vm [qemu|docker|toml]\n  vmlint\n  gpus\n  runexample\n  mcp"); return; }
+  if (["help", "--help", "-h"].includes(command)) { console.log("saddle <command>\n\ncommands\n  help\n  modes\n  plan [qemu|docker|toml]\n  vm [qemu|docker|toml]\n  vmlint\n  gpus\n  runexample\n  script <run|background|status|docker|compile> [file|runid]\n  mcp"); return; }
   if (command === "modes") { console.log(JSON.stringify(modecatalog(), null, 2)); return; }
   if (command === "plan") { await renderplan(args[1]); return; }
   /* The vm/vmlint/gpus triad makes the nominal npm aliases (vm:create, */
@@ -49,6 +60,7 @@ export async function main(args = argv.slice(2)) {
     console.log(JSON.stringify({ jobid: result.job.id, artifact: result.artifact, events: events.all().length }, null, 2));
     return;
   }
+  if (command === "script") { await renderscript(args[1], args[2]); return; }
   if (command === "mcp") { const server = mcpserver(); console.log(JSON.stringify({ tools: server.listtools() }, null, 2)); return; }
   throw new Error(`unknown command: ${command}`);
 }
@@ -143,6 +155,118 @@ async function rendergpus() {
     const name = String(gpu.name ?? gpu.model ?? "unknown");
     const profiles = Array.isArray(gpu.profiles) ? (gpu.profiles as unknown[]).length : 0;
     console.log(profiles > 0 ? `${name} (${profiles} mig profiles)` : name);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════ */
+/* Section 3: the script lanes renderer — the sh/yml/yaml execution   */
+/* surface of the engine lane (PR15): run, background, status, docker */
+/* and compile ride the very scriptlanes.ts functions the webserver   */
+/* routes serve, so the bin and the api speak one lane.               */
+/* ══════════════════════════════════════════════════════════════════ */
+/**
+ * the script lanes renderer: every descriptor subcommand reads one
+ * file whose extension picks the interpretation lane and answers the
+ * honest result — no faked exit codes, no silent skips.
+ */
+
+/** the poll pause the background renderer waits with (the same cadence
+ * the script lanes test polls the detached record with). */
+const scriptpause = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+/**
+ * interprets one descriptor file into a script plan: the extension
+ * picks the lane — .sh wraps the raw script as one direct step,
+ * .yml and .yaml ride the house yaml subset (both spellings one lane,
+ * the plan declares the babel compile lane). a missing file or an
+ * unknown extension refuses honestly instead of guessing.
+ *
+ * @param target the descriptor file path.
+ * @returns the interpreted plan.
+ */
+async function scriptplanfromfile(target: string): Promise<ScriptPlan> {
+  if (target.length === 0) {
+    throw new Error("the script subcommand requires a descriptor file (.sh, .yml or .yaml)");
+  }
+  const text = await readFile(target, "utf8");
+  if (target.endsWith(".sh")) return interpretsh(text);
+  if (target.endsWith(".yml")) return interpretyml(text);
+  if (target.endsWith(".yaml")) return interpretyaml(text);
+  throw new Error(`the descriptor extension of "${target}" is not one the script lanes speak (.sh, .yml, .yaml)`);
+}
+
+/**
+ * Renders one script lanes subcommand: run executes the plan
+ * server-side with the enforced per-step deadlines and prints the
+ * honest per-step result (a failed plan exits 1); background kicks the
+ * plan detached through the house job queue, prints the launch answer
+ * and observes the record settle through the run status (the registry
+ * lives in this process, the poll reads it the way the api consumer
+ * does); status reads the observable record of one runid — honestly
+ * refusing a runid another process launched (SCRIPT_RUN_NOT_FOUND,
+ * the one-shot cli never carried that registry); docker emits the
+ * docker-ready descriptor of the plan; compile validates the babel
+ * roundtrip and prints the compiled plan.
+ *
+ * @param subcommand the script subcommand (run, background, status, docker, compile).
+ * @param target the descriptor file path (or the runid for status).
+ */
+async function renderscript(subcommand = "help", target = "") {
+  if (["help", "--help", "-h"].includes(subcommand)) {
+    console.log(
+      "saddle script <run|background|status|docker|compile> [file|runid]" +
+        "\n\n  run <file>         execute the plan server-side and print the honest per-step result" +
+        "\n  background <file>  kick the plan detached and observe the record settle" +
+        "\n  status <runid>     read the observable record of one background run" +
+        "\n  docker <file>      emit the docker-ready descriptor of the plan" +
+        "\n  compile <file>     ride the babel compile roundtrip and print the compiled plan",
+    );
+    return;
+  }
+  try {
+    if (subcommand === "run") {
+      const plan = await scriptplanfromfile(target);
+      const result = await runscript(plan);
+      console.log(JSON.stringify({ source: plan.source, compiledvia: plan.compiledvia, ...result }, null, 2));
+      if (result.status === "failed") process.exitCode = 1;
+      return;
+    }
+    if (subcommand === "background") {
+      const plan = await scriptplanfromfile(target);
+      const launch = runscriptbackground(plan);
+      console.log(JSON.stringify({ runid: launch.runid, status: launch.status, source: plan.source }, null, 2));
+      let record = scriptRunStatus(launch.runid);
+      const deadlineat = Date.now() + 60000;
+      while (record.status !== "succeeded" && record.status !== "failed" && Date.now() < deadlineat) {
+        await scriptpause(50);
+        record = scriptRunStatus(launch.runid);
+      }
+      console.log(JSON.stringify(record, null, 2));
+      if (record.status === "failed") process.exitCode = 1;
+      return;
+    }
+    if (subcommand === "status") {
+      if (target.length === 0) throw new Error("the status subcommand requires a runid");
+      console.log(JSON.stringify(scriptRunStatus(target), null, 2));
+      return;
+    }
+    if (subcommand === "docker") {
+      const plan = await scriptplanfromfile(target);
+      const descriptor = dockerdescriptor(plan);
+      process.stdout.write(descriptor.dockerfile);
+      process.stdout.write(`# entrypoint (docker run): ${descriptor.entrypoint}\n`);
+      return;
+    }
+    if (subcommand === "compile") {
+      const plan = await scriptplanfromfile(target);
+      const compiled = await compilewithbabel(plan);
+      console.log(JSON.stringify(compiled, null, 2));
+      return;
+    }
+    throw new Error(`unknown script subcommand: ${subcommand}`);
+  } catch (error) {
+    process.stderr.write(`script lane failed: ${error instanceof Error ? error.message : String(error)}\n`);
+    process.exitCode = 1;
   }
 }
 

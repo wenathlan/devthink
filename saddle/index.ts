@@ -1475,4 +1475,10 @@ export * from './isolation.js';
  * resolver reads (the spine of the sandbox modalities the engine opens). */
 export * from './modalityregistry.js';
 export * from './modes.js';
+/** Re-exports the script lanes — the sh execution through the universal
+ * runner, the yml/yaml interpretation through the house yaml subset with
+ * the babel compile roundtrip, the detached background runs on the house
+ * job queue and the docker-ready descriptors (the PR15 lane surface the
+ * webserver routes and the script cli command consume). */
+export * from './scriptlanes.js';
 export * from './virtual.js';

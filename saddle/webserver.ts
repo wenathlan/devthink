@@ -16,7 +16,13 @@
  * (register/login/logout/me backed by scrypt and sessions in db.ts),
  * the edge execution plane (the modality catalog census, the probed
  * lane report and the server-side edge runs riding the modality
- * lanes), the signed mesh surface (register/heartbeat/nodes verified by
+ * lanes), the script lanes (sh execution through the universal
+ * runner, yml and yaml interpretation through the house yaml subset
+ * with the optional babel compile roundtrip, detached background runs
+ * on the house job queue with observable statuses, and docker-ready
+ * descriptors — all server-side, the visitor browser executes
+ * nothing), the signed mesh surface
+ * (register/heartbeat/nodes verified by
  * mesh.ts), the admin surface (overview/users/nodes/sandboxes/audit)
  * and the events poll for the dashboard. per the project rules there
  * is no serverless function anywhere: this file is the whole backend
@@ -25,12 +31,12 @@
  * stay at the app root beside the served root, so the extension denylist
  * keeps them unreachable by the static resolver.
  *
- * contexts (28): types, httpserver, portselection, noderole,
+ * contexts (29): types, httpserver, portselection, noderole,
  * staticfiles, mimetypes, contenttypes, cacheheaders, securityheaders,
  * cors, jsonio, apierrors, health, speccatalogs, specscache, edgeplane,
- * authroutes, sandboxes, sandboxfs, statemachine, ttlreaper,
- * execendpoint, filesroutes, meshroutes, adminroutes, eventsroute,
- * requestlogging, gracefulshutdown.
+ * scriptlanes, authroutes, sandboxes, sandboxfs, statemachine,
+ * ttlreaper, execendpoint, filesroutes, meshroutes, adminroutes,
+ * eventsroute, requestlogging, gracefulshutdown.
  *
  * rules: lowercase identifiers, english jsdoc in third person, no emoji,
  * try/catch on every fallible path, standardized {error:{code,message}}
@@ -94,6 +100,7 @@ import { MODALITIES, MODALITYPLANCOUNT, planreport } from './modalityregistry.ts
 import { edgelandesreport, runonedge } from './edgeplane.ts';
 import type { EdgeStorageAdapter } from './edgeplane.ts';
 import { CATALOGAPPS, familyjoin, workloadreport } from './workloadlaw.ts';
+import type { ScriptPlan } from './scriptlanes.ts';
 import { tmpdir } from 'node:os';
 
 /* ------------------------------------------------------------------ */
@@ -1913,6 +1920,198 @@ async function edgestorage(): Promise<EdgeStorageAdapter | null> {
   return edgevault;
 }
 
+/* ------------------------------------------------------------------ */
+/* context: scriptlanes — the pr15 script execution surface            */
+/* ------------------------------------------------------------------ */
+
+/** the script lane module surface the routes consume: the values load
+ * lazily (scriptlanes.ts belongs to the engine graph whose .js
+ * specifiers only bundler hosts resolve from source), the types ride
+ * the erased type-only import at the top. */
+type ScriptLaneModule = typeof import('./scriptlanes.ts');
+
+/** the memoized script lane module: undefined means not loaded yet,
+ * null means this host cannot load it (both load lanes refused). */
+let scriptlane: ScriptLaneModule | null | undefined;
+
+/**
+ * loads the script lanes module once per process: the source lane
+ * first (scriptlanes.ts — resolvable on bundler hosts like vite,
+ * vitest and bun), then the built engine tree (dist/scriptlanes.js —
+ * what "npm run build:engine" emits and what the container image
+ * carries beside this server). a host that can load neither keeps the
+ * lane honestly absent and the routes answer the 503 refusal below,
+ * never a faked execution.
+ *
+ * @returns the script lanes module or null when this host cannot load it.
+ */
+async function scriptlanes(): Promise<ScriptLaneModule | null> {
+  if (scriptlane !== undefined) {
+    return scriptlane;
+  }
+  try {
+    scriptlane = (await import('./scriptlanes.ts')) as ScriptLaneModule;
+  } catch {
+    try {
+      scriptlane = (await import('./dist/scriptlanes.js')) as ScriptLaneModule;
+    } catch {
+      scriptlane = null;
+    }
+  }
+  return scriptlane;
+}
+
+/**
+ * answers the honest 503 of an absent script lane (the house pattern
+ * of the edge run: the runtime absence is the honest lane report, not
+ * an internal secret the 5xx guard exists to hide).
+ *
+ * @param res the outgoing response.
+ * @param headers the prepared headers.
+ * @returns void.
+ */
+function scriptlaneabsent(res: ServerResponse, headers: Record<string, string>): void {
+  writejson(
+    res,
+    503,
+    {
+      error: {
+        code: 'script-lane-unavailable',
+        message:
+          'the script lanes are not loadable on this host: the plain node host resolves neither the engine source graph (scriptlanes.ts imports ./execution.js) nor the built engine tree (dist/scriptlanes.js is absent) — run "npm run build:engine" once or serve behind a bundler host, and the script routes execute',
+      },
+    },
+    headers,
+  );
+}
+
+/**
+ * reads one script request body into the interpreted plan: exactly one
+ * of the script (raw sh), yml or yaml (house subset descriptor) keys
+ * rides the request, the optional deadlinems bounds every step that
+ * carries no timeoutms of its own, and compile: true asks the babel
+ * roundtrip on the plan before execution. malformed bodies throw the
+ * route error shape ({status, code}) the catch answers with.
+ *
+ * @param lanes the loaded script lanes module.
+ * @param body the parsed request body.
+ * @returns the interpreted plan with the deadline and compile flags.
+ */
+function scriptplanfrombody(
+  lanes: ScriptLaneModule,
+  body: unknown,
+): { plan: ScriptPlan; deadlinems: number | undefined; compile: boolean } {
+  if (body === null || typeof body !== 'object') {
+    throw Object.assign(new Error('request body must be a json object'), {
+      code: 'invalid-body',
+      status: 400,
+    });
+  }
+  const spec = body as { script?: unknown; yml?: unknown; yaml?: unknown; deadlinems?: unknown; compile?: unknown };
+  const keys = (['script', 'yml', 'yaml'] as const).filter((key) => spec[key] !== undefined);
+  if (keys.length !== 1) {
+    throw Object.assign(
+      new Error('the script request carries exactly one of the script, yml or yaml keys'),
+      { code: 'invalid-script-request', status: 400 },
+    );
+  }
+  const text = spec[keys[0]];
+  if (typeof text !== 'string' || text.trim().length === 0) {
+    throw Object.assign(new Error(`the ${keys[0]} payload must be a non-empty string`), {
+      code: 'invalid-script-request',
+      status: 400,
+    });
+  }
+  if (
+    spec.deadlinems !== undefined &&
+    (typeof spec.deadlinems !== 'number' || !Number.isFinite(spec.deadlinems) || spec.deadlinems < 1)
+  ) {
+    throw Object.assign(
+      new Error('deadlinems must be a positive finite number of milliseconds'),
+      { code: 'invalid-deadline', status: 400 },
+    );
+  }
+  const plan =
+    keys[0] === 'script'
+      ? lanes.interpretsh(text)
+      : keys[0] === 'yml'
+        ? lanes.interpretyml(text)
+        : lanes.interpretyaml(text);
+  return {
+    plan,
+    deadlinems: typeof spec.deadlinems === 'number' ? spec.deadlinems : undefined,
+    compile: spec.compile === true,
+  };
+}
+
+/**
+ * maps one scriptlanes saddle error to its http failure shape: the
+ * coded refusals of the lane (yaml subset failures, invalid inputs,
+ * babel compile failures, unsafe descriptors, unknown run ids) answer
+ * their honest codes, the babel runtime absence answers 503, and
+ * anything else returns null for the generic 500.
+ *
+ * @param error the thrown value.
+ * @returns the mapped failure or null when the error carries no lane code.
+ */
+function scriptlanehttperror(error: unknown): { status: number; code: string; message: string } | null {
+  const code = (error as { code?: unknown })?.code;
+  const message = error instanceof Error ? error.message : String(error);
+  switch (code) {
+    case 'YAML_INTERPRET_FAILED':
+      return { status: 422, code: 'yaml-interpret-failed', message };
+    case 'INVALID_INPUT':
+      return { status: 400, code: 'invalid-script-request', message };
+    case 'BABEL_COMPILE_FAILED':
+      return { status: 422, code: 'babel-compile-failed', message };
+    case 'SCRIPTLANES_DESCRIPTOR_UNSAFE':
+      return { status: 422, code: 'descriptor-unsafe', message };
+    case 'SCRIPT_RUN_NOT_FOUND':
+      return { status: 404, code: 'script-run-not-found', message };
+    case 'BABEL_RUNTIME_ABSENT':
+      return { status: 503, code: 'babel-runtime-absent', message };
+    default:
+      return null;
+  }
+}
+
+/**
+ * answers one script lane failure: the house route shape ({status, code}
+ * carried on the error — what the body reader and the plan reader
+ * throw) answers as thrown, the mapped lane codes ride writeerror (the
+ * 4xx messages stay honest), the 503 runtime absence answers its body
+ * directly (the pattern of scriptlaneabsent), and the unmapped rest
+ * answers the generic 500.
+ *
+ * @param res the outgoing response.
+ * @param error the thrown value.
+ * @param headers the prepared headers.
+ * @returns void.
+ */
+function scriptlanefailure(res: ServerResponse, error: unknown, headers: Record<string, string>): void {
+  const route = error as RouteError;
+  if (typeof route?.status === 'number' && typeof route?.code === 'string') {
+    writeerror(
+      res,
+      route.status,
+      route.code,
+      error instanceof Error ? error.message : safemsg(error),
+      headers,
+    );
+    return;
+  }
+  const mapped = scriptlanehttperror(error);
+  if (mapped === null) {
+    writeerror(res, 500, 'script-lane-failed', safemsg(error), headers);
+    return;
+  }
+  if (mapped.status === 503) {
+    writejson(res, 503, { error: { code: mapped.code, message: mapped.message } }, headers);
+    return;
+  }
+  writeerror(res, mapped.status, mapped.code, mapped.message, headers);
+}
+
 /**
  * handles one /api/v1 request.
  *
@@ -2180,6 +2379,232 @@ async function handleapi(req: IncomingMessage, res: ServerResponse, url: URL): P
         safemsg(error),
         headers,
       );
+    }
+    return;
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* context: scriptlanes — the pr15 script execution surface:         */
+  /* POST /script/run            execute sh/yml/yaml server-side      */
+  /* POST /script/background     kick a detached run (job queue)      */
+  /* GET  /script/status?runid=  read one observable run record      */
+  /* POST /script/docker-descriptor  emit the container descriptor   */
+  /* every route requires an authenticated user; the sh steps, the    */
+  /* yml/yaml interpretation, the babel compile, the detached runs    */
+  /* and the docker descriptors all execute server-side through the   */
+  /* scriptlanes engine lane — the visitor browser executes nothing.  */
+  /* ---------------------------------------------------------------- */
+
+  /* POST /script/run — auth: interpret one sh script or yml/yaml
+     descriptor (the house yaml subset), optionally ride the babel
+     compile roundtrip first (compile: true), execute the plan
+     sequentially server-side with the enforced deadlines and answer
+     the honest per-step result. the route answers 200 with the honest
+     failed status when a step fails — the execution happened, the
+     failure is the script's own, never a hidden 5xx. */
+  if (req.method === 'POST' && path === '/script/run') {
+    const headers = respondheaders(req, 'credentials');
+    const user = requireauth(req);
+    if (user === null) {
+      writeerror(res, 401, 'unauthorized', 'authentication required', headers);
+      return;
+    }
+    const lanes = await scriptlanes();
+    if (lanes === null) {
+      scriptlaneabsent(res, headers);
+      return;
+    }
+    try {
+      const request = scriptplanfrombody(lanes, await readbody(req));
+      const plan = request.compile ? await lanes.compilewithbabel(request.plan) : request.plan;
+      const result = await lanes.runscript(plan, { deadlinems: request.deadlinems });
+      try {
+        store.addaudit({
+          userid: user.id,
+          action: 'script-run',
+          detail: `${plan.source}:${result.status}`,
+          ip: clientip(req),
+        });
+        store.addevent({
+          topic: 'script.run',
+          payload: {
+            userid: user.id,
+            source: plan.source,
+            compiledvia: plan.compiledvia,
+            stepcount: plan.steps.length,
+            status: result.status,
+            error: result.error?.code ?? null,
+          },
+        });
+      } catch {
+        /* the run already answered; the bookkeeping is best effort */
+      }
+      writejson(
+        res,
+        200,
+        {
+          source: plan.source,
+          compiledvia: plan.compiledvia,
+          status: result.status,
+          steps: result.steps,
+          error: result.error ?? null,
+        },
+        headers,
+      );
+    } catch (error) {
+      scriptlanefailure(res, error, headers);
+    }
+    return;
+  }
+
+  /* POST /script/background — auth: the same interpretation (and the
+     optional babel compile) as the run route, but the plan kicks
+     detached through the house job queue: the call answers 202 with
+     the runid immediately and the observable record stays readable
+     through GET /script/status until the detached run settles with
+     its result (the registry lives in this process — a runid from
+     another node answers not-found, never a guess). */
+  if (req.method === 'POST' && path === '/script/background') {
+    const headers = respondheaders(req, 'credentials');
+    const user = requireauth(req);
+    if (user === null) {
+      writeerror(res, 401, 'unauthorized', 'authentication required', headers);
+      return;
+    }
+    const lanes = await scriptlanes();
+    if (lanes === null) {
+      scriptlaneabsent(res, headers);
+      return;
+    }
+    try {
+      const request = scriptplanfrombody(lanes, await readbody(req));
+      const plan = request.compile ? await lanes.compilewithbabel(request.plan) : request.plan;
+      const launch = lanes.runscriptbackground(plan, { deadlinems: request.deadlinems });
+      try {
+        store.addaudit({
+          userid: user.id,
+          action: 'script-background',
+          detail: `${plan.source}:${launch.runid}`,
+          ip: clientip(req),
+        });
+        store.addevent({
+          topic: 'script.background',
+          payload: {
+            userid: user.id,
+            runid: launch.runid,
+            source: plan.source,
+            compiledvia: plan.compiledvia,
+            status: launch.status,
+          },
+        });
+      } catch {
+        /* the launch already answered; the bookkeeping is best effort */
+      }
+      writejson(
+        res,
+        202,
+        {
+          runid: launch.runid,
+          status: launch.status,
+          source: plan.source,
+          compiledvia: plan.compiledvia,
+        },
+        headers,
+      );
+    } catch (error) {
+      scriptlanefailure(res, error, headers);
+    }
+    return;
+  }
+
+  /* GET /script/status?runid= — auth: the observable record of one
+     background run (the runstatuses vocabulary, the auditable
+     transition history, and the result once the detached run settled);
+     an unknown runid answers the honest 404 the lane refuses with. */
+  if (req.method === 'GET' && path === '/script/status') {
+    const headers = respondheaders(req, 'credentials');
+    const user = requireauth(req);
+    if (user === null) {
+      writeerror(res, 401, 'unauthorized', 'authentication required', headers);
+      return;
+    }
+    const lanes = await scriptlanes();
+    if (lanes === null) {
+      scriptlaneabsent(res, headers);
+      return;
+    }
+    const runid = url.searchParams.get('runid') ?? '';
+    if (runid.length === 0) {
+      writeerror(
+        res,
+        400,
+        'invalid-script-request',
+        'the status lookup requires a runid query parameter',
+        headers,
+      );
+      return;
+    }
+    try {
+      const record = lanes.scriptRunStatus(runid);
+      writejson(res, 200, record, headers);
+    } catch (error) {
+      scriptlanefailure(res, error, headers);
+    }
+    return;
+  }
+
+  /* POST /script/docker-descriptor — auth: the docker-ready descriptor
+     of the container lane (container-docker) for one interpreted plan:
+     the Dockerfile on the house node base with every step as an
+     escaped RUN line, the verbatim plan script and the sh entrypoint.
+     the descriptor is emitted, never built — building stays with the
+     operator's container toolchain. */
+  if (req.method === 'POST' && path === '/script/docker-descriptor') {
+    const headers = respondheaders(req, 'credentials');
+    const user = requireauth(req);
+    if (user === null) {
+      writeerror(res, 401, 'unauthorized', 'authentication required', headers);
+      return;
+    }
+    const lanes = await scriptlanes();
+    if (lanes === null) {
+      scriptlaneabsent(res, headers);
+      return;
+    }
+    try {
+      const request = scriptplanfrombody(lanes, await readbody(req));
+      const descriptor = lanes.dockerdescriptor(request.plan);
+      try {
+        store.addaudit({
+          userid: user.id,
+          action: 'script-docker-descriptor',
+          detail: request.plan.source,
+          ip: clientip(req),
+        });
+        store.addevent({
+          topic: 'script.docker',
+          payload: {
+            userid: user.id,
+            source: request.plan.source,
+            stepcount: request.plan.steps.length,
+          },
+        });
+      } catch {
+        /* the descriptor already answered; the bookkeeping is best effort */
+      }
+      writejson(
+        res,
+        200,
+        {
+          source: request.plan.source,
+          compiledvia: request.plan.compiledvia,
+          dockerfile: descriptor.dockerfile,
+          entrypoint: descriptor.entrypoint,
+        },
+        headers,
+      );
+    } catch (error) {
+      scriptlanefailure(res, error, headers);
     }
     return;
   }
@@ -2647,6 +3072,8 @@ server.listen(port, host, () => {
       '  GET /api/v1/sandboxes/:id/files | GET/DELETE /api/v1/sandboxes/:id/files/<path> |',
       '  GET /api/v1/modalities | GET /api/v1/edge/lanes | POST /api/v1/edge/run (auth) |',
       '  GET /api/v1/edge/workloads | GET /api/v1/edge/join?app=&lane= |',
+      '  POST /api/v1/script/run | POST /api/v1/script/background (auth) |',
+      '  GET /api/v1/script/status?runid= | POST /api/v1/script/docker-descriptor (auth) |',
       '  POST /api/v1/mesh/register | POST /api/v1/mesh/heartbeat | GET /api/v1/mesh/nodes (signed) |',
       '  GET /api/v1/admin/{overview,users,nodes,sandboxes,audit} (admin)',
       `sandbox ttl: ${ttlms / 60000} min, sweep every ${sweepperiodms / 1000} s`,
