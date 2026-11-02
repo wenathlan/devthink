@@ -1,7 +1,7 @@
 /**
  * Planstable.tsx — the plans surface of the product face: the four bucket
- * plans of the safe as one dense table (the Supabase-grade plan sheet) —
- * plan name in mono, retention window, sealed rows and bytes in tabular
+ * plans of the safe as one dense table (the plan sheet of the product
+ * face) — plan name in mono, retention window, sealed rows and bytes in tabular
  * numerals, the lfs share as a hairline bar, the policy note riding the
  * featured row. Every number answers from the REAL rehearsal engines
  * (seedRules, shelfOf — buckets.ts over the sealed objects of objects.ts);
@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import { type BucketShelf, retentionLabel, seedRules, shelfOf } from "../../buckets.ts";
 import { formatBytes, seedVault } from "../../objects.ts";
 import { uicopy, uicopyfill } from "../../uistore.ts";
+import { useVaultQuota } from "../../vaultclient.ts";
 
 /** the rehearsal seed the product face answers (the same seed the objects
  * page pins — one rehearsal, zero drift). */
@@ -25,6 +26,11 @@ export const FACE_SEED = 20260314;
  */
 export function Planstable() {
   const shelf = useMemo(() => shelfOf(seedVault(FACE_SEED), seedRules(FACE_SEED)), []);
+  /** the live quota lane: when the configured engine answers, the user-
+   * defined limit the DATABASE holds renders its own line above the
+   * rehearsal (never a fixed number in this winget — the 2GB ghost died
+   * with the wave; the away lane keeps the declared rehearsal). */
+  const { live } = useVaultQuota();
 
   const rows = shelf;
 
@@ -33,6 +39,18 @@ export function Planstable() {
       <header className="vc-panel__head">
         <h3 className="vc-panel__title">{uicopy("face.plans.head")}</h3>
       </header>
+      {live ? (
+        <p
+          className="vc-console__line vc-console__line--live"
+          aria-label={uicopy("face.plans.liveQuotaAria")}
+        >
+          {uicopyfill("face.plans.liveQuota", {
+            state: live.state,
+            usage: formatBytes(Number(live.usage)),
+            limit: live.limitBytes === null ? "unlimited" : formatBytes(Number(live.limitBytes)),
+          })}
+        </p>
+      ) : null}
       <div className="vc-tablescroll">
         <table className="vc-table">
           <caption className="vc-table__caption">{uicopy("face.plans.caption")}</caption>

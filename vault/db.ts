@@ -15,7 +15,7 @@ import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 import { openStorageLane } from "./storagelane.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
-export const tables = ["keys", "payloads", "onboarding_states", "labels"] as const;
+export const tables = ["keys", "payloads", "onboarding_states", "labels", "accounts", "databases", "apikeys"] as const;
 
 /** the one storage lane of the site store (WAL, foreign keys, patient locks — the vault's own file). */
 const lane = openStorageLane({ defaultFile: "./vault.db" });
@@ -56,6 +56,28 @@ CREATE TABLE IF NOT EXISTS labels (
   revision   INTEGER NOT NULL DEFAULT 0,
   updatedAt  TEXT NOT NULL DEFAULT (datetime('now')),
   translated INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS accounts (
+  id             TEXT PRIMARY KEY,
+  email          TEXT NOT NULL UNIQUE,
+  passwordDigest TEXT NOT NULL,
+  createdAt      TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS databases (
+  id         TEXT PRIMARY KEY,
+  accountId  TEXT NOT NULL REFERENCES accounts(id),
+  name       TEXT NOT NULL,
+  quotaBytes INTEGER,
+  createdAt  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS apikeys (
+  id          TEXT PRIMARY KEY,
+  databaseId  TEXT NOT NULL REFERENCES databases(id),
+  label       TEXT NOT NULL DEFAULT 'the first key',
+  keyDigest   TEXT NOT NULL UNIQUE,
+  createdAt   TEXT NOT NULL DEFAULT (datetime('now')),
+  lastUsedAt  TEXT,
+  revokedAt   TEXT
 );
 `;
 

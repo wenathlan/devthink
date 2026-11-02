@@ -5,12 +5,14 @@
  * (chat.gatewaybase), same strict validator, same real reachability probe.
  * The natural state is disconnected: the endpoint is never inferred or
  * pre-filled, registering persists the opt-in and probes it, disconnecting
- * confirms inline (no window.confirm). Loose component of the settings
- * page, riding the dtw kit.
+ * confirms inline (no window.confirm). Every string the card renders rides
+ * the copy store (copy.ts). Loose component of the settings page, riding
+ * the dtw kit.
  */
 
 import {PlugConnectedRegular} from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
+import { copy } from "../../copy";
 import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, useGatewayRegistration } from "../../gateway.ts";
 
 /** GatewayCard — the settings section of the chat gateway. */
@@ -33,10 +35,10 @@ export function GatewayCard() {
   };
 
   return (
-    <section className="dtw-card" aria-label="Chat service connection">
+    <section className="dtw-card" aria-label={copy("settings.chat.aria")}>
       <h2 className="dtw-cardtitle">
         <PlugConnectedRegular fontSize={15} aria-hidden="true" />
-        Chat service
+        {copy("settings.chat.title")}
         <span className="dtw-settings__pill" data-state={gateway.status} role="status">
           {gatewayStatusLabel(gateway.status)}
         </span>
@@ -54,14 +56,14 @@ export function GatewayCard() {
               setDraft(event.target.value);
               if (gateway.formError) gateway.clearFormError();
             }}
-            placeholder="https://chat.example.com"
-            aria-label="Service address"
+            placeholder={copy("settings.chat.address.ph")}
+            aria-label={copy("settings.chat.address.aria")}
             spellCheck={false}
             autoComplete="off"
             disabled={testing}
           />
           <button type="submit" className="dtw-btn dtw-btn--primary" disabled={testing || !draft.trim()}>
-            {testing ? "Testing" : "Connect service"}
+            {testing ? copy("settings.chat.testing") : copy("settings.chat.connect")}
           </button>
           {gateway.formError ? (
             <small className="dtw-settings__error" role="alert">
@@ -73,13 +75,13 @@ export function GatewayCard() {
 
       {gateway.status === "error" ? (
         <small className="dtw-settings__error" role="alert">
-          {gateway.probeError ?? "The connected service did not answer."}
+          {gateway.probeError ?? copy("settings.chat.probeFailed")}
         </small>
       ) : null}
 
       {(gateway.status === "connected" || gateway.status === "error") && armed ? (
-        <fieldset className="dtw-settings__confirm" aria-label="Confirm disconnect">
-          <p>Disconnect this service? The assistant stops answering until you connect one again.</p>
+        <fieldset className="dtw-settings__confirm" aria-label={copy("settings.chat.confirm.aria")}>
+          <p>{copy("settings.chat.confirm.body")}</p>
           <div className="dtw-settings__actions">
             <button
               type="button"
@@ -89,10 +91,10 @@ export function GatewayCard() {
                 void gateway.disconnect();
               }}
             >
-              Disconnect
+              {copy("settings.chat.disconnect")}
             </button>
             <button type="button" className="dtw-btn" onClick={() => setArmed(false)}>
-              Keep
+              {copy("settings.chat.keep")}
             </button>
           </div>
         </fieldset>
@@ -101,7 +103,7 @@ export function GatewayCard() {
       {gateway.status === "connected" && !armed ? (
         <div className="dtw-settings__actions">
           <button type="button" className="dtw-btn" onClick={() => setArmed(true)}>
-            Disconnect
+            {copy("settings.chat.disconnect")}
           </button>
         </div>
       ) : null}
@@ -109,15 +111,15 @@ export function GatewayCard() {
       {gateway.status === "error" && !armed ? (
         <div className="dtw-settings__actions">
           <button type="button" className="dtw-btn" onClick={() => void gateway.retryProbe()}>
-            Test again
+            {copy("settings.chat.testAgain")}
           </button>
           <button type="button" className="dtw-btn" onClick={() => setArmed(true)}>
-            Disconnect
+            {copy("settings.chat.disconnect")}
           </button>
         </div>
       ) : null}
 
-      {!gateway.base && !testing ? <small>The assistant answers through this service once it is connected.</small> : null}
+      {!gateway.base && !testing ? <small>{copy("settings.chat.note")}</small> : null}
     </section>
   );
 }

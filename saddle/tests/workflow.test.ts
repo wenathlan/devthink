@@ -247,12 +247,13 @@ describe("the workflow contract", () => {
   /* gate 2: typecheck (module parsing plus the tsc no-emit build)       */
   /* ------------------------------------------------------------------ */
 
-  /** every root module loaded through the node type-stripping pipeline. */
+  /** every root module loaded through the node type-stripping pipeline
+   * (media.ts left with the media domain — the saddle ownership law,
+   * wave a, actions 108-112, the moved lane rides devthink now). */
   const rootmoduleloaders: Readonly<Record<string, () => Promise<unknown>>> = {
     "alternatives.ts": () => import("../alternatives.ts"),
     "compute.ts": () => import("../compute.ts"),
     "index.ts": () => import("../index.ts"),
-    "media.ts": () => import("../media.ts"),
     "orchestrator.ts": () => import("../orchestrator.ts"),
     "performance.ts": () => import("../performance.ts"),
     "render.ts": () => import("../render.ts"),

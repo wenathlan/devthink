@@ -31,6 +31,7 @@ const SKELETON = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", 
 const HALO = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomeHalo.tsx"), "utf8");
 const REVEAL = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomeReveal.tsx"), "utf8");
 const API = readFileSync(join(import.meta.dirname, "..", "api.ts"), "utf8");
+const ROUTES = readFileSync(join(import.meta.dirname, "..", "routes.ts"), "utf8");
 const CSS = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
 
 /** the face pass of the stylesheet (the slice the wave appended — the
@@ -214,7 +215,8 @@ describe("the token law of the face pass", () => {
 
 describe("the route lane of the face", () => {
   it("the http surface catalogs the copy lane beside the health probe", () => {
-    expect(API).toContain('uicopy: "/api/v1/ui/copy"');
+    expect(ROUTES).toContain('health: "/api/health"');
+    expect(ROUTES).toContain('uicopy: "/api/v1/ui/copy"');
     expect(API).toContain("ensureuicopyingested()");
     expect(API).toContain('sendError(res, 404, "VAULT_COPY"');
   });

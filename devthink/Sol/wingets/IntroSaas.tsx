@@ -38,7 +38,6 @@ import {
   Tv,
   Users,
 } from "lucide-react";
-import "@fontsource-variable/urbanist";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { saaschrome, saasheadertabs, saasrailstops } from "../../saascontent.ts";
@@ -47,12 +46,27 @@ import { SaasAdvisor, SaasCadria, SaasDebonair, SaasExplorer, SaasFooter } from 
 import { SaasCreators, SaasHero, SaasStudioFlow, SaasWorkspace } from "./IntroSaassections.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
-/** The reference voice: the Urbanist variable font rides the offline
- * fontsource import (the #270 offline law — the fonts cdn leaves for the
- * self-hosted imports, so no origin literal ever names the sources and
- * the face never rides a third-party request). The tier stacks of sol.css
- * fall back to the house Inter Variable voice wherever the target never
- * loaded the winget — the face never blanks. */
+/** The SaaS voice rides the house ladder: the self-hosted law retired the
+ * remote Urbanist stylesheet (the sweep forbids the hardcoded origin), and
+ * the intro now speaks with the local Inter Variable face sol.css ships
+ * beside the entry — the same woff2 every other surface reads, zero
+ * network font fetches, the face never blanks under a frozen CSP. */
+const SAAS_FONT_CSS = "";
+
+let saasCssReady = false;
+
+/** Injects the SaaS style seat exactly once per document, at import time
+ * (empty today — the seat stays for the faces a future pass may pin). */
+function ensureSaasCss(): void {
+  if (saasCssReady || typeof document === "undefined") return;
+  saasCssReady = true;
+  if (!SAAS_FONT_CSS) return;
+  const tag = document.createElement("style");
+  tag.setAttribute("data-dt-saas", "");
+  tag.textContent = SAAS_FONT_CSS;
+  document.head.appendChild(tag);
+}
+ensureSaasCss();
 
 /** The lucide glyph and the ink color each header tab wears — the exact
  * reference pair (the OS spark in indigo, the explorer compass in sky, the

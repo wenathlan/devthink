@@ -4,17 +4,17 @@
  * xpi, the vs code vsix and the immutable tag that carries every artifact
  * beside the checksums, the sbom and the attestations) pointing at the
  * reviewed GitHub releases of the family. The version rides the build:
- * vite bakes the root manifest version as the __dtversion__ global (one
+ * the root manifest version arrives as the __dtversion__ global (one
  * product, one metadata — the rail never drifts from the shipped
  * envelope). Style: the trylle card grammar of the landing — rounded-2xl,
  * ring-1 hairline, the Linear shadow with its ring, the micro curve on
  * every quiet hover, the 2px accent focus underline. English text only —
- * the gtx translation runs at runtime.
+ * the display translation owns the other languages at runtime.
  */
 import {ArrowUpRightRegular as ArrowUpRight, CubeRegular as Boxes, type FluentIcon, GlobeRegular as Globe, PuzzlePieceRegular as Puzzle, WindowConsoleRegular as SquareTerminal } from "@fluentui/react-icons";
 import { osText } from "../../oslabels.ts";
 
-/** the baked release version (vite define — see vite.config.ts) */
+/** the baked release version (the build define of the root manifest) */
 declare const __dtversion__: string;
 
 /** the immutable release the built site ships from, and the releases home */
