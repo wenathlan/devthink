@@ -54,6 +54,24 @@
       "@wenathlan/getry/types": ["../getry/types.ts"],
       "@wenathlan/getry/constants": ["../getry/constants.ts"],
       "@wenathlan/getry/tests/researchfixtures": ["../getry/tests/researchfixtures.ts"],
+      /* the getry owner faces of the gateway ownership wave
+       * (wave/ownership.gateway), mirrored from vite.config.ts: the
+       * embedded gateway surfaces the grand merge interned in server.ts
+       * (the http transport server, the request auth family, the console
+       * cli and the provider cli) move to the getry owner root one face
+       * per step, and the consumers speak them through the published
+       * library specifiers — the typecheck and every tsx subprocess the
+       * suites spawn resolve each specifier to the monorepo source the
+       * sibling app carries (the auth family landed with step 2; the
+       * server, cli and providercli faces land with the steps that
+       * follow, their targets answer the day they land). the installed
+       * 2.0.154 envelope carries none of these export surfaces yet, so
+       * the bridge is the resolution of record until the published
+       * envelope catches up. */
+      "@wenathlan/getry/server": ["../getry/server.ts"],
+      "@wenathlan/getry/auth": ["../getry/auth.ts"],
+      "@wenathlan/getry/cli": ["../getry/cli.ts"],
+      "@wenathlan/getry/providercli": ["../getry/providercli.ts"],
       /* the devthink self bridges of the ownership wave
        * (wave/ownership.getry), mirrored from the getry side: the moved
        * gateway graph leans on the os-owned seams it grew beside (config,

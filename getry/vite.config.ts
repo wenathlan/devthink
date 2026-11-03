@@ -77,6 +77,13 @@ export default defineConfig({
       "@wenathlan/getry/antigravity": path.resolve(import.meta.dirname, "antigravity.ts"),
       "@wenathlan/getry/oauth": path.resolve(import.meta.dirname, "oauth.ts"),
       "@wenathlan/getry/accounts": path.resolve(import.meta.dirname, "accounts.ts"),
+      /** the auth self bridge of the gateway ownership wave
+       * (wave/ownership.gateway): the devthink server compat shim speaks
+       * the moved auth family back through the published specifier
+       * ("@wenathlan/getry/auth"), and the graph lanes that pull the
+       * shim in through the devthink server bridge resolve it to this
+       * app's own source (the one owner of the moved family). */
+      "@wenathlan/getry/auth": path.resolve(import.meta.dirname, "auth.ts"),
       "@wenathlan/getry/project": path.resolve(import.meta.dirname, "project.ts"),
       "@wenathlan/getry/quota": path.resolve(import.meta.dirname, "quota.ts"),
       "@wenathlan/getry/recovery": path.resolve(import.meta.dirname, "recovery.ts"),

@@ -62,6 +62,13 @@
       "@wenathlan/getry/antigravity": ["./antigravity.ts"],
       "@wenathlan/getry/oauth": ["./oauth.ts"],
       "@wenathlan/getry/accounts": ["./accounts.ts"],
+      /* the auth self bridge of the gateway ownership wave
+       * (wave/ownership.gateway): the devthink server compat shim speaks
+       * the moved auth family back through the published specifier
+       * ("@wenathlan/getry/auth"), and this program pulls the shim in
+       * through the devthink server bridge — the specifier resolves to
+       * this app's own source (the one owner of the moved family). */
+      "@wenathlan/getry/auth": ["./auth.ts"],
       "@wenathlan/getry/project": ["./project.ts"],
       "@wenathlan/getry/quota": ["./quota.ts"],
       "@wenathlan/getry/recovery": ["./recovery.ts"],
@@ -95,6 +102,7 @@
     "antigravity.ts",
     "oauth.ts",
     "accounts.ts",
+    "auth.ts",
     "project.ts",
     "quota.ts",
     "recovery.ts",

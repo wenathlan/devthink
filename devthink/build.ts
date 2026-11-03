@@ -366,6 +366,24 @@ const familybridges = {
   "@wenathlan/getry/nodeshim": join(root, "..", "getry", "nodeshim.ts"),
   "@wenathlan/getry/types": join(root, "..", "getry", "types.ts"),
   "@wenathlan/getry/constants": join(root, "..", "getry", "constants.ts"),
+  /** the getry owner faces of the gateway ownership wave
+   * (wave/ownership.gateway), mirrored from the vite/vitest/tsconfig
+   * resolutions: the embedded gateway surfaces the grand merge interned
+   * in server.ts (the http transport server, the request auth family,
+   * the console cli and the provider cli) move to the getry owner root
+   * one face per step, and the consumers speak them through the
+   * published library specifiers — the server bundle INLINES the owner's
+   * sources through these aliases exactly the way the engine family
+   * rides them (never externalized, never duplicated inside devthink:
+   * the reviewed owner source answers at build time), and the lockfile
+   * stays untouched because no registry dependency is declared (the auth
+   * family landed with step 2; the server, cli and providercli faces
+   * land with the steps that follow, their targets answer the day they
+   * land). */
+  "@wenathlan/getry/server": join(root, "..", "getry", "server.ts"),
+  "@wenathlan/getry/auth": join(root, "..", "getry", "auth.ts"),
+  "@wenathlan/getry/cli": join(root, "..", "getry", "cli.ts"),
+  "@wenathlan/getry/providercli": join(root, "..", "getry", "providercli.ts"),
   /** the devthink self bridges of the ownership wave
    * (wave/ownership.getry), mirrored from the vite/vitest/tsconfig
    * resolutions: the moved gateway graph leans on the os-owned seams it

@@ -93,6 +93,11 @@
       "import": "./accounts.ts",
       "default": "./accounts.ts"
     },
+    "./auth": {
+      "types": "./auth.ts",
+      "import": "./auth.ts",
+      "default": "./auth.ts"
+    },
     "./project": {
       "types": "./project.ts",
       "import": "./project.ts",

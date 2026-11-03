@@ -54,6 +54,23 @@
       "@wenathlan/getry/nodeshim": ["../getry/dist/types/getry/nodeshim.d.ts"],
       "@wenathlan/getry/types": ["../getry/dist/types/getry/types.d.ts"],
       "@wenathlan/getry/constants": ["../getry/dist/types/getry/constants.d.ts"],
+      /* the getry owner faces of the gateway ownership wave
+       * (wave/ownership.gateway): the embedded gateway surfaces the grand
+       * merge interned in server.ts (the http transport server, the
+       * request auth family, the console cli and the provider cli) move
+       * to the getry owner root one face per step, and the declaration
+       * pass resolves every specifier to the owner's generated
+       * declaration face (getry/dist/types, the emit of
+       * ../getry/tsconfig.types.json) the same way the engine family
+       * rides it — the owner source never enters this program, the emit
+       * stays flat and the emitted declarations keep referencing the
+       * owner library specifier (the auth family landed with step 2; the
+       * server, cli and providercli faces land with the steps that
+       * follow, their faces answer the day they land). */
+      "@wenathlan/getry/server": ["../getry/dist/types/getry/server.d.ts"],
+      "@wenathlan/getry/auth": ["../getry/dist/types/getry/auth.d.ts"],
+      "@wenathlan/getry/cli": ["../getry/dist/types/getry/cli.d.ts"],
+      "@wenathlan/getry/providercli": ["../getry/dist/types/getry/providercli.d.ts"],
       /* the devthink self bridges of the ownership wave
        * (wave/ownership.getry), mirrored from tsconfig.json: the moved
        * gateway graph leans on the os-owned seams through the published

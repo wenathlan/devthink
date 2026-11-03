@@ -19,11 +19,13 @@
  *   8 response building — chat completion anthropic message response formats
  */
 
-/* the os seams of the wave/ownership.getry split: the request helpers of the
- * devthink server and the session persistence of the devthink storage stay
- * os-owned libraries the engine imports through the published specifiers —
- * never duplicated beside the gateway. */
-import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "@wenathlan/devthink/server";
+/* the seams of the ownership waves: the gateway auth family (the request
+ * auth helpers this engine rides — buildauthheaders, the id extractors,
+ * resolvekeys) is owned here since wave/ownership.gateway (auth.ts, one
+ * owner beside the pipeline), while the session persistence of the
+ * devthink storage stays an os-owned library the engine imports through
+ * the published specifier — never duplicated beside the gateway. */
+import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./auth.js";
 import { getsessionmessages, savemsg } from "@wenathlan/devthink/storage";
 import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
 import { makechunk, makefinalchunk, makestreamresponse } from "@wenathlan/devthink/server";
