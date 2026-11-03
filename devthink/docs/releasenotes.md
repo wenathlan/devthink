@@ -1,6 +1,6 @@
-# Devthink 2.1.7
+# Devthink 2.1.8
 
-This release is the supply-chain realignment rung of the ladder: the family climbs above the stale standalone line so the published consumption answers the source the repository carries. The registry still served the september saddle tarball (the 2.1.6 of the pre-family era) to every caret range the manifests declared — the family rungs had walked backwards under it, so the eleven apps resolved an engine months older than the repository while the tests rode the local aliases — and the rung answers by climbing the whole family to 2.1.7, above the poisoned line, so every caret range resolves the current build the moment this release publishes. The rung carries the engine-real arc the climb publishes: the dispatch reality law (#292) makes the merged seat prefer the real wire lanes over the rehearsal composer (the storage and ram ids ride the sigv4 signer, the wire clients and the kernel recipes), the ninety wiring (#294) seats the seventeen registered modalities that answered no executor (twelve host runtimes from deno to wasmtime, five inproc seats from isolates to dns, the census at sixty-six live and twenty-four host), the saddle script law (#297) answers the interpreter lanes the product door demanded, the saddle container law lands the nine missing lanes inside the engine image, the ghcr context law carries the vault sibling through the family build context with the polynomial trailing-slash healed, the dependency union law rides the twelve manifests on the same set with the engines climbing to the v 0.5.2 catalog, the design login law kills the leaking halo on the login card and retires the blue glow from the creation surfaces, and the qemu honest-boot law (#293) kills the sleep stand-in so a vm record never claims running over a process that was never a machine (the absent binary refuses with ERR_QEMU_ABSENT, the foreground child owns the lifecycle, the ci saddle leg carries a real qemu so the snapshot restore restart battery rides a live guest). The getry rung ladder (#295) walks the gateway dependency to the fresh family stamp so the drift gate answers green for every open wave, and the maintenance metadata heals behind the union: the engine floors answer the bounded forms the ladder renders (bun 1.4.4, npm 12.2.1), the manager seat climbs to the pnpm rung the workflow pins carry (12.16.1), the twelve certification records re-stamp their 2.1.7 outcomes, and the sign-in card rides the house window token again (the hand-built drop the login law retired). The metadata family stamps 2.1.7 with the battery artifacts re-stamped.
+This release is the container heal rung of the ladder: the three doors the 2.1.7 publish walked into answer green so the saddle container family finally ships. The saddle docker config regains its seat prefix (the copy law reads saddle/docker.config at the engine root again — the one-token cure the thirty-three vhe validate legs demanded, the resolve, scan, publish, verify and cleanup lanes of the max, balanced and lite profiles across the eleven architectures), the target plan lane rides the distpackage seat the dist law stamped (the thin targetcli wrapper the build:engine step writes lands at distpackage/packager, never the retired build/packager tree, so every declarative plan leg — the application tarballs, the desktop faces, the mobile shapes, the extension seats, the container and the cli — answers again), and the debonair container gains the symmetric engine-ownership sibling (coverpalette resolves the cadria synth palette through the ../cadria vite aliases, so the debonair context stages the cadria sources whole the same way the cadria lane stages the debonair audio engine — the Dockerfile copy and both workflow staging maps answer the same law, the family-ghcr matrix of the publish lane and the family loop of the release lane). The android signing door keeps its honest law (the caller-owned keystore when the production secrets exist, the ci-test-key when the dispatch carries the allow flag), and the stale release-approval waits the 2.1.7 era left behind answer the cancel so the queue rides clean. The metadata family stamps 2.1.8 with the battery artifacts re-stamped.
 
 ## Distribution channels
 
@@ -8,22 +8,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.1.7.tgz`
+- `wenathlan-devthink-2.1.8.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.1.7.nupkg`
+- `devthink.2.1.8.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.1.7.pom`
-- `devthink-2.1.7.jar`
-- `devthink2.1.7.zip`
-- `devthink-declarations-2.1.7.zip`
+- `devthink-2.1.8.pom`
+- `devthink-2.1.8.jar`
+- `devthink2.1.8.zip`
+- `devthink-declarations-2.1.8.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -37,77 +37,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.1.7.gem`
+- `devthink-2.1.8.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.1.7.vsix`
+- `devthink-vscode-2.1.8.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.1.7.xpi`
+- `devthink-firefox-2.1.8.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.1.7.zip`
+- `devthink-safari-2.1.8.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.1.7.zip`
-- `devthink-2.1.7-source.tar.xz`
-- `devthink-nativehost-2.1.7.template.json`
+- `devthink2.1.8.zip`
+- `devthink-2.1.8-source.tar.xz`
+- `devthink-nativehost-2.1.8.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.1.7.zip`
+- `devthink-site-2.1.8.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.1.7.zip`
+- `devthink-declarations-2.1.8.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.1.7.json`
-- `devthink-attestations-2.1.7.json`
-- `devthink-artifactmanifest-2.1.7.json`
+- `devthink-sbom-2.1.8.json`
+- `devthink-attestations-2.1.8.json`
+- `devthink-artifactmanifest-2.1.8.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.1.7.tgz`
-- `devthink.2.1.7.nupkg`
-- `devthink-2.1.7.pom`
-- `devthink-2.1.7.jar`
-- `devthink-2.1.7.gem`
+- `wenathlan-devthink-2.1.8.tgz`
+- `devthink.2.1.8.nupkg`
+- `devthink-2.1.8.pom`
+- `devthink-2.1.8.jar`
+- `devthink-2.1.8.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.1.7.vsix`
-- `devthink-firefox-2.1.7.xpi`
-- `devthink-safari-2.1.7.zip`
-- `devthink2.1.7.zip`
-- `devthink-2.1.7-source.tar.xz`
-- `devthink-nativehost-2.1.7.template.json`
-- `devthink-site-2.1.7.zip`
-- `devthink-declarations-2.1.7.zip`
-- `devthink-sbom-2.1.7.json`
-- `devthink-attestations-2.1.7.json`
-- `devthink-artifactmanifest-2.1.7.json`
+- `devthink-vscode-2.1.8.vsix`
+- `devthink-firefox-2.1.8.xpi`
+- `devthink-safari-2.1.8.zip`
+- `devthink2.1.8.zip`
+- `devthink-2.1.8-source.tar.xz`
+- `devthink-nativehost-2.1.8.template.json`
+- `devthink-site-2.1.8.zip`
+- `devthink-declarations-2.1.8.zip`
+- `devthink-sbom-2.1.8.json`
+- `devthink-attestations-2.1.8.json`
+- `devthink-artifactmanifest-2.1.8.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 
@@ -115,7 +115,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 150 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 151 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 

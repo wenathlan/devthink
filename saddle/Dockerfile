@@ -949,7 +949,7 @@ COPY --from=python-bridge /bridge/qemubridge.py /engine/qemubridge.py
 # keeps that a single COPY layer).
 COPY saddle/*.ts saddle/package.json saddle/tsconfig.json saddle/biome.jsonc /engine/
 COPY saddle/processors.json saddle/gpus.json saddle/cores.json saddle/boards.json saddle/vm.config.json saddle/virtualhardware.json /engine/
-COPY saddle/qemu.config saddle/mttg.config saddle/passage.config docker.config saddle/mime.types /engine/
+COPY saddle/qemu.config saddle/mttg.config saddle/passage.config saddle/docker.config saddle/mime.types /engine/
 # the engine-ownership sibling: db.ts pulls labels.ts whose
 # ../vault/labelstore.ts import resolves at /vault - the vault source
 # rides the context beside the saddle and lands at /vault where the

@@ -1,4 +1,4 @@
-# debonair 2.1.7 — THE SITE CONTAINER FILE
+# debonair 2.1.8 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS solbuild
 
-ARG DEBONAIR_VERSION=2.1.7
+ARG DEBONAIR_VERSION=2.1.8
 
 # The 2.0.153 family context fix: the application rides the context
 # nested under app/ (the uniform shape the three site containers read).
@@ -27,6 +27,15 @@ COPY app/ .
 # container (the app-only context left the import unloadable and the
 # vite step died on labels.ts).
 COPY vault/ /src/vault/
+# The cadria sibling of the engine-ownership law: coverpalette.ts
+# imports the synth palette through the @wenathlan/cadria/synthpalette
+# bridge and the vite alias resolves the specifier to
+# ../cadria/synthpalette.ts, so the sibling sources land at /src/cadria
+# where that bridge answers inside the container (the engine-ownership
+# map is symmetric: cadria stages debonair for the audio engine,
+# debonair stages cadria for the synth palette - sources only, the
+# build never installs the sibling, the alias reads the .ts files).
+COPY cadria/ /src/cadria/
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6

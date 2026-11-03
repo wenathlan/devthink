@@ -31,13 +31,13 @@ minimumReleaseAgeExclude:
   - undici@7.30.1
   - react-hook-form@7.91.0
   - '@fluentui/react-icons@2.0.345'
-  - lucide-react@1.65.0
+  - lucide-react@1.65.0 || 1.67.0
   - react-resizable-panels@4.15.3 || 4.16.0 || 4.16.1 || 4.17.0
-  - '@wenathlan/vault@2.0.153 || 2.0.154'
+  - '@wenathlan/vault@2.0.153 || 2.0.154 || 2.1.7'
   - '@wenathlan/getry@2.0.154'
   - hono@4.13.16
-  - '@wenathlan/cadria@2.0.154'
-  - '@wenathlan/debonair@2.0.154'
+  - '@wenathlan/cadria@2.0.154 || 2.1.7'
+  - '@wenathlan/debonair@2.0.154 || 2.1.7'
   - '@hono/node-server@2.1.6'
   - '@tailwindcss/node@4.3.4'
   - '@tailwindcss/oxide-android-arm64@4.3.4'
@@ -60,3 +60,4 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@5.1.0'
   - tailwindcss@4.3.4
   - vitest@5.1.0
+  - '@wenathlan/saddle@2.1.7'
