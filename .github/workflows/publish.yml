@@ -2335,6 +2335,23 @@ jobs:
         shell: bash
         run: cd devthink && bun run db:generate
 
+      # the gateway sibling the compiled binary bridges into: the bundle's
+      # module graph reaches ../getry/engine.ts through the getry bridge
+      # family (the thinking ladder the os consumes as a library), and the
+      # engine's lazy z-ai-web-dev-sdk singleton resolves from the getry
+      # tree's own node_modules — the devthink install alone leaves the
+      # sibling bare and the compile answers "Bundle failed" on the
+      # unresolved dynamic import (the same fresh-checkout law the prisma
+      # generate step carries: the sandbox builds passed by resolving a
+      # sibling's installed tree, the runner never had one).
+      - name: install the gateway sibling the binary bridges into
+        shell: bash
+        run: |
+          cd getry
+          rm -f "$HOME/.npmrc"
+          git checkout -- .npmrc 2>/dev/null || true
+          bun install --frozen-lockfile --ignore-scripts
+
       - name: compile the desktop binary
         shell: bash
         env:
