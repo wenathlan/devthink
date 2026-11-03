@@ -1654,7 +1654,7 @@ function applyCors(res: ServerResponse): void {
   res.setHeader("access-control-allow-methods", "GET, POST, DELETE, OPTIONS");
   res.setHeader(
     "access-control-allow-headers",
-    "content-type, authorization, x-vault-token, x-project-id, x-object-path, x-object-mime",
+    "content-type, authorization, x-vault-token, x-project-id, x-database-id, x-object-path, x-object-mime",
   );
 }
 
