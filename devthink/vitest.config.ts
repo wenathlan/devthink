@@ -4,6 +4,12 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      /** the transcode engine bridge of the ownership law: the os envelope
+       * re-exports the video engine the cadria seat owns; this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — retires when the published cadria envelope carries the
+       * transcodeengine export entry. */
+      "@wenathlan/cadria/transcodeengine": path.resolve(import.meta.dirname, "../cadria/transcodeengine.ts"),
       /** the modality registry bridge of the ownership law, mirrored from
        * vite.config.ts: the sandbox lane tests read the ninety-modality
        * catalog through the published library specifier
@@ -40,6 +46,12 @@ export default defineConfig({
        * mirror of the vite bridge): the 2.1.7 envelope ships the .ts
        * sources, so the test bundler resolves the bare specifier and the
        * memory face to the monorepo source. */
+      /** the aead seal bridge the transcode engine channel imports
+       * ("@wenathlan/saddle/security" — the rfc 8439 law the
+       * virtualization engine owns); resolves the specifier to the
+       * monorepo source ahead of the bare saddle alias so the subpath
+       * never lands on the index face. */
+      "@wenathlan/saddle/security": path.resolve(import.meta.dirname, "../saddle/security.ts"),
       "@wenathlan/saddle": path.resolve(import.meta.dirname, "../saddle/index.ts"),
       "@wenathlan/saddle/memory": path.resolve(import.meta.dirname, "../saddle/virtual.ts"),
       /** the getry engine bridge of the ownership law (pr16): the os imports
