@@ -1155,14 +1155,18 @@ jobs:
           set -euo pipefail
           for app in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
             test -f "./${app}/Dockerfile" || { echo "${app}: no Dockerfile, skipping."; continue; }
-            # a sibling file: pin (forge and foundry ride the vault tree
-            # beside them) cannot resolve inside an application-scoped build
-            # context — those images answer a dedicated family-context lane,
-            # never a silent failure here
-            if grep -q 'file:\.\./' "./${app}/package.json"; then
-              echo "${app}: the manifest pins a sibling tree; the container waits for the family-context lane."
-              continue
-            fi
+            # the container shape law every Dockerfile declares: the case
+            # map below is the single place a shape registers (the publish
+            # lane stages the same map for the site containers). the three
+            # site homes (argan, cadria, debonair) ride the staged
+            # familybuildctx the 2.0.153 family context fix introduced -
+            # the application nested under app/ with the copy-law vault
+            # sibling beside it (the label store bridge answers the
+            # @wenathlan/vault/labelstore imports through the ../vault
+            # aliases, so the vault sources ride every family context);
+            # the workbench image builds from the repository root the
+            # family-context law its Dockerfile header records; the
+            # self-contained site homes build from their own folder.
             # the legacy saddle container package of the standalone era keeps
             # its own access list (the 2.1.x line the old repository
             # published there): the merged repository token answers
@@ -1180,7 +1184,52 @@ jobs:
             fi
             image="ghcr.io/${OWNER,,}/${app}"
             echo "building ${image}:${RELEASE_VERSION}"
-            docker build -t "${image}:${RELEASE_VERSION}" "./${app}"
+            case "${app}" in
+              argan|debonair)
+                # the staged family shape: the application rides the
+                # context nested under app/ and the copy-law vault sibling
+                # rides beside it (sources only - the build never installs
+                # the sibling, the vite aliases read the .ts files)
+                rm -rf familybuildctx
+                mkdir -p familybuildctx/app familybuildctx/vault
+                cp -a "${app}/." familybuildctx/app/
+                cp -a vault/. familybuildctx/vault/
+                rm -rf familybuildctx/vault/node_modules \
+                       familybuildctx/vault/dist \
+                       familybuildctx/vault/build
+                docker build -t "${image}:${RELEASE_VERSION}" familybuildctx
+                ;;
+              cadria)
+                # the engine-ownership sibling map: cadria resolves the
+                # debonair audio engine through the ../debonair vite
+                # aliases, so the debonair sibling rides the context whole
+                # beside the copy-law vault sibling
+                rm -rf familybuildctx
+                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/debonair
+                cp -a cadria/. familybuildctx/app/
+                cp -a vault/. familybuildctx/vault/
+                cp -a debonair/. familybuildctx/debonair/
+                rm -rf familybuildctx/vault/node_modules \
+                       familybuildctx/vault/dist \
+                       familybuildctx/vault/build \
+                       familybuildctx/debonair/node_modules \
+                       familybuildctx/debonair/dist \
+                       familybuildctx/debonair/build
+                docker build -t "${image}:${RELEASE_VERSION}" familybuildctx
+                ;;
+              devthink)
+                # the workbench container law: the context is THE REPOSITORY
+                # ROOT (the family-context law the Dockerfile header
+                # records) and the runtime target the publish lane pins
+                docker build -t "${image}:${RELEASE_VERSION}" -f devthink/Dockerfile --target runtime .
+                ;;
+              *)
+                # the self-contained site shape: the application folder is
+                # the context (the flat village form cobaia, forge, foundry,
+                # getry, stealthhead and vault carry)
+                docker build -t "${image}:${RELEASE_VERSION}" "./${app}"
+                ;;
+            esac
             docker push "${image}:${RELEASE_VERSION}"
             echo "${app}: pushed ${image}:${RELEASE_VERSION}"
           done

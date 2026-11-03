@@ -336,13 +336,21 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
      * denial reddened the loop before stealthhead and vault ever built (the
      * 2.0.151 rung). the saddle container distributions answer the vhe
      * lane under the devthink package; the family loop skips the legacy
-     * package the same honest way the sibling-pin envelopes skip. */
+     * package the same honest way the container shape case map answers. */
     const release = await readworkflow("release.yml");
     expect(release).toContain('if [ "${app}" = "saddle" ]; then');
     expect(release).toContain(
       "the legacy container package keeps the standalone era access list; the saddle containers answer the vhe lane of the publish workflow.",
     );
-    expect(release).toContain("the manifest pins a sibling tree; the container waits for the family-context lane.");
+    /* the container shape law the case map registers: the dead sibling-pin
+     * guard the zero app carried left the lane (no manifest pins file:../
+     * today), so the three site homes ride the staged familybuildctx the
+     * publish lane stages, the workbench builds from the repository root
+     * and the self-contained site homes keep their own folder. */
+    expect(release).toContain('case "${app}" in');
+    expect(release).toContain("rm -rf familybuildctx");
+    expect(release).toContain("cp -a vault/. familybuildctx/vault/");
+    expect(release).toContain('docker build -t "${image}:${RELEASE_VERSION}" -f devthink/Dockerfile --target runtime .');
     /* the loop still walks every application folder: the skip is the
      * saddle leg alone, the siblings keep their builds. */
     expect(release).toContain(

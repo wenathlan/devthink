@@ -220,6 +220,17 @@ jobs:
           node build.ts
           bun run apifreeze:sync
           bun run permdiff:sync
+      - name: Re-stamp the certification records at the derived rung
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
+        # the certification records stamp the release the tree builds: the
+        # validation suite refuses a record that still carries the previous
+        # rung (the eight-seat stamp refusal the 2029 firing answered -
+        # expected 2.1.7 to be 2.1.8 on every certification seat), so the
+        # ladder re-stamps every record through the records:sync pass over
+        # the twelve gates (agentcert through wcag) before the validation
+        # walks the suite - the same re-stamp the release commit carries
+        # when a version lands by hand.
+        run: cd devthink && bun run records:sync
       - name: Validate with the proposed Node version
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
