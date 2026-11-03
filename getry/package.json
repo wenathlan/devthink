@@ -47,9 +47,145 @@
     "./thinking": {
       "types": "./thinking.ts",
       "default": "./thinking.ts"
+    },
+    "./engine": {
+      "types": "./engine.ts",
+      "import": "./engine.ts",
+      "default": "./engine.ts"
+    },
+    "./llm": {
+      "types": "./llm.ts",
+      "import": "./llm.ts",
+      "default": "./llm.ts"
+    },
+    "./streaming": {
+      "types": "./streaming.ts",
+      "import": "./streaming.ts",
+      "default": "./streaming.ts"
+    },
+    "./models": {
+      "types": "./models.ts",
+      "import": "./models.ts",
+      "default": "./models.ts"
+    },
+    "./request": {
+      "types": "./request.ts",
+      "import": "./request.ts",
+      "default": "./request.ts"
+    },
+    "./providers": {
+      "types": "./providers.ts",
+      "import": "./providers.ts",
+      "default": "./providers.ts"
+    },
+    "./antigravity": {
+      "types": "./antigravity.ts",
+      "import": "./antigravity.ts",
+      "default": "./antigravity.ts"
+    },
+    "./oauth": {
+      "types": "./oauth.ts",
+      "import": "./oauth.ts",
+      "default": "./oauth.ts"
+    },
+    "./accounts": {
+      "types": "./accounts.ts",
+      "import": "./accounts.ts",
+      "default": "./accounts.ts"
+    },
+    "./project": {
+      "types": "./project.ts",
+      "import": "./project.ts",
+      "default": "./project.ts"
+    },
+    "./quota": {
+      "types": "./quota.ts",
+      "import": "./quota.ts",
+      "default": "./quota.ts"
+    },
+    "./recovery": {
+      "types": "./recovery.ts",
+      "import": "./recovery.ts",
+      "default": "./recovery.ts"
+    },
+    "./fingerprint": {
+      "types": "./fingerprint.ts",
+      "import": "./fingerprint.ts",
+      "default": "./fingerprint.ts"
+    },
+    "./search": {
+      "types": "./search.ts",
+      "import": "./search.ts",
+      "default": "./search.ts"
+    },
+    "./utils": {
+      "types": "./utils.ts",
+      "import": "./utils.ts",
+      "default": "./utils.ts"
+    },
+    "./versionregistry": {
+      "types": "./versionregistry.ts",
+      "import": "./versionregistry.ts",
+      "default": "./versionregistry.ts"
+    },
+    "./intelligence": {
+      "types": "./intelligence.ts",
+      "import": "./intelligence.ts",
+      "default": "./intelligence.ts"
+    },
+    "./json": {
+      "types": "./json.ts",
+      "import": "./json.ts",
+      "default": "./json.ts"
+    },
+    "./jsonpolicy": {
+      "types": "./jsonpolicy.ts",
+      "import": "./jsonpolicy.ts",
+      "default": "./jsonpolicy.ts"
+    },
+    "./jsonschema": {
+      "types": "./jsonschema.ts",
+      "import": "./jsonschema.ts",
+      "default": "./jsonschema.ts"
+    },
+    "./gatewayconfig": {
+      "types": "./gatewayconfig.ts",
+      "import": "./gatewayconfig.ts",
+      "default": "./gatewayconfig.ts"
+    },
+    "./gatewayviewconfig": {
+      "types": "./gatewayviewconfig.ts",
+      "import": "./gatewayviewconfig.ts",
+      "default": "./gatewayviewconfig.ts"
+    },
+    "./gatewayprobe": {
+      "types": "./gatewayprobe.ts",
+      "import": "./gatewayprobe.ts",
+      "default": "./gatewayprobe.ts"
+    },
+    "./gatewaysmoke": {
+      "types": "./gatewaysmoke.ts",
+      "import": "./gatewaysmoke.ts",
+      "default": "./gatewaysmoke.ts"
+    },
+    "./nodeshim": {
+      "types": "./nodeshim.ts",
+      "import": "./nodeshim.ts",
+      "default": "./nodeshim.ts"
+    },
+    "./types": {
+      "types": "./types.ts",
+      "import": "./types.ts",
+      "default": "./types.ts"
+    },
+    "./constants": {
+      "types": "./constants.ts",
+      "import": "./constants.ts",
+      "default": "./constants.ts"
     }
   },
   "scripts": {
+    "db:generate": "prisma generate --schema schema.prisma",
     "dev": "vite --host",
     "build": "vite build",
     "start": "vite preview --host",

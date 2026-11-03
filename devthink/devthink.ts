@@ -34,7 +34,7 @@ import {
   type Session,
 } from "./storage.js";
 import { listModes, modePrompt, resolveMode } from "./modes.js";
-import { listModels, listProviders, streamChat } from "./providers.js";
+import { listModels, listProviders, streamChat } from "@wenathlan/getry/providers";
 import {
   createPairing,
   createPairingLink,
@@ -43,7 +43,7 @@ import {
   revokeBrowserSessions,
   setIdentityUserId,
 } from "./account.js";
-import type { ChatEvent } from "./streaming.js";
+import type { ChatEvent } from "@wenathlan/getry/streaming";
 import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/wingets/ConsoleTerminalui.js";
 import { startServer } from "./server.js";
 

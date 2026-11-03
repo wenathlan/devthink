@@ -28,25 +28,34 @@ beforeAll(async () => {
   // same command the repo scripts and the consumer init flow run (idempotent
   // when the client is already present) — a fresh checkout or ci lane that
   // skipped db:generate still lands the client before the first write.
-  // the schema and the prisma config live at the application root (the tests
-  // village keeps this suite inside the devthink app folder, so the two
-  // commands target the application directory one hop up).
+  // the os schema lives at the application root (the tests village keeps
+  // this suite inside the devthink app folder, so the command targets the
+  // application directory one hop up) and carries the gateway-kind mirrors
+  // the storage lane persists (the ownership wave moved the masters to
+  // getry/schema.prisma; the os mirror keeps the engine seam writing).
   const appdir = join(import.meta.dirname, "..");
-  await exec("bunx", ["prisma", "generate"], {
+  await exec("bunx", ["prisma", "generate", "--schema", "schema.prisma"], {
     cwd: appdir,
     timeout: 120000,
   });
   // push the repo schema into the isolated database (the same command the
   // consumer runs after init — verifies the schema loads under prisma 7).
-  // the config rides the explicit --config flag: the prisma 7 resolver
-  // auto-discovers prisma.config.ts alone, and the repository names its
-  // config prismaconfig.ts (the flat keyword law), so the bare db push
-  // never finds the datasource url without the flag
-  await exec("bunx", ["prisma", "db", "push", "--config", "prismaconfig.ts"], {
-    cwd: appdir,
-    env: { ...process.env, DEVTHINK_DATABASE_URL: process.env.DEVTHINK_DATABASE_URL },
-    timeout: 120000,
-  });
+  // the ownership wave (wave/ownership.getry) moved prismaconfig.ts to the
+  // gateway owner, so the os push no longer rides a --config flag: the
+  // schema rides the explicit --schema path and the datasource url rides
+  // the explicit --url override (the prisma 7 resolver auto-discovers
+  // prisma.config.ts alone, and the repository names its config
+  // prismaconfig.ts — the bare db push never finds the datasource url
+  // without one of the two flags)
+  await exec(
+    "bunx",
+    ["prisma", "db", "push", "--schema", "schema.prisma", "--url", process.env.DEVTHINK_DATABASE_URL ?? ""],
+    {
+      cwd: appdir,
+      env: { ...process.env, DEVTHINK_DATABASE_URL: process.env.DEVTHINK_DATABASE_URL },
+      timeout: 120000,
+    },
+  );
   if (!existsSync(join(persistdir, "test.db"))) throw new Error("db push produced no database");
 }, 150000);
 
@@ -57,7 +66,7 @@ afterAll(() => {
 // imported after the env is pinned — the lazy client reads the url on the
 // first database touch, so every call below resolves the pushed database
 const { getsession, getsessionmessages, savemsg } = await import("../storage.js");
-const { createversion } = await import("../engine.js");
+const { createversion } = await import("@wenathlan/getry/engine");
 
 /** the persisted shape after the engine's persist() coercion — startedat
  * is a Date (the schema column), everything else lowercase per the schema */

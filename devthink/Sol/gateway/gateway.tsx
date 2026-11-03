@@ -43,8 +43,14 @@ import {
   osText,
 } from "../../oslabels.ts";
 import { ShellChrome } from "@/wingets/Shellchrome";
-import { config } from "../../gatewayviewconfig.ts";
-import type { gatewayconfig } from "../../gateway.ts";
+import { config } from "@wenathlan/getry/gatewayviewconfig";
+/* the catalog kind answers from the gateway owner with the ownership wave
+ * (wave/ownership.getry): the version rows this page renders carry the
+ * getry types gatewayconfig (the catalog imports gatewaydefinition from
+ * @wenathlan/getry/types), so the page helpers speak the owner's kind —
+ * the os gateway.ts keeps its own view-side projection for the browser
+ * client surfaces that never touch the engine graph. */
+import type { gatewayconfig } from "@wenathlan/getry/types";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

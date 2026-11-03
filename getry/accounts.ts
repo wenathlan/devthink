@@ -49,7 +49,7 @@ import {
   GEMINI_CLI_USER_AGENT as GEMINI_CLI_USER_AGENT_FULL,
 } from "./constants.js";
 import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
-import { resolveConfigDir as configResolveConfigDir } from "./config.js";
+import { resolveConfigDir as configResolveConfigDir } from "@wenathlan/devthink/config";
 // v2.1.16 single-owner fix + the grand merge consolidation: the real
 // antigravity-cli client pair is imported from constants.js (the layer-0
 // raw-value owner — env-overridable, live-validated); the former local
@@ -330,7 +330,7 @@ export interface QuotaExhaustedOptions {
  */
 // v2.1.15 Phase C: resolveConfigDir moved to config.js (configuration
 // management owner) — re-exported below for the module surface.
-import { resolveConfigDir } from "./config.js";
+import { resolveConfigDir } from "@wenathlan/devthink/config";
 export { resolveConfigDir };
 
 export function resolveAccountsFilePath(customDir?: string): string {

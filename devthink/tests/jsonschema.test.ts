@@ -4,7 +4,7 @@
  * layer over the declared shape and the bridge from the fixed kinds.
  */
 import { describe, expect, it } from "vitest";
-import { decisionerror } from "../json.ts";
+import { decisionerror } from "@wenathlan/getry/json";
 import {
   compilejsonschema,
   createschemamodel,
@@ -12,7 +12,7 @@ import {
   type SchemaField,
   schemaerror,
   schemafromdecision,
-} from "../jsonschema.ts";
+} from "@wenathlan/getry/jsonschema";
 
 /** Asserts the action throws and the error answers the checks. */
 function throwswith(action: () => void, checks: (error: unknown) => boolean): void {

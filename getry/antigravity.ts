@@ -94,7 +94,7 @@ export type PluginOptions = {
 // v2.1.15 Phase B: generic utilities (fnv hash family, jitter) come from
 // core.js — THE owner; identity masquerade (dynamic UA, antigravity headers)
 // comes from fingerprint.js — THE owner.
-import { fnv1a32, fnv1a32Hex, getJitter } from "./core.js";
+import { fnv1a32, fnv1a32Hex, getJitter } from "@wenathlan/devthink/core";
 import { buildAntagravityHeaders, getDynamicUserAgent } from "./fingerprint.js";
 import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
 import {
@@ -148,11 +148,14 @@ export {
   CONTENT_TIMEOUT_MS,
   FALLBACK_PROJECT_ID,
   FORBIDDEN_HEADERS,
-  FETCH_TIMEOUT_MS,
   GEMINI_CLI_SCOPES,
   PLUGIN_VERSION,
 } from "./constants.js";
-export { fnv1a32, fnv1a32Hex, getJitter } from "./core.js";
+/* the os leaf constants (the fetch timeout and the jitter pair) stay
+ * devthink-owned behind the published specifier — never copied into the
+ * gateway. */
+export { FETCH_TIMEOUT_MS } from "@wenathlan/devthink/constants";
+export { fnv1a32, fnv1a32Hex, getJitter } from "@wenathlan/devthink/core";
 export { buildAntagravityHeaders, getDynamicUserAgent } from "./fingerprint.js";
 export {
   ALL_MODELS_2026,

@@ -7,7 +7,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { db } from "./storage";
+import { db } from "@wenathlan/devthink/storage";
 
 async function main() {
   console.log("[register-nvidia-keys] starting...");

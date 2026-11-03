@@ -41,7 +41,7 @@ import {
   workflowtriggers,
   woodpeckerworkflow,
 } from "../automation.js";
-import { metricstore } from "../intelligence.js";
+import { metricstore } from "@wenathlan/getry/intelligence";
 
 describe("the automation contract (the saddle ownership transfer, wave a)", () => {
   it("parses bot commands and executes through a platform adapter", async () => {

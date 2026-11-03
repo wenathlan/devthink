@@ -15,7 +15,67 @@
     "types": ["vite/client", "node"],
     "paths": {
       "@/*": ["./Sol/*", "./*"],
-      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      /* the modality registry bridge of the ownership wave
+       * (wave/ownership.getry), mirrored from the devthink side: the moved
+       * engine graph leans on the os server seam whose sandbox lane reads
+       * the saddle catalog through the published specifier, and the
+       * installed 2.1.6 envelope carries no ./modalityregistry export —
+       * the typecheck resolves the monorepo source the same way the
+       * vitest bridge does. retires when saddle 2.1.7 publishes the
+       * export entry. */
+      "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
+      "@wenathlan/devthink/config": ["../devthink/config.ts"],
+      "@wenathlan/devthink/constants": ["../devthink/constants.ts"],
+      "@wenathlan/devthink/core": ["../devthink/core.ts"],
+      "@wenathlan/devthink/data": ["../devthink/data.ts"],
+      "@wenathlan/devthink/http": ["../devthink/http.ts"],
+      "@wenathlan/devthink/memory": ["../devthink/memory.ts"],
+      "@wenathlan/devthink/policy": ["../devthink/policy.ts"],
+      "@wenathlan/devthink/protocol": ["../devthink/protocol.ts"],
+      "@wenathlan/devthink/security": ["../devthink/security.ts"],
+      "@wenathlan/devthink/server": ["../devthink/server.ts"],
+      "@wenathlan/devthink/storage": ["../devthink/storage.ts"],
+      "@wenathlan/devthink/tools": ["../devthink/tools.ts"],
+      "@wenathlan/devthink/types": ["../devthink/types.ts"],
+      /* the getry self bridges of the ownership wave (wave/ownership.getry),
+       * mirrored from the devthink side: the os sources the moved graph
+       * consumes through the devthink bridges above import the gateway
+       * modules back through the published specifiers
+       * ("@wenathlan/getry/engine" and siblings), and the published
+       * envelope still answers from the 2.0.154 face that carries only
+       * ./thinking — so every gateway specifier resolves to this app's own
+       * source here (the one owner of the moved modules) until the
+       * published envelope carries the export surfaces the wave added. */
+      "@wenathlan/getry/thinking": ["./thinking.ts"],
+      "@wenathlan/getry/engine": ["./engine.ts"],
+      "@wenathlan/getry/llm": ["./llm.ts"],
+      "@wenathlan/getry/streaming": ["./streaming.ts"],
+      "@wenathlan/getry/models": ["./models.ts"],
+      "@wenathlan/getry/request": ["./request.ts"],
+      "@wenathlan/getry/providers": ["./providers.ts"],
+      "@wenathlan/getry/antigravity": ["./antigravity.ts"],
+      "@wenathlan/getry/oauth": ["./oauth.ts"],
+      "@wenathlan/getry/accounts": ["./accounts.ts"],
+      "@wenathlan/getry/project": ["./project.ts"],
+      "@wenathlan/getry/quota": ["./quota.ts"],
+      "@wenathlan/getry/recovery": ["./recovery.ts"],
+      "@wenathlan/getry/fingerprint": ["./fingerprint.ts"],
+      "@wenathlan/getry/search": ["./search.ts"],
+      "@wenathlan/getry/utils": ["./utils.ts"],
+      "@wenathlan/getry/versionregistry": ["./versionregistry.ts"],
+      "@wenathlan/getry/intelligence": ["./intelligence.ts"],
+      "@wenathlan/getry/json": ["./json.ts"],
+      "@wenathlan/getry/jsonpolicy": ["./jsonpolicy.ts"],
+      "@wenathlan/getry/jsonschema": ["./jsonschema.ts"],
+      "@wenathlan/getry/gatewayconfig": ["./gatewayconfig.ts"],
+      "@wenathlan/getry/gatewayviewconfig": ["./gatewayviewconfig.ts"],
+      "@wenathlan/getry/gatewayprobe": ["./gatewayprobe.ts"],
+      "@wenathlan/getry/gatewaysmoke": ["./gatewaysmoke.ts"],
+      "@wenathlan/getry/nodeshim": ["./nodeshim.ts"],
+      "@wenathlan/getry/types": ["./types.ts"],
+      "@wenathlan/getry/constants": ["./constants.ts"],
+      "@wenathlan/getry/tests/researchfixtures": ["./tests/researchfixtures.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],

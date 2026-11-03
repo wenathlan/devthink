@@ -9,9 +9,66 @@
     "outDir": "build",
     "rootDir": ".",
     "paths": {
+      "z-ai-web-dev-sdk": [
+        "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
+      ],
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
-      "@wenathlan/devthink/server": ["./server.ts"]
+      /* the getry declaration face bridges of the ownership wave
+       * (wave/ownership.getry): the gateway modules answer through the
+       * published library specifiers ("@wenathlan/getry/llm" and siblings),
+       * and the declaration pass resolves every specifier to the owner's
+       * generated declaration face (getry/dist/types, the emit of
+       * ../getry/tsconfig.types.json) so the owner source never enters
+       * this program, the emit stays flat under the application rootDir
+       * and the emitted declarations keep referencing the owner library
+       * specifier — the same law the thinkingtypes.ts ambient carried for
+       * the thinking ladder alone before the wave. the face regenerates
+       * before every pass that reads it (build.ts and the library modes
+       * suite) exactly the way the prisma client generates above the
+       * declaration emit. */
+      "@wenathlan/getry/engine": ["../getry/dist/types/getry/engine.d.ts"],
+      "@wenathlan/getry/llm": ["../getry/dist/types/getry/llm.d.ts"],
+      "@wenathlan/getry/streaming": ["../getry/dist/types/getry/streaming.d.ts"],
+      "@wenathlan/getry/models": ["../getry/dist/types/getry/models.d.ts"],
+      "@wenathlan/getry/request": ["../getry/dist/types/getry/request.d.ts"],
+      "@wenathlan/getry/providers": ["../getry/dist/types/getry/providers.d.ts"],
+      "@wenathlan/getry/antigravity": ["../getry/dist/types/getry/antigravity.d.ts"],
+      "@wenathlan/getry/oauth": ["../getry/dist/types/getry/oauth.d.ts"],
+      "@wenathlan/getry/accounts": ["../getry/dist/types/getry/accounts.d.ts"],
+      "@wenathlan/getry/project": ["../getry/dist/types/getry/project.d.ts"],
+      "@wenathlan/getry/quota": ["../getry/dist/types/getry/quota.d.ts"],
+      "@wenathlan/getry/recovery": ["../getry/dist/types/getry/recovery.d.ts"],
+      "@wenathlan/getry/fingerprint": ["../getry/dist/types/getry/fingerprint.d.ts"],
+      "@wenathlan/getry/search": ["../getry/dist/types/getry/search.d.ts"],
+      "@wenathlan/getry/utils": ["../getry/dist/types/getry/utils.d.ts"],
+      "@wenathlan/getry/versionregistry": ["../getry/dist/types/getry/versionregistry.d.ts"],
+      "@wenathlan/getry/intelligence": ["../getry/dist/types/getry/intelligence.d.ts"],
+      "@wenathlan/getry/json": ["../getry/dist/types/getry/json.d.ts"],
+      "@wenathlan/getry/jsonpolicy": ["../getry/dist/types/getry/jsonpolicy.d.ts"],
+      "@wenathlan/getry/jsonschema": ["../getry/dist/types/getry/jsonschema.d.ts"],
+      "@wenathlan/getry/gatewayconfig": ["../getry/dist/types/getry/gatewayconfig.d.ts"],
+      "@wenathlan/getry/gatewayviewconfig": ["../getry/dist/types/getry/gatewayviewconfig.d.ts"],
+      "@wenathlan/getry/gatewayprobe": ["../getry/dist/types/getry/gatewayprobe.d.ts"],
+      "@wenathlan/getry/gatewaysmoke": ["../getry/dist/types/getry/gatewaysmoke.d.ts"],
+      "@wenathlan/getry/nodeshim": ["../getry/dist/types/getry/nodeshim.d.ts"],
+      "@wenathlan/getry/types": ["../getry/dist/types/getry/types.d.ts"],
+      "@wenathlan/getry/constants": ["../getry/dist/types/getry/constants.d.ts"],
+      /* the devthink self bridges of the ownership wave
+       * (wave/ownership.getry), mirrored from tsconfig.json: the moved
+       * gateway graph leans on the os-owned seams through the published
+       * library specifiers, and the declaration pass resolves every self
+       * specifier to this app's own source. */
+      "@wenathlan/devthink/config": ["./config.ts"],
+      "@wenathlan/devthink/constants": ["./constants.ts"],
+      "@wenathlan/devthink/core": ["./core.ts"],
+      "@wenathlan/devthink/http": ["./http.ts"],
+      "@wenathlan/devthink/memory": ["./memory.ts"],
+      "@wenathlan/devthink/policy": ["./policy.ts"],
+      "@wenathlan/devthink/security": ["./security.ts"],
+      "@wenathlan/devthink/server": ["./server.ts"],
+      "@wenathlan/devthink/storage": ["./storage.ts"],
+      "@wenathlan/devthink/types": ["./types.ts"]
     }
   },
   "include": [
@@ -19,6 +76,17 @@
     "modalitytypes.ts",
     "index.ts",
     "types.ts",
+    /* the os seam entries of the ownership wave (wave/ownership.getry): the
+       exports map answers the published specifiers the moved gateway graph
+       imports (config, constants, core, data, storage, security beside the
+       tools and types surfaces already carried), so the declaration emit
+       covers every entry the flat package stages. */
+    "config.ts",
+    "constants.ts",
+    "core.ts",
+    "data.ts",
+    "storage.ts",
+    "security.ts",
     "policy.ts",
     "memory.ts",
     "protocol.ts",

@@ -3,13 +3,11 @@ import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, it } from "vitest";
-import {
-  isAllowedOrigin,
-  isSecureRemoteEndpoint,
-  normalizeBasePath,
-  redactProviderError,
-  retryDelay,
-} from "../gateway.js";
+import { isAllowedOrigin, isSecureRemoteEndpoint, normalizeBasePath } from "../gateway.js";
+/* the provider wire trio (redactProviderError, retryDelay) answers from the
+ * getry owner with the ownership wave — the helpers ride the published
+ * library specifier the vitest bridge resolves to the monorepo source. */
+import { redactProviderError, retryDelay } from "@wenathlan/getry/providers";
 import {
   type DevThinkConfig,
   migrateLegacyCredentials,
@@ -26,7 +24,7 @@ import { createPairing, createPairingLink, getIdentity, setIdentityUserId } from
 import { isCompactId } from "../queue.ts";
 import { listModes } from "../modes.js";
 import { type ServerHandle, startServer } from "../server.js";
-import { type ChatEvent, parseEventStream } from "../streaming.js";
+import { type ChatEvent, parseEventStream } from "@wenathlan/getry/streaming";
 import { appendMessage, createMemoryStore, createSession, createTab, loadWorkspace } from "../storage.js";
 
 const temporary: string[] = [];

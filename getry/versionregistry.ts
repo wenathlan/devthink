@@ -56,7 +56,6 @@ import {
   ANTIGRAVITY_BLOCKED_VERSIONS,
   ANTIGRAVITY_VERSION_REMOTE_URLS,
   VERSION_FETCH_TIMEOUT_MS,
-  FETCH_TIMEOUT_MS,
   GEMINI_CLI_OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET,
   GEMINI_CLI_SCOPES,
@@ -66,12 +65,15 @@ import {
   CODE_ASSIST_PATH_MAP,
   PROJECT_FALLBACK,
 } from "./constants.js";
+/* the os leaf fetch timeout stays devthink-owned behind the published
+ * specifier — never copied into the gateway. */
+import { FETCH_TIMEOUT_MS } from "@wenathlan/devthink/constants";
 // v2.1.16 single-owner fix: the MODELS_2026 reference list comes from
 // models.js (model identification owner — the 11-id legacy list).
 import { MODELS_2026_LEGACY as MODELS_2026_REFERENCE } from "./models.js";
 import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import { fetchWithTimeout } from "./core.js";
-import { isValidSemver } from "./config.js";
+import { fetchWithTimeout } from "@wenathlan/devthink/core";
+import { isValidSemver } from "@wenathlan/devthink/config";
 export { isValidSemver };
 
 // Re-exports preserve this module's public surface after the dedupe.

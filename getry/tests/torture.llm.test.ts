@@ -27,7 +27,7 @@ import {
   toolbriefof,
   usagetotals,
 } from "../llm.js";
-import { buildtoolcatalog, callretryhintof } from "../tools.js";
+import { buildtoolcatalog, callretryhintof } from "@wenathlan/devthink/tools";
 import type { costbudget, modelmessage, parseguard, prompttemplate, providerconfig, usagerecord } from "../types.js";
 
 const now = 1_800_000_000_000;

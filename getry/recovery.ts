@@ -41,10 +41,11 @@ import {
   GEMINI_CLI_OAUTH_CLIENT_ID as GEMINI_CLI_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as GEMINI_CLI_CLIENT_SECRET,
   GEMINI_CLI_USER_AGENT_PLAIN as GEMINI_CLI_USER_AGENT,
-  JITTER_MAX_MS,
-  JITTER_MIN_MS,
   PROJECT_FALLBACK,
 } from "./constants.js";
+/* the os leaf jitter pair stays devthink-owned behind the published
+ * specifier — never copied into the gateway. */
+import { JITTER_MAX_MS, JITTER_MIN_MS } from "@wenathlan/devthink/constants";
 export { GEMINI_CLI_CLIENT_ID, GEMINI_CLI_CLIENT_SECRET, PROJECT_FALLBACK };
 
 // local variant: diverges from constants (GEMINI_CLI_USER_AGENT_FALLBACK is `gemini-cli/0.57.0 {os}/{arch}`; this is the exact GeminiCLI UA string)
@@ -69,7 +70,7 @@ export const X_CLIENT_METADATA_RAW = CLIENT_METADATA_STRING;
 // is unchanged.
 import { MODELS_2026_LEGACY as MODELS_2026 } from "./models.js";
 import type { ModelId2026 } from "./models.js";
-import { fnv1a32 } from "./core.js";
+import { fnv1a32 } from "@wenathlan/devthink/core";
 import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
 export { MODELS_2026 };
 export type { ModelId2026 };

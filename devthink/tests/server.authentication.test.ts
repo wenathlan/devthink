@@ -21,7 +21,7 @@ import {
   resolvekeys,
   validatetoken,
 } from "../server.js";
-import type { authconfig } from "../types.js";
+import type { authconfig } from "@wenathlan/getry/types";
 
 // ---------------------------------------------------------------------------
 // helpers

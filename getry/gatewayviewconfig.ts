@@ -28,13 +28,20 @@
  * use the cli to scaffold a fresh config (gateway init) and edit the values
  */
 
-import type { gatewaydefinition } from "./gateway.ts";
+/* the gatewaydefinition family moved to the gateway types with the
+ * wave/ownership.getry split: the catalog imports the kind from the engine
+ * owner (types.ts of this app root) — the os gateway lane keeps its own
+ * web-check projection and never leaks into the engine import graph. */
+import type { gatewaydefinition, thinkinglevel } from "./types.ts";
 import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
 
 /** the 7-level thinking budgets consumed from the getry engine (pr16): the
  * ladder is owned by getry and every budget map of this catalog derives
  * from the owner's THINKINGLEVELS — never a second literal copy. */
-const ladderbudgets = Object.fromEntries(THINKINGLEVELS.map((rung) => [rung.level, rung.budget]));
+const ladderbudgets = Object.fromEntries(THINKINGLEVELS.map((rung) => [rung.level, rung.budget])) as Record<
+  thinkinglevel,
+  number
+>;
 
 export const config: gatewaydefinition = {
   name: "DevThink Gateway",
