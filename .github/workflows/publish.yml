@@ -2168,6 +2168,20 @@ jobs:
                      familybuildctx/debonair/dist \
                      familybuildctx/debonair/build
               ;;
+            debonair)
+              # the engine-ownership sibling map: debonair resolves the
+              # cadria synth palette through the ../cadria vite aliases
+              # (the cover palette derivation rides the visual engine -
+              # the palette law is cadria's, the audio descriptor is
+              # debonair's own contract), so the sibling rides the
+              # context whole (sources only - the build never installs
+              # it, the aliases read the .ts files directly)
+              mkdir -p familybuildctx/cadria
+              cp -a cadria/. familybuildctx/cadria/
+              rm -rf familybuildctx/cadria/node_modules \
+                     familybuildctx/cadria/dist \
+                     familybuildctx/cadria/build
+              ;;
           esac
       - name: build and push the site container
         if: steps.published.outputs.skip != 'true'
@@ -3993,7 +4007,7 @@ jobs:
                default github answer of an unrecognized name never hides the
                manifest channels of the bundle it names. */
             const resolve = entry => {
-              const releasechannels = pack.artifactchannelof(entry.name.replace(/^build//, ""), version);
+              const releasechannels = pack.artifactchannelof(entry.name.replace(/^build\//, ""), version);
               if (releasechannels.length === 1 && releasechannels[0] === "github" && entry.channels.length > 1) return entry.channels;
               return releasechannels;
             };
@@ -4342,7 +4356,11 @@ jobs:
         run: npm --prefix saddle run build:engine
       - name: write target plan
         working-directory: saddle
-        run: node build/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
+        # the dist law (the source-is-library doctrine): build:engine stages
+        # the thin packager wrapper into distpackage/ (never a build/ tree -
+        # the sources ARE the engine), so the lane reads the wrapper at the
+        # seat the engine build stamps
+        run: node distpackage/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
       - name: upload target plan
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

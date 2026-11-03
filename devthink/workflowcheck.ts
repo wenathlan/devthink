@@ -262,7 +262,7 @@ const checks = {
     "package the saddle engine extension",
     "saddle.extension.",
     "Saddle plan ${{ matrix.target }} ${{ matrix.format }}",
-    "build/packager/targetcli.js",
+    "distpackage/packager/targetcli.js",
     "require('./saddle/package.json').version",
     "Validate saddle vhe image",
     "VHE_PROFILE_CPU=",
