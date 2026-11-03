@@ -2033,3 +2033,62 @@ export function streamingdemo(
     '             is fixed. this is how engines run models larger than ram.',
   ].join('\n');
 }
+
+/* ------------------------------------------------------------------ */
+/* lifecycle: the cold/warm/hot sandbox state machine (wave 3)         */
+/* ------------------------------------------------------------------ */
+/**
+ * the sandbox lifecycle state machine of the family, distilled from the
+ * foundry herd (wave 3, the engine ownership law: the foundry page model
+ * re-implemented the machine as a local twin; the machine answers from
+ * the saddle owner from this day on and the apps import it through the
+ * published library specifier). the ladder mirrors the boot classes the
+ * modality registry answers (hot, warm, cold) and the warm pool the
+ * orchestrator keeps: cold is built and not booted, warm is booted and
+ * keeping its working set, hot is executing work. zero logic change to
+ * the engine lanes above - the section is additive and imports nothing,
+ * so the browser-pure contract of this module stands.
+ */
+
+/** the three states of the sandbox lifecycle machine. */
+export type SandboxLifecycleState = 'cold' | 'warm' | 'hot';
+
+/** the state ladder in machine order. */
+export const SANDBOX_LIFECYCLE_STATES: readonly SandboxLifecycleState[] = ['cold', 'warm', 'hot'];
+
+/** the allowed transitions of the machine: cold boots to warm, warm
+ * executes to hot, and both ride the cooling paths back. a cold sandbox
+ * never executes; a hot one is already executing. */
+const LIFECYCLE_TRANSITIONS: Readonly<Record<SandboxLifecycleState, readonly SandboxLifecycleState[]>> = {
+  cold: ['warm'],
+  warm: ['hot', 'cold'],
+  hot: ['warm', 'cold'],
+};
+
+/** answers whether the machine allows one transition. */
+export function canTransition(from: SandboxLifecycleState, to: SandboxLifecycleState): boolean {
+  return LIFECYCLE_TRANSITIONS[from].includes(to);
+}
+
+/** the refusal the machine answers when a transition is not allowed -
+ * honest strings, never a silent fallback. */
+export function refusalFor(from: SandboxLifecycleState, to: SandboxLifecycleState): string {
+  if (from === to) return `the sandbox is already ${from}`;
+  if (from === 'cold' && to === 'hot') return 'a cold sandbox cannot execute — warm it first';
+  if (from === 'hot' && to === 'hot') return 'the sandbox is already hot';
+  return `the machine never goes ${from} → ${to} directly`;
+}
+
+/** the action names of the machine, one per transition. */
+export type SandboxLifecycleAction = 'warm' | 'heat' | 'cool' | 'freeze';
+
+/** the guard target each action drives - the machine answers the
+ * transition against this target (the landing state stays the caller's
+ * projection: cool guards the cooling path yet may keep its working set
+ * warm). */
+export const SANDBOX_LIFECYCLE_ACTION_TARGETS: Readonly<Record<SandboxLifecycleAction, SandboxLifecycleState>> = {
+  warm: 'warm',
+  heat: 'hot',
+  cool: 'cold',
+  freeze: 'cold',
+};

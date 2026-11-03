@@ -37,6 +37,16 @@ export default defineConfig({
        * resolves the specifier to the monorepo source the sibling engine
        * carries — the helper is never duplicated inside forge. */
       "@wenathlan/vault/utils": path.resolve(import.meta.dirname, "../vault/utils.ts"),
+
+      /** the runner-mode ladder bridge of the ownership law (wave 3): the
+       * app's runner seam (runner.ts, the module the pages and the floor
+       * engines read the five runtime targets from) rides the ladder
+       * through the published library specifier ("@wenathlan/saddle/modes"),
+       * and this bridge resolves the specifier to the monorepo source the
+       * sibling engine carries — the ladder is never duplicated inside
+       * forge, so the dev server and the build answer the same module the
+       * node-side tests answer. */
+      "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
   },
@@ -46,10 +56,10 @@ export default defineConfig({
     emptyOutDir: false,
     assetsDir: "",
   },
-  /** the theme (Sol/) and the root logics (runner, api, utils) share one app root, so the dev server allows the app root. */
+  /** the theme (Sol/) and the root logics (runner, api, utils) share one app root, so the dev server allows the app root — and the ownership bridge (wave 3) resolves the saddle mode surface the runner seam imports, so the saddle root rides the allow list beside the vault root. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../saddle")],
     },
     host: true,
     strictPort: false,

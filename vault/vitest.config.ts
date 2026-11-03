@@ -20,6 +20,16 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * workload law. */
       "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
+
+      /** the mimetypes engine bridge of the ownership law (wave 3): the
+       * vault's media-type pillar rides the family corpus engine through
+       * the published library specifier ("@wenathlan/argan/mimetypes"),
+       * and this bridge resolves the specifier to the monorepo source the
+       * sibling engine carries — the catalog engine (the parse, the
+       * collision-law indexes, the lookup lanes) is never duplicated
+       * inside vault. the entry retires when the published argan envelope
+       * carries the built mimetypes surface. */
+      "@wenathlan/argan/mimetypes": path.resolve(import.meta.dirname, "../argan/mimetypes.ts"),
     },
   },
   test: {

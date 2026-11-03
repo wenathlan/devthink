@@ -3,14 +3,25 @@
 // answers every static file with — the correct content type for every file
 // type, never a guess, never a hardcoded dozen. The corpus lives beside this
 // module in mime.types (the site's own mime lane, grown from its dozen-site
-// rows to the full registry): 3801 media types and 2808 extension mappings —
-// 6609 entries in all — generated programmatically from the known extension
+// rows to the full registry): 3801 media types and 2806 extension mappings —
+// 6607 entries in all — generated programmatically from the known extension
 // corpus (the live IANA media types registry, the node mime-db, the apache
 // httpd and nginx mime.types, the apache tika catalog, the rust mime_guess
 // table, the go builtin table and the family catalog of the argan gateway,
 // with the family law rows pinned: .ts answers video/mp2t and .tsx answers
 // application/typescript). Real types only, no filler: every row answers a
 // registration a real registry carries.
+//
+// Wave 3, the engine ownership law: the catalog engine — the corpus parse,
+// the collision-law indexes, the counts and every lookup lane this module
+// once re-implemented — answers from the argan owner through the published
+// library specifier ("@wenathlan/argan/mimetypes"): the argan gateway owns
+// the family media-type surface and this module is never its second
+// implementation. The vault keeps what is vault's alone: the corpus read off
+// the filesystem (the node-only doctrine below) and the serving names the
+// internal root and the package surface pin. The data equivalence is
+// byte-exact — the same corpus file, the same rows in the same order, the
+// same counts, the same lookups.
 //
 // The collision law rides the line order of the corpus: the family groups run
 // application, video, audio, image, font, model, chemical, message, multipart,
@@ -21,22 +32,29 @@
 // reads from the filesystem through node:fs, so the browser graph never
 // reaches this module (the browser surfaces keep their own copy lanes).
 //
-// @section corpus — the registry corpus and its parse
+// @section corpus — the registry corpus and its read
 // @section catalog — the rows and the counts the pillar announces
-// @section lookups — the extension index and the serving lane
+// @section lookups — the serving lane
 
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import {
+  createMimeCatalog,
+  MimeCorpusError,
+  parseMimeCorpus,
+  type MimeCorpusRow,
+} from "@wenathlan/argan/mimetypes";
 
 /** @section corpus */
 
 /** The corpus file the catalog parses (mime.types beside this module). */
 const CORPUS_FILE = "mime.types";
 
-/** The typed refusal a missing or malformed corpus answers — loud, never a
- * silent fallback to invented types (the pillar serves every registry row or
- * refuses honestly). */
-export class MimeCorpusError extends Error {}
+/** Resolves the module directory without leaning on import.meta.dirname alone
+ * (the older hosts answer only the url form). */
+function pathFromFile(): string {
+  return new URL(import.meta.url).pathname;
+}
 
 /**
  * Reads the registry corpus: the mime.types file beside this module (the
@@ -58,85 +76,39 @@ function readCorpus(): string {
   }
 }
 
-/** Resolves the module directory without leaning on import.meta.dirname alone
- * (the older hosts answer only the url form). */
-function pathFromFile(): string {
-  return new URL(import.meta.url).pathname;
-}
-
-/** One row of the registry catalog: the media type, its extensions and its
- * family (the tree before the slash). */
-export interface MimeTypeRow {
-  /** the media type, lowercase, registered or legacy-canonical ("video/mp2t") */
-  type: string;
-  /** the file extensions the row maps to the type, dotless and lowercase */
-  extensions: readonly string[];
-  /** the top-level family of the type (the tree before the slash) */
-  family: string;
-}
-
 /**
- * Parses the corpus into the catalog rows: every non-comment line carries the
- * media type and its space-separated extensions; the line order IS the
- * collision law (the first row claiming an extension keeps it).
- *
- * @param corpus the raw corpus text.
- * @returns the catalog rows in corpus order.
- * @throws MimeCorpusError when a line carries no media type.
+ * One row of the registry catalog: the media type, its extensions and its
+ * family (the tree before the slash) — the row shape the argan engine owns
+ * (wave 3), carried under the name the vault surface always answered.
  */
-export function parseMimeCorpus(corpus: string): MimeTypeRow[] {
-  const rows: MimeTypeRow[] = [];
-  for (const rawLine of corpus.split("\n")) {
-    const line = rawLine.trim();
-    if (line.length === 0 || line.startsWith("#")) continue;
-    const fields = line.split(/\s+/);
-    const type = (fields[0] ?? "").toLowerCase();
-    if (!type.includes("/")) {
-      throw new MimeCorpusError(`the corpus line "${rawLine}" carries no media type`);
-    }
-    const extensions = fields.slice(1).map((extension) => extension.toLowerCase());
-    rows.push({ type, extensions, family: type.split("/")[0] });
-  }
-  return rows;
-}
+export type MimeTypeRow = MimeCorpusRow;
 
 /** @section catalog */
 
 /** The catalog itself: every registry row in corpus order (the collision law order). */
 export const MIMETYPES: readonly MimeTypeRow[] = parseMimeCorpus(readCorpus());
 
+/** The engine the argan owner carries (wave 3), bound to the vault corpus:
+ * the collision-law indexes, the counts and every lookup lane answer from
+ * the one createMimeCatalog call — the parse and the serving lanes are never
+ * re-implemented here. */
+const CATALOG = createMimeCatalog(MIMETYPES);
+
 /** The families the catalog carries, in catalog order (the collision law order). */
-export const MIME_FAMILIES: readonly string[] = [
-  ...new Set(MIMETYPES.map((row) => row.family)),
-];
+export const MIME_FAMILIES: readonly string[] = CATALOG.families;
 
 /** The media type count of the catalog (the registry rows the pillar serves). */
-export const MIME_TYPE_COUNT = MIMETYPES.length;
+export const MIME_TYPE_COUNT = CATALOG.typeCount;
 
 /** The extension mapping count of the catalog (the type-to-extension pairs). */
-export const MIME_EXTENSION_COUNT = MIMETYPES.reduce((total, row) => total + row.extensions.length, 0);
+export const MIME_EXTENSION_COUNT = CATALOG.extensionCount;
 
 /** The whole entry count the pillar serves: every media type row plus every
  * extension mapping (the number the mimetypes pillar announces — above six
  * thousand on the wave D corpus). */
-export const MIME_ENTRY_COUNT = MIME_TYPE_COUNT + MIME_EXTENSION_COUNT;
+export const MIME_ENTRY_COUNT = CATALOG.entryCount;
 
 /** @section lookups */
-
-/** The serving index: every extension to the first type claiming it (the
- * collision law resolved once at load — the lane the internal root answers). */
-const EXTENSION_INDEX: ReadonlyMap<string, string> = (() => {
-  const index = new Map<string, string>();
-  for (const row of MIMETYPES) {
-    for (const extension of row.extensions) {
-      if (!index.has(extension)) index.set(extension, row.type);
-    }
-  }
-  return index;
-})();
-
-/** The type index: every media type to its row (the catalog lookup lane). */
-const TYPE_INDEX: ReadonlyMap<string, MimeTypeRow> = new Map(MIMETYPES.map((row) => [row.type, row]));
 
 /**
  * The content type one extension answers — the serving lane of the internal
@@ -145,58 +117,43 @@ const TYPE_INDEX: ReadonlyMap<string, MimeTypeRow> = new Map(MIMETYPES.map((row)
  * it), and an unknown extension answers undefined so the caller serves the
  * octet-stream default honestly instead of a guess.
  *
- * @param extension the file extension (".html", "html" — both answer).
- * @returns the media type, or undefined when no registry row claims it.
+ * (the lane answers from the argan engine — wave 3 — bound to the vault
+ * corpus; the signature and the law are the ones this module always carried.)
  */
-export function mimeTypeFor(extension: string): string | undefined {
-  const dotless = extension.trim().toLowerCase().replace(/^\.+/, "");
-  if (dotless.length === 0) return undefined;
-  return EXTENSION_INDEX.get(dotless);
-}
+export const mimeTypeFor = CATALOG.mimeTypeFor;
 
 /**
  * The extensions one media type carries (the catalog lookup lane — the
  * reverse of the serving index).
  *
- * @param type the media type ("video/mp2t").
- * @returns the extensions, or undefined when the catalog holds no such type.
+ * (the lane answers from the argan engine — wave 3 — bound to the vault corpus.)
  */
-export function extensionsFor(type: string): readonly string[] | undefined {
-  return TYPE_INDEX.get(type.trim().toLowerCase())?.extensions;
-}
+export const extensionsFor = CATALOG.extensionsFor;
 
 /**
  * The catalog row of one media type.
  *
- * @param type the media type.
- * @returns the row, or undefined when the catalog holds no such type.
+ * (the lane answers from the argan engine — wave 3 — bound to the vault corpus.)
  */
-export function mimeTypeRow(type: string): MimeTypeRow | undefined {
-  return TYPE_INDEX.get(type.trim().toLowerCase());
-}
+export const mimeTypeRow = CATALOG.mimeTypeRow;
 
 /**
  * The extension of one path — the last dot segment of the last path segment,
  * dotless and lowercase (no extension answers the empty string).
  *
- * @param pathname the path the internal root resolves.
- * @returns the dotless extension, or "" when the name carries none.
+ * (the lane answers from the argan engine — wave 3 — bound to the vault corpus.)
  */
-export function extensionOf(pathname: string): string {
-  const name = pathname.split("/").pop() ?? "";
-  const at = name.lastIndexOf(".");
-  if (at <= 0 || at === name.length - 1) return "";
-  return name.slice(at + 1).toLowerCase();
-}
+export const extensionOf = CATALOG.extensionOf;
 
 /**
  * The content type one path answers — the lane the internal root serves every
  * static file through: the registry row for the path's extension (dotless,
  * case-insensitive), the octet-stream default when no row claims it.
  *
- * @param pathname the path the internal root resolves.
- * @returns the content type (application/octet-stream when unknown).
+ * (the lane answers from the argan engine — wave 3 — bound to the vault corpus.)
  */
-export function contentTypeFor(pathname: string): string {
-  return mimeTypeFor(extensionOf(pathname)) ?? "application/octet-stream";
-}
+export const contentTypeFor = CATALOG.contentTypeFor;
+
+/** the corpus engine the argan owner carries (wave 3), re-exported under the
+ * names the vault surface always answered: the typed refusal and the parse. */
+export { MimeCorpusError, parseMimeCorpus };

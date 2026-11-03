@@ -6,6 +6,11 @@
 // "seeded replay of a run on the saddle engine boundary", never a live
 // tail of a real floor.
 
+// wave 3, the engine ownership law: the runner-mode ladder the replay
+// rolls its target from answers through the app seam (./runner.ts) from
+// the saddle owner — the five targets are never re-listed here.
+import { modes, type RunnerMode } from "./runner.ts";
+
 /** the levels a log line can carry. */
 export type LogLevel = "info" | "warn" | "error";
 
@@ -45,8 +50,7 @@ function bootLines(mode: string): LogLine[] {
  * the same seed answers the same lines, forever. */
 export function runLogLines(seed: number, steps = 5): LogLine[] {
   const rand = mulberry32(seed);
-  const modes = ["full-virtual", "runner", "node-packages", "docker", "ghcr"] as const;
-  const mode = modes[Math.floor(rand() * modes.length)] as (typeof modes)[number];
+  const mode = modes[Math.floor(rand() * modes.length)] as RunnerMode;
   const lines: LogLine[] = bootLines(mode);
   let t = 240;
   const failingStep = rand() < 0.25 ? Math.floor(rand() * steps) : -1;

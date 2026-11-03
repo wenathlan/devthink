@@ -248,6 +248,7 @@
     "@wenathlan/devthink": "^2.1.8",
     "@wenathlan/getry": "^2.0.154",
     "@wenathlan/saddle": "^2.1.8",
+    "@wenathlan/argan": "^2.1.8",
     "@wenathlan/vault": "^2.1.8",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
