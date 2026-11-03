@@ -15,6 +15,16 @@
       "z-ai-web-dev-sdk": [
         "../devthink/node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
+      /* the hono seat bridge of the declaration pass: the getry transport
+       * (server.ts, the ownership wave) imports the hono family, and the
+       * devthink-side lanes that run this declaration emit never install
+       * the getry tree - the resolution walks the devthink install the
+       * same way every sibling bridge does (the getry-local install and
+       * the getry lanes answer their own node_modules first when present). */
+      "hono": ["../devthink/node_modules/hono/dist/types/index.d.ts"],
+      "hono/cors": ["../devthink/node_modules/hono/dist/types/middleware/cors/index.d.ts"],
+      "@hono/node-server": ["../devthink/node_modules/@hono/node-server/dist/index.d.mts"],
+      "@hono/node-server/serve-static": ["../devthink/node_modules/@hono/node-server/dist/serve-static.d.mts"],
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       /* the modality registry bridge of the ownership wave
