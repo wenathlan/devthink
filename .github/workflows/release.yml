@@ -1221,7 +1221,7 @@ jobs:
             image="ghcr.io/${OWNER,,}/${app}"
             echo "building ${image}:${RELEASE_VERSION}"
             case "${app}" in
-              argan|debonair)
+              argan)
                 # the staged family shape: the application rides the
                 # context nested under app/ and the copy-law vault sibling
                 # rides beside it (sources only - the build never installs
@@ -1240,6 +1240,26 @@ jobs:
                 # the same explicit file the publish lane's family-ghcr
                 # mirror carries.
                 docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
+                ;;
+              debonair)
+                # the staged family shape plus the engine-ownership
+                # sibling: debonair resolves the cadria synth palette
+                # through the ../cadria/synthpalette vite aliases
+                # (coverpalette.ts), so the cadria sibling rides the
+                # context whole beside the copy-law vault sibling (the
+                # map is symmetric with the cadria lane below)
+                rm -rf familybuildctx
+                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/cadria
+                cp -a "${app}/." familybuildctx/app/
+                cp -a vault/. familybuildctx/vault/
+                cp -a cadria/. familybuildctx/cadria/
+                rm -rf familybuildctx/vault/node_modules \
+                       familybuildctx/vault/dist \
+                       familybuildctx/vault/build \
+                       familybuildctx/cadria/node_modules \
+                       familybuildctx/cadria/dist \
+                       familybuildctx/cadria/build
+                docker build -t "${image}:${RELEASE_VERSION}" familybuildctx
                 ;;
               cadria)
                 # the engine-ownership sibling map: cadria resolves the

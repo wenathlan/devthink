@@ -1,0 +1,89 @@
+name: DevThink Registry Heal
+
+# THE EMERGENCY REGISTRY LANE: the 2.1.7 envelopes the publish wave
+# stamped from the stale v2.1.7 tag (a tag cut before twenty-one rungs
+# landed on main) shipped broken tarballs — the saddle envelope declares
+# the dist entry points the package never carries, so every consumer the
+# caret range resolves answers "Cannot find module". The unpublish lane
+# the first heal carried answered E403 (the granular token that bypasses
+# two-factor authentication may never unpublish), so the heal moves the
+# latest dist-tag of every poisoned package back to the last honest rung
+# the manifests of main already resolve (2.1.6 for the saddle, 2.0.154
+# for the library apps). The ladder then walks the ordinary flow: the
+# maintenance rung derives the next rung, the release cuts the tag from
+# the healed main, and the publish answers envelopes the tree actually
+# builds — the fresh latest supersedes every caret range the same hour.
+#
+# The lane is dispatch-only, owner-gated through the release-approval
+# environment, and answers one idempotent pass: a dist-tag already
+# pointing at the honest rung is a green skip, never a failure.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type healtags to confirm the registry heal
+        required: true
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: registry-heal
+
+jobs:
+  heal:
+    name: move the latest dist-tags back to the honest rungs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: release-approval
+    steps:
+      - name: Refuse the accidental dispatch
+        if: github.event.inputs.confirm != 'healtags'
+        run: |
+          echo "The confirm input must read healtags (the lane refuses to run by accident)."
+          exit 1
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Move every poisoned latest back to the honest rung, idempotently
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          heal() {
+            package="$1"
+            honest="$2"
+            echo "::group::@wenathlan/$package latest -> $honest"
+            current="$(npm view "@wenathlan/$package" dist-tags.latest || echo absent)"
+            if [ "$current" = "$honest" ]; then
+              echo "the latest tag already answers $honest — skipping"
+            else
+              npm dist-tag add "@wenathlan/$package@$honest" latest
+              echo "moved @wenathlan/$package latest from $current to $honest"
+            fi
+            echo "::endgroup::"
+          }
+          heal saddle 2.1.6
+          heal devthink 2.0.154
+          heal argan 2.0.154
+          heal cadria 2.0.154
+          heal debonair 2.0.154
+          heal forge 2.0.154
+          heal foundry 2.0.154
+          heal stealthhead 2.0.154
+          heal vault 2.0.154
+      - name: Report the healed dist-tags
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          for package in devthink argan cadria debonair forge foundry getry saddle stealthhead vault; do
+            latest="$(npm view "@wenathlan/$package" dist-tags.latest || echo absent)"
+            echo "@wenathlan/$package latest = ${latest}"
+          done

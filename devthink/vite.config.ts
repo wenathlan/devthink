@@ -307,6 +307,14 @@ export default defineConfig({
        * workload law. */
       "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
+      /** the bare saddle face bridge of the source-is-library doctrine: the
+       * 2.1.7 envelope ships the .ts sources as the engine (the dist tree
+       * the 2.1.6 envelope carried never emits again), so the bundler
+       * resolves the bare specifier and the memory face to the monorepo
+       * source the sibling engine carries — the example job and every
+       * future consumer answer the same seat. */
+      "@wenathlan/saddle": path.resolve(import.meta.dirname, "../saddle/index.ts"),
+      "@wenathlan/saddle/memory": path.resolve(import.meta.dirname, "../saddle/virtual.ts"),
       /** the getry engine bridge of the ownership law (pr16): the os gateway
        * imports the 7-level reasoning ladder through the published library
        * specifier ("@wenathlan/getry/thinking"), and this bridge resolves the
