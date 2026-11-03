@@ -36,6 +36,12 @@ export default defineConfig({
        * same module the dev server serves. retires when saddle 2.1.7
        * publishes the export entry. */
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
+      /** the bare saddle face bridge of the source-is-library doctrine (the
+       * mirror of the vite bridge): the 2.1.7 envelope ships the .ts
+       * sources, so the test bundler resolves the bare specifier and the
+       * memory face to the monorepo source. */
+      "@wenathlan/saddle": path.resolve(import.meta.dirname, "../saddle/index.ts"),
+      "@wenathlan/saddle/memory": path.resolve(import.meta.dirname, "../saddle/virtual.ts"),
       /** the getry engine bridge of the ownership law (pr16): the os imports
        * the 7-level reasoning ladder through the published library specifier
        * ("@wenathlan/getry/thinking"), and the bridge resolves the specifier
