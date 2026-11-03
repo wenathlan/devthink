@@ -112,6 +112,10 @@ const handlers = createversion({
 
 The subpath resolves the built `dist/server.js` bundle with its `dist/server.d.ts` declarations — the grand merge consolidation interned the whole server surface (the engine, the auth, the transport, the console cli and the barrel) in the one `server.ts` module the build emits as a single tree-shakable entry beside every other library target. `node tests/build.ts` emits it together with the full dist family; the engine and the transport ride inside the same bundle.
 
+### Ownership (the gateway ownership wave)
+
+The transport family lives in the getry owner since the ownership wave (wave/ownership.gateway, step 3): the sse/ndjson stream pipeline, the gateway route loop (the transport half of `createserver`), the console static roots, the transport boot and the gateway config loader (`loadconfig`, `reloadconfig`, `validateconfig`, `getversion`, `listversions`) are `getry/server.ts` — the `@wenathlan/getry/server` face beside `getry/engine.ts` (`createversion`, `engineinternals`). This package stays the compat face: `devthink/server.ts` re-exports the stream utilities and the config loader through one shim, composes `createserver` from the getry transport plus the os lanes (the workbench surface), and `runserver`/`main` keep answering from the devthink seat — one surface, one owner per family. Consumers keep importing `@wenathlan/devthink/server` unchanged: the barrel re-export keeps every name resolving.
+
 ## Repository layout
 
 ```text

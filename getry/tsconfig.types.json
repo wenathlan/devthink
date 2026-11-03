@@ -69,6 +69,14 @@
        * through the devthink server bridge — the specifier resolves to
        * this app's own source (the one owner of the moved family). */
       "@wenathlan/getry/auth": ["./auth.ts"],
+      /* the server self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 3 — the transport move): the sse/ndjson
+       * stream pipeline, the gateway route loop, the console static roots,
+       * the transport boot (main/runserver) and the gateway config loader
+       * moved to this app's server.ts, and every consumer that speaks the
+       * published specifier ("@wenathlan/getry/server") resolves it to this
+       * app's own source — the one owner of the moved transport. */
+      "@wenathlan/getry/server": ["./server.ts"],
       "@wenathlan/getry/project": ["./project.ts"],
       "@wenathlan/getry/quota": ["./quota.ts"],
       "@wenathlan/getry/recovery": ["./recovery.ts"],
@@ -103,6 +111,7 @@
     "oauth.ts",
     "accounts.ts",
     "auth.ts",
+    "server.ts",
     "project.ts",
     "quota.ts",
     "recovery.ts",

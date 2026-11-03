@@ -98,6 +98,11 @@
       "import": "./auth.ts",
       "default": "./auth.ts"
     },
+    "./server": {
+      "types": "./server.ts",
+      "import": "./server.ts",
+      "default": "./server.ts"
+    },
     "./project": {
       "types": "./project.ts",
       "import": "./project.ts",

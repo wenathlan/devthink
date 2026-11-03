@@ -22,13 +22,16 @@
 /* the seams of the ownership waves: the gateway auth family (the request
  * auth helpers this engine rides — buildauthheaders, the id extractors,
  * resolvekeys) is owned here since wave/ownership.gateway (auth.ts, one
- * owner beside the pipeline), while the session persistence of the
- * devthink storage stays an os-owned library the engine imports through
- * the published specifier — never duplicated beside the gateway. */
+ * owner beside the pipeline), the sse/ndjson stream pipeline (the chunk
+ * builders, the stream response wrapper) is owned here since the same
+ * wave's transport step (server.ts beside the pipeline, in-package — the
+ * devthink server inversion is over), while the session persistence of
+ * the devthink storage stays an os-owned library the engine imports
+ * through the published specifier — never duplicated beside the gateway. */
 import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./auth.js";
 import { getsessionmessages, savemsg } from "@wenathlan/devthink/storage";
 import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
-import { makechunk, makefinalchunk, makestreamresponse } from "@wenathlan/devthink/server";
+import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
 import type {
   gatewayconfig,
   modeldef,

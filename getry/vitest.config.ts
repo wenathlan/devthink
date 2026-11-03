@@ -97,6 +97,16 @@ export default defineConfig({
        * the specifier resolves to this app's own source (the one owner
        * of the moved family). */
       "@wenathlan/getry/auth": path.resolve(import.meta.dirname, "auth.ts"),
+      /** the server self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 3 — the transport move): the
+       * sse/ndjson stream pipeline, the gateway route loop, the console
+       * static roots, the transport boot and the gateway config loader
+       * moved to this app's server.ts, and every lane that speaks the
+       * published specifier ("@wenathlan/getry/server") — the devthink
+       * server and config compat shims, the property lane that rides the
+       * owner in-package — resolves it to this app's own source at test
+       * runtime: the one owner of the moved transport. */
+      "@wenathlan/getry/server": path.resolve(import.meta.dirname, "server.ts"),
       "@wenathlan/getry/project": path.resolve(import.meta.dirname, "project.ts"),
       "@wenathlan/getry/quota": path.resolve(import.meta.dirname, "quota.ts"),
       "@wenathlan/getry/recovery": path.resolve(import.meta.dirname, "recovery.ts"),
