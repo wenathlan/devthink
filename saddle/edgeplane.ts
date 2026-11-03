@@ -21,7 +21,7 @@
 // domain graph (virtual.ts and its .js specifiers) to the lazy lane
 // loads.
 
-import { edgelaneexecutorsall, edgelanespecsall } from "./edgelandesninety.ts";
+import { edgelaneexecutorsall, edgelanespecsall } from "./edgelandes.ts";
 import { idfactory } from "./foundation.ts";
 import { getmodality } from "./modalityregistry.ts";
 

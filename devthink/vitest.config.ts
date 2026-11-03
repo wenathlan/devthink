@@ -48,6 +48,17 @@ export default defineConfig({
        * to the monorepo source the sibling app carries — the ladder is never
        * duplicated inside devthink, the engine answers from its one owner. */
       "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "../getry/thinking.ts"),
+      /** the getry research corpus bridge of the ownership law (the build
+       * family consolidation carried it): the researchcatalog lane of the
+       * one build file reads the corpus fixtures through the published
+       * library specifier ("@wenathlan/getry/tests/researchfixtures"),
+       * and this bridge resolves the specifier to the monorepo source the
+       * sibling app carries — the corpus is never duplicated inside
+       * devthink, the lane answers from its one owner. */
+      "@wenathlan/getry/tests/researchfixtures": path.resolve(
+        import.meta.dirname,
+        "../getry/tests/researchfixtures.ts",
+      ),
       /** the queue self-bridge of the ownership law: the getry owner's llm
        * module (imported through the family bridges) walks the house
        * retry.backoff parser through the published specifier

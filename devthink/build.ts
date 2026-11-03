@@ -1,9 +1,16 @@
-/** Builds browser and library targets with no remote runtime dependencies. */
-import { execFile } from "node:child_process";
+/** Builds browser and library targets with no remote runtime dependencies —
+ * and, since the build family consolidation, the one build file of the root:
+ * the former buildbinary/buildlib/buildresearchcatalog/buildusercatalog/
+ * buildterminal lanes ride this same file behind argv[2] lane words (binary,
+ * lib, researchcatalog, usercatalog, terminal), each section carrying its
+ * source verbatim below the root build body, while `node build.ts` with no
+ * lane word keeps answering the root build exactly the way CI runs it. */
+import { execFile, execSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdir, readdir, readFile, rm, stat, symlink, writeFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
-import { join, relative } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { arch, platform } from "node:process";
+import path, { join, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
@@ -23,7 +30,23 @@ import { importersamples } from "./tests/importerfixtures.ts";
 import { fixturepages, umdexample } from "./tests/pagefixtures.ts";
 import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts";
 import { frozenschemas } from "./tests/schemafixtures.ts";
+import { pxToCellX, pxToCellY } from "./density.ts";
 import { umdwrap } from "./umdwrap.ts";
+import type { IrNode } from "./runtimeterminal.ts";
+
+/* ─── the build family lanes (the flat folder law: one keyword file per
+   domain) — argv[2] names the lane a merged build rides; no lane word runs
+   the root build exactly the way CI does (`node build.ts`), a lane word
+   runs that lane alone, and an import of this module (the terminal test
+   battery reads the converter exports) never trips either. ─── */
+const buildlanes = new Set(["binary", "lib", "researchcatalog", "usercatalog", "terminal"]);
+const buildlane = process.argv[2];
+const buildentry =
+  !buildlanes.has(buildlane ?? "") &&
+  (process.argv[1]?.endsWith("build.ts") ||
+    process.argv[1]?.endsWith("build") ||
+    (import.meta as ImportMeta & { main?: boolean }).main === true);
+if (buildentry) {
 
 /** The built bundles import by absolute path: the file URL keeps the import legal on every platform (the windows drive letter is not a URL scheme). */
 const importbundle = (bundlepath: string) => import(pathToFileURL(bundlepath).href);
@@ -1481,3 +1504,870 @@ if (stagedpackage.bin.devthink !== "./cli.js")
 console.log(
   `Flat npm package staged: distpackage of ${stagedfiles.length + 1} files (${stagerootfiles.length} root surface files, ${stagedeclarations.length * 2} declaration files, ${stagedfiles.filter((file) => file.startsWith("caps/") || file.startsWith("schemas/") || file.startsWith("fixtures/")).length} grouped data files) with the package scoped checksums and the root manifest — pack it with npm pack ./distpackage.`,
 );
+}
+
+/* ------------------------------------------------------------------ */
+/* section: buildbinary.ts — the bun binary compile lane               */
+/* ------------------------------------------------------------------ */
+type BunRuntime = {
+  build: (options: Record<string, unknown>) => Promise<{ success: boolean; logs: unknown[] }>;
+};
+
+function bunRuntime(): BunRuntime {
+  const runtime = (globalThis as unknown as { Bun?: BunRuntime }).Bun;
+  if (!runtime) throw new Error("Bun is required to compile DevThink binaries.");
+  return runtime;
+}
+
+function flag(name: string): string | undefined {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] : undefined;
+}
+
+function packageVersion(): string {
+  const packageData = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")) as {
+    version?: string;
+  };
+  return packageData.version || "0.0.0";
+}
+
+function localCompileTarget(): string {
+  const os = platform === "darwin" ? "darwin" : platform === "win32" ? "windows" : "linux";
+  const cpu = arch === "arm64" ? "arm64" : "x64";
+  return `bun-${os}-${cpu}`;
+}
+
+export async function buildBinary(): Promise<void> {
+  const runtime = bunRuntime();
+  const target = flag("--target") || process.env.BUN_TARGET || localCompileTarget();
+  const outfile = flag("--outfile") || process.env.DEVTHINK_OUTFILE || `release/devthink-${target}`;
+  const result = await runtime.build({
+    entrypoints: ["./devthink.ts"],
+    target,
+    define: { "process.env.DEVTHINK_VERSION": JSON.stringify(packageVersion()) },
+    compile: { target, outfile },
+    minify: true,
+    sourcemap: "none",
+  });
+  if (!result.success) throw new Error(`Bun compilation failed: ${JSON.stringify(result.logs)}`);
+  console.log(`Built ${outfile}`);
+}
+
+const directEntry = process.argv[1]?.endsWith("build.ts") || process.argv[1]?.endsWith("build");
+const bunEntry = (import.meta as ImportMeta & { main?: boolean }).main === true;
+/* the lane word gates the auto-run so a plain `node build.ts` (the root
+   build) never trips the binary lane — run it with `node build.ts binary`. */
+if (buildlane === "binary" && (directEntry || bunEntry))
+  buildBinary().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.message : "Build failed.");
+    process.exitCode = 1;
+  });
+
+/* ------------------------------------------------------------------ */
+/* section: buildlib.ts — the npm library bundle proof                */
+/* ------------------------------------------------------------------ */
+if (buildlane === "lib") {
+/**
+ * build-lib — npm library bundle of the @wenathlan/devthink server family
+ * one file one responsibility — only the lib build orchestration lives here
+ *
+ * produces inside build/ (beside the extension bundles tests/build.ts emits):
+ *   server.js          esm library entry of the server surface (the embedded
+ *                      gateway console, transport, auth and library barrel
+ *                      beside the maene provider family barrel — one entry)
+ *   engine.js          esm engine entry
+ *   *.d.ts             declarations of the server family modules
+ *
+ * the grand merge consolidation interned the server lineage entries
+ * (the console, the transport, the request auth and the library
+ * barrel in server.ts): the library entries ride the server module the
+ * consolidated repository owns, and the engine entry keeps its own name —
+ * the server family entries never collide with the extension dist targets
+ * (the root build owns server.js itself, this script re-proves the lib pair
+ * with the bun compiler and keeps the engine entry alive).
+ *
+ * run order: tests/build.ts FIRST (the root build), then this script.
+ * the package is esm only — node engine floor, no cjs output.
+ */
+
+const root = process.cwd();
+
+function run(cmd: string) {
+  execSync(cmd, { stdio: "inherit", cwd: root });
+}
+
+// --- esm entries -----------------------------------------------------------
+
+// the ownership wave (wave/ownership.getry) moved the universal gateway engine
+// to the getry root: the engine entry bundles the owner's source — the
+// @wenathlan/devthink build never carries a second engine copy.
+run("bun build ../getry/engine.ts --target=node --format=esm --packages=external --outfile build/engine.js");
+console.log("[build-lib] esm engine entry bundled");
+
+// --- declarations ----------------------------------------------------------
+// the declaration pass of the root build (tsconfig.build.json includes
+// server.ts, and the engine rides the server import graph) already emitted
+// the server family declarations beside the extension declarations, so this
+// script only proves the pair exists below.
+
+// --- sanity ----------------------------------------------------------------
+
+const required = ["build/server.js", "build/engine.js", "build/server.d.ts", "build/engine.d.ts"];
+const missing = required.filter((p) => !existsSync(`${root}/${p}`));
+if (missing.length > 0) {
+  console.error(`[build-lib] missing bundle artifacts: ${missing.join(", ")}`);
+  process.exit(1);
+}
+console.log("[build-lib] library bundle complete");
+}
+
+/* ------------------------------------------------------------------ */
+/* section: buildresearchcatalog.ts — the research catalog build       */
+/* ------------------------------------------------------------------ */
+if (buildlane === "researchcatalog") {
+/**
+ * Builds the public research catalog from the GitHub search result exports the
+ * researchfixtures module carries. The script records source metadata only; it
+ * never downloads or executes repository code, and the two derived markdown
+ * documents (the public project catalog and the comparative feature and flow
+ * matrix) land back inside the researchfixtures module the corpus ships.
+ * The ownership wave (wave/ownership.getry) moved the corpus fixtures to the
+ * gateway owner: the import rides the library specifier
+ * @wenathlan/getry/tests/researchfixtures (bridged to the monorepo source) and
+ * the in-place rewrite targets the getry copy — the corpus is never duplicated
+ * inside devthink.
+ */
+/* merge fabric: the source file's static import of the getry research
+   fixtures rides a dynamic import inside the lane so the root build entry
+   (`node build.ts`) never loads the corpus module — the lane loads it at
+   exactly the moment the standalone script loaded it. */
+const { reposources } = await import("@wenathlan/getry/tests/researchfixtures");
+const modulepath = join(process.cwd(), "..", "getry", "tests", "researchfixtures.ts");
+const sourcefiles = Object.keys(reposources)
+  .filter((name) => /^repos.*\.json$/i.test(name))
+  .sort();
+const entries = [];
+
+/** One repository record of the public GitHub search exports the catalog reads. */
+interface repositoryentry {
+  fullName: string;
+  description?: string;
+  stargazersCount?: number;
+  url: string;
+  license?: { key?: string; name?: string };
+}
+
+for (const file of sourcefiles) {
+  const content = (reposources as Record<string, string>)[file];
+  const values = JSON.parse(content.replace(new RegExp(String.fromCharCode(27) + "\\[?[0-?]*[ -/]*[@-~]", "g"), ""));
+  if (Array.isArray(values)) entries.push(...values);
+}
+
+const unique = new Map();
+for (const item of entries) {
+  if (!item?.fullName || unique.has(item.fullName)) continue;
+  unique.set(item.fullName, item);
+}
+
+const ordered = [...unique.values()].sort((left, right) => (right.stargazersCount ?? 0) - (left.stargazersCount ?? 0));
+const licensed = ordered.filter((item) => item.license?.key && item.license.key !== "other");
+const selected = licensed.slice(0, 50);
+
+function classifyfeature(item: repositoryentry) {
+  const text = `${item.fullName} ${item.description ?? ""}`.toLowerCase();
+  const signals = [];
+  if (/(browser|web)/.test(text)) signals.push("browser context");
+  if (/(automation|automate|workflow)/.test(text)) signals.push("workflow automation");
+  if (/(agent|ai|llm)/.test(text)) signals.push("agent coordination");
+  if (/(extension|webextension|chrome|firefox)/.test(text)) signals.push("extension bridge");
+  if (/(mcp|claude)/.test(text)) signals.push("tool protocol bridge");
+  if (/(playwright|puppeteer|selenium|test)/.test(text)) signals.push("test driver");
+  if (/(vision|screen|screenshot|ocr)/.test(text)) signals.push("visual observation");
+  if (/(scrap|extract|crawl)/.test(text)) signals.push("data extraction");
+  return signals.length ? signals.join(", ") : "generic browser-agent reference";
+}
+
+function classifyflow(item: repositoryentry) {
+  const text = `${item.fullName} ${item.description ?? ""}`.toLowerCase();
+  if (/(mcp|claude)/.test(text)) return "hypothesis: agent protocol → extension or local bridge → browser action";
+  if (/(playwright|puppeteer|selenium|test)/.test(text))
+    return "hypothesis: declared task → browser driver → structured result";
+  if (/(extension|webextension|chrome|firefox)/.test(text))
+    return "hypothesis: extension UI → background runtime → scoped tab interaction";
+  return "hypothesis: task request → browser agent → reported outcome";
+}
+
+/** Encodes externally supplied repository metadata before it enters generated Markdown. */
+function markdownvalue(value: unknown) {
+  return encodeURIComponent(String(value ?? ""));
+}
+
+/** Accepts only the canonical GitHub repository URL obtained from the public metadata feed. */
+function repositoryurl(value: unknown) {
+  try {
+    const parsed = new URL(String(value));
+    if (parsed.protocol !== "https:" || parsed.hostname !== "github.com")
+      throw new Error("Non-canonical repository URL.");
+    return encodeURI(parsed.toString());
+  } catch {
+    return "https://github.com/";
+  }
+}
+
+const rows = selected.map((item, index) => {
+  const description = markdownvalue(item.description ?? "No public description supplied by the GitHub search index.");
+  return `| ${index + 1} | [${markdownvalue(item.fullName)}](${repositoryurl(item.url)}) | ${markdownvalue(item.license.name)} | ${Number.isSafeInteger(item.stargazersCount) ? item.stargazersCount : 0} | ${description} |`;
+});
+
+const matrixrows = selected.map((item, index) => {
+  const description = markdownvalue(item.description ?? "No public description supplied by the GitHub search index.");
+  return `| ${index + 1} | [${markdownvalue(item.fullName)}](${repositoryurl(item.url)}) | ${markdownvalue(classifyfeature(item))} | ${markdownvalue(classifyflow(item))} | public repository metadata only | ${markdownvalue(item.license.name)}; description: ${description} |`;
+});
+
+const markdown = `# Public Open Source Project Catalog\n\nThis catalog is derived from GitHub public-search metadata collected on 2026-08-27. It is an intake list, not an endorsement and not proof that every repository is safe, maintained, or legally reusable. The implementation review phase must confirm the license and inspect only the files needed for interoperability, security and behavior mapping.\n\n## Licensed project sample\n\n| No. | Repository | Declared license | Stars at collection | Public description |\n| --- | --- | --- | ---: | --- |\n${rows.join("\n")}\n\nThe collection contained ${ordered.length} distinct repositories. ${licensed.length} declared a recognized license in GitHub metadata. The first ${selected.length} licensed repositories are retained as the comparative sample; unlicensed or ambiguous repositories are not a code-reuse source.\n\n## Method and limitations\n\nThe catalog combines public GitHub searches for browser automation extensions, browser agents, Firefox automation, Playwright extensions, browser MCP connectors and browser-use agents. Search metadata is useful to establish a public landscape, but it cannot establish implementation quality, exact functionality, browser-store availability or security posture. Those questions are handled in the separate artifact and source review.\n\n## References\n\n[1]: https://github.com/topics/browser-automation "GitHub Topic — browser automation"\n[2]: https://github.com/topics/ai-browser-agent "GitHub Topic — AI browser agent"\n`;
+
+const matrix = `# Comparative Feature and Flow Matrix\n\nThis matrix is intentionally evidence-scoped. Each row represents a public GitHub repository result with a declared license. Feature labels are extracted from public names and descriptions; they are discovery signals, not verified implementation claims. Flow entries are explicit hypotheses to validate in a source or artifact review. No third-party code, branding or private behavior is copied into DevThink.\n\n| No. | Source | Public feature signals | Flow to validate | Evidence class | License and confidence note |\n| --- | --- | --- | --- | --- | --- |\n${matrixrows.join("\n")}\n\n## Reading the matrix\n\nA public listing or repository description can establish only a public claim. A later row in the artifact review will be marked manifest verified only after the downloaded package's manifest is read, and source verified only after an openly licensed source file is inspected. The matrix will retain unverified where neither form of evidence is available.\n\n## References\n\n[1]: https://github.com/topics/browser-automation "GitHub Topic — browser automation"\n[2]: https://github.com/topics/ai-browser-agent "GitHub Topic — AI browser agent"\n`;
+
+/** Escapes one derived markdown document into the template literal body the researchfixtures module carries, so a repository description can never break the module the corpus ships. */
+function templatetext(text: string) {
+  return text.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
+}
+
+const moduletext = await readFile(modulepath, "utf8");
+let rewrites = 0;
+const rewritten = moduletext
+  .replace(/export const publicprojectcatalog = `[\s\S]*?`;/, () => {
+    rewrites += 1;
+    return `export const publicprojectcatalog = \`${templatetext(markdown)}\`;`;
+  })
+  .replace(/export const featureflowmatrix = `[\s\S]*?`;/, () => {
+    rewrites += 1;
+    return `export const featureflowmatrix = \`${templatetext(matrix)}\`;`;
+  });
+if (rewrites !== 2)
+  throw new Error(
+    `The researchfixtures module carries ${rewrites} of the two catalog template literals the research catalog build rewrites; the module lost a derived document export.`,
+  );
+await writeFile(modulepath, rewritten, "utf8");
+console.log(JSON.stringify({ total: ordered.length, licensed: licensed.length, selected: selected.length }, null, 2));
+}
+
+/* ------------------------------------------------------------------ */
+/* section: buildusercatalog.ts — the user store catalog build         */
+/* ------------------------------------------------------------------ */
+if (buildlane === "usercatalog") {
+/**
+ * Extracts unique Chrome Web Store URLs from the user-provided requirement export.
+ * The script creates a source index only and does not fetch, execute or unpack extensions.
+ */
+const sourcedirectory = join(process.cwd(), "tests", "code");
+const input = await readFile(join(sourcedirectory, "inputrequirements.txt"), "utf8");
+const urls = [...input.matchAll(/https:\/\/chromewebstore\.google\.com\/detail\/[^\s*]+/g)].map((match) => match[0]);
+const unique = [...new Set(urls)];
+const rows = unique.map((url, index) => {
+  const parts = url.split("/");
+  const identifier = parts.at(-1) ?? "unknown";
+  const slug = decodeURIComponent(parts.at(-2) ?? "unknown").replace(/-/g, " ");
+  return `| ${index + 1} | ${slug} | ${identifier} | [Listing](${url}) | manifest inventory retained separately |`;
+});
+
+const output = `# User Provided Chrome Web Store Catalog\n\nThis source index extracts the Chrome Web Store URLs supplied by the user. A listing proves that a product page was referenced; it does not prove open-source availability or grant permission to copy code, branding or data.\n\n| No. | Listing label | Chrome extension ID | Source | Review state |\n| --- | --- | --- | --- | --- |\n${rows.join("\n")}\n\nThe companion [artifact inventory](artifactinventory.md) records the evidence-only manifest and file-list review performed where a public CRX payload was available. Third-party package code is never added to this repository.\n`;
+await writeFile(join(sourcedirectory, "userstorecatalog.md"), output);
+console.log(JSON.stringify({ unique: unique.length }, null, 2));
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* section: buildterminal.ts — the tsx to terminal converter (the one  */
+/* design law: sol rides the terminal through the build conversion)      */
+/* ════════════════════════════════════════════════════════════════════ */
+
+
+/* ---------------------------------------------------------------------------
+ * the design tokens (sol.css → the terminal palette)
+ * ------------------------------------------------------------------------- */
+
+/** a css style declaration dict as the converter reads it */
+export type StyleDict = Record<string, string>;
+
+/** parses the custom property declarations of a stylesheet — first
+ * definition wins, so the dark face (the first block of sol.css) is the set
+ * the terminal answers: terminals are the dark face of the same design */
+export function parseCssTokens(css: string): Map<string, string> {
+  const tokens = new Map<string, string>();
+  for (const match of css.matchAll(/--([a-z0-9-]+)\s*:\s*([^;}]+)/g)) {
+    const name = `--${match[1]}`;
+    if (!tokens.has(name)) tokens.set(name, match[2].trim());
+  }
+  return tokens;
+}
+
+/** resolves the var() chain of one value (with fallbacks) through tokens */
+export function resolveCssVars(value: string, tokens: Map<string, string>): string {
+  let out = value.trim();
+  for (let guard = 0; guard < 16; guard++) {
+    const use = /var\(\s*(--[a-z0-9-]+)\s*(?:,\s*([^()]+)\s*)?\)/.exec(out);
+    if (!use) return out;
+    const replacement = tokens.get(use[1]) ?? use[2] ?? "";
+    out = out.slice(0, use.index) + replacement + out.slice(use.index + use[0].length);
+  }
+  return out;
+}
+
+/** an rgb triple (mirrors the runtime type without importing react land) */
+export type Rgb = readonly [number, number, number];
+
+/** converts one css color value to rgb through the token chain — hex,
+ * rgb()/rgba() and color-mix (the mix blends over the canvas, the honest
+ * approximation of alpha on a terminal that paints text only) */
+export function cssColorToRgb(value: string, tokens: Map<string, string>, bg: Rgb = [32, 32, 32]): Rgb | undefined {
+  const resolved = resolveCssVars(value, tokens).trim().replace(/^["']|["']$/g, "");
+  if (!resolved || resolved === "transparent" || resolved === "none" || resolved === "inherit") return undefined;
+  const hex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(resolved);
+  if (hex) {
+    const digits = hex[1].length === 3 ? hex[1].split("").map((c) => c + c).join("") : hex[1];
+    return [
+      Number.parseInt(digits.slice(0, 2), 16),
+      Number.parseInt(digits.slice(2, 4), 16),
+      Number.parseInt(digits.slice(4, 6), 16),
+    ] as Rgb;
+  }
+  const func = /^rgba?\(\s*([\d.]+)[\s,]+([\d.]+)[\s,]+([\d.]+)/.exec(resolved);
+  if (func) return [Number(func[1]), Number(func[2]), Number(func[3])] as Rgb;
+  const mix = /^color-mix\(\s*in\s+[a-z-]+\s*,\s*([^,]+?)\s+([\d.]+)%,\s*(.+?)\s*\)$/.exec(resolved);
+  if (mix) {
+    const fg = cssColorToRgb(mix[1], tokens, bg);
+    const pct = Number(mix[2]) / 100;
+    if (!fg || pct <= 0) return undefined;
+    const rest = mix[3].trim();
+    const base = rest === "transparent" ? bg : (cssColorToRgb(rest, tokens, bg) ?? bg);
+    return [
+      Math.round(fg[0] * pct + base[0] * (1 - pct)),
+      Math.round(fg[1] * pct + base[1] * (1 - pct)),
+      Math.round(fg[2] * pct + base[2] * (1 - pct)),
+    ] as Rgb;
+  }
+  return undefined;
+}
+
+/* ---------------------------------------------------------------------------
+ * the jsx reader (a lightweight structural scan — no compiler dependency)
+ * ------------------------------------------------------------------------- */
+
+export type JsxAttr = { name: string; value: string; form: "string" | "expr" | "none" };
+export type JsxChild =
+  | { type: "element"; element: JsxElement }
+  | { type: "text"; text: string }
+  | { type: "slot"; expr: string };
+export type JsxElement = { tag: string; attrs: JsxAttr[]; children: JsxChild[] };
+
+/** reads one balanced brace region (strings and nesting respected) */
+function readBalanced(source: string, start: number, open: string = "{", close: string = "}"): { content: string; next: number } {
+  let depth = 0;
+  let inStr: string | null = null;
+  for (let i = start; i < source.length; i++) {
+    const char = source[i];
+    if (inStr) {
+      if (char === inStr && source[i - 1] !== "\\") inStr = null;
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      inStr = char;
+      continue;
+    }
+    if (char === open) depth += 1;
+    else if (char === close) {
+      depth -= 1;
+      if (depth === 0) return { content: source.slice(start + 1, i), next: i + 1 };
+    }
+  }
+  return { content: source.slice(start + 1), next: source.length };
+}
+
+/** parses the attributes of one open tag */
+function parseAttrs(source: string, start: number): { attrs: JsxAttr[]; next: number; selfClose: boolean } {
+  const attrs: JsxAttr[] = [];
+  let i = start;
+  for (;;) {
+    while (i < source.length && /\s/.test(source[i])) i += 1;
+    if (source.startsWith("/>", i)) return { attrs, next: i + 2, selfClose: true };
+    if (source[i] === ">") return { attrs, next: i + 1, selfClose: false };
+    const name = /^[A-Za-z_:@][\w:.-]*/.exec(source.slice(i));
+    if (!name) {
+      i += 1;
+      continue;
+    }
+    i += name[0].length;
+    while (i < source.length && /\s/.test(source[i])) i += 1;
+    if (source[i] !== "=") {
+      attrs.push({ name: name[0], value: "", form: "none" });
+      continue;
+    }
+    i += 1;
+    while (i < source.length && /\s/.test(source[i])) i += 1;
+    if (source[i] === '"' || source[i] === "'") {
+      const quote = source[i];
+      const end = source.indexOf(quote, i + 1);
+      attrs.push({ name: name[0], value: source.slice(i + 1, end), form: "string" });
+      i = end + 1;
+    } else if (source[i] === "{") {
+      const region = readBalanced(source, i);
+      attrs.push({ name: name[0], value: region.content, form: "expr" });
+      i = region.next;
+    } else {
+      const bare = /^[^\s>]+/.exec(source.slice(i));
+      attrs.push({ name: name[0], value: bare?.[0] ?? "", form: "string" });
+      i += bare?.[0].length ?? 0;
+    }
+  }
+}
+
+/** parses the children of one element until its closing tag (or a
+ * fragment's closer) — text, nested elements, slots and jsx comments */
+function parseChildrenUntil(source: string, start: number, closer: string): { children: JsxChild[]; next: number } {
+  const children: JsxChild[] = [];
+  let i = start;
+  while (i < source.length) {
+    if (source.startsWith(closer, i)) return { children, next: i + closer.length };
+    const char = source[i];
+    if (/\s/.test(char)) {
+      i += 1;
+      continue;
+    }
+    if (char === "<") {
+      if (source.startsWith("<>", i)) {
+        const inner = parseChildrenUntil(source, i + 2, "</>");
+        children.push(...inner.children);
+        i = inner.next;
+        continue;
+      }
+      const element = parseElementAt(source, i);
+      children.push({ type: "element", element: element.element });
+      i = element.next;
+      continue;
+    }
+    if (char === "{") {
+      const region = readBalanced(source, i);
+      i = region.next;
+      const expr = region.content.trim();
+      if (expr.startsWith("/*") || expr.length === 0) continue;
+      children.push({ type: "slot", expr });
+      continue;
+    }
+    let j = i;
+    while (j < source.length && !"<{".includes(source[j])) j += 1;
+    const text = source.slice(i, j).trim();
+    if (text) children.push({ type: "text", text });
+    i = j;
+  }
+  return { children, next: i };
+}
+
+/** parses one element starting at a `<` followed by a tag name */
+function parseElementAt(source: string, start: number): { element: JsxElement; next: number } {
+  const name = /^[A-Za-z][\w.]*/.exec(source.slice(start + 1));
+  const tag = name?.[0] ?? "div";
+  const after = parseAttrs(source, start + 1 + tag.length);
+  if (after.selfClose) return { element: { tag, attrs: after.attrs, children: [] }, next: after.next };
+  const rest = parseChildrenUntil(source, after.next, `</${tag}>`);
+  return { element: { tag, attrs: after.attrs, children: rest.children }, next: rest.next };
+}
+
+/** reads the root JSX element of a widget source (the element the return
+ * mounts; falls back to the first tag in the file) */
+export function parseJsxRoot(source: string): JsxElement | undefined {
+  const returnAt = source.indexOf("return (");
+  const scanFrom = returnAt >= 0 ? returnAt : 0;
+  const tagAt = source.slice(scanFrom).search(/<[A-Za-z]/);
+  if (tagAt < 0) return undefined;
+  return parseElementAt(source, scanFrom + tagAt).element;
+}
+
+/* ---------------------------------------------------------------------------
+ * the style contracts (the exported CSSProperties objects of the wingets)
+ * ------------------------------------------------------------------------- */
+
+/** scans one value until the next comma/brace at depth zero */
+function scanStyleValue(text: string, start: number): { value: string; next: number } {
+  let i = start;
+  let depth = 0;
+  let inStr: string | null = null;
+  const buf: string[] = [];
+  while (i < text.length) {
+    const char = text[i];
+    if (inStr) {
+      buf.push(char);
+      if (char === inStr && text[i - 1] !== "\\") inStr = null;
+      i += 1;
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      inStr = char;
+      buf.push(char);
+      i += 1;
+      continue;
+    }
+    if (char === "(" || char === "[") depth += 1;
+    if (char === ")" || char === "]") depth -= 1;
+    if (depth === 0 && (char === "," || char === "}")) break;
+    buf.push(char);
+    i += 1;
+  }
+  return { value: buf.join("").trim(), next: i };
+}
+
+/** parses one style object literal (spreads resolved through contracts;
+ * spread calls — the motion entrances — drop, the terminal holds still) */
+export function parseStyleObject(text: string, contracts: Record<string, StyleDict> = {}): StyleDict {
+  let body = text.trim();
+  if (body.startsWith("{")) body = readBalanced(body, 0).content;
+  const out: StyleDict = {};
+  let i = 0;
+  while (i < body.length) {
+    while (i < body.length && /[\s,]/.test(body[i])) i += 1;
+    if (i >= body.length) break;
+    if (body.startsWith("...", i)) {
+      const ident = /^[A-Za-z_$][\w$]*/.exec(body.slice(i + 3));
+      if (!ident) {
+        i += 3;
+        continue;
+      }
+      let end = i + 3 + ident[0].length;
+      if (body[end] === "(") {
+        // a spread call (stagedEntrance) — skip to the closing paren
+        let depth = 0;
+        let j = end;
+        for (; j < body.length; j++) {
+          if (body[j] === "(") depth += 1;
+          else if (body[j] === ")") {
+            depth -= 1;
+            if (depth === 0) break;
+          }
+        }
+        end = j + 1;
+      } else {
+        Object.assign(out, contracts[ident[0]] ?? {});
+      }
+      i = end;
+      continue;
+    }
+    const prop = /^([a-zA-Z-]+)\s*:\s*/.exec(body.slice(i));
+    if (!prop) {
+      i += 1;
+      continue;
+    }
+    i += prop[0].length;
+    const value = scanStyleValue(body, i);
+    out[prop[1]] = value.value;
+    i = value.next;
+  }
+  return out;
+}
+
+/** collects the exported CSSProperties contracts of one winget file */
+export function collectStyleContracts(source: string): Record<string, StyleDict> {
+  const contracts: Record<string, StyleDict> = {};
+  for (const match of source.matchAll(/export const (\w+)\s*:\s*CSSProperties\s*=\s*\{/g)) {
+    const openAt = match.index + match[0].length - 1;
+    const region = readBalanced(source, openAt);
+    contracts[match[1]] = parseStyleObject(region.content);
+  }
+  return contracts;
+}
+
+/* ---------------------------------------------------------------------------
+ * the conversion (jsx + styles + tokens → the terminal IR)
+ * ------------------------------------------------------------------------- */
+
+/** the conversion context: the contracts of the imported wingets, the css
+ * tokens, the discovered prop slots and the item binding of a map scope */
+export type ConvertContext = {
+  contracts: Record<string, StyleDict>;
+  tokens: Map<string, string>;
+  slots: Set<string>;
+  item?: string;
+};
+
+/** the widgets the pipeline converts today (the shell + the two proof
+ * widgets — the map generalizes to every winget) */
+export const TERMINAL_WIDGETS: ReadonlyArray<{ source: string; output: string; exportName: string }> = [
+  { source: "Sol/wingets/ShellControlshell.tsx", output: "shellterminal.ts", exportName: "ControlShellTerminal" },
+  { source: "Sol/wingets/ShellChip.tsx", output: "chipterminal.ts", exportName: "ChipTerminal" },
+  { source: "Sol/wingets/ShellKbd.tsx", output: "kbdterminal.ts", exportName: "KbdTerminal" },
+];
+
+function attrValue(element: JsxElement, name: string): JsxAttr | undefined {
+  return element.attrs.find((attr) => attr.name === name);
+}
+
+function classNames(element: JsxElement): string[] {
+  const attr = attrValue(element, "className");
+  if (!attr) return [];
+  return attr.value.split(/\s+/).filter(Boolean);
+}
+
+/** resolves the style dict of one element: the contract identifier, the
+ * inline object (spreads included) or the empty dict */
+function styleOf(element: JsxElement, ctx: ConvertContext): StyleDict {
+  const attr = attrValue(element, "style");
+  if (!attr) return {};
+  const raw = attr.value.trim();
+  if (attr.form === "string") return parseStyleObject(raw, ctx.contracts);
+  if (raw.startsWith("{")) return parseStyleObject(raw, ctx.contracts);
+  if (/^[A-Za-z_$][\w$]*$/.test(raw)) return ctx.contracts[raw] ?? {};
+  return parseStyleObject(raw, ctx.contracts);
+}
+
+/** the font shorthand → weight and scale flags (sizes fold to the three
+ * terminal scale classes; tracking drops — a cell cannot track) */
+function fontFlags(value: string): { bold?: boolean; scale?: "display" | "body" | "micro" } {
+  const clean = value.replace(/^["']|["']$/g, "");
+  const match = /(\d{3})\s+(\d+(?:\.\d+)?)px/.exec(clean);
+  if (!match) return {};
+  const weight = Number(match[1]);
+  const size = Number(match[2]);
+  return { bold: weight >= 600 ? true : undefined, scale: size >= 24 ? "display" : size <= 11 ? "micro" : "body" };
+}
+
+/** the tailwind arbitrary utilities of a className (gap-[18px] and the
+ * bracket paddings ride the same px→cell map) */
+function tailwindArbitrary(classes: string[]): { gap?: number; padY?: number; padX?: number } {
+  const out: { gap?: number; padY?: number; padX?: number } = {};
+  for (const cls of classes) {
+    const gap = /^gap-\[([\d.]+)px\]$/.exec(cls);
+    if (gap) out.gap = Number(gap[1]);
+    const pad = /^p[tblrxy]?-\[([\d.]+)px\]$/.exec(cls);
+    if (pad) out.padY = Number(pad[1]);
+  }
+  return out;
+}
+
+/** converts one jsx element into the terminal IR */
+export function convertElement(element: JsxElement, ctx: ConvertContext): IrNode {
+  const style = styleOf(element, ctx);
+  const classes = classNames(element);
+  const tw = tailwindArbitrary(classes);
+  const display = style.display ?? "";
+  const flexDirection = style.flexDirection === "row" || display.includes("inline-flex") ? "row" : style.flexDirection === "column" ? "column" : "column";
+  const isTextTag = ["p", "h1", "h2", "h3", "h4", "span", "kbd", "button", "strong", "em", "code", "small", "label", "a", "li"].includes(element.tag);
+  const toneAttr = attrValue(element, "data-tone");
+
+  // the mounted chrome (the navbar widget) answers the terminal chrome band;
+  // every other childless component is a face this pass does not convert —
+  // it renders nothing rather than a wrong guess (its own conversion ride)
+  if (/^[A-Z]/.test(element.tag)) {
+    if (element.tag === "ShellChrome") return { kind: "chrome" };
+    if (element.children.length === 0) return { kind: "box", direction: "column", gap: 0, children: [] };
+  }
+
+  // the child slots: text, props, optionals, maps, children passthrough
+  const childNodes: IrNode[] = [];
+  for (const child of element.children) {
+    if (child.type === "text") {
+      childNodes.push({ kind: "text", text: child.text });
+      continue;
+    }
+    if (child.type === "element") {
+      childNodes.push(convertElement(child.element, ctx));
+      continue;
+    }
+    const expr = child.expr;
+    if (/^[A-Za-z_$][\w$]*$/.test(expr)) {
+      ctx.slots.add(expr);
+      if (expr === "children") childNodes.push({ kind: "children" });
+      else if (ctx.item === expr) childNodes.push({ kind: "text", item: expr });
+      else childNodes.push({ kind: "text", slot: expr });
+      continue;
+    }
+    const optional = /^([A-Za-z_$][\w$]*)\s*\?\s*([\s\S]+?)\s*:\s*null$/.exec(expr);
+    if (optional) {
+      ctx.slots.add(optional[1]);
+      const body = optional[2];
+      const tagAt = body.search(/<[A-Za-z]/);
+      if (tagAt >= 0) {
+        const inner = parseElementAt(body, tagAt).element;
+        const node = convertElement(inner, ctx);
+        if (node.kind === "box" || node.kind === "text") node.when = optional[1];
+        childNodes.push(node);
+      }
+      continue;
+    }
+    const map = /^([A-Za-z_$][\w$]*)\.map\(\s*\(\s*([A-Za-z_$][\w$]*)\s*\)\s*=>\s*([\s\S]+)$/.exec(expr);
+    if (map) {
+      ctx.slots.add(map[1]);
+      const body = map[3];
+      const tagAt = body.search(/<[A-Za-z]/);
+      if (tagAt >= 0) {
+        const inner = parseElementAt(body, tagAt).element;
+        const child = convertElement(inner, { ...ctx, item: map[2] });
+        childNodes.push({ kind: "map", slot: map[1], item: map[2], gap: 1, child });
+      }
+      continue;
+    }
+    // a plain expression with jsx islands folds to the island; string
+    // literals fold to text — anything else drops (handlers stay web-side)
+    const tagAt = expr.search(/<[A-Za-z]/);
+    if (tagAt >= 0) {
+      childNodes.push(convertElement(parseElementAt(expr, tagAt).element, ctx));
+      continue;
+    }
+    const literal = /^["'](.*)["']$/.exec(expr);
+    if (literal) childNodes.push({ kind: "text", text: literal[1] });
+  }
+
+  if (isTextTag || (childNodes.length === 1 && childNodes[0].kind === "text" && element.children.every((c) => c.type !== "element"))) {
+    // a leaf text element: the first text/prop/item child rides the tags own
+    // style (color, weight, scale, the keycap brackets and chip tones)
+    const flags = fontFlags(style.font ?? "");
+    const color = style.color ? cssColorToRgb(style.color, ctx.tokens) : undefined;
+    // inside a text element the children slot reads as its string content
+    const textish = childNodes.map((node) => (node.kind === "children" ? ({ kind: "text", slot: "children" } as IrNode) : node));
+    const text = textish.find((node) => node.kind === "text");
+    if (text && text.kind === "text" && textish.every((node) => node.kind !== "box" && node.kind !== "map")) {
+      const only = textish.length === 1;
+      const node: IrNode = {
+        kind: "text",
+        ...(text.text !== undefined ? { text: text.text } : {}),
+        ...(text.slot !== undefined ? { slot: text.slot } : {}),
+        ...(text.item !== undefined ? { item: text.item } : {}),
+        ...(color ? { color } : {}),
+        ...flags,
+        ...(toneAttr?.form === "expr" ? { toneSlot: toneAttr.value.trim() } : {}),
+        ...(classes.includes("kbd") ? { deco: "bracket" as const } : {}),
+        ...(classes.includes("uichip") && only ? { deco: "paren" as const } : {}),
+        ...(text.when !== undefined ? { when: text.when } : {}),
+      };
+      if (!only) {
+        // multiple text children (the chip: content + remove glyph) fold to
+        // a row so the pill reads on one line — the tone rides the content
+        const first = textish[0];
+        if (toneAttr?.form === "expr" && first?.kind === "text") first.toneSlot = toneAttr.value.trim();
+        return {
+          kind: "box",
+          direction: "row",
+          gap: 1,
+          ...(classes.includes("uichip") ? { deco: "paren" as const } : {}),
+          children: textish,
+        };
+      }
+      return node;
+    }
+  }
+
+  // a container element: the flex/grid rhythm → the box
+  const gapPx = (() => {
+    const raw = style.gap ?? style.rowGap ?? style.columnGap;
+    if (raw !== undefined) return Number.parseFloat(raw);
+    return tw.gap;
+  })();
+  const gap = flexDirection === "row" ? pxToCellX(gapPx ?? 8) : pxToCellY(gapPx ?? 16);
+  const padding = (style.padding ?? "").replace(/["']/g, "");
+  const pads = padding.split(/\s+/).filter(Boolean).map((token) => Number.parseFloat(token) || 0);
+  const padY = pads.length >= 1 ? Math.max(1, Math.round(((pads[0] ?? 0) + (pads.length === 2 ? pads[0] : (pads[2] ?? pads[0]))) / 2 / 16)) : undefined;
+  const padX = pads.length >= 2 ? Math.max(0, Math.round(pads[1] / 8)) : undefined;
+  return {
+    kind: "box",
+    direction: flexDirection === "row" ? "row" : "column",
+    gap,
+    ...(style.borderBottom ? { rule: true } : {}),
+    ...(style.boxShadow ? { border: true } : {}),
+    ...(padX ? { padX } : {}),
+    ...(padY ? { padY } : {}),
+    children: childNodes,
+  };
+}
+
+/** converts one widget source into its terminal IR (tokens + contracts ride
+ * the imports of the file) */
+export function convertWidget(source: string, cssTokens: Map<string, string>): { ir: IrNode; slots: string[] } {
+  const contracts: Record<string, StyleDict> = {};
+  for (const match of source.matchAll(/from\s+"\.\/([\w]+)\.tsx"/g)) {
+    const sibling = path.resolve(import.meta.dirname ?? ".", "Sol", "wingets", `${match[1]}.tsx`);
+    if (existsSync(sibling)) Object.assign(contracts, collectStyleContracts(readFileSync(sibling, "utf8")));
+  }
+  const root = parseJsxRoot(source);
+  if (!root) throw new Error("no jsx root found in the widget source");
+  const ctx: ConvertContext = { contracts, tokens: cssTokens, slots: new Set() };
+  const ir = convertElement(root, ctx);
+  return { ir, slots: [...ctx.slots].sort() };
+}
+
+/* ---------------------------------------------------------------------------
+ * the emitter (IR → the committed terminal module)
+ * ------------------------------------------------------------------------- */
+
+/** emits one terminal module: the IR as a typed constant plus the props
+ * function with the SAME prop slots the web widget answers */
+export function emitTerminalModule(options: { exportName: string; sourcePath: string; ir: IrNode; slots: string[] }): string {
+  const { exportName, sourcePath, ir, slots } = options;
+  const propsType = `Record<string, unknown>`;
+  const slotDoc = slots.length > 0 ? slots.map((slot) => `\`string\``).join(", ") : "none";
+  return `/**
+ * GENERATED FILE — the terminal face of ${sourcePath}.
+ * emitter: devthink/buildterminal.ts (the tsx→terminal conversion of wave
+ * 2-c / PR11): the same design, the same tokens, the cell as the unit. The
+ * prop slots the web widget answers survive verbatim (${slotDoc}) — the
+ * interactivity contract rides the conversion. Regenerate with
+ * \`node buildterminal.ts\` — never edit by hand.
+ */
+import { render, type IrNode, type RenderOptions } from "./runtimeterminal.ts";
+
+const ir: IrNode = ${JSON.stringify(ir, null, 2)};
+
+export type ${exportName}Props = ${propsType};
+
+/** renders the ${sourcePath} face into terminal rows (ANSI, headless) */
+export function ${exportName}(props: ${exportName}Props = {}, options: RenderOptions = {}): string {
+  return render(ir, props, options);
+}
+`;
+}
+
+/** converts every configured widget; returns the output files in memory */
+export function convertAll(): Array<{ output: string; content: string; slots: string[] }> {
+  const root = import.meta.dirname ?? ".";
+  const css = readFileSync(path.resolve(root, "Sol", "sol.css"), "utf8");
+  const tokens = parseCssTokens(css);
+  return TERMINAL_WIDGETS.map((widget) => {
+    const source = readFileSync(path.resolve(root, widget.source), "utf8");
+    const { ir, slots } = convertWidget(source, tokens);
+    return {
+      output: widget.output,
+      slots,
+      content: emitTerminalModule({ exportName: widget.exportName, sourcePath: widget.source, ir, slots }),
+    };
+  });
+}
+
+/* ---------------------------------------------------------------------------
+ * the cli: write (default) or verify (--check)
+ * ------------------------------------------------------------------------- */
+
+function main(): void {
+  const check = process.argv.includes("--check");
+  const root = import.meta.dirname ?? ".";
+  const files = convertAll();
+  let drift = 0;
+  for (const file of files) {
+    const target = path.resolve(root, file.output);
+    if (check) {
+      const current = existsSync(target) ? readFileSync(target, "utf8") : "";
+      if (current !== file.content) {
+        drift += 1;
+        console.error(`drift: ${file.output} does not match the conversion of the current widgets`);
+      } else {
+        console.log(`ok: ${file.output} (${file.slots.length} prop slots survive)`);
+      }
+    } else {
+      mkdirSync(path.dirname(target), { recursive: true });
+      writeFileSync(target, file.content);
+      console.log(`converted ${file.output} (${file.slots.length} prop slots survive)`);
+    }
+  }
+  if (check && drift > 0) process.exitCode = 1;
+}
+
+/* the lane dispatch of the build family (the flat folder law): the
+ * terminal lane answers `node build.ts terminal [--check]` — the argv[2]
+ * lane word the dispatcher retires keeps the standalone-era flags
+ * (--check reads the same drift verdict) exactly as they were. */
+if (buildlane === "terminal") main();

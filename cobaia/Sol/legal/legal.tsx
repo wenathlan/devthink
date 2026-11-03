@@ -39,7 +39,11 @@ export function Legal() {
         </p>
       </section>
 
-      <article className="cb-article cb-in" style={{ "--cb-d": 1 } as CSSProperties} aria-label={label("legal.privacy.aria")}>
+      <article
+        className="cb-article cb-in"
+        style={{ "--cb-d": 1 } as CSSProperties}
+        aria-label={label("legal.privacy.aria")}
+      >
         <h2 className="cb-secttitle">{label("legal.privacy.title")}</h2>
         <div className="cb-articlebody">
           <Clause head={label("legal.privacy.collect.head")} text={label("legal.privacy.collect.text")} />
@@ -51,7 +55,11 @@ export function Legal() {
         </div>
       </article>
 
-      <article className="cb-article cb-in" style={{ "--cb-d": 2 } as CSSProperties} aria-label={label("legal.terms.aria")}>
+      <article
+        className="cb-article cb-in"
+        style={{ "--cb-d": 2 } as CSSProperties}
+        aria-label={label("legal.terms.aria")}
+      >
         <h2 className="cb-secttitle">{label("legal.terms.title")}</h2>
         <div className="cb-articlebody">
           <Clause head={label("legal.terms.service.head")} text={label("legal.terms.service.text")} />

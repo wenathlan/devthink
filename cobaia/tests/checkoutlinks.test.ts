@@ -10,30 +10,30 @@
 // the billing table cites, so a card never renders a bare key.
 import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
-import { PLANS, SUPPORTLINKS, isconfigured, planbyid } from "../checkoutlinks.ts";
+import { checkoutlinks, isconfigured, planbyid, supportlinks } from "../checkoutlinks.ts";
 import { LABEL_MANIFEST } from "../labels.ts";
 
 describe("checkout links", () => {
   it("carries the three honest plans in display order", () => {
     assert.deepEqual(
-      PLANS.map((plan) => plan.id),
+      checkoutlinks().map((plan) => plan.id),
       ["free", "pro", "studio"],
     );
   });
 
   it("prices the plans at the placeholder us$0 / 5 / 19 a month", () => {
-    const prices = new Map(PLANS.map((plan) => [plan.id, plan.priceusd]));
+    const prices = new Map(checkoutlinks().map((plan) => [plan.id, plan.priceusd]));
     expect(prices.get("free")).toBe(0);
     expect(prices.get("pro")).toBe(5);
     expect(prices.get("studio")).toBe(19);
-    for (const plan of PLANS) {
+    for (const plan of checkoutlinks()) {
       assert.ok(plan.featureKeys.length >= 3, `${plan.id} must list at least three honest features`);
     }
   });
 
   it("answers every plan sentence from the label manifest — zero hardcoded prose", () => {
     const prose = (key: string): string => (LABEL_MANIFEST as Record<string, string>)[key];
-    for (const plan of PLANS) {
+    for (const plan of checkoutlinks()) {
       assert.ok(prose(plan.nameKey), `${plan.id} name key must answer from the manifest`);
       assert.ok(prose(plan.perKey), `${plan.id} period key must answer from the manifest`);
       assert.ok(prose(plan.blurbKey), `${plan.id} blurb key must answer from the manifest`);
@@ -48,16 +48,16 @@ describe("checkout links", () => {
   });
 
   it("ships every checkout href empty — the honest empty state", () => {
-    for (const plan of PLANS) {
+    for (const plan of checkoutlinks()) {
       assert.equal(plan.href, "", `${plan.id} must not carry a fake checkout link`);
       assert.equal(isconfigured(plan.href), false, `${plan.id} must read as not configured`);
     }
   });
 
   it("keeps the support channels unconfigured until the owner sets them", () => {
-    assert.equal(SUPPORTLINKS.sponsors, "");
-    assert.equal(SUPPORTLINKS.kofi, "");
-    assert.equal(isconfigured(SUPPORTLINKS.sponsors), false);
+    assert.equal(supportlinks().sponsors, "");
+    assert.equal(supportlinks().kofi, "");
+    assert.equal(isconfigured(supportlinks().sponsors), false);
   });
 
   it("answers the configured contract on real values only", () => {

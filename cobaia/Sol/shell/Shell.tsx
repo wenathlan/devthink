@@ -22,11 +22,10 @@
  * block carries the two contracts).
  */
 import type { CSSProperties, ReactNode } from "react";
-import { useLocation, Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
-import { ROSTER } from "../wingets";
-import { BrandMark } from "../wingets";
+import { BrandMark, ROSTER } from "../wingets";
 
 /** the section links of the top bar, in reading order (home is the mark).
  * the href rides the route table, the text rides the label accessor. */

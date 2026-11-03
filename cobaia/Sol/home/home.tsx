@@ -18,10 +18,8 @@
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import { familyurl } from "../../familyurl";
-import { type LabelKey, labelfill, label } from "../../labels";
-import { ROSTER } from "../wingets";
-import { AdSlot } from "../wingets";
-import { BrandMark } from "../wingets";
+import { type LabelKey, label, labelfill } from "../../labels";
+import { AdSlot, BrandMark, ROSTER } from "../wingets";
 
 /** the featured deploy units of the landing preview (the full directory
  * lives on /apps): the OS, the engine, the store and one studio — read

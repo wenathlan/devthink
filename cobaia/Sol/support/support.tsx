@@ -13,7 +13,8 @@
  * nothing that asks for support ever sits beside an advertisement.
  */
 import type { CSSProperties } from "react";
-import { SUPPORTLINKS, isconfigured } from "../../checkoutlinks";
+import { isconfigured, supportlinks } from "../../checkoutlinks";
+import { useContent } from "../../content.ts";
 import { label } from "../../labels";
 
 /** one support channel: the card, the promise and its config link. */
@@ -52,6 +53,8 @@ function Channel({
 }
 
 export function Support() {
+  useContent();
+  const channels = supportlinks();
   return (
     <div className="cb-page">
       <section className="cb-hero" aria-label={label("support.aria.hero")}>
@@ -72,14 +75,14 @@ export function Support() {
             index={1}
             name={label("support.channel.sponsors.name")}
             promise={label("support.channel.sponsors.promise")}
-            href={SUPPORTLINKS.sponsors}
+            href={channels.sponsors}
             cta={label("support.channel.sponsors.cta")}
           />
           <Channel
             index={2}
             name={label("support.channel.kofi.name")}
             promise={label("support.channel.kofi.promise")}
-            href={SUPPORTLINKS.kofi}
+            href={channels.kofi}
             cta={label("support.channel.kofi.cta")}
           />
         </div>

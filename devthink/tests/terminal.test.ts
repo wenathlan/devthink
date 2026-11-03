@@ -28,7 +28,7 @@ import {
   cssColorToRgb,
   parseCssTokens,
   parseJsxRoot,
-} from "../buildterminal.ts";
+} from "../build.ts";
 import {
   DENSITY_PLATFORMS,
   TERMINAL_COLUMNS,

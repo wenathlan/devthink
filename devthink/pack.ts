@@ -883,7 +883,7 @@ export function containerbuildstages(): containerbuildstage[] {
       name: "binary-builder",
       purpose:
         "compiles devthink.ts with bun build --compile aimed at the bun target resolved from TARGETARCH (bun-linux-x64 on amd64, bun-linux-arm64 on arm64)",
-      checks: ["bun run buildbinary.ts --target <bun-target>"],
+      checks: ["bun run build.ts binary --target <bun-target>"],
     },
     {
       name: "binary-runtime",

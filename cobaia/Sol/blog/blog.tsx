@@ -14,8 +14,9 @@
  * place and the index links jump to the article.
  */
 import type { CSSProperties } from "react";
-import { postindex, postwords, type blogpost } from "../../posts";
-import { labelfill, label } from "../../labels";
+import { useContent } from "../../content.ts";
+import { label, labelfill } from "../../labels";
+import { type blogpost, postindex, postwords } from "../../posts";
 import { AdSlot } from "../wingets";
 
 /** the meta line of one post: the date and the honest word count. */
@@ -32,6 +33,7 @@ function PostMeta({ post }: { post: blogpost }) {
 }
 
 export function Blog() {
+  useContent();
   const posts = postindex();
   return (
     <div className="cb-page">

@@ -2403,7 +2403,7 @@ jobs:
           set -euo pipefail
           cd devthink
           mkdir -p release
-          bun run buildbinary.ts --target "${{ matrix.target }}" --outfile "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
+          bun run build.ts binary --target "${{ matrix.target }}" --outfile "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
           test -f "release/devthink.desktop.${RELEASE_VERSION}.${{ matrix.name }}${{ matrix.extension }}"
 
       # the runnable smoke: the compiled binary answers the version command
