@@ -282,7 +282,7 @@
       "import": "./build/types.js",
       "default": "./build/types.js"
     },
-        "./queue": {
+    "./queue": {
       "types": "./build/queue.d.ts",
       "import": "./build/queue.js",
       "default": "./build/queue.js"
