@@ -351,8 +351,10 @@ jobs:
     # build: the files field answers the tracked documentation set, the
     # zero-build site and the tests directory, so the pack dry-run is
     # the whole validation). The matrix answers the canonical family
-    # pass order: argan, cadria, debonair, forge, foundry, stealthhead,
-    # vault.
+    # pass order with the distribution-completeness law the mirror
+    # carries: every application envelope of the monorepo rides the
+    # registry lane (the gateway getry and the monetization cobaia walk
+    # beside the eight the mirror always carried, saddle last).
     if: >-
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
       (github.event_name != 'workflow_run' ||
@@ -377,7 +379,7 @@ jobs:
         # the family mirror here gives the saddle envelope the same
         # graceful token gate, the same retry and the same race tolerance
         # every sibling leg carries.
-        package: [argan, cadria, debonair, forge, foundry, stealthhead, vault, saddle]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault, saddle]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -767,9 +769,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # the canonical family pass order: argan, cadria, debonair, forge,
-        # foundry, stealthhead, vault.
-        package: [argan, cadria, debonair, forge, foundry, stealthhead, vault]
+        # the canonical family pass order with the distribution-completeness
+        # law: every application envelope of the monorepo rides the registry
+        # lane (the gateway getry and the monetization cobaia walk beside
+        # the seven this lane always carried).
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
