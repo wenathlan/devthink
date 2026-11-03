@@ -32,9 +32,31 @@ minimumReleaseAgeExclude:
   - react-hook-form@7.91.0
   - '@fluentui/react-icons@2.0.345'
   - lucide-react@1.65.0
-  - react-resizable-panels@4.15.3 || 4.16.0 || 4.16.1
+  - react-resizable-panels@4.15.3 || 4.16.0 || 4.16.1 || 4.17.0
   - '@wenathlan/vault@2.0.153 || 2.0.154'
   - '@wenathlan/getry@2.0.154'
   - hono@4.13.16
   - '@wenathlan/cadria@2.0.154'
   - '@wenathlan/debonair@2.0.154'
+  - '@hono/node-server@2.1.6'
+  - '@tailwindcss/node@4.3.4'
+  - '@tailwindcss/oxide-android-arm64@4.3.4'
+  - '@tailwindcss/oxide-darwin-arm64@4.3.4'
+  - '@tailwindcss/oxide-darwin-x64@4.3.4'
+  - '@tailwindcss/oxide-freebsd-x64@4.3.4'
+  - '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.4'
+  - '@tailwindcss/oxide-linux-arm64-gnu@4.3.4'
+  - '@tailwindcss/oxide-linux-arm64-musl@4.3.4'
+  - '@tailwindcss/oxide-linux-x64-gnu@4.3.4'
+  - '@tailwindcss/oxide-linux-x64-musl@4.3.4'
+  - '@tailwindcss/oxide-wasm32-wasi@4.3.4'
+  - '@tailwindcss/oxide-win32-arm64-msvc@4.3.4'
+  - '@tailwindcss/oxide-win32-x64-msvc@4.3.4'
+  - '@tailwindcss/oxide@4.3.4'
+  - '@tailwindcss/postcss@4.3.4'
+  - '@tailwindcss/vite@4.3.4'
+  - '@vitejs/plugin-react@6.2.1'
+  - '@vitest/mocker@5.1.0'
+  - '@vitest/spy@5.1.0'
+  - tailwindcss@4.3.4
+  - vitest@5.1.0
