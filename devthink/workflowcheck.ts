@@ -262,7 +262,10 @@ const checks = {
     "package the saddle engine extension",
     "saddle.extension.",
     "Saddle plan ${{ matrix.target }} ${{ matrix.format }}",
-    "build/packager/targetcli.js",
+    /* the dist law (wave of the first station carried it forward): the
+       packager targetcli stages under distpackage — the build never emits
+       a dist tree again, the artifacts stage into the distpackage seat */
+    "distpackage/packager/targetcli.js",
     "require('./saddle/package.json').version",
     "Validate saddle vhe image",
     "VHE_PROFILE_CPU=",

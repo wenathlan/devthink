@@ -155,10 +155,15 @@ describe("the boot face (the near-black canvas, the white mark, the real ring)",
     expect(face).not.toContain("transition: all");
   });
 
-  it("the boot screen renders mark + words + ring and never a fake percentage", () => {
-    expect(boot).toContain("boot-progress-ring");
+  it("the boot screen renders mark + words + the original startup bar and never a fake percentage", () => {
+    // the owner's order restored the bar of commits 118/140: the markup
+    // answers the boot-screen__bar pill (the 168px track with the bootFill
+    // sweep and the lead bead) — the ring retired from the markup while
+    // its stylesheet seat stays (the css block above still pins the ring
+    // rules, zero deletion), so the face law is bar-in-markup.
+    expect(boot).toContain("boot-screen__bar");
     expect(boot).toContain("<SolLogoMark size={92} />");
-    expect(boot).not.toContain("boot-screen__bar");
+    expect(boot).not.toContain("boot-progress-ring");
     expect(boot).not.toContain("boot-screen__readout");
     expect(boot).not.toContain("%");
   });

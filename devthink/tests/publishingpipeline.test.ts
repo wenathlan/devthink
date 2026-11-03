@@ -75,6 +75,11 @@ describe("the publishing pipeline", () => {
     const release = await readFile(join(repoRoot, ".github/workflows/release.yml"), "utf8");
     const workflow = parseDocument(release, { version: "1.2" }).toJS() as { jobs?: Record<string, unknown> };
     expect(Object.keys(workflow.jobs ?? {})).toEqual([
+      /* the release approval gate leads the lane (the repair wave of the
+       * first station): the named job carries the release-approval
+       * environment the registry lanes require, one review answering the
+       * whole wave */
+      "release-approval",
       "auto-tag",
       "metadata",
       "verify",

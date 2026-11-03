@@ -435,10 +435,12 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
     expect(source).toContain("manifest.android.${version}.json");
   });
 
-  it("the next conversion walks the ten applications with the ten-asset grammar", async () => {
+  it("the next conversion walks the eleven applications with the ten-asset grammar", async () => {
     const convert = await readFile(join(repoRoot, "devthink", "scriptsnextconvert.ts"), "utf8");
     /* the CONVERT list: every site application of the monorepo, the os
-     * included. */
+     * included — cobaia joined the conversion lane (wave/firststation):
+     * the monetization surface walks the same ten-asset grammar as the
+     * rest of the family. */
     const list = /const CONVERT = \[([^\]]+)\]/.exec(convert)?.[1] ?? "";
     const apps = [...list.matchAll(/"([a-z]+)"/g)].map((match) => match[1]);
     expect(apps).toEqual([
@@ -448,6 +450,7 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
       "foundry",
       "argan",
       "cadria",
+      "cobaia",
       "debonair",
       "saddle",
       "stealthhead",
@@ -488,15 +491,19 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
     /* the census counts the deterministic assets every release-triggered
      * lane attaches: the family desktop legs (the file bundles, the
      * manifest and the sha256 record of each platform), the family android
-     * legs (apk, aab, sha256, manifest), the next conversion (the site
-     * archive and the four next shapes, each with the brotli overlay) and
-     * the nine family envelopes the release ladder packs. the os rides its
-     * own publish lanes (the desktop bundles, the mobile artifacts, the
-     * container digest records, the extension packages, the iso and the
-     * wasm cores) beside this floor — the 2.0.151 release carried 455
-     * assets against this structural promise. the regression that lost the
-     * four hundred asset era of the 133/134 rungs answers here: a lane or a
-     * matrix leg deleted reddens the census before a release ever ships. */
+     * legs (the universal apk plus the four abi splits, the aab, the
+     * sha256, the manifest), the next conversion (the site archive and the
+     * four next shapes of the eleven applications — cobaia joined the
+     * conversion lane, each with the brotli overlay) and the nine family
+     * envelopes the release ladder packs. the os rides its own publish
+     * lanes (the desktop bundles, the mobile artifacts, the container
+     * digest records, the extension packages, the iso and the wasm cores)
+     * beside this floor. the wave of the first station expanded the
+     * surfaces: the windows legs answer the msi seat beside the nsis
+     * installer, the android lane walks the abi splits (four standalone
+     * apks beside the universal build) and cobaia rides the conversion —
+     * a lane or a matrix leg deleted reddens the census before a release
+     * ever ships. */
     const desktop = await parseworkflow("family-desktop.yml");
     const matrix = (
       desktop.jobs?.desktop as { strategy?: { matrix?: { include?: Array<{ bundles?: string }> } } } | undefined
@@ -505,14 +512,14 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
     const platforms = 7; /* the platform axis of the desktop lane */
     const desktopperapp = bundles + platforms * 2; /* bundle files + manifest + sha256 per platform */
     const desktopfamily = 9 * desktopperapp;
-    const androidfamily = 9 * 4; /* apk, aab, sha256, manifest */
-    const nextfamily = 10 * 10; /* site archive + four next shapes, brotli overlays included */
+    const androidfamily = 9 * 8; /* universal apk + four abi splits + aab + sha256 + manifest */
+    const nextfamily = 11 * 10; /* site archive + four next shapes of the eleven apps, brotli overlays included */
     const envelopes = 9; /* the family tgz the release ladder packs */
     const census = desktopfamily + androidfamily + nextfamily + envelopes;
-    expect(bundles).toBe(12); /* 3+3 linux, 1+2+1 windows, 1+1 macos file bundles */
-    expect(desktopperapp).toBe(26);
+    expect(bundles).toBe(14); /* 3+3 linux, 2+2+2 windows (nsis and msi), 1+1 macos file bundles */
+    expect(desktopperapp).toBe(28);
     expect(census).toBeGreaterThanOrEqual(300);
-    expect(census).toBe(9 * 26 + 36 + 100 + 9);
+    expect(census).toBe(9 * 28 + 72 + 110 + 9);
   });
 });
 
