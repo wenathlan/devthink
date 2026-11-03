@@ -26,8 +26,12 @@ describe("the release candidate verification matrix record", () => {
   /* the matrix lane spawns the whole verification matrix as subprocesses
    * (every browser family cell the gate chain joins), and a cold CI runner
    * walks past the default five second window the lottery hit on the
-   * bun lane — the cell walk carries its own sixty second budget. */
-  it("covers every matrix cell with a passing outcome once the gate has run", { timeout: 60_000 }, async () => {
+   * bun lane — the cell walk carries its own budget. the 2.1.7 envelope
+   * ladder measured the cold runner at sixty one seconds under the full
+   * suite's worker contention, so the budget rides one hundred twenty
+   * seconds: twice the measured cold walk, the same headroom ratio the
+   * sixty second stamp answered on the five second lottery. */
+  it("covers every matrix cell with a passing outcome once the gate has run", { timeout: 120_000 }, async () => {
     const built = existsSync("build/index.js");
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
     /* the matrix joins the committed records of the agent, cost, documentation and sweep gates beside its self contained subprocess cells, so a built tree runs the gate itself (the gate walks every cell and verifies the record stays internally consistent), while a lane that skipped the build asserts the committed record only and leaves the live cell walk to the gate chain that joins the matrix in order */
