@@ -1,18 +1,22 @@
 /** Design: the opening animation of the desktop, in the real Windows boot
  * face (win11React BootScreen): a near-black fullscreen canvas (the doctrine
  * #010001 recipe on the --win-boot token), the white brand mark centered
- * and the Fluent progress ring under it (48px, stroke 2px round caps, the
- * spin-infinite dasharray/rotate loop of designdoctrine.md — the indetermi-
- * nate boot indicator the real system keeps). The screen is REAL: it holds
+ * and the STARTUP BAR under it — the original bar of commits 118/140 the
+ * owner ordered back (the 168px pill track of sol.css, the 1.6s bootFill
+ * sweep with the silver gradient fill and the bootLeadDot bead riding its
+ * lead edge; the Fluent ring era of the later pass is retired from the
+ * markup by the same order — the ring stylesheet seat stays for the day a
+ * face needs it, zero deletion). The screen is REAL: it holds
  * until the panel's own boot work settles (the `ready` prop — the local
  * identity and the preference resolution of the panel anchor) AND the
  * orchestrated minimum window elapsed, then bootOut carries the handover
  * and the desktop fades in on the slowfadein of the doctrine. No fake
- * percentage meter — an indeterminate ring over a genuinely gated leave.
+ * percentage meter — the bar sweeps on the 1.6s floor that genuinely gates
+ * the leave (FILL_MS below answers the bootFill span one to one).
  * Every timing constant below mirrors the sol.css boot grammar exactly:
  * bootMarkIn 700ms on the mark, riseIn 800ms on the wordmark, the 1.6s
- * minimum window (the old bootFill span, kept as the orchestrated floor)
- * and bootOut .45s carrying the handover. Plays once per browser session
+ * minimum window (the bootFill span, the orchestrated floor) and bootOut
+ * .45s carrying the handover. Plays once per browser session
  * and skips instantly under reduced motion. When the intro page already
  * carried the session-opening animation (the catalogued intro flag of
  * onboardingstate.ts), the desktop never replays a second boot on top of
@@ -95,13 +99,14 @@ export function BootScreen({ ready = true, onDone }: { ready?: boolean; onDone: 
       </div>
       <p className="boot-screen__name">{osText("boot.wordmark")}</p>
       <p className="boot-screen__state">{osText("boot.state")}</p>
-      {/* the Fluent progress ring (designdoctrine.md boot section): 48px,
-          stroke 2px round caps, the spin-infinite dasharray loop — the
-          indeterminate indicator of a boot that is genuinely running */}
-      <div className="boot-screen__loader" aria-hidden="true">
-        <svg className="boot-progress-ring" height={48} width={48} viewBox="0 0 16 16" aria-hidden="true">
-          <circle cx="8px" cy="8px" r="7px" />
-        </svg>
+      {/* the startup bar — the original bar of commits 118/140 the owner
+          ordered back: the 168px pill track, the 1.6s bootFill sweep over
+          the silver gradient fill and the bootLeadDot bead on its lead
+          edge (the sol.css boot zone owns every stroke; the fill span and
+          FILL_MS answer each other one to one, so the sweep lands exactly
+          as the leave window opens) */}
+      <div className="boot-screen__bar" aria-hidden="true">
+        <i />
       </div>
     </div>
   );

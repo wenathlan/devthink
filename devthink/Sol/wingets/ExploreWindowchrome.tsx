@@ -50,10 +50,13 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
   }, []);
 
   /** the shared caption grammar: the 36px caption cell with the visible
-   * focus ring — the hover fill rides each button's own class so the close
-   * red never fights a competing hover utility in the compiled sheet */
+   * focus ring on the windows focus token (--win-focus, #4cc2ff dark /
+   * #0067c0 light — the owner law of the caption family; the neutral
+   * --color-focus ink never rides a window chrome) — the hover fill rides
+   * each button's own class so the close red never fights a competing
+   * hover utility in the compiled sheet */
   const captionBase =
-    "grid h-9 w-11 place-items-center text-ink-2 transition-colors duration-[60ms] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none";
+    "grid h-9 w-11 place-items-center text-ink-2 transition-colors duration-[60ms] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-(--win-focus) motion-reduce:transition-none";
   const captionIdle = `${captionBase} hover:bg-[rgb(136_136_136_/_0.2)]`;
 
   return (

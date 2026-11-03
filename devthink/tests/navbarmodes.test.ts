@@ -473,19 +473,21 @@ describe("the css ladder of the two modes (the sol.css pins)", () => {
   });
 });
 
-describe("the login shadow law (the design band drop and the --win-shad-* tokens, clipped by the login face)", () => {  it("the sign-in card rides the design band drop the window refit law stamped", () => {
+describe("the login shadow law (the design band drop and the --win-shad-* tokens, clipped by the login face)", () => {  it("the sign-in card rides the contained band drop the leak order stamped", () => {
     const card = solcss.indexOf(".dtw-login__card {");
     expect(card).toBeGreaterThan(-1);
     const cardblock = solcss.slice(card, card + 2400);
     expect(cardblock).toContain("box-shadow:");
-    // the token union law (#313) rides the refit law (#306): the family
-    // windows answer the design band — the hand-built drop
-    // (0 16px 40px rgb(0 0 0 / 22%)) and the house token
-    // (var(--win-shad-window)) share the login card elevation, the one
-    // union both ladder seats declare, and the retired -18px drop stays
+    // the owner's leak order (wave/firststation): the sign-in card once
+    // stacked the contained drop AND var(--win-shad-window) — the doubled
+    // elevation painted the reported leaking shadow. the card now answers
+    // the one contained two-step (the inset hairline plus the design band
+    // drop 0 16px 40px rgb(0 0 0 / 22%)) and the house window token stays
+    // on the shell windows that own it, never on the login card — the
+    // union of the two seats was the leak, the retired -18px drop stays
     // forbidden
     expect(cardblock).toContain("0 16px 40px rgb(0 0 0 / 22%)");
-    expect(cardblock).toContain("var(--win-shad-window)");
+    expect(cardblock).not.toContain("var(--win-shad-window)");
     expect(cardblock).not.toContain("0 16px 40px -18px");
   });
 

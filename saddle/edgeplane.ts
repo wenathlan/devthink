@@ -3,22 +3,25 @@
 // and the visitor browser never executes anything (the owner's law: the
 // interface never uses the visitor browser, gpu or cpu; the sandbox and
 // the saddle modalities act for the system over the internet). The plane
-// owns the lane table — the ten live lanes the engine drives today and
-// the six host lanes it probes — the visitor guard that refuses any
-// browser-shaped scope before a single instruction rides, and the
-// dispatcher that resolves the modality through the registry, rides the
-// lane executor, captures the output and commits the artifact through
-// the caller's storage adapter. The lane table is the wiring truth of
-// this plane: the sv1 catalog declared most of these lanes planned
-// before the edge wave wired them, and the report states what the engine
-// drives today, honestly probed per runtime. The imports stay node-safe
-// on purpose: the webserver's plain node host strips types and resolves
-// only .ts specifiers, so the plane imports the pure registry and
-// foundation modules directly and leaves the root domain graph
-// (virtual.ts and its .js specifiers) to the lazy lane loads.
+// owns the lane table — the ninety merged lane specs of the ninety
+// modalities plan (the wave groups beside the sixteen base contract
+// lanes edgelandes.ts owns — the completion wave lifted the base seats
+// from this file's inline table into the owning file, so the merged
+// table wires the whole plan through one spec surface) — the visitor
+// guard that refuses any browser-shaped scope before a single
+// instruction rides, and the dispatcher that resolves the modality
+// through the registry, rides the lane executor, captures the output and
+// commits the artifact through the caller's storage adapter. The lane
+// table is the wiring truth of this plane: the sv1 catalog declared most
+// of these lanes planned before the edge wave wired them, and the report
+// states what the engine drives today, honestly probed per runtime. The
+// imports stay node-safe on purpose: the webserver's plain node host
+// strips types and resolves only .ts specifiers, so the plane imports
+// the pure registry and foundation modules directly and leaves the root
+// domain graph (virtual.ts and its .js specifiers) to the lazy lane
+// loads.
 
 import { edgelaneexecutorsall, edgelanespecsall } from "./edgelandesninety.ts";
-import { probedocker, probehostbinary, probemodule, probenodevm, probevirtualmodule, probewasm } from "./edgelandes.ts";
 import { idfactory } from "./foundation.ts";
 import { getmodality } from "./modalityregistry.ts";
 
@@ -116,47 +119,20 @@ interface LaneSpec {
   present: () => boolean;
 }
 
-/** the lane table of the edge plane: the ten live lanes (the execution
- * lanes the engine drives today) and the six host lanes (the runtimes
- * the engine probes) of the base contract, then the seventy-four lanes
- * of the ninety modalities waves merged in through edgelandesninety.ts
- * (the thirty-seven host binary lanes — the twenty-five live of the
- * first wave and the twelve host seats of the wiring wave, the
- * twenty-four in-process lanes, the seven virtual hardware lanes and
- * the six heavyweight probes) — ninety lanes in total, sixty-six live
- * and twenty-four host, every modality of the ninety plan wired. The
- * ids are pinned — parallel waves and the api routes read them exactly. */
-const EDGELANES: readonly LaneSpec[] = Object.freeze([
-  ...edgelanespecsall,
-  // the live lanes: the engine executes through these today
-  { modality: "container-docker", kind: "live", runtime: "docker", present: probedocker },
-  { modality: "fs-vfs", kind: "live", runtime: "virtual-vfs", present: probevirtualmodule },
-  { modality: "runner-node", kind: "live", runtime: "node:vm", present: probenodevm },
-  { modality: "runner-bun", kind: "live", runtime: "bun", present: () => probehostbinary("bun") },
-  { modality: "runner-wasm", kind: "live", runtime: "webassembly", present: probewasm },
-  { modality: "runner-babel", kind: "live", runtime: "@babel/core", present: () => probemodule("@babel/core") },
-  { modality: "runner-webpack", kind: "live", runtime: "webpack", present: () => probemodule("webpack") },
-  { modality: "runner-universal", kind: "live", runtime: "bash", present: () => probehostbinary("bash") },
-  { modality: "language-python", kind: "live", runtime: "python3", present: () => probehostbinary("python3") },
-  { modality: "language-java", kind: "live", runtime: "java", present: () => probehostbinary("java") },
-  // the host lanes: the engine probes the runtime, execution is the next rung
-  { modality: "container-runsc", kind: "host", runtime: "runsc", present: () => probehostbinary("runsc") },
-  {
-    modality: "emulator-qemu",
-    kind: "host",
-    runtime: "qemu-system-x86_64",
-    present: () => probehostbinary("qemu-system-x86_64"),
-  },
-  {
-    modality: "microvm-firecracker",
-    kind: "host",
-    runtime: "firecracker",
-    present: () => probehostbinary("firecracker"),
-  },
-  { modality: "runtime-jvm", kind: "host", runtime: "java", present: () => probehostbinary("java") },
-  { modality: "language-go", kind: "host", runtime: "go", present: () => probehostbinary("go") },
-  { modality: "language-ruby", kind: "host", runtime: "ruby", present: () => probehostbinary("ruby") },
-]);
+/** the lane table of the edge plane: the ninety merged lane specs of
+ * edgelandesninety.ts — the thirty-seven host binary lanes (the
+ * twenty-five live of the first wave and the twelve host seats of the
+ * wiring wave), the twenty-four in-process lanes, the seven virtual
+ * hardware lanes, the six heavyweight probes and the sixteen base
+ * contract lanes (the docker surface, the engine vfs, the node:vm, bun,
+ * wasm, babel and webpack runners, the bash, python and java seats and
+ * the six host probes) the completion wave lifted from this file's
+ * inline table into the owning edgelandes.ts — ninety lanes in total,
+ * sixty-six live and twenty-four host, every modality of the ninety
+ * plan wired through the one merged spec surface, the same ids in the
+ * same order the table always answered. The ids are pinned — parallel
+ * waves and the api routes read them exactly. */
+const EDGELANES: readonly LaneSpec[] = edgelanespecsall;
 
 /** edgelanes — the lane table with every runtime probed now: the report
  * never lies, a lane whose runtime is absent says absent (an ops

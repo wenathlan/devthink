@@ -37,5 +37,8 @@
     "dev": "cd devthink && (bun server.ts serve &) && bunx vite --port 3000 --host 0.0.0.0",
     "gateway": "cd devthink && bun server.ts serve",
     "start": "bun run dev"
+  },
+  "devDependencies": {
+    "yaml": "^2.9.1"
   }
 }

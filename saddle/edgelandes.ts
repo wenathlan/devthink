@@ -22,7 +22,14 @@
 // types and resolves only .ts specifiers); the engine root domain
 // (virtual.ts) and the optional runtimes (@babel/core, webpack) load
 // lazily inside the executors so a missing module degrades that one
-// lane, never the engine boot.
+// lane, never the engine boot. This file owns the base lane spec table
+// beside the executors: the sixteen contract seats the edge plane drove
+// before the ninety waves merged (the docker surface, the engine vfs,
+// the node:vm, bun, wasm, babel and webpack runners, the bash, python
+// and java seats and the six host probes) — the ninety completion wave
+// lifted them from the inline plane table into this owning file so the
+// merged ninety table wires every modality of the plan through one spec
+// surface with its executor in the same seat.
 
 import { spawn, spawnSync } from "node:child_process";
 import { createHash, createHmac } from "node:crypto";
@@ -1459,3 +1466,75 @@ export const edgelaneexecutors: Readonly<Record<string, EdgeLaneExecutor>> = Obj
   "language-go": hostprobelane("go"),
   "language-ruby": hostprobelane("ruby"),
 });
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 10: the base lane spec table — the sixteen contract seats.  */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** one base lane declaration: the modality id, the wiring kind, the
+ * runtime surface it rides and the synchronous presence probe — the
+ * same spec shape the lane group files answer, owned here because this
+ * file owns the executors the lanes ride. */
+export interface BaseLaneSpec {
+  /** the modality id the lane wires (the registry id). */
+  modality: string;
+  /** the wiring kind: the ten live seats execute (the engine drives the
+   * runtime when the host carries it), the six host seats probe the
+   * runtime first (the execution wiring is the next rung). */
+  kind: "live" | "host";
+  /** the runtime surface the lane rides ("docker", "node:vm"...). */
+  runtime: string;
+  /** the honest presence probe of the runtime on this engine host. */
+  present: () => boolean;
+}
+
+/** the base lane spec table of the plane contract: the sixteen lanes the
+ * edge plane drove before the ninety waves merged — the docker surface
+ * (the hardened container lane), the engine's own virtual filesystem,
+ * the node:vm, webassembly, babel and webpack in-process runners, the
+ * bun, bash, python and java host seats, and the six host probes (the
+ * gvisor runsc, the qemu emulator, the firecracker microvm, the jvm,
+ * go and ruby). the ninety completion wave lifted them from the inline
+ * edgeplane table into this owning file so the merged ninety table
+ * wires every modality of the plan through one spec surface; the ids
+ * are pinned — the registry, the dispatcher merge and the api surface
+ * read them exactly. */
+export const baselanespecs: readonly BaseLaneSpec[] = Object.freeze([
+  // the live seats: the engine executes through these today
+  { modality: "container-docker", kind: "live", runtime: "docker", present: probedocker },
+  { modality: "fs-vfs", kind: "live", runtime: "virtual-vfs", present: probevirtualmodule },
+  { modality: "runner-node", kind: "live", runtime: "node:vm", present: probenodevm },
+  { modality: "runner-bun", kind: "live", runtime: "bun", present: () => probehostbinary("bun") },
+  { modality: "runner-wasm", kind: "live", runtime: "webassembly", present: probewasm },
+  { modality: "runner-babel", kind: "live", runtime: "@babel/core", present: () => probemodule("@babel/core") },
+  { modality: "runner-webpack", kind: "live", runtime: "webpack", present: () => probemodule("webpack") },
+  { modality: "runner-universal", kind: "live", runtime: "bash", present: () => probehostbinary("bash") },
+  { modality: "language-python", kind: "live", runtime: "python3", present: () => probehostbinary("python3") },
+  { modality: "language-java", kind: "live", runtime: "java", present: () => probehostbinary("java") },
+  // the host seats: the engine probes the runtime, execution is the next rung
+  { modality: "container-runsc", kind: "host", runtime: "runsc", present: () => probehostbinary("runsc") },
+  {
+    modality: "emulator-qemu",
+    kind: "host",
+    runtime: "qemu-system-x86_64",
+    present: () => probehostbinary("qemu-system-x86_64"),
+  },
+  { modality: "microvm-firecracker", kind: "host", runtime: "firecracker", present: () => probehostbinary("firecracker") },
+  { modality: "runtime-jvm", kind: "host", runtime: "java", present: () => probehostbinary("java") },
+  { modality: "language-go", kind: "host", runtime: "go", present: () => probehostbinary("go") },
+  { modality: "language-ruby", kind: "host", runtime: "ruby", present: () => probehostbinary("ruby") },
+]);
+
+/** the base lane ids in spec order — the pinned contract the merged
+ * ninety table and the reverse wiring check read exactly. */
+export const baselaneids: readonly string[] = Object.freeze(baselanespecs.map((lane) => lane.modality));
+
+/* the wiring self-check: the base lane table refuses to load over a gap
+ * between the specs and the executors (a spec without an executor is a
+ * miswired lane, and miswiring must fail loud at boot, never silently
+ * at run time). */
+for (const lane of baselanespecs) {
+  if (edgelaneexecutors[lane.modality] === undefined) {
+    throw new Error(`the base lane plane is miswired: no executor for the lane ${lane.modality}`);
+  }
+}

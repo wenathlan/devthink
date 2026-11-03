@@ -1,4 +1,4 @@
-// # edgelandes.net.ts — the network resolution lanes of the ninety-two
+// # edgelandesnet.ts — the network resolution lanes of the ninety-two
 // modalities wave (group d, the saddle ownership audit): the two
 // lane-less network modalities the registry declared live (network-dns
 // and network-doh) wired as honest resolution executors. The lanes
@@ -21,6 +21,10 @@
 // - the artifact law: every lane answers one artifact under the mime its
 //   registry record declares, carrying the resolution record the lane
 //   honestly observed (answers, ttl class, resolver surface).
+// (renamed from edgelandes.net.ts by the wave 1 logic-regrouping audit:
+// the family naming law carries no dot inside a file name — the extension
+// separator is the only dot a file name carries. no importer referenced
+// the old path; the module surface is unchanged.)
 
 import { Resolver } from "node:dns/promises";
 import { type EdgeLaneExecutor, type EdgeLaneOutput, edgelaneerror } from "./edgelandes.ts";
