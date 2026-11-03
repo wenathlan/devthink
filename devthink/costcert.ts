@@ -725,7 +725,7 @@ export interface costcertreport {
  * order with its outcome, no timestamps, so the record replays byte
  * identical. */
 export const costcertrecord: costcertreport = {
-  "release": "2.1.7",
+  "release": "2.1.8",
   "checklist": "docs/costcert.md",
   "entries": [
     {

@@ -262,7 +262,10 @@ const checks = {
     "package the saddle engine extension",
     "saddle.extension.",
     "Saddle plan ${{ matrix.target }} ${{ matrix.format }}",
-    "build/packager/targetcli.js",
+    /* the dist law seat: the build:engine step writes the thin targetcli
+       wrapper at distpackage/packager (the source-is-library doctrine the
+       build stamp carries), so the lane control reads the emitted seat */
+    "distpackage/packager/targetcli.js",
     "require('./saddle/package.json').version",
     "Validate saddle vhe image",
     "VHE_PROFILE_CPU=",
