@@ -184,6 +184,14 @@ for (const modulename of ["policy", "protocol", "memory", "progress", "hardening
    stub until the generate step runs (the gateway lineage's build always generated first). */
 await execute(process.execPath, [join(root, "node_modules", "prisma", "build", "index.js"), "generate"], { cwd: root });
 
+/* the gateway declaration face generates before the declaration emit: the ownership wave
+   (wave/ownership.getry) moved the gateway modules to the getry owner, and the build config
+   resolves every @wenathlan/getry/* specifier to the owner's generated declaration face
+   (getry/dist/types, the emit of the owner's tsconfig.types.json) so the owner source never
+   enters this program and the emit stays flat — the face regenerates here exactly the way
+   the prisma client generates above (idempotent: a warm face re-emits in place). */
+await execute(process.execPath, [await resolveTsc(), "-p", join("..", "getry", "tsconfig.types.json")], { cwd: root });
+
 /* the ownership bridge of the thinking ladder: the getry engine owns the 7-level ladder and
    the os consumes it as a library — the declaration emit reads the owner's committed public
    types (getry/thinkingtypes.ts, the declaration surface the path table of the build config
@@ -318,6 +326,67 @@ await build({
 /** The server library entry of the grand merge consolidation: the gateway lineage library surface (the embedded gateway http transport, the request auth, the console cli and the library barrel) and the maene lineage barrel (the provider account console, the provider family namespaces and the opencode server plugin entry) interned in server.ts — one tree shakable entry answers the whole server surface contract, so the ./server subpath resolves from the flat package exactly like every other entry. The runtime dependencies the gateway persistence and the hono server pull (the prisma stack, libsql, hono, the node adapter, ink and react) ride the package.json dependencies of the published artifact — the entry marks them external so the bundled code stays the reviewed repository sources alone and the dependency tree the consumer installs answers the rest. The thinking ladder rides the ownership law instead (pr16): the 7-level ladder is owned by the getry engine and the os consumes it as a library, so the server builds resolve the @wenathlan/getry/thinking specifier to the sibling owner source through the getrybridge alias — the same bridge the vite, vitest and tsconfig resolutions carry — and the bundle inlines the owner's rungs at build time (the generated build tree is a build artifact, never a second source of truth; the lockfile stays untouched because no registry dependency is declared). */
 const familybridges = {
   "@wenathlan/getry/thinking": join(root, "..", "getry", "thinking.ts"),
+  /** the getry engine module bridges of the ownership wave
+   * (wave/ownership.getry): the gateway pipeline sources (engine, llm,
+   * streaming, models, request, providers, antigravity, oauth, accounts,
+   * project, quota, recovery, fingerprint, search, utils,
+   * versionregistry, intelligence, the json family, the gateway config
+   * family, the smoke and probe lanes, the node shim and the shared
+   * types/constants surfaces) moved from the devthink root to the getry
+   * owner root, and the consumers speak them through the published library
+   * specifiers — the server bundle inlines the owner's modules the same
+   * way the thinking ladder rides the getry source, the same bridge the
+   * vite, vitest and tsconfig resolutions carry, and the lockfile stays
+   * untouched because no registry dependency is declared. */
+  "@wenathlan/getry/engine": join(root, "..", "getry", "engine.ts"),
+  "@wenathlan/getry/llm": join(root, "..", "getry", "llm.ts"),
+  "@wenathlan/getry/streaming": join(root, "..", "getry", "streaming.ts"),
+  "@wenathlan/getry/models": join(root, "..", "getry", "models.ts"),
+  "@wenathlan/getry/request": join(root, "..", "getry", "request.ts"),
+  "@wenathlan/getry/providers": join(root, "..", "getry", "providers.ts"),
+  "@wenathlan/getry/antigravity": join(root, "..", "getry", "antigravity.ts"),
+  "@wenathlan/getry/oauth": join(root, "..", "getry", "oauth.ts"),
+  "@wenathlan/getry/accounts": join(root, "..", "getry", "accounts.ts"),
+  "@wenathlan/getry/project": join(root, "..", "getry", "project.ts"),
+  "@wenathlan/getry/quota": join(root, "..", "getry", "quota.ts"),
+  "@wenathlan/getry/recovery": join(root, "..", "getry", "recovery.ts"),
+  "@wenathlan/getry/fingerprint": join(root, "..", "getry", "fingerprint.ts"),
+  "@wenathlan/getry/search": join(root, "..", "getry", "search.ts"),
+  "@wenathlan/getry/utils": join(root, "..", "getry", "utils.ts"),
+  "@wenathlan/getry/versionregistry": join(root, "..", "getry", "versionregistry.ts"),
+  "@wenathlan/getry/intelligence": join(root, "..", "getry", "intelligence.ts"),
+  "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
+  "@wenathlan/getry/jsonpolicy": join(root, "..", "getry", "jsonpolicy.ts"),
+  "@wenathlan/getry/jsonschema": join(root, "..", "getry", "jsonschema.ts"),
+  "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gatewayconfig.ts"),
+  "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gatewayviewconfig.ts"),
+  "@wenathlan/getry/gatewayprobe": join(root, "..", "getry", "gatewayprobe.ts"),
+  "@wenathlan/getry/gatewaysmoke": join(root, "..", "getry", "gatewaysmoke.ts"),
+  "@wenathlan/getry/nodeshim": join(root, "..", "getry", "nodeshim.ts"),
+  "@wenathlan/getry/types": join(root, "..", "getry", "types.ts"),
+  "@wenathlan/getry/constants": join(root, "..", "getry", "constants.ts"),
+  /** the devthink self bridges of the ownership wave
+   * (wave/ownership.getry), mirrored from the vite/vitest/tsconfig
+   * resolutions: the moved gateway graph leans on the os-owned seams it
+   * grew beside (config, constants, core, the http/memory/policy/security
+   * lane, server, storage and the shared types surface) through the
+   * published library specifiers, and this app is the package those
+   * specifiers name — no node_modules copy exists to answer them — so the
+   * server bundle inlines this app's own sources for every self specifier
+   * (the @wenathlan/devthink/server reference of the moved engine resolves
+   * back to the server entry itself, one module instance). the entries
+   * retire when the published devthink envelope carries the export
+   * surfaces the moved graph consumes. */
+  "@wenathlan/devthink/config": join(root, "config.ts"),
+  "@wenathlan/devthink/constants": join(root, "constants.ts"),
+  "@wenathlan/devthink/core": join(root, "core.ts"),
+  "@wenathlan/devthink/http": join(root, "http.ts"),
+  "@wenathlan/devthink/memory": join(root, "memory.ts"),
+  "@wenathlan/devthink/policy": join(root, "policy.ts"),
+  "@wenathlan/devthink/security": join(root, "security.ts"),
+  "@wenathlan/devthink/server": join(root, "server.ts"),
+  "@wenathlan/devthink/storage": join(root, "storage.ts"),
+  "@wenathlan/devthink/types": join(root, "types.ts"),
   /** the label store bridge of the ownership law: the os copy mechanism rides
    * the vault factory through the published library specifier, and the server
    * bundle inlines the owner's mechanism the same way the thinking ladder
@@ -362,6 +431,43 @@ await build({
   external: libraryexternals,
   alias: familybridges,
 });
+
+/** The os seam entries the ownership wave (wave/ownership.getry) added to the exports map: the
+    moved gateway graph leans on the os-owned seams it grew beside (config, constants, core,
+    the data surface, the storage lane, the security lane, the tool catalog and the shared
+    types surface) through the published library specifiers ("@wenathlan/devthink/storage" and
+    siblings), so the flat package answers every seam the getry owner's published sources
+    import. The entries ride the node platform (the config and storage lanes speak the fs and
+    the prisma stack), keep the runtime dependencies external exactly the way the server entry
+    does, and inline the gateway owner modules through the family bridges the same way — the
+    bundle stays the reviewed repository sources alone. */
+for (const modulename of ["config", "constants", "core", "data", "storage", "security", "tools", "types"]) {
+  await build({
+    entryPoints: [`${modulename}.ts`],
+    outfile: record(`${modulename}.js`),
+    bundle: true,
+    format: "esm",
+    platform: "node",
+    target: "node22",
+    sourcemap: true,
+    banner: { js: banner },
+    external: libraryexternals,
+    alias: familybridges,
+  });
+  await build({
+    entryPoints: [`${modulename}.ts`],
+    outfile: record(`${modulename}.min.js`),
+    bundle: true,
+    format: "esm",
+    platform: "node",
+    target: "node22",
+    sourcemap: true,
+    minify: true,
+    banner: { js: banner },
+    external: libraryexternals,
+    alias: familybridges,
+  });
+}
 
 /** The publishing pipeline bundles of the 1.1.87 family: the 1.1.90 correlation wave folds the vsixpack assembler, the mavenpack descriptors, the nugetpack layout, the containerpack stages, the sbom inventory builder and the artifact manifest builder into the one pack family entry, and the relayserve state machine ships beside them with the minified variants beside them, so the release chain and any local tooling import the packaging surfaces from one artifact beside the cross browser bundles. */
 for (const modulename of ["pack", "http"]) {
@@ -1179,6 +1285,17 @@ const stagerootfiles = [
   "progress.js",
   "hardening.js",
   "dashdone.js",
+  /* the os seam entries of the ownership wave (wave/ownership.getry): the
+     moved gateway graph imports them through the published specifiers, so
+     the flat package answers every seam the getry owner leans on. */
+  "config.js",
+  "constants.js",
+  "core.js",
+  "data.js",
+  "storage.js",
+  "security.js",
+  "tools.js",
+  "types.js",
   "node.cjs",
   "bun.js",
   "deno.js",
@@ -1203,6 +1320,16 @@ const stagedeclarations = [
   "progress",
   "hardening",
   "dashdone",
+  /* the os seam declarations of the ownership wave (wave/ownership.getry),
+     staged beside their bundles for the same published specifiers. */
+  "config",
+  "constants",
+  "core",
+  "data",
+  "storage",
+  "security",
+  "tools",
+  "types",
   "cli",
   "headless",
   "mcp",

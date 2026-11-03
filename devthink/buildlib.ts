@@ -32,7 +32,10 @@ function run(cmd: string) {
 
 // --- esm entries -----------------------------------------------------------
 
-run("bun build engine.ts --target=node --format=esm --packages=external --outfile build/engine.js");
+// the ownership wave (wave/ownership.getry) moved the universal gateway engine
+// to the getry root: the engine entry bundles the owner's source — the
+// @wenathlan/devthink build never carries a second engine copy.
+run("bun build ../getry/engine.ts --target=node --format=esm --packages=external --outfile build/engine.js");
 console.log("[build-lib] esm engine entry bundled");
 
 // --- declarations ----------------------------------------------------------

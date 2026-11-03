@@ -69,15 +69,17 @@ import {
   CLOUDCODE_DAILY_BASE,
   CODE_ASSIST_PATH_MAP,
   FALLBACK_PROJECT_ID,
-  FETCH_TIMEOUT_MS,
   GEMINI_CLI_OAUTH_CLIENT_ID as OAUTH_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as OAUTH_CLIENT_SECRET,
   GEMINI_CLI_USER_AGENT_MINIMAL as GEMINI_CLI_USER_AGENT,
 } from "./constants.js";
+/* the os leaf fetch timeout stays devthink-owned behind the published
+ * specifier — never copied into the gateway. */
+import { FETCH_TIMEOUT_MS } from "@wenathlan/devthink/constants";
 // v2.1.15 Phase B: generic utilities (fnv hash, fetch timeout wrapper, retry
 // predicate) come from core.js; identity masquerade (gl-node api-client
 // snapshot, antigravity header builder) comes from fingerprint.js.
-import { fetchWithTimeout, fnv1a32, isRetryable } from "./core.js";
+import { fetchWithTimeout, fnv1a32, isRetryable } from "@wenathlan/devthink/core";
 import { buildAntagravityHeaders, X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
 import type { AntigravityHeadersOptions } from "./fingerprint.js";
 // v2.1.15 Phase A: project.ts is THE single owner of project discovery. All

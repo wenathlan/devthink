@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import { getIdentity, pairingStatus } from "../../account.js";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
 import { osText } from "../../oslabels.ts";
-import { listProviders } from "../../providers.js";
+import { listProviders } from "@wenathlan/getry/providers";
 import { listSessions, readPreferences, type Session, savePreference } from "../../storage.js";
-import type { ChatEvent } from "../../streaming.js";
+import type { ChatEvent } from "@wenathlan/getry/streaming";
 import {
   isWorkspaceDestination,
   type WorkspaceDestination,

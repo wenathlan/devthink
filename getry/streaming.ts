@@ -50,8 +50,6 @@ import {
   BACKOFF_MAX_MS,
   GEMINI_CLI_OAUTH_CLIENT_ID as GEMINI_CLI_CLIENT_ID,
   GEMINI_CLI_OAUTH_CLIENT_SECRET as GEMINI_CLI_CLIENT_SECRET,
-  JITTER_MAX_MS,
-  JITTER_MIN_MS,
   LRU_THINKING_CACHE_SIZE,
   MAX_RETRIES,
   PROJECT_FALLBACK,
@@ -60,7 +58,11 @@ import {
   CLOUDCODE_PA_BASE,
   RETRYABLE_STATUS_CODES,
 } from "./constants.js";
-import { fnv1a32, getJitter, thinkingCache } from "./core.js";
+/* the generic leaf pair of the os utility module stayed with core.ts in
+ * devthink/constants.ts — the gateway imports the jitter window through the
+ * published specifier, the provider families above resolve locally. */
+import { JITTER_MAX_MS, JITTER_MIN_MS } from "@wenathlan/devthink/constants";
+import { fnv1a32, getJitter, thinkingCache } from "@wenathlan/devthink/core";
 import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
 
 // ---------------------------------------------------------------------------

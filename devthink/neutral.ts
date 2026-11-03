@@ -1,7 +1,7 @@
 /**
  * Neutral entry of the 1.1.81 family, widened by the 1.1.83 gateway integration.
  * The shared core for browser condition consumers: the build emits this entry as build/index.neutral.js on the browser platform with the node imports stripped behind the adapter seam, because the whole core reaches the platform only through the storage, clock, logger and fetch adapters the runtime injects.
- * The provider gateway logics of the 1.1.83 family ride the llm module this entry star-exports: the neutral browser condition carries no transport binding of its own, so a host that wants the provider gateways imports the per module entry `@wenathlan/devthink/llm` or one of the runtime shells and supplies its own transport through the seam — the module list below mirrors the core modules the freeze governs.
+ * The provider gateway logics of the 1.1.83 family ride the llm engine this entry star-exports from the gateway owner: the neutral browser condition carries no transport binding of its own, so a host that wants the provider gateways imports the per module entry `@wenathlan/getry/llm` or one of the runtime shells and supplies its own transport through the seam — the module list below mirrors the core modules the freeze governs.
  */
 
 export * from "./agent.js";
@@ -14,7 +14,7 @@ export * from "./workflow.js";
 export * from "./environments.js";
 export * from "./http.js";
 export * from "./security.js";
-export * from "./llm.js";
+export * from "@wenathlan/getry/llm";
 export * from "./memory.js";
 export * from "./mcp.js";
 export * from "./commands.js";

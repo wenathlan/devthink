@@ -100,7 +100,7 @@ import * as nodecrypto from "node:crypto";
 // v2.1.15 Phase A: models.ts owns every model substrate locally (flat id
 // lists, rich definition lists, the v1 routing catalog). Only generic
 // non-model constants come from constants.ts (layer 0).
-import { fnv1a32 } from "./core.js";
+import { fnv1a32 } from "@wenathlan/devthink/core";
 import {
   ANTIGRAVITY_USER_AGENT_FALLBACK,
   ANTIGRAVITY_VERSION_FALLBACK,

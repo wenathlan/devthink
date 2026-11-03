@@ -190,8 +190,6 @@ import type {
   handoffrecord,
   idempotencykey,
   idempotencyrecord,
-  modeloutput,
-  plandraft,
   progressnotice,
   promptdef,
   protocoleventsubscription,
@@ -206,6 +204,7 @@ import type {
   toolmock,
   tooldryrun,
 } from "./types.js";
+import type { modeloutput, plandraft } from "@wenathlan/getry/types";
 
 function record(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value))

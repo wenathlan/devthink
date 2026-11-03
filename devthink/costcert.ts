@@ -2,7 +2,8 @@
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { summaryproblemsof, syncmode, syncrecord } from "./records.ts";
-import type { callcontext, providerconfig } from "./types.ts";
+import type { callcontext } from "./types.ts";
+import type { providerconfig } from "@wenathlan/getry/types";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);

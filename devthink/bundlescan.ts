@@ -183,11 +183,12 @@ export function wireformatnames(name: string): boolean {
   );
 }
 
-/** The wire format field names of the gateway and maene provider protocols of the grand merge: the OpenAI-compatible, Anthropic and Gemini request and response envelopes (reasoning_content, finish_reason, max_tokens, prompt_tokens, the tool call shapes), the OAuth token exchange of the maene lineage (grant_type, access_token, code_challenge), the sqlite column names of the gateway persistence (chat_id, session_id, created_at, init_database) and the provider environment keys (api_key, https_proxy) — the names belong to the protocols, the databases and the environments they speak, never to the reviewed identifier vocabulary. The init-prefixed names the esbuild lazy module wrappers carry join the list beside init_database (its own precedent): the storage family merge of the 2.0.149 rung made the constants, core, config, models and fingerprint module inits lazy the same way, so their wrapper names belong to the bundler, never to the review, and the queue family merge of the 2.0.151 line folds its own wrapper beside them the same way. */
+/** The wire format field names of the gateway and maene provider protocols of the grand merge: the OpenAI-compatible, Anthropic and Gemini request and response envelopes (reasoning_content, finish_reason, max_tokens, prompt_tokens, the tool call shapes), the OAuth token exchange of the maene lineage (grant_type, access_token, code_challenge), the sqlite column names of the gateway persistence (chat_id, session_id, created_at, init_database) and the provider environment keys (api_key, https_proxy) — the names belong to the protocols, the databases and the environments they speak, never to the reviewed identifier vocabulary. The init-prefixed names the esbuild lazy module wrappers carry join the list beside init_database (its own precedent): the storage family merge of the 2.0.149 rung made the constants, core, config, models and fingerprint module inits lazy the same way, so their wrapper names belong to the bundler, never to the review, and the queue family merge of the 2.0.151 line folds its own wrapper beside them the same way. The ownership wave (wave/ownership.getry) moved the gateway constants module to the getry owner while the os kept its own constants beside it, so a bundle that inlines both roots (the server entry rides the family bridges) mints the suffixed collision wrapper init_constants2 beside the unsuffixed pair — the name belongs to the bundler the same way every unsuffixed wrapper does. */
 export function gatewaywirefields(name: string): boolean {
   return [
     "init_database",
     "init_constants",
+    "init_constants2",
     "init_core",
     "init_config",
     "init_models",

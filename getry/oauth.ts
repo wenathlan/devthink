@@ -490,8 +490,8 @@ export function getAvailablePort(): Promise<number> {
 import { SUPPORTED_MODELS_2026 } from "./models.js";
 // v2.1.15 Phase B: generic retry predicate from core.js; identity UA builders
 // from fingerprint.js; raw shared values from constants.js.
-import { isRetryable, fetchWithTimeout } from "./core.js";
-import { atomicWrite, cfgDir } from "./config.js";
+import { isRetryable, fetchWithTimeout } from "@wenathlan/devthink/core";
+import { atomicWrite, cfgDir } from "@wenathlan/devthink/config";
 import { apiClient, buildGeminiUserAgent, ua, X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
 import {
   ANTIGRAVITY_CLI_VERSION_POOL,

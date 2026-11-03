@@ -11,7 +11,7 @@ import { chdir, cwd } from "node:process";
 import { describe, expect, it } from "vitest";
 
 import { getversion, listversions, loadconfig, reloadconfig, validateconfig } from "../config.js";
-import type { gatewayconfig, gatewaydefinition } from "../types.js";
+import type { gatewayconfig, gatewaydefinition } from "@wenathlan/getry/types";
 
 // ---------------------------------------------------------------------------
 // fixtures

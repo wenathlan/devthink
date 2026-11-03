@@ -1,12 +1,15 @@
 // Gateway Prisma schema — V5 canonical with libsql adapter
 // Supports serverless/edge deployment (Vercel/Netlify) via DATABASE_URL=libsql:// or file://
 //
-// family sync contract (devthink master): a table of the same kind carries
-// the same columns and the same pointers in every application that holds
-// the kind — identity pointers are text, counts are 32-bit ints, time is
-// datetime or iso text, and byte-scale pointers are 64-bit BigInt. The
-// gateway chat log kind follows the devthink master ChatMessage surface;
-// getry carries the slice its own lanes consume.
+// family sync contract: a table of the same kind carries the same columns
+// and the same pointers in every application that holds the kind — identity
+// pointers are text, counts are 32-bit ints, time is datetime or iso text,
+// and byte-scale pointers are 64-bit BigInt. The gateway kinds (ChatMessage,
+// NvidiaKey, TownKey, ApiKey) moved here from devthink/schema.prisma in the
+// wave/ownership.getry split: the gateway owns its own datasource sqlite
+// from this wave on, and the master ChatMessage surface lives beside the
+// engine that writes it. getry additionally carries the SessionContext and
+// OnboardingState kinds its own lanes consume.
 
 generator client {
   provider = "prisma-client-js"
@@ -17,53 +20,163 @@ datasource db {
   provider = "sqlite"
 }
 
-/// ChatMessage — every gateway request/response is logged here
+/// every interaction log across v1 zai v2 babel v3 nvidia v4 opencode kilo v5 openrouter
 model ChatMessage {
-  id               String   @id @default(cuid())
-  chatId           String   /// the user-supplied chat_id (X-Chat-Id header)
-  chatSubId        String?  /// sub-id for multi-turn
-  provider         String   /// zai | babel | nvidia | opencode | kilo | v5
-  route            String   /// /v1/chat/completions etc.
-  model            String   /// the model used
-  role             String   @default("user") /// user | assistant | system
-  content          String   /// the message content (stringified if structured)
-  reasoningContent String?  /// thinking content if extracted
-  ip               String?  /// client IP
-  keyId            String?  /// which API key was used (for NVIDIA rotation)
-  finishReason     String?
-  promptTokens     Int?
-  completionTokens Int?
-  totalTokens      Int?
-  durationMs       Int?     /// round-trip duration
-  allParams        String?  /// JSON of all request params (debug)
-  allResponse      String?  /// JSON of full response (debug)
-  createdAt        DateTime @default(now())
+  id                  String  @id @default(cuid())
+  active              Boolean @default(true)
+  allparams           String?
+  allresponse         String?
+  annotations         String?
+  autofixapplied      String?
+  cachedtokens        Int     @default(0)
+  chattemplatekwargs  String?
+  completedat         DateTime?
+  completion          String?
+  completiontokens    Int?
+  content             String  @default("")
+  contextshared       Boolean @default(false)
+  devthinkcontext     Int?
+  devthinkoutput      Int?
+  endpoint            String?
+  error               String?
+  errorcode           String?
+  errormessage        String?
+  finishreason        String?
+  firsttokenms        Int     @default(0)
+  frequencypenalty    Float?
+  httpstatus          Int?
+  inputtokens         Int     @default(0)
+  ip                  String  @default("unknown")
+  ipused              String  @default("unknown")
+  keyid               String?
+  keylabel            String?
+  latencyms           Int     @default(0)
+  lastused            DateTime?
+  logprobs            String?
+  maxtokens           Int?
+  messagenumber       Int?
+  model               String?
+  modelvariant        String?
+  objectid            String?
+  outputtokens        Int     @default(0)
+  presencepenalty     Float?
+  prompttokens        Int     @default(0)
+  provider            String?
+  reasoningcontent    String?
+  reasoningeffort     String?
+  reasoninglevel      String?
+  requestid           String?
+  responseid          String?
+  responseheaders     String?
+  retries             Int     @default(0)
+  role                String  @default("assistant")
+  rotationcount       Int     @default(0)
+  rotationindex       Int?
+  route               String?
+  seed                Int?
+  servicetier         String?
+  sessionid           String?
+  sources             String?
+  startedat           DateTime?
+  status              String  @default("active")
+  stop                String?
+  stopsequence        String?
+  stream              Boolean @default(false)
+  streammode          Boolean @default(false)
+  version             String?
+  twocalls            Boolean?
+  systemfingerprint   String?
+  temperature         Float?
+  thinking            String?
+  thinkingbudget      Int?
+  thinkingenabled     Boolean @default(true)
+  thinkinglevel       String?
+  thinkingtokens      Int     @default(0)
+  toolcalls           String?
+  topk                Int?
+  topp                Float?
+  totaltokens         Int     @default(0)
+  useragent           String?
+  useragentforged     String?
+  createdat           DateTime @default(now())
+  updatedat           DateTime @updatedAt
 
-  @@index([chatId])
-  @@index([provider, createdAt])
-  @@index([model, createdAt])
+  @@index([sessionid])
+  @@index([route])
+  @@index([model])
+  @@index([provider])
+  @@index([status])
+  @@index([createdat])
 }
 
-/// ApiKey — registered API keys for providers (NVIDIA rotation, Babel ephemeral)
-model ApiKey {
-  id               String   @id @default(cuid())
-  provider         String   /// nvidia | babel | opencode | kilo | zai
-  key              String   /// the actual API key (env in production)
-  label            String?  /// human-friendly label
-  active           Boolean  @default(true)
-  status           String   @default("active") /// active | revoked | expired
-  useCount         Int      @default(0)
-  rotationCount    Int      @default(0)
-  errorCount       Int      @default(0)
-  lastUsedAt       DateTime?
-  lastErrorMessage String?
-  rateLimitHit     Boolean  @default(false)
-  createdAt        DateTime @default(now())
-  expiresAt        DateTime?
+/// nvidia api key management with rotation
+model NvidiaKey {
+  id              String   @id @default(cuid())
+  keyValue        String   @unique
+  label           String?
+  active          Boolean  @default(true)
+  status          String   @default("active")
+  lastUsedAt      DateTime?
+  errorCount      Int      @default(0)
+  successCount    Int      @default(0)
+  lastError       String?
+  lastErrorAt     DateTime?
+  rateLimitRemaining Int?
+  rateLimitResetAt  DateTime?
+  latencyP50      Int?
+  latencyP95      Int?
+  latencyP99      Int?
+  createdat       DateTime @default(now())
+  updatedat       DateTime @updatedAt
 
-  @@index([provider, active])
+  @@index([active])
   @@index([status])
-  @@index([provider, status, active])
+}
+
+/// babel town key management
+model TownKey {
+  id              String   @id @default(cuid())
+  keyValue        String   @unique
+  label           String?
+  active          Boolean  @default(true)
+  status          String   @default("active")
+  lastUsedAt      DateTime?
+  errorCount      Int      @default(0)
+  successCount    Int      @default(0)
+  lastError       String?
+  lastErrorAt     DateTime?
+  latencyP50      Int?
+  latencyP95      Int?
+  latencyP99      Int?
+  createdat       DateTime @default(now())
+  updatedat       DateTime @updatedAt
+
+  @@index([active])
+  @@index([status])
+}
+
+/// api key management for other providers
+model ApiKey {
+  id              String   @id @default(cuid())
+  keyValue        String   @unique
+  provider        String
+  label           String?
+  active          Boolean  @default(true)
+  status          String   @default("active")
+  lastUsedAt      DateTime?
+  errorCount      Int      @default(0)
+  successCount    Int      @default(0)
+  lastError       String?
+  lastErrorAt     DateTime?
+  latencyP50      Int?
+  latencyP95      Int?
+  latencyP99      Int?
+  createdat       DateTime @default(now())
+  updatedat       DateTime @updatedAt
+
+  @@index([provider])
+  @@index([active])
+  @@index([status])
 }
 
 /// SessionContext — per-(sessionId, provider) rotation state for devthink meta-model
@@ -92,19 +205,6 @@ model SessionContext {
   @@index([provider])
   @@index([route])
   @@index([lastMessageAt])
-}
-
-/// TownKey — Babel.town ephemeral IP-bound keys (60min expiry)
-model TownKey {
-  id        String   @id @default(cuid())
-  key       String   /// the actual Babel key
-  ip        String?  /// IP it was bound to
-  ua        String?  /// User-Agent that minted it
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  expiresAt DateTime /// 60min from createdAt
-
-  @@index([active, expiresAt])
 }
 
 /// the onboarding state of one visitor — the entry-flow gates catalogued on

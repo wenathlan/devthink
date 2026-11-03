@@ -321,8 +321,9 @@ export function resourceslist(): { resources: servedresource[] } {
 /* ── Merged from promptexpose.ts ── */
 
 import { listprompts as agentprompts, renderprompt } from "./agent.js";
-import { rendertemplate } from "./llm.js";
-import type { promptdef, prompttemplate } from "./types.js";
+import { rendertemplate } from "@wenathlan/getry/llm";
+import type { promptdef } from "./types.js";
+import type { prompttemplate } from "@wenathlan/getry/types";
 
 /**
  * Prompt exposure of the 1.1.84 mcp server mode.
