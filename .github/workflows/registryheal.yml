@@ -1,0 +1,74 @@
+name: DevThink Registry Heal
+
+# THE EMERGENCY UNPUBLISH LANE: the 2.1.7 envelopes the publish wave
+# stamped from the stale v2.1.7 tag (a tag cut before twenty-one rungs
+# landed on main) shipped broken tarballs — the saddle envelope declares
+# the dist entry points the package never carries, so every consumer the
+# caret range resolves answers "Cannot find module". The lane removes the
+# poisoned 2.1.7 faces from the registry (the seventy-two-hour unpublish
+# window the npm policy carries is wide open: the envelopes answered the
+# registry forty minutes ago) and the dist-tags fall back to the last
+# honest rungs (2.1.6 for the saddle, 2.0.154 for the library apps), the
+# faces every manifest of main already resolves.
+#
+# The lane is dispatch-only, owner-gated through the release-approval
+# environment, and answers one idempotent pass: an envelope the registry
+# already forgot is a green skip, never a failure.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: Type unpublish to confirm the registry heal
+        required: true
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: registry-heal
+
+jobs:
+  heal:
+    name: remove the poisoned 2.1.7 envelopes
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: release-approval
+    steps:
+      - name: Refuse the accidental dispatch
+        if: github.event.inputs.confirm != 'unpublish'
+        run: |
+          echo "The confirm input must read unpublish (the lane refuses to run by accident)."
+          exit 1
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Unpublish every poisoned envelope, idempotently
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          for package in devthink argan cadria debonair forge foundry saddle stealthhead vault; do
+            echo "::group::@wenathlan/$package@2.1.7"
+            if npm view "@wenathlan/$package@2.1.7" version >/dev/null 2>&1; then
+              npm unpublish "@wenathlan/$package@2.1.7" --force
+              echo "removed @wenathlan/$package@2.1.7"
+            else
+              echo "the registry already forgot @wenathlan/$package@2.1.7 — skipping"
+            fi
+            echo "::endgroup::"
+          done
+      - name: Report the healed dist-tags
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          for package in devthink argan cadria debonair forge foundry getry saddle stealthhead vault; do
+            latest="$(npm view "@wenathlan/$package" dist-tags.latest || echo absent)"
+            echo "@wenathlan/$package latest = ${latest}"
+          done
