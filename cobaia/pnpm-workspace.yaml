@@ -42,10 +42,10 @@ minimumReleaseAgeExclude:
   - '@types/google.maps@3.66.9'
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0 || 1.67.0
   - '@fluentui/react-icons@2.0.345'
-  - '@wenathlan/vault@2.0.152 || 2.0.153 || 2.0.154 || 2.1.7'
+  - '@wenathlan/vault@2.0.152 || 2.0.153 || 2.0.154 || 2.1.7 || 2.1.8'
   - hono@4.13.16
-  - '@wenathlan/cadria@2.0.154 || 2.1.7'
-  - '@wenathlan/debonair@2.0.154 || 2.1.7'
+  - '@wenathlan/cadria@2.0.154 || 2.1.7 || 2.1.8'
+  - '@wenathlan/debonair@2.0.154 || 2.1.7 || 2.1.8'
   - '@wenathlan/getry@2.0.154'
   - '@tailwindcss/node@4.3.4'
   - '@tailwindcss/oxide-android-arm64@4.3.4'
@@ -68,8 +68,8 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@5.1.0'
   - tailwindcss@4.3.4
   - vitest@5.1.0
-  - '@wenathlan/saddle@2.1.7'
-  - '@wenathlan/devthink@2.1.7'
+  - '@wenathlan/saddle@2.1.7 || 2.1.8'
+  - '@wenathlan/devthink@2.1.7 || 2.1.8'
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
 # is allowBuilds). the honest-site surface builds exactly the engines its db
