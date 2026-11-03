@@ -18,6 +18,15 @@
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle": ["./saddlefaces.ts"],
       "@wenathlan/saddle/memory": ["./saddlefacesmemory.ts"],
+      "hono": ["./node_modules/hono/dist/types/index.d.ts"],
+      "hono/cors": ["./node_modules/hono/dist/types/middleware/cors/index.d.ts"],
+      "@hono/node-server": ["./node_modules/@hono/node-server/dist/index.d.mts"],
+      "@hono/node-server/serve-static": ["./node_modules/@hono/node-server/dist/serve-static.d.mts"],
+      /* the hono seat bridge of the ownership wave (the gateway transport
+       * the getry seat owns imports the hono family, and the os lanes that
+       * typecheck the moved graph never install the getry tree — the
+       * resolution walks the devthink install the same way every bridge
+       * does). */
       "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
