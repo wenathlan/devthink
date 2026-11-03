@@ -1,5 +1,16 @@
 # saddle browser bridge
 
+> **Migration note (wave 2 regrouping):** the extension surface moved to
+> `devthink/browserextension.ts` (sections 10-17 of the former
+> `saddle/browser.ts`), with its tracked assets at the devthink root
+> (`extensionmanifest.json`, `extensionpopup.html`, `extensionpopup.css`,
+> `extensionicon32.png`, `extensionicon64.png`, `extensionicon128.png`)
+> and its test battery at `devthink/tests/browserextension.test.ts`. The
+> saddle is exclusively the virtualization engine; everything that runs
+> in the user's browser belongs to devthink, the owner of the family
+> extension product. The notes below describe the bridge design and stay
+> accurate for the migrated surface.
+
 This directory contains the first Manifest V3 surface for Saddle. It is a user initiated bridge, not a hidden automation service.
 
 ## load unpacked
@@ -7,7 +18,7 @@ This directory contains the first Manifest V3 surface for Saddle. It is a user i
 1. Open `chrome://extensions`.
 2. Enable developer mode.
 3. Choose **Load unpacked**.
-4. Select this `extension/` directory.
+4. Select the built artifact directory (the unpacked output of the build adapter below).
 5. Open a page, invoke Saddle from the extension action and choose `Snapshot` or `Read page`.
 
 The manifest requests only `activeTab`, `scripting` and `storage`. It does not request broad host permissions, cookies, tabs, webRequest or debugger access. `activeTab` gives temporary access after the user invokes the action for the current tab.
@@ -20,7 +31,7 @@ The content bridge runs in Chrome's isolated world. It exposes bounded page meta
 
 ## deterministic release artifact
 
-The Node-only build adapter creates an isolated unpacked artifact with the release version in its manifest. A caller can run `npm run extension:build -- --version 1.8.14 --output build/extension` and package that directory with the archive tool available in the host environment. The release workflow derives the version from the published tag and attaches `saddle.extension.<version>.zip` without changing the source manifest.
+The Node-only build adapter creates an isolated unpacked artifact with the release version in its manifest. A caller can run `node --import tsx ./browserextension.ts --version 1.8.14 --output build/browserextension` from the devthink app root (the retired saddle `extension:build` script went with the migration) and package that directory with the archive tool available in the host environment. The release workflow derives the version from the published tag and attaches `saddle.extension.<version>.zip` without changing the source manifest.
 
 ## next slices
 

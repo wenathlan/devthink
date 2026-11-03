@@ -20,6 +20,10 @@
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
+      /* the queue self-bridge: the getry llm source (imported through the
+       * family bridge graph) speaks the published queue specifier and the
+       * typecheck resolves it to this app's own source. */
+      "@wenathlan/devthink/queue": ["./queue.ts"],
       "@wenathlan/getry/engine": ["../getry/engine.ts"],
       "@wenathlan/getry/llm": ["../getry/llm.ts"],
       "@wenathlan/getry/streaming": ["../getry/streaming.ts"],

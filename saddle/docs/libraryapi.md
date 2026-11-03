@@ -60,7 +60,7 @@ The `fetcher`, browser adapter, persistence adapter, proxy pool, captcha solver,
 
 The package exposes explicit subpaths for `./browser`, `./bot`, `./captcha`, `./memory-engine`, `./deploy`, and `./release-evidence`. Desktop, mobile, target-plan and n8n contracts are exported from the root entry; the root entry remains the complete compiled JavaScript API with generated TypeScript declarations for consumers that prefer one import.
 
-The `./extension` subpath exposes browser-neutral message, snapshot and service-worker routing contracts. The concrete Manifest V3 files live in `extension/`; they are not imported by the core at runtime and do not require Chrome when the library is used as a Node package. The browser surface also exposes snapshots, tab/frame context, action results, bounded action batches and recording through `./browser`.
+The former `./extension` subpath retired with the wave 2 regrouping: the Chrome Manifest V3 surface (message, snapshot and service-worker routing contracts, the content and page bridges, the popup and the build adapter) runs in the user's browser, so it is not a VM modality of the engine and migrated to `devthink/browserextension.ts` with every export under the same name. The browser surface keeps exposing snapshots, tab/frame context, action results, bounded action batches and recording through `./browser`.
 
 The current release exposes `desktopmanifest`, `mobilemanifest`, `desktopadapter`, `mobileadapter`, `n8nnode`, `n8nmatch`, `n8nexecute`, `controlsurface`, `controlservice`, and `workerbridge`. These factories describe surface boundaries and invoke caller-owned handlers; they do not install a native toolkit, start an n8n server, create a dashboard, or store credentials.
 

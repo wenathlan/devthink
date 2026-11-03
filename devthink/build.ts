@@ -70,6 +70,7 @@ const bundlebudgets: Record<string, number> = {
   progress: 60_000,
   hardening: 60_000,
   dashdone: 120_000,
+  queue: 160_000,
   crossbrowser: 380_000,
   pack: 600_000,
 };
@@ -494,6 +495,29 @@ for (const modulename of ["pack", "http"]) {
   });
 }
 
+/** The request queue family entry of the exports map: queue.ts — the bounded request queue, the retry backoff discipline, the token estimation, the conversation compaction, the resilient sse parsing and the id minting of the queue family — ships as its own tree shakable entry with the minified variant beside it, so the ./queue subpath resolves from the flat package exactly like every other module entry and the family consumers (the getry gateway of the streaming fallback) ride the published retry.backoff discipline through the library specifier instead of a local copy. */
+await build({
+  entryPoints: ["queue.ts"],
+  outfile: record("queue.js"),
+  bundle: true,
+  format: "esm",
+  platform: "neutral",
+  target: "es2022",
+  sourcemap: true,
+  banner: { js: banner },
+});
+await build({
+  entryPoints: ["queue.ts"],
+  outfile: record("queue.min.js"),
+  bundle: true,
+  format: "esm",
+  platform: "neutral",
+  target: "es2022",
+  sourcemap: true,
+  minify: true,
+  banner: { js: banner },
+});
+
 /** The companionbin bundle of the 1.1.85 native host bridge family: the plain node recipe compiles the companion source of companion.ts with esbuild, stamps the package version over the source build marker and writes the runnable script with its sourcemap beside the host manifest template the same recipe stamps from the template the companion module embeds — no native compiler and no network step — and the packaging step asserts the recipe builds, because the companion ships as source plus a build command and never as a binary blob. */
 const companionbanner = `/*! devthink ${packagejson.version} companion — the optional native host of the native bridge — GPL-3.0-only — built with plain node, no native compiler */`;
 await build({
@@ -683,6 +707,7 @@ for (const [target, file] of [
   ["crossbrowser", "crossbrowser.js"],
   ["pack", "pack.js"],
   ["http", "http.js"],
+  ["queue", "queue.js"],
 ]) {
   const bytes = (await stat(join(root, "build", file))).size;
   bundleaccounting.push({ target, bytes, budget: bundlebudgets[target] });
@@ -951,6 +976,7 @@ for (const entry of [
   "progress",
   "hardening",
   "dashdone",
+  "queue",
   "types",
   "runtime",
   "umd",
@@ -1296,6 +1322,7 @@ const stagerootfiles = [
   "security.js",
   "tools.js",
   "types.js",
+    "queue.js",
   "node.cjs",
   "bun.js",
   "deno.js",
@@ -1330,6 +1357,7 @@ const stagedeclarations = [
   "security",
   "tools",
   "types",
+    "queue",
   "cli",
   "headless",
   "mcp",

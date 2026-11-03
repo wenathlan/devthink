@@ -96,6 +96,29 @@ export default defineConfig({
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "constants.ts"),
       "@wenathlan/getry/tests/researchfixtures": path.resolve(import.meta.dirname, "tests/researchfixtures.ts"),
+
+      /** the debonair route table bridge of the ownership law: the
+       * debonair lane rides the owner's route table through the published
+       * library specifier ("@wenathlan/debonair/routetable" — the
+       * zero-import leaf the debonair app carved out of gatewayapi.ts),
+       * and this bridge resolves the specifier to the monorepo source the
+       * sibling engine carries — the route rows are never duplicated
+       * inside getry (the mirror era of the debonair lane is over). the
+       * entry retires when the published envelope carries the built
+       * route table. */
+      "@wenathlan/debonair/routetable": path.resolve(import.meta.dirname, "../debonair/routetable.ts"),
+      /** the devthink queue bridge of the ownership law: the streaming
+       * fallback rides the house retry.backoff discipline (the doubling
+       * curve, the ±20% jitter, the retry-after hint parsing, the abortable
+       * sleep) through the published library specifier
+       * ("@wenathlan/devthink/queue" — the request queue family owns the
+       * retry backoff), and this bridge resolves the specifier to the
+       * monorepo source the sibling engine carries — the discipline is
+       * never duplicated inside getry (the local backoff copy of
+       * streamfallback.ts retired the day the gateway app started riding
+       * the library). the entry retires when the published envelope carries
+       * the built queue family. */
+      "@wenathlan/devthink/queue": path.resolve(import.meta.dirname, "../devthink/queue.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
   },
@@ -118,6 +141,7 @@ export default defineConfig({
       allow: [
         import.meta.dirname,
         path.resolve(import.meta.dirname, "../vault"),
+        path.resolve(import.meta.dirname, "../debonair"),
         path.resolve(import.meta.dirname, "../devthink"),
       ],
     },

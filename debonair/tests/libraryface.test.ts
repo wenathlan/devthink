@@ -4,7 +4,9 @@
 // pipeline seats, the four audio analysis seats the engine ownership wave
 // seated (the cadria analysis family the katexis engine now owns) with the
 // three gap seats the same wave completed (beatgrid, speechalign, stems),
-// and the three server lanes last — with the family publish shape (the
+// and the four server seats last (the three worker lanes and the route
+// table leaf the gateway and the sibling lanes ride — the wave 2d carve
+// out) — with the family publish shape (the
 // types/import/default conditions over the root sources, the same source
 // doctrine @wenathlan/getry/thinking rides); every target is a repository
 // file that ships inside the npm files array, because an export the
@@ -40,6 +42,7 @@ const demixmodule = await import("@wenathlan/debonair/demix");
 const formantmodule = await import("@wenathlan/debonair/formant");
 const genrecorpusmodule = await import("@wenathlan/debonair/genrecorpus");
 const gatewayapimodule = await import("@wenathlan/debonair/gatewayapi");
+const routetablemodule = await import("@wenathlan/debonair/routetable");
 const hpssmodule = await import("@wenathlan/debonair/hpss");
 const ingestmodule = await import("@wenathlan/debonair/ingest");
 const ingestreconmodule = await import("@wenathlan/debonair/ingestrecon");
@@ -57,8 +60,8 @@ const wavwritermodule = await import("@wenathlan/debonair/wavwriter");
 
 /** The engine subpaths the library publishes, in the map's own order: the
  * nine pure pipeline seats first, the four audio analysis seats and the
- * three gap seats the engine ownership wave seated next, the three server
- * lanes last. */
+ * three gap seats the engine ownership wave seated next, the four server
+ * seats last (the three worker lanes and the route table leaf). */
 const SUBPATHS = [
   "analyze",
   "hpss",
@@ -88,6 +91,7 @@ const SUBPATHS = [
   "renderworker",
   "reconworker",
   "gatewayapi",
+  "routetable",
 ] as const;
 
 type Subpath = (typeof SUBPATHS)[number];
@@ -132,6 +136,7 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   renderworker: renderworkermodule,
   reconworker: reconworkermodule,
   gatewayapi: gatewayapimodule,
+  routetable: routetablemodule,
 };
 
 /** The runtime seat a named export answers — the honest ladder: functions
@@ -550,6 +555,16 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     startReconLaneJob: "function",
     MINER_PHASES: "object",
     routes: "object",
+  },
+  routetable: {
+    /* the route table leaf the wave 2d carve out seated: the nineteen-row
+     * catalog with its two pure matchers — the lightest face of the
+     * gateway contract, the seat the getry lane imports instead of
+     * mirroring the rows (safedecode stays the leaf's private helper, the
+     * same seat it answers inside gatewayapi). */
+    routes: "object",
+    matchpath: "function",
+    matchroute: "function",
   },
 };
 
