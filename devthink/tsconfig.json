@@ -16,6 +16,8 @@
         "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
       "@/*": ["./Sol/*", "./*"],
+      "@wenathlan/saddle": ["./saddlefaces.ts"],
+      "@wenathlan/saddle/memory": ["./saddlefacesmemory.ts"],
       "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
