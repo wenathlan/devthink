@@ -107,3 +107,4 @@ minimumReleaseAgeExclude:
   - tailwindcss@4.3.4
   - vitest@5.1.0
   - '@wenathlan/saddle@2.1.7'
+  - '@wenathlan/devthink@2.1.7'

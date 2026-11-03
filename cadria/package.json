@@ -310,6 +310,7 @@
     "@prisma/client": "^7.10.1",
     "@wenathlan/cadria": "^2.1.7",
     "@wenathlan/debonair": "^2.1.7",
+    "@wenathlan/devthink": "^2.1.7",
     "@wenathlan/getry": "^2.0.154",
     "@wenathlan/saddle": "^2.1.7",
     "@wenathlan/vault": "^2.1.7",
