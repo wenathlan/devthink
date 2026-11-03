@@ -129,9 +129,11 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
     const publish = await readworkflow("publish.yml");
     expect(publish).toContain("require('./${{ matrix.package }}/package.json').version");
     expect(publish).toContain("require('./saddle/package.json').version");
-    /* the deleted saddle-v* tag resolver never runs again: the vhe lane
-     * reads the saddle manifest of the checked out source. */
-    expect(publish).toContain("saddle-v* tag resolver never runs again");
+    /* the deleted saddle-v* tag resolver never runs again: the saddle
+     * block's lanes read the saddle manifest of the checked out source
+     * (the retirement of the extension lane kept the same resolver law —
+     * the block comment carries the deleted-tag doctrine). */
+    expect(publish).toContain("deleted tag pattern never answers a resolver again");
     expect(publish).toContain(
       "version=$(node -p \"JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version\")",
     );

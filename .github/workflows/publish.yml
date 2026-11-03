@@ -4427,120 +4427,17 @@ jobs:
   # ---------------------------------------------------------------------
   # THE SADDLE BLOCK (the consolidation pass, saddle always last): the
   # saddle lanes the standalone workflow files carried ride as the closing
-  # application lanes of this file - the extension package, the target
-  # plans and the dispatch-only vhe registry lane - because the saddle
-  # surface is the heaviest pass of the house (the docker builds). Every
-  # lane reads the saddle application folder, stamps the version the
-  # saddle manifest declares (the saddle-v* tags the standalone board cut
-  # are retired - the deleted tag pattern never answers a resolver again)
-  # and attaches its assets to the same family release the lanes above
-  # carry.
-
-  saddle-extension:
-    name: package the saddle engine extension
-    # the saddle engine extension lane of the standalone board, folded in:
-    # the engine surface stays saddle-specific, so the lane reads the
-    # saddle application folder and attaches the zip to the family release
-    # the lanes above carry. The version answers the saddle manifest (the
-    # deleted saddle-v* tag resolver never runs again).
-    if: >-
-      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
-      (github.event_name != 'workflow_run' ||
-        (github.event.workflow_run.conclusion == 'success' &&
-          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      contents: write
-    steps:
-      - name: checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
-
-      - name: resolve the saddle version and the family release tag
-        id: release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
-        run: |
-          set -euo pipefail
-          tag="${RELEASE_TAG:-}"
-          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
-          fi
-          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
-            exit 1
-          fi
-          # detach onto the tagged source the lanes above build from, then
-          # read the version the saddle manifest of that source declares.
-          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
-          git checkout --detach "$tag"
-          version="$(node -p "require('./saddle/package.json').version")"
-          test -n "$version"
-          {
-            echo "tag=$tag"
-            echo "version=$version"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: setup node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 26.13.0
-
-      # the 2.0.154 extension rung: the deterministic gates run the saddle
-      # suite, and the runner-bun lane of the edge plane spawns the real
-      # bun runtime the family suite job of the ci ladder installs (the
-      # same pinned rung) - without it the release runner answers no bun
-      # and the lane the suite demands fails on the honest host absence
-      # the release lanes cannot accept.
-      - name: setup bun
-        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
-        with:
-          bun-version: 1.4.4
-          cache: false
-
-      - name: install dependencies
-        run: npm --prefix saddle ci
-      - name: run full deterministic gates
-        run: npm --prefix saddle run check && npm --prefix saddle run formatcheck && npm --prefix saddle test
-      - name: package dry-run
-        run: npm --prefix saddle run pack:check
-
-      - name: generate extension icons
-        # the 2.1.0 restructure: the extension assets live flat at the web
-        # root (manifest.json + iconNN.png - the browser.ts
-        # extensionassets entries), regenerated from the single icon source.
-        shell: bash
-        working-directory: saddle
-        run: |
-          npx --yes @tauri-apps/cli@2.11.4 icon icon.svg --output build/generated-icons
-          cp build/generated-icons/32x32.png icon32.png
-          cp build/generated-icons/64x64.png icon64.png
-          cp build/generated-icons/128x128.png icon128.png
-
-      - name: build extension
-        working-directory: saddle
-        run: node --import tsx browser.ts --version "${{ steps.release.outputs.version }}" --output build/extension
-
-      - name: create zip
-        working-directory: saddle/build/extension
-        run: zip -qr "../../saddle.extension.${{ steps.release.outputs.version }}.zip" .
-
-      - name: upload workflow artifact
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: saddle.extension.${{ steps.release.outputs.version }}
-          path: saddle/saddle.extension.${{ steps.release.outputs.version }}.zip
-          if-no-files-found: error
-
-      - name: attach release asset
-        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ steps.release.outputs.tag }}
-        run: gh release upload "$RELEASE_TAG" "saddle/saddle.extension.${{ steps.release.outputs.version }}.zip" --clobber
+  # application lanes of this file - the target plans and the dispatch-only
+  # vhe registry lane - because the saddle surface is the heaviest pass of
+  # the house (the docker builds). Every lane reads the saddle application
+  # folder, stamps the version the saddle manifest declares and attaches
+  # its assets to the same family release the lanes above carry. The
+  # saddle-v* tags are retired - the deleted tag pattern never answers a resolver again.
+  # The extension package lane the block once carried retired with the
+  # ownership regroup: the mv3 extension left the saddle for the os
+  # envelope (the browser.ts CLI the lane invoked answered the pre-regroup
+  # source), so the os extension lane above packages the one extension the
+  # family ships.
 
   saddle-target-plans:
     name: Saddle plan ${{ matrix.target }} ${{ matrix.format }}
@@ -5595,12 +5492,12 @@ jobs:
       - package
       - target-plans
       # the saddle block attaches its assets before the umbrella answers:
-      # the extension zip rides the release, the target plans ride the
-      # workflow artifacts, and the vhe lanes answer the release law (the
-      # saddle container law) - the registry image carries its own digests
-      # and the container archive lane attaches the saddle tar.gz beside
-      # the devthink one.
-      - saddle-extension
+      # the target plans ride the workflow artifacts, and the vhe lanes
+      # answer the release law (the saddle container law) - the registry
+      # image carries its own digests and the container archive lane
+      # attaches the saddle tar.gz beside the devthink one. the extension
+      # zip the block once attached retired with the ownership regroup (the
+      # os extension lane packages the one extension the family ships).
       - saddle-target-plans
       - saddle-container
     if: >-
