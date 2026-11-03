@@ -347,7 +347,12 @@ const edits: Array<[string, (content: string) => string]> = [
       content.replace(/ENV\.fetch\("SADDLE_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("SADDLE_VERSION", "${version}")`),
   ],
   ["../saddle/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../saddle/manifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
+  /* The logic ownership regroup (the mv3 extension left the saddle for the
+     os envelope seat): the extension manifest the lockstep stamped at the
+     saddle root rides the devthink root today as extensionmanifest.json —
+     the saddle console manifest (manifest.webmanifest) never carried the
+     version and stays out of the lockstep surface. */
+  ["extensionmanifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
   /* The 2.0.131 healing wave: the saddle api health literal, the web
      readme pin and the package lock root join the lockstep surface — the
      deterministic suite asserts the health endpoint answers the envelope
