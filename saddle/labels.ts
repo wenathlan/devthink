@@ -16,8 +16,10 @@ import { createLabelStore } from "../vault/labelstore.ts";
 
 
 /** the label revision of the manifest: bump on every copy wave so the seed
- * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 4;
+ * refreshes the store rows of the changed strings. (5: the compute face
+ * copy wave — the catalog, boot ladder and edge-law banner prose the wingets
+ * carried inline moved into the store, zero invented copy.) */
+export const LABEL_REVISION = 5;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -30,6 +32,9 @@ export const labelmanifest = {
   'console.shell.intro':
     'Pick the virtual hardware, boot the microvm and type: the same commands answer locally in the browser and on your own server. No account needed to run it; sign in to keep sandboxes.',
   'console.eyebrow': 'LIVE SANDBOX / SPEC PANEL · TERMINAL · BUS EVENTS',
+  // the console edge-law banner widget (the law band above the console surface)
+  'console.edgelaw.sentence': 'the saddle edge engine executes every pass — nothing runs on the visitor machine',
+  'console.edgelaw.counts': ' · live {live} · host {host} · planned {planned}',
   'console.signin': 'sign in',
   'console.badge.api': 'connected · v{version} · up {uptime}s',
   'console.badge.local': 'running locally in the browser',
@@ -597,6 +602,41 @@ export const labelmanifest = {
   'compute.note.eyebrow': 'SERVED / NEVER SHIPPED',
   'compute.note.body':
     'The catalog dies with the engine, not with the page: the wingets consume the db through the internal apis, so a row changes when the engine changes it — never when the bundle ships.',
+  // the modality catalog widget (the plan table the engine api serves)
+  'compute.catalog.aria': 'the modality catalog served by the saddle api',
+  'compute.catalog.eyebrow': 'MODALITY CATALOG / THE PLAN',
+  'compute.catalog.served': 'served by the engine api',
+  'compute.catalog.unreachable': 'the engine is unreachable — the catalog rides the saddle api',
+  'compute.catalog.legend':
+    'live runs on the edge engine today · host answers when the guest host provides the lane · planned seats wait in the roadmap',
+  'compute.catalog.tableAria': 'the modality catalog table',
+  'compute.catalog.loading': 'reading the plan from the engine…',
+  'compute.catalog.empty': 'the engine carries no records yet',
+  'compute.catalog.count.modalities': 'modalities',
+  'compute.catalog.count.modalitiesDetail': 'the plan total',
+  'compute.catalog.count.live': 'live',
+  'compute.catalog.count.liveDetail': 'running on the edge engine',
+  'compute.catalog.count.host': 'host',
+  'compute.catalog.count.hostDetail': 'host-gated lanes',
+  'compute.catalog.count.planned': 'planned',
+  'compute.catalog.count.plannedDetail': 'roadmap seats',
+  'compute.catalog.col.id': 'id',
+  'compute.catalog.col.label': 'label',
+  'compute.catalog.col.family': 'family',
+  'compute.catalog.col.state': 'state',
+  'compute.catalog.col.boot': 'boot',
+  'compute.catalog.col.lanes': 'lanes',
+  // the boot ladder widget (the classes with the ceilings the records state)
+  'compute.ladder.aria': 'the boot ladder of the engine plan',
+  'compute.ladder.eyebrow': 'BOOT LADDER / CLASSES',
+  'compute.ladder.failed': 'engine unreachable',
+  'compute.ladder.served': 'ceilings from the records',
+  'compute.ladder.unreached': '{boot} · unreached',
+  'compute.ladder.empty': '{boot} · empty class',
+  'compute.ladder.ceiling': '{boot} · boot ceiling',
+  'compute.ladder.unreachedDetail': 'the engine did not answer',
+  'compute.ladder.emptyDetail': 'the plan carries no member',
+  'compute.ladder.floorDetail': 'floor {floor} ms · {count} modalities',
   // the integrations page anchor (the surface area)
   'integrations.shell.section': '04 / 06',
   'integrations.shell.label': 'Integrations',

@@ -2,13 +2,20 @@
 // six heavyweight host lanes the plane probes (the browser server, the
 // mobile seats, the pod session and the confidential compute — every one
 // an honest probe lane that names its runtime and never fakes a boot) and
-// the merged lane tables the dispatch plane reads. the three lane groups
-// of the wave (edgelandeshost.ts — the host binary lanes, edgelandesinproc.ts
+// the merged lane tables the dispatch plane reads. the lane groups of the
+// wave (edgelandeshost.ts — the host binary lanes, edgelandesinproc.ts
 // — the in-process lanes and edgelandesvirtual.ts — the virtual hardware
-// composition lanes) each own their executors; this file only wires the
+// composition lanes) each own their executors, edgelandes.ts owns the
+// base contract seats beside its executors (the sixteen lanes the plane
+// drove before the waves merged — the docker surface, the vfs, the
+// node:vm, bun, wasm, babel and webpack runners, the bash, python and
+// java seats and the six host probes), and this file wires the
 // heavyweight probes and answers the one merged surface the plane law
 // demands: every lane in the table carries an executor, the wiring
-// self-check never loads a gap. the visitor law holds everywhere: the
+// self-check never loads a gap, and the table owns the ninety unique
+// modalities of the plan exactly — the completion wave closed the last
+// sixteen-seat gap between the merged wave tables (seventy-four) and the
+// ninety the plan charges. the visitor law holds everywhere: the
 // heavyweight lanes probe server-side surfaces only, the visitor browser,
 // gpu, cpu and storage are never touched.
 //
@@ -29,7 +36,7 @@ import { createRequire } from "node:module";
 import { edgelaneexecutorshost, hostlanespecs } from "./edgelandeshost.ts";
 import { edgelaneexecutorsinproc, inproclanespecs } from "./edgelandesinproc.ts";
 import type { EdgeLaneExecutor } from "./edgelandes.ts";
-import { edgelaneerror, edgelaneexecutors, probehostbinary } from "./edgelandes.ts";
+import { baselaneids, baselanespecs, edgelaneerror, edgelaneexecutors, probehostbinary } from "./edgelandes.ts";
 import { edgelaneexecutorsvirtual, virtuallanespecs } from "./edgelandesvirtual.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -157,20 +164,26 @@ export const heavyweightlaneids: readonly string[] = Object.freeze(heavyweightla
 /* Section 5: the merged tables — the one surface the plane reads. */
 /* ════════════════════════════════════════════════════════════════════ */
 
-/** the merged lane spec table of the plane: beside the sixteen base
- * lanes of the plane contract, the thirty-seven host binary lanes (the
- * twenty-five of the first wave, the twelve host seats of the wiring
- * wave), the twenty-four in-process lanes (the nineteen of the first
- * wave, the five seats of the wiring wave), the seven virtual hardware
- * lanes and the six heavyweight probes — seventy-four merged lanes, the
- * ninety the plan wires through the plane in total (sixty-six live,
- * twenty-four host), every modality the ninety plan answers. the order
- * walks the groups in their file order, then the heavyweight probes. */
+/** the merged lane spec table of the plane: beside the thirty-seven
+ * host binary lanes (the twenty-five of the first wave, the twelve host
+ * seats of the wiring wave), the twenty-four in-process lanes (the
+ * nineteen of the first wave, the five seats of the wiring wave), the
+ * seven virtual hardware lanes and the six heavyweight probes, the
+ * sixteen base contract lanes edgelandes.ts owns (the docker surface,
+ * the engine vfs, the node:vm, bun, wasm, babel and webpack runners, the
+ * bash, python and java seats and the six host probes the plane drove
+ * before the waves merged) — ninety merged lanes exactly, the ninety the
+ * plan wires through the plane (sixty-six live, twenty-four host), every
+ * modality the ninety plan answers through one spec surface. the order
+ * walks the groups in their file order, then the heavyweight probes,
+ * then the base contract seats — the order the edge plane table always
+ * answered, so the pinned lane contracts read the same sequence. */
 export const edgelanespecsall: readonly (HeavyweightLaneSpec & { kind: "live" | "host" })[] = Object.freeze([
   ...hostlanespecs,
   ...inproclanespecs,
   ...virtuallanespecs,
   ...heavyweightlanespecs,
+  ...baselanespecs,
 ]);
 
 /** the merged executor table of the plane: the dispatch reality law rides
@@ -192,27 +205,13 @@ export const edgelaneexecutorsall: Readonly<Record<string, EdgeLaneExecutor>> = 
   ...edgelaneexecutorshost,
 });
 
-/** the base lane ids of the plane contract (the sixteen lanes the base
- * edgeplane table wires directly — the merged executor table carries
- * their executors, so the reverse wiring check reads them too). */
-const BASELANEIDS: readonly string[] = Object.freeze([
-  "container-docker",
-  "fs-vfs",
-  "runner-node",
-  "runner-bun",
-  "runner-wasm",
-  "runner-babel",
-  "runner-webpack",
-  "runner-universal",
-  "language-python",
-  "language-java",
-  "container-runsc",
-  "emulator-qemu",
-  "microvm-firecracker",
-  "runtime-jvm",
-  "language-go",
-  "language-ruby",
-]);
+/** the base lane ids of the plane contract: the sixteen contract seats
+ * the completion wave lifted from the inline edgeplane table into the
+ * owning edgelandes.ts (the merged executor table carries their
+ * executors and the merged spec table carries their lanes, so the
+ * reverse wiring check reads them as both — the constant stays the
+ * documented contract of the base executor map keys). */
+const BASELANEIDS: readonly string[] = baselaneids;
 
 /** the wiring self-check of the merge: the plane refuses to load over a
  * lane it cannot wire (a table entry without an executor is a miswired

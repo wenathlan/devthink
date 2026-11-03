@@ -1,10 +1,16 @@
 // Signal & Ledger: the boot ladder — the three boot classes with the
 // ceilings the records themselves state. The winget fetches the plan on
 // mount and computes the hot / warm / cold floors and ceilings from the
-// fetched records; no number in this file is fixed.
+// fetched records; no number in this file is fixed. Every sentence the
+// tiles speak rides the label store (labels.ts — the copy law): the
+// unreached tile says "the engine did not answer", the empty class says
+// "the plan carries no member", and the honest floor line reads
+// "floor {floor} ms · {count} modalities" with the rung values the
+// records stated.
 import { TimerRegular as Ladder } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { fetchmodalities, type ModalityPlan } from "../../api.ts";
+import { label, labelfill } from "../../labels.ts";
 
 /** one rung of the ladder: the class name, its population and the ms
  * floor / ceiling the records state. */
@@ -64,11 +70,12 @@ export default function ComputeBootladder() {
   const loading = plan === null && !failed;
 
   return (
-    <section className="content-section" aria-label="the boot ladder of the engine plan">
+    <section className="content-section" aria-label={label("compute.ladder.aria")}>
       <div className="content-section-heading">
-        <p className="eyebrow">BOOT LADDER / CLASSES</p>
+        <p className="eyebrow">{label("compute.ladder.eyebrow")}</p>
         <span className="mono-label">
-          <Ladder fontSize={12} aria-hidden="true" /> {failed ? "engine unreachable" : "ceilings from the records"}
+          <Ladder fontSize={12} aria-hidden="true" />{" "}
+          {failed ? label("compute.ladder.failed") : label("compute.ladder.served")}
         </span>
       </div>
       <div className="metric-strip">
@@ -81,17 +88,20 @@ export default function ComputeBootladder() {
               </span>
               <span className="metric-label">
                 {failed
-                  ? `${boot} · unreached`
+                  ? labelfill("compute.ladder.unreached", { boot })
                   : rung === undefined
-                    ? `${boot} · empty class`
-                    : `${boot} · boot ceiling`}
+                    ? labelfill("compute.ladder.empty", { boot })
+                    : labelfill("compute.ladder.ceiling", { boot })}
               </span>
               <span className="metric-detail">
                 {failed
-                  ? "the engine did not answer"
+                  ? label("compute.ladder.unreachedDetail")
                   : rung === undefined
-                    ? "the plan carries no member"
-                    : `floor ${rung.floor} ms · ${rung.count} modalities`}
+                    ? label("compute.ladder.emptyDetail")
+                    : labelfill("compute.ladder.floorDetail", {
+                        floor: String(rung.floor),
+                        count: String(rung.count),
+                      })}
               </span>
             </div>
           );

@@ -1,14 +1,15 @@
 // The Law Banner: the console states the execution law — every pass runs
 // on the saddle edge engine over the internet, never on the visitor
-// machine (no visitor browser, gpu or cpu). The micro-counts (live / host
-// / planned) arrive from /api/v1/modalities on mount; while they load the
-// sentence stands alone.
+// machine (no visitor browser, gpu or cpu). The law sentence rides the
+// label store (labels.ts — the copy law); the store answers exactly:
+// "the saddle edge engine executes every pass — nothing runs on the visitor machine"
+// (console.edgelaw.sentence). The micro-counts (live / host / planned)
+// arrive from /api/v1/modalities on mount; while they load the sentence
+// stands alone.
 import { ShieldTaskRegular as Shield } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { fetchmodalities, type ModalityPlan } from "../../api.ts";
-
-/** the law the console carries: one sentence, lowercase english. */
-const lawsentence = "the saddle edge engine executes every pass — nothing runs on the visitor machine";
+import { label, labelfill } from "../../labels.ts";
 
 /**
  * the edge-law band: a single slim line above the console content — the
@@ -37,8 +38,13 @@ export default function ConsoleEdgelaw() {
 
   return (
     <p className="r3-declared-ribbon" role="note">
-      <Shield fontSize={13} aria-hidden="true" /> {lawsentence}
-      {plan !== null && ` · live ${plan.live} · host ${plan.host} · planned ${plan.planned}`}
+      <Shield fontSize={13} aria-hidden="true" /> {label("console.edgelaw.sentence")}
+      {plan !== null &&
+        labelfill("console.edgelaw.counts", {
+          live: String(plan.live),
+          host: String(plan.host),
+          planned: String(plan.planned),
+        })}
     </p>
   );
 }

@@ -59,6 +59,7 @@ const CONVERT = [
   "foundry",
   "argan",
   "cadria",
+  "cobaia",
   "debonair",
   "saddle",
   "stealthhead",

@@ -409,3 +409,7 @@ saddle/*.woff2
 /artifacts/
 getry/*.d.ts
 getry/*.d.ts.map
+
+# the polar state directory — machine-local device-flow artifacts (the
+# token, the banner, the poll state) never ride the family tree
+polar/

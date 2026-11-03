@@ -63,6 +63,34 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  release-approval:
+    name: release approval gate
+    # the explicit approval point of the release ladder (the release
+    # approval flow repair): one named job carries the release-approval
+    # environment, and the four publish jobs below - npmjs, githubrelease,
+    # familynpmjs and familyghcr - need it, so the review the owner grants
+    # answers once for the whole publish wave instead of four scattered
+    # per-lane deployments that sat waiting forever and wedged the runs
+    # behind them. the gate rides the same family chain gate the metadata
+    # resolve carries: only a real release (the auto-tag release of a bump
+    # push, a manual v* tag push or the explicit dispatch) asks for the
+    # review - every other push to main stays a silent no-op.
+    needs: auto-tag
+    if: >-
+      always() && (needs.auto-tag.result == 'success' || needs.auto-tag.result == 'skipped') &&
+      (needs.auto-tag.outputs.released == 'true' ||
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && github.ref_type == 'tag' && startsWith(github.ref_name, 'v')))
+    runs-on: ubuntu-latest
+    environment: release-approval
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: confirm the release approval
+        run: |
+          echo "the release-approval environment granted this release: the publish wave below flows."
+
   auto-tag:
     # the bump detector of the family chain (the saddle Release lane,
     # adapted to the DevThink identity): only a push to main whose
@@ -669,10 +697,13 @@ jobs:
 
   npmjs:
     name: Publish the flat distribution tarball to npmjs
-    needs: [assemble, releaseassets]
+    needs: [assemble, releaseassets, release-approval]
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    environment: release-approval
+    # the extension release-gate doctrine (the 2.0.18 port, the approval
+    # gate repair): the registry publish answers through the explicit
+    # release-approval gate job the lane needs - the one review the owner
+    # grants for the whole release wave.
     permissions:
       contents: read
       id-token: write
@@ -749,10 +780,13 @@ jobs:
 
   githubrelease:
     name: Gather, verify and publish the DevThink github release
-    needs: [assemble, releaseassets]
+    needs: [assemble, releaseassets, release-approval]
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    environment: release-approval
+    # the extension release-gate doctrine (the 2.0.18 port, the approval
+    # gate repair): the release flip answers through the explicit
+    # release-approval gate job the lane needs - the one review the owner
+    # grants for the whole release wave.
     permissions:
       contents: write
     steps:
@@ -1032,10 +1066,13 @@ jobs:
 
   familynpmjs:
     name: Publish every family package to npmjs
-    needs: [assemble, family]
+    needs: [assemble, family, release-approval]
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    environment: release-approval
+    # the extension release-gate doctrine (the 2.0.18 port, the approval
+    # gate repair): the family registry publishes answer through the
+    # explicit release-approval gate job the lane needs - the one review
+    # the owner grants for the whole release wave.
     permissions:
       contents: read
       id-token: write
@@ -1113,18 +1150,17 @@ jobs:
 
   familyghcr:
     name: Publish every family container to GHCR
-    needs: [assemble]
+    needs: [assemble, release-approval]
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # the extension release-gate doctrine (the 2.0.18 port) every registry
-    # publish of the house answers: the lane pushes container images to the
-    # github container registry exactly the way the npmjs, githubrelease and
-    # familynpmjs jobs above publish theirs, so the release-approval
-    # environment (the required reviewers of the approval flow) gates this
-    # container push the same way its family-ghcr mirror of the publish
-    # workflow is gated — no registry publish of the release ladder rides
-    # around the approval gate.
-    environment: release-approval
+    # the extension release-gate doctrine (the 2.0.18 port, the approval
+    # gate repair) every registry publish of the house answers: the lane
+    # pushes container images to the github container registry exactly the
+    # way the npmjs, githubrelease and familynpmjs jobs above publish
+    # theirs, so the explicit release-approval gate job the lane needs
+    # gates this container push the same way its family-ghcr mirror of the
+    # publish workflow is gated - no registry publish of the release
+    # ladder rides around the approval gate.
     permissions:
       contents: read
       packages: write
@@ -1197,7 +1233,13 @@ jobs:
                 rm -rf familybuildctx/vault/node_modules \
                        familybuildctx/vault/dist \
                        familybuildctx/vault/build
-                docker build -t "${image}:${RELEASE_VERSION}" familybuildctx
+                # the -f the staged shape demands (the 2.0.153 family
+                # context fix follow-through): the dockerfile stays at
+                # ${app}/Dockerfile outside the staged context, and a bare
+                # context path would look for familybuildctx/Dockerfile -
+                # the same explicit file the publish lane's family-ghcr
+                # mirror carries.
+                docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
                 ;;
               cadria)
                 # the engine-ownership sibling map: cadria resolves the
@@ -1215,7 +1257,9 @@ jobs:
                        familybuildctx/debonair/node_modules \
                        familybuildctx/debonair/dist \
                        familybuildctx/debonair/build
-                docker build -t "${image}:${RELEASE_VERSION}" familybuildctx
+                # the -f the staged shape demands (the same explicit file
+                # the publish lane's family-ghcr mirror carries).
+                docker build -t "${image}:${RELEASE_VERSION}" -f cadria/Dockerfile familybuildctx
                 ;;
               devthink)
                 # the workbench container law: the context is THE REPOSITORY

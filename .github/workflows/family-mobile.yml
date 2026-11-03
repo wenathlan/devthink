@@ -148,8 +148,12 @@ jobs:
         # the generated @capacitor/android template carries versionCode 1 /
         # versionName "1.0", no signing configuration and no shrinking; the
         # runner stamps the release identity, the keystore.properties loader
-        # (written by the signing step below) and the r8/resource-shrinking
-        # release buildType into the generated wrapper beside the config — the
+        # (written by the signing step below), the r8/resource-shrinking
+        # release buildType and the abi splits block (the asset parity
+        # expansion: one standalone apk per abi beside the universal build -
+        # armeabi-v7a, arm64-v8a, x86, x86_64 - the legacy splits dsl answers
+        # fully installable apks, never the bundletool split artifacts that
+        # need a base) into the generated wrapper beside the config — the
         # same release contract the saddle recipe carries.
         shell: bash
         env:
@@ -205,7 +209,19 @@ jobs:
               "        }",
               "    }"
             ].join("\n");
-            gradle = gradle.replace(plainrelease, stampedrelease);
+            const splitrelease = [
+              "    splits {",
+              "        abi {",
+              "            enable true",
+              "            reset()",
+              "            include \x27armeabi-v7a\x27, \x27arm64-v8a\x27, \x27x86\x27, \x27x86_64\x27",
+              "            universalApk true",
+              "        }",
+              "    }",
+              "",
+              ""
+            ].join("\n");
+            gradle = gradle.replace(plainrelease, splitrelease + stampedrelease);
             const keystoreloader = [
               "apply plugin: \x27com.android.application\x27",
               "",
@@ -219,7 +235,7 @@ jobs:
               "}"
             ].join("\n");
             gradle = gradle.replace("apply plugin: \x27com.android.application\x27", keystoreloader);
-            if (!gradle.includes(`versionCode ${versioncode}`) || !gradle.includes(`versionName "${version}"`) || !gradle.includes("signingConfig signingConfigs.release")) {
+            if (!gradle.includes(`versionCode ${versioncode}`) || !gradle.includes(`versionName "${version}"`) || !gradle.includes("signingConfig signingConfigs.release") || !gradle.includes("universalApk true")) {
               throw new Error("the stamp did not land");
             }
             fs.writeFileSync(file, gradle);
@@ -281,18 +297,43 @@ jobs:
           mkdir -p build/mobile/android
           apk="${{ matrix.app }}.android.${version}.apk"
           aab="${{ matrix.app }}.android.${version}.aab"
-          apk_source="$(find android/app/build/outputs/apk/release -type f \( -name 'android-release*.apk' -o -name 'app-release*.apk' \) -print -quit)"
           aab_source="$(find android/app/build/outputs/bundle/release -type f \( -name 'android-release*.aab' -o -name 'app-release*.aab' \) -print -quit)"
-          test -n "$apk_source" && test -n "$aab_source"
-          cp "$apk_source" "build/mobile/android/${apk}"
+          test -n "$aab_source"
           cp "$aab_source" "build/mobile/android/${aab}"
+          # the abi split collect (the asset parity expansion): every apk the
+          # splits dsl emitted lands under its public name - the universal
+          # build keeps the plain apk name the lane always shipped, and every
+          # abi answers beside it with dots only (the public naming carries
+          # no underscore, so x86_64 ships as x64).
+          collected=0
+          while IFS= read -r -d '' apk_source; do
+            [ -f "$apk_source" ] || continue
+            base="$(basename "$apk_source")"
+            case "$base" in
+              *armeabi-v7a*) out="${{ matrix.app }}.android.${version}.armeabi.v7a.apk" ;;
+              *arm64-v8a*) out="${{ matrix.app }}.android.${version}.arm64.v8a.apk" ;;
+              *x86_64*) out="${{ matrix.app }}.android.${version}.x64.apk" ;;
+              *x86*) out="${{ matrix.app }}.android.${version}.x86.apk" ;;
+              *) out="${{ matrix.app }}.android.${version}.apk" ;;
+            esac
+            cp "$apk_source" "build/mobile/android/${out}"
+            collected=$((collected + 1))
+          done < <(find android/app/build/outputs/apk/release -type f -name '*.apk' -print0 | sort -z)
+          test "$collected" -ge 5
+          test -f "build/mobile/android/${{ matrix.app }}.android.${version}.apk"
+          test -f "build/mobile/android/${{ matrix.app }}.android.${version}.armeabi.v7a.apk"
+          test -f "build/mobile/android/${{ matrix.app }}.android.${version}.arm64.v8a.apk"
+          test -f "build/mobile/android/${{ matrix.app }}.android.${version}.x86.apk"
+          test -f "build/mobile/android/${{ matrix.app }}.android.${version}.x64.apk"
           sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
           apksigner_path="$(find "$sdk_root/build-tools" -type f -name apksigner -perm -u+x -print 2>/dev/null | sort -V | tail -n 1)"
           test -n "$apksigner_path"
-          "$apksigner_path" verify --verbose "build/mobile/android/${apk}"
+          for apk_path in build/mobile/android/*.apk; do
+            "$apksigner_path" verify --verbose "$apk_path"
+          done
           jarsigner -verify -verbose -certs "build/mobile/android/${aab}" >/dev/null
-          sha256sum "build/mobile/android/${apk}" "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/${{ matrix.app }}.sha256.android.${version}"
-          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s"]\n}\n' "$version" "${FAMILY_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "$apk" "$aab" > "build/mobile/android/${{ matrix.app }}.manifest.android.${version}.json"
+          sha256sum build/mobile/android/*.apk "build/mobile/android/${aab}" | sed 's#build/mobile/android/##' > "build/mobile/android/${{ matrix.app }}.sha256.android.${version}"
+          printf '{\n  "version": "%s",\n  "platform": "android",\n  "signing": "%s",\n  "optimization": "r8-and-resource-shrinking",\n  "appId": "%s",\n  "files": ["%s", "%s.android.%s.armeabi.v7a.apk", "%s.android.%s.arm64.v8a.apk", "%s.android.%s.x86.apk", "%s.android.%s.x64.apk", "%s"]\n}\n' "$version" "${FAMILY_SIGNING:-unknown}" "$(node -p "JSON.parse(require('node:fs').readFileSync('./capacitor.config.json','utf8')).appId")" "$apk" "${{ matrix.app }}" "$version" "${{ matrix.app }}" "$version" "${{ matrix.app }}" "$version" "${{ matrix.app }}" "$version" "$aab" > "build/mobile/android/${{ matrix.app }}.manifest.android.${version}.json"
       - name: validate public asset names
         shell: bash
         run: |
