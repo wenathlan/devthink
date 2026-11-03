@@ -103,6 +103,16 @@
       "import": "./server.ts",
       "default": "./server.ts"
     },
+    "./cli": {
+      "types": "./cli.ts",
+      "import": "./cli.ts",
+      "default": "./cli.ts"
+    },
+    "./providercli": {
+      "types": "./providercli.ts",
+      "import": "./providercli.ts",
+      "default": "./providercli.ts"
+    },
     "./project": {
       "types": "./project.ts",
       "import": "./project.ts",

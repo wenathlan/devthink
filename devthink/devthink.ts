@@ -631,7 +631,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   if (command === "provider") {
     const family = argv.slice(argv.indexOf("provider") + 1);
     if (family.length === 0) return printHelp();
-    const consolemodule = await import("./server.js");
+    const consolemodule = await import("@wenathlan/getry/providercli");
     return void (await consolemodule.runproviderfamily(family));
   }
   if (
@@ -647,7 +647,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
       parsed.positional[1] === "models")
   ) {
     const family = argv.slice(argv.indexOf("gateway") + 1);
-    const consolemodule = await import("./server.js");
+    const consolemodule = await import("@wenathlan/getry/cli");
     return void (await consolemodule.runclifamily(family));
   }
   const runtime = loadRuntime();

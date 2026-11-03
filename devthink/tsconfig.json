@@ -90,6 +90,12 @@
       "@wenathlan/devthink/policy": ["./policy.ts"],
       "@wenathlan/devthink/security": ["./security.ts"],
       "@wenathlan/devthink/server": ["./server.ts"],
+      /* the oslabels self bridge of the provider console move (the gateway
+       * ownership wave, step 5): the moved console's barrel reads the
+       * paired label catalog through the published os specifier, and this
+       * program resolves it to this app's own source the same way the
+       * other self specifiers above ride. */
+      "@wenathlan/devthink/oslabels": ["./oslabels.ts"],
       "@wenathlan/devthink/storage": ["./storage.ts"],
       "@wenathlan/devthink/types": ["./types.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]

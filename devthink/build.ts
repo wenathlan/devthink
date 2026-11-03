@@ -404,6 +404,13 @@ const familybridges = {
   "@wenathlan/devthink/policy": join(root, "policy.ts"),
   "@wenathlan/devthink/security": join(root, "security.ts"),
   "@wenathlan/devthink/server": join(root, "server.ts"),
+  /* the oslabels self bridge of the provider console move (the gateway
+   * ownership wave, step 5): the moved console's barrel reads the paired
+   * label catalog through the published os specifier, and the server
+   * bundle inlines this app's own source for it the same way the other
+   * self specifiers above ride — the catalog is never duplicated inside
+   * getry. */
+  "@wenathlan/devthink/oslabels": join(root, "oslabels.ts"),
   "@wenathlan/devthink/storage": join(root, "storage.ts"),
   "@wenathlan/devthink/types": join(root, "types.ts"),
   /** the label store bridge of the ownership law: the os copy mechanism rides

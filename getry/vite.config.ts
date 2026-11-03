@@ -54,7 +54,13 @@ export default defineConfig({
       "@wenathlan/devthink/policy": path.resolve(import.meta.dirname, "../devthink/policy.ts"),
       "@wenathlan/devthink/protocol": path.resolve(import.meta.dirname, "../devthink/protocol.ts"),
       "@wenathlan/devthink/security": path.resolve(import.meta.dirname, "../devthink/security.ts"),
-      "@wenathlan/devthink/server": path.resolve(import.meta.dirname, "../devthink/server.ts"),
+      /* the @wenathlan/devthink/server self bridge was DELETED with the
+       * final double move of the gateway ownership wave (steps 4+5): the
+       * last getry consumers of the os server seam were the property lane
+       * (flipped in step 3) and the provider console barrel (moved to this
+       * app's providercli.ts, whose imports answer from in-package
+       * relatives) — nothing in getry imports the os server entry anymore,
+       * so the reverse-edge bridge retired with them. */
       "@wenathlan/devthink/storage": path.resolve(import.meta.dirname, "../devthink/storage.ts"),
       "@wenathlan/devthink/tools": path.resolve(import.meta.dirname, "../devthink/tools.ts"),
       "@wenathlan/devthink/types": path.resolve(import.meta.dirname, "../devthink/types.ts"),
@@ -93,6 +99,27 @@ export default defineConfig({
        * server and config compat shims — resolves it to this app's own
        * source: the one owner of the moved transport. */
       "@wenathlan/getry/server": path.resolve(import.meta.dirname, "server.ts"),
+      /** the cli self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 4 — the console cli move): the gateway
+       * console cli family moved to this app's cli.ts, and every lane that
+       * speaks the published specifier ("@wenathlan/getry/cli") — the
+       * devthink server compat shim and the devthink router — resolves it
+       * to this app's own source: the one owner of the moved console. */
+      "@wenathlan/getry/cli": path.resolve(import.meta.dirname, "cli.ts"),
+      /** the providercli self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 5 — the provider console move): the
+       * provider account console family moved to this app's providercli.ts,
+       * and every lane that speaks the published specifier
+       * ("@wenathlan/getry/providercli") — the devthink server compat shim
+       * and the devthink router — resolves it to this app's own source: the
+       * one owner of the moved console. */
+      "@wenathlan/getry/providercli": path.resolve(import.meta.dirname, "providercli.ts"),
+      /** the oslabels bridge of the ownership wave: the moved provider
+       * console reads the paired label catalog through the published os
+       * specifier ("@wenathlan/devthink/oslabels"), and this bridge resolves
+       * it to the monorepo source the sibling app carries — the label
+       * catalog is never duplicated inside getry. */
+      "@wenathlan/devthink/oslabels": path.resolve(import.meta.dirname, "../devthink/oslabels.ts"),
       "@wenathlan/getry/project": path.resolve(import.meta.dirname, "project.ts"),
       "@wenathlan/getry/quota": path.resolve(import.meta.dirname, "quota.ts"),
       "@wenathlan/getry/recovery": path.resolve(import.meta.dirname, "recovery.ts"),

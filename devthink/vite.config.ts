@@ -405,6 +405,12 @@ export default defineConfig({
       "@wenathlan/devthink/policy": path.resolve(import.meta.dirname, "policy.ts"),
       "@wenathlan/devthink/security": path.resolve(import.meta.dirname, "security.ts"),
       "@wenathlan/devthink/server": path.resolve(import.meta.dirname, "server.ts"),
+      /* the oslabels self bridge of the provider console move (the gateway
+       * ownership wave, step 5): the moved console's barrel reads the
+       * paired label catalog through the published os specifier, and this
+       * server resolves it to this app's own source on the dev server and
+       * the web build the same way the other self specifiers above ride. */
+      "@wenathlan/devthink/oslabels": path.resolve(import.meta.dirname, "oslabels.ts"),
       "@wenathlan/devthink/storage": path.resolve(import.meta.dirname, "storage.ts"),
       "@wenathlan/devthink/types": path.resolve(import.meta.dirname, "types.ts"),
       /** the sibling engine's own self-alias, armed for the family dev

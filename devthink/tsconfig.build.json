@@ -84,6 +84,12 @@
       "@wenathlan/devthink/policy": ["./policy.ts"],
       "@wenathlan/devthink/security": ["./security.ts"],
       "@wenathlan/devthink/server": ["./server.ts"],
+      /* the oslabels self bridge of the provider console move (the gateway
+       * ownership wave, step 5): the moved console's barrel reads the
+       * paired label catalog through the published os specifier, and the
+       * declaration pass resolves it to this app's own source the same way
+       * the other self specifiers above ride. */
+      "@wenathlan/devthink/oslabels": ["./oslabels.ts"],
       "@wenathlan/devthink/storage": ["./storage.ts"],
       "@wenathlan/devthink/types": ["./types.ts"]
     }
@@ -102,6 +108,11 @@
     "constants.ts",
     "core.ts",
     "data.ts",
+    /* the oslabels seam entry of the provider console move (the gateway
+       ownership wave, step 5): the moved console's barrel reads the paired
+       label catalog through the published os specifier, so the declaration
+       emit covers the seam the same way the os seam entries above ride. */
+    "oslabels.ts",
     "storage.ts",
     "security.ts",
     "policy.ts",
