@@ -33,6 +33,10 @@
       "@wenathlan/devthink/http": ["../devthink/http.ts"],
       "@wenathlan/devthink/memory": ["../devthink/memory.ts"],
       "@wenathlan/devthink/policy": ["../devthink/policy.ts"],
+      /* the queue bridge of the retry.backoff owner: the llm source walks
+       * the published queue specifier and the declaration pass resolves it
+       * to the monorepo source the sibling app carries. */
+      "@wenathlan/devthink/queue": ["../devthink/queue.ts"],
       "@wenathlan/devthink/protocol": ["../devthink/protocol.ts"],
       "@wenathlan/devthink/security": ["../devthink/security.ts"],
       "@wenathlan/devthink/server": ["../devthink/server.ts"],

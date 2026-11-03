@@ -42,6 +42,15 @@ export default defineConfig({
        * to the monorepo source the sibling app carries — the ladder is never
        * duplicated inside devthink, the engine answers from its one owner. */
       "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "../getry/thinking.ts"),
+      /** the queue self-bridge of the ownership law: the getry owner's llm
+       * module (imported through the family bridges) walks the house
+       * retry.backoff parser through the published specifier
+       * ("@wenathlan/devthink/queue" — the request queue family owns the
+       * discipline), and this bridge resolves the specifier to this app's
+       * own monorepo source — the installed envelope carries no ./queue
+       * export yet. retires when the published devthink envelope carries
+       * the built queue family. */
+      "@wenathlan/devthink/queue": path.resolve(import.meta.dirname, "queue.ts"),
       /** the getry engine module bridges of the ownership wave
        * (wave/ownership.getry), mirrored from vite.config.ts: the gateway
        * pipeline sources moved from the devthink root to the getry owner

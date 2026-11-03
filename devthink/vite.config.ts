@@ -314,6 +314,11 @@ export default defineConfig({
        * is never duplicated inside devthink, the engine answers from its one
        * owner (see engines.ts, the ownership manifest). */
       "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "../getry/thinking.ts"),
+      /** the queue self-bridge (mirrored from vitest.config.ts): the getry
+       * llm module walks the retry.backoff parser through the published
+       * specifier and the build resolves it to this app's own source — the
+       * installed envelope carries no ./queue export yet. */
+      "@wenathlan/devthink/queue": path.resolve(import.meta.dirname, "queue.ts"),
       /** the getry engine module bridges of the ownership wave
        * (wave/ownership.getry): the gateway pipeline sources (engine, llm,
        * streaming, models, request, providers, antigravity, oauth, accounts,
