@@ -133,10 +133,7 @@ export const ENGINEOWNERS: readonly engineownerrow[] = [
     library: "@wenathlan/getry",
     consumers: ["devthink"],
     role:
-      "the universal ai gateway: five providers, thirty-five routes, the 7-level reasoning ladder and the whole gateway pipeline the family rides as one library — the engine (engine.ts), the llm family, the streaming parser, the model catalog, the provider surface, the request helpers, the auth family (oauth, accounts), the json family (json, jsonpolicy, jsonschema) and the intelligence store — the os imports every family through the published library specifiers (@wenathlan/getry/engine, /llm, /streaming, /models, /providers, /request, /oauth, /accounts, /json, /jsonschema, /intelligence) and derives its default budget map from the owner's THINKINGLEVELS through @wenathlan/getry/thinking, never from a local copy.",
-    debt:
-      "getry/streamfallback.ts still reimplements the devthink retry.backoff discipline (doubling backoff, ±20% jitter, retry-after hint — the file header says 'reimplemented here, never imported across apps'). migration path: getry consumes the published @wenathlan/devthink queue export (the request queue family owns the retry backoff) and streamfallback keeps only the omniroute verdict vocabulary; the local backoff copy retires the day the gateway app rides the library like the os already rides getry.",
-  },
+      "the universal ai gateway: five providers, thirty-five routes, the 7-level reasoning ladder and the whole gateway pipeline the family rides as one library — the engine (engine.ts), the llm family, the streaming parser, the model catalog, the provider surface, the request helpers, the auth family (oauth, accounts), the json family (json, jsonpolicy, jsonschema) and the intelligence store — the os imports every family through the published library specifiers (@wenathlan/getry/engine, /llm, /streaming, /models, /providers, /request, /oauth, /accounts, /json, /jsonschema, /intelligence) and derives its default budget map from the owner's THINKINGLEVELS through @wenathlan/getry/thinking, never from a local copy.; streamfallback.ts rides the retry.backoff discipline of the published @wenathlan/devthink/queue export (the request queue family owns the backoff) and keeps only the omniroute verdict vocabulary local",  },
   {
     owner: "saddle",
     engine: "saddle",

@@ -1,8 +1,12 @@
 // # debonairlane.test — the debonair api lane of the family gateway (the
-// mount adapter contract): the thirteen-route catalog mirrors the debonair
-// gateway table in the family shape (first match wins, the params capture,
-// an empty capture never matches, the provider lanes answer absent), the
-// adapter translates the getry mount shape (the web request) into the
+// mount adapter contract): the nineteen-route catalog imports the debonair
+// gateway table from the owner's leaf module (the published
+// "@wenathlan/debonair/routetable" specifier bridged to the monorepo
+// source — the mirror era is over) in the family shape (first match wins,
+// the params capture, an empty capture never matches, the provider lanes
+// answer absent, the render, the recon and the tracks lanes the mirror
+// never saw now ride, the generate lane answers its real handler names),
+// the adapter translates the getry mount shape (the web request) into the
 // debonair gateway request (the json lane, the raw lane, the query record)
 // and the debonair answer back into the web response (the json body, the
 // blob stream with the digest headers, the standardized error shape, the
@@ -15,7 +19,6 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import {
   DEBONAIR_URL_ENV,
-  DEBONAIRROUTES,
   type DebonairDispatch,
   type DebonairGatewayAnswer,
   type DebonairGatewayRequest,
@@ -25,8 +28,9 @@ import {
   debonairrequest,
   debonairresponse,
   debonairserve,
-  matchdebonairpath,
-  matchdebonairroute,
+  matchpath,
+  matchroute,
+  routes,
 } from "../debonairlane.ts";
 
 /** the debonair origin the wire tests ride (a public https host — the law). */
@@ -64,41 +68,82 @@ function valueseat(value: (request: DebonairGatewayRequest) => unknown): {
   return engineseat((request) => ({ ok: true, status: 200, value: value(request) }));
 }
 
-describe("the debonair route catalog (the published contract mirror)", () => {
-  it("carries the thirteen debonair routes in the family shape", () => {
-    assert.equal(DEBONAIRROUTES.length, 13);
-    assert.deepEqual(DEBONAIRROUTES[0], { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" });
-    assert.deepEqual(DEBONAIRROUTES[5], { method: "GET", path: "/api/v1/blob/:id", handler: "getBlob" });
-    assert.deepEqual(DEBONAIRROUTES[12], { method: "GET", path: "/api/v1/vitrine", handler: "listVitrine" });
-    for (const route of DEBONAIRROUTES) {
+describe("the debonair route catalog (the owner's table imported through the leaf)", () => {
+  it("carries the nineteen debonair routes in the family shape (the real table, the real handler names)", () => {
+    assert.equal(routes.length, 19);
+    assert.deepEqual(routes[0], { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" });
+    assert.deepEqual(routes[5], { method: "GET", path: "/api/v1/blob/:id", handler: "getBlob" });
+    assert.deepEqual(routes[9], { method: "POST", path: "/api/v1/render", handler: "queueRender" });
+    assert.deepEqual(routes[11], { method: "POST", path: "/api/v1/recon", handler: "queueRecon" });
+    assert.deepEqual(routes[13], { method: "POST", path: "/api/v1/tracks", handler: "publishTrack" });
+    assert.deepEqual(routes[14], { method: "GET", path: "/api/v1/tracks", handler: "listTracks" });
+    assert.deepEqual(
+      routes[15],
+      { method: "POST", path: "/api/v1/generate/render", handler: "queueGenerateRender" },
+      "the generate lane answers its real handler name (the mirror said queueRender)",
+    );
+    assert.deepEqual(
+      routes[16],
+      { method: "GET", path: "/api/v1/generate/jobs/:id", handler: "getGenerateJob" },
+      "the generate job poll answers its real handler name (the mirror said getRenderJob)",
+    );
+    assert.deepEqual(
+      routes[17],
+      { method: "POST", path: "/api/v1/tracks/:id/publish", handler: "publishTrackById" },
+      "the publish by id answers its real handler name (the mirror said publishTrack)",
+    );
+    assert.deepEqual(routes[18], { method: "GET", path: "/api/v1/vitrine", handler: "listVitrine" });
+    for (const route of routes) {
       assert.ok(route.path.startsWith("/api/v1/"), `${route.path} rides the api prefix`);
       assert.ok(["GET", "POST", "DELETE"].includes(route.method));
     }
   });
 
   it("matches the params, refuses the empty capture and answers the method verdict", () => {
-    const routed = matchdebonairroute("GET", "/api/v1/ingest/jobs/123");
+    const routed = matchroute("GET", "/api/v1/ingest/jobs/123");
     assert.ok(routed.kind === "routed");
     assert.equal(routed.route.handler, "getIngestJob");
     assert.deepEqual(routed.params, { id: "123" });
     // the empty capture never matches — a route param always carries a value
-    assert.equal(matchdebonairpath("/api/v1/blob/:id", "/api/v1/blob/"), null);
+    assert.equal(matchpath("/api/v1/blob/:id", "/api/v1/blob/"), null);
     // the specific rows ride first: the jobs row wins over the :id row
-    const shelf = matchdebonairroute("GET", "/api/v1/ingest");
+    const shelf = matchroute("GET", "/api/v1/ingest");
     assert.ok(shelf.kind === "routed" && shelf.route.handler === "listIngestShelf");
     // the path matches, the method does not — the allowed list answers
-    const method = matchdebonairroute("PUT", "/api/v1/vitrine");
+    const method = matchroute("PUT", "/api/v1/vitrine");
     assert.ok(method.kind === "method");
     assert.deepEqual(method.allowed, ["GET"]);
     // the provider lanes own their paths — the catalog answers absent
-    const foreign = matchdebonairroute("POST", "/v1/chat/completions");
+    const foreign = matchroute("POST", "/v1/chat/completions");
     assert.deepEqual(foreign, { kind: "absent" });
   });
 
+  it("routes the render, the recon and the tracks lanes the mirror never saw", () => {
+    const render = matchroute("POST", "/api/v1/render");
+    assert.ok(render.kind === "routed" && render.route.handler === "queueRender");
+    const renderjob = matchroute("GET", "/api/v1/render/jobs/9");
+    assert.ok(renderjob.kind === "routed" && renderjob.route.handler === "getRenderJob");
+    const recon = matchroute("POST", "/api/v1/recon");
+    assert.ok(recon.kind === "routed" && recon.route.handler === "queueRecon");
+    const reconjob = matchroute("GET", "/api/v1/recon/jobs/9");
+    assert.ok(reconjob.kind === "routed" && reconjob.route.handler === "getReconJob");
+    const publish = matchroute("POST", "/api/v1/tracks");
+    assert.ok(publish.kind === "routed" && publish.route.handler === "publishTrack");
+    const tracks = matchroute("GET", "/api/v1/tracks");
+    assert.ok(tracks.kind === "routed" && tracks.route.handler === "listTracks");
+    // the generate lane's own spellings route under the real handler names
+    const generate = matchroute("POST", "/api/v1/generate/render");
+    assert.ok(generate.kind === "routed" && generate.route.handler === "queueGenerateRender");
+    const generatejob = matchroute("GET", "/api/v1/generate/jobs/9");
+    assert.ok(generatejob.kind === "routed" && generatejob.route.handler === "getGenerateJob");
+    const publishbyid = matchroute("POST", "/api/v1/tracks/9/publish");
+    assert.ok(publishbyid.kind === "routed" && publishbyid.route.handler === "publishTrackById");
+  });
+
   it("decodes the captured params (the vault safeDecode law)", () => {
-    const params = matchdebonairpath("/api/v1/profiles/:genre", "/api/v1/profiles/drill%20beats");
+    const params = matchpath("/api/v1/profiles/:genre", "/api/v1/profiles/drill%20beats");
     assert.deepEqual(params, { genre: "drill beats" });
-    const malformed = matchdebonairpath("/api/v1/profiles/:genre", "/api/v1/profiles/%zz");
+    const malformed = matchpath("/api/v1/profiles/:genre", "/api/v1/profiles/%zz");
     assert.deepEqual(malformed, { genre: "%zz" }, "a malformed escape keeps the raw text");
   });
 });

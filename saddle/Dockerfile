@@ -947,7 +947,7 @@ COPY --from=python-bridge /bridge/qemubridge.py /engine/qemubridge.py
 # the engine sources and the specification files consumed at runtime
 # (docker.config "final" stage copies the whole tree; the flat layout
 # keeps that a single COPY layer).
-COPY saddle/*.ts saddle/package.json saddle/tsconfig.json saddle/biome.jsonc saddle/jsdomtypes.ts /engine/
+COPY saddle/*.ts saddle/package.json saddle/tsconfig.json saddle/biome.jsonc /engine/
 COPY saddle/processors.json saddle/gpus.json saddle/cores.json saddle/boards.json saddle/vm.config.json saddle/virtualhardware.json /engine/
 COPY saddle/qemu.config saddle/mttg.config saddle/passage.config docker.config saddle/mime.types /engine/
 # the engine-ownership sibling: db.ts pulls labels.ts whose

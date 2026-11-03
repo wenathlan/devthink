@@ -7,14 +7,19 @@
  * library or over the shared gateway contract — never a sibling-folder
  * import. this module carries the three seats that contract needs:
  *
- * - the route catalog: the thirteen debonair routes (the ingest job lane,
- *   the blob stream, the miner lane, the generate lane) mirrored from the
- *   debonair gateway table — the published @wenathlan/debonair envelope
- *   carries the docs and the tests today, so the rows are mirrored the same
- *   honest way the family accents mirror the devthink table: the strings
- *   are the contract, and the day the library exports the table the rows
- *   answer the same strings (the lockstep is the published contract, not
- *   the import).
+ * - the route catalog: the nineteen debonair routes (the ingest job lane,
+ *   the blob stream, the miner lane, the render lane, the recon lane, the
+ *   tracks lane and the generate lane's own spellings) imported from the
+ *   debonair gateway table through the published library specifier
+ *   ("@wenathlan/debonair/routetable" — the zero-import leaf the owner
+ *   carved out of gatewayapi.ts). the mirror era is over: the rows were
+ *   mirrored once because the published envelope carried the docs and the
+ *   tests only, and the day the library exports the table has arrived —
+ *   the lane now answers the same strings from the owner's own source
+ *   (every row, the real handler names: queueGenerateRender,
+ *   getGenerateJob, publishTrackById beside the render, the recon and the
+ *   tracks lanes the mirror never saw), exactly the way forge and foundry
+ *   ride "@wenathlan/vault/routes".
  * - the mount adapter: the translation between the debonair gateway
  *   request/answer contract and the server shape this gateway speaks (the
  *   web Request in, the web Response out — the fetch mount every lane of
@@ -36,119 +41,35 @@
  * refusal.
  */
 
+import type { RouteVerdict } from "@wenathlan/debonair/routetable";
 import { hostallowed } from "./onboardingstate.ts";
 
-/** one row of the debonair route catalog (the mirror of the debonair
- * gateway table — method, path pattern, handler name). */
-export type DebonairRoute = {
-  method: "GET" | "POST" | "DELETE";
-  path: string;
-  handler: string;
-};
-
-/** the thirteen debonair routes the family gateway serves (mirrored from
- * the debonair gateway table by contract): the ingest job lane (the
- * upload, the progress query, the shelf, the read, the removal), the blob
- * stream, the miner lane (the profile mine, the vitrine list, the profile
- * read) and the generate lane (the render queue, the render job progress,
- * the track publish, the vitrine list). the more specific rows ride first
- * — the first match wins and the table order is the debonair law. */
-export const DEBONAIRROUTES: readonly DebonairRoute[] = [
-  { method: "POST", path: "/api/v1/ingest/upload", handler: "uploadIngest" },
-  { method: "GET", path: "/api/v1/ingest/jobs/:id", handler: "getIngestJob" },
-  { method: "GET", path: "/api/v1/ingest", handler: "listIngestShelf" },
-  { method: "GET", path: "/api/v1/ingest/:id", handler: "getIngest" },
-  { method: "DELETE", path: "/api/v1/ingest/:id", handler: "deleteIngest" },
-  { method: "GET", path: "/api/v1/blob/:id", handler: "getBlob" },
-  { method: "POST", path: "/api/v1/profiles/mine", handler: "mineProfile" },
-  { method: "GET", path: "/api/v1/profiles", handler: "listProfiles" },
-  { method: "GET", path: "/api/v1/profiles/:genre", handler: "getProfile" },
-  { method: "POST", path: "/api/v1/generate/render", handler: "queueRender" },
-  { method: "GET", path: "/api/v1/generate/jobs/:id", handler: "getRenderJob" },
-  { method: "POST", path: "/api/v1/tracks/:id/publish", handler: "publishTrack" },
-  { method: "GET", path: "/api/v1/vitrine", handler: "listVitrine" },
-];
-
-/** the debonair app of the family this lane fronts (the slug of the
- * family table — the engine owner of the audio domain). */
-export const DEBONAIR_APP = "debonair";
-
-/** decodes one url-encoded path segment, falling back to the raw text on a
- * malformed escape (the vault safeDecode law, the same discipline the
- * debonair matcher rides). */
-function safedecode(segment: string): string {
-  try {
-    return decodeURIComponent(segment);
-  } catch {
-    return segment;
-  }
-}
-
-/** matches one path against one debonair pattern — hand-rolled and
- * deterministic, the debonair matcher law mirrored: the segment count must
- * match exactly, a literal segment must equal, a ":name" segment captures
- * (an empty capture never matches — a route param always carries a value),
- * and the path rides the pathname alone (no query string, no
- * trailing-slash folding).
- *
- * @param pattern the debonair route pattern.
- * @param path the concrete request path.
- * @returns the captured params, or null when the path does not match.
- */
-export function matchdebonairpath(pattern: string, path: string): Record<string, string> | null {
-  const parts = pattern.split("/");
-  const segments = path.split("/");
-  if (parts.length !== segments.length) return null;
-  const params: Record<string, string> = {};
-  for (let index = 0; index < parts.length; index++) {
-    const part = parts[index];
-    if (part === undefined) return null;
-    const segment = segments[index];
-    if (segment === undefined) return null;
-    if (part.startsWith(":")) {
-      if (segment === "") return null;
-      params[part.slice(1)] = safedecode(segment);
-    } else if (part !== segment) {
-      return null;
-    }
-  }
-  return params;
-}
+/** the debonair route catalog seats, re-exported from the owner's leaf
+ * module ("@wenathlan/debonair/routetable" — the bridge of the ownership
+ * law in tsconfig/vite/vitest resolves the specifier to the monorepo
+ * source the sibling engine carries): the nineteen-row table, the pure
+ * matchers and the table's own types — the lane serves the catalog under
+ * the owner's names, the same re-export law forge/api.ts rides for the
+ * vault routes, so the route rows are never duplicated inside getry. */
+export { matchpath, matchroute, routes } from "@wenathlan/debonair/routetable";
+export type { GatewayHandlerName, RouteSpec, RouteVerdict } from "@wenathlan/debonair/routetable";
 
 /** the mount verdict of one request against the debonair catalog:
  * "routed" (a row matched the method and the path — the lane owns the
  * request), "method" (the path matches at least one row but the method
  * answers none of them — the lane still owns the path, the debonair
  * engine answers the 405) or "absent" (no row matches — the request rides
- * the other lanes of this gateway). */
-export type DebonairMountVerdict =
-  | { kind: "routed"; route: DebonairRoute; params: Record<string, string> }
-  | { kind: "method"; allowed: string[] }
-  | { kind: "absent" };
+ * the other lanes of this gateway). the owner's own dispatch verdict
+ * shape, imported with the table (the lane ownership seat the gateway
+ * mount loop reads). */
+export type DebonairMountVerdict = RouteVerdict;
 
-/** matches one method + path against the debonair catalog — the lane
- * ownership seat the gateway mount loop reads: a routed or method verdict
- * hands the request to the debonair lane, an absent verdict leaves it to
- * the provider lanes.
- *
- * @param method the http method (any case — the match normalizes).
- * @param path the request path.
- * @returns the verdict.
- */
-export function matchdebonairroute(method: string, path: string): DebonairMountVerdict {
-  const verb = method.trim().toUpperCase();
-  const allowed: string[] = [];
-  for (const route of DEBONAIRROUTES) {
-    const params = matchdebonairpath(route.path, path);
-    if (params === null) continue;
-    if (route.method === verb) return { kind: "routed", route, params };
-    allowed.push(route.method);
-  }
-  return allowed.length > 0 ? { kind: "method", allowed } : { kind: "absent" };
-}
+/** the debonair app of the family this lane fronts (the slug of the
+ * family table — the engine owner of the audio domain). */
+export const DEBONAIR_APP = "debonair";
 
-/** the debonair gateway request contract (mirrored from the debonair
- * gateway table): the transport adapter builds it — the json lane carries
+/** the debonair gateway request contract (the wire shape the debonair
+ * gateway serves): the transport adapter builds it — the json lane carries
  * the parsed body object, the raw lane carries the verbatim bytes with the
  * facts in the query. */
 export type DebonairGatewayRequest = {

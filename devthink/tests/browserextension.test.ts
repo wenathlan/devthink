@@ -1,26 +1,50 @@
+// @ts-nocheck
 /**
- * extension tests prove protocol and routing without Chrome, credentials or network access.
+ * browserextension tests prove protocol and routing without Chrome, credentials or network access.
+ *
+ * The suite moved from saddle/tests/extension.test.ts together with the
+ * extension surface (the wave 2 logic-regrouping PR): the Chrome MV3
+ * bridge runs in the user's browser, so it is not a VM modality and its
+ * contracts live in devthink/browserextension.ts — the saddle keeps only
+ * the transport-neutral virtual-browser contracts (sections 1-9 of
+ * saddle/browser.ts). The tracked assets of the surface ride the devthink
+ * root under the extension-prefixed names because the devthink root owns
+ * its own extension surface (manifest.json of record, popup.ts,
+ * design.html) — the migrated saddle assets carry the prefix and no root
+ * name collides.
+ *
+ * The battery rides @ts-nocheck the way the module it pins does: the
+ * section sources of browserextension.ts must stay verbatim classic
+ * JavaScript (the build adapter extracts them byte-for-byte into the
+ * artifact scripts Chrome injects as classic files), so the module and
+ * the suite keep the loose typing baseline the saddle authored them
+ * under — annotating either would rewrite the pinned surface for no
+ * runtime gain.
  */
 
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { createcommand, createerror, createsnapshot, isfreshsnapshot, snapshotdiff } from "../browser.ts";
-import { createworkerrouter } from "../browser.ts";
-import { startworker } from "../browser.ts";
-import { extensionpermissions, permissionpolicy, requestpermission } from "../browser.ts";
-import { buildextension } from "../browser.ts";
+import { createcommand, createerror, createsnapshot, isfreshsnapshot, snapshotdiff } from "../browserextension.ts";
+import { createworkerrouter } from "../browserextension.ts";
+import { startworker } from "../browserextension.ts";
+import { extensionpermissions, permissionpolicy, requestpermission } from "../browserextension.ts";
+import { buildextension } from "../browserextension.ts";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-/* repository root resolved from this test file location. */
-const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
-/* the content and pagebridge sections of the merged browser.ts register
-   globalThis.saddlecontent and globalThis.saddlepagebridge at module load —
-   the former side-effect imports of extension/content.js and
-   extension/pagebridge.js are covered by the browser.js imports above. */
+/* the devthink app root resolved from this test file location. */
+const appRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+/* the saddle engine root beside the app — the migration contract asserts
+   the engine no longer carries the extension surface. */
+const saddleRoot = join(appRoot, "..", "saddle");
+/* the content and pagebridge sections of the migrated browserextension.ts
+   register globalThis.saddlecontent and globalThis.saddlepagebridge at
+   module load — the former side-effect imports of extension/content.js and
+   extension/pagebridge.js are covered by the browserextension.ts imports
+   above. */
 
 describe("the extension surface", () => {
 it("creates versioned extension commands and correlated responses", async () => {
@@ -116,18 +140,23 @@ it("keeps extension permissions minimal and optional escalation caller-owned", a
 });
 
 it("builds a versioned unpacked extension artifact without mutating the source manifest", async () => {
-  /* the monorepo flat contract: the tracked extension source surface lives
-     at the app root (manifest.json, the popup page and stylesheet, and the
-     seed icon ladder beside the single icon source) and the retired web/
-     folder must stay gone — the build reads the flat entries and emits the
-     versioned artifact. */
-  assert.equal(existsSync(join(repoRoot, "manifest.json")), true, "manifest.json is the tracked extension manifest");
-  assert.equal(existsSync(join(repoRoot, "icon.svg")), true, "icon.svg is the single tracked icon source");
-  assert.equal(existsSync(join(repoRoot, "popup.html")), true, "popup.html is the tracked popup page");
-  assert.equal(existsSync(join(repoRoot, "popup.css")), true, "popup.css is the tracked popup stylesheet");
-  assert.equal(existsSync(join(repoRoot, "icon128.png")), true, "the tracked seed icon ladder rides the root");
-  assert.equal(existsSync(join(repoRoot, "web")), false, "web must not exist — the extension surface is flat at the app root");
-  const output = await mkdtemp(join(tmpdir(), "saddle-extension-"));
+  /* the migrated flat contract: the tracked extension source surface of
+     the saddle browser bridge lives at the devthink app root under the
+     extension-prefixed names (extensionmanifest.json, the popup page and
+     stylesheet, and the seed icon ladder beside the app icon source),
+     because the devthink root already owns its own extension surface —
+     and the saddle engine root no longer carries the surface at all (the
+     wave 2 regrouping: the extension runs in the user's browser, so it
+     is not a VM modality of the engine). */
+  assert.equal(existsSync(join(appRoot, "extensionmanifest.json")), true, "extensionmanifest.json is the tracked manifest of the migrated extension surface");
+  assert.equal(existsSync(join(appRoot, "icon.svg")), true, "icon.svg is the tracked icon source the manifest references");
+  assert.equal(existsSync(join(appRoot, "extensionpopup.html")), true, "extensionpopup.html is the tracked popup page of the migrated surface");
+  assert.equal(existsSync(join(appRoot, "extensionpopup.css")), true, "extensionpopup.css is the tracked popup stylesheet of the migrated surface");
+  assert.equal(existsSync(join(appRoot, "extensionicon128.png")), true, "the tracked seed icon ladder rides the app root under the extension prefix");
+  assert.equal(existsSync(join(saddleRoot, "manifest.json")), false, "the extension manifest left the saddle engine root with the wave 2 regrouping");
+  assert.equal(existsSync(join(saddleRoot, "popup.html")), false, "the extension popup page left the saddle engine root with the wave 2 regrouping");
+  assert.equal(existsSync(join(saddleRoot, "popup.css")), false, "the extension popup stylesheet left the saddle engine root with the wave 2 regrouping");
+  const output = await mkdtemp(join(tmpdir(), "devthink-browserextension-"));
   try {
     const result = await buildextension({ output, version: "1.8.1" });
     const manifest = JSON.parse(await readFile(join(output, "manifest.json"), "utf8"));

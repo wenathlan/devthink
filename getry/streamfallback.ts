@@ -4,15 +4,18 @@
  * the error catalog the gateway matches every upstream failure against and the
  * fallback runner that walks the route chain when one model dies. The verdict
  * vocabulary follows the declarative chains of omniroute (priority order,
- * already-tried routes excluded) and the retry curve follows the house
- * retry.backoff discipline of devthink (doubling backoff, ±20% jitter, the
- * server's Retry-After hint always wins) — reimplemented here, never imported
- * across apps. Wire: the streaming routes (the PARSERSTEPS pattern of
- * gateway.ts) wrap their upstream call with `runwithfallback`; failures land
- * on the ApiKeyRow counters of db.ts through `applyerrortokey` and the trail
- * feeds the chat log rows.
+ * already-tried routes excluded) and stays local to this file; the retry curve
+ * is the house retry.backoff discipline the request queue family owns,
+ * consumed through the published @wenathlan/devthink/queue export — the
+ * doubling curve, the ±20% jitter, the abortable sleep and the Retry-After
+ * parsing answer from the owner (the manifest debt of the ownership law is
+ * paid; the local backoff copy retired). Wire: the streaming routes (the
+ * PARSERSTEPS pattern of gateway.ts) wrap their upstream call with
+ * `runwithfallback`; failures land on the ApiKeyRow counters of db.ts through
+ * `applyerrortokey` and the trail feeds the chat log rows.
  */
 
+import { delayForAttempt, parseRetryAfterMs, sleepMs, type RetryConfig } from "@wenathlan/devthink/queue";
 import type { ApiKeyRow } from "./db.ts";
 
 /** the error catalog of the house: every upstream failure answers exactly one code. */
@@ -97,7 +100,11 @@ export type FallbackOptions = {
   onstep?: (step: FallbackStep) => void;
 };
 
-/** the house defaults for the streaming routes. */
+/**
+ * the house knobs for the streaming routes: the timing values the runner hands
+ * to the queue family's backoff curve — 250ms initial doubling (×2), capped at
+ * 4s, ±20% jitter — the discipline itself lives in @wenathlan/devthink/queue.
+ */
 export const FALLBACKDEFAULTS: FallbackOptions = {
   retriesPerRoute: 1,
   initialDelayMs: 250,
@@ -144,21 +151,13 @@ export function verdictfor(code: StreamErrorCode): FallbackVerdict {
   return "fallback";
 }
 
-/** parses a `Retry-After` header value (seconds or http-date) into ms, clamped. */
-function parseRetryAfterMs(value: string | null | undefined, now: number, maxDelayMs: number): number | undefined {
-  const raw = value?.trim();
-  if (!raw) return undefined;
-  if (/^\d+$/.test(raw)) return Math.min(Math.max(Number.parseInt(raw, 10) * 1000, 0), maxDelayMs);
-  const target = Date.parse(raw);
-  if (!Number.isFinite(target)) return undefined;
-  return Math.min(Math.max(target - now, 0), maxDelayMs);
-}
-
 /**
  * errorfromresponse — builds the classified failure from a fetch `Response`,
  * reading the `Retry-After` hint into the error so the runner honors it over
- * the computed backoff. Non-StreamError throws inside the attempt callback
- * classify as `unknown` and abort the chain (a bug must not turn into a storm).
+ * the computed backoff (the hint parsing is the queue family's
+ * `parseRetryAfterMs`, clamped to the house cap). Non-StreamError throws
+ * inside the attempt callback classify as `unknown` and abort the chain (a bug
+ * must not turn into a storm).
  *
  * @param response the failed fetch response (consumed or not, body untouched).
  * @param now the reference clock for http-date hints (defaults to the real clock).
@@ -179,20 +178,27 @@ export function errorfromresponse(
   );
 }
 
-/** the backoff curve: attempt 0 waits nothing, attempt n doubles from the initial delay. */
-function delayforattempt(options: FallbackOptions, attempt: number): number {
-  if (attempt <= 0) return 0;
-  const base = Math.min(options.initialDelayMs * 2 ** (attempt - 1), options.maxDelayMs);
-  const jitter = 1 + (2 * Math.random() - 1) * Math.min(Math.max(options.jitterRatio, 0), 1);
-  return Math.max(0, Math.round(base * jitter));
-}
-
-/** an abortable timer for node and browser. */
-function sleepms(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    if (ms <= 0) resolve();
-    else setTimeout(resolve, ms);
-  });
+/**
+ * retryconfigof — translates the runner knobs into the owner's retry policy:
+ * the queue family's `delayForAttempt` curve reads a {@link RetryConfig}, and
+ * the gateway knobs map onto it one to one — `initialDelayMs` rides
+ * `initialIntervalMs`, `maxDelayMs` rides `maxIntervalMs`, `jitterRatio`
+ * rides verbatim, and the doubling the retired local copy hardcoded rides as
+ * `backoffMultiplier` 2 (the same curve, owned by the queue family). The
+ * `retriesPerRoute` budget rides `maxRetries` so the translation stays one
+ * honest policy object.
+ *
+ * @param options the runner knobs (the merged {@link FALLBACKDEFAULTS}).
+ * @returns the owner's retry policy for the same curve.
+ */
+function retryconfigof(options: FallbackOptions): RetryConfig {
+  return {
+    maxRetries: options.retriesPerRoute,
+    initialIntervalMs: options.initialDelayMs,
+    backoffMultiplier: 2,
+    maxIntervalMs: options.maxDelayMs,
+    jitterRatio: options.jitterRatio,
+  };
 }
 
 /**
@@ -215,8 +221,11 @@ export function orderchain(routes: readonly FallbackRoute[]): FallbackRoute[] {
  * failures retry the same route up to `retriesPerRoute`, fallback-verdict
  * failures move to the next route, abort-verdict failures stop the chain.
  * The `Retry-After` hint of a thrown StreamError wins over the computed
- * backoff. Answers the first success; throws the last failure (a
- * StreamFallbackError carrying the full trail) when the chain is exhausted.
+ * backoff, and the computed backoff itself is the queue family's
+ * `delayForAttempt` curve over the runner knobs (the discipline answers from
+ * @wenathlan/devthink/queue, never from a local copy). Answers the first
+ * success; throws the last failure (a StreamFallbackError carrying the full
+ * trail) when the chain is exhausted.
  *
  * @typeParam T the attempt result.
  * @param routes the registered chain (any order; {@link orderchain} sorts).
@@ -247,12 +256,12 @@ export async function runwithfallback<T>(
         const delayMs =
           verdict === "fallback" || attemptNo > options.retriesPerRoute
             ? 0
-            : (hint ?? delayforattempt(options, attemptNo));
+            : (hint ?? delayForAttempt(retryconfigof(options), attemptNo));
         trail.push({ routeId: route.id, attempt: attemptNo, status: streamError.status, code, delayMs });
         options.onstep?.(trail[trail.length - 1]);
         if (verdict === "abort") throw new StreamFallbackError(streamError.message, streamError.status, code, trail);
         if (verdict === "fallback" || attemptNo > options.retriesPerRoute) break;
-        await sleepms(delayMs);
+        await sleepMs(delayMs);
       }
     }
   }

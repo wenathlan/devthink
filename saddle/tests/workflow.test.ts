@@ -387,7 +387,13 @@ describe("the workflow contract", () => {
     }
     /* the app contract: one tsx app, every module at the app root (the
      * static console pages and the retired wrapper folders are gone for
-     * good). The main.tsx wrapper stays retired: the app owns its mount. */
+     * good). The main.tsx wrapper stays retired: the app owns its mount.
+     * The manifest.json of the retired root extension left with the wave 2
+     * regrouping: the Chrome MV3 surface runs in the user's browser, so it
+     * migrated to devthink/browserextension.ts (the tracked assets ride the
+     * devthink root as extensionmanifest.json and the extension-prefixed
+     * family) and the engine root keeps only the PWA manifest
+     * (manifest.webmanifest) of the console. */
     for (const required of [
       "App.tsx",
       "index.html",
@@ -399,7 +405,7 @@ describe("the workflow contract", () => {
       "db.ts",
       "auth.ts",
       "mesh.ts",
-      "manifest.json",
+      "manifest.webmanifest",
       "icon.svg",
       "README.md",
       "init.sql",

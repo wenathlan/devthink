@@ -54,6 +54,12 @@ import {
 import { sendfetch, type fetchtransport, type transportresponse } from "@wenathlan/devthink/http";
 import { randomid } from "@wenathlan/devthink/memory";
 import { secretleakscan, vaultdelete, vaultstore, vaultvaluefor } from "@wenathlan/devthink/security";
+// the retry.backoff owner of the platform (queue.ts §2 of the os envelope) —
+// the gateway's Retry-After parse walks the owner's parser (parseRetryAfterMs)
+// through the published queue specifier instead of keeping a second twin: the
+// 2-c dedup, documented on gatewayretryafterof below (the request queue family
+// owns the retry backoff discipline of the family).
+import { parseRetryAfterMs } from "@wenathlan/devthink/queue";
 
 /**
  * Llm integration logics of the 1.1.57 family.
@@ -1869,17 +1875,34 @@ export function gatewayerrorfrom(error: unknown, requestid: string): gatewayerro
   );
 }
 
-/** Reads the retry after milliseconds a rate limited answer announced: the retry-after header carries seconds or milliseconds, the request epoch dates pass through and an absent or malformed header answers undefined. */
+/**
+ * Reads the retry after milliseconds a rate limited answer announced: the
+ * retry-after header carries seconds or milliseconds, the request epoch
+ * dates pass through and an absent or malformed header answers undefined.
+ *
+ * The 2-c dedup (the family law: zero duplicated logic): the parse walk
+ * itself — the seconds × 1000 read, the HTTP-date read, the
+ * malformed-undefined verdict and the zero floor — rides the owner of
+ * the retry.backoff family, queue.ts §2 `parseRetryAfterMs`, called with
+ * the clamp disabled (maxDelayMs ∞: the gateway policy carries no
+ * ceiling, so the owner's 120s default clamp never bites on this lane).
+ * The one deliberate fork kept on this side is the milliseconds
+ * heuristic in the digits branch: a digit count past ten million
+ * seconds (115+ days) is never a real seconds hint — some providers ship
+ * already-millisecond values — and the owner's signature cannot express
+ * that policy, so the fork stays local and explicit instead of silently
+ * dropping the feature.
+ */
 export function gatewayretryafterof(headers: Record<string, string>): number | undefined {
   for (const [name, value] of Object.entries(headers)) {
     if (name.toLowerCase() !== "retry-after") continue;
     const trimmed = value.trim();
     if (/^\d+$/.test(trimmed)) {
       const parsed = Number.parseInt(trimmed, 10);
-      return parsed > 10_000_000 ? parsed : parsed * 1000;
+      if (parsed > 10_000_000) return parsed;
     }
-    const date = Date.parse(trimmed);
-    if (Number.isFinite(date)) return Math.max(0, date - Date.now());
+    const wait = parseRetryAfterMs(trimmed, Date.now(), Number.POSITIVE_INFINITY);
+    if (wait !== undefined) return wait;
   }
   return undefined;
 }

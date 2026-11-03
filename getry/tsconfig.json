@@ -75,7 +75,9 @@
       "@wenathlan/getry/nodeshim": ["./nodeshim.ts"],
       "@wenathlan/getry/types": ["./types.ts"],
       "@wenathlan/getry/constants": ["./constants.ts"],
-      "@wenathlan/getry/tests/researchfixtures": ["./tests/researchfixtures.ts"]
+      "@wenathlan/getry/tests/researchfixtures": ["./tests/researchfixtures.ts"],
+      "@wenathlan/debonair/routetable": ["../debonair/routetable.ts"],
+      "@wenathlan/devthink/queue": ["../devthink/queue.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],

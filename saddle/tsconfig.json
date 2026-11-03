@@ -28,6 +28,6 @@
       "@saddle/isolation": ["./isolation.ts"]
     }
   },
-  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx", "docs/example-*.ts", "jsdomtypes.ts"],
+  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx", "docs/example-*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "coverage", "web", "tests", "build"]
 }

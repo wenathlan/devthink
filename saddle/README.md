@@ -170,14 +170,14 @@ The package export map is defined by the root manifest. Runnable public examples
 
 ## Browser extension
 
-The extension is a TypeScript-first Manifest V3 reference surface in [`extension/`](extension/). Its source is compiled into a stable JavaScript unpacked artifact and contains a popup, service worker, isolated content bridge, read-only page-world `pagefacts` boundary, snapshot diffs and persisted window/tab/frame context for explicit resume.
+The extension surface migrated to the devthink app with the wave 2 regrouping: it is a TypeScript-first Manifest V3 reference surface (popup, service worker, isolated content bridge, read-only page-world `pagefacts` boundary, snapshot diffs and persisted window/tab/frame context for explicit resume) that runs in the user's browser, so it is not a VM modality of the engine — its module, tracked assets and tests now live at `devthink/browserextension.ts`, the devthink root `extension*` asset family and `devthink/tests/browserextension.test.ts` (see `docs/browser.md` for the migration map).
 
 ```bash
-# build an isolated JavaScript artifact using the version supplied by the caller or release tag
-npm run extension:build -- --output build/extension
+# build an isolated JavaScript artifact from the devthink app root using the version supplied by the caller or release tag
+cd ../devthink && node --import tsx ./browserextension.ts --output build/browserextension
 
-# load build/extension from chrome://extensions
-ls build/extension/manifest.json build/extension/worker.js build/extension/content.js build/extension/popup.html
+# load build/browserextension from chrome://extensions
+ls build/browserextension/manifest.json build/browserextension/worker.js build/browserextension/content.js build/browserextension/popup.html
 ```
 
 The base permission set is `activeTab`, `scripting` and `storage`. It does not request broad host permissions, cookies, `webRequest`, debugger access or arbitrary page code execution. Optional host escalation remains caller-owned. Releases attach `saddle.extension.<version>.zip`; cross-browser profiles remain adapter work.

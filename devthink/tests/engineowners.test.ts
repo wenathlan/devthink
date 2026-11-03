@@ -94,19 +94,13 @@ describe("the ownership manifest", () => {
     assert.match(gateway.role, /@wenathlan\/getry\/engine/, "the library specifiers the os imports through");
   });
 
-  it("carries the explicit debt entries with their honest migration paths", () => {
-    // the getry debt is the one known duplication: streamfallback.ts
-    // reimplements the devthink retry backoff discipline instead of
-    // consuming the published queue family
-    const getry = engineof("getry");
-    assert.ok(getry?.debt, "the getry row must carry its documented debt");
-    assert.match(getry.debt, /streamfallback\.ts/);
-    assert.match(getry.debt, /migration path/i);
-    // every other row is debt-free: an undocumented duplication is the lie
+    it("carries zero debt entries — every documented duplication has been paid", () => {
+    // the streamfallback.ts debt was the last one: the file now rides the
+    // published @wenathlan/devthink/queue export (the request queue family
+    // owns the retry backoff) and keeps only the omniroute verdict
+    // vocabulary local, exactly the migration path the manifest recorded
     for (const row of ENGINEOWNERS) {
-      if (row.owner !== "getry") {
-        assert.equal(row.debt, undefined, `${row.owner} carries an undocumented debt entry`);
-      }
+      assert.equal(row.debt, undefined, `${row.owner} carries a debt entry — every documented duplication must be paid before the wave lands`);
     }
   });
 });

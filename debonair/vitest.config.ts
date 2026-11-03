@@ -47,6 +47,16 @@ export default defineConfig({
        * surface to its own source — the graph the registry resolves for the
        * embedder, resolved to the monorepo root inside the app. */
       "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "audiofeatures.ts"),
+
+      /** the route table self bridge the wave 2d carve out rides: the
+       * library face walk pins the leaf through the published library
+       * specifier ("@wenathlan/debonair/routetable" — the nineteen-row
+       * catalog the gateway and the sibling lanes ride), so the app
+       * resolves its own published surface to its own source (the
+       * installed envelope does not carry the leaf yet — the bridge is the
+       * resolution until the published one lands). the entry retires when
+       * the published envelope carries the built route table. */
+      "@wenathlan/debonair/routetable": path.resolve(import.meta.dirname, "routetable.ts"),
     },
   },
   test: {

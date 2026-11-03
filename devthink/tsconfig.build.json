@@ -93,6 +93,7 @@
     "progress.ts",
     "hardening.ts",
     "dashdone.ts",
+    "queue.ts",
     "version.ts",
     "runtime.ts",
     "cjs.ts",
