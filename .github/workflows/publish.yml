@@ -2168,6 +2168,20 @@ jobs:
                      familybuildctx/debonair/dist \
                      familybuildctx/debonair/build
               ;;
+            debonair)
+              # the engine-ownership sibling map is symmetric: debonair
+              # resolves the cadria synth palette through the
+              # ../cadria/synthpalette vite aliases (coverpalette.ts), so
+              # the cadria sibling rides the context whole (sources only -
+              # the build never installs it, the aliases read the .ts
+              # files directly) the same way the cadria lane stages the
+              # debonair audio engine above
+              mkdir -p familybuildctx/cadria
+              cp -a cadria/. familybuildctx/cadria/
+              rm -rf familybuildctx/cadria/node_modules \
+                     familybuildctx/cadria/dist \
+                     familybuildctx/cadria/build
+              ;;
           esac
       - name: build and push the site container
         if: steps.published.outputs.skip != 'true'
@@ -4342,7 +4356,11 @@ jobs:
         run: npm --prefix saddle run build:engine
       - name: write target plan
         working-directory: saddle
-        run: node build/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
+        # the dist law moved the emitted engine seat to distpackage (the
+        # source-is-library doctrine: tsc typechecks, the thin targetcli
+        # wrapper lands at distpackage/packager), so the lane reads the
+        # wrapper the build:engine step above just wrote there.
+        run: node distpackage/packager/targetcli.js "${{ matrix.target }}" "${{ matrix.format }}" build/targets
       - name: upload target plan
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

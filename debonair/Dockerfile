@@ -27,6 +27,15 @@ COPY app/ .
 # container (the app-only context left the import unloadable and the
 # vite step died on labels.ts).
 COPY vault/ /src/vault/
+# The cadria sibling of the engine-ownership law: coverpalette.ts
+# imports the synth palette through the @wenathlan/cadria/synthpalette
+# bridge and the vite alias resolves the specifier to
+# ../cadria/synthpalette.ts, so the sibling sources land at /src/cadria
+# where that bridge answers inside the container (the engine-ownership
+# map is symmetric: cadria stages debonair for the audio engine,
+# debonair stages cadria for the synth palette - sources only, the
+# build never installs the sibling, the alias reads the .ts files).
+COPY cadria/ /src/cadria/
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
