@@ -10768,6 +10768,12 @@ span[data-tile] {
   min-height: var(--win-titlebar-h);
   align-items: stretch;
   padding-left: 14px;
+  /* the row clips itself: the caption glyphs never ride outside the frame
+     when a shrink resize lands (the owner docket law — the close glyph
+     stays inside the window at every width) and the rounded corners keep
+     the red hover inside their arc (the snap flyout is a portal, the clip
+     never touches it) */
+  overflow: hidden;
   border-bottom: 1px solid var(--color-hairline);
   border-radius: calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0 0;
   background: var(--win-taskbar-tint);
