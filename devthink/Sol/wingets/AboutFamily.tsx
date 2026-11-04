@@ -5,8 +5,10 @@
  * rest varied), every tile carries the identity accent of its app as a
  * color-mix light behind the type (no box walls — campaign v3 r2-a) and the
  * roster is answered by the same family.sites accessor the explore surface
- * reads, so it is never restated on the institutional page. The entrance
- * rides the engine .enter kit at 70ms steps.
+ * reads, so it is never restated on the institutional page. The words ride
+ * the label store now (about.family.* — the data lane law): the copy never
+ * restates on the page either. The entrance rides the engine .enter kit at
+ * 70ms steps.
  */
 
 import {OpenRegular as SquareArrowOutUpRight} from "@fluentui/react-icons";
@@ -14,6 +16,7 @@ import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { type FamilySite, familySites } from "../../catalog.ts";
 import { familyAccentOf } from "../../familyaccent.ts";
+import { osText } from "../../oslabels.ts";
 
 /** the family identity accents resolve through the one spec-12 table the
  * identity battery pins (familyAccentOf — the single source the family
@@ -47,14 +50,11 @@ export function AboutFamily() {
   return (
     <section className="inst-section enter" style={{ "--i": 4 } as CSSProperties}>
       <p className="r2a-kicker">
-        the family
-        <b>{`${sites.length} named sites`}</b>
+        {osText("about.family.kicker")}
+        <b>{osText("about.family.count").replace("{count}", String(sites.length))}</b>
       </p>
-      <h2>The family</h2>
-      <p className="inst-section__intro">
-        One platform, several named sites. Each product lives on its own subdomain with its own interface, while the
-        engines stay shared.
-      </p>
+      <h2>{osText("about.family.heading")}</h2>
+      <p className="inst-section__intro">{osText("about.family.intro")}</p>
       <div className="family-wall">
         {sites.map((site, index) => (
           <a
@@ -69,7 +69,7 @@ export function AboutFamily() {
             <strong>{site.name}</strong>
             <p>{site.blurb}</p>
             <span className="family-card__cta">
-              open site
+              {osText("about.family.cta")}
               <SquareArrowOutUpRight fontSize={12} />
             </span>
           </a>

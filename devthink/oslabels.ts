@@ -8,6 +8,7 @@
  * accessors, and the same rows answer the paired database endpoint when it
  * comes online (the offline seeds are the static build's answer, the
  * chatlabels precedent). Nothing is written to the visitor device. */
+import type { CalculatorKeyAction } from "./calculator.ts";
 
 /* -------------------------------- strings ------------------------------- */
 
@@ -687,7 +688,22 @@ const seedOsStrings: OsStringRow[] = [
   },
 
   /* ---------------------------------- about ------------------------------- */
+  { id: "about.family.kicker", text: "the family" },
+  { id: "about.family.count", text: "{count} named sites" },
+  { id: "about.family.heading", text: "The family" },
+  {
+    id: "about.family.intro",
+    text: "One platform, several named sites. Each product lives on its own subdomain with its own interface, while the engines stay shared.",
+  },
+  { id: "about.family.cta", text: "open site" },
+  { id: "about.timeline.kicker", text: "the release ladder" },
   { id: "about.timeline.heading", text: "How the platform moved" },
+  {
+    id: "about.timeline.intro",
+    text: "The release ladder records the stamps of the platform; this page reads the same rows the history surface serves.",
+  },
+  { id: "about.timeline.stat", text: "release rungs" },
+  { id: "about.timeline.latest", text: "latest" },
 
   /* -------------------------------- guard wall ------------------------------ */
   { id: "guard.wall.aria", text: "Developer tools notice" },
@@ -746,6 +762,82 @@ export const seedOsCalendarWeekdays: string[] = ["S", "M", "T", "W", "T", "F", "
 /** the weekday letters in order. */
 export function osCalendarWeekdays(): string[] {
   return seedOsCalendarWeekdays;
+}
+
+/* ------------------------------- calculator ------------------------------ */
+
+/** the four memory kinds the strip answers with (the kind the winget hands
+ * the calculator page, the same grammar the pure logic module documents). */
+export type OsCalcMemoryKey = "mc" | "mr" | "m+" | "m-";
+
+/** one memory strip key of the keypad: the glyph the button prints, the
+ * memory kind the calculator logic applies and the aria name (the dot id
+ * this table owns, resolved once here). */
+export type OsCalcMemoryRow = { label: string; kind: OsCalcMemoryKey; aria: string };
+
+const seedOsCalcMemoryKeys: OsCalcMemoryRow[] = [
+  { label: "MC", kind: "mc", aria: osText("calc.key.memoryClear") },
+  { label: "MR", kind: "mr", aria: osText("calc.key.memoryRecall") },
+  { label: "M+", kind: "m+", aria: osText("calc.key.memoryAdd") },
+  { label: "M−", kind: "m-", aria: osText("calc.key.memorySubtract") },
+];
+
+/** the memory strip rows of the keypad, strip order. */
+export function osCalcMemoryKeys(): OsCalcMemoryRow[] {
+  return seedOsCalcMemoryKeys;
+}
+
+/** one on-screen key of the keypad grid: the glyph the button prints, the
+ * key action the pure logic module understands, the muted flag of the
+ * modifier row, the equals flag of the answer key and the aria name when
+ * the key owns one (the digit keys derive theirs from the {key} template,
+ * the winget never restates it). */
+export type OsCalcKey = {
+  label: string;
+  action: CalculatorKeyAction;
+  muted?: boolean;
+  equals?: boolean;
+  aria?: string;
+};
+
+const seedOsCalcKeys: OsCalcKey[][] = [
+  [
+    { label: "C", action: { kind: "clear" }, muted: true },
+    { label: "(", action: { kind: "lparen" }, muted: true },
+    { label: ")", action: { kind: "rparen" }, muted: true },
+    { label: "\u232b", action: { kind: "backspace" }, muted: true, aria: osText("calc.key.backspace") },
+  ],
+  [
+    { label: "7", action: { kind: "digit", digit: "7" } },
+    { label: "8", action: { kind: "digit", digit: "8" } },
+    { label: "9", action: { kind: "digit", digit: "9" } },
+    { label: "÷", action: { kind: "operator", value: "÷" } },
+  ],
+  [
+    { label: "4", action: { kind: "digit", digit: "4" } },
+    { label: "5", action: { kind: "digit", digit: "5" } },
+    { label: "6", action: { kind: "digit", digit: "6" } },
+    { label: "×", action: { kind: "operator", value: "×" } },
+  ],
+  [
+    { label: "1", action: { kind: "digit", digit: "1" } },
+    { label: "2", action: { kind: "digit", digit: "2" } },
+    { label: "3", action: { kind: "digit", digit: "3" } },
+    { label: "−", action: { kind: "operator", value: "−" } },
+  ],
+  [
+    { label: "%", action: { kind: "percent" } },
+    { label: "0", action: { kind: "digit", digit: "0" } },
+    { label: ".", action: { kind: "decimal" } },
+    { label: "+", action: { kind: "operator", value: "+" } },
+  ],
+  [{ label: "=", action: { kind: "equals" }, equals: true, aria: osText("calc.key.equals") }],
+];
+
+/** the on-screen key rows of the keypad, the four-column calculator order
+ * with the answer key closing the grid alone. */
+export function osCalcKeys(): OsCalcKey[][] {
+  return seedOsCalcKeys;
 }
 
 /* ------------------------------- providers ------------------------------- */

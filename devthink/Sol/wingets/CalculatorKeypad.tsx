@@ -1,66 +1,24 @@
 /**
  * keypad.tsx — the keypad of the native calculator: the memory
  * strip (MC, MR, M+, M−) above the standard four column grid, every key
- * answering with the key action the pure logic module understands. Loose
- * component of the calculator page.
+ * answering with the key action the pure logic module understands. The key
+ * tables ride the label store now (osCalcKeys / osCalcMemoryKeys — the
+ * data lane law): the winget renders the rows the store serves, it never
+ * restates a glyph, an action or an aria name. Loose component of the
+ * calculator page.
  */
 import type { CalculatorKeyAction } from "../../calculator";
-import { osText } from "../../oslabels.ts";
-
-/** one kind of memory key the strip answers with. */
-export type CalculatorMemoryKey = "mc" | "mr" | "m+" | "m-";
-
-type KeypadCell = { label: string; action: CalculatorKeyAction; muted?: boolean; aria?: string };
-
-const KEYPAD_ROWS: KeypadCell[][] = [
-  [
-    { label: "C", action: { kind: "clear" }, muted: true },
-    { label: "(", action: { kind: "lparen" }, muted: true },
-    { label: ")", action: { kind: "rparen" }, muted: true },
-    { label: "\u232b", action: { kind: "backspace" }, muted: true, aria: osText("calc.key.backspace") },
-  ],
-  [
-    { label: "7", action: { kind: "digit", digit: "7" } },
-    { label: "8", action: { kind: "digit", digit: "8" } },
-    { label: "9", action: { kind: "digit", digit: "9" } },
-    { label: "÷", action: { kind: "operator", value: "÷" } },
-  ],
-  [
-    { label: "4", action: { kind: "digit", digit: "4" } },
-    { label: "5", action: { kind: "digit", digit: "5" } },
-    { label: "6", action: { kind: "digit", digit: "6" } },
-    { label: "×", action: { kind: "operator", value: "×" } },
-  ],
-  [
-    { label: "1", action: { kind: "digit", digit: "1" } },
-    { label: "2", action: { kind: "digit", digit: "2" } },
-    { label: "3", action: { kind: "digit", digit: "3" } },
-    { label: "−", action: { kind: "operator", value: "−" } },
-  ],
-  [
-    { label: "%", action: { kind: "percent" } },
-    { label: "0", action: { kind: "digit", digit: "0" } },
-    { label: ".", action: { kind: "decimal" } },
-    { label: "+", action: { kind: "operator", value: "+" } },
-  ],
-];
-
-const MEMORY_KEYS: { label: string; kind: CalculatorMemoryKey; aria: string }[] = [
-  { label: "MC", kind: "mc", aria: osText("calc.key.memoryClear") },
-  { label: "MR", kind: "mr", aria: osText("calc.key.memoryRecall") },
-  { label: "M+", kind: "m+", aria: osText("calc.key.memoryAdd") },
-  { label: "M−", kind: "m-", aria: osText("calc.key.memorySubtract") },
-];
+import { type OsCalcMemoryKey, osCalcKeys, osCalcMemoryKeys, osText } from "../../oslabels.ts";
 
 export function CalculatorKeypad({
   onkey,
   onmemory }: {
   onkey: (action: CalculatorKeyAction) => void;
-  onmemory: (key: CalculatorMemoryKey) => void;
+  onmemory: (key: OsCalcMemoryKey) => void;
 }) {
   return (
     <div className="dtw-calc__keys">
-      {MEMORY_KEYS.map((key) => (
+      {osCalcMemoryKeys().map((key) => (
         <button
           key={key.kind}
           type="button"
@@ -71,25 +29,23 @@ export function CalculatorKeypad({
           {key.label}
         </button>
       ))}
-      {KEYPAD_ROWS.flat().map((cell) => (
+      {osCalcKeys().flat().map((cell) => (
         <button
           key={cell.label}
           type="button"
-          className={cell.muted ? "dtw-calc__key dtw-calc__key--muted" : "dtw-calc__key"}
+          className={
+            cell.equals
+              ? "dtw-calc__key dtw-calc__key--equals"
+              : cell.muted
+                ? "dtw-calc__key dtw-calc__key--muted"
+                : "dtw-calc__key"
+          }
           aria-label={cell.aria ?? (cell.action.kind === "digit" ? osText("calc.key.digit").replace("{key}", cell.label) : cell.label)}
           onClick={() => onkey(cell.action)}
         >
           {cell.label}
         </button>
       ))}
-      <button
-        type="button"
-        className="dtw-calc__key dtw-calc__key--equals"
-        aria-label={osText("calc.key.equals")}
-        onClick={() => onkey({ kind: "equals" })}
-      >
-        =
-      </button>
     </div>
   );
 }
