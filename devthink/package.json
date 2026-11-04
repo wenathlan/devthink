@@ -36,8 +36,10 @@
     "@prisma/client": "^7.10.1",
     "@wenathlan/cadria": "~2.0.155",
     "@wenathlan/debonair": "~2.0.155",
+    "@wenathlan/devthink": "~2.0.154",
     "@wenathlan/getry": "~2.0.155",
     "@wenathlan/saddle": "~2.0.155",
+    "@wenathlan/argan": "~2.0.155",
     "@wenathlan/vault": "~2.0.155",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
@@ -95,13 +97,13 @@
     "@tailwindcss/vite": "^4.3.4",
     "@tsconfig/node26": "^26.0.1",
     "@types/better-sqlite3": "^9.6.0",
-    "@types/three": "^0.187.0",
     "@types/chrome": "^0.3.7",
     "@types/express": "^5.0.6",
     "@types/google.maps": "^3.66.9",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.187.0",
     "@vitejs/plugin-react": "^6.2.1",
     "add": "^2.0.9",
     "autoprefixer": "^10.6.2",
@@ -406,7 +408,7 @@
   },
   "engines": {
     "bare": "^1.18.0",
-    "bun": ">=1.4.4 <2",
+    "bun": "^1.4.4",
     "cargo": ">=1.85.0",
     "chrome": "^16.0.912",
     "cnpm": "^9.4.0",
@@ -419,7 +421,7 @@
     "iojs": "^1.0.0",
     "java": ">=17",
     "node": ">=26.13.0 <27",
-    "npm": ">=12.2.1 <13",
+    "npm": "^12.2.1",
     "pnpm": "^12.6.0",
     "python": ">=3.11.0",
     "rust": ">=1.85.0",
@@ -428,6 +430,9 @@
     "v": "^0.5.2",
     "vscode": "^1.118.0",
     "yarn": "^4.17.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.63.0"
   },
   "files": [
     "distpackage"

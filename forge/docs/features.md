@@ -79,3 +79,7 @@ the real feature list of the forge app, read from the code and grouped by catego
 - family helpers port — the vault utils answer through `utils.ts` (`splitwords` and siblings).
 - health probe — the catalog carries `/api/health` for the deploy probes.
 - gateway client — the onboarding module talks to the platform gateway with host validation (loopback, private, cgnat and reserved ranges refused, mapped ipv6 normalized).
+
+## Dependencies
+
+- synchronized dependency union — the eleven family apps share one dependency tree: identical `dependencies`, `devDependencies` and `peerDependencies` (same keys, same versions, nothing removed, highest semver wins on conflicts) and one `engines` catalog with node as maestro and the V 0.5.2 seat as catalog annotation (@family wave/depssync).

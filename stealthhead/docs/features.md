@@ -170,3 +170,7 @@ real feature list from the code, grouped by category. every entry names a functi
 
 - logic tests — matchrules, rankingladder, weaponstats, physics, netcode, spawner and hud test files pin the pure logics.
 - contract tests — design, family, familyurl, sandboxmodality and onboardingstate test files pin the design contract, the family rail and the entry flow.
+
+## Dependencies
+
+- synchronized dependency union — the eleven family apps share one dependency tree: identical `dependencies`, `devDependencies` and `peerDependencies` (same keys, same versions, nothing removed, highest semver wins on conflicts) and one `engines` catalog with node as maestro and the V 0.5.2 seat as catalog annotation (@family wave/depssync).

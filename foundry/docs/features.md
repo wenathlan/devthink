@@ -70,3 +70,7 @@ real features from the code, grouped by category. Every entry names the module t
 - boot readout — the entry strip of the landing: state, body and note (`sol/wingets/HomeEntry.tsx`).
 - empty states — `EmptyState` with per-page copy and the reseed / rerun action (`sol/wingets/ShellEmptystate.tsx`).
 - accessibility — aria labels on every region, `role="alert"` refusals, `role="status"` readouts, dot plus text states, never color alone (all pages).
+
+## Dependencies
+
+- synchronized dependency union — the eleven family apps share one dependency tree: identical `dependencies`, `devDependencies` and `peerDependencies` (same keys, same versions, nothing removed, highest semver wins on conflicts) and one `engines` catalog with node as maestro and the V 0.5.2 seat as catalog annotation (@family wave/depssync).
