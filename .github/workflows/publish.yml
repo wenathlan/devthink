@@ -297,7 +297,17 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              publish_output="$(npm publish "${tarball}" --access public --provenance 2>&1)" && { published=1; break; }
+              # the owner rule (the 2.0.155 registry heal): the envelope
+              # publishes ALWAYS while the token exists - registry versions
+              # are distinct strings and a rung landing BELOW the registry
+              # latest (the retired 2.1.8 line still holds the latest tag
+              # of both registries) must never skip. npm 12 refuses the
+              # IMPLICIT latest tag in that case ("Cannot implicitly apply
+              # the latest tag"); the explicit tag answers the refusal, the
+              # publish lands, and the dist-tag step below pins latest to
+              # the release version - the same maene realignment doctrine
+              # the family-npmjs lane carries.
+              publish_output="$(npm publish "${tarball}" --access public --provenance --tag latest 2>&1)" && { published=1; break; }
               # the twin-409 doctrine (the idempotent win the family loop of
               # the release ladder carries): the ladder's own npmjs job
               # publishes the same tarball inside the same release event, and
@@ -707,7 +717,11 @@ jobs:
           published=0
           until [ "$attempt" -ge 3 ]; do
             attempt=$((attempt + 1))
-            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public; then
+            # the explicit latest tag (the 2.0.155 registry heal): the
+            # retired 2.1.8 line holds the github registry latest too, and
+            # npm 12 refuses the implicit tag on a lower rung - the
+            # dist-tag step below re-pins latest after the publish lands.
+            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public --tag latest; then
               published=1
               break
             fi
@@ -833,7 +847,10 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              if npm publish --registry=https://npm.pkg.github.com --access public; then
+              # the explicit latest tag (the 2.0.155 registry heal): the
+              # family envelopes land below the retired 2.1.8 latest the
+              # same way, and the dist-tag step below re-pins latest.
+              if npm publish --registry=https://npm.pkg.github.com --access public --tag latest; then
                 published=1
                 break
               fi
@@ -3179,7 +3196,7 @@ jobs:
             const splitrelease = [
               "    splits {",
               "        abi {",
-              "            enable true",
+              "            enable gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27assemble\x27) }",
               "            reset()",
               "            include \x27armeabi-v7a\x27, \x27arm64-v8a\x27, \x27x86\x27, \x27x86_64\x27",
               "            universalApk true",
@@ -3252,10 +3269,21 @@ jobs:
       - name: build optimized android release
         working-directory: devthink/android
         shell: bash
+        # the bundle-then-assemble law (the 2.0.155 android heal): the aab
+        # bundle task refuses to run beside the abi splits — the R8 resource
+        # shrinker answers one shrunk-resources file per split and the
+        # PerModuleBundleTask dies on the plural directory (the google
+        # issue 402800800 answer: disable the multiple-apk builds for the
+        # bundle lane). the splits block the stamp writes answers with the
+        # task-name gate — enable only when an assemble task rides the
+        # invocation — so the bundle call runs single-apk and the assemble
+        # call after it turns the per-abi apks back on (the asset parity
+        # expansion keeps every standalone apk beside the universal build).
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
+          ./gradlew --no-daemon --stacktrace bundleRelease
+          ./gradlew --no-daemon --stacktrace assembleRelease
 
       - name: collect android artifacts
         shell: bash
@@ -3906,39 +3934,78 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: stage the family build context
         # the same staged tree the family-ghcr lane builds (the release
-        # ladder mirror): the three site homes ride the app/-nested
-        # context with the copy-law vault sibling, cadria stages the
-        # debonair engine beside it, and the flat village form builds from
-        # its own folder.
+        # ladder mirror). THE 2.0.155 FAMILY CONTEXT LAW: the staged shape
+        # carries the application nested under app/ with every sibling
+        # source its vite aliases resolve — the fold waves moved the
+        # engines to their owners, so the copy law (labels.ts →
+        # @wenathlan/vault/labelstore), the workload law
+        # (@wenathlan/saddle/workloadlaw), the execution frontier
+        # (@wenathlan/saddle/modes and sandbox), the route table
+        # (@wenathlan/debonair/routetable) and the os seams
+        # (@wenathlan/devthink/*) answer from the sibling sources beside
+        # the application. The vault site home alone keeps the flat
+        # village form: its engine imports live behind the process guard
+        # and its build graph carries no sibling bridge.
         shell: bash
         run: |
           set -euo pipefail
+          stage_family_context() {
+            app="$1"; shift
+            rm -rf familybuildctx
+            mkdir -p familybuildctx/app
+            cp -a "${app}/." familybuildctx/app/
+            for sibling in "$@"; do
+              mkdir -p "familybuildctx/${sibling}"
+              cp -a "${sibling}/." "familybuildctx/${sibling}/"
+              rm -rf "familybuildctx/${sibling}/node_modules" \
+                     "familybuildctx/${sibling}/dist" \
+                     "familybuildctx/${sibling}/build"
+            done
+          }
           case "${{ matrix.app }}" in
-            argan|debonair)
-              rm -rf familybuildctx
-              mkdir -p familybuildctx/app familybuildctx/vault
-              cp -a "${{ matrix.app }}/." familybuildctx/app/
-              cp -a vault/. familybuildctx/vault/
-              rm -rf familybuildctx/vault/node_modules \
-                     familybuildctx/vault/dist \
-                     familybuildctx/vault/build
+            argan)
+              stage_family_context argan vault
               ;;
             cadria)
               # the engine-ownership sibling map: cadria resolves the
               # debonair audio engine through the ../debonair vite
-              # aliases, so the sibling rides the context whole beside the
-              # copy-law vault sibling
+              # aliases, so the sibling rides the context beside the
+              # copy-law vault sibling.
+              stage_family_context cadria vault debonair
+              ;;
+            debonair)
+              # the symmetric engine-ownership map: debonair resolves the
+              # cadria synth palette through the ../cadria vite aliases
+              # (coverpalette.ts), so the cadria sibling rides beside the
+              # copy-law vault sibling.
+              stage_family_context debonair vault cadria
+              ;;
+            cobaia|stealthhead)
+              # the copy-law vault sibling and the workload-law saddle
+              # sibling: labels.ts bridges the label store and the
+              # workload lane reads @wenathlan/saddle/workloadlaw.
+              stage_family_context "${{ matrix.app }}" vault saddle
+              ;;
+            forge|foundry)
+              # the execution frontier: the sandbox lanes read
+              # @wenathlan/saddle/modes, @wenathlan/saddle/sandbox and
+              # @wenathlan/saddle/workloadlaw beside the copy-law vault
+              # sibling.
+              stage_family_context "${{ matrix.app }}" vault saddle
+              ;;
+            getry)
+              # the gateway graph: the modality registry bridge reads
+              # @wenathlan/saddle/modalityregistry, the route table reads
+              # @wenathlan/debonair/routetable and the os seams read the
+              # @wenathlan/devthink lane, all beside the copy-law vault
+              # sibling (sources only, the aliases read the .ts files).
+              stage_family_context getry vault saddle debonair devthink
+              ;;
+            vault)
+              # the flat village form stays: the vault build graph carries
+              # no sibling bridge (the engine imports live behind the
+              # process guard), so no staged context answers a need.
               rm -rf familybuildctx
-              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/debonair
-              cp -a cadria/. familybuildctx/app/
-              cp -a vault/. familybuildctx/vault/
-              cp -a debonair/. familybuildctx/debonair/
-              rm -rf familybuildctx/vault/node_modules \
-                     familybuildctx/vault/dist \
-                     familybuildctx/vault/build \
-                     familybuildctx/debonair/node_modules \
-                     familybuildctx/debonair/dist \
-                     familybuildctx/debonair/build
               ;;
           esac
       - name: build the family container archive
@@ -3951,17 +4018,20 @@ jobs:
           image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${{ matrix.app }}"
           archive="${{ matrix.app }}.container.${version}.tar.gz"
           case "${{ matrix.app }}" in
-            argan|debonair|cadria)
+            vault)
+              # the self-contained site shape: the application folder is
+              # the context (the flat village form — the vault build graph
+              # carries no sibling bridge).
+              docker build --tag "${image}:${version}" "./${{ matrix.app }}"
+              ;;
+            *)
               # the staged family shape demands the explicit -f: the
               # dockerfile stays at ${{ matrix.app }}/Dockerfile outside the
               # staged context, exactly the way the family-ghcr lane
-              # carries it.
+              # carries it — every family site home but vault rides the
+              # staged context with its sibling sources (the 2.0.155
+              # family context law).
               docker build --tag "${image}:${version}" -f "${{ matrix.app }}/Dockerfile" familybuildctx
-              ;;
-            *)
-              # the self-contained site shape: the application folder is
-              # the context (the flat village form).
-              docker build --tag "${image}:${version}" "./${{ matrix.app }}"
               ;;
           esac
           docker save "${image}:${version}" | gzip -9 > "$archive"
