@@ -19,6 +19,7 @@
  *  @section os — the neutral identifiers (node:os)
  *  @section path — the pure string posix grammar (node:path)
  *  @section fs — the absent-and-inert filesystem (node:fs, node:fs/promises)
+ *  @section process — the neutral process surface (node:process)
  *  @section crypto — the platform randomness surface (node:crypto)
  *  @section url — the file url converters (node:url)
  *  @section util — the inspection stubs (node:util)
@@ -98,6 +99,12 @@ export const chmodSync = (_path: string, _mode: number): undefined => undefined;
 export const unlinkSync = (_path: string): undefined => undefined;
 export const statSync = (_path: string): never => absent("node:fs statSync");
 export const readFileSync = (_path: string): never => absent("node:fs readFileSync");
+/* the stream read the moved transport's static file middleware speaks at
+ * module scope (the @hono/node-server family the ownership wave's config
+ * bridge inlines into the browser graph) — the serve lane never runs on a
+ * browser host, so the binding answers the same honest refusal the stat
+ * and read lanes above carry. */
+export const createReadStream = (_path: string): never => absent("node:fs createReadStream");
 export const truncateSync = (_path: string, _len?: number): never => absent("node:fs truncateSync");
 export const readdirSync = (_path: string): string[] => [];
 
@@ -113,6 +120,17 @@ export const access = (_path: string): Promise<undefined> => Promise.resolve(und
 export const readFile = (_path: string): Promise<never> => Promise.reject(absent("node:fs/promises readFile"));
 export const stat = (_path: string): Promise<never> => Promise.reject(absent("node:fs/promises stat"));
 export const readdir = (_path: string): Promise<string[]> => Promise.resolve([]);
+
+// ---------------------------------------------------------------------------
+// @section process — the neutral process surface
+// ---------------------------------------------------------------------------
+
+/* the version table the moved transport's node adapter speaks at module
+ * scope (the @hono/node-server family the ownership wave's config bridge
+ * inlines into the browser graph) — the adapter never serves on a browser
+ * host, so the table answers the neutral empty record the identifiers
+ * doctrine carries, never a faked host report. */
+export const versions: Record<string, string> = {};
 
 // ---------------------------------------------------------------------------
 // @section dns — the resolution refusal (node:dns/promises)

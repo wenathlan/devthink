@@ -19,6 +19,27 @@
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle": ["./saddlefaces.ts"],
       "@wenathlan/saddle/memory": ["./saddlefacesmemory.ts"],
+      "hono": ["./honoface.ts"],
+      "hono/cors": ["./honocorsface.ts"],
+      "@hono/node-server": ["./hononodeserverface.ts"],
+      "@hono/node-server/serve-static": ["./honoservestaticface.ts"],
+      /* the hono seat bridge of the ownership wave (the gateway transport
+       * the getry seat owns imports the hono family, and the os lanes that
+       * walk the moved graph never install the getry tree — the resolution
+       * walks the devthink install the same way every bridge does). every
+       * entry answers BOTH seats the pinned tsconfig lanes serve, through
+       * the face modules the keys resolve onto: the tsc pass reads the
+       * declaration types the faces pin (the type imports below carry the
+       * declarations the packages ship), while the tsx subprocess lanes
+       * (the cli and e2e runners that boot the moved sources) load the
+       * real runtime entries the faces re-export through their relative
+       * node_modules paths — the one resolution node's walk from the
+       * moved sources never finds. the candidates are tsconfig-relative
+       * FILES on purpose: the paths pass resolves a file candidate from
+       * this tree the same way for every importer, while a directory
+       * candidate answers no subprocess lane (and a declaration-only
+       * candidate carries no runtime exports the way the first bridge
+       * attempt learned). */
       "@wenathlan/saddle/security": ["../saddle/security.ts"],
       "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
@@ -56,6 +77,24 @@
       "@wenathlan/getry/types": ["../getry/types.ts"],
       "@wenathlan/getry/constants": ["../getry/constants.ts"],
       "@wenathlan/getry/tests/researchfixtures": ["../getry/tests/researchfixtures.ts"],
+      /* the getry owner faces of the gateway ownership wave
+       * (wave/ownership.gateway), mirrored from vite.config.ts: the
+       * embedded gateway surfaces the grand merge interned in server.ts
+       * (the http transport server, the request auth family, the console
+       * cli and the provider cli) move to the getry owner root one face
+       * per step, and the consumers speak them through the published
+       * library specifiers — the typecheck and every tsx subprocess the
+       * suites spawn resolve each specifier to the monorepo source the
+       * sibling app carries (the auth family landed with step 2; the
+       * server, cli and providercli faces land with the steps that
+       * follow, their targets answer the day they land). the installed
+       * 2.0.154 envelope carries none of these export surfaces yet, so
+       * the bridge is the resolution of record until the published
+       * envelope catches up. */
+      "@wenathlan/getry/server": ["../getry/server.ts"],
+      "@wenathlan/getry/auth": ["../getry/auth.ts"],
+      "@wenathlan/getry/cli": ["../getry/cli.ts"],
+      "@wenathlan/getry/providercli": ["../getry/providercli.ts"],
       /* the devthink self bridges of the ownership wave
        * (wave/ownership.getry), mirrored from the getry side: the moved
        * gateway graph leans on the os-owned seams it grew beside (config,
@@ -74,6 +113,12 @@
       "@wenathlan/devthink/policy": ["./policy.ts"],
       "@wenathlan/devthink/security": ["./security.ts"],
       "@wenathlan/devthink/server": ["./server.ts"],
+      /* the oslabels self bridge of the provider console move (the gateway
+       * ownership wave, step 5): the moved console's barrel reads the
+       * paired label catalog through the published os specifier, and this
+       * program resolves it to this app's own source the same way the
+       * other self specifiers above ride. */
+      "@wenathlan/devthink/oslabels": ["./oslabels.ts"],
       "@wenathlan/devthink/storage": ["./storage.ts"],
       "@wenathlan/devthink/types": ["./types.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]

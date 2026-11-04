@@ -3802,3 +3802,216 @@ export default ModelsModule;
 // identity logic lives in fingerprint.ts, generic utilities in core.ts,
 // request utilities in request.ts. models.ts contains model identification
 // ONLY.
+
+// ===========================================================================
+// the opencode model definitions — the provider model builders of the
+// provider account console (the ownership move of the gateway ownership
+// wave, step 5: buildGoogleProviderModelConfigs +
+// buildOpenCodeModelDefinitions + detectTargetProvider moved verbatim from
+// the console family in devthink/server.ts — model identification lives
+// only in models.ts, so the model-definition builders moved with the
+// catalog they read; the providercli console imports them from here).
+// ===========================================================================
+
+/** Plugin identifier written into the opencode.json plugin list. */
+const PLUGIN_NAME = "devthink" as const;
+
+/**
+ * Direct cloudcode endpoints used by the documented bypass cascade.
+ * v2.1.16 single-owner fix: derived from models.js ENDPOINT_ORDER (the
+ * PROD/DAILY/SANDBOX routing-order owner) instead of local URL literals —
+ * same three URLs in the same order.
+ */
+const CLOUDCODE_ENDPOINTS_DIRECT: readonly string[] = ENDPOINT_ORDER;
+
+// the console-family aliases the builders read (the historical names the
+// verbatim bodies reference — every value resolves to the models.ts owner
+// binding it always answered from through the console's interop chain)
+const FLAT_MODELS_2026: any[] = MODELS_2026_08_25 as any[];
+const CODE_ASSIST = CODE_ASSIST_ENDPOINTS;
+const FALLBACK_PROJECT_ID = PROJECT_FALLBACK;
+const ANTIGRAVITY_VER_FB: string = ANTIGRAVITY_VERSION_FALLBACK;
+const ANTIGRAVITY_UA_FB: string = ANTIGRAVITY_USER_AGENT_FALLBACK;
+const OAUTH_SUPPORTED_MODELS: readonly string[] = SUPPORTED_MODELS_2026;
+
+/**
+ * Build the flat provider.google.models section from the merged models.ts
+ * catalog (behavior of cli(5).ts configure):
+ *  - every thinking level becomes a { thinkingLevel } variant;
+ *  - claude-opus ids additionally gain low/max thinkingConfig budget variants;
+ *  - claude-sonnet ids with thinking gain low/high thinkingLevel variants.
+ */
+export function buildGoogleProviderModelConfigs(): Record<string, any> {
+  const modelsConfig: Record<string, any> = {};
+  for (const m of FLAT_MODELS_2026) {
+    const variants: Record<string, any> = {};
+    for (const v of m.thinking ?? []) {
+      variants[v] = { thinkingLevel: v };
+    }
+    if (String(m.id).includes("claude-opus")) {
+      variants.low = { thinkingConfig: { thinkingBudget: 8192 } };
+      variants.max = { thinkingConfig: { thinkingBudget: 32768 } };
+    }
+    if (String(m.id).includes("claude-sonnet") && (m.thinking?.length ?? 0) > 0) {
+      variants.low = { thinkingLevel: "low" };
+      variants.high = { thinkingLevel: "high" };
+    }
+    modelsConfig[m.id] = {
+      name: m.name,
+      limit: { context: m.context, output: m.output },
+      modalities: m.modalities,
+      variants,
+      release: m.release,
+    };
+  }
+  return modelsConfig;
+}
+
+/**
+ * Rich provider model definitions with bypass documentation metadata
+ * (ported from cli(2).ts buildOpenCodeModelDefinitions).
+ * Returns the plugin list, the provider-level models map and the top-level
+ * model shortcut map for opencode.json.
+ */
+export function buildOpenCodeModelDefinitions(): {
+  pluginList: string[];
+  providerModels: Record<string, any>;
+  topLevelModels: Record<string, any>;
+} {
+  const pluginList = [PLUGIN_NAME];
+
+  const providerModels: Record<string, any> = {};
+  const topLevelModels: Record<string, any> = {};
+
+  for (const entry of MODELS_2026_CATALOG) {
+    const baseId = entry.id;
+
+    // Provider-level definition - rich metadata for the plugin
+    const richDef = {
+      id: baseId,
+      name: entry.name,
+      // NOTE: no `provider` string field here - the opencode config schema
+      // expects `provider.<id>.models.<id>.provider` to be an options OBJECT
+      // (or absent); the models are already scoped under
+      // provider.antigravity.models, so the string variant from the internal
+      // catalog (entry.provider) must not leak into the written config.
+      family: entry.family,
+      contextWindow: entry.context,
+      outputLimit: entry.output,
+      thinking: entry.thinking
+        ? {
+            supported: true,
+            budget: entry.family === "claude" ? 32_768 : 16_384,
+            max: entry.family === "claude" ? 64_000 : 32_768,
+            levels: ["minimal", "low", "medium", "high", "max"],
+          }
+        : { supported: false },
+      modalities: { input: ["text", "image", "pdf"], output: ["text"] },
+      // Bypass metadata - documents how the UA / headers work
+      antigravity: {
+        bypass: {
+          userAgent: `${ANTIGRAVITY_UA_FB} {os}/{arch}`,
+          stripHeaders: ["x-goog-user-project", "x-goog-quota-user"],
+          endpoints: [...CLOUDCODE_ENDPOINTS_DIRECT],
+          cascade: "403/404/5xx",
+          versionFallback: ANTIGRAVITY_VER_FB,
+        },
+        endpoint: CODE_ASSIST.PROD,
+        projectFallback: FALLBACK_PROJECT_ID,
+      },
+      // v2.1.16 single-owner fix: search model id from models.js
+      // (SEARCH_MODEL_PREVIEW owner) instead of a local literal.
+      googleSearch: entry.family === "gemini" ? { enabled: true, model: SEARCH_MODEL_PREVIEW } : undefined,
+    };
+
+    providerModels[baseId] = richDef;
+
+    // Register variants/aliases as separate provider models + top-level shortcuts
+    const allIds = [baseId, ...entry.variants, ...entry.aliases];
+    const uniqIds = Array.from(new Set(allIds));
+
+    for (const vid of uniqIds) {
+      // Minimal top-level alias for opencode compatibility
+      topLevelModels[vid] = {
+        provider: "antigravity",
+        model: baseId,
+        name: entry.name,
+        limit: { context: entry.context, output: entry.output },
+      };
+      if (!providerModels[vid]) {
+        providerModels[vid] = {
+          ...richDef,
+          id: vid,
+          aliasOf: baseId,
+          name: `${entry.name} (alias ${vid})`,
+        };
+      }
+    }
+
+    // "antigravity/" slash prefixed shortcut for OpenCode provider routing
+    const slashKey = `antigravity/${baseId}`;
+    topLevelModels[slashKey] = {
+      provider: "antigravity",
+      model: baseId,
+      name: entry.name,
+    };
+  }
+
+  // Fallback: also register the OAuth supported model list from oauth.ts
+  for (const m of OAUTH_SUPPORTED_MODELS) {
+    const mid = String(m);
+    if (!providerModels[mid]) {
+      providerModels[mid] = {
+        id: mid,
+        name: `${mid} (Antigravity 2026)`,
+        // no `provider` string field - see the richDef note above (the
+        // opencode config schema rejects a string provider inside
+        // provider.<id>.models.<id>).
+        family: mid.includes("claude") ? "claude" : "gemini",
+        contextWindow: mid.includes("claude") ? 200_000 : 1_048_576,
+        outputLimit: mid.includes("claude") ? 64_000 : 65_535,
+        thinking: { supported: true },
+        aliasOf: undefined,
+      };
+    }
+    if (!topLevelModels[mid]) {
+      topLevelModels[mid] = { provider: "antigravity", model: mid };
+    }
+  }
+
+  return { pluginList, providerModels, topLevelModels };
+}
+
+/**
+ * Detect the target provider by model ids (never by fixed name); the
+ * user may have named it anything as long as it carries our model ids.
+ * (the configure flow calls it on the parsed opencode.json — the console
+ * family in providercli.ts imports it from this owner.)
+ */
+export function detectTargetProvider(cfg: any): { id: string; existed: boolean } {
+  const providers = cfg?.provider;
+  if (providers && typeof providers === "object") {
+    let best: { id: string; score: number } | null = null;
+    for (const [id, block] of Object.entries(providers as Record<string, any>)) {
+      if (!block || typeof block !== "object") continue;
+      const models = block.models;
+      if (!models || typeof models !== "object") continue;
+      let score = 0;
+      for (const modelId of Object.keys(models)) {
+        const l = modelId.toLowerCase();
+        if (l.startsWith("antigravity-")) {
+          score = Math.max(score, 100);
+          break;
+        }
+        if (l.startsWith("gemini-")) score = Math.max(score, 60);
+      }
+      if (score <= 0) continue;
+      const lid = id.toLowerCase();
+      if (lid === "google") score += 10;
+      else if (lid === "antigravity") score += 5;
+      if (!best || score > best.score) best = { id, score };
+    }
+    if (best) return { id: best.id, existed: true };
+  }
+  return { id: "google", existed: false };
+}

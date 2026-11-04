@@ -15,6 +15,16 @@
       "z-ai-web-dev-sdk": [
         "../devthink/node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
+      /* the hono seat bridge of the declaration pass: the getry transport
+       * (server.ts, the ownership wave) imports the hono family, and the
+       * devthink-side lanes that run this declaration emit never install
+       * the getry tree - the resolution walks the devthink install the
+       * same way every sibling bridge does (the getry-local install and
+       * the getry lanes answer their own node_modules first when present). */
+      "hono": ["../devthink/node_modules/hono/dist/types/index.d.ts"],
+      "hono/cors": ["../devthink/node_modules/hono/dist/types/middleware/cors/index.d.ts"],
+      "@hono/node-server": ["../devthink/node_modules/@hono/node-server/dist/index.d.mts"],
+      "@hono/node-server/serve-static": ["../devthink/node_modules/@hono/node-server/dist/serve-static.d.mts"],
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       /* the modality registry bridge of the ownership wave
@@ -39,7 +49,13 @@
       "@wenathlan/devthink/queue": ["../devthink/queue.ts"],
       "@wenathlan/devthink/protocol": ["../devthink/protocol.ts"],
       "@wenathlan/devthink/security": ["../devthink/security.ts"],
-      "@wenathlan/devthink/server": ["../devthink/server.ts"],
+      /* the @wenathlan/devthink/server self bridge was DELETED with the
+       * final double move of the gateway ownership wave (steps 4+5): the
+       * last getry consumers of the os server seam were the property lane
+       * (flipped in step 3) and the provider console barrel (moved to this
+       * app's providercli.ts, whose imports answer from in-package
+       * relatives) — nothing in getry imports the os server entry anymore,
+       * so the reverse-edge bridge retired with them. */
       "@wenathlan/devthink/storage": ["../devthink/storage.ts"],
       "@wenathlan/devthink/tools": ["../devthink/tools.ts"],
       "@wenathlan/devthink/types": ["../devthink/types.ts"],
@@ -62,6 +78,42 @@
       "@wenathlan/getry/antigravity": ["./antigravity.ts"],
       "@wenathlan/getry/oauth": ["./oauth.ts"],
       "@wenathlan/getry/accounts": ["./accounts.ts"],
+      /* the auth self bridge of the gateway ownership wave
+       * (wave/ownership.gateway): the devthink server compat shim speaks
+       * the moved auth family back through the published specifier
+       * ("@wenathlan/getry/auth"), and this program pulls the shim in
+       * through the devthink server bridge — the specifier resolves to
+       * this app's own source (the one owner of the moved family). */
+      "@wenathlan/getry/auth": ["./auth.ts"],
+      /* the server self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 3 — the transport move): the sse/ndjson
+       * stream pipeline, the gateway route loop, the console static roots,
+       * the transport boot (main/runserver) and the gateway config loader
+       * moved to this app's server.ts, and every consumer that speaks the
+       * published specifier ("@wenathlan/getry/server") resolves it to this
+       * app's own source — the one owner of the moved transport. */
+      "@wenathlan/getry/server": ["./server.ts"],
+      /* the cli self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 4 — the console cli move): the gateway
+       * console cli family moved to this app's cli.ts, and every consumer
+       * that speaks the published specifier ("@wenathlan/getry/cli") — the
+       * devthink server compat shim and the devthink router — resolves it
+       * to this app's own source: the one owner of the moved console. */
+      "@wenathlan/getry/cli": ["./cli.ts"],
+      /* the providercli self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 5 — the provider console move): the
+       * provider account console family moved to this app's providercli.ts,
+       * and every consumer that speaks the published specifier
+       * ("@wenathlan/getry/providercli") — the devthink server compat shim
+       * and the devthink router — resolves it to this app's own source:
+       * the one owner of the moved console. */
+      "@wenathlan/getry/providercli": ["./providercli.ts"],
+      /* the oslabels bridge of the ownership wave: the moved provider
+       * console reads the paired label catalog through the published os
+       * specifier ("@wenathlan/devthink/oslabels"), and this program
+       * resolves it to the monorepo source the sibling app carries — the
+       * label catalog is never duplicated inside getry. */
+      "@wenathlan/devthink/oslabels": ["../devthink/oslabels.ts"],
       "@wenathlan/getry/project": ["./project.ts"],
       "@wenathlan/getry/quota": ["./quota.ts"],
       "@wenathlan/getry/recovery": ["./recovery.ts"],
@@ -95,6 +147,10 @@
     "antigravity.ts",
     "oauth.ts",
     "accounts.ts",
+    "auth.ts",
+    "server.ts",
+    "cli.ts",
+    "providercli.ts",
     "project.ts",
     "quota.ts",
     "recovery.ts",
