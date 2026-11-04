@@ -29,7 +29,7 @@ afterEach(() => {
 
 describe("the storage lane contract", () => {
 
-  /* ── the driver union (the 2.1.9 storage law) ───────────────────────── */
+  /* ── the driver union (the 2.0.155 storage law) ───────────────────────── */
 
   it("opens the node:sqlite builtin driver and answers the same helpers", () => {
     const dir = tempdir();
