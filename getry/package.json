@@ -63,6 +63,11 @@
       "import": "./streaming.ts",
       "default": "./streaming.ts"
     },
+    "./streamfallback": {
+      "types": "./streaming.ts",
+      "import": "./streaming.ts",
+      "default": "./streaming.ts"
+    },
     "./models": {
       "types": "./models.ts",
       "import": "./models.ts",

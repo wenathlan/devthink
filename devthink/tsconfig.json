@@ -16,6 +16,19 @@
       "z-ai-web-dev-sdk": [
         "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
+      /* the sqlite mirror bridge of the stream fold (wave/streamfold): the
+       * folded fallback arm of the getry stream keyword file lands its key
+       * failures on the ApiKeyRow rows of getry/db.ts (the sqlite mirror),
+       * and db.ts reads the better-sqlite3 declarations through import()
+       * type queries — the node resolution that walks up from the getry
+       * folder never sees the devthink install, so the specifier resolves
+       * onto this app's own @types seat the same way every bridge resolves
+       * (the declaration file is the candidate of record: the mirror loads
+       * the real driver through a computed vite-ignored import, never
+       * through this resolution). */
+      "better-sqlite3": [
+        "./node_modules/@types/better-sqlite3/index.d.ts"
+      ],
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle": ["./saddlefaces.ts"],
       "@wenathlan/saddle/memory": ["./saddlefaces.ts"],
