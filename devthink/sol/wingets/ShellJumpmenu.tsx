@@ -24,7 +24,9 @@ import type { DesktopApp } from "../../appregistry.ts";
 import { familyurl } from "../../gateway.ts";
 import { osText } from "../../os.ts";
 
-/** The localStorage key of the taskbar pin order (an id list). */
+/** The localStorage key of the taskbar pin order (an id list).
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth. */
 const TASKBAR_PINS_KEY = "dt.taskbar.pins.v1";
 
 /**

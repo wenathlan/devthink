@@ -9,7 +9,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import "./quotaisolation.ts";
-import { QUOTA_FLOOR_BYTES, quotaLimitFrom, quotaVerdict } from "../quota.ts";
+import { QUOTA_FLOOR_BYTES, quotaFloorFromMb, quotaLimitFrom, quotaVerdict } from "../quota.ts";
 
 describe("the pure verdicts", () => {
   it("answers ok at the boundary and over past it", () => {
@@ -67,6 +67,25 @@ describe("the limit parse", () => {
         assert.match(parsed.refusal, /decimal bytes or "unlimited"/);
       }
     }
+  });
+});
+
+describe("the VAULT_QUOTA_MB floor surface (the 2GB-lock unlock)", () => {
+  it("answers the 900MB family default when unset, empty or invalid", () => {
+    const familyDefault = 900n * 1024n * 1024n;
+    for (const value of [undefined, "", "   ", "abc", "10GB", "0", "-5", "1.5"]) {
+      assert.equal(quotaFloorFromMb(value), familyDefault, `"${value}" answers the 900MB default`);
+    }
+    assert.equal(QUOTA_FLOOR_BYTES, familyDefault, "the suite rides the family default floor");
+  });
+
+  it("rides the configured megabytes and clamps at the 900GB ceiling", () => {
+    assert.equal(quotaFloorFromMb("1"), 1024n * 1024n, "the honest minimum is one megabyte");
+    assert.equal(quotaFloorFromMb("900"), 900n * 1024n * 1024n);
+    assert.equal(quotaFloorFromMb("1024"), 1024n * 1024n * 1024n, "a 1GB floor rides");
+    assert.equal(quotaFloorFromMb("921600"), 921600n * 1024n * 1024n, "the 900GB ceiling rides exactly");
+    assert.equal(quotaFloorFromMb("999999999"), 921600n * 1024n * 1024n, "the ceiling holds at 900GB");
+    assert.equal(quotaFloorFromMb(" 512 "), 512n * 1024n * 1024n, "the trimmed value rides");
   });
 });
 

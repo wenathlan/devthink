@@ -1,22 +1,61 @@
 // # quota — the user-defined quota of the vault (no fixed cap anywhere).
 // The limit belongs to the person: every project carries one quota row whose
 // limit is bigint bytes — null means unlimited — and the only default is the
-// generous 900MB floor the family precedent answers at creation (never a
-// ceiling: the row grows to terabyte scale or drops to null at the owner's
-// word). Enforcement rides the verdict the routes answer — ok or over —
-// computed from the real usage the ledger reports. No browser, no plan
-// literal, no 2GB ghost: the number on the row is the law.
+// configurable floor the family answers at creation (VAULT_QUOTA_MB, default
+// 900MB, ceiling 900GB — never a locked cap: the row grows to terabyte scale
+// or drops to null at the owner's word). Enforcement rides the verdict the
+// routes answer — ok or over — computed from the real usage the ledger
+// reports. No browser, no plan literal, no 2GB ghost: the number on the row
+// is the law.
 //
 // @section verdict — the pure enforcement verdicts
+// @section floor — the VAULT_QUOTA_MB configuration surface
 // @section row — the quota rows on the database
 
 import { eq, sql } from "drizzle-orm";
 import { quotas, type StorageExecutor } from "./drizzle.ts";
 
+/** @section floor */
+
+/** The default creation floor, in megabytes: the family precedent, 900MB. */
+const FLOOR_DEFAULT_MB = 900;
+
+/** The honest minimum of the floor: one megabyte — a value below it answers
+ * the default instead (the floor never arms a zero or negative cap). */
+const FLOOR_MIN_MB = 1;
+
+/** The ceiling of the floor configuration, in binary megabytes: 900GB —
+ * 900 * 1024 = 921600MB. The ceiling binds the configured default only; the
+ * owner-set row still rides any scale or null (unlimited) at will. */
+const FLOOR_CEILING_MB = 900 * 1024;
+
+/**
+ * Resolves the creation floor from a VAULT_QUOTA_MB string — the 2GB-lock
+ * unlock, pure so the tests and the operators reason about one law:
+ * decimal megabytes, clamped into [1, 921600] (1MB .. 900GB, binary); an
+ * unset, empty or invalid value falls back to the 900MB family default.
+ * The floor is a creation default, never a cap: setQuota redefines the row
+ * at any scale, and null still means unlimited.
+ *
+ * @law the quota floor is configurable (VAULT_QUOTA_MB), never a locked cap
+ * @config VAULT_QUOTA_MB — megabytes of the creation floor (default 900, min 1, ceiling 921600 = 900GB)
+ * @param value the raw environment string (undefined when unset).
+ * @returns the floor in bytes, bigint.
+ */
+export function quotaFloorFromMb(value: string | undefined): bigint {
+  const parsed = value === undefined ? Number.NaN : Number(value.trim());
+  const megabytes =
+    Number.isFinite(parsed) && parsed >= FLOOR_MIN_MB ? Math.min(parsed, FLOOR_CEILING_MB) : FLOOR_DEFAULT_MB;
+  return BigInt(Math.round(megabytes)) * 1024n * 1024n;
+}
+
 /** @section verdict */
 
-/** The generous default floor answered at project creation: 900MB in bytes (the family precedent, in bigint). */
-export const QUOTA_FLOOR_BYTES: bigint = 900n * 1024n * 1024n;
+/** The creation floor answered at project creation — the VAULT_QUOTA_MB
+ * surface resolved once at import (default 900MB, the family precedent,
+ * ceiling 900GB; the 2GB lock is dead). The floor seeds the row only: the
+ * owner redefines it at any scale or drops it to null (unlimited) at will. */
+export const QUOTA_FLOOR_BYTES: bigint = quotaFloorFromMb(process.env.VAULT_QUOTA_MB);
 
 /** The enforcement verdict the routes answer — the honest state of one write against the quota. */
 export interface QuotaVerdict {

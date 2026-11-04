@@ -215,7 +215,9 @@ function defaultSnapshot(id: string, title: string, openCount: number): WindowSn
 /** The persisted window layout (the desktopstate pattern): the snapshots
  * ride localStorage and hydrate once, ids without a catalog app drop out.
  * The stored z values re-stamp in array order on hydrate — stored z pairs
- * may collide after a restore, the focus counter re-stamps from here on. */
+ * may collide after a restore, the focus counter re-stamps from here on.
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth. */
 const WINDOWS_STORAGE_KEY = "dt.windows.v1";
 
 function loadWindows(): WindowSnapshot[] {

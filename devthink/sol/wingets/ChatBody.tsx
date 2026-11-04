@@ -95,7 +95,9 @@ type Verdict = "up" | "down";
  * as the rail pins): the saved memory facts and the pinned project
  * instructions, both localStorage records with a validating type-guard
  * and storage optional. the list validator sits at module scope so the
- * load effect identity stays stable. */
+ * load effect identity stays stable.
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); these localStorage seats are a session cache only, never the source of truth. */
 const MEMORY_KEY = "dt-chat-memory-v1";
 const isMemoryList = arrayOf(isString);
 const INSTRUCTIONS_KEY = "dt-chat-instructions-v1";

@@ -63,7 +63,9 @@ const DAY_MS = 86_400_000;
 
 /** the pin store key — the session record carries no pinned field yet, so
  * the flag persists beside the sessions through the same os pattern
- * (localStorage + validating type-guard, storage optional). */
+ * (localStorage + validating type-guard, storage optional).
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth. */
 const PINS_KEY = "dt-chat-pins-v1";
 const isPinList = arrayOf(isString);
 

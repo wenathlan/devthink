@@ -1,4 +1,6 @@
 // # chunks — the 256KB chunk pipeline of the vault (the blob law).
+// @module chunks
+// @layer chunk — third of the storage stack: bucket → object → chunk → blob.
 // Blobs never ride the database raw: every object splits into 256KB windows,
 // each window answers for its own real sha-256, and the catalog reuses any
 // window it has already seen by digest — the automatic dedupe. Chunks store

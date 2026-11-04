@@ -2,6 +2,7 @@
  * objects — consolidated objects engine logics of the vault family.
  * @module objects
  * @family wave/logicfold2
+ * @layer object — second of the storage stack: bucket → object → chunk → blob.
  * One keyed file per family: the former variant arms (objectsledger)
  * retired into this seat with every export preserved under the same name.
  */

@@ -10,7 +10,9 @@ import { LocalLanguageRegular } from "@fluentui/react-icons";
 import { useState } from "react";
 import { copy } from "../../copy";
 
-/** the machine profile key the preference persists under. */
+/** the machine profile key the preference persists under.
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth. */
 const LANGPREF = "app-lang";
 
 const readpref = (): string => {

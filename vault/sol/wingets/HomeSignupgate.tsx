@@ -10,6 +10,8 @@
  * the engine lane is away (no configured origin) the gate says so honestly
  * and the cta waits. Every word rides the ui store, every input the silk
  * chrome of the family.
+ *
+ * @vault the binding held — this gate already rides the Vault engine via the internal API (vaultclient over @wenathlan/vault); no browser storage exists here by law, the session memory is the only seat.
  */
 
 import { useState } from "react";

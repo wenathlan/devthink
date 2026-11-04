@@ -219,11 +219,13 @@ describe("the engine static lane (the container doctrine)", () => {
         assert.equal(unknown.status, 404);
         assert.equal(((await unknown.json()) as { error: { code: string } }).error.code, "VAULT_ROUTE");
         // the faun seal: the database file refuses, plain or encoded, even
-        // though it sits inside the static root
-        for (const sealed of ["vault-storage.db", "vault-storage%2Edb", "VAULT-STORAGE.DB"]) {
+        // though it sits inside the static root — the 403 raw-database law
+        // (the raw database file never leaves the vault), one door for the
+        // request face and the static lane alike
+        for (const sealed of ["vault-storage.db", "vault-storage%2Edb", "VAULT-STORAGE.DB", "faun.db", "/sqlite-backup.db"]) {
           const refusal = await fetch(`${base}/${sealed}`);
-          assert.equal(refusal.status, 404, `${sealed} must never answer bytes`);
-          assert.equal(((await refusal.json()) as { error: { code: string } }).error.code, "VAULT_STATIC");
+          assert.equal(refusal.status, 403, `${sealed} must never answer bytes`);
+          assert.equal(((await refusal.json()) as { error: { code: string } }).error.code, "VAULT_DBFILE");
         }
         // the root-emit seal: the engine sources and the manifests never
         // answer bytes from the static lane, even when they sit inside the
