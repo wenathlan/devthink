@@ -88,10 +88,10 @@ minimumReleaseAgeExclude:
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0 || 1.67.0 || 1.68.0
   - '@fluentui/react-icons@2.0.345'
   - hono@4.13.16
-  - '@wenathlan/cadria@2.0.154 || 2.0.155 || 2.1.8'
-  - '@wenathlan/debonair@2.0.154 || 2.0.155 || 2.1.8'
-  - '@wenathlan/getry@2.0.154 || 2.0.155'
-  - '@wenathlan/vault@2.0.154 || 2.0.155 || 2.1.8'
+  - '@wenathlan/cadria@2.0.154 || 2.0.155 || 2.0.156 || 2.1.8'
+  - '@wenathlan/debonair@2.0.154 || 2.0.155 || 2.0.156 || 2.1.8'
+  - '@wenathlan/getry@2.0.154 || 2.0.155 || 2.0.156'
+  - '@wenathlan/vault@2.0.154 || 2.0.155 || 2.0.156 || 2.1.8'
   - '@tailwindcss/node@4.3.4'
   - '@tailwindcss/oxide-android-arm64@4.3.4'
   - '@tailwindcss/oxide-darwin-arm64@4.3.4'
@@ -113,6 +113,6 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@5.1.0'
   - tailwindcss@4.3.4
   - vitest@5.1.0
-  - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.1.8'
-  - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.1.7'
-  - '@wenathlan/argan@2.0.154 || 2.0.155'
+  - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.1.8'
+  - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.0.156 || 2.1.7'
+  - '@wenathlan/argan@2.0.154 || 2.0.155 || 2.0.156'
