@@ -378,7 +378,7 @@ export function SaasWorkspace({ scrollto }: { scrollto: (id: string) => void }) 
     <section id="workspace-subapps" className="obsidian-grid-bg relative overflow-hidden pt-0 pb-0 text-white">
       <div className="urbanist-frosted-blur pointer-events-none absolute inset-0 z-0" aria-hidden="true" />
       <div
-        className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-all duration-500"
+        className="pointer-events-none absolute top-1/3 left-1/2 h-[320px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 transition-[background-color,opacity] duration-500"
         style={{ background: `radial-gradient(closest-side, ${open.glow}, transparent)` }}
         aria-hidden="true"
       />
@@ -425,7 +425,7 @@ export function SaasWorkspace({ scrollto }: { scrollto: (id: string) => void }) 
                     zIndex: zIndexVal,
                     transform: `translateY(${translateY}px) rotate(${rotateDeg}deg) scale(${scaleVal})`,
                   }}
-                  className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 transition-all duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${isCenter ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
+                  className={`fan-clay group relative flex h-[270px] cursor-pointer flex-col justify-between overflow-hidden rounded-[20px] border bg-gradient-to-b p-5 transition-[transform,opacity,border-color] duration-500 ease-out sm:-mx-4 sm:h-[300px] ${card.gradient} ${isCenter ? "border-white/60" : "border-white/30 opacity-85 hover:opacity-100"}`}
                 >
                   <div className="fan-sheen pointer-events-none absolute inset-0" aria-hidden="true" />
                   <div key={card.id} className="fan-swap relative z-10 flex h-full flex-col justify-between">
@@ -490,7 +490,7 @@ export function SaasWorkspace({ scrollto }: { scrollto: (id: string) => void }) 
                     scrollto(item.target);
                   }}
                   aria-label={item.name}
-                  className={`transition-all duration-300 hover:scale-110 ${idx === active ? "scale-110 opacity-100" : "opacity-60 hover:opacity-100"}`}
+                  className={`transition-[transform,opacity] duration-300 hover:scale-110 ${idx === active ? "scale-110 opacity-100" : "opacity-60 hover:opacity-100"}`}
                 >
                   <Studiomark app={item.id as studiomarkid} className="h-11 w-11 sm:h-12 sm:w-12" />
                 </button>

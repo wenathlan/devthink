@@ -30,7 +30,7 @@ import {
   type FluentIcon as LucideIcon,
   MicroscopeRegular as Telescope,
 } from "@fluentui/react-icons";
-import { chatGreetingForHour, chatSuggestions, chatText } from "../../chatlabels.ts";
+import { chatGreetingForHour, chatSuggestions, chatText } from "../../labels.ts";
 import { label } from "../../labels.ts";
 import { cx, GATEWAY_MODEL } from "../../chatstate.ts";
 

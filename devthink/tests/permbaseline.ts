@@ -15,10 +15,10 @@ export interface permdiffbaseline {
   permissionset: { required: string[]; optional: string[]; optionalhost: string[] };
 }
 
-/** The recorded baseline of the 2.0.159 release — clean over 2.0.158, zero added, zero removed, zero reordered. */
+/** The recorded baseline of the 2.0.160 release — clean over 2.0.159, zero added, zero removed, zero reordered. */
 export const permdiffbaseline: permdiffbaseline = {
-  "release": "2.0.159",
-  "previous": "2.0.158",
+  "release": "2.0.160",
+  "previous": "2.0.159",
   "source": "the versioned baseline of the previous release",
   "added": [],
   "removed": [],

@@ -7,7 +7,7 @@
  */
 import { InfoRegular, SettingsRegular } from "@fluentui/react-icons";
 import type { BrowserStoreSummary } from "../../storage.ts";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { SettingsRow } from "./SettingsRow";
 import type { SettingsSnapshot } from "./Settingstypes";
 

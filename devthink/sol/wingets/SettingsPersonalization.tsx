@@ -13,7 +13,7 @@
  * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); the personalstore localStorage pattern is a session cache only, never the source of truth.
  */
 import { ColorRegular, ImageRegular, PersonRegular, WindowRegular } from "@fluentui/react-icons";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { uicopy } from "../../uistore.ts";
 import { AccentRow } from "./SettingsAccentrow";
 import { BackgroundPicker } from "./SettingsBackgroundpicker";

@@ -310,9 +310,16 @@ export async function runonedge(
         error: { code: "INVALID_EDGE_REQUEST", message: "an edge run requires a modality id and a code payload" },
       };
     }
-    const lane = EDGELANES.find((entry) => entry.modality === modality);
+    /* the hyphen tolerance of the family display names: a request that
+     * names the lane by its hyphenated display form (container-max) rides
+     * the unhyphenated registry id (containermax) — the id law stays, the
+     * caller's spelling never breaks the lane. */
+    const lanematch =
+      EDGELANES.find((entry) => entry.modality === modality) ??
+      EDGELANES.find((entry) => entry.modality === modality.replace(/-/g, ""));
+    const lane = lanematch;
     if (lane === undefined) {
-      const record = getmodality(modality);
+      const record = getmodality(modality) ?? getmodality(modality.replace(/-/g, ""));
       if (record === undefined) {
         return {
           runid,

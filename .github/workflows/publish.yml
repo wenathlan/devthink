@@ -6007,16 +6007,15 @@ jobs:
         # eleven architectures of saddle/containerarch.ts (x64, arm64,
         # armv7, riscv64, ppc64le, s390x, 386, mips64le, loong64, wasm32,
         # wasip1) and all three profiles ship the build legs the pinned
-        # node base honestly carries (amd64 the native x64 leg; arm64,
-        # ppc64le and s390x ride QEMU emulation - the seven seats the
-        # base does not ship answer the standard's honest coded absence,
-        # never a pretended build leg); each carries a single version tag
+        # eleven-architecture family standard rides every profile leg (the
+        # arch law: buildx carries the full linux platform surface, the
+        # native amd64 seat beside the QEMU-emulated ten); each carries a single version tag
         # on the saddle container package (max -> :<version>,
         # balanced/lite carry the profile suffix). One tag per version,
         # no rolling aliases.
         include:
           - profile: max
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -6025,7 +6024,7 @@ jobs:
             profilegpus: 8
             expectcpu: EPYC 9965
           - profile: balanced
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -6034,7 +6033,7 @@ jobs:
             profilegpus: 2
             expectcpu: 9995WX
           - profile: lite
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32

@@ -8,7 +8,7 @@
  */
 import { ArrowSyncRegular, ShieldRegular } from "@fluentui/react-icons";
 import type { BrowserStoreSummary } from "../../storage.ts";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { GatewayCard } from "./SettingsGatewaycard";
 import { SettingsRow } from "./SettingsRow";
 import type { SettingsSnapshot } from "./Settingstypes";

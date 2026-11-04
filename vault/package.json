@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/vault",
-  "version": "2.0.159",
+  "version": "2.0.160",
   "description": "vault is the supabase clone of the wenathlan family: it owns the self-hosted database, auth and storage surface, and ships the documentation set and the tests directory as one package",
   "bin": {
     "vault": "./cli.ts"
@@ -82,9 +82,9 @@
       "default": "./querylane.ts"
     },
     "./signup": {
-      "types": "./signup.ts",
-      "import": "./signup.ts",
-      "default": "./signup.ts"
+      "types": "./accounts.ts",
+      "import": "./accounts.ts",
+      "default": "./accounts.ts"
     },
     "./labels": {
       "types": "./labels.ts",
@@ -173,7 +173,6 @@
     "protocols.types",
     "protocols.ts",
     "querylane.ts",
-    "signup.ts",
     "storage.ts",
     "objects.ts",
     "onboardingstate.ts",

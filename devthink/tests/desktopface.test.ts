@@ -155,26 +155,33 @@ describe("the boot face (the near-black canvas, the white mark, the real ring)",
     expect(face).not.toContain("transition: all");
   });
 
-  it("the boot screen renders mark + words + the original startup bar and never a fake percentage", () => {
+  it("the boot screen renders the mark ALONE + the original startup bar and never a fake percentage", () => {
     // the owner's order restored the bar of commits 118/140: the markup
     // answers the boot-screen__bar pill (the 168px track with the bootFill
     // sweep and the lead bead) — the ring retired from the markup while
     // its stylesheet seat stays (the css block above still pins the ring
-    // rules, zero deletion), so the face law is bar-in-markup.
+    // rules, zero deletion), so the face law is bar-in-markup. The
+    // logo-without-text law of the reference retired the wordmark and
+    // state words under the mark the same way: the markup drops the pair
+    // (their stylesheet seats stay, zero deletion) — the bar is function,
+    // not a logo caption, so it stays.
     expect(boot).toContain("boot-screen__bar");
     expect(boot).toContain("<SolLogoMark size={92} />");
     expect(boot).not.toContain("boot-progress-ring");
     expect(boot).not.toContain("boot-screen__readout");
+    expect(boot).not.toContain("boot-screen__name");
+    expect(boot).not.toContain("boot-screen__state");
     expect(boot).not.toContain("%");
   });
 
-  it("the boot words ride the os label table — the labels law holds on the boot face", () => {
+  it("the boot voice rides the os label table through the aria alone — the labels law holds on the boot face", () => {
+    // the logo-without-text law: the face quotes only boot.aria (the
+    // screen-reader voice of the status root); the retired wordmark and
+    // state rows left the os table with the markup that quoted them
     expect(boot).toContain('osText("boot.aria")');
-    expect(boot).toContain('osText("boot.wordmark")');
-    expect(boot).toContain('osText("boot.state")');
+    expect(boot).not.toContain('osText("boot.wordmark")');
+    expect(boot).not.toContain('osText("boot.state")');
     expect(osText("boot.aria")).toBe("DevThink is starting");
-    expect(osText("boot.wordmark")).toBe("DevThink");
-    expect(osText("boot.state")).toBe("opening the local os");
   });
 
   it("the leave is REAL: the boot holds until the panel verdict (ready) past the floor", () => {

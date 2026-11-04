@@ -50,7 +50,7 @@ export * from "./protocols.ts";
 /** the internal root: the static site surface with the correct content type — and the faun law: the raw .db never rides it. */
 export * from "./internalroot.ts";
 /** the signup lane: the person's door — an account, a registered database, an api key shown exactly once (stored hashed; boots the site store at import). */
-export * from "./signup.ts";
+export * from "./accounts.ts";
 /** the /v2/query lane: bearer plus database-id headers over the per-database sqlite files of the better-sqlite3 core. */
 export * from "./querylane.ts";
 

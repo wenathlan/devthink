@@ -7,7 +7,7 @@
  */
 import { PowerRegular } from "@fluentui/react-icons";
 import { useState } from "react";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 
 /** PowerMenu — the power corner. Self-contained: the flyout open state
  * dies with the mount; the restart hands the page back to the browser. */

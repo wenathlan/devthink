@@ -51,7 +51,7 @@ import {
   StopFilled as Stop,
 } from "@fluentui/react-icons";
 import { type CSSProperties, type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { chatLimit, chatText } from "../../chatlabels.ts";
+import { chatLimit, chatText } from "../../labels.ts";
 import {
   CHAT_THINKING_LEVELS,
   CHAT_TOOLS,

@@ -12,7 +12,7 @@
 
 import {PlugConnectedRegular} from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { GATEWAY_REQUIRED_COPY, gatewayStatusLabel, useGatewayRegistration } from "../../gateway.ts";
 
 /** GatewayCard — the settings section of the chat gateway. */

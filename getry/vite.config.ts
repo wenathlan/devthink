@@ -79,7 +79,6 @@ export default defineConfig({
       "@wenathlan/getry/streaming": path.resolve(import.meta.dirname, "streaming.ts"),
       "@wenathlan/getry/models": path.resolve(import.meta.dirname, "models.ts"),
       "@wenathlan/getry/request": path.resolve(import.meta.dirname, "request.ts"),
-      "@wenathlan/getry/providers": path.resolve(import.meta.dirname, "providers.ts"),
       "@wenathlan/getry/antigravity": path.resolve(import.meta.dirname, "antigravity.ts"),
       "@wenathlan/getry/oauth": path.resolve(import.meta.dirname, "oauth.ts"),
       "@wenathlan/getry/accounts": path.resolve(import.meta.dirname, "accounts.ts"),

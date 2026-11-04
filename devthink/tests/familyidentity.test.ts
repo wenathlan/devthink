@@ -12,7 +12,7 @@
 import { describe, expect, it } from "vitest";
 import { APPS, appMeta } from "../os";
 import { FAMILY_ACCENT, familyAccentOf } from "../familyaccent";
-import { seedFamilySites } from "../seedcatalog";
+import { seedFamilySites } from "../catalog";
 
 /** the spec-12 accent table, verbatim — the decided colors of the campaign. */
 const SPEC_ACCENTS: Record<string, string> = {

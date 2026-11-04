@@ -28,7 +28,7 @@ import {
   restoreonce,
   revokeaccountsessionbearer,
 } from "../../account.ts";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import {
   type BrowserStoreSummary,

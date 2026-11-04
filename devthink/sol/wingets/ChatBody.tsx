@@ -21,7 +21,7 @@ import {
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { osAppLabels } from "../../catalog.ts";
-import { chatLimit, chatSandboxContract, chatText } from "../../chatlabels.ts";
+import { chatLimit, chatSandboxContract, chatText } from "../../labels.ts";
 import {
   branchLabel,
   buildSystemPrompt,

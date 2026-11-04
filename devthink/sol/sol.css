@@ -6,7 +6,12 @@
    as build residue, the sol/fonts sources ship with the tree. font-display
    swap answers the system ladder (Segoe UI Variable → Selawik) while the
    bytes arrive, and the weight range 100 900 serves the whole voice
-   without synthetic bold. */
+   without synthetic bold.
+   The Urbanist variable face joins the set self-hosted (the landing voice
+   of the reference): the Google Fonts latin variable woff2 captured once
+   into sol/fonts, zero network font fetches — the three reference tiers
+   (400/600/800 of .font-thin/medium/bold-tier and .saas-root) resolve
+   inside the same 100 900 range the sheet pattern pins. */
 @font-face {
   font-family: "Inter Variable";
   font-style: normal;
@@ -20,6 +25,13 @@
   font-weight: 100 900;
   font-display: swap;
   src: url("fonts/geist-mono-latin-wght-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Urbanist";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/urbanist-latin-wght-normal.woff2") format("woff2-variations");
 }
 
 /* DevThink Sol — the supreme OS theme, rebuilt from zero (the 8-d
@@ -10720,7 +10732,12 @@ span[data-tile] {
 }
 @media (max-width: 859px) {
   .shell-window {
-    min-width: 0;
+    /* the phone band keeps the doctrine floor but never exceeds the
+       viewport: the 320px spawn floor stands on wide-enough screens and
+       caps at the containing block on narrower ones, so a normal-state
+       frame never hangs past the edge of a phone (the close X stays
+       reachable on every width) */
+    min-width: min(320px, 100%);
     min-height: 0;
   }
   .shell-window[data-state="snapped-left"],
@@ -10818,13 +10835,17 @@ html[data-density="compact"] {
   color: var(--color-ink-3);
 }
 
-/* the session tab strip riding beside the lockup */
+/* the session tab strip riding beside the lockup — the strip clips its
+   own overflow (the resize law): when the lockup squeeze leaves the tabs
+   less than their natural width they never slide under the caption
+   controls, the scroller inside owns the horizontal scroll */
 .shell-window__tabs {
   display: flex;
   min-width: 0;
   flex: 1;
   align-items: flex-end;
   padding-left: 2px;
+  overflow: hidden;
 }
 
 /* the caption controls: the snap pair inside the bar, the fluent 46px
@@ -22566,12 +22587,13 @@ button.dtc-recents__row {
    the fan-deck clay. The chrome rules (selection, focus, drag) scope to
    .saas-root — the landing root owns them — while the material classes
    stay global like the reference sheet. Nothing here removes or demotes
-   a class another page renders (the 8-d doctrine holds); the self-hosted
-   law retired the remote Urbanist stylesheet (the sweep forbids the
-   hardcoded origin) and the tiers answer the house Inter Variable face
-   sol.css ships beside the entry — the same woff2 every other surface
-   reads, zero network font fetches, the face never blanks under a frozen
-   CSP.
+   a class another page renders (the 8-d doctrine holds); the Urbanist
+   voice is SELF-HOSTED now (the variable latin woff2 of the Google Fonts
+   reference family captured into sol/fonts beside the Inter/Geist pair —
+   the @font-face at the head of this sheet serves the three tiers), so
+   the landing answers the reference typeface itself with zero network
+   font fetches, the face never blanks under a frozen CSP, and the house
+   Inter Variable stack stays the fallback behind it.
    ========================================================================== */
 
 /* the voice of the landing: Urbanist over the house stack */

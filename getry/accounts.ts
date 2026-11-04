@@ -569,8 +569,8 @@ function normalizeAccountRaw(raw: unknown): AccountMetadataV3 | null {
     (r.refreshToken as string) ??
     (r.refresh_token as string) ??
     (r.refresh as string) ??
-    (r.token as any)?.refresh_token ??
-    (r.tokens as any)?.refresh_token ??
+    (r.token as { refresh_token?: string } | undefined)?.refresh_token ??
+    (r.tokens as { refresh_token?: string } | undefined)?.refresh_token ??
     "";
 
   if (typeof refreshTokenRaw !== "string" || refreshTokenRaw.length < 10) return null;

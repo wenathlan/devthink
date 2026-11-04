@@ -3400,7 +3400,12 @@ export const hostlanespecs: readonly HostLaneSpec[] = Object.freeze([
  * modality id in the same order as the spec table — the twenty-five of
  * the first wave beside the twelve of the wiring wave; the dispatch
  * plane refuses to boot over a lane it cannot wire. */
-export const edgelaneexecutorshost: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
+/* the honesty wrap of the host lane plane: every lane executor rides a
+ * guard that rewrites a coded absence into the lane-naming form the
+ * honesty law pins — the refusal always names the runtime AND the lane
+ * (modality id) it refused, so an operator reading the error learns both
+ * seats of the refusal without opening the source. */
+const edgelaneexecutorstable: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
   "sandboxbubblewrap": sandboxbubblewraplane,
   "sandboxnsjail": sandboxnsjaillane,
   "sandboxchroot": sandboxchrootlane,
@@ -3439,6 +3444,31 @@ export const edgelaneexecutorshost: Readonly<Record<string, EdgeLaneExecutor>> =
   "runnerdeno": runnerdenolane,
   "runnerwasi": runnerwasilane,
 });
+
+/** the wrapped host executor map: one guard per lane, the refusal law. */
+export const edgelaneexecutorshost: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze(
+  Object.fromEntries(
+    Object.entries(edgelaneexecutorstable).map(([id, executor]) => {
+      const guarded: EdgeLaneExecutor = async (code, inputs, deadline) => {
+        try {
+          return await executor(code, inputs, deadline);
+        } catch (error) {
+          const laneerror = error as { code?: string; message?: string };
+          if (laneerror?.code === "HOST_RUNTIME_ABSENT" && typeof laneerror.message === "string") {
+            if (!laneerror.message.includes(id)) {
+              throw edgelaneerror(
+                "HOST_RUNTIME_ABSENT",
+                `the lane ${id} refuses the run: ${laneerror.message}`,
+              );
+            }
+          }
+          throw error;
+        }
+      };
+      return [id, guarded] as const;
+    }),
+  ),
+);
 
 /** the host lane ids in the spec order — the pinned contract the
  * dispatcher merge and the api surface read exactly. */

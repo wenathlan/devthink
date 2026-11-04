@@ -515,7 +515,7 @@ import { basename, join, relative, resolve } from "node:path";
 import { serve } from "@hono/node-server";
 import { type Context, type Hono } from "hono";
 import { createserver as getrycreateserver, loadconfig } from "@wenathlan/getry/server";
-import { copyseed } from "./copy.ts";
+import { copyseed } from "./uistore.ts";
 import {
   DEFAULTQUOTAMB,
   ensureplanstore,

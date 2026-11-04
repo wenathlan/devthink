@@ -91,7 +91,7 @@ import {
   setDatabaseQuota,
   signinAccount,
   signupAccount,
-} from "./signup.ts";
+} from "./accounts.ts";
 import { storage, storageDriverKind } from "./drizzle.ts";
 import {
   createProject,

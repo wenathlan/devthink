@@ -12,7 +12,7 @@
  * settings page, riding the dtw kit.
  */
 import { type FormEvent, useMemo, useState } from "react";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../mcp";
 
 /** the one localStorage key the registry rides (mcpregistry.ts contract).

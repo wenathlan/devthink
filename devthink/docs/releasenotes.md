@@ -1,3 +1,118 @@
+# Devthink 2.0.160
+
+The 2.0.160 rung answers the red-suite heal and the variant retirement above the ladder the rungs climb: the debonair genre import debt that killed forty-seven suites across the audio and video families retires (the genrematrix arms answer the genre keyword seat, the duplicate clamp dies, the seed library answers its lazy seat so the render cycle never meets a TDZ), the stale variant files the fold waves left behind leave their eleven roots (engineowners, patternenums, timelineview, sessions, speccatalog, reverseingest, matchrules, signup, chatlabels, copy, seedcatalog, guard and the audit pair fold into their keyed seats), the copy law answers one ui store, the version literals stamp the synchronized 2.0.160 rung from the Dockerfiles through the cli, deno and webserver seats, the saddle container carries the heredoc entrypoint, the docker run recipes, the pids contract and the eleven-arch platform legs of the publish matrix, the honesty wrap names every lane refusal, the hyphen tolerance answers the family display names on the edge plane, the desktop and boot heroes carry the white mark alone (the logo-without-text law), the tabs clip and the mobile floor harden the window chrome, the transition-all naming closes the doctrine self-violation and the self-hosted Urbanist answers the landing voice beside the frozen CSP law.
+
+## Distribution channels
+
+Every artifact of this release ships through the channels below. The artifact manifest records the name, the byte size, the sha256 checksum and the channels of every artifact, the checksums file covers the release set, the sbom inventory documents it and the attestations carry its provenance. Nothing auto-publishes outside the reviewed release workflow.
+
+### npm channel
+
+- `wenathlan-devthink-2.0.160.tgz`
+
+The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
+
+### nuget channel
+
+- `devthink.2.0.160.nupkg`
+
+The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
+
+### maven channel
+
+- `devthink-2.0.160.pom`
+- `devthink-2.0.160.jar`
+- `devthink2.0.160.zip`
+- `devthink-declarations-2.0.160.zip`
+
+The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
+
+### container channel
+
+- `devthink-container.txt`
+- `devthink-container.digest`
+- `devthink-container.json`
+
+The multi stage image publishes for the five linux architectures of the family union surface — the index answers linux/amd64, linux/arm64, linux/ppc64le, linux/s390x and linux/riscv64 beside the per platform attestation entries — with the version tag and the latest channel alias the 2.0.16 realignment carries: the version tag stays the immutable coordinate an operator pins, the latest alias moves to the version this pipeline published (the maene dist-tag doctrine the npm lanes always carried, so docker pull devthink:latest answers the current release), and no referrers fallback tag rides the package because the digest files embed the exact image hash as release assets. The node runtime arrives from the verified nodejs.org tarballs on the debian trixie slim base whose manifest carries every architecture of the index. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.
+
+### rubygems channel
+
+- `devthink-2.0.160.gem`
+
+The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
+
+### vscode channel
+
+- `devthink-vscode-2.0.160.vsix`
+
+The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
+
+### firefox channel
+
+- `devthink-firefox-2.0.160.xpi`
+
+The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/browsercoverage.md.
+
+### safari channel
+
+- `devthink-safari-2.0.160.zip`
+
+The safari skeleton ships as the source asset the xcode wrapper builds from.
+
+### chromium channel
+
+- `devthink2.0.160.zip`
+- `devthink-2.0.160-source.tar.xz`
+- `devthink-nativehost-2.0.160.template.json`
+
+The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
+
+### site channel
+
+- `devthink-site-2.0.160.zip`
+
+The hashed static site of the chatbridge surface with its immutable cache header configuration.
+
+### declarations channel
+
+- `devthink-declarations-2.0.160.zip`
+
+Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
+
+### provenance channel
+
+- `devthink-sbom-2.0.160.json`
+- `devthink-attestations-2.0.160.json`
+- `devthink-artifactmanifest-2.0.160.json`
+
+The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
+
+### github channel
+
+- `wenathlan-devthink-2.0.160.tgz`
+- `devthink.2.0.160.nupkg`
+- `devthink-2.0.160.pom`
+- `devthink-2.0.160.jar`
+- `devthink-2.0.160.gem`
+- `devthink-container.txt`
+- `devthink-container.digest`
+- `devthink-container.json`
+- `devthink-vscode-2.0.160.vsix`
+- `devthink-firefox-2.0.160.xpi`
+- `devthink-safari-2.0.160.zip`
+- `devthink2.0.160.zip`
+- `devthink-2.0.160-source.tar.xz`
+- `devthink-nativehost-2.0.160.template.json`
+- `devthink-site-2.0.160.zip`
+- `devthink-declarations-2.0.160.zip`
+- `devthink-sbom-2.0.160.json`
+- `devthink-attestations-2.0.160.json`
+- `devthink-artifactmanifest-2.0.160.json`
+- `SHA256SUMS.txt`
+- `RELEASENOTES.md`
+
+Every artifact above attaches to the release of the immutable tag beside the checksums file and these notes; the release stays a draft until the verification step downloads every asset and verifies the checksums.
+
 # Devthink 2.0.159
 
 The 2.0.159 rung answers the laneheal law above the ladder the rungs climb: the entry faces return to their own single responsibility seats, the crypto aliases and the hyphen law answer the registry, the frozen contracts re-record over the fold surface and the viewport family law pins every door. The wave laws ride the same rung — the confstd law answers the configurable arms with one family pattern, the docstd law carries the saddle-shape doc suite into every app seat in its own voice, the rootdedup law retires the requirements export with zero consumers and folds the harvest id seed into the crxharvest seat that reads it while the eleven app roots keep only the documented web template family, and the saddle container heal lands the engine container the owner's law demands: the sandboxfold's dead COPY arms retire, the eleven-architecture standard of saddle/containerarch.ts rides the base-honest legs (the four linux seats the pinned node base carries — amd64, arm64, ppc64le, s390x — build under the digest-never-hardcoded law while the seven seats the base does not ship answer the honest coded absence) and the saddle vhe family (max, balanced and lite) rides the publish lanes again.

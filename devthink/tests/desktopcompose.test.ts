@@ -12,10 +12,10 @@
  * the cell, every spot inside the reference bounds, the source riding
  * the grid helpers), the drag contract with selection and double click
  * (pointer capture, the snap lattice, the honest persistence under the
- * doctrine key, the marquee and the keyboard), the hero lockup at the
- * middle of the surface (the two-path mark, the wordmark and the tagline
- * riding the os label table, the radial light bed, the recede under open
- * windows), and the chat bar out of the panel (the panel anchor carries
+ * doctrine key, the marquee and the keyboard), the hero mark at the
+ * middle of the surface (the owner law of the reference: the white logo
+ * stands alone — no wordmark and no tagline below it, the radial light
+ * bed, the recede under open windows), and the chat bar out of the panel (the panel anchor carries
  * no conversation surface — the chat body binds as a window app and the
  * deep link hands its session to the chat window).
  */
@@ -162,15 +162,18 @@ describe("the windows grid composition (the left-aligned column law — the real
   });
 });
 
-describe("the hero lockup (the logo sits at the middle of the composition)", () => {
-  it("the hero is the centered, pointer-transparent lockup — mark, wordmark, tagline", () => {
+describe("the hero mark (the logo sits at the middle of the composition)", () => {
+  it("the hero is the centered, pointer-transparent mark ALONE — the owner law: no wordmark, no tagline below the logo", () => {
     expect(desktop).toContain('"dt-desktop__hero absolute top-[45%] left-1/2 grid');
     expect(desktop).toContain("-translate-x-1/2 -translate-y-1/2 animate-hero pointer-events-none");
     expect(desktop).toContain('<SolLogoMark size={150} title={osText("desktop.logoTitle")} accent />');
-    expect(desktop).toContain('className="dt-desktop__wordmark');
-    expect(desktop).toContain('{osText("desktop.wordmark")}');
-    expect(desktop).toContain('className="dt-desktop__tagline');
-    expect(desktop).toContain('{osText("desktop.tagline")}');
+    /* the logo-without-text law: the retired wordmark and tagline never
+     * answer the desktop hero again — neither the classes nor the os label
+     * rows they rode */
+    expect(desktop).not.toContain('dt-desktop__wordmark');
+    expect(desktop).not.toContain('dt-desktop__tagline');
+    expect(desktop).not.toContain('osText("desktop.wordmark")');
+    expect(desktop).not.toContain('osText("desktop.tagline")');
   });
 
   it("one big radial light behind the hero — the depth-by-light law, the reduced-transparency guard", () => {
@@ -395,11 +398,12 @@ describe("the labels law (every desktop string rides the os label table)", () =>
     }
   });
 
-  it("the composition rows are pinned — the aria, the lockup, the menu grammar", () => {
+  it("the composition rows are pinned — the aria, the mark, the menu grammar", () => {
     expect(osText("desktop.aria")).toBe("DevThink desktop");
     expect(osText("desktop.logoTitle")).toBe("DevThink");
-    expect(osText("desktop.wordmark")).toBe("DevThink");
-    expect(osText("desktop.tagline")).toBe("local OS — chat first");
+    /* the logo-without-text law retired the wordmark and tagline rows —
+     * the ids no longer ride the os label table (osText answers "" for
+     * an unknown id, and the type union dropped the pair with the rows) */
     expect(osText("desktop.menu.view")).toBe("View");
     expect(osText("desktop.menu.view.reset")).toBe("reset layout");
     expect(osText("desktop.menu.sort.original")).toBe("original spots");

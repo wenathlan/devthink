@@ -18,7 +18,7 @@
  */
 import { PersonRegular, WindowConsoleRegular } from "@fluentui/react-icons";
 import type { OAuthProvider, ProviderRowView } from "../../account.ts";
-import { copy } from "../../copy.ts";
+import { copy } from "../../uistore.ts";
 
 /** the official four color google g mark of the sign in buttons. */
 function GoogleMark() {

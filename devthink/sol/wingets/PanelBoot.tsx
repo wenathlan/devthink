@@ -93,12 +93,13 @@ export function BootScreen({ ready = true, onDone }: { ready?: boolean; onDone: 
     <div className={`boot-screen${leaving ? " leaving" : ""}`} role="status" aria-label={osText("boot.aria")}>
       {/* the one mark of the boot zone: the white brand mark centered (the
           mark recolors through currentColor — the boot canvas paints it
-          white like the real system logo) */}
+          white like the real system logo). the owner law of the reference:
+          the logo stands alone — no wordmark and no state words below it
+          (the aria-label of the status root keeps the screen-reader voice;
+          the startup bar stays: it is function, not a logo caption) */}
       <div className="boot-screen__mark" aria-hidden="true">
         <SolLogoMark size={92} />
       </div>
-      <p className="boot-screen__name">{osText("boot.wordmark")}</p>
-      <p className="boot-screen__state">{osText("boot.state")}</p>
       {/* the startup bar — the original bar of commits 118/140 the owner
           ordered back: the 168px pill track, the 1.6s bootFill sweep over
           the silver gradient fill and the bootLeadDot bead on its lead
