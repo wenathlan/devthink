@@ -280,6 +280,33 @@ export default function Panel() {
     window.history.replaceState(null, "", historypath("/panel"));
   }, [deep, route]);
 
+  // the zoom law of the os shell: the viewport meta already pins the page
+  // width, but the browsers still answer ctrl+wheel, the pinch trackpad
+  // gesture and the ctrl/±/0 keyboard chords with a page-level zoom that
+  // shifts the whole design — the owner law locks the browser zoom at every
+  // door (the faun viewport precedent) and keeps the zoom the app itself
+  // owns (the zoom widget inside the windows) the only one that answers.
+  useEffect(() => {
+    const pinch = (event: Event) => event.preventDefault();
+    const onWheel = (event: WheelEvent) => {
+      if (event.ctrlKey) event.preventDefault();
+    };
+    const onKey = (event: KeyboardEvent) => {
+      const chord = (event.metaKey || event.ctrlKey) && ["+", "-", "=", "0", "_"].includes(event.key);
+      if (chord) event.preventDefault();
+    };
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("gesturestart", pinch, { passive: false });
+    window.addEventListener("gesturechange", pinch, { passive: false });
+    return () => {
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("gesturestart", pinch);
+      window.removeEventListener("gesturechange", pinch);
+    };
+  }, []);
+
   function openDestination(destination: WorkspaceDestination) {
     const directRoutes: Partial<Record<WorkspaceDestination, string>> = {
       providers: "/providers",
