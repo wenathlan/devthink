@@ -833,6 +833,7 @@ export const librarysurfaceexports: readonly string[] = [
   "apicallrecordof",
   "apientries",
   "apifeatureflagintersection",
+  "apifreezebaseline",
   "apifreezedate",
   "apifreezerelease",
   "apifreezescope",
