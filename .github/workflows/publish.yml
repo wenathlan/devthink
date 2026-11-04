@@ -297,7 +297,17 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              publish_output="$(npm publish "${tarball}" --access public --provenance 2>&1)" && { published=1; break; }
+              # the owner rule (the 2.0.155 registry heal): the envelope
+              # publishes ALWAYS while the token exists - registry versions
+              # are distinct strings and a rung landing BELOW the registry
+              # latest (the retired 2.1.8 line still holds the latest tag
+              # of both registries) must never skip. npm 12 refuses the
+              # IMPLICIT latest tag in that case ("Cannot implicitly apply
+              # the latest tag"); the explicit tag answers the refusal, the
+              # publish lands, and the dist-tag step below pins latest to
+              # the release version - the same maene realignment doctrine
+              # the family-npmjs lane carries.
+              publish_output="$(npm publish "${tarball}" --access public --provenance --tag latest 2>&1)" && { published=1; break; }
               # the twin-409 doctrine (the idempotent win the family loop of
               # the release ladder carries): the ladder's own npmjs job
               # publishes the same tarball inside the same release event, and
@@ -707,7 +717,11 @@ jobs:
           published=0
           until [ "$attempt" -ge 3 ]; do
             attempt=$((attempt + 1))
-            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public; then
+            # the explicit latest tag (the 2.0.155 registry heal): the
+            # retired 2.1.8 line holds the github registry latest too, and
+            # npm 12 refuses the implicit tag on a lower rung - the
+            # dist-tag step below re-pins latest after the publish lands.
+            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public --tag latest; then
               published=1
               break
             fi
@@ -833,7 +847,10 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              if npm publish --registry=https://npm.pkg.github.com --access public; then
+              # the explicit latest tag (the 2.0.155 registry heal): the
+              # family envelopes land below the retired 2.1.8 latest the
+              # same way, and the dist-tag step below re-pins latest.
+              if npm publish --registry=https://npm.pkg.github.com --access public --tag latest; then
                 published=1
                 break
               fi
@@ -3179,7 +3196,7 @@ jobs:
             const splitrelease = [
               "    splits {",
               "        abi {",
-              "            enable true",
+              "            enable gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27assemble\x27) }",
               "            reset()",
               "            include \x27armeabi-v7a\x27, \x27arm64-v8a\x27, \x27x86\x27, \x27x86_64\x27",
               "            universalApk true",
@@ -3252,10 +3269,21 @@ jobs:
       - name: build optimized android release
         working-directory: devthink/android
         shell: bash
+        # the bundle-then-assemble law (the 2.0.155 android heal): the aab
+        # bundle task refuses to run beside the abi splits — the R8 resource
+        # shrinker answers one shrunk-resources file per split and the
+        # PerModuleBundleTask dies on the plural directory (the google
+        # issue 402800800 answer: disable the multiple-apk builds for the
+        # bundle lane). the splits block the stamp writes answers with the
+        # task-name gate — enable only when an assemble task rides the
+        # invocation — so the bundle call runs single-apk and the assemble
+        # call after it turns the per-abi apks back on (the asset parity
+        # expansion keeps every standalone apk beside the universal build).
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
+          ./gradlew --no-daemon --stacktrace bundleRelease
+          ./gradlew --no-daemon --stacktrace assembleRelease
 
       - name: collect android artifacts
         shell: bash
