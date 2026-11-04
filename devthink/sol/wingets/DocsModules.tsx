@@ -4,7 +4,7 @@
  * responsibility beside it. Loose component of the docs page.
  */
 import type { CoreModule } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 export function DocsModules({ modules }: { modules: CoreModule[] }) {
   return (

@@ -47,7 +47,7 @@ export default defineConfig({
        * forge, so the dev server and the build answer the same module the
        * node-side tests answer. */
       "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
-      "@": path.resolve(import.meta.dirname, "Sol"),
+      "@": path.resolve(import.meta.dirname, "sol"),
     },
   },
   root: import.meta.dirname,

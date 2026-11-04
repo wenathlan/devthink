@@ -13,9 +13,11 @@
  */
 import { type FormEvent, useMemo, useState } from "react";
 import { copy } from "../../copy";
-import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../mcpregistry";
+import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../mcp";
 
-/** the one localStorage key the registry rides (mcpregistry.ts contract). */
+/** the one localStorage key the registry rides (mcpregistry.ts contract).
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth. */
 const REGISTRY_KEY = "dt.mcp.registry.v1";
 
 /** the plain answer the registry mutations return. */

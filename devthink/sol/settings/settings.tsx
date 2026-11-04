@@ -37,6 +37,11 @@ import {
   readBrowserPreferences,
   saveBrowserPreference,
 } from "../../storage.ts";
+import {
+  initPersonalization,
+  loadThemeMirror,
+  syncThemeFromPreference,
+} from "../../personalstore.ts";
 import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../wingets";
 import {
   AboutSettings,
@@ -44,11 +49,8 @@ import {
   AutomationMcp,
   GatewayPairing,
   HardDrives,
-  initPersonalization,
-  loadThemeMirror,
   Personalization,
   SettingsNav,
-  syncThemeFromPreference,
 } from "../wingets";
 
 export * from "../wingets";

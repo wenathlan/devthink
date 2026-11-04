@@ -11,6 +11,7 @@ import {
   seedAppIcons,
   seedCoreModules,
   seedFamilySites,
+  seedLanguages,
   seedMediaSlots,
   seedOsAppLabels,
   seedOsAppWindows,
@@ -49,6 +50,7 @@ export type StudioAsset = {
   size?: string;
 };
 export type StudioTrack = { id: string; title: string; engine: string; minutes: string; blurb: string };
+export type LanguageRow = { code: string; native: string };
 export type AboutBlock = { id: string; heading: string; body: string[] };
 export type Principle = { id: string; name: string; detail: string };
 export type MediaSlot = { id: string; label: string; ratio: string; caption: string };
@@ -88,6 +90,7 @@ type CatalogKind =
   | "platform.modules"
   | "platform.apps"
   | "platform.binaries"
+  | "platform.languages"
   | "studio.assets"
   | "studio.tracks"
   | "institutional.about"
@@ -165,6 +168,14 @@ export function nativeApps(): Promise<NativeApp[]> {
 
 export function runnerBinaries(): Promise<RunnerBinary[]> {
   return catalogRows("platform.binaries", seedRunnerBinaries);
+}
+
+/** the display language ladder of the settings card — the paired database
+ * answers over the catalog seam, the reviewed seeds answer the static
+ * build (2026: the language winget reads this accessor, it never restates
+ * the rows). */
+export function languageLadder(): Promise<LanguageRow[]> {
+  return catalogRows("platform.languages", seedLanguages);
 }
 
 export function studioAssets(): Promise<StudioAsset[]> {

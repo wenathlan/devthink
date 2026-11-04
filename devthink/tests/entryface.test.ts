@@ -29,17 +29,17 @@ import {
 } from "../saascontent.ts";
 import { uistoreseedrows } from "../uistore.ts";
 
-const sections = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaassections.tsx"), "utf8");
-const shaderhero = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroShaderhero.tsx"), "utf8");
-const barrel = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "index.ts"), "utf8");
-const saas = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaas.tsx"), "utf8");
-const rails = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaasrails.tsx"), "utf8");
-const kit = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "IntroSaaskit.tsx"), "utf8");
-const intro = readFileSync(join(import.meta.dirname, "..", "Sol", "intro", "intro.tsx"), "utf8");
-const explore = readFileSync(join(import.meta.dirname, "..", "Sol", "explore", "explore.tsx"), "utf8");
-const auth = readFileSync(join(import.meta.dirname, "..", "Sol", "auth", "auth.tsx"), "utf8");
-const routes = readFileSync(join(import.meta.dirname, "..", "Sol", "Sol.tsx"), "utf8");
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const sections = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroSaassections.tsx"), "utf8");
+const shaderhero = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroShaderhero.tsx"), "utf8");
+const barrel = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "index.ts"), "utf8");
+const saas = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroSaas.tsx"), "utf8");
+const rails = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroSaasrails.tsx"), "utf8");
+const kit = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroSaaskit.tsx"), "utf8");
+const intro = readFileSync(join(import.meta.dirname, "..", "sol", "intro", "intro.tsx"), "utf8");
+const explore = readFileSync(join(import.meta.dirname, "..", "sol", "explore", "explore.tsx"), "utf8");
+const auth = readFileSync(join(import.meta.dirname, "..", "sol", "auth", "auth.tsx"), "utf8");
+const routes = readFileSync(join(import.meta.dirname, "..", "sol", "Sol.tsx"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 const saascontent = readFileSync(join(import.meta.dirname, "..", "saascontent.ts"), "utf8");
 
 /** the marker of the restored landing block — every landing rule is read
@@ -494,7 +494,7 @@ describe("the intro to explore to auth chain", () => {
   });
 
   it("the taskbar widgets trigger walks the same chain — the os dock hands the explore face", () => {
-    const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
+    const chrome = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "Shellchrome.tsx"), "utf8");
     expect(chrome).toContain('onClick={() => navigate("/explore")}');
     expect(chrome).toContain('aria-label={uicopy("shell.widgets.aria")}');
     // the route the trigger lands on is the explore face of this chain

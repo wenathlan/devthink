@@ -28,7 +28,7 @@ import {
   saveplan,
   TIER_BADGES,
   type Tier,
-} from "../../planstate.ts";
+} from "../../plan.ts";
 
 /** The tier rows the cards render (the keys, never the words — the copy
  * store answers the lines). */

@@ -16,7 +16,7 @@ import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { type FamilySite, familySites } from "../../catalog.ts";
 import { familyAccentOf } from "../../familyaccent.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 /** the family identity accents resolve through the one spec-12 table the
  * identity battery pins (familyAccentOf — the single source the family

@@ -2,6 +2,8 @@
  * storage — consolidated storage engine logics of the vault family.
  * @module storage
  * @family wave/logicfold2
+ * @layer blob — the base of the storage stack: bucket → object → chunk → blob;
+ *  the storage lane (better-sqlite3 first) is the mechanism every layer rides.
  * One keyed file per family: the former variant arms (storagelane)
  * retired into this seat with every export preserved under the same name.
  */

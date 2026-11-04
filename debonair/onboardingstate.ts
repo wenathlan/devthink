@@ -29,7 +29,9 @@ export type VisitorOnboarding = {
 /** the stages one call can mark seen. */
 export type OnboardingStage = "intro" | "onboarding";
 
-/** the localStorage cache key (the DB mirror, never the source of truth). */
+/** the localStorage cache key (the DB mirror, never the source of truth).
+ *
+ * @vault the binding — data lives in the Vault engine via the internal API (GET/POST /api/v1/onboarding over @wenathlan/vault); the localStorage cache is a session cache only, never the source of truth. */
 const CACHE_KEY = "debonair.onboarding.seen";
 
 /** the localStorage key of the stable per-browser visitor id. */

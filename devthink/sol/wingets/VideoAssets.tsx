@@ -5,7 +5,7 @@
  */
 import {MoviesAndTvFilled} from "@fluentui/react-icons";
 import type { StudioAsset } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 export function VideoAssets({
   rows,

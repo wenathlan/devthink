@@ -32,10 +32,10 @@
 // (decoded audio — the same clock, the same singleton law: one audible
 // transport, the plan engine hushing beside it).
 
-import { planTake, type TakePlan } from "./arranger.ts";
+import { planTake, type TakePlan } from "./arrangement.ts";
 import { TakeEngine, TransportError } from "./audio.ts";
 import { gatewayblobstore, sessionblobstore } from "./blobstore.ts";
-import type { ReconDocument } from "./reconpayload.ts";
+import type { ReconDocument } from "./recon.ts";
 import { findTakeRecord, loadTakeRecords, type StorageLike, sessionStorageOrMemory } from "./take.ts";
 
 /** The demo take the bus always carries (the studio's own demo seed). */

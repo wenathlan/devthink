@@ -54,7 +54,7 @@ export default defineConfig({
        * specifier to the monorepo source the sibling engine carries — the
        * ladder is never duplicated inside foundry. */
       "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
-      "@": path.resolve(import.meta.dirname, "Sol"),
+      "@": path.resolve(import.meta.dirname, "sol"),
     },
   },
   root: import.meta.dirname,

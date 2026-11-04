@@ -3,7 +3,7 @@ import { Box, render, Text, useApp, useInput, useWindowSize } from "ink";
 import { useMemo, useState } from "react";
 import { getIdentity, pairingStatus } from "../../account.js";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { listProviders } from "@wenathlan/getry/providers";
 import { listSessions, readPreferences, type Session, savePreference } from "../../storage.js";
 import type { ChatEvent } from "@wenathlan/getry/streaming";

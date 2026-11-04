@@ -53,7 +53,7 @@ import {
 import { DESKTOP_APPS, isFamilyApp } from "../../appregistry.ts";
 import { label } from "../../labels.ts";
 import { peekonboardingstate } from "../../onboardingstate";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { SolLogoMark } from "../wingets";
 import { ShellChrome } from "../wingets";
 import { DownloadRail } from "../wingets";

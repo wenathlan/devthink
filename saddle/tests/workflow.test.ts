@@ -363,7 +363,7 @@ describe("the workflow contract", () => {
     for (const entry of readdirSync(reporoot, { withFileTypes: true })) {
       if (!entry.isDirectory()) continue;
       assert.ok(
-        entry.name === "Sol" ||
+        entry.name === "sol" ||
           entry.name === "docs" ||
           entry.name === "tests" ||
           entry.name === "build" ||
@@ -436,7 +436,7 @@ describe("the workflow contract", () => {
      * page mount and re-exports the loose components beside it; the theme
      * anchor sol/Sol.tsx owns the route table and App.tsx consumes only it). */
     assert.ok(
-      existsSync(join(reporoot, "Sol", "Sol.tsx")),
+      existsSync(join(reporoot, "sol", "Sol.tsx")),
       "sol/Sol.tsx — the theme anchor owns the route table (the anchor architecture)",
     );
     for (const page of [
@@ -454,7 +454,7 @@ describe("the workflow contract", () => {
       "console",
     ]) {
       assert.ok(
-        existsSync(join(reporoot, "Sol", page, `${page}.tsx`)),
+        existsSync(join(reporoot, "sol", page, `${page}.tsx`)),
         `sol/${page}/${page}.tsx — one page anchor per route folder (the anchor architecture)`,
       );
     }

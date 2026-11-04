@@ -11,7 +11,7 @@
  */
 
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
-import { osOnboardingSteps } from "../../oslabels.ts";
+import { osOnboardingSteps } from "../../os.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 import { AppTile } from "./ShellApptile.tsx";
 

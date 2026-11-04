@@ -29,7 +29,7 @@ import { type CSSProperties, type FormEvent, type ReactNode, useMemo, useState }
 import { Link, useLocation } from "wouter";
 import { DESKTOP_APPS, type DesktopApp, isFamilyApp } from "../../appregistry.ts";
 import { familyAccentOf } from "../../familyaccent.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { AppTile } from "./ShellApptile.tsx";
 import { HeroWaves } from "./ExploreWaves.tsx";
 

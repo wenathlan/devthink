@@ -2498,7 +2498,7 @@ function lineOf(source: string, index: number): number {
 /** extracts the declared uniform names (declaration order, duplicates kept out). */
 function declaredUniforms(stripped: string): string[] {
   const names: string[] = [];
-  const pattern = /uniform\s+\w+\s+(\w+)\s*(?:\[[^\]]*\])?\s*;/g;
+  const pattern = /uniform\s{1,8}\w{1,64}\s{1,8}(\w+)\s{0,8}(?:\[[^\]]{0,64}\])?\s{0,8};/g; // the bounded windows keep the adversarial 'uniform 0 0[' runs linear (the redos law)
   for (const match of stripped.matchAll(pattern)) {
     if (!names.includes(match[1])) names.push(match[1]);
   }

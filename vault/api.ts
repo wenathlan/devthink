@@ -357,6 +357,14 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     }
     const method = req.method ?? "GET";
     const pathname = url.pathname;
+    /* the raw-database law, one door earlier than every lane: a request
+     * that names the raw database file — plain, encoded or the faun
+     * spelling — refuses before the health probe, the api surface and
+     * the static faces are ever consulted. The bytes never leave. */
+    if (rawDatabaseRequest(pathname) || rawDatabaseRequest(safeDecode(pathname))) {
+      sendError(res, 403, "VAULT_DBFILE", "the raw database file never leaves the vault — the faun law holds on every face");
+      return;
+    }
     if (method === "GET" && pathname === routes.health) {
       sendJson(res, 200, {
         ok: true,
@@ -1405,9 +1413,29 @@ const STATIC_MIME: Readonly<Record<string, string>> = Object.freeze({
 });
 
 /** the database faces the static lane never serves (the faun seal — even a
- * stray store inside the static root answers 404, never bytes: the wal and
- * the shm sidecars refuse with their file). */
-const SEALED_FACES = [".db", ".db-journal", ".db-shm", ".db-wal"] as const;
+ * stray store inside the static root answers the 403 refusal, never bytes:
+ * the wal and the shm sidecars refuse with their file, and the sqlite
+ * spellings ride the same seal as the store file). */
+const SEALED_FACES = [".db", ".db-journal", ".db-shm", ".db-wal", ".sqlite", ".sqlite-wal", ".sqlite-shm", ".sqlite3", ".sqlite3-wal", ".sqlite3-shm"] as const;
+
+/**
+ * Answers whether one pathname names the raw database file — the faun law
+ * at the request door, one guard for the whole api face. The patterns are
+ * the mission law verbatim: /\.db$/i (every store spelling, plain or
+ * sidecar, whatever the segment before it) and /sqlite|faun\.db/i (the
+ * sqlite faces and the faun.db mistake that once published a whole site
+ * database). The refusal is a 403 on every face — static lane, internal
+ * root or api surface — and the bytes never leave the vault: database
+ * data flows only through the internal api lanes.
+ *
+ * @law the raw database file never leaves the vault
+ * @param pathname the raw or the decoded url pathname (the encoded
+ *  spellings — %2E and friends — reach this guard decoded).
+ * @returns true when the pathname names the raw database file.
+ */
+function rawDatabaseRequest(pathname: string): boolean {
+  return /\.db$/i.test(pathname) || /sqlite|faun\.db/i.test(pathname);
+}
 
 /** The built faces the static lane serves — the extension allowlist of the
  * family build (the hashed bundles, the deploy faces, the fonts). Every
@@ -1481,7 +1509,7 @@ function serveStatic(res: ServerResponse, pathname: string, head: boolean): bool
     return false;
   }
   if (sealedFace(pathname)) {
-    sendError(res, 404, "VAULT_STATIC", "a database file never answers from the static lane — the faun seal holds");
+    sendError(res, 403, "VAULT_DBFILE", "a database file never answers from the static lane — the faun seal holds");
     return true;
   }
   if (!servableFace(pathname)) {
@@ -1490,7 +1518,7 @@ function serveStatic(res: ServerResponse, pathname: string, head: boolean): bool
   }
   const candidate = staticCandidate(root, pathname);
   if (candidate !== undefined && sealedFace(candidate)) {
-    sendError(res, 404, "VAULT_STATIC", "a database file never answers from the static lane — the faun seal holds");
+    sendError(res, 403, "VAULT_DBFILE", "a database file never answers from the static lane — the faun seal holds");
     return true;
   }
   if (candidate !== undefined && statSync(candidate, { throwIfNoEntry: false })?.isFile()) {

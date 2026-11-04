@@ -21,7 +21,7 @@
  * focus ring on every interactive row, the entrance stagger under the
  * second (60ms beats, capped), the reduced motion respected. Every string
  * rides the label stores — the new keys through labels.ts, the inherited
- * explore rows through oslabels.ts.
+ * explore rows through os.ts.
  */
 import {
   ArrowLeftRegular as ArrowLeft,
@@ -39,7 +39,7 @@ import {
 import { type Ref, useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { label, type LabelKey } from "../../labels.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import type {
   AboutBlock,
   CoreModule,

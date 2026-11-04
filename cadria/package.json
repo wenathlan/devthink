@@ -1,11 +1,14 @@
 {
   "name": "@wenathlan/cadria",
-  "version": "2.0.157",
+  "version": "2.0.158",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
   "description": "cadria is the video and image player, editor and studio of the wenathlan family: it houses the versawase engine at the folder root, absorbs iukka (player) and create (editor), and imports katexis from debonair and gateway, AI and workflow from devthink. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
+  "bin": {
+    "cadria": "./cli.ts"
+  },
   "keywords": [
     "cadria",
     "versawase",
@@ -19,7 +22,7 @@
   "license": "GPL-3.0-only",
   "engines": {
     "bare": "^1.18.0",
-    "bun": "^1.4.2",
+    "bun": "^1.4.4",
     "cargo": ">=1.85.0",
     "chrome": "^16.0.912",
     "cnpm": "^9.4.0",
@@ -32,7 +35,7 @@
     "iojs": "^1.0.0",
     "java": ">=17",
     "node": ">=26.13.0 <27",
-    "npm": "^12.1.0",
+    "npm": "^12.2.1",
     "pnpm": "^12.6.0",
     "python": ">=3.11.0",
     "rust": ">=1.85.0",
@@ -41,6 +44,9 @@
     "v": "^0.5.2",
     "vscode": "^1.118.0",
     "yarn": "^4.17.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.63.0"
   },
   "files": [
     "README.md",
@@ -257,7 +263,7 @@
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/jetbrains-mono": "^5.3.0",
     "@fontsource-variable/outfit": "^5.3.0",
-    "@hono/node-server": "^2.1.5",
+    "@hono/node-server": "^2.1.6",
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
@@ -266,10 +272,11 @@
     "@wenathlan/devthink": "~2.0.154",
     "@wenathlan/getry": "~2.0.155",
     "@wenathlan/saddle": "~2.0.155",
+    "@wenathlan/argan": "~2.0.155",
     "@wenathlan/vault": "~2.0.155",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
-    "gsap": "^3.15.0",
+    "gsap": "^3.15.1",
     "hono": "^4.13.16",
     "ink": "^7.1.1",
     "lucide-react": "^1.68.0",
@@ -300,7 +307,7 @@
     "source-map-js": "1.2.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.6.4",
+    "@biomejs/biome": "^2.6.5",
     "@capacitor/android": "^8.6.0",
     "@capacitor/cli": "^8.6.0",
     "@capacitor/core": "^8.6.0",

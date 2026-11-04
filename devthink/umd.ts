@@ -1,4 +1,11 @@
 /**
+ * umd — the script tag entry face of the devthink browser bundle.
+ * @module umd
+ * @family wave/logicfold3
+ * @law single responsibility: this seat is the runtime entry the build emits as the global devthink bundle; the build time helper lives in umdwrap.ts so the build graph never resolves the index.js artifact at build time.
+ */
+
+/**
  * Umd entry of the 1.1.67 family, restamped by the 1.1.81 library modes and sunset at 2.0.0.
  * The shared core for script tag consumers: the build emits this entry as the global devthink bundle of the browser platform target, tree shakable imports, the whole library behind one script tag with the consent gates intact. The 2.0.0 sunset removed the deprecated uppercase Devthink global the deprecation window carried: the envelope exposes exactly the lowercase devthink surface the frozen library contract declares.
  */

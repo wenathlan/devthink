@@ -15,9 +15,9 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const approot = join(import.meta.dirname, "..");
-const solcss = readFileSync(join(approot, "Sol", "sol.css"), "utf8");
+const solcss = readFileSync(join(approot, "sol", "sol.css"), "utf8");
 const appshell = readFileSync(join(approot, "App.tsx"), "utf8");
-const explore = readFileSync(join(approot, "Sol", "explore", "explore.tsx"), "utf8");
+const explore = readFileSync(join(approot, "sol", "explore", "explore.tsx"), "utf8");
 
 /** every html entry of the app root — the index the vite build serves, the
  * design reference page and the extension popup: each one is a door the

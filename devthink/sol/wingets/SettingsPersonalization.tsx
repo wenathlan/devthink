@@ -9,6 +9,8 @@
  * pattern or the preference machine) and repaints the os through the same
  * css variables the shell already reads. Loose component of the settings
  * page, riding the dtw kit.
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); the personalstore localStorage pattern is a session cache only, never the source of truth.
  */
 import { ColorRegular, ImageRegular, PersonRegular, WindowRegular } from "@fluentui/react-icons";
 import { copy } from "../../copy";

@@ -23,7 +23,7 @@ export default defineConfig({
        * the mechanism is never duplicated inside cobaia. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
-      "@": path.resolve(import.meta.dirname, "Sol"),
+      "@": path.resolve(import.meta.dirname, "sol"),
     },
   },
   root: import.meta.dirname,

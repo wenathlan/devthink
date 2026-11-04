@@ -57,6 +57,8 @@
  * brightness controls of the tray drive two fixed, pointer-events-none,
  * removable screen overlays and their --tray-night / --tray-dim tokens —
  * session-only and reversible.
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); the browser localStorage seats this chrome leans on (the pin order) are a session cache only, never the source of truth.
  */
 
 import {
@@ -85,7 +87,7 @@ import {
   saveNavbarEdge,
   saveNavbarMode,
 } from "../../desktopstate";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { loadrecententries, pushrecentapp, type RecentEntry } from "../../recentapps.ts";
 import { readBrowserPreferences } from "../../storage.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";

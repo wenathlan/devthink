@@ -16,8 +16,8 @@ export default defineConfig({
 	plugins: [react(), tailwindcss()],
 	resolve: {
 		alias: {
-			// the theme sources live in the Sol folder of this app root.
-			'@': path.resolve(import.meta.dirname, 'Sol'),
+			// the theme sources live in the sol folder of this app root.
+			'@': path.resolve(import.meta.dirname, 'sol'),
 			// The label store bridge of the ownership law: the app's copy mechanism
 			// rides the vault factory through the relative sibling source (the
 			// owner is the vault engine — the mechanism is never duplicated inside
@@ -35,7 +35,7 @@ export default defineConfig({
 		emptyOutDir: false,
 		assetsDir: '',
 	},
-	/** the theme sources live in the Sol folder of this app root: the pages import
+	/** the theme sources live in the sol folder of this app root: the pages import
 	 * the root engine logics (api, auth, db, mesh, sandbox) across the theme
 	 * boundary, and the playground consumes the root isolation module, so the
 	 * dev server allows this single root. */

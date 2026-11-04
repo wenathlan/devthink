@@ -33,10 +33,10 @@ import { familyurl } from "../gateway.ts";
 import { FAMILY_SLUGS, windowapp, windowcatalog } from "../window.ts";
 import { APP_ICONS } from "../sol/wingets/ShellAppicons.tsx";
 
-const router = readFileSync(join(import.meta.dirname, "..", "Sol", "Sol.tsx"), "utf8");
-const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
-const familyframe = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellFamilyframe.tsx"), "utf8");
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const router = readFileSync(join(import.meta.dirname, "..", "sol", "Sol.tsx"), "utf8");
+const workspace = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelWorkspace.tsx"), "utf8");
+const familyframe = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "ShellFamilyframe.tsx"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 const viteconfig = readFileSync(join(import.meta.dirname, "..", "vite.config.ts"), "utf8");
 /** the pages workflow of the monorepo checkout — null inside the standalone
  * container context (the container carries the application tree alone, never
@@ -254,7 +254,7 @@ describe("the native anchors answer both doors with one design (the shared surfa
     }
     // the chat body carries the same contract (the window body and the
     // page body are one component, the embedded flag flips the surface)
-    const chatbody = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ChatBody.tsx"), "utf8");
+    const chatbody = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "ChatBody.tsx"), "utf8");
     expect(chatbody.includes("embedded?: boolean"), "the chat body carries the embedded prop").toBe(true);
     const chatpage = readFileSync(join(import.meta.dirname, "..", CHATPAGE), "utf8");
     expect(chatpage.includes("<ShellChrome />"), "the chat page owns the shell").toBe(true);
@@ -333,7 +333,7 @@ describe("the sync (both faces stay one design)", () => {
     // window chrome (the routed page renders bare); at the typed url the
     // app owns the whole viewport with its own voice
     for (const slug of FAMILY_SLUGS) {
-      const solroot = join(reporoot, slug, "Sol");
+      const solroot = join(reporoot, slug, "sol");
       expect(existsSync(solroot), `${slug} carries the Sol theme`).toBe(true);
       const files = collectTsx(solroot);
       expect(files.length, `${slug} theme carries tsx sources`).toBeGreaterThan(0);

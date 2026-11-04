@@ -12,7 +12,7 @@
 // is the desk's job).
 // Pure and multi-mode — browser, node and the tests alike.
 
-import type { TakePlan } from "./arranger.ts";
+import type { TakePlan } from "./arrangement.ts";
 
 /** The typed cloud failure the surfaces render honestly. */
 export class CloudSyncError extends Error {

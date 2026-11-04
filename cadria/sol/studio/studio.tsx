@@ -33,8 +33,8 @@ import { renderSvg, renderThumbnailSignature } from "../../image.ts";
 import { imageStyles, type StyleSpec, styleForDescriptor } from "../../image.ts";
 import type { DemoFixtureId } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";
-import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studiogenerate.ts";
-import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "../../studiosource.ts";
+import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studio.ts";
+import { analyzeSource, fileSource, fixtureSource, type StudioSource } from "../../studio.ts";
 import {
   StudioControls as ControlsPane,
   StudioExportrow as ExportRow,

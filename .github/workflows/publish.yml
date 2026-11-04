@@ -25,11 +25,15 @@ name: DevThink Publish
 # THE FAMILY DISTRIBUTION LANES (the 2.0.46 five-package wave): beside
 # every application registry lane rides its family mirror - the
 # family-npmjs, family-githubnpm, family-maven, family-nuget,
-# family-rubygems and family-ghcr jobs publish the four documentation
-# envelopes (argan, cadria, debonair, stealthhead) through the same
-# registries, the same conclusion guard, the same release-approval
-# environment and the same bounded retry the application lanes carry,
-# one matrix leg per envelope folder. The correlated registry logic of
+# family-rubygems and family-ghcr jobs publish every documentation
+# envelope (the six-distribution completeness law of the distpack
+# ladder: argan, cadria, cobaia, debonair, forge, foundry, getry,
+# stealthhead and vault ride the nuget, maven, rubygems, npmjs and
+# github npm lanes, saddle rides the nuget, rubygems and github npm
+# lanes beside its engine lanes) through the same registries, the same
+# conclusion guard, the same release-approval environment and the same
+# bounded retry the application lanes carry, one matrix leg per
+# envelope folder. The correlated registry logic of
 # each channel stays grouped inside the one lane pair it belongs to.
 #
 # THE FIVE HUNDRED ASSET LADDER (the 2.0.157 expansion the owner
@@ -792,7 +796,7 @@ jobs:
         # law: every application envelope of the monorepo rides the registry
         # lane (the gateway getry and the monetization cobaia walk beside
         # the seven this lane always carried).
-        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1070,7 +1074,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealthhead]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1322,7 +1326,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealthhead]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1375,7 +1379,13 @@ jobs:
           cd "${{ matrix.package }}"
           VERSION="${{ steps.release.outputs.version }}"
           dotnet pack "${{ matrix.package }}.csproj" --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
-          test -f "nuget/${{ matrix.package }}.${VERSION}.nupkg"
+          # the package id doctrine (the saddle engine envelope keeps the
+          # presentation casing Saddle while the sibling envelopes answer
+          # the lowercase matrix name): the packed name resolves from the
+          # output directory instead of the matrix literal, so every
+          # PackageId rides the one assertion.
+          NUPKG="$(find nuget -maxdepth 1 -name "*.${VERSION}.nupkg" -print -quit)"
+          test -n "${NUPKG}" && test -f "${NUPKG}"
       - name: publish the family package
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1383,9 +1393,11 @@ jobs:
           set -euo pipefail
           cd "${{ matrix.package }}"
           VERSION="${{ steps.release.outputs.version }}"
+          NUPKG="$(find nuget -maxdepth 1 -name "*.${VERSION}.nupkg" -print -quit)"
+          test -n "${NUPKG}" && test -f "${NUPKG}"
           pushed=false
           for attempt in 1 2 3; do
-            if dotnet nuget push "nuget/${{ matrix.package }}.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            if dotnet nuget push "${NUPKG}" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
             echo "The nuget push attempt ${attempt} of the ${{ matrix.package }} envelope failed; the bounded retry policy retries inside three attempts."
             sleep "$((attempt * 5))"
           done
@@ -1607,7 +1619,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealthhead]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -4395,7 +4407,7 @@ jobs:
           const app = process.env.APP;
           const version = process.env.VERSION;
           const stage = path.join("release-metadata", app);
-          const solRoot = path.join(app, "Sol");
+          const solRoot = path.join(app, "sol");
           const walk = directory => fs.readdirSync(directory, { withFileTypes: true })
             .flatMap(entry => {
               const entryPath = path.join(directory, entry.name);
@@ -4666,8 +4678,8 @@ jobs:
               private: manifest.private === true,
               docs: count("docs"),
               tests: count("tests"),
-              solRoutes: fs.existsSync(path.join(app, "Sol"))
-                ? fs.readdirSync(path.join(app, "Sol"), { withFileTypes: true }).filter(entry => entry.isDirectory()).length
+              solRoutes: fs.existsSync(path.join(app, "sol"))
+                ? fs.readdirSync(path.join(app, "sol"), { withFileTypes: true }).filter(entry => entry.isDirectory()).length
                 : 0,
               rootModules: rootModules,
               dockerfile: fs.existsSync(path.join(app, "Dockerfile"))
@@ -5580,6 +5592,28 @@ jobs:
                  saddlebuildctx/vault/tests
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
+      - name: Resolve the node base digest (the local-build lane)
+        # the digest-never-hardcoded law, the probe shape: this dispatch-only
+        # lane carries no needs edge (it never rides the release chain), so
+        # it resolves the manifest-list digest the same way the Dockerfile's
+        # digest-law comment documents for local builds - on the runner, at
+        # build time, the one-workflow-file standard every lane's own steps
+        # carry. the release chain's resolver stays the single source the
+        # publish legs read; this is the probe's own copy of the same lane.
+        id: nodebase
+        run: |
+          set -euo pipefail
+          token="$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/node:pull" | jq -r .token)"
+          digest="$(curl -fsSI -H "Authorization: Bearer ${token}" \
+            -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+            "https://registry-1.docker.io/v2/library/node/manifests/26.13.0-slim" \
+            | tr -d '\r' | awk 'tolower($1)=="docker-content-digest:"{print $2}')"
+          case "${digest}" in
+            sha256:*) ;;
+            *) echo "the node base digest resolved to an unexpected shape: ${digest}" >&2; exit 1 ;;
+          esac
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+
       - name: Build image (dry run, loaded locally)
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -5588,10 +5622,10 @@ jobs:
           # the profile target the variant matrix names (max, balanced or
           # lite) - the same targets the publish legs build; the mesa and
           # distro args of the grand-merge era retired with the from-source
-          # stages that never built green. the base rides the Dockerfile's
-          # bare-tag default (the digest law's local-build doctrine: this
-          # probe carries no needs edge, so no resolved digest rides it -
-          # the publish legs alone carry the resolved NODE_BASE pin).
+          # stages that never built green. the base rides the digest the
+          # probe's own resolve step above answers (this lane carries no
+          # needs edge - the release chain's resolver stays the source the
+          # publish legs read).
           target: ${{ matrix.profile }}
           platforms: ${{ matrix.platform }}
           push: false
@@ -5604,6 +5638,8 @@ jobs:
             VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
+            NODE_BASE_TAG=node:26.13.0-slim
+            NODE_BASE_DIGEST=${{ steps.nodebase.outputs.digest }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -5684,6 +5720,7 @@ jobs:
       ubunturef: ${{ steps.bases.outputs.ubuntu }}
       pythonref: ${{ steps.bases.outputs.python }}
       noderef: ${{ steps.bases.outputs.node }}
+      nodedigest: ${{ steps.bases.outputs.nodedigest }}
     permissions:
       # contents: write is required to keep the SHA256SUMS asset of the
       # mesa-cache release in place (the GitHub-generated digest of the
@@ -5827,6 +5864,7 @@ jobs:
             echo "ubuntu=ubuntu:24.04@${ubuntu_digest}"
             echo "python=python:3.14.7-slim@${python_digest}"
             echo "node=node:26.13.0-slim@${node_digest}"
+            echo "nodedigest=${node_digest}"
           } >> "$GITHUB_OUTPUT"
           echo "base digests resolved at build time: ubuntu ${ubuntu_digest} / python ${python_digest} / node ${node_digest}"
 
@@ -5907,7 +5945,8 @@ jobs:
             VHE_PROFILE_RAM_GB=1024
             VHE_PROFILE_GPU=b200
             VHE_PROFILE_GPUS=8
-            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
+            NODE_BASE_TAG=node:26.13.0-slim
+            NODE_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodedigest }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -6109,7 +6148,8 @@ jobs:
             VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
-            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
+            NODE_BASE_TAG=node:26.13.0-slim
+            NODE_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodedigest }}
           labels: |
             org.opencontainers.image.title=saddle (the master virtualization engine)
             org.opencontainers.image.description=the ninety modalities the self-hosted edge answers (the ${{ matrix.profile }} profile)
@@ -6308,7 +6348,8 @@ jobs:
             --build-arg VHE_PROFILE_RAM_GB="1024" \
             --build-arg VHE_PROFILE_GPU="b200" \
             --build-arg VHE_PROFILE_GPUS="8" \
-            --build-arg NODE_BASE="${{ needs.saddle-vhe-resolve.outputs.noderef }}" \
+            --build-arg NODE_BASE_TAG="node:26.13.0-slim" \
+            --build-arg NODE_BASE_DIGEST="${{ needs.saddle-vhe-resolve.outputs.nodedigest }}" \
             --tag "$IMAGE" -f saddlebuildctx/saddle/Dockerfile saddlebuildctx
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest

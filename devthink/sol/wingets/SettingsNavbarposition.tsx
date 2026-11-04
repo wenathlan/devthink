@@ -14,6 +14,8 @@
  * mode choice live through the same event. Every string rides the ui store
  * (the uicopy accessor of uistore.ts — no literal lives here). Loose
  * component of the settings page, riding the dtw kit.
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); browser storage is a session cache only, never the source of truth.
  */
 import { useEffect, useState } from "react";
 import {

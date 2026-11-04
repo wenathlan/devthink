@@ -12,7 +12,7 @@ import { ArrowUploadRegular } from "@fluentui/react-icons";
 import { useRef, useState } from "react";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";
-import type { StudioSource } from "../../studiosource.ts";
+import type { StudioSource } from "../../studio.ts";
 
 /** the input's accept list — wav rides the native path, the rest web audio. */
 const ACCEPT = ".wav,.mp3,.ogg,.flac,.m4a,audio/*";

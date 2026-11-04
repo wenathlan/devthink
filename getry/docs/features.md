@@ -98,3 +98,7 @@ every feature below is read from the code of the getry app root and the Sol them
 - family urls — the `"../" + slug + "/"` relative contract keeps cross-app links mount-proof (`familyurl.ts`).
 - debonair lane — the debonair api lane of the family gateway (`debonairlane.ts`).
 - workload lanes — `sandboxmodality.ts` declares the lanes this app owns in the family catalog.
+
+## Dependencies
+
+- synchronized dependency union — the eleven family apps share one dependency tree: identical `dependencies`, `devDependencies` and `peerDependencies` (same keys, same versions, nothing removed, highest semver wins on conflicts) and one `engines` catalog with node as maestro and the V 0.5.2 seat as catalog annotation (@family wave/depssync).

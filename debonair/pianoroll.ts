@@ -8,7 +8,7 @@
 // lane slot, a chord pitch or a bass onset). Zero DOM, zero audio, zero
 // storage — pure and multi-mode, browser and node alike.
 
-import { type ArrangerRole, RACK_LANES, stepSecondsOf, type TakePlan } from "./arranger.ts";
+import { type ArrangerRole, RACK_LANES, stepSecondsOf, type TakePlan } from "./arrangement.ts";
 import type { NoteEvent, TakeSchedule } from "./take.ts";
 
 /** The constants the roll edits under (the window, the grid, the velocities). */

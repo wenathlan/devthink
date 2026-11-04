@@ -20,9 +20,9 @@ import { describe, expect, it } from "vitest";
 import { afterAuthTarget } from "../gateway";
 import { panelgateverdict, resolveintrotarget } from "../introtarget";
 import { uistoreseedrows } from "../uistore.ts";
-import { osText } from "../oslabels.ts";
+import { osText } from "../os.ts";
 
-const anchor = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
+const anchor = readFileSync(join(import.meta.dirname, "..", "sol", "panel", "panel.tsx"), "utf8");
 const family = readFileSync(join(import.meta.dirname, "..", "account.ts"), "utf8");
 const labels = readFileSync(join(import.meta.dirname, "..", "copy.ts"), "utf8");
 
@@ -158,9 +158,9 @@ describe("the session source of the gate (the account family contract)", () => {
 });
 
 describe("the panel face wave (the texture, the boot copy and the tile lift)", () => {
-  const shellchrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
-  const panelboot = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelBoot.tsx"), "utf8");
-  const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+  const shellchrome = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "Shellchrome.tsx"), "utf8");
+  const panelboot = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelBoot.tsx"), "utf8");
+  const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 
   /** the appended wave block of the panel face (the cascade-order tail of
    * sol.css — the reading scopes to it so the earlier sections stay out) */
@@ -178,7 +178,7 @@ describe("the panel face wave (the texture, the boot copy and the tile lift)", (
 
   it("the boot words ride the os table rows — no literal stays on the boot face", () => {
     /* the win11-fidelity wave B migrated the boot face words from the ui
-     * store copy to the os label table (oslabels.ts — the os table law the
+     * store copy to the os label table (os.ts — the os table law the
      * desktop face answers); the uistore rows stay seeded for the surfaces
      * that still read them, the boot face never quotes them again. */
     expect(panelboot).toContain('osText("boot.aria")');

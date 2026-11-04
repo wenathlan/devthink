@@ -23,7 +23,7 @@
  * it. */
 import { useEffect, useRef, useState } from "react";
 import { peekonboardingstate } from "../../onboardingstate.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 
 const BOOT_KEY = "devthink.boot.done";

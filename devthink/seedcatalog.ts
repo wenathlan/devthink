@@ -8,6 +8,7 @@ import type {
   AppIconSet,
   CoreModule,
   FamilySite,
+  LanguageRow,
   LegalSection,
   MediaSlot,
   NativeApp,
@@ -421,6 +422,25 @@ export const seedStudioAssets: StudioAsset[] = [];
  * rows (glass river, low sun, paper moon) were retired with the rest of
  * the demo studio media. */
 export const seedStudioTracks: StudioTrack[] = [];
+
+/** the display language ladder of the settings card, native names per the
+ * windows grammar — the reviewed seed rows the paired database serves over
+ * the catalog seam; the language winget reads them through the accessor
+ * and never restates them (2026: no fixed data in wingets). */
+export const seedLanguages: LanguageRow[] = [
+  { code: "en", native: "English (United States)" },
+  { code: "pt", native: "Português (Brasil)" },
+  { code: "es", native: "Español (España)" },
+  { code: "fr", native: "Français (France)" },
+  { code: "de", native: "Deutsch (Deutschland)" },
+  { code: "it", native: "Italiano (Italia)" },
+  { code: "ja", native: "日本語 (日本)" },
+  { code: "ko", native: "한국어 (대한민국)" },
+  { code: "zh-CN", native: "中文 (简体，中国)" },
+  { code: "ru", native: "Русский (Россия)" },
+  { code: "ar", native: "العربية" },
+  { code: "hi", native: "हिन्दी (भारत)" },
+];
 
 export const seedAboutBlocks: AboutBlock[] = [
   {

@@ -2691,7 +2691,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   const root = DENTRO(path.join(ROOT, nome));
   // the folder is fully regenerated: stale files from an older shape never survive
   rmSync(root, { recursive: true, force: true });
-  const tema = path.join(root, "Sol");
+  const tema = path.join(root, "sol");
   w(
     path.join(root, "README.md"),
     `# ${nome}\n\n${papel}.\n\nHouse tree: one folder per app, no src/ — the app root carries the loose .ts logics and the theme root files (App.tsx the router, index.html, the platform deploy copies, the manifest and the schema), the theme stylesheet lives inside the theme as sol/sol.css, docs/ and tests/ exist beside it, and the sol/ folder carries the component folders: one folder per page with loose TSX components beside the shared shell. The complete site archive and the Next conversions (done by the workflow, no folder duplication) travel as tar.xz assets in the release.\n`,
@@ -2710,7 +2710,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   );
   w(
     path.join(root, "vite.config.ts"),
-    `// the vite build answers straight at the application root: the entry html and the hashed bundles live beside the engine logic, with no dist, no public and no assets folder\nimport react from '@vitejs/plugin-react';\nimport path from 'node:path';\nimport { defineConfig } from 'vite';\n\nexport default defineConfig({\n  base: '/',\n  plugins: [react()],\n  resolve: { alias: { '@': path.resolve(import.meta.dirname, 'Sol') } },\n  root: import.meta.dirname,\n  build: { outDir: path.resolve(import.meta.dirname, '.'), emptyOutDir: false, assetsDir: '' },\n  server: { fs: { allow: [import.meta.dirname] }, host: true, allowedHosts: true },\n});\n`,
+    `// the vite build answers straight at the application root: the entry html and the hashed bundles live beside the engine logic, with no dist, no public and no assets folder\nimport react from '@vitejs/plugin-react';\nimport path from 'node:path';\nimport { defineConfig } from 'vite';\n\nexport default defineConfig({\n  base: '/',\n  plugins: [react()],\n  resolve: { alias: { '@': path.resolve(import.meta.dirname, 'sol') } },\n  root: import.meta.dirname,\n  build: { outDir: path.resolve(import.meta.dirname, '.'), emptyOutDir: false, assetsDir: '' },\n  server: { fs: { allow: [import.meta.dirname] }, host: true, allowedHosts: true },\n});\n`,
   );
   w(
     path.join(root, "tsconfig.json"),

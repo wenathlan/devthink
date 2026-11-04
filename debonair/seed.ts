@@ -3,7 +3,7 @@
 // nothing here touches the visitor machine; the same rows ship in the site database and
 // reach the pages over HTTPS when a catalog endpoint is configured.
 
-import { planTake } from "./arranger.ts";
+import { planTake } from "./arrangement.ts";
 import { formatClock } from "./dawview.ts";
 import { GENRES } from "./genre.ts";
 import type {

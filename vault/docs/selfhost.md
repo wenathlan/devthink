@@ -77,6 +77,7 @@ instead of the quiet 503s). The environment the container answers:
 | `VAULT_TOKEN` | — (required) | the total admin bearer every `/api/v1/*` data route accepts (`Authorization: Bearer …` or `x-vault-token`) |
 | `VAULT_PORT` / `VAULT_HOST` | `3210` / `0.0.0.0` | the listen surface of the engine |
 | `VAULT_STORAGE_URL` | `file:/app/data/vault-storage.db` | the storage truth (sqlite, WAL) |
+| `VAULT_QUOTA_MB` | `900` | the quota floor seeded at project creation, in megabytes — the 2GB-lock unlock: honest minimum `1`, ceiling `921600` (900GB); a creation default, never a cap (the owner redefines the row at any scale or unlimited) |
 | `VAULT_UISTORE_DB` | `/app/data/uistore.db` | the interface copy store |
 | `VAULT_STATIC_DIR` | `/app/dist` | the site face root — unset it when a platform gateway owns the site lane |
 | `VAULT_SESSION_SECRET` | derived from `VAULT_TOKEN` | the HMAC key that signs the `vs_` session bearers — pin your own to decouple the account door from the operator token (rotating it retires every standing session) |

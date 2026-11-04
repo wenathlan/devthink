@@ -78,7 +78,7 @@ import {
 } from "../ingest.ts";
 import { serializePattern } from "../pattern.ts";
 import type { GenreProfile } from "../pattern.ts";
-import { parseRecon, type ReconDocument } from "../reconpayload.ts";
+import { parseRecon, type ReconDocument } from "../recon.ts";
 import { getrenderjob, renderjobseat, rendertrackseat } from "../render.ts";
 import { encodeWav, wavInfo } from "../wavwriter.ts";
 

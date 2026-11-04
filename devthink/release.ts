@@ -436,6 +436,52 @@ async function runreleasewalk(): Promise<void> {
       "../stealthhead/pom.xml",
       (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`),
     ],
+    /* The six-distribution completeness wave (the distpack ladder): the
+       five envelopes the registry seats never carried (cobaia, forge,
+       foundry, getry, vault) join the lockstep surface with the same four
+       carriers every sibling answers — the nuget csproj, the ruby gemspec,
+       the java version carrier and the maven revision — so every rung the
+       release sync walks stamps the whole distribution family at once. */
+    ["../cobaia/cobaia.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+    ["../forge/forge.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+    ["../foundry/foundry.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+    ["../getry/getry.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+    ["../vault/vault.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+    [
+      "../cobaia/cobaia.gemspec",
+      (content) =>
+        content.replace(/ENV\.fetch\("COBAIA_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("COBAIA_VERSION", "${version}")`),
+    ],
+    [
+      "../forge/forge.gemspec",
+      (content) =>
+        content.replace(/ENV\.fetch\("FORGE_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("FORGE_VERSION", "${version}")`),
+    ],
+    [
+      "../foundry/foundry.gemspec",
+      (content) =>
+        content.replace(/ENV\.fetch\("FOUNDRY_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("FOUNDRY_VERSION", "${version}")`),
+    ],
+    [
+      "../getry/getry.gemspec",
+      (content) =>
+        content.replace(/ENV\.fetch\("GETRY_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("GETRY_VERSION", "${version}")`),
+    ],
+    [
+      "../vault/vault.gemspec",
+      (content) =>
+        content.replace(/ENV\.fetch\("VAULT_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("VAULT_VERSION", "${version}")`),
+    ],
+    ["../cobaia/cobaia.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    ["../forge/forge.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    ["../foundry/foundry.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    ["../getry/getry.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    ["../vault/vault.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    ["../cobaia/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["../forge/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["../foundry/foundry.pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["../getry/getry.pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["../vault/vault.pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
     [
       "../argan/Dockerfile",
       (content) =>

@@ -4,7 +4,7 @@
 // runnable with vitest: pnpm vitest run tests/planstate.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { CAPABILITY_BADGES, planbadge, TIER_BADGES } from "../planstate.ts";
+import { CAPABILITY_BADGES, planbadge, TIER_BADGES } from "../plan.ts";
 
 /** the parse function mirrors planstate.parseplan (module-private there);
  * the contract under test is the shape the page and the store share. */

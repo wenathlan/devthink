@@ -15,7 +15,7 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
 import type { platformtarget } from "./types.ts";
-import { stripstrings, underscorednames } from "./bundlescan.ts";
+import { stripstrings, underscorednames } from "../foundry/bundlescan.ts";
 import { cjswrap } from "./cjswrap.ts";
 import {
   changelogdigestworkflow,
@@ -218,7 +218,7 @@ await execute(process.execPath, [await resolveTsc(), "-p", join("..", "getry", "
 
 /* the ownership bridge of the thinking ladder: the getry engine owns the 7-level ladder and
    the os consumes it as a library — the declaration emit reads the owner's committed public
-   types (getry/thinkingtypes.ts, the declaration surface the path table of the build config
+   types (getry/thinking.ts, the declaration surface the path table of the build config
    carries, so the owner source never enters the program and the emit stays flat), while the
    runtime resolves the specifier through this node_modules link the same way the flat gate
    tree resolves its packages through the application node_modules (the tests village folded
@@ -382,8 +382,8 @@ const familybridges = {
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
-  "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gatewayconfig.ts"),
-  "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gatewayviewconfig.ts"),
+  "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gateway.ts"),
+  "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gateway.ts"),
   "@wenathlan/getry/gatewayprobe": join(root, "..", "getry", "gatewayprobe.ts"),
   "@wenathlan/getry/gatewaysmoke": join(root, "..", "getry", "gatewaysmoke.ts"),
   "@wenathlan/getry/nodeshim": join(root, "..", "getry", "nodeshim.ts"),
@@ -433,7 +433,7 @@ const familybridges = {
    * bundle inlines this app's own source for it the same way the other
    * self specifiers above ride — the catalog is never duplicated inside
    * getry. */
-  "@wenathlan/devthink/oslabels": join(root, "oslabels.ts"),
+  "@wenathlan/devthink/oslabels": join(root, "os.ts"),
   "@wenathlan/devthink/storage": join(root, "storage.ts"),
   "@wenathlan/devthink/types": join(root, "types.ts"),
   /** the label store bridge of the ownership law: the os copy mechanism rides

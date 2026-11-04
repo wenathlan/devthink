@@ -76,7 +76,7 @@ import {
   sortAppsByName,
 } from "../../desktopstate.ts";
 import { familyurl } from "../../gateway.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { currentThemeLadder, saveThemeMirror } from "../../personalstore.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { DesktopMenu, type MenuEntry } from "./PanelDesktopmenu.tsx";
@@ -178,7 +178,9 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
   const reduced = useReducedMotion();
   const mobile = useIsMobile();
 
-  /** the stored user positions (moved icons), loaded once from localStorage */
+  /** the stored user positions (moved icons), loaded once from localStorage
+   *
+   * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth. */
   const [overrides, setOverrides] = useState<IconSpotMap>(() => loadIconSpots());
   /** the selected app ids (single click, ctrl+click, marquee commit) */
   const [selection, setSelection] = useState<ReadonlySet<string>>(() => new Set<string>());

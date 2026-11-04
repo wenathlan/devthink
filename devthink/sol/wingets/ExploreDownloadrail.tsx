@@ -12,7 +12,7 @@
  * the display translation owns the other languages at runtime.
  */
 import {ArrowUpRightRegular as ArrowUpRight, CubeRegular as Boxes, type FluentIcon, GlobeRegular as Globe, PuzzlePieceRegular as Puzzle, WindowConsoleRegular as SquareTerminal } from "@fluentui/react-icons";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 /** the baked release version (the build define of the root manifest) */
 declare const __dtversion__: string;

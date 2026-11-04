@@ -131,8 +131,8 @@ export default defineConfig({
       "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
       "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
       "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
-      "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "gatewayconfig.ts"),
-      "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "gatewayviewconfig.ts"),
+      "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "gateway.ts"),
+      "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "gateway.ts"),
       "@wenathlan/getry/gatewayprobe": path.resolve(import.meta.dirname, "gatewayprobe.ts"),
       "@wenathlan/getry/gatewaysmoke": path.resolve(import.meta.dirname, "gatewaysmoke.ts"),
       "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "nodeshim.ts"),
@@ -162,7 +162,7 @@ export default defineConfig({
        * the library). the entry retires when the published envelope carries
        * the built queue family. */
       "@wenathlan/devthink/queue": path.resolve(import.meta.dirname, "../devthink/queue.ts"),
-      "@": path.resolve(import.meta.dirname, "Sol"),
+      "@": path.resolve(import.meta.dirname, "sol"),
     },
   },
   root: import.meta.dirname,

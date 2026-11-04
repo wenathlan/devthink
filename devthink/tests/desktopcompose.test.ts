@@ -42,14 +42,14 @@ import {
   snapSpot,
   sortAppsByKind,
 } from "../desktopstate.ts";
-import { osText } from "../oslabels.ts";
+import { osText } from "../os.ts";
 import { uistoreseedrows } from "../uistore.ts";
 
-const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
-const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
-const windowframe = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWindowframe.tsx"), "utf8");
-const panel = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const desktop = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelDesktop.tsx"), "utf8");
+const workspace = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelWorkspace.tsx"), "utf8");
+const windowframe = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelWindowframe.tsx"), "utf8");
+const panel = readFileSync(join(import.meta.dirname, "..", "sol", "panel", "panel.tsx"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 
 /** the reference viewport of the geometry laws (the live audit viewport):
  * the desktop AREA of a 1280×720 screen — the viewport minus the 48px top
@@ -349,7 +349,7 @@ describe("the family window law (the double click never leaves the os)", () => {
     // recent-entries store the start menu recommended rail renders
     expect(workspace).toContain("openApps={windows.map((win) => win.id)}");
     expect(workspace).toContain("pushrecentapp(app.id);");
-    const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
+    const chrome = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "Shellchrome.tsx"), "utf8");
     expect(chrome).toContain("openApps = []");
     expect(chrome).toContain("const open = active || openApps.includes(app.id);");
     expect(chrome).toContain("pushrecentapp(app.id);");

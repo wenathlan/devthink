@@ -1,4 +1,6 @@
 // # buckets — the bucket ledger engine of the vault (root layer, pure logic).
+// @module buckets
+// @layer bucket — the top of the storage stack: bucket → object → chunk → blob.
 // The retention groups of the safe: every object rides one bucket, every
 // bucket carries a retention policy (keep-forever or a day count) and the
 // ledger answers the per-bucket census — rows, bytes, the lfs share and the

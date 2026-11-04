@@ -2202,3 +2202,7 @@ Bloco completo: «onda8d-captures-img.md § FEATURES».
 
 - **Meta por app: >1.000 features** (média 400, mín 600, máx 4.000, 99/versão)
 - Ondas 7–8 continuam o append por app.
+
+## Dependencies
+
+- synchronized dependency union — the eleven family apps share one dependency tree: identical `dependencies`, `devDependencies` and `peerDependencies` (same keys, same versions, nothing removed, highest semver wins on conflicts) and one `engines` catalog with node as maestro and the V 0.5.2 seat as catalog annotation (@family wave/depssync).

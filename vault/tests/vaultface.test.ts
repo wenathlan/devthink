@@ -17,22 +17,22 @@ import { describe, expect, it } from "vitest";
 import { LABEL_MANIFEST } from "../labels.ts";
 import { uistoreseedrows } from "../uistore.ts";
 
-const HOME = readFileSync(join(import.meta.dirname, "..", "Sol", "home", "home.tsx"), "utf8");
-const SHELL = readFileSync(join(import.meta.dirname, "..", "Sol", "shell", "Shell.tsx"), "utf8");
-const OBJECTS = readFileSync(join(import.meta.dirname, "..", "Sol", "objects", "objects.tsx"), "utf8");
-const BUCKETS = readFileSync(join(import.meta.dirname, "..", "Sol", "buckets", "buckets.tsx"), "utf8");
-const RETENTION = readFileSync(join(import.meta.dirname, "..", "Sol", "retention", "retention.tsx"), "utf8");
-const INDEX = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "index.ts"), "utf8");
-const PLANSTABLE = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomePlanstable.tsx"), "utf8");
-const BROWSE = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomeObjectbrowse.tsx"), "utf8");
-const CONSOLE = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomeDbconsole.tsx"), "utf8");
-const TOASTER = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomeToaster.tsx"), "utf8");
-const SKELETON = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomeSkeleton.tsx"), "utf8");
-const HALO = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomeHalo.tsx"), "utf8");
-const REVEAL = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "HomeReveal.tsx"), "utf8");
+const HOME = readFileSync(join(import.meta.dirname, "..", "sol", "home", "home.tsx"), "utf8");
+const SHELL = readFileSync(join(import.meta.dirname, "..", "sol", "shell", "Shell.tsx"), "utf8");
+const OBJECTS = readFileSync(join(import.meta.dirname, "..", "sol", "objects", "objects.tsx"), "utf8");
+const BUCKETS = readFileSync(join(import.meta.dirname, "..", "sol", "buckets", "buckets.tsx"), "utf8");
+const RETENTION = readFileSync(join(import.meta.dirname, "..", "sol", "retention", "retention.tsx"), "utf8");
+const INDEX = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "index.ts"), "utf8");
+const PLANSTABLE = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomePlanstable.tsx"), "utf8");
+const BROWSE = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeObjectbrowse.tsx"), "utf8");
+const CONSOLE = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeDbconsole.tsx"), "utf8");
+const TOASTER = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeToaster.tsx"), "utf8");
+const SKELETON = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeSkeleton.tsx"), "utf8");
+const HALO = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeHalo.tsx"), "utf8");
+const REVEAL = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeReveal.tsx"), "utf8");
 const API = readFileSync(join(import.meta.dirname, "..", "api.ts"), "utf8");
 const ROUTES = readFileSync(join(import.meta.dirname, "..", "routes.ts"), "utf8");
-const CSS = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const CSS = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 
 /** the face pass of the stylesheet (the slice the wave appended — the
  * token pins read the exact declarations of the pass, not the foundation). */

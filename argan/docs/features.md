@@ -69,3 +69,7 @@ Real feature list of the argan engine and its Sol surface, extracted from the co
 - Family rail — `family.ts` links the 8 siblings in rail order with their spec §12 accents through mount-proof relative URLs (the familyurl lane of the fold).
 - 404 — `notfound.tsx` renders the single NXDOMAIN (RCODE 3) page.
 - Error boundary — `App.tsx` wraps the router in a theme error boundary with a reload action and seeds the label store before the first paint.
+
+## Dependencies
+
+- synchronized dependency union — the eleven family apps share one dependency tree: identical `dependencies`, `devDependencies` and `peerDependencies` (same keys, same versions, nothing removed, highest semver wins on conflicts) and one `engines` catalog with node as maestro and the V 0.5.2 seat as catalog annotation (@family wave/depssync).

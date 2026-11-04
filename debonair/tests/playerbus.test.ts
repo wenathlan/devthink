@@ -14,7 +14,7 @@
 // pnpm vitest run tests/playerbus.test.ts
 import assert from "node:assert/strict";
 import { afterAll, afterEach, beforeAll, describe, it, vi } from "vitest";
-import { planTake } from "../arranger.ts";
+import { planTake } from "../arrangement.ts";
 import { mintid } from "../bigintids.ts";
 import { sessionblobstore } from "../blobstore.ts";
 import { reconOf } from "../ingest.ts";
@@ -50,7 +50,7 @@ import {
   resolveReferenceAudio,
   saveReferenceTake,
 } from "../playerbus.ts";
-import type { ReconDocument } from "../reconpayload.ts";
+import type { ReconDocument } from "../recon.ts";
 import { memoryStorage } from "../take.ts";
 import { HEADER_LAYOUT, writeWav16 } from "../wavwriter.ts";
 

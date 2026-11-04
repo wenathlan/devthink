@@ -13,7 +13,7 @@
 import {ArrowLeftRegular, WrenchSettingsRegular} from "@fluentui/react-icons";
 import type {CSSProperties} from "react";
 import {useLocation} from "wouter";
-import {osText} from "../../oslabels.ts";
+import {osText} from "../../os.ts";
 
 /**
  * the one face of the not-yet-built shelf — see the header comment.

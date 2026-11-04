@@ -22,7 +22,7 @@ import { DismissRegular as X } from "@fluentui/react-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { SolLogoMark } from "../wingets";
 import { ONBOARDING_STEPS, StepArt } from "../wingets";
 

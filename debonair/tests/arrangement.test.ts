@@ -7,7 +7,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { ArrangementError, rebaseSchedule, validateArrangement } from "../arrangement.ts";
-import { planTake } from "../arranger.ts";
+import { planTake } from "../arrangement.ts";
 import { scheduleTake, validateSchedule } from "../take.ts";
 
 describe("arrangement — rebaseSchedule", () => {

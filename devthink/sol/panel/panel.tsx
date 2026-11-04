@@ -22,7 +22,7 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
-import { PairingPanel } from "@/settings/settings";
+import { PairingPanel } from "@/wingets/SettingsPairing";
 import { islocalunlocked, restoreonce } from "../../account.ts";
 import { writeChatHandoff } from "../../chatstate.ts";
 import { copy } from "../../copy.ts";

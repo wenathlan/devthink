@@ -5,7 +5,7 @@
  */
 import {MusicNote2PlayFilled} from "@fluentui/react-icons";
 import type { StudioTrack } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 export function MusicTracks({
   rows,

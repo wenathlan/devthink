@@ -1,17 +1,17 @@
 // # wingetdata.test — the winget data lane law, batch one: the about family
 // and timeline words, and the calculator key tables, answer through the
-// label store (oslabels.ts — the typed seed rows the paired database
+// label store (os.ts — the typed seed rows the paired database
 // overrides when it comes online), never through literals restated inside
 // the wingets. runnable with vitest:
 // pnpm vitest run tests/wingetdata.test.ts
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { type OsStringId, osCalcKeys, osCalcMemoryKeys, osText } from "../oslabels.ts";
+import { type OsStringId, osCalcKeys, osCalcMemoryKeys, osText } from "../os.ts";
 
-const aboutFamily = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "AboutFamily.tsx"), "utf8");
-const aboutTimeline = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "AboutTimeline.tsx"), "utf8");
-const calcKeypad = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "CalculatorKeypad.tsx"), "utf8");
+const aboutFamily = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "AboutFamily.tsx"), "utf8");
+const aboutTimeline = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "AboutTimeline.tsx"), "utf8");
+const calcKeypad = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "CalculatorKeypad.tsx"), "utf8");
 
 describe("the about family winget answers the label store", () => {
   it("answers the family seeds through the accessor (the offline build law)", () => {

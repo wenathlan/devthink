@@ -27,7 +27,7 @@
 import { PauseRegular, PlayFilled } from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { planTake, type TakePlan, TOTAL_BARS } from "../../arranger.ts";
+import { planTake, type TakePlan, TOTAL_BARS } from "../../arrangement.ts";
 import { RENDER_TAIL_S } from "../../audio.ts";
 import { formatClock } from "../../dawview.ts";
 import {

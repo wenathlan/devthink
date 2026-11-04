@@ -1,4 +1,4 @@
-/** Runs the release readiness review of the platform release line: the gate walks every release gate of the chain against the committed evidence records of the candidate lanes (the pool audit, the sweep, the matrix, the pentest, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze — every record a typed const inside its own gate module, the flat folder law that dissolved the devthink/artifacts folder of the application first layer), verifies the source level guarantees the records cannot carry (the closed deprecation window, the migrateplan bridge over every importer fixture with its committed conversion records, the changelog chain, the transparency coverage, the budget gates), walks the 2.0.2 final polish gates beside them (the soak run, the wcag accessibility sweep and the store package icon family), records the verdict of every gate with its evidence link into the committed record readiness.ts (the readinessrecord const this module carries, migrated from devthink/artifacts/readiness.json when the flat folder law dissolved the artifacts folder), writes the go decision review into docs/readiness.md and exits nonzero when any gate blocks the go decision. The gate answers the readiness review the release candidate two section of the roadmap promises, the 2.0.0 closing audit carries forward and the 2.0.2 final polish extends; the sync mode (`node readiness.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. */
+/** Runs the release readiness review of the platform release line: the gate walks every release gate of the chain against the committed evidence records of the candidate lanes (the pool audit, the sweep, the matrix, the pentest, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze — every record a typed const inside its own gate module, the flat folder law that dissolved the devthink/artifacts folder of the application first layer), verifies the source level guarantees the records cannot carry (the closed deprecation window, the migrateplan bridge over every importer fixture with its committed conversion records, the changelog chain, the transparency coverage, the budget gates), walks the 2.0.2 final polish gates beside them (the soak run, the wcag accessibility sweep and the store package icon family), records the verdict of every gate with its evidence link into the committed record readiness.ts (the readinessrecord const this module carries, migrated from devthink/artifacts/readiness.json when the flat folder law dissolved the artifacts folder), writes the go decision review into docs/readiness.md and exits nonzero when any gate blocks the go decision. The gate answers the readiness review the release candidate two section of the roadmap promises, the 2.0.0 closing audit carries forward and the 2.0.2 final polish extends; the sync mode (`node readiness.ts sync`, or pnpm records:sync over every gate) rewrites the committed record after the release stamps its version. The foundry gate wave moves the seat to the foundry root — the pipeline family owns the release readiness review — while every read stays anchored to the devthink tree it audits: the gate keeps the devthink cwd, the evidence records stay devthink modules behind the boundary and the record writes docs/readiness.md of that tree. */
 import { execFile } from "node:child_process";
 import { existsSync } from "node:fs";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
@@ -7,26 +7,27 @@ import { createHash } from "node:crypto";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
-import { apifreezebaseline } from "./tests/freezebaseline.ts";
-import { permdiffbaseline } from "./tests/permbaseline.ts";
-import { frozenschemas } from "./tests/schemafixtures.ts";
-import { syncmode, syncrecord } from "./records.ts";
-import { agentcertrecord } from "./agentcert.ts";
-import { costcertrecord } from "./costcert.ts";
-import { doccheckrecord } from "./doccheck.ts";
-import { matrixverifyrecord } from "./matrixverify.ts";
-import { pentestrecord } from "./pentest.ts";
-import { poolcoveragerecord } from "./poolaudit.ts";
-import { reciperecord } from "./recipes.ts";
-import { soakrecord } from "./soak.ts";
-import { sweeprecord } from "./sweep.ts";
-import { telemetryfreerecord } from "./telemetryfree.ts";
-import { wcagrecord } from "./wcag.ts";
-import { readinessmigrateautoma } from "./tests/readinessautoma.ts";
-import { readinessmigrateselenium } from "./tests/readinessselenium.ts";
-import { readinessmigratetabular } from "./tests/readinesstabular.ts";
-import { readinessmigrateuivision } from "./tests/readinessuivision.ts";
-import { readinessmigratev1 } from "./tests/readinessv1.ts";
+/* the foundry seat carries the gate; every evidence read crosses back to the devthink tree it audits (the gate wave moved the machinery, not the walks). */
+import { apifreezebaseline } from "../devthink/tests/freezebaseline.ts";
+import { permdiffbaseline } from "../devthink/tests/permbaseline.ts";
+import { frozenschemas } from "../devthink/tests/schemafixtures.ts";
+import { syncmode, syncrecord } from "../devthink/records.ts";
+import { agentcertrecord } from "../devthink/agentcert.ts";
+import { costcertrecord } from "../devthink/costcert.ts";
+import { doccheckrecord } from "../devthink/doccheck.ts";
+import { matrixverifyrecord } from "../devthink/matrixverify.ts";
+import { pentestrecord } from "../devthink/pentest.ts";
+import { poolcoveragerecord } from "../devthink/poolaudit.ts";
+import { reciperecord } from "../devthink/recipes.ts";
+import { soakrecord } from "../devthink/soak.ts";
+import { sweeprecord } from "../devthink/sweep.ts";
+import { telemetryfreerecord } from "../devthink/telemetryfree.ts";
+import { wcagrecord } from "../devthink/wcag.ts";
+import { readinessmigrateautoma } from "../devthink/tests/readiness.automa.ts";
+import { readinessmigrateselenium } from "../devthink/tests/readiness.selenium.ts";
+import { readinessmigratetabular } from "../devthink/tests/readiness.tabular.ts";
+import { readinessmigrateuivision } from "../devthink/tests/readiness.uivision.ts";
+import { readinessmigratev1 } from "../devthink/tests/readiness.v1.ts";
 
 const execute = promisify(execFile);
 const repoRoot = resolve(process.cwd(), "..");
@@ -422,7 +423,7 @@ export async function runreadinesssuite() {
       .join("\n");
     const document = `# Release readiness review
 
-The readiness gate of the ${release} platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in \`readiness.ts\`, the verdict record in \`readiness.ts\` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
+The readiness gate of the ${release} platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in \`foundry/readiness.ts\`, the verdict record in \`foundry/readiness.ts\` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
 
 ## The gate table
 
@@ -458,7 +459,7 @@ The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** fo
     return report;
   }
   console.log(
-    `Readiness review of ${release}: ${summary.ok} of ${summary.gates} gates green, ${summary.blocked} blocked, go decision ${report.godecision}, record readiness.ts and review ${readinesstocument}.`,
+    `Readiness review of ${release}: ${summary.ok} of ${summary.gates} gates green, ${summary.blocked} blocked, go decision ${report.godecision}, record foundry/readiness.ts and review ${readinesstocument}.`,
   );
   if (summary.blocked > 0) process.exitCode = 1;
   return report;

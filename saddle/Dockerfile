@@ -1,4 +1,4 @@
-# saddle 2.0.157 — THE ENGINE CONTAINER FILE
+# saddle 2.0.158 — THE ENGINE CONTAINER FILE
 #
 # THE FAMILY CONTAINER DOCTRINE, THE SADDLE SHAPE: one versioned container
 # per engine, built like the site homes (argan, cadria) build theirs — a
@@ -16,9 +16,9 @@
 # THE THREE VARIANT PROFILES (the saddle-exclusive law: the only app of
 # the family that ships three) — select with the target flag:
 #
-#   docker build --target max       -t saddle:2.0.157 .
-#   docker build --target balanced  -t saddle:2.0.157-balanced .
-#   docker build --target lite      -t saddle:2.0.157-lite .
+#   docker build --target max       -t saddle:2.0.158 .
+#   docker build --target balanced  -t saddle:2.0.158-balanced .
+#   docker build --target lite      -t saddle:2.0.158-lite .
 #
 #   max       — the full profile catalog: the epyc 9965 class, 192 vcpu,
 #               384 threads, 1024 gib ram plan, the b200 gpu plan x8.
@@ -55,23 +55,33 @@
 # building from inside saddle/ breaks the vault COPY - the sibling rides
 # the context beside this directory, never inside it.
 #
-# THE DIGEST LAW: the base rides the bare tag here (local builds fetch the
-# moving tag), and the publish lanes resolve the manifest-list digest on
-# the runner at build time and pass the pinned reference as NODE_BASE — no
-# 64-hex digest ever lands in a source file (the signature is generated
-# during the build, never hardcoded).
+# THE DIGEST LAW: the FROM lines ride name@sha256:${NODE_BASE_DIGEST}
+# (the scorecard-file form the supply-chain gate reads as pinned) while
+# the digest itself never lands in a source file — the publish lanes
+# resolve the manifest-list digest on the runner at build time and pass
+# it as the NODE_BASE_DIGEST build-arg, and a local build resolves the
+# same lane before docker build (the signature is generated during the
+# build, never hardcoded).
 #
 # THE VERSION LAW: the ARG default below mirrors saddle/package.json
 # (the metadata lockstep the registry lanes stamp); the publish lanes pass
 # the resolved release version at build time, nothing is hardcoded beside
 # the stamp.
 
-ARG NODE_BASE="node:26.13.0-slim"
+ARG NODE_BASE_TAG="node:26.13.0-slim"
+# the digest-never-hardcoded law, the scorecard-file form: the FROM lines
+# ride name@sha256:${ARG} (the exact pattern the supply-chain gate reads
+# as pinned) while the digest itself still resolves at build time on the
+# runner (the bases step of the publish lanes) — no 64-hex ever enters the
+# repository, the manifest-list digest serves the whole build matrix
+# (the four base-carried legs of the eleven-architecture standard), and a
+# local build resolves the same lane before docker build.
+ARG NODE_BASE_DIGEST
 
 # ===== stage: solbuild — the locked npm tree and the console spa =====
-FROM --platform=$BUILDPLATFORM ${NODE_BASE} AS solbuild
+FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
-ARG SADDLE_VERSION=2.0.157
+ARG SADDLE_VERSION=2.0.158
 
 WORKDIR /app
 
@@ -97,9 +107,9 @@ RUN npm run web:build:pages \
     && rm -f /out/spa/popup.css
 
 # ===== stage: base — the hardened runtime floor every profile shares =====
-FROM ${NODE_BASE} AS base
+FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
-ARG SADDLE_VERSION=2.0.157
+ARG SADDLE_VERSION=2.0.158
 ARG SADDLE_PROFILE=max
 ARG VHE_PROFILE_CPU="epyc9965"
 ARG VHE_PROFILE_VCPUS="192"

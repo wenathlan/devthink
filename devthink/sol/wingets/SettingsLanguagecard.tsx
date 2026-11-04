@@ -5,12 +5,20 @@
  * the machine profile — zero external lanes, zero infra copy. The picker
  * itself rides the notranslate wall and never becomes its own subject.
  * Loose component of the settings page, riding the dtw kit.
+ *
+ * @db the language ladder seats in the platform.languages rows served via
+ * devthink/catalog.ts (the paired database over the catalog seam; the
+ * reviewed seedcatalog.ts seeds answer the static build) — no fixed data
+ * in wingets.
  */
 import { LocalLanguageRegular } from "@fluentui/react-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { copy } from "../../copy";
+import { languageLadder, type LanguageRow } from "../../catalog.ts";
 
-/** the machine profile key the preference persists under. */
+/** the machine profile key the preference persists under.
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth. */
 const LANGPREF = "app-lang";
 
 const readpref = (): string => {
@@ -29,25 +37,14 @@ const writepref = (lang: string): void => {
   }
 };
 
-/** the language ladder, native names per the windows grammar. */
-const LANGUAGES: readonly { code: string; native: string }[] = [
-  { code: "en", native: "English (United States)" },
-  { code: "pt", native: "Português (Brasil)" },
-  { code: "es", native: "Español (España)" },
-  { code: "fr", native: "Français (France)" },
-  { code: "de", native: "Deutsch (Deutschland)" },
-  { code: "it", native: "Italiano (Italia)" },
-  { code: "ja", native: "日本語 (日本)" },
-  { code: "ko", native: "한국어 (대한민국)" },
-  { code: "zh-CN", native: "中文 (简体，中国)" },
-  { code: "ru", native: "Русский (Россия)" },
-  { code: "ar", native: "العربية" },
-  { code: "hi", native: "हिन्दी (भारत)" },
-];
-
 /** LanguageCard — the display language card. */
 export function LanguageCard() {
   const [lang, setLang] = useState(() => readpref());
+  const [ladder, setLadder] = useState<LanguageRow[]>([]);
+
+  useEffect(() => {
+    void languageLadder().then(setLadder);
+  }, []);
 
   return (
     <section className="dtw-card notranslate" aria-label={copy("settings.language.title")}>
@@ -69,7 +66,7 @@ export function LanguageCard() {
           }}
           aria-label={copy("settings.language.display")}
         >
-          {LANGUAGES.map((entry) => (
+          {ladder.map((entry) => (
             <option key={entry.code} value={entry.code}>
               {entry.native}
             </option>

@@ -52,3 +52,7 @@ the real feature list of the cobaia content site, extracted from the code: every
 - window captions: the shell carries the minimize, maximize and close caption labels for the os window seat
 - wouter routing on the declared vite base: deep links resolve against the pages subpath the build declaration owns
 - static deploys: netlify, vercel and cloudflare workers configs at the app root, plus robots.txt and sitemap.xml for the crawlers
+
+## Dependencies
+
+- synchronized dependency union — the eleven family apps share one dependency tree: identical `dependencies`, `devDependencies` and `peerDependencies` (same keys, same versions, nothing removed, highest semver wins on conflicts) and one `engines` catalog with node as maestro and the V 0.5.2 seat as catalog annotation (@family wave/depssync).

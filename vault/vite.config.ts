@@ -26,7 +26,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "Sol"),
+      "@": path.resolve(import.meta.dirname, "sol"),
     },
   },
   root: import.meta.dirname,

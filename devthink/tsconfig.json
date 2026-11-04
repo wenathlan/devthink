@@ -69,8 +69,8 @@
       "@wenathlan/getry/json": ["../getry/json.ts"],
       "@wenathlan/getry/jsonpolicy": ["../getry/jsonpolicy.ts"],
       "@wenathlan/getry/jsonschema": ["../getry/jsonschema.ts"],
-      "@wenathlan/getry/gatewayconfig": ["../getry/gatewayconfig.ts"],
-      "@wenathlan/getry/gatewayviewconfig": ["../getry/gatewayviewconfig.ts"],
+      "@wenathlan/getry/gatewayconfig": ["../getry/gateway.ts"],
+      "@wenathlan/getry/gatewayviewconfig": ["../getry/gateway.ts"],
       "@wenathlan/getry/gatewayprobe": ["../getry/gatewayprobe.ts"],
       "@wenathlan/getry/gatewaysmoke": ["../getry/gatewaysmoke.ts"],
       "@wenathlan/getry/nodeshim": ["../getry/nodeshim.ts"],
@@ -118,12 +118,13 @@
        * paired label catalog through the published os specifier, and this
        * program resolves it to this app's own source the same way the
        * other self specifiers above ride. */
-      "@wenathlan/devthink/oslabels": ["./oslabels.ts"],
+      "@wenathlan/devthink/oslabels": ["./os.ts"],
       "@wenathlan/devthink/storage": ["./storage.ts"],
       "@wenathlan/devthink/types": ["./types.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
     }
   },
-  "include": ["*.ts", "tests/**/*.ts", "sol/**/*.ts", "sol/**/*.tsx"],
+  /* the foundry gate wave: the four ci gates ride the foundry seat, the os typecheck still walks their declarations. */
+  "include": ["*.ts", "tests/**/*.ts", "sol/**/*.ts", "sol/**/*.tsx", "../foundry/readiness.ts", "../foundry/dependencyupdates.ts", "../foundry/npmgate.ts", "../foundry/bundlescan.ts"],
   "exclude": ["tests/code", "dist", "node_modules"]
 }

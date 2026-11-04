@@ -29,17 +29,17 @@ minimumReleaseAgeExclude:
   - fast-uri@3.1.9
   - follow-redirects@1.16.1
   - zod@4.6.6
-  - '@biomejs/biome@2.6.3 || 2.6.4'
-  - '@biomejs/cli-android-arm64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-android-x64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-darwin-arm64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-darwin-x64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-linux-arm64-musl@2.6.3 || 2.6.4'
-  - '@biomejs/cli-linux-arm64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-linux-x64-musl@2.6.3 || 2.6.4'
-  - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4'
+  - '@biomejs/biome@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-android-arm64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-android-x64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-darwin-arm64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-darwin-x64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-linux-arm64-musl@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-linux-arm64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-linux-x64-musl@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4 || 2.6.5'
   - '@types/node@26.6.6'
   - '@capacitor/android@8.6.0'
   - '@capacitor/cli@8.6.0'
@@ -78,6 +78,8 @@ minimumReleaseAgeExclude:
   - vitest@5.1.0
   - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.1.8'
   - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.0.156 || 2.1.7'
+  - '@wenathlan/argan@2.0.155'
+  - gsap@3.15.1
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
 # is allowBuilds). THE 2.0.155 BUILDS GATE HEAL: the four-entry map froze

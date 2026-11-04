@@ -24,7 +24,7 @@ import {
   useRef,
   useState } from "react";
 import { clampNumber } from "../../desktopstate.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 /** one entry of a context menu */
 export type MenuEntry =

@@ -41,9 +41,9 @@ import {
   osGatewayThinking,
   osGatewayUsageBlock,
   osText,
-} from "../../oslabels.ts";
+} from "../../os.ts";
 import { ShellChrome } from "@/wingets/Shellchrome";
-import { config } from "@wenathlan/getry/gatewayviewconfig";
+import { gatewayViewConfig as config } from "@wenathlan/getry/gateway";
 /* the catalog kind answers from the gateway owner with the ownership wave
  * (wave/ownership.getry): the version rows this page renders carry the
  * getry types gatewayconfig (the catalog imports gatewaydefinition from

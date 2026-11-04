@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/wingets/Shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { queuestudiorender } from "../../runner";
 import { Constructionface, MusicEngine } from "../wingets";
 import { MusicTracks } from "../wingets";

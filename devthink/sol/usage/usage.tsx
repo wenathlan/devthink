@@ -21,7 +21,7 @@ import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import { browserStoreSummary } from "../../storage.ts";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { type Usage as UsageData, UsageMeasures } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal

@@ -28,7 +28,7 @@ import {
   isReferenceTake,
   type PlayerSnapshot,
 } from "../../playerbus.ts";
-import { reconRootName, reconScaleName } from "../../reconpayload.ts";
+import { reconRootName, reconScaleName } from "../../recon.ts";
 import { CoverArt } from "./HomeCoverart.tsx";
 
 /**

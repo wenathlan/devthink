@@ -15,7 +15,7 @@ import {
   TOTAL_BARS,
   takeId,
   validatePlan,
-} from "../arranger.ts";
+} from "../arrangement.ts";
 import { GENRES } from "../genre.ts";
 import { clipsOverlap, totalDuration } from "../timelinemodel.ts";
 

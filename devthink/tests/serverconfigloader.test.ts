@@ -127,15 +127,15 @@ describe("loadconfig — .mjs consumer configs", () => {
 
   it("an .mjs config wins over a same-directory .ts (scaffold flavor first)", async () => {
     const dir = mkdtempSync(join(tmpdir(), "gateway-cfg-"));
-    mkdirSync(join(dir, "Sol"), { recursive: true });
+    mkdirSync(join(dir, "sol"), { recursive: true });
     const original = cwd();
     try {
       writeFileSync(
-        join(dir, "Sol", "config.mjs"),
+        join(dir, "sol", "config.mjs"),
         'export const config = { name: "mjs-wins", versions: {} }\nexport default config\n',
       );
       writeFileSync(
-        join(dir, "Sol", "config.ts"),
+        join(dir, "sol", "config.ts"),
         'export const config = { name: "should-lose", versions: {} }\nexport default config\n',
       );
       chdir(dir);

@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.157",
+  "version": "2.0.158",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -36,8 +36,10 @@
     "@prisma/client": "^7.10.1",
     "@wenathlan/cadria": "~2.0.155",
     "@wenathlan/debonair": "~2.0.155",
+    "@wenathlan/devthink": "~2.0.154",
     "@wenathlan/getry": "~2.0.155",
     "@wenathlan/saddle": "~2.0.155",
+    "@wenathlan/argan": "~2.0.155",
     "@wenathlan/vault": "~2.0.155",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
@@ -95,13 +97,13 @@
     "@tailwindcss/vite": "^4.3.4",
     "@tsconfig/node26": "^26.0.1",
     "@types/better-sqlite3": "^9.6.0",
-    "@types/three": "^0.187.0",
     "@types/chrome": "^0.3.7",
     "@types/express": "^5.0.6",
     "@types/google.maps": "^3.66.9",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.187.0",
     "@vitejs/plugin-react": "^6.2.1",
     "add": "^2.0.9",
     "autoprefixer": "^10.6.2",
@@ -385,7 +387,7 @@
         "name": "mcpregistry",
         "owner": "devthink",
         "source": "root",
-        "module": "mcpregistry.ts",
+        "module": "mcp.ts",
         "role": "the mcp server registry: configurations, states and health of the connected servers."
       },
       {
@@ -406,7 +408,7 @@
   },
   "engines": {
     "bare": "^1.18.0",
-    "bun": ">=1.4.4 <2",
+    "bun": "^1.4.4",
     "cargo": ">=1.85.0",
     "chrome": "^16.0.912",
     "cnpm": "^9.4.0",
@@ -419,7 +421,7 @@
     "iojs": "^1.0.0",
     "java": ">=17",
     "node": ">=26.13.0 <27",
-    "npm": ">=12.2.1 <13",
+    "npm": "^12.2.1",
     "pnpm": "^12.6.0",
     "python": ">=3.11.0",
     "rust": ">=1.85.0",
@@ -428,6 +430,9 @@
     "v": "^0.5.2",
     "vscode": "^1.118.0",
     "yarn": "^4.17.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.63.0"
   },
   "files": [
     "distpackage"
@@ -463,7 +468,7 @@
     "check:web": "tsc --noEmit",
     "db:generate": "prisma generate --schema schema.prisma",
     "db:push": "prisma db push --schema schema.prisma --url \"${DEVTHINK_DATABASE_URL:-${DATABASE_URL:-file:./devthink.db}}\"",
-    "dependency:updates": "node dependencyupdates.ts sync",
+    "dependency:updates": "node ../foundry/dependencyupdates.ts sync",
     "dev": "bun --watch run devthink.ts",
     "dev:web": "vite --host",
     "digests:check": "node imagedigests.ts check",
@@ -479,7 +484,7 @@
     "package": "pnpm build && npm pack ./distpackage --dry-run",
     "permdiff:sync": "node permdiff.ts sync",
     "provider": "tsx devthink.ts provider",
-    "records:sync": "node agentcert.ts sync && node costcert.ts sync && node doccheck.ts sync && node matrixverify.ts sync && node pentest.ts sync && node poolaudit.ts sync && node readiness.ts sync && node recipes.ts sync && node soak.ts sync && node sweep.ts sync && node telemetryfree.ts sync && node wcag.ts sync",
+    "records:sync": "node agentcert.ts sync && node costcert.ts sync && node doccheck.ts sync && node matrixverify.ts sync && node pentest.ts sync && node poolaudit.ts sync && node ../foundry/readiness.ts sync && node recipes.ts sync && node soak.ts sync && node sweep.ts sync && node telemetryfree.ts sync && node wcag.ts sync",
     "release": "bun run check && bun run build",
     "server": "tsx server.ts",
     "start": "bun run devthink.ts",
@@ -499,12 +504,12 @@
     "validate:docs": "node doccheck.ts",
     "validate:runtime": "node runtime.ts",
     "validate:security": "node pentest.ts && node cspaudit.ts && node permdiff.ts",
-    "validate:workflow": "node workflow.ts && node npmgate.ts",
+    "validate:workflow": "node workflow.ts && node ../foundry/npmgate.ts",
     "workflow:updates": "node workflow.ts sync"
   },
   "type": "module",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "sideEffects": false,
-  "packageManager": "pnpm@12.16.1"
+  "packageManager": "pnpm@12.3.4"
 }

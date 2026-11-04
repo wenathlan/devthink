@@ -6,6 +6,8 @@
  * under each. The choice persists through the house localStorage pattern
  * and paints immediately — the desktop and the lock screen honor it. Loose
  * component of the settings page, riding the dtw kit.
+ *
+ * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth.
  */
 import { CheckmarkRegular } from "@fluentui/react-icons";
 import { useState } from "react";

@@ -14,7 +14,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { completions } from "../../commands.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 /** one rendered output row; cls mirrors the boot, ok, err and cmdline row classes. */
 export type TerminalRow = { id: number; text: string; cls: string };

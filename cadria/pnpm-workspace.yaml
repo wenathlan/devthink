@@ -36,17 +36,17 @@ minimumReleaseAgeExclude:
   - motion-utils@13.5.0
   - vite@8.3.2
   - react-hook-form@7.91.0
-  - '@biomejs/biome@2.6.3 || 2.6.4'
-  - '@biomejs/cli-android-arm64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-android-x64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-darwin-arm64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-darwin-x64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-linux-arm64-musl@2.6.3 || 2.6.4'
-  - '@biomejs/cli-linux-arm64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-linux-x64-musl@2.6.3 || 2.6.4'
-  - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4'
-  - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4'
+  - '@biomejs/biome@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-android-arm64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-android-x64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-darwin-arm64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-darwin-x64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-linux-arm64-musl@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-linux-arm64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-linux-x64-musl@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4 || 2.6.5'
   - react-resizable-panels@4.15.0 || 4.15.1 || 4.15.2 || 4.15.3 || 4.16.0 || 4.16.1 || 4.17.0 || 4.18.0
   - '@pnpm/exe.android-arm64@12.16.1'
   - '@pnpm/exe.android-x64@12.16.1'
@@ -100,6 +100,8 @@ minimumReleaseAgeExclude:
   - vitest@5.1.0
   - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.1.8'
   - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.0.156 || 2.1.7'
+  - '@wenathlan/argan@2.0.155'
+  - gsap@3.15.1
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read): the build scripts the dependency tree may run, every
 # other script stays ignored.

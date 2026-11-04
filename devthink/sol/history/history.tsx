@@ -15,7 +15,7 @@
 import { useEffect, useState } from "react";
 import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels, type Rung, releaseLadder } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { HistoryLadder } from "../wingets";
 
 /** the window title answers the catalog label row (bare-id fallback). */

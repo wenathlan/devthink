@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <AssemblyName>cobaia</AssemblyName>
+    <RootNamespace>cobaia</RootNamespace>
+    <PackageId>cobaia</PackageId>
+    <Version>2.0.158</Version>
+    <Authors>wenathlan</Authors>
+    <Description>Distribution package containing the cobaia documentation set and the tests directory. cobaia is the monetization surface — the plans, the support rails and the honest advertisement slots.</Description>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="docs/**/*" Pack="true" PackagePath="contentFiles/any/any/docs/" />
+    <None Include="tests/**/*" Pack="true" PackagePath="contentFiles/any/any/tests/" />
+  </ItemGroup>
+</Project>

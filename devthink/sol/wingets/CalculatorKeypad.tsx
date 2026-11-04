@@ -8,7 +8,7 @@
  * calculator page.
  */
 import type { CalculatorKeyAction } from "../../calculator";
-import { type OsCalcMemoryKey, osCalcKeys, osCalcMemoryKeys, osText } from "../../oslabels.ts";
+import { type OsCalcMemoryKey, osCalcKeys, osCalcMemoryKeys, osText } from "../../os.ts";
 
 export function CalculatorKeypad({
   onkey,

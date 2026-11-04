@@ -5,7 +5,7 @@
 // desk faders the bounce rides and the hard failures with their codes.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { planTake } from "../arranger.ts";
+import { planTake } from "../arrangement.ts";
 import { MASTERING } from "../katexis.ts";
 import {
   planStems,
