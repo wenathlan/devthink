@@ -12,7 +12,7 @@ import { X_GOOG_API_CLIENT } from "./fingerprint.js";
 import { MODELS_2026, ModelId2026, UA_DEFAULT_MODEL } from "./models.js";
 import { JITTER_MAX_MS, JITTER_MIN_MS } from "@wenathlan/devthink/constants";
 import { fnv1a32, getJitter, thinkingCache } from "@wenathlan/devthink/core";
-import { RetryConfig, delayForAttempt, parseRetryAfterMs } from "@wenathlan/devthink/queue";
+import { RetryConfig, delayForAttempt, parseRetryAfterMs, sleepMs } from "@wenathlan/devthink/queue";
 import { createHash, randomUUID } from "node:crypto";
 
 /* ===== block: streaming ===== */
@@ -3603,9 +3603,8 @@ export function computeExponentialDelay(attempt: number, base: number, max: numb
   return delay;
 }
 
-function sleepMs(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+// sleepMs answers from @wenathlan/devthink/queue (the owner of the timer
+// family) — the former local twin retired into the published import.
 
 /**
  * Fetches streamGenerateContent with exponential backoff, per-attempt timeout

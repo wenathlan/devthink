@@ -288,6 +288,31 @@
       "types": "./build/queue.d.ts",
       "import": "./build/queue.js",
       "default": "./build/queue.js"
+    },
+    "./os": {
+      "types": "./build/os.d.ts",
+      "import": "./build/os.js",
+      "default": "./build/os.js"
+    },
+    "./graph": {
+      "types": "./build/graph.d.ts",
+      "import": "./build/graph.js",
+      "default": "./build/graph.js"
+    },
+    "./hono": {
+      "types": "./build/hono.d.ts",
+      "import": "./build/hono.js",
+      "default": "./build/hono.js"
+    },
+    "./commands": {
+      "types": "./build/commands.d.ts",
+      "import": "./build/commands.js",
+      "default": "./build/commands.js"
+    },
+    "./engines": {
+      "types": "./build/engines.d.ts",
+      "import": "./build/engines.js",
+      "default": "./build/engines.js"
     }
   },
   "bin": {

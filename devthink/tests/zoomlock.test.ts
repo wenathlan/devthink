@@ -34,7 +34,13 @@ describe("the viewport lock (every html entry pins the faun meta)", () => {
   it("every entry declares the zoom zero viewport — the exact meta of the index, no free door", () => {
     for (const entry of htmlentries) {
       const html = readFileSync(join(approot, entry), "utf8");
-      expect(html, `${entry} carries the viewport meta`).toContain('<meta name="viewport"');
+      /* the build minifier may reorder the meta attributes (content before
+       * name), so the lock matches the viewport meta in either attribute
+       * order — the law pins the meta and its content, never the spelling. */
+      expect(
+        html,
+        `${entry} carries the viewport meta`,
+      ).toMatch(/<meta[^>]+name="viewport"/);
       expect(html, `${entry} pins the scale floor and ceiling`).toContain(
         "width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0",
       );

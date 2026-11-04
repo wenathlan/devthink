@@ -651,7 +651,7 @@ export const sweeprecord: sweepreport = {
       "family": "scans",
       "name": "no secret material appears in the bundle",
       "status": "fixed",
-      "detail": "no literal key, token or password value appears in the 288 shipped sources or the 29 compiled bundles"
+      "detail": "no literal key, token or password value appears in the 288 shipped sources or the 34 compiled bundles"
     },
     {
       "family": "scans",

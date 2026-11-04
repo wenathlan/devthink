@@ -6,13 +6,13 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { serveruntime } from "./node_modules/@hono/node-server/dist/index.mjs";
-import { servestatictypes } from "./node_modules/@hono/node-server/dist/serve-static.d.mts";
-import { servestaticruntime } from "./node_modules/@hono/node-server/dist/serve-static.mjs";
-import { honoruntime } from "./node_modules/hono/dist/index.js";
-import { corsruntime } from "./node_modules/hono/dist/middleware/cors/index.js";
-import { honocontext, honoinstance } from "./node_modules/hono/dist/types/index.d.ts";
-import { corstypes } from "./node_modules/hono/dist/types/middleware/cors/index.d.ts";
+import { serve as serveruntime } from "@hono/node-server";
+import { serveStatic as servestaticruntime } from "@hono/node-server/serve-static";
+import { Hono as honoruntime } from "hono";
+import { cors as corsruntime } from "hono/cors";
+import type { serveStatic as servestatictypes } from "@hono/node-server/serve-static";
+import type { Context as honocontext, Hono as honoinstance } from "hono";
+import type { cors as corstypes } from "hono/cors";
 
 /* ===== block: honocorsface ===== */
 /**
@@ -106,7 +106,7 @@ export const cors: typeof corstypes = corsruntime;
 // @ts-ignore — the runtime entry carries no adjacent declaration (the types tree ships under dist/types; whichever declaration face a program resolves the line onto, the typed re-exports below carry the type)
 
 
-type honomodule = typeof import("./node_modules/hono/dist/types/index.d.ts");
+type honomodule = typeof import("hono");
 
 /** Context — the hono context type the declaration tree carries. */
 export type Context = honocontext;

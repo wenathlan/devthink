@@ -26,7 +26,6 @@ import type {
   toolstep,
   transformrule,
 } from "./types.js";
-import { tocsv, toexcel, tojson } from "./page.js";
 
 /**
  * Dataset command logics for the background executors.
@@ -941,3 +940,127 @@ export function chunkextracttaskof(input: {
     window: input.window,
   };
 }
+
+/** Escapes one csv field, wrapping values that carry the delimiter, quotes or line breaks. */
+function csvfield(value: string, delimiter: string): string {
+  return value.includes(delimiter) || value.includes('"') || value.includes("\n")
+    ? `"${value.replace(/"/g, '""')}"`
+    : value;
+}
+
+/** Serializes columns and rows into csv text. */
+export function tocsv(columns: columnspec[], rows: datasetrow[], delimiter = ","): string {
+  const lines = [columns.map((column) => csvfield(column.label || column.key, delimiter)).join(delimiter)];
+  for (const row of rows)
+    lines.push(columns.map((column) => csvfield(row[column.key] ?? "", delimiter)).join(delimiter));
+  return lines.join("\n");
+}
+
+/** Parses csv text into headers and raw rows, honoring quoted fields and escaped quotes. */
+export function parsecsv(text: string, delimiter = ","): { headers: string[]; rows: string[][] } {
+  const records: string[][] = [];
+  let field = "";
+  let record: string[] = [];
+  let quoted = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index]!;
+    if (quoted) {
+      if (character === '"') {
+        if (text[index + 1] === '"') {
+          field += '"';
+          index += 1;
+        } else quoted = false;
+      } else field += character;
+      continue;
+    }
+    if (character === '"') {
+      quoted = true;
+      continue;
+    }
+    if (character === delimiter) {
+      record.push(field);
+      field = "";
+      continue;
+    }
+    if (character === "\n" || character === "\r") {
+      if (character === "\r" && text[index + 1] === "\n") index += 1;
+      record.push(field);
+      field = "";
+      if (record.some((value) => value.length > 0) || record.length > 1) records.push(record);
+      record = [];
+      continue;
+    }
+    field += character;
+  }
+  record.push(field);
+  if (record.some((value) => value.length > 0) || record.length > 1) records.push(record);
+  const [headers = [], ...rows] = records;
+  return { headers, rows };
+}
+
+/** Maps parsed csv headers onto dataset column specs through a reviewed mapping of csv names to target keys. */
+export function mapcolumns(headers: string[], mapping: Record<string, string> = {}): columnspec[] {
+  const used = new Set<string>();
+  return headers.map((header) => {
+    const target = mapping[header] ?? mapping[normalizeheader(header)] ?? header;
+    return columnspecof(target, used);
+  });
+}
+
+/** Serializes columns and rows into a json dataset payload. */
+export function tojson(columns: columnspec[], rows: datasetrow[]): string {
+  return JSON.stringify({ columns, rows });
+}
+
+/** Escapes one xml text node. */
+function xmltext(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/** Serializes columns and rows into an Excel SpreadsheetML 2003 workbook that Excel opens natively. */
+export function toexcel(columns: columnspec[], rows: datasetrow[], name: string): string {
+  const head = columns
+    .map(
+      (column) => `<Cell ss:StyleID="head"><Data ss:Type="String">${xmltext(column.label || column.key)}</Data></Cell>`,
+    )
+    .join("");
+  const body = rows
+    .map(
+      (row) =>
+        `<Row>${columns
+          .map((column) => {
+            const value = row[column.key] ?? "";
+            const numeric = column.kind === "number" && value.trim() !== "" && Number.isFinite(Number(value));
+            return numeric
+              ? `<Cell><Data ss:Type="Number">${xmltext(value)}</Data></Cell>`
+              : `<Cell><Data ss:Type="String">${xmltext(value)}</Data></Cell>`;
+          })
+          .join("")}</Row>`,
+    )
+    .join("");
+  return `<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="head"><Font ss:Bold="1"/></Style></Styles><Worksheet ss:Name="${xmltext(name || "dataset").slice(0, 31)}"><Table><Row>${head}</Row>${body}</Table></Worksheet></Workbook>`;
+}
+
+export function normalizeheader(label: string): string {
+  const slug = label
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "column";
+}
+
+/** Builds one column spec from a header label with a unique stable key and the normalized name. */
+export function columnspecof(label: string, used: Set<string> = new Set()): columnspec {
+  const base = normalizeheader(label);
+  let key = base;
+  let suffix = 2;
+  while (used.has(key)) {
+    key = `${base}${suffix}`;
+    suffix += 1;
+  }
+  used.add(key);
+  return { key, label: label.trim(), kind: "text", normalized: label.trim().toLowerCase() };
+}
+
+/** Classifies a column as number only when every non-empty value parses as a number. */

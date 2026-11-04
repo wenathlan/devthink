@@ -40,6 +40,7 @@
       "@wenathlan/devthink/constants": ["../devthink/constants.ts"],
       "@wenathlan/devthink/core": ["../devthink/core.ts"],
       "@wenathlan/devthink/data": ["../devthink/data.ts"],
+      "@wenathlan/devthink/os": ["../devthink/os.ts"],
       "@wenathlan/devthink/http": ["../devthink/http.ts"],
       "@wenathlan/devthink/memory": ["../devthink/memory.ts"],
       "@wenathlan/devthink/policy": ["../devthink/policy.ts"],
@@ -108,12 +109,11 @@
        * and the devthink router — resolves it to this app's own source:
        * the one owner of the moved console. */
       "@wenathlan/getry/providercli": ["./providercli.ts"],
-      /* the oslabels bridge of the ownership wave: the moved provider
-       * console reads the paired label catalog through the published os
-       * specifier ("@wenathlan/devthink/oslabels"), and this program
-       * resolves it to the monorepo source the sibling app carries — the
-       * label catalog is never duplicated inside getry. */
-      "@wenathlan/devthink/oslabels": ["../devthink/os.ts"],
+      /* the os bridge of the provider console move: the console reads the
+       * paired label catalog through the published os specifier and this
+       * program resolves it to the monorepo source the sibling app
+       * carries — the label catalog is never duplicated inside getry. */
+      "@wenathlan/devthink/os": ["../devthink/os.ts"],
       "@wenathlan/getry/project": ["./project.ts"],
       "@wenathlan/getry/quota": ["./quota.ts"],
       "@wenathlan/getry/recovery": ["./recovery.ts"],

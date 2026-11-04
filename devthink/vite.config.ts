@@ -376,8 +376,6 @@ export default defineConfig({
       "@wenathlan/getry/versionregistry": path.resolve(import.meta.dirname, "../getry/versionregistry.ts"),
       "@wenathlan/getry/intelligence": path.resolve(import.meta.dirname, "../getry/intelligence.ts"),
       "@wenathlan/getry/json": path.resolve(import.meta.dirname, "../getry/json.ts"),
-      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "../getry/json.ts"),
-      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "../getry/json.ts"),
       "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "../getry/gateway.ts"),
       "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "../getry/gateway.ts"),
       "@wenathlan/getry/gatewayprobe": path.resolve(import.meta.dirname, "../getry/gatewayprobe.ts"),
@@ -449,7 +447,6 @@ export default defineConfig({
       "@wenathlan/getry/server": path.resolve(import.meta.dirname, "../getry/server.ts"),
       "@wenathlan/getry/auth": path.resolve(import.meta.dirname, "../getry/auth.ts"),
       "@wenathlan/getry/cli": path.resolve(import.meta.dirname, "../getry/cli.ts"),
-      "@wenathlan/getry/providers": path.resolve(import.meta.dirname, "../getry/providers.ts"),
       /** the devthink self bridges of the ownership wave
        * (wave/ownership.getry), mirrored from vitest.config.ts: the moved
        * gateway graph leans on the os-owned seams it grew beside (config,

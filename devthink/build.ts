@@ -71,19 +71,19 @@ await mkdir(extensiondist, { recursive: true });
 /** The version stamp and license banner every bundle embeds: the version reads from package.json so no bundle carries a second version source, and the license name rides the same line. */
 const banner = `/*! devthink ${packagejson.version} — consent-first browser agent library — GPL-3.0-only — https://github.com/wenathlan/devthink */`;
 
-/** The byte budget of every build target: the bounds are build-time engineering bounds on the unminified variants (a minified variant stays strictly smaller than its unminified bundle) and an overgrown bundle fails the build before it ships. The grand merge consolidation interned the provider gateway adapters in the llm core surface, and the logicfold3 rung folded the os family, the mcp registry, the page bridge and the plan state into the keyword seats of the index surface, so the index family bounds ride one more notch above the engineering ceilings the surface outgrew with every fold. */
+/** The byte budget of every build target: the bounds are build-time engineering bounds on the unminified variants (a minified variant stays strictly smaller than its unminified bundle) and an overgrown bundle fails the build before it ships. The grand merge consolidation interned the provider gateway adapters in the llm core surface, and the logicfold waves interned the page bridge, the umd and cjs families beside the keyed os seat, so the index family bounds ride one notch above the pre-merge engineering ceilings the surface outgrew. */
 const bundlebudgets: Record<string, number> = {
-  index: 2_450_000,
-  indexcjs: 2_550_000,
-  neutral: 2_300_000,
-  umd: 2_550_000,
-  node: 2_550_000,
-  bun: 2_450_000,
-  deno: 2_450_000,
+  index: 2_500_000,
+  indexcjs: 2_600_000,
+  neutral: 2_400_000,
+  umd: 2_600_000,
+  node: 2_600_000,
+  bun: 2_500_000,
+  deno: 2_500_000,
   cli: 900_000,
   headless: 900_000,
   mcp: 1_400_000,
-  server: 2_400_000,
+  server: 2_600_000,
   http: 600_000,
   bridge: 160_000,
   companion: 60_000,
@@ -380,8 +380,6 @@ const familybridges = {
   "@wenathlan/getry/versionregistry": join(root, "..", "getry", "versionregistry.ts"),
   "@wenathlan/getry/intelligence": join(root, "..", "getry", "intelligence.ts"),
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
-  "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
-  "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
   "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gateway.ts"),
   "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gateway.ts"),
   "@wenathlan/getry/gatewayprobe": join(root, "..", "getry", "gatewayprobe.ts"),
@@ -406,7 +404,6 @@ const familybridges = {
   "@wenathlan/getry/server": join(root, "..", "getry", "server.ts"),
   "@wenathlan/getry/auth": join(root, "..", "getry", "auth.ts"),
   "@wenathlan/getry/cli": join(root, "..", "getry", "cli.ts"),
-  "@wenathlan/getry/providers": join(root, "..", "getry", "providers.ts"),
   /** the devthink self bridges of the ownership wave
    * (wave/ownership.getry), mirrored from the vite/vitest/tsconfig
    * resolutions: the moved gateway graph leans on the os-owned seams it
@@ -490,7 +487,7 @@ await build({
     the prisma stack), keep the runtime dependencies external exactly the way the server entry
     does, and inline the gateway owner modules through the family bridges the same way — the
     bundle stays the reviewed repository sources alone. */
-for (const modulename of ["config", "constants", "core", "data", "storage", "security", "tools", "types"]) {
+for (const modulename of ["config", "constants", "core", "data", "os", "graph", "hono", "commands", "engines", "storage", "security", "tools", "types"]) {
   await build({
     entryPoints: [`${modulename}.ts`],
     outfile: record(`${modulename}.js`),
@@ -1366,6 +1363,11 @@ const stagerootfiles = [
   "constants.js",
   "core.js",
   "data.js",
+  "os.js",
+  "graph.js",
+  "hono.js",
+  "commands.js",
+  "engines.js",
   "storage.js",
   "security.js",
   "tools.js",
@@ -1401,6 +1403,13 @@ const stagedeclarations = [
   "constants",
   "core",
   "data",
+  /* the os seam declaration of the provider console move: the paired label
+     catalog answers the published ./os specifier the console barrel reads. */
+  "os",
+  "graph",
+  "hono",
+  "commands",
+  "engines",
   "storage",
   "security",
   "tools",

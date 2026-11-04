@@ -159,6 +159,15 @@ export function platformnames(name: string): boolean {
 export function wireformatnames(name: string): boolean {
   return (
     [
+      /* the openai compatible models wire field (the /v1/models answer
+       * carries context_length in the snake case the protocol speaks) and
+       * the griffel renderer export (the fluent styling engine publishes
+       * its unstable_ prefixed css rule api) stay allowlisted beside the
+       * manifest fields: their names belong to the protocols and the
+       * reviewed engines they speak, not to the os review. */
+      "context_length",
+      "unstable_filterCSSRule",
+
       "allowed_origins",
       "browser_specific_settings",
       "strict_min_version",

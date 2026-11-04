@@ -881,7 +881,12 @@ describe("hardcoded provider url scan of the source tree", () => {
      * the gateway family stays default empty. the file floor rides the
      * getry tree after the ownership split: the app root carries the
      * gateway sources the wave moved in beside the theme lanes. */
-    const outsidescan = new Set([...gatewaysources, "providers.ts", "gatewayviewconfig.ts", "types.ts"]);
+    /* the logicfold waves interned the view config (gatewayviewconfig.ts)
+     * into gateway.ts — the catalog documentation the exclusion always
+     * allowed rides in the merged seat, so the exception follows the
+     * content while the engine dial-out surfaces (engine.ts, llm.ts) stay
+     * scanned. */
+    const outsidescan = new Set([...gatewaysources, "providers.ts", "gateway.ts", "types.ts"]);
     for (const entry of await readdir(root))
       if (entry.endsWith(".ts") && !outsidescan.has(entry)) files.push(join(root, entry));
     for (const entry of await readdir(join(root, "tests")))

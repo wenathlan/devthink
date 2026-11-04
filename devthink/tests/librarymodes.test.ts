@@ -39,7 +39,7 @@ import {
 import type { stepoutcome } from "../types.js";
 import { clicommands, surfacepalette } from "../views.js";
 import { stripstrings, underscorednames } from "../../foundry/bundlescan.ts";
-import { umdwrap } from "../umd.ts";
+import { umdwrap } from "../umdwrap.ts";
 
 const execute = promisify(execFile);
 const require = createRequire(import.meta.url);

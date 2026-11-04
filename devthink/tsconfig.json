@@ -13,6 +13,9 @@
     "types": ["chrome", "node", "vite/client"],
     "paths": {
       "@wenathlan/cadria/transcodeengine": ["../cadria/transcodeengine.ts"],
+      "@wenathlan/cadria/transcode": ["../cadria/transcode.ts"],
+      "@wenathlan/devthink/os": ["./os.ts"],
+      "@wenathlan/getry/gateway": ["../getry/gateway.ts"],
       "z-ai-web-dev-sdk": [
         "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
