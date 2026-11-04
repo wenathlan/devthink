@@ -268,7 +268,7 @@ jobs:
           cd devthink
           node build.ts
           bun run check
-          node apifreezegate.ts
+          node apifreeze.ts
           node permdiff.ts
           node release.ts check
           npm pack ./distpackage --dry-run

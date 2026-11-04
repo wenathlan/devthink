@@ -6,7 +6,7 @@
  * interactivity contract rides the conversion. Regenerate with
  * `node buildterminal.ts` — never edit by hand.
  */
-import { render, type IrNode, type RenderOptions } from "./runtimeterminal.ts";
+import { render, type IrNode, type RenderOptions } from "./runtime.ts";
 
 const ir: IrNode = {
   "kind": "box",

@@ -2,7 +2,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { familylanes } from "./familylanes.ts";
-import { releasepat } from "./releasepat.ts";
+import { releasepublishpat } from "./release.ts";
 
 const repoRoot = resolve(process.cwd(), "..");
 const mode = process.argv[2] ?? "check";
@@ -228,7 +228,7 @@ const edits = [
       )
       /* the runtime version arg walks with the same pin: the nodefetch stage
          extracts the tarball of the exact baseline the .nvmrc carries, and the
-         containerpack and runtimepolicy gates read the arg against it — the
+         containerpack and runtime gates read the arg against it — the
          2.0.133 rung exposed the lane was missing (the arg stayed 26.12.0
          while every other pin walked to 26.12.1 and the validation refused
          the rung) */
@@ -272,7 +272,7 @@ if (lanes.drift) drift = true;
    redden waiting for the rung that lands them — the walk answers sync only,
    the familylanes pattern, and once both markers answer the pat form the
    walk reports no drift ever again. */
-const patwalk = mode === "sync" ? await releasepat(mode) : { drift: false, create: "unchecked", flip: "unchecked" };
+const patwalk = mode === "sync" ? await releasepublishpat(mode) : { drift: false, create: "unchecked", flip: "unchecked" };
 if (patwalk.drift) drift = true;
 if (drift && mode === "check")
   throw new Error("Maintenance metadata is outdated. Run pnpm sync:maintenance in a review branch.");
@@ -292,7 +292,7 @@ console.log(
         pnpm: latestpnpmmajor !== declaredpnpm && !allowmajors,
       },
       familylanes: { desktop: lanes.desktop, mobile: lanes.mobile },
-      releasepat: { create: patwalk.create, flip: patwalk.flip },
+      releasepublishpat: { create: patwalk.create, flip: patwalk.flip },
       drift,
     },
     null,

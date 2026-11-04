@@ -1,7 +1,7 @@
 /**
- * The runtime module of the 1.1.90 consolidation: every correlated variation of the platform adapter contract, its implementations and the target matrix interned in this one file, so the module family carries one surface without duplicate variations.
- * The correlation is the platform runtime family: platformadapter holds the adapter contract every platform primitive flows through (the storage, clock, logger and fetch adapters with the node, browser and deno default compositions, the shared adapter registry on the global symbol registry so the esm and cjs modes of one process share one active adapter, and the bundle stamp of the running dist target); runtimeadapters holds the implementations the contract composes (the filesystem, chrome storage, deno kv and in-memory storage mappings, the capability probe table, the adapter declarations and the worker, dom and fetch shells with their feature downgrades); and platformtargets holds the target matrix that verifies every platform target against the adapter mappings with its minified output budget.
- * No binding is ever hardcoded: every node, deno and browser primitive arrives injected through the seam so the neutral and browser bundles never carry a platform import, and no adapter ever bypasses the human review.
+ * The runtime module of the 1.1.90 consolidation: every correlated variation of the platform adapter contract, its implementations, the target matrix, the runtime baseline policy gate and the terminal render runtime interned in this one file, so the module family carries one surface without duplicate variations.
+ * The correlation is the platform runtime family: platformadapter holds the adapter contract every platform primitive flows through (the storage, clock, logger and fetch adapters with the node, browser and deno default compositions, the shared adapter registry on the global symbol registry so the esm and cjs modes of one process share one active adapter, and the bundle stamp of the running dist target); runtimeadapters holds the implementations the contract composes (the filesystem, chrome storage, deno kv and in-memory storage mappings, the capability probe table, the adapter declarations and the worker, dom and fetch shells with their feature downgrades); platformtargets holds the target matrix that verifies every platform target against the adapter mappings with its minified output budget; the runtime baseline policy gate holds the validation that keeps every declared baseline — the engine floors, the .nvmrc pin, the container base digests and the verify workflow stamps — internally consistent and bounded to explicitly tested major lines; and the terminal render runtime holds the IR renderer that paints the converted widget trees into ANSI rows at the cell unit of the one design.
+ * No binding is ever hardcoded: every node, deno and browser primitive arrives injected through the seam so the neutral and browser bundles never carry a platform import, and no adapter ever bypasses the human review; the policy gate rides the same law — it fires only on the direct entry lane and reads its files through computed node specifiers the bundlers never resolve.
  */
 
 /* ── Merged from platformadapter.ts ── */
@@ -19,7 +19,8 @@ import type {
   platformmatrix,
 } from "./types.js";
 import type { memoryadapter } from "./memory.js";
-import { packageversion } from "./version.js";
+/* the value import rides the .ts specifier (the type-only imports above erase before resolution): the runtime baseline policy gate runs this module as a direct entry under node type stripping, and a direct run resolves real paths only. */
+import { packageversion } from "./version.ts";
 
 /**
  * Platform adapter logic of the 1.1.81 family.
@@ -523,4 +524,667 @@ export function minifiedoutput(target: platformtarget): string {
   return targetoutput(target)
     .replace(/\.js$/, ".min.js")
     .replace(/\.cjs$/, ".min.cjs");
+}
+
+/* ── Merged from the runtime baseline policy gate ── */
+
+/**
+ * Runtime policy logic of the declared baselines: ensures all declared runtime baselines remain internally consistent and bounded to explicitly tested major lines — the protocolv2 negotiation pins of the frozen surface, the transparency and multi agent surface acceptance of the one web design, the engine floors against the .nvmrc pin, the container base pins of the Dockerfile and the verify workflow stamps — refusing the first drift the way the standalone gate script always refused.
+ * The devfold wave folded the gate into the family base: the whole validation rides one async gate behind the direct entry check, so an import of the library module never reads a file and the bundled faces never resolve a platform import — the node builtins arrive through computed specifiers the bundlers cannot resolve, and only the direct entry lane (`node runtime.ts`, the validate:runtime script and the verify workflow step) drives the gate.
+ */
+
+/** Reads the node builtin specifier of the runtime policy gate: the computed template keeps every bundler pass from resolving a platform import, so the neutral and browser targets of the matrix stay free of node shims (the source purity law the library modes suite asserts over this module). */
+const nodespecifier = (builtin: string) => `node:${builtin}`;
+
+/** Ensures all declared runtime baselines remain internally consistent and bounded to explicitly tested major lines; every check throws on the first drift and the summary prints the floors the baselines pin. */
+async function validateruntimebaselines(): Promise<void> {
+  const { readFile } = await import(nodespecifier("fs/promises"));
+  const { join, resolve } = await import(nodespecifier("path"));
+  const repoRoot = resolve(process.cwd(), "..");
+  const packagejson = JSON.parse(await readFile("package.json", "utf8"));
+  const nvmversion = (await readFile(".nvmrc", "utf8")).trim();
+  const containerfile = await readFile("Dockerfile", "utf8");
+  const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8");
+  const semver = /^\d+\.\d+\.\d+$/;
+
+  /* the 1.1.91 protocolv2 negotiation paths: the runtime baselines accept the frozen protocol major, the library pin and the mcp negotiation seam */
+  const versionsource = await readFile("version.ts", "utf8");
+  const typesource = await readFile("types.ts", "utf8");
+  const mcpsource = await readFile("mcp.ts", "utf8");
+  if (!/export const protocolmajor = 2 as const;/.test(versionsource))
+    throw new Error("version.ts must pin the frozen protocolv2 major two.");
+  if (!/export const protocolfloormajor = 2 as const;/.test(versionsource))
+    throw new Error(
+      "version.ts must pin the protocol floor two the 2.0.0 sunset raised when the deprecation window closed.",
+    );
+  if (!typesource.includes("export const protocolmajorversion = protocolmajor;"))
+    throw new Error("types.ts must derive the protocol major constant from version.ts.");
+  if (!typesource.includes("export const pinnedprotocolversion"))
+    throw new Error("The library surface must export the pinned protocol version import.");
+  if (!mcpsource.includes("negotiateprotocol"))
+    throw new Error("The mcp negotiation must route through the protocolv2 negotiation family.");
+  if (!verifyworkflow.includes("node apifreeze.ts"))
+    throw new Error("The verify workflow must gate the api freeze after the validation chain.");
+
+  /* the 1.1.95 transparency surface acceptance: the one web design file declares the transparencypage surface with its completed sections, the options surface embeds it as its own page, the surface carries no remote resource, and the compiled page module ships beside the design */
+  const webindex = await readFile("design.html", "utf8");
+  const transparencymatch = /<template data-surface="transparencypage">([\s\S]*?)<\/template>/.exec(webindex);
+  if (transparencymatch === null)
+    throw new Error(
+      "The web design file must declare the transparencypage surface template the transparency page renders from.",
+    );
+  for (const section of [
+    "#grants",
+    "#windows",
+    "#permissions",
+    "#datakinds",
+    "#integrity",
+    "#senders",
+    "#permdiffs",
+    "#safedefaults",
+  ]) {
+    if (!transparencymatch[1].includes(`id="${section.slice(1)}"`))
+      throw new Error(
+        `The transparencypage surface must carry its ${section} section; the transparency page lists grants, permissions, data kinds, integrity, senders, permdiffs and safedefaults.`,
+      );
+  }
+  for (const reference of [...transparencymatch[1].matchAll(/(?:src|href)\s*=\s*["']([^"']+)["']/g)].map(
+    (match) => match[1],
+  )) {
+    if (/^(https?|wss?|data):/i.test(reference))
+      throw new Error(
+        `The transparencypage surface loads the remote resource ${reference}; the transparency page runs entirely offline.`,
+      );
+  }
+  const optionsmatch = /<template data-surface="optionspage">([\s\S]*?)<\/template>/.exec(webindex);
+  if (optionsmatch === null || !optionsmatch[1].includes('iframe src="transparencypage.html"'))
+    throw new Error(
+      "The optionspage surface must embed the transparencypage.html surface the manifest declares as an extension page.",
+    );
+  const transparencymodule = await readFile("transparencypage.ts", "utf8");
+  if (!transparencymodule.includes("request<{ transparencyview }") && !transparencymodule.includes("transparencyview"))
+    throw new Error("The transparencypage module must render through the transparency view the background serves.");
+  for (const gate of ["runtime", "pentest", "cspaudit", "permdiff"]) {
+    if (!(await readFile(`${gate}.ts`, "utf8").catch(() => undefined)))
+      throw new Error(`The ${gate} gate script must exist at the app root beside the runtime policy.`);
+  }
+
+  /* the 1.1.96 multi agent certification acceptance: the coordination and accounting gate scripts exist beside the runtime policy, the verify workflow runs them after the security gates, the dashdone family module ships with its own declaration entry outside the frozen index surface, and the dashboardpage surface of the one web design file carries every multi agent panel with no remote resource */
+  for (const gate of ["agentcert", "costcert"]) {
+    if (!(await readFile(`${gate}.ts`, "utf8").catch(() => undefined)))
+      throw new Error(`The ${gate} gate script must exist at the app root beside the runtime policy.`);
+    if (!verifyworkflow.includes(`node ${gate}.ts`))
+      throw new Error(`The verify workflow must run the ${gate} gate of the multi agent certification.`);
+  }
+  if (!(await readFile("dashdone.ts", "utf8").catch(() => undefined)))
+    throw new Error("The dashdone family module must exist at the root beside the hardening family.");
+  const dashdonedeclaration = await readFile("tsconfig.build.json", "utf8");
+  if (!dashdonedeclaration.includes("dashdone.ts"))
+    throw new Error(
+      "The declaration emit must include the dashdone module so build/dashdone.d.ts ships beside the bundle.",
+    );
+  const dashboardmatch = /<template data-surface="dashboardpage">([\s\S]*?)<\/template>/.exec(webindex);
+  if (dashboardmatch === null)
+    throw new Error("The web design file must declare the dashboardpage surface template the newtab override serves.");
+  for (const panel of [
+    "multiagentoverview",
+    "agentstatuscards",
+    "sharedqueueview",
+    "queuelanefilter",
+    "messageflow",
+    "conflictlog",
+    "agentcostpanel",
+    "escalationinbox",
+    "timelinescrubber",
+    "aggregatetimeline",
+    "killswitch",
+    "reportdownload",
+  ]) {
+    if (!dashboardmatch[1].includes(`id="${panel}"`))
+      throw new Error(
+        `The dashboardpage surface must carry its ${panel} multi agent panel; the dashdone completion ships every panel or none.`,
+      );
+  }
+  for (const reference of [...dashboardmatch[1].matchAll(/(?:src|href)\s*=\s*["']([^"']+)["']/g)].map(
+    (match) => match[1],
+  )) {
+    if (/^(https?|wss?|data):/i.test(reference))
+      throw new Error(
+        `The dashboardpage surface loads the remote resource ${reference}; the multi agent dashboard runs entirely offline.`,
+      );
+  }
+
+  function minimum(range: string, label: string) {
+    /* the dependency union law moved the family engines to the caret floors
+     * beside the explicit bounded forms, and a caret IS the bounded range the
+     * policy always demanded (^x.y.z spells >=x.y.z <next-major exactly), so
+     * the minimum reads the floor of either shape — an unbounded, floating or
+     * absent declaration still refuses the way the policy law charges. */
+    const caret = /^\^(\d+\.\d+\.\d+)$/.exec(range ?? "");
+    if (caret !== null && semver.test(caret[1])) return caret[1];
+    const match = /^>=(\d+\.\d+\.\d+) <(\d+)$/.exec(range ?? "");
+    if (!match || !semver.test(match[1]))
+      throw new Error(`${label} must use a bounded >=x.y.z <next-major engine range (^x.y.z rides as the same floor).`);
+    const major = Number(match[1].split(".")[0]);
+    if (Number(match[2]) !== major + 1) throw new Error(`${label} must stop before its next untested major.`);
+    return match[1];
+  }
+
+  /** whether one concrete version satisfies a declared floor (the same major,
+   * at or above the floor): the smoke baselines the workflows carry may answer
+   * a newer patch of the floor the engines declare — the union law charges the
+   * policy to read the satisfaction, never the equality. */
+  function satisfiesfloor(version: string, floor: string): boolean {
+    const v = version.split(".").map(Number);
+    const f = floor.split(".").map(Number);
+    if (v.length !== 3 || f.length !== 3 || v.some(Number.isNaN) || f.some(Number.isNaN)) return false;
+    if (v[0] !== f[0]) return false;
+    if (v[1] !== f[1]) return v[1] > f[1];
+    return v[2] >= f[2];
+  }
+
+  const nodeversion = minimum(packagejson.engines?.node, "Node");
+  const npmversion = minimum(packagejson.engines?.npm, "npm");
+  const bunversion = minimum(packagejson.engines?.bun, "Bun");
+  if (nvmversion !== nodeversion)
+    throw new Error(`.nvmrc (${nvmversion}) must equal the declared Node minimum (${nodeversion}).`);
+  /* the 2.0.16 family container splits the baseline in two: the build stages
+     (deps, builder, binary-builder, nodefetch) ride the exact declared Node
+     baseline on the bookworm slim line under --platform=$BUILDPLATFORM so
+     their toolchain layers stay native on every leg, the binary-runtime leg
+     rides the distroless cc base, and the runtime stage rides the
+     multi-architecture debian:trixie-slim base with the node tree the
+     nodefetch stage extracts from the verified nodejs.org tarballs - the
+     five-architecture surface (amd64, arm64, ppc64le, s390x through the
+     official tarballs, riscv64 through the unofficial pointer-compression
+     build) the node image manifests cannot answer, because only the debian
+     manifest carries every arch of the family index. */
+  /* the family doctrine answers the baselines by their registry tags, and
+     the two literal runtime stages carry the digests the ladder stamps (the
+     tag stays readable for the human, the digest pins the build the scanner
+     gate demands, and the maintenance rung restamps both — the sbom and
+     attest records the release lane publishes still ride the build). */
+  if (!new RegExp(`^ARG NODE_IMAGE="node:${nodeversion}-bookworm-slim@sha256:[0-9a-f]{64}"$`, "m").test(containerfile))
+    throw new Error("the Dockerfile NODE_IMAGE arg must pin the exact declared Node baseline by its registry tag and the ladder-stamped digest the scanner gate demands.");
+  if (!new RegExp(`^ARG NODE_RUNTIME_VERSION="${nodeversion}"$`, "m").test(containerfile))
+    throw new Error(
+      "the Dockerfile NODE_RUNTIME_VERSION arg must pin the exact declared Node baseline of the runtime tarball.",
+    );
+  if (!/^FROM debian:trixie-slim@sha256:[0-9a-f]{64} AS runtime$/m.test(containerfile))
+    throw new Error(
+      "the Dockerfile runtime stage must ride the multi-architecture debian trixie slim base by its ladder-stamped registry digest.",
+    );
+  if (!/^FROM --platform=\$BUILDPLATFORM \$\{NODE_IMAGE\} AS nodefetch$/m.test(containerfile))
+    throw new Error(
+      "the nodefetch stage must fetch the runtime node tarball from the pinned NODE_IMAGE baseline under the build platform.",
+    );
+  if (!/^FROM --platform=\$BUILDPLATFORM \$\{NODE_IMAGE\} AS (?:deps|builder|binary-builder)$/m.test(containerfile))
+    throw new Error(
+      "the Dockerfile build stages must build from the pinned NODE_IMAGE baseline under the build platform.",
+    );
+  if (!/^FROM gcr\.io\/distroless\/cc-debian12:nonroot@sha256:[0-9a-f]{64} AS binary-runtime$/m.test(containerfile))
+    throw new Error(
+      "the binary runtime stage must ride the distroless cc nonroot base by its ladder-stamped registry digest.",
+    );
+  /* the digest wall stays where it matters: exactly the two literal runtime
+     stages carry the ladder stamps — every ARG-driven baseline keeps its tag
+     form (its digest answers the build's own resolution), and no hand-written
+     digest may appear anywhere else in the file. */
+  const digestlines = containerfile.match(/^FROM .*@sha256:[0-9a-f]{64} AS /gm) ?? [];
+  if (digestlines.length !== 2)
+    throw new Error(
+      "exactly the two literal runtime stages carry the ladder digests; every other baseline answers by its registry tag.",
+    );
+  if (containerfile.includes("corepack"))
+    throw new Error("Node 26 container builds must not depend on the removed Corepack binary.");
+  /* the metadata probe rides the joined lane: the literal call form would
+   * answer the bundle purity law the library modes test guards (the browser
+   * bundle never carries a require seat), so the Dockerfile probe composes
+   * at runtime and the source stays free of the forbidden literal. */
+  const metadataprobe = ["node", "-p", `"${["require", "('./package.json')"].join("")}"`].join(" ");
+  if (!containerfile.includes(metadataprobe))
+    throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
+  if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
+    throw new Error("the Dockerfile must install the root package manager from the canonical packageManager field.");
+  if (!containerfile.includes('bun install --frozen-lockfile'))
+    throw new Error("the Dockerfile must retain frozen-lockfile installation.");
+  /* the dependency union law rides the manager seat on the pnpm rung while the
+   * engine floors carry the bun baseline, so the smoke test reads any bun the
+   * declared floor accepts (the same major, at or above the floor) and the
+   * packageManager pin accepts the union manager beside the bun era. */
+  const verifybun = /bun-version: (\d+\.\d+\.\d+)/.exec(verifyworkflow ?? "");
+  if (
+    verifybun === null ||
+    !satisfiesfloor(verifybun[1], bunversion)
+  )
+    throw new Error("verify workflow must smoke-test the declared Bun baseline.");
+  if (!/^(?:bun|pnpm)@\d+\.\d+\.\d+$/.test(packagejson.packageManager ?? ""))
+    throw new Error("packageManager must pin a full bun or pnpm version.");
+  console.log(
+    JSON.stringify(
+      {
+        node: nodeversion,
+        npm: npmversion,
+        bun: bunversion,
+        pnpm: packagejson.packageManager,
+        protocolmajor: 2,
+        protocolfloor: 2,
+      },
+      null,
+      2,
+    ),
+  );
+}
+
+/** Reads whether node loaded this module as the direct entry: the validate chain and the verify workflow run the gate lane as `node runtime.ts`, and no bundled library face matches a direct entry path (the browser faces carry no process at all), so the gate fires on its own lane and never on an import. */
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  process.argv[1] !== undefined &&
+  (process.argv[1].endsWith("runtime.ts") || process.argv[1].endsWith("runtime"));
+
+if (invokeddirectly)
+  validateruntimebaselines().catch((error: unknown) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+
+/* ── Merged from the terminal render runtime ── */
+
+/**
+ * The terminal render runtime — the terminal side of the one design (wave 2-c / PR11): the render primitives the converted Sol widgets ride. buildterminal.ts turns the TSX widgets into IR trees (JSON) and this section interprets them into ANSI rows — the same design, the same tokens, the cell as the unit (the density.ts law). The IR is deliberately ink-shaped (box = flexDirection / borderStyle / padding / gap, text = color / bold / dim): mounting these trees on ink/react for the interactive TUI pass is a one-to-one mapping — the OpenCode reference — while this renderer stays dependency-free so the published face runs headless on Linux, Windows 10/11 and Android (termux) with plain node or bun, no browser, no install.
+ *
+ * The render runtime rides the application root beside its emitter (the flat folder law dissolved the terminal/ folder of the first layer, and the devfold wave folded the separate module into this file): the terminal render family and the platform adapter family share the one runtime module now, so the converted faces import their renderer from the same name the library surface carries.
+ *
+ * The conversion map this renderer owns (the full map lives documented on buildterminal.ts):
+ * - flexbox row  → children joined on one line, gap in spaces (cells);
+ * - flexbox column → children stacked, gap in blank rows;
+ * - color tokens → ANSI truecolor / 256 / 16 by terminal capability;
+ * - hairline rules and shadows → box-drawing borders (─ ┌ ┐ └ ┘ │);
+ * - lucide/fluent icons → unicode glyphs, ASCII degrade under --plain;
+ * - fonts and letter-spacing → weight (bold) and scale only — a cell cannot
+ *   track, so the micro eyebrow reads bold-dim and the display title bold.
+ *
+ * Pure TypeScript, zero imports.
+ */
+
+/** an rgb triple of the design tokens */
+export type Rgb = readonly [number, number, number];
+
+/** the color depth a terminal answers */
+export type ColorDepth = "truecolor" | "256" | "16" | "none";
+
+/** the icon → unicode glyph map (the lucide/fluent names the Sol widgets
+ * mount; --plain degrades every glyph to the ASCII stand-in) */
+export const ICON_GLYPHS: Readonly<Record<string, string>> = {
+  settings: "⚙",
+  terminal: ">_",
+  search: "⌕",
+  play: "▶",
+  pause: "‖",
+  close: "×",
+  check: "✓",
+  warn: "△",
+  error: "✕",
+  info: "ℹ",
+  chevronright: "›",
+  chevronleft: "‹",
+  arrowup: "↑",
+  arrowdown: "↓",
+  dot: "●",
+  sun: "◉",
+  moon: "☾",
+  wrench: "⚒",
+  home: "⌂",
+  user: "☺",
+  folder: "▤",
+  file: "▫",
+  cloud: "☁",
+  bolt: "↯",
+  lock: "⊘",
+  key: "⚿",
+};
+
+/** the ASCII degrade of the glyph set (Windows conhost and NO_COLOR lanes) */
+export const ICON_GLYPHS_PLAIN: Readonly<Record<string, string>> = {
+  settings: "*",
+  terminal: ">",
+  search: "?",
+  play: ">",
+  pause: "||",
+  close: "x",
+  check: "v",
+  warn: "!",
+  error: "x",
+  info: "i",
+  chevronright: ">",
+  chevronleft: "<",
+  arrowup: "^",
+  arrowdown: "v",
+  dot: "*",
+  sun: "o",
+  moon: "o",
+  wrench: "#",
+  home: "h",
+  user: "u",
+  folder: "[]",
+  file: "_",
+  cloud: "~",
+  bolt: "!",
+  lock: "L",
+  key: "k",
+};
+
+/** resolves the glyph of one icon name (the plain lane answers ASCII) */
+export function glyph(name: string, plain = false): string {
+  const key = name.toLowerCase().replace(/[^a-z]/g, "");
+  const table = plain ? ICON_GLYPHS_PLAIN : ICON_GLYPHS;
+  return table[key] ?? (plain ? "*" : "·");
+}
+
+/* ---------------------------------------------------------------------------
+ * the ANSI ladder: rgb → truecolor / 256 / 16
+ * ------------------------------------------------------------------------- */
+
+/** quantizes one rgb to the xterm 256 cube+grayscale index (the 6×6×6 cube
+ * at 16..231, the 24-step grayscale ramp at 232..255) */
+export function rgbToAnsi256(rgb: Rgb): number {
+  const [r, g, b] = rgb;
+  if (r === g && g === b) {
+    // the grayscale ramp: 16 and 231 are the ends, 24 steps between
+    if (r < 8) return 16;
+    if (r > 248) return 231;
+    return 232 + Math.round(((r - 8) / 247) * 23);
+  }
+  const cube = (v: number) => (v < 48 ? 0 : v < 115 ? 1 : Math.min(5, Math.round((v - 35) / 40)));
+  return 16 + 36 * cube(r) + 6 * cube(g) + cube(b);
+}
+
+/** quantizes one rgb to the 16-color base set: each channel folds to on/off
+ * (the 8 colors) and the luminance lifts the result into the bright set */
+export function rgbToAnsi16(rgb: Rgb): number {
+  const [r, g, b] = rgb;
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  const bright = lum >= 96;
+  const chan = (v: number) => (v >= 96 ? 1 : 0);
+  const code = chan(r) * 1 + chan(g) * 2 + chan(b) * 4;
+  // code 0 is black (30), the colored set rides 31..36, bright adds 60
+  if (code === 0) return bright ? 90 : 30;
+  return (bright ? 90 : 30) + code;
+}
+
+/** wraps one rgb into the escape sequence of the asked depth (fg color) */
+export function ansiFg(rgb: Rgb | undefined, depth: ColorDepth): string {
+  if (!rgb || depth === "none") return "";
+  if (depth === "truecolor") return `\x1b[38;2;${rgb[0]};${rgb[1]};${rgb[2]}m`;
+  if (depth === "256") return `\x1b[38;5;${rgbToAnsi256(rgb)}m`;
+  return `\x1b[${rgbToAnsi16(rgb)}m`;
+}
+
+/** the closing escape of a colored span */
+export const ANSI_RESET = "\x1b[0m";
+
+/** reads the color depth a terminal answers from its environment (the
+ * Windows 10/11 terminals, linux and termux all ride this ladder; NO_COLOR
+ * and TERM=dumb answer the plain lane) */
+export function colorDepthFromEnv(env: Record<string, string | undefined>): ColorDepth {
+  if (env.NO_COLOR || env.TERM === "dumb" || env.TERM === "") return "none";
+  if (env.COLORTERM === "truecolor" || env.COLORTERM === "24bit") return "truecolor";
+  if ((env.TERM ?? "").includes("256color")) return "256";
+  if (env.WT_SESSION || env.TERM_PROGRAM === "vscode" || env.ANSICON) return "256";
+  if ((env.TERM ?? "").includes("xterm")) return "256";
+  return "16";
+}
+
+/* ---------------------------------------------------------------------------
+ * the IR (ink-shaped: box = flexDirection/gap/border, text = color/bold/dim)
+ * ------------------------------------------------------------------------- */
+
+export type IrText = {
+  kind: "text";
+  /** a literal string, or a prop slot name, or an item slot of a map node */
+  text?: string;
+  slot?: string;
+  item?: string;
+  /** the token color (rgb) the text rides */
+  color?: Rgb;
+  bold?: boolean;
+  dim?: boolean;
+  /** the scale class the web font size converted into */
+  scale?: "display" | "body" | "micro";
+  /** an icon glyph name the node mounts */
+  icon?: string;
+  /** the prop slot this node renders only when it holds a truthy value */
+  when?: string;
+  /** the verdict tone slot (the chip data-tone map) */
+  toneSlot?: string;
+  /** the inline decoration the web border converted into: keycaps ride
+   * brackets, chips ride parens (the pill and the doubled bottom edge) */
+  deco?: "bracket" | "paren";
+};
+
+export type IrBox = {
+  kind: "box";
+  /** flexDirection row|column — the flex→rows map */
+  direction: "row" | "column";
+  /** the flex gap converted to cells (spaces in row, blank rows in column) */
+  gap: number;
+  /** a hairline rule below the box (border-bottom → the ─ row) */
+  rule?: boolean;
+  /** a full box border (shadows and bordered chips → box drawing) */
+  border?: boolean;
+  /** left padding in cells */
+  padX?: number;
+  /** vertical padding in blank rows */
+  padY?: number;
+  /** the prop slot this box renders only when it holds a truthy value */
+  when?: string;
+  /** the inline pill decoration of a row box (the chip border-radius →
+   * parens — a cell cannot round) */
+  deco?: "paren" | "bracket";
+  children: IrNode[];
+};
+
+export type IrChrome = { kind: "chrome" };
+export type IrMap = { kind: "map"; slot: string; item: string; child: IrNode; gap?: number };
+export type IrChildren = { kind: "children" };
+
+export type IrNode = IrText | IrBox | IrChrome | IrMap | IrChildren;
+
+/** the verdict tones of the family chips (the .uichip[data-tone] palette of
+ * sol.css, dark face — the terminal answers the dark token set): the values
+ * are pinned here with their source so the conversion test can assert the
+ * css and the runtime never drift */
+export const TONE_COLORS: Readonly<Record<string, Rgb>> = {
+  neutral: [195, 195, 195], // var(--dt-muted) → #c3c3c3
+  ok: [127, 209, 168], // var(--ok) → #7fd1a8
+  warn: [226, 194, 106], // var(--warn) → #e2c26a
+  err: [240, 138, 122], // var(--err) → #f08a7a
+  info: [185, 194, 208], // var(--info) → #b9c2d0
+};
+
+/** the props the converted widget receives — the SAME props the web face
+ * answers (the interactivity contract survives the conversion) */
+export type IrProps = Record<string, unknown>;
+
+export type RenderOptions = {
+  depth?: ColorDepth;
+  plain?: boolean;
+  /** the live terminal width in cells (the responsive fold) */
+  columns?: number;
+};
+
+/* ---------------------------------------------------------------------------
+ * the renderer: IR → ANSI rows
+ * ------------------------------------------------------------------------- */
+
+/** paints one string with the sgr flags of a text node */
+function paint(content: string, node: { color?: Rgb; bold?: boolean; dim?: boolean }, depth: ColorDepth, plain: boolean): string {
+  if (plain) return content;
+  const flags: string[] = [];
+  if (node.bold) flags.push("\x1b[1m");
+  if (node.dim) flags.push("\x1b[2m");
+  const color = ansiFg(node.color, depth);
+  if (color) flags.push(color);
+  if (flags.length === 0) return content;
+  return `${flags.join("")}${content}${ANSI_RESET}`;
+}
+
+/** renders the terminal chrome band (the ShellChrome navbar → the brand row
+ * plus the hairline — the one chrome of the design on the terminal) */
+function renderChrome(depth: ColorDepth, plain: boolean, columns: number): string[] {
+  const width = Math.max(columns, 40);
+  const brand = paint("◐ devthink — the os", { color: [250, 250, 250], bold: true }, depth, plain);
+  const rule = paint("─".repeat(width), { color: [67, 67, 67], dim: true }, depth, plain);
+  return [brand, rule];
+}
+
+/** renders one IR node to lines (the flex→rows engine: a row joins children
+ * on one line, a column stacks them) */
+export function renderIr(ir: IrNode, props: IrProps = {}, options: RenderOptions = {}): string[] {
+  const depth = options.depth ?? "truecolor";
+  const plain = options.plain ?? false;
+  const columns = options.columns ?? 80;
+  const resolveText = (node: IrText): string => {
+    if (node.icon) return glyph(node.icon, plain);
+    if (node.text !== undefined) return node.text;
+    if (node.slot !== undefined) {
+      const value = props[node.slot];
+      return value === undefined ? "" : String(value);
+    }
+    if (node.item !== undefined) return String(props[`__item:${node.item}`] ?? "");
+    return "";
+  };
+  const truthy = (slot: string | undefined): boolean => slot === undefined || Boolean(props[slot]);
+  switch (ir.kind) {
+    case "text": {
+      if (!truthy(ir.when)) return [];
+      let content = resolveText(ir);
+      const tone = ir.toneSlot ? String(props[ir.toneSlot] ?? "neutral") : undefined;
+      const toneColor = tone ? TONE_COLORS[tone] : undefined;
+      if (ir.deco === "bracket") content = `[${content}]`;
+      if (ir.deco === "paren") content = `(${content})`;
+      // the responsive fold: the terminal width IS the measure (the 640px
+      // lede of the web face answers the same 80 cells here)
+      return wrapCells(content, columns).map((line) =>
+        paint(line, { color: ir.color ?? toneColor, bold: ir.bold, dim: ir.dim }, depth, plain),
+      );
+    }
+    case "chrome":
+      return renderChrome(depth, plain, columns);
+    case "children": {
+      const value = props.children;
+      if (typeof value === "string") return value.split("\n");
+      if (Array.isArray(value)) return value.flatMap((line) => String(line).split("\n"));
+      return [];
+    }
+    case "map": {
+      const list = props[ir.slot];
+      if (!Array.isArray(list)) return [];
+      const itemLines = list.map((entry) =>
+        renderIr(ir.child, { ...props, [`__item:${ir.item}`]: entry }, options),
+      );
+      // mapped children of a flex row join inline (the list layout of the
+      // one design — keycap sequences read on one line)
+      if (itemLines.every((set) => set.length === 1)) {
+        const sep = " ".repeat(ir.gap ?? 1);
+        return [itemLines.map((set) => set[0]).join(sep)];
+      }
+      return itemLines.flatMap((set) => set);
+    }
+    case "box": {
+      if (!truthy(ir.when)) return [];
+      const pad = " ".repeat(ir.padX ?? 0);
+      const childLines = ir.children.map((child) => renderIr(child, props, options));
+      let lines: string[];
+      if (ir.direction === "row") {
+        // flex row → every child on one line, joined by the gap in cells
+        const height = Math.max(1, ...childLines.map((set) => set.length));
+        const gap = " ".repeat(ir.gap);
+        lines = [];
+        for (let row = 0; row < height; row++) {
+          const joined = childLines
+            .map((set) => set[row] ?? "")
+            .join(gap)
+            .trimEnd();
+          lines.push(joined);
+        }
+      } else {
+        // flex column → every child stacked, blank rows between
+        lines = [];
+        for (let index = 0; index < childLines.length; index++) {
+          if (index > 0) lines.push(...Array.from({ length: ir.gap }, () => ""));
+          lines.push(...childLines[index]);
+        }
+      }
+      if (ir.deco && ir.direction === "row") {
+        const open = ir.deco === "paren" ? "(" : "[";
+        const close = ir.deco === "paren" ? ")" : "]";
+        lines = lines.map((line) => (line.length > 0 ? open + line + close : line));
+      }
+      if (ir.border) {
+        // shadow/boxed chip → the box-drawing border of the terminal
+        const width = Math.max(1, ...lines.map((line) => visibleLength(line)));
+        const top = `┌${"─".repeat(width + 2)}┐`;
+        const bottom = `└${"─".repeat(width + 2)}┘`;
+        lines = [top, ...lines.map((line) => `│ ${line.padEnd(width)} │`), bottom];
+      }
+      if (ir.rule) {
+        const width = Math.max(1, ...lines.map((line) => visibleLength(line)), 1);
+        lines.push(paint("─".repeat(Math.min(width, columns)), { color: [67, 67, 67], dim: true }, depth, plain));
+      }
+      if (ir.padY) {
+        const blank = Array.from({ length: ir.padY }, () => "");
+        lines = [...blank, ...lines, ...blank];
+      }
+      return lines.map((line) => (line.length > 0 ? pad + line : line));
+    }
+  }
+}
+
+/** the visible width of a line (escape sequences carry no cells) */
+export function visibleLength(line: string): number {
+  let width = 0;
+  let inEscape = false;
+  for (const char of line) {
+    if (inEscape) {
+      if (char === "m") inEscape = false;
+      continue;
+    }
+    if (char === "\x1b") {
+      inEscape = true;
+      continue;
+    }
+    width += 1;
+  }
+  return width;
+}
+
+/** word-wraps one plain string to the cell budget (the responsive fold of
+ * the terminal — words never break mid-glyph) */
+export function wrapCells(text: string, columns: number): string[] {
+  if (visibleLength(text) <= columns) return [text];
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let line = "";
+  for (const word of words) {
+    const candidate = line.length === 0 ? word : `${line} ${word}`;
+    if (visibleLength(candidate) > columns && line.length > 0) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = candidate;
+    }
+  }
+  if (line.length > 0) lines.push(line);
+  return lines;
+}
+
+/** renders one IR tree to the final terminal document (trailing spaces
+ * trimmed, the family newline contract) */
+export function render(ir: IrNode, props: IrProps = {}, options: RenderOptions = {}): string {
+  return renderIr(ir, props, options)
+    .map((line) => line.trimEnd())
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trimEnd();
 }

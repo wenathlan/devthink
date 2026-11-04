@@ -6206,8 +6206,8 @@ export function validatestep(step: toolstep, origin: string): policyevaluation {
     if (!sessioncheck.allowed) return sessioncheck;
   }
   if (isworkflowkind(step.kind)) {
-    const workflowcheck = validateworkflowgrammar(step, options);
-    if (!workflowcheck.allowed) return workflowcheck;
+    const workflowgrammarcheck = validateworkflowgrammar(step, options);
+    if (!workflowgrammarcheck.allowed) return workflowgrammarcheck;
   }
   if (istriggeraction(step.kind)) {
     const triggercheck = validatetriggergrammar(step, options);
@@ -10413,7 +10413,7 @@ export function encryptmemorygate(input: {
   };
 }
 
-/** Reads the sensitive memory classes of the encrypt gate from the memorycare family table. */
+/** Reads the sensitive memory classes of the encrypt gate from the memory care family table. */
 function sensitivememoryclassesof(memoryclass: string | undefined): boolean {
   return memoryclass !== undefined && sensitivememoryclasses.has(memoryclass);
 }

@@ -61,9 +61,9 @@ describe("the publishing pipeline", () => {
     /* the container build carries no .github/workflows tree: the workflow
     checks answer at the repository surface only, the smoke boot skips them */
     if (!existsSync(join(repoRoot, ".github/workflows"))) return;
-    /* the workflowcheck asserts the channel jobs, the gates and the new release steps; the npmgate asserts the new bundles stay allowed in the tarball */
-    const workflowcheck = await execute("node", ["workflowcheck.ts"]);
-    expect(workflowcheck.stdout).toContain("verified");
+    /* the workflow yaml controls gate of the workflow module asserts the channel jobs, the gates and the new release steps; the npmgate asserts the new bundles stay allowed in the tarball */
+    const controls = await execute("node", ["workflow.ts"]);
+    expect(controls.stdout).toContain("verified");
     const npmgate = await execute("node", ["npmgate.ts"]);
     expect(npmgate.stdout).toContain('"valid": true');
   });

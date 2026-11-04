@@ -32,7 +32,7 @@ import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts"
 import { frozenschemas } from "./tests/schemafixtures.ts";
 import { pxToCellX, pxToCellY } from "./density.ts";
 import { umdwrap } from "./umdwrap.ts";
-import type { IrNode } from "./runtimeterminal.ts";
+import type { IrNode } from "./runtime.ts";
 
 /* ─── the build family lanes (the flat folder law: one keyword file per
    domain) — argv[2] names the lane a merged build rides; no lane word runs
@@ -2334,7 +2334,7 @@ export function emitTerminalModule(options: { exportName: string; sourcePath: st
  * interactivity contract rides the conversion. Regenerate with
  * \`node buildterminal.ts\` — never edit by hand.
  */
-import { render, type IrNode, type RenderOptions } from "./runtimeterminal.ts";
+import { render, type IrNode, type RenderOptions } from "./runtime.ts";
 
 const ir: IrNode = ${JSON.stringify(ir, null, 2)};
 

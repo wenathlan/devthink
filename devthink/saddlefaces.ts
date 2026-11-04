@@ -1,12 +1,15 @@
 /**
  * saddlefaces.ts — the typed library face of the saddle engine for the
  * typecheck build, declared as a real module the tsconfig paths resolve
- * the bare specifier onto (the 2.1.8 envelope ships the source-is-library
+ * the bare specifier and the /memory subpath onto (the 2.1.8 envelope
+ * ships the source-is-library
  * doctrine, so the physical module resolves for the runtime while the
  * typecheck program answers these declarations instead — the implicit
  * anys the upstream sources carry under their own loose tsconfig never
  * enter the consumer program). The runtime keeps resolving the real
  * sources through the vitest and vite bridges, node 26 strips the types.
+ * The memory face of the /memory subpath (localmemory, localstorage)
+ * rides in this same file under its own lane below.
  * Retires the day the published saddle envelope carries the declaration
  * build beside the sources.
  */
@@ -83,3 +86,17 @@
 
   /** the priority-ordered scheduler over the provider list. */
   export declare function scheduler(providers: saddleprovider[]): saddlescheduler;
+
+  /* ── the memory face of the saddle library: the /memory subpath the tsconfig paths resolve onto this same file. ── */
+
+  /** the in-process local memory manager (prepare, sync, cleanup). */
+  export declare function localmemory(options?: Record<string, unknown>): {
+    prepare(job: unknown): Promise<{ location: string }>;
+    sync(set: unknown, bytes: Uint8Array): Promise<unknown>;
+    cleanup(set: unknown): Promise<void>;
+  };
+
+  /** the filesystem storage under the given root directory. */
+  export declare function localstorage(root: string): {
+    put(entry: { key: string; data: Uint8Array; contenttype: string; metadata: Record<string, string> }): Promise<{ key: string; sha256: string }>;
+  };
