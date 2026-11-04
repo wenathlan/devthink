@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <AssemblyName>getry</AssemblyName>
+    <RootNamespace>getry</RootNamespace>
+    <PackageId>getry</PackageId>
+    <Version>2.0.157</Version>
+    <Authors>wenathlan</Authors>
+    <Description>Distribution package containing the getry documentation set and the tests directory. getry is the AI gateway — five provider gateways serving 35 OpenAI-compatible routes.</Description>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="docs/**/*" Pack="true" PackagePath="contentFiles/any/any/docs/" />
+    <None Include="tests/**/*" Pack="true" PackagePath="contentFiles/any/any/tests/" />
+  </ItemGroup>
+</Project>

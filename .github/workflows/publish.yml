@@ -25,11 +25,15 @@ name: DevThink Publish
 # THE FAMILY DISTRIBUTION LANES (the 2.0.46 five-package wave): beside
 # every application registry lane rides its family mirror - the
 # family-npmjs, family-githubnpm, family-maven, family-nuget,
-# family-rubygems and family-ghcr jobs publish the four documentation
-# envelopes (argan, cadria, debonair, stealthhead) through the same
-# registries, the same conclusion guard, the same release-approval
-# environment and the same bounded retry the application lanes carry,
-# one matrix leg per envelope folder. The correlated registry logic of
+# family-rubygems and family-ghcr jobs publish every documentation
+# envelope (the six-distribution completeness law of the distpack
+# ladder: argan, cadria, cobaia, debonair, forge, foundry, getry,
+# stealthhead and vault ride the nuget, maven, rubygems, npmjs and
+# github npm lanes, saddle rides the nuget, rubygems and github npm
+# lanes beside its engine lanes) through the same registries, the same
+# conclusion guard, the same release-approval environment and the same
+# bounded retry the application lanes carry, one matrix leg per
+# envelope folder. The correlated registry logic of
 # each channel stays grouped inside the one lane pair it belongs to.
 #
 # THE FIVE HUNDRED ASSET LADDER (the 2.0.157 expansion the owner
@@ -791,7 +795,7 @@ jobs:
         # law: every application envelope of the monorepo rides the registry
         # lane (the gateway getry and the monetization cobaia walk beside
         # the seven this lane always carried).
-        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1069,7 +1073,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealthhead]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1321,7 +1325,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealthhead]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -1374,7 +1378,13 @@ jobs:
           cd "${{ matrix.package }}"
           VERSION="${{ steps.release.outputs.version }}"
           dotnet pack "${{ matrix.package }}.csproj" --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
-          test -f "nuget/${{ matrix.package }}.${VERSION}.nupkg"
+          # the package id doctrine (the saddle engine envelope keeps the
+          # presentation casing Saddle while the sibling envelopes answer
+          # the lowercase matrix name): the packed name resolves from the
+          # output directory instead of the matrix literal, so every
+          # PackageId rides the one assertion.
+          NUPKG="$(find nuget -maxdepth 1 -name "*.${VERSION}.nupkg" -print -quit)"
+          test -n "${NUPKG}" && test -f "${NUPKG}"
       - name: publish the family package
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1382,9 +1392,11 @@ jobs:
           set -euo pipefail
           cd "${{ matrix.package }}"
           VERSION="${{ steps.release.outputs.version }}"
+          NUPKG="$(find nuget -maxdepth 1 -name "*.${VERSION}.nupkg" -print -quit)"
+          test -n "${NUPKG}" && test -f "${NUPKG}"
           pushed=false
           for attempt in 1 2 3; do
-            if dotnet nuget push "nuget/${{ matrix.package }}.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            if dotnet nuget push "${NUPKG}" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
             echo "The nuget push attempt ${attempt} of the ${{ matrix.package }} envelope failed; the bounded retry policy retries inside three attempts."
             sleep "$((attempt * 5))"
           done
@@ -1606,7 +1618,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair, stealthhead]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

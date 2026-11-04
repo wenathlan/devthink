@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <AssemblyName>foundry</AssemblyName>
+    <RootNamespace>foundry</RootNamespace>
+    <PackageId>foundry</PackageId>
+    <Version>2.0.157</Version>
+    <Authors>wenathlan</Authors>
+    <Description>Distribution package containing the foundry documentation set and the tests directory. foundry is the e2b and docker clone interface — sandboxes and images while the engine lives in saddle.</Description>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <None Include="docs/**/*" Pack="true" PackagePath="contentFiles/any/any/docs/" />
+    <None Include="tests/**/*" Pack="true" PackagePath="contentFiles/any/any/tests/" />
+  </ItemGroup>
+</Project>
