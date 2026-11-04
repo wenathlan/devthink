@@ -126,7 +126,7 @@ const sleepsync = (ms: number): void => {
  * @param file the database file the lane owns.
  * @returns the open connection with the ladder walked.
  */
-const openWithLadder = (file: string): Database => {
+const openWithLadder = (file: string): Database.Database => {
   let lastError: unknown = null;
   for (let attempt = 0; attempt < OPENATTEMPTS; attempt += 1) {
     const db = new Database(file);
