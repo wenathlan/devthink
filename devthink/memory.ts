@@ -6798,7 +6798,7 @@ export function randomid(): string {
   return crypto.randomUUID();
 }
 
-/* ── Merged from memorycare.ts: the 1.1.88 consolidation interns the correlated memorycare logic here, so no variation of the same file lives beside another. ── */
+/* ── Merged from the memory care arm: the 1.1.88 consolidation interns the correlated care logic here, so no variation of the same file lives beside another. ── */
 
 /**
  * Memory care logic of the 1.1.71 state depth family.

@@ -27,7 +27,7 @@ export const apifreezebaseline: apifreezebaseline = {
     "popup": 26,
     "background": 234,
     "pagebridge": 31,
-    "library": 3129,
+    "library": 3137,
     "cli": 14,
     "mcp": 35
   },
@@ -49,7 +49,7 @@ export const apifreezebaseline: apifreezebaseline = {
     "contract/pagebridgesurfacemessages": "fe279a70afa5915addca96e4839140c4ee40d6017042608cc49e74989d31d5e0",
     "contract/clisurfacecommands": "1afa593c41d846955cfa762900467cdaa79d8748d5a5429459fe8d5e5b0b0687",
     "contract/mcpsurfacetools": "1186093be13e894f5352cddb386f20d3cc1eb85b87d566f73213f31c83ca9ce3",
-    "contract/librarysurfaceexports": "f882de393a2a381f736752abae8ec9f8b085fa7183485c248983bebd3e7f963d",
+    "contract/librarysurfaceexports": "ba9b5721e1f99a6468f7018b9655fd6f44b853f1d4cc8b8fff3b4aebe717b9d5",
     "contract/auditkinds": "df16b46f0cd37b7ae401d36685c9e88d56154cb7ba1cea0b21a15a605b1736a5",
     "contract/frozenmessagecatalog": "b5dd8e8454a5cc2c7f3bb0f7cc1f7a6183eec1f788b92abec792d46fdf1bdbf2",
     "contract/errorcodetable": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",

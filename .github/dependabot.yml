@@ -4,8 +4,9 @@ version: 2
 #
 # The version-update pull requests stay closed (open-pull-requests-limit: 0):
 # the maintenance ladder of maintenance.yml owns the weekly non-breaking
-# update rung (npm dependencies through tests/devthink.dependencyupdates.ts
-# and the versioned action references through tests/devthink.workflowupdates.ts),
+# update rung (npm dependencies through the dependency updates lane of
+# devthink/dependencyupdates.ts and the versioned action references through
+# the action tag update lane of devthink/workflow.ts),
 # so Dependabot version-update PRs would collide with that ladder. Dependabot
 # security updates are not subject to the limit, so the vulnerable-dependency
 # fix PRs and the security-tab alerts keep answering for every manifest below.
@@ -83,7 +84,8 @@ updates:
     schedule:
       interval: weekly
   # The workflow family of .github/workflows (version-tag references the
-  # maintenance ladder tracks through tests/devthink.workflowupdates.ts).
+  # maintenance ladder tracks through the action tag update lane of
+  # devthink/workflow.ts).
   - package-ecosystem: github-actions
     directory: /
     open-pull-requests-limit: 0

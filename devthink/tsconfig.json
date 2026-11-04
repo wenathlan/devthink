@@ -18,7 +18,7 @@
       ],
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle": ["./saddlefaces.ts"],
-      "@wenathlan/saddle/memory": ["./saddlefacesmemory.ts"],
+      "@wenathlan/saddle/memory": ["./saddlefaces.ts"],
       "hono": ["./honoface.ts"],
       "hono/cors": ["./honocorsface.ts"],
       "@hono/node-server": ["./hononodeserverface.ts"],

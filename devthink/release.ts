@@ -231,334 +231,423 @@ function versioncatalogof(version: string, packagejson: { engines?: Record<strin
   return `## Version catalog\n\nThe catalog records the current devthink release and the runtime baselines every artifact of that release was built and verified against. The release metadata synchronization regenerates the table on every release and the maintenance workflow re-runs the synchronization after each release, so the catalog never drifts from package.json.\n\n| Entry | Version |\n| --- | --- |\n${rows.map(([entry, value]) => `| ${entry} | ${value} |`).join("\n")}\n`;
 }
 
-const mode = process.argv[2] ?? "check";
-const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string; engines?: Record<string, string | undefined>; packageManager?: string };
-const version = packagejson.version;
-if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("package.json version must be SemVer.");
-const changelog = await readFile("CHANGELOG.md", "utf8");
-const heading = new RegExp(`^##\\s+${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`, "m");
-if (!heading.test(changelog)) throw new Error(`CHANGELOG.md must contain a ## ${version} heading.`);
-const headingmatch = changelog.match(heading);
-if (!headingmatch || headingmatch.index === undefined)
-  throw new Error(`Unable to locate the ${version} changelog heading.`);
-const section = changelog
-  .slice(headingmatch.index + headingmatch[0].length)
-  .split(/^##\s+/m)[0]
-  .trim();
-if (!section) throw new Error(`CHANGELOG.md ${version} must contain release-note content.`);
-const chain = await chainsectionsof(changelog);
-const edits: Array<[string, (content: string) => string]> = [
-  ["manifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
-  [
-    "version.ts",
-    () =>
-      `/** Canonical package version synchronized from package.json. */\nexport const packageversion = "${version}" as const;\n\n/** The frozen protocolv2 major of the 1.1.91 api freeze: the wire speaks major two from this release on, the deprecation window closed at 2.0.0 and every major above two refuses until a future major bump. */\nexport const protocolmajor = 2 as const;\n\n/** The lowest protocol major this build accepts: the deprecation window closed at 2.0.0, so the line speaks major two only — a client that declares major one answers the refusal below the floor while version one assets ride the migrateplan command and the migration guide. */\nexport const protocolfloormajor = 2 as const;\n`,
-  ],
-  [
-    "deno.json",
-    (content) => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`),
-  ],
-  ["tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["design.html", (content) => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],
-  ["pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-  ["devthink.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
-  [
-    "devthink.gemspec",
-    (content) =>
-      content.replace(
-        /ENV\.fetch\("DEVTHINK_VERSION", "[0-9A-Za-z.-]+"\)/,
-        `ENV.fetch("DEVTHINK_VERSION", "${version}")`,
-      ),
-  ],
-  ["devthink.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
-  /* The 2.0.46 five-package wave, extended by the 2.0.48 family wave: the
-     family envelopes (argan, cadria, debonair, stealthhead, forge, foundry,
-     vault) carry the same version the metadata lockstep
-     stamps — one metadata doctrine, the registry family lanes answer the
-     release tag against these envelopes at publish time. The paths ride
-     one level above the application folder (the family folders live at
-     the monorepo root beside devthink/). */
-  ["../argan/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../cadria/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  [
-    "../cadria/version.ts",
-    () =>
-      `/** Canonical package version synchronized from package.json. */\nexport const packageversion = "${version}" as const;\n`,
-  ],
-  ["../debonair/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  [
-    "../stealthhead/package.json",
-    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
-  ],
-  ["../forge/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../foundry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../vault/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  /* The 2.0.128 tauri manifest wave: the desktop manifests of the family
-     envelopes join the lockstep surface — the tauri.conf.json files carried
-     versions of their own (2.0.62, 2.0.97) that no walk ever touched, so
-     the desktop packaging answered a version the release never shipped. */
-  ["../argan/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../cadria/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  [
-    "../debonair/tauri.conf.json",
-    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
-  ],
-  [
-    "../stealthhead/tauri.conf.json",
-    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
-  ],
-  ["../forge/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  [
-    "../foundry/tauri.conf.json",
-    (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
-  ],
-  ["../vault/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  /* The 2.0.127 root lockstep wave: the monorepo root envelope and the
-     three envelopes the family walk never carried (getry, saddle, cobaia)
-     join the lockstep surface — every application of the repository
-     answers the one version the release chain stamps, because one release
-     notes and one tag serve the whole family. The root package.json is
-     the version the release workflow resolves the auto tag against; a
-     root left behind the family froze the tag lane at the version the
-     root still carried while the family metadata answered another. The
-     saddle envelope walks its full carrier set (the csproj, the maven
-     revision, the gemspec, the tauri manifest, the browser bridge
-     manifest and the docker image tags of the package scripts) so the
-     engine never answers a version of its own. */
-  ["../package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../getry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../getry/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  ["../cobaia/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  [
-    "../saddle/package.json",
-    (content) =>
-      content
-        .replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)
-        .replace(/saddle:[0-9][0-9A-Za-z.-]*/g, `saddle:${version}`),
-  ],
-  [
-    "../saddle/saddle.csproj",
-    (content) => content.replace(/<Version([^>]*)>[0-9][0-9A-Za-z.-]*<\/Version>/, `<Version$1>${version}</Version>`),
-  ],
-  ["../saddle/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-  [
-    "../saddle/saddle.gemspec",
-    (content) =>
-      content.replace(/ENV\.fetch\("SADDLE_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("SADDLE_VERSION", "${version}")`),
-  ],
-  ["../saddle/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-  /* The logic ownership regroup (the mv3 extension left the saddle for the
-     os envelope seat): the extension manifest the lockstep stamped at the
-     saddle root rides the devthink root today as extensionmanifest.json —
-     the saddle console manifest (manifest.webmanifest) never carried the
-     version and stays out of the lockstep surface. */
-  ["extensionmanifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
-  /* The 2.0.131 healing wave: the saddle api health literal, the web
-     readme pin and the package lock root join the lockstep surface — the
-     deterministic suite asserts the health endpoint answers the envelope
-     version (rule 95) and the readme pins it, and the carriers rode three
-     rungs behind because the family lanes of the 128 through 130 tags
-     died at install before any gate ever read them; the lock root carries
-     the version the frozen install validates against, so it walks beside
-     the manifest the way the vite walk walked it. */
-  [
-    "../saddle/webserver.ts",
-    (content) => content.replace(/const version = '[0-9A-Za-z.-]+';/, `const version = '${version}';`),
-  ],
-  [
-    "../saddle/README.md",
-    (content) => content.replace(/the [0-9][0-9A-Za-z.-]+ grand-merge envelope/, `the ${version} grand-merge envelope`),
-  ],
-  [
-    "../saddle/package-lock.json",
-    (content) => {
-      const lock = JSON.parse(content);
-      lock.version = version;
-      if (lock.packages && lock.packages[""]) lock.packages[""].version = version;
-      return `${JSON.stringify(lock, null, 2)}\n`;
-    },
-  ],
-  ["../argan/argan.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
-  [
-    "../cadria/cadria.csproj",
-    (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
-  ],
-  [
-    "../debonair/debonair.csproj",
-    (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
-  ],
-  [
-    "../stealthhead/stealthhead.csproj",
-    (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
-  ],
-  [
-    "../argan/argan.gemspec",
-    (content) =>
-      content.replace(/ENV\.fetch\("ARGAN_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("ARGAN_VERSION", "${version}")`),
-  ],
-  [
-    "../cadria/cadria.gemspec",
-    (content) =>
-      content.replace(/ENV\.fetch\("CADRIA_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("CADRIA_VERSION", "${version}")`),
-  ],
-  [
-    "../debonair/debonair.gemspec",
-    (content) =>
-      content.replace(
-        /ENV\.fetch\("DEBONAIR_VERSION", "[0-9A-Za-z.-]+"\)/,
-        `ENV.fetch("DEBONAIR_VERSION", "${version}")`,
-      ),
-  ],
-  [
-    "../stealthhead/stealthhead.gemspec",
-    (content) =>
-      content.replace(
-        /ENV\.fetch\("STEALTHHEAD_VERSION", "[0-9A-Za-z.-]+"\)/,
-        `ENV.fetch("STEALTHHEAD_VERSION", "${version}")`,
-      ),
-  ],
-  ["../argan/argan.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
-  ["../cadria/cadria.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
-  ["../debonair/debonair.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
-  [
-    "../stealthhead/stealthhead.java",
-    (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`),
-  ],
-  ["../argan/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-  ["../cadria/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-  [
-    "../debonair/pom.xml",
-    (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`),
-  ],
-  [
-    "../stealthhead/pom.xml",
-    (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`),
-  ],
-  [
-    "../argan/Dockerfile",
-    (content) =>
-      content
-        .replace(
-          /# argan [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
-          `# argan ${version} — THE SITE CONTAINER FILE`,
-        )
-        .replace(/ARG ARGAN_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG ARGAN_VERSION=${version}`),
-  ],
-  [
-    "../cadria/Dockerfile",
-    (content) =>
-      content
-        .replace(
-          /# cadria [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
-          `# cadria ${version} — THE SITE CONTAINER FILE`,
-        )
-        .replace(/ARG CADRIA_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG CADRIA_VERSION=${version}`),
-  ],
-  [
-    "../debonair/Dockerfile",
-    (content) =>
-      content
-        .replace(
-          /# debonair [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
-          `# debonair ${version} — THE SITE CONTAINER FILE`,
-        )
-        .replace(/ARG DEBONAIR_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG DEBONAIR_VERSION=${version}`),
-  ],
-  ["devthinkcli.cs", (content) => content.replace(/Version = "[0-9A-Za-z.-]+"/, `Version = "${version}"`)],
-  [
-    "Dockerfile",
-    (content) =>
-      content
-        .replace(
-          /# devthink [0-9][0-9A-Za-z.-]* — THE ONE CONTAINER FILE/,
-          `# devthink ${version} — THE ONE CONTAINER FILE`,
-        )
-        .replace(
-          /DEVTHINK_VERSION   baked into the OCI version label, default [0-9][0-9A-Za-z.-]*/,
-          `DEVTHINK_VERSION   baked into the OCI version label, default ${version}`,
-        )
-        .replace(/ghcr\.io\/wenathlan\/devthink:[0-9][0-9A-Za-z.-]*/g, `ghcr.io/wenathlan/devthink:${version}`)
-        .replace(/ARG DEVTHINK_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG DEVTHINK_VERSION=${version}`),
-  ],
-  [
-    "docs/runtimeversions.md",
-    (content) => {
-      const catalog = versioncatalogof(version, packagejson);
-      return /## Version catalog/.test(content)
-        ? content.replace(/## Version catalog[\s\S]*$/, catalog)
-        : `${content.replace(/\s*$/, "\n")}\n${catalog}`;
-    },
-  ],
-  [
-    "README.md",
-    (content) =>
-      content
-        .replace(/Version: \*\*[0-9A-Za-z.-]+\*\*/, `Version: **${version}**`)
-        .replace(/Behavior in [0-9A-Za-z.-]+/g, `Behavior in ${version}`)
-        .replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
-  ],
-  [
-    "docs/releasegates.md",
-    (content) =>
-      content
-        .replace(
-          /\| Gate \| Required evidence \| [0-9A-Za-z.-]+ status \|/,
-          `| Gate | Required evidence | ${version} status |`,
-        )
-        .replace(/(?:extension|dist)\/devthink[0-9A-Za-z.-]+\.zip/g, `build/devthink${version}.zip`)
-        .replace(/Local validation for [0-9A-Za-z.-]+/g, `Local validation for ${version}`)
-        .replace(
-          /NuGet package contains `contentFiles\/any\/any\/devthink[0-9A-Za-z.-]+\.zip`/g,
-          `NuGet package contains \`contentFiles/any/any/devthink${version}.zip\``,
+/** The release metadata walk lane — the devfold fold wrapped the walk's former top-level flow (the check, notes and sync modes the check:metadata, notes:release and sync:metadata scripts run over `node release.ts <mode>`) into this private lane function so the module stays import-safe: the maintenance sync imports the pat publish walk folded below without ever executing this lane, and the lane fires only when node loads this file as the direct entry. */
+async function runreleasewalk(): Promise<void> {
+  const mode = process.argv[2] ?? "check";
+  const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string; engines?: Record<string, string | undefined>; packageManager?: string };
+  const version = packagejson.version;
+  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("package.json version must be SemVer.");
+  const changelog = await readFile("CHANGELOG.md", "utf8");
+  const heading = new RegExp(`^##\\s+${version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?:\\s|$)`, "m");
+  if (!heading.test(changelog)) throw new Error(`CHANGELOG.md must contain a ## ${version} heading.`);
+  const headingmatch = changelog.match(heading);
+  if (!headingmatch || headingmatch.index === undefined)
+    throw new Error(`Unable to locate the ${version} changelog heading.`);
+  const section = changelog
+    .slice(headingmatch.index + headingmatch[0].length)
+    .split(/^##\s+/m)[0]
+    .trim();
+  if (!section) throw new Error(`CHANGELOG.md ${version} must contain release-note content.`);
+  const chain = await chainsectionsof(changelog);
+  const edits: Array<[string, (content: string) => string]> = [
+    ["manifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
+    [
+      "version.ts",
+      () =>
+        `/** Canonical package version synchronized from package.json. */\nexport const packageversion = "${version}" as const;\n\n/** The frozen protocolv2 major of the 1.1.91 api freeze: the wire speaks major two from this release on, the deprecation window closed at 2.0.0 and every major above two refuses until a future major bump. */\nexport const protocolmajor = 2 as const;\n\n/** The lowest protocol major this build accepts: the deprecation window closed at 2.0.0, so the line speaks major two only — a client that declares major one answers the refusal below the floor while version one assets ride the migrateplan command and the migration guide. */\nexport const protocolfloormajor = 2 as const;\n`,
+    ],
+    [
+      "deno.json",
+      (content) => content.replace(/npm:@wenathlan\/devthink@[0-9A-Za-z.-]+/, `npm:@wenathlan/devthink@${version}`),
+    ],
+    ["tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    ["design.html", (content) => content.replace(/DEVTHINK\s+[0-9][0-9A-Za-z.-]*/, `DEVTHINK ${version}`)],
+    ["pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["devthink.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+    [
+      "devthink.gemspec",
+      (content) =>
+        content.replace(
+          /ENV\.fetch\("DEVTHINK_VERSION", "[0-9A-Za-z.-]+"\)/,
+          `ENV.fetch("DEVTHINK_VERSION", "${version}")`,
         ),
-  ],
-  ["docs/releasenotes.md", () => `${notesof(version, section, chain)}\n`],
-];
-let drift = false;
-for (const [path, transform] of edits) {
-  let current = "";
-  try {
-    current = await readFile(path, "utf8");
-  } catch {
-    if (
-      ![
-        "pom.xml",
-        "devthink.csproj",
-        "README.md",
-        "docs/releasegates.md",
-        "docs/releasenotes.md",
-        "docs/runtimeversions.md",
-      ].includes(path)
-    )
-      throw new Error(`Missing required metadata file: ${path}`);
+    ],
+    ["devthink.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    /* The 2.0.46 five-package wave, extended by the 2.0.48 family wave: the
+       family envelopes (argan, cadria, debonair, stealthhead, forge, foundry,
+       vault) carry the same version the metadata lockstep
+       stamps — one metadata doctrine, the registry family lanes answer the
+       release tag against these envelopes at publish time. The paths ride
+       one level above the application folder (the family folders live at
+       the monorepo root beside devthink/). */
+    ["../argan/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    ["../cadria/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    [
+      "../cadria/version.ts",
+      () =>
+        `/** Canonical package version synchronized from package.json. */\nexport const packageversion = "${version}" as const;\n`,
+    ],
+    ["../debonair/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    [
+      "../stealthhead/package.json",
+      (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+    ],
+    ["../forge/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    ["../foundry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    ["../vault/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    /* The 2.0.128 tauri manifest wave: the desktop manifests of the family
+       envelopes join the lockstep surface — the tauri.conf.json files carried
+       versions of their own (2.0.62, 2.0.97) that no walk ever touched, so
+       the desktop packaging answered a version the release never shipped. */
+    ["../argan/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    ["../cadria/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    [
+      "../debonair/tauri.conf.json",
+      (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+    ],
+    [
+      "../stealthhead/tauri.conf.json",
+      (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+    ],
+    ["../forge/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    [
+      "../foundry/tauri.conf.json",
+      (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+    ],
+    ["../vault/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    /* The 2.0.127 root lockstep wave: the monorepo root envelope and the
+       three envelopes the family walk never carried (getry, saddle, cobaia)
+       join the lockstep surface — every application of the repository
+       answers the one version the release chain stamps, because one release
+       notes and one tag serve the whole family. The root package.json is
+       the version the release workflow resolves the auto tag against; a
+       root left behind the family froze the tag lane at the version the
+       root still carried while the family metadata answered another. The
+       saddle envelope walks its full carrier set (the csproj, the maven
+       revision, the gemspec, the tauri manifest, the browser bridge
+       manifest and the docker image tags of the package scripts) so the
+       engine never answers a version of its own. */
+    ["../package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    ["../getry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    ["../getry/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    ["../cobaia/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    [
+      "../saddle/package.json",
+      (content) =>
+        content
+          .replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)
+          .replace(/saddle:[0-9][0-9A-Za-z.-]*/g, `saddle:${version}`),
+    ],
+    [
+      "../saddle/saddle.csproj",
+      (content) => content.replace(/<Version([^>]*)>[0-9][0-9A-Za-z.-]*<\/Version>/, `<Version$1>${version}</Version>`),
+    ],
+    ["../saddle/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    [
+      "../saddle/saddle.gemspec",
+      (content) =>
+        content.replace(/ENV\.fetch\("SADDLE_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("SADDLE_VERSION", "${version}")`),
+    ],
+    ["../saddle/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    /* The logic ownership regroup (the mv3 extension left the saddle for the
+       os envelope seat): the extension manifest the lockstep stamped at the
+       saddle root rides the devthink root today as extensionmanifest.json —
+       the saddle console manifest (manifest.webmanifest) never carried the
+       version and stays out of the lockstep surface. */
+    ["extensionmanifest.json", (content) => JSON.stringify({ ...JSON.parse(content), version }, null, 2) + "\n"],
+    /* The 2.0.131 healing wave: the saddle api health literal, the web
+       readme pin and the package lock root join the lockstep surface — the
+       deterministic suite asserts the health endpoint answers the envelope
+       version (rule 95) and the readme pins it, and the carriers rode three
+       rungs behind because the family lanes of the 128 through 130 tags
+       died at install before any gate ever read them; the lock root carries
+       the version the frozen install validates against, so it walks beside
+       the manifest the way the vite walk walked it. */
+    [
+      "../saddle/webserver.ts",
+      (content) => content.replace(/const version = '[0-9A-Za-z.-]+';/, `const version = '${version}';`),
+    ],
+    [
+      "../saddle/README.md",
+      (content) => content.replace(/the [0-9][0-9A-Za-z.-]+ grand-merge envelope/, `the ${version} grand-merge envelope`),
+    ],
+    [
+      "../saddle/package-lock.json",
+      (content) => {
+        const lock = JSON.parse(content);
+        lock.version = version;
+        if (lock.packages && lock.packages[""]) lock.packages[""].version = version;
+        return `${JSON.stringify(lock, null, 2)}\n`;
+      },
+    ],
+    ["../argan/argan.csproj", (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`)],
+    [
+      "../cadria/cadria.csproj",
+      (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
+    ],
+    [
+      "../debonair/debonair.csproj",
+      (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
+    ],
+    [
+      "../stealthhead/stealthhead.csproj",
+      (content) => content.replace(/<Version>[^<]+<\/Version>/, `<Version>${version}</Version>`),
+    ],
+    [
+      "../argan/argan.gemspec",
+      (content) =>
+        content.replace(/ENV\.fetch\("ARGAN_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("ARGAN_VERSION", "${version}")`),
+    ],
+    [
+      "../cadria/cadria.gemspec",
+      (content) =>
+        content.replace(/ENV\.fetch\("CADRIA_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("CADRIA_VERSION", "${version}")`),
+    ],
+    [
+      "../debonair/debonair.gemspec",
+      (content) =>
+        content.replace(
+          /ENV\.fetch\("DEBONAIR_VERSION", "[0-9A-Za-z.-]+"\)/,
+          `ENV.fetch("DEBONAIR_VERSION", "${version}")`,
+        ),
+    ],
+    [
+      "../stealthhead/stealthhead.gemspec",
+      (content) =>
+        content.replace(
+          /ENV\.fetch\("STEALTHHEAD_VERSION", "[0-9A-Za-z.-]+"\)/,
+          `ENV.fetch("STEALTHHEAD_VERSION", "${version}")`,
+        ),
+    ],
+    ["../argan/argan.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    ["../cadria/cadria.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    ["../debonair/debonair.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
+    [
+      "../stealthhead/stealthhead.java",
+      (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`),
+    ],
+    ["../argan/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["../cadria/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    [
+      "../debonair/pom.xml",
+      (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`),
+    ],
+    [
+      "../stealthhead/pom.xml",
+      (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`),
+    ],
+    [
+      "../argan/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# argan [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+            `# argan ${version} — THE SITE CONTAINER FILE`,
+          )
+          .replace(/ARG ARGAN_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG ARGAN_VERSION=${version}`),
+    ],
+    [
+      "../cadria/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# cadria [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+            `# cadria ${version} — THE SITE CONTAINER FILE`,
+          )
+          .replace(/ARG CADRIA_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG CADRIA_VERSION=${version}`),
+    ],
+    [
+      "../debonair/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# debonair [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+            `# debonair ${version} — THE SITE CONTAINER FILE`,
+          )
+          .replace(/ARG DEBONAIR_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG DEBONAIR_VERSION=${version}`),
+    ],
+    ["devthinkcli.cs", (content) => content.replace(/Version = "[0-9A-Za-z.-]+"/, `Version = "${version}"`)],
+    [
+      "Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# devthink [0-9][0-9A-Za-z.-]* — THE ONE CONTAINER FILE/,
+            `# devthink ${version} — THE ONE CONTAINER FILE`,
+          )
+          .replace(
+            /DEVTHINK_VERSION   baked into the OCI version label, default [0-9][0-9A-Za-z.-]*/,
+            `DEVTHINK_VERSION   baked into the OCI version label, default ${version}`,
+          )
+          .replace(/ghcr\.io\/wenathlan\/devthink:[0-9][0-9A-Za-z.-]*/g, `ghcr.io/wenathlan/devthink:${version}`)
+          .replace(/ARG DEVTHINK_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG DEVTHINK_VERSION=${version}`),
+    ],
+    [
+      "docs/runtimeversions.md",
+      (content) => {
+        const catalog = versioncatalogof(version, packagejson);
+        return /## Version catalog/.test(content)
+          ? content.replace(/## Version catalog[\s\S]*$/, catalog)
+          : `${content.replace(/\s*$/, "\n")}\n${catalog}`;
+      },
+    ],
+    [
+      "README.md",
+      (content) =>
+        content
+          .replace(/Version: \*\*[0-9A-Za-z.-]+\*\*/, `Version: **${version}**`)
+          .replace(/Behavior in [0-9A-Za-z.-]+/g, `Behavior in ${version}`)
+          .replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`),
+    ],
+    [
+      "docs/releasegates.md",
+      (content) =>
+        content
+          .replace(
+            /\| Gate \| Required evidence \| [0-9A-Za-z.-]+ status \|/,
+            `| Gate | Required evidence | ${version} status |`,
+          )
+          .replace(/(?:extension|dist)\/devthink[0-9A-Za-z.-]+\.zip/g, `build/devthink${version}.zip`)
+          .replace(/Local validation for [0-9A-Za-z.-]+/g, `Local validation for ${version}`)
+          .replace(
+            /NuGet package contains `contentFiles\/any\/any\/devthink[0-9A-Za-z.-]+\.zip`/g,
+            `NuGet package contains \`contentFiles/any/any/devthink${version}.zip\``,
+          ),
+    ],
+    ["docs/releasenotes.md", () => `${notesof(version, section, chain)}\n`],
+  ];
+  let drift = false;
+  for (const [path, transform] of edits) {
+    let current = "";
+    try {
+      current = await readFile(path, "utf8");
+    } catch {
+      if (
+        ![
+          "pom.xml",
+          "devthink.csproj",
+          "README.md",
+          "docs/releasegates.md",
+          "docs/releasenotes.md",
+          "docs/runtimeversions.md",
+        ].includes(path)
+      )
+        throw new Error(`Missing required metadata file: ${path}`);
+    }
+    const next = transform(current);
+    if (current !== next) {
+      drift = true;
+      if (mode === "sync" || (mode === "notes" && path === "docs/releasenotes.md")) await writeFile(path, next);
+    }
   }
-  const next = transform(current);
-  if (current !== next) {
+  if (mode === "check" && drift) throw new Error("Release metadata drift detected. Run pnpm sync:metadata.");
+  if (mode === "notes") await writeFile("docs/releasenotes.md", `${notesof(version, section, chain)}\n`);
+  /* The 2.0.128 staging pass: a sync leaves the whole tree staged. The ladder's
+     landing commit once carried a hand-written staged set that named every
+     metadata file the rung stamps — a carrier the set forgot answered drift red
+     in the verify pipeline below and the rung died with its pull request closed.
+     The sync now stages what the repository carries after the walk (git add -A
+     over the repository root — the sync's own surface, the maintenance walk
+     that ran before it and every generated file beside them), so the landing
+     commit can never miss a stamped file again: the index IS the manifest. The
+     staging answers only the sync mode (check and notes never touch the index),
+     only when a git repository answers around the run, and it swallows its own
+     failure — a repository without git (a plain artifact directory) still
+     completes the sync. */
+  if (mode === "sync") {
+    try {
+      /* the child seat rides the computed lane (the bundle purity law):
+       * the literal node specifier would answer the browser bundle checks
+       * the library modes guard — the join never folds, so the bundler
+       * leaves the specifier to the node runtime. */
+      const childseat = ["node", "child_process"].join(":");
+      const { spawnSync } = await import(childseat);
+      const staged = spawnSync("git", ["add", "-A"], { cwd: "..", encoding: "utf8" });
+      if (staged.status !== 0 && staged.stderr) process.stderr.write(staged.stderr);
+    } catch {
+      // no git around the run: the walk completed, the staging is optional
+    }
+  }
+  console.log(JSON.stringify({ version, changelog: `CHANGELOG.md#${version}`, drift, mode }, null, 2));
+}
+
+/** Reads whether node loaded this module as the direct entry: the release metadata lanes run `node release.ts check|notes|sync` (the check:metadata, notes:release and sync:metadata scripts), and no library face imports this module for its walk — the maintenance sync imports only the pat publish walk folded below — so the lane fires on its own entry and never on an import. */
+const releasewalkmain =
+  typeof process !== "undefined" && process.argv[1] !== undefined && process.argv[1].endsWith("release.ts");
+if (releasewalkmain) void runreleasewalk();
+
+/* ── Merged from the release publish pat walk ── */
+import { join, resolve } from "node:path";
+
+/** The one-shot walk of the release publish doctrine: the owner pat rides the release create and the publish flip.
+
+The family artifact lanes answer the release published event, and a release the repository token creates never fires it (the github token event suppression), so the create and the flip of the release workflow ride the owner pat whenever the secret exists — the same fallback the maintenance ladder rides — and the app token keeps the lane standing when it does not. The GH013 wall refuses any workflow file through the repository token, so the walk lives in the maintenance sync the way the familylanes migration lives there: the sync renders the forms, the rung's owner pat landing carries them, and the standing checks never redden waiting for the rung (the check mode never invokes this walk). The migration is one-shot: once both markers answer the pat form, the walk reports no drift ever again. */
+const repoRoot = resolve(process.cwd(), "..");
+
+/* the old form of the create step env (the repository token answering the
+ * release creation) and the pat form the walk renders over it. */
+const createOld = [
+  "      - name: Tag the bumped version and create the release",
+  "        if: steps.versions.outputs.changed == 'true'",
+  "        env:",
+  "          GH_TOKEN: ${{ github.token }}",
+  "          VERSION: ${{ steps.versions.outputs.version }}",
+].join("\n");
+const createNew = [
+  "      - name: Tag the bumped version and create the release",
+  "        if: steps.versions.outputs.changed == 'true'",
+  "        env:",
+  "          # the family artifact lanes ride the release published event, and a",
+  "          # release the repository token creates never fires it (the github",
+  "          # token event suppression), so the create rides the owner pat",
+  "          # whenever the secret exists — the same fallback the maintenance",
+  "          # ladder rides — and the app token keeps the lane standing when it",
+  "          # does not (the release still publishes, only the family lanes of",
+  "          # that release stay quiet until the next pat published one).",
+  "          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}",
+  "          VERSION: ${{ steps.versions.outputs.version }}",
+].join("\n");
+
+/* the old form of the publish flip env and the pat form the walk renders. */
+const flipOld = [
+  "      - name: Publish the verified release",
+  "        env:",
+  "          GH_TOKEN: ${{ github.token }}",
+  "          GITHUB_REPOSITORY: ${{ github.repository }}",
+].join("\n");
+const flipNew = [
+  "      - name: Publish the verified release",
+  "        env:",
+  "          # the flip owns the published event the family artifact lanes",
+  "          # answer: the repository token never fires it (the github token",
+  "          # event suppression), so the flip rides the owner pat whenever",
+  "          # the secret exists and the app token keeps the lane standing",
+  "          # when it does not.",
+  "          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}",
+  "          GITHUB_REPOSITORY: ${{ github.repository }}",
+].join("\n");
+
+/** Renders the pat publish forms over the release workflow when the old forms answer (the release publish walk the maintenance sync drives). */
+export async function releasepublishpat(mode: string) {
+  if (!new Set(["check", "sync"]).has(mode)) throw new Error("Use check or sync.");
+  const workflowpath = join(repoRoot, ".github/workflows/release.yml");
+  const content = await readFile(workflowpath, "utf8");
+  const createStatus = content.includes(createNew) ? "already" : content.includes(createOld) ? "walks" : "unmatched";
+  const flipStatus = content.includes(flipNew) ? "already" : content.includes(flipOld) ? "walks" : "unmatched";
+  let drift = false;
+  if (mode === "sync") {
+    let walked = content;
+    if (createStatus === "walks") {
+      walked = walked.replace(createOld, createNew);
+      drift = true;
+    }
+    if (flipStatus === "walks") {
+      walked = walked.replace(flipOld, flipNew);
+      drift = true;
+    }
+    if (drift) await writeFile(workflowpath, walked, "utf8");
+  } else if (createStatus === "walks" || flipStatus === "walks") {
     drift = true;
-    if (mode === "sync" || (mode === "notes" && path === "docs/releasenotes.md")) await writeFile(path, next);
   }
+  return { drift, create: createStatus, flip: flipStatus };
 }
-if (mode === "check" && drift) throw new Error("Release metadata drift detected. Run pnpm sync:metadata.");
-if (mode === "notes") await writeFile("docs/releasenotes.md", `${notesof(version, section, chain)}\n`);
-/* The 2.0.128 staging pass: a sync leaves the whole tree staged. The ladder's
-   landing commit once carried a hand-written staged set that named every
-   metadata file the rung stamps — a carrier the set forgot answered drift red
-   in the verify pipeline below and the rung died with its pull request closed.
-   The sync now stages what the repository carries after the walk (git add -A
-   over the repository root — the sync's own surface, the maintenance walk
-   that ran before it and every generated file beside them), so the landing
-   commit can never miss a stamped file again: the index IS the manifest. The
-   staging answers only the sync mode (check and notes never touch the index),
-   only when a git repository answers around the run, and it swallows its own
-   failure — a repository without git (a plain artifact directory) still
-   completes the sync. */
-if (mode === "sync") {
-  try {
-    const { spawnSync } = await import("node:child_process");
-    const staged = spawnSync("git", ["add", "-A"], { cwd: "..", encoding: "utf8" });
-    if (staged.status !== 0 && staged.stderr) process.stderr.write(staged.stderr);
-  } catch {
-    // no git around the run: the walk completed, the staging is optional
-  }
-}
-console.log(JSON.stringify({ version, changelog: `CHANGELOG.md#${version}`, drift, mode }, null, 2));

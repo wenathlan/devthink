@@ -1,7 +1,7 @@
 /**
- * The workflow module of the 1.1.90 consolidation: every correlated variation of the workflow engine, its control constructs, its triggers and its editor interned in this one file, so the module family carries one surface without duplicate variations — the workflow and controlflow modules import each other today, and the merge resolves that circular import by making the engine base and its control constructs one module.
- * The correlation is the workflow family: workflow holds the engine base (the step, block and template normalizers, the composition that validates and freezes a step list, the block expansion that hides no step from review, the typed scope stack with shadowing, the variable bindings, the expression arithmetic with coercion refusals, the regex extraction, the seeded delay jitter, the run loop with per step checkpoints, the pause, resume and cancel transitions and the pure dry run); controlflow holds the control constructs the engine executes (the condition, branch, loop, repeatuntil, while, foreach, parallel and trycatch steps with their bounds, the retry policy with its backoff, the timeout aborts and the seeded control random); trigger holds the rule kinds that arm, schedule, match and fire the reviewed workflows (the cooldowns, the cron and calendar parts, the webhook verification and the manual run confirmation); and workfloweditor holds the editor surface (the palette and step library, the canvas layout with snap, reorder and group select, the undo and redo history, the minimap, the breakpoints, the version diff, the import and export in the reviewed file format and the site overrides).
- * No loop bound, retry policy, cooldown or cron field is ever hardcoded beyond the documented grammar: every bound stays the user's choice, and no workflow, trigger or editor path ever bypasses the human review.
+ * The workflow module of the 1.1.90 consolidation: every correlated variation of the workflow engine, its control constructs, its triggers, its editor, its yaml controls gate and its action tag update lane interned in this one file, so the module family carries one surface without duplicate variations — the workflow and controlflow modules import each other today, and the merge resolves that circular import by making the engine base and its control constructs one module.
+ * The correlation is the workflow family: workflow holds the engine base (the step, block and template normalizers, the composition that validates and freezes a step list, the block expansion that hides no step from review, the typed scope stack with shadowing, the variable bindings, the expression arithmetic with coercion refusals, the regex extraction, the seeded delay jitter, the run loop with per step checkpoints, the pause, resume and cancel transitions and the pure dry run); controlflow holds the control constructs the engine executes (the condition, branch, loop, repeatuntil, while, foreach, parallel and trycatch steps with their bounds, the retry policy with its backoff, the timeout aborts and the seeded control random); trigger holds the rule kinds that arm, schedule, match and fire the reviewed workflows (the cooldowns, the cron and calendar parts, the webhook verification and the manual run confirmation); the workflow editor surface holds the palette and step library, the canvas layout with snap, reorder and group select, the undo and redo history, the minimap, the breakpoints, the version diff, the import and export in the reviewed file format and the site overrides; and the two release pipeline lanes — the yaml controls gate that refuses a missing release workflow control and the action tag update lane that refreshes only the mutable, reviewed GitHub Action tags — ride the same module behind the direct entry guard at the bottom of this file.
+ * No loop bound, retry policy, cooldown or cron field is ever hardcoded beyond the documented grammar: every bound stays the user's choice, and no workflow, trigger, editor or gate path ever bypasses the human review.
  */
 
 import type {
@@ -3303,8 +3303,10 @@ export function ruleoriginsgranted(rule: triggerule, workfloworigins: string[]):
   return ruleorigins(rule).every((origin) => granted.has(origin));
 }
 
-/* ── Merged from workfloweditor.ts ── */
-import { workflowfileversion } from "./protocol.js";
+/* ── Merged from the workflow editor surface ── */
+/* the file format pin rides this module itself (the protocol module keeps the same pin on its frozen surface): the gate lanes at the bottom run this module as a direct entry under node type stripping, and a static value import of the protocol module would drag its whole import graph — the circular pair the 1.1.90 consolidation documented — into a run that only needs the gates. */
+/** The reviewed workflow file format version the editor export and import lanes stamp; the protocol module pins the same constant on its frozen surface. */
+const workflowfileversion = 1 as const;
 
 /**
  * Workflow editor of the 1.1.53 family.
@@ -4492,4 +4494,487 @@ function yamlscalarvalue(text: string): unknown {
   if (text === "null") return null;
   if (/^-?\d+(?:\.\d+)?$/.test(text)) return Number(text);
   return text;
+}
+
+/* ── Merged from the workflow yaml controls gate ── */
+
+/**
+ * Workflow yaml controls gate of the merged repository: rejects missing release workflow controls without executing or publishing any artifact — every yaml of the workflow house parses, every workflow file declares both on and jobs, and the pinned control table refuses the first missing release, verify, security, lint, ci, pages, publish or maintenance control the lanes own.
+ * The devfold wave folded the gate into the family base: the whole validation rides one async gate behind the direct entry check, so an import of the library module never reads a file and the bundled faces never resolve a platform import — the node builtins and the yaml parser arrive through computed specifiers the bundlers cannot resolve, and only the direct entry lane (`node workflow.ts`, the validate:workflow script and the verify workflow step) drives the gate.
+ */
+
+/** Reads the node builtin specifier of the workflow gate lanes: the computed template keeps every bundler pass from resolving a platform import, so the neutral and browser targets of the matrix stay free of node shims. */
+const gatebuiltin = (builtin: string) => `node:${builtin}`;
+
+/** Reads the module specifier of a gate-only dependency: the computed template keeps every bundler pass from resolving the yaml parser into a library face, so the shipped bundles never carry the dev-time dependency the gate reads. */
+const gatedependency = (name: string) => `${name}`;
+
+/** Verifies the workflow yaml house of the repository: the yaml well-formedness of every config and workflow file, the on and jobs contract of every workflow file and the pinned control table of the release lanes; every check throws on the first drift and the summary prints the verified file count. */
+async function verifyworkflowyamlcontrols(): Promise<void> {
+  const { readdir, readFile } = await import(gatebuiltin("fs/promises"));
+  const { join, resolve } = await import(gatebuiltin("path"));
+  const { parseDocument } = await import(gatedependency("yaml"));
+  const repoRoot = resolve(process.cwd(), "..");
+  const workflowdirectory = join(repoRoot, ".github/workflows");
+  /* The workflow folder groups every workflow yaml AND the config yamls the
+     workflows themselves read (the labeler config, the actionlint policy —
+     the owner rule: every yaml of the workflow house stays grouped under one
+     folder). The config files carry no on/jobs contract, so the per-file
+     workflow contract skips them while the yaml well-formedness still reads
+     every file. */
+  const configfiles = (file: string) => /-config\.ya?ml$/i.test(file);
+  const workflowfiles = (await readdir(workflowdirectory))
+    .filter((file: string) => /\.ya?ml$/i.test(file) && !configfiles(file))
+    .sort();
+  const allymlfiles = (await readdir(workflowdirectory)).filter((file: string) => /\.ya?ml$/i.test(file));
+  if (workflowfiles.length === 0) throw new Error("No GitHub Actions workflows were found.");
+  for (const file of allymlfiles) {
+    const content = await readFile(`${workflowdirectory}/${file}`, "utf8");
+    const document = parseDocument(content, { prettyErrors: true, uniqueKeys: true, version: "1.2" });
+    if (document.errors.length)
+      throw new Error(`${file} has invalid YAML: ${document.errors.map((error: { message: string }) => error.message).join("; ")}`);
+    if (configfiles(file)) continue;
+    const workflow = document.toJS();
+    if (!workflow || typeof workflow !== "object" || !("on" in workflow) || !("jobs" in workflow))
+      throw new Error(`${file} must declare both on and jobs.`);
+  }
+
+  /* The controls of the merged repository: the release workflow carries the
+     rich draft → assemble → verify → publish chain of the DevThink Release
+     (the 16-job extension lineage adapted to the standalone publish lanes),
+     the verify workflow the 22-gate ladder of the release candidate, and the
+     rubygems and maintenance workflows the workflow_run chains R1 and R3
+     restored. The keys re-stamp the extension-era spelling to the DevThink
+     layout: the tarball name, the maven artifact, the container file and the
+     registry publish jobs answer under the merged identity. */
+  const checks = {
+    "verify.yml": [
+      "workflow_call:",
+      "ref:",
+      "pull_request:",
+      "npm install --global",
+      "bun run test:chromium",
+      "browser-actions/setup-chrome@",
+      "chrome-version: stable",
+      "CHROME_BIN: ${{ steps.chrome-for-testing.outputs.chrome-path }}",
+      "oven-sh/setup-bun@",
+      "bun build/cli.js manifest",
+      "bun run check",
+      "node apifreeze.ts",
+      "node pentest.ts",
+      "node cspaudit.ts",
+      "node permdiff.ts",
+      "node agentcert.ts",
+      "node costcert.ts",
+      "node doccheck.ts",
+      "node sweep.ts",
+      "node poolaudit.ts",
+      "node matrixverify.ts",
+      "node telemetryfree.ts",
+      "node recipes.ts",
+      "node readiness.ts",
+      "mvn --batch-mode",
+      "dotnet pack",
+      "upload-artifact",
+      "node build/cli.js planlint build/fixtures/plans",
+      "node build/cli.js runworkflow",
+      "--dryrun --quiet",
+      "runtime: [node, bun, deno]",
+      "denoland/setup-deno@",
+      "deno check build/deno.js",
+      "bun x vitest run",
+      "Require smoke against the cjs bundle",
+      "Import smoke against the esm bundle",
+      "Global smoke against the umd bundle",
+      "Tarball content check over every mode file",
+      "build/index.cjs",
+      "build/devthink.umd.js",
+      "build/checksums.txt",
+      "node nativesmoke.ts",
+      "native install --profile",
+      "native uninstall --profile",
+      "NativeMessagingHosts",
+      "Assert the native messaging permission stays absent from the required set",
+      "node jsongate.ts",
+      "build/nativehost.template.json",
+      "build/companion.js",
+      "Run the firefox prep step offline",
+      "Run the addons linter over the xpipack output when installed",
+      "Install firefox and run a load smoke on the xpipack build when available",
+      "build/devthink-firefox-${VERSION}.xpi",
+      "Run the vsix package build",
+      "Run the nuget pack dry run",
+      "Run the maven pack dry run",
+      "Build the container image and run its smoke",
+      "docker build -f devthink/Dockerfile",
+      "Assert the artifact manifest matches the built set",
+      "build/devthink-vscode-${VERSION}.vsix",
+      "contentFiles/any/any/cli.js",
+      "target/devthink-${VERSION}.jar",
+    ],
+    "release.yml": [
+      "package.json",
+      "CHANGELOG.md",
+      "refusing to ship an empty release body",
+      "Tag $TAG does not point to the source being released.",
+      "uses: ./.github/workflows/verify.yml",
+      "node build.ts",
+      "node packageextension.ts",
+      "npm pack ./distpackage --pack-destination release",
+      "package/fixtures/example-org-pagestate.json",
+      "package/checksums.txt",
+      "package/gallery.json",
+      "package/bridge.js",
+      "package/companion.js",
+      "package/nativehost.template.json",
+      "package/server.js",
+      "package/crossbrowser.js",
+      "package/pack.js",
+      "package/http.js",
+      "package/manifest.json",
+      "package/index.d.ts",
+      "nested past two directories",
+      "wenathlan-devthink-${VERSION}.tgz",
+      "build/devthink-firefox-${VERSION}.xpi",
+      "build/devthink-safari-${VERSION}.zip",
+      "build/devthink-vscode-${VERSION}.vsix",
+      "build/devthink-site-${VERSION}.zip",
+      "devthink-declarations-${VERSION}.zip",
+      "cp build/devthink.umd.js build/devthink.umd.min.js release/",
+      "devthink-nativehost-${VERSION}.template.json",
+      "git archive --format=zip",
+      "test -f build/artifactmanifest.json",
+      "release-complete",
+      "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz",
+      "registry.npmjs.org",
+      "secrets.NODE_AUTH_TOKEN || secrets.NPM_TOKEN",
+      "npm whoami",
+      "environment: release-approval",
+      "the bounded retry policy retries inside three attempts",
+      "actions/attest@",
+      "devthink-sbom-${VERSION}.json",
+      "devthink-attestations-${VERSION}.json",
+      "devthink-artifactmanifest-${VERSION}.json",
+      "sbomcoveragecheck",
+      "artifactmanifestcheck",
+      "vsixmarketplacemetadatacheck",
+      "gh release create",
+      'gh release create "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --draft',
+      "gh release upload",
+      "gh release download",
+      "sha256sum --check SHA256SUMS.txt",
+      "find . -maxdepth 1 -type f ! -name SHA256SUMS.txt",
+      "sort -z | xargs -0 sha256sum",
+      'gh release edit "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --draft=false',
+    ],
+    "security.yml": [
+      "dependency-review-action",
+      "codeql-action",
+      "trufflehog",
+      "sbom-action",
+      "license-checker@25.0.1",
+      "--onlyAllow=",
+      /* the absorbed governance lanes of the 2.0.16 grouping pass */
+      "github/codeql-action/init@",
+      "build-mode: none",
+      "25 4 * * 3",
+      "ossf/scorecard-action@",
+      "publish_results: true",
+      "::error file=SECURITY.md::",
+      "major}.x",
+      /* the 2.0.18 gap closures: the layout contract */
+      "one-workflow-file layout contract",
+      /* the embedded build cache doctrine of the 2.0.16 pass */
+    ],
+    "workflowlint.yml": [
+      /* the correlated grouping: the workflow lint lives in its own lane —
+         the security battery no longer duplicates the actionlint step. */
+      "reviewdog/action-actionlint@",
+      "fail_level: error",
+      "actionlint_flags: -config .github/workflows/actionlint-config.cfg",
+    ],
+    "ci.yml": [
+      "runtime: [node, bun, deno]",
+      "deno check build/deno.js",
+      "node-version: 24",
+      "Typecheck on the active LTS line",
+      "npm run check:web",
+      "uses: ./.github/workflows/verify.yml",
+      "if: github.event_name == 'workflow_dispatch'",
+      /* the 2.0.18 gap closure: the repository structure gate */
+      "Repository flat structure contract",
+      "nest past four directories",
+      "duplicates another",
+      /* the consolidation pass: the cross-bundler verification the retired
+         webpack.yml workflow carried rides the CI battery as its webpack job */
+      "Pack the core bundle through webpack",
+      "npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack",
+      "webpack --entry ./build/index.js",
+      "build/webpack/devthink.webpack.js",
+    ],
+    "pages.yml": [
+      "VITE_BASE_PATH",
+      "404.html",
+      ".nojekyll",
+      "Boot smoke test (SPA entry and fallback page on a pinned port)",
+      "python3 -m http.server",
+      'python3 -m http.server "${SMOKE_PORT}"',
+      "Lint the delivered html pages (python html.parser well-formedness)",
+    ],
+    "publish.yml": [
+      /* the merged lane file of the 2.0.16 grouping pass */
+      "workflow_run:",
+      'workflows: ["DevThink Release"]',
+      "devthink-publish-${{ github.event_name }}-${{ github.ref }}",
+      /* the npmjs lane: the flat built tarball with the checksum signature and provenance */
+      "npm pack ./distpackage --pack-destination release",
+      "package/checksums.txt",
+      'npm publish "${tarball}" --access public --provenance',
+      "id-token: write",
+      "the publish race resolved with the same built content",
+      "npm dist-tag add",
+      "retrying with backoff",
+      /* the github npm lane */
+      "npm.pkg.github.com",
+      'npm publish "${tarball}" --registry=https://npm.pkg.github.com',
+      "distpackage/package.json",
+      /* the ghcr lane: the five-architecture index with the embedded cache and the latest realignment */
+      "docker buildx imagetools inspect",
+      "platforms: linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64",
+      "platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64",
+      '. == ["amd64", "arm64", "ppc64le", "riscv64", "s390x"]',
+      'echo "${image}:latest"',
+      "drop the legacy referrers fallback tags",
+      'all(startswith("sha256-"))',
+      /* the rubygems lane */
+      "ruby/setup-ruby@",
+      "gem build devthink.gemspec",
+      "DEVTHINK_VERSION=",
+      "gem push devthink-*.gem",
+      "rubygems.pkg.github.com",
+      "pre-deploy existence check",
+      /* the desktop tauri lane: the portable checksum and the web tauri config */
+      "shasum -a 256",
+      "devthink/tauri.conf.json",
+      "standalone: ${{ matrix.runner != 'macos-15-intel' }}",
+      /* the closing sums umbrella: the needs chain over every lane */
+      "Rebuild the release SHA256SUMS umbrella",
+      "target-plans",
+      "!cancelled()",
+      /* the 2.0.18 gap closures: the approval environments, the digest pin lane */
+      "environment: release-approval",
+      "Pin the published container digest as release assets",
+      "devthink-container.digest",
+      "- digest",
+      /* the consolidation pass: the saddle block the three retired saddle
+         workflow files carried rides this file as the closing application
+         lanes - the target plans and the dispatch-only vhe registry lane,
+         the heaviest pass of the house. the extension package lane the
+         block once carried retired with the ownership regroup: the mv3
+         extension left the saddle for the os envelope (the browser.ts CLI
+         the lane invoked answered the pre-regroup source), so the os
+         extension lane packages the one extension the family ships. */
+      "Saddle plan ${{ matrix.target }} ${{ matrix.format }}",
+      /* the dist law seat (both heal lanes answered it): the build:engine
+         step writes the thin targetcli wrapper at distpackage/packager —
+         the source-is-library doctrine the build stamp carries — so the
+         lane control reads the emitted seat the build never calls dist */
+      "distpackage/packager/targetcli.js",
+      "require('./saddle/package.json').version",
+      "Validate saddle vhe image",
+      "VHE_PROFILE_CPU=",
+      "MESA_SHA256=",
+      "if: github.event_name == 'workflow_dispatch'",
+    ],
+    "maintenance.yml": [
+      "workflow_run:",
+      "workflows: [DevThink Security]",
+      "schedule:",
+      "allow_major_updates",
+      "apply_cache_cleanup",
+      "extension-mcp",
+      "Retire the merged maven packages the single distribution replaced",
+      "node-version-file: devthink/.nvmrc",
+      "npm install --global",
+      "bun install --frozen-lockfile",
+      "oven-sh/setup-bun@",
+      "bun run dependency:updates",
+      "bun run workflow:updates",
+      "GH_TOKEN: ${{ github.token }}",
+      "bun run sync:metadata",
+      "gh pr create",
+      "actions: write",
+      "NONDEFAULT_MAX_AGE_HOURS",
+      "actions/caches",
+      /* the 2.0.18 gap closures: the scoped retention and the second window */
+      "WORKFLOW_RUN_SCOPED",
+      "17 15 * * *",
+      /* the consolidation pass: the pull request labeler the retired
+         labeler.yml workflow carried rides the maintenance ladder as its
+         label job, reading the config that stays grouped inside the
+         workflows folder (the owner rule) */
+      "pull_request_target:",
+      "actions/labeler@",
+      "configuration-path: .github/workflows/labeler-config.cfg",
+    ],
+  };
+  for (const [file, terms] of Object.entries(checks)) {
+    const content = await readFile(`${workflowdirectory}/${file}`, "utf8");
+    for (const term of terms)
+      if (!content.includes(term)) {
+        throw new Error(`${file} is missing required control: ${term}`);
+      }
+  }
+  /* The 2.0.16 owner directive: the build cache never rides a registry
+     package — the gha cache embeds inside the workflow runs (created, used,
+     cleaned) and the devthink-buildcache package the 2.0.15 lanes pushed is
+     gone from every workflow file. */
+  for (const file of workflowfiles) {
+    const content = await readFile(`${workflowdirectory}/${file}`, "utf8");
+    if (content.includes("devthink-buildcache"))
+      throw new Error(
+        `${file} must not reference the retired registry buildcache package; the build cache embeds inside the workflow run.`,
+      );
+  }
+
+  for (const forbidden of ["migratelegacynuget", "Wenathlan.Devthink.Extension", "gh api --method DELETE"]) {
+    if ((await readFile(`${workflowdirectory}/release.yml`, "utf8")).includes(forbidden))
+      throw new Error(`release.yml must not retain the consumed legacy-package deletion control: ${forbidden}`);
+  }
+  /* The publish-lane coordination of the merged repository: the registry
+     channels live in their standalone release-triggered workflows, so the
+     release workflow must not duplicate a lane another workflow owns — the
+     release lane carries the assembly, the verification, the github release
+     chain and the npmjs publication the npm gate demands, nothing else. */
+  const releasetext = await readFile(`${workflowdirectory}/release.yml`, "utf8");
+  for (const duplicated of [
+    "mvn --batch-mode",
+    "dotnet nuget push",
+    "npm.pkg.github.com",
+    "type=raw,value=stable",
+    "docker buildx imagetools inspect",
+    "gem build devthink.gemspec",
+  ]) {
+    if (releasetext.includes(duplicated))
+      throw new Error(`release.yml must not duplicate the standalone publish lane control: ${duplicated}`);
+  }
+  for (const forbidden of [":latest", "wenathlan/extension", "wenathlan-gateway"]) {
+    if (releasetext.includes(forbidden))
+      throw new Error(`release.yml must answer under the DevThink identity; forbidden control: ${forbidden}`);
+  }
+  console.log(`Workflow YAML and controls verified for ${workflowfiles.length} files.`);
+}
+
+/* ── Merged from the action tag update lane ── */
+
+/**
+ * Updates only mutable, reviewed GitHub Action release tags; SHA-pinned actions remain immutable — the lane walks every workflow yaml of the workflow house, refreshes the pinned tags of the allowed action set, repairs the retired .mjs runner references and reports the skipped majors, the runner-law repairs and the drift flag.
+ * The devfold wave folded the lane into the family base: the whole walk rides one async lane behind the direct entry check, so an import of the library module never reads a file and the bundled faces never resolve a platform import — and only the direct entry lane (`node workflow.ts check`, `node workflow.ts sync`, the workflow:updates script and the verify workflow step) drives it.
+ */
+async function syncworkflowactiontags(): Promise<void> {
+  const { readdir, readFile, writeFile } = await import(gatebuiltin("fs/promises"));
+  const { join, resolve } = await import(gatebuiltin("path"));
+  const repoRoot = resolve(process.cwd(), "..");
+  const mode = process.argv[2] ?? "check";
+  if (!new Set(["check", "sync"]).has(mode)) throw new Error("Use check or sync.");
+  const allowmajors = process.argv.includes("--allow-majors");
+  const allowed = new Set([
+    "actions/checkout",
+    "actions/setup-node",
+    "actions/setup-java",
+    "actions/setup-dotnet",
+    "actions/upload-artifact",
+    "actions/download-artifact",
+    "actions/dependency-review-action",
+    "actions/attest",
+    "pnpm/action-setup",
+    "oven-sh/setup-bun",
+    "denoland/setup-deno",
+    "docker/setup-qemu-action",
+    "docker/setup-buildx-action",
+    "docker/login-action",
+    "docker/metadata-action",
+    "docker/build-push-action",
+    "github/codeql-action/init",
+    "github/codeql-action/analyze",
+    "trufflesecurity/trufflehog",
+    "anchore/sbom-action",
+  ]);
+  const latest = new Map();
+  // the runner law rides the same stamper: the ts conversion retired every
+  // .mjs runner of the battery, so any workflow still calling one walks to its
+  // .ts twin — the transitional shims the landing carried answer the legacy
+  // names while the stamps lag, and this pass retires them by pointing every
+  // command at the real ts lane. the repair is idempotent, so a clean tree
+  // answers unchanged and a drifted one converges back to the law.
+  const repairs: Array<[RegExp, string]> = [
+    [/\b(tests\/[A-Za-z0-9][A-Za-z0-9._-]*)\.mjs\b/g, "$1.ts"],
+  ];
+  async function versionfor(action: string) {
+    if (!latest.has(action)) {
+      const token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN;
+      const headers: Record<string, string> = { Accept: "application/vnd.github+json" };
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const response = await fetch(`https://api.github.com/repos/${action}/releases/latest`, { headers });
+      if (!response.ok) throw new Error(`GitHub releases for ${action} returned ${response.status}`);
+      const tag = (await response.json()).tag_name;
+      if (!/^v\d+(?:\.\d+){0,2}$/.test(tag ?? "")) throw new Error(`${action} has an unsupported latest tag: ${tag}`);
+      latest.set(action, tag);
+    }
+    return latest.get(action);
+  }
+  let drift = false;
+  const skippedmajors = [];
+  const runnerlaw: string[] = [];
+  for (const file of (await readdir(join(repoRoot, ".github/workflows")))
+    .filter((entry: string) => /\.ya?ml$/i.test(entry))
+    .sort()) {
+    const path = join(repoRoot, ".github/workflows", file);
+    const current = await readFile(path, "utf8");
+    const matches = [...current.matchAll(/uses:\s*([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)@(v\d+(?:\.\d+){0,2})/g)];
+    let next = current;
+    for (const match of matches) {
+      const [, action, pinned] = match;
+      if (!allowed.has(action)) continue;
+      const version = await versionfor(action);
+      const currentmajor = Number(pinned.slice(1).split(".")[0]);
+      const latestmajor = Number(version.slice(1).split(".")[0]);
+      if (latestmajor > currentmajor && !allowmajors) {
+        skippedmajors.push({ action, current: pinned, latest: version });
+        continue;
+      }
+      if (version !== pinned) next = next.replace(`uses: ${action}@${pinned}`, `uses: ${action}@${version}`);
+    }
+    let walked = next;
+    for (const [pattern, replacement] of repairs) walked = walked.replace(pattern, replacement);
+    if (walked !== next) runnerlaw.push(file);
+    next = walked;
+    if (next !== current) {
+      drift = true;
+      if (mode === "sync") await writeFile(path, next);
+    }
+  }
+  if (drift && mode === "check")
+    throw new Error("A mutable GitHub Action release tag is outdated. Run pnpm workflow:updates in a review branch.");
+  console.log(
+    JSON.stringify(
+      { mode, allowmajors, checked: allowed.size, skippedmajors, runnerlaw, drift, immutablePinsPreserved: true },
+      null,
+      2,
+    ),
+  );
+}
+
+/** Reads whether node loaded this module as the direct entry: the validate chain and the verify workflow run the gate lanes as `node workflow.ts` (the yaml controls gate) and `node workflow.ts check` or `node workflow.ts sync` (the action tag update lane), and no bundled library face matches a direct entry path (the browser faces carry no process at all), so the gates fire on their own lane and never on an import. */
+const workflowgatemain =
+  typeof process !== "undefined" &&
+  process.argv[1] !== undefined &&
+  (process.argv[1].endsWith("workflow.ts") || process.argv[1].endsWith("workflow"));
+
+if (workflowgatemain) {
+  const lane = process.argv[2] === "check" || process.argv[2] === "sync" ? syncworkflowactiontags() : verifyworkflowyamlcontrols();
+  lane.catch((error: unknown) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 }

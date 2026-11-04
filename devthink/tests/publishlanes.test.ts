@@ -449,7 +449,7 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
   });
 
   it("the next conversion walks the eleven applications with the ten-asset grammar", async () => {
-    const convert = await readFile(join(repoRoot, "devthink", "scriptsnextconvert.ts"), "utf8");
+    const convert = await readFile(join(repoRoot, "devthink", "scripts.ts"), "utf8");
     /* the CONVERT list: every site application of the monorepo, the os
      * included — cobaia joined the conversion lane (wave/firststation):
      * the monetization surface walks the same ten-asset grammar as the

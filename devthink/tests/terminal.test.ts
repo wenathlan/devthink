@@ -46,7 +46,7 @@ import {
   rgbToAnsi16,
   rgbToAnsi256,
   type IrNode,
-} from "../runtimeterminal.ts";
+} from "../runtime.ts";
 import { ChipTerminal } from "../chipterminal.ts";
 import { KbdTerminal } from "../kbdterminal.ts";
 import { ControlShellTerminal } from "../shellterminal.ts";
