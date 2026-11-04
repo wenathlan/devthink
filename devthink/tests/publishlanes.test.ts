@@ -255,8 +255,16 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   it("the pre-deploy existence check matches the -vhe suffix — the saddle lesson", async () => {
     const publish = await readworkflow("publish.yml");
     /* the bare startswith(${version}) once saw the node-engine tag and
-     * no-opped the vhe publication; the match carries the -vhe suffix. */
-    expect(publish).toContain('startswith(\\"${version}-vhe\\")');
+     * no-opped the vhe publication; the match carries the -vhe suffix.
+     * the partial-publish freeze fix tightens the same lesson: the
+     * no-op now demands the complete three-profile family (max,
+     * balanced and lite all live) instead of any single -vhe tag, and
+     * the per-leg guard inside the publish matrix skips only the legs
+     * that already ship so a re-run completes the missing siblings. */
+    expect(publish).toContain('. == \\"${version}-vhe\\" or . == \\"${version}-vhe-balanced\\" or . == \\"${version}-vhe-lite\\"');
+    expect(publish).toContain('if [ "${api_out}" = "3" ]');
+    expect(publish).toContain('echo "skip=true" >> "$GITHUB_OUTPUT"');
+    expect(publish).toContain("if: steps.meta.outputs.skip != 'true'");
   });
 
   it("the vhe lanes answer the release law — the saddle container publishes with the family", async () => {

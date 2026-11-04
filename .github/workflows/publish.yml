@@ -4937,13 +4937,27 @@ jobs:
           # the devthink container package - the bare startswith(${version})
           # saw the node-engine tag and no-opped the vhe publication (the
           # saddle lesson): the match carries the -vhe suffix.
-          api_out="$(gh api "/users/${OWNER}/packages/container/devthink/versions" --jq "[.[] | select(.metadata.container.tags[]? | startswith(\"${version}-vhe\"))] | length" 2>/dev/null || true)"
+          #
+          # The partial-publish freeze fix: the no-op used to count ANY
+          # ${version}-vhe* tag as "published", so a run that landed only
+          # the max leg before failing froze balanced and lite out of every
+          # re-run (the duplicate no-op answered forever while the family
+          # stayed incomplete). The complete-family law: the resolve only
+          # no-ops when ALL THREE profile tags of the version are live
+          # (${version}-vhe, ${version}-vhe-balanced, ${version}-vhe-lite)
+          # - a partial family always re-proceeds, and the per-leg guard
+          # inside the publish matrix skips only the legs that already
+          # ship, so a re-run completes exactly the missing profiles.
+          api_out="$(gh api "/users/${OWNER}/packages/container/devthink/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${version}-vhe\" or . == \"${version}-vhe-balanced\" or . == \"${version}-vhe-lite\")] | length" 2>/dev/null || true)"
           case "${api_out}" in
             ''|*[!0-9]*) api_out=0 ;;
           esac
-          if [ "${api_out}" != "0" ]; then
-            echo "GHCR container ${OWNER}/devthink:${version}-vhe is already published; the duplicate dispatch will no-op."
+          if [ "${api_out}" = "3" ]; then
+            echo "GHCR container ${OWNER}/devthink carries the complete ${version}-vhe family (max, balanced, lite); the duplicate dispatch will no-op."
             exit 0
+          fi
+          if [ "${api_out}" != "0" ]; then
+            echo "GHCR container ${OWNER}/devthink carries a partial ${version}-vhe family (${api_out} of 3 tags); proceeding so the missing profiles ship (the per-leg guard skips the published legs)."
           fi
           echo "proceed=true" >> "$GITHUB_OUTPUT"
 
@@ -5231,6 +5245,9 @@ jobs:
           VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
           IMAGE: ${{ env.REGISTRY }}/${{ github.repository }}
           PROFILE: ${{ matrix.profile }}
+          OWNER: ${{ github.repository_owner }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           img="${IMAGE,,}"
@@ -5244,6 +5261,22 @@ jobs:
           # major.minor, no rolling alias.
           echo "tag=${img}:${ver}${suffix}" >> "$GITHUB_OUTPUT"
           echo "resolved tag: ${img}:${ver}${suffix}"
+          # the per-leg guard of the partial-publish freeze fix: a re-run
+          # that follows a partial family (max shipped, balanced/lite
+          # missing) skips only the leg whose tag already answers on the
+          # registry, so the re-run completes exactly the missing profiles
+          # instead of re-pushing the nine-QEMU-arch legs that already
+          # ship (60+ minutes of build time each, cold cache).
+          leg_out="$(gh api "/users/${OWNER,,}/packages/container/devthink/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${ver}${suffix}\")] | length" 2>/dev/null || true)"
+          case "${leg_out}" in
+            ''|*[!0-9]*) leg_out=0 ;;
+          esac
+          if [ "${leg_out}" != "0" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "tag ${ver}${suffix} already ships on the registry; this leg will skip (the missing siblings still build)."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Stage the saddle build context (the engine-ownership sibling)
         # the label store law rides the sibling import: the saddle labels
@@ -5266,6 +5299,10 @@ jobs:
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build and push the multi-arch image
+        # the per-leg guard: a leg whose tag already ships on the registry
+        # skips (the partial-publish freeze fix - the re-run completes only
+        # the missing profile siblings of the -vhe family).
+        if: steps.meta.outputs.skip != 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./saddlebuildctx
