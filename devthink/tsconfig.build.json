@@ -14,6 +14,13 @@
       ],
       "@/*": ["./sol/*", "./*"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
+      /* the modality registry of the ladder retirement (wave/engineregroup1):
+       * the sandbox lane reads the saddle catalog through the published
+       * specifier and the declaration pass resolves it through the family
+       * install exactly like the workloadlaw sibling does (the saddle
+       * envelope now publishes the ./modalityregistry export; the ambient
+       * modalitytypes.ts mirror retired with the bridge — the catalog has
+       * one owner, the engine). */
       /* the getry declaration face bridges of the ownership wave
        * (wave/ownership.getry): the gateway modules answer through the
        * published library specifiers ("@wenathlan/getry/llm" and siblings),
@@ -28,6 +35,14 @@
        * suite) exactly the way the prisma client generates above the
        * declaration emit. */
       "@wenathlan/getry/engine": ["../getry/dist/types/getry/engine.d.ts"],
+      /* the thinking face of the ladder retirement (wave/engineregroup1):
+       * the os speaks the owner's ThinkingLevelName (os.ts imports the type
+       * through the published specifier) and the ambient thinkingtypes.ts
+       * mirror retired the day the owner face mapped — the declaration pass
+       * resolves the specifier to the owner's generated face exactly like
+       * every other @wenathlan/getry/* face above (the ambient declaration
+       * the mirror carried retired with it; the rungs have one owner). */
+      "@wenathlan/getry/thinking": ["../getry/dist/types/getry/thinking.d.ts"],
       "@wenathlan/getry/llm": ["../getry/dist/types/getry/llm.d.ts"],
       "@wenathlan/getry/streaming": ["../getry/dist/types/getry/streaming.d.ts"],
       "@wenathlan/getry/models": ["../getry/dist/types/getry/models.d.ts"],
@@ -95,8 +110,6 @@
     }
   },
   "include": [
-    "thinkingtypes.ts",
-    "modalitytypes.ts",
     "index.ts",
     "types.ts",
     /* the os seam entries of the ownership wave (wave/ownership.getry): the

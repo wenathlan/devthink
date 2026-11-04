@@ -117,6 +117,7 @@
     "./sandboxqueue": "./sandbox.ts",
     "./sandboxquota": "./sandbox.ts",
     "./modalities": "./modalityregistry.ts",
+    "./modalityregistry": "./modalityregistry.ts",
     "./workloadlaw": "./workloadlaw.ts",
     "./browser": "./browser.ts",
     "./browser-playwright": "./browser.ts",
