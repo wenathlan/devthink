@@ -40,6 +40,7 @@ export default defineConfig({
        * embedder, resolved to the monorepo root inside the app. the audio
        * leaves retired into the one keyword file (audio.ts), so the
        * specifier resolves to the consolidated file. */
+      "@wenathlan/debonair/audio": path.resolve(import.meta.dirname, "audio.ts"),
       "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "audio.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
