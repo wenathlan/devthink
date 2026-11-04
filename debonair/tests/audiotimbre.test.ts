@@ -12,20 +12,26 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import {
   brightness,
-  DEFAULT_COEFFICIENTS,
+  DB_FLOOR,
   dctii,
+  DEFAULT_COEFFICIENTS,
+  dynamicStats,
   hztomel,
   MEL_BANDS,
   melFilterbank,
   meltohz,
   mfcc,
   noisinessIndex,
+  onsetShapes,
+  rmsEnvelope,
   rolloffSharpness,
   spectralSlope,
   timbreStats,
+  todb,
   warmthIndex,
-} from "../audiotimbre.ts";
-import { DB_FLOOR, dynamicStats, onsetShapes, rmsEnvelope, todb, zcr, zcrrate } from "../audiotimbreenv.ts";
+  zcr,
+  zcrrate,
+} from "../audio.ts";
 
 const SR = 16000;
 

@@ -33,10 +33,10 @@
 // transport, the plan engine hushing beside it).
 
 import { planTake, type TakePlan } from "./arranger.ts";
-import { TakeEngine, TransportError } from "./audioengine.ts";
+import { TakeEngine, TransportError } from "./audio.ts";
 import { gatewayblobstore, sessionblobstore } from "./blobstore.ts";
 import type { ReconDocument } from "./reconpayload.ts";
-import { findTakeRecord, loadTakeRecords, type StorageLike, sessionStorageOrMemory } from "./takestore.ts";
+import { findTakeRecord, loadTakeRecords, type StorageLike, sessionStorageOrMemory } from "./take.ts";
 
 /** The demo take the bus always carries (the studio's own demo seed). */
 const DEMO_PROMPT = "midnight studio take, warm sub bass, dusty keys, brass light";

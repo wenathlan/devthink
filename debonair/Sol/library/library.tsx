@@ -41,7 +41,7 @@ import {
   sessionStorageOrMemory,
   TAKE_SELECT_KEY,
   type TakeRecord,
-} from "../../takestore.ts";
+} from "../../take.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 import { CoverArt } from "../wingets";

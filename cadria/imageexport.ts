@@ -28,7 +28,7 @@
 // "export-size" (png off the documented ladder, any size outside [64, 4096]),
 // "export-empty" (blank id, unreadable palette, empty block cast).
 
-import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
+import type { AudioDescriptor } from "@wenathlan/debonair/audio";
 import {
   type Block,
   compositionBlocks,

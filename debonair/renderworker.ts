@@ -40,7 +40,7 @@ import {
   ROLE_TRIM,
   seededNoiseChannel,
   VOICE_RECIPES,
-} from "./audioengine.ts";
+} from "./audio.ts";
 import { mintid } from "./bigintids.ts";
 import { type FormantEvent, renderFormantPhrase, type Vowel } from "./formant.ts";
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
@@ -57,7 +57,7 @@ import {
   validatePatternProject,
 } from "./patternenums.ts";
 import type { WorkerModality } from "./sandboxmodality.ts";
-import type { NoteEvent } from "./takeevents.ts";
+import type { NoteEvent } from "./take.ts";
 import { midiToHz } from "./tuning.ts";
 import { sungLineOf } from "./vocalsynth.ts";
 import { encodeWav } from "./wavwriter.ts";

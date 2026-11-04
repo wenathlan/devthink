@@ -9,7 +9,7 @@
 
 import type { ArrangerRole, TakePlan } from "./arranger.ts";
 import { MASTERING } from "./katexis.ts";
-import type { NoteEvent, TakeSchedule } from "./takeevents.ts";
+import type { NoteEvent, TakeSchedule } from "./take.ts";
 
 /** The machine readable failure codes of the stem planner. */
 export type StemsErrorCode = "empty-schedule" | "unknown-role" | "bad-order" | "conservation" | "bad-manifest";

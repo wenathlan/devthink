@@ -1,9 +1,14 @@
 // # libraryface.test — the npm library face of the katexis engine (the
 // pipeline wave PV6.005): the package contract any consumer imports. the
 // exports map answers one subpath per engine module — the nine pure
-// pipeline seats, the four audio analysis seats the engine ownership wave
-// seated (the cadria analysis family the katexis engine now owns) with the
-// three gap seats the same wave completed (beatgrid, speechalign, stems),
+// pipeline seats, the two keyword seats the audio fold wave seated (the
+// audio family and the take family, every leaf the half-done fold of #347
+// left beside its keyword file retired into the one file per domain), the
+// five retired leaf keys the same fold keeps as published-specifier
+// aliases of the audio keyword file (the embedder's old specifiers keep
+// resolving, every target the one file the domain owns) with
+// the three gap seats the engine ownership wave completed (beatgrid,
+// speechalign, stems),
 // and the four server seats last (the three worker lanes and the route
 // table leaf the gateway and the sibling lanes ride — the wave 2d carve
 // out) — with the family publish shape (the
@@ -29,11 +34,8 @@ import { describe, it } from "vitest";
 process.env.DATABASE_URL = "file:./local.libraryface.test.db";
 
 const analyzemodule = await import("@wenathlan/debonair/analyze");
-const audioattributesmodule = await import("@wenathlan/debonair/audioattributes");
-const audiodecodemodule = await import("@wenathlan/debonair/audiodecode");
-const audiofeaturesmodule = await import("@wenathlan/debonair/audiofeatures");
-const audiopipelinemodule = await import("@wenathlan/debonair/audiopipeline");
-const audioenginemodule = await import("@wenathlan/debonair/audioengine");
+const audiomodule = await import("@wenathlan/debonair/audio");
+const takemodule = await import("@wenathlan/debonair/take");
 const beatgridmodule = await import("@wenathlan/debonair/beatgrid");
 const blobstoremodule = await import("@wenathlan/debonair/blobstore");
 const composermodule = await import("@wenathlan/debonair/composer");
@@ -59,9 +61,12 @@ const timestretchmodule = await import("@wenathlan/debonair/timestretch");
 const wavwritermodule = await import("@wenathlan/debonair/wavwriter");
 
 /** The engine subpaths the library publishes, in the map's own order: the
- * nine pure pipeline seats first, the four audio analysis seats and the
- * three gap seats the engine ownership wave seated next, the four server
- * seats last (the three worker lanes and the route table leaf). */
+ * nine pure pipeline seats first, the two keyword seats the audio fold wave
+ * seated (the audio and the take families, one keyword file per domain),
+ * the five retired leaf keys the fold keeps as published-specifier aliases
+ * of the audio keyword file next, the three gap seats the engine ownership
+ * wave seated after them, the four server seats last (the three worker
+ * lanes and the route table leaf). */
 const SUBPATHS = [
   "analyze",
   "hpss",
@@ -77,11 +82,13 @@ const SUBPATHS = [
   "patternenums",
   "composer",
   "coverpalette",
-  "audioengine",
+  "audio",
+  "take",
   "wavwriter",
   "blobstore",
   "audioattributes",
   "audiodecode",
+  "audioengine",
   "audiofeatures",
   "audiopipeline",
   "beatgrid",
@@ -96,12 +103,31 @@ const SUBPATHS = [
 
 type Subpath = (typeof SUBPATHS)[number];
 
+/** The keyword-file targets: the two family seats answer their keyword
+ * files and the five retired leaf keys answer the audio keyword file (the
+ * alias shape the fold pins — one target per domain, so the published
+ * specifiers of the retired leaves resolve to the file that owns them
+ * now); every subpath outside this table answers its own root source. */
+const KEYWORD: Partial<Record<Subpath, string>> = {
+  audio: "audio.ts",
+  take: "take.ts",
+  audioattributes: "audio.ts",
+  audiodecode: "audio.ts",
+  audioengine: "audio.ts",
+  audiofeatures: "audio.ts",
+  audiopipeline: "audio.ts",
+};
+
+/** The repository file a subpath resolves to — the keyword seat or alias
+ * answers the keyword file, every other seat its own root source. */
+const targetOf = (module: Subpath): string => KEYWORD[module] ?? `${module}.ts`;
+
 /** The one publish shape every subpath answers: the family conditions —
  * types for the declaration consumer, import for the esm consumer, default
- * for everything else — over the root source file, the same doctrine the
+ * for everything else — over the target source file, the same doctrine the
  * getry thinking export rides (no dist step, the source is the library). */
 const familysubpath = (module: Subpath) => {
-  const target = `./${module}.ts`;
+  const target = `./${targetOf(module)}`;
   return { types: target, import: target, default: target };
 };
 
@@ -122,13 +148,15 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   genrecorpus: genrecorpusmodule,
   reverseingest: reverseingestmodule,
   timestretch: timestretchmodule,
-  audioengine: audioenginemodule,
+  audio: audiomodule,
+  take: takemodule,
   wavwriter: wavwritermodule,
   blobstore: blobstoremodule,
-  audioattributes: audioattributesmodule,
-  audiodecode: audiodecodemodule,
-  audiofeatures: audiofeaturesmodule,
-  audiopipeline: audiopipelinemodule,
+  audioattributes: audiomodule,
+  audiodecode: audiomodule,
+  audioengine: audiomodule,
+  audiofeatures: audiomodule,
+  audiopipeline: audiomodule,
   beatgrid: beatgridmodule,
   speechalign: speechalignmodule,
   stems: stemsmodule,
@@ -143,6 +171,131 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
  * and classes answer "function", the tables and arrays answer "object",
  * the scalar constants answer their own typeof. */
 type Seat = "function" | "object" | "number" | "string";
+
+/** The audio keyword surface (the audio fold wave): the fifteen retired
+ * leaves ride as sections of the one file the ownership law pins for the
+ * domain — the descriptor contract, the wav walk, the decode layer, the
+ * fft kernel, the rhythm pair, the spectrum, the structure, the timbre
+ * pair, the tonality pair, the fusion, the pipeline orchestrator and the
+ * browser transport — every runtime seat the fold carried, pinned once:
+ * the family seat and the five alias keys answer the same table. */
+const audiosurface: Record<string, Seat> = {
+  AudioDecodeError: "function",
+  BAND_EDGES_HZ: "object",
+  BAND_NAMES: "object",
+  CHORD_DEFAULT_FRAME_MS: "number",
+  CHORD_INTERVALS: "object",
+  DB_FLOOR: "number",
+  DEFAULT_COEFFICIENTS: "number",
+  DEFAULT_HOP: "number",
+  DEFAULT_MIX_LAW: "object",
+  DEFAULT_SIZE: "number",
+  DESCRIPTOR_DIMS: "number",
+  DIM_ORDER: "object",
+  FFT_MAX_SIZE: "number",
+  FFT_MIN_SIZE: "number",
+  FftError: "function",
+  MEL_BANDS: "number",
+  NARRATIVE_CONTOUR: "object",
+  NOISE_SECONDS: "number",
+  PipelineError: "function",
+  RENDER_TAIL_S: "number",
+  ROLE_TRIM: "object",
+  RhythmError: "function",
+  SWING_THRESHOLD: "number",
+  SpectrumError: "function",
+  TENSION_ENERGY_WEIGHT: "number",
+  TENSION_NOVELTY_WEIGHT: "number",
+  TakeEngine: "function",
+  TransportError: "function",
+  VOICE_RECIPES: "object",
+  VoiceBank: "function",
+  analyzePcm: "function",
+  analyzeStructure: "function",
+  analyzeWavBytes: "function",
+  audioSeed: "function",
+  audioSeedFromStats: "function",
+  bandEnergies: "function",
+  beatGrid: "function",
+  blackman: "function",
+  bpmOverTime: "function",
+  brightness: "function",
+  canonicalTempo: "function",
+  chordTemplates: "object",
+  chromaVector: "function",
+  chromagram: "function",
+  clamp01: "function",
+  dctii: "function",
+  decodeWav: "function",
+  descriptorSummary: "function",
+  detectChords: "function",
+  downbeatGrid: "function",
+  downbeatIndex: "function",
+  downmix: "function",
+  dynamicStats: "function",
+  energyCurve: "function",
+  envelopeSampleAt: "function",
+  estimateBpm: "function",
+  estimateKey: "function",
+  fft: "function",
+  fftMagnitudes: "function",
+  finite: "function",
+  frameEnergies: "function",
+  framecount: "function",
+  fromAudioBufferLike: "function",
+  fuseDescriptor: "function",
+  hamming: "function",
+  hann: "function",
+  harmonicStats: "function",
+  hertzToMel: "function",
+  hztomel: "function",
+  keyName: "function",
+  keyProfiles: "object",
+  labelSections: "function",
+  melFilterbank: "function",
+  melToHertz: "function",
+  melbands: "function",
+  meltohz: "function",
+  mfcc: "function",
+  noisinessIndex: "function",
+  normalize01: "function",
+  normalizePeak: "function",
+  noveltyCurve: "function",
+  onsetEnvelope: "function",
+  onsetPeaks: "function",
+  onsetShapes: "function",
+  pitchClassNames: "object",
+  readWavLayout: "function",
+  readWavSamples: "function",
+  renderTakeOffline: "function",
+  reportDigest: "function",
+  resample: "function",
+  rhythmStats: "function",
+  rmsEnvelope: "function",
+  rolloffSharpness: "function",
+  seededNoiseChannel: "function",
+  spectralCentroid: "function",
+  spectralFlatness: "function",
+  spectralFlux: "function",
+  spectralRolloff: "function",
+  spectralSlope: "function",
+  spectrogramImage: "function",
+  spectrumFrames: "function",
+  stft: "function",
+  stftFrameCount: "function",
+  structureBoundaries: "function",
+  summarizeSpectrum: "function",
+  swingRatio: "function",
+  tensionCurve: "function",
+  timbreStats: "function",
+  todb: "function",
+  warmthIndex: "function",
+  wavinfo: "function",
+  windowFunction: "function",
+  zcr: "function",
+  zcrrate: "function",
+  zcurve: "function",
+};
 
 /** The honest surface pin — every named runtime export of every subpath
  * with the seat it answers. the deepEqual walk below asserts this table is
@@ -370,17 +523,37 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     STRETCH_RATIO_MIN: "number",
     STRETCH_RATIO_MAX: "number",
   },
-  audioengine: {
-    renderTakeOffline: "function",
-    seededNoiseChannel: "function",
-    TakeEngine: "function",
-    TransportError: "function",
-    VoiceBank: "function",
-    NOISE_SECONDS: "number",
-    RENDER_TAIL_S: "number",
-    DEFAULT_MIX_LAW: "object",
-    ROLE_TRIM: "object",
-    VOICE_RECIPES: "object",
+  audio: audiosurface,
+  /* the five retired leaf keys the fold keeps as published-specifier
+   * aliases: each resolves to the audio keyword file, so each answers the
+   * keyword file's whole runtime surface — the pin walks the one table. */
+  audioattributes: audiosurface,
+  audiodecode: audiosurface,
+  audioengine: audiosurface,
+  audiofeatures: audiosurface,
+  audiopipeline: audiosurface,
+  /* the take keyword seat (the audio fold wave): the three retired take
+   * leaves — the event scheduler, the session take store, the bounce
+   * desk — answer their one keyword file. */
+  take: {
+    EXPORT_LABELS: "object",
+    RECON_SEED_SCHEMA_VERSION: "string",
+    TAKE_SELECT_KEY: "string",
+    TAKE_STORE_KEY: "string",
+    downloadFile: "function",
+    eventsInWindow: "function",
+    exportTake: "function",
+    findTakeRecord: "function",
+    loadTakeRecords: "function",
+    memoryStorage: "function",
+    positionAt: "function",
+    reconSeedFile: "function",
+    removeTakePlan: "function",
+    saveTakePlan: "function",
+    scheduleTake: "function",
+    sectionAt: "function",
+    sessionStorageOrMemory: "function",
+    validateSchedule: "function",
   },
   wavwriter: {
     encodeWav: "function",
@@ -429,39 +602,6 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     VAULT_ORIGIN_ENV: "string",
     VAULT_PROJECT_ENV: "string",
     VAULT_TOKEN_ENV: "string",
-  },
-  audioattributes: {
-    /* the analysis contract seat: every export is a declaration (the five
-     * summaries and the fused descriptor interface), so the runtime surface
-     * is honestly empty — the types condition of the subpath carries the
-     * contract the embedder's declarations read. */
-  },
-  audiodecode: {
-    decodeWav: "function",
-    downmix: "function",
-    resample: "function",
-    normalizePeak: "function",
-    fromAudioBufferLike: "function",
-    AudioDecodeError: "function",
-    wavinfo: "function",
-  },
-  audiofeatures: {
-    audioSeed: "function",
-    audioSeedFromStats: "function",
-    clamp01: "function",
-    descriptorSummary: "function",
-    fuseDescriptor: "function",
-    normalize01: "function",
-    zcurve: "function",
-    DESCRIPTOR_DIMS: "number",
-    DIM_ORDER: "object",
-    NARRATIVE_CONTOUR: "object",
-  },
-  audiopipeline: {
-    analyzePcm: "function",
-    analyzeWavBytes: "function",
-    reportDigest: "function",
-    PipelineError: "function",
   },
   beatgrid: {
     onsetEnvelope: "function",
@@ -575,7 +715,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
  * and follows it, so the closure is the exact set the exports graph loads. */
 function importclosure(roots: readonly Subpath[]): string[] {
   const seen = new Set<string>();
-  const queue: string[] = roots.map((module) => `${module}.ts`);
+  const queue: string[] = roots.map((module) => targetOf(module));
   const specifier = /from\s+"\.\/([^"]+)"/g;
   while (queue.length > 0) {
     const file = queue.pop() as string;
@@ -615,7 +755,7 @@ describe("the library face of @wenathlan/debonair", () => {
 
   it("answers every exports target with a repository file the tarball packs", () => {
     for (const module of SUBPATHS) {
-      const file = `${module}.ts`;
+      const file = targetOf(module);
       assert.ok(existsSync(file), `the exports target ${file} does not resolve to a repository file`);
       assert.ok(pkg.files.includes(file), `the exports target ${file} never ships in the npm files array`);
     }

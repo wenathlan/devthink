@@ -42,11 +42,11 @@ export default defineConfig({
 
       /** the self bridge the transitive specifier rides: the cadria palette
        * engine imports the audio contract through debonair's own published
-       * specifiers ("@wenathlan/debonair/audiofeatures" carries the dim
-       * order the palette folds), so the app resolves its own published
+       * specifier ("@wenathlan/debonair/audio" carries the dim order the
+       * palette folds), so the app resolves its own published
        * surface to its own source — the graph the registry resolves for the
        * embedder, resolved to the monorepo root inside the app. */
-      "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "audiofeatures.ts"),
+      "@wenathlan/debonair/audio": path.resolve(import.meta.dirname, "audio.ts"),
 
       /** the route table self bridge the wave 2d carve out rides: the
        * library face walk pins the leaf through the published library

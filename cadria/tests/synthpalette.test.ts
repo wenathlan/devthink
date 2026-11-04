@@ -8,8 +8,7 @@
 // the neutral gray-green fallback rung, never NaN, never a throw.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
-import { DIM_ORDER } from "@wenathlan/debonair/audiofeatures";
+import { type AudioDescriptor, DIM_ORDER } from "@wenathlan/debonair/audio";
 import {
   AA_MIN_CONTRAST,
   contrastRatio,

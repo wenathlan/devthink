@@ -16,7 +16,7 @@ import {
   stemsManifest,
   validateStems,
 } from "../stems.ts";
-import { type NoteEvent, scheduleTake, type TakeSchedule } from "../takeevents.ts";
+import { type NoteEvent, scheduleTake, type TakeSchedule } from "../take.ts";
 
 describe("stems — planStems", () => {
   const plan = planTake({ prompt: "midnight techno, dark sub bass, hypnotic arp", seed: "k4-stems" });

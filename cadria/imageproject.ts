@@ -11,7 +11,7 @@
 // "project-range" non-finite or out-of-bounds numbers · "project-version"
 // unreadable bundle/descriptor version. Fresh deep-frozen replicas only —
 // caller inputs are never mutated, in memory or across JSON.
-import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
+import type { AudioDescriptor } from "@wenathlan/debonair/audio";
 import {
   type Block,
   type BlockRole,

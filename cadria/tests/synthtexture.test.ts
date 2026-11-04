@@ -9,9 +9,7 @@
 // blends — is deterministic bit-for-bit.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
-import { DIM_ORDER } from "@wenathlan/debonair/audiofeatures";
-import type { TexturePresetName, TextureSpec } from "../synth.ts";
+import { type AudioDescriptor, DIM_ORDER } from "@wenathlan/debonair/audio";
 import {
   GRAIN_COUPLING,
   JITTER_FIELD_CAP,
@@ -21,7 +19,9 @@ import {
   synthTextureFromPreset,
   TEXTURE_RANGES,
   textureDistance,
+  TexturePresetName,
   texturePresets,
+  TextureSpec,
 } from "../synth.ts";
 
 /** neutral base vector: mid-low everywhere so single-dim overrides read clean. */

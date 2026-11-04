@@ -13,7 +13,7 @@ import {
   type StructureStats,
   structureBoundaries,
   tensionCurve,
-} from "../audiostructure.ts";
+} from "../audio.ts";
 
 const RATE = 100; // 100 Hz analysis frames → 10 ms per frame
 const INTRO = [1, 0.2, 0.1, 0.05] as const;

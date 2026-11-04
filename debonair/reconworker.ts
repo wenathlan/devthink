@@ -35,7 +35,7 @@
 // route lane binds this walk). Pure and multi-mode — the same call runs in
 // the browser and in node.
 
-import { seededNoiseChannel } from "./audioengine.ts";
+import { seededNoiseChannel } from "./audio.ts";
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { pcmhash } from "./ingest.ts";
 import { RECON_ENVELOPE_WINDOWS } from "./ingestrecon.ts";

@@ -65,7 +65,7 @@ import {
   renderPatternMix,
   schedulePattern,
 } from "./renderworker.ts";
-import type { NoteEvent } from "./takeevents.ts";
+import type { NoteEvent } from "./take.ts";
 import { encodeWav } from "./wavwriter.ts";
 
 /** The machine readable failure codes of the reverse ingest. */

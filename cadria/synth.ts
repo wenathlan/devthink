@@ -14,8 +14,14 @@
 // (bezier math) keep their own root files, and the audio contract rides the
 // published debonair specifiers the family resolves for the embedder.
 
-import type { AudioDescriptor, NarrativeShape } from "@wenathlan/debonair/audioattributes";
-import { clamp01, DESCRIPTOR_DIMS, DIM_ORDER, NARRATIVE_CONTOUR } from "@wenathlan/debonair/audiofeatures";
+import {
+  type AudioDescriptor,
+  clamp01,
+  DESCRIPTOR_DIMS,
+  DIM_ORDER,
+  NARRATIVE_CONTOUR,
+  type NarrativeShape,
+} from "@wenathlan/debonair/audio";
 import { hexfromrgb, oklchfromrgb, relativeluma709, rgbfromhex, rgbfromoklch } from "./colorconvert.ts";
 import { bezierprogress } from "./easecurves.ts";
 
@@ -178,7 +184,7 @@ export function jitterField(seed: string, count: number): number[] {
   return out;
 }
 
-/** the consumed dims by contract position (audiofeatures.ts DIM_ORDER). */
+/** the consumed dims by contract position (the DIM_ORDER of audio.ts). */
 const FLATNESS_DIM = 3;
 const FLUX_DIM = 4;
 const NOISE_DIM = 16;
@@ -403,7 +409,7 @@ export function contrastRatio(a: string, b: string): number {
   return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
 }
 
-// descriptor dim positions — literals per the fixed contract at the top of audiofeatures.ts (DIM_ORDER); position is the contract.
+// descriptor dim positions — literals per the fixed contract at the top of the audio keyword file (DIM_ORDER); position is the contract.
 const DIM = {
   brightness: 6,
   tonic: 12,
@@ -1002,7 +1008,7 @@ function contourShape(c: number): NarrativeShape {
   return best;
 }
 
-/** one fnv-1a pass over a string, byte-folded (the constants audiofeatures hashes with). */
+/** one fnv-1a pass over a string, byte-folded (the constants the audio keyword file hashes with). */
 function fnv1a(text: string): number {
   let lane = FNV_BASIS;
   for (let i = 0; i < text.length; i += 1)

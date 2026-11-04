@@ -11,8 +11,7 @@
 // descriptor, same blocks; different seed, different jitter.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
-import { DIM_ORDER, NARRATIVE_CONTOUR } from "@wenathlan/debonair/audiofeatures";
+import { type AudioDescriptor, DIM_ORDER, NARRATIVE_CONTOUR } from "@wenathlan/debonair/audio";
 import {
   type Block,
   compositionBalance,

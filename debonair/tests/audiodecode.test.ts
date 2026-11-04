@@ -14,7 +14,7 @@ import {
   normalizePeak,
   resample,
   wavinfo,
-} from "../audiodecode.ts";
+} from "../audio.ts";
 
 /** little-endian u16 / u32 byte arrays. */
 const le16 = (value: number): number[] => [value & 0xff, (value >>> 8) & 0xff];

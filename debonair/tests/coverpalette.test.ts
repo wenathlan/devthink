@@ -11,7 +11,7 @@
 import assert from "node:assert/strict";
 import { FALLBACK_PALETTE } from "@wenathlan/cadria/synth";
 import { describe, it } from "vitest";
-import type { DescriptorStats } from "../audioattributes.ts";
+import type { DescriptorStats } from "../audio.ts";
 import { coverPaletteFromPcm, coverPaletteFromStats, plateAccents } from "../coverpalette.ts";
 
 /** A deterministic synthetic tonal take: a 110 hz sawtooth bass under an

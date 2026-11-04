@@ -51,7 +51,7 @@ import {
   saveReferenceTake,
 } from "../playerbus.ts";
 import type { ReconDocument } from "../reconpayload.ts";
-import { memoryStorage } from "../takestore.ts";
+import { memoryStorage } from "../take.ts";
 import { HEADER_LAYOUT, writeWav16 } from "../wavwriter.ts";
 
 // ---- the fake host: a window with a session storage and an AudioContext ----

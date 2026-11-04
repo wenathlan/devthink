@@ -18,7 +18,8 @@ debonair/
 ├─ rhythmgrammar.ts        # drum-pattern grammar — the 16-step grid, eight genre families as glyph tables, swing offsets, accent curves, seeded fills (wave b1)
 ├─ genrematrix.ts          # the fifteen-genre style dictionary — bpm ranges, swing, pattern family, scale biases, progression set, lufs target, timbre hints (wave b1)
 ├─ arranger.ts             # the composer — prompt+seed → the whole TakePlan (genre match, seeded bpm/key, chord timeline, accented+swung grid, section voicing, timelinemodel clips, mixer strips); deterministic (5-b)
-├─ takeevents.ts           # the event scheduler — plan → the flat time-ascending note list (drums+bass+keys+lead, fills, energy), window slices, grid position (5-b)
+├─ audio.ts                # the audio keyword file — the whole audio domain folded as bannered sections, one per retired leaf: the descriptor contract, the wav walk, the decode layer, the fft kernel, the rhythm pair, the spectrum, the structure, the timbre pair, the tonality pair, the fusion, the pipeline orchestrator and the browser transport (the audio fold wave — the fifteen #347 leaves retired)
+├─ take.ts                 # the take keyword file — the event scheduler (plan → the flat time-ascending note list, window slices, grid position), the session take shelf and the bounce desk folded as bannered sections (the audio fold wave — the three #347 leaves retired)
 ├─ beatgrid.ts             # beat grid + tempo map — time-domain onset envelope, autocorrelation tempo (50–200 bpm, log-gaussian prior), dp beat tracking, quantize/swing/subdivide, tempo anchors with hold/linear/exponential curves and beatsElapsed/timeAtBeat
 ├─ loudness.ts             # ebu r128 metering + normalization — k-weighting bs.1770-4 (shelf+rlb), 400ms gating blocks, two-stage gate, lra (ebu 3342), momentary/short-term series, sample/true peak (4x linear estimate), gainToTarget + applyGain
 ├─ mixergraph.ts           # mixing graph state — channels, sends, mute/solo, master bus; effective gains and every routing path resolved as a pure acyclic tree (solo wins over mute, gains chain in db)
@@ -27,7 +28,6 @@ debonair/
 ├─ timelinemodel.ts        # arrangement timeline state — clips on tracks in seconds, snap/split/trim/move, overlap validation, minimum duration; the daw edit algebra, zero render
 ├─ ducking.ts              # sidechain auto-duck — rms envelope over prefix sums, activity regions with bridge/min rules, soft-knee compressor curve, attack/release follower, volume keyframes for the offline render
 ├─ dawview.ts              # the pure view math — clock format, clip geometry, fader travel (−60..+6 db), meter percent, playhead percent (5-b)
-├─ takestore.ts            # the session take shelf — takestore + studio hand-off keys over an injectable storage seam (session storage, memory fallback) (5-b)
 ├─ db.ts                   # self-hosted sqlite runtime — better-sqlite3 wal, prepared parameterized statements only, schema mirroring prisma, content rows + render jobs; the site's storage, the future pattern db seat
 ├─ seed.ts                 # first-run content tables — genres, timeline tracks, mixer strips, readouts, library rows, stage cards, badges, locale choices (the offline answer of the static build)
 ├─ catalog.ts              # typed content accessor for the sol pages — https api when VITE_CATALOG_URL is set, in-memory seed otherwise, memoized promises, write-free
@@ -47,8 +47,6 @@ debonair/
 ├─ wavwriter.ts            # the riff writer — 16/24/32f headers by hand, the parse-back law every bounce test rides (kathesis b3)
 ├─ stems.ts                # the stem planner — per-role stems from the schedule, the bounce manifest schema v1 (kathesis b3)
 ├─ cloudsync.ts            # the gateway persistence seam — /api/projects, the typed errors (offline/timeout/refused), the local shelf fallback (kathesis b3)
-├─ takeexporter.ts         # the bounce desk of the studio — wav 16/24, midi, stems: every export a real render, no fake progress (5-b, moved to root)
-├─ audioengine.ts          # the browser transport (root logic, moved from Sol/studio) — the WebAudio graph per take, the wave-b2 recipes, the lookahead scheduler, the offline render mirror (5-b · v2.28)
 ├─ hpss.ts                 # the tier-1 separator — median-filter hpss, centered framing, conjugate ifft, f64 ola, conservation 2.3e-7 over the whole signal (pv0)
 ├─ ingest.ts               # the decomposition pipeline — the debonair.ingest/1 document: mix + harmonic/percussive stems, per-second vector frames, the fnv-1a pcm hash (pv0)
 ├─ ingestrecon.ts          # the recon descriptor lane — wraps the ingest pipeline and seats the recon/3 descriptors: the 13-seat mfcc (the timbre library's dct-ii, imported), the 32-window envelope statistics, the top-5 peaks with the noise-floor guard, the yin f0 notes (window 80 ms hop 40 ms, the tonal harmonic stem only), the per-second flux/krumhansl-root/48-scale-fit/bpm, the ingest/1 → recon/3 converters (wave 16a · pr17)

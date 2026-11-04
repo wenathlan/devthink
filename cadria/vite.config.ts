@@ -20,18 +20,16 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      /** the engine ownership bridges of the audio family: the analysis
+      /** the engine ownership bridge of the audio family: the analysis
        * seats the studio pages ride (the descriptor contract and the
-       * orchestrated analysis report) live in the katexis engine of the
+       * orchestrated analysis report — the whole audio domain the keyword
+       * fold retired into the one file) live in the katexis engine of the
        * debonair sibling — the audio domain has one owner and cadria
-       * consumes it through the published library specifiers, never
+       * consumes it through the published library specifier, never
        * through a local duplicate. the long family keys ride before the
-       * "@" theme alias; each entry retires when the published envelope
+       * "@" theme alias; the entry retires when the published envelope
        * carries the built module. */
-      "@wenathlan/debonair/audioattributes": path.resolve(import.meta.dirname, "../debonair/audioattributes.ts"),
-      "@wenathlan/debonair/audiodecode": path.resolve(import.meta.dirname, "../debonair/audiodecode.ts"),
-      "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "../debonair/audiofeatures.ts"),
-      "@wenathlan/debonair/audiopipeline": path.resolve(import.meta.dirname, "../debonair/audiopipeline.ts"),
+      "@wenathlan/debonair/audio": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
       /** the label store bridge of the ownership law: the app's copy
        * mechanism rides the vault factory through the published library
        * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves

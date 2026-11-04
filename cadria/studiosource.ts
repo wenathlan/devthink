@@ -5,7 +5,7 @@
  * genuine wave-1 chain over it. The decode doctrine is the documented dual
  * path:
  *   wav  → the raw bytes go to analyzeWavBytes, whose decodeWav walk
- *          (audiodecode.ts over audioformat.ts) owns the container natively,
+ *          (the decode layer of the audio keyword file) owns the container natively,
  *          no web audio needed;
  *   else → AudioContext.decodeAudioData decodes mp3/ogg/flac/m4a in the
  *          browser and fromAudioBufferLike maps the web AudioBuffer onto the
@@ -17,10 +17,14 @@
  * named, so the studio status line can show a traceable message.
  */
 
-import { fromAudioBufferLike, wavinfo } from "@wenathlan/debonair/audiodecode";
-import { type AnalysisReport, analyzePcm, analyzeWavBytes } from "@wenathlan/debonair/audiopipeline";
-import type { DemoFixture, DemoFixtureId } from "./introfixtures.ts";
-import { demoFixtures } from "./introfixtures.ts";
+import {
+  type AnalysisReport,
+  analyzePcm,
+  analyzeWavBytes,
+  fromAudioBufferLike,
+  wavinfo,
+} from "@wenathlan/debonair/audio";
+import { DemoFixture, DemoFixtureId, demoFixtures } from "./introfixtures.ts";
 
 /** hard cap on an uploaded file (bytes) — bounds the decodeAudioData working set. */
 const MAX_FILE_BYTES = 64 * 1024 * 1024;

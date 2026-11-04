@@ -13,7 +13,7 @@ import {
   saveTakePlan,
   TAKE_SELECT_KEY,
   TAKE_STORE_KEY,
-} from "../takestore.ts";
+} from "../take.ts";
 
 describe("takestore", () => {
   it("stores a take and reads it back with its timestamp", () => {
