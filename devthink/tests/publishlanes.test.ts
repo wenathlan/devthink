@@ -19,7 +19,13 @@
  * clears the three hundred plus law, so the regression that once lost the
  * four hundred asset era of the 133/134 rungs can never land silently
  * again: the census answers at the pull request gate, before a release
- * ever ships.
+ * ever ships. the registry family seats — the distfamily law: the four
+ * github-packages family matrices answer every application envelope
+ * (the saddle engine envelope joins the maven seat beside the nuget,
+ * rubygems and github npm seats it already answered), and the saddle
+ * pom answers the family coordinates the lane deploys, so a leg
+ * dropped from a matrix or the dead standalone saddle registry
+ * redeclared reddens the gate before a release ever ships.
  */
 import { existsSync } from "node:fs";
 import { access, readFile } from "node:fs/promises";
@@ -58,6 +64,24 @@ const MIRRORFAMILY = ["argan", "cadria", "cobaia", "debonair", "forge", "foundry
  * (the gateway getry and the monetization cobaia answer beside the eight
  * the lanes always carried). */
 const RELEASEFAMILY = ["argan", "cadria", "cobaia", "debonair", "forge", "foundry", "getry", "stealthhead", "vault", "saddle"];
+/** the registry family the four github-packages matrix lanes walk in the
+ * canonical alphabetical pass order — the distfamily law: every
+ * application envelope answers every registry seat (devthink rides its
+ * own single lanes, the ten siblings ride the family mirrors, and the
+ * saddle engine envelope walks the maven seat beside the nuget, rubygems
+ * and github npm seats it already answered). */
+const REGISTRYFAMILY = [
+  "argan",
+  "cadria",
+  "cobaia",
+  "debonair",
+  "forge",
+  "foundry",
+  "getry",
+  "saddle",
+  "stealthhead",
+  "vault",
+];
 /** every application folder of the monorepo the version lockstep stamps. */
 const ALLAPPS = [
   "devthink",
@@ -163,6 +187,43 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
   });
 });
 
+describe.skipIf(!inrepo)("the registry family seats (the distfamily law)", () => {
+  it("the four github-packages family matrices answer every application envelope", async () => {
+    const publish = await parseworkflow("publish.yml");
+    for (const lane of ["family-maven", "family-nuget", "family-rubygems", "family-githubnpm"]) {
+      const matrix = (publish.jobs?.[lane]?.strategy as { matrix?: { package?: string[] } })?.matrix;
+      expect(matrix?.package, `${lane} drifts from the registry family`).toEqual(REGISTRYFAMILY);
+    }
+    /* the npmjs mirror keeps its own order: saddle walks last, the
+     * heaviest pass of the house beside its engine build. */
+    const npmjs = (publish.jobs?.["family-npmjs"]?.strategy as { matrix?: { package?: string[] } })?.matrix;
+    expect(npmjs?.package).toEqual(MIRRORFAMILY);
+  });
+
+  it("the family maven lane walks the one registry path every leg deploys", async () => {
+    const publish = await readworkflow("publish.yml");
+    /* the existence pre-check and the deploy target share the
+     * io/github/wenathlan coordinate path the saddle pom now answers —
+     * one lane, one registry, ten legs. */
+    expect(publish).toContain('PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"');
+    expect(publish).toContain('"$PUBLISH/io/github/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}.jar"');
+  });
+
+  it("the saddle maven envelope answers the family coordinates the lane deploys", async () => {
+    const pom = await readFile(join(repoRoot, "saddle", "pom.xml"), "utf8");
+    expect(pom).toContain("<groupId>io.github.wenathlan</groupId>");
+    expect(pom).toContain("<artifactId>saddle</artifactId>");
+    expect(pom).toContain("https://maven.pkg.github.com/wenathlan/devthink");
+    /* the standalone saddle registry the standalone era declared answers
+     * no lane the merged repository token can publish. */
+    expect(pom).not.toContain("maven.pkg.github.com/wenathlan/saddle");
+    /* the revision lockstep: the family poms carry the release the root
+     * manifest stamps, the same way every sibling pom does. */
+    const root = JSON.parse(await readFile(join(repoRoot, "devthink", "package.json"), "utf8")) as { version: string };
+    expect(pom).toContain(`<revision>${root.version}</revision>`);
+  });
+});
+
 describe.skipIf(!inrepo)("the container distributions lane", () => {
   it("the three vhe profiles answer the owner doctrine — max, light and palatial ride max, balanced and lite", async () => {
     const publish = await parseworkflow("publish.yml");
@@ -196,13 +257,13 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
       profilegpu: "rtx5090",
       profilegpus: 1,
     });
-    /* every profile ships the eleven-architecture family standard (the
-     * complete linux platform surface buildx/docker carries — the saddle
-     * arch law). */
+    /* every profile ships the build legs the pinned base honestly
+     * carries (the eleven-arch container law the saddle container heal
+     * landed): amd64 the native x64 leg, arm64, ppc64le and s390x under
+     * QEMU — the seven seats the base does not ship answer the
+     * standard's honest coded absence, never a pretended build leg. */
     for (const leg of profiles) {
-      expect(leg.platforms).toBe(
-        "linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64",
-      );
+      expect(leg.platforms).toBe("linux/amd64,linux/arm64,linux/ppc64le,linux/s390x");
     }
   });
 
@@ -241,12 +302,22 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     ]);
   });
 
-  it("the published vhe index answers the eleven architectures and the honest console smokes", async () => {
+  it("the published vhe index answers the base-carried build legs and the honest console smokes", async () => {
     const publish = await readworkflow("publish.yml");
+    /* the saddle container heal law (the eleven-arch standard of the
+     * containerarch table): the build legs answer the four platforms
+     * the pinned base honestly carries — the native x64 leg beside the
+     * three QEMU-emulated seats — while the seven seats the base does
+     * not ship keep the honest coded absence of the standard table. */
+    expect(publish).toContain("platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x");
+    expect(publish).toContain("platforms: linux/arm64,linux/ppc64le,linux/s390x");
+    const standard = await readFile(join(repoRoot, "saddle", "containerarch.ts"), "utf8");
+    for (const id of ["x64", "arm64", "armv7", "riscv64", "ppc64le", "s390x", "386", "mips64le", "loong64", "wasm32", "wasip1"]) {
+      expect(standard, `the container standard must keep the ${id} seat`).toContain(`"${id}"`);
+    }
     /* the saddlemod heal law: the spoofed /proc validations retired with
      * the mesa machinery — the legs verify the image with an honest
      * detached boot, the /health probe and the modalities plancount. */
-    expect(publish).toContain("linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64");
     expect(publish).toContain("/health");
     expect(publish).toContain("/api/v1/modalities");
   });
