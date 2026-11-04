@@ -1,4 +1,4 @@
-# infra.md — the DevThink family logic book (the root law keeps the root clean, the book rides the docs seat)
+# INFRA.md — the DevThink family logic book (the single root seat of the owner law, the family book answers at the repo root)
 
 > O arquivo único na raiz para reagrupar e reajustar de zero a 3000 ou até 4000 lógicas correlatas da família, regras em PT-BR, texto minimalista, título e descrição no máximo.
 
