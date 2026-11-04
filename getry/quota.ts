@@ -688,8 +688,11 @@ export function parseQuotaGroup(raw: QuotaGroupRaw, source: QuotaSource): QuotaG
   let id: QuotaGroupId = resolveQuotaGroup(displayNameRaw);
 
   // displayName containing "Gemini Models" => generic gemini
+  // the bounded gap window keeps the claude→gpt scan linear on adversarial
+  // display names (the code-scanning redos law) — a real grouped name
+  // never carries a 128-char canyon between the two markers.
   if (/gemini models/i.test(displayNameRaw)) id = "gemini";
-  if (/claude.*gpt|3p/i.test(displayNameRaw)) id = "claude-3p";
+  if (/claude.{0,128}gpt|3p/i.test(displayNameRaw)) id = "claude-3p";
 
   const description = String(raw.description ?? "").trim();
   const bucketsRaw = Array.isArray(raw.buckets) ? raw.buckets : [];

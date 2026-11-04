@@ -59,8 +59,11 @@ export interface ValidateShaderOptions {
 
 /** strips line and block comments while preserving every line number. */
 function stripComments(source: string): string {
+  // the bounded block window keeps the scan linear on adversarial "/* /*"
+  // runs (the code-scanning redos law); no honest shader rides a 64k-wide
+  // comment block, and the line arm was already safe.
   return source
-    .replace(/\/\*[\s\S]*?\*\//g, (block) => "\n".repeat((block.match(/\n/g) ?? []).length))
+    .replace(/\/\*[\s\S]{0,65536}?\*\//g, (block) => "\n".repeat((block.match(/\n/g) ?? []).length))
     .replace(/\/\/[^\n]*/g, "");
 }
 

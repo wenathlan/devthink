@@ -146,8 +146,12 @@ const OBSERVER_FILE_MODE = 0o600;
 const OBSERVER_DIR_MODE = 0o755;
 const MEMORY_CACHE_KEY = "latest";
 
-const SEMVER_RE = /^(\d+)\.(\d+)\.(\d+)(?:-[\w.-]+)?(?:\+[\w.-]+)?$/;
-const SEMVER_EXTRACT_RE = /(\d+\.\d+\.\d+(?:-[\w.-]+)?(?:\+[\w.-]+)?)/;
+// bounded quantifiers (digits/prerelease/build capped) keep every scan
+// linear — the unbounded arms answered polynomial time on adversarial
+// digit runs (the code-scanning redos law), and no honest semver rides
+// sixteen-plus digits per segment anyway.
+const SEMVER_RE = /^(\d{1,16})\.(\d{1,16})\.(\d{1,16})(?:-[\w.-]{0,64})?(?:\+[\w.-]{0,64})?$/;
+const SEMVER_EXTRACT_RE = /(\d{1,16}\.\d{1,16}\.\d{1,16}(?:-[\w.-]{0,64})?(?:\+[\w.-]{0,64})?)/;
 
 // ---------------------------------------------------------------------------
 // Section: Auth constants (plugin integration reference, not used in fetch)
@@ -359,8 +363,12 @@ export function parseVersionFromPayload(payload: unknown): string | null {
   }
 
   try {
+    // the stringify of an adversarial payload can be megabytes — the
+    // bounded extract regex is linear, and the window gate keeps even the
+    // linear scan off the hostile tail (the redos law).
     const asString = JSON.stringify(payload);
-    const m = asString.match(SEMVER_EXTRACT_RE);
+    const window = asString.length <= 4096 ? asString : asString.slice(0, 4096);
+    const m = window.match(SEMVER_EXTRACT_RE);
     if (m?.[1]) {
       const cleaned = cleanSemver(m[1]);
       if (cleaned) return cleaned;
@@ -387,7 +395,9 @@ export function parseAntigravityVersion(raw: string): {
     return { normalized: FALLBACK_VERSION, full: FALLBACK_FULL_VERSION };
   }
   const trimmed = raw.trim();
-  const m = trimmed.match(/(\d+\.\d+\.\d+(?:\.\d+)?)/);
+  // bounded arms keep the extract scan linear (the redos law) and the
+  // length gate keeps hostile megabyte payloads away from the engine.
+  const m = trimmed.length <= 512 ? trimmed.match(/(\d{1,16}\.\d{1,16}\.\d{1,16}(?:\.\d{1,16})?)/) : null;
   if (!m) {
     const cleaned = trimmed.replace(/[^0-9.-]/g, "");
     return {
