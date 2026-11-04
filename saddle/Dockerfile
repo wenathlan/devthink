@@ -188,14 +188,15 @@
 # range the recipes draw their host ports from). nothing in the stack
 # ever binds a hardcoded address.
 
-# Base image contract (the pinned dependencies law): the defaults ride
-# manifest-list digests — the registry resolves one digest per platform, so
-# the eleven-architecture matrix stays served by a single pinned reference
-# while the fetch stays byte-honest (the code-scanning pin law). the
-# release checksums the runners generate (SHA256SUMS) cover the artifacts,
-# never the sources; the workflow may still override the ARG with a newer
-# pinned digest.
-ARG UBUNTU="ubuntu:24.04@sha256:fe81560990fae86dc4743202b2cb4d3df98d0bcf949173cecef15ce1127ef852"
+# Base image contract (the digest-never-hardcoded law): the defaults ride
+# bare tags — no 64-hex digest ever lands in a source file (the owner law:
+# signatures are generated during the process, never written). the publish
+# lanes resolve the manifest-list digest of each base at build time
+# (github-computed, the MESA_SHA256 pattern) and pass the digest-pinned
+# reference through these ARGs, so every real build fetches byte-honest
+# images while the source stays digest-free; a local build without the
+# build-arg rides the tag.
+ARG UBUNTU="ubuntu:24.04"
 # maximum virtual hardware profile baked at build time (workflow override
 # friendly): the top catalog cpu (EPYC 9965, 192 cores / 384 threads), the
 # catalog maximum memory plan (1024 GiB), the top gpu profile (B200) and
@@ -207,7 +208,7 @@ ARG VHE_PROFILE_THREADS="384"
 ARG VHE_PROFILE_RAM_GB="1024"
 ARG VHE_PROFILE_GPU="b200"
 ARG VHE_PROFILE_GPUS="8"
-ARG PYTHON_BASE="python:3.14.7-slim@sha256:51dafde81dbdb6ebde285137a295cf18a47ca95234fe388a343719cb97305b3d"
+ARG PYTHON_BASE="python:3.14.7-slim"
 ARG LLVM_VERSION="18"
 ARG NODE_VERSION="26.7.0"
 ARG MESA_VERSION="26.2.1"
@@ -689,11 +690,12 @@ ENTRYPOINT ["/usr/bin/tini", "--", "qemu-system-x86_64"]
 # outputs (the engine dist, pure js, and the web SPA, static assets) are
 # architecture-independent, while the tailwind/lightningcss pipeline only
 # ships native bindings for the builder platforms - the per-arch legs never
-# run it under QEMU. The base rides the manifest-list digest (the pinned
-# dependencies law): the registry resolves the digest per platform, so one
-# pinned digest serves the whole eleven-architecture matrix while the
-# fetch stays byte-honest.
-FROM --platform=$BUILDPLATFORM node:26.13.0-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39 AS saddle-build
+# run it under QEMU. The base rides the NODE_BASE arg (the digest law: the
+# default carries the bare tag, the publish lanes resolve the manifest-list
+# digest at build time and pass the pinned reference — no 64-hex ever
+# lands in this file).
+ARG NODE_BASE="node:26.13.0-slim"
+FROM --platform=$BUILDPLATFORM ${NODE_BASE} AS saddle-build
 
 ARG SADDLE_VERSION=2.0.154
 WORKDIR /app
@@ -1388,7 +1390,8 @@ CMD ["node", "/engine/webserver.ts"]
 #   docker build --target saddle-runtime -t saddle:<version> .
 # ══════════════════════════════════════════════════════════════════════
 
-FROM node:26.13.0-slim@sha256:e4db4c914bf8ad241bd24804fc25d272d89bad97e68cdc8a1414862790a02c39 AS saddle-runtime
+ARG NODE_BASE="node:26.13.0-slim"
+FROM ${NODE_BASE} AS saddle-runtime
 
 ARG SADDLE_VERSION=2.0.154
 LABEL org.opencontainers.image.title="Saddle" \
