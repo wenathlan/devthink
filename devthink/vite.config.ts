@@ -261,6 +261,12 @@ function nodebuiltinshim(): Plugin {
 
 export default defineConfig({
   define: {
+    /** the browser bundle never crashes on the node bare global: the gateway
+     * engine family the browser graph now reaches (the google genai sdk the
+     * getry providers ride, whose fetch compat shims read global.Request and
+     * global.Headers) answers through the standard identifier swap — the
+     * white-screen regression the pages deploy carried dies here. */
+    global: "globalThis",
     __dtversion__: JSON.stringify(manifestversion),
     /** the intro target of the build: the entry doctrine resolves the ONE
      * face per distribution (web SaaS landing vs owned system boot) through
@@ -492,14 +498,6 @@ export default defineConfig({
     dedupe: ["react", "react-dom", "react-dom/client"],
   },
   root: import.meta.dirname,
-  /** the browser bundle never crashes on the node bare global: the gateway
-   * engine family the browser graph now reaches (the google genai sdk the
-   * getry providers ride, whose fetch compat shims read global.Request and
-   * global.Headers) answers through the standard identifier swap — the
-   * white-screen regression the pages deploy carried dies here. */
-  define: {
-    global: "globalThis",
-  },
   build: {
     /** the build answers at the application root: assetsDir empty keeps every
      * hashed bundle flat beside the entry html, emptyOutDir false never wipes
