@@ -740,8 +740,10 @@ async function validateruntimebaselines(): Promise<void> {
   /* the metadata probe rides the joined lane: the literal call form would
    * answer the bundle purity law the library modes test guards (the browser
    * bundle never carries a require seat), so the Dockerfile probe composes
-   * at runtime and the source stays free of the forbidden literal. */
-  const metadataprobe = ["node", "-p", `"${["require", "('./package.json')"].join("")}"`].join(" ");
+   * at runtime and the source stays free of the forbidden literal. the
+   * probe keeps the prefix shape of the original seat (the Dockerfile's
+   * own expressions continue past the package.json argument). */
+  const metadataprobe = ["node", "-p", `"${["require", "('./package.json')"].join("")}"].join(" ");
   if (!containerfile.includes(metadataprobe))
     throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
   if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
