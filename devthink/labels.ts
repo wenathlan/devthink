@@ -212,6 +212,19 @@ export const labelManifest = {
 
 export type LabelKey = keyof typeof labelManifest & string;
 
+/**
+ * label — the manifest accessor the wingets read: the dot id quotes the
+ * manifest row, the translation store overrides it at boot and the
+ * manifest text is the offline answer. an unknown id renders empty,
+ * never a crash on the interface.
+ *
+ * @param id the manifest key of the string.
+ * @returns the interface text the id quotes.
+ */
+export function label(id: LabelKey): string {
+  return labelManifest[id] ?? "";
+}
+
 /** the row-store door of the os app: the labels ride the IndexedDB lane of
  * the storage module (the browser-safe service door — never better-sqlite3
  * inside the static bundle). the adapter maps the door onto the factory's
