@@ -22,7 +22,7 @@ import {
   GRID_MIN,
   HISTOGRAM_BINS,
   rhythmScatter,
-} from "../synthcomposition.ts";
+} from "../synth.ts";
 
 /** builds a descriptor from named dim overrides over a 0.5 mid field. */
 function desc(over: Record<string, number> = {}, seed = "9a2f41c07b3d5e88"): AudioDescriptor {

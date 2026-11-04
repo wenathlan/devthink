@@ -36,10 +36,13 @@ import { type AnalysisReport, analyzePcm, analyzeWavBytes, PipelineError } from 
 import { buildImageProject, type ImageProject, ProjectError, parseProject, serializeProject } from "./imageproject.ts";
 import { renderCommands, renderSvg } from "./imagerender.ts";
 import { styleByName, styleForDescriptor } from "./imagestyles.ts";
-import { compositionBlocks, rhythmScatter } from "./synthcomposition.ts";
-import { synthMotion } from "./synthmotion.ts";
-import { synthPalette } from "./synthpalette.ts";
-import { synthTexture } from "./synthtexture.ts";
+import {
+  compositionBlocks,
+  rhythmScatter,
+  synthMotion,
+  synthPalette,
+  synthTexture,
+} from "./synth.ts";
 
 // ---- storage seam contract (mirrors the generation.ts interface verbatim; runs before it lands) ----
 

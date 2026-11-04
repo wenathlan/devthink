@@ -12,10 +12,21 @@
 // unreadable bundle/descriptor version. Fresh deep-frozen replicas only —
 // caller inputs are never mutated, in memory or across JSON.
 import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
-import type { Block, BlockRole } from "./synthcomposition.ts";
-import { KEYFRAME_CAP, type MotionEasing, type MotionKeyframeKind, type MotionSpec } from "./synthmotion.ts";
-import { type OklchTriple, oklchToSrgbHex, type Palette, wrapHue } from "./synthpalette.ts";
-import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "./synthtexture.ts";
+import {
+  type Block,
+  type BlockRole,
+  KEYFRAME_CAP,
+  type MotionEasing,
+  type MotionKeyframeKind,
+  type MotionSpec,
+  type OklchTriple,
+  oklchToSrgbHex,
+  type Palette,
+  wrapHue,
+  GRAIN_COUPLING,
+  TEXTURE_RANGES,
+  type TextureSpec,
+} from "./synth.ts";
 
 export type ProjectErrorCode = "project-version" | "project-shape" | "project-range";
 export type CanvasOrientation = "portrait" | "landscape" | "square";

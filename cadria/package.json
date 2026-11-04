@@ -57,10 +57,6 @@
     "versawasecomposition.ts",
     "shadercomp.ts",
     "visualize.ts",
-    "visualizemesh.ts",
-    "visualizematerial.ts",
-    "visualizenormals.ts",
-    "visualizeexport.ts",
     "timelineedit.ts",
     "timelineview.ts",
     "timeticks.ts",
@@ -74,10 +70,7 @@
     "blendmodes.ts",
     "colorconvert.ts",
     "easecurves.ts",
-    "synthpalette.ts",
-    "synthcomposition.ts",
-    "synthtexture.ts",
-    "synthmotion.ts",
+    "synth.ts",
     "imagerender.ts",
     "imagerenderpaint.ts",
     "imageproject.ts",
@@ -140,26 +133,6 @@
       "types": "./visualize.ts",
       "import": "./visualize.ts",
       "default": "./visualize.ts"
-    },
-    "./visualizemesh": {
-      "types": "./visualizemesh.ts",
-      "import": "./visualizemesh.ts",
-      "default": "./visualizemesh.ts"
-    },
-    "./visualizematerial": {
-      "types": "./visualizematerial.ts",
-      "import": "./visualizematerial.ts",
-      "default": "./visualizematerial.ts"
-    },
-    "./visualizenormals": {
-      "types": "./visualizenormals.ts",
-      "import": "./visualizenormals.ts",
-      "default": "./visualizenormals.ts"
-    },
-    "./visualizeexport": {
-      "types": "./visualizeexport.ts",
-      "import": "./visualizeexport.ts",
-      "default": "./visualizeexport.ts"
     },
     "./timelineedit": {
       "types": "./timelineedit.ts",
@@ -226,25 +199,10 @@
       "import": "./easecurves.ts",
       "default": "./easecurves.ts"
     },
-    "./synthpalette": {
-      "types": "./synthpalette.ts",
-      "import": "./synthpalette.ts",
-      "default": "./synthpalette.ts"
-    },
-    "./synthcomposition": {
-      "types": "./synthcomposition.ts",
-      "import": "./synthcomposition.ts",
-      "default": "./synthcomposition.ts"
-    },
-    "./synthtexture": {
-      "types": "./synthtexture.ts",
-      "import": "./synthtexture.ts",
-      "default": "./synthtexture.ts"
-    },
-    "./synthmotion": {
-      "types": "./synthmotion.ts",
-      "import": "./synthmotion.ts",
-      "default": "./synthmotion.ts"
+    "./synth": {
+      "types": "./synth.ts",
+      "import": "./synth.ts",
+      "default": "./synth.ts"
     },
     "./imagerender": {
       "types": "./imagerender.ts",

@@ -14,7 +14,7 @@
 import { useEffect, useState } from "react";
 import { type RenderFrame, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
 import { label } from "../../labels.ts";
-import type { MotionSpec } from "../../synthmotion.ts";
+import type { MotionSpec } from "../../synth.ts";
 
 /** the beat envelope quantization — 16 steps per loop keeps the pulse smooth
  * without re-serializing the whole svg every frame. */

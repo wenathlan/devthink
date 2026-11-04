@@ -24,7 +24,7 @@ import {
   TONIC_HUE_OFFSET,
   tonicHue,
   wrapHue,
-} from "../synthpalette.ts";
+} from "../synth.ts";
 
 // seeded LCG (the audio-test voice) — deterministic "random-ish" descriptors.
 function lcg(seed: number): () => number {

@@ -10,7 +10,7 @@
 // behind them.
 
 import type { EffectProgram } from "./shadercomp.ts";
-import type { ImageInput } from "./visualizemesh.ts";
+import type { ImageInput } from "./visualize.ts";
 
 export type { ImageInput };
 

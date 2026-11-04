@@ -1,6 +1,6 @@
 // # coverpalette — the bridge battery of the ownership law: the cadria
 // palette engine answers the audio app through the published library
-// specifier ("@wenathlan/cadria/synthpalette"), resolved to the monorepo
+// specifier ("@wenathlan/cadria/synth"), resolved to the monorepo
 // source by the vitest alias the family bridge pattern carries. The seats
 // pinned here: the derivation is deterministic (the same pcm answers the
 // same palette bit-for-bit), the engine answers real content (a tonal take
@@ -9,7 +9,7 @@
 // carry the anchor-first law the cover plate renders.
 
 import assert from "node:assert/strict";
-import { FALLBACK_PALETTE } from "@wenathlan/cadria/synthpalette";
+import { FALLBACK_PALETTE } from "@wenathlan/cadria/synth";
 import { describe, it } from "vitest";
 import type { DescriptorStats } from "../audioattributes.ts";
 import { coverPaletteFromPcm, coverPaletteFromStats, plateAccents } from "../coverpalette.ts";

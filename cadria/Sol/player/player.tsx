@@ -31,10 +31,14 @@ import {
 import { type RenderFrame, renderCommands, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";
-import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
-import { type MotionSpec, synthMotion } from "../../synthmotion.ts";
-import { synthPalette } from "../../synthpalette.ts";
-import { synthTexture } from "../../synthtexture.ts";
+import {
+  compositionBlocks,
+  rhythmScatter,
+  type MotionSpec,
+  synthMotion,
+  synthPalette,
+  synthTexture,
+} from "../../synth.ts";
 import {
   attachdecode,
   type DecodeSession,

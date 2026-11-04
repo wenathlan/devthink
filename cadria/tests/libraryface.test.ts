@@ -48,9 +48,7 @@ async function readPackage(): Promise<PackageJson> {
  * and the labels consumer rides @wenathlan/vault/labelstore — the registry
  * envelope owns their resolution for the embedder. */
 const SPECIFIER_LANE: readonly string[] = [
-  "./synthpalette",
-  "./synthcomposition",
-  "./synthmotion",
+  "./synth",
   "./imagestyles",
   "./imageexport",
   "./imageproject",
@@ -61,7 +59,7 @@ describe("the library face", () => {
   it("declares the engine surface the family law promises", async () => {
     const packagejson = await readPackage();
     const specifiers = Object.keys(packagejson.exports);
-    assert.ok(specifiers.length >= 35, "the exports map carries the engine surface, not the empty envelope");
+    assert.ok(specifiers.length >= 17, "the exports map carries the engine surface, not the empty envelope");
     for (const promised of [
       "./versawase",
       "./versawase3d",
@@ -70,7 +68,7 @@ describe("the library face", () => {
       "./visualize",
       "./timelineedit",
       "./mediaprobe",
-      "./synthpalette",
+      "./synth",
       "./labels",
     ]) {
       assert.ok(specifiers.includes(promised), `"${promised}" rides the exports map`);
@@ -109,7 +107,7 @@ describe("the library face", () => {
     const root = dirname(fileURLToPath(new URL(import.meta.url)));
     const specifierLane = new Set(SPECIFIER_LANE);
     const pure = Object.entries(packagejson.exports).filter(([name]) => !specifierLane.has(name));
-    assert.ok(pure.length >= 28, "the pure closure covers the engine core");
+    assert.ok(pure.length >= 14, "the pure closure covers the engine core");
     for (const [specifier, entry] of pure) {
       const resolved = resolve(root, "..", entry.import);
       const module = await import(pathToFileURL(resolved).href);
@@ -161,7 +159,7 @@ describe("the library face", () => {
         }
       }
     }
-    assert.ok(seen.size >= 28, "the walk covered every pure published module and its local closure");
+    assert.ok(seen.size >= 15, "the walk covered every pure published module and its local closure");
   });
 
   it("answers the family lockstep on the manifest version", async () => {

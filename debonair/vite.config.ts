@@ -25,13 +25,13 @@ export default defineConfig({
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
       /** the cadria engine bridge of the ownership law: the cover palette
        * derivation rides the visual engine through the published library
-       * specifier ("@wenathlan/cadria/synthpalette"), and this bridge
+       * specifier ("@wenathlan/cadria/synth"), and this bridge
        * resolves the specifier to the monorepo source the sibling engine
        * carries — the palette mapping is never duplicated inside debonair
        * (the audio descriptor is debonair's own contract, the palette law
        * is cadria's). the entry retires when the published envelope carries
        * the built palette engine. */
-      "@wenathlan/cadria/synthpalette": path.resolve(import.meta.dirname, "../cadria/synthpalette.ts"),
+      "@wenathlan/cadria/synth": path.resolve(import.meta.dirname, "../cadria/synth.ts"),
       /** the self bridge the transitive specifier rides: the cadria palette
        * engine imports the audio contract through debonair's own published
        * specifiers ("@wenathlan/debonair/audiofeatures" carries the dim

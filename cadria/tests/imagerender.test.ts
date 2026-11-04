@@ -24,8 +24,7 @@ import {
   Z_SPECULAR,
 } from "../imagerender.ts";
 import { renderSvg } from "../imagerenderpaint.ts";
-import type { Block } from "../synthcomposition.ts";
-import type { Palette } from "../synthpalette.ts";
+import type { Block, Palette } from "../synth.ts";
 
 /** a layout block shorthand. */
 function block(x: number, y: number, w: number, h: number, role: Block["role"], weight = 0.1): Block {

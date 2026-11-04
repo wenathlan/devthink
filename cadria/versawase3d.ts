@@ -11,7 +11,7 @@
 // disposes cleanly.
 
 import * as THREE from "three";
-import type { MeshGeometry } from "./visualizemesh.ts";
+import type { MeshGeometry } from "./visualize.ts";
 
 /** the mesh payload the viewport mounts — exactly what visualize() answers. */
 export interface MeshData {

@@ -12,7 +12,7 @@ import { describe, it } from "vitest";
 import type { AudioDescriptor, DescriptorStats } from "@wenathlan/debonair/audioattributes";
 import { fuseDescriptor } from "@wenathlan/debonair/audiofeatures";
 import { bezierprogress } from "../easecurves.ts";
-import type { MotionKeyframe, MotionSpec } from "../synthmotion.ts";
+import type { MotionKeyframe, MotionSpec } from "../synth.ts";
 import {
   evaluateEase,
   KEYFRAME_CAP,
@@ -25,7 +25,7 @@ import {
   PULSE_SCALE_FLOOR,
   synthMotion,
   TIMELINE_EVENT_CAP,
-} from "../synthmotion.ts";
+} from "../synth.ts";
 
 /** one believable mid-tempo minor-key clip — bpm pinned at 120 → 500 ms loop. */
 const baseStats: DescriptorStats = {

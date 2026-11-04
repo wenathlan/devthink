@@ -25,7 +25,7 @@ import {
   styleForDescriptor,
   TEXTURE_DELTA_CAP,
 } from "../imagestyles.ts";
-import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "../synthtexture.ts";
+import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "../synth.ts";
 
 /** builds a descriptor from named dim overrides over a 0.5 mid field. */
 function desc(over: Record<string, number> = {}, seed = "1b6e5a9c3d7f2480"): AudioDescriptor {

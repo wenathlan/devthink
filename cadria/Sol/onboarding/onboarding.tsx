@@ -28,9 +28,12 @@ import { renderCommands, renderSvg, renderThumbnailSignature } from "../../image
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { type LabelKey, label } from "../../labels.ts";
 import { markOnboardingStage } from "../../onboardingstate.ts";
-import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
-import { synthPalette } from "../../synthpalette.ts";
-import { synthTexture } from "../../synthtexture.ts";
+import {
+  compositionBlocks,
+  rhythmScatter,
+  synthPalette,
+  synthTexture,
+} from "../../synth.ts";
 import { CadriaMark } from "../shell/Shell.tsx";
 
 /** the canvas the see frame renders at (px; the render layer clamps and centers it). */
