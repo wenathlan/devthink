@@ -1,84 +1,42 @@
 // # sandboxmodality — the workload lane declaration of the getry
 // application (root layer, wave WL1): the lanes this app owns in the
-// family workload catalog, mirrored from the engine of record
-// (saddle/workloadlaw.ts — the FAMILYLANES table) as the string contract
-// the deploy and the platform speak. The mirror law (the same discipline
-// the devthink modalities vendor rides): the rows are mirrored, not
-// imported, because the published saddle envelope the container build
-// installs does not carry the workload law yet and the family law bars a
-// relative path across apps — the day the envelope publishes, the ids
-// answer the same strings (the lockstep is the string contract, not the
-// import). The app battery pins the mirror against the engine source
-// through the library bridge so the vendor can never drift in silence.
+// family workload catalog, answered now straight from the engine of
+// record through the published library specifier
+// ("@wenathlan/saddle/workloadlaw" — the envelope carries the workload
+// law, so the mirror era closes): the rows are the owner's own objects,
+// the lockstep is the import itself, the vendor can never drift in
+// silence. The family law bars a relative path across apps, so the
+// specifier rides the bridges the app's tsconfigs and the vitest config
+// carry — the same discipline the modalityregistry bridge of the
+// ownership wave already speaks. The app battery pins the import against
+// the engine catalog so the vendor can never drift in silence.
 //
 // The seat law (the deploy's opt-in, the family's shared shape): the
 // deploy pins GETRY_SANDBOX_LANE — "local" (the default, the deploy's own process),
 // "join" (the platform resolves every lane through the engine's join
 // resolver — the nuclear modality law: the workload never names a
 // modality, the join answers), or a modality id the deploy pins for the
-// app's lanes (named here, validated by the platform's join at dispatch —
-// this module never judges engine vocabulary, so the mirror cannot drift
+// app's lanes (validated by the platform's join at dispatch —
+// this module never judges engine vocabulary, so the seat cannot drift
 // when the registry grows). The module never spawns anything and resolves
 // no join: it names the lanes' truth; the platform resolves the sandbox.
-// Zero consumer data, zero imports.
+// Zero consumer data.
 
-/** one mirrored workload lane row — the same five keys the engine law pins
- * (app, lane, role, demand, today). */
-export type AppWorkloadLane = {
-  /** the official app slug every row carries. */
-  readonly app: string;
-  /** the lane id inside the app (kebab-case, the engine catalog id). */
-  readonly lane: string;
-  /** what the lane does, in one sentence (the engine row's sentence). */
-  readonly role: string;
-  /** the demand the lane puts on the sandbox (gpu, network, isolation,
-   * boot budget — never a modality name: the nuclear law). */
-  readonly demand: {
-    readonly gpu: boolean;
-    readonly network: boolean;
-    readonly isolation: "process" | "namespace" | "vm" | "hardware";
-    readonly bootbudget?: number;
-  };
-  /** where the heavy pass runs today — the honest truth the census reads. */
-  readonly today: "engine-lane" | "app-lane";
-};
+import { lanesof } from "@wenathlan/saddle/workloadlaw";
+import type { WorkloadLane } from "@wenathlan/saddle/workloadlaw";
 
-/** the app slug every mirrored row carries. */
+/** one workload lane row of this app — the engine law's own shape (app,
+ * lane, role, demand, today). */
+export type AppWorkloadLane = WorkloadLane;
+
+/** the app slug every row carries. */
 export const APPSLUG = "getry";
 
-/** the workload lanes this app owns — the mirror of the engine catalog
- * rows (saddle/workloadlaw.ts, the FAMILYLANES table; the battery pins
- * the two surfaces equal). */
-export const WORKLOADLANES: readonly AppWorkloadLane[] = Object.freeze([
-  {
-    app: "getry",
-    lane: "inference-route",
-    role: "the inference route lane: the provider pool, the sse parse and the model masking over the upstream calls",
-    demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 },
-    today: "engine-lane",
-  },
-  {
-    app: "getry",
-    lane: "stream-fallback",
-    role: "the resilience runner: the verdict ladder, the backoff walk and the trail the retry lane keeps",
-    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
-    today: "engine-lane",
-  },
-  {
-    app: "getry",
-    lane: "thinking-ladder",
-    role: "the seven-level reasoning ladder: the budget resolution the request injects before the upstream call",
-    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
-    today: "engine-lane",
-  },
-  {
-    app: "getry",
-    lane: "router-rotation",
-    role: "the rotation lane: the weighted draw, the cooldown ledger and the session rows the store keeps",
-    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
-    today: "engine-lane",
-  },
-]);
+/** the workload lanes this app owns — the engine catalog rows
+ * (saddle/workloadlaw.ts, the FAMILYLANES table) answered through the
+ * published specifier; the battery pins the import against the engine
+ * catalog byte for byte. */
+export const WORKLOADLANES: readonly AppWorkloadLane[] = Object.freeze(lanesof(APPSLUG));
 
 /** the environment name the deploy pins the sandbox lane seat through
  * (the opt-in seat — documented in the env example, zero hardcode). */
@@ -102,7 +60,7 @@ export type LaneSeatResult =
  * onto the platform's join resolver (the nuclear modality law); any other
  * non-empty choice is the modality id the deploy pins for the lanes
  * (named by the deploy, validated by the platform's join at dispatch —
- * this module never judges engine vocabulary, so the mirror cannot drift
+ * this module never judges engine vocabulary, so the seat cannot drift
  * when the registry grows).
  *
  * @param choice the deploy's choice (the env value or the config row).
@@ -133,11 +91,11 @@ export function lanesandboxfromenv(lookup: (key: string) => string | undefined):
 }
 
 /**
- * Answers one mirrored lane row by lane id — the lookup the app surfaces
+ * Answers one lane row by lane id — the lookup the app surfaces
  * and the batteries read.
  *
  * @param lane the lane id inside the app.
- * @returns the mirrored row, or undefined when the app carries no such
+ * @returns the lane row, or undefined when the app carries no such
  * lane.
  */
 export function laneof(lane: string): AppWorkloadLane | undefined {

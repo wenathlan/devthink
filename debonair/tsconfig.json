@@ -17,7 +17,15 @@
       "@wenathlan/cadria/synth": ["../cadria/synth.ts"],
       "@wenathlan/debonair/audio": ["./audio.ts"],
       "@wenathlan/debonair/audioattributes": ["./audio.ts"],
-      "@wenathlan/debonair/audiofeatures": ["./audio.ts"]
+      "@wenathlan/debonair/audiofeatures": ["./audio.ts"],
+      /* the workload law bridge of the family: the app's sandbox lane seat
+       * answers the engine catalog rows through the published specifier
+       * ("@wenathlan/saddle/workloadlaw"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * mirror era is over, the rows are the owner's own objects. the
+       * entry retires when the published envelope carries the built
+       * workload law. */
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"]
     },
     "types": ["vite/client", "node"]
   },
