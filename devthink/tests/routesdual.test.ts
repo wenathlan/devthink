@@ -354,5 +354,15 @@ describe("the sync (both faces stay one design)", () => {
       expect(index, `${app} pins the zoom zero viewport`).toContain("minimum-scale=1.0, maximum-scale=1.0");
       expect(index).toContain("user-scalable=no");
     }
+    // the faun lock answers every html entry of the os, never only the
+    // index: the design reference page and the extension popup serve their
+    // own doors and pin the same zoom zero viewport
+    for (const entry of ["design.html", "extensionpopup.html"]) {
+      const html = readFileSync(join(reporoot, "devthink", entry), "utf8");
+      expect(html, `devthink/${entry} pins the zoom zero viewport`).toContain(
+        "minimum-scale=1.0, maximum-scale=1.0",
+      );
+      expect(html).toContain("user-scalable=no");
+    }
   });
 });
