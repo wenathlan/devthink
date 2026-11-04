@@ -25,7 +25,7 @@ import {
   type GatewayProject,
   listGatewayProjects,
 } from "../../gateway.ts";
-import { imageStyles } from "../../imagestyles.ts";
+import { imageStyles } from "../../image.ts";
 import { label } from "../../labels.ts";
 import { useToast } from "../toast/Toast.tsx";
 import { EmptyState } from "../wingets";

@@ -105,7 +105,7 @@ import {
   storageCensus,
   sweepOrphans,
   usageOf,
-} from "./objectsledger.ts";
+} from "./objects.ts";
 import { type QuotaVerdict, quotaLimitFrom, quotaVerdict, readQuota, setQuota } from "./quota.ts";
 import { decoyledger, isprobe } from "./decoy.ts";
 import { routes } from "./routes.ts";

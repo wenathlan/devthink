@@ -59,7 +59,7 @@ import {
   slide,
   split,
   trim,
-} from "../../timelineedit.ts";
+} from "../../timeline.ts";
 import {
   advanceplayhead,
   clipgeometry,
@@ -74,7 +74,7 @@ import {
   stockbin,
   ticktopx,
   ZOOM_LEVELS,
-} from "../../timelineview.ts";
+} from "../../timeline.ts";
 import {
   COMMON_FRAME_RATES,
   type FrameRate,

@@ -44,9 +44,9 @@ import {
   type AudioDescriptor,
   PipelineError,
 } from "@wenathlan/debonair/audio";
-import { buildImageProject, type ImageProject, ProjectError, parseProject, serializeProject } from "./imageproject.ts";
-import { renderCommands, renderSvg } from "./imagerender.ts";
-import { styleByName, styleForDescriptor } from "./imagestyles.ts";
+import { buildImageProject, type ImageProject, ProjectError, parseProject, serializeProject } from "./image.ts";
+import { renderCommands, renderSvg } from "./image.ts";
+import { styleByName, styleForDescriptor } from "./image.ts";
 import {
   compositionBlocks,
   rhythmScatter,

@@ -23,8 +23,8 @@ import {
   VOWEL_FORMANTS,
   type Vowel,
 } from "../formant.ts";
-import type { GenreProfile } from "../patternminer.ts";
-import { RENDER_SAMPLE_RATE, formantEventsOf, renderPlan, renderVoiceMix } from "../renderworker.ts";
+import type { GenreProfile } from "../pattern.ts";
+import { RENDER_SAMPLE_RATE, formantEventsOf, renderPlan, renderVoiceMix } from "../render.ts";
 import { FFT_SIZE, frameSpectrum } from "../spectrum.ts";
 import { VOWEL_FORMANTS as REEXPORTED } from "../vocalsynth.ts";
 

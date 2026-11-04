@@ -25,7 +25,7 @@ import {
   stageorderv5,
   transcodemodecatalog,
   validatestagecatalog,
-} from "../transcodeengine.ts";
+} from "../transcode.ts";
 
 /** the demo transcode job the battery walks (the hevc hdr to av1 sdr
  * tonemap path with the p4 preset). */

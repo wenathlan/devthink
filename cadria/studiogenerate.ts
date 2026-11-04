@@ -25,9 +25,9 @@
  */
 
 import { type AnalysisReport, type AudioDescriptor } from "@wenathlan/debonair/audio";
-import { buildImageProject, type ImageProject } from "./imageproject.ts";
-import { type RenderFrame, renderCommands } from "./imagerender.ts";
-import { applyStyleBias, type StyleSpec, styleByName } from "./imagestyles.ts";
+import { buildImageProject, type ImageProject } from "./image.ts";
+import { type RenderFrame, renderCommands } from "./image.ts";
+import { applyStyleBias, type StyleSpec, styleByName } from "./image.ts";
 import {
   type Block,
   compositionBlocks,

@@ -632,7 +632,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   if (command === "provider") {
     const family = argv.slice(argv.indexOf("provider") + 1);
     if (family.length === 0) return printHelp();
-    const consolemodule = await import("@wenathlan/getry/providercli");
+    const consolemodule = await import("@wenathlan/getry/providers");
     return void (await consolemodule.runproviderfamily(family));
   }
   if (

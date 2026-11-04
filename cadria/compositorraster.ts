@@ -14,7 +14,7 @@
 // are the truth), no masks beyond the coverage the shapes own.
 // Exports: 1 function family, 5 helpers, 2 types.
 
-import { type DrawCommand, type RenderFrame, Z_BACKGROUND } from "./imagerender.ts";
+import { type DrawCommand, type RenderFrame, Z_BACKGROUND } from "./image.ts";
 import { makeopacity, type OpacityGrid } from "./masks.ts";
 import { boxblurimage, type PixelImage } from "./pixel.ts";
 import { fitCameraDistance } from "./versawase.ts";

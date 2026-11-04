@@ -10,8 +10,8 @@
  */
 
 import { ArrowShuffleRegular, WandRegular } from "@fluentui/react-icons";
-import type { StyleSpec } from "../../imagestyles.ts";
-import { styleFingerprint } from "../../imagestyles.ts";
+import type { StyleSpec } from "../../image.ts";
+import { styleFingerprint } from "../../image.ts";
 import { label } from "../../labels.ts";
 
 type ControlsPaneProps = {

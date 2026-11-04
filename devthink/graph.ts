@@ -1,4 +1,13 @@
 /**
+ * graph — consolidated graph engine logics of the devthink family.
+ * @module graph
+ * @family wave/logicfold2
+ * One keyed file per family: the former variant arms (graphnodes, graphrunner, graphviewstate)
+ * retired into this seat with every export preserved under the same name.
+ */
+
+/* ===== block: graphnodes ===== */
+/**
  * graphnodes — the graph model of the devthink engine (root layer, pure typescript).
  *
  * The owner law: the logics run by stages, on graphs and nodes. This module is
@@ -604,4 +613,449 @@ export function graphfingerprint(graph: nodegraph): string {
     hash = ((hash * 33) ^ code) >>> 0;
   }
   return hash.toString(16).padStart(8, "0");
+}
+
+/* ===== block: graphrunner ===== */
+/**
+ * graphrunner — the stage engine of the devthink graphs (root layer, pure
+ * typescript).
+ *
+ * The owner law: "the logics must run stage by stage". The runner walks the
+ * graph exactly the way graphnodes.ts layers it: one wave per stage, the
+ * nodes of a stage in the stable insertion order of the model, never a
+ * nondeterministic promise pool — the run is one straight await chain, so the
+ * same graph with the same handler always produces the same event sequence.
+ * Every node holds one state of the model ladder (pending → running → done |
+ * failed, with skipped for everything a failure strands), a failing node
+ * retries a fixed number of attempts before it strands the rest of the run,
+ * and the view aggregates the whole run into one progress percentage the
+ * surfaces draw. The engine owns no clock and no work: the handler is the
+ * caller's logic (sync or async), the pause between stages is an option the
+ * caller injects, and the engine only sequences — deterministically, with an
+ * event and a view callback on every transition.
+ */
+
+
+
+/** The status of the whole run: idle before it starts, running on the waves, done or failed at the end. */
+export type runstatus = "idle" | "running" | "done" | "failed";
+
+/** The kinds of event the engine answers on the onevent callback, in run order. */
+export type runeventtype = "runbegin" | "stagebegin" | "nodestart" | "nodeattempt" | "nodedone" | "nodefailed" | "nodeskipped" | "stageend" | "runend";
+
+/** One event of the run: the kind, the stage it rode, the node it touched, the attempt number and the run progress at the moment. */
+export interface runevent {
+  type: runeventtype;
+  /** The zero-based stage (wave) the event rode. */
+  stage: number;
+  /** The node the event touched (absent on the run and stage markers). */
+  nodeid?: string;
+  /** The attempt number (1-based) on the attempt and failure events. */
+  attempt?: number;
+  /** The human detail (the failure message a handler threw). */
+  message?: string;
+  /** The aggregated progress of the run at the moment (0..100). */
+  progress: number;
+}
+
+/** One immutable snapshot of the run: the stage map, the node states, the counters and the aggregated progress. */
+export interface runstageview {
+  status: runstatus;
+  /** The stage the run stands on (0-based; equals stagecount when settled). */
+  stageindex: number;
+  /** The stage waves of the graph (the stages, stable order). */
+  stages: readonly (readonly string[])[];
+  /** The state of every node of the graph. */
+  nodestates: Readonly<Record<string, nodestate>>;
+  /** How many nodes settled done. */
+  donecount: number;
+  /** How many nodes settled failed. */
+  failedcount: number;
+  /** How many nodes settled skipped (stranded by a failure). */
+  skippedcount: number;
+  /** How many nodes the run walks. */
+  totalcount: number;
+  /** The aggregated progress (0..100): the done share of the walk. */
+  progress: number;
+  /** The failure that stranded the run (status failed only). */
+  failure?: { nodeid: string; message: string };
+}
+
+/** The options of one run: the caller injects the work, the cadence and the callbacks. */
+export interface runneroptions {
+  /** The work of one node — sync or async; absent, the node just passes. */
+  handler?: (node: graphnode) => void | Promise<void>;
+  /** The extra attempts after the first one (0 = run once, the default). */
+  retry?: number;
+  /** The pause in ms between stages — the caller's cadence, injected (0 by default). */
+  stagegap?: number;
+  /** The view callback: every state transition answers one fresh snapshot. */
+  onview?: (view: runstageview) => void;
+  /** The event callback: every transition answers one event, in run order. */
+  onevent?: (event: runevent) => void;
+}
+
+/** One staged runner over one graph: the view reads anytime, run walks the stages. */
+export interface graphrunner {
+  /** The graph the runner walks (as given). */
+  readonly graph: nodegraph;
+  /** The options the run rides (as given). */
+  readonly options: runneroptions;
+  /** Reads the current snapshot without touching the run. */
+  view(): runstageview;
+  /** Walks the stages once; a second call on a settled runner answers the settled view unchanged. */
+  run(): Promise<runstageview>;
+}
+
+/** Counts the settled shares of a state map and answers the aggregated progress (0..100). */
+export function viewprogress(nodestates: Readonly<Record<string, nodestate>>): number {
+  const ids = Object.keys(nodestates);
+  if (ids.length === 0) return 0;
+  let done = 0;
+  for (const id of ids) {
+    if (nodestates[id] === "done") done += 1;
+  }
+  return Math.round((done / ids.length) * 100);
+}
+
+/** Builds the initial view of one graph: every node pending, progress zero, the stages layered and stable. */
+export function initialview(graph: nodegraph): runstageview {
+  const stages = stagewaves(graph);
+  const nodestates: Record<string, nodestate> = {};
+  for (const node of graph.nodes) nodestates[node.id] = "pending";
+  return {
+    status: "idle",
+    stageindex: 0,
+    stages,
+    nodestates,
+    donecount: 0,
+    failedcount: 0,
+    skippedcount: 0,
+    totalcount: graph.nodes.length,
+    progress: 0,
+  };
+}
+
+/** Reads the stage index one node rides on a view (0-based), or -1 when the view holds no such node. */
+export function stageofnode(view: runstageview, nodeid: string): number {
+  for (const [index, wave] of view.stages.entries()) {
+    if (wave.includes(nodeid)) return index;
+  }
+  return -1;
+}
+
+/** The pause the engine itself takes: the injected stage gap (never a timer the module owns). */
+function pause(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+/**
+ * Creates the staged runner of one graph. The view starts idle with every
+ * node pending; run() walks the waves in order — the nodes of a wave one
+ * after the other in the stable insertion order, each one retried up to the
+ * retry budget, the view and the events answered on every transition. One
+ * failure after the last attempt strands the run: the stranded nodes settle
+ * skipped, the status settles failed and the failure names the node and the
+ * message. Example: `createrunner(graph, { handler, onview: setrunview })`.
+ */
+export function createrunner(graph: nodegraph, options: runneroptions = {}): graphrunner {
+  let current: runstageview = initialview(graph);
+  let started = false;
+  const emit = (view: runstageview): void => {
+    current = view;
+    options.onview?.(view);
+  };
+  const event = (partial: Omit<runevent, "progress">): void => {
+    options.onevent?.({ ...partial, progress: current.progress });
+  };
+  const counts = (nodestates: Readonly<Record<string, nodestate>>) => {
+    let donecount = 0;
+    let failedcount = 0;
+    let skippedcount = 0;
+    for (const id of Object.keys(nodestates)) {
+      if (nodestates[id] === "done") donecount += 1;
+      else if (nodestates[id] === "failed") failedcount += 1;
+      else if (nodestates[id] === "skipped") skippedcount += 1;
+    }
+    return { donecount, failedcount, skippedcount };
+  };
+  const viewof = (base: Omit<runstageview, "donecount" | "failedcount" | "skippedcount" | "progress" | "totalcount">): runstageview => {
+    const tally = counts(base.nodestates);
+    return {
+      ...base,
+      nodestates: { ...base.nodestates },
+      ...tally,
+      totalcount: graph.nodes.length,
+      progress: viewprogress(base.nodestates),
+    };
+  };
+  return {
+    graph,
+    options,
+    view: () => current,
+    async run(): Promise<runstageview> {
+      if (started) return current;
+      started = true;
+      const stages = current.stages;
+      const nodestates: Record<string, nodestate> = { ...current.nodestates };
+      const retry = Math.max(0, Math.floor(options.retry ?? 0));
+      const stagegap = Math.max(0, options.stagegap ?? 0);
+      emit(viewof({ status: "running", stageindex: 0, stages, nodestates }));
+      event({ type: "runbegin", stage: 0 });
+      for (const [index, wave] of stages.entries()) {
+        emit(viewof({ status: "running", stageindex: index, stages, nodestates }));
+        event({ type: "stagebegin", stage: index });
+        for (const nodeid of wave) {
+          const node = nodebyid(graph, nodeid);
+          if (!node) continue;
+          nodestates[nodeid] = "running";
+          emit(viewof({ status: "running", stageindex: index, stages, nodestates }));
+          event({ type: "nodestart", stage: index, nodeid });
+          let settled = false;
+          let message: string | undefined;
+          for (let attempt = 1; attempt <= retry + 1 && !settled; attempt += 1) {
+            if (attempt > 1) event({ type: "nodeattempt", stage: index, nodeid, attempt });
+            try {
+              await options.handler?.(node);
+              settled = true;
+            } catch (error) {
+              message = error instanceof Error ? error.message : String(error);
+            }
+          }
+          if (settled) {
+            nodestates[nodeid] = "done";
+            emit(viewof({ status: "running", stageindex: index, stages, nodestates }));
+            event({ type: "nodedone", stage: index, nodeid });
+            continue;
+          }
+          nodestates[nodeid] = "failed";
+          emit(viewof({ status: "running", stageindex: index, stages, nodestates }));
+          event({ type: "nodefailed", stage: index, nodeid, attempt: retry + 1, message });
+          for (const waveid of stages.slice(index).flat()) {
+            if (nodestates[waveid] === "pending" || nodestates[waveid] === "running") {
+              nodestates[waveid] = "skipped";
+              emit(viewof({ status: "running", stageindex: index, stages, nodestates }));
+              event({ type: "nodeskipped", stage: index, nodeid: waveid });
+            }
+          }
+          const failure = { nodeid, message: message ?? "the node failed without a message" };
+          const settledview = viewof({ status: "failed", stageindex: stages.length, stages, nodestates, failure });
+          emit(settledview);
+          event({ type: "stageend", stage: index });
+          event({ type: "runend", stage: stages.length });
+          return settledview;
+        }
+        event({ type: "stageend", stage: index });
+        if (stagegap > 0 && index < stages.length - 1) await pause(stagegap);
+      }
+      const settledview = viewof({ status: "done", stageindex: stages.length, stages, nodestates });
+      emit(settledview);
+      event({ type: "runend", stage: stages.length });
+      return settledview;
+    },
+  };
+}
+
+/**
+ * Resets one runner view to the idle start (every node pending) — the pure
+ * answer for surfaces that rerun the same graph with a fresh runner. Example:
+ * `resetview(initialview(graph))` is an identity; the helper exists so the
+ * surfaces read one name.
+ */
+export function resetview(graph: nodegraph): runstageview {
+  return initialview(resetnodestates(graph));
+}
+
+/* ===== block: graphviewstate ===== */
+/**
+ * graphviewstate — the pure view state of the graph drawing (root layer, pure
+ * typescript).
+ *
+ * The drawing of a graph is a state, and the state is pure: this module
+ * answers the positions of the nodes on the topological layers (x rides the
+ * stage, y rides the stable row inside the stage), the selection of one node
+ * and the collapse of subgraphs (one collapsed node hides its whole
+ * descendant slice until it expands again). No DOM, no React, no randomness —
+ * graphview.tsx (the SVG surface) consumes the answers of this module the
+ * way graphrunner.ts consumes the model, and the same graph with the same
+ * options always answers the same positions. Layout math stays here so the
+ * surface never improvises geometry.
+ */
+
+
+
+/** One drawn position: the x/y on the view canvas plus the layer and the row that produced them. */
+export interface viewposition {
+  x: number;
+  y: number;
+  /** The topological layer (the stage) the node rides. */
+  layer: number;
+  /** The row inside the layer (the stable order the node draws at). */
+  row: number;
+}
+
+/** The pure state of one drawn graph: the positions, the selection and the collapsed roots. */
+export interface graphviewstate {
+  /** The drawn position of every node of the graph. */
+  positions: Readonly<Record<string, viewposition>>;
+  /** The id of the selected node (null = nothing selected). */
+  selection: string | null;
+  /** The ids of the nodes whose descendant slice is collapsed. */
+  collapsed: readonly string[];
+}
+
+/** The layout options: the card pitch of the layered columns and rows and the origin of the map. */
+export interface layoutoptions {
+  /** The horizontal pitch between stages (columns), in view units. */
+  columnwidth?: number;
+  /** The vertical pitch between nodes of one stage (rows), in view units. */
+  rowheight?: number;
+  /** The x of the first column. */
+  originx?: number;
+  /** The y of the first row. */
+  originy?: number;
+  /** An optional stable row order (ids listed earlier draw higher inside their wave). */
+  order?: readonly string[];
+}
+
+/** The bounds of one drawn map: the box the svg viewBox rides. */
+export interface viewbounds {
+  minx: number;
+  miny: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Lays one graph out on the topological layers: x rides the stage (one
+ * column per layer), y rides the stable row inside the stage (insertion
+ * order, or the given order first). Example: `layoutgraphview(graph,
+ * { columnwidth: 240, rowheight: 96 })`.
+ */
+export function layoutgraphview(graph: nodegraph, options: layoutoptions = {}): Record<string, viewposition> {
+  const columnwidth = Math.max(1, options.columnwidth ?? 240);
+  const rowheight = Math.max(1, options.rowheight ?? 96);
+  const originx = options.originx ?? 0;
+  const originy = options.originy ?? 0;
+  const order = new Map((options.order ?? []).map((id, index) => [id, index]));
+  const positions: Record<string, viewposition> = {};
+  const waves = stagewaves(graph);
+  waves.forEach((wave, layer) => {
+    const sorted = [...wave].sort((a, b) => (order.get(a) ?? Number.MAX_SAFE_INTEGER) - (order.get(b) ?? Number.MAX_SAFE_INTEGER));
+    sorted.forEach((id, row) => {
+      positions[id] = { x: originx + layer * columnwidth, y: originy + row * rowheight, layer, row };
+    });
+  });
+  return positions;
+}
+
+/**
+ * Builds the initial view state of one graph: the layered positions, nothing
+ * selected, nothing collapsed. Example: `makeviewstate(graph)`.
+ */
+export function makeviewstate(graph: nodegraph, options: layoutoptions = {}): graphviewstate {
+  return { positions: layoutgraphview(graph, options), selection: null, collapsed: [] };
+}
+
+/** Answers the view with one selection (the id must be a drawn node; null clears). */
+export function withselection(state: graphviewstate, id: string | null): graphviewstate {
+  if (id !== null && !(id in state.positions)) return state;
+  return { ...state, selection: id };
+}
+
+/** Answers the view with the selection toggled on one node (select, or clear when it already rides). */
+export function togglenodeselection(state: graphviewstate, id: string): graphviewstate {
+  return withselection(state, state.selection === id ? null : id);
+}
+
+/**
+ * Collapses one node: its whole descendant slice hides until it expands.
+ * Nodes without descendants refuse the collapse (nothing to hide) and the
+ * view answers unchanged. Example: `collapsenode(state, graph, "engine")`.
+ */
+export function collapsenode(state: graphviewstate, graph: nodegraph, id: string): graphviewstate {
+  if (!(id in state.positions) || state.collapsed.includes(id)) return state;
+  if (descendants(graph, id).length === 0) return state;
+  return { ...state, collapsed: [...state.collapsed, id] };
+}
+
+/** Expands one collapsed node (its slice draws again); unknown or open ids answer unchanged. */
+export function expandnode(state: graphviewstate, id: string): graphviewstate {
+  if (!state.collapsed.includes(id)) return state;
+  return { ...state, collapsed: state.collapsed.filter((entry) => entry !== id) };
+}
+
+/** Toggles the collapse of one node (collapse when open, expand when collapsed). */
+export function togglenodecollapse(state: graphviewstate, graph: nodegraph, id: string): graphviewstate {
+  return state.collapsed.includes(id) ? expandnode(state, id) : collapsenode(state, graph, id);
+}
+
+/** Reads the hidden ids one collapsed root owns: its descendants (the root itself stays drawn). */
+export function collapsedslice(graph: nodegraph, root: string): string[] {
+  return descendants(graph, root);
+}
+
+/** Reads every hidden id of the view: the descendants of all collapsed roots, roots excluded, deduplicated. */
+export function hiddenids(state: graphviewstate, graph: nodegraph): string[] {
+  const hidden = new Set<string>();
+  for (const root of state.collapsed) {
+    for (const id of collapsedslice(graph, root)) hidden.add(id);
+  }
+  return [...hidden];
+}
+
+/** Answers whether one node is currently hidden by a collapse. */
+export function ishidden(state: graphviewstate, graph: nodegraph, id: string): boolean {
+  return hiddenids(state, graph).includes(id);
+}
+
+/**
+ * Answers the visible slice of the graph: the nodes not hidden by a collapse
+ * and the wires whose both ends stay visible — the exact graph the surface
+ * draws. Example: `visiblegraph(state, graph)`.
+ */
+export function visiblegraph(state: graphviewstate, graph: nodegraph): nodegraph {
+  const hidden = new Set(hiddenids(state, graph));
+  return {
+    nodes: graph.nodes.filter((node) => !hidden.has(node.id)),
+    edges: graph.edges.filter((edge) => !hidden.has(edge.from) && !hidden.has(edge.to)),
+  };
+}
+
+/** Counts the descendants one collapsed node hides (the badge the card draws). */
+export function collapsecount(state: graphviewstate, graph: nodegraph, id: string): number {
+  if (!state.collapsed.includes(id)) return 0;
+  return collapsedslice(graph, id).length;
+}
+
+/** Answers the positions of the visible nodes only (the hidden ones leave the map). */
+export function visiblepositions(state: graphviewstate, graph: nodegraph): Record<string, viewposition> {
+  const hidden = new Set(hiddenids(state, graph));
+  const positions: Record<string, viewposition> = {};
+  for (const [id, position] of Object.entries(state.positions)) {
+    if (!hidden.has(id)) positions[id] = position;
+  }
+  return positions;
+}
+
+/**
+ * Answers the bounds box of a drawn map: the min corner and the size the svg
+ * viewBox rides, grown by the card box and the padding so the outer cards
+ * never touch the edge. Example: `viewbounds(state.positions, { cardwidth:
+ * 176, cardheight: 56, padding: 24 })`.
+ */
+export function viewbounds(
+  positions: Readonly<Record<string, viewposition>>,
+  options: { cardwidth?: number; cardheight?: number; padding?: number } = {},
+): viewbounds {
+  const cardwidth = options.cardwidth ?? 176;
+  const cardheight = options.cardheight ?? 56;
+  const padding = options.padding ?? 24;
+  const entries = Object.values(positions);
+  if (entries.length === 0) return { minx: 0, miny: 0, width: cardwidth + padding * 2, height: cardheight + padding * 2 };
+  const minx = Math.min(...entries.map((position) => position.x)) - padding;
+  const miny = Math.min(...entries.map((position) => position.y)) - padding;
+  const maxx = Math.max(...entries.map((position) => position.x + cardwidth)) + padding;
+  const maxy = Math.max(...entries.map((position) => position.y + cardheight)) + padding;
+  return { minx, miny, width: maxx - minx, height: maxy - miny };
 }

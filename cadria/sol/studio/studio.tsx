@@ -28,9 +28,9 @@ export * from "../wingets";
 
 import { type AnalysisReport, PipelineError } from "@wenathlan/debonair/audio";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { type ImageProject, ProjectError } from "../../imageproject.ts";
-import { renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
-import { imageStyles, type StyleSpec, styleForDescriptor } from "../../imagestyles.ts";
+import { type ImageProject, ProjectError } from "../../image.ts";
+import { renderSvg, renderThumbnailSignature } from "../../image.ts";
+import { imageStyles, type StyleSpec, styleForDescriptor } from "../../image.ts";
 import type { DemoFixtureId } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";
 import { generateStudioProject, reseededSeed, type SessionSave, type StudioGeneration } from "../../studiogenerate.ts";

@@ -10,7 +10,7 @@ import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { openStorageLane, PRAGMA_BOOTSTRAP } from "../storagelane.ts";
+import { openStorageLane, PRAGMA_BOOTSTRAP } from "../storage.ts";
 
 const tempdirs: string[] = [];
 

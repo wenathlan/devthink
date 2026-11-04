@@ -44,7 +44,7 @@ import type {
   MinerRunValue,
 } from "../gatewayapi.ts";
 import { dispatch, matchroute, startMinerJob } from "../gatewayapi.ts";
-import { GENRES } from "../genrematrix.ts";
+import { GENRES } from "../genre.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
 import { INGEST_SCHEMA_VERSION } from "../ingest.ts";
 // the seat answers before the module load: this suite rides its own
@@ -55,7 +55,7 @@ process.env.DATABASE_URL = "file:./local.minerserver.db";
 const ingestmodule = await import("../ingest.ts");
 const { listGenreProfiles, migrategenreschema, migratejobsschema } = ingestmodule;
 import type { IngestStampRow } from "../ingest.ts";
-import { PROFILE_GENRE_KEYS, validateGenreProfile } from "../patternminer.ts";
+import { PROFILE_GENRE_KEYS, validateGenreProfile } from "../pattern.ts";
 import { seedGenreProfileCards } from "../seed.ts";
 
 /** The pinned base tick the clocks and the mints walk from. */

@@ -33,7 +33,7 @@ export * from "./chunks.ts";
 /** the executing schema and the self-hosted connection: drizzle over better-sqlite3 (boots at import). */
 export * from "./drizzle.ts";
 /** the real object ledger: deposits, verified reads, soft deletes, the orphan sweep and the census. */
-export * from "./objectsledger.ts";
+export * from "./objects.ts";
 /** the quota engine: the user-defined limit rows and the pure enforcement verdicts. */
 export * from "./quota.ts";
 /** the real digest engine: sha-256 and sha-1 over real bytes, the hex shape gates. */
@@ -72,7 +72,7 @@ export * from "./labels.ts";
 /** the entry-flow accessor: the seen flags of the visitor, one writer only. */
 export * from "./onboardingstate.ts";
 /** the storage lane: the shared sqlite mechanism of the family — the factory the siblings open (no boot; SqlParam keeps flowing through the db star, the deep specifier carries it for the bridged siblings). */
-export { openStorageLane, PRAGMA_BOOTSTRAP, type StorageLane, type StorageLaneOptions } from "./storagelane.ts";
+export { openStorageLane, PRAGMA_BOOTSTRAP, type StorageLane, type StorageLaneOptions } from "./storage.ts";
 /** the ui store: the uicopy seed, the accessor chain and the sqlite lane. */
 export * from "./uistore.ts";
 

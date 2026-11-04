@@ -10,7 +10,7 @@
 //   pnpm test
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { GENRES } from "../genrematrix.ts";
+import { GENRES } from "../genre.ts";
 import { NOTE_NAMES as INGEST_NOTE_NAMES } from "../ingest.ts";
 import { SCALE_STEPS } from "../musictheory.ts";
 import {
@@ -46,7 +46,7 @@ import {
   TRANSIENT_LABELS,
   validatePatternProject,
   validatePatternTimeline,
-} from "../patternenums.ts";
+} from "../pattern.ts";
 
 /** The embedding fixture: thirty-two two-decimal numbers (canonical already). */
 function embeddingFixture(): number[] {

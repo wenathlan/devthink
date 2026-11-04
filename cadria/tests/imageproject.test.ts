@@ -9,7 +9,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import type { AudioDescriptor } from "@wenathlan/debonair/audio";
-import type { ImageProject } from "../imageproject.ts";
+import type { ImageProject } from "../image.ts";
 import {
   buildImageProject,
   ProjectError,
@@ -20,7 +20,7 @@ import {
   rngPick,
   serializeProject,
   VARIANT_HUE_STEP,
-} from "../imageproject.ts";
+} from "../image.ts";
 import { compositionBlocks, synthMotion, synthPalette, synthTexture } from "../synth.ts";
 
 const SEED = "9a7c1e2b44d0f836";

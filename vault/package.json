@@ -94,9 +94,9 @@
       "default": "./labelstore.ts"
     },
     "./storagelane": {
-      "types": "./storagelane.ts",
-      "import": "./storagelane.ts",
-      "default": "./storagelane.ts"
+      "types": "./storage.ts",
+      "import": "./storage.ts",
+      "default": "./storage.ts"
     },
     "./objects": {
       "types": "./objects.ts",
@@ -104,9 +104,9 @@
       "default": "./objects.ts"
     },
     "./objectsledger": {
-      "types": "./objectsledger.ts",
-      "import": "./objectsledger.ts",
-      "default": "./objectsledger.ts"
+      "types": "./objects.ts",
+      "import": "./objects.ts",
+      "default": "./objects.ts"
     },
     "./onboardingstate": {
       "types": "./onboardingstate.ts",
@@ -171,9 +171,8 @@
     "protocols.ts",
     "querylane.ts",
     "signup.ts",
-    "storagelane.ts",
+    "storage.ts",
     "objects.ts",
-    "objectsledger.ts",
     "onboardingstate.ts",
     "quota.ts",
     "retention.ts",

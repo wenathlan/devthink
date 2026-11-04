@@ -24,7 +24,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { type AnalysisReport, analyzePcm, reportDigest } from "@wenathlan/debonair/audio";
-import { renderCommands, renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
+import { renderCommands, renderSvg, renderThumbnailSignature } from "../../image.ts";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { type LabelKey, label } from "../../labels.ts";
 import { markOnboardingStage } from "../../onboardingstate.ts";

@@ -1,4 +1,22 @@
 /**
+ * streaming — consolidated streaming engine logics of the getry family.
+ * @module streaming
+ * @family wave/logicfold2
+ * One keyed file per family: the former variant arms (streamfallback)
+ * retired into this seat with every export preserved under the same name.
+ */
+
+import { BACKOFF_BASE_MS, BACKOFF_FACTOR, BACKOFF_MAX_MS, CLIENT_METADATA_RAW, CLOUDCODE_PA_BASE, GEMINI_CLI_CLIENT_ID, GEMINI_CLI_CLIENT_SECRET, GEMINI_CLI_USER_AGENT, LRU_THINKING_CACHE_SIZE, MAX_RETRIES, PROJECT_FALLBACK, RETRYABLE_STATUS_CODES } from "./constants.js";
+import { ApiKeyRow } from "./db.ts";
+import { X_GOOG_API_CLIENT } from "./fingerprint.js";
+import { MODELS_2026, ModelId2026, UA_DEFAULT_MODEL } from "./models.js";
+import { JITTER_MAX_MS, JITTER_MIN_MS } from "@wenathlan/devthink/constants";
+import { fnv1a32, getJitter, thinkingCache } from "@wenathlan/devthink/core";
+import { RetryConfig, delayForAttempt, parseRetryAfterMs, sleepMs } from "@wenathlan/devthink/queue";
+import { createHash, randomUUID } from "node:crypto";
+
+/* ===== block: streaming ===== */
+/**
  * @file streaming.ts
  * @module provider/streaming
  * @description
@@ -14,12 +32,6 @@
  *   - OpenAI / Anthropic transformers compatible with opencode plugin SDK
  *   - Auto-recovery exponential backoff + jitter 0-80ms
  *   - Synthetic finish injection when cloudcode-pa closes abruptly
- *
- *  The edgelandes fold (wave/streamfold): the stream family answers from
- *  ONE keyword file — the fallback arm (streamfallback.ts: the error
- *  catalog, the verdict vocabulary and the route-chain runner) retired
- *  into this file as the trailing section below, every export preserved
- *  verbatim, and the "./streamfallback" package specifier resolving here.
  *
  *  Architectural constraints:
  *   - Library-first, root-first (no src/ folder)
@@ -38,39 +50,25 @@
  *   - fingerprint.ts — FNV-1a reused here for deterministic ids
  *   - request.ts — builds Antigravity request body
  *   - recovery.ts — higher level auto-recovery using this module
- *   - db.ts — the ApiKeyRow rows the absorbed fallback arm lands failures on
  *
  * @author devthink
  * @license MIT
  */
 
-import { createHash, randomUUID } from "node:crypto";
+
 import * as os from "node:os";
 
 // ---------------------------------------------------------------------------
 // Frozen-owner imports — identical values owned by constants.ts / core.ts
 // ---------------------------------------------------------------------------
 
-import {
-  BACKOFF_BASE_MS,
-  BACKOFF_FACTOR,
-  BACKOFF_MAX_MS,
-  GEMINI_CLI_OAUTH_CLIENT_ID as GEMINI_CLI_CLIENT_ID,
-  GEMINI_CLI_OAUTH_CLIENT_SECRET as GEMINI_CLI_CLIENT_SECRET,
-  LRU_THINKING_CACHE_SIZE,
-  MAX_RETRIES,
-  PROJECT_FALLBACK,
-  GEMINI_CLI_USER_AGENT,
-  CLIENT_METADATA_RAW,
-  CLOUDCODE_PA_BASE,
-  RETRYABLE_STATUS_CODES,
-} from "./constants.js";
+
 /* the generic leaf pair of the os utility module stayed with core.ts in
  * devthink/constants.ts — the gateway imports the jitter window through the
  * published specifier, the provider families above resolve locally. */
-import { JITTER_MAX_MS, JITTER_MIN_MS } from "@wenathlan/devthink/constants";
-import { fnv1a32, getJitter, thinkingCache } from "@wenathlan/devthink/core";
-import { X_GOOG_API_CLIENT_GEMINI_CLI as X_GOOG_API_CLIENT } from "./fingerprint.js";
+
+
+
 
 // ---------------------------------------------------------------------------
 // Constants — frozen, deterministic
@@ -2034,8 +2032,8 @@ export async function* streamToAnthropic(
 // ModelId2026 union moved to models.ts (MODELS_2026_LEGACY / ModelId2026) —
 // imported under the historical name and re-exported so the public surface
 // is unchanged.
-import { MODELS_2026_LEGACY as MODELS_2026, UA_DEFAULT_MODEL } from "./models.js";
-import type { ModelId2026 } from "./models.js";
+
+
 export { MODELS_2026 };
 export type { ModelId2026 };
 
@@ -4109,20 +4107,14 @@ export async function collectEvents(events: AsyncIterable<ChatEvent>): Promise<{
   return { text, reasoning };
 }
 
-// ---------------------------------------------------------------------------
-// The stream fallback arm — absorbed from streamfallback.ts (the edgelandes fold)
-// ---------------------------------------------------------------------------
-
+/* ===== block: streamfallback ===== */
 /**
- * The stream fallback arm — the model fallback of the streaming routes,
- * absorbed from streamfallback.ts by the edgelandes fold (wave/streamfold):
- * the stream family answers from ONE keyword file and this trailing
- * section carries the arm with every export preserved verbatim.
+ * streamfallback.ts — the model fallback of the streaming routes (root layer).
  *
  * the error catalog the gateway matches every upstream failure against and the
  * fallback runner that walks the route chain when one model dies. The verdict
  * vocabulary follows the declarative chains of omniroute (priority order,
- * already-tried routes excluded) and stays local to this section; the retry curve
+ * already-tried routes excluded) and stays local to this file; the retry curve
  * is the house retry.backoff discipline the request queue family owns,
  * consumed through the published @wenathlan/devthink/queue export — the
  * doubling curve, the ±20% jitter, the abortable sleep and the Retry-After
@@ -4133,13 +4125,8 @@ export async function collectEvents(events: AsyncIterable<ChatEvent>): Promise<{
  * `applyerrortokey` and the trail feeds the chat log rows.
  */
 
-import {
-  delayForAttempt,
-  parseRetryAfterMs,
-  sleepMs as queuesleepms,
-  type RetryConfig,
-} from "@wenathlan/devthink/queue";
-import type { ApiKeyRow } from "./db.ts";
+
+
 
 /** the error catalog of the house: every upstream failure answers exactly one code. */
 export type StreamErrorCode =
@@ -4384,7 +4371,7 @@ export async function runwithfallback<T>(
         options.onstep?.(trail[trail.length - 1]);
         if (verdict === "abort") throw new StreamFallbackError(streamError.message, streamError.status, code, trail);
         if (verdict === "fallback" || attemptNo > options.retriesPerRoute) break;
-        await queuesleepms(delayMs);
+        await sleepMs(delayMs);
       }
     }
   }

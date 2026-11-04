@@ -12,7 +12,7 @@
  * node graph catalog (the console page's stage catalog and ride).
  */
 
-import { connectnodes, makenode, type nodegraph } from "./graphnodes.ts";
+import { connectnodes, makenode, type nodegraph } from "./graph.ts";
 import { packageversion } from "./version.ts";
 
 /** the console prompt of the ink terminal (TerminalUi.tsx): the marker pair the workbench shares. */

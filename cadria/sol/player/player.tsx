@@ -28,7 +28,7 @@ import {
   type GatewayProject,
   listGatewayProjects,
 } from "../../gateway.ts";
-import { type RenderFrame, renderCommands, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
+import { type RenderFrame, renderCommands, renderKeyframePerturbation, renderSvg } from "../../image.ts";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";
 import {
@@ -51,7 +51,7 @@ import {
   ratelabel,
   stepdecode,
   timecodelabel,
-} from "../../videodecode.ts";
+} from "../../video.ts";
 
 /** the demo canvas the in-session fallback renders at (px). */
 const DEMO_CANVAS = 640;

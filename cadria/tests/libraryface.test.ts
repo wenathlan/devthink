@@ -49,11 +49,11 @@ async function readPackage(): Promise<PackageJson> {
  * envelope owns their resolution for the embedder. */
 const SPECIFIER_LANE: readonly string[] = [
   "./synth",
-  "./imagestyles",
-  "./imageexport",
-  "./imageproject",
+  "./image",
+  "./image",
+  "./image",
   "./labels",
-  "./transcodeengine",];
+  "./transcode",];
 
 describe("the library face", () => {
   it("declares the engine surface the family law promises", async () => {
@@ -62,11 +62,11 @@ describe("the library face", () => {
     assert.ok(specifiers.length >= 17, "the exports map carries the engine surface, not the empty envelope");
     for (const promised of [
       "./versawase",
-      "./versawase3d",
+      "./versawase",
       "./shadercomp",
-      "./versawaserender",
+      "./versawase",
       "./visualize",
-      "./timelineedit",
+      "./timeline",
       "./mediaprobe",
       "./synth",
       "./labels",

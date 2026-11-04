@@ -49,8 +49,7 @@
     "analyze.ts",
     "hpss.ts",
     "ingest.ts",
-    "patternminer.ts",
-    "patternenums.ts",
+    "pattern.ts",
     "reconpayload.ts",
     "composer.ts",
     "coverpalette.ts",
@@ -58,7 +57,7 @@
     "take.ts",
     "wavwriter.ts",
     "blobstore.ts",
-    "renderworker.ts",
+    "render.ts",
     "reconworker.ts",
     "gatewayapi.ts",
     "routetable.ts",
@@ -67,14 +66,13 @@
     "stems.ts",
     "demix.ts",
     "formant.ts",
-    "genrecorpus.ts",
+    "genre.ts",
     "reverseingest.ts",
     "timestretch.ts",
     "vocalsynth.ts",
     "arranger.ts",
     "bigintids.ts",
     "fingerprint.ts",
-    "genrematrix.ts",
     "harmonyengine.ts",
     "katexis.ts",
     "limiter.ts",
@@ -120,9 +118,9 @@
       "default": "./reconpayload.ts"
     },
     "./patternminer": {
-      "types": "./patternminer.ts",
-      "import": "./patternminer.ts",
-      "default": "./patternminer.ts"
+      "types": "./pattern.ts",
+      "import": "./pattern.ts",
+      "default": "./pattern.ts"
     },
     "./demix": {
       "types": "./demix.ts",
@@ -135,9 +133,9 @@
       "default": "./formant.ts"
     },
     "./genrecorpus": {
-      "types": "./genrecorpus.ts",
-      "import": "./genrecorpus.ts",
-      "default": "./genrecorpus.ts"
+      "types": "./genre.ts",
+      "import": "./genre.ts",
+      "default": "./genre.ts"
     },
     "./reverseingest": {
       "types": "./reverseingest.ts",
@@ -150,9 +148,9 @@
       "default": "./timestretch.ts"
     },
     "./patternenums": {
-      "types": "./patternenums.ts",
-      "import": "./patternenums.ts",
-      "default": "./patternenums.ts"
+      "types": "./pattern.ts",
+      "import": "./pattern.ts",
+      "default": "./pattern.ts"
     },
     "./composer": {
       "types": "./composer.ts",
@@ -225,9 +223,9 @@
       "default": "./stems.ts"
     },
     "./renderworker": {
-      "types": "./renderworker.ts",
-      "import": "./renderworker.ts",
-      "default": "./renderworker.ts"
+      "types": "./render.ts",
+      "import": "./render.ts",
+      "default": "./render.ts"
     },
     "./reconworker": {
       "types": "./reconworker.ts",
@@ -243,6 +241,21 @@
       "types": "./routetable.ts",
       "import": "./routetable.ts",
       "default": "./routetable.ts"
+    },
+    "./pattern": {
+      "types": "./pattern.ts",
+      "import": "./pattern.ts",
+      "default": "./pattern.ts"
+    },
+    "./genre": {
+      "types": "./genre.ts",
+      "import": "./genre.ts",
+      "default": "./genre.ts"
+    },
+    "./render": {
+      "types": "./render.ts",
+      "import": "./render.ts",
+      "default": "./render.ts"
     }
   },
   "scripts": {

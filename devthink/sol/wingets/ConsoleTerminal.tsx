@@ -13,7 +13,7 @@
  * the data-state hook the section below emits.
  */
 import { useEffect, useRef, useState } from "react";
-import { completions } from "../../commandcatalog.ts";
+import { completions } from "../../commands.ts";
 import { osText } from "../../oslabels.ts";
 
 /** one rendered output row; cls mirrors the boot, ok, err and cmdline row classes. */

@@ -19,12 +19,12 @@ import { RocketRegular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
-import { completions, responseof } from "../../commandcatalog.ts";
+import { completions, responseof } from "../../commands.ts";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "../../consoleboot.ts";
 import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consoleboot.ts";
 import { gatewayReady } from "../../gateway.js";
-import { createrunner, type runstageview } from "../../graphrunner.js";
-import { makeviewstate } from "../../graphviewstate.js";
+import { createrunner, type runstageview } from "../../graph.js";
+import { makeviewstate } from "../../graph.js";
 import { osText } from "../../oslabels.ts";
 import { ConsoleReference, GraphView, Terminal, type TerminalRow, type TerminalState } from "../wingets";
 

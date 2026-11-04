@@ -19,7 +19,7 @@
  */
 
 import process from "node:process";
-import { openStorageLane } from "@wenathlan/vault/storagelane";
+import { openStorageLane } from "@wenathlan/vault/storage";
 import { LABELMANIFEST, LABELREVISION } from "./labels.ts";
 import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./match.ts";
 import { RANKINGSEED, type RankingEntry } from "./ranking.ts";

@@ -12,7 +12,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { INGEST_WORKER_MODALITY } from "../ingest.ts";
-import { RENDER_WORKER_MODALITY } from "../renderworker.ts";
+import { RENDER_WORKER_MODALITY } from "../render.ts";
 import {
   APPSLUG,
   SANDBOXLANEENV,

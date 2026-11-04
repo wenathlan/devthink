@@ -12,7 +12,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { type RenderFrame, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
+import { type RenderFrame, renderKeyframePerturbation, renderSvg } from "../../image.ts";
 import { label } from "../../labels.ts";
 import type { MotionSpec } from "../../synth.ts";
 

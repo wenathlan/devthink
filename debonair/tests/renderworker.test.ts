@@ -27,8 +27,8 @@ import { mintid } from "../bigintids.ts";
 import { composeFromProfile } from "../composer.ts";
 import { MASTERING, trackNameFromPrompt } from "../katexis.ts";
 import { truePeakLinear } from "../limiter.ts";
-import { LANE_STEPS, serializePattern, validatePatternProject } from "../patternenums.ts";
-import { type GenreProfile, segmentVector } from "../patternminer.ts";
+import { LANE_STEPS, serializePattern, validatePatternProject } from "../pattern.ts";
+import { type GenreProfile, segmentVector } from "../pattern.ts";
 import {
   getrenderjob,
   getrendertrack,
@@ -40,7 +40,7 @@ import {
   renderjobseat,
   rendertrackseat,
   updaterenderjob,
-} from "../renderjobs.ts";
+} from "../render.ts";
 import {
   RENDER_PHASES,
   RENDER_SAMPLE_RATE,
@@ -51,7 +51,7 @@ import {
   type RenderStorePut,
   renderPlan,
   startRenderJob,
-} from "../renderworker.ts";
+} from "../render.ts";
 import { HEADER_LAYOUT, wavInfo } from "../wavwriter.ts";
 
 // ---------------------------------------------------------------------------

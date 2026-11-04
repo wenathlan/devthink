@@ -13,7 +13,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import type { AudioDescriptor } from "@wenathlan/debonair/audio";
-import type { ExportProject } from "../imageexport.ts";
+import type { ExportProject } from "../image.ts";
 import {
   ANIMATION_FPS,
   buildAnimationManifest,
@@ -28,7 +28,7 @@ import {
   perturbFrame,
   thumbnailSignature,
   toExportProject,
-} from "../imageexport.ts";
+} from "../image.ts";
 import {
   compositionBlocks,
   compositionGrid,

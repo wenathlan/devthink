@@ -1,21 +1,12 @@
-// # sandbox.ts — the one keyword file of the sandbox domain: the
-// consolidation law of the root (one keyword file per domain — the
-// edgelandes law of PR #347, the wave after the saddle virtual fold of
-// PR #356) folds the sandbox family into this seat: the browser-pure
-// port of the saddle virtual hardware engine (the former sandbox.ts
-// body below), the declarative sandbox specification and its vocabulary
-// (sandboxprofile.ts), the configuration adapter of the spec plane
-// (sandboxenvprofile.ts), the sandbox lifecycle queue (sandboxqueue.ts)
-// and the per-account resource quota ledger (sandboxquota.ts). Every
-// export is preserved verbatim, zero logic changes, and the four arms
-// stay browser-pure riders of the seat (the single intra-family import
-// — the env adapter's vocabulary pull from sandboxprofile.ts —
-// dissolves because both arms ride this same file now, the profile
-// section answering before the adapter section composes it). The
-// internal section dividers of each folded arm are preserved under its
-// fold box the way the edgelandes and virtual folds kept every wave
-// file's structure.
+/**
+ * sandbox — consolidated sandbox engine logics of the saddle family.
+ * @module sandbox
+ * @family wave/logicfold2
+ * One keyed file per family: the former variant arms (sandboxenvprofile, sandboxprofile, sandboxqueue, sandboxquota)
+ * retired into this seat with every export preserved under the same name.
+ */
 
+/* ===== block: sandbox ===== */
 /**
  * sandbox.ts — browser-pure port of the saddle virtual hardware engine.
  *
@@ -2111,20 +2102,101 @@ export const SANDBOX_LIFECYCLE_ACTION_TARGETS: Readonly<Record<SandboxLifecycleA
   freeze: 'cold',
 };
 
-/* ------------------------------------------------------------------ */
-/* fold: sandboxprofile.ts — the declarative sandbox spec arm         */
-/* ------------------------------------------------------------------ */
-
+/* ===== block: sandboxenvprofile ===== */
 /**
- * the sandbox family fold (the edgelandes law, the wave after the
- * saddle virtual fold of PR #356): this trailing section carries
- * sandboxprofile.ts — the declarative sandbox specification of saddle —
- * verbatim into the one keyword file; every export rides intact and
- * zero logic changes follow. the arm was browser-pure with zero
- * imports, so nothing dissolves here (the env adapter section below
- * reads the vocabulary this section declares, so profile rides first).
+ * sandboxenvprofile.ts — the configuration adapter of the sandbox spec
+ * plane.
+ *
+ * the declarative spec (sandboxprofile.ts) never holds capacities: the
+ * limits table is a parameter. this module is the adapter that turns
+ * configuration into that parameter: it reads the SADDLE_SPEC_LIMITS
+ * json environment variable ({ "bases": { ... } }), merges it over a
+ * documented development bootstrap table (so a partial override stays
+ * safe) and returns the effective limits table. production deployments
+ * can equally hand the database sourced table straight to
+ * resolvesandboxspec and skip this adapter entirely.
+ *
+ * the module is browser-pure: zero dom, zero node builtins; it imports
+ * only the vocabulary and types of sandboxprofile.ts. the bootstrap table
+ * is a documented convenience, never a product rule — every field it
+ * carries is overridable.
  */
 
+
+
+
+/** documented development bootstrap table; production overrides it with
+ * the SADDLE_SPEC_LIMITS json (or the database table). fields: maxvcpus/
+ * maxramgb/maxvgpus/maxdiskgb/maxtimeoutseconds/defaultvcpus/
+ * defaultramgb. */
+const bootstraplimits: sandboxspeclimits = {
+  bases: {
+    lite: {
+      maxvcpus: 4,
+      maxramgb: 8,
+      maxvgpus: 0,
+      maxdiskgb: 32,
+      maxtimeoutseconds: 900,
+      defaultvcpus: 2,
+      defaultramgb: 4,
+    },
+    balanced: {
+      maxvcpus: 16,
+      maxramgb: 32,
+      maxvgpus: 1,
+      maxdiskgb: 128,
+      maxtimeoutseconds: 3600,
+      defaultvcpus: 8,
+      defaultramgb: 16,
+    },
+    max: {
+      maxvcpus: 64,
+      maxramgb: 256,
+      maxvgpus: 2,
+      maxdiskgb: 512,
+      maxtimeoutseconds: 14400,
+      defaultvcpus: 32,
+      defaultramgb: 64,
+    },
+  },
+  defaulttimeoutseconds: 900,
+};
+
+/**
+ * reads the limits table from the SADDLE_SPEC_LIMITS environment json;
+ * the bootstrap table fills every base the json does not define, so a
+ * partial override stays safe. broken json falls back to the bootstrap
+ * table (the spec plane never becomes unavailable over config drift).
+ *
+ * @param env the environment record (process.env shaped).
+ * @returns the effective limits table.
+ */
+export function specenvlimits(env: Record<string, string | undefined>): sandboxspeclimits {
+  const raw = env.SADDLE_SPEC_LIMITS;
+  if (raw === undefined || raw.trim() === '') {
+    return bootstraplimits;
+  }
+  try {
+    const parsed = JSON.parse(raw) as { bases?: Record<string, Partial<sandboxbaselimit>> };
+    const bases = { ...bootstraplimits.bases };
+    if (typeof parsed?.bases === 'object' && parsed.bases !== null) {
+      for (const key of SANDBOXBASES) {
+        const override = parsed.bases[key as sandboxbaseid];
+        if (typeof override === 'object' && override !== null) {
+          bases[key as sandboxbaseid] = {
+            ...bootstraplimits.bases[key as sandboxbaseid],
+            ...override,
+          };
+        }
+      }
+    }
+    return { ...bootstraplimits, bases };
+  } catch {
+    return bootstraplimits;
+  }
+}
+
+/* ===== block: sandboxprofile ===== */
 /**
  * sandboxprofile.ts — the declarative sandbox specification of saddle.
  *
@@ -2523,123 +2595,7 @@ export function enginespecfor(
   };
 }
 
-/* ------------------------------------------------------------------ */
-/* fold: sandboxenvprofile.ts — the spec configuration adapter        */
-/* ------------------------------------------------------------------ */
-
-/**
- * the sandbox family fold (the edgelandes law, the wave after the
- * saddle virtual fold of PR #356): this trailing section carries
- * sandboxenvprofile.ts — the configuration adapter of the sandbox spec
- * plane — verbatim into the one keyword file; every export rides intact
- * and zero logic changes follow. the arm's single intra-family import
- * (the vocabulary and types of sandboxprofile.ts) dissolves: the
- * profile section above declares SANDBOXBASES in this same seat now.
- */
-
-/**
- * sandboxenvprofile.ts — the configuration adapter of the sandbox spec
- * plane.
- *
- * the declarative spec (sandboxprofile.ts) never holds capacities: the
- * limits table is a parameter. this module is the adapter that turns
- * configuration into that parameter: it reads the SADDLE_SPEC_LIMITS
- * json environment variable ({ "bases": { ... } }), merges it over a
- * documented development bootstrap table (so a partial override stays
- * safe) and returns the effective limits table. production deployments
- * can equally hand the database sourced table straight to
- * resolvesandboxspec and skip this adapter entirely.
- *
- * the module is browser-pure: zero dom, zero node builtins; it imports
- * only the vocabulary and types of sandboxprofile.ts. the bootstrap table
- * is a documented convenience, never a product rule — every field it
- * carries is overridable.
- */
-
-/** documented development bootstrap table; production overrides it with
- * the SADDLE_SPEC_LIMITS json (or the database table). fields: maxvcpus/
- * maxramgb/maxvgpus/maxdiskgb/maxtimeoutseconds/defaultvcpus/
- * defaultramgb. */
-const bootstraplimits: sandboxspeclimits = {
-  bases: {
-    lite: {
-      maxvcpus: 4,
-      maxramgb: 8,
-      maxvgpus: 0,
-      maxdiskgb: 32,
-      maxtimeoutseconds: 900,
-      defaultvcpus: 2,
-      defaultramgb: 4,
-    },
-    balanced: {
-      maxvcpus: 16,
-      maxramgb: 32,
-      maxvgpus: 1,
-      maxdiskgb: 128,
-      maxtimeoutseconds: 3600,
-      defaultvcpus: 8,
-      defaultramgb: 16,
-    },
-    max: {
-      maxvcpus: 64,
-      maxramgb: 256,
-      maxvgpus: 2,
-      maxdiskgb: 512,
-      maxtimeoutseconds: 14400,
-      defaultvcpus: 32,
-      defaultramgb: 64,
-    },
-  },
-  defaulttimeoutseconds: 900,
-};
-
-/**
- * reads the limits table from the SADDLE_SPEC_LIMITS environment json;
- * the bootstrap table fills every base the json does not define, so a
- * partial override stays safe. broken json falls back to the bootstrap
- * table (the spec plane never becomes unavailable over config drift).
- *
- * @param env the environment record (process.env shaped).
- * @returns the effective limits table.
- */
-export function specenvlimits(env: Record<string, string | undefined>): sandboxspeclimits {
-  const raw = env.SADDLE_SPEC_LIMITS;
-  if (raw === undefined || raw.trim() === '') {
-    return bootstraplimits;
-  }
-  try {
-    const parsed = JSON.parse(raw) as { bases?: Record<string, Partial<sandboxbaselimit>> };
-    const bases = { ...bootstraplimits.bases };
-    if (typeof parsed?.bases === 'object' && parsed.bases !== null) {
-      for (const key of SANDBOXBASES) {
-        const override = parsed.bases[key as sandboxbaseid];
-        if (typeof override === 'object' && override !== null) {
-          bases[key as sandboxbaseid] = {
-            ...bootstraplimits.bases[key as sandboxbaseid],
-            ...override,
-          };
-        }
-      }
-    }
-    return { ...bootstraplimits, bases };
-  } catch {
-    return bootstraplimits;
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/* fold: sandboxqueue.ts — the sandbox lifecycle queue arm            */
-/* ------------------------------------------------------------------ */
-
-/**
- * the sandbox family fold (the edgelandes law, the wave after the
- * saddle virtual fold of PR #356): this trailing section carries
- * sandboxqueue.ts — the sandbox lifecycle queue of saddle — verbatim
- * into the one keyword file; every export rides intact and zero logic
- * changes follow. the arm was deliberately pure with zero imports, so
- * nothing dissolves here.
- */
-
+/* ===== block: sandboxqueue ===== */
 /**
  * sandboxqueue.ts — the sandbox lifecycle queue of saddle.
  *
@@ -2980,19 +2936,7 @@ export function createsandboxqueue(options?: sandboxqueueoptions): {
   };
 }
 
-/* ------------------------------------------------------------------ */
-/* fold: sandboxquota.ts — the per-account quota ledger arm           */
-/* ------------------------------------------------------------------ */
-
-/**
- * the sandbox family fold (the edgelandes law, the wave after the
- * saddle virtual fold of PR #356): this trailing section carries
- * sandboxquota.ts — the per-account resource quota ledger of saddle —
- * verbatim into the one keyword file; every export rides intact and
- * zero logic changes follow. the arm was pure with zero imports, so
- * nothing dissolves here.
- */
-
+/* ===== block: sandboxquota ===== */
 /**
  * sandboxquota.ts — the per-account resource quota ledger of saddle.
  *

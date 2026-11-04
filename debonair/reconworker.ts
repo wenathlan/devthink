@@ -40,7 +40,7 @@ import { seededNoiseChannel } from "./audio.ts";
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { pcmhash, RECON_ENVELOPE_WINDOWS } from "./ingest.ts";
 import { limitTruePeak } from "./limiter.ts";
-import { PATTERN_SCALES, type PatternScaleName } from "./patternenums.ts";
+import { PATTERN_SCALES, type PatternScaleName } from "./pattern.ts";
 import {
   parseRecon,
   RECON_LAYERS,
@@ -50,7 +50,7 @@ import {
   type ReconFrame,
   serializeRecon,
 } from "./reconpayload.ts";
-import type { RenderBlobPointer, RenderBlobStore, RenderJobRow, RenderJobSeat } from "./renderworker.ts";
+import type { RenderBlobPointer, RenderBlobStore, RenderJobRow, RenderJobSeat } from "./render.ts";
 import { midiToHz } from "./tuning.ts";
 import { encodeWav } from "./wavwriter.ts";
 

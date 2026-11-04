@@ -1,49 +1,18 @@
-// # versawase — the image, video, animation and 3D engine of the family, housed
-// at the cadria root and consolidated as ONE keyword file of the versawase
-// domain (the edgelandes law of the root: one keyword file per domain —
-// the purest fold candidate the family carries). The former eight arms
-// folded here verbatim, in pipeline order:
-//   Section 1: versawasegen.ts         — the procedural mesh generator (uv
-//                                         sphere, torus, noise terrain,
-//                                         extrusion, the twist/belly/subdivide
-//                                         modifier stack, the honest audit).
-//   Section 2: versawaseshaders.ts     — the GLSL material catalog and the
-//                                         source validator of the 3d material
-//                                         lane (2 vertex stages, 6 materials).
-//   Section 3: versawaserender.ts      — the WebGL2 pass runtime (fullscreen
-//                                         triangle, ping-pong framebuffers,
-//                                         the readPixels readback).
-//   Section 4: versawase3d.ts          — the three.js viewport runtime (the
-//                                         mesh conversion, the hand-rolled
-//                                         orbit, the honest mount).
-//   Section 5: versawaseanimate.ts     — the animation sampler (per-node
-//                                         snapshots over the Scene3d contract).
-//   Section 6: versawaseslices.ts      — the sliced-render planner (the
-//                                         F-CAD-027 doctrine).
-//   Section 7: versawasescheduler.ts   — the render-job scheduler (the
-//                                         multi-slot plan, the pure status
-//                                         transitions).
-//   Section 8: versawasecomposition.ts — the composition document (tracks,
-//                                         clips, the effect stack, the
-//                                         gl-transitions catalog, the json
-//                                         round trip, the Saddle slice plan).
-// Every export of every source file is preserved verbatim — zero logic
-// changes, every specifier rides intact. The consolidation notes (the only
-// edits the merge made): the intra-family imports dissolved into the single
-// module scope — versawaseanimate and versawasescheduler composed on
-// trackValueAt, sceneDuration and renderJobFrames of the first seat below,
-// and versawasecomposition composed on planSlices and RenderSlice of the
-// slices section (the sections ride pipeline order, so every dissolved
-// reference is already declared when its consumer composes); the shared
-// cross-domain imports (node:crypto of composition+shaders, three of the
-// viewport, shadercomp of composition+shaders+render, timeticks of slices,
-// visualize of viewport+render) declare once at the top; the published
-// ./versawase3d, ./versawaseanimate, ./versawasecomposition, ./versawasegen,
-// ./versawaserender, ./versawasescheduler, ./versawaseshaders and
-// ./versawaseslices specifiers keep resolving through the package exports
-// map — they point at this seat now, the way the edgelandes fold kept every
-// retired specifier live.
-//
+/**
+ * versawase — consolidated versawase engine logics of the cadria family.
+ * @module versawase
+ * @family wave/logicfold2
+ * One keyed file per family: the former variant arms (versawase3d, versawaseanimate, versawasecomposition, versawasegen, versawaserender, versawasescheduler, versawaseshaders, versawaseslices)
+ * retired into this seat with every export preserved under the same name.
+ */
+
+import { EffectProgram, SHADER_EFFECTS, ShaderEffectId, compileEffectProgram } from "./shadercomp.ts";
+import { FrameRate, frameat, frameratefromf64, tickofframe, ticksfromseconds } from "./timeticks.ts";
+import { ImageInput, MeshGeometry } from "./visualize.ts";
+import { createHash } from "node:crypto";
+
+/* ===== block: versawase ===== */
+// # versawase — the image, video, animation and 3D engine of the family, housed at the cadria root.
 // Library-grade module shipped inside the published packages (npm, maven with the Spring
 // Boot rider): it owns the domain types and pure, generic helpers only — zero consumer
 // data. The content tables of this site live in the db layer (seed.ts + db.ts) and reach
@@ -51,16 +20,6 @@
 // The family renders through this engine: stealthhead (the fps platform) depends on the
 // published @wenathlan/cadria library for every 3D, animation and render concern and
 // carries only its storage and pre-compilation surface.
-
-import { createHash } from "node:crypto";
-import * as THREE from "three";
-import { compileEffectProgram, type EffectProgram, SHADER_EFFECTS, type ShaderEffectId } from "./shadercomp.ts";
-import { type FrameRate, frameratefromf64, frameat, tickofframe, ticksfromseconds } from "./timeticks.ts";
-import type { ImageInput, MeshGeometry } from "./visualize.ts";
-
-/* ════════════════════════════════════════════════════════════════════ */
-/* versawase.ts — the engine domain contract (the first seat). */
-/* ════════════════════════════════════════════════════════════════════ */
 
 /** Badge tone used across the family cards and chips. */
 export type BadgeTone = "default" | "success" | "error" | "warning" | "info";
@@ -261,28 +220,873 @@ export function shaderManifestComplete(shaders: readonly PrecompiledShader[]): b
   );
 }
 
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 1: versawasegen.ts — the procedural mesh generator. */
-/* ════════════════════════════════════════════════════════════════════ */
+/* ===== block: versawase3d ===== */
+// # versawase3d — the 3d viewport runtime of the versawase engine: it takes
+// the mesh data the visualize pipeline already produces (vertices, indices,
+// vertex colors, normals) and mounts a real three.js scene — perspective
+// camera with a hand-rolled orbit (drag to rotate, wheel or pinch to zoom,
+// no external controls package), ambient plus directional light, a
+// vertex-colored standard material, and a rAF loop that stays still under
+// reduced motion. The mesh math is a pure conversion (image space is
+// mirrored into three's y-up space and the winding is reversed to keep the
+// front faces toward the camera), node-testable without any canvas; the
+// DOM side (listeners, observer, loop) lives in one viewport object that
+// disposes cleanly.
+
+import * as THREE from "three";
+
+
+/** the mesh payload the viewport mounts — exactly what visualize() answers. */
+export interface MeshData {
+  mesh: MeshGeometry;
+  /** rgb vertex colors 0-1, 3 per vertex (null = plain material). */
+  colors: Float32Array | null;
+  /** xyz unit normals, 3 per vertex (null = the geometry computes its own). */
+  normals: Float32Array | null;
+}
+
+/** the pure, three-ready conversion of one mesh payload. */
+export interface ThreeMeshArgs {
+  /** xyz positions with y mirrored: image rows read top-down in three's y-up space. */
+  positions: Float32Array;
+  /** unit normals with y mirrored to match the positions (null when the input had none). */
+  normals: Float32Array | null;
+  /** vertex colors passed through untouched (null when the input had none). */
+  colors: Float32Array | null;
+  /** triangle indices with the winding reversed — the y mirror flips front faces. */
+  indices: Uint32Array;
+  /** the axis-aligned center of the converted positions. */
+  center: [number, number, number];
+  /** the axis-aligned extent of the converted positions. */
+  size: [number, number, number];
+  /** element counts of the mesh. */
+  counts: { vertices: number; triangles: number };
+}
 
 /**
- * versawasegen — the procedural mesh generator of the versawase engine:
- * pure TypeScript functions that build real geometry — uv sphere, torus,
- * noise terrain and polygon extrusion — answering the {positions, normals,
- * uvs, indices} buffer set every consumer of the family 3d lane speaks.
- * The primitives carry the modifier stack the engine doctrine records
- * (twist, belly, subdivision) as pure whole-mesh transforms, and every
- * generator composes on one honest audit (validateMesh) instead of hoping
- * the buffers are well formed. Zero dependencies, zero DOM, zero GL: the
- * same calls run in node (the tests), in the browser viewport
- * (versawase3d mounts the buffers) and inside a Saddle render lane
- * (software rasterization never touches the visitor GPU). Coordinates are
- * y-up to match the three.js space the 3d viewport mounts; winding is
- * counter-clockwise seen from outside, so front faces point away from the
- * solid. The noise floor is a deterministic integer-hash value noise with
- * quintic fade and fractal octaves — the terrain height is real
- * mathematics, never a canned table.
+ * Converts one visualize mesh into three's coordinate system: image space
+ * grows x right and y down, so the y axis is mirrored (rows read top-down)
+ * and, because a mirror reflection flips triangle winding, the last two
+ * corners of every face are swapped — the front faces keep pointing toward
+ * the camera at +z. Colors pass through; provided normals are mirrored the
+ * same way as the positions.
  */
+export function threeMeshArgs(data: MeshData): ThreeMeshArgs {
+  const { mesh } = data;
+  const source = mesh.vertices;
+  const positions = new Float32Array(source.length);
+  for (let offset = 0; offset < source.length; offset += 3) {
+    positions[offset] = source[offset];
+    positions[offset + 1] = -source[offset + 1];
+    positions[offset + 2] = source[offset + 2];
+  }
+  let normals: Float32Array | null = null;
+  if (data.normals) {
+    const given = data.normals;
+    normals = new Float32Array(given.length);
+    for (let offset = 0; offset < given.length; offset += 3) {
+      normals[offset] = given[offset];
+      normals[offset + 1] = -given[offset + 1];
+      normals[offset + 2] = given[offset + 2];
+    }
+  }
+  const faces = mesh.indices;
+  const indices = new Uint32Array(faces.length);
+  for (let face = 0; face < faces.length; face += 3) {
+    indices[face] = faces[face];
+    indices[face + 1] = faces[face + 2];
+    indices[face + 2] = faces[face + 1];
+  }
+  const min: [number, number, number] = [0, 0, 0];
+  const max: [number, number, number] = [0, 0, 0];
+  for (let offset = 0; offset < positions.length; offset += 3) {
+    for (let axis = 0; axis < 3; axis += 1) {
+      const value = positions[offset + axis];
+      if (offset === 0 || value < min[axis]) min[axis] = value;
+      if (offset === 0 || value > max[axis]) max[axis] = value;
+    }
+  }
+  return {
+    positions,
+    normals,
+    colors: data.colors,
+    indices,
+    center: [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2],
+    size: [max[0] - min[0], max[1] - min[1], max[2] - min[2]],
+    counts: { vertices: positions.length / 3, triangles: indices.length / 3 },
+  };
+}
+
+/**
+ * The camera distance that frames the longest mesh side inside the viewport:
+ * half the longest side over the tangent of half the field of view, times a
+ * breathing margin. Degenerate meshes fall back to the unit side.
+ */
+export function fitCameraDistance(
+  size: readonly [number, number, number] | readonly number[],
+  fovDegrees = 50,
+  margin = 1.45,
+): number {
+  const longest = Math.max(size[0], size[1], size[2]) || 1;
+  const halfFov = ((fovDegrees > 0 && fovDegrees < 180 ? fovDegrees : 50) / 2) * (Math.PI / 180);
+  return (longest / 2 / Math.tan(halfFov)) * (margin > 0 ? margin : 1);
+}
+
+/** the mount options of one viewport. */
+export interface ViewportOptions {
+  /** initial polar angle from +y in degrees (default 62 — a three-quarter view). */
+  phiDegrees?: number;
+  /** initial azimuth around +y in degrees (default -32). */
+  thetaDegrees?: number;
+  /** slow idle drift while the OS allows motion (default true). */
+  spin?: boolean;
+  /** the reduced-motion answer: no autonomous motion, renders on demand (default false). */
+  reducedMotion?: boolean;
+}
+
+/** one mounted viewport: deterministic surface, clean teardown. */
+export interface Viewport {
+  /** renders one frame synchronously (the screenshot path uses it). */
+  renderNow(): void;
+  /** restores the initial framing. */
+  reset(): void;
+  /** answers a png data url of the current frame (for the download row). */
+  screenshot(): string;
+  /** cancels the loop, drops the listeners and disposes every three resource. */
+  dispose(): void;
+}
+
+/** the honest outcome of mounting: a viewport, or the typed refusal. */
+export type ViewportOutcome = { ok: true; viewport: Viewport } | { ok: false; error: "three-no-webgl" };
+
+/** the idle drift rate in radians per second (a slow showroom turn). */
+const SPIN_RAD_PER_SECOND = 0.22;
+
+/** drag sensitivity in radians per pixel. */
+const ROTATE_PER_PIXEL = 0.006;
+
+/** zoom sensitivity per wheel notch (exponential). */
+const ZOOM_PER_NOTCH = 0.0012;
+
+/**
+ * Mounts the real 3d scene over one canvas: converted BufferGeometry with
+ * vertex colors, ambient plus directional light, a perspective camera on a
+ * hand-rolled orbit and a rAF loop that only moves when the OS allows
+ * motion — under reduced motion the viewport renders on demand (input and
+ * resize) and never animates on its own. A canvas without a webgl context
+ * answers { ok: false, error: "three-no-webgl" } — no fallback, no pretend.
+ */
+export function mountThreeScene(
+  canvas: HTMLCanvasElement,
+  data: MeshData,
+  options: ViewportOptions = {},
+): ViewportOutcome {
+  let renderer: THREE.WebGLRenderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  } catch {
+    return { ok: false, error: "three-no-webgl" };
+  }
+
+  const args = threeMeshArgs(data);
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(args.positions, 3));
+  if (args.normals) geometry.setAttribute("normal", new THREE.BufferAttribute(args.normals, 3));
+  if (args.colors) geometry.setAttribute("color", new THREE.BufferAttribute(args.colors, 3));
+  geometry.setIndex(new THREE.BufferAttribute(args.indices, 1));
+  if (!args.normals) geometry.computeVertexNormals();
+
+  const material = new THREE.MeshStandardMaterial({
+    vertexColors: args.colors !== null,
+    roughness: 0.9,
+    metalness: 0.05,
+    // carved holes (minHeight) let the orbit see the back of the relief
+    side: THREE.DoubleSide,
+  });
+  const mesh = new THREE.Mesh(geometry, material);
+  // lay the relief up: the image plane becomes horizontal, heights point to +y
+  const group = new THREE.Group();
+  group.rotation.x = -Math.PI / 2;
+  group.add(mesh);
+
+  const scene = new THREE.Scene();
+  scene.add(group);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  // rotation.x = -pi/2 maps (x, y, z) to (x, z, -y): the center follows
+  const target = new THREE.Vector3(args.center[0], args.center[2], -args.center[1]);
+  const key = new THREE.DirectionalLight(0xffffff, 1.2);
+  key.position
+    .copy(target)
+    .add(new THREE.Vector3(0.5, 0.9, 0.7).normalize().multiplyScalar(Math.max(args.size[1], 1) * 4 + 10));
+  key.target.position.copy(target);
+  scene.add(key);
+  scene.add(key.target);
+
+  const fov = 50;
+  const camera = new THREE.PerspectiveCamera(fov, 1, 0.01, 10000);
+  const initialTheta = ((options.thetaDegrees ?? -32) * Math.PI) / 180;
+  const initialPhi = ((options.phiDegrees ?? 62) * Math.PI) / 180;
+  const initialRadius = fitCameraDistance(args.size, fov);
+  const minRadius = initialRadius * 0.3;
+  const maxRadius = initialRadius * 5;
+
+  let theta = initialTheta;
+  let phi = initialPhi;
+  let radius = initialRadius;
+  let dragging = false;
+  let pinchDistance = 0;
+  let dirty = true;
+  let disposed = false;
+  let raf = 0;
+  let lastFrameMs = 0;
+  const pointers = new Map<number, { x: number; y: number }>();
+  const reduced = options.reducedMotion ?? false;
+  const spinEnabled = (options.spin ?? true) && !reduced;
+
+  const clampRadius = (value: number): number => Math.min(maxRadius, Math.max(minRadius, value));
+  const clampPhi = (value: number): number => Math.min(Math.PI - 0.08, Math.max(0.08, value));
+  const pointerDistance = (): number => {
+    const [first, second] = [...pointers.values()];
+    if (!first || !second) return 0;
+    return Math.hypot(first.x - second.x, first.y - second.y);
+  };
+
+  const place = (): void => {
+    camera.position.set(
+      target.x + radius * Math.sin(phi) * Math.cos(theta),
+      target.y + radius * Math.cos(phi),
+      target.z + radius * Math.sin(phi) * Math.sin(theta),
+    );
+    camera.lookAt(target);
+  };
+
+  const frame = (now: number): void => {
+    raf = 0;
+    if (disposed) return;
+    const deltaSeconds = lastFrameMs === 0 ? 0 : Math.min((now - lastFrameMs) / 1000, 0.1);
+    lastFrameMs = now;
+    if (spinEnabled && !dragging) {
+      theta += SPIN_RAD_PER_SECOND * deltaSeconds;
+      dirty = true;
+    }
+    if (dirty) {
+      place();
+      renderer.render(scene, camera);
+      dirty = false;
+    }
+    if (spinEnabled) raf = requestAnimationFrame(frame);
+  };
+
+  /** asks for one frame — the reduced-motion path renders exactly this and stops. */
+  const requestRender = (): void => {
+    dirty = true;
+    if (raf === 0 && !disposed) raf = requestAnimationFrame(frame);
+  };
+
+  const resize = (): void => {
+    const width = canvas.clientWidth || 1;
+    const height = canvas.clientHeight || 1;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    requestRender();
+  };
+
+  const onPointerDown = (event: PointerEvent): void => {
+    canvas.setPointerCapture(event.pointerId);
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    dragging = true;
+    if (pointers.size === 2) pinchDistance = pointerDistance();
+  };
+  const onPointerMove = (event: PointerEvent): void => {
+    const previous = pointers.get(event.pointerId);
+    if (!previous) return;
+    if (pointers.size === 2) {
+      previous.x = event.clientX;
+      previous.y = event.clientY;
+      const next = pointerDistance();
+      if (pinchDistance > 0 && next > 0) radius = clampRadius((radius * pinchDistance) / next);
+      pinchDistance = next;
+    } else {
+      theta -= (event.clientX - previous.x) * ROTATE_PER_PIXEL;
+      phi = clampPhi(phi - (event.clientY - previous.y) * ROTATE_PER_PIXEL);
+    }
+    previous.x = event.clientX;
+    previous.y = event.clientY;
+    requestRender();
+  };
+  const onPointerUp = (event: PointerEvent): void => {
+    pointers.delete(event.pointerId);
+    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    if (pointers.size < 2) pinchDistance = 0;
+    dragging = pointers.size > 0;
+    requestRender();
+  };
+  const onWheel = (event: WheelEvent): void => {
+    event.preventDefault();
+    radius = clampRadius(radius * Math.exp(event.deltaY * ZOOM_PER_NOTCH));
+    requestRender();
+  };
+
+  const listeners: [string, EventListener, AddEventListenerOptions?][] = [
+    ["pointerdown", onPointerDown as EventListener],
+    ["pointermove", onPointerMove as EventListener],
+    ["pointerup", onPointerUp as EventListener],
+    ["pointercancel", onPointerUp as EventListener],
+    ["wheel", onWheel as EventListener, { passive: false }],
+  ];
+  for (const [type, listener, capture] of listeners) {
+    canvas.addEventListener(type, listener, capture);
+  }
+  canvas.style.touchAction = "none";
+
+  const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => resize()) : null;
+  observer?.observe(canvas);
+  resize();
+
+  return {
+    ok: true,
+    viewport: {
+      renderNow(): void {
+        place();
+        renderer.render(scene, camera);
+        dirty = false;
+      },
+      reset(): void {
+        theta = initialTheta;
+        phi = initialPhi;
+        radius = initialRadius;
+        requestRender();
+      },
+      screenshot(): string {
+        place();
+        renderer.render(scene, camera);
+        dirty = false;
+        return canvas.toDataURL("image/png");
+      },
+      dispose(): void {
+        if (disposed) return;
+        disposed = true;
+        if (raf !== 0) cancelAnimationFrame(raf);
+        raf = 0;
+        observer?.disconnect();
+        for (const [type, listener, capture] of listeners) {
+          canvas.removeEventListener(type, listener, capture);
+        }
+        geometry.dispose();
+        material.dispose();
+        renderer.dispose();
+      },
+    },
+  };
+}
+
+/* ===== block: versawaseanimate ===== */
+// # versawaseanimate — the animation sampler of the versawase engine: it turns
+// the declarative Scene3d contract (versawase.ts) into per-node transform
+// snapshots over time. Library-grade and pure: no consumer data, no DOM, no
+// GL — the pages, stealthhead and external packages bring their own scene
+// rows and ride the same sampler. Sampling composes on top of the engine
+// primitives (trackValueAt for one track, sceneDuration for the wrap span)
+// instead of duplicating their math.
+
+
+
+/** The sampled local state of one node at a point in time. */
+export interface NodeSnapshot {
+  id: string;
+  position: Axis3;
+  rotation: Axis3;
+  scale: Axis3;
+  opacity: number;
+  /** morph weight (0..1) when a morph track targets the node */
+  morph: number;
+}
+
+/** Named-axis vector for transform snapshots (mesh math rides visualizemesh's tuple Vec3). */
+export interface Axis3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
+const ZERO: Axis3 = { x: 0, y: 0, z: 0 };
+const ONE: Axis3 = { x: 1, y: 1, z: 1 };
+
+/** Collects the animation tracks that target one node id. */
+export function tracksByTarget(scene: Scene3d, nodeId: string): readonly AnimationTrack[] {
+  return scene.tracks.filter((track) => track.target === nodeId);
+}
+
+/** Wraps seconds into the authored span when the scene loops, so long plays ride the same keys. */
+export function wrapSeconds(seconds: number, span: number): number {
+  if (span <= 0) return Math.max(0, seconds);
+  if (seconds <= span) return Math.max(0, seconds);
+  return seconds % span;
+}
+
+/** Samples every channel of one node's tracks into a local snapshot (defaults included). */
+export function sampleNode(scene: Scene3d, node: SceneNode, seconds: number): NodeSnapshot {
+  const snapshot: NodeSnapshot = {
+    id: node.id,
+    position: { ...ZERO },
+    rotation: { ...ZERO },
+    scale: { ...ONE },
+    opacity: 1,
+    morph: 0,
+  };
+  for (const track of tracksByTarget(scene, node.id)) {
+    const value = trackValueAt(track, seconds);
+    switch (track.channel) {
+      case "position":
+        snapshot.position = axisValue(snapshot.position, track, value);
+        break;
+      case "rotation":
+        snapshot.rotation = axisValue(snapshot.rotation, track, value);
+        break;
+      case "scale":
+        snapshot.scale = axisValue(snapshot.scale, track, value);
+        break;
+      case "opacity":
+        snapshot.opacity = value;
+        break;
+      case "morph":
+        snapshot.morph = value;
+        break;
+    }
+  }
+  return snapshot;
+}
+
+/** Samples the whole scene at one instant: every node id maps to its local snapshot. */
+export function sampleSceneAt(scene: Scene3d, seconds: number): Map<string, NodeSnapshot> {
+  const time = wrapSeconds(seconds, sceneDuration(scene));
+  const snapshots = new Map<string, NodeSnapshot>();
+  for (const node of scene.nodes) {
+    snapshots.set(node.id, sampleNode(scene, node, time));
+  }
+  return snapshots;
+}
+
+/**
+ * Accumulates the world transform of one node over its parent chain:
+ * positions add, scales multiply, rotations add (euler degrees, local order).
+ * Cycles in the parent graph are cut at the first revisit.
+ */
+export function worldTransform(
+  scene: Scene3d,
+  nodeId: string,
+  seconds: number,
+): { position: Axis3; rotation: Axis3; scale: Axis3 } {
+  const time = wrapSeconds(seconds, sceneDuration(scene));
+  const byId = new Map(scene.nodes.map((node) => [node.id, node]));
+  const chain: SceneNode[] = [];
+  const seen = new Set<string>();
+  let cursor: SceneNode | undefined = byId.get(nodeId);
+  while (cursor && !seen.has(cursor.id)) {
+    seen.add(cursor.id);
+    chain.unshift(cursor);
+    cursor = cursor.parent ? byId.get(cursor.parent) : undefined;
+  }
+  const world = { position: { ...ZERO }, rotation: { ...ZERO }, scale: { ...ONE } };
+  for (const node of chain) {
+    const local = sampleNode(scene, node, time);
+    world.position = addVec(world.position, local.position);
+    world.rotation = addVec(world.rotation, local.rotation);
+    world.scale = mulVec(world.scale, local.scale);
+  }
+  return world;
+}
+
+/** Folds one track value into one axis slot of a vector (x/y/z encoded in the track id suffix). */
+function axisValue(base: Axis3, track: AnimationTrack, value: number): Axis3 {
+  const axis = axisOf(track.id);
+  return { ...base, [axis]: value } as Axis3;
+}
+
+/** Reads the axis a track drives from its id suffix (-x, -y, -z); unknown ids ride x. */
+function axisOf(trackId: string): keyof Axis3 {
+  const suffix = trackId.slice(-2).toLowerCase();
+  if (suffix === "-y") return "y";
+  if (suffix === "-z") return "z";
+  return "x";
+}
+
+function addVec(a: Axis3, b: Axis3): Axis3 {
+  return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
+}
+
+function mulVec(a: Axis3, b: Axis3): Axis3 {
+  return { x: a.x * b.x, y: a.y * b.y, z: a.z * b.z };
+}
+
+/* ===== block: versawasecomposition ===== */
+// # versawasecomposition — the composition document of the cadria video
+// studio: the structured payload a timeline project serializes to and the
+// Saddle render lane consumes. Where timelineedit.ts owns the tick-space
+// edit algebra of one track, this module owns the whole-document shape —
+// tracks (video, audio, text), clips with media windows and playback rate,
+// the shadercomp effect stack per clip, the transition on the cut (the
+// gl-transitions name catalog) and the frame the whole thing renders at.
+// Every mutation answers the new document or a typed refusal — never a
+// throw, never a mutation — and the JSON lane is a real round trip:
+// serialize answers a deterministic byte-for-byte payload, parse answers
+// the same document back after validating every rule again (a document
+// that only the writer can read is not a format). The composition carries
+// its own Saddle plan: the same sliced-render planner the render lane
+// rides (versawaseslices) cuts the composition duration into frame-aligned
+// slices, so the heavy rasterization happens on the edge farm over the
+// standard transport — the visitor GPU is never touched by the render
+// lane, exactly the doctrine the engine records.
+
+
+
+
+
+/** the track kinds a composition carries. */
+export type TrackKind = "video" | "audio" | "text";
+
+/** one effect of a clip stack: a shadercomp library id plus its amount. */
+export interface ClipEffect {
+  /** the compositor effect id (validated against the shadercomp library). */
+  effectId: ShaderEffectId;
+  /** the effect amount inside the library's honest range. */
+  amount: number;
+  /** whether the effect is active in the stack (bypassed effects stay authored). */
+  enabled: boolean;
+}
+
+/** the transition glued on a clip's leading cut. */
+export interface ClipTransition {
+  /** a gl-transitions catalog name (validated against GL_TRANSITIONS). */
+  name: string;
+  /** how long the transition overlaps, in seconds (inside the clip span). */
+  durationSeconds: number;
+}
+
+/** one clip: a timeline span plus the media window it shows. */
+export interface CompositionClip {
+  id: string;
+  /** the track this clip rides. */
+  trackId: string;
+  /** timeline start in seconds (>= 0). */
+  startSeconds: number;
+  /** timeline duration in seconds (> 0). */
+  durationSeconds: number;
+  /** media in-point in seconds (>= 0). */
+  sourceIn: number;
+  /** playback rate: media seconds per timeline second (> 0). */
+  speed: number;
+  /** the effect stack applied to this clip, in order. */
+  effects: readonly ClipEffect[];
+  /** the transition on the clip's leading cut, when one is authored. */
+  transition?: ClipTransition;
+}
+
+/** one track of the composition. */
+export interface CompositionTrack {
+  id: string;
+  kind: TrackKind;
+  /** the clips of the track, in authored order. */
+  clips: readonly CompositionClip[];
+}
+
+/** the whole composition document. */
+export interface VideoComposition {
+  id: string;
+  name: string;
+  /** the frame rate the composition renders at (> 0). */
+  fps: number;
+  /** raster width in pixels (positive, even per the transcode doctrine). */
+  width: number;
+  /** raster height in pixels (positive, even per the transcode doctrine). */
+  height: number;
+  tracks: readonly CompositionTrack[];
+}
+
+/** every way a composition request can honestly refuse (by return type). */
+export type CompositionIssue =
+  | "duplicate-track"
+  | "unknown-track"
+  | "duplicate-clip"
+  | "overlap"
+  | "bad-span"
+  | "bad-speed"
+  | "unknown-transition"
+  | "bad-transition-span"
+  | "unknown-effect"
+  | "bad-amount"
+  | "bad-format"
+  | "bad-fps"
+  | "bad-dimensions"
+  | "bad-name"
+  | "bad-id";
+
+/** either the new document (or payload) or the reason nothing happened. */
+export type CompositionOutcome<T> = { ok: true; value: T } | { ok: false; error: CompositionIssue };
+
+/**
+ * The canonical gl-transitions name set the engine recognizes on a cut —
+ * the same public collection of webgl transitions (bounces, wipes, warps,
+ * page curls) every player of the family names its cuts by. The catalog
+ * ships names: each entry's sources and uniforms live in the upstream
+ * collection, precompiled and served the shadercomp way.
+ */
+export const GL_TRANSITIONS: readonly string[] = [
+  "Bounce",
+  "BowTieHorizontal",
+  "BowTieVertical",
+  "ButterflyWaveScrawler",
+  "CircleCrop",
+  "ColourDistance",
+  "CrazyParametricFun",
+  "CrossZoom",
+  "DirectionalSlide",
+  "DoomScreenTransition",
+  "Dreamy",
+  "EdgeTransition",
+  "FilmBurn",
+  "GlitchDisplace",
+  "Heart",
+  "InvertedPageCurl",
+  "LeftDrawer",
+  "Mosaic",
+  "PolkaDotsCurtain",
+  "Radial",
+  "RightDrawer",
+  "Roll",
+  "RotateScaleFade",
+  "SimpleZoom",
+  "StereoViewer",
+  "Swap",
+  "Swirl",
+  "WaterDrop",
+  "ZoomInCircles",
+];
+
+/** whether a transition name rides the gl-transitions catalog. */
+export function isKnownTransition(name: string): boolean {
+  return GL_TRANSITIONS.includes(name);
+}
+
+/** the effect library row of one id, when it exists. */
+function effectRow(effectId: string) {
+  return SHADER_EFFECTS.find((effect) => effect.id === effectId);
+}
+
+/** exclusive timeline end of a clip. */
+export function clipEndSeconds(clip: CompositionClip): number {
+  return clip.startSeconds + clip.durationSeconds;
+}
+
+/** the total duration of a composition — the furthest clip end over every track (0 when empty). */
+export function compositionDurationSeconds(composition: VideoComposition): number {
+  let duration = 0;
+  for (const track of composition.tracks) {
+    for (const clip of track.clips) {
+      const end = clipEndSeconds(clip);
+      if (end > duration) duration = end;
+    }
+  }
+  return duration;
+}
+
+/** validates one clip against the library catalogs and the honest ranges. */
+function clipIssue(clip: CompositionClip): CompositionIssue | null {
+  if (typeof clip.id !== "string" || clip.id.length === 0) return "bad-id";
+  if (typeof clip.trackId !== "string" || clip.trackId.length === 0) return "bad-id";
+  if (!Number.isFinite(clip.startSeconds) || clip.startSeconds < 0 || !Number.isFinite(clip.durationSeconds) || clip.durationSeconds <= 0)
+    return "bad-span";
+  if (!Number.isFinite(clip.speed) || clip.speed <= 0) return "bad-speed";
+  if (!Number.isFinite(clip.sourceIn) || clip.sourceIn < 0) return "bad-span";
+  for (const effect of clip.effects ?? []) {
+    const row = effectRow(effect.effectId);
+    if (!row) return "unknown-effect";
+    if (typeof effect.amount !== "number" || !Number.isFinite(effect.amount) || effect.amount < row.minAmount || effect.amount > row.maxAmount)
+      return "bad-amount";
+  }
+  if (clip.transition !== undefined) {
+    if (!isKnownTransition(clip.transition.name)) return "unknown-transition";
+    if (
+      !Number.isFinite(clip.transition.durationSeconds) ||
+      clip.transition.durationSeconds <= 0 ||
+      clip.transition.durationSeconds > clip.durationSeconds
+    )
+      return "bad-transition-span";
+  }
+  return null;
+}
+
+/** whether two half-open clip spans share any timeline instant. */
+function spansOverlap(a: CompositionClip, b: CompositionClip): boolean {
+  return a.startSeconds < clipEndSeconds(b) && b.startSeconds < clipEndSeconds(a);
+}
+
+/** validates the whole document shape (parse lane) — every rule, one pass. */
+function documentIssue(document: VideoComposition): CompositionIssue | null {
+  if (typeof document.id !== "string" || document.id.length === 0) return "bad-id";
+  if (typeof document.name !== "string" || document.name.length === 0) return "bad-name";
+  if (!Number.isFinite(document.fps) || document.fps <= 0) return "bad-fps";
+  if (!Number.isInteger(document.width) || document.width <= 0 || document.width % 2 !== 0) return "bad-dimensions";
+  if (!Number.isInteger(document.height) || document.height <= 0 || document.height % 2 !== 0) return "bad-dimensions";
+  if (!Array.isArray(document.tracks)) return "bad-format";
+  const trackIds = new Set<string>();
+  const clipIds = new Set<string>();
+  for (const track of document.tracks) {
+    if (typeof track.id !== "string" || track.id.length === 0) return "bad-id";
+    if (trackIds.has(track.id)) return "duplicate-track";
+    trackIds.add(track.id);
+    if (track.kind !== "video" && track.kind !== "audio" && track.kind !== "text") return "bad-format";
+    if (!Array.isArray(track.clips)) return "bad-format";
+    const placed: CompositionClip[] = [];
+    for (const clip of track.clips) {
+      const issue = clipIssue(clip);
+      if (issue) return issue;
+      if (clipIds.has(clip.id)) return "duplicate-clip";
+      clipIds.add(clip.id);
+      if (clip.trackId !== track.id) return "unknown-track";
+      if (placed.some((other) => spansOverlap(other, clip))) return "overlap";
+      placed.push(clip);
+    }
+  }
+  return null;
+}
+
+/** adds one track to the composition (the id must be fresh). */
+export function addTrack(composition: VideoComposition, track: CompositionTrack): CompositionOutcome<VideoComposition> {
+  if (typeof track.id !== "string" || track.id.length === 0) return { ok: false, error: "bad-id" };
+  if (track.kind !== "video" && track.kind !== "audio" && track.kind !== "text") return { ok: false, error: "bad-format" };
+  if (composition.tracks.some((existing) => existing.id === track.id)) return { ok: false, error: "duplicate-track" };
+  const clips: CompositionClip[] = [];
+  const clipIds = new Set<string>();
+  for (const clip of track.clips ?? []) {
+    const issue = clipIssue(clip);
+    if (issue) return { ok: false, error: issue };
+    if (clip.trackId !== track.id) return { ok: false, error: "unknown-track" };
+    if (clipIds.has(clip.id)) return { ok: false, error: "duplicate-clip" };
+    if (clips.some((other) => spansOverlap(other, clip))) return { ok: false, error: "overlap" };
+    clipIds.add(clip.id);
+    clips.push(clip);
+  }
+  return { ok: true, value: { ...composition, tracks: [...composition.tracks, { ...track, clips }] } };
+}
+
+/** adds one clip to its track (the span must be free, the ids fresh, the catalogs satisfied). */
+export function addClip(composition: VideoComposition, clip: CompositionClip): CompositionOutcome<VideoComposition> {
+  const issue = clipIssue(clip);
+  if (issue) return { ok: false, error: issue };
+  const track = composition.tracks.find((existing) => existing.id === clip.trackId);
+  if (!track) return { ok: false, error: "unknown-track" };
+  const duplicate =
+    clip.id.length === 0 ||
+    composition.tracks.some((existing) => existing.clips.some((other) => other.id === clip.id));
+  if (duplicate) return { ok: false, error: "duplicate-clip" };
+  if (track.clips.some((other) => spansOverlap(other, clip))) return { ok: false, error: "overlap" };
+  return {
+    ok: true,
+    value: {
+      ...composition,
+      tracks: composition.tracks.map((existing) =>
+        existing.id === track.id ? { ...existing, clips: [...existing.clips, clip] } : existing,
+      ),
+    },
+  };
+}
+
+/** serializes one clip to its plain json shape (fixed key order — the format IS the order). */
+function clipToJson(clip: CompositionClip): Record<string, unknown> {
+  const json: Record<string, unknown> = {
+    id: clip.id,
+    trackId: clip.trackId,
+    startSeconds: clip.startSeconds,
+    durationSeconds: clip.durationSeconds,
+    sourceIn: clip.sourceIn,
+    speed: clip.speed,
+    effects: clip.effects.map((effect) => ({ effectId: effect.effectId, amount: effect.amount, enabled: effect.enabled })),
+  };
+  if (clip.transition !== undefined)
+    json.transition = { name: clip.transition.name, durationSeconds: clip.transition.durationSeconds };
+  return json;
+}
+
+/** the plain json shape of the whole document (deterministic — byte-stable for one document). */
+export function compositionJson(composition: VideoComposition): Record<string, unknown> {
+  return {
+    id: composition.id,
+    name: composition.name,
+    fps: composition.fps,
+    width: composition.width,
+    height: composition.height,
+    tracks: composition.tracks.map((track) => ({
+      id: track.id,
+      kind: track.kind,
+      clips: track.clips.map(clipToJson),
+    })),
+  };
+}
+
+/** the serialized payload of a composition — the structured bytes the family transports. */
+export function serializeComposition(composition: VideoComposition): string {
+  return JSON.stringify(compositionJson(composition));
+}
+
+/** the sha-256 of the serialized payload — the identity the render lane dedupes by. */
+export function compositionFingerprint(composition: VideoComposition): string {
+  return createHash("sha256").update(serializeComposition(composition), "utf8").digest("hex");
+}
+
+/**
+ * Parses a serialized payload back into a composition: json damage answers
+ * bad-format, and every document rule is validated again on the way in —
+ * a payload that skips the rules is refused no matter who wrote it.
+ */
+export function parseComposition(payload: string): CompositionOutcome<VideoComposition> {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(payload);
+  } catch {
+    return { ok: false, error: "bad-format" };
+  }
+  if (typeof parsed !== "object" || parsed === null) return { ok: false, error: "bad-format" };
+  const candidate = parsed as VideoComposition;
+  const issue = documentIssue(candidate);
+  if (issue) return { ok: false, error: issue };
+  return { ok: true, value: candidate };
+}
+
+/**
+ * The Saddle render plan of a composition: the sliced-render planner cuts
+ * the composition duration into frame-aligned slices (the doctrine's ten
+ * second grid by default), so the edge farm rasterizes in parallel over
+ * the standard transport and the preview equals the final artifact — the
+ * visitor GPU is never part of the render lane.
+ */
+export function compositionSlicePlan(composition: VideoComposition, sliceSeconds = 10): readonly RenderSlice[] {
+  return planSlices({
+    durationSeconds: compositionDurationSeconds(composition),
+    fps: composition.fps,
+    sliceSeconds,
+  });
+}
+
+/* ===== block: versawasegen ===== */
+// # versawasegen — the procedural mesh generator of the versawase engine:
+// pure TypeScript functions that build real geometry — uv sphere, torus,
+// noise terrain and polygon extrusion — answering the {positions, normals,
+// uvs, indices} buffer set every consumer of the family 3d lane speaks.
+// The primitives carry the modifier stack the engine doctrine records
+// (twist, belly, subdivision) as pure whole-mesh transforms, and every
+// generator composes on one honest audit (validateMesh) instead of hoping
+// the buffers are well formed. Zero dependencies, zero DOM, zero GL: the
+// same calls run in node (the tests), in the browser viewport
+// (versawase3d mounts the buffers) and inside a Saddle render lane
+// (software rasterization never touches the visitor GPU). Coordinates are
+// y-up to match the three.js space the 3d viewport mounts; winding is
+// counter-clockwise seen from outside, so front faces point away from the
+// solid. The noise floor is a deterministic integer-hash value noise with
+// quintic fade and fractal octaves — the terrain height is real
+// mathematics, never a canned table.
 
 /** one 2d point of an extrusion profile. */
 export interface Vec2 {
@@ -1094,491 +1898,20 @@ export function subdivideMesh(mesh: GeneratedMesh, levels = 1): GeneratedMesh {
   };
 }
 
-
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 2: versawaseshaders.ts — the GLSL material catalog and source validator. */
-/* ════════════════════════════════════════════════════════════════════ */
-
-/**
- * versawaseshaders — the GLSL material catalog and source validator of
- * the versawase engine. shadercomp.ts owns the compositor fragment effects
- * (film/optics vocabulary over a source texture); this module owns the 3d
- * material lane: the vertex stages that carry a GeneratedMesh to clip space
- * (mvp with normal matrix, flat mvp) and the fragment materials that shade
- * it (lambert, toon, matcap, uv/normal debug, depth ramp), every source a
- * real ES 3.00 program. The validator is the honest gate the family law
- * asks for: brace/paren/bracket balance, the #version-first rule, the
- * es 3.00 storage invariants (no gl_FragColor, no attribute/varying),
- * declared-uniform extraction, required-uniform checks and the
- * sampler-behind-texture() rule — all over comments-stripped source with
- * line numbers preserved, answering typed issues instead of throwing. The
- * catalog cross-checks itself (validateCatalogShaders) and the compositor
- * library (validateLibraryEffects folds every shadercomp effect program
- * through the same gate), so a broken body is refused before any manifest
- * row ships. Pure node-side TypeScript: the sha-256 stamps ride node:crypto
- * exactly like shadercomp, nothing here touches the GPU.
- */
-
-/** one catalog stage: a real GLSL ES 3.00 source plus its declared uniforms. */
-export interface ShaderStageEntry {
-  id: string;
-  stage: "vertex" | "fragment";
-  label: string;
-  /** the full GLSL source, `#version 300 es` first. */
-  glsl: string;
-  /** every uniform the source declares — the manifest contract. */
-  uniforms: readonly string[];
-}
-
-/** one finding of the validator: what broke, and where. */
-export interface ShaderIssue {
-  /** stable machine code (unbalanced-braces, missing-uniform, ...). */
-  code: string;
-  /** 1-based line of the finding (0 when the source never reaches it). */
-  line: number;
-  message: string;
-}
-
-/** the typed answer of the validator — issues empty means ok. */
-export interface ShaderValidation {
-  ok: boolean;
-  issues: readonly ShaderIssue[];
-  /** the uniforms the source declares, in declaration order. */
-  uniforms: readonly string[];
-}
-
-/** the validation options; every field carries a default. */
-export interface ValidateShaderOptions {
-  /** the stage the source claims to be (documented on the issue only). */
-  stage?: "vertex" | "fragment";
-  /** whether a `void main(` entry point is required (default true). */
-  requiresMain?: boolean;
-  /** uniforms the caller requires the source to declare. */
-  requiredUniforms?: readonly string[];
-}
-
-/**
- * Strips line and block comments while preserving every line number: the
- * block pass collapses every complete block to the newlines it carried
- * (an unterminated block stays verbatim), then the line pass removes
- * every `//` run to its newline without touching it — the same two-pass
- * contract the regex lane answered. The scan is linear: the code scanning
- * gate refused the polynomial backtracking the lazy block regex answered
- * on adversarial sources, so the fold landed the identical strip as a
- * hand-rolled walk.
- */
-function stripComments(source: string): string {
-  let blockStripped = "";
-  let at = 0;
-  while (at < source.length) {
-    if (source.startsWith("/*", at)) {
-      const close = source.indexOf("*/", at + 2);
-      if (close === -1) {
-        blockStripped += source.slice(at);
-        break;
-      }
-      const block = source.slice(at, close + 2);
-      blockStripped += "\n".repeat((block.match(/\n/g) ?? []).length);
-      at = close + 2;
-    } else {
-      blockStripped += source[at];
-      at += 1;
-    }
-  }
-  let out = "";
-  at = 0;
-  while (at < blockStripped.length) {
-    if (blockStripped.startsWith("//", at)) {
-      const end = blockStripped.indexOf("\n", at);
-      if (end === -1) break;
-      at = end;
-    } else {
-      out += blockStripped[at];
-      at += 1;
-    }
-  }
-  return out;
-}
-
-/** 1-based line of a character index inside the source. */
-function lineOf(source: string, index: number): number {
-  let line = 1;
-  for (let at = 0; at < index && at < source.length; at += 1) {
-    if (source.charCodeAt(at) === 10) line += 1;
-  }
-  return line;
-}
-
-/** extracts the declared uniform names (declaration order, duplicates kept out). */
-function declaredUniforms(stripped: string): string[] {
-  const names: string[] = [];
-  const pattern = /uniform\s+\w+\s+(\w+)\s*(?:\[[^\]]*\])?\s*;/g;
-  for (const match of stripped.matchAll(pattern)) {
-    if (!names.includes(match[1])) names.push(match[1]);
-  }
-  return names;
-}
-
-/**
- * Validates one GLSL source honestly: brace/paren/bracket balance with the
- * offending line, the #version-first-line rule, the es 3.00 invariants
- * (gl_FragColor and attribute/varying are refused), the main() entry point,
- * declared-uniform extraction, required-uniform presence and the rule that
- * texture() calls need a declared sampler. Comments are stripped first, so
- * commented-out damage never fools the gate and real line numbers survive.
- */
-export function validateShaderSource(source: string, options: ValidateShaderOptions = {}): ShaderValidation {
-  const issues: ShaderIssue[] = [];
-  const requiresMain = options.requiresMain ?? true;
-  if (typeof source !== "string" || source.trim().length === 0) {
-    return { ok: false, issues: [{ code: "empty-source", line: 0, message: "the shader source is empty" }], uniforms: [] };
-  }
-  const stripped = stripComments(source);
-  const uniforms = declaredUniforms(stripped);
-
-  // bracket balance: every opener must close, and on its own nesting level
-  const pairs: [string, string, string][] = [
-    ["{", "}", "unbalanced-braces"],
-    ["(", ")", "unbalanced-parens"],
-    ["[", "]", "unbalanced-brackets"],
-  ];
-  for (const [open, close, code] of pairs) {
-    const stack: number[] = [];
-    let closedEarly = -1;
-    for (let at = 0; at < stripped.length; at += 1) {
-      const character = stripped[at];
-      if (character === open) stack.push(at);
-      else if (character === close) {
-        const opened = stack.pop();
-        if (opened === undefined) {
-          closedEarly = at;
-          break;
-        }
-      }
-    }
-    if (closedEarly >= 0)
-      issues.push({ code, line: lineOf(stripped, closedEarly), message: `a "${close}" closes without its "${open}"` });
-    else if (stack.length > 0)
-      issues.push({ code, line: lineOf(stripped, stack[stack.length - 1]), message: `${stack.length} "${open}" never close` });
-  }
-
-  // the #version directive must lead the file when it appears at all
-  const versionAt = stripped.search(/^\s*#\s*version\b/m);
-  if (versionAt > 0)
-    issues.push({ code: "version-not-first", line: lineOf(stripped, versionAt), message: "#version must be the first line of the source" });
-
-  // es 3.00 storage invariants
-  const fragColor = /\bgl_FragColor\b/.exec(stripped);
-  if (fragColor)
-    issues.push({ code: "es3-fragcolor", line: lineOf(stripped, fragColor.index), message: "gl_FragColor is es 1.00 storage — declare an out vec4 and write it" });
-  const legacy = /\b(?:attribute|varying)\b/.exec(stripped);
-  if (legacy)
-    issues.push({
-      code: "es3-legacy-storage",
-      line: lineOf(stripped, legacy.index),
-      message: `"${legacy[0]}" is es 1.00 storage — es 3.00 spells it in/out`,
-    });
-
-  // the entry point
-  if (requiresMain && !/\bvoid\s+main\s*\(/.test(stripped))
-    issues.push({ code: "missing-main", line: 0, message: "the source never declares `void main(`" });
-
-  // required uniforms
-  for (const required of options.requiredUniforms ?? []) {
-    if (!uniforms.includes(required))
-      issues.push({ code: "missing-uniform", line: 0, message: `the source never declares uniform "${required}"` });
-  }
-
-  // texture() needs a declared sampler
-  if (/\btexture\s*\(/.test(stripped) && !/\buniform\s+sampler2D\s+\w+/.test(stripped))
-    issues.push({ code: "texture-without-sampler", line: 0, message: "texture() is called but no sampler2D uniform is declared" });
-
-  return { ok: issues.length === 0, issues, uniforms };
-}
-
-// ---------------------------------------------------------------------------
-// the vertex stages
-// ---------------------------------------------------------------------------
-
-/** the mvp vertex stage with normals and uv (the material lane standard). */
-const VERTEX_MVP_STANDARD =
-  "#version 300 es\n" +
-  "precision highp float;\n" +
-  "in vec3 aPosition;\n" +
-  "in vec3 aNormal;\n" +
-  "in vec2 aUv;\n" +
-  "uniform mat4 uModel;\n" +
-  "uniform mat4 uViewProjection;\n" +
-  "uniform mat3 uNormalMatrix;\n" +
-  "out vec3 vNormal;\n" +
-  "out vec2 vUv;\n" +
-  "void main() {\n" +
-  "  vNormal = normalize(uNormalMatrix * aNormal);\n" +
-  "  vUv = aUv;\n" +
-  "  gl_Position = uViewProjection * uModel * vec4(aPosition, 1.0);\n" +
-  "}\n";
-
-/** the flat mvp vertex stage (positions only — the depth ramp rides it). */
-const VERTEX_MVP_FLAT =
-  "#version 300 es\n" +
-  "precision highp float;\n" +
-  "in vec3 aPosition;\n" +
-  "uniform mat4 uModel;\n" +
-  "uniform mat4 uViewProjection;\n" +
-  "void main() {\n" +
-  "  gl_Position = uViewProjection * uModel * vec4(aPosition, 1.0);\n" +
-  "}\n";
-
-/** the vertex stages of the catalog. */
-export const VERTEX_STAGES: readonly ShaderStageEntry[] = [
-  {
-    id: "mvp-standard",
-    stage: "vertex",
-    label: "mvp with normals and uv",
-    glsl: VERTEX_MVP_STANDARD,
-    uniforms: ["uModel", "uViewProjection", "uNormalMatrix"],
-  },
-  {
-    id: "mvp-flat",
-    stage: "vertex",
-    label: "flat mvp (positions only)",
-    glsl: VERTEX_MVP_FLAT,
-    uniforms: ["uModel", "uViewProjection"],
-  },
-];
-
-// ---------------------------------------------------------------------------
-// the fragment materials
-// ---------------------------------------------------------------------------
-
-/** the lambert material: diffuse plus a documented ambient floor. */
-const FRAGMENT_LAMBERT =
-  "#version 300 es\n" +
-  "precision highp float;\n" +
-  "uniform vec3 uLightDirection;\n" +
-  "uniform vec3 uLightColor;\n" +
-  "uniform vec3 uBaseColor;\n" +
-  "in vec3 vNormal;\n" +
-  "in vec2 vUv;\n" +
-  "out vec4 outColor;\n" +
-  "void main() {\n" +
-  "  vec3 normal = normalize(vNormal);\n" +
-  "  float diffuse = max(dot(normal, normalize(uLightDirection)), 0.0);\n" +
-  "  vec3 lit = uBaseColor * uLightColor * (0.18 + 0.82 * diffuse);\n" +
-  "  outColor = vec4(lit, 1.0);\n" +
-  "}\n";
-
-/** the toon material: the diffuse term quantized into bands. */
-const FRAGMENT_TOON =
-  "#version 300 es\n" +
-  "precision highp float;\n" +
-  "uniform vec3 uLightDirection;\n" +
-  "uniform vec3 uBaseColor;\n" +
-  "uniform float uBands;\n" +
-  "in vec3 vNormal;\n" +
-  "in vec2 vUv;\n" +
-  "out vec4 outColor;\n" +
-  "void main() {\n" +
-  "  vec3 normal = normalize(vNormal);\n" +
-  "  float diffuse = max(dot(normal, normalize(uLightDirection)), 0.0);\n" +
-  "  float bands = max(uBands, 1.0);\n" +
-  "  float quantized = floor(diffuse * bands) / max(bands - 1.0, 1.0);\n" +
-  "  outColor = vec4(uBaseColor * (0.35 + 0.65 * quantized), 1.0);\n" +
-  "}\n";
-
-/** the matcap material: the view-space normal mapped onto a sampler look. */
-const FRAGMENT_MATCAP =
-  "#version 300 es\n" +
-  "precision highp float;\n" +
-  "uniform sampler2D uMatcap;\n" +
-  "in vec3 vNormal;\n" +
-  "in vec2 vUv;\n" +
-  "out vec4 outColor;\n" +
-  "void main() {\n" +
-  "  vec3 normal = normalize(vNormal);\n" +
-  "  vec2 cap = normal.xy * 0.5 + 0.5;\n" +
-  "  outColor = vec4(texture(uMatcap, cap).rgb, 1.0);\n" +
-  "}\n";
-
-/** the uv debug material: paints the interpolated uv coordinates. */
-const FRAGMENT_UV_DEBUG =
-  "#version 300 es\n" +
-  "precision highp float;\n" +
-  "in vec3 vNormal;\n" +
-  "in vec2 vUv;\n" +
-  "out vec4 outColor;\n" +
-  "void main() {\n" +
-  "  outColor = vec4(vUv, 0.0, 1.0);\n" +
-  "}\n";
-
-/** the normal debug material: normals mapped from -1..1 into 0..1 rgb. */
-const FRAGMENT_NORMAL_DEBUG =
-  "#version 300 es\n" +
-  "precision highp float;\n" +
-  "in vec3 vNormal;\n" +
-  "in vec2 vUv;\n" +
-  "out vec4 outColor;\n" +
-  "void main() {\n" +
-  "  vec3 normal = normalize(vNormal) * 0.5 + 0.5;\n" +
-  "  outColor = vec4(normal, 1.0);\n" +
-  "}\n";
-
-/** the depth ramp material: the window depth painted as a near-white ramp. */
-const FRAGMENT_DEPTH_RAMP =
-  "#version 300 es\n" +
-  "precision highp float;\n" +
-  "out vec4 outColor;\n" +
-  "void main() {\n" +
-  "  float depth = gl_FragCoord.z;\n" +
-  "  outColor = vec4(vec3(1.0 - depth), 1.0);\n" +
-  "}\n";
-
-/** the fragment materials of the catalog, each with its vertex pairing. */
-export const FRAGMENT_MATERIALS: readonly (ShaderStageEntry & { vertexStage: string })[] = [
-  {
-    id: "lambert",
-    stage: "fragment",
-    label: "lambert diffuse",
-    glsl: FRAGMENT_LAMBERT,
-    uniforms: ["uLightDirection", "uLightColor", "uBaseColor"],
-    vertexStage: "mvp-standard",
-  },
-  {
-    id: "toon",
-    stage: "fragment",
-    label: "banded toon",
-    glsl: FRAGMENT_TOON,
-    uniforms: ["uLightDirection", "uBaseColor", "uBands"],
-    vertexStage: "mvp-standard",
-  },
-  {
-    id: "matcap",
-    stage: "fragment",
-    label: "matcap look",
-    glsl: FRAGMENT_MATCAP,
-    uniforms: ["uMatcap"],
-    vertexStage: "mvp-standard",
-  },
-  {
-    id: "uvdebug",
-    stage: "fragment",
-    label: "uv debug",
-    glsl: FRAGMENT_UV_DEBUG,
-    uniforms: [],
-    vertexStage: "mvp-standard",
-  },
-  {
-    id: "normaldebug",
-    stage: "fragment",
-    label: "normal debug",
-    glsl: FRAGMENT_NORMAL_DEBUG,
-    uniforms: [],
-    vertexStage: "mvp-standard",
-  },
-  {
-    id: "depthramp",
-    stage: "fragment",
-    label: "depth ramp",
-    glsl: FRAGMENT_DEPTH_RAMP,
-    uniforms: [],
-    vertexStage: "mvp-flat",
-  },
-];
-
-/** one compiled material program: both stages, both hashes, the uniform manifest. */
-export interface MaterialProgram {
-  id: string;
-  vertexStage: string;
-  fragmentStage: string;
-  vertexSource: string;
-  fragmentSource: string;
-  vertexSha256: string;
-  fragmentSha256: string;
-  /** every uniform both stages declare (vertex first, then fragment). */
-  uniforms: readonly string[];
-}
-
-/** the material ids the catalog answers (the caller-facing surface). */
-export function materialIds(): readonly string[] {
-  return FRAGMENT_MATERIALS.map((material) => material.id);
-}
-
-/**
- * Compiles one catalog material into its program pair: the paired vertex
- * stage, the fragment source, the sha-256 of each (the PrecompiledShader
- * doctrine — a visitor machine never compiles a shader) and the uniform
- * manifest of both stages. Unknown ids answer null — no pretend program.
- */
-export function compileMaterialProgram(id: string): MaterialProgram | null {
-  const material = FRAGMENT_MATERIALS.find((entry) => entry.id === id);
-  if (!material) return null;
-  const vertex = VERTEX_STAGES.find((stage) => stage.id === material.vertexStage);
-  if (!vertex) return null;
-  return {
-    id: material.id,
-    vertexStage: vertex.id,
-    fragmentStage: material.id,
-    vertexSource: vertex.glsl,
-    fragmentSource: material.glsl,
-    vertexSha256: createHash("sha256").update(vertex.glsl, "utf8").digest("hex"),
-    fragmentSha256: createHash("sha256").update(material.glsl, "utf8").digest("hex"),
-    uniforms: [...vertex.uniforms, ...material.uniforms],
-  };
-}
-
-/** validates every catalog stage against its own declared uniforms. */
-export function validateCatalogShaders(): { id: string; validation: ShaderValidation }[] {
-  const rows: { id: string; validation: ShaderValidation }[] = [];
-  for (const stage of [...VERTEX_STAGES, ...FRAGMENT_MATERIALS]) {
-    rows.push({
-      id: stage.id,
-      validation: validateShaderSource(stage.glsl, { stage: stage.stage, requiredUniforms: stage.uniforms }),
-    });
-  }
-  return rows;
-}
-
-/**
- * Cross-checks the compositor library: every shadercomp effect compiled into
- * its full program (header + body + footer) and folded through the same
- * validator, with the pass uniforms required. A broken effect body surfaces
- * here before any manifest row ships.
- */
-export function validateLibraryEffects(): { id: string; validation: ShaderValidation }[] {
-  const rows: { id: string; validation: ShaderValidation }[] = [];
-  for (const effect of SHADER_EFFECTS) {
-    const compiled = compileEffectProgram(effect.id, 0);
-    rows.push({
-      id: effect.id,
-      validation: compiled
-        ? validateShaderSource(compiled.program, { stage: "fragment", requiredUniforms: ["uSource", "uResolution", "uTime", "uAmount"] })
-        : {
-            ok: false,
-            issues: [{ code: "unknown-effect", line: 0, message: `effect "${effect.id}" did not compile` }],
-            uniforms: [],
-          },
-    });
-  }
-  return rows;
-}
+/* ===== block: versawaserender ===== */
+// # versawaserender — the WebGL2 runtime that actually executes the compiled
+// EffectPrograms of shadercomp.ts: one fullscreen-triangle draw per effect,
+// ping-pong framebuffers between passes, and a readPixels readback that
+// answers an ImageData-shaped buffer. Vanilla WebGL2 only — three never
+// rides the 2d compositor passes. Refusal is typed and honest: a canvas
+// without a webgl2 context never fakes a render, and damaged input answers
+// outcomes instead of throwing (the transcodeplan/shadercomp contract).
+// The pure pieces (triangle geometry, program cache, pass planning, row
+// flip) are node-testable; every GL call sits in one renderer class
+// behind them.
 
 
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 3: versawaserender.ts — the WebGL2 pass runtime. */
-/* ════════════════════════════════════════════════════════════════════ */
 
-/**
- * versawaserender — the WebGL2 runtime that actually executes the compiled
- * EffectPrograms of shadercomp.ts: one fullscreen-triangle draw per effect,
- * ping-pong framebuffers between passes, and a readPixels readback that
- * answers an ImageData-shaped buffer. Vanilla WebGL2 only — three never
- * rides the 2d compositor passes. Refusal is typed and honest: a canvas
- * without a webgl2 context never fakes a render, and damaged input answers
- * outcomes instead of throwing (the transcodeplan/shadercomp contract).
- * The pure pieces (triangle geometry, program cache, pass planning, row
- * flip) are node-testable; every GL call sits in one renderer class
- * behind them.
- */
 
 export type { ImageInput };
 
@@ -1994,529 +2327,538 @@ export class VersaRender {
   }
 }
 
+/* ===== block: versawasescheduler ===== */
+// # versawasescheduler — the render-job scheduler of the versawase engine: it
+// turns the RenderJob contract (versawase.ts) into a deterministic multi-slot
+// plan and owns the pure status transitions of the queue. Library-grade: no
+// worker pool, no I/O, no clock — the pages, the gateway and stealthhead bring
+// their own executors and ride the same plan. Frame counts compose on the
+// engine primitive (renderJobFrames) instead of re-deriving them.
 
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 4: versawase3d.ts — the three.js viewport runtime. */
-/* ════════════════════════════════════════════════════════════════════ */
 
-/**
- * versawase3d — the 3d viewport runtime of the versawase engine: it takes
- * the mesh data the visualize pipeline already produces (vertices, indices,
- * vertex colors, normals) and mounts a real three.js scene — perspective
- * camera with a hand-rolled orbit (drag to rotate, wheel or pinch to zoom,
- * no external controls package), ambient plus directional light, a
- * vertex-colored standard material, and a rAF loop that stays still under
- * reduced motion. The mesh math is a pure conversion (image space is
- * mirrored into three's y-up space and the winding is reversed to keep the
- * front faces toward the camera), node-testable without any canvas; the
- * DOM side (listeners, observer, loop) lives in one viewport object that
- * disposes cleanly.
- */
 
-/** the mesh payload the viewport mounts — exactly what visualize() answers. */
-export interface MeshData {
-  mesh: MeshGeometry;
-  /** rgb vertex colors 0-1, 3 per vertex (null = plain material). */
-  colors: Float32Array | null;
-  /** xyz unit normals, 3 per vertex (null = the geometry computes its own). */
-  normals: Float32Array | null;
+/** One scheduled job: the slot it rides, the load it adds and its queue position. */
+export interface ScheduleEntry {
+  job: RenderJob;
+  /** worker slot index (0-based) */
+  slot: number;
+  /** frame count the job produces (fps-normalized for 3d ranges) */
+  frames: number;
+  /** 1-based position inside its slot */
+  order: number;
+  /** load the slot already carried when the job was placed (abstract units) */
+  startLoad: number;
 }
 
-/** the pure, three-ready conversion of one mesh payload. */
-export interface ThreeMeshArgs {
-  /** xyz positions with y mirrored: image rows read top-down in three's y-up space. */
-  positions: Float32Array;
-  /** unit normals with y mirrored to match the positions (null when the input had none). */
-  normals: Float32Array | null;
-  /** vertex colors passed through untouched (null when the input had none). */
-  colors: Float32Array | null;
-  /** triangle indices with the winding reversed — the y mirror flips front faces. */
-  indices: Uint32Array;
-  /** the axis-aligned center of the converted positions. */
-  center: [number, number, number];
-  /** the axis-aligned extent of the converted positions. */
-  size: [number, number, number];
-  /** element counts of the mesh. */
-  counts: { vertices: number; triangles: number };
+/** Total load a slot carries after planning (frame units summed per slot). */
+export function slotLoads(entries: readonly ScheduleEntry[], slots: number): number[] {
+  const loads = Array.from({ length: Math.max(0, slots) }, () => 0);
+  for (const entry of entries) {
+    if (entry.slot >= 0 && entry.slot < loads.length) loads[entry.slot] += entry.frames;
+  }
+  return loads;
 }
 
 /**
- * Converts one visualize mesh into three's coordinate system: image space
- * grows x right and y down, so the y axis is mirrored (rows read top-down)
- * and, because a mirror reflection flips triangle winding, the last two
- * corners of every face are swapped — the front faces keep pointing toward
- * the camera at +z. Colors pass through; provided normals are mirrored the
- * same way as the positions.
+ * Plans queued jobs onto slots deterministically: input order is preserved,
+ * every job lands on the least-loaded slot (ties ride the lowest index) and
+ * the frame count comes from renderJobFrames. Non-queued jobs are skipped —
+ * the plan never re-runs work that already left the queue.
  */
-export function threeMeshArgs(data: MeshData): ThreeMeshArgs {
-  const { mesh } = data;
-  const source = mesh.vertices;
-  const positions = new Float32Array(source.length);
-  for (let offset = 0; offset < source.length; offset += 3) {
-    positions[offset] = source[offset];
-    positions[offset + 1] = -source[offset + 1];
-    positions[offset + 2] = source[offset + 2];
-  }
-  let normals: Float32Array | null = null;
-  if (data.normals) {
-    const given = data.normals;
-    normals = new Float32Array(given.length);
-    for (let offset = 0; offset < given.length; offset += 3) {
-      normals[offset] = given[offset];
-      normals[offset + 1] = -given[offset + 1];
-      normals[offset + 2] = given[offset + 2];
+export function planSchedule(jobs: readonly RenderJob[], fps: number, slots: number): ScheduleEntry[] {
+  const safeSlots = Math.max(1, Math.floor(slots));
+  const loads = Array.from({ length: safeSlots }, () => 0);
+  const perSlot = Array.from({ length: safeSlots }, () => 0);
+  const entries: ScheduleEntry[] = [];
+  for (const job of jobs) {
+    if (job.status !== "queued") continue;
+    const frames = renderJobFrames(job, fps);
+    let slot = 0;
+    for (let at = 1; at < safeSlots; at += 1) {
+      if (loads[at] < loads[slot]) slot = at;
     }
+    perSlot[slot] += 1;
+    entries.push({ job, slot, frames, order: perSlot[slot], startLoad: loads[slot] });
+    loads[slot] += frames;
   }
-  const faces = mesh.indices;
-  const indices = new Uint32Array(faces.length);
-  for (let face = 0; face < faces.length; face += 3) {
-    indices[face] = faces[face];
-    indices[face + 1] = faces[face + 2];
-    indices[face + 2] = faces[face + 1];
-  }
-  const min: [number, number, number] = [0, 0, 0];
-  const max: [number, number, number] = [0, 0, 0];
-  for (let offset = 0; offset < positions.length; offset += 3) {
-    for (let axis = 0; axis < 3; axis += 1) {
-      const value = positions[offset + axis];
-      if (offset === 0 || value < min[axis]) min[axis] = value;
-      if (offset === 0 || value > max[axis]) max[axis] = value;
-    }
-  }
-  return {
-    positions,
-    normals,
-    colors: data.colors,
-    indices,
-    center: [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2],
-    size: [max[0] - min[0], max[1] - min[1], max[2] - min[2]],
-    counts: { vertices: positions.length / 3, triangles: indices.length / 3 },
-  };
+  return entries;
 }
 
-/**
- * The camera distance that frames the longest mesh side inside the viewport:
- * half the longest side over the tangent of half the field of view, times a
- * breathing margin. Degenerate meshes fall back to the unit side.
- */
-export function fitCameraDistance(
-  size: readonly [number, number, number] | readonly number[],
-  fovDegrees = 50,
-  margin = 1.45,
-): number {
-  const longest = Math.max(size[0], size[1], size[2]) || 1;
-  const halfFov = ((fovDegrees > 0 && fovDegrees < 180 ? fovDegrees : 50) / 2) * (Math.PI / 180);
-  return (longest / 2 / Math.tan(halfFov)) * (margin > 0 ? margin : 1);
+/** Moves a queued job to rendering; answers null when the transition is illegal. */
+export function startJob(job: RenderJob): RenderJob | null {
+  return transition(job, "queued", "rendering");
 }
 
-/** the mount options of one viewport. */
-export interface ViewportOptions {
-  /** initial polar angle from +y in degrees (default 62 — a three-quarter view). */
-  phiDegrees?: number;
-  /** initial azimuth around +y in degrees (default -32). */
-  thetaDegrees?: number;
-  /** slow idle drift while the OS allows motion (default true). */
-  spin?: boolean;
-  /** the reduced-motion answer: no autonomous motion, renders on demand (default false). */
-  reducedMotion?: boolean;
+/** Moves a rendering job to ready; answers null when the transition is illegal. */
+export function completeJob(job: RenderJob): RenderJob | null {
+  return transition(job, "rendering", "ready");
 }
 
-/** one mounted viewport: deterministic surface, clean teardown. */
-export interface Viewport {
-  /** renders one frame synchronously (the screenshot path uses it). */
-  renderNow(): void;
-  /** restores the initial framing. */
-  reset(): void;
-  /** answers a png data url of the current frame (for the download row). */
-  screenshot(): string;
-  /** cancels the loop, drops the listeners and disposes every three resource. */
-  dispose(): void;
+/** Moves a queued or rendering job to failed; answers null when the transition is illegal. */
+export function failJob(job: RenderJob): RenderJob | null {
+  if (job.status !== "queued" && job.status !== "rendering") return null;
+  return { ...job, status: "failed", tone: "error" };
 }
 
-/** the honest outcome of mounting: a viewport, or the typed refusal. */
-export type ViewportOutcome = { ok: true; viewport: Viewport } | { ok: false; error: "three-no-webgl" };
-
-/** the idle drift rate in radians per second (a slow showroom turn). */
-const SPIN_RAD_PER_SECOND = 0.22;
-
-/** drag sensitivity in radians per pixel. */
-const ROTATE_PER_PIXEL = 0.006;
-
-/** zoom sensitivity per wheel notch (exponential). */
-const ZOOM_PER_NOTCH = 0.0012;
-
-/**
- * Mounts the real 3d scene over one canvas: converted BufferGeometry with
- * vertex colors, ambient plus directional light, a perspective camera on a
- * hand-rolled orbit and a rAF loop that only moves when the OS allows
- * motion — under reduced motion the viewport renders on demand (input and
- * resize) and never animates on its own. A canvas without a webgl context
- * answers { ok: false, error: "three-no-webgl" } — no fallback, no pretend.
- */
-export function mountThreeScene(
-  canvas: HTMLCanvasElement,
-  data: MeshData,
-  options: ViewportOptions = {},
-): ViewportOutcome {
-  let renderer: THREE.WebGLRenderer;
-  try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-  } catch {
-    return { ok: false, error: "three-no-webgl" };
-  }
-
-  const args = threeMeshArgs(data);
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(args.positions, 3));
-  if (args.normals) geometry.setAttribute("normal", new THREE.BufferAttribute(args.normals, 3));
-  if (args.colors) geometry.setAttribute("color", new THREE.BufferAttribute(args.colors, 3));
-  geometry.setIndex(new THREE.BufferAttribute(args.indices, 1));
-  if (!args.normals) geometry.computeVertexNormals();
-
-  const material = new THREE.MeshStandardMaterial({
-    vertexColors: args.colors !== null,
-    roughness: 0.9,
-    metalness: 0.05,
-    // carved holes (minHeight) let the orbit see the back of the relief
-    side: THREE.DoubleSide,
-  });
-  const mesh = new THREE.Mesh(geometry, material);
-  // lay the relief up: the image plane becomes horizontal, heights point to +y
-  const group = new THREE.Group();
-  group.rotation.x = -Math.PI / 2;
-  group.add(mesh);
-
-  const scene = new THREE.Scene();
-  scene.add(group);
-  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-  // rotation.x = -pi/2 maps (x, y, z) to (x, z, -y): the center follows
-  const target = new THREE.Vector3(args.center[0], args.center[2], -args.center[1]);
-  const key = new THREE.DirectionalLight(0xffffff, 1.2);
-  key.position
-    .copy(target)
-    .add(new THREE.Vector3(0.5, 0.9, 0.7).normalize().multiplyScalar(Math.max(args.size[1], 1) * 4 + 10));
-  key.target.position.copy(target);
-  scene.add(key);
-  scene.add(key.target);
-
-  const fov = 50;
-  const camera = new THREE.PerspectiveCamera(fov, 1, 0.01, 10000);
-  const initialTheta = ((options.thetaDegrees ?? -32) * Math.PI) / 180;
-  const initialPhi = ((options.phiDegrees ?? 62) * Math.PI) / 180;
-  const initialRadius = fitCameraDistance(args.size, fov);
-  const minRadius = initialRadius * 0.3;
-  const maxRadius = initialRadius * 5;
-
-  let theta = initialTheta;
-  let phi = initialPhi;
-  let radius = initialRadius;
-  let dragging = false;
-  let pinchDistance = 0;
-  let dirty = true;
-  let disposed = false;
-  let raf = 0;
-  let lastFrameMs = 0;
-  const pointers = new Map<number, { x: number; y: number }>();
-  const reduced = options.reducedMotion ?? false;
-  const spinEnabled = (options.spin ?? true) && !reduced;
-
-  const clampRadius = (value: number): number => Math.min(maxRadius, Math.max(minRadius, value));
-  const clampPhi = (value: number): number => Math.min(Math.PI - 0.08, Math.max(0.08, value));
-  const pointerDistance = (): number => {
-    const [first, second] = [...pointers.values()];
-    if (!first || !second) return 0;
-    return Math.hypot(first.x - second.x, first.y - second.y);
-  };
-
-  const place = (): void => {
-    camera.position.set(
-      target.x + radius * Math.sin(phi) * Math.cos(theta),
-      target.y + radius * Math.cos(phi),
-      target.z + radius * Math.sin(phi) * Math.sin(theta),
-    );
-    camera.lookAt(target);
-  };
-
-  const frame = (now: number): void => {
-    raf = 0;
-    if (disposed) return;
-    const deltaSeconds = lastFrameMs === 0 ? 0 : Math.min((now - lastFrameMs) / 1000, 0.1);
-    lastFrameMs = now;
-    if (spinEnabled && !dragging) {
-      theta += SPIN_RAD_PER_SECOND * deltaSeconds;
-      dirty = true;
-    }
-    if (dirty) {
-      place();
-      renderer.render(scene, camera);
-      dirty = false;
-    }
-    if (spinEnabled) raf = requestAnimationFrame(frame);
-  };
-
-  /** asks for one frame — the reduced-motion path renders exactly this and stops. */
-  const requestRender = (): void => {
-    dirty = true;
-    if (raf === 0 && !disposed) raf = requestAnimationFrame(frame);
-  };
-
-  const resize = (): void => {
-    const width = canvas.clientWidth || 1;
-    const height = canvas.clientHeight || 1;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(width, height, false);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    requestRender();
-  };
-
-  const onPointerDown = (event: PointerEvent): void => {
-    canvas.setPointerCapture(event.pointerId);
-    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    dragging = true;
-    if (pointers.size === 2) pinchDistance = pointerDistance();
-  };
-  const onPointerMove = (event: PointerEvent): void => {
-    const previous = pointers.get(event.pointerId);
-    if (!previous) return;
-    if (pointers.size === 2) {
-      previous.x = event.clientX;
-      previous.y = event.clientY;
-      const next = pointerDistance();
-      if (pinchDistance > 0 && next > 0) radius = clampRadius((radius * pinchDistance) / next);
-      pinchDistance = next;
-    } else {
-      theta -= (event.clientX - previous.x) * ROTATE_PER_PIXEL;
-      phi = clampPhi(phi - (event.clientY - previous.y) * ROTATE_PER_PIXEL);
-    }
-    previous.x = event.clientX;
-    previous.y = event.clientY;
-    requestRender();
-  };
-  const onPointerUp = (event: PointerEvent): void => {
-    pointers.delete(event.pointerId);
-    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
-    if (pointers.size < 2) pinchDistance = 0;
-    dragging = pointers.size > 0;
-    requestRender();
-  };
-  const onWheel = (event: WheelEvent): void => {
-    event.preventDefault();
-    radius = clampRadius(radius * Math.exp(event.deltaY * ZOOM_PER_NOTCH));
-    requestRender();
-  };
-
-  const listeners: [string, EventListener, AddEventListenerOptions?][] = [
-    ["pointerdown", onPointerDown as EventListener],
-    ["pointermove", onPointerMove as EventListener],
-    ["pointerup", onPointerUp as EventListener],
-    ["pointercancel", onPointerUp as EventListener],
-    ["wheel", onWheel as EventListener, { passive: false }],
-  ];
-  for (const [type, listener, capture] of listeners) {
-    canvas.addEventListener(type, listener, capture);
-  }
-  canvas.style.touchAction = "none";
-
-  const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => resize()) : null;
-  observer?.observe(canvas);
-  resize();
-
-  return {
-    ok: true,
-    viewport: {
-      renderNow(): void {
-        place();
-        renderer.render(scene, camera);
-        dirty = false;
-      },
-      reset(): void {
-        theta = initialTheta;
-        phi = initialPhi;
-        radius = initialRadius;
-        requestRender();
-      },
-      screenshot(): string {
-        place();
-        renderer.render(scene, camera);
-        dirty = false;
-        return canvas.toDataURL("image/png");
-      },
-      dispose(): void {
-        if (disposed) return;
-        disposed = true;
-        if (raf !== 0) cancelAnimationFrame(raf);
-        raf = 0;
-        observer?.disconnect();
-        for (const [type, listener, capture] of listeners) {
-          canvas.removeEventListener(type, listener, capture);
-        }
-        geometry.dispose();
-        material.dispose();
-        renderer.dispose();
-      },
-    },
-  };
+/** Counts the jobs per status in one pass (queue health readout). */
+export function queueCensus(jobs: readonly RenderJob[]): Record<RenderJob["status"], number> {
+  const census: Record<RenderJob["status"], number> = { queued: 0, rendering: 0, ready: 0, failed: 0 };
+  for (const job of jobs) census[job.status] += 1;
+  return census;
 }
 
+/** Shared guard of the pure status machine. */
+function transition(job: RenderJob, from: RenderJob["status"], to: RenderJob["status"]): RenderJob | null {
+  if (job.status !== from) return null;
+  const next: RenderJob = { ...job, status: to };
+  if (to === "ready") next.tone = "success";
+  if (to === "rendering") next.tone = "info";
+  return next;
+}
 
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 5: versawaseanimate.ts — the animation sampler. */
-/* ════════════════════════════════════════════════════════════════════ */
+/* ===== block: versawaseshaders ===== */
+// # versawaseshaders — the GLSL material catalog and source validator of
+// the versawase engine. shadercomp.ts owns the compositor fragment effects
+// (film/optics vocabulary over a source texture); this module owns the 3d
+// material lane: the vertex stages that carry a GeneratedMesh to clip space
+// (mvp with normal matrix, flat mvp) and the fragment materials that shade
+// it (lambert, toon, matcap, uv/normal debug, depth ramp), every source a
+// real ES 3.00 program. The validator is the honest gate the family law
+// asks for: brace/paren/bracket balance, the #version-first rule, the
+// es 3.00 storage invariants (no gl_FragColor, no attribute/varying),
+// declared-uniform extraction, required-uniform checks and the
+// sampler-behind-texture() rule — all over comments-stripped source with
+// line numbers preserved, answering typed issues instead of throwing. The
+// catalog cross-checks itself (validateCatalogShaders) and the compositor
+// library (validateLibraryEffects folds every shadercomp effect program
+// through the same gate), so a broken body is refused before any manifest
+// row ships. Pure node-side TypeScript: the sha-256 stamps ride node:crypto
+// exactly like shadercomp, nothing here touches the GPU.
 
-/**
- * versawaseanimate — the animation sampler of the versawase engine: it turns
- * the declarative Scene3d contract (versawase.ts) into per-node transform
- * snapshots over time. Library-grade and pure: no consumer data, no DOM, no
- * GL — the pages, stealthhead and external packages bring their own scene
- * rows and ride the same sampler. Sampling composes on top of the engine
- * primitives (trackValueAt for one track, sceneDuration for the wrap span)
- * instead of duplicating their math.
- */
 
-/** The sampled local state of one node at a point in time. */
-export interface NodeSnapshot {
+
+
+/** one catalog stage: a real GLSL ES 3.00 source plus its declared uniforms. */
+export interface ShaderStageEntry {
   id: string;
-  position: Axis3;
-  rotation: Axis3;
-  scale: Axis3;
-  opacity: number;
-  /** morph weight (0..1) when a morph track targets the node */
-  morph: number;
+  stage: "vertex" | "fragment";
+  label: string;
+  /** the full GLSL source, `#version 300 es` first. */
+  glsl: string;
+  /** every uniform the source declares — the manifest contract. */
+  uniforms: readonly string[];
 }
 
-/** Named-axis vector for transform snapshots (mesh math rides visualizemesh's tuple Vec3). */
-export interface Axis3 {
-  x: number;
-  y: number;
-  z: number;
+/** one finding of the validator: what broke, and where. */
+export interface ShaderIssue {
+  /** stable machine code (unbalanced-braces, missing-uniform, ...). */
+  code: string;
+  /** 1-based line of the finding (0 when the source never reaches it). */
+  line: number;
+  message: string;
 }
 
-const ZERO: Axis3 = { x: 0, y: 0, z: 0 };
-const ONE: Axis3 = { x: 1, y: 1, z: 1 };
-
-/** Collects the animation tracks that target one node id. */
-export function tracksByTarget(scene: Scene3d, nodeId: string): readonly AnimationTrack[] {
-  return scene.tracks.filter((track) => track.target === nodeId);
+/** the typed answer of the validator — issues empty means ok. */
+export interface ShaderValidation {
+  ok: boolean;
+  issues: readonly ShaderIssue[];
+  /** the uniforms the source declares, in declaration order. */
+  uniforms: readonly string[];
 }
 
-/** Wraps seconds into the authored span when the scene loops, so long plays ride the same keys. */
-export function wrapSeconds(seconds: number, span: number): number {
-  if (span <= 0) return Math.max(0, seconds);
-  if (seconds <= span) return Math.max(0, seconds);
-  return seconds % span;
+/** the validation options; every field carries a default. */
+export interface ValidateShaderOptions {
+  /** the stage the source claims to be (documented on the issue only). */
+  stage?: "vertex" | "fragment";
+  /** whether a `void main(` entry point is required (default true). */
+  requiresMain?: boolean;
+  /** uniforms the caller requires the source to declare. */
+  requiredUniforms?: readonly string[];
 }
 
-/** Samples every channel of one node's tracks into a local snapshot (defaults included). */
-export function sampleNode(scene: Scene3d, node: SceneNode, seconds: number): NodeSnapshot {
-  const snapshot: NodeSnapshot = {
-    id: node.id,
-    position: { ...ZERO },
-    rotation: { ...ZERO },
-    scale: { ...ONE },
-    opacity: 1,
-    morph: 0,
-  };
-  for (const track of tracksByTarget(scene, node.id)) {
-    const value = trackValueAt(track, seconds);
-    switch (track.channel) {
-      case "position":
-        snapshot.position = axisValue(snapshot.position, track, value);
-        break;
-      case "rotation":
-        snapshot.rotation = axisValue(snapshot.rotation, track, value);
-        break;
-      case "scale":
-        snapshot.scale = axisValue(snapshot.scale, track, value);
-        break;
-      case "opacity":
-        snapshot.opacity = value;
-        break;
-      case "morph":
-        snapshot.morph = value;
-        break;
+/** strips line and block comments while preserving every line number. */
+function stripComments(source: string): string {
+  // the bounded block window keeps the scan linear on adversarial "/* /*"
+  // runs (the code-scanning redos law); no honest shader rides a 64k-wide
+  // comment block, and the line arm was already safe.
+  return source
+    .replace(/\/\*[\s\S]{0,65536}?\*\//g, (block) => "\n".repeat((block.match(/\n/g) ?? []).length))
+    .replace(/\/\/[^\n]*/g, "");
+}
+
+/** 1-based line of a character index inside the source. */
+function lineOf(source: string, index: number): number {
+  let line = 1;
+  for (let at = 0; at < index && at < source.length; at += 1) {
+    if (source.charCodeAt(at) === 10) line += 1;
+  }
+  return line;
+}
+
+/** extracts the declared uniform names (declaration order, duplicates kept out). */
+function declaredUniforms(stripped: string): string[] {
+  const names: string[] = [];
+  const pattern = /uniform\s+\w+\s+(\w+)\s*(?:\[[^\]]*\])?\s*;/g;
+  for (const match of stripped.matchAll(pattern)) {
+    if (!names.includes(match[1])) names.push(match[1]);
+  }
+  return names;
+}
+
+/**
+ * Validates one GLSL source honestly: brace/paren/bracket balance with the
+ * offending line, the #version-first-line rule, the es 3.00 invariants
+ * (gl_FragColor and attribute/varying are refused), the main() entry point,
+ * declared-uniform extraction, required-uniform presence and the rule that
+ * texture() calls need a declared sampler. Comments are stripped first, so
+ * commented-out damage never fools the gate and real line numbers survive.
+ */
+export function validateShaderSource(source: string, options: ValidateShaderOptions = {}): ShaderValidation {
+  const issues: ShaderIssue[] = [];
+  const requiresMain = options.requiresMain ?? true;
+  if (typeof source !== "string" || source.trim().length === 0) {
+    return { ok: false, issues: [{ code: "empty-source", line: 0, message: "the shader source is empty" }], uniforms: [] };
+  }
+  const stripped = stripComments(source);
+  const uniforms = declaredUniforms(stripped);
+
+  // bracket balance: every opener must close, and on its own nesting level
+  const pairs: [string, string, string][] = [
+    ["{", "}", "unbalanced-braces"],
+    ["(", ")", "unbalanced-parens"],
+    ["[", "]", "unbalanced-brackets"],
+  ];
+  for (const [open, close, code] of pairs) {
+    const stack: number[] = [];
+    let closedEarly = -1;
+    for (let at = 0; at < stripped.length; at += 1) {
+      const character = stripped[at];
+      if (character === open) stack.push(at);
+      else if (character === close) {
+        const opened = stack.pop();
+        if (opened === undefined) {
+          closedEarly = at;
+          break;
+        }
+      }
     }
+    if (closedEarly >= 0)
+      issues.push({ code, line: lineOf(stripped, closedEarly), message: `a "${close}" closes without its "${open}"` });
+    else if (stack.length > 0)
+      issues.push({ code, line: lineOf(stripped, stack[stack.length - 1]), message: `${stack.length} "${open}" never close` });
   }
-  return snapshot;
+
+  // the #version directive must lead the file when it appears at all
+  const versionAt = stripped.search(/^\s*#\s*version\b/m);
+  if (versionAt > 0)
+    issues.push({ code: "version-not-first", line: lineOf(stripped, versionAt), message: "#version must be the first line of the source" });
+
+  // es 3.00 storage invariants
+  const fragColor = /\bgl_FragColor\b/.exec(stripped);
+  if (fragColor)
+    issues.push({ code: "es3-fragcolor", line: lineOf(stripped, fragColor.index), message: "gl_FragColor is es 1.00 storage — declare an out vec4 and write it" });
+  const legacy = /\b(?:attribute|varying)\b/.exec(stripped);
+  if (legacy)
+    issues.push({
+      code: "es3-legacy-storage",
+      line: lineOf(stripped, legacy.index),
+      message: `"${legacy[0]}" is es 1.00 storage — es 3.00 spells it in/out`,
+    });
+
+  // the entry point
+  if (requiresMain && !/\bvoid\s+main\s*\(/.test(stripped))
+    issues.push({ code: "missing-main", line: 0, message: "the source never declares `void main(`" });
+
+  // required uniforms
+  for (const required of options.requiredUniforms ?? []) {
+    if (!uniforms.includes(required))
+      issues.push({ code: "missing-uniform", line: 0, message: `the source never declares uniform "${required}"` });
+  }
+
+  // texture() needs a declared sampler
+  if (/\btexture\s*\(/.test(stripped) && !/\buniform\s+sampler2D\s+\w+/.test(stripped))
+    issues.push({ code: "texture-without-sampler", line: 0, message: "texture() is called but no sampler2D uniform is declared" });
+
+  return { ok: issues.length === 0, issues, uniforms };
 }
 
-/** Samples the whole scene at one instant: every node id maps to its local snapshot. */
-export function sampleSceneAt(scene: Scene3d, seconds: number): Map<string, NodeSnapshot> {
-  const time = wrapSeconds(seconds, sceneDuration(scene));
-  const snapshots = new Map<string, NodeSnapshot>();
-  for (const node of scene.nodes) {
-    snapshots.set(node.id, sampleNode(scene, node, time));
-  }
-  return snapshots;
+// ---------------------------------------------------------------------------
+// the vertex stages
+// ---------------------------------------------------------------------------
+
+/** the mvp vertex stage with normals and uv (the material lane standard). */
+const VERTEX_MVP_STANDARD =
+  "#version 300 es\n" +
+  "precision highp float;\n" +
+  "in vec3 aPosition;\n" +
+  "in vec3 aNormal;\n" +
+  "in vec2 aUv;\n" +
+  "uniform mat4 uModel;\n" +
+  "uniform mat4 uViewProjection;\n" +
+  "uniform mat3 uNormalMatrix;\n" +
+  "out vec3 vNormal;\n" +
+  "out vec2 vUv;\n" +
+  "void main() {\n" +
+  "  vNormal = normalize(uNormalMatrix * aNormal);\n" +
+  "  vUv = aUv;\n" +
+  "  gl_Position = uViewProjection * uModel * vec4(aPosition, 1.0);\n" +
+  "}\n";
+
+/** the flat mvp vertex stage (positions only — the depth ramp rides it). */
+const VERTEX_MVP_FLAT =
+  "#version 300 es\n" +
+  "precision highp float;\n" +
+  "in vec3 aPosition;\n" +
+  "uniform mat4 uModel;\n" +
+  "uniform mat4 uViewProjection;\n" +
+  "void main() {\n" +
+  "  gl_Position = uViewProjection * uModel * vec4(aPosition, 1.0);\n" +
+  "}\n";
+
+/** the vertex stages of the catalog. */
+export const VERTEX_STAGES: readonly ShaderStageEntry[] = [
+  {
+    id: "mvp-standard",
+    stage: "vertex",
+    label: "mvp with normals and uv",
+    glsl: VERTEX_MVP_STANDARD,
+    uniforms: ["uModel", "uViewProjection", "uNormalMatrix"],
+  },
+  {
+    id: "mvp-flat",
+    stage: "vertex",
+    label: "flat mvp (positions only)",
+    glsl: VERTEX_MVP_FLAT,
+    uniforms: ["uModel", "uViewProjection"],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// the fragment materials
+// ---------------------------------------------------------------------------
+
+/** the lambert material: diffuse plus a documented ambient floor. */
+const FRAGMENT_LAMBERT =
+  "#version 300 es\n" +
+  "precision highp float;\n" +
+  "uniform vec3 uLightDirection;\n" +
+  "uniform vec3 uLightColor;\n" +
+  "uniform vec3 uBaseColor;\n" +
+  "in vec3 vNormal;\n" +
+  "in vec2 vUv;\n" +
+  "out vec4 outColor;\n" +
+  "void main() {\n" +
+  "  vec3 normal = normalize(vNormal);\n" +
+  "  float diffuse = max(dot(normal, normalize(uLightDirection)), 0.0);\n" +
+  "  vec3 lit = uBaseColor * uLightColor * (0.18 + 0.82 * diffuse);\n" +
+  "  outColor = vec4(lit, 1.0);\n" +
+  "}\n";
+
+/** the toon material: the diffuse term quantized into bands. */
+const FRAGMENT_TOON =
+  "#version 300 es\n" +
+  "precision highp float;\n" +
+  "uniform vec3 uLightDirection;\n" +
+  "uniform vec3 uBaseColor;\n" +
+  "uniform float uBands;\n" +
+  "in vec3 vNormal;\n" +
+  "in vec2 vUv;\n" +
+  "out vec4 outColor;\n" +
+  "void main() {\n" +
+  "  vec3 normal = normalize(vNormal);\n" +
+  "  float diffuse = max(dot(normal, normalize(uLightDirection)), 0.0);\n" +
+  "  float bands = max(uBands, 1.0);\n" +
+  "  float quantized = floor(diffuse * bands) / max(bands - 1.0, 1.0);\n" +
+  "  outColor = vec4(uBaseColor * (0.35 + 0.65 * quantized), 1.0);\n" +
+  "}\n";
+
+/** the matcap material: the view-space normal mapped onto a sampler look. */
+const FRAGMENT_MATCAP =
+  "#version 300 es\n" +
+  "precision highp float;\n" +
+  "uniform sampler2D uMatcap;\n" +
+  "in vec3 vNormal;\n" +
+  "in vec2 vUv;\n" +
+  "out vec4 outColor;\n" +
+  "void main() {\n" +
+  "  vec3 normal = normalize(vNormal);\n" +
+  "  vec2 cap = normal.xy * 0.5 + 0.5;\n" +
+  "  outColor = vec4(texture(uMatcap, cap).rgb, 1.0);\n" +
+  "}\n";
+
+/** the uv debug material: paints the interpolated uv coordinates. */
+const FRAGMENT_UV_DEBUG =
+  "#version 300 es\n" +
+  "precision highp float;\n" +
+  "in vec3 vNormal;\n" +
+  "in vec2 vUv;\n" +
+  "out vec4 outColor;\n" +
+  "void main() {\n" +
+  "  outColor = vec4(vUv, 0.0, 1.0);\n" +
+  "}\n";
+
+/** the normal debug material: normals mapped from -1..1 into 0..1 rgb. */
+const FRAGMENT_NORMAL_DEBUG =
+  "#version 300 es\n" +
+  "precision highp float;\n" +
+  "in vec3 vNormal;\n" +
+  "in vec2 vUv;\n" +
+  "out vec4 outColor;\n" +
+  "void main() {\n" +
+  "  vec3 normal = normalize(vNormal) * 0.5 + 0.5;\n" +
+  "  outColor = vec4(normal, 1.0);\n" +
+  "}\n";
+
+/** the depth ramp material: the window depth painted as a near-white ramp. */
+const FRAGMENT_DEPTH_RAMP =
+  "#version 300 es\n" +
+  "precision highp float;\n" +
+  "out vec4 outColor;\n" +
+  "void main() {\n" +
+  "  float depth = gl_FragCoord.z;\n" +
+  "  outColor = vec4(vec3(1.0 - depth), 1.0);\n" +
+  "}\n";
+
+/** the fragment materials of the catalog, each with its vertex pairing. */
+export const FRAGMENT_MATERIALS: readonly (ShaderStageEntry & { vertexStage: string })[] = [
+  {
+    id: "lambert",
+    stage: "fragment",
+    label: "lambert diffuse",
+    glsl: FRAGMENT_LAMBERT,
+    uniforms: ["uLightDirection", "uLightColor", "uBaseColor"],
+    vertexStage: "mvp-standard",
+  },
+  {
+    id: "toon",
+    stage: "fragment",
+    label: "banded toon",
+    glsl: FRAGMENT_TOON,
+    uniforms: ["uLightDirection", "uBaseColor", "uBands"],
+    vertexStage: "mvp-standard",
+  },
+  {
+    id: "matcap",
+    stage: "fragment",
+    label: "matcap look",
+    glsl: FRAGMENT_MATCAP,
+    uniforms: ["uMatcap"],
+    vertexStage: "mvp-standard",
+  },
+  {
+    id: "uvdebug",
+    stage: "fragment",
+    label: "uv debug",
+    glsl: FRAGMENT_UV_DEBUG,
+    uniforms: [],
+    vertexStage: "mvp-standard",
+  },
+  {
+    id: "normaldebug",
+    stage: "fragment",
+    label: "normal debug",
+    glsl: FRAGMENT_NORMAL_DEBUG,
+    uniforms: [],
+    vertexStage: "mvp-standard",
+  },
+  {
+    id: "depthramp",
+    stage: "fragment",
+    label: "depth ramp",
+    glsl: FRAGMENT_DEPTH_RAMP,
+    uniforms: [],
+    vertexStage: "mvp-flat",
+  },
+];
+
+/** one compiled material program: both stages, both hashes, the uniform manifest. */
+export interface MaterialProgram {
+  id: string;
+  vertexStage: string;
+  fragmentStage: string;
+  vertexSource: string;
+  fragmentSource: string;
+  vertexSha256: string;
+  fragmentSha256: string;
+  /** every uniform both stages declare (vertex first, then fragment). */
+  uniforms: readonly string[];
+}
+
+/** the material ids the catalog answers (the caller-facing surface). */
+export function materialIds(): readonly string[] {
+  return FRAGMENT_MATERIALS.map((material) => material.id);
 }
 
 /**
- * Accumulates the world transform of one node over its parent chain:
- * positions add, scales multiply, rotations add (euler degrees, local order).
- * Cycles in the parent graph are cut at the first revisit.
+ * Compiles one catalog material into its program pair: the paired vertex
+ * stage, the fragment source, the sha-256 of each (the PrecompiledShader
+ * doctrine — a visitor machine never compiles a shader) and the uniform
+ * manifest of both stages. Unknown ids answer null — no pretend program.
  */
-export function worldTransform(
-  scene: Scene3d,
-  nodeId: string,
-  seconds: number,
-): { position: Axis3; rotation: Axis3; scale: Axis3 } {
-  const time = wrapSeconds(seconds, sceneDuration(scene));
-  const byId = new Map(scene.nodes.map((node) => [node.id, node]));
-  const chain: SceneNode[] = [];
-  const seen = new Set<string>();
-  let cursor: SceneNode | undefined = byId.get(nodeId);
-  while (cursor && !seen.has(cursor.id)) {
-    seen.add(cursor.id);
-    chain.unshift(cursor);
-    cursor = cursor.parent ? byId.get(cursor.parent) : undefined;
+export function compileMaterialProgram(id: string): MaterialProgram | null {
+  const material = FRAGMENT_MATERIALS.find((entry) => entry.id === id);
+  if (!material) return null;
+  const vertex = VERTEX_STAGES.find((stage) => stage.id === material.vertexStage);
+  if (!vertex) return null;
+  return {
+    id: material.id,
+    vertexStage: vertex.id,
+    fragmentStage: material.id,
+    vertexSource: vertex.glsl,
+    fragmentSource: material.glsl,
+    vertexSha256: createHash("sha256").update(vertex.glsl, "utf8").digest("hex"),
+    fragmentSha256: createHash("sha256").update(material.glsl, "utf8").digest("hex"),
+    uniforms: [...vertex.uniforms, ...material.uniforms],
+  };
+}
+
+/** validates every catalog stage against its own declared uniforms. */
+export function validateCatalogShaders(): { id: string; validation: ShaderValidation }[] {
+  const rows: { id: string; validation: ShaderValidation }[] = [];
+  for (const stage of [...VERTEX_STAGES, ...FRAGMENT_MATERIALS]) {
+    rows.push({
+      id: stage.id,
+      validation: validateShaderSource(stage.glsl, { stage: stage.stage, requiredUniforms: stage.uniforms }),
+    });
   }
-  const world = { position: { ...ZERO }, rotation: { ...ZERO }, scale: { ...ONE } };
-  for (const node of chain) {
-    const local = sampleNode(scene, node, time);
-    world.position = addVec(world.position, local.position);
-    world.rotation = addVec(world.rotation, local.rotation);
-    world.scale = mulVec(world.scale, local.scale);
-  }
-  return world;
+  return rows;
 }
-
-/** Folds one track value into one axis slot of a vector (x/y/z encoded in the track id suffix). */
-function axisValue(base: Axis3, track: AnimationTrack, value: number): Axis3 {
-  const axis = axisOf(track.id);
-  return { ...base, [axis]: value } as Axis3;
-}
-
-/** Reads the axis a track drives from its id suffix (-x, -y, -z); unknown ids ride x. */
-function axisOf(trackId: string): keyof Axis3 {
-  const suffix = trackId.slice(-2).toLowerCase();
-  if (suffix === "-y") return "y";
-  if (suffix === "-z") return "z";
-  return "x";
-}
-
-function addVec(a: Axis3, b: Axis3): Axis3 {
-  return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
-}
-
-function mulVec(a: Axis3, b: Axis3): Axis3 {
-  return { x: a.x * b.x, y: a.y * b.y, z: a.z * b.z };
-}
-
-
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 6: versawaseslices.ts — the sliced-render planner. */
-/* ════════════════════════════════════════════════════════════════════ */
 
 /**
- * versawaseslices — the sliced-render planner of the versawase engine (the
- * F-CAD-027 doctrine: the render is cut into fixed seconds slices, the preview
- * rides the same slice grid as the final, and the assembly is deterministic).
- * Library-grade and pure: a caller brings the duration, the frame rate and the
- * slice length; the planner answers the frame-aligned slices with their tick
- * windows, the honest wall-clock estimate across parallel workers and the
- * weighted progress readout. Frame math composes on the timeticks primitives
- * (frameratefromf64, frameat, tickofframe) — never re-derived here.
+ * Cross-checks the compositor library: every shadercomp effect compiled into
+ * its full program (header + body + footer) and folded through the same
+ * validator, with the pass uniforms required. A broken effect body surfaces
+ * here before any manifest row ships.
  */
+export function validateLibraryEffects(): { id: string; validation: ShaderValidation }[] {
+  const rows: { id: string; validation: ShaderValidation }[] = [];
+  for (const effect of SHADER_EFFECTS) {
+    const compiled = compileEffectProgram(effect.id, 0);
+    rows.push({
+      id: effect.id,
+      validation: compiled
+        ? validateShaderSource(compiled.program, { stage: "fragment", requiredUniforms: ["uSource", "uResolution", "uTime", "uAmount"] })
+        : {
+            ok: false,
+            issues: [{ code: "unknown-effect", line: 0, message: `effect "${effect.id}" did not compile` }],
+            uniforms: [],
+          },
+    });
+  }
+  return rows;
+}
+
+/* ===== block: versawaseslices ===== */
+// # versawaseslices — the sliced-render planner of the versawase engine (the
+// F-CAD-027 doctrine: the render is cut into fixed seconds slices, the preview
+// rides the same slice grid as the final, and the assembly is deterministic).
+// Library-grade and pure: a caller brings the duration, the frame rate and the
+// slice length; the planner answers the frame-aligned slices with their tick
+// windows, the honest wall-clock estimate across parallel workers and the
+// weighted progress readout. Frame math composes on the timeticks primitives
+// (frameratefromf64, frameat, tickofframe) — never re-derived here.
+
+
 
 /** One render slice: a frame-aligned window of the timeline with its tick span. */
 export interface RenderSlice {
@@ -2629,448 +2971,4 @@ function slicesRate(slices: readonly RenderSlice[]): FrameRate {
 function resolveRate(fps?: FrameRate | number): FrameRate {
   if (typeof fps === "number") return frameratefromf64(fps);
   return fps ?? frameratefromf64(24);
-}
-
-
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 7: versawasescheduler.ts — the render-job scheduler. */
-/* ════════════════════════════════════════════════════════════════════ */
-
-/**
- * versawasescheduler — the render-job scheduler of the versawase engine: it
- * turns the RenderJob contract (versawase.ts) into a deterministic multi-slot
- * plan and owns the pure status transitions of the queue. Library-grade: no
- * worker pool, no I/O, no clock — the pages, the gateway and stealthhead bring
- * their own executors and ride the same plan. Frame counts compose on the
- * engine primitive (renderJobFrames) instead of re-deriving them.
- */
-
-/** One scheduled job: the slot it rides, the load it adds and its queue position. */
-export interface ScheduleEntry {
-  job: RenderJob;
-  /** worker slot index (0-based) */
-  slot: number;
-  /** frame count the job produces (fps-normalized for 3d ranges) */
-  frames: number;
-  /** 1-based position inside its slot */
-  order: number;
-  /** load the slot already carried when the job was placed (abstract units) */
-  startLoad: number;
-}
-
-/** Total load a slot carries after planning (frame units summed per slot). */
-export function slotLoads(entries: readonly ScheduleEntry[], slots: number): number[] {
-  const loads = Array.from({ length: Math.max(0, slots) }, () => 0);
-  for (const entry of entries) {
-    if (entry.slot >= 0 && entry.slot < loads.length) loads[entry.slot] += entry.frames;
-  }
-  return loads;
-}
-
-/**
- * Plans queued jobs onto slots deterministically: input order is preserved,
- * every job lands on the least-loaded slot (ties ride the lowest index) and
- * the frame count comes from renderJobFrames. Non-queued jobs are skipped —
- * the plan never re-runs work that already left the queue.
- */
-export function planSchedule(jobs: readonly RenderJob[], fps: number, slots: number): ScheduleEntry[] {
-  const safeSlots = Math.max(1, Math.floor(slots));
-  const loads = Array.from({ length: safeSlots }, () => 0);
-  const perSlot = Array.from({ length: safeSlots }, () => 0);
-  const entries: ScheduleEntry[] = [];
-  for (const job of jobs) {
-    if (job.status !== "queued") continue;
-    const frames = renderJobFrames(job, fps);
-    let slot = 0;
-    for (let at = 1; at < safeSlots; at += 1) {
-      if (loads[at] < loads[slot]) slot = at;
-    }
-    perSlot[slot] += 1;
-    entries.push({ job, slot, frames, order: perSlot[slot], startLoad: loads[slot] });
-    loads[slot] += frames;
-  }
-  return entries;
-}
-
-/** Moves a queued job to rendering; answers null when the transition is illegal. */
-export function startJob(job: RenderJob): RenderJob | null {
-  return transition(job, "queued", "rendering");
-}
-
-/** Moves a rendering job to ready; answers null when the transition is illegal. */
-export function completeJob(job: RenderJob): RenderJob | null {
-  return transition(job, "rendering", "ready");
-}
-
-/** Moves a queued or rendering job to failed; answers null when the transition is illegal. */
-export function failJob(job: RenderJob): RenderJob | null {
-  if (job.status !== "queued" && job.status !== "rendering") return null;
-  return { ...job, status: "failed", tone: "error" };
-}
-
-/** Counts the jobs per status in one pass (queue health readout). */
-export function queueCensus(jobs: readonly RenderJob[]): Record<RenderJob["status"], number> {
-  const census: Record<RenderJob["status"], number> = { queued: 0, rendering: 0, ready: 0, failed: 0 };
-  for (const job of jobs) census[job.status] += 1;
-  return census;
-}
-
-/** Shared guard of the pure status machine. */
-function transition(job: RenderJob, from: RenderJob["status"], to: RenderJob["status"]): RenderJob | null {
-  if (job.status !== from) return null;
-  const next: RenderJob = { ...job, status: to };
-  if (to === "ready") next.tone = "success";
-  if (to === "rendering") next.tone = "info";
-  return next;
-}
-
-
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 8: versawasecomposition.ts — the composition document. */
-/* ════════════════════════════════════════════════════════════════════ */
-
-/**
- * versawasecomposition — the composition document of the cadria video
- * studio: the structured payload a timeline project serializes to and the
- * Saddle render lane consumes. Where timelineedit.ts owns the tick-space
- * edit algebra of one track, this module owns the whole-document shape —
- * tracks (video, audio, text), clips with media windows and playback rate,
- * the shadercomp effect stack per clip, the transition on the cut (the
- * gl-transitions name catalog) and the frame the whole thing renders at.
- * Every mutation answers the new document or a typed refusal — never a
- * throw, never a mutation — and the JSON lane is a real round trip:
- * serialize answers a deterministic byte-for-byte payload, parse answers
- * the same document back after validating every rule again (a document
- * that only the writer can read is not a format). The composition carries
- * its own Saddle plan: the same sliced-render planner the render lane
- * rides (versawaseslices) cuts the composition duration into frame-aligned
- * slices, so the heavy rasterization happens on the edge farm over the
- * standard transport — the visitor GPU is never touched by the render
- * lane, exactly the doctrine the engine records.
- */
-
-/** the track kinds a composition carries. */
-export type TrackKind = "video" | "audio" | "text";
-
-/** one effect of a clip stack: a shadercomp library id plus its amount. */
-export interface ClipEffect {
-  /** the compositor effect id (validated against the shadercomp library). */
-  effectId: ShaderEffectId;
-  /** the effect amount inside the library's honest range. */
-  amount: number;
-  /** whether the effect is active in the stack (bypassed effects stay authored). */
-  enabled: boolean;
-}
-
-/** the transition glued on a clip's leading cut. */
-export interface ClipTransition {
-  /** a gl-transitions catalog name (validated against GL_TRANSITIONS). */
-  name: string;
-  /** how long the transition overlaps, in seconds (inside the clip span). */
-  durationSeconds: number;
-}
-
-/** one clip: a timeline span plus the media window it shows. */
-export interface CompositionClip {
-  id: string;
-  /** the track this clip rides. */
-  trackId: string;
-  /** timeline start in seconds (>= 0). */
-  startSeconds: number;
-  /** timeline duration in seconds (> 0). */
-  durationSeconds: number;
-  /** media in-point in seconds (>= 0). */
-  sourceIn: number;
-  /** playback rate: media seconds per timeline second (> 0). */
-  speed: number;
-  /** the effect stack applied to this clip, in order. */
-  effects: readonly ClipEffect[];
-  /** the transition on the clip's leading cut, when one is authored. */
-  transition?: ClipTransition;
-}
-
-/** one track of the composition. */
-export interface CompositionTrack {
-  id: string;
-  kind: TrackKind;
-  /** the clips of the track, in authored order. */
-  clips: readonly CompositionClip[];
-}
-
-/** the whole composition document. */
-export interface VideoComposition {
-  id: string;
-  name: string;
-  /** the frame rate the composition renders at (> 0). */
-  fps: number;
-  /** raster width in pixels (positive, even per the transcode doctrine). */
-  width: number;
-  /** raster height in pixels (positive, even per the transcode doctrine). */
-  height: number;
-  tracks: readonly CompositionTrack[];
-}
-
-/** every way a composition request can honestly refuse (by return type). */
-export type CompositionIssue =
-  | "duplicate-track"
-  | "unknown-track"
-  | "duplicate-clip"
-  | "overlap"
-  | "bad-span"
-  | "bad-speed"
-  | "unknown-transition"
-  | "bad-transition-span"
-  | "unknown-effect"
-  | "bad-amount"
-  | "bad-format"
-  | "bad-fps"
-  | "bad-dimensions"
-  | "bad-name"
-  | "bad-id";
-
-/** either the new document (or payload) or the reason nothing happened. */
-export type CompositionOutcome<T> = { ok: true; value: T } | { ok: false; error: CompositionIssue };
-
-/**
- * The canonical gl-transitions name set the engine recognizes on a cut —
- * the same public collection of webgl transitions (bounces, wipes, warps,
- * page curls) every player of the family names its cuts by. The catalog
- * ships names: each entry's sources and uniforms live in the upstream
- * collection, precompiled and served the shadercomp way.
- */
-export const GL_TRANSITIONS: readonly string[] = [
-  "Bounce",
-  "BowTieHorizontal",
-  "BowTieVertical",
-  "ButterflyWaveScrawler",
-  "CircleCrop",
-  "ColourDistance",
-  "CrazyParametricFun",
-  "CrossZoom",
-  "DirectionalSlide",
-  "DoomScreenTransition",
-  "Dreamy",
-  "EdgeTransition",
-  "FilmBurn",
-  "GlitchDisplace",
-  "Heart",
-  "InvertedPageCurl",
-  "LeftDrawer",
-  "Mosaic",
-  "PolkaDotsCurtain",
-  "Radial",
-  "RightDrawer",
-  "Roll",
-  "RotateScaleFade",
-  "SimpleZoom",
-  "StereoViewer",
-  "Swap",
-  "Swirl",
-  "WaterDrop",
-  "ZoomInCircles",
-];
-
-/** whether a transition name rides the gl-transitions catalog. */
-export function isKnownTransition(name: string): boolean {
-  return GL_TRANSITIONS.includes(name);
-}
-
-/** the effect library row of one id, when it exists. */
-function effectRow(effectId: string) {
-  return SHADER_EFFECTS.find((effect) => effect.id === effectId);
-}
-
-/** exclusive timeline end of a clip. */
-export function clipEndSeconds(clip: CompositionClip): number {
-  return clip.startSeconds + clip.durationSeconds;
-}
-
-/** the total duration of a composition — the furthest clip end over every track (0 when empty). */
-export function compositionDurationSeconds(composition: VideoComposition): number {
-  let duration = 0;
-  for (const track of composition.tracks) {
-    for (const clip of track.clips) {
-      const end = clipEndSeconds(clip);
-      if (end > duration) duration = end;
-    }
-  }
-  return duration;
-}
-
-/** validates one clip against the library catalogs and the honest ranges. */
-function clipIssue(clip: CompositionClip): CompositionIssue | null {
-  if (typeof clip.id !== "string" || clip.id.length === 0) return "bad-id";
-  if (typeof clip.trackId !== "string" || clip.trackId.length === 0) return "bad-id";
-  if (!Number.isFinite(clip.startSeconds) || clip.startSeconds < 0 || !Number.isFinite(clip.durationSeconds) || clip.durationSeconds <= 0)
-    return "bad-span";
-  if (!Number.isFinite(clip.speed) || clip.speed <= 0) return "bad-speed";
-  if (!Number.isFinite(clip.sourceIn) || clip.sourceIn < 0) return "bad-span";
-  for (const effect of clip.effects ?? []) {
-    const row = effectRow(effect.effectId);
-    if (!row) return "unknown-effect";
-    if (typeof effect.amount !== "number" || !Number.isFinite(effect.amount) || effect.amount < row.minAmount || effect.amount > row.maxAmount)
-      return "bad-amount";
-  }
-  if (clip.transition !== undefined) {
-    if (!isKnownTransition(clip.transition.name)) return "unknown-transition";
-    if (
-      !Number.isFinite(clip.transition.durationSeconds) ||
-      clip.transition.durationSeconds <= 0 ||
-      clip.transition.durationSeconds > clip.durationSeconds
-    )
-      return "bad-transition-span";
-  }
-  return null;
-}
-
-/** whether two half-open clip spans share any timeline instant. */
-function spansOverlap(a: CompositionClip, b: CompositionClip): boolean {
-  return a.startSeconds < clipEndSeconds(b) && b.startSeconds < clipEndSeconds(a);
-}
-
-/** validates the whole document shape (parse lane) — every rule, one pass. */
-function documentIssue(document: VideoComposition): CompositionIssue | null {
-  if (typeof document.id !== "string" || document.id.length === 0) return "bad-id";
-  if (typeof document.name !== "string" || document.name.length === 0) return "bad-name";
-  if (!Number.isFinite(document.fps) || document.fps <= 0) return "bad-fps";
-  if (!Number.isInteger(document.width) || document.width <= 0 || document.width % 2 !== 0) return "bad-dimensions";
-  if (!Number.isInteger(document.height) || document.height <= 0 || document.height % 2 !== 0) return "bad-dimensions";
-  if (!Array.isArray(document.tracks)) return "bad-format";
-  const trackIds = new Set<string>();
-  const clipIds = new Set<string>();
-  for (const track of document.tracks) {
-    if (typeof track.id !== "string" || track.id.length === 0) return "bad-id";
-    if (trackIds.has(track.id)) return "duplicate-track";
-    trackIds.add(track.id);
-    if (track.kind !== "video" && track.kind !== "audio" && track.kind !== "text") return "bad-format";
-    if (!Array.isArray(track.clips)) return "bad-format";
-    const placed: CompositionClip[] = [];
-    for (const clip of track.clips) {
-      const issue = clipIssue(clip);
-      if (issue) return issue;
-      if (clipIds.has(clip.id)) return "duplicate-clip";
-      clipIds.add(clip.id);
-      if (clip.trackId !== track.id) return "unknown-track";
-      if (placed.some((other) => spansOverlap(other, clip))) return "overlap";
-      placed.push(clip);
-    }
-  }
-  return null;
-}
-
-/** adds one track to the composition (the id must be fresh). */
-export function addTrack(composition: VideoComposition, track: CompositionTrack): CompositionOutcome<VideoComposition> {
-  if (typeof track.id !== "string" || track.id.length === 0) return { ok: false, error: "bad-id" };
-  if (track.kind !== "video" && track.kind !== "audio" && track.kind !== "text") return { ok: false, error: "bad-format" };
-  if (composition.tracks.some((existing) => existing.id === track.id)) return { ok: false, error: "duplicate-track" };
-  const clips: CompositionClip[] = [];
-  const clipIds = new Set<string>();
-  for (const clip of track.clips ?? []) {
-    const issue = clipIssue(clip);
-    if (issue) return { ok: false, error: issue };
-    if (clip.trackId !== track.id) return { ok: false, error: "unknown-track" };
-    if (clipIds.has(clip.id)) return { ok: false, error: "duplicate-clip" };
-    if (clips.some((other) => spansOverlap(other, clip))) return { ok: false, error: "overlap" };
-    clipIds.add(clip.id);
-    clips.push(clip);
-  }
-  return { ok: true, value: { ...composition, tracks: [...composition.tracks, { ...track, clips }] } };
-}
-
-/** adds one clip to its track (the span must be free, the ids fresh, the catalogs satisfied). */
-export function addClip(composition: VideoComposition, clip: CompositionClip): CompositionOutcome<VideoComposition> {
-  const issue = clipIssue(clip);
-  if (issue) return { ok: false, error: issue };
-  const track = composition.tracks.find((existing) => existing.id === clip.trackId);
-  if (!track) return { ok: false, error: "unknown-track" };
-  const duplicate =
-    clip.id.length === 0 ||
-    composition.tracks.some((existing) => existing.clips.some((other) => other.id === clip.id));
-  if (duplicate) return { ok: false, error: "duplicate-clip" };
-  if (track.clips.some((other) => spansOverlap(other, clip))) return { ok: false, error: "overlap" };
-  return {
-    ok: true,
-    value: {
-      ...composition,
-      tracks: composition.tracks.map((existing) =>
-        existing.id === track.id ? { ...existing, clips: [...existing.clips, clip] } : existing,
-      ),
-    },
-  };
-}
-
-/** serializes one clip to its plain json shape (fixed key order — the format IS the order). */
-function clipToJson(clip: CompositionClip): Record<string, unknown> {
-  const json: Record<string, unknown> = {
-    id: clip.id,
-    trackId: clip.trackId,
-    startSeconds: clip.startSeconds,
-    durationSeconds: clip.durationSeconds,
-    sourceIn: clip.sourceIn,
-    speed: clip.speed,
-    effects: clip.effects.map((effect) => ({ effectId: effect.effectId, amount: effect.amount, enabled: effect.enabled })),
-  };
-  if (clip.transition !== undefined)
-    json.transition = { name: clip.transition.name, durationSeconds: clip.transition.durationSeconds };
-  return json;
-}
-
-/** the plain json shape of the whole document (deterministic — byte-stable for one document). */
-export function compositionJson(composition: VideoComposition): Record<string, unknown> {
-  return {
-    id: composition.id,
-    name: composition.name,
-    fps: composition.fps,
-    width: composition.width,
-    height: composition.height,
-    tracks: composition.tracks.map((track) => ({
-      id: track.id,
-      kind: track.kind,
-      clips: track.clips.map(clipToJson),
-    })),
-  };
-}
-
-/** the serialized payload of a composition — the structured bytes the family transports. */
-export function serializeComposition(composition: VideoComposition): string {
-  return JSON.stringify(compositionJson(composition));
-}
-
-/** the sha-256 of the serialized payload — the identity the render lane dedupes by. */
-export function compositionFingerprint(composition: VideoComposition): string {
-  return createHash("sha256").update(serializeComposition(composition), "utf8").digest("hex");
-}
-
-/**
- * Parses a serialized payload back into a composition: json damage answers
- * bad-format, and every document rule is validated again on the way in —
- * a payload that skips the rules is refused no matter who wrote it.
- */
-export function parseComposition(payload: string): CompositionOutcome<VideoComposition> {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(payload);
-  } catch {
-    return { ok: false, error: "bad-format" };
-  }
-  if (typeof parsed !== "object" || parsed === null) return { ok: false, error: "bad-format" };
-  const candidate = parsed as VideoComposition;
-  const issue = documentIssue(candidate);
-  if (issue) return { ok: false, error: issue };
-  return { ok: true, value: candidate };
-}
-
-/**
- * The Saddle render plan of a composition: the sliced-render planner cuts
- * the composition duration into frame-aligned slices (the doctrine's ten
- * second grid by default), so the edge farm rasterizes in parallel over
- * the standard transport and the preview equals the final artifact — the
- * visitor GPU is never part of the render lane.
- */
-export function compositionSlicePlan(composition: VideoComposition, sliceSeconds = 10): readonly RenderSlice[] {
-  return planSlices({
-    durationSeconds: compositionDurationSeconds(composition),
-    fps: composition.fps,
-    sliceSeconds,
-  });
 }

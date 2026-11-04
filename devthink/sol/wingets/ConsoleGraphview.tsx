@@ -22,8 +22,8 @@
  * only and dies under prefers-reduced-motion.
  */
 import { useId } from "react";
-import type { nodegraph, nodestate } from "../../graphnodes.js";
-import { viewbounds, type viewposition } from "../../graphviewstate.js";
+import type { nodegraph, nodestate } from "../../graph.js";
+import { viewbounds, type viewposition } from "../../graph.js";
 
 /** The card box of one node on the map (the hit target stays at 44px+ tall). */
 export const GRAPHVIEW_CARD_WIDTH = 176;

@@ -18,7 +18,7 @@ import {
   ENGINEOWNERS,
   OFFICIALAPPS,
   ownersbyengine,
-} from "../engineowners.ts";
+} from "../engines.ts";
 import { THINKINGLEVELS } from "../../getry/thinking.ts";
 
 describe("the ownership manifest", () => {
@@ -73,7 +73,7 @@ describe("the ownership manifest", () => {
     assert.ok(gateway, "the getry row must exist");
     // the os envelope points at its own root engine (the graph runner) and
     // names the queue family and the mcp registry — never the moved pipeline
-    assert.equal(os.module, "graphrunner.ts", "the os engine module is the graph runner, not the moved pipeline");
+    assert.equal(os.module, "graph.ts", "the os engine module is the graph runner, not the moved pipeline");
     assert.match(os.role, /graph runner \(graphrunner\.ts\)/);
     assert.match(os.role, /queue family \(queue\.ts\)/);
     assert.match(os.role, /mcp registry \(mcpregistry\.ts, the os protocol serving its own tools\)/);

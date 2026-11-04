@@ -9,7 +9,7 @@
  * same fixture always answers the same report and the same artwork.
  */
 
-import { rngFromSeed } from "./imageproject.ts";
+import { rngFromSeed } from "./image.ts";
 
 /** the id of a built-in demo fixture. */
 export type DemoFixtureId = "glass" | "static" | "pulse";
