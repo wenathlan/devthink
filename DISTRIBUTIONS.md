@@ -3,9 +3,9 @@
 <!--
   DISTRIBUTIONS.md — the distribution catalog of the monorepo.
 
-  @file      .github/DISTRIBUTIONS.md
+  @file      DISTRIBUTIONS.md
   @wave      W10-DISTPACK (PR14 — the distpack ladder)
-  @version   2.0.157
+  @version   2.0.159
   @summary   Every application of the family answers six independent
              distribution seats — NuGet, Maven, Docker/Container, npm
              (npmjs), Registry (GitHub Packages) and RubyGems — and every
