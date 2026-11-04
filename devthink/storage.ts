@@ -48,7 +48,13 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+/* the prisma adapter rides a lazy lane: the top-level graph stays
+ * prisma-free (the web bundle of the workbench carries no node fetch
+ * engine — the white-screen law), the class loads on the first database
+ * touch through the dynamic import of ensuredb, and the type alone rides
+ * the static surface through the type-only import that erases with the
+ * build. */
+import type { PrismaLibSql as prismaadapter } from "@prisma/adapter-libsql";
 import type { PrismaClient } from "@prisma/client";
 import { ensurePaths, resolvePaths, type DevThinkConfig, type DevThinkPaths } from "./config.js";
 import { createCompactId } from "./queue.ts";
@@ -469,17 +475,20 @@ function resolvedburl(): { url: string; isremote: boolean } {
 async function ensuredb(): Promise<PrismaClient> {
   if (globalforprisma.prisma) return globalforprisma.prisma;
   const { url, isremote } = resolvedburl();
-  /** PrismaLibSql takes config not a pre-created client */
+  /** PrismaLibSql takes config not a pre-created client — the adapter
+   * class rides the same lazy lane as the client: no import-time
+   * evaluation ever touches the node fetch engine. */
   const config = isremote
     ? { url, ...(process.env.DATABASE_AUTH_TOKEN ? { authToken: process.env.DATABASE_AUTH_TOKEN } : {}) }
     : { url };
+  const { PrismaLibSql } = await import("@prisma/adapter-libsql");
   const adapter = new PrismaLibSql(config);
   // cjs interop: a commonjs @prisma/client resolution exposes the class on
   // the default export (the module namespace may not carry the named
   // binding) — accept both spellings
-  const mod = (await import("@prisma/client")) as {
-    PrismaClient?: new (opts: { adapter: PrismaLibSql }) => PrismaClient;
-    default?: { PrismaClient: new (opts: { adapter: PrismaLibSql }) => PrismaClient };
+  const mod = (await import("@prisma/client")) as unknown as {
+    PrismaClient?: new (opts: { adapter: prismaadapter }) => PrismaClient;
+    default?: { PrismaClient: new (opts: { adapter: prismaadapter }) => PrismaClient };
   };
   const prismaclient = mod.PrismaClient ?? mod.default?.PrismaClient;
   if (!prismaclient) {

@@ -274,6 +274,18 @@ export default defineConfig({
      * keeps the module link safe while every env-overridable constant falls
      * back to its compiled default. */
     "process.env": "({})",
+    /** the browser-global law of the node-ism leak: the bundler graph carries
+     * libraries (the msw-style response caches, the griffel window shims)
+     * that read the node `global` identifier at module scope —
+     * `global.Response` evaluated top-level — and the browser never
+     * declares it, so the entry module dies with ReferenceError before the
+     * first component mounts (the white-screen doctrine: the bundle
+     * answers 200, the root answers zero children, no console line). the
+     * rewrite points every bare `global` at `globalThis`, the one standard
+     * identifier both runtimes declare, so the guards (`typeof global`)
+     * keep their honest meaning and the direct reads (`global.Response`)
+     * answer the live browser surface. */
+    global: "globalThis",
   },
   base: pagesBasePath(process.env.VITE_BASE_PATH),
   plugins: [nodebuiltinshim(), react(), tailwindcss(), familydevbridge()],

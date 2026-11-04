@@ -128,9 +128,15 @@ export const readdir = (_path: string): Promise<string[]> => Promise.resolve([])
 /* the version table the moved transport's node adapter speaks at module
  * scope (the @hono/node-server family the ownership wave's config bridge
  * inlines into the browser graph) — the adapter never serves on a browser
- * host, so the table answers the neutral empty record the identifiers
- * doctrine carries, never a faked host report. */
-export const versions: Record<string, string> = {};
+ * host, so the table answers the neutral record the identifiers doctrine
+ * carries, never a faked host report: the node key rides an EMPTY string —
+ * the honest "no node runtime on this host" answer — so the module-scope
+ * version gate of the inlined adapter (`versions.node.split('.')` then the
+ * 23 / 22.7 / 20.18 ladder) parses the empty rung, reads NaN on every
+ * comparison and resolves the unsupported lane without ever throwing on
+ * the undefined read that used to kill the whole workbench boot (the
+ * white-screen law: one record's shape decides whether the os renders). */
+export const versions: Record<string, string> = { node: "" };
 
 // ---------------------------------------------------------------------------
 // @section dns — the resolution refusal (node:dns/promises)
