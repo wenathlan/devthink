@@ -17,7 +17,7 @@
  * the import: better-sqlite3 is a native binding, the browser graph never
  * reaches this file (the browser accessors stay in their own modules).
  */
-import { mkdirSync } from "node:fs";
+import { chmodSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
 
@@ -34,6 +34,31 @@ export type SqlParam = string | number | bigint | boolean | null;
  * taught the ladder the wider window. */
 export const PRAGMA_BOOTSTRAP = ["busy_timeout = 30000", "journal_mode = WAL", "foreign_keys = ON"] as const;
 
+/** the driver names the lane knows: the family seat (better-sqlite3), the
+ * node builtin the engines without dependencies ride (node:sqlite) and the
+ * bun runtime the os workbench resolves (bun:sqlite). */
+export type StorageDriverName = "better-sqlite3" | "node:sqlite" | "bun:sqlite";
+
+/** the structural statement every driver answers (run, all, get — the
+ * parameterized seats the helpers ride, whichever driver carries them). */
+type SqliteStatement = {
+  run(...params: unknown[]): { changes: number; lastInsertRowid: number | bigint };
+  all(...params: unknown[]): unknown[];
+  get(...params: unknown[]): unknown;
+};
+
+/** the structural database every driver answers (prepare, exec, close —
+ * the pragma ladder walks through the exec seat on the builtin faces). */
+type SqliteDatabase = {
+  prepare(sql: string): SqliteStatement;
+  exec(sql: string): unknown;
+  close(): unknown;
+  pragma?(value: string): unknown;
+};
+
+/** the structural constructor the driver seat answers. */
+type SqliteDatabaseConstructor = new (file: string) => SqliteDatabase;
+
 /** the lane options: the url wins over the environment, the environment
  * name defaults to the family DATABASE_URL, and the default file answers
  * when neither is set (each app names its own — app data, never logic). */
@@ -44,6 +69,17 @@ export type StorageLaneOptions = {
   envName?: string;
   /** the file the lane opens when nothing else answers (default "./local.db"). */
   defaultFile?: string;
+  /** the driver the lane opens (default "better-sqlite3", the family seat;
+   * "node:sqlite" answers the engines that run on the node builtin alone,
+   * "bun:sqlite" the bun runtime the os workbench rides). */
+  driver?: StorageDriverName;
+  /** an injectable constructor seat (tests and the os workbench driver
+   * resolution carry their own — the seat wins over every named driver). */
+  driverSeat?: () => SqliteDatabaseConstructor;
+  /** the file mode the lane stamps on the database file after the open
+   * (the security seats that demand 0o600 pass it here; best effort,
+   * never applies to a :memory: lane). */
+  fileMode?: number;
 };
 
 /** the open storage lane: the one connection and the doors every family
@@ -53,6 +89,8 @@ export type StorageLaneOptions = {
 export type StorageLane = {
   /** the one sqlite connection of the lane (WAL, foreign keys, patient locks). */
   readonly db: Database.Database;
+  /** the driver name the lane opened (the reporting seats read it). */
+  readonly driver: string;
   /** runs a parameterized statement and returns the change counters. */
   execute(sql: string, params?: readonly SqlParam[]): { changes: number; lastInsertRowid: number | bigint };
   /** runs a parameterized query and returns every row. */
@@ -126,15 +164,54 @@ const sleepsync = (ms: number): void => {
  * @param file the database file the lane owns.
  * @returns the open connection with the ladder walked.
  */
-const openWithLadder = (file: string): Database.Database => {
+/** resolves the constructor of the named driver: the seat wins (tests and
+ * the os workbench inject their own resolution), the family seat answers
+ * the static import, the node builtin resolves through the builtin module
+ * loader (no static import — the graph the browser bundles carry stays
+ * clean) and bun answers the computed require the runtime alone reads. */
+const driverConstructor = (options: StorageLaneOptions): { name: string; open: SqliteDatabaseConstructor } => {
+  if (options.driverSeat) return { name: "seat", open: options.driverSeat() };
+  const driver = options.driver ?? "better-sqlite3";
+  if (driver === "better-sqlite3") return { name: driver, open: Database as unknown as SqliteDatabaseConstructor };
+  if (driver === "node:sqlite") {
+    const builtin = (process as unknown as { getBuiltinModule?: (id: string) => unknown }).getBuiltinModule?.("node:sqlite") as
+      | { DatabaseSync?: SqliteDatabaseConstructor }
+      | undefined;
+    if (!builtin?.DatabaseSync) throw new Error("the node:sqlite driver is absent on this runtime");
+    return { name: driver, open: builtin.DatabaseSync };
+  }
+  /* bun:sqlite — the computed specifier the bundlers never follow. */
+  const requirefn = (globalThis as { require?: unknown }).require as ((id: string) => unknown) | undefined;
+  const bunsqlite = requirefn?.(["bun", "sqlite"].join(":")) as { Database?: SqliteDatabaseConstructor } | undefined;
+  if (!bunsqlite?.Database) throw new Error("the bun:sqlite driver is absent on this runtime");
+  return { name: driver, open: bunsqlite.Database };
+};
+
+/** walks the pragma ladder once on the open connection: the better-sqlite3
+ * face carries the pragma method, the builtin faces answer through exec. */
+const walkPragmas = (db: SqliteDatabase): void => {
+  for (const pragma of PRAGMA_BOOTSTRAP) {
+    if (typeof db.pragma === "function") db.pragma(pragma);
+    else db.exec(`PRAGMA ${pragma};`);
+  }
+};
+
+const openWithLadder = (file: string, options: StorageLaneOptions): { db: SqliteDatabase; name: string } => {
+  const seat = driverConstructor(options);
   let lastError: unknown = null;
   for (let attempt = 0; attempt < OPENATTEMPTS; attempt += 1) {
-    const db = new Database(file);
+    const db = new seat.open(file);
     try {
-      for (const pragma of PRAGMA_BOOTSTRAP) {
-        db.pragma(pragma);
+      walkPragmas(db);
+      if (options.fileMode !== undefined && !file.includes(":memory:")) {
+        try {
+          chmodSync(file, options.fileMode);
+        } catch {
+          /* the file mode is best effort — a read-only seat or an absent
+           * file never fails the boot the pragmas already greened. */
+        }
       }
-      return db;
+      return { db, name: seat.name };
     } catch (error) {
       db.close();
       const code = (error as { code?: string }).code ?? "";
@@ -162,17 +239,35 @@ const openWithLadder = (file: string): Database.Database => {
 export function openStorageLane(options: StorageLaneOptions = {}): StorageLane {
   const file = resolveStorageUrl(options);
   mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
-  const db = openWithLadder(file);
-  const cache = new Map<string, Database.Statement>();
+  const opened = openWithLadder(file, options);
+  const db = opened.db;
+  /* the transaction seat: the better-sqlite3 face carries the transaction
+   * wrapper; the builtin faces answer the explicit begin/commit ladder the
+   * same bodies always demanded. */
+  const transactionOf = (body: () => unknown): unknown => {
+    const holder = db as unknown as { transaction?: (this: unknown, body: () => unknown) => () => unknown };
+    if (typeof holder.transaction === "function") return holder.transaction(body)();
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      const answer = body();
+      db.exec("COMMIT");
+      return answer;
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
+  };
+  const cache = new Map<string, SqliteStatement>();
   const prepare = (sql: string): Database.Statement => {
     const cached = cache.get(sql);
-    if (cached) return cached;
+    if (cached) return cached as Database.Statement;
     const statement = db.prepare(sql);
     cache.set(sql, statement);
-    return statement;
+    return statement as Database.Statement;
   };
   return {
-    db,
+    db: db as unknown as Database.Database,
+    driver: opened.name,
     execute(sql: string, params: readonly SqlParam[] = []): { changes: number; lastInsertRowid: number | bigint } {
       return prepare(sql).run(...(params as never[])) as { changes: number; lastInsertRowid: number | bigint };
     },
@@ -187,7 +282,7 @@ export function openStorageLane(options: StorageLaneOptions = {}): StorageLane {
     },
     prepare,
     transaction<T>(body: () => T): T {
-      return db.transaction(body)();
+      return transactionOf(body) as T;
     },
     close(): void {
       cache.clear();
