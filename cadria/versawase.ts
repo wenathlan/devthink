@@ -1157,11 +1157,47 @@ export interface ValidateShaderOptions {
   requiredUniforms?: readonly string[];
 }
 
-/** strips line and block comments while preserving every line number. */
+/**
+ * Strips line and block comments while preserving every line number: the
+ * block pass collapses every complete block to the newlines it carried
+ * (an unterminated block stays verbatim), then the line pass removes
+ * every `//` run to its newline without touching it — the same two-pass
+ * contract the regex lane answered. The scan is linear: the code scanning
+ * gate refused the polynomial backtracking the lazy block regex answered
+ * on adversarial sources, so the fold landed the identical strip as a
+ * hand-rolled walk.
+ */
 function stripComments(source: string): string {
-  return source
-    .replace(/\/\*[\s\S]*?\*\//g, (block) => "\n".repeat((block.match(/\n/g) ?? []).length))
-    .replace(/\/\/[^\n]*/g, "");
+  let blockStripped = "";
+  let at = 0;
+  while (at < source.length) {
+    if (source.startsWith("/*", at)) {
+      const close = source.indexOf("*/", at + 2);
+      if (close === -1) {
+        blockStripped += source.slice(at);
+        break;
+      }
+      const block = source.slice(at, close + 2);
+      blockStripped += "\n".repeat((block.match(/\n/g) ?? []).length);
+      at = close + 2;
+    } else {
+      blockStripped += source[at];
+      at += 1;
+    }
+  }
+  let out = "";
+  at = 0;
+  while (at < blockStripped.length) {
+    if (blockStripped.startsWith("//", at)) {
+      const end = blockStripped.indexOf("\n", at);
+      if (end === -1) break;
+      at = end;
+    } else {
+      out += blockStripped[at];
+      at += 1;
+    }
+  }
+  return out;
 }
 
 /** 1-based line of a character index inside the source. */
