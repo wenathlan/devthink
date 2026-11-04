@@ -58,10 +58,17 @@
 # the resolved release version at build time, nothing is hardcoded beside
 # the stamp.
 
-ARG NODE_BASE="node:26.13.0-slim"
+ARG NODE_BASE_TAG="node:26.13.0-slim"
+# the digest-never-hardcoded law, the scorecard-file form: the FROM lines
+# ride name@sha256:${ARG} (the exact pattern the supply-chain gate reads
+# as pinned) while the digest itself still resolves at build time on the
+# runner (the bases step of the publish lanes) — no 64-hex ever enters the
+# repository, the manifest-list digest serves the whole eleven-architecture
+# matrix, and a local build resolves the same lane before docker build.
+ARG NODE_BASE_DIGEST
 
 # ===== stage: solbuild — the locked npm tree and the console spa =====
-FROM --platform=$BUILDPLATFORM ${NODE_BASE} AS solbuild
+FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
 ARG SADDLE_VERSION=2.0.157
 
@@ -89,7 +96,7 @@ RUN npm run web:build:pages \
     && rm -f /out/spa/popup.css
 
 # ===== stage: base — the hardened runtime floor every profile shares =====
-FROM ${NODE_BASE} AS base
+FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
 ARG SADDLE_VERSION=2.0.157
 ARG SADDLE_PROFILE=max
