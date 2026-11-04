@@ -33,6 +33,7 @@ process.env.DATABASE_URL = "file:./local.libraryface.test.db";
 
 const analyzemodule = await import("@wenathlan/debonair/analyze");
 const audiomodule = await import("@wenathlan/debonair/audio");
+const takemodule = await import("@wenathlan/debonair/take");
 const audioattributesmodule = await import("@wenathlan/debonair/audioattributes");
 const audiodecodemodule = await import("@wenathlan/debonair/audiodecode");
 const audiofeaturesmodule = await import("@wenathlan/debonair/audiofeatures");
@@ -84,11 +85,12 @@ const SUBPATHS = [
   "composer",
   "coverpalette",
   "audio",
-  "audioengine",
+  "take",
   "wavwriter",
   "blobstore",
   "audioattributes",
   "audiodecode",
+  "audioengine",
   "audiofeatures",
   "audiopipeline",
   "beatgrid",
@@ -151,6 +153,7 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   reverseingest: reverseingestmodule,
   timestretch: timestretchmodule,
   audio: audiomodule,
+  take: takemodule,
   audioengine: audioenginemodule,
   wavwriter: wavwritermodule,
   blobstore: blobstoremodule,
@@ -529,6 +532,28 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
    * answering, now through the shared source the "audio" key carries. */
   audio: audiosurface,
   audioengine: audiosurface,
+  /* the take keyword file folds the session take family — the event
+   * scheduler, the take store, the bounce desk — into its one seat. */
+  take: {
+    EXPORT_LABELS: "object",
+    RECON_SEED_SCHEMA_VERSION: "string",
+    TAKE_SELECT_KEY: "string",
+    TAKE_STORE_KEY: "string",
+    downloadFile: "function",
+    eventsInWindow: "function",
+    exportTake: "function",
+    findTakeRecord: "function",
+    loadTakeRecords: "function",
+    memoryStorage: "function",
+    positionAt: "function",
+    reconSeedFile: "function",
+    removeTakePlan: "function",
+    saveTakePlan: "function",
+    scheduleTake: "function",
+    sectionAt: "function",
+    sessionStorageOrMemory: "function",
+    validateSchedule: "function",
+  },
   wavwriter: {
     encodeWav: "function",
     validateEncoding: "function",
