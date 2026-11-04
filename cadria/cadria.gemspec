@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "cadria"
-  spec.version = ENV.fetch("CADRIA_VERSION", "2.0.159")
+  spec.version = ENV.fetch("CADRIA_VERSION", "2.0.160")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The cadria documentation, site and tests envelope (the versawase engine home)."

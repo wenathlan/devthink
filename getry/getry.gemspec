@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "getry"
-  spec.version = ENV.fetch("GETRY_VERSION", "2.0.159")
+  spec.version = ENV.fetch("GETRY_VERSION", "2.0.160")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The getry documentation and tests envelope (the AI gateway — five provider gateways serving 35 OpenAI-compatible routes)."
