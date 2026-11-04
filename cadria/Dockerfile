@@ -22,8 +22,11 @@ ARG CADRIA_VERSION=2.0.156
 # vite step.
 WORKDIR /src/app
 COPY app/package.json app/pnpm-lock.yaml app/pnpm-workspace.yaml ./
+COPY app/pnpmboot.package.json /tmp/pnpmboot/package.json
+COPY app/pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
- && npm install -g --no-fund --no-audit "$(node -p 'require("./package.json").packageManager')" \
+ && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
+ && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
  && pnpm install --frozen-lockfile
 COPY app/ .
 COPY debonair/ /src/debonair/

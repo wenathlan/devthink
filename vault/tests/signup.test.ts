@@ -76,8 +76,8 @@ describe("the signup and signin doors", () => {
     );
     assert.ok(row);
     assert.notEqual(row.passwordDigest, "honest words");
-    assert.match(row.passwordDigest, /^[0-9a-f]{64}$/, "the digest rides the sha-256 hex shape");
-    assert.equal(row.passwordDigest.length, 64);
+    assert.match(row.passwordDigest, /^[0-9a-f]{64}:[0-9a-f]{128}$/, "the digest rides the salted scrypt family shape");
+    assert.equal(row.passwordDigest.length, 64 + 1 + 128);
   });
 });
 

@@ -1,11 +1,11 @@
 // # signup — the signup lane of the vault storage engine (the wave D
 // rewire): the person's door onto the network database. The full flow the
 // supabase-law product answers: the user signs up (an account on the site
-// store, the password stored only as a salted sha-256 digest — the sha.ts
-// lane, never plaintext at rest), registers an app/database, and gets their
+// store, the password stored only as the salted scrypt digest — the
+// accounts.ts family law, never plaintext at rest), registers an app/database, and gets their
 // own Database ID plus an API key displayed exactly once — the plaintext key
 // rides exactly the one creation answer and never lands anywhere else: not
-// in the database (only its sha-256 digest is stored), not in any log, never
+// in the database (only its scrypt digest is stored), not in any log, never
 // persisted in the browser (the face holds it in memory for the one display
 // and drops it with the session — no localStorage, no cookies, no session
 // storage; the security law of the vault).
@@ -29,6 +29,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { db, execute, queryAll, queryOne } from "./db.ts";
 import { QUOTA_FLOOR_BYTES } from "./quota.ts";
 import { sha256Hex } from "./sha.ts";
+import { hashPassword, passwordMatches } from "./accounts.ts";
 
 /** @section shapes */
 
@@ -118,19 +119,10 @@ export function signupEmailValid(email: string): boolean {
   return EMAIL_PATTERN.test(email);
 }
 
-/**
- * The salted digest of one password — the sha-256 lane over the account id
- * (the salt) and the password: the site store never holds a plaintext
- * secret at rest, and equal passwords on different accounts answer
- * different digests.
- *
- * @param accountId the salt of the digest (the account's own id).
- * @param password the plaintext password (never stored).
- * @returns the hex digest the account row carries.
- */
-export function passwordDigest(accountId: string, password: string): string {
-  return sha256Hex(`${accountId}:${password}`);
-}
+// The password digest law lives in accounts.ts (hashPassword /
+// passwordMatches — the salted scrypt family lane, the timing-safe verify):
+// this signup lane answers it without carrying a duplicate (the
+// no-duplication law between the files of the house).
 
 /** the typed refusal the signup lane answers. */
 export type SignupRefusal =
@@ -165,7 +157,7 @@ export function signupAccount(email: string, password: string): SignupAnswer {
   const id = `acc-${randomBytes(8).toString("hex")}`;
   execute(
     "INSERT INTO accounts (id, email, passwordDigest, createdAt) VALUES (?, ?, ?, datetime('now'))",
-    [id, trimmed, passwordDigest(id, password)],
+    [id, trimmed, hashPassword(password)],
   );
   const row = queryOne<{ id: string; email: string; createdAt: string }>(
     "SELECT id, email, createdAt FROM accounts WHERE id = ?",
@@ -198,7 +190,7 @@ export function signinAccount(email: string, password: string): SigninAnswer {
   if (row === undefined) {
     return { refusal: { kind: "absent", why: `no account answers ${trimmed}` } };
   }
-  if (passwordDigest(row.id, password) !== row.passwordDigest) {
+  if (!passwordMatches(password, row.passwordDigest)) {
     return { refusal: { kind: "wrong", why: "the password does not answer the account" } };
   }
   return {
@@ -266,7 +258,7 @@ export function accountVerified(email: string, password: string): SignupAccountR
     "SELECT id, passwordDigest FROM accounts WHERE email = ?",
     [email.trim().toLowerCase()],
   );
-  if (row === undefined || passwordDigest(row.id, password) !== row.passwordDigest) {
+  if (row === undefined || !passwordMatches(password, row.passwordDigest)) {
     return undefined;
   }
   return accountOf(row.id);
