@@ -297,17 +297,7 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              # the owner rule (the 2.0.155 registry heal): the envelope
-              # publishes ALWAYS while the token exists - registry versions
-              # are distinct strings and a rung landing BELOW the registry
-              # latest (the retired 2.1.8 line still holds the latest tag
-              # of both registries) must never skip. npm 12 refuses the
-              # IMPLICIT latest tag in that case ("Cannot implicitly apply
-              # the latest tag"); the explicit tag answers the refusal, the
-              # publish lands, and the dist-tag step below pins latest to
-              # the release version - the same maene realignment doctrine
-              # the family-npmjs lane carries.
-              publish_output="$(npm publish "${tarball}" --access public --provenance --tag latest 2>&1)" && { published=1; break; }
+              publish_output="$(npm publish "${tarball}" --access public --provenance 2>&1)" && { published=1; break; }
               # the twin-409 doctrine (the idempotent win the family loop of
               # the release ladder carries): the ladder's own npmjs job
               # publishes the same tarball inside the same release event, and
@@ -717,11 +707,7 @@ jobs:
           published=0
           until [ "$attempt" -ge 3 ]; do
             attempt=$((attempt + 1))
-            # the explicit latest tag (the 2.0.155 registry heal): the
-            # retired 2.1.8 line holds the github registry latest too, and
-            # npm 12 refuses the implicit tag on a lower rung - the
-            # dist-tag step below re-pins latest after the publish lands.
-            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public --tag latest; then
+            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public; then
               published=1
               break
             fi
@@ -847,10 +833,7 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              # the explicit latest tag (the 2.0.155 registry heal): the
-              # family envelopes land below the retired 2.1.8 latest the
-              # same way, and the dist-tag step below re-pins latest.
-              if npm publish --registry=https://npm.pkg.github.com --access public --tag latest; then
+              if npm publish --registry=https://npm.pkg.github.com --access public; then
                 published=1
                 break
               fi
@@ -3196,7 +3179,7 @@ jobs:
             const splitrelease = [
               "    splits {",
               "        abi {",
-              "            enable gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27assemble\x27) }",
+              "            enable true",
               "            reset()",
               "            include \x27armeabi-v7a\x27, \x27arm64-v8a\x27, \x27x86\x27, \x27x86_64\x27",
               "            universalApk true",
@@ -3269,21 +3252,10 @@ jobs:
       - name: build optimized android release
         working-directory: devthink/android
         shell: bash
-        # the bundle-then-assemble law (the 2.0.155 android heal): the aab
-        # bundle task refuses to run beside the abi splits — the R8 resource
-        # shrinker answers one shrunk-resources file per split and the
-        # PerModuleBundleTask dies on the plural directory (the google
-        # issue 402800800 answer: disable the multiple-apk builds for the
-        # bundle lane). the splits block the stamp writes answers with the
-        # task-name gate — enable only when an assemble task rides the
-        # invocation — so the bundle call runs single-apk and the assemble
-        # call after it turns the per-abi apks back on (the asset parity
-        # expansion keeps every standalone apk beside the universal build).
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace bundleRelease
-          ./gradlew --no-daemon --stacktrace assembleRelease
+          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
 
       - name: collect android artifacts
         shell: bash
@@ -3934,78 +3906,39 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: stage the family build context
         # the same staged tree the family-ghcr lane builds (the release
-        # ladder mirror). THE 2.0.155 FAMILY CONTEXT LAW: the staged shape
-        # carries the application nested under app/ with every sibling
-        # source its vite aliases resolve — the fold waves moved the
-        # engines to their owners, so the copy law (labels.ts →
-        # @wenathlan/vault/labelstore), the workload law
-        # (@wenathlan/saddle/workloadlaw), the execution frontier
-        # (@wenathlan/saddle/modes and sandbox), the route table
-        # (@wenathlan/debonair/routetable) and the os seams
-        # (@wenathlan/devthink/*) answer from the sibling sources beside
-        # the application. The vault site home alone keeps the flat
-        # village form: its engine imports live behind the process guard
-        # and its build graph carries no sibling bridge.
+        # ladder mirror): the three site homes ride the app/-nested
+        # context with the copy-law vault sibling, cadria stages the
+        # debonair engine beside it, and the flat village form builds from
+        # its own folder.
         shell: bash
         run: |
           set -euo pipefail
-          stage_family_context() {
-            app="$1"; shift
-            rm -rf familybuildctx
-            mkdir -p familybuildctx/app
-            cp -a "${app}/." familybuildctx/app/
-            for sibling in "$@"; do
-              mkdir -p "familybuildctx/${sibling}"
-              cp -a "${sibling}/." "familybuildctx/${sibling}/"
-              rm -rf "familybuildctx/${sibling}/node_modules" \
-                     "familybuildctx/${sibling}/dist" \
-                     "familybuildctx/${sibling}/build"
-            done
-          }
           case "${{ matrix.app }}" in
-            argan)
-              stage_family_context argan vault
+            argan|debonair)
+              rm -rf familybuildctx
+              mkdir -p familybuildctx/app familybuildctx/vault
+              cp -a "${{ matrix.app }}/." familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              rm -rf familybuildctx/vault/node_modules \
+                     familybuildctx/vault/dist \
+                     familybuildctx/vault/build
               ;;
             cadria)
               # the engine-ownership sibling map: cadria resolves the
               # debonair audio engine through the ../debonair vite
-              # aliases, so the sibling rides the context beside the
-              # copy-law vault sibling.
-              stage_family_context cadria vault debonair
-              ;;
-            debonair)
-              # the symmetric engine-ownership map: debonair resolves the
-              # cadria synth palette through the ../cadria vite aliases
-              # (coverpalette.ts), so the cadria sibling rides beside the
-              # copy-law vault sibling.
-              stage_family_context debonair vault cadria
-              ;;
-            cobaia|stealthhead)
-              # the copy-law vault sibling and the workload-law saddle
-              # sibling: labels.ts bridges the label store and the
-              # workload lane reads @wenathlan/saddle/workloadlaw.
-              stage_family_context "${{ matrix.app }}" vault saddle
-              ;;
-            forge|foundry)
-              # the execution frontier: the sandbox lanes read
-              # @wenathlan/saddle/modes, @wenathlan/saddle/sandbox and
-              # @wenathlan/saddle/workloadlaw beside the copy-law vault
-              # sibling.
-              stage_family_context "${{ matrix.app }}" vault saddle
-              ;;
-            getry)
-              # the gateway graph: the modality registry bridge reads
-              # @wenathlan/saddle/modalityregistry, the route table reads
-              # @wenathlan/debonair/routetable and the os seams read the
-              # @wenathlan/devthink lane, all beside the copy-law vault
-              # sibling (sources only, the aliases read the .ts files).
-              stage_family_context getry vault saddle debonair devthink
-              ;;
-            vault)
-              # the flat village form stays: the vault build graph carries
-              # no sibling bridge (the engine imports live behind the
-              # process guard), so no staged context answers a need.
+              # aliases, so the sibling rides the context whole beside the
+              # copy-law vault sibling
               rm -rf familybuildctx
+              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/debonair
+              cp -a cadria/. familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              cp -a debonair/. familybuildctx/debonair/
+              rm -rf familybuildctx/vault/node_modules \
+                     familybuildctx/vault/dist \
+                     familybuildctx/vault/build \
+                     familybuildctx/debonair/node_modules \
+                     familybuildctx/debonair/dist \
+                     familybuildctx/debonair/build
               ;;
           esac
       - name: build the family container archive
@@ -4018,20 +3951,17 @@ jobs:
           image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${{ matrix.app }}"
           archive="${{ matrix.app }}.container.${version}.tar.gz"
           case "${{ matrix.app }}" in
-            vault)
-              # the self-contained site shape: the application folder is
-              # the context (the flat village form — the vault build graph
-              # carries no sibling bridge).
-              docker build --tag "${image}:${version}" "./${{ matrix.app }}"
-              ;;
-            *)
+            argan|debonair|cadria)
               # the staged family shape demands the explicit -f: the
               # dockerfile stays at ${{ matrix.app }}/Dockerfile outside the
               # staged context, exactly the way the family-ghcr lane
-              # carries it — every family site home but vault rides the
-              # staged context with its sibling sources (the 2.0.155
-              # family context law).
+              # carries it.
               docker build --tag "${image}:${version}" -f "${{ matrix.app }}/Dockerfile" familybuildctx
+              ;;
+            *)
+              # the self-contained site shape: the application folder is
+              # the context (the flat village form).
+              docker build --tag "${image}:${version}" "./${{ matrix.app }}"
               ;;
           esac
           docker save "${image}:${version}" | gzip -9 > "$archive"
@@ -4763,6 +4693,38 @@ jobs:
           echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
           echo "mesa ${tarball}: ${sha} (resolved at build time)"
 
+      - name: Resolve the base-image digests (registry-computed)
+        id: basedigests
+        run: |
+          set -euo pipefail
+          # The family digest contract rides the resolver doctrine the mesa
+          # lane already answers: the manifest-list digests of the three
+          # base images resolve at build time from the registry — the
+          # sha256 values never enter the repository (the gateway family
+          # policy the publishlanes gate carries), and every one of the
+          # eleven architectures still resolves its own platform inside
+          # the same immutable registry index the digest pins.
+          digest_of() {
+            local name="$1" tag="$2"
+            local token; token="$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/${name}:pull" | jq -r .token)"
+            local digest; digest="$(curl -fsSL -H "Authorization: Bearer ${token}"               -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json"               "https://registry-1.docker.io/v2/library/${name}/manifests/${tag}" | sha256sum | cut -d' ' -f1)"
+            test -n "${digest}" && test "${#digest}" -eq 64
+            printf '%s' "${digest}"
+          }
+          ubuntu_tag=$(sed -n 's/^ARG UBUNTU_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          python_tag=$(sed -n 's/^ARG PYTHON_BASE_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          nodeslim_tag=$(sed -n 's/^ARG NODE_SLIM_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          test -n "${ubuntu_tag}" && test -n "${python_tag}" && test -n "${nodeslim_tag}"
+          ubuntudigest="$(digest_of "${ubuntu_tag%%:*}" "${ubuntu_tag#*:}")"
+          pythondigest="$(digest_of "${python_tag%%:*}" "${python_tag#*:}")"
+          nodeslimdigest="$(digest_of "${nodeslim_tag%%:*}" "${nodeslim_tag#*:}")"
+          {
+            echo "ubuntudigest=${ubuntudigest}"
+            echo "pythondigest=${pythondigest}"
+            echo "nodeslimdigest=${nodeslimdigest}"
+          } >> "$GITHUB_OUTPUT"
+          echo "base images: ubuntu ${ubuntudigest}, python ${pythondigest}, node-slim ${nodeslimdigest} (resolved at build time)"
+
       - name: Set up QEMU (the nine emulated legs of the eleven-arch index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
@@ -4819,9 +4781,9 @@ jobs:
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
             MESA_SHA256=${{ steps.mesa.outputs.sha256 }}
-            UBUNTU=${{ needs.saddle-vhe-resolve.outputs.ubunturef }}
-            PYTHON_BASE=${{ needs.saddle-vhe-resolve.outputs.pythonref }}
-            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
+            UBUNTU_DIGEST=${{ steps.basedigests.outputs.ubuntudigest }}
+            PYTHON_BASE_DIGEST=${{ steps.basedigests.outputs.pythondigest }}
+            NODE_SLIM_DIGEST=${{ steps.basedigests.outputs.nodeslimdigest }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -4926,9 +4888,9 @@ jobs:
       tag: ${{ steps.resolve.outputs.tag }}
       proceed: ${{ steps.resolve.outputs.proceed }}
       mesasha256: ${{ steps.mesa.outputs.sha256 }}
-      ubunturef: ${{ steps.bases.outputs.ubuntu }}
-      pythonref: ${{ steps.bases.outputs.python }}
-      noderef: ${{ steps.bases.outputs.node }}
+      ubuntudigest: ${{ steps.basedigests.outputs.ubuntudigest }}
+      pythondigest: ${{ steps.basedigests.outputs.pythondigest }}
+      nodeslimdigest: ${{ steps.basedigests.outputs.nodeslimdigest }}
     permissions:
       # contents: write is required to keep the SHA256SUMS asset of the
       # mesa-cache release in place (the GitHub-generated digest of the
@@ -5013,67 +4975,15 @@ jobs:
           # the devthink container package - the bare startswith(${version})
           # saw the node-engine tag and no-opped the vhe publication (the
           # saddle lesson): the match carries the -vhe suffix.
-          #
-          # The partial-publish freeze fix: the no-op used to count ANY
-          # ${version}-vhe* tag as "published", so a run that landed only
-          # the max leg before failing froze balanced and lite out of every
-          # re-run (the duplicate no-op answered forever while the family
-          # stayed incomplete). The complete-family law: the resolve only
-          # no-ops when ALL THREE profile tags of the version are live
-          # (${version}-vhe, ${version}-vhe-balanced, ${version}-vhe-lite)
-          # - a partial family always re-proceeds, and the per-leg guard
-          # inside the publish matrix skips only the legs that already
-          # ship, so a re-run completes exactly the missing profiles.
-          api_out="$(gh api "/users/${OWNER}/packages/container/devthink/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${version}-vhe\" or . == \"${version}-vhe-balanced\" or . == \"${version}-vhe-lite\")] | length" 2>/dev/null || true)"
+          api_out="$(gh api "/users/${OWNER}/packages/container/devthink/versions" --jq "[.[] | select(.metadata.container.tags[]? | startswith(\"${version}-vhe\"))] | length" 2>/dev/null || true)"
           case "${api_out}" in
             ''|*[!0-9]*) api_out=0 ;;
           esac
-          if [ "${api_out}" = "3" ]; then
-            echo "GHCR container ${OWNER}/devthink carries the complete ${version}-vhe family (max, balanced, lite); the duplicate dispatch will no-op."
+          if [ "${api_out}" != "0" ]; then
+            echo "GHCR container ${OWNER}/devthink:${version}-vhe is already published; the duplicate dispatch will no-op."
             exit 0
           fi
-          if [ "${api_out}" != "0" ]; then
-            echo "GHCR container ${OWNER}/devthink carries a partial ${version}-vhe family (${api_out} of 3 tags); proceeding so the missing profiles ship (the per-leg guard skips the published legs)."
-          fi
           echo "proceed=true" >> "$GITHUB_OUTPUT"
-
-      - id: bases
-        name: Resolve the base image digests (GitHub-computed)
-        run: |
-          set -euo pipefail
-          # the digest-never-hardcoded law (the owner rule): no 64-hex
-          # digest ever lands in a source file — the base image digests
-          # are resolved on this GitHub runner at build time (the same
-          # doctrine the mesa digest carries) and handed to the docker
-          # builds as build-args, so every published fetch is byte-honest
-          # while the Dockerfile keeps its bare-tag defaults for local
-          # builds. the manifest-list digest serves the whole
-          # eleven-architecture matrix (the registry resolves it per
-          # platform).
-          resolve_ref() {
-            local repo="$1" tag="$2"
-            local token
-            token="$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${repo}:pull" | jq -r .token)"
-            curl -fsSI -H "Authorization: Bearer ${token}" \
-              -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json" \
-              "https://registry-1.docker.io/v2/${repo}/manifests/${tag}" \
-              | tr -d '\r' | awk 'tolower($1)=="docker-content-digest:"{print $2}'
-          }
-          ubuntu_digest="$(resolve_ref library/ubuntu 24.04)"
-          python_digest="$(resolve_ref library/python 3.14.7-slim)"
-          node_digest="$(resolve_ref library/node 26.13.0-slim)"
-          for pair in "ubuntu:${ubuntu_digest}" "python:${python_digest}" "node:${node_digest}"; do
-            name="${pair%%:*}"; digest="${pair#*:}"
-            if ! [[ "${digest}" =~ ^sha256:[a-f0-9]{64}$ ]]; then
-              echo "the ${name} base digest resolved to an unexpected shape: ${digest}" >&2; exit 1
-            fi
-          done
-          {
-            echo "ubuntu=ubuntu:24.04@${ubuntu_digest}"
-            echo "python=python:3.14.7-slim@${python_digest}"
-            echo "node=node:26.13.0-slim@${node_digest}"
-          } >> "$GITHUB_OUTPUT"
-          echo "base digests resolved at build time: ubuntu ${ubuntu_digest} / python ${python_digest} / node ${node_digest}"
 
       - id: mesa
         name: Resolve the mesa tarball digest (GitHub-computed)
@@ -5159,6 +5069,38 @@ jobs:
           echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
           echo "mesa ${tarball}: ${sha} (resolved at build time)"
 
+      - name: Resolve the base-image digests (registry-computed)
+        id: basedigests
+        run: |
+          set -euo pipefail
+          # The family digest contract rides the resolver doctrine the mesa
+          # lane already answers: the manifest-list digests of the three
+          # base images resolve at build time from the registry — the
+          # sha256 values never enter the repository (the gateway family
+          # policy the publishlanes gate carries), and every one of the
+          # eleven architectures still resolves its own platform inside
+          # the same immutable registry index the digest pins.
+          digest_of() {
+            local name="$1" tag="$2"
+            local token; token="$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/${name}:pull" | jq -r .token)"
+            local digest; digest="$(curl -fsSL -H "Authorization: Bearer ${token}"               -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json"               "https://registry-1.docker.io/v2/library/${name}/manifests/${tag}" | sha256sum | cut -d' ' -f1)"
+            test -n "${digest}" && test "${#digest}" -eq 64
+            printf '%s' "${digest}"
+          }
+          ubuntu_tag=$(sed -n 's/^ARG UBUNTU_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          python_tag=$(sed -n 's/^ARG PYTHON_BASE_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          nodeslim_tag=$(sed -n 's/^ARG NODE_SLIM_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          test -n "${ubuntu_tag}" && test -n "${python_tag}" && test -n "${nodeslim_tag}"
+          ubuntudigest="$(digest_of "${ubuntu_tag%%:*}" "${ubuntu_tag#*:}")"
+          pythondigest="$(digest_of "${python_tag%%:*}" "${python_tag#*:}")"
+          nodeslimdigest="$(digest_of "${nodeslim_tag%%:*}" "${nodeslim_tag#*:}")"
+          {
+            echo "ubuntudigest=${ubuntudigest}"
+            echo "pythondigest=${pythondigest}"
+            echo "nodeslimdigest=${nodeslimdigest}"
+          } >> "$GITHUB_OUTPUT"
+          echo "base images: ubuntu ${ubuntudigest}, python ${pythondigest}, node-slim ${nodeslimdigest} (resolved at build time)"
+
   saddle-vhe-scan:
     name: Saddle vhe security gate (Trivy on the release image)
     needs: saddle-vhe-resolve
@@ -5238,9 +5180,9 @@ jobs:
             VHE_PROFILE_GPU=b200
             VHE_PROFILE_GPUS=8
             MESA_SHA256=${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}
-            UBUNTU=${{ needs.saddle-vhe-resolve.outputs.ubunturef }}
-            PYTHON_BASE=${{ needs.saddle-vhe-resolve.outputs.pythonref }}
-            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
+            UBUNTU_DIGEST=${{ needs.saddle-vhe-resolve.outputs.ubuntudigest }}
+            PYTHON_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.pythondigest }}
+            NODE_SLIM_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodeslimdigest }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -5362,9 +5304,6 @@ jobs:
           VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
           IMAGE: ${{ env.REGISTRY }}/${{ github.repository }}
           PROFILE: ${{ matrix.profile }}
-          OWNER: ${{ github.repository_owner }}
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           img="${IMAGE,,}"
@@ -5378,22 +5317,6 @@ jobs:
           # major.minor, no rolling alias.
           echo "tag=${img}:${ver}${suffix}" >> "$GITHUB_OUTPUT"
           echo "resolved tag: ${img}:${ver}${suffix}"
-          # the per-leg guard of the partial-publish freeze fix: a re-run
-          # that follows a partial family (max shipped, balanced/lite
-          # missing) skips only the leg whose tag already answers on the
-          # registry, so the re-run completes exactly the missing profiles
-          # instead of re-pushing the nine-QEMU-arch legs that already
-          # ship (60+ minutes of build time each, cold cache).
-          leg_out="$(gh api "/users/${OWNER,,}/packages/container/devthink/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${ver}${suffix}\")] | length" 2>/dev/null || true)"
-          case "${leg_out}" in
-            ''|*[!0-9]*) leg_out=0 ;;
-          esac
-          if [ "${leg_out}" != "0" ]; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "tag ${ver}${suffix} already ships on the registry; this leg will skip (the missing siblings still build)."
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Stage the saddle build context (the engine-ownership sibling)
         # the label store law rides the sibling import: the saddle labels
@@ -5416,10 +5339,6 @@ jobs:
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build and push the multi-arch image
-        # the per-leg guard: a leg whose tag already ships on the registry
-        # skips (the partial-publish freeze fix - the re-run completes only
-        # the missing profile siblings of the -vhe family).
-        if: steps.meta.outputs.skip != 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./saddlebuildctx
@@ -5436,9 +5355,9 @@ jobs:
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
             MESA_SHA256=${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}
-            UBUNTU=${{ needs.saddle-vhe-resolve.outputs.ubunturef }}
-            PYTHON_BASE=${{ needs.saddle-vhe-resolve.outputs.pythonref }}
-            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
+            UBUNTU_DIGEST=${{ needs.saddle-vhe-resolve.outputs.ubuntudigest }}
+            PYTHON_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.pythondigest }}
+            NODE_SLIM_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodeslimdigest }}
           labels: |
             org.opencontainers.image.title=saddle grand-merge vhe (e2ugh virtual hardware engine)
             org.opencontainers.image.description=100 percent software virtual hardware engine (${{ matrix.profile }} profile)
@@ -5623,9 +5542,9 @@ jobs:
             --build-arg VHE_PROFILE_GPU="b200" \
             --build-arg VHE_PROFILE_GPUS="8" \
             --build-arg MESA_SHA256="${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}" \
-            --build-arg UBUNTU="${{ needs.saddle-vhe-resolve.outputs.ubunturef }}" \
-            --build-arg PYTHON_BASE="${{ needs.saddle-vhe-resolve.outputs.pythonref }}" \
-            --build-arg NODE_BASE="${{ needs.saddle-vhe-resolve.outputs.noderef }}" \
+            --build-arg UBUNTU_DIGEST="${{ needs.saddle-vhe-resolve.outputs.ubuntudigest }}" \
+            --build-arg PYTHON_BASE_DIGEST="${{ needs.saddle-vhe-resolve.outputs.pythondigest }}" \
+            --build-arg NODE_SLIM_DIGEST="${{ needs.saddle-vhe-resolve.outputs.nodeslimdigest }}" \
             --tag "$IMAGE" -f saddlebuildctx/saddle/Dockerfile saddlebuildctx
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest
