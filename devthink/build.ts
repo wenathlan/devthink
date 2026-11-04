@@ -15,7 +15,8 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
 import type { platformtarget } from "./types.ts";
-import { stripstrings, underscorednames } from "./bundlescan.ts";
+/* the foundry seat owns the bundle scanner now (the gate wave): the build imports it across the app boundary, the scanner text law never moved. */
+import { stripstrings, underscorednames } from "../foundry/bundlescan.ts";
 import { cjswrap } from "./cjswrap.ts";
 import {
   changelogdigestworkflow,

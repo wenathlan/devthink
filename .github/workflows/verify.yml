@@ -143,7 +143,7 @@ jobs:
       - name: Run the example gallery recipes runner of the platform release
         run: cd devthink && node recipes.ts
       - name: Run the release readiness review of the platform release
-        run: cd devthink && node readiness.ts
+        run: cd devthink && node ../foundry/readiness.ts
       - name: Run the maintenance metadata proposal check of the dependency ladder
         run: cd devthink && node maintain.ts check
       # The release metadata lockstep drifted to the maintenance lane alone
@@ -153,7 +153,7 @@ jobs:
       - name: Check the release metadata lockstep of the version catalog
         run: cd devthink && node release.ts check
       - name: Check for available non-breaking dependency updates of the ladder
-        run: cd devthink && node dependencyupdates.ts check
+        run: cd devthink && node ../foundry/dependencyupdates.ts check
       - name: Check the versioned GitHub Actions references of the ladder
         env:
           GH_TOKEN: ${{ github.token }}
@@ -161,7 +161,7 @@ jobs:
       - name: Run the runtime policy gate of the declared baselines
         run: cd devthink && node runtime.ts
       - name: Run the release workflow npm gate
-        run: cd devthink && node npmgate.ts
+        run: cd devthink && node ../foundry/npmgate.ts
       - name: Run the workflow yaml and controls gate
         run: cd devthink && node workflow.ts
       - name: Run the native bridge smoke against a fake host process

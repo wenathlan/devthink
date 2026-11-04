@@ -4572,7 +4572,7 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "node matrixverify.ts",
       "node telemetryfree.ts",
       "node recipes.ts",
-      "node readiness.ts",
+      "node ../foundry/readiness.ts",
       "mvn --batch-mode",
       "dotnet pack",
       "upload-artifact",

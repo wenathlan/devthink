@@ -124,6 +124,7 @@
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
     }
   },
-  "include": ["*.ts", "tests/**/*.ts", "Sol/**/*.ts", "Sol/**/*.tsx"],
+  /* the foundry gate wave: the four ci gates ride the foundry seat, the os typecheck still walks their declarations. */
+  "include": ["*.ts", "tests/**/*.ts", "Sol/**/*.ts", "Sol/**/*.tsx", "../foundry/readiness.ts", "../foundry/dependencyupdates.ts", "../foundry/npmgate.ts", "../foundry/bundlescan.ts"],
   "exclude": ["tests/code", "dist", "node_modules"]
 }

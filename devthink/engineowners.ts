@@ -124,7 +124,7 @@ export const ENGINEOWNERS: readonly engineownerrow[] = [
     module: "graphplan.ts",
     consumers: [],
     role:
-      "the deployable pipeline clone: the full pipeline surface — sandbox plus the network database — a leaf deploy unit the family never imports; the engine logic lives in saddle, the storage in vault, and only the plan graph is its own.",
+      "the deployable pipeline clone: the full pipeline surface — sandbox plus the network database — a leaf deploy unit the family never imports; the engine logic lives in saddle, the storage in vault, and only the plan graph is its own. the foundry gate wave moved the four standalone ci gates of the devthink root to this seat — readiness, dependencyupdates, npmgate and bundlescan — so the pipeline family owns the repo-wide gate machinery, every read anchored to the devthink tree it audits and the verify lane answering from the foundry seat with the devthink cwd (the devfold law had already interned runtimepolicy, workflowcheck, workflowupdates and configparity into the devthink keyword files, so those four gates ride their own modules under the one-keyword-one-file law).",
   },
   {
     owner: "getry",

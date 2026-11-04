@@ -54,7 +54,7 @@
     "z-ai-web-dev-sdk": "^0.0.18"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.6.4",
+    "@biomejs/biome": "^2.6.5",
     "@capacitor/android": "^8.6.0",
     "@capacitor/cli": "^8.6.0",
     "@capacitor/core": "^8.6.0",
@@ -443,7 +443,7 @@
     "check:web": "tsc --noEmit",
     "db:generate": "prisma generate --schema schema.prisma",
     "db:push": "prisma db push --schema schema.prisma --url \"${DEVTHINK_DATABASE_URL:-${DATABASE_URL:-file:./devthink.db}}\"",
-    "dependency:updates": "node dependencyupdates.ts sync",
+    "dependency:updates": "node ../foundry/dependencyupdates.ts sync",
     "dev": "bun --watch run devthink.ts",
     "dev:web": "vite --host",
     "digests:check": "node imagedigests.ts check",
@@ -459,7 +459,7 @@
     "package": "pnpm build && npm pack ./distpackage --dry-run",
     "permdiff:sync": "node permdiff.ts sync",
     "provider": "tsx devthink.ts provider",
-    "records:sync": "node agentcert.ts sync && node costcert.ts sync && node doccheck.ts sync && node matrixverify.ts sync && node pentest.ts sync && node poolaudit.ts sync && node readiness.ts sync && node recipes.ts sync && node soak.ts sync && node sweep.ts sync && node telemetryfree.ts sync && node wcag.ts sync",
+    "records:sync": "node agentcert.ts sync && node costcert.ts sync && node doccheck.ts sync && node matrixverify.ts sync && node pentest.ts sync && node poolaudit.ts sync && node ../foundry/readiness.ts sync && node recipes.ts sync && node soak.ts sync && node sweep.ts sync && node telemetryfree.ts sync && node wcag.ts sync",
     "release": "bun run check && bun run build",
     "server": "tsx server.ts",
     "start": "bun run devthink.ts",
@@ -479,7 +479,7 @@
     "validate:docs": "node doccheck.ts",
     "validate:runtime": "node runtime.ts",
     "validate:security": "node pentest.ts && node cspaudit.ts && node permdiff.ts",
-    "validate:workflow": "node workflow.ts && node npmgate.ts",
+    "validate:workflow": "node workflow.ts && node ../foundry/npmgate.ts",
     "workflow:updates": "node workflow.ts sync"
   },
   "type": "module",

@@ -1,6 +1,6 @@
 # Release readiness review
 
-The readiness gate of the 2.0.156 platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in `readiness.ts`, the verdict record in `readiness.ts` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
+The readiness gate of the 2.0.156 platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in `foundry/readiness.ts`, the verdict record in `foundry/readiness.ts` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
 
 ## The gate table
 

@@ -1,4 +1,4 @@
-/** Proposes stable direct dependency updates and blocks every breaking SemVer boundary unless explicitly allowed. */
+/** Proposes stable direct dependency updates and blocks every breaking SemVer boundary unless explicitly allowed. The foundry gate wave moves the seat to the foundry root — the pipeline family owns the dependency ladder — while the walk keeps the cwd of the tree it audits: the devthink ladder runs it from the devthink root and the manifest it reads stays that root's own. */
 import { readFile, writeFile } from "node:fs/promises";
 
 const mode = process.argv[2] ?? "check";
