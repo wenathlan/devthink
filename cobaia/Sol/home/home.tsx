@@ -17,15 +17,20 @@
  */
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
+import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label, labelfill } from "../../labels";
-import { AdSlot, BrandMark, ROSTER } from "../wingets";
+import { roster } from "../../roster.ts";
+import { AdSlot, BrandMark } from "../wingets";
 
 /** the featured deploy units of the landing preview (the full directory
  * lives on /apps): the OS, the engine, the store and one studio — read
  * from the one roster table so the preview can never drift from /apps. */
 const FEATUREDSLUGS: readonly string[] = ["devthink", "saddle", "vault", "cadria"];
-const FEATURED = ROSTER.filter((member) => FEATUREDSLUGS.includes(member.slug));
+/** the featured rows answer the accessor at render time (the content
+ * lane law): the seed answers the first paint and the useContent mount
+ * refreshes the derivation when the live rows land. */
+const featured = () => roster().filter((member) => FEATUREDSLUGS.includes(member.slug));
 
 /** the three steps of the landing: what the family is made of — the text
  * rides the label accessor (the store keeps the sentence). */
@@ -36,6 +41,7 @@ const STEPS: readonly { n: LabelKey; title: LabelKey; text: LabelKey }[] = [
 ];
 
 export function Home() {
+  useContent();
   return (
     <div className="cb-page">
       {/* the hero: the family said plainly */}
@@ -92,7 +98,7 @@ export function Home() {
           </p>
         </div>
         <div className="cb-appgrid">
-          {FEATURED.map((app, index) => (
+          {featured().map((app, index) => (
             <a
               key={app.slug}
               className="cb-appcard cb-in"
