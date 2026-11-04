@@ -6,7 +6,7 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { BACKOFF_BASE_MS, BACKOFF_FACTOR, BACKOFF_MAX_MS, CLIENT_METADATA_RAW, CLOUDCODE_PA_BASE, GEMINI_CLI_CLIENT_ID, GEMINI_CLI_CLIENT_SECRET, GEMINI_CLI_USER_AGENT, LRU_THINKING_CACHE_SIZE, MAX_RETRIES, PROJECT_FALLBACK, RETRYABLE_STATUS_CODES } from "./constants.js";
+import { BACKOFF_BASE_MS, BACKOFF_FACTOR, BACKOFF_MAX_MS, CLIENT_METADATA_RAW, CLOUDCODE_PA_BASE, GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, GEMINI_CLI_USER_AGENT, LRU_THINKING_CACHE_SIZE, MAX_RETRIES, PROJECT_FALLBACK, RETRYABLE_STATUS_CODES } from "./constants.js";
 import { ApiKeyRow } from "./db.ts";
 import { X_GOOG_API_CLIENT } from "./fingerprint.js";
 import { MODELS_2026, ModelId2026, UA_DEFAULT_MODEL } from "./models.js";
@@ -80,8 +80,8 @@ export {
   BACKOFF_BASE_MS,
   BACKOFF_FACTOR,
   BACKOFF_MAX_MS,
-  GEMINI_CLI_CLIENT_ID,
-  GEMINI_CLI_CLIENT_SECRET,
+  GEMINI_CLI_OAUTH_CLIENT_ID,
+  GEMINI_CLI_OAUTH_CLIENT_SECRET,
   JITTER_MAX_MS,
   JITTER_MIN_MS,
   LRU_THINKING_CACHE_SIZE,
@@ -2016,7 +2016,7 @@ export async function* streamToAnthropic(
 // Merged: canonical bypass constants (from ONDA 4 streaming module)
 // ---------------------------------------------------------------------------
 
-// GEMINI_CLI_CLIENT_ID / GEMINI_CLI_CLIENT_SECRET / PROJECT_FALLBACK are
+// GEMINI_CLI_OAUTH_CLIENT_ID / GEMINI_CLI_OAUTH_CLIENT_SECRET / PROJECT_FALLBACK are
 // imported from constants.js (identical values) and re-exported above.
 
 /** Production Cloud Code Assist base endpoint. */
@@ -3916,8 +3916,8 @@ export const Streaming = {
   transformToGemini,
   handleThinkingBlock,
 
-  GEMINI_CLI_CLIENT_ID,
-  GEMINI_CLI_CLIENT_SECRET,
+  GEMINI_CLI_OAUTH_CLIENT_ID,
+  GEMINI_CLI_OAUTH_CLIENT_SECRET,
   GEMINI_CLI_USER_AGENT,
   X_GOOG_API_CLIENT,
   CLIENT_METADATA_RAW,
