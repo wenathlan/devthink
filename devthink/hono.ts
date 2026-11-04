@@ -6,13 +6,17 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { serveruntime } from "./node_modules/@hono/node-server/dist/index.mjs";
-import { servestatictypes } from "./node_modules/@hono/node-server/dist/serve-static.d.mts";
-import { servestaticruntime } from "./node_modules/@hono/node-server/dist/serve-static.mjs";
-import { honoruntime } from "./node_modules/hono/dist/index.js";
-import { corsruntime } from "./node_modules/hono/dist/middleware/cors/index.js";
-import { honocontext, honoinstance } from "./node_modules/hono/dist/types/index.d.ts";
-import { corstypes } from "./node_modules/hono/dist/types/middleware/cors/index.d.ts";
+// @ts-ignore — the runtime entry carries no adjacent declaration (the ownership-wave face pattern)
+import { serve as serveruntime } from "./node_modules/@hono/node-server/dist/index.mjs";
+import type { serveStatic as servestatictypes } from "./node_modules/@hono/node-server/dist/serve-static.d.mts";
+// @ts-ignore — the runtime entry carries no adjacent declaration (the ownership-wave face pattern)
+import { serveStatic as servestaticruntime } from "./node_modules/@hono/node-server/dist/serve-static.mjs";
+// @ts-ignore — the runtime entry carries no adjacent declaration (the types tree ships under dist/types)
+import { Hono as honoruntime } from "./node_modules/hono/dist/index.js";
+// @ts-ignore — the runtime entry carries no adjacent declaration (the types tree ships under dist/types)
+import { cors as corsruntime } from "./node_modules/hono/dist/middleware/cors/index.js";
+import type { Context as honocontext, Hono as honoinstance } from "./node_modules/hono/dist/types/index.d.ts";
+import type { cors as corstypes } from "./node_modules/hono/dist/types/middleware/cors/index.d.ts";
 
 /* ===== block: honocorsface ===== */
 /**

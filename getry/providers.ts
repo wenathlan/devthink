@@ -566,8 +566,7 @@ const CODE_ASSIST = (modelsMod.CODE_ASSIST_ENDPOINTS as any) ??
   };
 // v2.1.16 single-owner fix: the "antigravity-gemini-3.7-flash" literal comes
 // from models.js (DEFAULT_MODEL owner) instead of a local copy.
-const DEFAULT_MODEL_ID: string =
-  (modelsMod.DEFAULT_MODEL as string) ?? (modelsPkg.DEFAULT_MODEL as string) ?? UA_DEFAULT_MODEL;
+// the DEFAULT_MODEL_ID import from ./models.js owns the seat (the dynamic local collided with it)
 
 // system.js (debug logger singleton + logs dir) - audit trail on login (cli(5) feature)
 const debugLoggerImpl: any = (systemMod.debugLogger as any) ?? (systemPkg.debugLogger as any) ?? null;
@@ -1281,7 +1280,7 @@ async function cmdLogin(args: string[], loginRl?: readline.Interface): Promise<v
 
 /** Temp readline used when the login mode question runs outside the menu. */
 async function promptLoginModeChoice(): Promise<string> {
-  const rl = readline.createInterface({ input, output });
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   try {
     return await askQuestion(rl, "mode 1/2 [1]: ");
   } finally {
@@ -1402,7 +1401,7 @@ async function cmdAccounts(args: string[]): Promise<void> {
         process.exit(1);
       }
       const projIdx = args.findIndex((a) => a === "--project" || a.startsWith("--project="));
-      let project = FALLBACK_PROJECT_ID;
+      let project: string = FALLBACK_PROJECT_ID;
       if (projIdx >= 0) {
         const v = args[projIdx]!;
         project = v.includes("=") ? v.split("=").slice(1).join("=") : (args[projIdx + 1] ?? FALLBACK_PROJECT_ID);
@@ -2241,7 +2240,7 @@ async function revokeGoogleToken(token?: string | null): Promise<boolean> {
  */
 async function logoutFlow(emailArg?: string, all = false, sharedRl?: readline.Interface): Promise<void> {
   printHeader();
-  const rl = sharedRl ?? readline.createInterface({ input, output });
+  const rl = sharedRl ?? readline.createInterface({ input: process.stdin, output: process.stdout });
   const ownedRl = !sharedRl;
   try {
     const mgr: any = getDefaultAccountManager({ disableBackgroundTimer: true });
@@ -2386,7 +2385,7 @@ async function disableAccountFlow(email: string, reason = "manually disabled via
  * Pass {@link sharedRl} when invoked from the interactive menu.
  */
 async function cmdManage(_args: string[], sharedRl?: readline.Interface): Promise<void> {
-  const rl = sharedRl ?? readline.createInterface({ input, output });
+  const rl = sharedRl ?? readline.createInterface({ input: process.stdin, output: process.stdout });
   const ownedRl = !sharedRl;
   try {
     await cmdAccounts(["list"]);
@@ -2608,7 +2607,7 @@ async function configureModelsFlow(
 // 06. INTERACTIVE MENU
 // ===========================================================================
 async function interactiveMenu(): Promise<void> {
-  const rl = readline.createInterface({ input, output });
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   let exit = false;
   const mgr = getDefaultAccountManager({ disableBackgroundTimer: true });
 

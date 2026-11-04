@@ -637,7 +637,7 @@ async function main(): Promise<void> {
 
   const port = Number(process.env.PORT) || 3001;
   const hostname = process.env.HOST || "0.0.0.0";
-  serve({ fetch: app.fetch, port, hostname }, (info) => {
+  serve({ fetch: app.fetch, port, hostname }, (info: { address: string; port: number }) => {
     console.log(`[server] gateway listening on http://${info.address}:${info.port}`);
     console.log(`[server] config loaded — ${versioncount} versions`);
   });

@@ -7866,16 +7866,6 @@ export function evaluatexpath(root: xnode, expression: string): xnode[] {
  * Correlated rules for the dispatch seam, semantic snapshots, target preview with resolution, dialog log reads and the original action set live in this file.
  */
 
-function stepoptions(step: toolstep): Record<string, unknown> {
-  if (!step.options) return {};
-  try {
-    const parsed = JSON.parse(step.options);
-    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? (parsed as Record<string, unknown>) : {};
-  } catch {
-    return {};
-  }
-}
-
 /** Routes one reviewed step to the execution environment the policy names: dom actions that need page events keep this pagecontext bridge because page events only fire in the live page, evaluate steps run inside the isolated world the background injects through the scripting api, parse heavy read kinds may offload into the offscreen worker pool behind the granted capability and a step carrying untrusted markup renders inside the sandboxframe — this bridge itself only ever executes the pagecontext steps. */
 export function routesenvironment(step: toolstep): "pagecontext" | "elsewhere" {
   if (step.environment !== undefined && step.environment !== "pagecontext") return "elsewhere";
@@ -7929,7 +7919,7 @@ export function previewtarget(
   window.setTimeout(clearpreview, 5000);
   return {
     ok: true,
-    summary: `Previewing ${label(target) || target.tagName.toLowerCase()} for five seconds.`,
+    summary: `Previewing ${elementlabel(target) || target.tagName.toLowerCase()} for five seconds.`,
     resolvedtarget: resolution.target,
   };
 }
@@ -7943,13 +7933,13 @@ export function capturesnapshot(): observation {
   ];
   const interactive = candidates
     .map((element) => ({
-      selector: selector(element),
+      selector: elementselector(element),
       role: element.getAttribute("role") || element.tagName.toLowerCase(),
-      label: label(element),
+      label: elementlabel(element),
     }))
     .filter((item) => item.label || item.role);
   const forms = [...document.querySelectorAll("input, textarea, select")].map((element) => ({
-    label: label(element),
+    label: elementlabel(element),
     type: element.getAttribute("type") || element.tagName.toLowerCase(),
     name: element.getAttribute("name") || "",
     ...(element instanceof HTMLSelectElement
@@ -8009,7 +7999,7 @@ function extractcontent(targetselector: string | undefined, root: Document): ste
 /** Scrolls one reviewed target into view without reading or changing other page state. */
 function scrolltarget(target: HTMLElement): stepresult {
   target.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
-  return { ok: true, summary: `Scrolled ${label(target) || target.tagName.toLowerCase()} into view.` };
+  return { ok: true, summary: `Scrolled ${elementlabel(target) || target.tagName.toLowerCase()} into view.` };
 }
 
 /** Dispatches hover events on one reviewed target. */
@@ -8020,7 +8010,7 @@ function hovertarget(target: HTMLElement): stepresult {
     );
   }
   target.dispatchEvent(new MouseEvent("mouseenter", { bubbles: false, cancelable: true }));
-  return { ok: true, summary: `Hover events delivered to ${label(target) || target.tagName.toLowerCase()}.` };
+  return { ok: true, summary: `Hover events delivered to ${elementlabel(target) || target.tagName.toLowerCase()}.` };
 }
 
 /** Selects one reviewed existing option; values outside the declared options are refused. */
@@ -8370,7 +8360,7 @@ async function performstepinner(step: toolstep, expectedorigin: string, rootdocu
       element.focus();
       result = { ok: true, summary: "Target focused." };
     } else if (step.kind === "inspect")
-      result = { ok: true, summary: `Target: ${label(element) || element.tagName.toLowerCase()}.` };
+      result = { ok: true, summary: `Target: ${elementlabel(element) || element.tagName.toLowerCase()}.` };
     else if (step.kind === "click") {
       element.click();
       result = { ok: true, summary: "Reviewed click completed." };
@@ -8461,7 +8451,7 @@ export function queryelements(query: string): { ok: boolean; selectors: string[]
     return { ok: true, selectors: [], summary: `The reviewed selector ${query} matched no element.` };
   return {
     ok: true,
-    selectors: matched.map((element) => selector(element)),
+    selectors: matched.map((element) => elementselector(element)),
     summary: `Resolved ${matched.length} element reference${matched.length === 1 ? "" : "s"} of the reviewed selector ${query}.`,
   };
 }

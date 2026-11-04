@@ -23,11 +23,11 @@ import { soakrecord } from "../devthink/soak.ts";
 import { sweeprecord } from "../devthink/sweep.ts";
 import { telemetryfreerecord } from "../devthink/telemetryfree.ts";
 import { wcagrecord } from "../devthink/wcag.ts";
-import { readinessmigrateautoma } from "../devthink/tests/readiness.automa.ts";
-import { readinessmigrateselenium } from "../devthink/tests/readiness.selenium.ts";
-import { readinessmigratetabular } from "../devthink/tests/readiness.tabular.ts";
-import { readinessmigrateuivision } from "../devthink/tests/readiness.uivision.ts";
-import { readinessmigratev1 } from "../devthink/tests/readiness.v1.ts";
+import { readinessmigrateautoma } from "../devthink/tests/readinessautoma.ts";
+import { readinessmigrateselenium } from "../devthink/tests/readinessselenium.ts";
+import { readinessmigratetabular } from "../devthink/tests/readinesstabular.ts";
+import { readinessmigrateuivision } from "../devthink/tests/readinessuivision.ts";
+import { readinessmigratev1 } from "../devthink/tests/readinessv1.ts";
 
 const execute = promisify(execFile);
 const repoRoot = resolve(process.cwd(), "..");

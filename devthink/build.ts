@@ -380,8 +380,6 @@ const familybridges = {
   "@wenathlan/getry/versionregistry": join(root, "..", "getry", "versionregistry.ts"),
   "@wenathlan/getry/intelligence": join(root, "..", "getry", "intelligence.ts"),
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
-  "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
-  "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
   "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gateway.ts"),
   "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gateway.ts"),
   "@wenathlan/getry/gatewayprobe": join(root, "..", "getry", "gatewayprobe.ts"),
@@ -406,7 +404,6 @@ const familybridges = {
   "@wenathlan/getry/server": join(root, "..", "getry", "server.ts"),
   "@wenathlan/getry/auth": join(root, "..", "getry", "auth.ts"),
   "@wenathlan/getry/cli": join(root, "..", "getry", "cli.ts"),
-  "@wenathlan/getry/providers": join(root, "..", "getry", "providers.ts"),
   /** the devthink self bridges of the ownership wave
    * (wave/ownership.getry), mirrored from the vite/vitest/tsconfig
    * resolutions: the moved gateway graph leans on the os-owned seams it
