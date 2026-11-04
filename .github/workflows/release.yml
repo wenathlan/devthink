@@ -225,10 +225,21 @@ jobs:
       tag: ${{ steps.source.outputs.tag }}
       ref: ${{ steps.source.outputs.ref }}
     steps:
+      # the immutable release source (the floating-tip heal): a push event
+      # that carried `github.ref` (refs/heads/main) resolved the branch's
+      # CURRENT tip at checkout time, so a main that moved between the
+      # auto-tag and this gate answered a different commit than the tag
+      # pointed at and the lockstep died ("Tag does not point to the
+      # source being released") — the whole release ladder of the 2.0.155
+      # wave broke exactly this way while the approval gate held it. every
+      # checkout of the release source now answers `github.sha` — the
+      # immutable commit the event carries — so the tag lockstep compares
+      # the exact source the bump pushed, and the dispatch lane keeps its
+      # explicit inputs.tag contract.
       - name: Checkout the DevThink release source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
           fetch-depth: 0
       - name: Resolve the release source under the version tag lockstep
         id: source
@@ -314,7 +325,7 @@ jobs:
         # this commit, so the assemble checkout answers the same source.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
           fetch-depth: 0
       - name: Set up Bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -426,7 +437,7 @@ jobs:
         # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
           fetch-depth: 0
       - name: Convert the sites and emit the web and next zips
         # the smart conversion of the family: no application duplicates a
@@ -724,7 +735,7 @@ jobs:
         # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
           sparse-checkout: |
             devthink/.nvmrc
           fetch-depth: 1
@@ -934,7 +945,7 @@ jobs:
         # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
           sparse-checkout: |
             cadria/versawase.ts
             debonair/katexis.ts
@@ -1021,7 +1032,7 @@ jobs:
         # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
           fetch-depth: 1
       - name: Build the saddle engine envelope (the exports promise)
         # the saddle manifest gates publish on the built dist through
@@ -1188,7 +1199,7 @@ jobs:
         # source without an untrusted ref flowing into the lane.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
           fetch-depth: 1
       - name: Log in to the github container registry
         run: echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.repository_owner }}" --password-stdin
