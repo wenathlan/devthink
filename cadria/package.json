@@ -69,6 +69,7 @@
     "mediaprobemp4.ts",
     "mediaprobewebm.ts",
     "transcodeplan.ts",
+    "transcodeengine.ts",
     "pixel.ts",
     "masks.ts",
     "blendmodes.ts",
@@ -275,6 +276,11 @@
       "types": "./labels.ts",
       "import": "./labels.ts",
       "default": "./labels.ts"
+    },
+    "./transcodeengine": {
+      "types": "./transcodeengine.ts",
+      "import": "./transcodeengine.ts",
+      "default": "./transcodeengine.ts"
     }
   },
   "homepage": "https://github.com/wenathlan/devthink/tree/main/cadria",

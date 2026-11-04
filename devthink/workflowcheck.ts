@@ -257,10 +257,12 @@ const checks = {
     "- digest",
     /* the consolidation pass: the saddle block the three retired saddle
        workflow files carried rides this file as the closing application
-       lanes - the extension package, the target plans and the
-       dispatch-only vhe registry lane, the heaviest pass of the house */
-    "package the saddle engine extension",
-    "saddle.extension.",
+       lanes - the target plans and the dispatch-only vhe registry lane,
+       the heaviest pass of the house. the extension package lane the
+       block once carried retired with the ownership regroup: the mv3
+       extension left the saddle for the os envelope (the browser.ts CLI
+       the lane invoked answered the pre-regroup source), so the os
+       extension lane packages the one extension the family ships. */
     "Saddle plan ${{ matrix.target }} ${{ matrix.format }}",
     /* the dist law seat (both heal lanes answered it): the build:engine
        step writes the thin targetcli wrapper at distpackage/packager —

@@ -180,6 +180,17 @@ export interface AccountAnswer {
 }
 
 /** the signin answer: the signed session bearer answers once, the caller owns where it lives. */
+/** the register answer: the database row the person's door provisioned plus
+ * the api key shown exactly once — the plaintext never rides any later read. */
+export interface RegisterDatabaseAnswer {
+  ok: true;
+  database: { id: string; accountId: string; name: string; quotaBytes: string | null; createdAt: string };
+  /** the plaintext api key — shown exactly once, the caller alone owns it */
+  key: string;
+  /** the key row id (for later revocation) */
+  keyId: string;
+}
+
 export interface SignInAnswer {
   ok: true;
   accountId: string;
@@ -291,6 +302,12 @@ export function vaultclient(options: VaultClientOptions = {}): {
   health(): Promise<HealthAnswer | LaneRefusal | LaneAway>;
   signup(email: string, password: string): Promise<AccountAnswer | LaneRefusal | LaneAway>;
   signin(email: string, password: string): Promise<SignInAnswer | LaneRefusal | LaneAway>;
+  registerDatabase(input: {
+    email: string;
+    password: string;
+    name: string;
+    quotaBytes?: bigint | null;
+  }): Promise<RegisterDatabaseAnswer | LaneRefusal | LaneAway>;
   listProjects(page?: { limit?: number; offset?: number }): Promise<ListProjectsAnswer | LaneRefusal | LaneAway>;
   createKey(project: string, label: string): Promise<CreateKeyAnswer | LaneRefusal | LaneAway>;
   listKeys(project: string): Promise<{ ok: true; rows: KeyRow[] } | LaneRefusal | LaneAway>;
@@ -441,6 +458,56 @@ export function vaultclient(options: VaultClientOptions = {}): {
             typeof mail === "string"
           ) {
             return { ok: true, accountId: id, email: mail, token: row.token, expiresAt: row.expiresAt };
+          }
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async registerDatabase(input) {
+      const body = JSON.stringify({
+        email: input.email,
+        password: input.password,
+        name: input.name,
+        quotaBytes: input.quotaBytes === undefined ? undefined : input.quotaBytes === null ? null : input.quotaBytes.toString(),
+      });
+      const answer = await call("POST", "/api/v1/databases", {
+        headers: { "content-type": "application/json" },
+        body: new TextEncoder().encode(body) as Uint8Array<ArrayBuffer>,
+        anonymous: true,
+      });
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const row = parsed as Record<string, unknown>;
+          const database = typeof row.database === "object" && row.database !== null ? row.database : {};
+          const db = database as Record<string, unknown>;
+          if (
+            typeof db.id === "string" &&
+            typeof db.accountId === "string" &&
+            typeof db.name === "string" &&
+            (db.quotaBytes === null || typeof db.quotaBytes === "string") &&
+            typeof db.createdAt === "string" &&
+            typeof row.key === "string" &&
+            typeof row.keyId === "string"
+          ) {
+            return {
+              ok: true,
+              database: {
+                id: db.id,
+                accountId: db.accountId,
+                name: db.name,
+                quotaBytes: db.quotaBytes === null ? null : (db.quotaBytes as string),
+                createdAt: db.createdAt,
+              },
+              key: row.key,
+              keyId: row.keyId,
+            };
           }
         }
       } catch {
