@@ -22,7 +22,7 @@
 // drift stays the caller's fact, not the lane's theater).
 // zero dependencies, zero consumer data.
 
-import { gatewaylane, type IngestClientDeps } from "./ingestclient.ts";
+import { gatewaylane, type IngestClientDeps } from "./ingest.ts";
 import { hostallowed } from "./onboardingstate.ts";
 import { patternFromLlm, patternPromptHint, type PatternProject } from "./patternenums.ts";
 

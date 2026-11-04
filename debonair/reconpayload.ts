@@ -18,9 +18,9 @@
 // same document always serializes to the same bytes. The law itself lives
 // in docs/recon.spec.md (the lineage V1→V8, the anti-base64 strategies, the
 // reconstruction ladder, the ban list); this file is the law in code.
-// Non-goals: no audio, no measurement (the descriptor lane ingestrecon.ts
-// fills the seats), no storage, no synthesis. Pure and multi-mode — the
-// same call runs in the browser and in node.
+// Non-goals: no audio, no measurement (the descriptor lane the ingest recon
+// lane of ingest.ts fills the seats), no storage, no synthesis. Pure and
+// multi-mode — the same call runs in the browser and in node.
 
 import { NOTE_NAMES, PATTERN_SCALE_NAMES, PATTERN_VOICES } from "./patternenums.ts";
 

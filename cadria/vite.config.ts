@@ -45,6 +45,17 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "."),
     emptyOutDir: false,
     assetsDir: "",
+    /** the node seat stays external: the pages import the gateway module
+     * for the browser client lane, and the lazy server chunks (the
+     * generation store, the node-server adapter, the storagelane's
+     * better-sqlite3) keep their bare imports instead of riding the
+     * browser bundle — the pages never call the server seats, so the
+     * chunks the lazy lanes produce answer the node runtime, not the
+     * rolldown graph (the fold law keeps one gateway file, the build
+     * law keeps the node seats out of the web). */
+    rolldownOptions: {
+      external: [/better-sqlite3/, /@hono\/node-server/],
+    },
   },
   /** the theme sources live in the Sol folder of this app root: the pages import
    * the engine files (versawase.ts and the data layer) across the theme boundary

@@ -23,8 +23,7 @@ import Database from "better-sqlite3";
 import { afterAll, describe, it } from "vitest";
 import { planTake } from "../arranger.ts";
 import { memoryblobstore } from "../blobstore.ts";
-import { onsetSecondsOf, segmentsof } from "../ingest.ts";
-import { reconBpmSeriesOf, reconOf, reconRootModeOf, reconScaleModeOf } from "../ingestrecon.ts";
+import { onsetSecondsOf, reconBpmSeriesOf, reconOf, reconRootModeOf, reconScaleModeOf, segmentsof } from "../ingest.ts";
 import { RECON_NOTES_MAX, RECON_SCALE_NAMES, serializeRecon } from "../reconpayload.ts";
 import {
   RECON_PHASES,

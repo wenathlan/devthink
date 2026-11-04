@@ -62,8 +62,6 @@
     "timeticks.ts",
     "videodecode.ts",
     "mediaprobe.ts",
-    "mediaprobemp4.ts",
-    "mediaprobewebm.ts",
     "transcodeplan.ts",
     "transcodeengine.ts",
     "pixel.ts",
@@ -73,7 +71,6 @@
     "easecurves.ts",
     "synth.ts",
     "imagerender.ts",
-    "imagerenderpaint.ts",
     "imageproject.ts",
     "imagestyles.ts",
     "imageexport.ts",
@@ -160,16 +157,6 @@
       "import": "./mediaprobe.ts",
       "default": "./mediaprobe.ts"
     },
-    "./mediaprobemp4": {
-      "types": "./mediaprobemp4.ts",
-      "import": "./mediaprobemp4.ts",
-      "default": "./mediaprobemp4.ts"
-    },
-    "./mediaprobewebm": {
-      "types": "./mediaprobewebm.ts",
-      "import": "./mediaprobewebm.ts",
-      "default": "./mediaprobewebm.ts"
-    },
     "./transcodeplan": {
       "types": "./transcodeplan.ts",
       "import": "./transcodeplan.ts",
@@ -209,11 +196,6 @@
       "types": "./imagerender.ts",
       "import": "./imagerender.ts",
       "default": "./imagerender.ts"
-    },
-    "./imagerenderpaint": {
-      "types": "./imagerenderpaint.ts",
-      "import": "./imagerenderpaint.ts",
-      "default": "./imagerenderpaint.ts"
     },
     "./imageproject": {
       "types": "./imageproject.ts",

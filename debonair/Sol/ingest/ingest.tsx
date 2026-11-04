@@ -39,28 +39,30 @@ import {
 } from "@fluentui/react-icons";
 import { type ChangeEvent, type DragEvent, useEffect, useRef, useState } from "react";
 import { type BlobPointer, gatewayblobstore, sessionblobstore } from "../../blobstore.ts";
+import { coverPaletteFromPcm, plateAccents } from "../../coverpalette.ts";
 import { formatClock } from "../../dawview.ts";
 import type { IngestJobValue } from "../../gatewayapi.ts";
 import { separate } from "../../hpss.ts";
-import { decompose, type IngestDocument } from "../../ingest.ts";
-import { coverPaletteFromPcm, plateAccents } from "../../coverpalette.ts";
 import {
+  decompose,
   deleteDocument,
+  droppingest,
   fetchDocument,
   fetchShelf,
-  ingestorigin,
-  ownerid,
-  pollJob,
-  uploadIngest,
-} from "../../ingestclient.ts";
-import { droppingest, type IngestRecord, listingests, saveingest } from "../../ingeststore.ts";
-import {
   INGEST_STEMS_SCHEMA_VERSION,
+  type IngestDocument,
   type IngestJobPhase,
+  type IngestRecord,
   type IngestStampRow,
   type IngestStemsManifest,
+  ingestorigin,
+  listingests,
+  ownerid,
   PIPELINE_PHASES,
-} from "../../ingestworker.ts";
+  pollJob,
+  saveingest,
+  uploadIngest,
+} from "../../ingest.ts";
 import { type LabelKey, label, labelfill } from "../../labels.ts";
 import {
   busFeature,

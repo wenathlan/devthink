@@ -9,14 +9,14 @@
 
 // # Settings — platform settings (design doctrine pass): the theme flip
 // (light/dark via [data-theme] on <html>, session scope — nothing stored),
-// the gateway url field (session state through the shared gatewayclient —
+// the gateway url field (session state through the shared gateway client —
 // the studio and the gallery read the same base) with a live health check,
 // the reduced-motion override (a session flag the js-driven beats consult
 // beside the os media query) and the about ledger. no danger zone: nothing
 // on this page can destroy anything. the anchor renders BARE: the one Shell
 // chrome lives in Sol/Sol.tsx.
 import { useCallback, useState } from "react";
-import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../../gatewayclient.ts";
+import { gatewayHealth, gatewayUrl, setGatewayUrl } from "../../gateway.ts";
 import { label } from "../../labels.ts";
 import { applyTheme, currentTheme, type Theme } from "../../theme";
 import { packageversion } from "../../version.ts";

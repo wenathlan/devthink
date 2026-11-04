@@ -121,7 +121,7 @@ export type BlobResult =
   | { ok: true; pointer: BlobPointer; data: Uint8Array | null }
   | { ok: false; code: BlobErrorCode; message: string; status: number | null };
 
-/** The storage seam every lane rides (the ingeststore/takestore injectable
+/** The storage seam every lane rides (the ingest store/takestore injectable
  * discipline): put/get/remove answer the typed result, list answers the
  * pointers (empty when the lane holds nothing or was closed), close
  * retires the store so later calls answer store-closed. */
@@ -368,7 +368,7 @@ export interface MemoryBlobOptions {
 /**
  * The memory mirror — the offline seat and the test lane: one map of owned
  * bytes under the byte cap, the oldest evicted first when the cap fills
- * (the ingeststore mirror law), deterministic in order and eviction, every
+ * (the ingest store mirror law), deterministic in order and eviction, every
  * call answering the typed result.
  */
 export class MemoryBlobStore implements BlobStore {

@@ -9,7 +9,7 @@
 // resolving, every target the one file the domain owns) with
 // the three gap seats the engine ownership wave completed (beatgrid,
 // speechalign, stems),
-// and the four server seats last (the three worker lanes and the route
+// and the three server seats last (the two worker lanes and the route
 // table leaf the gateway and the sibling lanes ride — the wave 2d carve
 // out) — with the family publish shape (the
 // types/import/default conditions over the root sources, the same source
@@ -47,9 +47,7 @@ const gatewayapimodule = await import("@wenathlan/debonair/gatewayapi");
 const routetablemodule = await import("@wenathlan/debonair/routetable");
 const hpssmodule = await import("@wenathlan/debonair/hpss");
 const ingestmodule = await import("@wenathlan/debonair/ingest");
-const ingestreconmodule = await import("@wenathlan/debonair/ingestrecon");
 const reconpayloadmodule = await import("@wenathlan/debonair/reconpayload");
-const ingestworkermodule = await import("@wenathlan/debonair/ingestworker");
 const patternenumsmodule = await import("@wenathlan/debonair/patternenums");
 const patternminermodule = await import("@wenathlan/debonair/patternminer");
 const renderworkermodule = await import("@wenathlan/debonair/renderworker");
@@ -65,13 +63,12 @@ const wavwritermodule = await import("@wenathlan/debonair/wavwriter");
  * seated (the audio and the take families, one keyword file per domain),
  * the five retired leaf keys the fold keeps as published-specifier aliases
  * of the audio keyword file next, the three gap seats the engine ownership
- * wave seated after them, the four server seats last (the three worker
+ * wave seated after them, the three server seats last (the two worker
  * lanes and the route table leaf). */
 const SUBPATHS = [
   "analyze",
   "hpss",
   "ingest",
-  "ingestrecon",
   "reconpayload",
   "patternminer",
   "demix",
@@ -94,7 +91,6 @@ const SUBPATHS = [
   "beatgrid",
   "speechalign",
   "stems",
-  "ingestworker",
   "renderworker",
   "reconworker",
   "gatewayapi",
@@ -137,7 +133,6 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   analyze: analyzemodule,
   hpss: hpssmodule,
   ingest: ingestmodule,
-  ingestrecon: ingestreconmodule,
   reconpayload: reconpayloadmodule,
   patternminer: patternminermodule,
   patternenums: patternenumsmodule,
@@ -160,7 +155,6 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   beatgrid: beatgridmodule,
   speechalign: speechalignmodule,
   stems: stemsmodule,
-  ingestworker: ingestworkermodule,
   renderworker: renderworkermodule,
   reconworker: reconworkermodule,
   gatewayapi: gatewayapimodule,
@@ -319,6 +313,9 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     HARMONIC_KERNEL: "number",
     PERCUSSIVE_KERNEL: "number",
   },
+  /* the ingest family seat — one file under the fold law: the decomposition
+   * pipeline, the client, the db, the payload, the store, the worker and the
+   * recon lanes, every runtime seat of the six retired arms one seat here. */
   ingest: {
     decompose: "function",
     ingestMixPcm: "function",
@@ -328,17 +325,56 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     segmentsof: "function",
     INGEST_SCHEMA_VERSION: "string",
     NOTE_NAMES: "object",
-  },
-  ingestrecon: {
-    reconEnvelope32: "function",
-    reconSpectralPeaks: "function",
-    reconYinNotes: "function",
-    reconScaleFit: "function",
-    reconBpmPerSecond: "function",
-    reconFamilyOf: "function",
-    reconFromIngest: "function",
-    reconOf: "function",
-    trackStreamOf: "function",
+    INGEST_CALL_TIMEOUT_MS: "number",
+    INGEST_UPLOAD_TIMEOUT_MS: "number",
+    gatewaylane: "function",
+    uploadIngest: "function",
+    pollJob: "function",
+    fetchShelf: "function",
+    fetchDocument: "function",
+    deleteDocument: "function",
+    ownerid: "function",
+    ingestorigin: "function",
+    loaddbface: "function",
+    IngestDbError: "function",
+    migrateingestschema: "function",
+    ensureingestschema: "function",
+    puttingest: "function",
+    getingestrow: "function",
+    listingestrows: "function",
+    getingestdoc: "function",
+    listingestdocs: "function",
+    droppingestrow: "function",
+    docvalid: "function",
+    migrategenreschema: "function",
+    ensuregenreschema: "function",
+    saveGenreProfile: "function",
+    listGenreProfiles: "function",
+    migratejobsschema: "function",
+    ensurejobsschema: "function",
+    putjob: "function",
+    getjob: "function",
+    updatejob: "function",
+    listjobs: "function",
+    SOUND_PAYLOAD_SCHEMA_VERSION: "string",
+    ENERGY_CHUNK_MS: "number",
+    RECONSTRUCT_DEFAULT_DEPTH: "number",
+    PAYLOAD_LANE_MODALITY: "string",
+    probesound: "function",
+    energychunks: "function",
+    ingestPayload: "function",
+    reconstructWav: "function",
+    saveingest: "function",
+    listingests: "function",
+    getingest: "function",
+    droppingest: "function",
+    ingestcount: "function",
+    INGEST_STEMS_SCHEMA_VERSION: "string",
+    PIPELINE_PHASES: "object",
+    INGEST_WORKER_MODALITY: "string",
+    parseWav: "function",
+    downmixmono: "function",
+    runIngestJob: "function",
     RECON_MFCC_COEFFICIENTS: "number",
     RECON_ENVELOPE_WINDOWS: "number",
     RECON_SPECTRAL_PEAKS: "number",
@@ -351,6 +387,15 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     RECON_BPM_WINDOW_MS: "number",
     RECON_BASS_MIDI_MAX: "number",
     RECON_GUITAR_MIDI_MAX: "number",
+    reconEnvelope32: "function",
+    reconSpectralPeaks: "function",
+    reconYinNotes: "function",
+    reconScaleFit: "function",
+    reconBpmPerSecond: "function",
+    reconFamilyOf: "function",
+    reconFromIngest: "function",
+    reconOf: "function",
+    trackStreamOf: "function",
     reconScaleModeOf: "function",
     reconRootModeOf: "function",
     reconBpmSeriesOf: "function",
@@ -650,14 +695,6 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     StemsError: "function",
     STEM_ROLES: "object",
     STEMS_SCHEMA_VERSION: "string",
-  },
-  ingestworker: {
-    downmixmono: "function",
-    parseWav: "function",
-    runIngestJob: "function",
-    PIPELINE_PHASES: "object",
-    INGEST_STEMS_SCHEMA_VERSION: "string",
-    INGEST_WORKER_MODALITY: "string",
   },
   renderworker: {
     renderPatternMix: "function",

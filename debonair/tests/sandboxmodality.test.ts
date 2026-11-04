@@ -11,7 +11,7 @@
 //   pnpm vitest run tests/sandboxmodality.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { INGEST_WORKER_MODALITY } from "../ingestworker.ts";
+import { INGEST_WORKER_MODALITY } from "../ingest.ts";
 import { RENDER_WORKER_MODALITY } from "../renderworker.ts";
 import {
   APPSLUG,

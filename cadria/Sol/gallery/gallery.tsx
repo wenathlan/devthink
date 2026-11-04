@@ -24,7 +24,7 @@ import {
   type GatewayClientError,
   type GatewayProject,
   listGatewayProjects,
-} from "../../gatewayclient.ts";
+} from "../../gateway.ts";
 import { imageStyles } from "../../imagestyles.ts";
 import { label } from "../../labels.ts";
 import { useToast } from "../toast/Toast.tsx";

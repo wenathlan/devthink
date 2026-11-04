@@ -17,8 +17,8 @@
 
 import { mintid } from "./bigintids.ts";
 import { GENRES } from "./genrematrix.ts";
-import type { IngestClientDeps, IngestClientResult } from "./ingestclient.ts";
-import { uploadIngest } from "./ingestclient.ts";
+import type { IngestClientDeps, IngestClientResult } from "./ingest.ts";
+import { uploadIngest } from "./ingest.ts";
 
 /** @section identity — the service seat */
 

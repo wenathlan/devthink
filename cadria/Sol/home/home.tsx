@@ -27,7 +27,7 @@ import {
 // the anchor renders BARE: the one Shell chrome lives in Sol/Sol.tsx.
 import { type ReactElement, useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { type GatewayProject, listGatewayProjects } from "../../gatewayclient.ts";
+import { type GatewayProject, listGatewayProjects } from "../../gateway.ts";
 import { label } from "../../labels.ts";
 import { HomeEntrygate as EntryGate } from "../wingets";
 import { EmptyState } from "../wingets";

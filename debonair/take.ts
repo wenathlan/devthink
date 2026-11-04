@@ -17,7 +17,7 @@
 import { type ArrangerRole, beatSecondsOf, stepSecondsOf, type TakePlan } from "./arranger.ts";
 import { renderTakeOffline } from "./audio.ts";
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
-import { reconOf } from "./ingestrecon.ts";
+import { reconOf } from "./ingest.ts";
 import { buildTracksFromSchedule, validateMidi, writeMidi } from "./midiwriter.ts";
 import { chordNotes, scalePcs } from "./musictheory.ts";
 import type { ReconDocument } from "./reconpayload.ts";

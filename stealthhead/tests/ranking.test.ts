@@ -1,4 +1,4 @@
-// # rankingladder.test — honest unit tests for the elo ladder arithmetic,
+// # ranking.test — honest unit tests for the elo ladder arithmetic,
 // runnable with the vitest runner:
 //   pnpm test
 // Every k table, ceiling and floor arrives as a parameter — the tests pass
@@ -14,7 +14,7 @@ import {
   projectedrating,
   rankduel,
   ratingdelta,
-} from "../rankingladder.ts";
+} from "../ranking.ts";
 
 /** the season config the tests play with: 32/24/16 bands like the classic tables. */
 const SEASON: LadderOptions = {

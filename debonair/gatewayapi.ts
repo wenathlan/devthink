@@ -91,18 +91,17 @@
 import type { BlobPointer, BlobResult, BlobStore } from "./blobstore.ts";
 import { blobidvalid } from "./blobstore.ts";
 import { matchGenre } from "./genrematrix.ts";
-import type { IngestDocument } from "./ingest.ts";
-import { reconOf } from "./ingestrecon.ts";
 import type {
   IngestDbHandle,
+  IngestDocument,
   IngestJobErrorCode,
   IngestJobKind,
   IngestJobPointers,
   IngestJobVisibility,
   IngestStampRow,
   IngestStemsManifest,
-} from "./ingestworker.ts";
-import { INGEST_STEMS_SCHEMA_VERSION, parseWav, runIngestJob } from "./ingestworker.ts";
+} from "./ingest.ts";
+import { INGEST_STEMS_SCHEMA_VERSION, parseWav, reconOf, runIngestJob } from "./ingest.ts";
 import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern, validatePatternProject } from "./patternenums.ts";
 import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./patternminer.ts";
 import { classifyDocument, mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./patternminer.ts";
@@ -153,7 +152,7 @@ export type IngestJobState = "queued" | "running" | "done" | "failed";
 
 /** One job ledger row — the ingest_jobs table shape (the nine prescribed
  * columns; the pointer columns ride the decimal string form the mint
- * answers, the same shape the ingestdb row functions bind). */
+ * answers, the same shape the ingest db row functions bind). */
 export interface GatewayJobRow {
   /** The minted job id (the decimal string). */
   id: string;
@@ -181,11 +180,11 @@ export type GatewayJobPatch = Partial<
 >;
 
 /** The job ledger seat — the ingest_jobs row functions behind one seam
- * (the wiring lane binds the real ingestdb functions; the tests bind a
- * temp sqlite). The seat is synchronous on purpose: the worker's progress
+ * (the wiring lane binds the real ingest db lane functions; the tests bind
+ * a temp sqlite). The seat is synchronous on purpose: the worker's progress
  * callback is synchronous, and a sync seat keeps every phase landing in
  * order — a queued write must never overtake the done write (the
- * better-sqlite3 discipline the ingestdb row functions ride). */
+ * better-sqlite3 discipline the ingest db row functions ride). */
 export interface GatewayJobSeat {
   /** Registers one job row (the upsert law — a re-registration refreshes). */
   putjob(row: GatewayJobRow): void;
@@ -198,7 +197,7 @@ export interface GatewayJobSeat {
   listjobs(ownerId?: string): GatewayJobRow[];
 }
 
-/** The document shelf seat — the ingestdb seam the worker's own handle
+/** The document shelf seat — the ingest db seam the worker's own handle
  * law names (IngestDbHandle.puttingestrow stamps the IngestStampRow),
  * grown with the shelf reads the routes serve. This stack rides the
  * injected handle because the ingest_documents table of this branch
@@ -237,8 +236,8 @@ export interface GatewayProfileRow {
 }
 
 /** The genre profile seat — the genre_profiles row functions behind one
- * seam (the wiring lane binds the real ingestdb functions; the tests bind
- * a temp sqlite — the injectable discipline the document and ledger
+ * seam (the wiring lane binds the real ingest db lane functions; the tests
+ * bind a temp sqlite — the injectable discipline the document and ledger
  * seats ride). */
 export interface GatewayProfileSeat {
   /** Saves one profile document, answering the row id the storage
@@ -279,7 +278,7 @@ export interface GatewayTrackSeat extends RenderTrackSeat {
 export interface GatewayEnv {
   /** The blob store the worker writes and the stream route reads. */
   store: BlobStore;
-  /** The document shelf seat (the ingestdb seam). */
+  /** The document shelf seat (the ingest db seam). */
   db: GatewayDocumentSeat;
   /** The job ledger seat. */
   jobs: GatewayJobSeat;
