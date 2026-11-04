@@ -72,11 +72,22 @@ minimumReleaseAgeExclude:
   - '@wenathlan/devthink@2.0.154 || 2.0.155'
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
-# is allowBuilds). the honest-site surface builds exactly the engines its db
-# layer and toolchain ride on; nothing else is granted a build script.
+# is allowBuilds). THE 2.0.155 BUILDS GATE HEAL: the four-entry map froze
+# the container install (ERR_PNPM_IGNORED_BUILDS on cpu-features, pnpm,
+# protobufjs and ssh2 — every build-carrying package the tree holds must
+# answer the map, true or false, or the frozen install refuses), so the
+# map rides the complete forge form: ssh2 answers false on purpose (the
+# native accelerator refuses the runner node, the pure js fallback carries
+# the line) and pnpm answers false the same way; everything else builds.
 allowBuilds:
   '@prisma/engines': true
+  '@tailwindcss/oxide': true
   better-sqlite3: true
+  cpu-features: true
   esbuild: true
+  pnpm: false
   prisma: true
+  protobufjs: true
+  ssh2: false
+  workerd: true
 dangerouslyAllowAllBuilds: false
