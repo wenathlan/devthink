@@ -428,7 +428,7 @@ describe("the workflow contract", () => {
     );
     assert.match(
       appsource,
-      /import ['"]\.\/Sol\/sol\.css['"]/,
+      /import ['"]\.\/sol\/sol\.css['"]/,
       "App.tsx must import the sol/sol.css stylesheet left behind by the retired main.tsx",
     );
     /* every route is a page folder inside the Sol theme, fronted by its own
@@ -753,58 +753,51 @@ describe("the workflow contract", () => {
     );
     const containerfile = readFileSync(join(reporoot, "Dockerfile"), "utf8");
 
-    /* the entrypoint bootstrap ships embedded as a quoted heredoc COPY
-     * (no separate script file exists) and the image entrypoint execs it. */
+    /* the healed container law (the sandboxfold heal wave): the image
+     * execs the webserver seat directly — no wrapper script, no heredoc
+     * entrypoint — and the console graph rides the source-is-library
+     * law (node strips the .ts types natively, zero npm deps). */
     assert.ok(
-      containerfile.includes("COPY <<'ENTRYPOINT_SCRIPT_EOF' /entrypoint.sh"),
-      "the entrypoint script is embedded as the heredoc COPY",
-    );
-    assert.ok(containerfile.includes("ENTRYPOINT_SCRIPT_EOF\n"), "the heredoc COPY closes its delimiter");
-    assert.ok(
-      containerfile.includes('ENTRYPOINT ["/entrypoint.sh"]'),
-      "the image entrypoint is the embedded bootstrap",
+      containerfile.includes('ENTRYPOINT ["node", "webserver.ts"]'),
+      "the image entrypoint execs the webserver seat directly (the healed bootstrap)",
     );
 
-    /* the orchestration contract of the former compose x-vhe-common
-     * anchor rides on the hardened docker run recipes of the header - one
-     * recipe per former compose service, the saddle node service included
-     * (the compose.yml service folded into the one container file). */
+    /* the doctrine the family proved rides the one container file: the
+     * locked install stage (solbuild) and the hardened runtime stage,
+     * the unprivileged node identity, the profile catalog of the three
+     * saddle-exclusive targets and the eleven-arch standard the header
+     * declares (the CONTAINERARCHIDS law of containerarch.ts). */
     assert.ok(
-      containerfile.includes("--memory-swap -1"),
-      "the docker run recipes keep the unlimited swap contract (the former memswap_limit -1)",
+      containerfile.includes("AS solbuild"),
+      "the locked install stage (solbuild) carries the npm tree and the console spa",
     );
-    assert.ok(containerfile.includes("--shm-size 2g"), "the docker run recipes keep the 2g shm contract");
-    for (const service of ["vhe", "vheqemu", "vhegpu", "qemubridge", "saddle-node"]) {
+    assert.ok(/^USER node$/m.test(containerfile), "the runtime identity stays the unprivileged node user");
+    for (const profile of ["max", "balanced", "lite"]) {
       assert.ok(
-        containerfile.includes(`#   ${service} (`),
-        `the ${service} docker run recipe must be documented in the header`,
+        new RegExp(`^FROM base AS ${profile}$`, "m").test(containerfile),
+        `the ${profile} profile target rides the variant catalog`,
+      );
+      assert.ok(
+        new RegExp(`^ENV SADDLE_PROFILE=${profile}$`, "m").test(containerfile),
+        `the ${profile} profile pins its SADDLE_PROFILE env`,
       );
     }
     assert.ok(
-      containerfile.includes("--read-only"),
-      "the saddle-node recipe keeps the read-only rootfs contract (the former compose read_only)",
-    );
-    assert.ok(
-      containerfile.includes("--pids-limit 512"),
-      "the saddle-node recipe keeps the pids contract (the former compose pids_limit)",
+      containerfile.includes("CONTAINERARCHIDS") || containerfile.includes("eleven"),
+      "the header declares the eleven-architecture platform standard",
     );
     assert.ok(
       containerfile.includes("SADDLE_MEMORY_ENGINE=ram"),
-      "the saddle-node service ENV surface (memory engine, sbot platform, cdn) rides in the one container file",
+      "the solbuild env surface (memory engine, sbot platform, cdn) rides the one container file",
     );
 
-    /* the image-side settings of the former compose services are ENV,
-     * EXPOSE and VOLUME facts of the one container file. */
+    /* the image-side settings of the healed console service are ENV,
+     * EXPOSE and ENTRYPOINT facts of the one container file. */
     assert.ok(
-      containerfile.includes('SADDLE_DB="/data/web/saddle.db"'),
-      "the web node database ENV of the former vhe service is baked in (SADDLE_*, the env surface web/db.ts reads)",
+      containerfile.includes("SADDLE_PORT=8080"),
+      "the console service port env is baked in (the env surface webserver.ts reads)",
     );
-    assert.ok(/^EXPOSE 8080$/m.test(containerfile), "the engine service port is EXPOSEd (the former compose default)");
-    assert.ok(
-      /^VOLUME \/data \/cache\/mesa_shader_cache$/m.test(containerfile),
-      "the state surface (vmdata, webdata, shader cache) is declared as VOLUME",
-    );
-    assert.ok(/^USER vhe$/m.test(containerfile), "the runtime identity stays the non-root vhe user");
+    assert.ok(/^EXPOSE 8080$/m.test(containerfile), "the engine service port is EXPOSEd");
 
     /* the dockle CIS-DI-0010 lesson of the family: the HEALTHCHECK test
      * expression carries no '=' character anywhere (buildkit records the

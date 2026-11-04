@@ -3318,9 +3318,11 @@ export const RECON_BASS_MIDI_MAX = 48;
 /** The midi breakpoint under which the register law seats the guitar family. */
 export const RECON_GUITAR_MIDI_MAX = 72;
 
-/** The layer dictionary seats of the two hpss stems (0 harmonic, 1 percussive). */
-const HARMONIC_LAYER_ID = RECON_LAYERS.indexOf("harmonic");
-const PERCUSSIVE_LAYER_ID = RECON_LAYERS.indexOf("percussive");
+/** The layer dictionary seats of the two hpss stems (0 harmonic, 1
+ * percussive) — answered lazily so the ingest seat never evaluates the
+ * recon vocabulary at module scope (the recon↔ingest family never closes
+ * a load cycle; the ids ride the table the recon seat owns). */
+const layerSeatOf = (name: "harmonic" | "percussive"): number => RECON_LAYERS.indexOf(name);
 
 // ---------------------------------------------------------------------------
 // the descriptor kernels (each one answers a frozen seat family)
@@ -3728,12 +3730,12 @@ function buildRecon(
     const notes = reconYinNotes(harmonic, sampleRate, start, start + sampleRate);
     const layers: ReconLayerFrame[] = [
       {
-        layerId: HARMONIC_LAYER_ID,
+        layerId: layerSeatOf("harmonic"),
         spectralPeaks: reconSpectralPeaks(harmonicSpectrum.magnitudes, harmonicSpectrum.binHz).map(round4),
         midiNotes: notes.map(round4),
       },
       {
-        layerId: PERCUSSIVE_LAYER_ID,
+        layerId: layerSeatOf("percussive"),
         spectralPeaks: reconSpectralPeaks(percussiveSpectrum.magnitudes, percussiveSpectrum.binHz).map(round4),
         midiNotes: [],
       },

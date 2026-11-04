@@ -90,7 +90,7 @@
 
 import type { BlobPointer, BlobResult, BlobStore } from "./blobstore.ts";
 import { blobidvalid } from "./blobstore.ts";
-import { matchGenre } from "./genre.ts";
+import { matchGenre } from "./genrematrix.ts";
 import type {
   IngestDbHandle,
   IngestDocument,

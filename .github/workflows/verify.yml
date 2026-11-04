@@ -109,7 +109,7 @@ jobs:
       - name: Validate every tracked JSON document of the metadata family
         run: cd devthink && node jsongate.ts
       - name: Verify the protocolv2 api freeze of the frozen contracts
-        run: cd devthink && node apifreezegate.ts
+        run: cd devthink && node apifreeze.ts
       - name: Run the penetration test checklist of the security hardening release
         run: cd devthink && node pentest.ts
       - name: Audit every content security policy of the extension surfaces

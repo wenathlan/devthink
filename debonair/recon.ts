@@ -1416,11 +1416,6 @@ interface PartialVoice {
   phase: number;
 }
 
-/** Clamps a number into the inclusive range. */
-function clamp(x: number, lo: number, hi: number): number {
-  return Math.min(hi, Math.max(lo, x));
-}
-
 /**
  * Reads the partial bank of one layer's second — the top-5 spectral peaks
  * the layer lane carries, interleaved [hz0, mag0, …]: every pair inside

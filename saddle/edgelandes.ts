@@ -2645,7 +2645,7 @@ async function screenwaylandlane(code: string, inputs: unknown, deadline: number
   if (!cagepresent && !westonpresent) {
     throw edgelaneerror(
       "HOST_RUNTIME_ABSENT",
-      "the host runtime cage is absent: the lane screen-wayland requires it on PATH (weston, the alternative seat, is absent too)",
+      "the host runtime cage is absent: the lane screenwayland requires it on PATH (weston, the alternative seat, is absent too)",
     );
   }
   return withtempdirhost(async (dir) => {
@@ -2776,7 +2776,7 @@ async function buildturborepolane(code: string, inputs: unknown, deadline: numbe
   if (!seat.present) {
     throw edgelaneerror(
       "HOST_RUNTIME_ABSENT",
-      "the host runtime turbo is absent: the lane build-turborepo requires it on PATH (neither the turbo binary nor the engine module seat resolved)",
+      "the host runtime turbo is absent: the lane buildturborepo requires it on PATH (neither the turbo binary nor the engine module seat resolved)",
     );
   }
   return withtempdirhost(async (dir) => {

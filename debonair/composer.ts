@@ -27,7 +27,7 @@
 // profile-driven sibling that answers the pattern contract). pure and
 // multi-mode — the same call runs in the browser and in node.
 
-import { GENRES, type GenreStyle, genreById, matchGenre } from "./genre.ts";
+import { GENRES, type GenreStyle, genreById, matchGenre } from "./genrematrix.ts";
 import { type ChordEvent, generateProgression, hashSeed, mulberry32, PROGRESSION_SETS } from "./harmonyengine.ts";
 import type { IngestSegment } from "./ingest.ts";
 import { chordPcs, type Key, noteToPc, SCALE_NAMES, SCALE_STEPS, type ScaleName } from "./musictheory.ts";
