@@ -7,16 +7,15 @@
  */
 
 import { getDefaultAccountManager } from "./accounts.js";
-import { ANTIGRAVITY_VERSION_FALLBACK, ANTIGRAVITY_VERSION_MIN_SUPPORTED, CLIENT_METADATA_STRING, CLOUDCODE_BASE_URL, CLOUDCODE_DAILY_BASE, CODE_ASSIST_PATH_MAP, ENDPOINTS, GATEWAY_FALLBACK_PROJECT_ID, GATEWAY_FILE_PATHS, GATEWAY_PLUGIN_VERSION, GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, GEMINI_CLI_SCOPES, GEMINI_CLI_USER_AGENT, OAUTH_REVOKE_URL, OAUTH_TOKEN_URL, PLUGIN_VERSION, PROJECT_FALLBACK } from "./constants.js";
+import { ANTIGRAVITY_VERSION_FALLBACK, ANTIGRAVITY_VERSION_MIN_SUPPORTED, CLIENT_METADATA_STRING, CLOUDCODE_BASE_URL, CLOUDCODE_DAILY_BASE, CODE_ASSIST_PATH_MAP, ENDPOINTS, FALLBACK_PROJECT_ID, FILE_PATHS, GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, GEMINI_CLI_SCOPES, GEMINI_CLI_USER_AGENT, OAUTH_REVOKE_URL, OAUTH_TOKEN_URL, PLUGIN_VERSION, PROJECT_FALLBACK } from "./constants.js";
 import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import { ENDPOINT_ORDER, MODELS_2026_CATALOG, MODELS_DEFAULT_MODEL, MODELS_DEFAULT_MODEL_ID, MODEL_BY_ID, ModelCatalogEntry, SEARCH_MODEL_PREVIEW, buildGoogleProviderModelConfigs, buildOpenCodeModelDefinitions, detectTargetProvider } from "./models.js";
+import { ENDPOINT_ORDER, MODELS_2026_CATALOG, DEFAULT_MODEL_ID, UA_DEFAULT_MODEL, MODEL_BY_ID, ModelCatalogEntry, SEARCH_MODEL_PREVIEW, buildGoogleProviderModelConfigs, buildOpenCodeModelDefinitions, detectTargetProvider } from "./models.js";
 import { ANTIGRAVITY_CLI_CLIENT_ID, ANTIGRAVITY_CLI_CLIENT_SECRET, ANTIGRAVITY_CLI_GRPC_VERSION, ANTIGRAVITY_CLI_OAUTH_SCOPES, ANTIGRAVITY_CLI_REDIRECT_OFFICIAL, ANTIGRAVITY_CLI_VERSION_LATEST, GEMINI_OAUTH_CLIENT_ID, GEMINI_OAUTH_CLIENT_SECRET } from "./oauth.js";
 import { ChatEvent, parseEventStream } from "./streaming.js";
 import { DevThinkConfig, DevThinkPaths, VERSION_FALLBACK, atomicWrite, cfgDir, fetchVersionChain, loadConfigRaw, resolveCredential, saveConfigRaw, validateEmail, validateModelId, validateModelIdCharset, validateProjectId, validateSemver } from "@wenathlan/devthink/config";
 import { FETCH_TIMEOUT_MS } from "@wenathlan/devthink/constants";
 import { debugLogger, logsDir, redactSecrets } from "@wenathlan/devthink/core";
 import { osStringRows } from "@wenathlan/devthink/oslabels";
-import { input, output } from "node:process";
 
 /* ===== block: providers ===== */
 /**
@@ -506,7 +505,7 @@ const authenticate = oauth.authenticate as typeof import("./oauth.js").authentic
 // models.js — a MODEL_BY_ID lookup keyed by the models.js DEFAULT_MODEL_ID
 // ("antigravity-gemini-3-pro", whose catalog record carries the very same
 // name/context/output/api/quotaGroup the former local literal spelled out).
-const MODELS_FALLBACK_ENTRY = MODEL_BY_ID[MODELS_DEFAULT_MODEL_ID];
+const MODELS_FALLBACK_ENTRY = MODEL_BY_ID[DEFAULT_MODEL_ID];
 const ALL_MODELS_FALLBACK: ReadonlyArray<any> =
   (modelsMod.ALL_MODELS_2026 as any) ??
   (modelsPkg.ALL_MODELS_2026 as any) ??
@@ -525,18 +524,11 @@ const getConfigPath = (configMod.getConfigPath as any) ?? (() => path.join(resol
 const AccountManagerClass = (accountsMod.AccountManager as any) ?? (accountsPkg as any);
 // constants
 const ALL_MODELS_2026: ReadonlyArray<any> = (modelsMod.ALL_MODELS_2026 as any) ?? ALL_MODELS_FALLBACK;
-const FILE_PATHS = (GATEWAY_FILE_PATHS as any) ?? {
-  get baseDir() {
-    return resolveBaseDir();
-  },
-  get authDir() {
-    return path.join(resolveBaseDir(), "auth");
-  },
-};
+// the FILE_PATHS import is the real constants export (the fold alias retired)
 // v2.1.16 single-owner fix: the fallback literal comes from constants.js
 // (PROJECT_FALLBACK owner) instead of a local copy.
-const FALLBACK_PROJECT_ID = (GATEWAY_FALLBACK_PROJECT_ID as string) ?? PROJECT_FALLBACK;
-const PLUGIN_VERSION_FALLBACK = (GATEWAY_PLUGIN_VERSION as string) ?? "1.0.0";
+// the FALLBACK_PROJECT_ID import is the real constants export (the fold alias retired)
+const PLUGIN_VERSION_FALLBACK = PLUGIN_VERSION;
 // Ported from cli(2).ts: antigravity UA/version fallbacks (constants first, models.ts backup)
 // v2.1.16 single-owner fix: the "1.19.2" literal comes from constants.js
 // (ANTIGRAVITY_VERSION_FALLBACK owner) instead of a local copy.
@@ -575,7 +567,7 @@ const CODE_ASSIST = (modelsMod.CODE_ASSIST_ENDPOINTS as any) ??
 // v2.1.16 single-owner fix: the "antigravity-gemini-3.7-flash" literal comes
 // from models.js (DEFAULT_MODEL owner) instead of a local copy.
 const DEFAULT_MODEL_ID: string =
-  (modelsMod.DEFAULT_MODEL as string) ?? (modelsPkg.DEFAULT_MODEL as string) ?? MODELS_DEFAULT_MODEL;
+  (modelsMod.DEFAULT_MODEL as string) ?? (modelsPkg.DEFAULT_MODEL as string) ?? UA_DEFAULT_MODEL;
 
 // system.js (debug logger singleton + logs dir) - audit trail on login (cli(5) feature)
 const debugLoggerImpl: any = (systemMod.debugLogger as any) ?? (systemPkg.debugLogger as any) ?? null;
