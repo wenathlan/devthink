@@ -1,20 +1,21 @@
-// # weaponstats.test — honest unit tests for the armory terminal ballistics
+// # weapons.test — honest unit tests for the armory terminal ballistics
 // (falloff, shots, ttk, balance), runnable with the vitest runner:
 //   pnpm test
 // The falloff specs and balance bounds arrive as parameters — the tests pass
 // their own catalog config, exactly as a season would.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { WEAPONCATALOG, type Weapon } from "../weapons.ts";
 import {
+  WEAPONCATALOG,
+  type Weapon,
   damageatmeters,
   type FalloffSpec,
   shotstokill,
   timetokill,
   ttkbydistance,
   validatebalance,
-  weaponstatserror,
-} from "../weaponstats.ts";
+  ballisticserror,
+} from "../weapons.ts";
 
 /** the catalog falloff: full damage to 20 m, 60% at 60 m, linear. */
 const LINEAR: FalloffSpec = { startmeters: 20, endmeters: 60, retainfraction: 0.6, curve: 1 };
@@ -62,16 +63,16 @@ describe("weapon stats damage falloff", () => {
   });
 
   it("refuses a bad distance, a bad spec and a bad row", () => {
-    assert.throws(() => damageatmeters(rifle, -1, LINEAR), weaponstatserror);
+    assert.throws(() => damageatmeters(rifle, -1, LINEAR), ballisticserror);
     assert.throws(
       () => damageatmeters(rifle, 10, { ...LINEAR, endmeters: 10 }),
       (error: unknown) => {
-        assert.ok(error instanceof weaponstatserror);
+        assert.ok(error instanceof ballisticserror);
         assert.equal(error.code, "bad-falloff");
         return true;
       },
     );
-    assert.throws(() => damageatmeters({ ...rifle, damage: 0 }, 10, LINEAR), weaponstatserror);
+    assert.throws(() => damageatmeters({ ...rifle, damage: 0 }, 10, LINEAR), ballisticserror);
   });
 });
 
@@ -120,7 +121,7 @@ describe("weapon stats shots and ttk", () => {
     assert.throws(
       () => shotstokill(rifle, 10, 0, LINEAR),
       (error: unknown) => {
-        assert.ok(error instanceof weaponstatserror);
+        assert.ok(error instanceof ballisticserror);
         assert.equal(error.code, "bad-health");
         return true;
       },

@@ -49,7 +49,6 @@
     "analyze.ts",
     "hpss.ts",
     "ingest.ts",
-    "ingestrecon.ts",
     "patternminer.ts",
     "patternenums.ts",
     "reconpayload.ts",
@@ -59,7 +58,6 @@
     "take.ts",
     "wavwriter.ts",
     "blobstore.ts",
-    "ingestworker.ts",
     "renderworker.ts",
     "reconworker.ts",
     "gatewayapi.ts",
@@ -115,11 +113,6 @@
       "types": "./ingest.ts",
       "import": "./ingest.ts",
       "default": "./ingest.ts"
-    },
-    "./ingestrecon": {
-      "types": "./ingestrecon.ts",
-      "import": "./ingestrecon.ts",
-      "default": "./ingestrecon.ts"
     },
     "./reconpayload": {
       "types": "./reconpayload.ts",
@@ -230,11 +223,6 @@
       "types": "./stems.ts",
       "import": "./stems.ts",
       "default": "./stems.ts"
-    },
-    "./ingestworker": {
-      "types": "./ingestworker.ts",
-      "import": "./ingestworker.ts",
-      "default": "./ingestworker.ts"
     },
     "./renderworker": {
       "types": "./renderworker.ts",

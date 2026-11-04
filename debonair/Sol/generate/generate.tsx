@@ -41,7 +41,7 @@ import {
   queueRender,
 } from "../../generateclient.ts";
 import { GENRES, type GenreStyle, matchGenre } from "../../genrematrix.ts";
-import { listingests } from "../../ingeststore.ts";
+import { listingests } from "../../ingest.ts";
 import { PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { label, labelfill } from "../../labels.ts";
 import { NOTE_NAMES } from "../../patternenums.ts";

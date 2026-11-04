@@ -40,7 +40,7 @@ import { type BlobResult, blobidvalid, gatewayblobstore } from "./blobstore.ts";
 import { composeSimilar } from "./composer.ts";
 import type { GatewayProfileRow, RenderJobValue, VitrineTrackValue, VitrineValue } from "./gatewayapi.ts";
 import { matchGenre } from "./genrematrix.ts";
-import { gatewaylane, INGEST_CALL_TIMEOUT_MS, type IngestClientDeps, type IngestClientResult } from "./ingestclient.ts";
+import { gatewaylane, INGEST_CALL_TIMEOUT_MS, type IngestClientDeps, type IngestClientResult } from "./ingest.ts";
 import { hostallowed } from "./onboardingstate.ts";
 import type { PatternProject } from "./patternenums.ts";
 import { serializePattern, validatePatternProject } from "./patternenums.ts";
@@ -79,7 +79,7 @@ function fail(
 
 /** @section seams — the injected dependencies */
 
-/** The seams one call rides (the ingestclient discipline: the tests inject
+/** The seams one call rides (the ingest client discipline: the tests inject
  * doubles, the browser hands the defaults; the abort window is injectable
  * so the timeout lane tests in milliseconds). */
 export interface GenerateClientDeps {

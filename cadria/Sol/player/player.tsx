@@ -27,7 +27,7 @@ import {
   GatewayClientError,
   type GatewayProject,
   listGatewayProjects,
-} from "../../gatewayclient.ts";
+} from "../../gateway.ts";
 import { type RenderFrame, renderCommands, renderKeyframePerturbation, renderSvg } from "../../imagerender.ts";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";

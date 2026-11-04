@@ -60,25 +60,33 @@ import {
   startReconLaneJob,
   startRenderLaneJob,
 } from "../gatewayapi.ts";
-import { INGEST_SCHEMA_VERSION, ingestPcm } from "../ingest.ts";
+import type { IngestStampRow } from "../ingest.ts";
 import {
   getjob,
+  INGEST_SCHEMA_VERSION,
+  ingestPcm,
   listGenreProfiles,
   listjobs,
+  loaddbface,
   migrategenreschema,
   migratejobsschema,
+  parseWav,
   putjob,
+  reconOf,
   saveGenreProfile,
   updatejob,
-} from "../ingestdb.ts";
-import { reconOf } from "../ingestrecon.ts";
-import type { IngestStampRow } from "../ingestworker.ts";
-import { parseWav } from "../ingestworker.ts";
+} from "../ingest.ts";
 import { serializePattern } from "../patternenums.ts";
 import type { GenreProfile } from "../patternminer.ts";
 import { parseRecon, type ReconDocument } from "../reconpayload.ts";
 import { getrenderjob, renderjobseat, rendertrackseat } from "../renderjobs.ts";
 import { encodeWav, wavInfo } from "../wavwriter.ts";
+
+// the fold's lazy db face: the ledger walk (putjob/getjob/updatejob/listjobs)
+// rides the module db, so the suite binds the seat once before the walk —
+// the same binding the static import of the retired arm answered at module
+// time (the shared local.db law this suite always rode).
+await loaddbface();
 
 /** The source rate of the synthetic take (a rate the writer's band carries). */
 const SAMPLE_RATE = 44100;
@@ -206,7 +214,7 @@ const DOC_COLUMNS =
   "id, owner_id, kind, visibility, name, mix_pointer, stems_pointer, size_bytes, sha256, samplerate, durationseconds, pcmhash, ingestedat, docjson";
 
 /**
- * The document shelf seat over a sqlite handle — the ingestdb seam bound
+ * The document shelf seat over a sqlite handle — the ingest db seam bound
  * to the reference-law table (the same column set the worker's own test
  * handle stamps: the owner, the kind, the visibility, the pointer pair,
  * the size, the sha and the canonical document json).
@@ -296,7 +304,7 @@ function documentseat(database: Database): GatewayDocumentSeat {
 /**
  * The job ledger seat over a sqlite handle — the ingest_jobs row
  * functions the gateway worker lane wires (the same nine columns the
- * real ingestdb binds), recording every patch so the tests can pin the
+ * real ingest db lane binds), recording every patch so the tests can pin the
  * walk order.
  *
  * @param database the temp sqlite handle.
@@ -1382,8 +1390,12 @@ describe("the ingest_jobs ledger (the row functions round trip)", () => {
   });
 
   it("rides parameterized sql only — no interpolated statement ever assembles", () => {
-    const source = readFileSync(new URL("../ingestdb.ts", import.meta.url), "utf8");
-    assert.ok(!source.includes("${"), "no template interpolation rides the db module (the house database law)");
-    assert.ok(source.includes("CREATE TABLE IF NOT EXISTS ingest_jobs"), "the ledger migration lands its table");
+    const source = readFileSync(new URL("../ingest.ts", import.meta.url), "utf8");
+    const start = source.indexOf("/* ===== the ingest db lane ===== */");
+    assert.ok(start >= 0, "the ingest db lane rides inside ingest.ts");
+    const next = source.indexOf("/* =====", start + 1);
+    const dblane = source.slice(start, next === -1 ? undefined : next);
+    assert.ok(!dblane.includes("${"), "no template interpolation rides the db lane (the house database law)");
+    assert.ok(dblane.includes("CREATE TABLE IF NOT EXISTS ingest_jobs"), "the ledger migration lands its table");
   });
 });

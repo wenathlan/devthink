@@ -24,8 +24,8 @@ import type { IngestDocument, IngestSegment } from "../ingest.ts";
 // writer (the SQLITE_BUSY lesson — every suite its own seat).
 process.env.DATABASE_URL = "file:./local.patternminer.db";
 
-const ingestdbmodule = await import("../ingestdb.ts");
-const { listGenreProfiles, migrategenreschema, saveGenreProfile } = ingestdbmodule;
+const ingestmodule = await import("../ingest.ts");
+const { listGenreProfiles, migrategenreschema, saveGenreProfile } = ingestmodule;
 
 import {
   BPM_BUCKETS,

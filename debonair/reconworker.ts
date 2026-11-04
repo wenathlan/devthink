@@ -30,15 +30,15 @@
 // feature funnel the tests pin: the render's per-second rms, centroid, zcr
 // and flatness land inside the bands the original's seats measured.
 //
-// Non-goals: no measurement (ingestrecon.ts owns the descriptor lane), no
+// Non-goals: no measurement (the ingest recon lane of ingest.ts owns the
+// descriptors), no
 // storage (the blob store seam rides the orchestrator), no gateway (the
 // route lane binds this walk). Pure and multi-mode — the same call runs in
 // the browser and in node.
 
 import { seededNoiseChannel } from "./audio.ts";
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
-import { pcmhash } from "./ingest.ts";
-import { RECON_ENVELOPE_WINDOWS } from "./ingestrecon.ts";
+import { pcmhash, RECON_ENVELOPE_WINDOWS } from "./ingest.ts";
 import { limitTruePeak } from "./limiter.ts";
 import { PATTERN_SCALES, type PatternScaleName } from "./patternenums.ts";
 import {

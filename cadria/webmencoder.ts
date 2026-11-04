@@ -16,7 +16,7 @@
 // encodeWebmFrames pre-encoded payloads through the payload lane and the
 // container muxes them unchanged; the demux twin (decodeWebmFrames) walks
 // the EBML back, inflates the payloads and answers the frames. The DocType
-// rides "webm" so the family probe lane (mediaprobewebm.ts) recognizes the
+// rides "webm" so the family probe lane (mediaprobe.ts) recognizes the
 // stream; the mediaprobe walk answers the honest codec row (V_CADRIA, the
 // dimensions, the duration) for every stream this module ships.
 // Non-goals: no streaming (unknown-size elements), no lacing (one

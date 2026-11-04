@@ -52,9 +52,9 @@ import { INGEST_SCHEMA_VERSION } from "../ingest.ts";
 // writer (the SQLITE_BUSY lesson — every suite its own seat).
 process.env.DATABASE_URL = "file:./local.minerserver.db";
 
-const ingestdbmodule = await import("../ingestdb.ts");
-const { listGenreProfiles, migrategenreschema, migratejobsschema } = ingestdbmodule;
-import type { IngestStampRow } from "../ingestworker.ts";
+const ingestmodule = await import("../ingest.ts");
+const { listGenreProfiles, migrategenreschema, migratejobsschema } = ingestmodule;
+import type { IngestStampRow } from "../ingest.ts";
 import { PROFILE_GENRE_KEYS, validateGenreProfile } from "../patternminer.ts";
 import { seedGenreProfileCards } from "../seed.ts";
 
@@ -96,7 +96,7 @@ const DOC_COLUMNS =
   "id, owner_id, kind, visibility, name, mix_pointer, stems_pointer, size_bytes, sha256, samplerate, durationseconds, pcmhash, ingestedat, docjson";
 
 /**
- * The document shelf seat over a sqlite handle — the ingestdb seam bound
+ * The document shelf seat over a sqlite handle — the ingest db seam bound
  * to the reference-law table (the same binding the gatewayapi suite
  * rides).
  *

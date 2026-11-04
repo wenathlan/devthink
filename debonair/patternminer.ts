@@ -16,8 +16,8 @@
 // hand-roll the whole contract (zero dependencies, the family law): they
 // clamp tolerantly where the contract allows and reject hard with machine
 // codes where the shape breaks. non-goals: no audio, no storage (the row
-// seat lives in ingestdb.ts), no scheduling — pure and multi-mode, the
-// same call runs in the browser and in node.
+// seat lives in the ingest db lane of ingest.ts), no scheduling — pure and
+// multi-mode, the same call runs in the browser and in node.
 
 import { GENRES } from "./genrematrix.ts";
 import type { IngestDocument, IngestSegment } from "./ingest.ts";

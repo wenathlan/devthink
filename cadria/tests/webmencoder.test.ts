@@ -10,7 +10,7 @@
 // back to the exact frame bytes, timecodes and keyframe flags included).
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { probeWebm } from "../mediaprobewebm.ts";
+import { probeWebm } from "../mediaprobe.ts";
 import type { PixelImage } from "../pixel.ts";
 import {
   CADRIA_CODEC_ID,

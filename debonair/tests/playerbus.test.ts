@@ -17,7 +17,7 @@ import { afterAll, afterEach, beforeAll, describe, it, vi } from "vitest";
 import { planTake } from "../arranger.ts";
 import { mintid } from "../bigintids.ts";
 import { sessionblobstore } from "../blobstore.ts";
-import { reconOf } from "../ingestrecon.ts";
+import { reconOf } from "../ingest.ts";
 import {
   busFeature,
   busPause,
