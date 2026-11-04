@@ -15,7 +15,7 @@
 // stands behind the plate.
 
 import { FALLBACK_PALETTE, type Palette, synthPalette } from "@wenathlan/cadria/synth";
-import { analyzePcm, type DescriptorStats, fuseDescriptor } from "./audio.ts";
+import { type DescriptorStats, analyzePcm, fuseDescriptor } from "./audio.ts";
 
 /**
  * Derives the cover palette of an analyzed clip from its five stat blocks —

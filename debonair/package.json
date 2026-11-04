@@ -55,8 +55,11 @@
     "reconpayload.ts",
     "composer.ts",
     "coverpalette.ts",
+<<<<<<< HEAD
     "audio.ts",
     "take.ts",
+=======
+>>>>>>> d5695b75 (wave: the logic dedup law — the debonair audio leaves retire into the one keyed file)
     "wavwriter.ts",
     "blobstore.ts",
     "ingestworker.ts",
@@ -64,6 +67,10 @@
     "reconworker.ts",
     "gatewayapi.ts",
     "routetable.ts",
+<<<<<<< HEAD
+=======
+    "audio.ts",
+>>>>>>> d5695b75 (wave: the logic dedup law — the debonair audio leaves retire into the one keyed file)
     "beatgrid.ts",
     "speechalign.ts",
     "stems.ts",
@@ -82,12 +89,18 @@
     "limiter.ts",
     "loudness.ts",
     "mixergraph.ts",
+    "midiwriter.ts",
     "musictheory.ts",
     "onboardingstate.ts",
     "rhythmgrammar.ts",
     "sandboxmodality.ts",
     "spectrum.ts",
+<<<<<<< HEAD
     "midiwriter.ts",
+=======
+    "take.ts",
+    "takeevents.ts",
+>>>>>>> d5695b75 (wave: the logic dedup law — the debonair audio leaves retire into the one keyed file)
     "timelinemodel.ts",
     "tuning.ts"
   ],
@@ -176,10 +189,17 @@
       "import": "./audio.ts",
       "default": "./audio.ts"
     },
+<<<<<<< HEAD
     "./take": {
       "types": "./take.ts",
       "import": "./take.ts",
       "default": "./take.ts"
+=======
+    "./audioengine": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+>>>>>>> d5695b75 (wave: the logic dedup law — the debonair audio leaves retire into the one keyed file)
     },
     "./wavwriter": {
       "types": "./wavwriter.ts",
@@ -200,11 +220,14 @@
       "types": "./audio.ts",
       "import": "./audio.ts",
       "default": "./audio.ts"
+<<<<<<< HEAD
     },
     "./audioengine": {
       "types": "./audio.ts",
       "import": "./audio.ts",
       "default": "./audio.ts"
+=======
+>>>>>>> d5695b75 (wave: the logic dedup law — the debonair audio leaves retire into the one keyed file)
     },
     "./audiofeatures": {
       "types": "./audio.ts",

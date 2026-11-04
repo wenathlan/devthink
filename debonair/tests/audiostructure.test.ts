@@ -9,8 +9,8 @@ import {
   frameEnergies,
   labelSections,
   noveltyCurve,
+  type RawStructureStats,
   type Section,
-  type StructureStats,
   structureBoundaries,
   tensionCurve,
 } from "../audio.ts";
@@ -221,7 +221,7 @@ describe("audiostructure curves", () => {
 
 describe("audiostructure analyzeStructure", () => {
   it("reads the synthetic song end to end", () => {
-    const stats: StructureStats = analyzeStructure(songFrames(), RATE);
+    const stats: RawStructureStats = analyzeStructure(songFrames(), RATE);
     assert.equal(stats.durationMs, 42000);
     assert.deepEqual(
       stats.sections.map((s) => s.role),

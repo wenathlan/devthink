@@ -294,7 +294,7 @@ describe("the reverse ingest (the payload to wav reconstruction)", () => {
     assert.equal(writerinfo.channels, 1);
     assert.equal(writerinfo.bitDepth, 16);
     assert.equal(writerinfo.frames, SAMPLE_RATE * SECONDS);
-    // the decoder's independent reader (audioformat.ts)
+    // the decoder's independent reader (the audio.ts format section)
     const decoderinfo = wavinfo(bytes);
     assert.equal(decoderinfo.frames, writerinfo.frames);
     assert.ok(Math.abs(decoderinfo.durationSeconds - SECONDS) < 0.01);

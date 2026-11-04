@@ -6,15 +6,20 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import {
-  BAND_EDGES_HZ,
-  BAND_NAMES,
-  bandEnergies,
   blackman,
-  fft,
   FftError,
+  fft,
   fftMagnitudes,
   hamming,
   hann,
+  stft,
+  stftFrameCount,
+  type WindowName,
+} from "../audio.ts";
+import {
+  BAND_EDGES_HZ,
+  BAND_NAMES,
+  bandEnergies,
   hertzToMel,
   melbands,
   melToHertz,
@@ -23,10 +28,7 @@ import {
   spectralFlux,
   spectralRolloff,
   spectrogramImage,
-  stft,
-  stftFrameCount,
   summarizeSpectrum,
-  type WindowName,
 } from "../audio.ts";
 
 const SAMPLE_RATE = 8000;
