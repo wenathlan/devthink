@@ -17,10 +17,11 @@
       /* the modality registry of the ladder retirement (wave/engineregroup1):
        * the sandbox lane reads the saddle catalog through the published
        * specifier and the declaration pass resolves it through the family
-       * install exactly like the workloadlaw sibling does (the saddle
-       * envelope now publishes the ./modalityregistry export; the ambient
-       * modalitytypes.ts mirror retired with the bridge — the catalog has
-       * one owner, the engine). */
+       * bridge exactly like the sandbox sibling above (the saddle envelope
+       * publishes the ./modalityregistry export; the ambient modalitytypes.ts
+       * mirror retired with the bridge — the catalog has one owner, the
+       * engine). */
+      "@wenathlan/saddle/modalityregistry": ["./saddlefaces.ts"],
       /* the getry declaration face bridges of the ownership wave
        * (wave/ownership.getry): the gateway modules answer through the
        * published library specifiers ("@wenathlan/getry/llm" and siblings),
