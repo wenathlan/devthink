@@ -12,6 +12,7 @@ overrides:
   esbuild: ^0.28.2
   deepmerge-ts: ^8.0.0
   mysql2: ^3.23.1
+  postcss-selector-parser: ^7.1.6
 
 # the freshly published security fixes install before they age: pnpm 12
 # verifies the supply-chain age by default and these four corrections ride

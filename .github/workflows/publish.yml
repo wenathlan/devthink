@@ -4749,6 +4749,9 @@ jobs:
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
             MESA_SHA256=${{ steps.mesa.outputs.sha256 }}
+            UBUNTU=${{ needs.saddle-vhe-resolve.outputs.ubunturef }}
+            PYTHON_BASE=${{ needs.saddle-vhe-resolve.outputs.pythonref }}
+            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -4853,6 +4856,9 @@ jobs:
       tag: ${{ steps.resolve.outputs.tag }}
       proceed: ${{ steps.resolve.outputs.proceed }}
       mesasha256: ${{ steps.mesa.outputs.sha256 }}
+      ubunturef: ${{ steps.bases.outputs.ubuntu }}
+      pythonref: ${{ steps.bases.outputs.python }}
+      noderef: ${{ steps.bases.outputs.node }}
     permissions:
       # contents: write is required to keep the SHA256SUMS asset of the
       # mesa-cache release in place (the GitHub-generated digest of the
@@ -4960,6 +4966,44 @@ jobs:
             echo "GHCR container ${OWNER}/devthink carries a partial ${version}-vhe family (${api_out} of 3 tags); proceeding so the missing profiles ship (the per-leg guard skips the published legs)."
           fi
           echo "proceed=true" >> "$GITHUB_OUTPUT"
+
+      - id: bases
+        name: Resolve the base image digests (GitHub-computed)
+        run: |
+          set -euo pipefail
+          # the digest-never-hardcoded law (the owner rule): no 64-hex
+          # digest ever lands in a source file — the base image digests
+          # are resolved on this GitHub runner at build time (the same
+          # doctrine the mesa digest carries) and handed to the docker
+          # builds as build-args, so every published fetch is byte-honest
+          # while the Dockerfile keeps its bare-tag defaults for local
+          # builds. the manifest-list digest serves the whole
+          # eleven-architecture matrix (the registry resolves it per
+          # platform).
+          resolve_ref() {
+            local repo="$1" tag="$2"
+            local token
+            token="$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:${repo}:pull" | jq -r .token)"
+            curl -fsSI -H "Authorization: Bearer ${token}" \
+              -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+              "https://registry-1.docker.io/v2/${repo}/manifests/${tag}" \
+              | tr -d '\r' | awk 'tolower($1)=="docker-content-digest:"{print $2}'
+          }
+          ubuntu_digest="$(resolve_ref library/ubuntu 24.04)"
+          python_digest="$(resolve_ref library/python 3.14.7-slim)"
+          node_digest="$(resolve_ref library/node 26.13.0-slim)"
+          for pair in "ubuntu:${ubuntu_digest}" "python:${python_digest}" "node:${node_digest}"; do
+            name="${pair%%:*}"; digest="${pair#*:}"
+            if ! [[ "${digest}" =~ ^sha256:[a-f0-9]{64}$ ]]; then
+              echo "the ${name} base digest resolved to an unexpected shape: ${digest}" >&2; exit 1
+            fi
+          done
+          {
+            echo "ubuntu=ubuntu:24.04@${ubuntu_digest}"
+            echo "python=python:3.14.7-slim@${python_digest}"
+            echo "node=node:26.13.0-slim@${node_digest}"
+          } >> "$GITHUB_OUTPUT"
+          echo "base digests resolved at build time: ubuntu ${ubuntu_digest} / python ${python_digest} / node ${node_digest}"
 
       - id: mesa
         name: Resolve the mesa tarball digest (GitHub-computed)
@@ -5124,6 +5168,9 @@ jobs:
             VHE_PROFILE_GPU=b200
             VHE_PROFILE_GPUS=8
             MESA_SHA256=${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}
+            UBUNTU=${{ needs.saddle-vhe-resolve.outputs.ubunturef }}
+            PYTHON_BASE=${{ needs.saddle-vhe-resolve.outputs.pythonref }}
+            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -5319,6 +5366,9 @@ jobs:
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
             MESA_SHA256=${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}
+            UBUNTU=${{ needs.saddle-vhe-resolve.outputs.ubunturef }}
+            PYTHON_BASE=${{ needs.saddle-vhe-resolve.outputs.pythonref }}
+            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
           labels: |
             org.opencontainers.image.title=saddle grand-merge vhe (e2ugh virtual hardware engine)
             org.opencontainers.image.description=100 percent software virtual hardware engine (${{ matrix.profile }} profile)
@@ -5503,6 +5553,9 @@ jobs:
             --build-arg VHE_PROFILE_GPU="b200" \
             --build-arg VHE_PROFILE_GPUS="8" \
             --build-arg MESA_SHA256="${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}" \
+            --build-arg UBUNTU="${{ needs.saddle-vhe-resolve.outputs.ubunturef }}" \
+            --build-arg PYTHON_BASE="${{ needs.saddle-vhe-resolve.outputs.pythonref }}" \
+            --build-arg NODE_BASE="${{ needs.saddle-vhe-resolve.outputs.noderef }}" \
             --tag "$IMAGE" -f saddlebuildctx/saddle/Dockerfile saddlebuildctx
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest

@@ -44,8 +44,15 @@ ARG VAULT_VERSION=2.0.154
 # the binary the runtime copies answers the exact platform it rides.
 WORKDIR /deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN apk add --no-cache python3 make g++ \
- && npm install -g --no-fund --no-audit pnpm@12.3.4 \
+# the pinned dependencies law: the pnpm tarball is fetched by exact
+# version and verified by its sha256 before install - the registry fetch
+# answers a byte-honest checksum, never a floating tag (npm carries no
+# digest channel, so the checksum gate is the pin).
+RUN apk add --no-cache python3 make g++ curl \
+ && curl -fsSLo pnpm.tgz "https://registry.npmjs.org/pnpm/-/pnpm-12.3.4.tgz" \
+ && echo "08a3d2d539b377a6b7ea2469b612672255ca71c30a62698530582cb9d35c268f  pnpm.tgz" | sha256sum -c - \
+ && npm install -g --no-fund --no-audit ./pnpm.tgz \
+ && rm pnpm.tgz \
  && pnpm install --prod --frozen-lockfile
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797

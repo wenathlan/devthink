@@ -1378,8 +1378,11 @@ export interface ThoughtLikePart {
  * - array of OpenCode-like blocks
  */
 
-const THINKING_TAG_REGEX = /<(thinking|thought|think|reasoning|Thought|Thinking)[^>]*>[\s\S]*?<\/\1\s*>/gi;
-const THINKING_SELF_CLOSED_REGEX = /<(thinking|thought|think)[^>]*\/>/gi;
+// bounded windows keep every tag scan linear (the code-scanning redos
+// law): the attribute and body arms carry hard ceilings so an adversarial
+// "<thinking>" run degrades to a bounded scan, never a polynomial one.
+const THINKING_TAG_REGEX = /<(thinking|thought|think|reasoning|Thought|Thinking)[^>]{0,256}>[\s\S]{0,262144}?<\/\1\s{0,16}>/gi;
+const THINKING_SELF_CLOSED_REGEX = /<(thinking|thought|think)[^>]{0,256}\/>/gi;
 const THINKING_INLINE_PREFIX = /^(?:Thought:|Thinking:|Reasoning:)\s*/i;
 
 export function filterThinkingBlocks(input: string): string;
@@ -1392,11 +1395,12 @@ export function filterThinkingBlocks(input: unknown): unknown {
     out = out.replace(THINKING_TAG_REGEX, "");
     out = out.replace(THINKING_SELF_CLOSED_REGEX, "");
     // removes multiple lines that are only the Thinking: prefix
-    // also cleans the stray "<thinking>" artifacts
-    out = out.replace(/<\/?thinking[^>]*>/gi, "");
-    out = out.replace(/<\/?thought[^>]*>/gi, "");
-    out = out.replace(/<\/?think[^>]*>/gi, "");
-    out = out.replace(/<\/?reasoning[^>]*>/gi, "");
+    // also cleans the stray "<thinking>" artifacts (bounded attribute
+    // windows — the redos law)
+    out = out.replace(/<\/?thinking[^>]{0,256}>/gi, "");
+    out = out.replace(/<\/?thought[^>]{0,256}>/gi, "");
+    out = out.replace(/<\/?think[^>]{0,256}>/gi, "");
+    out = out.replace(/<\/?reasoning[^>]{0,256}>/gi, "");
     // removes the lines starting with Thought:
     out = out
       .split("\n")
@@ -2164,11 +2168,15 @@ function extractJsonFromText(text: string): Record<string, unknown> | null {
   try {
     return JSON.parse(text) as Record<string, unknown>;
   } catch {
-    // tenta extrair json embebido
-    const m = text.match(/\{[\s\S]*\}/);
-    if (m) {
+    // tenta extrair json embebido — the old greedy regex
+    // (/\{[\s\S]*\}/) answered polynomial time on adversarial "{{{{"
+    // runs (the code-scanning redos law); the indexOf/lastIndexOf pair
+    // walks the string once, linear always.
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start !== -1 && end > start) {
       try {
-        return JSON.parse(m[0]) as Record<string, unknown>;
+        return JSON.parse(text.slice(start, end + 1)) as Record<string, unknown>;
       } catch {
         return null;
       }
