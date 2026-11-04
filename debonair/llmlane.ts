@@ -24,7 +24,7 @@
 
 import { gatewaylane, type IngestClientDeps } from "./ingest.ts";
 import { hostallowed } from "./onboardingstate.ts";
-import { patternFromLlm, patternPromptHint, type PatternProject } from "./patternenums.ts";
+import { patternFromLlm, patternPromptHint, type PatternProject } from "./pattern.ts";
 
 /** @section codes — the typed failure branch */
 

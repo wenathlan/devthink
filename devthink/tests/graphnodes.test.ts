@@ -31,7 +31,7 @@ import {
   validategraph,
   withnodestate,
   withnodestates,
-} from "../graphnodes.js";
+} from "../graph.js";
 
 /** the diamond the layering tests ride: a → b, a → c, b → d, c → d. */
 function diamond() {

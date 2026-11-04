@@ -1,7 +1,7 @@
 /**
  * dockmagnify.ts — the pure math of the dock magnification (root logic
  * layer): the gaussian falloff the magnifying pad answers. The component
- * layer (Sol/wingets/ShellDockmagnify.tsx) walks the pointer and drives the
+ * layer (sol/wingets/ShellDockmagnify.tsx) walks the pointer and drives the
  * GSAP tweens; this module owns the numbers and the curve so the law is
  * unit-testable without a DOM — no react, no gsap, no listeners here.
  *

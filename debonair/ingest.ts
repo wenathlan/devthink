@@ -39,9 +39,9 @@ import type { IngestJobValue } from "./gatewayapi.ts";
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { type StemPair, separate } from "./hpss.ts";
 import { hostallowed } from "./onboardingstate.ts";
-import { PATTERN_SCALE_NAMES, PATTERN_SCALES } from "./patternenums.ts";
-import type { GenreProfile } from "./patternminer.ts";
-import { serializeProfile } from "./patternminer.ts";
+import { PATTERN_SCALE_NAMES, PATTERN_SCALES } from "./pattern.ts";
+import type { GenreProfile } from "./pattern.ts";
+import { serializeProfile } from "./pattern.ts";
 import {
   fnv1aNumbers,
   RECON_LAYERS,

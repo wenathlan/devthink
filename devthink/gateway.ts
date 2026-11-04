@@ -313,7 +313,7 @@ export type GatewayRegistration = ReturnType<typeof useGatewayRegistration>;
 /**
  * authgate — the pure guards of the entry flow (root logic, side-effect-
  * free, unit-tested in tests/authflow.test.ts). The authentication page-app
- * (Sol/auth/auth.tsx) rides these guards on the owner entry chain intro →
+ * (sol/auth/auth.tsx) rides these guards on the owner entry chain intro →
  * explore → auth → panel: afterAuthTarget resolves the post-session
  * destination (default /panel, a safe same-origin ?next= honored), the
  * opt-in local CLI pairing (POST /pairings/consume — the same gateway
@@ -555,7 +555,7 @@ export function gatewayReady(): boolean {
  * repository root) stays the property of the root library: importing it here
  * would pull the whole engine module graph into the web typecheck. this
  * section carries the projection the shipped v1–v5 catalog (the config.ts of
- * the Sol/gateway page folder) actually exercises, with the field names kept
+ * the sol/gateway page folder) actually exercises, with the field names kept
  * identical to the engine so the two never drift in vocabulary: a field
  * renamed in the engine shows up here as a type error on the catalog the
  * page renders.

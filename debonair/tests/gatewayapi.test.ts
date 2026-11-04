@@ -76,10 +76,10 @@ import {
   saveGenreProfile,
   updatejob,
 } from "../ingest.ts";
-import { serializePattern } from "../patternenums.ts";
-import type { GenreProfile } from "../patternminer.ts";
+import { serializePattern } from "../pattern.ts";
+import type { GenreProfile } from "../pattern.ts";
 import { parseRecon, type ReconDocument } from "../reconpayload.ts";
-import { getrenderjob, renderjobseat, rendertrackseat } from "../renderjobs.ts";
+import { getrenderjob, renderjobseat, rendertrackseat } from "../render.ts";
 import { encodeWav, wavInfo } from "../wavwriter.ts";
 
 // the fold's lazy db face: the ledger walk (putjob/getjob/updatejob/listjobs)

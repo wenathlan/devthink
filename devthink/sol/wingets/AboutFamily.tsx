@@ -1,0 +1,80 @@
+/**
+ * family.tsx — the loose family component of the about folder. The family
+ * sites render as a specimen wall, not a uniform card grid: a twelve-column
+ * field where each tile takes a different span (one dominant specimen, the
+ * rest varied), every tile carries the identity accent of its app as a
+ * color-mix light behind the type (no box walls — campaign v3 r2-a) and the
+ * roster is answered by the same family.sites accessor the explore surface
+ * reads, so it is never restated on the institutional page. The words ride
+ * the label store now (about.family.* — the data lane law): the copy never
+ * restates on the page either. The entrance rides the engine .enter kit at
+ * 70ms steps.
+ */
+
+import {OpenRegular as SquareArrowOutUpRight} from "@fluentui/react-icons";
+import type { CSSProperties } from "react";
+import { useEffect, useState } from "react";
+import { type FamilySite, familySites } from "../../catalog.ts";
+import { familyAccentOf } from "../../familyaccent.ts";
+import { osText } from "../../oslabels.ts";
+
+/** the family identity accents resolve through the one spec-12 table the
+ * identity battery pins (familyAccentOf — the single source the family
+ * views answer to); the site slug of the host is the app id, an unknown
+ * host falls back to the platform signal — presentation only, the roster
+ * itself stays the catalog's answer */
+function accentFor(host: string): string {
+  const slug = host.replace(/^https?:\/\//, "").split("/")[0]?.split(".")[0] ?? "";
+  return familyAccentOf(slug, "var(--dtv3-sig)");
+}
+
+const MONO = "var(--font-mono, var(--dt-mono))";
+const hostStyle = { color: "var(--dt-faint)", font: `500 10px ${MONO}`, letterSpacing: ".08em" } as const;
+
+/** the tile entrance/stagger props: the identity accent rides --tile-accent,
+ * the .enter delay rides --i (the engine kit's 70ms steps). */
+function tileStyleFor(host: string, index: number): CSSProperties & Record<`--${string}`, number | string> {
+  const style = {} as CSSProperties & Record<`--${string}`, number | string>;
+  style["--tile-accent"] = accentFor(host);
+  style["--i"] = index;
+  return style;
+}
+
+export function AboutFamily() {
+  const [sites, setSites] = useState<FamilySite[]>([]);
+
+  useEffect(() => {
+    void familySites().then(setSites);
+  }, []);
+
+  return (
+    <section className="inst-section enter" style={{ "--i": 4 } as CSSProperties}>
+      <p className="r2a-kicker">
+        {osText("about.family.kicker")}
+        <b>{osText("about.family.count").replace("{count}", String(sites.length))}</b>
+      </p>
+      <h2>{osText("about.family.heading")}</h2>
+      <p className="inst-section__intro">{osText("about.family.intro")}</p>
+      <div className="family-wall">
+        {sites.map((site, index) => (
+          <a
+            key={site.host}
+            className={index === 0 ? "family-wall__tile family-wall__tile--dominant enter" : "family-wall__tile enter"}
+            href={site.host}
+            style={tileStyleFor(site.host, index)}
+          >
+            <span className="family-wall__host" style={hostStyle}>
+              {site.host.replace("https://", "")}
+            </span>
+            <strong>{site.name}</strong>
+            <p>{site.blurb}</p>
+            <span className="family-card__cta">
+              {osText("about.family.cta")}
+              <SquareArrowOutUpRight fontSize={12} />
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}

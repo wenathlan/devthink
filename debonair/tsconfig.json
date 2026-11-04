@@ -15,10 +15,12 @@
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
       "@wenathlan/cadria/synth": ["../cadria/synth.ts"],
-      "@wenathlan/debonair/audio": ["./audio.ts"]
+      "@wenathlan/debonair/audio": ["./audio.ts"],
+      "@wenathlan/debonair/audioattributes": ["./audio.ts"],
+      "@wenathlan/debonair/audiofeatures": ["./audio.ts"]
     },
     "types": ["vite/client", "node"]
   },
-  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],
+  "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

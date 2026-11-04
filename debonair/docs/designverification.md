@@ -74,7 +74,7 @@ session verified.
 
 | defect | where | the fix |
 | --- | --- | --- |
-| the light face washed the library sparkbars out: the ready waveform mixed 38% of the dark signal over near-white (≈2.5:1 presence, flagged illegible in the session compare) and the draft waveform filled with the light ladder's surface-6 (#f1f1f2 on #f3f3f3 — invisible) | `Sol/sol.css` (the sparkbar ladder) | light-face overrides riding the same tokens: base 68% of the accent, ready 84%, draft a 26% ink mix over surface-2 — the waveform keeps the presence it owns on the dark floor (verified in the session: ready ≈5.8:1, draft quiet but visible, the compare clean) |
+| the light face washed the library sparkbars out: the ready waveform mixed 38% of the dark signal over near-white (≈2.5:1 presence, flagged illegible in the session compare) and the draft waveform filled with the light ladder's surface-6 (#f1f1f2 on #f3f3f3 — invisible) | `sol/sol.css` (the sparkbar ladder) | light-face overrides riding the same tokens: base 68% of the accent, ready 84%, draft a 26% ink mix over surface-2 — the waveform keeps the presence it owns on the dark floor (verified in the session: ready ≈5.8:1, draft quiet but visible, the compare clean) |
 
 one candidate defect was judged a false positive and left untouched: the
 player bar title truncates with an ellipsis — that is the design (the
@@ -90,11 +90,11 @@ passes). all cleared, zero behavior changes except the one honest upgrade:
 
 | finding | file | the fix |
 | --- | --- | --- |
-| `lint/correctness/noUnusedVariables` — STEP_LEADS never read | `Sol/onboarding/onboarding.tsx` | the dead constant removed (the titles ride the manifest keys inline) |
-| `lint/a11y/useSemanticElements` — a div wearing role="meter" | `Sol/wingets/StudioVumeter.tsx` | the honest family fix: the painted column turns presentational (aria-hidden) and a real native `<meter>` carries the reading (sr-only beside it, min/max/value live) — verified in the session: the five columns paint and the five native meters carry the same levels [12, 72, 48, 0, 72] while the transport runs |
-| `assist/source/organizeImports` + format (9 findings) | `App.tsx`, `Sol/generate`, `Sol/intro`, `Sol/notfound`, `Sol/settings`, `Sol/studio`, `Sol/wingets/index.ts`, `StudioPianoroll`, `StudioTimeline` | the deterministic sorts and line wraps applied (`biome check --write`) |
+| `lint/correctness/noUnusedVariables` — STEP_LEADS never read | `sol/onboarding/onboarding.tsx` | the dead constant removed (the titles ride the manifest keys inline) |
+| `lint/a11y/useSemanticElements` — a div wearing role="meter" | `sol/wingets/StudioVumeter.tsx` | the honest family fix: the painted column turns presentational (aria-hidden) and a real native `<meter>` carries the reading (sr-only beside it, min/max/value live) — verified in the session: the five columns paint and the five native meters carry the same levels [12, 72, 48, 0, 72] while the transport runs |
+| `assist/source/organizeImports` + format (9 findings) | `App.tsx`, `sol/generate`, `sol/intro`, `sol/notfound`, `sol/settings`, `sol/studio`, `sol/wingets/index.ts`, `StudioPianoroll`, `StudioTimeline` | the deterministic sorts and line wraps applied (`biome check --write`) |
 
 the gates after the wave: `pnpm typecheck` clean, `pnpm test` 548/548
 green (the solcss contract included — the banned palette, the motion law,
 the trylle foundation, the standalone law all still pinned), `npx biome
-check Sol/ App.tsx` zero findings.
+check sol/ App.tsx` zero findings.

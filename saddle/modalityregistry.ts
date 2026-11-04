@@ -1,28 +1,46 @@
-// # modalityregistry — the catalog of the sandbox modalities the saddle
-// engine opens (root layer, wave SV1). One record per modality: the
-// isolation family, the driver requirements it mounts, the boot cost class,
-// the hardening gates it carries, the mime contract it answers and the
-// honest state of its wiring. The registry is the spine of the ninety
-// modality plan (the owner's law: the ninety modalities of saddle act for
-// the system, nothing touches the visitor machine): the workload never
-// chooses by name — the join resolver reads the request (isolation, gpu,
-// network, boot budget) and answers the modality set that satisfies it, so
-// the person chooses none and the platform resolves the join of all (the
-// nuclear modality law). Every record declares its state — live, host or
-// planned — so the report never lies: a lane that does not wire a modality
-// says so instead of pretending. Pure data and pure functions: zero
-// storage, zero node-only imports, the browser-pure bundle keeps carrying
-// it.
-//
-// the fold law of the virtual wave: the orphan modalityregistrytypes.ts —
-// the declare-only mirror of this registry the v2 wave left at the root
-// with zero importers (the devthink os reads its own ambient
-// modalitytypes.ts bridge, never the saddle mirror) — absorbed into this
-// seat: every declaration it carried (BootClass, ModalityFamily,
-// ModalityState, ModalityRecord, BOOTLADDER, MODALITYPLANCOUNT,
-// MODALITIES, ModalityPlanReport, planreport, BaseProfile, JoinRequest,
-// resolvejoin, getmodality) already rides this file with its real
-// implementation, so the mirror retired without one new line of code.
+/**
+ * modalityregistry — the catalog of the ninety sandbox modalities the
+ * saddle virtualization engine opens (the exclusive master engine of the
+ * family: the vm, the sandbox, the microvm, the runner and the hardware
+ * virtual seats — every workload rides the self-hosted edge, nothing
+ * touches the visitor machine). One record per modality: the keyword id
+ * (no hyphens), the display label, the category block, the driver
+ * requirements it mounts, the boot cost class, the hardening gates it
+ * carries, the mime contract it answers and the honest state of its
+ * wiring. The registry is the spine of the ninety modality plan (the
+ * owner's law: the ninety modalities of saddle act for the system,
+ * nothing touches the visitor machine): the workload never chooses by
+ * name — the join resolver reads the request (isolation, gpu, network,
+ * boot budget) and answers the modality set that satisfies it, so the
+ * person chooses none and the platform resolves the join of all (the
+ * nuclear modality law). Every record declares its binding — live (a
+ * platform lane executes through it today), host (the lane probes the
+ * host runtime and reports availability) or planned (the documented
+ * edge-binding path the catalog promises) — so the report never lies:
+ * a lane that does not wire a modality says so instead of pretending.
+ * Pure data and pure functions: zero storage, zero node-only imports,
+ * the browser-pure bundle keeps carrying it.
+ *
+ * the fold law of the virtual wave: the orphan modalityregistrytypes.ts —
+ * the declare-only mirror of this registry the v2 wave left at the root
+ * with zero importers (the devthink os reads its own ambient
+ * modalitytypes.ts bridge, never the saddle mirror) — absorbed into this
+ * seat: every declaration it carried (BootClass, ModalityFamily,
+ * ModalityState, ModalityRecord, BOOTLADDER, MODALITYPLANCOUNT,
+ * MODALITIES, ModalityPlanReport, planreport, BaseProfile, JoinRequest,
+ * resolvejoin, getmodality) already rides this file with its real
+ * implementation, so the mirror retired without one new line of code.
+ *
+ * @module saddle/modalityregistry
+ * @family wave/saddlemod2
+ * @token modality
+ * @token ninety
+ * @flag join-resolver
+ * @flag visitor-law
+ * @binding MODALITY_COUNT is derived from the records' real length —
+ *   never a hardcoded count — and MODALITYPLANCOUNT pins the plan line
+ *   the owner charged; the tests assert both stay equal at ninety.
+ */
 
 /** The boot cost classes the ladder measures. */
 export type BootClass = "hot" | "warm" | "cold";
@@ -110,9 +128,10 @@ export const MODALITYPLANCOUNT = 90;
 
 /** The modality records: the catalog the join resolver reads. */
 export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
-  // the virtual family: the full machine with the virtual drivers
+  /* ===== block: vm modalities — the virtual family (5) ===== */
+  // the full machine with the virtual drivers
   {
-    id: "virtual-full",
+    id: "virtualfull",
     label: "complete virtual",
     family: "virtual",
     isolation: "hardware",
@@ -126,7 +145,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.sandbox+json",
   },
   {
-    id: "virtual-vgpu",
+    id: "virtualvgpu",
     label: "vgpu slice",
     family: "virtual",
     isolation: "hardware",
@@ -140,7 +159,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.sandbox+json",
   },
   {
-    id: "virtual-screen",
+    id: "virtualscreen",
     label: "vm plus vnc",
     family: "screen",
     isolation: "vm",
@@ -154,7 +173,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.screen+json",
   },
   {
-    id: "virtual-drivers",
+    id: "virtualdrivers",
     label: "virtual drivers",
     family: "virtual",
     isolation: "vm",
@@ -168,7 +187,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.sandbox+json",
   },
   {
-    id: "virtual-kvm",
+    id: "virtualkvm",
     label: "kvm machine",
     family: "virtual",
     isolation: "hardware",
@@ -181,9 +200,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.sandbox+json",
   },
-  // the runner family: the universal binary runner
+  /* ===== block: runner modalities — the universal binary and the package runtimes (8) ===== */
+  // the universal binary runner
   {
-    id: "runner-universal",
+    id: "runneruniversal",
     label: "universal runner",
     family: "runner",
     isolation: "namespace",
@@ -197,7 +217,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runner-node",
+    id: "runnernode",
     label: "node packages",
     family: "packages",
     isolation: "process",
@@ -211,7 +231,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runner-bun",
+    id: "runnerbun",
     label: "bun runtime",
     family: "packages",
     isolation: "process",
@@ -225,7 +245,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runner-deno",
+    id: "runnerdeno",
     label: "deno runtime",
     family: "packages",
     isolation: "process",
@@ -239,7 +259,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runner-webpack",
+    id: "runnerwebpack",
     label: "webpack bundle",
     family: "packages",
     isolation: "process",
@@ -253,7 +273,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runner-babel",
+    id: "runnerbabel",
     label: "babel transpile",
     family: "packages",
     isolation: "process",
@@ -267,7 +287,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runner-wasm",
+    id: "runnerwasm",
     label: "wasm and wasi",
     family: "wasm",
     isolation: "process",
@@ -281,7 +301,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/wasm",
   },
   {
-    id: "runner-serverless",
+    id: "runnerserverless",
     label: "v8 isolates",
     family: "runner",
     isolation: "process",
@@ -294,11 +314,12 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.run+json",
   },
-  // the language family: the polyglot toolchains the engine mounts inside
-  // the sandbox (every runner documented by its driver set — the exec lane
-  // drives each through the host runtime, the honest probe answers per host)
+  /* ===== block: runner modalities — the language toolchains (12) ===== */
+  // the polyglot toolchains the engine mounts inside the sandbox (every
+  // runner documented by its driver set — the exec lane drives each
+  // through the host runtime, the honest probe answers per host)
   {
-    id: "language-python",
+    id: "languagepython",
     label: "cpython runtime",
     family: "language",
     isolation: "process",
@@ -312,7 +333,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-go",
+    id: "languagego",
     label: "golang toolchain",
     family: "language",
     isolation: "process",
@@ -326,7 +347,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-rust",
+    id: "languagerust",
     label: "rustc toolchain",
     family: "language",
     isolation: "process",
@@ -340,7 +361,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-cargo",
+    id: "languagecargo",
     label: "cargo builds",
     family: "language",
     isolation: "process",
@@ -354,7 +375,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-v",
+    id: "languagev",
     label: "v compiler",
     family: "language",
     isolation: "process",
@@ -368,7 +389,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-java",
+    id: "languagejava",
     label: "jdk runtime",
     family: "language",
     isolation: "process",
@@ -382,7 +403,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-dotnet",
+    id: "languagedotnet",
     label: "dotnet runtime",
     family: "language",
     isolation: "process",
@@ -396,7 +417,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-ruby",
+    id: "languageruby",
     label: "ruby interpreter",
     family: "language",
     isolation: "process",
@@ -410,7 +431,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-php",
+    id: "languagephp",
     label: "php interpreter",
     family: "language",
     isolation: "process",
@@ -424,7 +445,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-lua",
+    id: "languagelua",
     label: "lua interpreter",
     family: "language",
     isolation: "process",
@@ -438,7 +459,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-zig",
+    id: "languagezig",
     label: "zig toolchain",
     family: "language",
     isolation: "process",
@@ -452,7 +473,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "language-nim",
+    id: "languagenim",
     label: "nim compiler",
     family: "language",
     isolation: "process",
@@ -465,10 +486,11 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.run+json",
   },
+  /* ===== block: runner modalities — the heavyweight runtimes and wasi (4) ===== */
   // the runtime extensions of the runner family: the heavyweight virtual
   // machines and the edge runtimes the join resolves beside the v8 isolate
   {
-    id: "runtime-jvm",
+    id: "runtimejvm",
     label: "jvm hotspot",
     family: "runner",
     isolation: "process",
@@ -482,7 +504,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runtime-clr",
+    id: "runtimeclr",
     label: "clr runtime",
     family: "runner",
     isolation: "process",
@@ -496,7 +518,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runtime-workerd",
+    id: "runtimeworkerd",
     label: "workerd runtime",
     family: "runner",
     isolation: "process",
@@ -510,7 +532,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.run+json",
   },
   {
-    id: "runner-wasi",
+    id: "runnerwasi",
     label: "wasi preview",
     family: "wasm",
     isolation: "process",
@@ -523,9 +545,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: false,
     mime: "application/wasm",
   },
-  // the container family: docker hardened, the profile pair and ghcr immutable
+  /* ===== block: sandbox modalities — the container family, docker hardened (5) ===== */
+  // the profile pair and ghcr immutable
   {
-    id: "container-docker",
+    id: "containerdocker",
     label: "docker hardened",
     family: "container",
     isolation: "namespace",
@@ -539,7 +562,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.container+json",
   },
   {
-    id: "container-max",
+    id: "containermax",
     label: "docker max profile",
     family: "container",
     isolation: "namespace",
@@ -553,7 +576,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.container+json",
   },
   {
-    id: "container-lite",
+    id: "containerlite",
     label: "docker lite profile",
     family: "container",
     isolation: "namespace",
@@ -567,7 +590,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.container+json",
   },
   {
-    id: "container-ghcr",
+    id: "containerghcr",
     label: "ghcr immutable",
     family: "container",
     isolation: "namespace",
@@ -581,7 +604,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.container+json",
   },
   {
-    id: "container-runsc",
+    id: "containerrunsc",
     label: "gvisor sandboxed",
     family: "container",
     isolation: "namespace",
@@ -594,10 +617,11 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.container+json",
   },
-  // the sandbox family: the os jails short of a container daemon (the
-  // isolation ladder the engine walks below the microvm)
+  /* ===== block: sandbox modalities — the os jails (3) ===== */
+  // the isolation ladder the engine walks below the container daemon,
+  // short of a container daemon and below the microvm
   {
-    id: "sandbox-bubblewrap",
+    id: "sandboxbubblewrap",
     label: "bubblewrap jail",
     family: "sandbox",
     isolation: "namespace",
@@ -611,7 +635,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.sandbox+json",
   },
   {
-    id: "sandbox-nsjail",
+    id: "sandboxnsjail",
     label: "nsjail cell",
     family: "sandbox",
     isolation: "namespace",
@@ -625,7 +649,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.sandbox+json",
   },
   {
-    id: "sandbox-chroot",
+    id: "sandboxchroot",
     label: "chroot root",
     family: "sandbox",
     isolation: "process",
@@ -638,10 +662,11 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: false,
     mime: "application/vnd.devthink.sandbox+json",
   },
-  // the container extensions: the rootless and the oci runtimes the lane
-  // can drive beside the docker daemon
+  /* ===== block: sandbox modalities — the rootless and oci container extensions (4) ===== */
+  // the rootless and the oci runtimes the lane can drive beside the docker
+  // daemon
   {
-    id: "container-podman",
+    id: "containerpodman",
     label: "podman rootless",
     family: "container",
     isolation: "namespace",
@@ -655,7 +680,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.container+json",
   },
   {
-    id: "container-containerd",
+    id: "containercontainerd",
     label: "containerd supervisor",
     family: "container",
     isolation: "namespace",
@@ -669,7 +694,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.container+json",
   },
   {
-    id: "container-runc",
+    id: "containerrunc",
     label: "runc process",
     family: "container",
     isolation: "namespace",
@@ -683,7 +708,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.container+json",
   },
   {
-    id: "container-crun",
+    id: "containercrun",
     label: "crun process",
     family: "container",
     isolation: "namespace",
@@ -696,9 +721,9 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: false,
     mime: "application/vnd.devthink.container+json",
   },
-  // the microvm family: per workflow, the e2b form
+  /* ===== block: microvm modalities — per workflow, the e2b form (2) ===== */
   {
-    id: "microvm-firecracker",
+    id: "microvmfirecracker",
     label: "firecracker microvm",
     family: "microvm",
     isolation: "vm",
@@ -712,7 +737,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.microvm+json",
   },
   {
-    id: "microvm-gpuless",
+    id: "microvmgpuless",
     label: "gpuless render",
     family: "microvm",
     isolation: "vm",
@@ -725,9 +750,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.microvm+json",
   },
-  // the pod family: one pod per session (the competitor recipe)
+  /* ===== block: sandbox modalities — the pod family, one pod per session (1) ===== */
+  // the competitor recipe
   {
-    id: "pod-session",
+    id: "podsession",
     label: "pod per session",
     family: "pod",
     isolation: "namespace",
@@ -740,9 +766,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.pod+json",
   },
-  // the confidential family: attested compute
+  /* ===== block: hardware modalities — the confidential compute (2) ===== */
+  // attested compute
   {
-    id: "confidential-sevsnp",
+    id: "confidentialsevsnp",
     label: "sev snp",
     family: "confidential",
     isolation: "hardware",
@@ -756,7 +783,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.confidential+json",
   },
   {
-    id: "confidential-tdx",
+    id: "confidentialtdx",
     label: "tdx",
     family: "confidential",
     isolation: "hardware",
@@ -769,9 +796,9 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.confidential+json",
   },
-  // the emulator family: qemu full emulation
+  /* ===== block: vm modalities — the emulator family, qemu full emulation (1) ===== */
   {
-    id: "emulator-qemu",
+    id: "emulatorqemu",
     label: "qemu",
     family: "emulator",
     isolation: "vm",
@@ -784,9 +811,9 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.emulator+json",
   },
-  // the browser family: the sandbox-side browser (never the person's)
+  /* ===== block: browser modalities — the sandbox-side browser, never the person's (2) ===== */
   {
-    id: "browser-server",
+    id: "browserserver",
     label: "virtual browser",
     family: "browser",
     isolation: "namespace",
@@ -800,7 +827,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.browser+json",
   },
   {
-    id: "browser-webcontainer",
+    id: "browserwebcontainer",
     label: "webcontainer server side",
     family: "browser",
     isolation: "namespace",
@@ -813,10 +840,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.browser+json",
   },
-  // the screen family extensions: the virtual displays the sandboxed ui
-  // renders through (never the visitor display)
+  /* ===== block: hardware modalities — the virtual displays (2) ===== */
+  // the displays the sandboxed ui renders through (never the visitor display)
   {
-    id: "screen-xvfb",
+    id: "screenxvfb",
     label: "xvfb display",
     family: "screen",
     isolation: "process",
@@ -830,7 +857,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.screen+json",
   },
   {
-    id: "screen-wayland",
+    id: "screenwayland",
     label: "wayland compositor",
     family: "screen",
     isolation: "process",
@@ -843,9 +870,9 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: false,
     mime: "application/vnd.devthink.screen+json",
   },
-  // the mobile family: the os images of the mobile lane
+  /* ===== block: mobile modalities — the os images of the mobile lane (3) ===== */
   {
-    id: "mobile-capacitor",
+    id: "mobilecapacitor",
     label: "capacitor",
     family: "mobile",
     isolation: "namespace",
@@ -859,7 +886,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.mobile+json",
   },
   {
-    id: "mobile-termux",
+    id: "mobiletermux",
     label: "termux",
     family: "mobile",
     isolation: "namespace",
@@ -873,7 +900,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.mobile+json",
   },
   {
-    id: "mobile-postmarketos",
+    id: "mobilepostmarketos",
     label: "postmarketos",
     family: "mobile",
     isolation: "vm",
@@ -886,9 +913,9 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.mobile+json",
   },
-  // the fs and delivery families: the vfs, the git objects and the cdn lane
+  /* ===== block: fs modalities — the vfs, the git objects and the cdn lane (3) ===== */
   {
-    id: "fs-vfs",
+    id: "fsvfs",
     label: "vfs",
     family: "fs",
     isolation: "process",
@@ -902,7 +929,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.vfs+json",
   },
   {
-    id: "fs-gitobjects",
+    id: "fsgitobjects",
     label: "git objects vfs",
     family: "fs",
     isolation: "process",
@@ -916,7 +943,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.vfs+json",
   },
   {
-    id: "delivery-cdn",
+    id: "deliverycdn",
     label: "cdn mirror",
     family: "delivery",
     isolation: "process",
@@ -929,10 +956,11 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.cdn+json",
   },
-  // the delivery protocol extensions: the wire lanes the streamed answer
-  // rides (the socket surface the self-hosted engine speaks)
+  /* ===== block: delivery modalities — the wire protocols (4) ===== */
+  // the socket surface the self-hosted engine speaks, the lanes the
+  // streamed answer rides
   {
-    id: "delivery-wss",
+    id: "deliverywss",
     label: "websocket streams",
     family: "delivery",
     isolation: "process",
@@ -946,7 +974,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.cdn+json",
   },
   {
-    id: "delivery-webtransport",
+    id: "deliverywebtransport",
     label: "webtransport lane",
     family: "delivery",
     isolation: "process",
@@ -960,7 +988,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.cdn+json",
   },
   {
-    id: "delivery-grpc",
+    id: "deliverygrpc",
     label: "grpc lane",
     family: "delivery",
     isolation: "process",
@@ -974,7 +1002,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.cdn+json",
   },
   {
-    id: "delivery-capnproto",
+    id: "deliverycapnproto",
     label: "capnproto lane",
     family: "delivery",
     isolation: "process",
@@ -987,11 +1015,12 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.cdn+json",
   },
-  // the storage family: the self-hosted vault backends (the competitor
-  // recipe of the hosted buckets — sqlite and the wire protocols and the
-  // s3-compatible daemons, every one a lane may mount behind the vault)
+  /* ===== block: storage modalities — the self-hosted vault backends (7) ===== */
+  // the competitor recipe of the hosted buckets — sqlite and the wire
+  // protocols and the s3-compatible daemons, every one a lane may mount
+  // behind the vault
   {
-    id: "storage-sqlite",
+    id: "storagesqlite",
     label: "sqlite vault",
     family: "storage",
     isolation: "process",
@@ -1005,7 +1034,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.storage+json",
   },
   {
-    id: "storage-libsql",
+    id: "storagelibsql",
     label: "libsql vault",
     family: "storage",
     isolation: "process",
@@ -1019,7 +1048,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.storage+json",
   },
   {
-    id: "storage-mysql",
+    id: "storagemysql",
     label: "mysql wire vault",
     family: "storage",
     isolation: "process",
@@ -1033,7 +1062,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.storage+json",
   },
   {
-    id: "storage-postgres",
+    id: "storagepostgres",
     label: "postgres wire vault",
     family: "storage",
     isolation: "process",
@@ -1047,7 +1076,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.storage+json",
   },
   {
-    id: "storage-s3",
+    id: "storages3",
     label: "s3 compatible vault",
     family: "storage",
     isolation: "process",
@@ -1061,7 +1090,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.storage+json",
   },
   {
-    id: "storage-minio",
+    id: "storageminio",
     label: "minio vault",
     family: "storage",
     isolation: "process",
@@ -1075,7 +1104,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.storage+json",
   },
   {
-    id: "storage-garage",
+    id: "storagegarage",
     label: "garage vault",
     family: "storage",
     isolation: "process",
@@ -1088,11 +1117,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.storage+json",
   },
-  // the network family: the resolution and the private tunnels the engine
-  // opens for the sandbox (the hardened default stays off until a lane
-  // asks)
+  /* ===== block: network modalities — the resolvers and the private tunnels (5) ===== */
+  // the hardened default stays off until a lane asks
   {
-    id: "network-dns",
+    id: "networkdns",
     label: "dns resolver",
     family: "network",
     isolation: "process",
@@ -1106,7 +1134,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.net+json",
   },
   {
-    id: "network-doh",
+    id: "networkdoh",
     label: "dns over https",
     family: "network",
     isolation: "process",
@@ -1120,7 +1148,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.net+json",
   },
   {
-    id: "network-tor",
+    id: "networktor",
     label: "tor onion lane",
     family: "network",
     isolation: "process",
@@ -1134,7 +1162,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.net+json",
   },
   {
-    id: "network-i2p",
+    id: "networki2p",
     label: "i2p tunnel",
     family: "network",
     isolation: "process",
@@ -1148,7 +1176,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.net+json",
   },
   {
-    id: "network-wireguard",
+    id: "networkwireguard",
     label: "wireguard tunnel",
     family: "network",
     isolation: "process",
@@ -1161,12 +1189,12 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.net+json",
   },
-  // the ram family: the storage-to-ram bridge, the kernel recipes that swap,
-  // map and overlay the same bytes between use flags (the memory ladder the
-  // corpus records: the tmpfs at the microsecond, the memory map at five,
-  // the compressed ram at five hundred)
+  /* ===== block: ram modalities — the storage-to-ram bridge (8) ===== */
+  // the kernel recipes that swap, map and overlay the same bytes between
+  // use flags (the memory ladder the corpus records: the tmpfs at the
+  // microsecond, the memory map at five, the compressed ram at five hundred)
   {
-    id: "ram-tmpfs",
+    id: "ramtmpfs",
     label: "tmpfs",
     family: "ram",
     isolation: "process",
@@ -1180,7 +1208,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.ram+json",
   },
   {
-    id: "ram-mmap",
+    id: "rammmap",
     label: "zero copy map",
     family: "ram",
     isolation: "process",
@@ -1194,7 +1222,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.ram+json",
   },
   {
-    id: "ram-overlayfs",
+    id: "ramoverlayfs",
     label: "overlayfs",
     family: "ram",
     isolation: "process",
@@ -1208,7 +1236,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.ram+json",
   },
   {
-    id: "ram-loopram",
+    id: "ramloopram",
     label: "loop ram disk",
     family: "ram",
     isolation: "process",
@@ -1222,7 +1250,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.ram+json",
   },
   {
-    id: "ram-gitram",
+    id: "ramgitram",
     label: "git in ram",
     family: "ram",
     isolation: "process",
@@ -1236,7 +1264,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.ram+json",
   },
   {
-    id: "ram-zram",
+    id: "ramzram",
     label: "zram zstd",
     family: "ram",
     isolation: "process",
@@ -1250,7 +1278,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.ram+json",
   },
   {
-    id: "ram-zswap",
+    id: "ramzswap",
     label: "zswap",
     family: "ram",
     isolation: "process",
@@ -1264,7 +1292,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.ram+json",
   },
   {
-    id: "ram-swapfile",
+    id: "ramswapfile",
     label: "swapfile",
     family: "ram",
     isolation: "process",
@@ -1277,10 +1305,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: false,
     mime: "application/vnd.devthink.ram+json",
   },
-  // the build family: the build graphs the engine runs inside the sandbox
-  // (the artifact lane the repositories compile through)
+  /* ===== block: build modalities — the build graphs (5) ===== */
+  // the artifact lane the repositories compile through, inside the sandbox
   {
-    id: "build-make",
+    id: "buildmake",
     label: "make builds",
     family: "build",
     isolation: "process",
@@ -1294,7 +1322,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.build+json",
   },
   {
-    id: "build-bazel",
+    id: "buildbazel",
     label: "bazel builds",
     family: "build",
     isolation: "process",
@@ -1308,7 +1336,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.build+json",
   },
   {
-    id: "build-buck",
+    id: "buildbuck",
     label: "buck builds",
     family: "build",
     isolation: "process",
@@ -1322,7 +1350,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.build+json",
   },
   {
-    id: "build-ninja",
+    id: "buildninja",
     label: "ninja builds",
     family: "build",
     isolation: "process",
@@ -1336,7 +1364,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.build+json",
   },
   {
-    id: "build-turborepo",
+    id: "buildturborepo",
     label: "turborepo builds",
     family: "build",
     isolation: "process",
@@ -1349,11 +1377,11 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.build+json",
   },
-  // the ci family: the self-hosted runners the engine drives for the
-  // repository pipelines (no hosted ci dependency — the runner rides the
-  // same self-hosted law)
+  /* ===== block: ci modalities — the self-hosted runners (2) ===== */
+  // the repository pipelines the engine drives (no hosted ci dependency —
+  // the runner rides the same self-hosted law)
   {
-    id: "ci-actions",
+    id: "ciactions",
     label: "actions runner",
     family: "ci",
     isolation: "process",
@@ -1367,7 +1395,7 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.ci+json",
   },
   {
-    id: "ci-gitlab",
+    id: "cigitlab",
     label: "gitlab runner",
     family: "ci",
     isolation: "process",
@@ -1380,10 +1408,10 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.ci+json",
   },
-  // the gpu family: the virtual graphics the machine may present (the
-  // declared slice — the record never claims a host gpu it does not mount)
+  /* ===== block: hardware modalities — the virtual graphics (1) ===== */
+  // the declared slice — the record never claims a host gpu it does not mount
   {
-    id: "gpu-virgl",
+    id: "gpuvirgl",
     label: "virgl render",
     family: "gpu",
     isolation: "vm",
@@ -1396,10 +1424,11 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     network: true,
     mime: "application/vnd.devthink.gpu+json",
   },
-  // the local family: the explicit opt-in (the only lane that may touch the
-  // visitor machine, and only under declared consent)
+  /* ===== block: local modalities — the explicit opt-in (1) ===== */
+  // the only lane that may touch the visitor machine, and only under
+  // declared consent
   {
-    id: "local-optin",
+    id: "localoptin",
     label: "local opt in",
     family: "local",
     isolation: "process",
@@ -1413,6 +1442,11 @@ export const MODALITIES: readonly ModalityRecord[] = Object.freeze([
     mime: "application/vnd.devthink.local+json",
   },
 ]);
+
+/** The count the catalog answers — derived from the records' real length
+ * (never a hardcoded line, so the count cannot drift from the array) and
+ * the line the tests pin against the plan the owner charged. */
+export const MODALITY_COUNT = MODALITIES.length;
 
 /** The honest plan report: what the catalog holds against the ninety
  * plan —

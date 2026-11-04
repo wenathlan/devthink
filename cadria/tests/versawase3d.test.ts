@@ -6,7 +6,7 @@
 
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
-import { fitCameraDistance, mountThreeScene, threeMeshArgs } from "../versawase3d.ts";
+import { fitCameraDistance, mountThreeScene, threeMeshArgs } from "../versawase.ts";
 import { type ImageInput, faceNormal, visualize } from "../visualize.ts";
 
 /** builds a w×h grayscale horizontal ramp (left black, right white, alpha full). */

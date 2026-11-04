@@ -98,7 +98,7 @@ Environment overrides: `OPENCODE_CONFIG_DIR` (default `~/.config/opencode`), `AN
 
 ## Configuration reference
 
-The provider family is configured through `~/.config/opencode/antigravity.json` (override the location with `OPENCODE_CONFIG_DIR`). The shipped schema — `docs/schemas/antigravity.json` in the merged repository — is dual-purpose: it is both a JSON Schema (Draft-07) for the user-editable keys and a frozen manifest of the Gemini CLI bypass identity (the `x-antigravity-bypass` object); the strict standalone schema ships beside it as `docs/schemas/antigravityschema.json`. User keys:
+The provider family is configured through `~/.config/opencode/antigravity.json` (override the location with `OPENCODE_CONFIG_DIR`). The shipped schema — `antigravity.json` in the merged repository — is dual-purpose: it is both a JSON Schema (Draft-07) for the user-editable keys and a frozen manifest of the Gemini CLI bypass identity (the `x-antigravity-bypass` object); the strict standalone schema ships beside it as `antigravityschema.json`. User keys:
 
 | Key | Type | Default | Purpose |
 | --- | --- | --- | --- |
@@ -178,8 +178,8 @@ L5  antigravity.ts / devthink.ts / server.ts   entry orchestration only
 | `search.ts` | L4 THE search-grounding owner (googleSearch, urlContext, image-gen config, citations). |
 | `streaming.ts` | L4 THE streaming owner (tolerant SSE parser, transformers, replay cache). |
 | `versionregistry.ts` | L2 THE version-detection owner (dynamic resolver: legacy plus observer chains). |
-| `docs/schemas/antigravity.json` | Dual-purpose schema plus bypass manifest. |
-| `docs/schemas/antigravityschema.json` | Strict standalone JSON Schema (Draft-07). |
+| `antigravity.json` | Dual-purpose schema plus bypass manifest. |
+| `antigravityschema.json` | Strict standalone JSON Schema (Draft-07). |
 | `docs/antigravity/` | The lineage reference docs (README, RESEARCH, WAVES, MODELS, BYPASS, FLUXOGRAMA, CHECKLIST) — preserved verbatim by the merge. |
 | `tests/provider/` | The family suite: `node:test` plus `node:assert` (constants, config validators, system shim, oauth PKCE, fingerprint FNV-1a-32, models 9router mapping, system). |
 | `SECURITY.md` | Vulnerability reporting policy of the maintained `2.0.x` line. |

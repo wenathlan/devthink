@@ -14,7 +14,7 @@
 // consumer that wants the pure surfaces without the connections rides the
 // deep specifiers instead: ./storage, ./sha, ./chunks, ./objects,
 // ./buckets, ./retention, ./labels, ./onboardingstate, ./family,
-// ./familyurl, ./hometypes, ./utils.
+// ./hometypes, ./utils.
 //
 // the published form is the source itself (the debonair/getry library
 // pattern of the family): the engines pin node 26, which runs the
@@ -33,7 +33,7 @@ export * from "./chunks.ts";
 /** the executing schema and the self-hosted connection: drizzle over better-sqlite3 (boots at import). */
 export * from "./drizzle.ts";
 /** the real object ledger: deposits, verified reads, soft deletes, the orphan sweep and the census. */
-export * from "./objectsledger.ts";
+export * from "./objects.ts";
 /** the quota engine: the user-defined limit rows and the pure enforcement verdicts. */
 export * from "./quota.ts";
 /** the real digest engine: sha-256 and sha-1 over real bytes, the hex shape gates. */
@@ -72,16 +72,16 @@ export * from "./labels.ts";
 /** the entry-flow accessor: the seen flags of the visitor, one writer only. */
 export * from "./onboardingstate.ts";
 /** the storage lane: the shared sqlite mechanism of the family — the factory the siblings open (no boot; SqlParam keeps flowing through the db star, the deep specifier carries it for the bridged siblings). */
-export { openStorageLane, PRAGMA_BOOTSTRAP, type StorageLane, type StorageLaneOptions } from "./storagelane.ts";
+export { openStorageLane, PRAGMA_BOOTSTRAP, type StorageLane, type StorageLaneOptions } from "./storage.ts";
 /** the ui store: the uicopy seed, the accessor chain and the sqlite lane. */
 export * from "./uistore.ts";
 
 /* ── the family chrome — the shared identity of the deploy units ── */
 
-/** the family table: the sibling slugs and the spec §12 accents. */
+/** the family table and the two-way family door: the sibling slugs, the
+ * spec §12 accents and the deploy-unit url resolver (the familyurl lane of
+ * the fold — one keyword, one file). */
 export * from "./family.ts";
-/** the two-way family door: the deploy-unit url resolver. */
-export * from "./familyurl.ts";
 /** the home page types. */
 export * from "./hometypes.ts";
 /** the shared word splitter. */

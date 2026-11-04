@@ -8,6 +8,14 @@
  * never hold real authority - the self-hosted node keeps the real
  * scrypt/cookie sessions (see the saddle readme, static-first design).
  *
+ * @vault binding point: this module is the documented binding point for
+ *   the static-edge account shelf — the privacy law routes every
+ *   browser-local read and write through this one seat (the wingets
+ *   call localaccountnames(), never the raw storage), and the
+ *   vault-backed session API on the self-hosted node owns the real
+ *   authority. The storage here is the offline fallback, never the
+ *   source of truth.
+ *
  * typed ES module conversion of web/localauth.js (the window-global
  * IIFE): same storage keys, same seed, same keyfile format, same
  * returns. the module is shared by the Login, Register and Dashboard
@@ -93,6 +101,32 @@ export type AccountsBackupPayload = {
 
 /** the exported admin allowlist (a defensive copy). */
 export const adminusers: readonly string[] = adminlist.slice();
+
+/**
+ * Reads the local account names through the one binding point (the
+ * wingets never touch window.localStorage directly — the raw reads the
+ * dashboards carried retired with the privacy law).
+ *
+ * @vault binding point: saddle/localauth.ts — the static-edge account
+ *   registry is the fallback only when no backend answers; the real
+ *   sessions ride the self-hosted node's scrypt/cookie surface and the
+ *   vault-backed storage owns the authority (the migration law: this
+ *   mirror answers until the session API carries the shelf).
+ * @returns the account names in the local registry (empty when none).
+ */
+export function localaccountnames(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(userskey);
+    const parsed = raw ? JSON.parse(raw) : {};
+    if (parsed !== null && typeof parsed === 'object') {
+      return Object.keys(parsed as Record<string, unknown>);
+    }
+  } catch {
+    /* no registry or unreadable storage: the empty list applies */
+  }
+  return [];
+}
 
 function readusers(): Record<string, LocalAccountRecord> {
         try {

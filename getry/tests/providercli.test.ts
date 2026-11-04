@@ -17,7 +17,7 @@ import {
   providercli,
   resolveAccountsPath,
   runproviderfamily,
-} from "../providercli.js";
+} from "../providers.js";
 import { getDefaultAccountManager, resolveAccountsPath as accountsResolveAccountsPath } from "../accounts.js";
 import { MODELS_2026_CATALOG } from "../models.js";
 

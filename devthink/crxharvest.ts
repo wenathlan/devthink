@@ -2570,7 +2570,7 @@ async function loadcache(): Promise<Record<string, harvestrecord>> {
 }
 
 async function main() {
-  const idsource = await readFile(join(root, "docs", "inputextensionids.txt"), "utf8");
+  const idsource = await readFile(join(root, "inputextensionids.txt"), "utf8");
   const identifiers = [
     ...new Set(
       idsource

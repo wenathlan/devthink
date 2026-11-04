@@ -199,7 +199,7 @@ describe("mediaprobe mp4", () => {
   });
 
   it("feeds the transcode planner as a source", async () => {
-    const { buildTranscodePlan } = await import("../transcodeplan.ts");
+    const { buildTranscodePlan } = await import("../transcode.ts");
     const source = {
       width: probe.tracks[0].width ?? 0,
       height: probe.tracks[0].height ?? 0,

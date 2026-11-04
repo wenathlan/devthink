@@ -1,0 +1,372 @@
+/**
+ * sandboxlane — the server-side sandbox of the run and storage lane
+ * real filesystem round trips inside the session jail: write, list, read,
+ * removal, the containment refusal, the invalid session gate, the honest
+ * pending answers, the modalities report and the once-only welcome page
+ * (the registry the report reads answers through the library bridge —
+ * the single-source law of the catalog, one owner: the engine). every
+ * test drives a unique session id so the .sandboxrun root under the
+ * package cwd stays isolated per run.
+ */
+
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { describe, expect, it } from "vitest";
+
+import { createsandboxsession, hostmodalityreport, runsandboxline } from "../sandboxlane.js";
+import type { SandboxAnswer } from "../sandboxlane.js";
+import { MODALITIES, MODALITYPLANCOUNT, planreport } from "@wenathlan/saddle/modalityregistry";
+
+let counter = 0;
+
+function newsessionid(): string {
+  counter += 1;
+  return ["test-", String(Date.now()), "-", String(counter)].join("");
+}
+
+function jailpath(sessionid: string): string {
+  return path.join(process.cwd(), ".sandboxrun", sessionid);
+}
+
+function joinedrows(answer: SandboxAnswer): string {
+  return answer.rows.map((row) => row.line).join("\n");
+}
+
+describe("sandboxlane", () => {
+  it("writes, lists and reads a real file inside the session jail", async () => {
+    const sessionid = newsessionid();
+    const written = await runsandboxline(sessionid, "write hello.txt hello from the sandbox lane");
+    expect(written.exitcode).toBe(0);
+    expect(joinedrows(written)).toContain("wrote ");
+    const listed = await runsandboxline(sessionid, "ls");
+    expect(joinedrows(listed)).toContain("hello.txt");
+    const read = await runsandboxline(sessionid, "cat hello.txt");
+    expect(joinedrows(read)).toContain("hello from the sandbox lane");
+    const ondisk = await readFile(path.join(jailpath(sessionid), "hello.txt"), "utf8");
+    expect(ondisk).toBe("hello from the sandbox lane");
+  });
+
+  it("refuses a target that escapes the jail and creates nothing outside", async () => {
+    const sessionid = newsessionid();
+    // the forward-slash traversal resolves outside the jail on every platform
+    // (a backslash form is a legal file NAME on posix, so it stays inside)
+    const answer = await runsandboxline(sessionid, "write ../../escape.txt escaped payload");
+    expect(joinedrows(answer)).toContain("path escapes the session jail");
+    let outside = "";
+    try {
+      outside = await readFile(path.join(process.cwd(), "escape.txt"), "utf8");
+    } catch {
+      outside = "";
+    }
+    expect(outside).not.toContain("escaped payload");
+  });
+
+  it("refuses an invalid session id", async () => {
+    const answer = await runsandboxline("bad id with spaces", "ls");
+    expect(joinedrows(answer)).toContain("invalid session");
+  });
+
+  it("answers the run line through the container modality — executing when the host carries docker, refusing honestly otherwise", async () => {
+    const sessionid = newsessionid();
+    // a real jailed script: the write lands in the session jail, the run
+    // executes it inside the container when the runtime answers
+    const placed = await runsandboxline(
+      sessionid,
+      "write hello.js console.log(process.version)",
+    );
+    expect(placed.exitcode).toBe(0);
+    const answer = await runsandboxline(sessionid, "run hello.js");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    if (text.includes("no docker runtime")) {
+      // the honest refusal: the host carries no container runtime, nothing
+      // executed, and the modality report rides along
+      expect(text).toContain("nothing executed");
+      expect(text).toContain("containerdocker");
+    } else {
+      // the container executed the jailed script: the node version row and
+      // the exit row answer
+      expect(text).toContain("exit 0");
+      expect(text).toMatch(/v\d+\.\d+\.\d+/);
+    }
+  }, 120_000);
+
+  it("refuses a run line whose arguments carry a rejected character", async () => {
+    const sessionid = newsessionid();
+    const answer = await runsandboxline(sessionid, ["run", "hello.js", "a;rm"].join(" "));
+    expect(answer.exitcode).toBe(1);
+    expect(joinedrows(answer)).toContain("rejected character");
+  });
+
+  it("answers 127 with an honest row for an unknown tool", async () => {
+    const sessionid = newsessionid();
+    const answer = await runsandboxline(sessionid, "frobnicate everything");
+    expect(answer.exitcode).toBe(127);
+    expect(joinedrows(answer)).toContain("does not carry this tool");
+  });
+
+  it("removes a file and shows the removal in the listing", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(sessionid, "write rmme.txt temporary payload");
+    const before = await runsandboxline(sessionid, "ls");
+    expect(joinedrows(before)).toContain("rmme.txt");
+    await runsandboxline(sessionid, "rm -rf rmme.txt");
+    const after = await runsandboxline(sessionid, "ls");
+    expect(joinedrows(after)).not.toContain("rmme.txt");
+  });
+
+  it("writes the welcome page once and keeps it on the second call", async () => {
+    const sessionid = newsessionid();
+    const first = await createsandboxsession(sessionid);
+    expect(first).toContain("session ready");
+    const welcome = path.join(jailpath(sessionid), "welcome.md");
+    const content = await readFile(welcome, "utf8");
+    expect(content).toContain("family infrastructure");
+    expect(content).toContain("visitor browser");
+    const beforestat = await stat(welcome);
+    const second = await createsandboxsession(sessionid);
+    expect(second).toContain("type help for the tool surface");
+    const afterstat = await stat(welcome);
+    expect(afterstat.mtimeMs).toBe(beforestat.mtimeMs);
+    const contentafter = await readFile(welcome, "utf8");
+    expect(contentafter).toBe(content);
+  });
+
+  it("reports the host modalities honestly from the registry (the single source)", async () => {
+    const rows = await hostmodalityreport();
+    // the summary row plus one honest row per registry record of the ninety plan
+    expect(rows.length).toBe(91);
+    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 81 live, 9 host, 0 planned");
+    const text = rows.join("\n");
+    // the live lanes name the surfaces the platform drives
+    expect(text).toContain("container-docker: live lane — docker ");
+    expect(text).toContain("runner-node: live lane — the node runtime the run lane executes inside the container");
+    expect(text).toContain("fs-vfs: live lane — the session jail the storage lane drives");
+    expect(text).toContain("runner-serverless: live lane — the v8 isolate the exec lane drives in process");
+    expect(text).toContain("storage-sqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
+    expect(text).toContain("fs-gitobjects: live lane — the content-addressed objects store the gitobj tool drives");
+    expect(text).toContain("network-dns: live lane — the node resolver the dns tool drives");
+    expect(text).toContain("network-doh: live lane — the https resolver the doh tool drives");
+    // the polyglot live lanes probe their host runtime (python names the binary)
+    expect(text).toContain("language-python: live lane — python3 ");
+    expect(text).toContain("build-make: live lane — make ");
+    // the host runtimes name their binary and the probe verdict of this host
+    expect(text).toContain("emulator-qemu: host runtime qemu-system-x86_64 ");
+    expect(text).toContain("microvm-firecracker: host runtime firecracker ");
+    expect(text).toContain("container-runsc: host runtime runsc ");
+    // the ninety modalities wave wired the planned set: virtual-full is a
+    // live composition lane the edge plane drives, pod-session a host probe
+    expect(text).toContain("virtual-full: live lane — the platform drives it");
+    expect(text).toContain("pod-session: host runtime pod-session ");
+    // every record row after the summary carries one of the three state words
+    for (const row of rows.slice(1)) {
+      expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
+    }
+  });
+
+  it("executes a jailed python script through the polyglot lane when the host carries python", async () => {
+    const sessionid = newsessionid();
+    const placed = await runsandboxline(
+      sessionid,
+      "write hello.py print(40 + 2)",
+    );
+    expect(placed.exitcode).toBe(0);
+    const answer = await runsandboxline(sessionid, "exec python hello.py");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    if (text.includes("no python3 runtime")) {
+      // the honest refusal: this host carries no cpython, nothing executed
+      expect(text).toContain("nothing executed");
+      expect(text).toContain("languagepython");
+    } else {
+      expect(text).toContain("42");
+      expect(text).toContain("exit 0");
+    }
+  }, 120_000);
+
+  it("executes a jailed script inside the v8 isolate of the serverless modality", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(
+      sessionid,
+      "write iso.js console.log(6 * 7)",
+    );
+    const answer = await runsandboxline(sessionid, "exec isolate iso.js");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    expect(text).toContain("42");
+    expect(text).toContain("exit 0");
+  });
+
+  it("answers the honest refusal with the modality report when the host carries no runtime of the language", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(
+      sessionid,
+      "write hello.lua print(42)",
+    );
+    const answer = await runsandboxline(sessionid, "exec lua hello.lua");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    if (text.includes("no lua runtime")) {
+      expect(text).toContain("nothing executed");
+      expect(text).toContain("languagelua");
+      expect(text).toContain("the modality registry answers the ninety plan");
+    } else {
+      expect(text).toContain("42");
+      expect(text).toContain("exit 0");
+    }
+  }, 120_000);
+
+  it("executes a jailed wasm module through the webassembly runtime of the host", async () => {
+    const sessionid = newsessionid();
+    // the minimal add module: two i32 params, the add body, the export row —
+    // forty one honest bytes the webassembly runtime compiles in the jail
+    const modulebytes = Buffer.from([
+      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
+      0x01, 0x07, 0x01, 0x60, 0x02, 0x7f, 0x7f, 0x01, 0x7f,
+      0x03, 0x02, 0x01, 0x00,
+      0x07, 0x07, 0x01, 0x03, 0x61, 0x64, 0x64, 0x00, 0x00,
+      0x0a, 0x09, 0x01, 0x07, 0x00, 0x20, 0x00, 0x20, 0x01, 0x6a, 0x0b,
+    ]);
+    await mkdir(path.join(jailpath(sessionid)), { recursive: true });
+    await writeFile(path.join(jailpath(sessionid), "add.wasm"), modulebytes);
+    const answer = await runsandboxline(sessionid, "exec wasm add.wasm 40 2");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    expect(text).toContain("add = 42");
+    expect(text).toContain("exit 0");
+  });
+
+  it("answers the honest wasi refusal when the module carries no wasi start", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(sessionid, "write plain.txt not a module");
+    const answer = await runsandboxline(sessionid, "exec wasi plain.txt");
+    expect(answer.exitcode).toBe(0);
+    const text = joinedrows(answer);
+    // the honest error: the preview1 host refuses the non-module, nothing
+    // was invented — every row answers the compile or the start failure
+    expect(text).toMatch(/(did not (compile|start)|magic word)/);
+  });
+
+  it("drives a real sqlite database inside the jail through the sql lane", async () => {
+    const sessionid = newsessionid();
+    const create = await runsandboxline(
+      sessionid,
+      "sql app.db CREATE TABLE notes (id INTEGER PRIMARY KEY, body TEXT)",
+    );
+    expect(create.exitcode).toBe(0);
+    expect(joinedrows(create)).toContain("changes 0");
+    const insert = await runsandboxline(
+      sessionid,
+      'sql app.db "INSERT INTO notes (body) VALUES (\'hello\')"',
+    );
+    expect(insert.exitcode).toBe(0);
+    expect(joinedrows(insert)).toContain("changes 1");
+    const select = await runsandboxline(
+      sessionid,
+      "sql app.db SELECT id, body FROM notes",
+    );
+    expect(select.exitcode).toBe(0);
+    const text = joinedrows(select);
+    expect(text).toContain("id=1");
+    expect(text).toContain("body=hello");
+  });
+
+  it("round-trips one file through the git objects store of the jail", async () => {
+    const sessionid = newsessionid();
+    await runsandboxline(sessionid, "write payload.md the objects store answer");
+    const write = await runsandboxline(sessionid, "gitobj write payload.md");
+    expect(write.exitcode).toBe(0);
+    const writetext = joinedrows(write);
+    expect(writetext).toMatch(/^blob [0-9a-f]{40}$/m);
+    const hash = writetext.split(" ")[1];
+    const read = await runsandboxline(sessionid, ["gitobj read ", hash].join(""));
+    expect(read.exitcode).toBe(0);
+    const readtext = joinedrows(read);
+    expect(readtext).toContain("type blob");
+    expect(readtext).toContain("the objects store answer");
+  });
+
+  it("answers the resolver lanes honestly — the node resolver for the local name, the https resolver refusing without a path", async () => {
+    const sessionid = newsessionid();
+    const local = await runsandboxline(sessionid, "dns localhost");
+    expect(local.exitcode).toBe(0);
+    expect(joinedrows(local)).toContain("localhost");
+    const refused = await runsandboxline(sessionid, "dns no-such-name.invalid");
+    expect(refused.exitcode).toBe(0);
+    const refusedtext = joinedrows(refused);
+    // the honest error answers on every host — never an invented record
+    expect(refusedtext).toMatch(/(localhost|refused|no-such-name)/);
+    const dohanswer = await runsandboxline(sessionid, "doh example.com");
+    expect(dohanswer.exitcode).toBe(0);
+    const dohtext = joinedrows(dohanswer);
+    // the https resolver answers its records or its honest refusal
+    expect(dohtext.length).toBeGreaterThan(0);
+  }, 30_000);
+
+  it("refuses an exec line whose arguments carry a rejected character and answers the known languages for an unknown word", async () => {
+    const sessionid = newsessionid();
+    const refused = await runsandboxline(sessionid, "exec python hello.py a;rm");
+    expect(refused.exitcode).toBe(1);
+    expect(joinedrows(refused)).toContain("rejected character");
+    const unknown = await runsandboxline(sessionid, "exec klingon hello.k");
+    expect(unknown.exitcode).toBe(0);
+    const text = joinedrows(unknown);
+    expect(text).toContain("carries no lane");
+    expect(text).toContain("the polyglot lane answers:");
+  });
+});
+
+describe("the registry the lane reads (the single-source law)", () => {
+  it("answers the engine source through the library bridge — the vendor retired", async () => {
+    // the registry of record lives in the engine (saddle/modalityregistry.ts)
+    // and the lane reads it through the published library specifier
+    // ("@wenathlan/saddle/modalityregistry") the config bridges resolve to
+    // the sibling owner source — the vendored mirror the container-era
+    // constraint once demanded retired the day the family envelope
+    // answered (the 2.0.152 tarball ships the built registry beside the
+    // source, and the family-context build answers the bridge exactly the
+    // way the checkout does). the pin the retirement carries: the module
+    // the lane imports IS the engine module (one owner, never a second
+    // author), and the vendor file stays gone (the tests village keeps
+    // this suite inside the devthink app folder, so the paths resolve by
+    // depth: the engine through the saddle owner folder two levels up,
+    // the retired vendor through the devthink application root one level
+    // up — the container builder runs this suite from the devthink
+    // context alone, and the ownership pin answers everywhere the suite
+    // rides because it asserts the imported module itself, never a file
+    // the container never carries).
+    const enginepath = path.join(import.meta.dirname, "..", "..", "saddle", "modalityregistry.ts");
+    if (existsSync(enginepath)) {
+      // the workspace pin: the bridge the configs carry resolves the
+      // specifier to the sibling owner source the engine battery walks,
+      // so the engine module and the lane module are one module.
+      const enginemodule = (await import(pathToFileURL(enginepath).href)) as typeof import(
+        "@wenathlan/saddle/modalityregistry"
+      );
+      expect(enginemodule.MODALITIES).toBe(MODALITIES);
+      expect(enginemodule.planreport).toBe(planreport);
+    }
+    // the retired vendor stays gone: a resurrected mirror is a second
+    // author the single-source law forbids.
+    await expect(readFile(path.join(import.meta.dirname, "..", "modalities.ts"), "utf8")).rejects.toThrow();
+  });
+
+  it("answers the ninety plan from the engine registry the lane reads", () => {
+    // the engine registry the lane imports answers the same census the
+    // engine battery pins — the two suites hold the same truth from both
+    // ends
+    expect(MODALITYPLANCOUNT).toBe(90);
+    expect(MODALITIES).toHaveLength(90);
+    const report = planreport();
+    expect(report).toEqual({
+      plancount: 90,
+      catalogcount: 90,
+      live: 81,
+      host: 9,
+      planned: 0,
+      plananswered: true,
+    });
+  });
+});

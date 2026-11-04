@@ -12,7 +12,7 @@ import {
   type SchemaField,
   schemaerror,
   schemafromdecision,
-} from "@wenathlan/getry/jsonschema";
+} from "@wenathlan/getry/json";
 
 /** Asserts the action throws and the error answers the checks. */
 function throwswith(action: () => void, checks: (error: unknown) => boolean): void {

@@ -177,17 +177,17 @@ The release workflow builds Bun binaries for Linux x64, macOS arm64 and Windows 
 
 ## Topology
 
-The theme root is the application root and the Sol/ folder carries the component folders (the theme stylesheet lives inside the theme as `Sol/sol.css`); no `src/` and no `client/src/` exists.
+The theme root is the application root and the sol/ folder carries the component folders (the theme stylesheet lives inside the theme as `sol/sol.css`); no `src/` and no `client/src/` exists.
 
 ```text
-the app root carries the theme roots and Sol/ carries the component folders
+the app root carries the theme roots and sol/ carries the component folders
 ├── App.tsx
 ├── capacitor.config.ts
 ├── control.shell.tsx
 ├── gateway.ts
 ├── index.html
 ├── schema.prisma
-├── Sol/
+├── sol/
 │   ├── sol.css
 │   ├── console/
 │   ├── gatewayview/

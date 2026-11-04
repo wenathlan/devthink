@@ -109,7 +109,7 @@ jobs:
       - name: Validate every tracked JSON document of the metadata family
         run: cd devthink && node jsongate.ts
       - name: Verify the protocolv2 api freeze of the frozen contracts
-        run: cd devthink && node apifreeze.ts
+        run: cd devthink && node apifreezegate.ts
       - name: Run the penetration test checklist of the security hardening release
         run: cd devthink && node pentest.ts
       - name: Audit every content security policy of the extension surfaces
@@ -157,13 +157,13 @@ jobs:
       - name: Check the versioned GitHub Actions references of the ladder
         env:
           GH_TOKEN: ${{ github.token }}
-        run: cd devthink && node workflow.ts check
+        run: cd devthink && node workflowupdates.ts check
       - name: Run the runtime policy gate of the declared baselines
-        run: cd devthink && node runtime.ts
+        run: cd devthink && node runtimepolicy.ts
       - name: Run the release workflow npm gate
         run: cd devthink && node npmgate.ts
       - name: Run the workflow yaml and controls gate
-        run: cd devthink && node workflow.ts
+        run: cd devthink && node workflowcheck.ts
       - name: Run the native bridge smoke against a fake host process
         run: cd devthink && node nativesmoke.ts
       - name: Lint every example plan with the compiled CLI
@@ -503,13 +503,10 @@ jobs:
           mkdir -p prisma
           cp "$GITHUB_WORKSPACE/devthink/schema.prisma" prisma/schema.prisma
           cp "$GITHUB_WORKSPACE/devthink/prismaconfig.ts" prismaconfig.ts
-          # the pinned dependencies law: the prisma tarball rides an exact
-          # version verified by its sha256 (npm carries no digest channel,
-          # so the checksum gate is the pin — the code-scanning law).
-          curl -fsSLo prisma.tgz "https://registry.npmjs.org/prisma/-/prisma-7.10.0.tgz"
-          echo "558c963a273a0ebbe52b1fb33d27f7d6503a52e5de0c53447c0a63e41fef4b40  prisma.tgz" | sha256sum -c -
-          npm install --no-save ./prisma.tgz
-          rm prisma.tgz
+          # the pinned-dependencies law of the supply-chain gate: the pinned
+          # prisma@7.10.0 CLI provisions through bun (the registry answers
+          # the integrity), and the npx pair resolves it from the tree.
+          bun add prisma@7.10.0
           npx prisma db push --config prismaconfig.ts
           npx prisma generate --config prismaconfig.ts
           DEVTHINK_CONSUMER_DB=1 node consumersmoke.mts

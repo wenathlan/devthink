@@ -14,7 +14,7 @@ import {
   policyerror,
   policyfor,
   reviewrollout,
-} from "../jsonpolicy.ts";
+} from "../json.ts";
 
 /** Asserts the action throws and the error answers the checks. */
 function throwswith(action: () => void, checks: (error: unknown) => boolean): void {

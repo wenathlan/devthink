@@ -24,10 +24,10 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "vite/client"],
     "paths": {
-      "@/*": ["./Sol/*", "./*"],
+      "@/*": ["./sol/*", "./*"],
       "@saddle/isolation": ["./isolation.ts"]
     }
   },
-  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx", "docs/example-*.ts"],
+  "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx", "docs/example-*.ts"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "coverage", "web", "tests", "build"]
 }

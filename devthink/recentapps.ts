@@ -6,7 +6,7 @@
  * head) and degrades to an empty list when storage is unavailable, so the
  * Start menu simply falls back to its pinned grid. Reading returns the
  * stored ids in most-recent-first order; the caller maps them onto the
- * shared app catalog (Sol/shell/appregistry.ts) — this module never imports
+ * shared app catalog (sol/shell/appregistry.ts) — this module never imports
  * the catalog and never hardcodes app data.
  *
  * The v2 lane adds the open timestamp each entry carries (the

@@ -20,12 +20,12 @@ export default defineConfig({
 
       /** the storage lane bridge of the ownership law: the app's sqlite
        * mechanism rides the vault factory through the published library
-       * specifier ("@wenathlan/vault/storagelane"), and this bridge resolves
+       * specifier ("@wenathlan/vault/storage"), and this bridge resolves
        * the specifier to the monorepo source the sibling engine carries —
        * the bootstrap and the helpers are never duplicated inside cadria.
        * the entry retires when the published envelope carries the built
        * storage lane. */
-      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
+      "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
 
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published
@@ -35,17 +35,21 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * workload law. */
       "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
-      /** the engine ownership bridge of the audio family: the analysis
+      /** the engine ownership bridges of the audio family: the analysis
        * seats the wave-1 pipeline rides (the descriptor contract, the pcm
-       * decode layer, the feature fusion and the orchestrated report — the
-       * whole audio domain the keyword fold retired into the one file) live
+       * decode layer, the feature fusion and the orchestrated report) live
        * in the katexis engine of the debonair sibling — the audio domain
        * has one owner and cadria consumes it through the published library
-       * specifier, never through a local duplicate. this bridge resolves
-       * the specifier to the monorepo source the sibling carries; the
-       * entry retires when the published envelope carries the built
+       * specifiers, never through a local duplicate. the audio leaves
+       * retired into the one keyword file (debonair/audio.ts), so every
+       * audio specifier of the family resolves to the consolidated file;
+       * each entry retires when the published envelope carries the built
        * module. */
       "@wenathlan/debonair/audio": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
+      "@wenathlan/debonair/audioattributes": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
+      "@wenathlan/debonair/audiodecode": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
+      "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
+      "@wenathlan/debonair/audiopipeline": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
     },
   },
   test: {

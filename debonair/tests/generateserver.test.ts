@@ -34,8 +34,8 @@ import type {
   RenderJobValue,
 } from "../gatewayapi.ts";
 import { dispatch, matchroute, routes, startRenderJob } from "../gatewayapi.ts";
-import { serializePattern } from "../patternenums.ts";
-import type { GenreProfile } from "../patternminer.ts";
+import { serializePattern } from "../pattern.ts";
+import type { GenreProfile } from "../pattern.ts";
 import {
   getrenderjob,
   getrendertrack,
@@ -45,8 +45,8 @@ import {
   publishrendertrack,
   renderjobseat,
   rendertrackseat,
-} from "../renderjobs.ts";
-import type { RenderTrackRow } from "../renderworker.ts";
+} from "../render.ts";
+import type { RenderTrackRow } from "../render.ts";
 
 /** The pinned base tick the clocks and the mints walk from. */
 const BASE_TICK = 1_700_000_000_000;

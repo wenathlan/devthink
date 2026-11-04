@@ -131,15 +131,15 @@ the armory catalog (`WEAPONCATALOG`, 10 weapons):
 
 ## sol subapps (the web surface)
 
-- `Sol/Sol.tsx` — the theme anchor and route table: `/intro`, `/onboarding`, then the shell with `/`, `/match`, `/ranking`, `/weapons`, `/world`, `/404` and the catch-all.
-- `Sol/shell` — the application window hosting every fundamental route.
-- `Sol/intro` — the animated first-run splash.
-- `Sol/onboarding` — the three-step first-run frames.
-- `Sol/home` — the gated home (entry gate decides intro → onboarding → home).
-- `Sol/match`, `Sol/ranking`, `Sol/weapons`, `Sol/world` — the four game domain pages.
-- `Sol/notfound` — the 404 and catch-all face.
-- `Sol/toast` — the toast surface.
-- `Sol/wingets` — the shared widgets: `Constructionface` (the in-construction face), `HomeEntrygate`, `HomeScope`, `ShellBrandmark`.
+- `sol/Sol.tsx` — the theme anchor and route table: `/intro`, `/onboarding`, then the shell with `/`, `/match`, `/ranking`, `/weapons`, `/world`, `/404` and the catch-all.
+- `sol/shell` — the application window hosting every fundamental route.
+- `sol/intro` — the animated first-run splash.
+- `sol/onboarding` — the three-step first-run frames.
+- `sol/home` — the gated home (entry gate decides intro → onboarding → home).
+- `sol/match`, `sol/ranking`, `sol/weapons`, `sol/world` — the four game domain pages.
+- `sol/notfound` — the 404 and catch-all face.
+- `sol/toast` — the toast surface.
+- `sol/wingets` — the shared widgets: `Constructionface` (the in-construction face), `HomeEntrygate`, `HomeScope`, `ShellBrandmark`.
 
 ## current construction state
 

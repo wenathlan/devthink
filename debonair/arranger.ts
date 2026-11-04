@@ -6,10 +6,10 @@
 // (timelinemodel) and the mixing desk rows (mixergraph strips). Every random
 // decision runs through the engine's seeded mulberry32 — same prompt, same
 // seed, same take. Zero audio and zero consumer data: the browser transport
-// (Sol/studio/audioengine.ts) and the tests read the same plan. Pure and
+// (sol/studio/audioengine.ts) and the tests read the same plan. Pure and
 // multi-mode — browser and node alike.
 
-import { GENRES, type GenreStyle, matchGenre, pickBpm } from "./genrematrix.ts";
+import { GENRES, type GenreStyle, matchGenre, pickBpm } from "./genre.ts";
 import { type ChordEvent, generateProgression, hashSeed, mulberry32, PROGRESSION_SETS } from "./harmonyengine.ts";
 import type { MixerStripRow } from "./katexis.ts";
 import { MASTERING, trackNameFromPrompt } from "./katexis.ts";

@@ -6,7 +6,7 @@
 // and the wall-clock estimate pays the slowest worker.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { estimateWallClock, planSlices, sliceAt, sliceProgress } from "../versawaseslices.ts";
+import { estimateWallClock, planSlices, sliceAt, sliceProgress } from "../versawase.ts";
 import { TICKS_PER_SECOND, tickofframe } from "../timeticks.ts";
 
 describe("versawaseslices", () => {

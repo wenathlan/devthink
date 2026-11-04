@@ -19,10 +19,11 @@ pnpm dev
 
 # The family contract (wave 6-a)
 
-- `family.ts` — the single table of the eight siblings beside argan with the
-  spec §12 accent of each one; the shell rail foot, the landing footer and
-  `tests/family.test.ts` all consume this one table.
-- `familyurl.ts` — the verbatim relative-url contract (`"../" + slug + "/"`)
+- `family.ts` — the family keyword file (the fold law): the single table of
+  the eight siblings beside argan with the spec §12 accent of each one — the
+  shell rail foot, the landing footer and `tests/family.test.ts` all consume
+  this one table — plus the retired `familyurl.ts` arm riding as the
+  familyurl lane: the verbatim relative-url contract (`"../" + slug + "/"`)
   that keeps every cross-app link mount-proof.
 - `restore:entry` — the entry-face guard: a no-op while `index.html` rides the
   canonical source face (the `./App.tsx` script plus the font triad link), a

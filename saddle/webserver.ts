@@ -64,15 +64,15 @@ import {
   getmig,
 } from './sandbox.ts';
 import type { SandboxFs, SandboxState } from './sandbox.ts';
-import { resolvesandboxspec } from './sandboxprofile.ts';
-import type { resolvedsandboxspec } from './sandboxprofile.ts';
-import { specenvlimits } from './sandboxenvprofile.ts';
+import { resolvesandboxspec } from './sandbox.ts';
+import type { resolvedsandboxspec } from './sandbox.ts';
+import { specenvlimits } from './sandbox.ts';
 import {
   accountlimitsfromenv,
   createaccountledger,
   quotaerror,
   usagefromrows,
-} from './sandboxquota.ts';
+} from './sandbox.ts';
 import store from './db.ts';
 import type { DbError, SandboxRow, WorkspaceUsage } from './db.ts';
 import {

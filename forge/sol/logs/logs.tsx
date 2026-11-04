@@ -1,0 +1,184 @@
+/**
+ * logs page anchor — layer 3 of the anchor architecture.
+ * The file carrying the folder's own name is the path manager of the page:
+ * it mounts the page and is consumed only by the theme anchor (sol/Sol.tsx).
+ *
+ * The logs page — the tail of a run, replayed deterministically: one integer
+ * seed unrolls the whole line stream (runstream.ts), the player walks it
+ * on a timer, prefers-reduced-motion renders the full stream at once. The
+ * stream says what it is: a seeded replay of a run on the saddle engine
+ * boundary — never a live floor tail. Clocks, census and outcome are
+ * tabular and pinned by the tests.
+ */
+
+import {
+  ArrowRotateCounterclockwiseRegular,
+  PauseRegular,
+  PlayFilled,
+  WindowConsoleRegular,
+} from "@fluentui/react-icons";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  formatLogTime,
+  linesWithin,
+  logCensus,
+  logDuration,
+  logOutcome,
+  logText,
+  runLogLines,
+} from "../../runstream.ts";
+import { labelfill, label } from "../../labels";
+import { EmptyState } from "../wingets";
+
+/** the seed of the replayed run (shown on the page, pinned by the tests) */
+export const LOG_SEED = 421337;
+/** the replay cadence: the wall clock multiplier over the run clock */
+const PLAY_MS = 120;
+
+/** the seeds the page offers as one-click replays (stable, memorable) */
+const PRESET_SEEDS: readonly number[] = [421337, 90012, 5124, 77031];
+
+/** The logs page: the deterministic replay of one run. */
+export default function Logs() {
+  const [seed, setSeed] = useState(LOG_SEED);
+  const [playing, setPlaying] = useState(true);
+  const [clock, setClock] = useState(0);
+  const timer = useRef<number | null>(null);
+
+  const lines = useMemo(() => runLogLines(seed), [seed]);
+  const duration = useMemo(() => logDuration(lines), [lines]);
+  const visible = useMemo(() => linesWithin(lines, clock), [lines, clock]);
+  const outcome = useMemo(() => logOutcome(lines), [lines]);
+  const census = useMemo(() => logCensus(visible), [visible]);
+  const done = clock >= duration;
+
+  /** the replay clock: one interval tick advances the run clock; reduced
+   * motion never starts the timer (the full stream renders at once). */
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      setClock(duration);
+      return;
+    }
+    if (!playing) return;
+    timer.current = window.setInterval(() => {
+      setClock((value) => Math.min(duration, value + 180));
+    }, PLAY_MS);
+    return () => {
+      if (timer.current !== null) window.clearInterval(timer.current);
+    };
+  }, [playing, duration]);
+
+  /** restarts the replay from zero on the current seed */
+  function replay() {
+    setClock(0);
+    setPlaying(true);
+  }
+
+  return (
+    <main className="shell fl-page">
+      <header className="pagehead">
+        <p className="pagehead__eyebrow">{label("logs.eyebrow")}</p>
+        <h1 className="pagehead__title">{label("logs.title")}</h1>
+        <p className="pagehead__lede">{labelfill("logs.lede", { seed: String(seed) })}</p>
+        <div className="pagehead__actions">
+          <button
+            type="button"
+            className="btn"
+            onClick={() => (done ? replay() : setPlaying((value) => !value))}
+            aria-pressed={playing && !done}
+          >
+            {done ? (
+              <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
+            ) : playing ? (
+              <PauseRegular fontSize={14} aria-hidden="true" />
+            ) : (
+              <PlayFilled fontSize={14} aria-hidden="true" />
+            )}
+            {done ? label("logs.replay") : playing ? label("logs.pause") : label("logs.resume")}
+          </button>
+          <button type="button" className="btn secondary" onClick={replay}>
+            <ArrowRotateCounterclockwiseRegular fontSize={14} aria-hidden="true" />
+            {label("logs.restart")}
+          </button>
+        </div>
+      </header>
+
+      <section className="fl-console" aria-label={label("logs.console.aria")}>
+        <div className="fl-console__seeds">
+          <p className="fl-console__head">
+            <WindowConsoleRegular fontSize={13} aria-hidden="true" />
+            {label("logs.seeds")}
+          </p>
+          <div className="fl-seedrow">
+            {PRESET_SEEDS.map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                className="fl-seed"
+                aria-pressed={preset === seed}
+                onClick={() => {
+                  setSeed(preset);
+                  setClock(0);
+                  setPlaying(true);
+                }}
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
+        </div>
+        <dl className="fl-console__facts">
+          <div className="fl-fact">
+            <dt>{label("logs.factClock")}</dt>
+            <dd>
+              {formatLogTime(clock)} / {formatLogTime(duration)}
+            </dd>
+          </div>
+          <div className="fl-fact">
+            <dt>{label("logs.factLines")}</dt>
+            <dd>
+              {visible.length} / {lines.length}
+            </dd>
+          </div>
+          <div className="fl-fact">
+            <dt>{label("logs.factCensus")}</dt>
+            <dd>{labelfill("logs.censusValue", { info: String(census.info), warn: String(census.warn), error: String(census.error) })}</dd>
+          </div>
+          <div className="fl-fact">
+            <dt>{label("logs.factOutcome")}</dt>
+            <dd data-outcome={outcome}>{outcome}</dd>
+          </div>
+        </dl>
+      </section>
+
+      {lines.length === 0 ? (
+        <EmptyState icon={WindowConsoleRegular} title={label("logs.empty.title")} line={label("logs.empty.line")} />
+      ) : (
+        <section className="fl-stream" aria-label={label("logs.stream.aria")} aria-live="polite">
+          <div className="fl-stream__head" aria-hidden="true">
+            <span>{label("logs.head.clock")}</span>
+            <span>{label("logs.head.level")}</span>
+            <span>{label("logs.head.line")}</span>
+          </div>
+          <ol className="fl-stream__lines">
+            {visible.map((line) => (
+              <li key={`${line.t}-${line.text}`} className="fl-line" data-level={line.level}>
+                <span className="fl-line__clock">{formatLogTime(line.t)}</span>
+                <span className="fl-line__level">{line.level}</span>
+                <span className="fl-line__text">{line.text}</span>
+              </li>
+            ))}
+          </ol>
+          <p className="fl-stream__cursor" data-done={done ? "true" : "false"}>
+            {done ? label("logs.cursorDone") : label("logs.cursorTailing")}
+          </p>
+        </section>
+      )}
+
+      <p className="fr-footnote">
+        {labelfill("logs.footnote", { count: String(logText(lines).split("\n").length), seed: String(seed) })}
+      </p>
+    </main>
+  );
+}

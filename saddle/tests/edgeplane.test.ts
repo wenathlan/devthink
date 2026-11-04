@@ -23,102 +23,102 @@ import { localstorage } from "../virtual.ts";
  * wave beside the five wiring wave seats), the seven virtual hardware
  * lanes and the ten base live lanes. */
 const LIVELANES = [
-  "sandbox-bubblewrap",
-  "sandbox-nsjail",
-  "sandbox-chroot",
-  "container-podman",
-  "container-containerd",
-  "container-runc",
-  "container-crun",
-  "container-max",
-  "container-lite",
-  "container-ghcr",
-  "runtime-clr",
-  "runtime-workerd",
-  "screen-xvfb",
-  "screen-wayland",
-  "mobile-termux",
-  "build-bazel",
-  "build-buck",
-  "build-turborepo",
-  "ci-actions",
-  "ci-gitlab",
-  "network-tor",
-  "network-i2p",
-  "network-wireguard",
-  "storage-minio",
-  "storage-garage",
-  "ram-tmpfs",
-  "ram-mmap",
-  "ram-overlayfs",
-  "ram-loopram",
-  "ram-gitram",
-  "ram-zram",
-  "ram-zswap",
-  "ram-swapfile",
-  "delivery-cdn",
-  "delivery-wss",
-  "delivery-webtransport",
-  "delivery-grpc",
-  "delivery-capnproto",
-  "storage-libsql",
-  "storage-mysql",
-  "storage-postgres",
-  "storage-s3",
-  "browser-webcontainer",
-  "local-optin",
-  "runner-serverless",
-  "fs-gitobjects",
-  "storage-sqlite",
-  "network-dns",
-  "network-doh",
-  "virtual-full",
-  "virtual-vgpu",
-  "virtual-screen",
-  "virtual-drivers",
-  "virtual-kvm",
-  "microvm-gpuless",
-  "gpu-virgl",
-  "container-docker",
-  "fs-vfs",
-  "runner-node",
-  "runner-bun",
-  "runner-wasm",
-  "runner-babel",
-  "runner-webpack",
-  "runner-universal",
-  "language-python",
-  "language-java",
+  "sandboxbubblewrap",
+  "sandboxnsjail",
+  "sandboxchroot",
+  "containerpodman",
+  "containercontainerd",
+  "containerrunc",
+  "containercrun",
+  "containermax",
+  "containerlite",
+  "containerghcr",
+  "runtimeclr",
+  "runtimeworkerd",
+  "screenxvfb",
+  "screenwayland",
+  "mobiletermux",
+  "buildbazel",
+  "buildbuck",
+  "buildturborepo",
+  "ciactions",
+  "cigitlab",
+  "networktor",
+  "networki2p",
+  "networkwireguard",
+  "storageminio",
+  "storagegarage",
+  "ramtmpfs",
+  "rammmap",
+  "ramoverlayfs",
+  "ramloopram",
+  "ramgitram",
+  "ramzram",
+  "ramzswap",
+  "ramswapfile",
+  "deliverycdn",
+  "deliverywss",
+  "deliverywebtransport",
+  "deliverygrpc",
+  "deliverycapnproto",
+  "storagelibsql",
+  "storagemysql",
+  "storagepostgres",
+  "storages3",
+  "browserwebcontainer",
+  "localoptin",
+  "runnerserverless",
+  "fsgitobjects",
+  "storagesqlite",
+  "networkdns",
+  "networkdoh",
+  "virtualfull",
+  "virtualvgpu",
+  "virtualscreen",
+  "virtualdrivers",
+  "virtualkvm",
+  "microvmgpuless",
+  "gpuvirgl",
+  "containerdocker",
+  "fsvfs",
+  "runnernode",
+  "runnerbun",
+  "runnerwasm",
+  "runnerbabel",
+  "runnerwebpack",
+  "runneruniversal",
+  "languagepython",
+  "languagejava",
 ] as const;
 
 /** the twenty-four host lane ids the pinned contract charges: the
  * twelve wiring wave host binary seats in alphabetical order, the six
  * heavyweight probes and the six base host lanes. */
 const HOSTLANES = [
-  "build-make",
-  "build-ninja",
-  "language-cargo",
-  "language-dotnet",
-  "language-lua",
-  "language-nim",
-  "language-php",
-  "language-rust",
-  "language-v",
-  "language-zig",
-  "runner-deno",
-  "runner-wasi",
-  "browser-server",
-  "mobile-capacitor",
-  "mobile-postmarketos",
-  "pod-session",
-  "confidential-sevsnp",
-  "confidential-tdx",
-  "container-runsc",
-  "emulator-qemu",
-  "microvm-firecracker",
-  "runtime-jvm",
-  "language-go",
-  "language-ruby",
+  "buildmake",
+  "buildninja",
+  "languagecargo",
+  "languagedotnet",
+  "languagelua",
+  "languagenim",
+  "languagephp",
+  "languagerust",
+  "languagev",
+  "languagezig",
+  "runnerdeno",
+  "runnerwasi",
+  "browserserver",
+  "mobilecapacitor",
+  "mobilepostmarketos",
+  "podsession",
+  "confidentialsevsnp",
+  "confidentialtdx",
+  "containerrunsc",
+  "emulatorqemu",
+  "microvmfirecracker",
+  "runtimejvm",
+  "languagego",
+  "languageruby",
 ] as const;
 
 /** the minimal wasm module the lane must instantiate and call:
@@ -150,16 +150,16 @@ describe("the edge plane answers the visitor law", () => {
     // resolves only where the toolchain installed it) — the report never
     // pins a host it did not probe
     const report = edgelandesreport();
-    assert.equal(report["runner-node"]?.present, true);
-    assert.equal(report["runner-wasm"]?.present, true);
-    assert.equal(report["runner-universal"]?.present, true);
+    assert.equal(report["runnernode"]?.present, true);
+    assert.equal(report["runnerwasm"]?.present, true);
+    assert.equal(report["runneruniversal"]?.present, true);
     for (const id of [
-      "runner-bun",
-      "language-python",
-      "language-java",
-      "runner-babel",
-      "container-docker",
-      "runner-webpack",
+      "runnerbun",
+      "languagepython",
+      "languagejava",
+      "runnerbabel",
+      "containerdocker",
+      "runnerwebpack",
     ]) {
       assert.equal(typeof report[id]?.present, "boolean", `the lane ${id} answers its host honestly`);
     }
@@ -182,12 +182,12 @@ describe("the edge plane answers the visitor law", () => {
 
   it("executes the runner-node lane in process through node:vm", async () => {
     const result = await runonedge({
-      modality: "runner-node",
+      modality: "runnernode",
       code: "const answer = inputs.n * 7; console.log('node lane:' + answer); answer",
       inputs: { n: 6 },
     });
     assert.equal(result.status, "succeeded");
-    assert.equal(result.modality, "runner-node");
+    assert.equal(result.modality, "runnernode");
     assert.equal(result.lane, "node:vm");
     assert.ok(result.stdout?.includes("node lane:42"));
     assert.ok(result.stdout?.includes("42"), "the completion value rides the last stdout line");
@@ -195,21 +195,21 @@ describe("the edge plane answers the visitor law", () => {
   });
 
   it("executes the runner-bun lane through the host runtime", async () => {
-    const result = await runonedge({ modality: "runner-bun", code: "console.log('bun lane:' + (6 * 7))" });
+    const result = await runonedge({ modality: "runnerbun", code: "console.log('bun lane:' + (6 * 7))" });
     assert.equal(result.status, "succeeded");
     assert.equal(result.lane, "bun");
     assert.ok(result.stdout?.includes("bun lane:42"));
   });
 
   it("executes the language-python lane through the host runtime", async () => {
-    const result = await runonedge({ modality: "language-python", code: "print('python lane:' + str(6 * 7))" });
+    const result = await runonedge({ modality: "languagepython", code: "print('python lane:' + str(6 * 7))" });
     assert.equal(result.status, "succeeded");
     assert.equal(result.lane, "python3");
     assert.ok(result.stdout?.includes("python lane:42"));
   });
 
   it("executes the runner-universal lane through bash", async () => {
-    const result = await runonedge({ modality: "runner-universal", code: 'echo "bash lane:$((6 * 7))"' });
+    const result = await runonedge({ modality: "runneruniversal", code: 'echo "bash lane:$((6 * 7))"' });
     assert.equal(result.status, "succeeded");
     assert.equal(result.lane, "bash");
     assert.ok(result.stdout?.includes("bash lane:42"));
@@ -223,7 +223,7 @@ describe("the edge plane answers the visitor law", () => {
       "  }",
       "}",
     ].join("\n");
-    const result = await runonedge({ modality: "language-java", code });
+    const result = await runonedge({ modality: "languagejava", code });
     assert.equal(result.status, "succeeded");
     assert.equal(result.lane, "java");
     assert.ok(result.stdout?.includes("java lane:42"));
@@ -234,7 +234,7 @@ describe("the edge plane answers the visitor law", () => {
     const check = new WebAssembly.Instance(new WebAssembly.Module(WASMMODULEBYTES));
     assert.equal((check.exports.answer as () => number)(), 42);
     const result = await runonedge({
-      modality: "runner-wasm",
+      modality: "runnerwasm",
       code: Buffer.from(WASMMODULEBYTES).toString("base64"),
     });
     assert.equal(result.status, "succeeded");
@@ -246,7 +246,7 @@ describe("the edge plane answers the visitor law", () => {
   // skips where the toolchain is absent instead of pretending it exists
   it.skipIf(!probemodule("@babel/core"))("executes the runner-babel lane through transform and vm", async () => {
     const result = await runonedge({
-      modality: "runner-babel",
+      modality: "runnerbabel",
       code: "const answer = 6 * 7; console.log('babel lane:' + answer); answer",
     });
     assert.equal(result.status, "succeeded");
@@ -258,7 +258,7 @@ describe("the edge plane answers the visitor law", () => {
     const dir = await mkdtemp(join(tmpdir(), "saddleedgetest"));
     try {
       const storage = localstorage(dir);
-      const result = await runonedge({ modality: "runner-node", code: "console.log('artifact lane:42')" }, { storage });
+      const result = await runonedge({ modality: "runnernode", code: "console.log('artifact lane:42')" }, { storage });
       assert.equal(result.status, "succeeded");
       assert.ok(result.artifact, "the run committed an artifact");
       assert.equal(result.artifact?.mime, "text/plain;charset=utf-8");
@@ -285,7 +285,7 @@ describe("the edge plane answers the visitor law", () => {
     // roundtripped ramdisk report (the rehearsal map stays importable
     // directly, the dispatch never substitutes it for the real lane)
     const ramrun = await runonedge({
-      modality: "ram-tmpfs",
+      modality: "ramtmpfs",
       code: '{"mount":"tmpfs","files":{"lane.txt":"68656c6c6f"}}',
     });
     if (ramrun.status === "failed") {
@@ -300,19 +300,19 @@ describe("the edge plane answers the visitor law", () => {
     }
     // the consent gate refuses without the declared consent — the visitor
     // machine law the local-optin lane guards
-    const refused = await runonedge({ modality: "local-optin", code: "{}" });
+    const refused = await runonedge({ modality: "localoptin", code: "{}" });
     assert.equal(refused.status, "failed");
     assert.equal(refused.error?.code, "LOCAL_CONSENT_REQUIRED");
     // the virtual hardware lanes compose the machine payloads: the full
     // machine answers its report composed, never booted
-    const machinerun = await runonedge({ modality: "virtual-drivers", code: "{}" });
+    const machinerun = await runonedge({ modality: "virtualdrivers", code: "{}" });
     assert.equal(machinerun.status, "succeeded", JSON.stringify(machinerun.error));
     // the heavyweight lanes answer their probe honestly (present or
     // absent, never a faked boot)
-    const heavy = await runonedge({ modality: "pod-session", code: "" });
+    const heavy = await runonedge({ modality: "podsession", code: "" });
     assert.ok(heavy.status === "succeeded" || heavy.error?.code === "HOST_RUNTIME_ABSENT");
     // the host binary lanes name their runtime when absent
-    const jail = await runonedge({ modality: "sandbox-bubblewrap", code: "echo hi" });
+    const jail = await runonedge({ modality: "sandboxbubblewrap", code: "echo hi" });
     assert.ok(jail.status === "succeeded" || jail.error?.code === "HOST_RUNTIME_ABSENT", JSON.stringify(jail.error));
   });
 
@@ -326,12 +326,12 @@ describe("the edge plane answers the visitor law", () => {
     const { edgelaneexecutors } = await import("../edgelandes.ts");
     const { edgelaneexecutorshost } = await import("../edgelandes.ts");
     for (const id of [
-      "storage-s3",
-      "storage-libsql",
-      "storage-mysql",
-      "ram-tmpfs",
-      "ram-zram",
-      "ram-swapfile",
+      "storages3",
+      "storagelibsql",
+      "storagemysql",
+      "ramtmpfs",
+      "ramzram",
+      "ramswapfile",
     ]) {
       assert.strictEqual(
         edgelaneexecutorsall[id],
@@ -339,7 +339,7 @@ describe("the edge plane answers the visitor law", () => {
         `the shared id ${id} dispatches the real wire executor`,
       );
     }
-    for (const id of ["runtime-clr", "container-max", "container-lite", "container-ghcr"]) {
+    for (const id of ["runtimeclr", "containermax", "containerlite", "containerghcr"]) {
       assert.strictEqual(
         edgelaneexecutorsall[id],
         edgelaneexecutorshost[id as keyof typeof edgelaneexecutorshost],
@@ -360,9 +360,9 @@ describe("the edge plane answers the visitor law", () => {
     // now rides the table, so the honest answer is the runtime's own: a
     // real run on a deno-carrying host, the coded absence naming deno on
     // a host without it
-    const record = getmodality("runner-deno");
+    const record = getmodality("runnerdeno");
     if (record?.state !== "live") return; // the registry census moved again — nothing to prove here
-    const run = await runonedge({ modality: "runner-deno", code: "console.log('deno lane:' + (6 * 7))" });
+    const run = await runonedge({ modality: "runnerdeno", code: "console.log('deno lane:' + (6 * 7))" });
     if (run.status === "succeeded") {
       assert.equal(run.lane, "deno");
       assert.ok(run.stdout?.includes("deno lane:42"), "the deno run answers its program");
@@ -373,7 +373,7 @@ describe("the edge plane answers the visitor law", () => {
   });
 
   it("reports the absent host runtime of a host lane honestly", async () => {
-    const runsc = await runonedge({ modality: "container-runsc", code: "" });
+    const runsc = await runonedge({ modality: "containerrunsc", code: "" });
     assert.equal(runsc.status, "failed");
     assert.equal(runsc.error?.code, "HOST_RUNTIME_ABSENT");
     assert.ok(runsc.error?.message.includes("runsc"), "the message names the runtime");
@@ -383,7 +383,7 @@ describe("the edge plane answers the visitor law", () => {
     // docker answers run-exited-nonzero, an absent docker refuses with
     // host-runtime-absent), so the assertion follows the probe instead
     // of pinning a host the lane never saw
-    const docker = await runonedge({ modality: "container-docker", code: "" });
+    const docker = await runonedge({ modality: "containerdocker", code: "" });
     if (docker.status === "failed") {
       assert.ok(
         docker.error?.code === "HOST_RUNTIME_ABSENT" || docker.error?.code === "RUN_EXITED_NONZERO",

@@ -39,14 +39,14 @@ import { mintid } from "./bigintids.ts";
 import { type BlobResult, blobidvalid, gatewayblobstore } from "./blobstore.ts";
 import { composeSimilar } from "./composer.ts";
 import type { GatewayProfileRow, RenderJobValue, VitrineTrackValue, VitrineValue } from "./gatewayapi.ts";
-import { matchGenre } from "./genrematrix.ts";
+import { matchGenre } from "./genre.ts";
 import { gatewaylane, INGEST_CALL_TIMEOUT_MS, type IngestClientDeps, type IngestClientResult } from "./ingest.ts";
 import { hostallowed } from "./onboardingstate.ts";
-import type { PatternProject } from "./patternenums.ts";
-import { serializePattern, validatePatternProject } from "./patternenums.ts";
-import type { GenreProfile, IngestDocumentWithId } from "./patternminer.ts";
-import { mineGenre, PROFILE_GENRE_KEYS, ProfileError, validateGenreProfile } from "./patternminer.ts";
-import type { RenderTrackRow } from "./renderworker.ts";
+import type { PatternProject } from "./pattern.ts";
+import { serializePattern, validatePatternProject } from "./pattern.ts";
+import type { GenreProfile, IngestDocumentWithId } from "./pattern.ts";
+import { mineGenre, PROFILE_GENRE_KEYS, ProfileError, validateGenreProfile } from "./pattern.ts";
+import type { RenderTrackRow } from "./render.ts";
 import { singPattern } from "./vocalsynth.ts";
 
 /** @section codes — the typed failure branch */

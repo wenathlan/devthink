@@ -22,7 +22,7 @@
 // lane of ingest.ts fills the seats), no storage, no synthesis. Pure and
 // multi-mode — the same call runs in the browser and in node.
 
-import { NOTE_NAMES, PATTERN_SCALE_NAMES, PATTERN_VOICES } from "./patternenums.ts";
+import { NOTE_NAMES, PATTERN_SCALE_NAMES, PATTERN_VOICES } from "./pattern.ts";
 
 // ---------------------------------------------------------------------------
 // the schema id, the canon rate and the pinned counts (the contract numbers)

@@ -14,12 +14,12 @@ function read(path: string): string {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
-const CSS = read("../Sol/sol.css");
+const CSS = read("../sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../Sol/wingets/ShellBrandmark.tsx");
-const SHELL = read("../Sol/shell/Shell.tsx");
+const MARK = read("../sol/wingets/ShellBrandmark.tsx");
+const SHELL = read("../sol/shell/Shell.tsx");
 const TOML = read("../devthink.toml");
-const SOL = read("../Sol/Sol.tsx");
+const SOL = read("../sol/Sol.tsx");
 
 const BANNED = [/3b82f6/i, /2563eb/i, /f97316/i];
 
@@ -132,10 +132,10 @@ describe("design contract", () => {
   });
 
   it("mounts the flow law (the entry gate on /, intro and onboarding in the chain)", () => {
-    const GATE = read("../Sol/wingets/HomeEntrygate.tsx");
-    const HOME = read("../Sol/home/home.tsx");
-    const INTRO = read("../Sol/intro/intro.tsx");
-    const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
+    const GATE = read("../sol/wingets/HomeEntrygate.tsx");
+    const HOME = read("../sol/home/home.tsx");
+    const INTRO = read("../sol/intro/intro.tsx");
+    const ONBOARDING = read("../sol/onboarding/onboarding.tsx");
     assert.match(GATE, /navigate\("\/intro"/, "an unseen intro navigates to the splash");
     assert.match(GATE, /navigate\("\/onboarding"/, "an unseen onboarding navigates to the walk");
     assert.match(HOME, /EntryGate/, "the home anchor consults the gate");
@@ -175,7 +175,7 @@ describe("design contract", () => {
 
   it("links the family row from the one table (zero drift between rail and landing)", () => {
     assert.match(SHELL, /from "\.\.\/\.\.\/family\.ts"/, "the shell reads family.ts");
-    const HOME = read("../Sol/home/home.tsx");
+    const HOME = read("../sol/home/home.tsx");
     assert.match(HOME, /familyrow/, "the landing footer reads the same table");
   });
 });

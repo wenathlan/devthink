@@ -80,6 +80,10 @@ declare module "@wenathlan/saddle/modalityregistry" {
   /** the plan line the owner charged (the ninety modalities). */
   export const MODALITYPLANCOUNT: 90;
 
+  /** the count the catalog answers — derived from the records' real length,
+   * never a hardcoded line (the wave/saddlemod2 law). */
+  export const MODALITY_COUNT: number;
+
   /** the catalog: every modality record, frozen, in catalog order. */
   export const MODALITIES: readonly ModalityRecord[];
 

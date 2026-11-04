@@ -44,7 +44,7 @@ import {
   setIdentityUserId,
 } from "./account.js";
 import type { ChatEvent } from "@wenathlan/getry/streaming";
-import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./Sol/wingets/ConsoleTerminalui.js";
+import { banner, box, colors, formatConfig, formatEvent, statusBar } from "./sol/wingets/ConsoleTerminalui.js";
 import { startServer } from "./server.js";
 
 export type ParsedArgs = { flags: Record<string, string | boolean>; positional: string[] };
@@ -531,7 +531,7 @@ function handleRoutes(): void {
 async function interactive(runtime: ReturnType<typeof loadRuntime>): Promise<void> {
   if (process.stdin.isTTY && process.stdout.isTTY && process.env.DEVTHINK_PLAIN !== "1") {
     try {
-      const { startTerminalWorkspace } = await import("./Sol/wingets/ConsoleTerminalui.js");
+      const { startTerminalWorkspace } = await import("./sol/wingets/ConsoleTerminalui.js");
       return await startTerminalWorkspace(runtime, version(), (prompt, current, onEvent) =>
         runChat(prompt, { flags: { mode: runtime.config.mode || "chat" }, positional: [] }, runtime, current, {
           onEvent,
@@ -632,7 +632,7 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
   if (command === "provider") {
     const family = argv.slice(argv.indexOf("provider") + 1);
     if (family.length === 0) return printHelp();
-    const consolemodule = await import("@wenathlan/getry/providercli");
+    const consolemodule = await import("@wenathlan/getry/providers");
     return void (await consolemodule.runproviderfamily(family));
   }
   if (
@@ -797,7 +797,7 @@ function document(): string {
           "the same tsx rides the browser and the terminal: the build converts the widgets, the tokens stay one, the platforms split only on dpi.",
         actions: "explore",
         children: [
-          "the shell (Sol/wingets/ShellControlshell.tsx) converted by the terminal lane of build.ts",
+          "the shell (sol/wingets/ShellControlshell.tsx) converted by the terminal lane of build.ts",
           "flex → rows and columns · colors → ansi · hairlines → ─ rules",
         ],
       },

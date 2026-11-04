@@ -405,7 +405,7 @@ saddle/*.woff2
 # the probe artifacts of the build scripts (tests/devthink.scripts.*probe.ts
 # write their screenshots and browser profiles into the repository-root
 # artifacts/ folder — anchored so the typed gate records the tests village
-# carries and the foundry/Sol/artifacts/ theme folder stay untouched)
+# carries and the foundry/sol/artifacts/ theme folder stay untouched)
 /artifacts/
 getry/*.d.ts
 getry/*.d.ts.map

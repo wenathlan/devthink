@@ -3,8 +3,8 @@
  * TSX outside the foundry theme. The foundry is the runner clone of the
  * family: it stores and executes together — the vault storage layer beside
  * the forge runtime layer in one deployable unit. The root manages the
- * themes as single files: it imports only the theme anchor (Sol/Sol.tsx —
- * the file named after the theme folder, beside Sol/sol.css) and the theme
+ * themes as single files: it imports only the theme anchor (sol/Sol.tsx —
+ * the file named after the theme folder, beside sol/sol.css) and the theme
  * stylesheet, wraps the anchor in the error boundary and the wouter router
  * provider (the base rides the build declaration, never the runtime path)
  * and mounts on #root. Every page and component lives behind the anchor
@@ -16,10 +16,10 @@ import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
 import { label, seedLabels } from "./labels";
-import Sol from "./Sol/Sol";
+import Sol from "./sol/Sol";
 import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/inter";
-import "./Sol/sol.css";
+import "./sol/sol.css";
 
 // the copy law rides the boot: the seed refreshes the label store rows
 // (translated rows protected) before the first paint answers

@@ -7,7 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe("example session log (docs/logs/example-session.json)", () => {
   const raw = readFileSync(
-    join(__dirname, "..", "docs", "logs", "examplesession.json"),
+    join(__dirname, "..", "examplesession.json"),
     "utf-8",
   );
   const log = JSON.parse(raw) as {

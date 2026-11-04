@@ -2,14 +2,14 @@
 <html lang="en" class="light" data-theme="light">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="DevThink the thinking OS" />
     <title>DevThink OS for every AI</title>
-    <link rel="icon" id="devthink-favicon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/icon192.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" id="devthink-favicon" href="./favicon.ico" sizes="any" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="./icon192.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
     <script>
       /* the animated favicon of the reference (index.html grammar): the seven
          brand frames rasterized at 64px and swapped every 700ms, the static
@@ -34,7 +34,7 @@
         }
         function step(n) {
           if (n >= frames.length) {
-            if (!pngs.length) { setIcon('/favicon.ico'); return; }
+            if (!pngs.length) { setIcon('./favicon.ico'); return; }
             setIcon(pngs[0]);
             setInterval(function () { idx = (idx + 1) % pngs.length; setIcon(pngs[idx]); }, 700);
             return;
@@ -45,7 +45,23 @@
         if (document.readyState !== 'loading') { setTimeout(run, 50); } else { document.addEventListener('DOMContentLoaded', run); }
       })();
     </script>
-    <script type="module" src="/App.tsx"></script>
+    <script>
+      /* the boot lamp (the pages law): a module-scope crash on any host —
+         the subpath deploy beside — paints one visible line into the shell
+         instead of the white screen, and only while the root is empty */
+      (function () {
+        function lamp() {
+          var root = document.getElementById('root');
+          if (!root || root.childElementCount) return;
+          root.innerHTML =
+            '<div style="font:13px/1.5 system-ui,sans-serif;color:#444;padding:24px">' +
+            'DevThink failed to boot — <a href="./">reload</a>.</div>';
+        }
+        window.addEventListener('error', function () { setTimeout(lamp, 50); });
+        setTimeout(lamp, 6000);
+      })();
+    </script>
+    <script type="module" src="./App.tsx"></script>
   </head>
   <body>
     <div id="root"></div>

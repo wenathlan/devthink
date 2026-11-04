@@ -4,7 +4,7 @@
  * location is, which folders "This PC" carries, how the breadcrumb path of
  * a location resolves, how the quick-access rail orders itself and how the
  * byte figures of a capacity bar format. No react, no anchors, no
- * components — the component binding rides the theme (Sol/files/files.tsx,
+ * components — the component binding rides the theme (sol/files/files.tsx,
  * the only consumer) and the live figures (the drive registry, the store
  * summary, the storage estimate) are read by that consumer through the
  * root modules that own them (harddrives.ts, db.ts, the navigator storage

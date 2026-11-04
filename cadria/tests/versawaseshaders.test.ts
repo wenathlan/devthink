@@ -18,9 +18,9 @@ import {
   validateLibraryEffects,
   validateShaderSource,
   VERTEX_STAGES,
-} from "../versawaseshaders.ts";
+} from "../versawase.ts";
 import { SHADER_EFFECTS } from "../shadercomp.ts";
-import { PASS_VERTEX_SOURCE } from "../versawaserender.ts";
+import { PASS_VERTEX_SOURCE } from "../versawase.ts";
 
 describe("versawaseshaders catalog", () => {
   it("ships the material lane: two vertex stages and six fragment materials", () => {

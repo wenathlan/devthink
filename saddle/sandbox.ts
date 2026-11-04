@@ -1,4 +1,13 @@
 /**
+ * sandbox — consolidated sandbox engine logics of the saddle family.
+ * @module sandbox
+ * @family wave/logicfold2
+ * One keyed file per family: the former variant arms (sandboxenvprofile, sandboxprofile, sandboxqueue, sandboxquota)
+ * retired into this seat with every export preserved under the same name.
+ */
+
+/* ===== block: sandbox ===== */
+/**
  * sandbox.ts — browser-pure port of the saddle virtual hardware engine.
  *
  * this module is a lightweight rewrite of the engine generators
@@ -2092,3 +2101,1179 @@ export const SANDBOX_LIFECYCLE_ACTION_TARGETS: Readonly<Record<SandboxLifecycleA
   cool: 'cold',
   freeze: 'cold',
 };
+
+/* ===== block: sandboxenvprofile ===== */
+/**
+ * sandboxenvprofile.ts — the configuration adapter of the sandbox spec
+ * plane.
+ *
+ * the declarative spec (sandboxprofile.ts) never holds capacities: the
+ * limits table is a parameter. this module is the adapter that turns
+ * configuration into that parameter: it reads the SADDLE_SPEC_LIMITS
+ * json environment variable ({ "bases": { ... } }), merges it over a
+ * documented development bootstrap table (so a partial override stays
+ * safe) and returns the effective limits table. production deployments
+ * can equally hand the database sourced table straight to
+ * resolvesandboxspec and skip this adapter entirely.
+ *
+ * the module is browser-pure: zero dom, zero node builtins; it imports
+ * only the vocabulary and types of sandboxprofile.ts. the bootstrap table
+ * is a documented convenience, never a product rule — every field it
+ * carries is overridable.
+ */
+
+
+
+
+/** documented development bootstrap table; production overrides it with
+ * the SADDLE_SPEC_LIMITS json (or the database table). fields: maxvcpus/
+ * maxramgb/maxvgpus/maxdiskgb/maxtimeoutseconds/defaultvcpus/
+ * defaultramgb. */
+const bootstraplimits: sandboxspeclimits = {
+  bases: {
+    lite: {
+      maxvcpus: 4,
+      maxramgb: 8,
+      maxvgpus: 0,
+      maxdiskgb: 32,
+      maxtimeoutseconds: 900,
+      defaultvcpus: 2,
+      defaultramgb: 4,
+    },
+    balanced: {
+      maxvcpus: 16,
+      maxramgb: 32,
+      maxvgpus: 1,
+      maxdiskgb: 128,
+      maxtimeoutseconds: 3600,
+      defaultvcpus: 8,
+      defaultramgb: 16,
+    },
+    max: {
+      maxvcpus: 64,
+      maxramgb: 256,
+      maxvgpus: 2,
+      maxdiskgb: 512,
+      maxtimeoutseconds: 14400,
+      defaultvcpus: 32,
+      defaultramgb: 64,
+    },
+  },
+  defaulttimeoutseconds: 900,
+};
+
+/**
+ * reads the limits table from the SADDLE_SPEC_LIMITS environment json;
+ * the bootstrap table fills every base the json does not define, so a
+ * partial override stays safe. broken json falls back to the bootstrap
+ * table (the spec plane never becomes unavailable over config drift).
+ *
+ * @param env the environment record (process.env shaped).
+ * @returns the effective limits table.
+ */
+export function specenvlimits(env: Record<string, string | undefined>): sandboxspeclimits {
+  const raw = env.SADDLE_SPEC_LIMITS;
+  if (raw === undefined || raw.trim() === '') {
+    return bootstraplimits;
+  }
+  try {
+    const parsed = JSON.parse(raw) as { bases?: Record<string, Partial<sandboxbaselimit>> };
+    const bases = { ...bootstraplimits.bases };
+    if (typeof parsed?.bases === 'object' && parsed.bases !== null) {
+      for (const key of SANDBOXBASES) {
+        const override = parsed.bases[key as sandboxbaseid];
+        if (typeof override === 'object' && override !== null) {
+          bases[key as sandboxbaseid] = {
+            ...bootstraplimits.bases[key as sandboxbaseid],
+            ...override,
+          };
+        }
+      }
+    }
+    return { ...bootstraplimits, bases };
+  } catch {
+    return bootstraplimits;
+  }
+}
+
+/* ===== block: sandboxprofile ===== */
+/**
+ * sandboxprofile.ts — the declarative sandbox specification of saddle.
+ *
+ * a saddle sandbox is declared, never assembled: one request names the
+ * base (max, balanced or lite), the guest operating system (android,
+ * grapheneos, linux, omarchy, windows), the cpu architecture (arm64 or
+ * amd64), the runtime form (runtime-node, full-docker, published) and
+ * the optional resource wishes (vcpus, ramgb, vgpu, diskgb, timeout,
+ * networking). this module owns that vocabulary: it validates one
+ * declared spec against a caller supplied limits table and resolves it
+ * into concrete values the engine surface consumes.
+ *
+ * nothing about capacities lives in code: the limits table is a plain
+ * parameter (config, environment or database). the environment adapter
+ * lives in sandboxenvprofile.ts (SADDLE_SPEC_LIMITS json over a
+ * documented bootstrap table).
+ *
+ * the module is browser-pure like sandbox.ts: zero imports, zero dom,
+ * zero node builtins, deterministic verdicts. errors are typed and
+ * traceable — every sandboxspecerror carries a machine readable code,
+ * the offending field, the received value and the expectation missed.
+ *
+ * competitor sources shaping the contract: opensandbox-group/
+ * opensandbox (declared timeoutSeconds bounded by the server side
+ * max_sandbox_timeout_seconds; declared resources on the create
+ * request) and daytonaio/daytona (per-sandbox cpu/memory/disk quota
+ * fields with min=1 validation; gpu admission before create).
+ *
+ * wire points (kept honest): webserver.ts createsandbox validates the
+ * optional base/os/arch/form fields here before building the engine
+ * spec; sandbox.ts createSandboxState stays the hardware identity
+ * layer and receives the resolved vcpus/ramgb untouched.
+ */
+
+/* ------------------------------------------------------------------ */
+/* types: the declared vocabulary                                      */
+/* ------------------------------------------------------------------ */
+
+/** the three runtime bases of the saddle fleet. */
+export type sandboxbaseid = 'max' | 'balanced' | 'lite';
+
+/** the guest operating systems a sandbox can boot. */
+export type sandboxosid = 'android' | 'grapheneos' | 'linux' | 'omarchy' | 'windows';
+
+/** the guest cpu architectures (amd64 == the x86_64 of the engine bank). */
+export type sandboxarchid = 'arm64' | 'amd64';
+
+/** the runtime forms of a published sandbox. */
+export type sandboxformid = 'runtime-node' | 'full-docker' | 'published';
+
+/** the networking modes of a sandbox. */
+export type sandboxnetworkid = 'nat' | 'bridged' | 'isolated';
+
+/** the os family a guest belongs to (android builds on the linux kernel). */
+export type sandboxosfamily = 'android' | 'linux' | 'windows';
+
+/** fixed product vocabulary; only the capacities are configuration. */
+export const SANDBOXBASES: readonly sandboxbaseid[] = ['max', 'balanced', 'lite'];
+export const SANDBOXOSES: readonly sandboxosid[] = [
+  'android',
+  'grapheneos',
+  'linux',
+  'omarchy',
+  'windows',
+];
+export const SANDBOXARCHES: readonly sandboxarchid[] = ['arm64', 'amd64'];
+export const SANDBOXFORMS: readonly sandboxformid[] = ['runtime-node', 'full-docker', 'published'];
+export const SANDBOXNETWORKS: readonly sandboxnetworkid[] = ['nat', 'bridged', 'isolated'];
+
+/* ------------------------------------------------------------------ */
+/* types: the limits table (pure configuration, never hardcoded)       */
+/* ------------------------------------------------------------------ */
+
+/** one base row of the limits table: ceilings and defaults per base. */
+export type sandboxbaselimit = {
+  readonly maxvcpus: number;
+  readonly maxramgb: number;
+  readonly maxvgpus: number;
+  readonly maxdiskgb: number;
+  readonly maxtimeoutseconds: number;
+  readonly defaultvcpus: number;
+  readonly defaultramgb: number;
+};
+
+/** the full limits table handed to the resolver by the caller. */
+export type sandboxspeclimits = {
+  readonly bases: Readonly<Record<sandboxbaseid, sandboxbaselimit>>;
+  readonly defaulttimeoutseconds?: number;
+};
+
+/** the declared request shape (every field is optional or unknown). */
+export type sandboxspecinput = Record<string, unknown>;
+
+/** the resolved spec: concrete values validated against the limits. */
+export type resolvedsandboxspec = {
+  readonly base: sandboxbaseid;
+  readonly os: sandboxosid;
+  readonly arch: sandboxarchid;
+  readonly form: sandboxformid;
+  readonly networking: sandboxnetworkid;
+  readonly family: sandboxosfamily;
+  readonly vcpus: number;
+  readonly ramgb: number;
+  readonly vgpu: boolean;
+  readonly diskgb: number | null;
+  readonly timeoutseconds: number;
+};
+
+/* ------------------------------------------------------------------ */
+/* errors: typed and traceable                                         */
+/* ------------------------------------------------------------------ */
+
+/** every failure code the resolver can produce. */
+export type sandboxspecerrorcode =
+  | 'invalid-spec'
+  | 'missing-base'
+  | 'invalid-base'
+  | 'invalid-os'
+  | 'invalid-arch'
+  | 'invalid-form'
+  | 'invalid-networking'
+  | 'invalid-vcpus'
+  | 'invalid-ramgb'
+  | 'invalid-vgpu'
+  | 'invalid-diskgb'
+  | 'invalid-timeout'
+  | 'timeout-above-limit'
+  | 'vgpu-not-available'
+  | 'unknown-base-limits';
+
+/** the typed spec failure: code, field, received value and expectation. */
+export class sandboxspecerror extends Error {
+  /** machine readable failure code. */
+  readonly code: sandboxspecerrorcode;
+  /** the declared field that failed (or 'spec' for envelope failures). */
+  readonly field: string;
+  /** the received value, json-safe. */
+  readonly value: unknown;
+  /** the expectation the value missed. */
+  readonly expected: string;
+
+  constructor(
+    code: sandboxspecerrorcode,
+    field: string,
+    value: unknown,
+    expected: string,
+    message?: string,
+  ) {
+    super(message ?? `sandbox spec field "${field}" ${expected} (received ${show(value)})`);
+    this.name = 'sandboxspecerror';
+    this.code = code;
+    this.field = field;
+    this.value = value;
+    this.expected = expected;
+  }
+}
+
+/** renders a json-safe preview of any received value for error messages. */
+function show(value: unknown): string {
+  if (typeof value === 'string') {
+    return JSON.stringify(value);
+  }
+  if (typeof value === 'number' || typeof value === 'boolean' || value === null) {
+    return String(value);
+  }
+  if (value === undefined) {
+    return 'undefined';
+  }
+  return Array.isArray(value) ? 'an array' : typeof value;
+}
+
+/** picks the matching member of a fixed vocabulary; undefined otherwise. */
+function memberof<t extends string>(vocabulary: readonly t[], value: unknown): t | undefined {
+  return typeof value === 'string'
+    ? (vocabulary.find((item) => item === value) as t | undefined)
+    : undefined;
+}
+
+/** validates a positive integer wish; null when the shape is wrong. */
+function positiveinteger(value: unknown): number | null {
+  return typeof value === 'number' && Number.isInteger(value) && value >= 1 ? value : null;
+}
+
+/* ------------------------------------------------------------------ */
+/* the resolver                                                        */
+/* ------------------------------------------------------------------ */
+
+/**
+ * validates one declared spec against the limits table and resolves it
+ * into concrete values. the verdict is a discriminated result so
+ * callers surface the typed error without try/catch.
+ *
+ * @param input the declared spec (unknown json is tolerated).
+ * @param limits the limits table (config, env or database sourced).
+ * @returns the resolved spec or the typed, traceable error.
+ */
+export function resolvesandboxspec(
+  input: unknown,
+  limits: sandboxspeclimits,
+): { ok: true; value: resolvedsandboxspec } | { ok: false; error: sandboxspecerror } {
+  if (typeof input !== 'object' || input === null || Array.isArray(input)) {
+    return {
+      ok: false,
+      error: new sandboxspecerror('invalid-spec', 'spec', input, 'a plain object'),
+    };
+  }
+  const declared = input as sandboxspecinput;
+  const base = memberof(SANDBOXBASES, declared.base);
+  if (base === undefined) {
+    return {
+      ok: false,
+      error:
+        declared.base === undefined
+          ? new sandboxspecerror(
+              'missing-base',
+              'base',
+              undefined,
+              `one of ${SANDBOXBASES.join(', ')}`,
+            )
+          : new sandboxspecerror(
+              'invalid-base',
+              'base',
+              declared.base,
+              `one of ${SANDBOXBASES.join(', ')}`,
+            ),
+    };
+  }
+  const row: sandboxbaselimit | undefined = limits.bases[base];
+  if (row === undefined) {
+    return {
+      ok: false,
+      error: new sandboxspecerror(
+        'unknown-base-limits',
+        'base',
+        base,
+        'a base present in the limits table',
+      ),
+    };
+  }
+  // fixed vocabularies: a present but unknown member is a typed error.
+  const words: Array<readonly [string, readonly string[], sandboxspecerrorcode]> = [
+    ['os', SANDBOXOSES, 'invalid-os'],
+    ['arch', SANDBOXARCHES, 'invalid-arch'],
+    ['form', SANDBOXFORMS, 'invalid-form'],
+    ['networking', SANDBOXNETWORKS, 'invalid-networking'],
+  ];
+  for (const [field, vocabulary, code] of words) {
+    if (declared[field] !== undefined && !memberof(vocabulary, declared[field])) {
+      return {
+        ok: false,
+        error: new sandboxspecerror(
+          code,
+          field,
+          declared[field],
+          `one of ${vocabulary.join(', ')}`,
+        ),
+      };
+    }
+  }
+  // resource wishes: positive integers bounded by the base ceiling.
+  const ceilings: Array<readonly [string, sandboxspecerrorcode, number]> = [
+    ['vcpus', 'invalid-vcpus', row.maxvcpus],
+    ['ramgb', 'invalid-ramgb', row.maxramgb],
+    ['diskgb', 'invalid-diskgb', row.maxdiskgb],
+  ];
+  for (const [field, code, ceiling] of ceilings) {
+    if (declared[field] === undefined) {
+      continue;
+    }
+    const wish = positiveinteger(declared[field]);
+    if (wish === null) {
+      return {
+        ok: false,
+        error: new sandboxspecerror(code, field, declared[field], 'a positive integer'),
+      };
+    }
+    if (wish > ceiling) {
+      return {
+        ok: false,
+        error: new sandboxspecerror(
+          code,
+          field,
+          declared[field],
+          `an integer between 1 and ${ceiling} on the ${base} base`,
+        ),
+      };
+    }
+  }
+  let vgpu = false;
+  if (declared.vgpu !== undefined && typeof declared.vgpu !== 'boolean') {
+    return {
+      ok: false,
+      error: new sandboxspecerror('invalid-vgpu', 'vgpu', declared.vgpu, 'a boolean'),
+    };
+  }
+  vgpu = declared.vgpu === true;
+  if (vgpu && row.maxvgpus < 1) {
+    return {
+      ok: false,
+      error: new sandboxspecerror(
+        'vgpu-not-available',
+        'vgpu',
+        true,
+        `a base with vgpu slices (the ${base} base exposes none)`,
+      ),
+    };
+  }
+  const defaulttimeout = limits.defaulttimeoutseconds ?? 900;
+  let timeoutseconds = defaulttimeout;
+  if (declared.timeoutseconds !== undefined) {
+    const wish = positiveinteger(declared.timeoutseconds);
+    if (wish === null) {
+      return {
+        ok: false,
+        error: new sandboxspecerror(
+          'invalid-timeout',
+          'timeoutseconds',
+          declared.timeoutseconds,
+          'a positive integer of seconds',
+        ),
+      };
+    }
+    if (wish > row.maxtimeoutseconds) {
+      return {
+        ok: false,
+        error: new sandboxspecerror(
+          'timeout-above-limit',
+          'timeoutseconds',
+          declared.timeoutseconds,
+          `at most ${row.maxtimeoutseconds} seconds on the ${base} base`,
+        ),
+      };
+    }
+    timeoutseconds = wish;
+  }
+  const os = (memberof(SANDBOXOSES, declared.os) ?? 'linux') as sandboxosid;
+  return {
+    ok: true,
+    value: {
+      base,
+      os,
+      arch: (memberof(SANDBOXARCHES, declared.arch) ?? 'amd64') as sandboxarchid,
+      form: (memberof(SANDBOXFORMS, declared.form) ?? 'runtime-node') as sandboxformid,
+      networking: (memberof(SANDBOXNETWORKS, declared.networking) ?? 'nat') as sandboxnetworkid,
+      family: osfamily(os),
+      vcpus: (declared.vcpus as number | undefined) ?? row.defaultvcpus,
+      ramgb: (declared.ramgb as number | undefined) ?? row.defaultramgb,
+      vgpu,
+      diskgb: (declared.diskgb as number | undefined) ?? null,
+      timeoutseconds,
+    },
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* helpers and bridges                                                 */
+/* ------------------------------------------------------------------ */
+
+/** maps a guest os onto its kernel family (grapheneos builds on aosp). */
+export function osfamily(os: sandboxosid): sandboxosfamily {
+  if (os === 'android' || os === 'grapheneos') {
+    return 'android';
+  }
+  return os === 'windows' ? 'windows' : 'linux';
+}
+
+/** the structural shape consumed by sandbox.ts createSandboxState. */
+export type sandboxenginespec = {
+  readonly model: string;
+  readonly vcpus: number;
+  readonly ramgb: number;
+  readonly gpu: string;
+  readonly mig: string;
+};
+
+/**
+ * bridges a resolved spec onto the engine surface: vcpus and ramgb come
+ * from the resolved spec, the cpu model and gpu identity stay caller
+ * choices (the reviewed catalog of sandbox.ts remains the only source
+ * of processor and gpu identity).
+ *
+ * @param resolved the resolved spec produced by resolvesandboxspec.
+ * @param options the caller picked engine identities (model, gpu, mig).
+ * @returns the engine spec object.
+ */
+export function enginespecfor(
+  resolved: resolvedsandboxspec,
+  options?: { model?: string; gpu?: string; mig?: string },
+): sandboxenginespec {
+  return {
+    model: options?.model ?? '',
+    vcpus: resolved.vcpus,
+    ramgb: resolved.ramgb,
+    gpu: resolved.vgpu ? (options?.gpu ?? '') : '',
+    mig: options?.mig ?? 'off',
+  };
+}
+
+/* ===== block: sandboxqueue ===== */
+/**
+ * sandboxqueue.ts — the sandbox lifecycle queue of saddle.
+ *
+ * one sandbox walks a single linear machine: creating -> starting ->
+ * running -> stopping -> stopped, with the supervision states cancelled,
+ * failed and timedout closing the paths out. every intermediate state
+ * carries a per-state time budget; the health-check tick reaps entries
+ * whose budget expired (the ttl reaper pattern of webserver.ts and the
+ * pool reaper of opensandbox). transitions are validated by a pure
+ * transition table so both callers and tests exercise the same guard.
+ *
+ * the module is deliberately pure: no timers of its own, no dom, no node
+ * builtins, an injectable clock. hosts drive it — webserver.ts ramps
+ * the api lifecycle with a timeout, the ttl reaper sweeps every minute,
+ * and orchestrator.ts owns the fifteen state vm plane machine; this
+ * module is the queue-level complement those surfaces can delegate to
+ * (wire point documented in the webserver statemachine context: the
+ * api states map as created->creating, expired->timedout,
+ * destroyed->stopped).
+ *
+ * studied competitors shaping the contract: daytonaio/daytona (sandbox
+ * states creating/starting/started/stopping/stopped/error with the
+ * -ing intermediates) and opensandbox-group/opensandbox (Creating ->
+ * Running -> Deleting -> Deleted with 409 on state conflicting
+ * operations and a pool acquisition that fails fast with Retry-After).
+ */
+
+/* ------------------------------------------------------------------ */
+/* types: phases, transitions, entries                                 */
+/* ------------------------------------------------------------------ */
+
+/** every phase of the sandbox lifecycle queue. */
+export type sandboxphase =
+  | 'creating'
+  | 'starting'
+  | 'running'
+  | 'stopping'
+  | 'stopped'
+  | 'cancelled'
+  | 'failed'
+  | 'timedout';
+
+/** phases that end the queue entry (no further transition is legal). */
+export const SANDBOXTERMINALPHASES: readonly sandboxphase[] = [
+  'stopped',
+  'cancelled',
+  'failed',
+  'timedout',
+];
+
+/** the legal transitions of the single lifecycle machine. */
+const sandboxtransitions: Record<sandboxphase, readonly sandboxphase[]> = {
+  creating: ['starting', 'cancelled', 'failed', 'timedout'],
+  starting: ['running', 'cancelled', 'failed', 'timedout'],
+  running: ['stopping', 'cancelled', 'failed', 'timedout'],
+  stopping: ['stopped', 'failed', 'timedout'],
+  stopped: [],
+  cancelled: [],
+  failed: [],
+  timedout: [],
+};
+
+/** per-state time budgets in milliseconds; a state without a budget
+ * never times out (running typically relies on the host ttl instead). */
+export type sandboxphasebudgets = {
+  readonly creating?: number;
+  readonly starting?: number;
+  readonly running?: number;
+  readonly stopping?: number;
+};
+
+/** one queue entry: identity, phase, bookkeeping. */
+export type sandboxqueueentry = {
+  readonly id: string;
+  state: sandboxphase;
+  /** epoch ms of the last phase change. */
+  enteredat: number;
+  /** epoch ms the current phase budget expires; null when unbounded. */
+  deadline: number | null;
+};
+
+/** one recorded lifecycle event (bounded ring, newest last). */
+export type sandboxqueueevent = {
+  readonly id: string;
+  readonly from: sandboxphase;
+  readonly to: sandboxphase;
+  readonly at: number;
+  readonly reason: 'requested' | 'timeout' | 'cancel';
+};
+
+/** failure codes carried by sandboxqueueerror. */
+export type sandboxqueueerrorcode =
+  | 'unknown-sandbox'
+  | 'duplicate-sandbox'
+  | 'invalid-transition'
+  | 'terminal-phase';
+
+/** the typed queue failure, traceable to the entry and both phases. */
+export class sandboxqueueerror extends Error {
+  /** machine readable failure code. */
+  readonly code: sandboxqueueerrorcode;
+  /** the entry the failure belongs to. */
+  readonly id: string;
+  /** the phase the entry was in (or from), when known. */
+  readonly from: sandboxphase | null;
+  /** the requested target phase, when known. */
+  readonly to: sandboxphase | null;
+
+  constructor(
+    code: sandboxqueueerrorcode,
+    id: string,
+    from: sandboxphase | null,
+    to: sandboxphase | null,
+    message?: string,
+  ) {
+    super(
+      message ??
+        `sandbox queue ${code} for ${id}${from === null ? '' : ` (from ${from})`}${to === null ? '' : ` to ${to}`}`,
+    );
+    this.name = 'sandboxqueueerror';
+    this.code = code;
+    this.id = id;
+    this.from = from;
+    this.to = to;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* pure guards                                                         */
+/* ------------------------------------------------------------------ */
+
+/** checks whether a phase change is legal on the single machine. */
+export function cansandboxstep(from: sandboxphase, to: sandboxphase): boolean {
+  return sandboxtransitions[from].includes(to);
+}
+
+/** reports whether a phase is terminal. */
+export function issandboxterminal(phase: sandboxphase): boolean {
+  return SANDBOXTERMINALPHASES.includes(phase);
+}
+
+/* ------------------------------------------------------------------ */
+/* the queue                                                           */
+/* ------------------------------------------------------------------ */
+
+/** options of createsandboxqueue (all optional, sane defaults). */
+export type sandboxqueueoptions = {
+  /** per-state budgets; the defaults mirror the 125 ms api ramp. */
+  readonly budgets?: sandboxphasebudgets;
+  /** event ring capacity (default 100). */
+  readonly eventcap?: number;
+};
+
+/** a read-only status view answered by status(). */
+export type sandboxqueuestatus = {
+  readonly id: string;
+  readonly state: sandboxphase;
+  readonly enteredat: number;
+  readonly deadline: number | null;
+  readonly age: number;
+  readonly terminal: boolean;
+};
+
+/**
+ * creates the lifecycle queue. the queue validates every transition,
+ * stamps deadlines from the budgets and reaps expired entries on the
+ * health-check tick; the host decides when to tick.
+ *
+ * @param options the budgets and event ring capacity.
+ * @returns the queue facade (add, step, cancel, healthcheck, status,
+ *   list, events, size).
+ */
+export function createsandboxqueue(options?: sandboxqueueoptions): {
+  add: (id: string, now?: number) => sandboxqueueentry;
+  step: (id: string, to: sandboxphase, now?: number) => sandboxqueueentry;
+  cancel: (id: string, now?: number) => sandboxqueueentry;
+  healthcheck: (now?: number) => string[];
+  status: (id: string, now?: number) => sandboxqueuestatus;
+  list: (now?: number) => sandboxqueuestatus[];
+  events: () => sandboxqueueevent[];
+  size: () => number;
+} {
+  const budgets: sandboxphasebudgets = options?.budgets ?? {
+    creating: 125,
+    starting: 125,
+    stopping: 30000,
+  };
+  const eventcap = options?.eventcap ?? 100;
+  const entries = new Map<string, sandboxqueueentry>();
+  const ring: sandboxqueueevent[] = [];
+
+  /** stamps one event into the bounded ring. */
+  function record(
+    id: string,
+    from: sandboxphase,
+    to: sandboxphase,
+    at: number,
+    reason: sandboxqueueevent['reason'],
+  ): void {
+    ring.push({ id, from, to, at, reason });
+    if (ring.length > eventcap) {
+      ring.splice(0, ring.length - eventcap);
+    }
+  }
+
+  /** resolves the deadline of a phase from the budget table. */
+  function deadlinefor(state: sandboxphase, now: number): number | null {
+    const budget = budgets[state as keyof sandboxphasebudgets];
+    return typeof budget === 'number' && budget > 0 ? now + budget : null;
+  }
+
+  function statusOf(entry: sandboxqueueentry, now: number): sandboxqueuestatus {
+    return {
+      id: entry.id,
+      state: entry.state,
+      enteredat: entry.enteredat,
+      deadline: entry.deadline,
+      age: Math.max(0, now - entry.enteredat),
+      terminal: issandboxterminal(entry.state),
+    };
+  }
+
+  return {
+    add(id, now = Date.now()) {
+      if (entries.has(id)) {
+        throw new sandboxqueueerror('duplicate-sandbox', id, null, null);
+      }
+      const entry: sandboxqueueentry = {
+        id,
+        state: 'creating',
+        enteredat: now,
+        deadline: deadlinefor('creating', now),
+      };
+      entries.set(id, entry);
+      record(id, 'creating', 'creating', now, 'requested');
+      return entry;
+    },
+
+    step(id, to, now = Date.now()) {
+      const entry = entries.get(id);
+      if (entry === undefined) {
+        throw new sandboxqueueerror('unknown-sandbox', id, null, to);
+      }
+      if (!cansandboxstep(entry.state, to)) {
+        if (issandboxterminal(entry.state)) {
+          throw new sandboxqueueerror(
+            'terminal-phase',
+            id,
+            entry.state,
+            to,
+            `sandbox ${id} is terminal (${entry.state}); ${to} is unreachable`,
+          );
+        }
+        throw new sandboxqueueerror(
+          'invalid-transition',
+          id,
+          entry.state,
+          to,
+          `sandbox ${id} cannot transition ${entry.state} -> ${to}`,
+        );
+      }
+      const from = entry.state;
+      entry.state = to;
+      entry.enteredat = now;
+      entry.deadline = deadlinefor(to, now);
+      record(id, from, to, now, 'requested');
+      return entry;
+    },
+
+    cancel(id, now = Date.now()) {
+      const entry = entries.get(id);
+      if (entry === undefined) {
+        throw new sandboxqueueerror('unknown-sandbox', id, null, 'cancelled');
+      }
+      const from = entry.state;
+      if (!cansandboxstep(from, 'cancelled')) {
+        if (issandboxterminal(from)) {
+          throw new sandboxqueueerror(
+            'terminal-phase',
+            id,
+            from,
+            'cancelled',
+            `sandbox ${id} is terminal (${from}); cancellation is unreachable`,
+          );
+        }
+        throw new sandboxqueueerror(
+          'invalid-transition',
+          id,
+          from,
+          'cancelled',
+          `sandbox ${id} cannot be cancelled from ${from}`,
+        );
+      }
+      entry.state = 'cancelled';
+      entry.enteredat = now;
+      entry.deadline = null;
+      record(id, from, 'cancelled', now, 'cancel');
+      return entry;
+    },
+
+    healthcheck(now = Date.now()) {
+      const reaped: string[] = [];
+      for (const entry of entries.values()) {
+        if (entry.deadline === null || entry.deadline > now || issandboxterminal(entry.state)) {
+          continue;
+        }
+        const from = entry.state;
+        entry.state = 'timedout';
+        entry.enteredat = now;
+        entry.deadline = null;
+        record(entry.id, from, 'timedout', now, 'timeout');
+        reaped.push(entry.id);
+      }
+      return reaped;
+    },
+
+    status(id, now = Date.now()) {
+      const entry = entries.get(id);
+      if (entry === undefined) {
+        throw new sandboxqueueerror('unknown-sandbox', id, null, null);
+      }
+      return statusOf(entry, now);
+    },
+
+    list(now = Date.now()) {
+      return [...entries.values()]
+        .map((entry) => statusOf(entry, now))
+        .sort((a, b) => (a.id < b.id ? -1 : 1));
+    },
+
+    events() {
+      return [...ring];
+    },
+
+    size() {
+      return entries.size;
+    },
+  };
+}
+
+/* ===== block: sandboxquota ===== */
+/**
+ * sandboxquota.ts — the per-account resource quota ledger of saddle.
+ *
+ * every account holds counters of the resources its live sandboxes
+ * allocate (sandbox count, vcpus, ramgb, vgpus, diskgb) against a
+ * limits table. the limits are a plain parameter — the operator's plan
+ * table comes from config or the database and never lives in code; an
+ * absent limit means unlimited, mirroring the SADDLE_MAX_SANDBOXES
+ * convention of webserver.ts (0 or unset means unlimited).
+ *
+ * the ledger keeps reservations and releases in balance with a simple
+ * reconciliation: the host projects the authoritative usage (for
+ * example from the sqlite sandboxes rows) and reconcile() overwrites
+ * the in-memory counters with it, so drift from admin deletes, restarts
+ * or crashes self-heals on the next create.
+ *
+ * the module is pure: zero imports, zero dom, zero node builtins, a
+ * Map per account, typed traceable errors (quotaexceedederror carries
+ * the resource, the request, the limit and the remaining headroom).
+ *
+ * competitor sources shaping the contract: daytonaio/daytona (tenant
+ * resource quota admission with per-sandbox cpu/memory/gpu quota
+ * fields and the gpu allocator acquire/release pair around create) and
+ * opensandbox-group/opensandbox (namespace ResourceQuota admission —
+ * the sandbox is not admitted when the quota is exhausted — and the
+ * pool acquisition that fails fast when capacity stays unavailable).
+ *
+ * wire point: webserver.ts createsandbox reconciles the owning
+ * account from store.listsandboxesbyuser rows and reserves the new
+ * sandbox; destroysandbox releases it. limits come from
+ * accountlimitsfromenv(process.env) and stay unlimited when unset.
+ */
+
+/* ------------------------------------------------------------------ */
+/* types: usage, limits, errors                                        */
+/* ------------------------------------------------------------------ */
+
+/** the resource counters one account allocates through live sandboxes. */
+export type accountusage = {
+  sandboxes: number;
+  vcpus: number;
+  ramgb: number;
+  vgpus: number;
+  diskgb: number;
+};
+
+/** the per-account limits; an absent or non-positive field is unlimited. */
+export type accountlimits = {
+  readonly sandboxes?: number;
+  readonly vcpus?: number;
+  readonly ramgb?: number;
+  readonly vgpus?: number;
+  readonly diskgb?: number;
+};
+
+/** one resource wish (a partial usage delta). */
+export type resourcewish = Partial<accountusage>;
+
+/** the resource names tracked by the ledger. */
+const RESOURCES: readonly (keyof accountusage)[] = [
+  'sandboxes',
+  'vcpus',
+  'ramgb',
+  'vgpus',
+  'diskgb',
+];
+
+/** failure codes carried by quotaerror. */
+export type quotaerrorcode = 'invalid-wish' | 'quota-exceeded';
+
+/** the typed quota failure, traceable to the account and the resource. */
+export class quotaerror extends Error {
+  /** machine readable failure code. */
+  readonly code: quotaerrorcode;
+  /** the account the failure belongs to. */
+  readonly accountid: string;
+  /** the resource that failed (or 'wish' for malformed deltas). */
+  readonly resource: string;
+  /** the requested amount (null when the wish itself was malformed). */
+  readonly requested: number | null;
+  /** the active limit (null when unlimited). */
+  readonly limit: number | null;
+  /** the headroom the account had before the request. */
+  readonly available: number | null;
+
+  constructor(
+    code: quotaerrorcode,
+    accountid: string,
+    resource: string,
+    requested: number | null,
+    limit: number | null,
+    available: number | null,
+    message?: string,
+  ) {
+    super(
+      message ??
+        `account ${accountid} ${code} on ${resource}: requested ${requested ?? '?'} of ${limit ?? 'unlimited'} (${available ?? '?'} available)`,
+    );
+    this.name = 'quotaerror';
+    this.code = code;
+    this.accountid = accountid;
+    this.resource = resource;
+    this.requested = requested;
+    this.limit = limit;
+    this.available = available;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* helpers                                                             */
+/* ------------------------------------------------------------------ */
+
+/** validates one resource wish: every present field is a positive number. */
+function sanitize(wish: resourcewish): Partial<accountusage> {
+  const clean: Partial<accountusage> = {};
+  for (const resource of RESOURCES) {
+    const value = wish[resource];
+    if (value === undefined) {
+      continue;
+    }
+    if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
+      throw new quotaerror(
+        'invalid-wish',
+        '',
+        resource,
+        typeof value === 'number' ? value : null,
+        null,
+        null,
+        `resource ${resource} must be a positive finite number (received ${String(value)})`,
+      );
+    }
+    clean[resource] = value;
+  }
+  return clean;
+}
+
+/** headroom of one resource under its limit (null limit means Infinity). */
+function headroom(limit: number | undefined, used: number): number | null {
+  return typeof limit === 'number' && limit > 0 ? Math.max(0, limit - used) : null;
+}
+
+/* ------------------------------------------------------------------ */
+/* the ledger                                                          */
+/* ------------------------------------------------------------------ */
+
+/** a read-only snapshot answered by usage(). */
+export type accountquotasnapshot = {
+  readonly accountid: string;
+  readonly used: Readonly<accountusage>;
+  readonly remaining: Readonly<Record<keyof accountusage, number | null>>;
+};
+
+/**
+ * creates the per-account ledger with one limits table for every
+ * account (per-plan tables ride on the caller passing the plan row of
+ * the account).
+ *
+ * @param limits the limits table (absent fields are unlimited).
+ * @returns the ledger facade (admits, reserve, release, usage,
+ *   reconcile, reset).
+ */
+export function createaccountledger(limits: accountlimits): {
+  admits: (accountid: string, wish: resourcewish) => boolean;
+  reserve: (accountid: string, wish: resourcewish) => accountquotasnapshot;
+  release: (accountid: string, wish: resourcewish) => accountquotasnapshot;
+  usage: (accountid: string) => accountquotasnapshot;
+  reconcile: (
+    accountid: string,
+    observed: accountusage,
+  ) => { before: accountquotasnapshot; after: accountquotasnapshot };
+  reset: (accountid?: string) => void;
+} {
+  const books = new Map<string, accountusage>();
+
+  /** zeroes the counters of an unseen account. */
+  function blank(accountid: string): accountusage {
+    const existing = books.get(accountid);
+    if (existing !== undefined) {
+      return existing;
+    }
+    const fresh: accountusage = { sandboxes: 0, vcpus: 0, ramgb: 0, vgpus: 0, diskgb: 0 };
+    books.set(accountid, fresh);
+    return fresh;
+  }
+
+  function snapshotOf(accountid: string, used: accountusage): accountquotasnapshot {
+    const remaining = {} as Record<keyof accountusage, number | null>;
+    for (const resource of RESOURCES) {
+      remaining[resource] = headroom(limits[resource], used[resource]);
+    }
+    return { accountid, used: { ...used }, remaining };
+  }
+
+  /** the shared admit-or-throw walk used by admits and reserve. */
+  function check(accountid: string, wish: resourcewish): Partial<accountusage> {
+    const clean = sanitize(wish);
+    const used = blank(accountid);
+    for (const resource of RESOURCES) {
+      const request = clean[resource];
+      if (request === undefined) {
+        continue;
+      }
+      const room = headroom(limits[resource], used[resource]);
+      if (room !== null && request > room) {
+        throw new quotaerror(
+          'quota-exceeded',
+          accountid,
+          resource,
+          request,
+          limits[resource] ?? null,
+          room,
+        );
+      }
+    }
+    return clean;
+  }
+
+  return {
+    admits(accountid, wish) {
+      try {
+        check(accountid, wish);
+        return true;
+      } catch (error) {
+        if (error instanceof quotaerror) {
+          return false;
+        }
+        throw error;
+      }
+    },
+
+    reserve(accountid, wish) {
+      const clean = check(accountid, wish);
+      const used = blank(accountid);
+      for (const resource of RESOURCES) {
+        const request = clean[resource];
+        if (request !== undefined) {
+          used[resource] += request;
+        }
+      }
+      return snapshotOf(accountid, used);
+    },
+
+    release(accountid, wish) {
+      const clean = sanitize(wish);
+      const used = blank(accountid);
+      for (const resource of RESOURCES) {
+        const request = clean[resource];
+        if (request !== undefined) {
+          used[resource] = Math.max(0, used[resource] - request);
+        }
+      }
+      return snapshotOf(accountid, used);
+    },
+
+    usage(accountid) {
+      return snapshotOf(accountid, blank(accountid));
+    },
+
+    reconcile(accountid, observed) {
+      const used = blank(accountid);
+      const before = snapshotOf(accountid, used);
+      for (const resource of RESOURCES) {
+        const value = observed[resource];
+        used[resource] =
+          typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : 0;
+      }
+      const after = snapshotOf(accountid, used);
+      return { before, after };
+    },
+
+    reset(accountid) {
+      if (accountid === undefined) {
+        books.clear();
+        return;
+      }
+      books.delete(accountid);
+    },
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* projection: rows to usage                                           */
+/* ------------------------------------------------------------------ */
+
+/** the structural row shape the projection reads (SandboxRow of db.ts
+ * satisfies it; kept structural so the module stays import-free). */
+export type sandboxrowlike = {
+  readonly vcpus: number | null;
+  readonly ramgb: number | null;
+  readonly state: string | null;
+};
+
+/**
+ * projects sandbox rows onto one account usage: every row that is not
+ * destroyed counts as a live allocation (the same semantics the
+ * SADDLE_MAX_SANDBOXES cap check of webserver.ts uses).
+ *
+ * @param rows the authoritative rows of one account.
+ * @returns the usage counters the rows allocate.
+ */
+export function usagefromrows(rows: readonly sandboxrowlike[]): accountusage {
+  const usage: accountusage = { sandboxes: 0, vcpus: 0, ramgb: 0, vgpus: 0, diskgb: 0 };
+  for (const row of rows) {
+    if (row.state === 'destroyed') {
+      continue;
+    }
+    usage.sandboxes += 1;
+    usage.vcpus += typeof row.vcpus === 'number' ? row.vcpus : 0;
+    usage.ramgb += typeof row.ramgb === 'number' ? row.ramgb : 0;
+  }
+  return usage;
+}
+
+/* ------------------------------------------------------------------ */
+/* adapter: limits from the environment                                */
+/* ------------------------------------------------------------------ */
+
+/**
+ * reads the per-account limits from the environment: SADDLE_MAX_SANDBOXES
+ * (the existing count cap of webserver.ts), SADDLE_ACCOUNT_MAX_VCPUS,
+ * SADDLE_ACCOUNT_MAX_RAM_GB, SADDLE_ACCOUNT_MAX_VGPUS and
+ * SADDLE_ACCOUNT_MAX_DISK_GB. unset, zero and negative values mean
+ * unlimited, so the default deployment enforces nothing.
+ *
+ * @param env the environment record (process.env shaped).
+ * @returns the limits table.
+ */
+export function accountlimitsfromenv(env: Record<string, string | undefined>): accountlimits {
+  const positive = (name: string): number | undefined => {
+    const parsed = Number(env[name]);
+    return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : undefined;
+  };
+  return {
+    sandboxes: positive('SADDLE_MAX_SANDBOXES'),
+    vcpus: positive('SADDLE_ACCOUNT_MAX_VCPUS'),
+    ramgb: positive('SADDLE_ACCOUNT_MAX_RAM_GB'),
+    vgpus: positive('SADDLE_ACCOUNT_MAX_VGPUS'),
+    diskgb: positive('SADDLE_ACCOUNT_MAX_DISK_GB'),
+  };
+}

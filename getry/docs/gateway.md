@@ -11,7 +11,7 @@
 
 - `gateway.ts` — the gateway versions domain: `GATEWAYROUTES` (the 7 route kinds), `GATEWAYVERSIONS` (the v1–v5 catalog), `PARSERSTEPS` (the streaming parser pattern), `listversions`, `findversion`, `totalroutes`, `liveversions`.
 - `gatewayconfig.ts` — the embedded single-version gateway definition (v1 zai sdk, keyless).
-- `gatewayviewconfig.ts` — the shipped multi-version catalog (v1–v5) the console page renders; the config loader probes `Sol/config.mjs|ts|js` for user overrides.
+- `gatewayviewconfig.ts` — the shipped multi-version catalog (v1–v5) the console page renders; the config loader probes `sol/config.mjs|ts|js` for user overrides.
 - `engine.ts` — the universal gateway engine: `createversion(cfg)` produces all route handlers from one `gatewayconfig`.
 - `server.ts` — the gateway transport: sse/ndjson writers, heartbeat discard, frame parser, chunk builders, `makestreamresponse`, `createserver`, `main`/`runserver`, plus the config loader (`loadconfig`, `reloadconfig`, `getversion`, `listversions`).
 - `auth.ts` — request auth and key resolution: token/session/request id extraction, `resolvekeys`, `buildauthheaders`, `buildauthqueryparams`.
@@ -98,7 +98,7 @@ the 7-level thinking ladder (`thinking.ts`), each level bound to a token budget:
 
 ## sol surface
 
-- `Sol/Sol.tsx` mounts the route table: `/intro`, `/onboarding`, `/`, `/versions`, `/thinking`, `/sessions`, `/404`.
+- `sol/Sol.tsx` mounts the route table: `/intro`, `/onboarding`, `/`, `/versions`, `/thinking`, `/sessions`, `/404`.
 - subapps: `home`, `intro`, `notfound`, `onboarding`, `sessions`, `shell`, `thinking`, `toast`, `versions`, `wingets` (HomeEntrygate, ShellBrandmark, ShellEmptystate).
 - `versions` — the gateway registry: five replica rows (version tag, provider chip, live dot, the 7 route chips), the parser pattern rail, quick-start calls. every row reads `gateway.ts`.
 - `thinking` — the reasoning ladder: 7 rungs with hairline budget bars against the 68k ceiling, the default rung marked. every number reads `thinking.ts`.

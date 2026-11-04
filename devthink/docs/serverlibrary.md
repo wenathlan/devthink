@@ -145,7 +145,7 @@ devthink/
   tests/server/           # the family suite (engine, http, oauth, config, cli…)
 ```
 
-The root modules are the universal library (dry, no hardcoding). The theme root files (App.tsx, index.html, the schema, the deploy manifests) live at the app root beside them, and the Sol/ theme folders carry the component surfaces — the shipped catalog under `Sol/gatewayview/config.ts`, the schema at `schema.prisma`.
+The root modules are the universal library (dry, no hardcoding). The theme root files (App.tsx, index.html, the schema, the deploy manifests) live at the app root beside them, and the sol/ theme folders carry the component surfaces — the shipped catalog under `sol/gatewayview/config.ts`, the schema at `schema.prisma`.
 
 ## Deploy
 

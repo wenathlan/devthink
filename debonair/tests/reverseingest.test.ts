@@ -11,8 +11,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { onsetSecondsOf } from "../ingest.ts";
-import { LANE_STEPS, type PatternProject, type PatternTimeline, serializePattern } from "../patternenums.ts";
-import { renderPlan, type RenderBlobStore } from "../renderworker.ts";
+import { LANE_STEPS, type PatternProject, type PatternTimeline, serializePattern } from "../pattern.ts";
+import { renderPlan, type RenderBlobStore } from "../render.ts";
 import { reverseIngestPayload, timelineEvents } from "../reverseingest.ts";
 import { FFT_SIZE, frameSpectrum } from "../spectrum.ts";
 import { midiToHz } from "../tuning.ts";

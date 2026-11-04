@@ -14,11 +14,11 @@
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
     "paths": {
-      "@/*": ["./Sol/*", "./*"],
+      "@/*": ["./sol/*", "./*"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"]
     }
   },
-  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],
+  "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "tests"]
 }

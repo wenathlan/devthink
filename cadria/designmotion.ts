@@ -1,5 +1,5 @@
 // # designmotion — the ts mirror of the sol.css motion tokens
-// the css side owns the truth (Sol/sol.css, tokens section); this module is
+// the css side owns the truth (sol/sol.css, tokens section); this module is
 // its typed echo for the tsx side, so components never re-invent a duration,
 // an easing or a spring. one design, two runtimes: the same numbers appear in
 // both places, documented against each other. pure constants — no dom, no css

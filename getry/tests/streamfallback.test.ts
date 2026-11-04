@@ -2,6 +2,10 @@
  * streamfallback.test.ts — honest unit tests for the stream fallback,
  * runnable with the vitest runner:
  *   pnpm test
+ *
+ * the edgelandes fold (wave/streamfold) retired streamfallback.ts into
+ * streaming.ts as its trailing fallback arm — the battery imports the arm
+ * from the one stream keyword file now.
  */
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
@@ -16,7 +20,7 @@ import {
   runwithfallback,
   StreamError,
   verdictfor,
-} from "../streamfallback.ts";
+} from "../streaming.ts";
 
 /** the two-route chain the tests walk. */
 const CHAIN: FallbackRoute[] = [

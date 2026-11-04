@@ -23,7 +23,7 @@ import {
   serializeComposition,
   type CompositionClip,
   type VideoComposition,
-} from "../versawasecomposition.ts";
+} from "../versawase.ts";
 
 /** one empty composition shell the tests build on. */
 function shell(): VideoComposition {

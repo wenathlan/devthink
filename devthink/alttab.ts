@@ -1,6 +1,6 @@
 /**
  * alttab — the pure logic behind the Windows alt-tab switcher of the Sol
- * shell (Sol/shell/alttabswitcher.tsx). One responsibility: the cycle math
+ * shell (sol/shell/alttabswitcher.tsx). One responsibility: the cycle math
  * and the key grammar of the switcher. The switcher walks the MRU window
  * order (most recently focused first), stepping forward with alt+tab and
  * backward with alt+shift+tab, wrapping at both ends; the arrow keys walk

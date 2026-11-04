@@ -372,7 +372,7 @@ export function interpretyaml(text: string): ScriptPlan {
 function babelabsenterror(cause?: unknown) {
   return saddleerror(
     "the babel compile lane requires @babel/core at runtime and it is absent in this install — the compile refuses instead of degrading",
-    { code: "BABEL_RUNTIME_ABSENT", cause, details: { lane: "runner-babel" } },
+    { code: "BABEL_RUNTIME_ABSENT", cause, details: { lane: "runnerbabel" } },
   );
 }
 

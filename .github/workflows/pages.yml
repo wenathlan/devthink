@@ -1,7 +1,7 @@
 name: Family Pages
 
 # The universal interface deploy of the monorepo (the owner doctrine: one
-# theme per application, the Sol folder serves web, OS, TV, mobile, desktop
+# theme per application, the sol folder serves web, OS, TV, mobile, desktop
 # and the extension — only the conversion workflow differs). This lane builds
 # every family theme and ships ONE GitHub Pages site where each application
 # answers under its own subpath: /devthink/, /argan/, /cadria/, /debonair/,

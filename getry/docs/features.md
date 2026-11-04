@@ -8,7 +8,7 @@ every feature below is read from the code of the getry app root and the Sol them
 - five gateway versions — v1 zai, v2 babel, v3 nvidia, v4 opencode+kilo, v5 openrouter, cataloged in `gateway.ts`.
 - 35 OpenAI-compatible routes — 7 route kinds (chat/completions, completions, embeddings, keys, messages, models, responses) per version, counted by `totalroutes()`.
 - paused fallback — v2 babel answers 503 with a fallback route to v1; the engine checks the paused flag before every post route.
-- dynamic version config — the config loader probes `Sol/config.mjs|ts|js` for a user definition; `gatewayviewconfig.ts` ships the v1–v5 example catalog.
+- dynamic version config — the config loader probes `sol/config.mjs|ts|js` for a user definition; `gatewayviewconfig.ts` ships the v1–v5 example catalog.
 - route info endpoints — every version answers a get info descriptor (models, routes, fusion context, meta model).
 - key status endpoint — the keys route reports auth mode, env key count, signup url and key url per version.
 - model catalog endpoint — the models route lists the version models with context, max output, thinking/streaming/tools/vision flags; the devthink meta model rides first.
@@ -81,7 +81,7 @@ every feature below is read from the code of the getry app root and the Sol them
 
 ## ui (Sol theme)
 
-- route table — /intro, /onboarding, /, /versions, /thinking, /sessions, /404 mounted by `Sol/Sol.tsx`.
+- route table — /intro, /onboarding, /, /versions, /thinking, /sessions, /404 mounted by `sol/Sol.tsx`.
 - versions page — five gateway replica rows with provider chips, live dots and route chips, the parser pattern rail and quick-start calls.
 - thinking page — the 7-level ladder with hairline budget bars against the 68k ceiling and the default rung marked.
 - sessions page — the session ledger with rotation summary, masked keys meta rail and recent chat log.

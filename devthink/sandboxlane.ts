@@ -367,28 +367,28 @@ interface ExecLane {
  * declares, each wired to its real host runtime (the registry owns the
  * catalog, this table owns the invocation grammar) */
 const EXECLANES: Readonly<Record<string, ExecLane>> = Object.freeze({
-  bun: { modality: "runner-bun", bin: "bun", argv: (t, a) => [t, ...a], word: "the bun runtime" },
-  deno: { modality: "runner-deno", bin: "deno", argv: (t, a) => ["run", "--allow-read=.", "--allow-write=.", "--allow-env", t, ...a], word: "the deno runtime" },
-  python: { modality: "language-python", bin: "python3", argv: (t, a) => ["-I", t, ...a], word: "the cpython runtime" },
-  python3: { modality: "language-python", bin: "python3", argv: (t, a) => ["-I", t, ...a], word: "the cpython runtime" },
-  ruby: { modality: "language-ruby", bin: "ruby", argv: (t, a) => [t, ...a], word: "the ruby interpreter" },
-  lua: { modality: "language-lua", bin: "lua", argv: (t, a) => [t, ...a], word: "the lua interpreter" },
-  php: { modality: "language-php", bin: "php", argv: (t, a) => [t, ...a], word: "the php interpreter" },
-  go: { modality: "language-go", bin: "go", argv: (t, a) => ["run", t, ...a], word: "the golang toolchain" },
-  v: { modality: "language-v", bin: "v", argv: (t, a) => ["run", t, ...a], word: "the v compiler" },
-  zig: { modality: "language-zig", bin: "zig", argv: (t, a) => ["run", t, ...a], word: "the zig toolchain" },
-  nim: { modality: "language-nim", bin: "nim", argv: (t, a) => ["r", t, ...a], word: "the nim compiler" },
-  java: { modality: "language-java", bin: "java", argv: (t, a) => [t, ...a], word: "the jdk runtime" },
-  jvm: { modality: "runtime-jvm", bin: "java", argv: (t, a) => ["-jar", t, ...a], word: "the jvm hotspot" },
-  dotnet: { modality: "language-dotnet", bin: "dotnet", argv: (t, a) => ["run", "--project", t, ...a], word: "the dotnet runtime" },
-  make: { modality: "build-make", bin: "make", argv: (t, a) => ["-f", t, ...a], word: "the make builds" },
-  ninja: { modality: "build-ninja", bin: "ninja", argv: (t, a) => ["-f", t, ...a], word: "the ninja builds" },
-  cargo: { modality: "language-cargo", bin: "cargo", argv: (t, a) => ["run", "--manifest-path", t, ...a], word: "the cargo builds" },
+  bun: { modality: "runnerbun", bin: "bun", argv: (t, a) => [t, ...a], word: "the bun runtime" },
+  deno: { modality: "runnerdeno", bin: "deno", argv: (t, a) => ["run", "--allow-read=.", "--allow-write=.", "--allow-env", t, ...a], word: "the deno runtime" },
+  python: { modality: "languagepython", bin: "python3", argv: (t, a) => ["-I", t, ...a], word: "the cpython runtime" },
+  python3: { modality: "languagepython", bin: "python3", argv: (t, a) => ["-I", t, ...a], word: "the cpython runtime" },
+  ruby: { modality: "languageruby", bin: "ruby", argv: (t, a) => [t, ...a], word: "the ruby interpreter" },
+  lua: { modality: "languagelua", bin: "lua", argv: (t, a) => [t, ...a], word: "the lua interpreter" },
+  php: { modality: "languagephp", bin: "php", argv: (t, a) => [t, ...a], word: "the php interpreter" },
+  go: { modality: "languagego", bin: "go", argv: (t, a) => ["run", t, ...a], word: "the golang toolchain" },
+  v: { modality: "languagev", bin: "v", argv: (t, a) => ["run", t, ...a], word: "the v compiler" },
+  zig: { modality: "languagezig", bin: "zig", argv: (t, a) => ["run", t, ...a], word: "the zig toolchain" },
+  nim: { modality: "languagenim", bin: "nim", argv: (t, a) => ["r", t, ...a], word: "the nim compiler" },
+  java: { modality: "languagejava", bin: "java", argv: (t, a) => [t, ...a], word: "the jdk runtime" },
+  jvm: { modality: "runtimejvm", bin: "java", argv: (t, a) => ["-jar", t, ...a], word: "the jvm hotspot" },
+  dotnet: { modality: "languagedotnet", bin: "dotnet", argv: (t, a) => ["run", "--project", t, ...a], word: "the dotnet runtime" },
+  make: { modality: "buildmake", bin: "make", argv: (t, a) => ["-f", t, ...a], word: "the make builds" },
+  ninja: { modality: "buildninja", bin: "ninja", argv: (t, a) => ["-f", t, ...a], word: "the ninja builds" },
+  cargo: { modality: "languagecargo", bin: "cargo", argv: (t, a) => ["run", "--manifest-path", t, ...a], word: "the cargo builds" },
 });
 
 /** the exec word of the rust lane — the two phase grammar the tool drives
  * (rustc compiles the source to the jail, the binary executes after) */
-const RUSTLANE: ExecLane = { modality: "language-rust", bin: "rustc", argv: (t, a) => [t, ...a], word: "the rustc toolchain" };
+const RUSTLANE: ExecLane = { modality: "languagerust", bin: "rustc", argv: (t, a) => [t, ...a], word: "the rustc toolchain" };
 
 /** exechelprows — the language words the help lists (sorted, one row) */
 function exechelprows(): string[] {
@@ -998,43 +998,43 @@ export async function writesandboxfile(sessionid: string, target: string, conten
  * probes on the host PATH (the registry owns the catalog; this table only
  * names the binary each probed record answers through) */
 const HOSTPROBES: Readonly<Record<string, string>> = Object.freeze({
-  "container-docker": "docker",
-  "emulator-qemu": "qemu-system-x86_64",
-  "microvm-firecracker": "firecracker",
-  "container-runsc": "runsc",
-  "runner-bun": "bun",
-  "runner-deno": "deno",
-  "language-python": "python3",
-  "language-ruby": "ruby",
-  "language-lua": "lua",
-  "language-php": "php",
-  "language-go": "go",
-  "language-rust": "rustc",
-  "language-cargo": "cargo",
-  "language-java": "java",
-  "runtime-jvm": "java",
-  "language-zig": "zig",
-  "language-v": "v",
-  "language-nim": "nim",
-  "language-dotnet": "dotnet",
-  "build-make": "make",
-  "build-ninja": "ninja",
+  "containerdocker": "docker",
+  "emulatorqemu": "qemu-system-x86_64",
+  "microvmfirecracker": "firecracker",
+  "containerrunsc": "runsc",
+  "runnerbun": "bun",
+  "runnerdeno": "deno",
+  "languagepython": "python3",
+  "languageruby": "ruby",
+  "languagelua": "lua",
+  "languagephp": "php",
+  "languagego": "go",
+  "languagerust": "rustc",
+  "languagecargo": "cargo",
+  "languagejava": "java",
+  "runtimejvm": "java",
+  "languagezig": "zig",
+  "languagev": "v",
+  "languagenim": "nim",
+  "languagedotnet": "dotnet",
+  "buildmake": "make",
+  "buildninja": "ninja",
 });
 
 /** the live lane words — the honest sentence each live record of the
  * registry answers with (the registry declares the state, the lane names
  * the surface it drives) */
 const LIVELANES: Readonly<Record<string, string>> = Object.freeze({
-  "runner-node": "the node runtime the run lane executes inside the container",
-  "fs-vfs": "the session jail the storage lane drives",
-  "runner-serverless": "the v8 isolate the exec lane drives in process",
-  "storage-sqlite": "the sqlite database the sql tool drives through better-sqlite3",
-  "fs-gitobjects": "the content-addressed objects store the gitobj tool drives",
-  "network-dns": "the node resolver the dns tool drives",
-  "network-doh": "the https resolver the doh tool drives",
-  "runner-babel": "the babel transform round trip the edge plane drives server-side",
-  "runner-webpack": "the webpack compile the edge plane drives server-side",
-  "runner-universal": "the bash sh execution the script lanes drive server-side",
+  "runnernode": "the node runtime the run lane executes inside the container",
+  "fsvfs": "the session jail the storage lane drives",
+  "runnerserverless": "the v8 isolate the exec lane drives in process",
+  "storagesqlite": "the sqlite database the sql tool drives through better-sqlite3",
+  "fsgitobjects": "the content-addressed objects store the gitobj tool drives",
+  "networkdns": "the node resolver the dns tool drives",
+  "networkdoh": "the https resolver the doh tool drives",
+  "runnerbabel": "the babel transform round trip the edge plane drives server-side",
+  "runnerwebpack": "the webpack compile the edge plane drives server-side",
+  "runneruniversal": "the bash sh execution the script lanes drive server-side",
 });
 
 /** binaryonpath — a pure PATH scan with stat (windows also probes the exe

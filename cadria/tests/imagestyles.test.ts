@@ -23,7 +23,7 @@ import {
   styleFingerprint,
   styleForDescriptor,
   TEXTURE_DELTA_CAP,
-} from "../imagestyles.ts";
+} from "../image.ts";
 import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "../synth.ts";
 
 /** builds a descriptor from named dim overrides over a 0.5 mid field. */

@@ -3,7 +3,7 @@
 // The interface never touches the visitor machine: the choice rides the
 // session scope (tab memory, the same contract as the theme) and the
 // document carries it as data-motion="reduced" — the one attribute the
-// stylesheet guards answer to (the session hard stop of Sol/sol.css). The
+// stylesheet guards answer to (the session hard stop of sol/sol.css). The
 // media query stays the boss: the switch only ever adds the document flag
 // on top of `prefers-reduced-motion`, never against it. Pure and
 // multi-mode: the storage seam and the document root are injectable so

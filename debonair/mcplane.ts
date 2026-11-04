@@ -29,14 +29,14 @@ import { mintid } from "./bigintids.ts";
 import { composeFromProfile } from "./composer.ts";
 import type { GatewayProfileRow } from "./gatewayapi.ts";
 import { fetchProfile, listVitrine, mineProfile, pollRenderJob, publishTrack, queueRender } from "./generateclient.ts";
-import { GENRES, matchGenre } from "./genrematrix.ts";
+import { GENRES, matchGenre } from "./genre.ts";
 import type { IngestClientCode, IngestClientDeps, IngestClientResult } from "./ingest.ts";
 import { pollJob, uploadIngest } from "./ingest.ts";
 import { composeWithLlm, type LlmLaneCode } from "./llmlane.ts";
 import { hostallowed } from "./onboardingstate.ts";
-import type { PatternProject } from "./patternenums.ts";
-import { validatePatternProject } from "./patternenums.ts";
-import type { RenderTrackRow } from "./renderworker.ts";
+import type { PatternProject } from "./pattern.ts";
+import { validatePatternProject } from "./pattern.ts";
+import type { RenderTrackRow } from "./render.ts";
 
 /** @section catalog — the tool list (the family mcp contract) */
 
