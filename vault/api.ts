@@ -107,6 +107,7 @@ import {
   usageOf,
 } from "./objectsledger.ts";
 import { type QuotaVerdict, quotaLimitFrom, quotaVerdict, readQuota, setQuota } from "./quota.ts";
+import { decoyledger, isprobe } from "./decoy.ts";
 import { routes } from "./routes.ts";
 import { ensureuicopyingested, uistoreget, uistorelist } from "./uistore.ts";
 
@@ -518,6 +519,17 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
       return;
     }
     if (auth.kind === "none") {
+      /* the decoy lane of the faun lesson's final seal: a browser-shaped
+       * probe (the scanner signature — accept carrying text/html, the one
+       * shape no api client of this surface sends) reads a plausible
+       * ledger of fake projects instead of the honest refusal, so the
+       * enumeration dies in the decoy and the real base stays sealed
+       * behind the gate. every api-shaped request keeps the honest 401
+       * contract the accounts, objects and storagelane suites assert. */
+      if (isprobe(req.headers.accept) && method === "GET") {
+        sendJson(res, 200, { projects: decoyledger() });
+        return;
+      }
       sendError(
         res,
         401,
