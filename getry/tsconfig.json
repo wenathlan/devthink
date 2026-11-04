@@ -25,6 +25,14 @@
        * vitest bridge does. retires when saddle 2.1.7 publishes the
        * export entry. */
       "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
+      /* the workload law bridge of the family: the app's sandbox lane seat
+       * answers the engine catalog rows through the published specifier
+       * ("@wenathlan/saddle/workloadlaw"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * mirror era is over, the rows are the owner's own objects. the
+       * entry retires when the published envelope carries the built
+       * workload law. */
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       /* the bare package seats of the moved-source subprocess lane (the
        * gateway ownership wave): the getry cli test pins THIS tsconfig
        * when tsx boots the owner console (cli.ts → server.ts → engine.ts →

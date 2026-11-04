@@ -20,7 +20,15 @@
       "@wenathlan/debonair/audiopipeline": ["../debonair/audio.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
-      "@wenathlan/saddle/security": ["../saddle/security.ts"]
+      "@wenathlan/saddle/security": ["../saddle/security.ts"],
+      /* the workload law bridge of the family: the app's sandbox lane seat
+       * answers the engine catalog rows through the published specifier
+       * ("@wenathlan/saddle/workloadlaw"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * mirror era is over, the rows are the owner's own objects. the
+       * entry retires when the published envelope carries the built
+       * workload law. */
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
