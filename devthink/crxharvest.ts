@@ -2569,8 +2569,81 @@ async function loadcache(): Promise<Record<string, harvestrecord>> {
   }
 }
 
+/** the seed id list the harvest walks — folded from the root
+ * inputextensionids.txt (the rootdedup law: the scratch input arms leave
+ * the app root, the cataloged ids ride the script that owns them, so the
+ * seed reads no file the checkout could lose). */
+const idsource = `
+adbonjafebjadholmnabocnddmhpennj
+ajdlmleaplmphpokbjmnhgkgaaemclil
+akadnehffdhihfhpmcbokdlfjpgooffe
+akldabonmimlicnjlflnapfeklbfemhj
+anlikcnbgdeidpacdbdljnabclhahhmd
+bapaclfmcgookbglclacfgeemaehkkme
+bgjdnapfffligabpfbkbapibaifgmjie
+bhfbkacflpnpfgfjghhajikhfghcknip
+bjcngahpcjeililljmfegmlanlpgibdi
+bjfgambnhccakkhmkepdoekmckoijdlc
+bkhaagjahfmjljalopjnoealnfndnagc
+cbibgdcbkoikdkeahemkjkpacmgicaco
+cclndjheoijilbieeofdjiledodbdakb
+cecngibhkljoiafhjfmcgbmikfogdiko
+celalggclffbgnloepbfadhjhmchikoh
+cpgamigjcbffkaiciiepndmonbfdimbb
+ddjnfplagacilcnjpindbdcopccndihj
+dgjhfomjieaadpoljlnidmbgkdffpack
+dnfmklmdbipiahdjiogaoemjaiodomdf
+ebofbaomnlpjgnponhalmmihcgakodpj
+edacconmaakjimmfgnblocblbcdcpbko
+eenjdnjldapjajjofmldgmkjaienebbj
+ffijkpjpoehejdlbfoefcpgbimdgocmf
+fldmhceldgbpfpkbgopacenieobmligc
+gblapfbnbicdckfhkllcnfleiemhmgeb
+gbldofcpkknbggpkmbdaefngejllnief
+gcbalfbdmfieckjlnckgchpgbkgkonoe
+geggbdbnidkhbnbjoganapfhkpgkndfo
+ghlmiigebgipgagnhlanjmmniefbfihl
+giljefjcheohhamkjphiebfjnlphnokk
+gpccjhdgjkmalnepmeclooflliiocfed
+gpcpndfhbmichbgffhlaedjlnomnfgla
+gpnieenphjbjcpcdnjhnipckcldebjdf
+hdcehjaodheipickeopncehaikamghjk
+heolgaalbnnelipfhbccbkdohecmaimo
+hfjnppljknigdnnpocjjgdcfmnodoafe
+hkcbjmdeheceggmlbhbiljejkkpjljjp
+idahijhccencfhigphpmlnjbppldolgk
+idkjhjggpffolpidfkikidcokdkdaogg
+iebfoaldapgggcpjialmbnhcendcnkpi
+iebpjdmgckacbodjpijphcplhebcmeop
+ihhkmalpkhkoedlmcnilbbddbhnnvbii
+ildkmabpimmkaediidaifkhjpohdnifk
+ilehdekjacappgghkgmmlbhgbnlkgoid
+infppggnoaenmfagbfknfkancpbljcca
+ioohfnlbpolaalcbppaggpgcgpldohfg
+jambeljnbnfbkcpnoiaedcabbgmnnlcd
+jfeammnjpkecdekppnclgkkffahnhfhe
+jfgfiigpkhlkbnfnbobbkinehhfdhndo
+jnhgnonknehpejjnehehllkliplmbmgn
+joggkdfebigddmaagckekihhfncdobff
+jphkkablogbfneefecondchaafbdaomc
+kbacobbmnajbihpidjilndoielmaojbj
+kdmpkkahkhdmdhfkdihkopikgcocbpbf
+khaocdcbgnfgfoiplkbdaappfcdldgeb
+kjgebebilcoaamgfpogkoehcnjbnncic
+kkepankimcahnjamnimeijpplgjpmdpp
+ljdobmomdgdljniojadhoplhkpialdid
+mahgcggahcbplkpmpmhdnbdjbcnoafcg
+mhjhnkcfbdhnjickkkdbjoildmbinlgd
+mlcokfhobljidglkgileejcelojhhmdm
+mmlmfjhmonkocbjadbfplnigmagldckm
+mooikfkahbdckldjjndioackbalphokd
+obpjaonipoaomjnokbimppohbpjibflm
+ofaokhiedipichpaobibbnahnkdoiiah
+okngcalljddikhljpfhgmikklmmmdkkd
+pncmdlebcopjodenlllcomedphdmeogm
+`;
+
 async function main() {
-  const idsource = await readFile(join(root, "inputextensionids.txt"), "utf8");
   const identifiers = [
     ...new Set(
       idsource
