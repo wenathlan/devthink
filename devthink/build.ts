@@ -16,7 +16,7 @@ import { promisify } from "node:util";
 import { build } from "esbuild";
 import type { platformtarget } from "./types.ts";
 import { stripstrings, underscorednames } from "../foundry/bundlescan.ts";
-import { cjswrap } from "./cjs.ts";
+import { cjswrap } from "./cjswrap.ts";
 import {
   changelogdigestworkflow,
   cjssample,
@@ -31,7 +31,7 @@ import { fixturepages, umdexample } from "./tests/pagefixtures.ts";
 import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts";
 import { frozenschemas } from "./tests/schemafixtures.ts";
 import { pxToCellX, pxToCellY } from "./density.ts";
-import { umdwrap } from "./umd.ts";
+import { umdwrap } from "./umdwrap.ts";
 import type { IrNode } from "./runtime.ts";
 
 /* ─── the build family lanes (the flat folder law: one keyword file per

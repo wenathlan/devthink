@@ -1,0 +1,24 @@
+/**
+ * cjswrap — the build time cjs wrapper of the devthink library modes.
+ * @module cjswrap
+ * @family wave/logicfold3
+ * @law single responsibility: the runtime entry face lives in cjs.ts; this seat only wraps the emitted bundle body so node build.ts never resolves the index.js artifact at build time.
+ */
+
+/** Wraps one cjs bundle body behind the stable getter object of the 1.1.81 library modes: every named export of the esm core moves behind one getter that reads the internal exports object, so the require surface stays stable against assignment and the same names answer in the esm and the cjs mode. */
+export function cjswrap(body: string): string {
+  return `${body}
+/* The stable getter object of the cjs mode: every named export sits behind one getter that reads the internal exports, so the require surface never rebinds and the mode reports its own stamp. */
+(function (internal) {
+  var stable = {};
+  var names = Object.getOwnPropertyNames(internal);
+  for (var position = 0; position < names.length; position += 1) {
+    (function (name) {
+      var descriptor = Object.getOwnPropertyDescriptor(internal, name);
+      Object.defineProperty(stable, name, { enumerable: descriptor.enumerable, get: function () { return internal[name]; } });
+    })(names[position]);
+  }
+  module.exports = stable;
+})(module.exports);
+`;
+}
