@@ -479,9 +479,9 @@ async function runreleasewalk(): Promise<void> {
     ["../vault/vault.java", (content) => content.replace(/VERSION = "[0-9A-Za-z.-]+"/, `VERSION = "${version}"`)],
     ["../cobaia/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
     ["../forge/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-    ["../foundry/foundry.pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-    ["../getry/getry.pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
-    ["../vault/vault.pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["../foundry/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["../getry/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
+    ["../vault/pom.xml", (content) => content.replace(/<revision>[^<]+<\/revision>/, `<revision>${version}</revision>`)],
     [
       "../argan/Dockerfile",
       (content) =>
