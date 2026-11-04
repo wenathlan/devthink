@@ -21,7 +21,7 @@ import {
   issandboxterminal,
   type sandboxphase,
   sandboxqueueerror,
-} from '../sandboxqueue.ts';
+} from '../sandbox.ts';
 
 /** walks the full happy path of the machine. */
 function happywalk(now: number): void {
