@@ -230,7 +230,7 @@ jobs:
       # CURRENT tip at checkout time, so a main that moved between the
       # auto-tag and this gate answered a different commit than the tag
       # pointed at and the lockstep died ("Tag does not point to the
-      # source being released") — the whole release ladder of the 2.0.155
+      # source being released") — the whole release ladder of the 2.0.156
       # wave broke exactly this way while the approval gate held it. every
       # checkout of the release source now answers `github.sha` — the
       # immutable commit the event carries — so the tag lockstep compares

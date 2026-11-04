@@ -943,7 +943,7 @@ export function gallerydriftof(previous: recipereport | null, current: reciperep
  * stay the live measurements the recorded run took; the gallery drift diff
  * never reads them). */
 export const reciperecord: recipereport = {
-  "release": "2.0.155",
+  "release": "2.0.156",
   "mode": "sync",
   "gallery": {
     "version": "2.0.0",
