@@ -259,10 +259,9 @@ describe("the workflow contract", () => {
     "render.ts": () => import("../render.ts"),
     "scheduler.ts": () => import("../scheduler.ts"),
     "security.ts": () => import("../security.ts"),
-    "virtualcpu.ts": () => import("../virtualcpu.ts"),
-    "virtualgpu.ts": () => import("../virtualgpu.ts"),
-    "virtualization.ts": () => import("../virtualization.ts"),
-    "virtualmemory.ts": () => import("../virtualmemory.ts"),
+    /* the virtual family fold (the edgelandes law): the four arm modules
+     * retired into the one keyword file — the gate loads the folded seat. */
+    "virtual.ts": () => import("../virtual.ts"),
   };
 
   it("ci gate typecheck: every root module parses through type stripping", async (t) => {

@@ -26,7 +26,7 @@ import { join } from "node:path";
    ownership law, wave a, actions 108-112 — the master virtualization engine
    keeps only the sandbox/vm/runner/vgpu/vcpu/ports/hardware-virtual
    modalities). */
-const domains = ["index", "foundation", "isolation", "virtual", "execution", "browser", "communication", "integration", "distribution", "modes", "cli", "server", "format", "alternatives", "compute", "orchestrator", "performance", "quantum", "render", "scheduler", "security", "tiers", "virtualcpu", "virtualgpu", "virtualization", "virtualmemory"];
+const domains = ["index", "foundation", "isolation", "virtual", "execution", "browser", "communication", "integration", "distribution", "modes", "cli", "server", "format", "alternatives", "compute", "orchestrator", "performance", "quantum", "render", "scheduler", "security", "tiers"];
 
 /** Finds domain files that do not follow the skill formatting contract. */
 export async function formatissues(root = process.cwd()) {

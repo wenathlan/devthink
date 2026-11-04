@@ -20,7 +20,7 @@ import {
   MIGLAYOUTBLACKWELL,
   pciIds,
   validatedensity,
-} from '../virtualgpu.ts';
+} from '../virtual.ts';
 
 /* ------------------------------------------------------------------ */
 /* verified identity bank                                              */

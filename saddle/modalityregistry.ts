@@ -13,6 +13,16 @@
 // says so instead of pretending. Pure data and pure functions: zero
 // storage, zero node-only imports, the browser-pure bundle keeps carrying
 // it.
+//
+// the fold law of the virtual wave: the orphan modalityregistrytypes.ts —
+// the declare-only mirror of this registry the v2 wave left at the root
+// with zero importers (the devthink os reads its own ambient
+// modalitytypes.ts bridge, never the saddle mirror) — absorbed into this
+// seat: every declaration it carried (BootClass, ModalityFamily,
+// ModalityState, ModalityRecord, BOOTLADDER, MODALITYPLANCOUNT,
+// MODALITIES, ModalityPlanReport, planreport, BaseProfile, JoinRequest,
+// resolvejoin, getmodality) already rides this file with its real
+// implementation, so the mirror retired without one new line of code.
 
 /** The boot cost classes the ladder measures. */
 export type BootClass = "hot" | "warm" | "cold";

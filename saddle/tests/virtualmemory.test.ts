@@ -26,7 +26,7 @@ import {
   planhugepages,
   shmSize,
   validatememoryrequest,
-} from '../virtualmemory.ts';
+} from '../virtual.ts';
 
 /** extracts one numeric meminfo row in kB from a generated payload. */
 function meminfovalue(text: string, key: string): number {

@@ -29,7 +29,7 @@ import {
   buildtsnschedule,
   plancxltype3,
   planznszones,
-} from '../virtualization.ts';
+} from '../virtual.ts';
 
 /* ------------------------------------------------------------------ */
 /* virtualization.ts: cxl type-3, zns/fdp, p4, tsn                      */

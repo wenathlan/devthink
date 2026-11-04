@@ -21,7 +21,7 @@ import { randomInt, randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { migprofileid } from './virtualmemory.ts';
+import type { migprofileid } from './virtual.ts';
 
 /* ------------------------------------------------------------------ */
 /* Section 1: reference versions                                       */
@@ -1446,18 +1446,12 @@ export {
   tmpfsrecipe,
   zramrecipe,
 } from './tiers.ts';
-/** Re-exports the virtual processor bank and cpuinfo generators. */
-export * from './virtualcpu.ts';
-/** Re-exports the gpu passthrough surface (vfio, rom dump, vgpu data). */
-export * from './virtualgpu.ts';
-/** Re-exports the virtualization surface (qemu turbo argv, passage,
- * mttg cgroups, mttg grid, checkpoint and restore, virtualizationcore
- * bridge). */
-export * from './virtualization.ts';
-/** Re-exports the MIG profile union declared by the memory module. */
-export type { migprofileid } from './virtualmemory.ts';
-/** Re-exports the memory tier catalog and virtual memory manager. */
-export * from './virtualmemory.ts';
+/* the virtual family fold (the edgelandes law, wave/virtualfold): the
+ * four arm modules — virtualcpu.ts, virtualgpu.ts, virtualization.ts and
+ * virtualmemory.ts — retired into the one keyword file virtual.ts, so
+ * their star re-exports retire with them: the `export * from
+ * './virtual.ts'` of the routing barrel below carries every one of their
+ * names (plus the MIG profile type union) through the single seat. */
 
 /* ── Section 2: the saddle domain routing barrel ── */
 
