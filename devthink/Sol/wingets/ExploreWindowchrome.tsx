@@ -61,16 +61,16 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
 
   return (
     <div
-      className={`fixed inset-x-0 top-0 z-[80] flex h-9 items-center gap-3 border-b border-hairline bg-canvas/80 px-3 backdrop-blur-xl backdrop-saturate-150 transition-[transform,opacity] duration-200 ease-fluent motion-reduce:transition-none ${
+      className={`fixed inset-x-0 top-0 z-[80] flex h-9 items-center gap-3 overflow-hidden border-b border-hairline bg-canvas/80 px-3 backdrop-blur-xl backdrop-saturate-150 transition-[transform,opacity] duration-200 ease-fluent motion-reduce:transition-none ${
         visible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-full opacity-0"
       }`}
       aria-hidden={!visible}
     >
-      <span className="text-ink-2" aria-hidden="true">
+      <span className="shrink-0 text-ink-2" aria-hidden="true">
         <SolLogoMark size={13} />
       </span>
-      <span className="font-mono text-[11px] text-ink-2">{osText("explore.window.title")}</span>
-      <span className="ml-auto flex items-center">
+      <span className="min-w-0 truncate font-mono text-[11px] text-ink-2">{osText("explore.window.title")}</span>
+      <span className="ml-auto flex shrink-0 items-center">
         <button type="button" tabIndex={visible ? 0 : -1} aria-label={osText("explore.window.minimize")} onClick={onMinimize} className={captionIdle}>
           <Minus fontSize={13} aria-hidden="true" />
         </button>
