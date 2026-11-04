@@ -8,8 +8,8 @@ name: DevThink Registry Heal
 # the first heal carried answered E403 (the granular token that bypasses
 # two-factor authentication may never unpublish), so the heal moves the
 # latest dist-tag of every poisoned package back to the last honest rung
-# the manifests of main already resolve (2.1.6 for the saddle, 2.0.154
-# for the library apps). The ladder then walks the ordinary flow: the
+# the manifests of main already resolve (2.0.154 for the saddle and the library apps —
+# the rung the family curve realignment stamps from). The ladder then walks the ordinary flow: the
 # maintenance rung derives the next rung, the release cuts the tag from
 # the healed main, and the publish answers envelopes the tree actually
 # builds — the fresh latest supersedes every caret range the same hour.
@@ -69,7 +69,7 @@ jobs:
             fi
             echo "::endgroup::"
           }
-          heal saddle 2.1.6
+          heal saddle 2.0.154
           heal devthink 2.0.154
           heal argan 2.0.154
           heal cadria 2.0.154
