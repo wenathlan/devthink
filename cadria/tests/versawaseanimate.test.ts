@@ -12,7 +12,7 @@ import {
   tracksByTarget,
   worldTransform,
   wrapSeconds,
-} from "../versawaseanimate.ts";
+} from "../versawase.ts";
 import type { Scene3d } from "../versawase.ts";
 
 const SCENE: Scene3d = {

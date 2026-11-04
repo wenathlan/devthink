@@ -17,7 +17,7 @@
 import { type DrawCommand, type RenderFrame, Z_BACKGROUND } from "./imagerender.ts";
 import { makeopacity, type OpacityGrid } from "./masks.ts";
 import { boxblurimage, type PixelImage } from "./pixel.ts";
-import { fitCameraDistance } from "./versawase3d.ts";
+import { fitCameraDistance } from "./versawase.ts";
 import type { MeshGeometry } from "./visualize.ts";
 
 /** one rgb triple 0-255 (the byte domain of every raster lane). */

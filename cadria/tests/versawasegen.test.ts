@@ -24,7 +24,7 @@ import {
   validateMesh,
   valueNoise2,
   type GeneratedMesh,
-} from "../versawasegen.ts";
+} from "../versawase.ts";
 
 /** the vertex triple at one index of a position buffer. */
 function vertex(mesh: GeneratedMesh, index: number): [number, number, number] {
