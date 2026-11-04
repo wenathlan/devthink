@@ -30,6 +30,7 @@ export default defineConfig({
        * the family resolves to the consolidated file; the long family
        * keys ride before the "@" theme alias; each entry retires when
        * the published envelope carries the built module. */
+      "@wenathlan/debonair/audio": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
       "@wenathlan/debonair/audioattributes": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
       "@wenathlan/debonair/audiodecode": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
       "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
