@@ -33,6 +33,13 @@ onlyBuiltDependencies:
   - ssh2
   - workerd
 dangerouslyAllowAllBuilds: true
+# the native build law (the node 26 v8 gate): ssh2's optional c++ binding
+# speaks the removed v8 context api (GetIsolate), so the gyp lottery dies
+# here in the seat pnpm 12 reads - the pure-js engine answers the lanes
+# and no install ever compiles the broken binding.
+neverBuiltDependencies:
+  - ssh2
+
 minimumReleaseAgeExclude:
   - zod@4.6.6
   - follow-redirects@1.16.1
@@ -78,7 +85,7 @@ minimumReleaseAgeExclude:
   - '@capacitor/ios@8.6.0'
   - '@types/node@26.6.6'
   - '@types/google.maps@3.66.9'
-  - lucide-react@1.64.0 || 1.65.0 || 1.66.0 || 1.67.0
+  - lucide-react@1.64.0 || 1.65.0 || 1.66.0 || 1.67.0 || 1.68.0
   - '@fluentui/react-icons@2.0.345'
   - hono@4.13.16
   - '@wenathlan/cadria@2.0.154 || 2.0.155 || 2.1.8'
@@ -107,5 +114,5 @@ minimumReleaseAgeExclude:
   - tailwindcss@4.3.4
   - vitest@5.1.0
   - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.1.8'
-  - '@wenathlan/devthink@2.0.154 || 2.0.155'
+  - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.1.7'
   - '@wenathlan/argan@2.0.154 || 2.0.155'
