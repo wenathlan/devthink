@@ -33,12 +33,20 @@
 # modalities, the same console, the same health surface; only the declared
 # hardware plan differs.
 #
-# THE ELEVEN-ARCHITECTURE PLATFORM SURFACE (the pr15b law): every profile
-# publishes across the complete linux platform list buildx/docker carries —
-# linux/amd64, linux/amd64/v2, linux/arm64, linux/arm/v7, linux/arm/v6,
-# linux/ppc64le, linux/s390x, linux/riscv64, linux/386, linux/mips64le,
-# linux/loong64 — amd64 and amd64/v2 build native, the other nine legs
-# ride qemu emulation in the publish workflow.
+# THE ELEVEN-ARCHITECTURE PLATFORM STANDARD (the pr15b law): every
+# profile answers the eleven architectures the container standard names —
+# the CONTAINERARCHIDS of saddle/containerarch.ts: x64, arm64, armv7,
+# riscv64, ppc64le, s390x, 386, mips64le, loong64, wasm32, wasip1 (the
+# wasm pair rides the oci artifact shapes wasm32/wasip1 and wasip1/wasm
+# the wasm runtimes consume). The build legs follow the pinned node
+# base's honest manifest list — the four linux seats it carries
+# (linux/amd64 the native x64 leg; linux/arm64, linux/ppc64le and
+# linux/s390x ride qemu emulation in the publish workflow). The seven
+# seats the node base does not ship (armv7, riscv64, 386, mips64le,
+# loong64 and the wasm pair) answer the standard's honest coded absence
+# (ARCH_IMAGE_ABSENT), never a pretended build leg — the same honesty
+# law the containerarch table keeps for its own pinned base: a leg
+# never claims a manifest the base does not carry.
 #
 # THE CONTEXT LAW (the family context fix): this file COPYs from two
 # trees (saddle/ and the engine-ownership sibling vault/), so every build
@@ -47,11 +55,13 @@
 # building from inside saddle/ breaks the vault COPY - the sibling rides
 # the context beside this directory, never inside it.
 #
-# THE DIGEST LAW: the base rides the bare tag here (local builds fetch the
-# moving tag), and the publish lanes resolve the manifest-list digest on
-# the runner at build time and pass the pinned reference as NODE_BASE — no
-# 64-hex digest ever lands in a source file (the signature is generated
-# during the build, never hardcoded).
+# THE DIGEST LAW: the FROM lines ride name@sha256:${NODE_BASE_DIGEST}
+# (the scorecard-file form the supply-chain gate reads as pinned) while
+# the digest itself never lands in a source file — the publish lanes
+# resolve the manifest-list digest on the runner at build time and pass
+# it as the NODE_BASE_DIGEST build-arg, and a local build resolves the
+# same lane before docker build (the signature is generated during the
+# build, never hardcoded).
 #
 # THE VERSION LAW: the ARG default below mirrors saddle/package.json
 # (the metadata lockstep the registry lanes stamp); the publish lanes pass
@@ -63,8 +73,9 @@ ARG NODE_BASE_TAG="node:26.13.0-slim"
 # ride name@sha256:${ARG} (the exact pattern the supply-chain gate reads
 # as pinned) while the digest itself still resolves at build time on the
 # runner (the bases step of the publish lanes) — no 64-hex ever enters the
-# repository, the manifest-list digest serves the whole eleven-architecture
-# matrix, and a local build resolves the same lane before docker build.
+# repository, the manifest-list digest serves the whole build matrix
+# (the four base-carried legs of the eleven-architecture standard), and a
+# local build resolves the same lane before docker build.
 ARG NODE_BASE_DIGEST
 
 # ===== stage: solbuild — the locked npm tree and the console spa =====
@@ -170,9 +181,11 @@ RUN apt-get update \
 # pure-node server stack - zero npm dependencies, the node 26 runtime
 # carries everything (node:sqlite, node:crypto, native type stripping
 # for the .ts sources). the console set closes the whole import graph:
-# webserver.ts pulls the sandbox quartet (sandbox.ts, sandboxprofile.ts,
-# sandboxenvprofile.ts, sandboxquota.ts), db.ts, auth.ts, mesh.ts,
-# modalityregistry.ts, edgeplane.ts and workloadlaw.ts; edgeplane.ts
+# webserver.ts pulls the one sandbox seat (sandbox.ts - the sandboxfold
+# merged the profile, env-profile and quota seats into it, so the three
+# dead COPY arms the pre-fold file carried retire here), db.ts, auth.ts,
+# mesh.ts, modalityregistry.ts, edgeplane.ts and workloadlaw.ts;
+# edgeplane.ts
 # pulls foundation.ts and the one edgelandes keyword file (the edgelandes
 # fold retired the host/inproc/virtual/ninety arms into it); the lazy
 # script-lane surface (webserver.ts imports scriptlanes.ts on first use)
@@ -184,7 +197,7 @@ RUN apt-get update \
 # webserver.ts starts clean; before the fix the container crashed at
 # boot with module-not-found.
 # run the console with: docker run saddle:<version>
-COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/sandboxprofile.ts /app/sandboxenvprofile.ts /app/sandboxquota.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scriptlanes.ts /app/execution.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scriptlanes.ts /app/execution.ts /app/mime.types /app/init.sql /app/schema.prisma ./
 # the label store of the console stack: labels.ts (pulled by db.ts)
 # resolves ../vault/labelstore.ts at /vault - the same family context
 # fix the solbuild stage applies.
