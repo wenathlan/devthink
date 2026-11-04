@@ -40,13 +40,25 @@ export default defineConfig({
        * the built palette engine. */
       "@wenathlan/cadria/synth": path.resolve(import.meta.dirname, "../cadria/synth.ts"),
 
-      /** the self bridge the transitive specifier rides: the cadria palette
-       * engine imports the audio contract through debonair's own published
-       * specifier ("@wenathlan/debonair/audio" carries the dim order the
-       * palette folds), so the app resolves its own published
-       * surface to its own source — the graph the registry resolves for the
-       * embedder, resolved to the monorepo root inside the app. */
+      /** the audio family self bridges the consolidation rides: the library
+       * face walk pins every audio specifier of the published surface
+       * ("@wenathlan/debonair/audio", the legacy "audioengine",
+       * "audioattributes", "audiodecode", "audiofeatures" and
+       * "audiopipeline" keys the embedders already ride) against the one
+       * keyword file the leaf retirement seated — every audio specifier
+       * resolves to the consolidated audio.ts, the same target the exports
+       * map promises (the installed envelope does not carry the
+       * consolidated file yet — the bridges are the resolution until the
+       * published one lands). the transitive specifier the cadria palette
+       * engine rides ("@wenathlan/debonair/audiofeatures" carries the dim
+       * order the palette folds) answers the same file. each entry retires
+       * when the published envelope carries the consolidated module. */
       "@wenathlan/debonair/audio": path.resolve(import.meta.dirname, "audio.ts"),
+      "@wenathlan/debonair/audioattributes": path.resolve(import.meta.dirname, "audio.ts"),
+      "@wenathlan/debonair/audiodecode": path.resolve(import.meta.dirname, "audio.ts"),
+      "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "audio.ts"),
+      "@wenathlan/debonair/audiopipeline": path.resolve(import.meta.dirname, "audio.ts"),
+      "@wenathlan/debonair/audioengine": path.resolve(import.meta.dirname, "audio.ts"),
 
       /** the route table self bridge the wave 2d carve out rides: the
        * library face walk pins the leaf through the published library

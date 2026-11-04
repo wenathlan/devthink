@@ -8,12 +8,13 @@
 // (the engine's own recipes driven sample-accurately at the 48 khz rate the
 // MASTERING spec pins — the kick 808 pitch dive, the noise snare and hats,
 // the bass sub, the detuned pad, the vibrato lead, every number read from
-// audioengine's VOICE_RECIPES table, never re-implemented: the browser
-// VoiceBank and this lane read the one source, so the desk and the bounce
-// cannot drift), encode (the wavwriter, mono pcm 16 — the reference's wav
+// the VOICE_RECIPES table of the audioengine section of audio.ts,
+// never re-implemented: the browser VoiceBank and this lane read the one
+// source, so the desk and the bounce cannot drift), encode (the wavwriter,
+// mono pcm 16 — the reference's wav
 // law), store (the blob store put under audio/wav). determinism is total:
 // the same plan and seed answer the same bytes (the seeded noise rides the
-// take identity through audioengine's own seededNoiseChannel — the same
+// take identity through the audioengine section's own seededNoiseChannel — the same
 // stream the browser bank reads). the mix law rides the desk's own default
 // faders and master trim (DEFAULT_MIX_LAW); the glue compressor stays the
 // browser desk's — the webaudio compressor is deliberately ua-tailored, so

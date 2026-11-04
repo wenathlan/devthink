@@ -172,7 +172,7 @@ export const PATTERN_SCALE_ALIASES: Record<string, PatternScaleName> = {
   blues_min: "blues",
 };
 
-/** The instrument voices the engine renders (the audioengine recipes). */
+/** The instrument voices the engine renders (the audio.ts voice recipes). */
 export type PatternVoice = "lead" | "pluck" | "keys" | "bell" | "arp" | "flute" | "bass" | "pad";
 
 /** The voice vocabulary in engine order. */
