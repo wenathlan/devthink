@@ -413,3 +413,10 @@ getry/*.d.ts.map
 # the polar state directory — machine-local device-flow artifacts (the
 # token, the banner, the poll state) never ride the family tree
 polar/
+
+# the repository root lock never returns (the root layer law: the first
+# layer carries only the eleven application folders beside .github,
+# .gitignore and package.json — the envelope installs nothing, every
+# application lock lives inside its application folder, and the anchored
+# pattern leaves the per-application bun.lock files tracked)
+/bun.lock
