@@ -40,7 +40,7 @@ import {
   publishTrack,
   queueRender,
 } from "../../generateclient.ts";
-import { GENRES, type GenreStyle, matchGenre } from "../../genre.ts";
+import { GENRES, type GenreStyle, matchGenre } from "../../genrematrix.ts";
 import { listingests } from "../../ingest.ts";
 import { PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { label, labelfill } from "../../labels.ts";
@@ -54,7 +54,7 @@ import {
   type ReferenceTake,
   saveReferenceTake,
 } from "../../playerbus.ts";
-import { RENDER_SAMPLE_RATE, schedulePattern } from "../../render.ts";
+import { RENDER_SAMPLE_RATE, schedulePattern } from "../../renderengine.ts";
 import {
   downloadFile,
   loadTakeRecords,
