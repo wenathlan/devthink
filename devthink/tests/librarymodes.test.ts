@@ -38,7 +38,8 @@ import {
 } from "../runtime.js";
 import type { stepoutcome } from "../types.js";
 import { clicommands, surfacepalette } from "../views.js";
-import { stripstrings, underscorednames } from "../bundlescan.ts";
+/* the bundle scanner rides the foundry seat (the gate wave): the suite imports it across the app boundary, the text law never moved. */
+import { stripstrings, underscorednames } from "../../foundry/bundlescan.ts";
 import { umdwrap } from "../umdwrap.ts";
 
 const execute = promisify(execFile);

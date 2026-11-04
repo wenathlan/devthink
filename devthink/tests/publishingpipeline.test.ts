@@ -61,10 +61,10 @@ describe("the publishing pipeline", () => {
     /* the container build carries no .github/workflows tree: the workflow
     checks answer at the repository surface only, the smoke boot skips them */
     if (!existsSync(join(repoRoot, ".github/workflows"))) return;
-    /* the workflow yaml controls gate of the workflow module asserts the channel jobs, the gates and the new release steps; the npmgate asserts the new bundles stay allowed in the tarball */
+    /* the workflow yaml controls gate of the workflow module asserts the channel jobs, the gates and the new release steps; the npmgate (the foundry seat now, the gate wave) asserts the new bundles stay allowed in the tarball — both answer with the devthink cwd, the spawn path crossing the app boundary for the foundry seat. */
     const controls = await execute("node", ["workflow.ts"]);
     expect(controls.stdout).toContain("verified");
-    const npmgate = await execute("node", ["npmgate.ts"]);
+    const npmgate = await execute("node", ["../foundry/npmgate.ts"]);
     expect(npmgate.stdout).toContain('"valid": true');
   });
 

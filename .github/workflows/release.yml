@@ -28,7 +28,7 @@ name: DevThink Release
 # and the container/desktop/buildextension asset lanes), exactly as R1 and R2
 # restored them — this workflow carries the assembly, the verification and
 # the github release chain plus the npmjs publication job the release npm
-# gate (npmgate.ts) demands: the flat distpackage tarball publish with
+# gate (foundry/npmgate.ts) demands: the flat distpackage tarball publish with
 # provenance, the bounded retry and the pre-publish existence check. The two
 # npm lanes stay idempotent against each other (the first publish wins, the
 # latecomer answers "already exists; skipping"), and every other registry

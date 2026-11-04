@@ -1,4 +1,4 @@
-/** Verifies that public npm publishing remains explicit and token-safe. */
+/** Verifies that public npm publishing remains explicit and token-safe. The foundry gate wave moves the seat to the foundry root — the pipeline family owns the release npm gate — while the walk keeps the devthink cwd and reads the repository release pipeline from the repo root it always anchored to. */
 import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 

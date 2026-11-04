@@ -1,4 +1,4 @@
-/** The shared bundle scanner of the build and the vitest naming checks: one scanner strips the non code spans of a bundle and one predicate reads the underscored identifiers the platform and the bundler own, so the build gate and the test suite grade identical text. */
+/** The shared bundle scanner of the build and the vitest naming checks: one scanner strips the non code spans of a bundle and one predicate reads the underscored identifiers the platform and the bundler own, so the build gate and the test suite grade identical text. The foundry gate wave moves the seat to the foundry root — the pipeline family owns the scanner both trees grade with — while the scanner stays pure text law, bound to no tree. */
 
 /** Strips the non code spans of one bundle — the string, template, comment and regex literals — so the naming check reads declared identifiers only; a small scanner walks the bundle once because a plain quote strip would mispair the quotes the regex literals carry. */
 export function stripstrings(content: string): string {

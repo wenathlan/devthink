@@ -19,6 +19,7 @@
     "allowImportingTsExtensions": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],
+  /* the foundry gate wave: the four ci gates ride this seat as repo-wide machinery, the os typecheck owns their declaration walk. */
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "readiness.ts", "dependencyupdates.ts", "npmgate.ts", "bundlescan.ts"]
 }

@@ -5,7 +5,7 @@ version: 2
 # The version-update pull requests stay closed (open-pull-requests-limit: 0):
 # the maintenance ladder of maintenance.yml owns the weekly non-breaking
 # update rung (npm dependencies through the dependency updates lane of
-# devthink/dependencyupdates.ts and the versioned action references through
+# foundry/dependencyupdates.ts and the versioned action references through
 # the action tag update lane of devthink/workflow.ts),
 # so Dependabot version-update PRs would collide with that ladder. Dependabot
 # security updates are not subject to the limit, so the vulnerable-dependency
