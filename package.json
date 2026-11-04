@@ -31,7 +31,8 @@
     "typescript": "^5.8.0",
     "v": "^0.5.2",
     "vscode": "^1.118.0",
-    "yarn": "^4.17.1"
+    "yarn": "^4.17.1",
+    "yaml": "^2.9.1"
   },
   "scripts": {
     "dev": "cd devthink && (bun server.ts serve &) && bunx vite --port 3000 --host 0.0.0.0",
