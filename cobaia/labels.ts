@@ -24,7 +24,6 @@
 
 import { createLabelStore } from "@wenathlan/vault/labelstore";
 
-
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
 export const LABEL_REVISION = 4;
@@ -83,8 +82,7 @@ export const LABEL_MANIFEST = {
     "the family runs on about us$15 a month of domains. the pricing and the support page exist to cover that floor first — and the apps themselves stay free of ads.",
   "home.section.previewAria": "a preview of the app directory",
   "home.section.previewTitle": "A few of the ten",
-  "home.section.previewLede":
-    "every member lives beside this site, one link away. the full directory lives on",
+  "home.section.previewLede": "every member lives beside this site, one link away. the full directory lives on",
   "home.section.previewLink": "/apps",
   "home.section.previewTail": ".",
   "home.appcard.open": "open {slug}",

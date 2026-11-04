@@ -10,9 +10,10 @@
  */
 
 import type { CSSProperties } from "react";
+import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
-import { ROSTER } from "../../roster.ts";
+import { roster } from "../../roster.ts";
 
 /** the site doors of the footer row, in reading order (the labels ride the
  * shell foot keys — the same words the chrome's footer carries). */
@@ -30,6 +31,7 @@ const SITEDOORS: readonly { href: string; key: LabelKey }[] = [
  * @returns the footer element.
  */
 export function IntroFooter() {
+  useContent();
   return (
     <footer className="cb-introfoot">
       <div className="cb-introwrap">
@@ -43,7 +45,7 @@ export function IntroFooter() {
         </nav>
         <nav className="cb-introfoot__row" aria-label={label("intro.footer.familyAria")}>
           <span className="cb-eyebrow">{label("intro.footer.family")}</span>
-          {ROSTER.map((member) => (
+          {roster().map((member) => (
             <a
               key={member.slug}
               className="cb-introfoot__fam"

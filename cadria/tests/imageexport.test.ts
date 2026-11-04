@@ -29,10 +29,14 @@ import {
   thumbnailSignature,
   toExportProject,
 } from "../imageexport.ts";
-import { compositionBlocks, compositionGrid, rhythmScatter } from "../synthcomposition.ts";
-import { synthMotion } from "../synthmotion.ts";
-import { synthPalette } from "../synthpalette.ts";
-import { synthTexture } from "../synthtexture.ts";
+import {
+  compositionBlocks,
+  compositionGrid,
+  rhythmScatter,
+  synthMotion,
+  synthPalette,
+  synthTexture,
+} from "../synth.ts";
 
 // ---- the documented 32-dim fixture (values per DIM_ORDER position) ----
 // 0-6 spectral: centroid .42, spread .38, rolloff .55, flatness .18, flux .35,

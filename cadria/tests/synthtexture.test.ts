@@ -11,7 +11,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
 import { DIM_ORDER } from "@wenathlan/debonair/audiofeatures";
-import type { TexturePresetName, TextureSpec } from "../synthtexture.ts";
+import type { TexturePresetName, TextureSpec } from "../synth.ts";
 import {
   GRAIN_COUPLING,
   JITTER_FIELD_CAP,
@@ -22,7 +22,7 @@ import {
   TEXTURE_RANGES,
   textureDistance,
   texturePresets,
-} from "../synthtexture.ts";
+} from "../synth.ts";
 
 /** neutral base vector: mid-low everywhere so single-dim overrides read clean. */
 const BASE = 0.3;

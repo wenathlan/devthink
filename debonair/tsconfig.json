@@ -14,7 +14,7 @@
     "paths": {
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
-      "@wenathlan/cadria/synthpalette": ["../cadria/synthpalette.ts"],
+      "@wenathlan/cadria/synth": ["../cadria/synth.ts"],
       "@wenathlan/debonair/audioattributes": ["./audioattributes.ts"],
       "@wenathlan/debonair/audiofeatures": ["./audiofeatures.ts"]
     },

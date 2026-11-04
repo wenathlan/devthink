@@ -7,7 +7,10 @@
 // priority and estimate the wait — no clocks, no randomness at serve time.
 // This module is the testable core of the /queue page.
 
-import type { RunnerMode } from "./runner.ts";
+// wave 3, the engine ownership law: the runner-mode ladder the rehearsal
+// queue stamps its runs with answers through the app seam (./runner.ts)
+// from the saddle owner — the five targets are never re-listed here.
+import { modes, type RunnerMode } from "./runner.ts";
 
 /** the three priorities of the floor: express cuts ahead, batch rides last. */
 export type QueuePriority = "express" | "normal" | "batch";
@@ -112,7 +115,6 @@ export function queueFromSeed(seed: number, count = 6): QueueItem[] {
   for (let i = 0; i < count; i++) {
     const priority = labels[Math.floor(rand() * labels.length)];
     const label = REHEARSAL_LABELS[i % REHEARSAL_LABELS.length];
-    const modes: readonly RunnerMode[] = ["full-virtual", "runner", "node-packages", "docker", "ghcr"];
     const mode = modes[modeIndex % modes.length] as RunnerMode;
     modeIndex += 1 + Math.floor(rand() * 2);
     queue = enqueue(queue, {

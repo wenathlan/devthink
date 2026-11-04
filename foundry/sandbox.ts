@@ -7,12 +7,29 @@
 // does not do (a cold sandbox cannot execute, a hot one cannot boot twice),
 // and every refusal is an honest string. This module is the testable core
 // of the /sandboxes page.
+//
+// wave 3, the engine ownership law: the state machine itself (the ladder,
+// the transition table, the guards and the refusal vocabulary) answers
+// from the saddle owner through the published library specifier
+// ("@wenathlan/saddle/sandbox") — the machine is never duplicated inside
+// the app. the foundry keeps the page-model projection: the sandbox
+// record, the herd, the census and the boot/step bookkeeping the machine
+// drives.
 
-/** the three states of the sandbox machine. */
-export type SandboxState = "cold" | "warm" | "hot";
+import {
+  canTransition,
+  refusalFor,
+  SANDBOX_LIFECYCLE_ACTION_TARGETS,
+  SANDBOX_LIFECYCLE_STATES,
+  type SandboxLifecycleAction,
+  type SandboxLifecycleState,
+} from "@wenathlan/saddle/sandbox";
 
-/** the state ladder in machine order. */
-export const SANDBOX_STATES: readonly SandboxState[] = ["cold", "warm", "hot"];
+/** the three states of the sandbox machine (the ladder the saddle engine owns). */
+export type SandboxState = SandboxLifecycleState;
+
+/** the state ladder in machine order (the ladder the saddle engine owns). */
+export const SANDBOX_STATES: readonly SandboxState[] = SANDBOX_LIFECYCLE_STATES;
 
 /** one sandbox of the herd. */
 export interface Sandbox {
@@ -30,44 +47,20 @@ export interface Sandbox {
   steps: number;
 }
 
-/** the allowed transitions of the machine: cold → warm → hot and the
- * cooling paths back. A cold sandbox never executes; a hot one is already
- * executing. */
-const TRANSITIONS: Readonly<Record<SandboxState, readonly SandboxState[]>> = {
-  cold: ["warm"],
-  warm: ["hot", "cold"],
-  hot: ["warm", "cold"],
-};
+/** the machine the saddle engine owns (the ladder, the transition table,
+ * the guards canTransition/refusalFor and the action guard table), bound
+ * to the foundry surface — wave 3, the engine ownership law. */
+export { canTransition, refusalFor };
 
-/** answers whether the machine allows one transition. */
-export function canTransition(from: SandboxState, to: SandboxState): boolean {
-  return TRANSITIONS[from].includes(to);
-}
-
-/** the refusal the machine answers when a transition is not allowed. */
-export function refusalFor(from: SandboxState, to: SandboxState): string {
-  if (from === to) return `the sandbox is already ${from}`;
-  if (from === "cold" && to === "hot") return "a cold sandbox cannot execute — warm it first";
-  if (from === "hot" && to === "hot") return "the sandbox is already hot";
-  return `the machine never goes ${from} → ${to} directly`;
-}
-
-/** the action names of the machine, one per transition. */
-export type SandboxAction = "warm" | "heat" | "cool" | "freeze";
-
-/** the transition each action drives. */
-const ACTION_TO: Readonly<Record<SandboxAction, SandboxState>> = {
-  warm: "warm",
-  heat: "hot",
-  cool: "cold",
-  freeze: "cold",
-};
+/** the action names of the machine, one per transition (the vocabulary the
+ * saddle engine owns — wave 3). */
+export type SandboxAction = SandboxLifecycleAction;
 
 /** drives one action against one sandbox: returns the next sandbox and an
  * honest refusal when the machine does not allow the move. Pure — the
  * input never mutates. */
 export function drive(sandbox: Sandbox, action: SandboxAction): { sandbox: Sandbox; refusal?: string } {
-  const to = ACTION_TO[action];
+  const to = SANDBOX_LIFECYCLE_ACTION_TARGETS[action];
   if (!canTransition(sandbox.state, to)) {
     return { sandbox, refusal: refusalFor(sandbox.state, to) };
   }

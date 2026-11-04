@@ -26,7 +26,6 @@ export const { execute, queryAll, queryOne } = lane;
 /** the parameter types the helpers bind (re-exported seat of the lane). */
 export type { SqlParam } from "@wenathlan/vault/storagelane";
 
-
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS onboarding_states (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,

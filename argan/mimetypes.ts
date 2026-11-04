@@ -10,6 +10,14 @@
 // keeps it, exactly the way the gateway head answers a lookup. The rows ride the literal
 // factory below so the three-thousand-row table stays one flat, typeable MimeTypeRow[]
 // (a raw literal this wide would fuse into a union the checker refuses to represent).
+//
+// Wave 3, the engine ownership law: the family corpus engine rides this module too —
+// the corpus parse, the collision-law indexes and every lookup lane the vault storage
+// engine served from a local re-implementation answer from the argan owner from this
+// day on, through the published library specifier ("@wenathlan/argan/mimetypes").
+// The engine section at the tail is additive: the gateway catalog rows and the gateway
+// helpers above never move, and the section imports nothing, so the module stays
+// browser-pure and library-grade for every consumer.
 
 /** The top-level families of the catalog (the type tree before the slash). */
 export type MimeFamily =
@@ -3317,4 +3325,150 @@ export function mimeFamilyOf(type: string): MimeFamily | undefined {
 /** Lists every row of one family (the pane renders one group per family). */
 export function mimetypesByFamily(family: MimeFamily): MimeTypeRow[] {
   return MIMETYPES.filter((row) => row.family === family);
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* The family corpus engine (wave 3, the engine ownership law): the      */
+/* corpus parse, the collision-law indexes and the lookup lanes the      */
+/* vault storage engine re-implemented as its own module now answer     */
+/* here, from the owner. Everything below is additive and imports       */
+/* nothing — the gateway catalog above never moves, and the engine      */
+/* serves any corpus the family carries (the vault's mime.types lane    */
+/* among them) with the same laws the vault module pinned: the line     */
+/* order is the collision law, the first row claiming an extension      */
+/* keeps it, and an unknown extension answers undefined so the caller   */
+/* serves the octet-stream default honestly instead of a guess.         */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** The typed refusal a missing or malformed corpus answers — loud, never a
+ * silent fallback to invented types (the engine serves every registry row
+ * or refuses honestly). */
+export class MimeCorpusError extends Error {}
+
+/** One row of a registry corpus the engine serves: the media type, its
+ * extensions and its family (the tree before the slash — a plain string so
+ * the legacy trees beyond the ten canonical families ride along). */
+export interface MimeCorpusRow {
+  /** the media type, lowercase, registered or legacy-canonical ("video/mp2t") */
+  type: string;
+  /** the file extensions the row maps to the type, dotless and lowercase */
+  extensions: readonly string[];
+  /** the top-level family of the type (the tree before the slash) */
+  family: string;
+}
+
+/**
+ * Parses a corpus into the catalog rows: every non-comment line carries the
+ * media type and its space-separated extensions; the line order IS the
+ * collision law (the first row claiming an extension keeps it).
+ *
+ * @param corpus the raw corpus text.
+ * @returns the catalog rows in corpus order.
+ * @throws MimeCorpusError when a line carries no media type.
+ */
+export function parseMimeCorpus(corpus: string): MimeCorpusRow[] {
+  const rows: MimeCorpusRow[] = [];
+  for (const rawLine of corpus.split("\n")) {
+    const line = rawLine.trim();
+    if (line.length === 0 || line.startsWith("#")) continue;
+    const fields = line.split(/\s+/);
+    const type = (fields[0] ?? "").toLowerCase();
+    if (!type.includes("/")) {
+      throw new MimeCorpusError(`the corpus line "${rawLine}" carries no media type`);
+    }
+    const extensions = fields.slice(1).map((extension) => extension.toLowerCase());
+    rows.push({ type, extensions, family: type.split("/")[0] });
+  }
+  return rows;
+}
+
+/** The served catalog the engine answers over one corpus: the families, the
+ * counts and every lookup lane, resolved once at creation. */
+export interface MimeCatalog {
+  /** the families the catalog carries, in catalog order (the collision law order) */
+  readonly families: readonly string[];
+  /** the media type count of the catalog (the registry rows the engine serves) */
+  readonly typeCount: number;
+  /** the extension mapping count of the catalog (the type-to-extension pairs) */
+  readonly extensionCount: number;
+  /** the whole entry count: every media type row plus every extension mapping */
+  readonly entryCount: number;
+  /**
+   * The content type one extension answers — the serving lane of the static
+   * root. The extension may arrive dotted or dotless; the lookup is lowercase;
+   * the collision law answers (the first family claiming the extension keeps
+   * it), and an unknown extension answers undefined so the caller serves the
+   * octet-stream default honestly instead of a guess.
+   */
+  mimeTypeFor(extension: string): string | undefined;
+  /**
+   * The extensions one media type carries (the catalog lookup lane — the
+   * reverse of the serving index).
+   */
+  extensionsFor(type: string): readonly string[] | undefined;
+  /** The catalog row of one media type. */
+  mimeTypeRow(type: string): MimeCorpusRow | undefined;
+  /**
+   * The extension of one path — the last dot segment of the last path
+   * segment, dotless and lowercase (no extension answers the empty string).
+   */
+  extensionOf(pathname: string): string;
+  /**
+   * The content type one path answers — the lane a static root serves every
+   * file through: the registry row for the path's extension (dotless,
+   * case-insensitive), the octet-stream default when no row claims it.
+   */
+  contentTypeFor(pathname: string): string;
+}
+
+/**
+ * Builds the served catalog over one corpus's rows: the extension index
+ * (the collision law resolved once — the first row claiming an extension
+ * keeps it), the type index, the families in order and the counts.
+ *
+ * @param rows the catalog rows in corpus order (the collision law order).
+ * @returns the served catalog.
+ */
+export function createMimeCatalog(rows: readonly MimeCorpusRow[]): MimeCatalog {
+  const extensionIndex: ReadonlyMap<string, string> = (() => {
+    const index = new Map<string, string>();
+    for (const row of rows) {
+      for (const extension of row.extensions) {
+        if (!index.has(extension)) index.set(extension, row.type);
+      }
+    }
+    return index;
+  })();
+  const typeIndex: ReadonlyMap<string, MimeCorpusRow> = new Map(rows.map((row) => [row.type, row]));
+  const families: readonly string[] = [...new Set(rows.map((row) => row.family))];
+  const typeCount = rows.length;
+  const extensionCount = rows.reduce((total, row) => total + row.extensions.length, 0);
+  const mimeTypeFor = (extension: string): string | undefined => {
+    const dotless = extension.trim().toLowerCase().replace(/^\.+/, "");
+    if (dotless.length === 0) return undefined;
+    return extensionIndex.get(dotless);
+  };
+  const extensionsFor = (type: string): readonly string[] | undefined =>
+    typeIndex.get(type.trim().toLowerCase())?.extensions;
+  const mimeTypeRow = (type: string): MimeCorpusRow | undefined =>
+    typeIndex.get(type.trim().toLowerCase());
+  const extensionOf = (pathname: string): string => {
+    const name = pathname.split("/").pop() ?? "";
+    const at = name.lastIndexOf(".");
+    if (at <= 0 || at === name.length - 1) return "";
+    return name.slice(at + 1).toLowerCase();
+  };
+  const contentTypeFor = (pathname: string): string =>
+    mimeTypeFor(extensionOf(pathname)) ?? "application/octet-stream";
+  return {
+    families,
+    typeCount,
+    extensionCount,
+    entryCount: typeCount + extensionCount,
+    mimeTypeFor,
+    extensionsFor,
+    mimeTypeRow,
+    extensionOf,
+    contentTypeFor,
+  };
 }

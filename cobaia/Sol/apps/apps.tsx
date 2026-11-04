@@ -13,12 +13,14 @@
  * in-feed ad slot closes the feed at the end of the content.
  */
 import type { CSSProperties } from "react";
+import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
-import { labelfill, label } from "../../labels";
+import { label, labelfill } from "../../labels";
+import { roster } from "../../roster.ts";
 import { AdSlot } from "../wingets";
-import { ROSTER } from "../wingets";
 
 export function Apps() {
+  useContent();
   return (
     <div className="cb-page">
       <section className="cb-hero" aria-label={label("apps.aria.hero")}>
@@ -35,7 +37,7 @@ export function Apps() {
 
       <section className="cb-section" aria-label={label("apps.section.rosterAria")}>
         <div className="cb-appgrid">
-          {ROSTER.map((member, index) => (
+          {roster().map((member, index) => (
             <a
               key={member.slug}
               className="cb-appcard cb-in"

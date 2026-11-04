@@ -108,3 +108,4 @@ minimumReleaseAgeExclude:
   - vitest@5.1.0
   - '@wenathlan/saddle@2.1.7 || 2.1.8'
   - '@wenathlan/devthink@2.1.7 || 2.1.8'
+  - '@wenathlan/argan@2.1.8'

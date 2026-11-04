@@ -1,6 +1,6 @@
 // # coverpalette — the cover plate palette owner of the audio app: the
 // derivation rides the cadria palette engine through the published library
-// specifier ("@wenathlan/cadria/synthpalette"), the ownership law the family
+// specifier ("@wenathlan/cadria/synth"), the ownership law the family
 // carries — the palette mapping law (the tonic-anchored hue, the noise-washed
 // support field, the energy-tracked accents, the AA-guarded ink) is cadria's
 // alone, never duplicated here; the audio contract (the fused descriptor the
@@ -14,7 +14,7 @@
 // cover plate law carries over the name hash it replaces when real audio
 // stands behind the plate.
 
-import { FALLBACK_PALETTE, type Palette, synthPalette } from "@wenathlan/cadria/synthpalette";
+import { FALLBACK_PALETTE, type Palette, synthPalette } from "@wenathlan/cadria/synth";
 import type { DescriptorStats } from "./audioattributes.ts";
 import { fuseDescriptor } from "./audiofeatures.ts";
 import { analyzePcm } from "./audiopipeline.ts";

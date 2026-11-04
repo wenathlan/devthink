@@ -16,8 +16,9 @@
  * are plain hrefs the visitor chooses to follow.
  */
 import type { CSSProperties } from "react";
-import { PLANS, isconfigured, type checkoutplan } from "../../checkoutlinks";
-import { labelfill, label } from "../../labels";
+import { checkoutlinks, type checkoutplan, isconfigured } from "../../checkoutlinks";
+import { useContent } from "../../content.ts";
+import { label, labelfill } from "../../labels";
 
 /** renders one plan's checkout control: a live anchor when the owner
  * configured the link, the honest disabled state until then. */
@@ -40,6 +41,7 @@ function PlanAction({ plan }: { plan: checkoutplan }) {
 }
 
 export function Pricing() {
+  useContent();
   return (
     <div className="cb-page">
       <section className="cb-hero" aria-label={label("pricing.aria.hero")}>
@@ -56,7 +58,7 @@ export function Pricing() {
 
       <section className="cb-section" aria-label={label("pricing.section.plansAria")}>
         <div className="cb-plans">
-          {PLANS.map((plan, index) => (
+          {checkoutlinks().map((plan, index) => (
             <article
               key={plan.id}
               className={plan.id === "studio" ? "cb-plan cb-plan--lead cb-in" : "cb-plan cb-in"}

@@ -37,6 +37,23 @@ export default defineConfig({
        * resolves the specifier to the monorepo source the sibling engine
        * carries — the helper is never duplicated inside foundry. */
       "@wenathlan/vault/utils": path.resolve(import.meta.dirname, "../vault/utils.ts"),
+
+      /** the sandbox lifecycle bridge of the ownership law (wave 3): the
+       * /sandboxes page model rides the cold/warm/hot state machine
+       * through the published library specifier
+       * ("@wenathlan/saddle/sandbox"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * machine is never duplicated inside foundry, so the dev server and
+       * the build answer the same module the node-side tests answer. */
+      "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
+
+      /** the runner-mode ladder bridge of the ownership law (wave 3): the
+       * app's runner seam (runner.ts) rides the five runtime targets
+       * through the published library specifier
+       * ("@wenathlan/saddle/modes"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * ladder is never duplicated inside foundry. */
+      "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
       "@": path.resolve(import.meta.dirname, "Sol"),
     },
   },
@@ -46,10 +63,10 @@ export default defineConfig({
     emptyOutDir: false,
     assetsDir: "",
   },
-  /** the theme (Sol/) and the root logics (runner, api, utils, db) share one app root, so the dev server allows the app root. */
+  /** the theme (Sol/) and the root logics (runner, api, utils, db) share one app root, so the dev server allows the app root — and the ownership bridges (wave 3) resolve the saddle engine modules the sandbox page and the runner seam import, so the saddle root rides the allow list beside the vault root. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../saddle")],
     },
     host: true,
     strictPort: false,

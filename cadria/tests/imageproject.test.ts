@@ -21,10 +21,7 @@ import {
   serializeProject,
   VARIANT_HUE_STEP,
 } from "../imageproject.ts";
-import { compositionBlocks } from "../synthcomposition.ts";
-import { synthMotion } from "../synthmotion.ts";
-import { synthPalette } from "../synthpalette.ts";
-import { synthTexture } from "../synthtexture.ts";
+import { compositionBlocks, synthMotion, synthPalette, synthTexture } from "../synth.ts";
 
 const SEED = "9a7c1e2b44d0f836";
 

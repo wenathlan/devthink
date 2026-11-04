@@ -149,3 +149,22 @@ export function targetmanifest(target, options = {}) { const profile = targetpro
 
 /** Returns all supported target profiles for documentation and tooling. */
 export function targetcatalog() { return Object.fromEntries(Object.entries(targetprofiles).map(([key, value]) => [key, { ...value, capabilities: [...value.capabilities] }])); }
+
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 6: the runner-mode ladder — the runtime targets a run asks   */
+/* the engine for (wave 3, the engine ownership law: forge and foundry  */
+/* consumed the five targets as duplicated twin lists; the ladder       */
+/* answers from the saddle owner from this day on, and the apps import  */
+/* it through the published library specifier). Zero logic change to    */
+/* the lanes above — the section is additive and imports nothing.       */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * the runner modes of the engine: the runtime targets a run asks for on
+ * the saddle boundary — the full virtual machine, the runner host, the
+ * node packages lane, the docker lane and the ghcr immutable lane.
+ */
+export const runnermodes = ["full-virtual", "runner", "node-packages", "docker", "ghcr"] as const;
+
+/** one runner mode of the engine (the runtime target a run asks for). */
+export type RunnerMode = (typeof runnermodes)[number];

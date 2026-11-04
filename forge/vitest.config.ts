@@ -43,6 +43,15 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * workload law. */
       "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
+
+      /** the runner-mode ladder bridge of the ownership law (wave 3): the
+       * app's runner seam (runner.ts) rides the five runtime targets
+       * through the published library specifier
+       * ("@wenathlan/saddle/modes"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * ladder is never duplicated inside forge. the entry retires when
+       * the published envelope carries the built mode surface. */
+      "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
     },
   },
   test: {

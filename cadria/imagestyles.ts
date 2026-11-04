@@ -27,7 +27,7 @@
 
 import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
 import { DIM_ORDER } from "@wenathlan/debonair/audiofeatures";
-import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "./synthtexture.ts";
+import { GRAIN_COUPLING, TEXTURE_RANGES, type TextureSpec } from "./synth.ts";
 
 /** symmetry grammar a style asks of the composition layer. */
 export type StyleSymmetry = "mirror" | "rotational" | "asymmetric";

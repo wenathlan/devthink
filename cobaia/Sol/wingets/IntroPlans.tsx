@@ -15,7 +15,8 @@
 
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
-import { type checkoutplan, isconfigured, PLANS } from "../../checkoutlinks";
+import { checkoutlinks, type checkoutplan, isconfigured } from "../../checkoutlinks";
+import { useContent } from "../../content.ts";
 import { label, labelfill } from "../../labels";
 
 /** renders one plan's checkout control: a live anchor when the owner
@@ -45,6 +46,7 @@ function PlanAction({ plan }: { plan: checkoutplan }) {
  * @returns the plans section element.
  */
 export function IntroPlans() {
+  useContent();
   return (
     <section className="cb-introband cb-introband--s1" id="intro-plans" aria-label={label("intro.plans.aria")}>
       <div className="cb-introwrap">
@@ -54,7 +56,7 @@ export function IntroPlans() {
           <p className="cb-sectlede">{label("intro.plans.lede")}</p>
         </div>
         <div className="cb-plans">
-          {PLANS.map((plan, index) => (
+          {checkoutlinks().map((plan, index) => (
             <article
               key={plan.id}
               className={plan.id === "studio" ? "cb-plan cb-plan--lead cb-in" : "cb-plan cb-in"}

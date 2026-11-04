@@ -19,7 +19,7 @@
 // pnpm vitest run tests/edgelandes.inproc.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { edgelaneexecutorsinproc, inproclaneids, inproclanespecs } from "../edgelandesinproc.ts";
+import { edgelaneexecutorsinproc, inproclaneids, inproclanespecs } from "../edgelandes.ts";
 import { getmodality } from "../modalityregistry.ts";
 
 /** the hard deadline every lane test rides under. */

@@ -15,9 +15,12 @@ import { type AnalysisReport, analyzePcm, reportDigest } from "@wenathlan/debona
 import { renderCommands, renderSvg, renderThumbnailSignature } from "../../imagerender.ts";
 import { type DemoFixtureId, demoFixtures } from "../../introfixtures.ts";
 import { label } from "../../labels.ts";
-import { compositionBlocks, rhythmScatter } from "../../synthcomposition.ts";
-import { synthPalette } from "../../synthpalette.ts";
-import { synthTexture } from "../../synthtexture.ts";
+import {
+  compositionBlocks,
+  rhythmScatter,
+  synthPalette,
+  synthTexture,
+} from "../../synth.ts";
 
 /** the cue the intro hero's "hear to see" cta sends: which fixture to run. */
 export type DemoCue = { id: DemoFixtureId; nonce: number };

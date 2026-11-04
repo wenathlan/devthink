@@ -45,7 +45,8 @@
   "files": [
     "README.md",
     "docs",
-    "tests"
+    "tests",
+    "mimetypes.ts"
   ],
   "homepage": "https://github.com/wenathlan/devthink/tree/main/argan",
   "bugs": {
@@ -56,6 +57,13 @@
     "registry": "https://registry.npmjs.org/"
   },
   "type": "module",
+  "exports": {
+    "./mimetypes": {
+      "types": "./mimetypes.ts",
+      "import": "./mimetypes.ts",
+      "default": "./mimetypes.ts"
+    }
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",

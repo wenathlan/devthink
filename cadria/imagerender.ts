@@ -21,12 +21,18 @@
 // renderCommands, renderThumbnailSignature, renderKeyframePerturbation,
 // renderSvg (re-exported from imagerenderpaint.ts).
 
-import type { Block, BlockRole, Rect } from "./synthcomposition.ts";
-import type { MotionKeyframe } from "./synthmotion.ts";
-import type { Palette } from "./synthpalette.ts";
-import { FALLBACK_PALETTE } from "./synthpalette.ts";
-import type { TextureSpec } from "./synthtexture.ts";
-import { GRAIN_COUPLING, jitterField, TEXTURE_RANGES } from "./synthtexture.ts";
+import {
+  type Block,
+  type BlockRole,
+  FALLBACK_PALETTE,
+  GRAIN_COUPLING,
+  jitterField,
+  type MotionKeyframe,
+  type Palette,
+  type Rect,
+  TEXTURE_RANGES,
+  type TextureSpec,
+} from "./synth.ts";
 
 export { renderSvg } from "./imagerenderpaint.ts";
 

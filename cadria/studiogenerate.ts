@@ -29,17 +29,20 @@ import type { AnalysisReport } from "@wenathlan/debonair/audiopipeline";
 import { buildImageProject, type ImageProject } from "./imageproject.ts";
 import { type RenderFrame, renderCommands } from "./imagerender.ts";
 import { applyStyleBias, type StyleSpec, styleByName } from "./imagestyles.ts";
-import { type Block, compositionBlocks, rhythmScatter } from "./synthcomposition.ts";
-import { type MotionSpec, synthMotion } from "./synthmotion.ts";
 import {
+  type Block,
+  compositionBlocks,
+  rhythmScatter,
+  type MotionSpec,
+  synthMotion,
   type OklchTriple,
   oklchToSrgbHex,
   type Palette,
   srgbHexToOklch,
   synthPalette,
+  synthTexture,
   wrapHue,
-} from "./synthpalette.ts";
-import { synthTexture } from "./synthtexture.ts";
+} from "./synth.ts";
 
 /** the studio controls one generation run reads. */
 export type StudioControls = { styleName: string; width: number; height: number; seed: string };

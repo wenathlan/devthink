@@ -22,10 +22,11 @@
  * block carries the two contracts).
  */
 import type { CSSProperties, ReactNode } from "react";
-import { useLocation, Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
-import { ROSTER } from "../wingets";
+import { roster } from "../../roster.ts";
 import { BrandMark } from "../wingets";
 
 /** the section links of the top bar, in reading order (home is the mark).
@@ -42,6 +43,7 @@ const NAVLINKS: readonly { href: string; key: LabelKey }[] = [
  * footer row; the embedded pass renders the SAME site surface inside the
  * os power clip (the window-era law: one design in both seats). */
 export function Shell({ children }: { children: ReactNode }) {
+  useContent();
   const [location] = useLocation();
 
   // the embedded contract of the family fullscreen law: inside the os
@@ -133,7 +135,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <div className="cb-footcol cb-footfamily">
               <p className="cb-foothead">{label("shell.foot.familyHead")}</p>
               <div className="cb-famgrid">
-                {ROSTER.map((member) => (
+                {roster().map((member) => (
                   <a
                     key={member.slug}
                     className="cb-famlink"

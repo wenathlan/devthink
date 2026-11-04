@@ -29,14 +29,17 @@
 // "export-empty" (blank id, unreadable palette, empty block cast).
 
 import type { AudioDescriptor } from "@wenathlan/debonair/audioattributes";
-import type { Block } from "./synthcomposition.ts";
-import { compositionBlocks } from "./synthcomposition.ts";
-import type { MotionSpec } from "./synthmotion.ts";
-import { synthMotion } from "./synthmotion.ts";
-import type { Palette } from "./synthpalette.ts";
-import { synthPalette } from "./synthpalette.ts";
-import type { TextureSpec } from "./synthtexture.ts";
-import { sanitizeTexture, synthTexture } from "./synthtexture.ts";
+import {
+  type Block,
+  compositionBlocks,
+  type MotionSpec,
+  synthMotion,
+  type Palette,
+  synthPalette,
+  type TextureSpec,
+  sanitizeTexture,
+  synthTexture,
+} from "./synth.ts";
 
 /** every artifact format the export wave can plan and bundle. */
 export type ExportFormat = "svg" | "png" | "webm" | "gif";

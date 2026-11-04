@@ -15,8 +15,7 @@ import assert from "node:assert/strict";
 import { readdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { describe, it } from "vitest";
-import { edgelaneexecutorshost, hostlaneids, hostlanespecs } from "../edgelandeshost.ts";
-import { probehostbinary } from "../edgelandes.ts";
+import { edgelaneexecutorshost, hostlaneids, hostlanespecs, probehostbinary } from "../edgelandes.ts";
 
 /** the thirty-seven host binary lane ids the pinned contract charges
  * (parallel waves and the dispatcher merge read these exactly): the
