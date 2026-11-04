@@ -27,10 +27,11 @@ name: DevThink Publish
 # family-npmjs, family-githubnpm, family-maven, family-nuget,
 # family-rubygems and family-ghcr jobs publish every documentation
 # envelope (the six-distribution completeness law of the distpack
-# ladder: argan, cadria, cobaia, debonair, forge, foundry, getry,
-# stealthhead and vault ride the nuget, maven, rubygems, npmjs and
-# github npm lanes, saddle rides the nuget, rubygems and github npm
-# lanes beside its engine lanes) through the same registries, the same
+# ladder, closed by the distfamily wave: every application envelope
+# rides the nuget, maven, rubygems, npmjs and github npm lanes - the
+# ten siblings in the canonical pass order, saddle walking npmjs last
+# beside its engine lanes and answering the devthink maven registry
+# the family coordinates carry) through the same registries, the same
 # conclusion guard, the same release-approval environment and the same
 # bounded retry the application lanes carry, one matrix leg per
 # envelope folder. The correlated registry logic of
@@ -1055,12 +1056,15 @@ jobs:
 
   family-maven:
     needs: release-approval
-    # the family maven lane: every documentation envelope deploys its own
-    # io.github.wenathlan.<app> jar (the README, the documentation set,
-    # the zero-build site and the tests directory as jar resources) into
-    # the same GitHub Packages maven registry the single devthink
-    # distribution uses - the existence pre-check, the bounded retry and
-    # the server-id settings handoff mirror the application lane above.
+    # the family maven lane: every application envelope deploys its own
+    # io.github.wenathlan.<app> jar (the nine documentation envelopes
+    # carry the README, the documentation set, the zero-build site and
+    # the tests directory as jar resources; the saddle engine envelope
+    # compiles its Saddle.java adapter into the one real jar of the
+    # family) into the same GitHub Packages maven registry the single
+    # devthink distribution uses - the existence pre-check, the bounded
+    # retry and the server-id settings handoff mirror the application
+    # lane above.
     if: >-
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
       (github.event_name != 'workflow_run' ||
@@ -1074,7 +1078,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
+        # the canonical family pass order with the distfamily law: the
+        # saddle engine jar joins the nine documentation jars (its pom
+        # answers the io.github.wenathlan coordinates and the devthink
+        # registry this lane deploys, so the one existence path and the
+        # one bounded retry serve every leg alike).
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
