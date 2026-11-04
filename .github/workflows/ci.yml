@@ -213,6 +213,12 @@ jobs:
         # regenerated lockfile misses the key - the cache stays off here.
       - name: Install the locked workbench dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the workbench typecheck walks the getry gateway the tsconfig paths
+        # map — its better-sqlite3 types resolve from the getry node_modules
+        # this step materializes (the same seat the deterministic suite
+        # boots).
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
       - name: Generate the prisma client the typecheck imports
         # the database module imports the PrismaClient the generated
         # .prisma/client tree declares — a fresh install carries the stub
@@ -386,6 +392,13 @@ jobs:
 
       - name: Install the os tree
         working-directory: devthink
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the config parity cell boots the getry gateway module graph (the
+        # family law: the server seat answers from the getry root) — its
+        # hono runtime resolves from the getry node_modules this step
+        # materializes.
+        working-directory: getry
         run: bun install --frozen-lockfile --ignore-scripts
 
       - name: Run the config parity gate
