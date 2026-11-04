@@ -32,6 +32,24 @@ name: DevThink Publish
 # one matrix leg per envelope folder. The correlated registry logic of
 # each channel stays grouped inside the one lane pair it belongs to.
 #
+# THE FIVE HUNDRED ASSET LADDER (the 2.0.157 expansion the owner
+# demanded - "os assets não tão passando de quinhentos"): the
+# family-metadata and family-map lanes answer every release with the
+# real metadata asset set of the eleven applications - documentation
+# bundles, engine maps, api surfaces, test inventories, schema bundles,
+# dependency snapshots, changelog excerpts, license notices, route maps,
+# web asset inventories, biome configuration snapshots, the
+# per-architecture container manifests of the eleven platforms the
+# saddle vhe matrix carries, the per-application checksum umbrellas and
+# the family reports (the map, the version ladder, the mimetypes
+# registry digest, the protocols registry, the gate ladder report, the
+# release approval audit trail and the asset inventory) - two hundred
+# sixty real build products every one derived from the tagged tree, so
+# the release the ladder cuts ships past the half thousand assets the
+# owner demanded (never a placeholder: zips of tracked folders, reports
+# the node walker computes over the sources, manifests stamped with the
+# grammar the container lanes already speak).
+#
 # THE SADDLE BLOCK (the consolidation pass, saddle always last): the three
 # saddle lanes the standalone workflow files carried - the saddle engine
 # extension package, the saddle target plans and the saddle vhe registry
@@ -4003,6 +4021,874 @@ jobs:
             "${{ matrix.app }}.sha256.container.${version}" \
             "${{ matrix.app }}.manifest.container.${version}.json" --clobber
 
+  family-metadata:
+    name: family release metadata ${{ matrix.app }}
+    # THE FIVE HUNDRED ASSET LADDER (the expansion the owner demanded:
+    # the release the ladder cuts answers with MORE than five hundred
+    # real assets - "os assets não tão passando de quinhentos"): every
+    # application of the family attaches its metadata asset set to the
+    # release beside the installers and the containers - the
+    # documentation bundle, the engine map and the api surface of the
+    # root modules, the test inventory, the schema bundle, the dependency
+    # snapshot, the changelog excerpt, the license notice, the route map,
+    # the web asset inventory, the biome configuration snapshot, the
+    # per-architecture container manifests of the eleven platforms the
+    # saddle vhe matrix carries and the checksum over the whole set -
+    # twenty-three real build products per application, every one derived
+    # from the tagged tree at build time (zips of the tracked folders,
+    # reports the node walker computes over the sources, the manifest
+    # grammar the container lanes already speak), never a placeholder.
+    # The lane walks all eleven applications - the os and the saddle
+    # engine ride beside the nine site homes, because the metadata set is
+    # a family right the asset parity doctrine already pins - and every
+    # leg attaches with --clobber the way every asset lane does.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    # every job carries its own ceiling (the family contract): the
+    # metadata lane reads and zips the tagged tree only - no install, no
+    # compile - so the light-lane fifteen-minute value answers.
+    timeout-minutes: 15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine).
+    permissions:
+      contents: write
+    strategy:
+      # one application failing its metadata leg must not kill the
+      # sibling legs - every folder answers its own asset set to the end.
+      fail-fast: false
+      matrix:
+        # the eleven applications of the monorepo (the distribution
+        # completeness law): the os, the saddle engine and the nine site
+        # homes all ride the metadata lane.
+        app: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: resolve release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so every leg reads the tagged source.
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.app }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.app }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: bundle the documentation set
+        # the tracked documentation folder of the application, zipped
+        # whole the way the source archive zips the tree - the markdown
+        # corpus every envelope ships inside its registry tarball, here
+        # as the release asset a reader downloads beside the binary.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          app="$APP"
+          version="$RELEASE_VERSION"
+          stage="release-metadata/${app}"
+          mkdir -p "$stage"
+          test -d "${app}/docs"
+          ( cd "$app" && zip -r -X -q "../${stage}/${app}.docs.${version}.zip" docs )
+          test -s "${stage}/${app}.docs.${version}.zip"
+          entries="$(unzip -Z1 "${stage}/${app}.docs.${version}.zip" | grep -c '^docs/' || true)"
+          test "$entries" -gt 0
+      - name: write the engine map and the api surface
+        # the module census of the application root: every tracked .ts
+        # logic file with its size, its line count and its exported
+        # symbol list - the engine map answers the machine reader, the
+        # api surface the human one, both computed from the tagged
+        # sources the release stamps.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          APP="$APP" VERSION="$RELEASE_VERSION" node <<'ENGINEMAP'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const app = process.env.APP;
+          const version = process.env.VERSION;
+          const stage = path.join("release-metadata", app);
+          const surface = [];
+          const modules = fs.readdirSync(app, { withFileTypes: true })
+            .filter(entry => entry.isFile() && entry.name.endsWith(".ts"))
+            .map(entry => entry.name)
+            .sort()
+            .map(name => {
+              const source = fs.readFileSync(path.join(app, name), "utf8");
+              const lines = source.split("\n");
+              const exports = [];
+              for (const line of lines) {
+                const declared = line.match(/^export\s+(?:default\s+)?(?:async\s+)?(?:function\s*\*?|class|const|let|var|type|interface|enum)\s+([A-Za-z0-9_$]+)/);
+                if (declared) { exports.push(declared[1]); continue; }
+                const braces = line.match(/^export\s*\{([^}]*)\}/);
+                if (braces) {
+                  for (const part of braces[1].split(",")) {
+                    const symbol = part.trim().split(/\s+as\s+/)[0].trim();
+                    if (symbol !== "") exports.push(symbol);
+                  }
+                }
+              }
+              for (const symbol of exports) surface.push(name + ": " + symbol);
+              return { file: name, bytes: Buffer.byteLength(source, "utf8"), lines: lines.length, exports: exports.length, exported: exports };
+            });
+          if (modules.length === 0) throw new Error(app + " carries no root typescript modules");
+          const map = {
+            version: version,
+            application: app,
+            source: "the tagged release tree",
+            modules: modules.length,
+            exports: surface.length,
+            files: modules
+          };
+          fs.writeFileSync(path.join(stage, app + ".enginemap." + version + ".json"), JSON.stringify(map, null, 2) + "\n");
+          fs.writeFileSync(
+            path.join(stage, app + ".api." + version + ".txt"),
+            "# " + app + " api surface " + version + "\n" +
+            "# " + modules.length + " root modules, " + surface.length + " exported symbols\n\n" +
+            surface.join("\n") + "\n"
+          );
+          console.log(app + ": " + modules.length + " root modules, " + surface.length + " exported symbols");
+          ENGINEMAP
+      - name: write the test inventory
+        # the tracked tests directory of the application: every test
+        # module with its size and line count - the evidence inventory
+        # the verification ladder runs, shipped beside the release it
+        # certifies.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          APP="$APP" VERSION="$RELEASE_VERSION" node <<'TESTMAP'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const app = process.env.APP;
+          const version = process.env.VERSION;
+          const stage = path.join("release-metadata", app);
+          const tests = fs.readdirSync(path.join(app, "tests"), { withFileTypes: true })
+            .filter(entry => entry.isFile() && entry.name.endsWith(".ts"))
+            .map(entry => entry.name)
+            .sort()
+            .map(name => {
+              const source = fs.readFileSync(path.join(app, "tests", name), "utf8");
+              return { file: name, bytes: Buffer.byteLength(source, "utf8"), lines: source.split("\n").length };
+            });
+          if (tests.length === 0) throw new Error(app + " carries no tracked test modules");
+          const inventory = {
+            version: version,
+            application: app,
+            source: "the tracked tests directory",
+            tests: tests.length,
+            lines: tests.reduce((total, entry) => total + entry.lines, 0),
+            files: tests
+          };
+          fs.writeFileSync(path.join(stage, app + ".tests." + version + ".json"), JSON.stringify(inventory, null, 2) + "\n");
+          console.log(app + ": " + tests.length + " test modules");
+          TESTMAP
+      - name: bundle the schema set
+        # the schema and configuration corpus of the application: the
+        # prisma schema, the drizzle config, the toml seats and the sql
+        # the app tracks - the data shape the release ships, zipped the
+        # way the documentation bundle ships its prose.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          app="$APP"
+          version="$RELEASE_VERSION"
+          stage="release-metadata/${app}"
+          schema_files=()
+          for candidate in schema.prisma prisma drizzle.config.ts devthink.toml wrangler.toml netlify.toml deno.json tsconfig.json sql; do
+            if [ -e "${app}/${candidate}" ]; then
+              schema_files+=("$candidate")
+            fi
+          done
+          # the root sql seats (the saddle init script): the find walks the
+          # application folder, so an application without root sql simply
+          # answers no rows and the loop stays empty.
+          while IFS= read -r -d '' sqlfile; do
+            schema_files+=("${sqlfile#"$app"/}")
+          done < <(find "$app" -maxdepth 1 -type f -name '*.sql' -print0 | sort -z)
+          test "${#schema_files[@]}" -gt 0
+          ( cd "$app" && zip -r -X -q "../${stage}/${app}.schema.${version}.zip" "${schema_files[@]}" )
+          test -s "${stage}/${app}.schema.${version}.zip"
+      - name: write the dependency snapshot
+        # the manifest truth of the application: the package.json the
+        # envelope publishes (the dependency specifiers, the engines, the
+        # license) beside the checksummed lockfiles the frozen installs
+        # resolve - the dependency tree the release stamps, recorded as
+        # the snapshot the supply-chain ladder audits.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          APP="$APP" VERSION="$RELEASE_VERSION" node <<'DEPSNAP'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const crypto = require("node:crypto");
+          const app = process.env.APP;
+          const version = process.env.VERSION;
+          const stage = path.join("release-metadata", app);
+          const manifest = JSON.parse(fs.readFileSync(path.join(app, "package.json"), "utf8"));
+          const lockfiles = ["bun.lock", "pnpm-lock.yaml", "package-lock.json"]
+            .filter(name => fs.existsSync(path.join(app, name)))
+            .map(name => {
+              const content = fs.readFileSync(path.join(app, name));
+              return {
+                file: name,
+                bytes: content.length,
+                lines: content.toString("utf8").split("\n").length,
+                sha256: crypto.createHash("sha256").update(content).digest("hex")
+              };
+            });
+          if (lockfiles.length === 0) throw new Error(app + " carries no tracked lockfile");
+          const dependencies = manifest.dependencies ?? {};
+          const devDependencies = manifest.devDependencies ?? {};
+          const snapshot = {
+            version: version,
+            application: app,
+            manifest: {
+              name: manifest.name ?? app,
+              version: manifest.version,
+              description: manifest.description ?? "",
+              license: manifest.license ?? "undeclared",
+              private: manifest.private === true,
+              engines: manifest.engines ?? {},
+              dependencies: Object.keys(dependencies).length,
+              devDependencies: Object.keys(devDependencies).length,
+              dependencySpecifiers: dependencies
+            },
+            lockfiles: lockfiles
+          };
+          fs.writeFileSync(path.join(stage, app + ".dependencies." + version + ".json"), JSON.stringify(snapshot, null, 2) + "\n");
+          console.log(app + ": " + Object.keys(dependencies).length + " runtime dependencies, " + lockfiles.length + " lockfiles");
+          DEPSNAP
+      - name: write the changelog excerpt
+        # the release notes of the rung: the application's own changelog
+        # section when its folder tracks one for this version, the family
+        # changelog section of devthink otherwise - the prose the release
+        # carries, excerpted per application the way the umbrella sums
+        # per asset.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          app="$APP"
+          version="$RELEASE_VERSION"
+          stage="release-metadata/${app}"
+          changelog="${app}/CHANGELOG.md"
+          if [ ! -f "$changelog" ] || ! grep -q "^## ${version}$" "$changelog"; then
+            changelog="devthink/CHANGELOG.md"
+          fi
+          grep -q "^## ${version}$" "$changelog"
+          {
+            echo "# the ${app} changelog excerpt ${version}"
+            echo
+            echo "source: ${changelog}"
+            echo
+            awk -v section="## ${version}" 'BEGIN { inside = 0 } $0 == section { inside = 1; next } inside && /^## / { exit } inside { print }' "$changelog"
+          } > "${stage}/${app}.changelog.${version}.md"
+          test -s "${stage}/${app}.changelog.${version}.md"
+      - name: write the license notice
+        # the attribution record of the application: the license the
+        # manifest declares, the license and notice files the folder
+        # tracks when it carries them, the readme headline and the
+        # runtime dependency attribution - the legal seat every envelope
+        # ships, answered as the release asset beside the code it covers.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          APP="$APP" VERSION="$RELEASE_VERSION" node <<'NOTICE'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const app = process.env.APP;
+          const version = process.env.VERSION;
+          const stage = path.join("release-metadata", app);
+          const manifest = JSON.parse(fs.readFileSync(path.join(app, "package.json"), "utf8"));
+          const lines = [];
+          lines.push("# the " + app + " notice " + version);
+          lines.push("");
+          lines.push("application: " + (manifest.name ?? app));
+          lines.push("version: " + manifest.version);
+          lines.push("license: " + (manifest.license ?? "undeclared in package.json"));
+          if (typeof manifest.homepage === "string") lines.push("homepage: " + manifest.homepage);
+          for (const tracked of ["LICENSE", "notice.md", "thirdpartynotices.md", "docs/thirdpartynotices.md"]) {
+            if (fs.existsSync(path.join(app, tracked))) lines.push("tracked file: " + app + "/" + tracked);
+          }
+          if (fs.existsSync(path.join(app, "README.md"))) {
+            const readme = fs.readFileSync(path.join(app, "README.md"), "utf8").split("\n");
+            const heading = readme.find(line => line.startsWith("# "));
+            if (heading) {
+              lines.push("");
+              lines.push("readme: " + heading.replace(/^#\s+/, ""));
+              const paragraph = readme.find(line => line.trim() !== "" && !line.startsWith("#"));
+              if (paragraph) lines.push(paragraph.trim().slice(0, 400));
+            }
+          }
+          const dependencies = manifest.dependencies ?? {};
+          lines.push("");
+          lines.push("runtime dependencies (" + Object.keys(dependencies).length + "):");
+          for (const name of Object.keys(dependencies).sort()) lines.push("  " + name + " " + dependencies[name]);
+          fs.writeFileSync(path.join(stage, app + ".notice." + version + ".txt"), lines.join("\n") + "\n");
+          console.log(app + ": notice over " + Object.keys(dependencies).length + " runtime dependencies");
+          NOTICE
+      - name: write the route map
+        # the sol tree inventory of the application: every route folder
+        # the interface shell tracks, with the file census by extension -
+        # the surface map of the shipped interface, recorded as the
+        # release asset the reader walks beside the bundles.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          APP="$APP" VERSION="$RELEASE_VERSION" node <<'SOLMAP'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const app = process.env.APP;
+          const version = process.env.VERSION;
+          const stage = path.join("release-metadata", app);
+          const solRoot = path.join(app, "Sol");
+          const walk = directory => fs.readdirSync(directory, { withFileTypes: true })
+            .flatMap(entry => {
+              const entryPath = path.join(directory, entry.name);
+              return entry.isDirectory() ? walk(entryPath) : [entryPath];
+            });
+          const files = walk(solRoot).map(filePath => path.relative(app, filePath));
+          if (files.length === 0) throw new Error(app + " carries no sol tree");
+          const routes = fs.readdirSync(solRoot, { withFileTypes: true })
+            .filter(entry => entry.isDirectory())
+            .map(entry => entry.name)
+            .sort();
+          const byExtension = {};
+          for (const filePath of files) {
+            const extension = path.extname(filePath) || "(none)";
+            byExtension[extension] = (byExtension[extension] ?? 0) + 1;
+          }
+          const solmap = {
+            version: version,
+            application: app,
+            source: "the tracked Sol tree",
+            routes: routes.length,
+            routeFolders: routes,
+            files: files.length,
+            byExtension: byExtension
+          };
+          fs.writeFileSync(path.join(stage, app + ".solmap." + version + ".json"), JSON.stringify(solmap, null, 2) + "\n");
+          console.log(app + ": " + routes.length + " route folders, " + files.length + " files");
+          SOLMAP
+      - name: write the web asset inventory
+        # the flat web root of the application: the entry html, the
+        # icons, the manifests, the header and redirect rules and the
+        # mime registry the tracked surface carries - the delivery seat
+        # the static lanes serve, inventoried with sizes.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          APP="$APP" VERSION="$RELEASE_VERSION" node <<'WEBASSETS'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const app = process.env.APP;
+          const version = process.env.VERSION;
+          const stage = path.join("release-metadata", app);
+          const candidates = [
+            "index.html", "icon.svg", "favicon.svg", "manifest.webmanifest", "mime.types",
+            "_headers", "_redirects", "netlify.toml", "wrangler.toml", "deno.json",
+            "robots.txt", "sitemap.xml", "browserconfig.xml", "404.html",
+            "sitemanifest.json", "extensionmanifest.json", "manifest.json"
+          ];
+          const assets = candidates
+            .filter(name => fs.existsSync(path.join(app, name)))
+            .map(name => ({ file: name, bytes: fs.statSync(path.join(app, name)).size }));
+          if (assets.length < 3) throw new Error(app + " carries too thin a web root to inventory");
+          const inventory = {
+            version: version,
+            application: app,
+            source: "the tracked web root",
+            assets: assets.length,
+            files: assets
+          };
+          fs.writeFileSync(path.join(stage, app + ".webassets." + version + ".json"), JSON.stringify(inventory, null, 2) + "\n");
+          console.log(app + ": " + assets.length + " web root assets");
+          WEBASSETS
+      - name: snapshot the biome configuration
+        # the formatting and lint seat the application tracks, shipped as
+        # the configuration snapshot the biome tooling answers - the same
+        # config file the verify ladder's checks read.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          app="$APP"
+          version="$RELEASE_VERSION"
+          stage="release-metadata/${app}"
+          test -s "${app}/biome.jsonc"
+          cp "${app}/biome.jsonc" "${stage}/${app}.biome.${version}.jsonc"
+      - name: write the per-architecture container manifests
+        # the container seat of the application across the eleven
+        # platforms the saddle vhe matrix carries (linux/amd64,
+        # linux/amd64/v2, linux/arm64, linux/arm/v7, linux/arm/v6,
+        # linux/ppc64le, linux/s390x, linux/riscv64, linux/386,
+        # linux/mips64le and linux/loong64): one manifest per
+        # architecture per application, the same grammar the container
+        # archive lane stamps, so the operator reading the release
+        # answers the image coordinate of every platform the registry
+        # family serves.
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          app="$APP"
+          version="$RELEASE_VERSION"
+          stage="release-metadata/${app}"
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          image="ghcr.io/${owner}/${app}"
+          test -f "${app}/Dockerfile"
+          for entry in "amd64 linux/amd64" "amd64v2 linux/amd64/v2" "arm64 linux/arm64" "armv7 linux/arm/v7" "armv6 linux/arm/v6" "ppc64le linux/ppc64le" "s390x linux/s390x" "riscv64 linux/riscv64" "386 linux/386" "mips64le linux/mips64le" "loong64 linux/loong64"; do
+            arch="${entry%% *}"
+            platform="${entry##* }"
+            printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "container",\n  "architecture": "%s",\n  "os": "linux",\n  "target": "%s",\n  "image": "%s:%s",\n  "dockerfile": "%s/Dockerfile",\n  "signing": "caller-owned"\n}\n' \
+              "$version" "$app" "$arch" "$platform" "$image" "$version" "$app" \
+              > "${stage}/${app}.manifest.container.${arch}.${version}.json"
+          done
+      - name: checksum the metadata set
+        # the umbrella over the metadata assets the leg attaches - the
+        # same checksum discipline every asset family carries, so the
+        # reader verifies the whole set with one file. the checksum is
+        # written beside the stage and moved in, never checksumming
+        # itself (the SHA256SUMS umbrella law).
+        shell: bash
+        env:
+          APP: ${{ matrix.app }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          app="$APP"
+          version="$RELEASE_VERSION"
+          stage="release-metadata/${app}"
+          checksum="${app}.sha256.metadata.${version}"
+          sha256sum "$stage"/* | sed "s#$stage/##" > "release-metadata/${checksum}"
+          mv "release-metadata/${checksum}" "${stage}/${checksum}"
+          test -s "${stage}/${checksum}"
+          # the twenty-three asset contract of the ladder: eleven
+          # metadata files, eleven architecture manifests, one checksum.
+          count="$(find "$stage" -maxdepth 1 -type f | wc -l)"
+          test "$count" -eq 23
+          ! find "$stage" -type f -name '*_*' -print -quit | grep -q .
+      - name: upload workflow artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ matrix.app }}.metadata.${{ steps.releaseversion.outputs.version }}
+          path: release-metadata/${{ matrix.app }}
+          if-no-files-found: error
+      - name: attach release assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag),
+        # and --clobber keeps a re-run idempotent over its own names,
+        # which carry the application prefix and never collide with
+        # another lane's grammar.
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" release-metadata/${{ matrix.app }}/* --clobber
+
+  family-map:
+    name: the family map, the registries and the release audit trail
+    # THE FAMILY LEVEL OF THE FIVE HUNDRED ASSET LADDER: beside the
+    # per-application metadata sets the family-map lane attaches the
+    # whole-family reports - the family map (every application with its
+    # manifest truth and its surface census), the version ladder (the
+    # lockstep verdict across the eleven manifests), the mimetypes
+    # registry digest (the media type census of the tracked registry the
+    # gateway serves, with the per-application mime.types checksums),
+    # the protocols registry (the tracked protocol modules with their
+    # export census), the gate ladder report (the release gates the
+    # releasegates doc records), the release approval audit trail (the
+    # run coordinates of the wave the release-approval environment
+    # gated) and the asset inventory of everything the ladder attaches -
+    # every report computed from the tagged tree and the live run, never
+    # a placeholder.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    # every job carries its own ceiling (the family contract): the
+    # registry lane reads the tagged tree only - no install, no compile.
+    timeout-minutes: 15
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine).
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: resolve release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so the lane reads the tagged source.
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./devthink/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: write the family map and the version ladder
+        # the whole-family census: every application of the monorepo with
+        # its manifest truth (the package name, the description, the
+        # license) and its surface census (the documentation, the tests,
+        # the sol routes, the root modules, the dockerfile) - and the
+        # version ladder the lockstep law pins, one verdict for the
+        # eleven manifests.
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          VERSION="$RELEASE_VERSION" node <<'FAMILYMAP'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const version = process.env.VERSION;
+          const stage = "release-family";
+          fs.mkdirSync(stage, { recursive: true });
+          const apps = ["argan", "cadria", "cobaia", "debonair", "devthink", "forge", "foundry", "getry", "saddle", "stealthhead", "vault"];
+          const family = apps.map(app => {
+            const manifest = JSON.parse(fs.readFileSync(path.join(app, "package.json"), "utf8"));
+            const count = directory => fs.existsSync(path.join(app, directory))
+              ? fs.readdirSync(path.join(app, directory)).filter(name => !name.startsWith(".")).length
+              : 0;
+            const rootModules = fs.readdirSync(app, { withFileTypes: true })
+              .filter(entry => entry.isFile() && entry.name.endsWith(".ts")).length;
+            return {
+              application: app,
+              package: manifest.name ?? app,
+              version: manifest.version,
+              description: manifest.description ?? "",
+              license: manifest.license ?? "undeclared",
+              private: manifest.private === true,
+              docs: count("docs"),
+              tests: count("tests"),
+              solRoutes: fs.existsSync(path.join(app, "Sol"))
+                ? fs.readdirSync(path.join(app, "Sol"), { withFileTypes: true }).filter(entry => entry.isDirectory()).length
+                : 0,
+              rootModules: rootModules,
+              dockerfile: fs.existsSync(path.join(app, "Dockerfile"))
+            };
+          });
+          const map = {
+            version: version,
+            applications: family.length,
+            family: family
+          };
+          fs.writeFileSync(path.join(stage, "family.map." + version + ".json"), JSON.stringify(map, null, 2) + "\n");
+          const ladder = {
+            version: version,
+            lockstep: family.every(entry => entry.version === version),
+            applications: family.map(entry => ({ application: entry.application, version: entry.version, lockstep: entry.version === version }))
+          };
+          fs.writeFileSync(path.join(stage, "family.versions." + version + ".json"), JSON.stringify(ladder, null, 2) + "\n");
+          console.log("the family map: " + family.length + " applications, lockstep " + ladder.lockstep);
+          FAMILYMAP
+      - name: write the mimetypes registry digest
+        # the media type census of the tracked registry the family
+        # serves: the counts by top-level family of every registered
+        # media type in the docs registry, beside the checksummed
+        # mime.types file every application tracks.
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          VERSION="$RELEASE_VERSION" node <<'MIMEDIGEST'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const crypto = require("node:crypto");
+          const version = process.env.VERSION;
+          const stage = "release-family";
+          const source = "devthink/docs/mimetypes.txt";
+          const lines = fs.readFileSync(source, "utf8").split("\n");
+          const counts = new Map();
+          let entries = 0;
+          for (const line of lines) {
+            const match = line.match(/^([a-z0-9][a-z0-9!#$&^_.+-]*\/[a-z0-9][a-z0-9!#$&^_.+-]*)(\s|$)/i);
+            if (!match) continue;
+            entries += 1;
+            const top = match[1].split("/")[0];
+            counts.set(top, (counts.get(top) ?? 0) + 1);
+          }
+          if (entries === 0) throw new Error("the mimetypes registry answered no entries");
+          const apps = ["argan", "cadria", "cobaia", "debonair", "devthink", "forge", "foundry", "getry", "saddle", "stealthhead", "vault"];
+          const perApp = apps.map(app => {
+            const content = fs.readFileSync(path.join(app, "mime.types"));
+            return {
+              application: app,
+              file: app + "/mime.types",
+              bytes: content.length,
+              lines: content.toString("utf8").split("\n").length,
+              sha256: crypto.createHash("sha256").update(content).digest("hex")
+            };
+          });
+          const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+          const report = [
+            "# the family mimetypes registry digest " + version,
+            "# source: " + source,
+            "# " + entries + " registered media types across " + ranked.length + " top-level families",
+            "",
+            ...ranked.map(([top, count]) => top + "\t" + count),
+            "",
+            "# the tracked mime.types file of every application:",
+            ...perApp.map(entry => entry.application + "\t" + entry.bytes + " bytes\t" + entry.lines + " lines\tsha256 " + entry.sha256),
+            ""
+          ].join("\n");
+          fs.writeFileSync(path.join(stage, "family.mimetypes." + version + ".txt"), report);
+          console.log("the mimetypes digest: " + entries + " media types, " + ranked.length + " families");
+          MIMEDIGEST
+      - name: write the protocols registry
+        # the protocol census of the family: every tracked protocol
+        # module (the gateway meshes and the os protocol) with its size
+        # and its export count - the wire surface the family speaks.
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          VERSION="$RELEASE_VERSION" node <<'PROTOCOLS'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const version = process.env.VERSION;
+          const stage = "release-family";
+          const apps = ["argan", "cadria", "cobaia", "debonair", "devthink", "forge", "foundry", "getry", "saddle", "stealthhead", "vault"];
+          const modules = [];
+          for (const app of apps) {
+            for (const name of ["protocols.ts", "protocol.ts"]) {
+              const file = path.join(app, name);
+              if (!fs.existsSync(file)) continue;
+              const source = fs.readFileSync(file, "utf8");
+              const lines = source.split("\n");
+              const exports = lines.filter(line => /^export\s/.test(line)).length;
+              modules.push({
+                application: app,
+                file: app + "/" + name,
+                bytes: Buffer.byteLength(source, "utf8"),
+                lines: lines.length,
+                exports: exports
+              });
+            }
+          }
+          if (modules.length === 0) throw new Error("the family tracks no protocol modules");
+          const registry = {
+            version: version,
+            source: "the tracked protocol modules of the family",
+            modules: modules.length,
+            files: modules
+          };
+          fs.writeFileSync(path.join(stage, "family.protocols." + version + ".json"), JSON.stringify(registry, null, 2) + "\n");
+          console.log("the protocols registry: " + modules.length + " modules");
+          PROTOCOLS
+      - name: write the gate ladder report
+        # the release gates the releasegates doc records, parsed from
+        # the tracked table into the machine-readable report - the
+        # ladder every release walks, shipped beside the release it
+        # certifies.
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          VERSION="$RELEASE_VERSION" node <<'GATES'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const version = process.env.VERSION;
+          const stage = "release-family";
+          const source = "devthink/docs/releasegates.md";
+          const gates = fs.readFileSync(source, "utf8").split("\n")
+            .filter(line => line.startsWith("| ") && !line.startsWith("| Gate ") && !line.startsWith("| --- "))
+            .map(line => line.split("|").map(cell => cell.trim()))
+            .filter(cells => cells.length >= 4)
+            .map(cells => ({ gate: cells[1], status: cells[cells.length - 2] }));
+          if (gates.length === 0) throw new Error("the releasegates doc answered no gate rows");
+          const report = {
+            version: version,
+            source: source,
+            gates: gates.length,
+            ladder: gates
+          };
+          fs.writeFileSync(path.join(stage, "family.gates." + version + ".json"), JSON.stringify(report, null, 2) + "\n");
+          console.log("the gate ladder: " + gates.length + " gates");
+          GATES
+      - name: write the release approval audit trail
+        # the run coordinates of the publish wave: the workflow, the
+        # run, the attempt, the actor and the event that carried the
+        # lanes, beside the release-approval environment the registry
+        # lanes answer - the audit record the approval doctrine keeps,
+        # stamped with the release it gated. the asset lanes of the wave
+        # attach without waiting on the review (the doctrine the gate
+        # job pins); this record answers what ran and what the gate
+        # covered.
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p release-family
+          printf '{\n  "version": "%s",\n  "tag": "%s",\n  "workflow": "%s",\n  "run_id": "%s",\n  "run_number": "%s",\n  "run_attempt": "%s",\n  "event": "%s",\n  "actor": "%s",\n  "ref": "%s",\n  "commit": "%s",\n  "environment": "release-approval",\n  "law": "every registry lane of this wave answers the release-approval environment review; the asset lanes attach without waiting on the review"\n}\n' \
+            "$RELEASE_VERSION" "$RELEASE_TAG" "$GITHUB_WORKFLOW" "$GITHUB_RUN_ID" "$GITHUB_RUN_NUMBER" "$GITHUB_RUN_ATTEMPT" "$GITHUB_EVENT_NAME" "$GITHUB_ACTOR" "$GITHUB_REF" "$GITHUB_SHA" \
+            > "release-family/release.approval.${RELEASE_VERSION}.json"
+          test -s "release-family/release.approval.${RELEASE_VERSION}.json"
+      - name: write the asset inventory
+        # the deterministic inventory of everything the five hundred
+        # asset ladder attaches: the per-application metadata sets, the
+        # per-architecture container manifests and the family reports -
+        # the manifest of the wave itself, so the reader answers what
+        # the ladder shipped without walking the release page.
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+        run: |
+          set -euo pipefail
+          VERSION="$RELEASE_VERSION" node <<'INVENTORY'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const version = process.env.VERSION;
+          const stage = "release-family";
+          const apps = ["argan", "cadria", "cobaia", "debonair", "devthink", "forge", "foundry", "getry", "saddle", "stealthhead", "vault"];
+          const arches = ["amd64", "amd64v2", "arm64", "armv7", "armv6", "ppc64le", "s390x", "riscv64", "386", "mips64le", "loong64"];
+          const categories = ["docs.zip", "enginemap.json", "api.txt", "tests.json", "schema.zip", "dependencies.json", "changelog.md", "notice.txt", "solmap.json", "webassets.json", "biome.jsonc"];
+          const perApplication = categories.length + arches.length + 1;
+          const metadataAssets = [];
+          for (const app of apps) {
+            for (const category of categories) {
+              const dot = category.indexOf(".");
+              metadataAssets.push(app + "." + category.slice(0, dot) + "." + version + "." + category.slice(dot + 1));
+            }
+            for (const arch of arches) metadataAssets.push(app + ".manifest.container." + arch + "." + version + ".json");
+            metadataAssets.push(app + ".sha256.metadata." + version);
+          }
+          const familyAssets = [
+            "family.map." + version + ".json",
+            "family.versions." + version + ".json",
+            "family.mimetypes." + version + ".txt",
+            "family.protocols." + version + ".json",
+            "family.gates." + version + ".json",
+            "family.assets." + version + ".json",
+            "release.approval." + version + ".json"
+          ];
+          const inventory = {
+            version: version,
+            lane: "the five hundred asset ladder",
+            applications: apps.length,
+            architectures: arches.length,
+            perApplication: perApplication,
+            metadataAssets: metadataAssets.length,
+            familyAssets: familyAssets.length,
+            assetsThisLaneAttaches: metadataAssets.length + familyAssets.length,
+            files: metadataAssets.concat(familyAssets)
+          };
+          fs.writeFileSync(path.join(stage, "family.assets." + version + ".json"), JSON.stringify(inventory, null, 2) + "\n");
+          console.log("the asset inventory: " + inventory.assetsThisLaneAttaches + " assets across " + apps.length + " applications");
+          INVENTORY
+      - name: upload workflow artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: family.map.${{ steps.releaseversion.outputs.version }}
+          path: release-family
+          if-no-files-found: error
+      - name: attach release assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag),
+        # and --clobber keeps a re-run idempotent over its own names.
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: gh release upload "$RELEASE_TAG" release-family/* --clobber
+
   package:
     name: package the browser extension
     # the extension lane of the merged repository: the interface files live
@@ -5461,6 +6347,11 @@ jobs:
       - ios
       - container
       - family-container
+      # the five hundred asset ladder attaches its metadata sets and its
+      # family reports before the umbrella answers, so the SHA256SUMS
+      # signature covers the expanded asset set the ladder ships.
+      - family-metadata
+      - family-map
       - package
       - target-plans
       # the saddle block attaches its assets before the umbrella answers:
