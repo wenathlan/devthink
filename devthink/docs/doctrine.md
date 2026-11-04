@@ -153,7 +153,7 @@
 
 - Commit 835f899 is the base; everything after it in the destroyed line (docs 2.0.99,
   chat-service 2.0.100, start-menu 2.0.101) was reset away. The gateway view folder
-  is renamed `Sol/gateway` and answers the route it always served.
+  is renamed `sol/gateway` and answers the route it always served.
 - The "7+1 subagent chat" rule came from the sandbox skill, not from the corpus; the
   binding formulation is the cascading checkpoint workflow of section 6.
 - "40+ sandbox modalities" is not canonical; 20 walking to 30 is.

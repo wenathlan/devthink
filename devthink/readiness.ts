@@ -22,11 +22,11 @@ import { soakrecord } from "./soak.ts";
 import { sweeprecord } from "./sweep.ts";
 import { telemetryfreerecord } from "./telemetryfree.ts";
 import { wcagrecord } from "./wcag.ts";
-import { readinessmigrateautoma } from "./tests/readiness.automa.ts";
-import { readinessmigrateselenium } from "./tests/readiness.selenium.ts";
-import { readinessmigratetabular } from "./tests/readiness.tabular.ts";
-import { readinessmigrateuivision } from "./tests/readiness.uivision.ts";
-import { readinessmigratev1 } from "./tests/readiness.v1.ts";
+import { readinessmigrateautoma } from "./tests/readinessautoma.ts";
+import { readinessmigrateselenium } from "./tests/readinessselenium.ts";
+import { readinessmigratetabular } from "./tests/readinesstabular.ts";
+import { readinessmigrateuivision } from "./tests/readinessuivision.ts";
+import { readinessmigratev1 } from "./tests/readinessv1.ts";
 
 const execute = promisify(execFile);
 const repoRoot = resolve(process.cwd(), "..");

@@ -1,4 +1,4 @@
-/** Style: stealthhead Sol — static SPA built straight at the repository root: hashed bundles land beside the source files, with a repository-scoped base path and preview-safe host handling. The tailwind plugin compiles the @import "tailwindcss" foundation of Sol/sol.css (the 8-g pass): the @theme tokens become utilities and preflight loads once. */
+/** Style: stealthhead Sol — static SPA built straight at the repository root: hashed bundles land beside the source files, with a repository-scoped base path and preview-safe host handling. The tailwind plugin compiles the @import "tailwindcss" foundation of sol/sol.css (the 8-g pass): the @theme tokens become utilities and preflight loads once. */
 
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";

@@ -62,7 +62,7 @@
       byte-capped offline mirror (ingeststore.ts); sqlite rows through
       parameter binding only (ingestdb.ts)
 - [x] PV0.004 the /ingest bench walking decode → separate → analyze →
-      segment → store with the phase meter (Sol/ingest/ingest.tsx)
+      segment → store with the phase meter (sol/ingest/ingest.tsx)
 - [x] PV0.005 the typed-URL law: devthink barra <app> lands inside the os on
       all ten family apps (?arrive handoff, ?independent escape)
 - [x] PV0.006 the 339-test battery green, the 402kb bundle building clean

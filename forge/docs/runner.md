@@ -4,7 +4,7 @@ forge is the deployable clone of pure execution of the wenathlan family: it runs
 
 ## overview
 
-- the app root carries the loose `.ts` logics (pure, testable engines); the `Sol/` theme folder carries the whole ui.
+- the app root carries the loose `.ts` logics (pure, testable engines); the `sol/` theme folder carries the whole ui.
 - execution is delegated to the saddle engine boundary: a run asks for one of five runtime targets (the runner-mode ladder), the engine resolves the sandbox and returns the result — forge never re-implements the ladder.
 - every floor engine (fleet, queue, graphplan, runstream) is deterministic: one integer seed plus a mulberry32 prng answers the same answer in node and in the browser, so the tests pin the pages line by line.
 - the pages are honest rehearsals: the fleet, the queue and the log stream are seeded replays on the saddle engine boundary, never a live floor claim.
@@ -36,15 +36,15 @@ forge is the deployable clone of pure execution of the wenathlan family: it runs
 
 ## sol subapps (the pages)
 
-- `Sol/runs/runs.tsx` — the runner floor. a seeded rehearsal fleet (`FLOOR_SEED = 20260214`, `FLEET_SIZE = 8`), one row per runner: name, mode, state, load bar, runs/failures record and the three-dot health rung with the honest why. the summary carries total runners, the green/amber/red counts, the busy load and the verdict (healthy while no runner rides red). `advance` ticks the floor and the run plan together (one ride, two views); `reseed` rolls a new floor.
-- `Sol/queue/queue.tsx` — the execution queue. a seeded rehearsal queue (`QUEUE_SEED = 731004`, 7 items), the serving order (priority first, fifo inside the lane), the summary (depth, per-lane counts, the head run, the last served run), the enqueue form (label, priority chips, runner-mode chips) and per-row cancel. every action drives the real queue engine.
-- `Sol/logs/logs.tsx` — the log replay. one seed (`LOG_SEED = 421337`, presets 421337, 90012, 5124, 77031) unrolls the line stream; the player walks it on a timer (120 ms cadence, 180 ms of run clock per tick) with play/pause/replay/restart; the facts bar shows the clock, the visible/total lines, the info/warn/error census and the outcome; `prefers-reduced-motion` renders the full stream at once.
-- `Sol/home/home.tsx` — the landing and the platform entry: the run field with the real runner modes as chips hands over to `/runs`; the capability ledger (register, queue, logs) and the 01–03 run flow (mount, run, report); the family row of the spec §12 accents.
-- `Sol/intro/intro.tsx` — the first-run splash: the mark holds ~1.6 s, slides up 0.8 s and hands to the onboarding; click, key or reduced motion skips.
-- `Sol/onboarding/onboarding.tsx` — the three-frame first-run dialog (is / does / enter); finish or skip marks the stage seen and navigates to the gated home.
-- `Sol/shell/Shell.tsx` — the app surface: full-bleed at its own url, the window chrome only when embedded in the devthink os power clip; the rail pins `/`, `/runs`, `/queue`, `/logs`; the family foot with one identity dot per sibling; the theme flip.
-- `Sol/wingets/` — the shared components: `GraphPanel` (the run plan drawn as an svg stage graph — card 176×56, one bezier per wire, states as dot plus text, running wears the windows accent `#4cc2ff`, failed rides `rgb(232 17 35)`), `EmptyState`, `BrandMark`, `Entry` (the boot readout), the entry gate and the home tabs — all served through `wingets/index.ts`.
-- `Sol/notfound/notfound.tsx` — the 404 page.
+- `sol/runs/runs.tsx` — the runner floor. a seeded rehearsal fleet (`FLOOR_SEED = 20260214`, `FLEET_SIZE = 8`), one row per runner: name, mode, state, load bar, runs/failures record and the three-dot health rung with the honest why. the summary carries total runners, the green/amber/red counts, the busy load and the verdict (healthy while no runner rides red). `advance` ticks the floor and the run plan together (one ride, two views); `reseed` rolls a new floor.
+- `sol/queue/queue.tsx` — the execution queue. a seeded rehearsal queue (`QUEUE_SEED = 731004`, 7 items), the serving order (priority first, fifo inside the lane), the summary (depth, per-lane counts, the head run, the last served run), the enqueue form (label, priority chips, runner-mode chips) and per-row cancel. every action drives the real queue engine.
+- `sol/logs/logs.tsx` — the log replay. one seed (`LOG_SEED = 421337`, presets 421337, 90012, 5124, 77031) unrolls the line stream; the player walks it on a timer (120 ms cadence, 180 ms of run clock per tick) with play/pause/replay/restart; the facts bar shows the clock, the visible/total lines, the info/warn/error census and the outcome; `prefers-reduced-motion` renders the full stream at once.
+- `sol/home/home.tsx` — the landing and the platform entry: the run field with the real runner modes as chips hands over to `/runs`; the capability ledger (register, queue, logs) and the 01–03 run flow (mount, run, report); the family row of the spec §12 accents.
+- `sol/intro/intro.tsx` — the first-run splash: the mark holds ~1.6 s, slides up 0.8 s and hands to the onboarding; click, key or reduced motion skips.
+- `sol/onboarding/onboarding.tsx` — the three-frame first-run dialog (is / does / enter); finish or skip marks the stage seen and navigates to the gated home.
+- `sol/shell/Shell.tsx` — the app surface: full-bleed at its own url, the window chrome only when embedded in the devthink os power clip; the rail pins `/`, `/runs`, `/queue`, `/logs`; the family foot with one identity dot per sibling; the theme flip.
+- `sol/wingets/` — the shared components: `GraphPanel` (the run plan drawn as an svg stage graph — card 176×56, one bezier per wire, states as dot plus text, running wears the windows accent `#4cc2ff`, failed rides `rgb(232 17 35)`), `EmptyState`, `BrandMark`, `Entry` (the boot readout), the entry gate and the home tabs — all served through `wingets/index.ts`.
+- `sol/notfound/notfound.tsx` — the 404 page.
 
 ## saddle integration
 

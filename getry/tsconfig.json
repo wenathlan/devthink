@@ -14,7 +14,7 @@
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
     "paths": {
-      "@/*": ["./Sol/*", "./*"],
+      "@/*": ["./sol/*", "./*"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       /* the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from the devthink side: the moved
@@ -147,6 +147,6 @@
       "@wenathlan/devthink/queue": ["../devthink/queue.ts"]
     }
   },
-  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],
+  "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "tests"]
 }

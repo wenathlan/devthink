@@ -86,7 +86,7 @@ describe("package governance surface", () => {
     expect(providerdoc).toContain("devthink.ts");
     expect(providerdoc).toContain("antigravity.ts");
     expect(providerdoc).toContain("soft_quota_threshold_percent");
-    expect(providerdoc).toContain("docs/schemas/antigravity.json");
+    expect(providerdoc).toContain("antigravityschema.json");
     expect(providerdoc).toContain("The maene lineage");
   });
 });

@@ -244,7 +244,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # every application follows the house flat contract: the Sol theme
+          # every application follows the house flat contract: the sol theme
           # folders and the grouped docs/tests trees stay inside the ceiling,
           # and no app carries a nested src/ tree of its own.
           deep="$(git ls-files | awk -F/ 'NF > 5')"

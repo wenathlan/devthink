@@ -1,6 +1,6 @@
 /**
  * studiogenerate.ts — the GENERATION layer of the studio (moved from
- * Sol/studio/generate.ts: pure logic rides the app root): fold the analyzed
+ * sol/studio/generate.ts: pure logic rides the app root): fold the analyzed
  * descriptor, the selected style and the controls into one ImageProject v1
  * (the buildImageProject chain the gateway's /api/generate runs) and compile
  * its deterministic render frame. The style fold is the render-wave concern

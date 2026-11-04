@@ -6,7 +6,7 @@
 // stock slate bin the surface ships as its honest material. No DOM, no
 // React, no storage: every function takes its inputs as parameters and
 // answers by return type, so the node runner can pin the geometry the same
-// way timelineedit.test pins the algebra. The screen (Sol/edit/edit.tsx)
+// way timelineedit.test pins the algebra. The screen (sol/edit/edit.tsx)
 // folds real edits through timelineedit and reads every number it paints
 // from here — the view never invents time.
 

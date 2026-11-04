@@ -5,7 +5,7 @@
  * round, the round clock with its expiry budget, the seat scoring and the
  * next-action hints the board renders. every function is pure and multi-mode —
  * the same call runs in the browser (the match page reads the hints through
- * Sol/stealthhead/match) and in node (the unit tests), with zero DOM and zero
+ * sol/stealthhead/match) and in node (the unit tests), with zero DOM and zero
  * storage. the rules carry no rows: the match seed and the HTTPS accessor stay
  * in match.ts, this file only judges the shapes those rows move through.
  */

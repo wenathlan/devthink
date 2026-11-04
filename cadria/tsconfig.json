@@ -23,6 +23,6 @@
       "@wenathlan/saddle/security": ["../saddle/security.ts"]
     }
   },
-  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],
+  "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

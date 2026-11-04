@@ -7,8 +7,8 @@
  * directly and every page is public; the intro (/intro) is the one bare
  * presentation page the family grammar gives every app, mounted full-bleed
  * under the family fullscreen law. The root manages the theme as a single
- * file: it imports only the theme anchor (Sol/Sol.tsx — the file named
- * after the theme folder, beside Sol/sol.css), the theme stylesheet and the
+ * file: it imports only the theme anchor (sol/Sol.tsx — the file named
+ * after the theme folder, beside sol/sol.css), the theme stylesheet and the
  * root logics, wraps the anchor in the wouter router (the subpath the pages
  * deploy owns answers through the declared base, the same mount grammar
  * every sibling carries) and renders the theme into the root element —
@@ -18,10 +18,10 @@
  */
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
-import Sol from "./Sol/Sol";
+import Sol from "./sol/Sol";
 import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/inter";
-import "./Sol/sol.css";
+import "./sol/sol.css";
 import { seedLabels } from "./labels";
 
 // the copy law rides the boot: the seed refreshes the label store rows from

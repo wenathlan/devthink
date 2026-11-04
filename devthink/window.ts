@@ -2,7 +2,7 @@
  * window.ts — the pure window logic of the os (root layer): what a window
  * is, which apps open as windows and the spawn geometry each opens at. No
  * react, no anchors, no components — the component binding rides the
- * workspace (Sol/panel/workspace.tsx, the only consumer) and the labels and
+ * workspace (sol/panel/workspace.tsx, the only consumer) and the labels and
  * the spawn geometry ride the catalog db (osAppLabels()/osAppWindows() from
  * catalog.ts, the reviewed seeds serving offline). This syntax serves any
  * app, any subapp, any deploy unit without a code change.

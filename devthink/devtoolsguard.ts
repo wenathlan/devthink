@@ -43,7 +43,7 @@
  * @section response the trip response — the interstitial, never a wipe
  * @section trip the trip convergence (the prongs meet here, once)
  * @section surface install / suspend / listener surface (the toggle seam)
- * @depends-on oslabels.ts (the interstitial copy rows), Sol/sol.css §AA (the wall skin)
+ * @depends-on oslabels.ts (the interstitial copy rows), sol/sol.css §AA (the wall skin)
  * @consumed-by App.tsx (the arm site), personalstore.ts (the owner toggle)
  */
 

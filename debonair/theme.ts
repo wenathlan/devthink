@@ -5,7 +5,7 @@
 // The interface never touches the visitor machine: no cookies, no storage — the
 // choice holds for the session and the next load starts from the sol dark
 // default again. The light fusion stays one toggle away and rides the same
-// token ladder (the [data-theme="light"] flip of Sol/sol.css).
+// token ladder (the [data-theme="light"] flip of sol/sol.css).
 export type Theme = "dark" | "light";
 
 function root(): HTMLElement {

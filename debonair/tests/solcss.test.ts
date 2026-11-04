@@ -15,8 +15,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { describe, it } from "vitest";
 
-const css = readFileSync(new URL("../Sol/sol.css", import.meta.url), "utf8");
-const shell = readFileSync(new URL("../Sol/shell/Shell.tsx", import.meta.url), "utf8");
+const css = readFileSync(new URL("../sol/sol.css", import.meta.url), "utf8");
+const shell = readFileSync(new URL("../sol/shell/Shell.tsx", import.meta.url), "utf8");
 
 /** Strips comments so the guards read rules, not the doctrine prose. */
 function rules(source: string): string {

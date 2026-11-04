@@ -2,7 +2,7 @@
  * until the database endpoint is paired. The rows describe the prepared media
  * areas the pages render: no image file ships in the repository, the picture
  * content arrives from the database over HTTPS. The agent session seed
- * mirrors the documented example log of docs/logs/examplesession.json
+ * mirrors the documented example log of examplesession.json
  * verbatim, so the agent browser page renders the repository's own example
  * instead of inventing one. */
 import type { AgentSession, MediaSlot } from "./catalog";
@@ -29,7 +29,7 @@ export const seedMediaSlots: MediaSlot[] = [
 ];
 
 /** the reviewed agent session seed: the documented example session of
- * docs/logs/examplesession.json (id, browser, seed, events and the captcha
+ * examplesession.json (id, browser, seed, events and the captcha
  * verdict), mirrored verbatim — the offline answer of the sessions catalog. */
 export const seedAgentSessions: AgentSession[] = [
   {

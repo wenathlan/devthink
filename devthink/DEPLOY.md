@@ -88,7 +88,7 @@ Ports 3001–3005 (devthink, argan, debonair, cadria, stealthhead) — the panel
 
 ## 8. Universal interface and the family pages (wave 2.0.47)
 
-The theme folder is `Sol/` in every app — the old `site/` no longer exists
+The theme folder is `sol/` in every app — the old `site/` no longer exists
 and its content was absorbed without loss. The theme is the single web, os,
 TV, phone, desktop, binary and extension interface: only the ratio varies
 (horizontal on tablet/notebook/pc, vertical on the phone), DPI and

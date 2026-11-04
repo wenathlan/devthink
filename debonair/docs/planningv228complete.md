@@ -9,7 +9,7 @@
 ## where the app stands (inherited, verified this session)
 
 - native app at `debonair/debonair/` (house tree: pure ts engines at the root,
-  Sol/ theme, docs/, tests/). 28 engines + kathesis b2 (spectrum, fingerprint,
+  sol/ theme, docs/, tests/). 28 engines + kathesis b2 (spectrum, fingerprint,
   analyze, vocalsynth). 261 vitest cases green, tsc 0, biome 0. commit 504b8ae
   on branch kathesis/b2-wave, pushed.
 - served in the sandbox by the next.js gateway (single launcher page, iframe of
@@ -32,7 +32,7 @@
 
 - K1 — competitor dissection (read-only on allan/temp; writes docs/).
 - K2 — planning: this document + generated ladder.
-- K3 — studio daw editing (pianoroll.ts engine + Sol/studio/timeline + pianoroll ui + tests).
+- K3 — studio daw editing (pianoroll.ts engine + sol/studio/timeline + pianoroll ui + tests).
 - K4 — writers: wavwriter.ts, midiwriter.ts, stems.ts + contract tests.
 - K5 — live viz (spectrum scope, waveform overview, clock) on the real analyser.
 - K6 — gateway persistence (api + cloudsync.ts engine + settings surface).

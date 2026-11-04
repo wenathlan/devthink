@@ -662,7 +662,7 @@ export { createserver, main, main as runserver };
  * resolution order:
  *   1 config.mjs in cwd — the scaffolded standard location
  *   2 gatewayconfig.ts in cwd — user placed config at project root
- *   3 Sol/config.mjs — the legacy theme-folder location (still honored)
+ *   3 sol/config.mjs — the legacy theme-folder location (still honored)
  *   4 builtin default — the shipped v1 v5 example configs
  *
  * the cli scaffolds a fresh config.mjs for new users
@@ -714,9 +714,9 @@ export async function loadconfig(): Promise<gatewaydefinition> {
     "config.mjs",
     "config.ts",
     "config.js",
-    "Sol/config.mjs",
-    "Sol/config.ts",
-    "Sol/config.js",
+    "sol/config.mjs",
+    "sol/config.ts",
+    "sol/config.js",
     "gatewayconfig.mjs",
     "gatewayconfig.ts",
     "gatewayconfig.js",

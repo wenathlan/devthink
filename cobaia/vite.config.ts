@@ -1,4 +1,4 @@
-/** Style: cobaia sol — the vite config lives at the app root while the theme stays in Sol/: static build emitting the hashed bundles directly into the app root folder (publish = "."), with a repository-scoped base path so the theme answers any deploy root (pages subpath, vercel, netlify, workers). The Tailwind 4 vite plugin compiles the theme stylesheet's `@import "tailwindcss"` head (the @theme source of truth + the light/hcf custom variants). */
+/** Style: cobaia sol — the vite config lives at the app root while the theme stays in sol/: static build emitting the hashed bundles directly into the app root folder (publish = "."), with a repository-scoped base path so the theme answers any deploy root (pages subpath, vercel, netlify, workers). The Tailwind 4 vite plugin compiles the theme stylesheet's `@import "tailwindcss"` head (the @theme source of truth + the light/hcf custom variants). */
 
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
@@ -32,7 +32,7 @@ export default defineConfig({
     emptyOutDir: false,
     assetsDir: "",
   },
-  /** the theme (Sol/) and the root logics (checkoutlinks, posts, adsconfig) share one app root, so the dev server allows the app root. */
+  /** the theme (sol/) and the root logics (checkoutlinks, posts, adsconfig) share one app root, so the dev server allows the app root. */
   server: {
     fs: {
       allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault")],

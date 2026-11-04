@@ -12,7 +12,7 @@
       "z-ai-web-dev-sdk": [
         "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
-      "@/*": ["./Sol/*", "./*"],
+      "@/*": ["./sol/*", "./*"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       /* the getry declaration face bridges of the ownership wave
        * (wave/ownership.getry): the gateway modules answer through the

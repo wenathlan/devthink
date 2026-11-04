@@ -1,5 +1,5 @@
 // dashboardlib.ts — Signal & Ledger: defensive utilities of the dashboard
-// absorbed from e2ugh (moved from Sol/dashboard/lib.ts: pure logic rides the
+// absorbed from e2ugh (moved from sol/dashboard/lib.ts: pure logic rides the
 // app root; the page folder keeps only the anchor and its tsx components) —
 // shape-tolerant payloads (backend routes evolve in parallel) and the single
 // api wrapper ({ok, status, body}) the whole page uses.

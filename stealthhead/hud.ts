@@ -5,7 +5,7 @@
  * hitmarker windows, the killfeed with dedup and ttl, and the
  * directional damage indicators. the design is absorbed from the
  * official catalog through the LOGICS-6 wave plan (the hud page renders
- * these numbers through Sol/stealthhead/match; the par of matchrules).
+ * these numbers through sol/stealthhead/match; the par of matchrules).
  * every function is a pure function over plain structs: the same state
  * always paints the same numbers, and nothing here touches a pixel.
  * non-goals: no dom, no rendering, no styling, no animation frames, no

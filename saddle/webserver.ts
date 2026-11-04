@@ -216,7 +216,7 @@ type EventView = {
 
 /** the directory holding this module: the repository root with the backend
  * sources (db.ts, auth.ts, mesh.ts, sandbox.ts) after the Sol
- * restructure (the theme lives in Sol/, the engine stays at the root). */
+ * restructure (the theme lives in sol/, the engine stays at the root). */
 const moduledir = dirname(fileURLToPath(import.meta.url));
 
 /** repository root resolved from this module: the same directory since

@@ -1,6 +1,6 @@
 /**
  * studiosource.ts — the SOURCE layer of the generation studio (moved from
- * Sol/studio/source.ts: pure logic rides the app root): turn a picked file
+ * sol/studio/source.ts: pure logic rides the app root): turn a picked file
  * or a built-in intro fixture into one normalized StudioSource, then run the
  * genuine wave-1 chain over it. The decode doctrine is the documented dual
  * path:

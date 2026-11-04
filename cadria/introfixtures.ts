@@ -1,6 +1,6 @@
 /**
  * introfixtures.ts — the built-in synthetic fixtures of the intro demo
- * (moved from Sol/intro/fixtures.ts: pure logic rides the app root): three
+ * (moved from sol/intro/fixtures.ts: pure logic rides the app root): three
  * short mono slices synthesized straight into Float32Array in code (the
  * tests/audiopipeline.test.ts fixture approach — no binary files, no
  * network, no storage), deterministic to the last sample: every oscillator

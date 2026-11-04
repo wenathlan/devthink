@@ -31,7 +31,7 @@ import { DESKTOP_APPS, FAMILY_APP_IDS, isFamilyApp } from "../appregistry.ts";
 import { osAppLabels } from "../catalog.ts";
 import { familyurl } from "../gateway.ts";
 import { FAMILY_SLUGS, windowapp, windowcatalog } from "../window.ts";
-import { APP_ICONS } from "../Sol/wingets/ShellAppicons.tsx";
+import { APP_ICONS } from "../sol/wingets/ShellAppicons.tsx";
 
 const router = readFileSync(join(import.meta.dirname, "..", "Sol", "Sol.tsx"), "utf8");
 const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
@@ -218,21 +218,21 @@ describe("the native anchors answer both doors with one design (the shared surfa
    * body and the page (the page mounts the same body unembedded beside
    * the shell). */
   const ANCHOR_PAGES: Record<string, string> = {
-    files: "Sol/files/files.tsx",
-    calculator: "Sol/calculator/calculator.tsx",
-    docs: "Sol/docs/docs.tsx",
-    image: "Sol/image/image.tsx",
-    games: "Sol/games/games.tsx",
-    console: "Sol/console/console.tsx",
-    usage: "Sol/usage/usage.tsx",
-    settings: "Sol/settings/settings.tsx",
-    projects: "Sol/projects/projects.tsx",
-    audio: "Sol/audio/audio.tsx",
-    video: "Sol/video/video.tsx",
-    providers: "Sol/providers/providers.tsx",
-    gateway: "Sol/gateway/gateway.tsx",
+    files: "sol/files/files.tsx",
+    calculator: "sol/calculator/calculator.tsx",
+    docs: "sol/docs/docs.tsx",
+    image: "sol/image/image.tsx",
+    games: "sol/games/games.tsx",
+    console: "sol/console/console.tsx",
+    usage: "sol/usage/usage.tsx",
+    settings: "sol/settings/settings.tsx",
+    projects: "sol/projects/projects.tsx",
+    audio: "sol/audio/audio.tsx",
+    video: "sol/video/video.tsx",
+    providers: "sol/providers/providers.tsx",
+    gateway: "sol/gateway/gateway.tsx",
   };
-  const CHATPAGE = "Sol/chat/chat.tsx";
+  const CHATPAGE = "sol/chat/chat.tsx";
 
   it("every windowed anchor answers a page file with the embedded contract", () => {
     for (const [id, page] of Object.entries(ANCHOR_PAGES)) {

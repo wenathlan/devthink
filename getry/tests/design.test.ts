@@ -20,15 +20,15 @@ function read(path: string): string {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
-const CSS = read("../Sol/sol.css");
+const CSS = read("../sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../Sol/wingets/ShellBrandmark.tsx");
-const SHELL = read("../Sol/shell/Shell.tsx");
-const SOL = read("../Sol/Sol.tsx");
-const HOME = read("../Sol/home/home.tsx");
-const GATE = read("../Sol/wingets/HomeEntrygate.tsx");
-const INTRO = read("../Sol/intro/intro.tsx");
-const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
+const MARK = read("../sol/wingets/ShellBrandmark.tsx");
+const SHELL = read("../sol/shell/Shell.tsx");
+const SOL = read("../sol/Sol.tsx");
+const HOME = read("../sol/home/home.tsx");
+const GATE = read("../sol/wingets/HomeEntrygate.tsx");
+const INTRO = read("../sol/intro/intro.tsx");
+const ONBOARDING = read("../sol/onboarding/onboarding.tsx");
 const STATE = read("../onboardingstate.ts");
 const DB = read("../db.ts");
 const SCHEMA = read("../schema.prisma");
@@ -197,7 +197,7 @@ describe("flow contract — intro → onboarding → the platform", () => {
 
   it("gates the home anchor on the seen state before anything shows", () => {
     /* the widget surface law: the dotted widget name is written exactly
-    once (inside Sol/wingets/index.ts) and the page answers the surface
+    once (inside sol/wingets/index.ts) and the page answers the surface
     import with its canonical alias — never the dotted path again */
     expect(HOME).toMatch(/import \{ HomeEntrygate as EntryGate \} from "\.\.\/wingets"/);
     expect(GATE).toContain('navigate("/intro", { replace: true })');

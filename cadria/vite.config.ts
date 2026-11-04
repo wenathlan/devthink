@@ -1,7 +1,7 @@
 /** Style: DevThink Sol — static SPA built at the app root: the vite build emits
  * the hashed bundles directly into the app root folder (publish = "."), with a
  * repository-scoped base path and preview-safe host handling. The tailwind
- * plugin compiles the @import "tailwindcss" foundation of Sol/sol.css (the
+ * plugin compiles the @import "tailwindcss" foundation of sol/sol.css (the
  * 8-g pass): the @theme tokens become utilities and preflight loads once. */
 
 import path from "node:path";

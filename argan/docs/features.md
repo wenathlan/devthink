@@ -10,7 +10,7 @@ Real feature list of the argan engine and its Sol surface, extracted from the co
 - Zone file parser — `zonediff.ts` `parseZoneRecords` handles `$ORIGIN`, `$TTL`, the `@` apex, owner inheritance on indented lines, parenthesized continuations, quoted strings, both `[ttl] [class]` orders and RFC 2308 TTL units (s/m/h/d/w), throwing `ZoneDiffError` with the offending line number.
 - Zone planner — `diffZones`/`diffZoneFiles`/`recordsFromRows` diff two zone versions into create/delete/update changes grouped by owner and type; round-robin order never produces a change and an unconfigured TTL never triggers an update.
 - Publication serial — `serialForPublication` keeps the serial when the diff is empty and bumps it through `nextSerial` otherwise.
-- Dig resolver — `Sol/home/home.tsx` parses dig-style queries (`dig <name> [TYPE]`, verb optional) and resolves them against the served apex snapshot with the wildcard honored, answering ok, nodata or nxdomain.
+- Dig resolver — `sol/home/home.tsx` parses dig-style queries (`dig <name> [TYPE]`, verb optional) and resolves them against the served apex snapshot with the wildcard honored, answering ok, nodata or nxdomain.
 - Record type chips — the home resolver offers A, AAAA, MX, NS, TXT, SOA and CAA, intersected with the served rows.
 - Publication flow — the 5-step rail (Validate, Write zone, Persist, Republish, Serve) served from `seed.ts` through `catalog.ts` to the zones page.
 
@@ -52,7 +52,7 @@ Real feature list of the argan engine and its Sol surface, extracted from the co
 
 ## UI
 
-- Route tree — `Sol/Sol.tsx` mounts `/intro`, `/onboarding`, `/`, `/zones`, `/dnssec`, `/gateway`, `/settings` and the `/404` catch-all behind the wouter router.
+- Route tree — `sol/Sol.tsx` mounts `/intro`, `/onboarding`, `/`, `/zones`, `/dnssec`, `/gateway`, `/settings` and the `/404` catch-all behind the wouter router.
 - Entry gate — `HomeEntrygate` reads the first-run state and routes unseen visitors to the intro or the onboarding; only a finished flow sees the landing.
 - Intro splash — the 1.6s opening splash with the drawn mark, skippable by click or key, straight hand-over under reduced motion.
 - Onboarding frames — three first-run frames (what the app is, what it hosts, the enter hand-over); finish and skip both mark the stage seen.

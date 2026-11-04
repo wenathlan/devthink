@@ -1,8 +1,8 @@
 /**
  * App — the global anchor (layer 1 of the anchor architecture) and the only
  * TSX outside the theme. The root manages the themes as single files: it
- * imports only the theme anchor (Sol/Sol.tsx — the file named after the theme
- * folder, beside Sol/sol.css) and the theme stylesheet, wraps the anchor in
+ * imports only the theme anchor (sol/Sol.tsx — the file named after the theme
+ * folder, beside sol/sol.css) and the theme stylesheet, wraps the anchor in
  * the global concerns it owns (the error boundary, the toaster, the devtools
  * shield and the wouter router provider) and renders it. The whole route tree
  * lives behind the theme anchor; no page or component of the theme is ever
@@ -17,11 +17,11 @@ import { Router as WouterRouter } from "wouter";
 import { installdevtoolsguard, ondevtoolstrip, showdevtoolsinterstitial } from "./devtoolsguard.ts";
 import { guardStatus, reportguardstrike } from "./guard.ts";
 import { seedLabels } from "./labels.ts";
-import Sol from "./Sol/Sol.tsx";
+import Sol from "./sol/Sol.tsx";
 import { loadDevtoolsWall } from "./personalstore.ts";
 import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/inter";
-import "./Sol/sol.css";
+import "./sol/sol.css";
 
 // the label seed rides the boot: the manifest ingests into the store and the
 // translation overrides load before the surfaces read their copy

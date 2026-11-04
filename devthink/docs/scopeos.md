@@ -67,8 +67,8 @@ the claims above are checked against the tree on 2026-10-13:
 
 - the owni is embedded: page.ts, background.ts, providers.ts and policy.ts
   at the app root, with the providers surface living at
-  Sol/providers/providers.tsx.
-- the os registry holds the 42 ids: Sol/os/apps.ts carries 42 id entries —
+  sol/providers/providers.tsx.
+- the os registry holds the 42 ids: sol/os/apps.ts carries 42 id entries —
   the apps and their sections — as the single source the shell reads.
 - the zoomlock is installed: App.tsx imports installzoomlock from
   zoomlock.ts and calls it before the first render when a window exists.

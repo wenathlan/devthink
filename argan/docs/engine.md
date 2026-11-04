@@ -4,7 +4,7 @@ The network, DNS and edge engine of the devthink family: authoritative zones, re
 
 ## Overview
 
-Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`, version 2.0.155). The engine lives as library-grade TypeScript modules at the app root; the web surface lives in `Sol/` and renders every row from the data layer (seed rows offline, the site API over HTTPS when configured). The published package exports `./mimetypes` for family consumers (the vault storage engine among them).
+Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`, version 2.0.155). The engine lives as library-grade TypeScript modules at the app root; the web surface lives in `sol/` and renders every row from the data layer (seed rows offline, the site API over HTTPS when configured). The published package exports `./mimetypes` for family consumers (the vault storage engine among them).
 
 ## Module inventory
 
@@ -35,17 +35,17 @@ Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`
 
 ## Sol surface
 
-- `Sol/Sol.tsx` — the theme anchor and route tree: `/intro`, `/onboarding`, `/`, `/zones`, `/dnssec`, `/gateway`, `/settings`, `/404` plus the catch-all.
-- `Sol/home/` — the landing: a dig-style local resolver over the served apex snapshot (query types A, AAAA, MX, NS, TXT, SOA, CAA; wildcard honored; honest ok/nodata/nxdomain verdicts), hero badges, the zones and library ledgers, publication steps, the apex CTA and the family footer; the entry gate decides between intro, onboarding and the landing.
-- `Sol/zones/` — the zones console: the zone ledger with the apex featured and the newest serial pulsing, the 5-step publication rail, the apex record set ledger and the verbatim zone file one summary away.
-- `Sol/dnssec/` — the DNSSEC console: the KSK/ZSK key ledger, the algorithm badges, the sign-pipeline output as a terminal and the 4-step rollover ladder.
-- `Sol/gateway/` — the gateway console: the transport table (8 transports — classic 53, DoT 853, DoH 443, DoH JSON, DoQ, DoH3, DNSCrypt, ODoH), the 3-step DoH-first rail and the staging Corefile terminal.
-- `Sol/settings/` — the settings console: three numbered sections (appearance, clean URLs, network) with the theme switch, the reduce-motion switch, resolver and locale selects and a live clean-URL demo.
-- `Sol/intro/`, `Sol/onboarding/` — the first-run flow: a 1.6s splash with the drawn mark and three Windows 11-style first-run frames; both mark their stage through `onboardingstate.ts`.
-- `Sol/shell/` — the app frame: full-bleed standalone law, the page rail, the family foot with one accent dot per sibling, the theme flip and the `ArganMark` icon.
-- `Sol/notfound/` — the single 404 (RCODE 3, NXDOMAIN).
-- `Sol/toast/` — the toast surface: a role=status live region with success, error and info tones.
-- `Sol/wingets/` — the shared widgets: `HomeEntrygate` (the first-run gate) and `ShellEmptystate` (glyph, one line of truth, one action, pending shimmer).
+- `sol/Sol.tsx` — the theme anchor and route tree: `/intro`, `/onboarding`, `/`, `/zones`, `/dnssec`, `/gateway`, `/settings`, `/404` plus the catch-all.
+- `sol/home/` — the landing: a dig-style local resolver over the served apex snapshot (query types A, AAAA, MX, NS, TXT, SOA, CAA; wildcard honored; honest ok/nodata/nxdomain verdicts), hero badges, the zones and library ledgers, publication steps, the apex CTA and the family footer; the entry gate decides between intro, onboarding and the landing.
+- `sol/zones/` — the zones console: the zone ledger with the apex featured and the newest serial pulsing, the 5-step publication rail, the apex record set ledger and the verbatim zone file one summary away.
+- `sol/dnssec/` — the DNSSEC console: the KSK/ZSK key ledger, the algorithm badges, the sign-pipeline output as a terminal and the 4-step rollover ladder.
+- `sol/gateway/` — the gateway console: the transport table (8 transports — classic 53, DoT 853, DoH 443, DoH JSON, DoQ, DoH3, DNSCrypt, ODoH), the 3-step DoH-first rail and the staging Corefile terminal.
+- `sol/settings/` — the settings console: three numbered sections (appearance, clean URLs, network) with the theme switch, the reduce-motion switch, resolver and locale selects and a live clean-URL demo.
+- `sol/intro/`, `sol/onboarding/` — the first-run flow: a 1.6s splash with the drawn mark and three Windows 11-style first-run frames; both mark their stage through `onboardingstate.ts`.
+- `sol/shell/` — the app frame: full-bleed standalone law, the page rail, the family foot with one accent dot per sibling, the theme flip and the `ArganMark` icon.
+- `sol/notfound/` — the single 404 (RCODE 3, NXDOMAIN).
+- `sol/toast/` — the toast surface: a role=status live region with success, error and info tones.
+- `sol/wingets/` — the shared widgets: `HomeEntrygate` (the first-run gate) and `ShellEmptystate` (glyph, one line of truth, one action, pending shimmer).
 
 ## Family integration
 

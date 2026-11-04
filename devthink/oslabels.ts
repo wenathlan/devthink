@@ -982,18 +982,18 @@ export const seedOsGatewayStructure = `devthink/
   engine.ts                 # universal engine — routes, rotation, retry, fallback
   gateway-http.ts           # the http transport — hono server + sse pipeline
   gateway-cli.ts            # the scaffolding cli (init add keys serve export)
-  gateway-configloader.ts   # config validation + the standard Sol/config.* probe
+  gateway-configloader.ts   # config validation + the standard sol/config.* probe
   gateway-auth.ts           # the 12 auth methods + key resolution
   database.ts               # prisma + libsql client
   types.ts                  # the public types of every family (gateway section)
   gatewayviewconfig.ts      # the shipped v1–v5 definitions (data only)
   gatewayviewdefinition.ts  # the view-side structural contract
-  Sol/                      # the design room of the whole project
+  sol/                      # the design room of the whole project
     App.tsx                 # the workbench entry — one router, one mount
     gatewayview/            # this console — the embedded gateway face
       gatewayview.tsx       # this page (self-contained, no main.tsx)
     schema.prisma           # the database schema
-    prisma/                 # the local sqlite home — Sol/prisma/devthink.db
+    prisma/                 # the local sqlite home — sol/prisma/devthink.db
     console/                # the cli design page
     capacitor.config.ts     # the android wrapper — same interface
     vercel.json netlify.toml # platform manifests — deploy from here

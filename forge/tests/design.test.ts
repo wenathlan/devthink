@@ -17,16 +17,16 @@ function read(path: string): string {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
-const CSS = read("../Sol/sol.css");
+const CSS = read("../sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../Sol/wingets/ShellBrandmark.tsx");
+const MARK = read("../sol/wingets/ShellBrandmark.tsx");
 const TOML = read("../devthink.toml");
-const SOL = read("../Sol/Sol.tsx");
-const GATE = read("../Sol/wingets/HomeEntrygate.tsx");
+const SOL = read("../sol/Sol.tsx");
+const GATE = read("../sol/wingets/HomeEntrygate.tsx");
 const STATE = read("../onboardingstate.ts");
-const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
-const INTRO = read("../Sol/intro/intro.tsx");
-const SHELL = read("../Sol/shell/Shell.tsx");
+const ONBOARDING = read("../sol/onboarding/onboarding.tsx");
+const INTRO = read("../sol/intro/intro.tsx");
+const SHELL = read("../sol/shell/Shell.tsx");
 const PRISMA = read("../schema.prisma");
 const DB = read("../db.ts");
 

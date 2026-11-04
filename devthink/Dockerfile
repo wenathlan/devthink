@@ -351,7 +351,7 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # the rest of the tree, in the checkout geometry: the application sources
 # (the library sources, the web root interface files — the static site
 # design and the extension surfaces, flat at the application root beside
-# the Sol component folders — and the docs the deterministic checks read),
+# the sol component folders — and the docs the deterministic checks read),
 # the gate scripts, the fixtures and the vitest suite the builder runs
 # (the tests-village migration folded the old root tests/ tree into the
 # application root, so COPY devthink carries them), and the sibling
