@@ -16,7 +16,7 @@
 // the public shelf through). zero dependencies, zero consumer data.
 
 import { mintid } from "./bigintids.ts";
-import { GENRES } from "./genre.ts";
+import { GENRES } from "./genrematrix.ts";
 import type { IngestClientDeps, IngestClientResult } from "./ingest.ts";
 import { uploadIngest } from "./ingest.ts";
 

@@ -109,11 +109,10 @@
        * and the devthink router — resolves it to this app's own source:
        * the one owner of the moved console. */
       "@wenathlan/getry/providercli": ["./providercli.ts"],
-      /* the os bridge of the provider console move: the console reads the
-       * paired label catalog through the published os specifier and this
-       * program resolves it to the monorepo source the sibling app
-       * carries — the label catalog is never duplicated inside getry. */
-      "@wenathlan/devthink/os": ["../devthink/os.ts"],
+      /* the os bridge of the provider console move rides the declaration
+       * the devthink paths block already carries above — the console reads
+       * the paired label catalog through the same published os specifier,
+       * one declaration per specifier (the json law the biome gate pins). */
       "@wenathlan/getry/project": ["./project.ts"],
       "@wenathlan/getry/quota": ["./quota.ts"],
       "@wenathlan/getry/recovery": ["./recovery.ts"],

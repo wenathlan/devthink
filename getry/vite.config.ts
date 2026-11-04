@@ -106,14 +106,6 @@ export default defineConfig({
        * devthink server compat shim and the devthink router — resolves it
        * to this app's own source: the one owner of the moved console. */
       "@wenathlan/getry/cli": path.resolve(import.meta.dirname, "cli.ts"),
-      /** the providercli self bridge of the gateway ownership wave
-       * (wave/ownership.gateway, step 5 — the provider console move): the
-       * provider account console family moved to this app's providercli.ts,
-       * and every lane that speaks the published specifier
-       * ("@wenathlan/getry/providers") — the devthink server compat shim
-       * and the devthink router — resolves it to this app's own source: the
-       * one owner of the moved console. */
-      "@wenathlan/getry/providers": path.resolve(import.meta.dirname, "providers.ts"),
       /** the oslabels bridge of the ownership wave: the moved provider
        * console reads the paired label catalog through the published os
        * specifier ("@wenathlan/devthink/oslabels"), and this bridge resolves
@@ -128,8 +120,6 @@ export default defineConfig({
       "@wenathlan/getry/utils": path.resolve(import.meta.dirname, "utils.ts"),
       "@wenathlan/getry/versionregistry": path.resolve(import.meta.dirname, "versionregistry.ts"),
       "@wenathlan/getry/intelligence": path.resolve(import.meta.dirname, "intelligence.ts"),
-      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
-      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
       "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
       "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "gateway.ts"),
       "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "gateway.ts"),

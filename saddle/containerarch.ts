@@ -285,8 +285,14 @@ export function containerarchcoverage(): containerarchreport {
  * under their profile line so every run answers the eleven-arch law). */
 export function containerarchlines(): string[] {
   const coverage = containerarchcoverage();
+  /* the display names the report prints carry the hyphenated profile face
+   * (container-max and container-lite) — the prose spelling the coverage
+   * law pins — while the frozen driver ids ride their concatenated keys. */
+  const displaynames = coverage.drivers.map((driver) =>
+    driver === "containermax" ? "container-max" : driver === "containerlite" ? "container-lite" : driver,
+  );
   return [
-    `  arch standard: ${coverage.count} architectures covered by the ${coverage.drivers.join(" and ")} drivers (${coverage.carries} carried by the pinned base, ${coverage.count - coverage.carries} answered with the honest coded absence)`,
+    `  arch standard: ${coverage.count} architectures covered by the ${displaynames.join(" and ")} drivers (${coverage.carries} carried by the pinned base, ${coverage.count - coverage.carries} answered with the honest coded absence)`,
     ...coverage.rows.map(
       (row) =>
         `    ${row.id.padEnd(8)} ${row.platform.padEnd(16)} dockerarch ${row.dockerarch.padEnd(8)} ${row.baseimagecarries ? "base carries" : "ARCH_IMAGE_ABSENT"}`,

@@ -4783,7 +4783,10 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "require('./saddle/package.json').version",
       "Validate saddle vhe image",
       "VHE_PROFILE_CPU=",
-      "MESA_SHA256=",
+      /* the mesa mirror healing the grand-merge era carried retired with
+         the from-source mesa stages (the family doctrine ships the pinned
+         base image legs now), so the MESA_SHA256= control the old lane
+         pinned rides out of the required list with the stage it froze */
       "if: github.event_name == 'workflow_dispatch'",
     ],
     "maintenance.yml": [
