@@ -848,7 +848,7 @@ function containerprofilelane(profile: "max" | "lite"): EdgeLaneExecutor {
     }
     let memorymodule: MemoryRecipeModule;
     try {
-      memorymodule = (await import("./virtualmemory.ts")) as MemoryRecipeModule;
+      memorymodule = (await import("./virtual.ts")) as MemoryRecipeModule;
     } catch (error) {
       throw edgelaneerror(
         "LANE_MODULE_UNAVAILABLE",
@@ -4906,18 +4906,18 @@ export const inproclaneids: readonly string[] = Object.freeze(inproclanespecs.ma
 // ranges at their midpoints and keep only the run-invariant smi lines —
 // the same manifest always composes the same report bytes.
 
-/* the virtualization domain (virtualization.ts) re-exports virtualgpu
- * through a .js specifier — the webserver's plain node host resolves only
- * .ts specifiers, so the kvm lane loads the domain lazily inside the
- * executor (the family law: a domain the host cannot resolve degrades
- * that one lane honestly, never the engine boot). */
+/* the virtualization surface rides the one keyword file virtual.ts since
+ * the virtual family fold (the edgelandes law) — the kvm lane still loads
+ * the domain lazily inside the executor (the family law: a domain the
+ * host cannot resolve degrades that one lane honestly, never the engine
+ * boot). */
 async function loadvirtualization(): Promise<{
   buildqemucmd: (opts: { vcpu: number; memMB: number }) => readonly string[];
   kvmcapnames: readonly string[];
   qemuversioncheck: () => string;
 }> {
   try {
-    return await import("./virtualization.ts");
+    return await import("./virtual.ts");
   } catch (error) {
     throw edgelaneerror(
       "KVM_MODULE_UNAVAILABLE",

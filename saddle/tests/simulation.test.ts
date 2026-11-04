@@ -23,7 +23,7 @@ import { createVirtualEngine, disposeengine, engineeventbus, randomPort } from "
 import { kvmavailable, orchestrator, qemuruntime } from "../orchestrator.ts";
 import { buildQemuTcgArgs } from "../performance.ts";
 import { psilstm, rlautoscaler, tenantadmission, vmconfigcrdt } from "../scheduler.ts";
-import { buildqemucmd } from "../virtualization.ts";
+import { buildqemucmd } from "../virtual.ts";
 
 /** repository root resolved from this test file location. */
 const reporoot = join(dirname(fileURLToPath(import.meta.url)), "..");
