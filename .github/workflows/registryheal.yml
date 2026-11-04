@@ -9,7 +9,7 @@ name: DevThink Registry Heal
 # two-factor authentication may never unpublish), so the heal moves the
 # latest dist-tag of every poisoned package back to the last honest rung
 # the manifests of main already resolve (2.0.154 for the saddle and the library apps —
-# for the library apps). The ladder then walks the ordinary flow: the
+# the rung the family curve realignment stamps from). The ladder then walks the ordinary flow: the
 # maintenance rung derives the next rung, the release cuts the tag from
 # the healed main, and the publish answers envelopes the tree actually
 # builds — the fresh latest supersedes every caret range the same hour.
