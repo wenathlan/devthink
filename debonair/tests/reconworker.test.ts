@@ -38,8 +38,13 @@ import {
   startReconJob,
 } from "../reconworker.ts";
 import { renderjobseat } from "../renderjobs.ts";
-import { scheduleTake } from "../takeevents.ts";
-import { EXPORT_LABELS, exportTake, RECON_SEED_SCHEMA_VERSION, reconSeedFile } from "../takeexporter.ts";
+import {
+  EXPORT_LABELS,
+  exportTake,
+  RECON_SEED_SCHEMA_VERSION,
+  reconSeedFile,
+  scheduleTake,
+} from "../take.ts";
 import { HEADER_LAYOUT, wavInfo } from "../wavwriter.ts";
 
 /** The analysis rate of the recon lane (the cd canon). */

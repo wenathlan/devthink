@@ -11,16 +11,18 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import {
+  CHORD_INTERVALS,
+  chordTemplates,
   chromagram,
   chromaVector,
+  detectChords,
   estimateKey,
   harmonicStats,
   keyName,
   keyProfiles,
   pitchClassNames,
   spectrumFrames,
-} from "../audiotonality.ts";
-import { CHORD_INTERVALS, chordTemplates, detectChords } from "../audiotonalitychords.ts";
+} from "../audio.ts";
 
 const RATE = 44100;
 const FRAME_MS = (1000 * 2048) / 44100;

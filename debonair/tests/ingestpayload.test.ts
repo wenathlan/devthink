@@ -14,7 +14,7 @@
 // pnpm vitest run tests/ingestpayload.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { wavinfo } from "../audioformat.ts";
+import { wavinfo } from "../audio.ts";
 import { INGEST_SCHEMA_VERSION } from "../ingest.ts";
 import {
   ENERGY_CHUNK_MS,

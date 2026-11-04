@@ -26,7 +26,7 @@
 // the legacy anchor visuals stay public beside the page (nothing is turned off)
 export * from "../wingets";
 
-import { type AnalysisReport, PipelineError } from "@wenathlan/debonair/audiopipeline";
+import { type AnalysisReport, PipelineError } from "@wenathlan/debonair/audio";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type ImageProject, ProjectError } from "../../imageproject.ts";
 import { renderSvg, renderThumbnailSignature } from "../../imagerender.ts";

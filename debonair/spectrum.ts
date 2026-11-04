@@ -9,7 +9,7 @@
 // project frames through here so the window, the magnitude math and the
 // chroma law stay in one place. Pure math — zero storage, zero audio context.
 
-import { fft } from "./audiofft.ts";
+import { fft } from "./audio.ts";
 
 /** The FFT window length the analysis domains share (4096 = ~93ms at 44.1k). */
 export const FFT_SIZE = 4096;

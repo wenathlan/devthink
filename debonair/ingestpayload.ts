@@ -14,7 +14,7 @@
 // and the limit is documented in code, tests and
 // docs/kathesisresearch.md instead of being papered over.
 
-import { AudioDecodeError, readWavLayout, readWavSamples } from "./audioformat.ts";
+import { AudioDecodeError, readWavLayout, readWavSamples } from "./audio.ts";
 import { sha256hex } from "./blobstore.ts";
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { type IngestDocument, ingestPcm, onsetSecondsOf, pcmhash } from "./ingest.ts";

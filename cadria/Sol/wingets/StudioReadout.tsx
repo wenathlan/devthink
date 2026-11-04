@@ -8,7 +8,7 @@
  * no report.
  */
 
-import { type AnalysisReport, reportDigest } from "@wenathlan/debonair/audiopipeline";
+import { type AnalysisReport, reportDigest } from "@wenathlan/debonair/audio";
 import { label } from "../../labels.ts";
 
 /** pitch-class names, c first — the same table reportDigest spells. */

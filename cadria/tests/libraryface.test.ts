@@ -12,7 +12,7 @@
 //
 // The specifier lane (the seven entries whose closure carries a runtime
 // value import of a family specifier — synthpalette and the synthesis chain
-// ride @wenathlan/debonair/audiofeatures, labels rides
+// ride @wenathlan/debonair/audio, labels rides
 // @wenathlan/vault/labelstore) answers the structure and files pins here
 // while the behavior stays pinned by the module batteries (synthpalette,
 // synthcomposition, synthtexture, synthmotion, imagestyles, imageexport and
@@ -44,7 +44,7 @@ async function readPackage(): Promise<PackageJson> {
 }
 
 /** the export entries whose closure carries a runtime family specifier: the
- * synthesis chain rides @wenathlan/debonair (audiofeatures value imports)
+ * synthesis chain rides @wenathlan/debonair (audio value imports)
  * and the labels consumer rides @wenathlan/vault/labelstore — the registry
  * envelope owns their resolution for the embedder. */
 const SPECIFIER_LANE: readonly string[] = [

@@ -55,7 +55,8 @@
     "reconpayload.ts",
     "composer.ts",
     "coverpalette.ts",
-    "audioengine.ts",
+    "audio.ts",
+    "take.ts",
     "wavwriter.ts",
     "blobstore.ts",
     "ingestworker.ts",
@@ -63,20 +64,6 @@
     "reconworker.ts",
     "gatewayapi.ts",
     "routetable.ts",
-    "audioattributes.ts",
-    "audiodecode.ts",
-    "audiofeatures.ts",
-    "audiofft.ts",
-    "audioformat.ts",
-    "audiopipeline.ts",
-    "audiorhythm.ts",
-    "audiorhythmbeat.ts",
-    "audiospectrum.ts",
-    "audiostructure.ts",
-    "audiotimbre.ts",
-    "audiotimbreenv.ts",
-    "audiotonality.ts",
-    "audiotonalitychords.ts",
     "beatgrid.ts",
     "speechalign.ts",
     "stems.ts",
@@ -100,7 +87,7 @@
     "rhythmgrammar.ts",
     "sandboxmodality.ts",
     "spectrum.ts",
-    "takeevents.ts",
+    "midiwriter.ts",
     "timelinemodel.ts",
     "tuning.ts"
   ],
@@ -184,10 +171,15 @@
       "import": "./coverpalette.ts",
       "default": "./coverpalette.ts"
     },
-    "./audioengine": {
-      "types": "./audioengine.ts",
-      "import": "./audioengine.ts",
-      "default": "./audioengine.ts"
+    "./audio": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+    },
+    "./take": {
+      "types": "./take.ts",
+      "import": "./take.ts",
+      "default": "./take.ts"
     },
     "./wavwriter": {
       "types": "./wavwriter.ts",
@@ -200,24 +192,29 @@
       "default": "./blobstore.ts"
     },
     "./audioattributes": {
-      "types": "./audioattributes.ts",
-      "import": "./audioattributes.ts",
-      "default": "./audioattributes.ts"
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
     },
     "./audiodecode": {
-      "types": "./audiodecode.ts",
-      "import": "./audiodecode.ts",
-      "default": "./audiodecode.ts"
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+    },
+    "./audioengine": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
     },
     "./audiofeatures": {
-      "types": "./audiofeatures.ts",
-      "import": "./audiofeatures.ts",
-      "default": "./audiofeatures.ts"
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
     },
     "./audiopipeline": {
-      "types": "./audiopipeline.ts",
-      "import": "./audiopipeline.ts",
-      "default": "./audiopipeline.ts"
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
     },
     "./beatgrid": {
       "types": "./beatgrid.ts",

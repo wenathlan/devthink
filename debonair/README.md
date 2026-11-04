@@ -8,7 +8,7 @@ Audio and DAW. Isolated marketing app for the operating system. Houses the katex
 
 # Debonair Sol
 
-Debonair is the audio workstation (DAW) of the DevThink family, running on the katexis engine. This Sol theme is the workstation's web surface — a Vite + React SPA whose library, generate, studio and settings routes drive real engine plans (no mock anywhere: the studio plays the WebAudio transport of `Sol/studio/audioengine.ts` over the plans `arranger.ts` composes).
+Debonair is the audio workstation (DAW) of the DevThink family, running on the katexis engine. This Sol theme is the workstation's web surface — a Vite + React SPA whose library, generate, studio and settings routes drive real engine plans (no mock anywhere: the studio plays the WebAudio transport of the audio keyword file (`audio.ts`) over the plans `arranger.ts` composes).
 
 ```bash
 pnpm install
@@ -39,7 +39,9 @@ Debonair owns the katexis engine, and the engine answers the family ownership la
 | `@wenathlan/debonair/patternminer` | the genre tool — `mineGenre`, `similarityRank` and `validateGenreProfile` answer the `debonair.profile/1` document from the ingested references |
 | `@wenathlan/debonair/patternenums` | the pattern vocabulary — the scale, voice and drum-lane tables plus the `debonair.pattern/1` and `debonair.timeline/1` validators and the canonical serializer |
 | `@wenathlan/debonair/composer` | the prompt-to-plan brain — `parseComposerPrompt`, `composeFromProfile` and `composeSimilar` answer the seeded plan near the profile centroid |
-| `@wenathlan/debonair/audioengine` | the voice recipes and the transport — the pure `VOICE_RECIPES` tables with `VoiceBank`, `TakeEngine` and `renderTakeOffline` (the WebAudio seats, browser-hosted) |
+| `@wenathlan/debonair/audio` | the audio domain keyword file — the analysis family (descriptor contract, wav walk, decode, fft, rhythm pair, spectrum, structure, timbre pair, tonality pair, fusion, pipeline) with the browser transport `VoiceBank`, `TakeEngine` and `renderTakeOffline` riding the same seat |
+| `@wenathlan/debonair/take` | the take domain keyword file — the event scheduler (`scheduleTake`, `positionAt`), the session take store (`loadTakeRecords`, `saveTakePlan`) and the bounce desk (`exportTake`, `downloadFile`) |
+| `@wenathlan/debonair/audioattributes` · `audiodecode` · `audioengine` · `audiofeatures` · `audiopipeline` | the retired leaf keys the audio fold keeps as aliases — each resolves to `audio.ts`, so the published specifiers of the pre-fold leaves keep answering (the surfaces they pin ride the keyword file) |
 | `@wenathlan/debonair/wavwriter` | the wav encoder — `encodeWav`, `writeWav16` and `wavInfo` answer deterministic riff/wave bytes, pure on every runtime |
 | `@wenathlan/debonair/blobstore` | the content-addressed store — `memoryblobstore`, `fileblobstore` and `gatewayblobstore` answer the put/get pointer contract |
 | `@wenathlan/debonair/ingestworker` | the server ingest job — `parseWav`, `downmixmono` and `runIngestJob` walk decode, separate, analyze, segment, store over injected seats |

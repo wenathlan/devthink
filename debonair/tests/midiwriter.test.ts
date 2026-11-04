@@ -18,7 +18,7 @@ import {
   validateMidi,
   writeMidi,
 } from "../midiwriter.ts";
-import { scheduleTake } from "../takeevents.ts";
+import { scheduleTake } from "../take.ts";
 
 /** Reads a big-endian u16 out of the bytes (SMF is big-endian, the opposite of wav). */
 const u16be = (bytes: Uint8Array, offset: number): number => (bytes[offset] << 8) | bytes[offset + 1];

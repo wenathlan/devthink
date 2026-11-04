@@ -6,8 +6,13 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { decodeWav } from "../audiodecode.ts";
-import { analyzePcm, analyzeWavBytes, PipelineError, reportDigest } from "../audiopipeline.ts";
+import {
+  analyzePcm,
+  analyzeWavBytes,
+  decodeWav,
+  PipelineError,
+  reportDigest,
+} from "../audio.ts";
 
 const SAMPLE_RATE = 48000;
 

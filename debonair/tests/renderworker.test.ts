@@ -22,7 +22,7 @@
 import assert from "node:assert/strict";
 import Database from "better-sqlite3";
 import { describe, it } from "vitest";
-import { RENDER_TAIL_S } from "../audioengine.ts";
+import { RENDER_TAIL_S } from "../audio.ts";
 import { mintid } from "../bigintids.ts";
 import { composeFromProfile } from "../composer.ts";
 import { MASTERING, trackNameFromPrompt } from "../katexis.ts";

@@ -6,8 +6,13 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { onsetEnvelope, onsetPeaks, rhythmStats } from "../audiorhythm.ts";
-import { canonicalTempo, RhythmError } from "../audiorhythmbeat.ts";
+import {
+  canonicalTempo,
+  onsetEnvelope,
+  onsetPeaks,
+  RhythmError,
+  rhythmStats,
+} from "../audio.ts";
 
 /** builds a mono sine burst at hz for ms on a track at sampleRate. */
 function burst(

@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { planTake } from "../arranger.ts";
 import { scalePcs } from "../musictheory.ts";
-import { eventsInWindow, positionAt, scheduleTake, sectionAt, validateSchedule } from "../takeevents.ts";
+import { eventsInWindow, positionAt, scheduleTake, sectionAt, validateSchedule } from "../take.ts";
 
 describe("takeevents — scheduleTake", () => {
   const plan = planTake({ prompt: "midnight techno, dark sub bass, hypnotic arp", seed: "demo-1" });

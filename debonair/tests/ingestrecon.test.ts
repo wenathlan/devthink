@@ -12,7 +12,7 @@
 // pnpm vitest run tests/ingestrecon.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { mfcc } from "../audiotimbre.ts";
+import { mfcc } from "../audio.ts";
 import { decompose } from "../ingest.ts";
 import { separate } from "../hpss.ts";
 import {

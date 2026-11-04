@@ -20,7 +20,7 @@ import {
   scheduleToNotes,
   validateNotes,
 } from "../pianoroll.ts";
-import { scheduleTake } from "../takeevents.ts";
+import { scheduleTake } from "../take.ts";
 
 /** the swung fixture (lofi swings 0.62 — the deep column offset the matrix carries) */
 const SWUNG_PLAN: TakePlan = planTake({ prompt: "dusty lofi swing, warm sub", seed: "k3-swung", genreId: "lofi" });

@@ -9,7 +9,7 @@
 // storage — pure and multi-mode, browser and node alike.
 
 import { type ArrangerRole, RACK_LANES, stepSecondsOf, type TakePlan } from "./arranger.ts";
-import type { NoteEvent, TakeSchedule } from "./takeevents.ts";
+import type { NoteEvent, TakeSchedule } from "./take.ts";
 
 /** The constants the roll edits under (the window, the grid, the velocities). */
 export const PIANOROLL_CONSTANTS = {

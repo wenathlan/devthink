@@ -1,6 +1,6 @@
 /**
  * spectrum.tsx — the live scope of the studio (Sol layer): a canvas fed by
- * the real analyser tap of the transport's master bus (audioengine.ts) —
+ * the real analyser tap of the transport's master bus (audio.ts) —
  * the doctrine is explicit: waveforms and scopes are controls and feedback,
  * never decoration, so the scope draws only what the bus carries. The
  * reduced-motion law freezes the scope to one settled frame instead of
@@ -8,7 +8,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import type { TakeEngine } from "../../audioengine.ts";
+import type { TakeEngine } from "../../audio.ts";
 import { label } from "../../labels.ts";
 import { reduceMotionApplied } from "../../motionpref.ts";
 

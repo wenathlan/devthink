@@ -6,7 +6,7 @@
 // studio (browser) and in node (these tests). Pure — zero DOM, zero storage, zero audio.
 
 import { type ArrangerRole, ROLE_NAMES, type TakePlan } from "./arranger.ts";
-import type { TakeSchedule } from "./takeevents.ts";
+import type { TakeSchedule } from "./take.ts";
 
 /** The machine readable failure codes of the midi writer. */
 export type MidiErrorCode =

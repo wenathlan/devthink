@@ -11,7 +11,7 @@
 // the page rides STAGES now — the stepper on top (prompt → lyrics → style →
 // generate → takes → mix, the owner's order) scrolls the page to its section
 // while the FL-grade console underneath stays exactly the engine it was: the
-// transport keys drive the WebAudio clock of audioengine.ts, the playlist
+// transport keys drive the WebAudio clock of audio.ts, the playlist
 // draws the timelinemodel clips, the channel rack renders the rhythmgrammar
 // grid and the mixer strips ride mixergraph onto the live buses. Every number
 // is the engine's: bpm, key, chords, pattern family, LUFS target.
@@ -19,7 +19,7 @@ import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState }
 import { Link } from "wouter";
 import { rebaseSchedule } from "../../arrangement.ts";
 import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arranger.ts";
-import { TakeEngine } from "../../audioengine.ts";
+import { TakeEngine } from "../../audio.ts";
 import { formatClock, formatGain } from "../../dawview.ts";
 import { label, labelfill } from "../../labels.ts";
 import { effectiveGainDb, graphFromStrips, type MixerGraph, patchChannel } from "../../mixergraph.ts";
@@ -27,15 +27,18 @@ import { reduceMotionApplied } from "../../motionpref.ts";
 import { type EditableNote, notesToSchedule, scheduleToNotes } from "../../pianoroll.ts";
 import { busHush } from "../../playerbus.ts";
 import type { StageId } from "../../stages.ts";
-import { positionAt } from "../../takeevents.ts";
-import { downloadFile, EXPORT_LABELS, type ExportKind, exportTake } from "../../takeexporter.ts";
 import {
+  downloadFile,
+  EXPORT_LABELS,
+  type ExportKind,
+  exportTake,
   findTakeRecord,
   loadTakeRecords,
+  positionAt,
   saveTakePlan,
   sessionStorageOrMemory,
   TAKE_SELECT_KEY,
-} from "../../takestore.ts";
+} from "../../take.ts";
 import type { TimelineClip } from "../../timelinemodel.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { Fader, PianoRoll, Spectrum, StageStepper, Timeline, VuMeter } from "../wingets";

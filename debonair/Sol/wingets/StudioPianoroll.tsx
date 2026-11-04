@@ -24,7 +24,7 @@ import {
   resizeNote,
   validateNotes,
 } from "../../pianoroll.ts";
-import type { TakeSchedule } from "../../takeevents.ts";
+import type { TakeSchedule } from "../../take.ts";
 
 /** the detent ladder the velocity key cycles through (the rack's glyph law) */
 const VELOCITY_LADDER: readonly number[] = Object.values(PIANOROLL_CONSTANTS.VELOCITY_STEPS);

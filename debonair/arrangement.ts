@@ -14,7 +14,7 @@
 // Pure and multi-mode — browser and node alike.
 
 import { type ArrangerRole, ROLE_NAMES, type TakePlan } from "./arranger.ts";
-import { type NoteEvent, scheduleTake, type TakeSchedule } from "./takeevents.ts";
+import { type NoteEvent, scheduleTake, type TakeSchedule } from "./take.ts";
 import type { TimelineClip } from "./timelinemodel.ts";
 
 /** The typed arrangement failure the desk renders honestly. */

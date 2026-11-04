@@ -28,7 +28,7 @@ import { PauseRegular, PlayFilled } from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import { planTake, type TakePlan, TOTAL_BARS } from "../../arranger.ts";
-import { RENDER_TAIL_S } from "../../audioengine.ts";
+import { RENDER_TAIL_S } from "../../audio.ts";
 import { formatClock } from "../../dawview.ts";
 import {
   composeTake,
@@ -55,15 +55,15 @@ import {
   saveReferenceTake,
 } from "../../playerbus.ts";
 import { RENDER_SAMPLE_RATE, schedulePattern } from "../../renderworker.ts";
-import { scheduleTake } from "../../takeevents.ts";
-import { downloadFile } from "../../takeexporter.ts";
 import {
+  downloadFile,
   loadTakeRecords,
   saveTakePlan,
+  scheduleTake,
   sessionStorageOrMemory,
   TAKE_SELECT_KEY,
   type TakeRecord,
-} from "../../takestore.ts";
+} from "../../take.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
 

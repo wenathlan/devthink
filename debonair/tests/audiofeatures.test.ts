@@ -9,17 +9,17 @@
 // higher tempo dim) so the image-mapping wave can trust every dim by index.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { DescriptorStats } from "../audioattributes.ts";
 import {
   audioSeed,
   audioSeedFromStats,
   DESCRIPTOR_DIMS,
-  DIM_ORDER,
+  type DescriptorStats,
   descriptorSummary,
+  DIM_ORDER,
   fuseDescriptor,
   normalize01,
   zcurve,
-} from "../audiofeatures.ts";
+} from "../audio.ts";
 
 /** one believable mid-tempo minor-key clip, all fields in documented units. */
 const baseStats: DescriptorStats = {

@@ -21,12 +21,18 @@
 // lower rungs own theirs. Pure and multi-mode — the browser and node agree.
 
 import { SILENCE_RMS } from "./analyze.ts";
-import { resample } from "./audiodecode.ts";
-import { onsetEnvelope } from "./audiorhythm.ts";
-import { bpmOverTime } from "./audiorhythmbeat.ts";
-import { spectralFlux } from "./audiospectrum.ts";
-import { brightness, mfcc, rolloffSharpness, spectralSlope, warmthIndex } from "./audiotimbre.ts";
-import { rmsEnvelope } from "./audiotimbreenv.ts";
+import {
+  bpmOverTime,
+  brightness,
+  mfcc,
+  onsetEnvelope,
+  resample,
+  rmsEnvelope,
+  rolloffSharpness,
+  spectralFlux,
+  spectralSlope,
+  warmthIndex,
+} from "./audio.ts";
 import { type StemPair, separate } from "./hpss.ts";
 import { decompose, type IngestDocument, type IngestSegment, onsetSecondsOf, pcmhash, segmentsof } from "./ingest.ts";
 import { PATTERN_SCALE_NAMES, PATTERN_SCALES } from "./patternenums.ts";

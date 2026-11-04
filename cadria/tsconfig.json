@@ -13,10 +13,7 @@
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
     "paths": {
-      "@wenathlan/debonair/audioattributes": ["../debonair/audioattributes.ts"],
-      "@wenathlan/debonair/audiodecode": ["../debonair/audiodecode.ts"],
-      "@wenathlan/debonair/audiofeatures": ["../debonair/audiofeatures.ts"],
-      "@wenathlan/debonair/audiopipeline": ["../debonair/audiopipeline.ts"],
+      "@wenathlan/debonair/audio": ["../debonair/audio.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
       "@wenathlan/saddle/security": ["../saddle/security.ts"]
