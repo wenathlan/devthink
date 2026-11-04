@@ -22,43 +22,43 @@ import { edgelaneexecutorshost, hostlaneids, hostlanespecs, probehostbinary } fr
  * twenty-five of the first wave in their spec order, then the twelve
  * of the wiring wave in alphabetical order. */
 const HOSTBINLANES = [
-  "sandbox-bubblewrap",
-  "sandbox-nsjail",
-  "sandbox-chroot",
-  "container-podman",
-  "container-containerd",
-  "container-runc",
-  "container-crun",
-  "container-max",
-  "container-lite",
-  "container-ghcr",
-  "runtime-clr",
-  "runtime-workerd",
-  "screen-xvfb",
-  "screen-wayland",
-  "mobile-termux",
-  "build-bazel",
-  "build-buck",
-  "build-turborepo",
-  "ci-actions",
-  "ci-gitlab",
-  "network-tor",
-  "network-i2p",
-  "network-wireguard",
-  "storage-minio",
-  "storage-garage",
-  "build-make",
-  "build-ninja",
-  "language-cargo",
-  "language-dotnet",
-  "language-lua",
-  "language-nim",
-  "language-php",
-  "language-rust",
-  "language-v",
-  "language-zig",
-  "runner-deno",
-  "runner-wasi",
+  "sandboxbubblewrap",
+  "sandboxnsjail",
+  "sandboxchroot",
+  "containerpodman",
+  "containercontainerd",
+  "containerrunc",
+  "containercrun",
+  "containermax",
+  "containerlite",
+  "containerghcr",
+  "runtimeclr",
+  "runtimeworkerd",
+  "screenxvfb",
+  "screenwayland",
+  "mobiletermux",
+  "buildbazel",
+  "buildbuck",
+  "buildturborepo",
+  "ciactions",
+  "cigitlab",
+  "networktor",
+  "networki2p",
+  "networkwireguard",
+  "storageminio",
+  "storagegarage",
+  "buildmake",
+  "buildninja",
+  "languagecargo",
+  "languagedotnet",
+  "languagelua",
+  "languagenim",
+  "languagephp",
+  "languagerust",
+  "languagev",
+  "languagezig",
+  "runnerdeno",
+  "runnerwasi",
 ] as const;
 
 /** the twelve wiring wave lanes ride the host rung of the table (kind
@@ -66,18 +66,18 @@ const HOSTBINLANES = [
  * the host carries it) while the twenty-five first wave lanes stay
  * kind live. */
 const HOSTSEATLANES: readonly string[] = [
-  "build-make",
-  "build-ninja",
-  "language-cargo",
-  "language-dotnet",
-  "language-lua",
-  "language-nim",
-  "language-php",
-  "language-rust",
-  "language-v",
-  "language-zig",
-  "runner-deno",
-  "runner-wasi",
+  "buildmake",
+  "buildninja",
+  "languagecargo",
+  "languagedotnet",
+  "languagelua",
+  "languagenim",
+  "languagephp",
+  "languagerust",
+  "languagev",
+  "languagezig",
+  "runnerdeno",
+  "runnerwasi",
 ];
 
 /** the minimal wasi smoke module the runner-wasi lane runs: one
@@ -110,22 +110,22 @@ const laneerrorcode = (error: unknown): string | undefined => {
  * get their own seat (the wiring wave languages each answer their own
  * source shape, the wasi seat answers the base64 module bytes). */
 const smokeprogram = (id: string): string => {
-  if (id === "runtime-clr") return 'Console.WriteLine("smoke:42");';
-  if (id === "runtime-workerd") return 'export default { fetch: () => new Response("smoke:42") };';
-  if (id === "network-wireguard") return "";
-  if (id === "runner-deno") return 'console.log("smoke:42");';
-  if (id === "runner-wasi") return Buffer.from(WASISMOKEBYTES).toString("base64");
-  if (id === "language-rust" || id === "language-cargo") return 'fn main() { println!("smoke:42"); }';
-  if (id === "language-v") return 'fn main() { println("smoke:42") }';
-  if (id === "language-dotnet") return 'class Program { static void Main() { System.Console.WriteLine("smoke:42"); } }';
-  if (id === "language-php") return '<?php echo "smoke:42";';
-  if (id === "language-lua") return 'print("smoke:42")';
-  if (id === "language-zig") {
+  if (id === "runtimeclr") return 'Console.WriteLine("smoke:42");';
+  if (id === "runtimeworkerd") return 'export default { fetch: () => new Response("smoke:42") };';
+  if (id === "networkwireguard") return "";
+  if (id === "runnerdeno") return 'console.log("smoke:42");';
+  if (id === "runnerwasi") return Buffer.from(WASISMOKEBYTES).toString("base64");
+  if (id === "languagerust" || id === "languagecargo") return 'fn main() { println!("smoke:42"); }';
+  if (id === "languagev") return 'fn main() { println("smoke:42") }';
+  if (id === "languagedotnet") return 'class Program { static void Main() { System.Console.WriteLine("smoke:42"); } }';
+  if (id === "languagephp") return '<?php echo "smoke:42";';
+  if (id === "languagelua") return 'print("smoke:42")';
+  if (id === "languagezig") {
     return 'const std = @import("std");\npub fn main() !void {\n    try std.io.getStdOut().writeAll("smoke:42\\n");\n}';
   }
-  if (id === "language-nim") return 'echo "smoke:42"';
-  if (id === "build-make") return "all:\n\t@echo smoke:42";
-  if (id === "build-ninja") return "rule cmd\n  command = echo smoke:42\nbuild smoke: cmd\n";
+  if (id === "languagenim") return 'echo "smoke:42"';
+  if (id === "buildmake") return "all:\n\t@echo smoke:42";
+  if (id === "buildninja") return "rule cmd\n  command = echo smoke:42\nbuild smoke: cmd\n";
   return "echo smoke:42";
 };
 
@@ -181,7 +181,7 @@ describe("the host binary lanes answer the honesty law", () => {
       // docker|socket, turbo|module — answer present only when one seat
       // holds; ci-actions names its runtime actions-runner while probing
       // the Runner.Listener binary and the ACTIONS_RUNNER_ROOT directory)
-      if (spec.modality !== "ci-actions") {
+      if (spec.modality !== "ciactions") {
         assert.equal(
           probehostbinary(spec.runtime),
           false,

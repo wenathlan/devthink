@@ -83,8 +83,15 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
         const [theme, setTheme] = useState<Theme>(() => {
                 if (switchable) {
-                        const stored = localStorage.getItem('theme');
-                        return (stored as Theme) || defaultTheme;
+                        // the privacy law: no browser-local storage — the
+                        // session keeps the choice in memory and the media
+                        // query answers the first paint (the @vault law:
+                        // the vault-backed session carries the durable
+                        // preference on the self-hosted edge).
+                        if (typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches) {
+                                return 'dark';
+                        }
+                        return defaultTheme;
                 }
                 return defaultTheme;
         });
@@ -98,7 +105,8 @@ export function ThemeProvider({
                 }
 
                 if (switchable) {
-                        localStorage.setItem('theme', theme);
+                        // the choice lives in the session state; nothing is
+                        // written to the visitor's storage (the @vault law).
                 }
         }, [theme, switchable]);
 

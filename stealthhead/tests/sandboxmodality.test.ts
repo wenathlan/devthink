@@ -66,12 +66,12 @@ describe("the sandbox lane seat (the deploy decides)", () => {
   });
 
   it("pins the named modality for the platform join to validate", () => {
-    const pinned = lanesandbox("runner-node");
-    assert.deepEqual(pinned, { ok: true, seat: "runner-node", sandboxed: true, pinned: true });
+    const pinned = lanesandbox("runnernode");
+    assert.deepEqual(pinned, { ok: true, seat: "runnernode", sandboxed: true, pinned: true });
     // the module never judges engine vocabulary: the platform's join
     // validates the pinned id at dispatch, the mirror only names it
-    const unusual = lanesandbox("microvm-firecracker");
-    assert.deepEqual(unusual, { ok: true, seat: "microvm-firecracker", sandboxed: true, pinned: true });
+    const unusual = lanesandbox("microvmfirecracker");
+    assert.deepEqual(unusual, { ok: true, seat: "microvmfirecracker", sandboxed: true, pinned: true });
   });
 
   it("reads the seat off the environment lookup the deploy pins", () => {

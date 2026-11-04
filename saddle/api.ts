@@ -10,7 +10,7 @@
  */
 
 /** localstorage key carrying the persisted api base override. */
-const apistoragekey = "saddle_api";
+const apistoragekey = "saddle_api"; // retired with the localStorage persistence (the @vault law in apibase)
 
 /** standardized error payload answered by every /api/v1 endpoint. */
 export type ApiErrorBody = {
@@ -62,20 +62,24 @@ declare global {
 }
 
 /**
- * resolves the api base: ?api= wins (and persists), then the window
- * global, then localstorage, then same origin ("").
+ * resolves the api base: ?api= wins for the session (never persisted —
+ * the privacy law: no browser-local storage, the visitor storage is
+ * never a source of truth), then the window global, then same origin
+ * ("").
  *
+ * @vault binding point: the api base preference rides the edge session
+ *   (the operator's server-side session on the self-hosted node); the
+ *   browser keeps nothing — a static deployment answers the preset
+ *   through the window global instead.
  * @returns the trimmed api base ("" means same-origin).
  */
 export function apibase(): string {
   try {
     const fromquery = new URLSearchParams(window.location.search).get("api");
     if (fromquery !== null && fromquery.trim() !== "") {
-      const trimmed = fromquery.trim().replace(/\/+$/, "");
-      window.localStorage.setItem(apistoragekey, trimmed);
-      return trimmed;
+      return fromquery.trim().replace(/\/+$/, "");
     }
-    const preset = window.SADDLE_API || window.localStorage.getItem(apistoragekey) || "";
+    const preset = window.SADDLE_API || "";
     return String(preset).trim().replace(/\/+$/, "");
   } catch {
     return "";

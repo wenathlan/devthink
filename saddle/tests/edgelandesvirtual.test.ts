@@ -69,7 +69,7 @@ describe("the virtual hardware composition lanes answer the composition law", ()
   });
 
   it("composes the virtual-full machine report from the engine payloads", async () => {
-    const run = await runlane("virtual-full", FULLMANIFEST);
+    const run = await runlane("virtualfull", FULLMANIFEST);
     assert.ok(run.stdout.includes("AMD EPYC 9965"), "the model string rides the report");
     assert.ok(run.stdout.includes("192 cores / 384 threads"), "the cores and threads ride the report");
     assert.ok(run.stdout.includes("NVIDIA-SMI"), "the smi summary line rides the report");
@@ -85,7 +85,7 @@ describe("the virtual hardware composition lanes answer the composition law", ()
     assert.equal(artifact.machine?.cores, 192);
     assert.ok(Array.isArray(artifact.boot) && artifact.boot.length > 0, "the artifact carries the full boot sequence");
     const quiet = await runlane(
-      "virtual-full",
+      "virtualfull",
       JSON.stringify({ model: "AMD EPYC 9965", gpu: "rtx5090", ramgb: 32, boot: false }),
     );
     assert.ok(quiet.stdout.includes("the manifest asks for no boot sequence"), "boot false answers no dmesg");
@@ -94,7 +94,7 @@ describe("the virtual hardware composition lanes answer the composition law", ()
 
   it("composes the virtual-vgpu slice report from the mig catalog", async () => {
     const run = await runlane(
-      "virtual-vgpu",
+      "virtualvgpu",
       JSON.stringify({ gpu: "rtxpro6000", mig: "1g.24gb", ramgb: 64, vcpus: 16 }),
     );
     for (const profileid of ["1g.24gb", "2g.48gb", "4g.96gb"]) {
@@ -106,10 +106,10 @@ describe("the virtual hardware composition lanes answer the composition law", ()
     assert.ok(run.stdout.includes("MIG: enabled, profile 1g.24gb"), "the sliced device rides the smi surface");
     assert.ok(run.stdout.includes("FAKE_MODEL=NVIDIA RTX PRO 6000 Blackwell"), "the nvml shim answers the model");
     assert.ok(run.stdout.includes("FAKE_VRAM=24576"), "the nvml shim answers the slice vram");
-    const defaulted = await runlane("virtual-vgpu", "{}");
+    const defaulted = await runlane("virtualvgpu", "{}");
     assert.ok(defaulted.stdout.includes("NVIDIA RTX PRO 6000 Blackwell"), "the default device is the mig-capable one");
     await assert.rejects(
-      () => runlane("virtual-vgpu", JSON.stringify({ gpu: "rtx5090" })),
+      () => runlane("virtualvgpu", JSON.stringify({ gpu: "rtx5090" })),
       codeis("CATALOG_ENTRY_ABSENT"),
     );
   });
@@ -117,15 +117,15 @@ describe("the virtual hardware composition lanes answer the composition law", ()
   it("composes the virtual-screen display tree with the deterministic otp gate", async () => {
     const manifest = JSON.stringify({ model: "AMD EPYC 9965", gpu: "rtx5090", ramgb: 32 });
     const otpof = (stdout: string): string => /otp: ([0-9a-f]+)/.exec(stdout)?.[1] ?? "";
-    const first = await runlane("virtual-screen", manifest);
+    const first = await runlane("virtualscreen", manifest);
     assert.ok(first.stdout.includes("1280x800"), "the display tree answers the geometry");
     assert.ok(first.stdout.includes("vnc://saddle-display:5900"), "the display tree answers the vnc law");
     const otp = otpof(first.stdout);
     assert.ok(otp.length >= 8, "the otp is at least 8 characters");
-    const second = await runlane("virtual-screen", manifest);
+    const second = await runlane("virtualscreen", manifest);
     assert.equal(otpof(second.stdout), otp, "the same manifest answers the same otp");
     const other = await runlane(
-      "virtual-screen",
+      "virtualscreen",
       JSON.stringify({ model: "AMD EPYC 9965", gpu: "rtx5090", ramgb: 64 }),
     );
     assert.notEqual(otpof(other.stdout), otp, "a different manifest answers a different otp");
@@ -133,7 +133,7 @@ describe("the virtual hardware composition lanes answer the composition law", ()
 
   it("composes the virtual-drivers table under the driver-quota gate", async () => {
     const countdevices = (stdout: string): number => (stdout.match(/FAKE_MODEL=/g) ?? []).length;
-    const defaulted = await runlane("virtual-drivers", "{}");
+    const defaulted = await runlane("virtualdrivers", "{}");
     assert.ok(defaulted.stdout.includes("virtualcpu"), "the cpu driver row rides the table");
     assert.ok(defaulted.stdout.includes("virtualgpu"), "the gpu driver row rides the table");
     assert.ok(defaulted.stdout.includes("virtualmemory"), "the memory driver row rides the table");
@@ -141,15 +141,15 @@ describe("the virtual hardware composition lanes answer the composition law", ()
     assert.ok(defaulted.stdout.includes("575.57.08"), "the nvml driver rides the gpu row");
     assert.ok(defaulted.stdout.includes("2.0.127"), "the engine version rides the memory row");
     assert.equal(countdevices(defaulted.stdout), 4, "the quota defaults to 4 devices");
-    const two = await runlane("virtual-drivers", "{}", { quota: 2 });
+    const two = await runlane("virtualdrivers", "{}", { quota: 2 });
     assert.equal(countdevices(two.stdout), 2, "the quota law bounds the devices");
-    const bounded = await runlane("virtual-drivers", "{}", { quota: 99 });
+    const bounded = await runlane("virtualdrivers", "{}", { quota: 99 });
     assert.equal(countdevices(bounded.stdout), 16, "the quota clamps at 16");
   });
 
   it("composes the virtual-kvm plan with the qemu argv and the caps", async () => {
     const run = await runlane(
-      "virtual-kvm",
+      "virtualkvm",
       JSON.stringify({ model: "AMD EPYC 9965", gpu: "rtx5090", ramgb: 32, vcpus: 8 }),
     );
     assert.ok(run.stdout.includes("/usr/bin/qemu-system-x86_64"), "the argv starts with the qemu binary name");
@@ -159,13 +159,13 @@ describe("the virtual hardware composition lanes answer the composition law", ()
     assert.ok(run.stdout.includes("clean-rootfs"), "the clean-rootfs law rides the report");
     assert.ok(run.stdout.includes("never this one"), "the report answers a plan, never a booted machine");
     await assert.rejects(
-      () => runlane("virtual-kvm", JSON.stringify({ model: "Intel Core Ultra 9 285K", ramgb: 512 })),
+      () => runlane("virtualkvm", JSON.stringify({ model: "Intel Core Ultra 9 285K", ramgb: 512 })),
       codeis("KVM_COMPOSITION_FAILED"),
     );
   });
 
   it("composes the microvm-gpuless software-render machine", async () => {
-    const run = await runlane("microvm-gpuless", JSON.stringify({ model: "AMD EPYC 9965", ramgb: 32, vcpus: 8 }));
+    const run = await runlane("microvmgpuless", JSON.stringify({ model: "AMD EPYC 9965", ramgb: 32, vcpus: 8 }));
     assert.ok(run.stdout.includes("OpenGL core profile version string: 4.6"), "llvmpipe answers opengl 4.6");
     assert.ok(run.stdout.includes("API Version: 1.4.313"), "lavapipe answers vulkan 1.4");
     assert.ok(run.stdout.includes("OpenCL 3.1"), "rusticl answers opencl 3.1");
@@ -177,10 +177,10 @@ describe("the virtual hardware composition lanes answer the composition law", ()
   });
 
   it("composes the gpu-virgl slice under the context-quota law", async () => {
-    const defaulted = await runlane("gpu-virgl", "{}");
+    const defaulted = await runlane("gpuvirgl", "{}");
     assert.ok(defaulted.stdout.includes("context quota: 8"), "the context quota defaults to 8");
     assert.ok(defaulted.stdout.includes("ctx 0-7"), "the default contexts render their range");
-    const three = await runlane("gpu-virgl", "{}", { contexts: 3 });
+    const three = await runlane("gpuvirgl", "{}", { contexts: 3 });
     assert.ok(three.stdout.includes("context quota: 3"), "the quota honors inputs.contexts");
     assert.ok(three.stdout.includes("ctx 0-2"), "the overriden contexts render their range");
     assert.equal(three.artifact?.mime, "application/vnd.devthink.gpu+json");
@@ -189,13 +189,13 @@ describe("the virtual hardware composition lanes answer the composition law", ()
 
   it("composes identical bytes for identical manifests on every lane", async () => {
     const fixtures: Record<string, { code: string; inputs?: unknown }> = {
-      "virtual-full": { code: FULLMANIFEST },
-      "virtual-vgpu": { code: JSON.stringify({ gpu: "b200", mig: "2g.48gb", ramgb: 96 }) },
-      "virtual-screen": { code: JSON.stringify({ model: "AMD EPYC 9965", gpu: "h100", ramgb: 64 }) },
-      "virtual-drivers": { code: "{}", inputs: { quota: 3 } },
-      "virtual-kvm": { code: JSON.stringify({ model: "AMD EPYC 9955", ramgb: 128, vcpus: 16 }) },
-      "microvm-gpuless": { code: JSON.stringify({ model: "Apple M3 Ultra", ramgb: 16, vcpus: 4 }) },
-      "gpu-virgl": { code: JSON.stringify({ gpu: "rx9070xt" }), inputs: { contexts: 5 } },
+      "virtualfull": { code: FULLMANIFEST },
+      "virtualvgpu": { code: JSON.stringify({ gpu: "b200", mig: "2g.48gb", ramgb: 96 }) },
+      "virtualscreen": { code: JSON.stringify({ model: "AMD EPYC 9965", gpu: "h100", ramgb: 64 }) },
+      "virtualdrivers": { code: "{}", inputs: { quota: 3 } },
+      "virtualkvm": { code: JSON.stringify({ model: "AMD EPYC 9955", ramgb: 128, vcpus: 16 }) },
+      "microvmgpuless": { code: JSON.stringify({ model: "Apple M3 Ultra", ramgb: 16, vcpus: 4 }) },
+      "gpuvirgl": { code: JSON.stringify({ gpu: "rx9070xt" }), inputs: { contexts: 5 } },
     };
     for (const id of virtuallaneids) {
       const fixture = fixtures[id];
@@ -220,12 +220,12 @@ describe("the virtual hardware composition lanes answer the composition law", ()
     for (const id of virtuallaneids) {
       await assert.rejects(() => runlane(id, "not json at all"), codeis("INVALID_MACHINE_MANIFEST"));
     }
-    await assert.rejects(() => runlane("virtual-full", '{"ramgb": 0}'), codeis("INVALID_MACHINE_MANIFEST"));
-    await assert.rejects(() => runlane("virtual-full", '{"ramgb": 20000}'), codeis("INVALID_MACHINE_MANIFEST"));
-    await assert.rejects(() => runlane("virtual-full", '{"ramgb": "lots"}'), codeis("INVALID_MACHINE_MANIFEST"));
-    await assert.rejects(() => runlane("virtual-full", '{"model": "Intel Pentium 4"}'), codeis("CATALOG_ENTRY_ABSENT"));
-    await assert.rejects(() => runlane("virtual-kvm", '{"gpu": "voodoo 3"}'), codeis("CATALOG_ENTRY_ABSENT"));
-    await assert.rejects(() => runlane("virtual-vgpu", '{"mig": "9g.999gb"}'), codeis("CATALOG_ENTRY_ABSENT"));
+    await assert.rejects(() => runlane("virtualfull", '{"ramgb": 0}'), codeis("INVALID_MACHINE_MANIFEST"));
+    await assert.rejects(() => runlane("virtualfull", '{"ramgb": 20000}'), codeis("INVALID_MACHINE_MANIFEST"));
+    await assert.rejects(() => runlane("virtualfull", '{"ramgb": "lots"}'), codeis("INVALID_MACHINE_MANIFEST"));
+    await assert.rejects(() => runlane("virtualfull", '{"model": "Intel Pentium 4"}'), codeis("CATALOG_ENTRY_ABSENT"));
+    await assert.rejects(() => runlane("virtualkvm", '{"gpu": "voodoo 3"}'), codeis("CATALOG_ENTRY_ABSENT"));
+    await assert.rejects(() => runlane("virtualvgpu", '{"mig": "9g.999gb"}'), codeis("CATALOG_ENTRY_ABSENT"));
   });
 
   it("answers the artifact mime its registry record declares", async () => {

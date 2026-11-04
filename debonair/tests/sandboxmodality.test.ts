@@ -29,7 +29,7 @@ import { lanesof } from "@wenathlan/saddle/workloadlaw";
 
 describe("the modality vocabulary (the saddle registry mirror)", () => {
   it("carries local beside the three saddle modality ids the heavy jobs may ride", () => {
-    assert.deepEqual(WORKER_MODALITIES, ["local", "runner-node", "container-docker", "microvm-firecracker"]);
+    assert.deepEqual(WORKER_MODALITIES, ["local", "runnernode", "containerdocker", "microvmfirecracker"]);
   });
 
   it("names the environment seat the deploy pins the opt-in through", () => {
@@ -53,12 +53,12 @@ describe("the modality option seat (the deploy decides)", () => {
     const blank = workermodality("   ");
     assert.ok(blank.ok && blank.modality === "local" && blank.sandboxed === false);
     // a lane whose declared default is a saddle modality keeps it
-    const pinned = workermodality(undefined, "runner-node");
-    assert.ok(pinned.ok && pinned.modality === "runner-node" && pinned.sandboxed === true);
+    const pinned = workermodality(undefined, "runnernode");
+    assert.ok(pinned.ok && pinned.modality === "runnernode" && pinned.sandboxed === true);
   });
 
   it("resolves the deploy's saddle choice (the opt-in)", () => {
-    for (const modality of ["runner-node", "container-docker", "microvm-firecracker"]) {
+    for (const modality of ["runnernode", "containerdocker", "microvmfirecracker"]) {
       const seated = workermodality(`  ${modality}  `);
       assert.ok(seated.ok, `${modality} seats`);
       assert.equal(seated.modality, modality);
@@ -78,9 +78,9 @@ describe("the modality option seat (the deploy decides)", () => {
 
 describe("the env seat (the deploy's opt-in through the environment)", () => {
   it("reads the pinned modality and answers the default when the seat is silent", () => {
-    const seated = workermodalityfromenv((name) => (name === WORKER_MODALITY_ENV ? "container-docker" : undefined));
+    const seated = workermodalityfromenv((name) => (name === WORKER_MODALITY_ENV ? "containerdocker" : undefined));
     assert.ok(seated.ok);
-    assert.equal(seated.modality, "container-docker");
+    assert.equal(seated.modality, "containerdocker");
     assert.equal(seated.sandboxed, true);
     const silent = workermodalityfromenv(() => undefined);
     assert.ok(silent.ok && silent.modality === "local" && silent.sandboxed === false);
@@ -134,12 +134,12 @@ describe("the sandbox lane seat (wave WL1 — the deploy decides)", () => {
   });
 
   it("pins the named modality for the platform join to validate", () => {
-    const pinned = lanesandbox("runner-node");
-    assert.deepEqual(pinned, { ok: true, seat: "runner-node", sandboxed: true, pinned: true });
+    const pinned = lanesandbox("runnernode");
+    assert.deepEqual(pinned, { ok: true, seat: "runnernode", sandboxed: true, pinned: true });
     // the module never judges engine vocabulary: the platform's join
     // validates the pinned id at dispatch, the mirror only names it
-    const unusual = lanesandbox("microvm-firecracker");
-    assert.deepEqual(unusual, { ok: true, seat: "microvm-firecracker", sandboxed: true, pinned: true });
+    const unusual = lanesandbox("microvmfirecracker");
+    assert.deepEqual(unusual, { ok: true, seat: "microvmfirecracker", sandboxed: true, pinned: true });
   });
 
   it("reads the seat off the environment lookup the deploy pins", () => {

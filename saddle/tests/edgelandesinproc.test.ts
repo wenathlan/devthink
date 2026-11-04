@@ -28,42 +28,42 @@ const DEADLINEMS = 5000;
 /** the twenty-four lane ids in spec order (the pinned group b contract):
  * the nineteen of the first wave, then the five seats of the wiring wave. */
 const LANES = [
-  "ram-tmpfs",
-  "ram-mmap",
-  "ram-overlayfs",
-  "ram-loopram",
-  "ram-gitram",
-  "ram-zram",
-  "ram-zswap",
-  "ram-swapfile",
-  "delivery-cdn",
-  "delivery-wss",
-  "delivery-webtransport",
-  "delivery-grpc",
-  "delivery-capnproto",
-  "storage-libsql",
-  "storage-mysql",
-  "storage-postgres",
-  "storage-s3",
-  "browser-webcontainer",
-  "local-optin",
-  "runner-serverless",
-  "fs-gitobjects",
-  "storage-sqlite",
-  "network-dns",
-  "network-doh",
+  "ramtmpfs",
+  "rammmap",
+  "ramoverlayfs",
+  "ramloopram",
+  "ramgitram",
+  "ramzram",
+  "ramzswap",
+  "ramswapfile",
+  "deliverycdn",
+  "deliverywss",
+  "deliverywebtransport",
+  "deliverygrpc",
+  "deliverycapnproto",
+  "storagelibsql",
+  "storagemysql",
+  "storagepostgres",
+  "storages3",
+  "browserwebcontainer",
+  "localoptin",
+  "runnerserverless",
+  "fsgitobjects",
+  "storagesqlite",
+  "networkdns",
+  "networkdoh",
 ] as const;
 
 /** the ram lanes: every one answers the oom guard law. */
 const RAMLANES = [
-  "ram-tmpfs",
-  "ram-mmap",
-  "ram-overlayfs",
-  "ram-loopram",
-  "ram-gitram",
-  "ram-zram",
-  "ram-zswap",
-  "ram-swapfile",
+  "ramtmpfs",
+  "rammmap",
+  "ramoverlayfs",
+  "ramloopram",
+  "ramgitram",
+  "ramzram",
+  "ramzswap",
+  "ramswapfile",
 ] as const;
 
 /** the json manifest lanes: every one refuses non-json payloads (the
@@ -71,44 +71,44 @@ const RAMLANES = [
  * wave). */
 const JSONLANES = [
   ...RAMLANES,
-  "delivery-cdn",
-  "storage-libsql",
-  "storage-s3",
-  "runner-serverless",
-  "fs-gitobjects",
-  "storage-sqlite",
-  "network-dns",
-  "network-doh",
+  "deliverycdn",
+  "storagelibsql",
+  "storages3",
+  "runnerserverless",
+  "fsgitobjects",
+  "storagesqlite",
+  "networkdns",
+  "networkdoh",
 ] as const;
 
 /** one deterministic sample payload per lane (the determinism and mime laws run every lane). */
 const SAMPLES: Record<string, { code: string; inputs?: unknown }> = {
-  "ram-tmpfs": { code: '{"mount":"tmpfs","files":{"boot.bin":"00ff10","note.txt":"48656c6c6f"}}' },
-  "ram-mmap": { code: '{"window":[2,3],"bytes":"0011223344"}' },
-  "ram-overlayfs": { code: '{"lower":{"a":"0011","b":"0022"},"upper":{"a":"ffee","c":"4455"}}' },
-  "ram-loopram": { code: '{"sectorsize":16,"sectors":4,"writes":[[1,"aabb"],[3,"cc"]]}' },
-  "ram-gitram": { code: '{"objects":[{"oid":"obj1","data":"0011"},{"oid":"obj2","data":"2233"}],"read":"obj2"}' },
-  "ram-zram": { code: '{"pagesize":8,"pages":["00112233","ff"]}' },
-  "ram-zswap": { code: '{"poolsize":2,"pages":["0011","2233","4455"]}' },
-  "ram-swapfile": { code: '{"extents":[[0,2,"aabb"],[4,2,"ccdd"]],"read":[0,6]}' },
-  "delivery-cdn": { code: '{"origin":"https://mirror.example","assets":["a.js","b.css"]}' },
-  "delivery-wss": { code: "hello wss lane" },
-  "delivery-webtransport": { code: "quic datagram" },
-  "delivery-grpc": { code: "grpc payload" },
-  "delivery-capnproto": { code: "capnp" },
-  "storage-libsql": { code: '{"sql":"select 1"}' },
-  "storage-mysql": { code: "saddle" },
-  "storage-postgres": { code: "saddle" },
-  "storage-s3": { code: '{"method":"GET","bucket":"vault","key":"edge/report.json","payload":""}' },
-  "browser-webcontainer": { code: "export const answer = 42;" },
-  "local-optin": { code: "", inputs: { consent: true } },
-  "runner-serverless": { code: '{"isolate":"ninety","module":"export const answer = 6 * 7;"}' },
-  "fs-gitobjects": {
+  "ramtmpfs": { code: '{"mount":"tmpfs","files":{"boot.bin":"00ff10","note.txt":"48656c6c6f"}}' },
+  "rammmap": { code: '{"window":[2,3],"bytes":"0011223344"}' },
+  "ramoverlayfs": { code: '{"lower":{"a":"0011","b":"0022"},"upper":{"a":"ffee","c":"4455"}}' },
+  "ramloopram": { code: '{"sectorsize":16,"sectors":4,"writes":[[1,"aabb"],[3,"cc"]]}' },
+  "ramgitram": { code: '{"objects":[{"oid":"obj1","data":"0011"},{"oid":"obj2","data":"2233"}],"read":"obj2"}' },
+  "ramzram": { code: '{"pagesize":8,"pages":["00112233","ff"]}' },
+  "ramzswap": { code: '{"poolsize":2,"pages":["0011","2233","4455"]}' },
+  "ramswapfile": { code: '{"extents":[[0,2,"aabb"],[4,2,"ccdd"]],"read":[0,6]}' },
+  "deliverycdn": { code: '{"origin":"https://mirror.example","assets":["a.js","b.css"]}' },
+  "deliverywss": { code: "hello wss lane" },
+  "deliverywebtransport": { code: "quic datagram" },
+  "deliverygrpc": { code: "grpc payload" },
+  "deliverycapnproto": { code: "capnp" },
+  "storagelibsql": { code: '{"sql":"select 1"}' },
+  "storagemysql": { code: "saddle" },
+  "storagepostgres": { code: "saddle" },
+  "storages3": { code: '{"method":"GET","bucket":"vault","key":"edge/report.json","payload":""}' },
+  "browserwebcontainer": { code: "export const answer = 42;" },
+  "localoptin": { code: "", inputs: { consent: true } },
+  "runnerserverless": { code: '{"isolate":"ninety","module":"export const answer = 6 * 7;"}' },
+  "fsgitobjects": {
     code: '{"repo":"vault","objects":[{"type":"blob","data":"48656c6c6f"},{"type":"tree","data":"aabb"}]}',
   },
-  "storage-sqlite": { code: '{"sql":"select 1 as answer","pagesize":4096}' },
-  "network-dns": { code: '{"name":"example.dev","qtype":"A"}' },
-  "network-doh": { code: '{"resolver":"https://dns.devthink.test/dns-query","name":"example.dev","qtype":"AAAA"}' },
+  "storagesqlite": { code: '{"sql":"select 1 as answer","pagesize":4096}' },
+  "networkdns": { code: '{"name":"example.dev","qtype":"A"}' },
+  "networkdoh": { code: '{"resolver":"https://dns.devthink.test/dns-query","name":"example.dev","qtype":"AAAA"}' },
 };
 
 /** runs one lane under the test deadline. */
@@ -233,7 +233,7 @@ describe("the in-process lanes answer the group b contract", () => {
   it("enforces the ram quota law under the default and the declared budget", async () => {
     // the default 64 mb ceiling: a manifest declaring a 102.4 mb loop disk refuses before any allocation
     const oversize = JSON.stringify({ sectorsize: 512, sectors: 200000, writes: [] });
-    await assert.rejects(() => runlane("ram-loopram", oversize), refuses("RAM_QUOTA_EXCEEDED"));
+    await assert.rejects(() => runlane("ramloopram", oversize), refuses("RAM_QUOTA_EXCEEDED"));
     // every ram recipe answers the guard under a zero byte budget
     for (const id of RAMLANES) {
       await assert.rejects(
@@ -245,7 +245,7 @@ describe("the in-process lanes answer the group b contract", () => {
   });
 
   it("frames the rfc6455 text frame with the deterministic mask and round-trips", async () => {
-    const output = await runlane("delivery-wss", "hello");
+    const output = await runlane("deliverywss", "hello");
     const manifest = artifactof(output);
     const frame = decodehex(manifest.framehex as string);
     assert.equal(frame[0], 0x81, "fin and the text opcode");
@@ -257,7 +257,7 @@ describe("the in-process lanes answer the group b contract", () => {
   });
 
   it("frames the grpc length-prefixed message", async () => {
-    const output = await runlane("delivery-grpc", "grpc payload");
+    const output = await runlane("deliverygrpc", "grpc payload");
     const manifest = artifactof(output);
     const frame = decodehex(manifest.framehex as string);
     assert.equal(frame[0], 0x00, "the uncompressed flag");
@@ -267,7 +267,7 @@ describe("the in-process lanes answer the group b contract", () => {
   });
 
   it("frames the capnproto segment word aligned", async () => {
-    const output = await runlane("delivery-capnproto", "capnp");
+    const output = await runlane("deliverycapnproto", "capnp");
     const manifest = artifactof(output);
     const message = decodehex(manifest.messagehex as string);
     assert.equal(message.byteLength % 8, 0, "the message length is word aligned");
@@ -282,7 +282,7 @@ describe("the in-process lanes answer the group b contract", () => {
   });
 
   it("frames the webtransport datagram with the quic varint", async () => {
-    const output = await runlane("delivery-webtransport", "quic datagram");
+    const output = await runlane("deliverywebtransport", "quic datagram");
     const manifest = artifactof(output);
     const frame = decodehex(manifest.framehex as string);
     assert.equal(frame[0], 0x01, "the deterministic stream id varint");
@@ -292,7 +292,7 @@ describe("the in-process lanes answer the group b contract", () => {
   });
 
   it("speaks the mysql and postgres handshake byte laws", async () => {
-    const mysql = artifactof(await runlane("storage-mysql", "saddle"));
+    const mysql = artifactof(await runlane("storagemysql", "saddle"));
     const packet = decodehex(mysql.packethex as string);
     const payloadlength = packet[0] | (packet[1] << 8) | (packet[2] << 16);
     assert.equal(payloadlength, packet.byteLength - 4, "the 3-byte little-endian payload length");
@@ -301,10 +301,10 @@ describe("the in-process lanes answer the group b contract", () => {
     assert.ok(astext(packet).includes("saddle\0"), "the null-terminated username");
     assert.ok(astext(packet).includes("vault\0"), "the null-terminated database");
     // the auth-token law: a token replaces the zero auth response
-    const tokened = artifactof(await runlane("storage-mysql", "saddle", { token: "saddle-secret-token" }));
+    const tokened = artifactof(await runlane("storagemysql", "saddle", { token: "saddle-secret-token" }));
     assert.notEqual(tokened.packethex, mysql.packethex, "the token mixes the handshake bytes");
 
-    const postgres = artifactof(await runlane("storage-postgres", "saddle"));
+    const postgres = artifactof(await runlane("storagepostgres", "saddle"));
     const message = decodehex(postgres.messagehex as string);
     const length = ((message[0] << 24) | (message[1] << 16) | (message[2] << 8) | message[3]) >>> 0;
     assert.equal(length, message.byteLength, "the 4-byte big-endian length answers the message length");
@@ -317,19 +317,19 @@ describe("the in-process lanes answer the group b contract", () => {
   });
 
   it("signs the s3 canonical request with the deterministic signer", async () => {
-    const request = SAMPLES["storage-s3"].code;
-    const manifest = artifactof(await runlane("storage-s3", request));
+    const request = SAMPLES["storages3"].code;
+    const manifest = artifactof(await runlane("storages3", request));
     const canonical = manifest.canonical as string;
     assert.ok(canonical.startsWith("GET\n/vault/edge/report.json\n"), "the method line and the bucket path");
     assert.ok(canonical.includes("host:vault.s3.amazonaws.com"), "the host header");
     assert.match(manifest.signature as string, /^[0-9a-f]{8}$/, "the fnv-1a signature");
     // the auth-token law: the secret key mixes the signer
-    const keyed = artifactof(await runlane("storage-s3", request, { secretkey: "hunter2" }));
+    const keyed = artifactof(await runlane("storages3", request, { secretkey: "hunter2" }));
     assert.notEqual(keyed.signature, manifest.signature, "the secret key mixes the signature");
   });
 
   it("compresses the zram pages with the real stored-block zlib stream", async () => {
-    const output = await runlane("ram-zram", SAMPLES["ram-zram"].code);
+    const output = await runlane("ramzram", SAMPLES["ramzram"].code);
     const manifest = artifactof(output);
     const streams = manifest.streams as string[];
     const pages = ["00112233", "ff"];
@@ -342,20 +342,20 @@ describe("the in-process lanes answer the group b contract", () => {
 
   it("answers the ram recipe laws of the memory ladder", async () => {
     // tmpfs: the mounted report and the serialized tree
-    const tmpfsrun = await runlane("ram-tmpfs", SAMPLES["ram-tmpfs"].code);
+    const tmpfsrun = await runlane("ramtmpfs", SAMPLES["ramtmpfs"].code);
     assert.deepEqual(artifactof(tmpfsrun).files, { "boot.bin": "00ff10", "note.txt": "48656c6c6f" });
     const tmpfsreport = JSON.parse(tmpfsrun.stdout) as { filecount: number; totalbytes: number };
     assert.equal(tmpfsreport.filecount, 2);
     assert.equal(tmpfsreport.totalbytes, 8);
     // mmap: the zero-copy window view
-    const mmap = artifactof(await runlane("ram-mmap", SAMPLES["ram-mmap"].code));
+    const mmap = artifactof(await runlane("rammmap", SAMPLES["rammmap"].code));
     assert.deepEqual(mmap.window, [2, 3]);
     assert.equal(mmap.bytes, "223344", "the window view answers the mapped bytes at the offset");
     // overlayfs: the upper layer wins, the union answers
-    const overlay = artifactof(await runlane("ram-overlayfs", SAMPLES["ram-overlayfs"].code));
+    const overlay = artifactof(await runlane("ramoverlayfs", SAMPLES["ramoverlayfs"].code));
     assert.deepEqual(overlay.files, { a: "ffee", b: "0022", c: "4455" });
     // loopram: the sector map and the disk bytes
-    const loop = artifactof(await runlane("ram-loopram", SAMPLES["ram-loopram"].code));
+    const loop = artifactof(await runlane("ramloopram", SAMPLES["ramloopram"].code));
     const disk = decodehex(loop.disk as string);
     assert.equal(disk.byteLength, 64, "the four sector disk");
     assert.deepEqual(loop.written, [1, 3], "the sector map");
@@ -364,11 +364,11 @@ describe("the in-process lanes answer the group b contract", () => {
     assert.equal(disk[48], 0xcc, "the sector 3 write");
     assert.equal(disk[0], 0x00, "the unwritten sectors read zero");
     // gitram: the hash table answers the read object
-    const git = artifactof(await runlane("ram-gitram", SAMPLES["ram-gitram"].code));
+    const git = artifactof(await runlane("ramgitram", SAMPLES["ramgitram"].code));
     assert.equal(git.oid, "obj2");
     assert.equal(git.bytes, "2233");
     // swapfile: the extent table read answers the holes as zeros
-    const swap = artifactof(await runlane("ram-swapfile", SAMPLES["ram-swapfile"].code));
+    const swap = artifactof(await runlane("ramswapfile", SAMPLES["ramswapfile"].code));
     assert.equal(swap.bytes, "aabb0000ccdd", "the read answers the extent bytes and the zero hole");
     assert.deepEqual(
       swap.extents,
@@ -381,13 +381,13 @@ describe("the in-process lanes answer the group b contract", () => {
   });
 
   it("runs the webcontainer module seat through node:vm", async () => {
-    const output = await runlane("browser-webcontainer", "export const answer = 42;");
+    const output = await runlane("browserwebcontainer", "export const answer = 42;");
     const report = JSON.parse(output.stdout) as { exports: Record<string, unknown> };
     assert.equal(report.exports.answer, 42, "the module exports answer the export report");
     assert.deepEqual(artifactof(output), { exports: { answer: 42 } });
     // the console capture and the inputs surface ride the same seat
     const seated = await runlane(
-      "browser-webcontainer",
+      "browserwebcontainer",
       "console.log('seat:' + inputs.probe);\nexport const seen = inputs.probe;",
       { probe: "x" },
     );
@@ -395,14 +395,14 @@ describe("the in-process lanes answer the group b contract", () => {
     const seatedreport = JSON.parse(seated.stdout.split("\n").at(-1) ?? "{}") as { exports: Record<string, unknown> };
     assert.equal(seatedreport.exports.seen, "x", "the frozen inputs surface reaches the module");
     // a module that throws rejects honestly (the vm error surfaces as the lane failure)
-    await assert.rejects(() => runlane("browser-webcontainer", "throw new Error('boom')"), refuses("VM_MODULE_FAILED"));
+    await assert.rejects(() => runlane("browserwebcontainer", "throw new Error('boom')"), refuses("VM_MODULE_FAILED"));
   });
 
   it("gates the local opt-in lane behind the declared consent", async () => {
-    await assert.rejects(() => runlane("local-optin", ""), refuses("LOCAL_CONSENT_REQUIRED"));
-    await assert.rejects(() => runlane("local-optin", "", { consent: "true" }), refuses("LOCAL_CONSENT_REQUIRED"));
-    await assert.rejects(() => runlane("local-optin", "", null), refuses("LOCAL_CONSENT_REQUIRED"));
-    const granted = await runlane("local-optin", "", { consent: true });
+    await assert.rejects(() => runlane("localoptin", ""), refuses("LOCAL_CONSENT_REQUIRED"));
+    await assert.rejects(() => runlane("localoptin", "", { consent: "true" }), refuses("LOCAL_CONSENT_REQUIRED"));
+    await assert.rejects(() => runlane("localoptin", "", null), refuses("LOCAL_CONSENT_REQUIRED"));
+    const granted = await runlane("localoptin", "", { consent: true });
     assert.deepEqual(JSON.parse(granted.stdout), {
       consent: true,
       scope: "declared",
@@ -413,7 +413,7 @@ describe("the in-process lanes answer the group b contract", () => {
 
   it("pins the cdn origin", async () => {
     await assert.rejects(
-      () => runlane("delivery-cdn", JSON.stringify({ assets: ["a.js"] })),
+      () => runlane("deliverycdn", JSON.stringify({ assets: ["a.js"] })),
       refuses("INVALID_LANE_PAYLOAD"),
       "a mirror manifest without an origin refuses",
     );
@@ -421,7 +421,7 @@ describe("the in-process lanes answer the group b contract", () => {
 
   it("answers the wave four seat laws (the isolate, the fan-out, the page and the resolvers)", async () => {
     // serverless: the cold isolate answers its exports beside the fingerprint
-    const serverless = await runlane("runner-serverless", SAMPLES["runner-serverless"].code);
+    const serverless = await runlane("runnerserverless", SAMPLES["runnerserverless"].code);
     const serverlessreport = JSON.parse(serverless.stdout.split("\n").at(-1) ?? "{}") as {
       isolate: string;
       fingerprint: string;
@@ -434,7 +434,7 @@ describe("the in-process lanes answer the group b contract", () => {
     assert.deepEqual(artifactof(serverless).exports, { answer: 42 }, "the artifact carries the exports");
     // the frozen inputs surface reaches the module through the same seat
     const seated = await runlane(
-      "runner-serverless",
+      "runnerserverless",
       '{"isolate":"seated","module":"export const seen = inputs.probe;"}',
       { probe: "x" },
     );
@@ -442,11 +442,11 @@ describe("the in-process lanes answer the group b contract", () => {
     assert.equal(seatedreport.exports.seen, "x", "the frozen inputs surface reaches the module");
     // a module that throws answers the honest coded refusal
     await assert.rejects(
-      () => runlane("runner-serverless", '{"isolate":"boom","module":"throw new Error(\'boom\')"}'),
+      () => runlane("runnerserverless", '{"isolate":"boom","module":"throw new Error(\'boom\')"}'),
       refuses("VM_MODULE_FAILED"),
     );
     // git objects: the loose-object header law and the fan-out shards
-    const git = artifactof(await runlane("fs-gitobjects", SAMPLES["fs-gitobjects"].code));
+    const git = artifactof(await runlane("fsgitobjects", SAMPLES["fsgitobjects"].code));
     const gitpaths = Object.keys(git.files as Record<string, string>);
     assert.equal(gitpaths.length, 2, "one path per object");
     assert.equal(git.repo, "vault", "the repo manifest names the tree");
@@ -460,12 +460,12 @@ describe("the in-process lanes answer the group b contract", () => {
     );
     // an object type outside the git law refuses honestly
     await assert.rejects(
-      () => runlane("fs-gitobjects", '{"repo":"vault","objects":[{"type":"delta","data":"aabb"}]}'),
+      () => runlane("fsgitobjects", '{"repo":"vault","objects":[{"type":"delta","data":"aabb"}]}'),
       refuses("INVALID_LANE_PAYLOAD"),
       "a non-git object type refuses",
     );
     // sqlite: the page-one header law
-    const sqlite = artifactof(await runlane("storage-sqlite", SAMPLES["storage-sqlite"].code));
+    const sqlite = artifactof(await runlane("storagesqlite", SAMPLES["storagesqlite"].code));
     const header = decodehex(sqlite.headerhex as string);
     assert.equal(header.byteLength, 100, "the hundred-byte header");
     assert.equal(astext(header.subarray(0, 16)), "SQLite format 3\0", "the magic string");
@@ -474,12 +474,12 @@ describe("the in-process lanes answer the group b contract", () => {
     assert.equal(header[18], 1, "the legacy write version");
     // a page size outside the power-of-two law refuses honestly
     await assert.rejects(
-      () => runlane("storage-sqlite", '{"sql":"select 1","pagesize":3000}'),
+      () => runlane("storagesqlite", '{"sql":"select 1","pagesize":3000}'),
       refuses("INVALID_LANE_PAYLOAD"),
       "a non power-of-two page size refuses",
     );
     // dns: the rfc1035 question bytes
-    const dns = artifactof(await runlane("network-dns", SAMPLES["network-dns"].code));
+    const dns = artifactof(await runlane("networkdns", SAMPLES["networkdns"].code));
     const query = decodehex(dns.queryhex as string);
     assert.equal(query.byteLength, 12 + 1 + 7 + 1 + 3 + 1 + 4, "the header, the labels, the root and the tail");
     assert.equal((query[0] << 8) | query[1], dns.id as number, "the transaction id rides the header");
@@ -495,12 +495,12 @@ describe("the in-process lanes answer the group b contract", () => {
     assert.equal((query[27] << 8) | query[28], 1, "the class IN");
     // an unknown qtype refuses honestly
     await assert.rejects(
-      () => runlane("network-dns", '{"name":"example.dev","qtype":"SOA"}'),
+      () => runlane("networkdns", '{"name":"example.dev","qtype":"SOA"}'),
       refuses("INVALID_LANE_PAYLOAD"),
       "an unknown qtype refuses",
     );
     // doh: the rfc8484 base64url ride over the same question bytes
-    const doh = artifactof(await runlane("network-doh", SAMPLES["network-doh"].code));
+    const doh = artifactof(await runlane("networkdoh", SAMPLES["networkdoh"].code));
     assert.ok((doh.url as string).startsWith("https://dns.devthink.test/dns-query?dns="), "the request line");
     assert.equal(doh.accept, "application/dns-message", "the accept header");
     const wire = new Uint8Array(Buffer.from(doh.dns as string, "base64url"));
@@ -509,7 +509,7 @@ describe("the in-process lanes answer the group b contract", () => {
     // a plaintext resolver refuses honestly
     await assert.rejects(
       () =>
-        runlane("network-doh", '{"resolver":"http://dns.devthink.test/dns-query","name":"example.dev","qtype":"A"}'),
+        runlane("networkdoh", '{"resolver":"http://dns.devthink.test/dns-query","name":"example.dev","qtype":"A"}'),
       refuses("INVALID_LANE_PAYLOAD"),
       "a plaintext resolver refuses",
     );
@@ -524,7 +524,7 @@ describe("the in-process lanes answer the group b contract", () => {
       );
     }
     // a json document that is not the recipe's object shape refuses just as honestly
-    await assert.rejects(() => runlane("ram-tmpfs", "42"), refuses("INVALID_LANE_PAYLOAD"));
+    await assert.rejects(() => runlane("ramtmpfs", "42"), refuses("INVALID_LANE_PAYLOAD"));
   });
 
   it("answers the registry mime for every artifact", async () => {

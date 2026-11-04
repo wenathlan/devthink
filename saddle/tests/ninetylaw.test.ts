@@ -26,16 +26,16 @@ import { getmodality, MODALITIES, MODALITYPLANCOUNT, planreport } from "../modal
 /** the ten promotions of the forty live law (wave w2 b1): the ids the
  * registry flipped live and the edge plane wired lanes for. */
 const PROMOTIONS = [
-  "runtime-clr",
-  "container-max",
-  "container-lite",
-  "container-ghcr",
-  "storage-s3",
-  "storage-libsql",
-  "storage-mysql",
-  "ram-tmpfs",
-  "ram-zram",
-  "ram-swapfile",
+  "runtimeclr",
+  "containermax",
+  "containerlite",
+  "containerghcr",
+  "storages3",
+  "storagelibsql",
+  "storagemysql",
+  "ramtmpfs",
+  "ramzram",
+  "ramswapfile",
 ] as const;
 
 /** one normalized lane answer — the same shape runonedge answers, kept
@@ -133,7 +133,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     // executor map this law wired; the merged dispatch prefers the host
     // clr lane on a dotnet-carrying host, so the battery pins the gate
     // directly)
-    const invalid = await runvaultlane("runtime-clr", "not-an-assembly");
+    const invalid = await runvaultlane("runtimeclr", "not-an-assembly");
     assert.equal(invalid.status, "failed");
     assert.equal(invalid.error?.code, "ASSEMBLY_BYTES_INVALID");
     assert.ok(invalid.error?.message.includes("assembly"), "the message names the assembly law");
@@ -147,7 +147,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     // runner needs — the lane answers before either clock dies)
     const bytes = Buffer.concat([Buffer.from([0x4d, 0x5a]), Buffer.alloc(64, 0)]);
     const result = await runonedge({
-      modality: "runtime-clr",
+      modality: "runtimeclr",
       code: bytes.toString("base64"),
       deadlinems: 20000,
     });
@@ -196,7 +196,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     // never reaches a daemon (the gate rides the base executor map this
     // law wired; the merged dispatch prefers the host ghcr lane on a
     // docker-carrying host, so the battery pins the gate directly)
-    const tag = await runvaultlane("container-ghcr", "ghcr.io/devthink/hello:latest");
+    const tag = await runvaultlane("containerghcr", "ghcr.io/devthink/hello:latest");
     assert.equal(tag.status, "failed");
     assert.equal(tag.error?.code, "GHCR_REFERENCE_UNPINNED");
     assert.ok(tag.error?.message.includes("pinned"), "the message names the digest-pin policy");
@@ -204,7 +204,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
 
   it("names docker when the ghcr lane carries one pinned reference", async () => {
     const digest = `ghcr.io/devthink/ninetylaw-probe@sha256:${"a".repeat(64)}`;
-    const result = await runonedge({ modality: "container-ghcr", code: digest, deadlinems: 30000 });
+    const result = await runonedge({ modality: "containerghcr", code: digest, deadlinems: 30000 });
     // an absent docker answers host-runtime-absent, a present docker
     // answers the registry verdict of the unpullable digest honestly
     // (a slow registry may answer the deadline instead)
@@ -221,7 +221,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
   }, 45000);
 
   it("names the storage configuration when the s3 lane meets an absent env", async () => {
-    const result = await runwithoutenv("storage-s3", "the ninety law probe payload", [
+    const result = await runwithoutenv("storages3", "the ninety law probe payload", [
       "SADDLE_S3_ENDPOINT",
       "SADDLE_S3_KEY",
       "SADDLE_S3_SECRET",
@@ -234,21 +234,21 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
   });
 
   it("names the libsql configuration when the lane meets an absent url", async () => {
-    const result = await runwithoutenv("storage-libsql", "the ninety law probe payload", ["LIBSQL_URL"]);
+    const result = await runwithoutenv("storagelibsql", "the ninety law probe payload", ["LIBSQL_URL"]);
     assert.equal(result.status, "failed");
     assert.equal(result.error?.code, "HOST_RUNTIME_ABSENT");
     assert.ok(result.error?.message.includes("LIBSQL_URL"), "the message names the configuration");
   });
 
   it("names the mysql configuration when the lane meets an absent url", async () => {
-    const result = await runwithoutenv("storage-mysql", "the ninety law probe payload", ["MYSQL_URL"]);
+    const result = await runwithoutenv("storagemysql", "the ninety law probe payload", ["MYSQL_URL"]);
     assert.equal(result.status, "failed");
     assert.equal(result.error?.code, "HOST_RUNTIME_ABSENT");
     assert.ok(result.error?.message.includes("MYSQL_URL"), "the message names the configuration");
   });
 
   it("answers the tmpfs recipe honestly through the privilege ladder", async () => {
-    const result = await runvaultlane("ram-tmpfs", "the ninety law probe payload");
+    const result = await runvaultlane("ramtmpfs", "the ninety law probe payload");
     if (result.status === "failed") {
       // a host without the mount binary answers host-runtime-absent, a
       // host without the mount privilege answers host-privilege-absent —
@@ -270,7 +270,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
   });
 
   it("answers the zram recipe honestly through the privilege ladder", async () => {
-    const result = await runvaultlane("ram-zram", "");
+    const result = await runvaultlane("ramzram", "");
     if (result.status === "failed") {
       // a host missing binaries of the set answers host-runtime-absent, a
       // host without the /sys privilege answers host-privilege-absent —
@@ -291,7 +291,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
   });
 
   it("answers the swapfile recipe honestly through the privilege ladder", async () => {
-    const result = await runvaultlane("ram-swapfile", "");
+    const result = await runvaultlane("ramswapfile", "");
     if (result.status === "failed") {
       // a host missing binaries of the set answers host-runtime-absent, a
       // host without the swapon privilege answers host-privilege-absent —

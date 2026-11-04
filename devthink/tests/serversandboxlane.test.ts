@@ -84,7 +84,7 @@ describe("sandboxlane", () => {
       // the honest refusal: the host carries no container runtime, nothing
       // executed, and the modality report rides along
       expect(text).toContain("nothing executed");
-      expect(text).toContain("container-docker");
+      expect(text).toContain("containerdocker");
     } else {
       // the container executed the jailed script: the node version row and
       // the exit row answer
@@ -179,7 +179,7 @@ describe("sandboxlane", () => {
     if (text.includes("no python3 runtime")) {
       // the honest refusal: this host carries no cpython, nothing executed
       expect(text).toContain("nothing executed");
-      expect(text).toContain("language-python");
+      expect(text).toContain("languagepython");
     } else {
       expect(text).toContain("42");
       expect(text).toContain("exit 0");
@@ -210,7 +210,7 @@ describe("sandboxlane", () => {
     const text = joinedrows(answer);
     if (text.includes("no lua runtime")) {
       expect(text).toContain("nothing executed");
-      expect(text).toContain("language-lua");
+      expect(text).toContain("languagelua");
       expect(text).toContain("the modality registry answers the ninety plan");
     } else {
       expect(text).toContain("42");
