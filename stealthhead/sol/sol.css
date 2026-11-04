@@ -3386,3 +3386,10 @@ code {
     opacity: 0.4;
   }
 }
+
+/* the zoom lock (the owner law, wave designheal): the viewport pins the
+   scale and the touch lane answers pan-x pan-y only — no pinch may
+   rescale the interface on any host. */
+html {
+  touch-action: pan-x pan-y;
+}

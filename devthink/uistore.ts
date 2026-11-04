@@ -126,8 +126,8 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   /* --------------------- shell navbar (the two modes) --------------- */
   "navbar.mode.aria": "Navbar mode",
   "navbar.mode.desc": "Floating lets the bar loose from the walls; docked pins it to one edge.",
-  "navbar.mode.floating": "Floating",
-  "navbar.mode.docked": "Docked",
+  "navbar.mode.floating": "flutuante",
+  "navbar.mode.docked": "fixado",
   "navbar.edge.aria": "Dock edge",
   "navbar.edge.bottom": "Bottom edge",
   "navbar.edge.left": "Left edge",

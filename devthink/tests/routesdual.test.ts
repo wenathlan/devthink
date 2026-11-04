@@ -347,11 +347,14 @@ describe("the sync (both faces stay one design)", () => {
       t.skip("the sibling app trees live in the repository checkout, not the standalone container context");
       return;
     }
-    // the PR18 law from the index: the viewport meta pins the zoom at the
-    // 100 percent baseline on every app of the family
+    // the designheal law from the index (the owner order, the Faun meta
+    // verbatim): the viewport meta pins the zoom at the 100 percent
+    // baseline on every app of the family
     for (const app of ["devthink", ...FAMILY_SLUGS]) {
       const index = readFileSync(join(reporoot, app, "index.html"), "utf8");
-      expect(index, `${app} pins the zoom zero viewport`).toContain("minimum-scale=1.0, maximum-scale=1.0");
+      expect(index, `${app} pins the zoom zero viewport`).toContain(
+        'content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"',
+      );
       expect(index).toContain("user-scalable=no");
     }
     // the faun lock answers every html entry of the os, never only the

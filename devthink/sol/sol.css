@@ -542,12 +542,22 @@
   --win-taskbar-tint: rgb(32 32 32 / 75%);
   --win-taskbar-filter: saturate(3) blur(20px);
   --win-titlebar-h: 30px;
+  /* the compact rung of the doctrine band (owner law 28px compact /
+     30px standard): a data-density="compact" root swaps the band, every
+     consumer reads the same --win-titlebar-h slot */
+  --win-titlebar-h-compact: 28px;
+  /* the bar font of the windows family (PR9): the Segoe UI Variable
+     Display stack owns the titlebar voice on every window chrome */
+  --win-titlebar-font: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
   --win-close: rgb(232 17 35);
   --win-handles: 8;
   --win-handle-size: 8px;
   --win-handle-offset: -8px;
   --win-focus: #4cc2ff;
   --win-pill: 999px;
+  /* the ice-vault accent of the family spec (PR9): the #a3d7e6 lane the
+     vault surfaces borrow — focus stays the windows #4cc2ff */
+  --accent-ice-vault: #a3d7e6;
   --win-ease-start: cubic-bezier(0.79, 0.14, 0.15, 0.86);
   --win-ease-panel: cubic-bezier(0.62, 0, 0.32, 1);
   --win-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -10752,6 +10762,10 @@ span[data-tile] {
 .shell-window:not(.is-active) .shell-window__bar {
   filter: grayscale(0.8);
 }
+/* the compact density rung (PR9): the 28px band answers the compact root */
+html[data-density="compact"] {
+  --win-titlebar-h: var(--win-titlebar-h-compact);
+}
 
 /* the ONE lockup of the window zone: mark, name, role line. the lockup
    shrinks before the controls ever leave the window (the resize law the
@@ -10777,7 +10791,7 @@ span[data-tile] {
 }
 .shell-window__app {
   color: var(--color-ink);
-  font-family: var(--font-display);
+  font-family: var(--win-titlebar-font);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -22922,4 +22936,11 @@ button.dtc-recents__row {
 [data-anim-paused] .saas-root .animate-float-card,
 [data-anim-paused] .saas-root .animate-float-card-delayed {
   animation-play-state: paused;
+}
+
+/* the zoom lock (the owner law, wave designheal): the viewport pins the
+   scale and the touch lane answers pan-x pan-y only — no pinch may
+   rescale the interface on any host. */
+html {
+  touch-action: pan-x pan-y;
 }
