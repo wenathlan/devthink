@@ -27,7 +27,7 @@ export const apifreezebaseline: apifreezebaseline = {
     "popup": 26,
     "background": 234,
     "pagebridge": 31,
-    "library": 3129,
+    "library": 3137,
     "cli": 14,
     "mcp": 35
   },
