@@ -2,7 +2,7 @@
 // boundary, the CRUD over the injected storage, the opt-in default and the
 // honest refusals.
 import { describe, expect, it } from "vitest";
-import { createmcpregistry, memorystorage, safeurl } from "../mcpregistry.js";
+import { createmcpregistry, memorystorage, safeurl } from "../mcp";
 
 describe("safeurl", () => {
   it("accepts public http and https urls", () => {

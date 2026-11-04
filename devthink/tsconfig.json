@@ -16,7 +16,7 @@
       "z-ai-web-dev-sdk": [
         "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
-      "@/*": ["./Sol/*", "./*"],
+      "@/*": ["./sol/*", "./*"],
       "@wenathlan/saddle": ["./saddlefaces.ts"],
       "@wenathlan/saddle/memory": ["./saddlefaces.ts"],
       "hono": ["./honoface.ts"],
@@ -125,6 +125,6 @@
     }
   },
   /* the foundry gate wave: the four ci gates ride the foundry seat, the os typecheck still walks their declarations. */
-  "include": ["*.ts", "tests/**/*.ts", "Sol/**/*.ts", "Sol/**/*.tsx", "../foundry/readiness.ts", "../foundry/dependencyupdates.ts", "../foundry/npmgate.ts", "../foundry/bundlescan.ts"],
+  "include": ["*.ts", "tests/**/*.ts", "sol/**/*.ts", "sol/**/*.tsx", "../foundry/readiness.ts", "../foundry/dependencyupdates.ts", "../foundry/npmgate.ts", "../foundry/bundlescan.ts"],
   "exclude": ["tests/code", "dist", "node_modules"]
 }

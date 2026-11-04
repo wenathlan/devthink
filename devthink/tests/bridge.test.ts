@@ -848,7 +848,7 @@ describe("popup bridge states", () => {
 describe("static site scan refuses serverless functions", () => {
   it("asserts the site ships static file types only and no function directory exists anywhere in the repository", () => {
     const root = process.cwd();
-    const sitedir = join(root, "Sol");
+    const sitedir = join(root, "sol");
     /* the merged site tree: the devthink web application, the extension platform folder and the gateway console folder all ship static source types the build compiles — the type ceiling refuses every executable or binary a serverless platform would need (the web tree stays zero js: the compiled artifacts live in the build output, never in the sources). svg joins the set at 2.0.14: the tauri icon source (icon.svg, one of the theme root files the app root carries) is a static image the desktop lane derives its bundle densities from — the same static class the css sheets answer, never an executable surface. 2.0.43 adds the platform template types the deploys read as static content: the caddy file, the mime types, the headers and redirects files and the wrangler dev secrets example (the real .dev.vars never ships — the gitignore holds it). woff2 joins at the token union wave: the trylle variable fonts (sol/fonts) are static font faces the css @font-face serves — bytes a browser reads, never an executable surface */
     const statictypes = new Set([
       "ts",
@@ -951,7 +951,7 @@ describe("hardcoded relay url scan of the source tree", () => {
 });
 
 function sitedirOf(root: string): string {
-  return join(root, "Sol");
+  return join(root, "sol");
 }
 
 describe("chatbridge e2e against the testrelay on localhost", () => {

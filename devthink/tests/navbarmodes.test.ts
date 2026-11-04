@@ -60,22 +60,22 @@ vi.mock("../storage.ts", () => ({
   },
 }));
 
-const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
+const chrome = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "Shellchrome.tsx"), "utf8");
 const dockmagnifyhook = readFileSync(
-  join(import.meta.dirname, "..", "Sol", "wingets", "ShellDockmagnify.tsx"),
+  join(import.meta.dirname, "..", "sol", "wingets", "ShellDockmagnify.tsx"),
   "utf8",
 );
-const trayflyouts = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellTrayflyouts.tsx"), "utf8");
+const trayflyouts = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "ShellTrayflyouts.tsx"), "utf8");
 const navbarcard = readFileSync(
-  join(import.meta.dirname, "..", "Sol", "wingets", "SettingsNavbarposition.tsx"),
+  join(import.meta.dirname, "..", "sol", "wingets", "SettingsNavbarposition.tsx"),
   "utf8",
 );
 const personalization = readFileSync(
-  join(import.meta.dirname, "..", "Sol", "wingets", "SettingsPersonalization.tsx"),
+  join(import.meta.dirname, "..", "sol", "wingets", "SettingsPersonalization.tsx"),
   "utf8",
 );
-const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const workspace = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelWorkspace.tsx"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 
 beforeEach(() => {
   preferencerows.clear();

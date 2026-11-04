@@ -78,6 +78,8 @@ minimumReleaseAgeExclude:
   - vitest@5.1.0
   - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.1.8'
   - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.0.156 || 2.1.7'
+  - '@wenathlan/argan@2.0.155'
+  - gsap@3.15.1
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
 # is allowBuilds). THE 2.0.155 BUILDS GATE HEAL: the four-entry map froze

@@ -32,8 +32,8 @@ import { DESKTOP_APPS, PINNED_APPS, searchDesktopApps } from "../appregistry.ts"
 import { loadrecentapps, loadrecententries, pushrecentapp } from "../recentapps.ts";
 import { uicopy, uistoreseedrows } from "../uistore.ts";
 
-const chrome = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "Shellchrome.tsx"), "utf8");
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const chrome = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "Shellchrome.tsx"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 const recentappssource = readFileSync(join(import.meta.dirname, "..", "recentapps.ts"), "utf8");
 
 /** installs a minimal window.localStorage stub (the node battery has no

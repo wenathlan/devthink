@@ -80,3 +80,4 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-linux-x64@2.6.5'
   - '@biomejs/cli-win32-arm64@2.6.5'
   - '@biomejs/cli-win32-x64@2.6.5'
+  - '@wenathlan/argan@2.0.155'

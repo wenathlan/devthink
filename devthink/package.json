@@ -511,5 +511,5 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "sideEffects": false,
-  "packageManager": "pnpm@12.16.1"
+  "packageManager": "pnpm@12.3.4"
 }

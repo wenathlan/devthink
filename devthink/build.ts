@@ -15,7 +15,7 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
 import type { platformtarget } from "./types.ts";
-import { stripstrings, underscorednames } from "./bundlescan.ts";
+import { stripstrings, underscorednames } from "../foundry/bundlescan.ts";
 import { cjswrap } from "./cjs.ts";
 import {
   changelogdigestworkflow,

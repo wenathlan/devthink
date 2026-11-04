@@ -42,13 +42,13 @@ import {
 import { osText } from "../os.ts";
 import { currentThemeLadder } from "../personalstore.ts";
 
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
-const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");
-const desktoplock = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktoplock.tsx"), "utf8");
-const boot = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelBoot.tsx"), "utf8");
-const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
-const tray = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "ShellTrayflyouts.tsx"), "utf8");
-const panel = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
+const desktop = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelDesktop.tsx"), "utf8");
+const desktoplock = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelDesktoplock.tsx"), "utf8");
+const boot = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelBoot.tsx"), "utf8");
+const workspace = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelWorkspace.tsx"), "utf8");
+const tray = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "ShellTrayflyouts.tsx"), "utf8");
+const panel = readFileSync(join(import.meta.dirname, "..", "sol", "panel", "panel.tsx"), "utf8");
 const personalstore = readFileSync(join(import.meta.dirname, "..", "personalstore.ts"), "utf8");
 const desktopstate = readFileSync(join(import.meta.dirname, "..", "desktopstate.ts"), "utf8");
 const oslabels = readFileSync(join(import.meta.dirname, "..", "os.ts"), "utf8");
@@ -216,7 +216,7 @@ describe("the context menu face (the doctrine panel curve on the win11 menus)", 
 
   it("the menu closes on the outside press and the Escape — the existing contract pins", () => {
     expect(desktop).toContain('onClose={() => setMenu(null)}');
-    expect(readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktopmenu.tsx"), "utf8")).toContain(
+    expect(readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelDesktopmenu.tsx"), "utf8")).toContain(
       "window.addEventListener(\"pointerdown\", onPointerDown, true);",
     );
   });

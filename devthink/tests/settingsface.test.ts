@@ -17,12 +17,12 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { copy, copyseed } from "../copy.ts";
 
-const settingsdir = join(import.meta.dirname, "..", "Sol", "settings");
-const wingetsdir = join(import.meta.dirname, "..", "Sol", "wingets");
+const settingsdir = join(import.meta.dirname, "..", "sol", "settings");
+const wingetsdir = join(import.meta.dirname, "..", "sol", "wingets");
 const anchor = readFileSync(join(settingsdir, "settings.tsx"), "utf8");
 const nav = readFileSync(join(wingetsdir, "SettingsNav.tsx"), "utf8");
 const drives = readFileSync(join(wingetsdir, "SettingsHarddrives.tsx"), "utf8");
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 
 /** the flat declarations of the settings scope, rule by rule (the naive
  * pair scan is enough for the unlayered linear cascade of sol.css). */

@@ -27,7 +27,7 @@ function source(...parts: string[]): string {
 
 describe("the compute face design law", () => {
   it("the compute page ships no fixed provider or bridge arrays and no third-party brands", () => {
-    const page = source("Sol", "compute", "compute.tsx");
+    const page = source("sol", "compute", "compute.tsx");
     assert.ok(!/providers\s*=\s*\[/.test(page), "the fixed providers array must die");
     assert.ok(!/bridge\s*=\s*\[/.test(page), "the fixed bridge array must die");
     assert.ok(
@@ -37,7 +37,7 @@ describe("the compute face design law", () => {
   });
 
   it("the compute page keeps the shell anchor and mounts the two api wingets", () => {
-    const page = source("Sol", "compute", "compute.tsx");
+    const page = source("sol", "compute", "compute.tsx");
     assert.ok(page.includes("PageShell"), "the page keeps the PageShell frame");
     assert.ok(page.includes("ComputeModalitycatalog"), "the catalog winget is mounted");
     assert.ok(page.includes("ComputeBootladder"), "the boot ladder winget is mounted");
@@ -45,7 +45,7 @@ describe("the compute face design law", () => {
   });
 
   it("the catalog winget rides the api and carries no fixed records", () => {
-    const winget = source("Sol", "wingets", "ComputeModalitycatalog.tsx");
+    const winget = source("sol", "wingets", "ComputeModalitycatalog.tsx");
     assert.ok(/fetchmodalities|apifetch/.test(winget), "the winget fetches through the api surface");
     assert.ok(!/\{\s*id:\s*["']/.test(winget), "no fixed record literals inside the winget");
     assert.ok(winget.includes("dash-skeleton"), "loading renders skeleton rows");
@@ -55,7 +55,7 @@ describe("the compute face design law", () => {
   });
 
   it("the boot ladder computes its ceilings from the fetched records", () => {
-    const winget = source("Sol", "wingets", "ComputeBootladder.tsx");
+    const winget = source("sol", "wingets", "ComputeBootladder.tsx");
     assert.ok(/fetchmodalities|apifetch/.test(winget), "the ladder fetches the plan");
     assert.ok(/Math\.min/.test(winget), "the floor comes from the records");
     assert.ok(/Math\.max/.test(winget), "the ceiling comes from the records");
@@ -63,13 +63,13 @@ describe("the compute face design law", () => {
   });
 
   it("the console carries the edge-law banner with the law sentence and a fetch", () => {
-    const page = source("Sol", "console", "console.tsx");
+    const page = source("sol", "console", "console.tsx");
     assert.ok(page.includes("ConsoleEdgelaw"), "the console mounts the banner");
     assert.ok(
       page.indexOf("ConsoleEdgelaw") < page.indexOf("console-section"),
       "the banner lands above the console surface",
     );
-    const banner = source("Sol", "wingets", "ConsoleEdgelaw.tsx");
+    const banner = source("sol", "wingets", "ConsoleEdgelaw.tsx");
     assert.ok(
       banner.includes("the saddle edge engine executes every pass"),
       "the banner carries the first half of the law sentence",
@@ -95,7 +95,7 @@ describe("the compute face design law", () => {
   });
 
   it("the winget barrel exports all three new surfaces", () => {
-    const barrel = source("Sol", "wingets", "index.ts");
+    const barrel = source("sol", "wingets", "index.ts");
     assert.ok(/export \{ default as ComputeModalitycatalog \}/.test(barrel));
     assert.ok(/export \{ default as ComputeBootladder \}/.test(barrel));
     assert.ok(/export \{ default as ConsoleEdgelaw \}/.test(barrel));

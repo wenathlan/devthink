@@ -42,7 +42,7 @@ export default defineConfig({
        * specifier resolves to the consolidated file. */
       "@wenathlan/debonair/audio": path.resolve(import.meta.dirname, "audio.ts"),
       "@wenathlan/debonair/audiofeatures": path.resolve(import.meta.dirname, "audio.ts"),
-      "@": path.resolve(import.meta.dirname, "Sol"),
+      "@": path.resolve(import.meta.dirname, "sol"),
     },
   },
   root: import.meta.dirname,

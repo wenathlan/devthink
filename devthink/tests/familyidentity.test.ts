@@ -10,7 +10,7 @@
  * fails before any view renders unlit.
  */
 import { describe, expect, it } from "vitest";
-import { APPS, appMeta } from "../osapps";
+import { APPS, appMeta } from "../os";
 import { FAMILY_ACCENT, familyAccentOf } from "../familyaccent";
 import { seedFamilySites } from "../seedcatalog";
 

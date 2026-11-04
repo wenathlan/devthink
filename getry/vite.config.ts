@@ -162,7 +162,7 @@ export default defineConfig({
        * the library). the entry retires when the published envelope carries
        * the built queue family. */
       "@wenathlan/devthink/queue": path.resolve(import.meta.dirname, "../devthink/queue.ts"),
-      "@": path.resolve(import.meta.dirname, "Sol"),
+      "@": path.resolve(import.meta.dirname, "sol"),
     },
   },
   root: import.meta.dirname,

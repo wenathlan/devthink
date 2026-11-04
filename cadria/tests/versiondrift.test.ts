@@ -17,7 +17,7 @@ describe("the version drift gate", () => {
     const manifest = JSON.parse(await readFile(join(approot, "package.json"), "utf8")) as { version: string };
     const versionmodule = await readFile(join(approot, "version.ts"), "utf8");
     expect(versionmodule).toContain(`export const packageversion = "${manifest.version}" as const;`);
-    const settings = await readFile(join(approot, "Sol", "settings", "settings.tsx"), "utf8");
+    const settings = await readFile(join(approot, "sol", "settings", "settings.tsx"), "utf8");
     expect(settings).toContain('from "../../version.ts"');
     expect(settings).not.toMatch(/const VERSION = "2\./);
   });

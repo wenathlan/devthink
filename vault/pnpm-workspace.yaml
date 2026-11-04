@@ -116,3 +116,4 @@ minimumReleaseAgeExclude:
   - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.1.8'
   - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.0.156 || 2.1.7'
   - '@wenathlan/argan@2.0.154 || 2.0.155 || 2.0.156'
+  - gsap@3.15.1

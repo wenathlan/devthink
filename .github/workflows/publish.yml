@@ -4406,7 +4406,7 @@ jobs:
           const app = process.env.APP;
           const version = process.env.VERSION;
           const stage = path.join("release-metadata", app);
-          const solRoot = path.join(app, "Sol");
+          const solRoot = path.join(app, "sol");
           const walk = directory => fs.readdirSync(directory, { withFileTypes: true })
             .flatMap(entry => {
               const entryPath = path.join(directory, entry.name);
@@ -4664,8 +4664,8 @@ jobs:
               private: manifest.private === true,
               docs: count("docs"),
               tests: count("tests"),
-              solRoutes: fs.existsSync(path.join(app, "Sol"))
-                ? fs.readdirSync(path.join(app, "Sol"), { withFileTypes: true }).filter(entry => entry.isDirectory()).length
+              solRoutes: fs.existsSync(path.join(app, "sol"))
+                ? fs.readdirSync(path.join(app, "sol"), { withFileTypes: true }).filter(entry => entry.isDirectory()).length
                 : 0,
               rootModules: rootModules,
               dockerfile: fs.existsSync(path.join(app, "Dockerfile"))

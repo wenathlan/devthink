@@ -491,7 +491,7 @@ export default defineConfig({
        * mechanism is never duplicated inside devthink. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
-      "@": path.resolve(import.meta.dirname, "Sol"),
+      "@": path.resolve(import.meta.dirname, "sol"),
     },
     /** the family dev bridge dedupe wall: the sibling apps carry their own
      * node_modules folders (or symlinks to this one), and a react resolved

@@ -12,10 +12,10 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
+const solcss = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 const ismobile = readFileSync(join(import.meta.dirname, "..", "useismobile.ts"), "utf8");
-const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
-const windowframe = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWindowframe.tsx"), "utf8");
+const workspace = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelWorkspace.tsx"), "utf8");
+const windowframe = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelWindowframe.tsx"), "utf8");
 const spawnsource = readFileSync(join(import.meta.dirname, "..", "window.ts"), "utf8");
 
 describe("the window body container (the app answers the window, never the viewport)", () => {

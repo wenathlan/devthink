@@ -52,7 +52,7 @@ import { KbdTerminal } from "../kbdterminal.ts";
 import { ControlShellTerminal } from "../shellterminal.ts";
 
 const approot = join(import.meta.dirname, "..");
-const solcss = readFileSync(join(approot, "Sol", "sol.css"), "utf8");
+const solcss = readFileSync(join(approot, "sol", "sol.css"), "utf8");
 const tokens = parseCssTokens(solcss);
 
 describe("the dpi tokens (one design, four densities)", () => {
@@ -201,7 +201,7 @@ describe("the conversion map — flexbox folds to rows and columns", () => {
 
 describe("the committed proof — the shell, the chip and the keycap", () => {
   it("converts the real widgets of Sol (the jsx reader walks the sources)", () => {
-    const chipSource = readFileSync(join(approot, "Sol", "wingets", "ShellChip.tsx"), "utf8");
+    const chipSource = readFileSync(join(approot, "sol", "wingets", "ShellChip.tsx"), "utf8");
     expect(parseJsxRoot(chipSource)?.tag).toBe("span");
     const { slots } = convertWidget(chipSource, tokens);
     expect(slots).toContain("children");
