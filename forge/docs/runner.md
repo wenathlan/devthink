@@ -20,7 +20,7 @@ forge is the deployable clone of pure execution of the wenathlan family: it runs
 - `sandboxmodality.ts` — the workload lane declaration: the two lanes forge owns (`binary-run`, `queue-priority`), mirrored as a string contract from `saddle/workloadlaw.ts` (`FAMILYLANES`), plus the lane seat resolution for the `FORGE_SANDBOX_LANE` env (`local` default / `join` / a pinned modality id).
 - `onboardingstate.ts` — the first-run state of one visitor (the only writer of the intro/onboarding seen flags).
 - `labels.ts` — the copy law: `LABEL_MANIFEST` (english source of truth, `page.widget.key` paths, revision 3), `label`, `labelfill` and the browser `seedLabels` — a hardcoded string inside a widget is a defect.
-- `family.ts` / `familyurl.ts` — the family table (nine sibling slugs, the spec §12 accent table) and the relative `../slug/` url resolver for the rail foot links.
+- `family.ts` — the family keyword file (the fold law): the family table (nine sibling slugs, the spec §12 accent table) and the relative `../slug/` url resolver for the rail foot links — the retired `familyurl.ts` arm rides as the familyurl lane of this one file.
 - `theme.ts` — the dark/light theme flip through the `data-theme` attribute; session scope only, no cookies, no storage; the rail foot toggle is the only writer.
 - `hometypes.ts` — the `HomeProps` contract of the home page.
 - `api.ts` / `utils.ts` — the ports of the family libraries: `routes` from `@wenathlan/vault/routes`, helpers from `@wenathlan/vault/utils` — never duplicated inside forge.

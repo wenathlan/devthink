@@ -8,7 +8,7 @@ House tree: one folder per app, no src/ — the app root carries only the loose 
 
 Vault is the storage library of the family, and storage answers the family ownership law as a published library: any consumer — a sibling app, an embedder, a script — imports the engine through `@wenathlan/vault` subpaths instead of ever reimplementing a store. The package.json exports map answers one subpath per root module with the family publish shape (the `types`/`import`/`default` conditions over the root source files, the same source doctrine `@wenathlan/getry/thinking` and the debonair engine ride — no build step, the source is the library, the node 26 pin runs the erasable-typescript sources natively), the npm files array packs every exported module with its local import closure, and `tests/package.test.ts` pins the whole contract: every declared target exists, imports in Node, ships in the files list, and the barrel carries the engine.
 
-The boot law of the map: `./db` and `./drizzle` open their self-hosted sqlite connections at import time (`DATABASE_URL` and `VAULT_STORAGE_URL`, both overridable, both defaulting to a file: store beside the working directory), and `./api`, `./accounts`, `./objectsledger` and `./quota` ride `./drizzle` transitively — so the barrel `@wenathlan/vault` boots the engine. A consumer that wants the pure surfaces without the connections rides the deep specifiers instead: `./storage`, `./sha`, `./chunks`, `./objects`, `./buckets`, `./retention`, `./labels`, `./onboardingstate`, `./family`, `./familyurl`, `./hometypes`, `./utils`.
+The boot law of the map: `./db` and `./drizzle` open their self-hosted sqlite connections at import time (`DATABASE_URL` and `VAULT_STORAGE_URL`, both overridable, both defaulting to a file: store beside the working directory), and `./api`, `./accounts`, `./objectsledger` and `./quota` ride `./drizzle` transitively — so the barrel `@wenathlan/vault` boots the engine. A consumer that wants the pure surfaces without the connections rides the deep specifiers instead: `./storage`, `./sha`, `./chunks`, `./objects`, `./buckets`, `./retention`, `./labels`, `./onboardingstate`, `./family`, `./hometypes`, `./utils`.
 
 | Subpath | What it answers |
 | --- | --- |
@@ -19,8 +19,7 @@ The boot law of the map: `./db` and `./drizzle` open their self-hosted sqlite co
 | `@wenathlan/vault/chunks` | the 256KB chunk pipeline — `split`/`reassemble`, `encodeChunk`/`decodeChunk`, the manifest law, `CHUNK_BYTES` and the `VaultChannel` contract |
 | `@wenathlan/vault/db` | the site store — the better-sqlite3 bootstrap and the parameterized helpers (boots at import) |
 | `@wenathlan/vault/drizzle` | the executing schema — the drizzle tables, `openStorage`/`closeStorage` and `storageDriverKind` (boots at import) |
-| `@wenathlan/vault/family` | the family table — `FAMILY_SLUGS` and the spec §12 accents of `FAMILY_ACCENTS` |
-| `@wenathlan/vault/familyurl` | the two-way family door — `familyurl` resolves the deploy-unit urls |
+| `@wenathlan/vault/family` | the family table and the two-way family door — `FAMILY_SLUGS`, the spec §12 accents of `FAMILY_ACCENTS` and `familyurl` the deploy-unit url resolver (the retired `familyurl.ts` arm rides as the familyurl lane of the fold) |
 | `@wenathlan/vault/hometypes` | the home page types — `HomeProps` |
 | `@wenathlan/vault/labels` | the copy law — `LABEL_MANIFEST`, the typed accessor `label` and the seed |
 | `@wenathlan/vault/objects` | the sealed rehearsal ledger — deterministic from the seed, honest about being a rehearsal |

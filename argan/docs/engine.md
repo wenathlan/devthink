@@ -23,8 +23,7 @@ Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`
 - `reveal.ts` — scroll reveal: an IntersectionObserver at 12% visibility adds the `in` class once per element.
 - `onboardingstate.ts` — the first-run state: the only writer of the intro/onboarding seen flags; DB is the source of truth over `GET`/`POST /api/v1/onboarding` (base `VITE_ONBOARDING_URL`, host-validated — localhost, loopback, private and reserved ranges refused), with the localStorage key `argan.onboarding.seen` as a pure cache mirror and a stable per-browser visitor id.
 - `sandboxmodality.ts` — the workload lane declaration: 4 mirrored lanes (`dnssec-validate`, `zonefile-parse-diff`, `catalog-registry-serve`, `label-store-seed`) with role, demand and boot budget; resolves the deploy's `ARGAN_SANDBOX_LANE` seat (local, join, or a pinned modality id).
-- `family.ts` — the family table: the 8 sibling slugs (cadria, debonair, forge, foundry, getry, saddle, stealthhead, vault) with the spec §12 accent and dot-ink of each; consumed by the shell rail, the landing footer and the family test.
-- `familyurl.ts` — the cross-app URL contract: `familyurl(slug)` answers the relative `"../" + slug + "/"` path so every family link survives any mount point.
+- `family.ts` — the family keyword file (the fold law): the family table — the 8 sibling slugs (cadria, debonair, forge, foundry, getry, saddle, stealthhead, vault) with the spec §12 accent and dot-ink of each, consumed by the shell rail, the landing footer and the family test — plus the retired `familyurl.ts` arm riding as the familyurl lane: the cross-app URL contract where `familyurl(slug)` answers the relative `"../" + slug + "/"` path so every family link survives any mount point.
 
 ## Data layer
 
@@ -53,7 +52,7 @@ Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`
 - `@wenathlan/vault/storagelane` — the SQLite lane `db.ts` opens (`openStorageLane`, `SqlParam`).
 - `@wenathlan/vault/labelstore` — the label store factory `labels.ts` rides; the vite and vitest configs bridge the specifier to the monorepo source.
 - `saddle/workloadlaw.ts` — the `FAMILYLANES` engine of record that `sandboxmodality.ts` mirrors (rows mirrored, not imported; the vitest battery pins the mirror against the engine source through the library bridge).
-- `family.ts` + `familyurl.ts` — the 8 sibling deploy units in rail order, linked out through relative URLs.
+- `family.ts` — the 8 sibling deploy units in rail order, linked out through relative URLs (the familyurl lane of the fold answers the links).
 - Runtime dependencies include `@wenathlan/cadria`, `@wenathlan/debonair`, `@wenathlan/devthink`, `@wenathlan/getry`, `@wenathlan/saddle` and `@wenathlan/vault` (all `~2.0.155` family envelopes).
 
 ## Testing

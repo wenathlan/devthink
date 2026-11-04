@@ -66,6 +66,6 @@ Real feature list of the argan engine and its Sol surface, extracted from the co
 - Scroll reveal — `reveal.ts` adds the `in` class at 12% visibility through one shared IntersectionObserver.
 - Toast — `Toast.tsx` answers action feedback in success, error and info tones through a role=status live region (2600 ms fade, 3000 ms remove).
 - Empty states — `ShellEmptystate` renders the glyph-in-wash, one line of truth and one real action, with the pending shimmer while tables are in flight.
-- Family rail — `family.ts` + `familyurl.ts` link the 8 siblings in rail order with their spec §12 accents through mount-proof relative URLs.
+- Family rail — `family.ts` links the 8 siblings in rail order with their spec §12 accents through mount-proof relative URLs (the familyurl lane of the fold).
 - 404 — `notfound.tsx` renders the single NXDOMAIN (RCODE 3) page.
 - Error boundary — `App.tsx` wraps the router in a theme error boundary with a reload action and seeds the label store before the first paint.

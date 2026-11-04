@@ -7,8 +7,7 @@
 // its own dot ink, and no accent ever collides with the banned palette.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { FAMILY_ACCENTS, FAMILY_SLUGS, familyrow } from "../family.ts";
-import { familyurl } from "../familyurl.ts";
+import { FAMILY_ACCENTS, FAMILY_SLUGS, familyrow, familyurl } from "../family.ts";
 
 const BANNED = new Set(["#3b82f6", "#2563eb", "#f97316"]);
 

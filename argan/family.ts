@@ -1,10 +1,15 @@
-// # family — the family table of argan (root layer, beside familyurl.ts).
+// # family — the family table of argan, housed at the argan root.
 // The deploy units of the wenathlan family with the one accent each carries
 // (the spec §12 table, mirrored from the devthink familyidentity wave and
-// from the cadria contract) and the slugs in rail order. Pure data, no
+// from the cadria contract) and the slugs in rail order. Pure data, zero
 // imports: the chrome (the shell rail foot), the landing footer and the
 // vitest suite all consume this one table, so the family row can never
-// drift between surfaces.
+// drift between surfaces. The file carries the whole family keyword under
+// the fold law (every file that starts with the same keyword is one file):
+// the table lane this header describes and the retired familyurl arm as
+// the section below — the relative url resolver that keeps every
+// cross-app link mount-proof, every export of the family one export of
+// this file.
 
 /** the sibling deploy units beside argan, rail order (argan itself is not
  * listed — the row links OUT, never back). */
@@ -45,4 +50,32 @@ export function familyrow(): readonly FamilyMember[] {
     if (member) row.push(member);
   }
   return row;
+}
+
+/* ===== the familyurl lane — familyurl.ts retires into the keyword file ===== */
+
+/**
+ * familyurl.ts — the url of a family application beside this one (root
+ * layer).
+ *
+ * the family deploys as sibling folders on one host: argan lives at
+ * /argan/, the other deploy units at /<slug>/, and every cross-application
+ * link must survive any mount point (project pages, self-hosted domains,
+ * bare local preview servers) without trusting a build constant or reading
+ * the live location. the helper therefore builds a RELATIVE url — one level
+ * up from the current deploy unit, then into the sibling folder — so the
+ * chrome of the window resolves the family from wherever the app is
+ * mounted. pure and multi-mode: the same call runs in the browser and in
+ * node (the unit tests), with zero storage.
+ */
+
+/** resolves the url of a family deploy unit that shares this host.
+ *
+ * @param slug the deploy unit segment (the app folder name); decorative
+ *   slashes are stripped.
+ * @returns the relative path of the family application, slash-terminated.
+ */
+export function familyurl(slug: string): string {
+  // biome-ignore lint/style/useTemplate: the family contract body stays verbatim — every app of the family copies this exact line
+  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
 }

@@ -14,7 +14,7 @@
 // consumer that wants the pure surfaces without the connections rides the
 // deep specifiers instead: ./storage, ./sha, ./chunks, ./objects,
 // ./buckets, ./retention, ./labels, ./onboardingstate, ./family,
-// ./familyurl, ./hometypes, ./utils.
+// ./hometypes, ./utils.
 //
 // the published form is the source itself (the debonair/getry library
 // pattern of the family): the engines pin node 26, which runs the
@@ -78,10 +78,10 @@ export * from "./uistore.ts";
 
 /* ── the family chrome — the shared identity of the deploy units ── */
 
-/** the family table: the sibling slugs and the spec §12 accents. */
+/** the family table and the two-way family door: the sibling slugs, the
+ * spec §12 accents and the deploy-unit url resolver (the familyurl lane of
+ * the fold — one keyword, one file). */
 export * from "./family.ts";
-/** the two-way family door: the deploy-unit url resolver. */
-export * from "./familyurl.ts";
 /** the home page types. */
 export * from "./hometypes.ts";
 /** the shared word splitter. */

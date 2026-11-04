@@ -53,11 +53,6 @@
       "import": "./family.ts",
       "default": "./family.ts"
     },
-    "./familyurl": {
-      "types": "./familyurl.ts",
-      "import": "./familyurl.ts",
-      "default": "./familyurl.ts"
-    },
     "./hometypes": {
       "types": "./hometypes.ts",
       "import": "./hometypes.ts",
@@ -166,7 +161,6 @@
     "db.ts",
     "drizzle.ts",
     "family.ts",
-    "familyurl.ts",
     "hometypes.ts",
     "internalroot.ts",
     "labels.ts",

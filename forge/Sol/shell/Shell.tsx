@@ -29,8 +29,7 @@ import {
 } from "@fluentui/react-icons";
 import { type ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { FAMILY_SLUGS, familyAccentOf } from "../../family";
-import { familyurl } from "../../familyurl";
+import { FAMILY_SLUGS, familyAccentOf, familyurl } from "../../family";
 import { labelfill, label } from "../../labels";
 import { currentTheme, type Theme, toggleTheme } from "../../theme";
 

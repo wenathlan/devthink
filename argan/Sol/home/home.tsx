@@ -33,8 +33,7 @@ import {
   listTransports,
   listZones,
 } from "../../catalog.ts";
-import { familyrow } from "../../family";
-import { familyurl } from "../../familyurl";
+import { familyrow, familyurl } from "../../family";
 import { label, labelfill } from "../../labels";
 import { ArganMark, type NavLink, Shell } from "../shell/Shell";
 import { EntryGate } from "../wingets";

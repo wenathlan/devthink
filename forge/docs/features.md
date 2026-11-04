@@ -53,7 +53,7 @@ the real feature list of the forge app, read from the code and grouped by catego
 - standalone law — full-bleed at the app's own url; the draggable window chrome exists only when embedded in the devthink os power clip (`Sol/shell/Shell.tsx`).
 - rail navigation — four pins: home, runs, queue and logs, with acrylic tooltips and the 48px press hands (`RAIL_APPS`).
 - theme flip — dark and light finishes through the `data-theme` attribute, session scope only, no cookies, no storage (`theme.ts`).
-- family row — the nine sibling deploy units with the spec §12 accent dots, resolved to relative urls (`family.ts`, `familyurl.ts`).
+- family row — the nine sibling deploy units with the spec §12 accent dots, resolved to relative urls (`family.ts` — the fold of the retired `familyurl.ts` arm into the familyurl lane).
 - copy law — every interface string lives in the label store (`LABEL_MANIFEST`, revision 3); the seed refreshes changed rows and never overwrites a translated row (`labels.ts`, `seedLabels`).
 - label interpolation — `labelfill` fills the placeholders of a label with runtime values (seeds, counts, percents).
 - landing — the hero with the run field and the real runner modes as chips, the capability ledger, the 01–03 run flow (mount, run, report) and the footer meta-quad (`Sol/home/home.tsx`).

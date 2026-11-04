@@ -28,8 +28,7 @@ import {
 } from "@fluentui/react-icons";
 import { type ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { FAMILY_SLUGS, familyAccentOf } from "../../family.ts";
-import { familyurl } from "../../familyurl.ts";
+import { FAMILY_SLUGS, familyAccentOf, familyurl } from "../../family.ts";
 import { label, labelfill } from "../../labels";
 import { useUicopy } from "../../uistore.ts";
 import { Toaster } from "../wingets";

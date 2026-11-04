@@ -20,8 +20,7 @@
 // flush to the window floor. One orchestrated entrance, then stillness.
 // The copy stays third-person lowercase — the family grammar.
 import { useCallback, useMemo, useState } from "react";
-import { familyrow } from "../../family";
-import { familyurl } from "../../familyurl";
+import { familyrow, familyurl } from "../../family";
 import type { HomeProps } from "../../hometypes.ts";
 import { labelfill } from "../../labels";
 import { lfsPointerFrom, storageModeFor } from "../../storage";

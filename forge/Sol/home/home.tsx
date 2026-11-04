@@ -23,8 +23,7 @@
 import { ArrowRightRegular, ArrowUpRightRegular } from "@fluentui/react-icons";
 import { type FormEvent, useState } from "react";
 import { useLocation } from "wouter";
-import { familyrow } from "../../family";
-import { familyurl } from "../../familyurl";
+import { familyrow, familyurl } from "../../family";
 import type { HomeProps } from "../../hometypes.ts";
 import { labelfill, label } from "../../labels";
 import { modes } from "../../runner.ts";
