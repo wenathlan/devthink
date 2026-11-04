@@ -28,12 +28,12 @@ export * from "./ChatSidebar.tsx";
 export * from "./ChatSolboticon.tsx";
 export * from "./ChatTurn.tsx";
 export * from "./ChatWelcome.tsx";
-export * from "./Constructionface.tsx";
 export { default as ConsoleGraphview } from "./ConsoleGraphview.tsx";
 export * from "./ConsoleGraphview.tsx";
 export * from "./ConsoleReference.tsx";
 export { default as Terminal } from "./ConsoleTerminal.tsx";
 export * from "./ConsoleTerminal.tsx";
+export * from "./Constructionface.tsx";
 /* the ink terminal ui never rides the web barrel: the CLI entry imports it
  * directly (devthink.ts), and the browser bundle would otherwise link the
  * terminal renderer into the page graph — the one interface law keeps the
@@ -87,7 +87,6 @@ export * from "./SettingsNav.tsx";
 export * from "./SettingsNavbarposition.tsx";
 export * from "./SettingsPairing.tsx";
 export * from "./SettingsPersonalization.tsx";
-export * from "../../personalstore.ts";
 export * from "./SettingsRow.tsx";
 export * from "./Settingstypes.ts";
 export * from "./ShellAlttabswitcher.tsx";
