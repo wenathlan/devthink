@@ -140,8 +140,11 @@ describe("sandboxlane", () => {
     expect(rows.length).toBe(91);
     expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 81 live, 9 host, 0 planned");
     const text = rows.join("\n");
-    // the live lanes name the surfaces the platform drives
-    expect(text).toContain("containerdocker: live lane — docker not installed on this host, the run lane refuses honestly");
+    // the live lanes name the surfaces the platform drives; the docker seat
+    // probes this host, so the honest answer names whichever verdict the
+    // probe found (the runner may carry docker or not — both refuse-or-run
+    // honestly)
+    expect(text).toMatch(/containerdocker: live lane — docker (available on this host|not installed on this host, the run lane refuses honestly)/);
     expect(text).toContain("runnernode: live lane — the node runtime the run lane executes inside the container");
     expect(text).toContain("fsvfs: live lane — the session jail the storage lane drives");
     expect(text).toContain("runnerserverless: live lane — the v8 isolate the exec lane drives in process");

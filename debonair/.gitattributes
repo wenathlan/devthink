@@ -1,3 +1,7 @@
+# the debonair text attributes.
+# Normalize line endings to LF
+* text=auto eol=lf
+
 # git lfs embedded: heavy binary artifacts never bloat the history
 *.glb filter=lfs diff=lfs merge=lfs -text
 *.gltf filter=lfs diff=lfs merge=lfs -text
