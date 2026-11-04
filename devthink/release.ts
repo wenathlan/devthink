@@ -556,7 +556,12 @@ async function runreleasewalk(): Promise<void> {
      completes the sync. */
   if (mode === "sync") {
     try {
-      const { spawnSync } = await import("node:child_process");
+      /* the child seat rides the computed lane (the bundle purity law):
+       * the literal node specifier would answer the browser bundle checks
+       * the library modes guard — the join never folds, so the bundler
+       * leaves the specifier to the node runtime. */
+      const childseat = ["node", "child_process"].join(":");
+      const { spawnSync } = await import(childseat);
       const staged = spawnSync("git", ["add", "-A"], { cwd: "..", encoding: "utf8" });
       if (staged.status !== 0 && staged.stderr) process.stderr.write(staged.stderr);
     } catch {

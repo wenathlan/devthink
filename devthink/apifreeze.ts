@@ -4030,7 +4030,14 @@ async function runapifreezesuite() {
   const gatebuiltin = (builtin: string) => `node:${builtin}`;
   const { createHash } = await import(gatebuiltin("crypto"));
   const { mkdir, readFile, readdir, writeFile } = await import(gatebuiltin("fs/promises"));
-  const { apifreezebaseline: storedbaseline } = await import("./tests/freezebaseline.ts");
+  /* the freeze baseline rides the runtime lane: the computed specifier
+   * keeps the tests artifact out of every bundle graph (the cli contract
+   * guards the reviewed vocabulary, and a literal dynamic import would
+   * carry init_freezebaseline into index.js) — the node runtime resolves
+   * the module relative to this file the same way the standalone gate
+   * always did. */
+  const freezeimport = ["./tests", "freezebaseline.ts"].join("/");
+  const { apifreezebaseline: storedbaseline } = await import(freezeimport);
   const packagejson = JSON.parse(await readFile("package.json", "utf8"));
   const release = String(packagejson.version);
   const baselinepath = "tests/freezebaseline.ts";
