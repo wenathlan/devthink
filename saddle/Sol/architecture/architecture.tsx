@@ -28,11 +28,12 @@ import { useEffect, useState } from 'react';
 import { PageShell } from '../shell/Shell.tsx';
 import { type MediaSlot, mediaSlots } from '../../catalog';
 import { label } from '../../labels.ts';
-import { SANDBOXFORMS, type sandboxformid } from '../../sandboxprofile.ts';
+import { SANDBOXFORMS, type sandboxformid } from '../../sandbox.ts';
 
 /** the ledger annotations of the three runtime forms: the copy rides the
  * store under the architecture.form.* family, keyed by the declared form
- * ids of sandboxprofile (the ids are data, the words are copy). */
+ * ids of the sandboxprofile arm of sandbox.ts (the ids are data, the
+ * words are copy). */
 const formlabels: Record<sandboxformid, { name: string; pkg: string; note: string }> = {
 	'runtime-node': {
 		name: label('architecture.form.runtimeNode.name'),

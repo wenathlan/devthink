@@ -15,14 +15,14 @@
 
 import assert from 'node:assert/strict';
 import { describe, it } from 'vitest';
-import { specenvlimits } from '../sandboxenvprofile.ts';
+import { specenvlimits } from '../sandbox.ts';
 import {
   enginespecfor,
   osfamily,
   resolvesandboxspec,
   sandboxspecerror,
   type sandboxspeclimits,
-} from '../sandboxprofile.ts';
+} from '../sandbox.ts';
 
 /** a compact limits table for the tests (max carries a vgpu ceiling). */
 const limits: sandboxspeclimits = {

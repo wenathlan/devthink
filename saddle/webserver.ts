@@ -62,17 +62,14 @@ import {
   getcpubyid,
   getgpu,
   getmig,
-} from './sandbox.ts';
-import type { SandboxFs, SandboxState } from './sandbox.ts';
-import { resolvesandboxspec } from './sandboxprofile.ts';
-import type { resolvedsandboxspec } from './sandboxprofile.ts';
-import { specenvlimits } from './sandboxenvprofile.ts';
-import {
+  resolvesandboxspec,
+  specenvlimits,
   accountlimitsfromenv,
   createaccountledger,
   quotaerror,
   usagefromrows,
-} from './sandboxquota.ts';
+} from './sandbox.ts';
+import type { SandboxFs, SandboxState, resolvedsandboxspec } from './sandbox.ts';
 import store from './db.ts';
 import type { DbError, SandboxRow, WorkspaceUsage } from './db.ts';
 import {
@@ -110,9 +107,10 @@ import { tmpdir } from 'node:os';
 /** sandbox creation request carried by POST /api/v1/sandboxes; the cpu
  * model, gpu and mig values come from the reviewed catalogs. the
  * declaration fields (base, os, arch, form, networking, vgpu, diskgb,
- * timeoutseconds) ride the sandboxprofile.ts plane: any of them present
- * switches the request to the resolved spec path, none keeps the exact
- * legacy behavior. */
+ * timeoutseconds) ride the sandboxprofile arm of the one keyword file
+ * sandbox.ts (the sandbox family fold): any of them present switches
+ * the request to the resolved spec path, none keeps the exact legacy
+ * behavior. */
 export type SandboxCreateBody = {
   model?: string;
   vcpus?: number;
@@ -252,7 +250,7 @@ const startrampms = 125;
  * environment (SADDLE_MAX_SANDBOXES plus the SADDLE_ACCOUNT_* family)
  * and stay unlimited when unset, so the default deployment enforces
  * nothing. counters reconcile from the sqlite rows on every create and
- * releases ride destroysandbox (sandboxquota.ts). */
+ * releases ride destroysandbox (the sandboxquota arm of sandbox.ts). */
 const accountledger = createaccountledger(accountlimitsfromenv(process.env));
 
 /** the session ttl mirrored from auth.ts for clone-forwarded sessions. */
@@ -770,8 +768,9 @@ function createsandbox(body: SandboxCreateBody, user: SessionUser): SandboxRecor
     }
   }
   // declarative spec plane: when any declaration field is present the
-  // request resolves through sandboxprofile.ts (base, os, arch, form,
-  // vgpu, diskgb, timeout, networking) against the SADDLE_SPEC_LIMITS
+  // request resolves through the sandboxprofile arm of sandbox.ts
+  // (base, os, arch, form, vgpu, diskgb, timeout, networking) against
+  // the SADDLE_SPEC_LIMITS
   // table and the resolved values feed the engine spec below; legacy
   // bodies keep the exact previous behavior.
   const specactive =
@@ -885,9 +884,9 @@ function createsandbox(body: SandboxCreateBody, user: SessionUser): SandboxRecor
     );
   }
   // per-account resource ledger: reconcile the counters from the
-  // authoritative sqlite rows (the simple reconciliation of
-  // sandboxquota.ts) then reserve the new sandbox; a plan limit maps
-  // to 429 like the sandbox count cap above.
+  // authoritative sqlite rows (the simple reconciliation of the
+  // sandboxquota arm of sandbox.ts) then reserve the new sandbox; a
+  // plan limit maps to 429 like the sandbox count cap above.
   try {
     accountledger.reconcile(user.id, usagefromrows(store.listsandboxesbyuser(user.id, 1000)));
   } catch {

@@ -9,11 +9,12 @@
  * R3-saddle: home is the LANDING of the platform — one sand light over the
  * window stage, the prompt-giga field where the operator declares a sandbox
  * (a giant mono input with the embedded boot key and the real declared
- * vocabulary of sandboxprofile.ts as chips), the sandbox matrix as a
- * hairline ledger of the three runtime bases (base / guests / arch / vgpu /
- * ceiling — the documented development bootstrap limits of
- * sandboxenvprofile.ts), the thesis, the runtime chain, the surfaces
- * ledger, the 01–03 steps and the footer meta-quad. The boot key parses the
+ * vocabulary of the sandboxprofile arm of sandbox.ts as chips), the
+ * sandbox matrix as a hairline ledger of the three runtime bases (base /
+ * guests / arch / vgpu / ceiling — the documented development bootstrap
+ * limits of sandboxenvprofile, the env adapter arm of the same keyword
+ * file), the thesis, the runtime chain, the surfaces ledger, the 01–03
+ * steps and the footer meta-quad. The boot key parses the
  * draft against the declared vocabulary and hands the parsed declaration to
  * the console over the `saddle.declared` session key — the console reads
  * and spends it once on mount (a real handoff: the hardware identities stay
@@ -41,7 +42,7 @@ import { Link, useLocation } from 'wouter';
 import { SectionRail } from '../shell/Shell.tsx';
 import { type MediaSlot, mediaSlots } from '../../catalog';
 import { label, labelfill } from '../../labels.ts';
-import { specenvlimits } from '../../sandboxenvprofile.ts';
+import { specenvlimits } from '../../sandbox.ts';
 import {
         SANDBOXARCHES,
         SANDBOXBASES,
@@ -50,7 +51,7 @@ import {
         type sandboxarchid,
         type sandboxbaseid,
         type sandboxosid,
-} from '../../sandboxprofile.ts';
+} from '../../sandbox.ts';
 import { HomeEntrygate as EntryGate } from '../wingets';
 import { MetricStrip as MetricStrip } from '../wingets';
 import { RuntimeDiagram as RuntimeDiagram } from '../wingets';
