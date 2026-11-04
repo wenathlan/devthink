@@ -4,7 +4,7 @@
     <AssemblyName>vault</AssemblyName>
     <RootNamespace>vault</RootNamespace>
     <PackageId>vault</PackageId>
-    <Version>2.0.157</Version>
+    <Version>2.0.158</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the vault documentation set and the tests directory. vault is the supabase clone — the self-hosted database, auth and storage surface.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
