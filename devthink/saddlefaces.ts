@@ -114,9 +114,18 @@
  * sources.
  */
 
-declare module "@wenathlan/saddle/modalityregistry" {
-  /** the boot cost classes the ladder measures. */
-  export type BootClass = "hot" | "warm" | "cold";
+/* the modality registry face of the @wenathlan/saddle/modalityregistry
+ * subpath: the top-level exports below answer the specifier exactly the
+ * way the bare and /memory lanes above do — the tsconfig paths of both
+ * programs map the subpath onto this file, the runtime bridges inline the
+ * owner's real source (../saddle/modalityregistry.ts) and the declaration
+ * build keeps the program inside the rootDir law. The surface mirrors the
+ * engine's type-only bridge (saddle/modalityregistrytypes.ts) one for one;
+ * retires the day the published saddle envelope carries the declaration
+ * build beside the sources. */
+
+/** the boot cost classes the ladder measures. */
+export type BootClass = "hot" | "warm" | "cold";
 
   /** the isolation families the modalities group under. */
   export type ModalityFamily =
@@ -176,17 +185,17 @@ declare module "@wenathlan/saddle/modalityregistry" {
   }
 
   /** the boot budgets of the ladder, per class. */
-  export const BOOTLADDER: Readonly<Record<BootClass, number>>;
+  export declare const BOOTLADDER: Readonly<Record<BootClass, number>>;
 
   /** the plan line the owner charged (the ninety modalities). */
-  export const MODALITYPLANCOUNT: 90;
+  export declare const MODALITYPLANCOUNT: 90;
 
   /** the count the catalog answers — derived from the records' real length,
    * never a hardcoded line (the wave/saddlemod2 law). */
-  export const MODALITY_COUNT: number;
+  export declare const MODALITY_COUNT: number;
 
   /** the catalog: every modality record, frozen, in catalog order. */
-  export const MODALITIES: readonly ModalityRecord[];
+  export declare const MODALITIES: readonly ModalityRecord[];
 
   /** the honest census of the registry against the ninety plan. */
   export interface ModalityPlanReport {
@@ -210,7 +219,7 @@ declare module "@wenathlan/saddle/modalityregistry" {
    *
    * @returns the census of the catalog.
    */
-  export function planreport(): ModalityPlanReport;
+  export declare function planreport(): ModalityPlanReport;
 
   /** the base profiles the owner names (the config wave makes them editable). */
   export type BaseProfile = "max" | "balanced" | "lite";
@@ -238,7 +247,7 @@ declare module "@wenathlan/saddle/modalityregistry" {
    * @param request the workload demands.
    * @returns the modality records that satisfy the join, best candidate first.
    */
-  export function resolvejoin(request: JoinRequest): readonly ModalityRecord[];
+  export declare function resolvejoin(request: JoinRequest): readonly ModalityRecord[];
 
   /**
    * answers one modality by id (the config rows and the api carry ids).
@@ -246,5 +255,4 @@ declare module "@wenathlan/saddle/modalityregistry" {
    * @param id the modality id.
    * @returns the record, or undefined when the id is unknown.
    */
-  export function getmodality(id: string): ModalityRecord | undefined;
-}
+  export declare function getmodality(id: string): ModalityRecord | undefined;

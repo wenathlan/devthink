@@ -44,7 +44,10 @@
        * candidate carries no runtime exports the way the first bridge
        * attempt learned). */
       "@wenathlan/saddle/security": ["../saddle/security.ts"],
-      "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
+      /* the modality registry subpath answers the saddlefaces body (the
+       * same seat the bare specifier and /memory ride): one typed face per
+       * engine family, the runtime bridges inline the owner's real source */
+      "@wenathlan/saddle/modalityregistry": ["./saddlefaces.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
