@@ -58,6 +58,7 @@ import {
   useState } from "react";
 import { createPortal } from "react-dom";
 import { osText } from "../../os.ts";
+import { FAMILY_SLUGS } from "../../window.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 
 export type WindowState = "normal" | "maximized" | "minimized" | "snapped-left" | "snapped-right";
@@ -152,6 +153,24 @@ const ZONE_WORDS: Record<SnapZone, string> = {
  * and the spawn floor of the root window logic enforce the same pair) */
 export const WINDOW_MIN_WIDTH = 320;
 export const WINDOW_MIN_HEIGHT = 320;
+/** the family band floor: a family iframe (the ten sibling apps the panel
+ * mounts through the family frame) renders its own 1280x800 responsive
+ * design — squeezing the window below the band cuts the standalone face,
+ * so the manual resize of a family window floors at the band instead of
+ * the doctrine 320 (the same law the spawnfit verdict applies at open). */
+export const FAMILY_BAND_WIDTH = 1280;
+export const FAMILY_BAND_HEIGHT = 800;
+/** the resize floor of one window id: family windows answer their band, the
+ * anchors answer the doctrine minimum (pure, exported for the tests). */
+export function windowminwidthof(id: string): number {
+  return FAMILY_SLUGS.includes(id as (typeof FAMILY_SLUGS)[number]) ? FAMILY_BAND_WIDTH : WINDOW_MIN_WIDTH;
+}
+/** the vertical floor of one window id: family windows answer their band
+ * height, the anchors answer the doctrine minimum (pure, exported for the
+ * tests). */
+export function windowminheightof(id: string): number {
+  return FAMILY_SLUGS.includes(id as (typeof FAMILY_SLUGS)[number]) ? FAMILY_BAND_HEIGHT : WINDOW_MIN_HEIGHT;
+}
 /** the drag raise of the win11React doctrine: while a title-bar drag is
  * live the moved window paints above every sibling on the 9900 band (the
  * aero ghost rides one step above it on calc(var(--win-drag-z) + 1)), and
@@ -571,17 +590,21 @@ export function WindowFrame({ win, active, tabs, onFocus, onUpdate, onClose, chi
 
     const applyMove = (move: PointerEvent) => {
       // the resize deltas divide by the zoom scale — the bounds answer
-      // css pixels, the pointer arrives in viewport pixels
+      // css pixels, the pointer arrives in viewport pixels; the floors
+      // follow the window id (a family iframe answers its 1280x800 band —
+      // the standalone face never cuts inside the panel window)
       const patch: Partial<Omit<WindowSnapshot, "id">> = {};
-      if (east) patch.width = Math.max(WINDOW_MIN_WIDTH, origin.width + (move.clientX - startX) / scale);
+      const minwidth = windowminwidthof(win.id);
+      const minheight = windowminheightof(win.id);
+      if (east) patch.width = Math.max(minwidth, origin.width + (move.clientX - startX) / scale);
       if (west) {
-        const width = Math.max(WINDOW_MIN_WIDTH, origin.width - (move.clientX - startX) / scale);
+        const width = Math.max(minwidth, origin.width - (move.clientX - startX) / scale);
         patch.width = width;
         patch.x = origin.x + (origin.width - width);
       }
-      if (south) patch.height = Math.max(WINDOW_MIN_HEIGHT, origin.height + (move.clientY - startY) / scale);
+      if (south) patch.height = Math.max(minheight, origin.height + (move.clientY - startY) / scale);
       if (north) {
-        const height = Math.max(WINDOW_MIN_HEIGHT, origin.height - (move.clientY - startY) / scale);
+        const height = Math.max(minheight, origin.height - (move.clientY - startY) / scale);
         patch.height = height;
         patch.y = origin.y + (origin.height - height);
       }
