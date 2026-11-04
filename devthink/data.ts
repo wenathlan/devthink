@@ -1042,11 +1042,16 @@ export function toexcel(columns: columnspec[], rows: datasetrow[], name: string)
 }
 
 export function normalizeheader(label: string): string {
-  const slug = label
+  // js/polynomial-redos (code-scanning): the separator collapse stays as-is
+  // (a single unambiguous quantifier), but the dash trim drops the
+  // /^-+|-+$/g regex — it can regress quadratically on a long run of '-' —
+  // for a linear pair of loops with the exact same result.
+  let slug = label
     .trim()
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/[^\p{L}\p{N}]+/gu, "-");
+  while (slug.startsWith("-")) slug = slug.slice(1);
+  while (slug.endsWith("-")) slug = slug.slice(0, -1);
   return slug || "column";
 }
 
