@@ -208,42 +208,47 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
 
   it("the dockerfile defaults bake the max profile and never hardcode a digest", async () => {
     const dockerfile = await readFile(join(repoRoot, "saddle", "Dockerfile"), "utf8");
-    expect(dockerfile).toContain('ARG VHE_PROFILE_CPU="epyc9965"');
-    expect(dockerfile).toContain('ARG VHE_PROFILE_VCPUS="192"');
-    expect(dockerfile).toContain('ARG VHE_PROFILE_THREADS="384"');
-    expect(dockerfile).toContain('ARG VHE_PROFILE_RAM_GB="1024"');
-    expect(dockerfile).toContain('ARG VHE_PROFILE_GPU="b200"');
-    expect(dockerfile).toContain('ARG VHE_PROFILE_GPUS="8"');
-    /* the gateway family policy: no hardcoded sha-256 anywhere in the
-     * container sources — the mesa digest arrives as the github-computed
-     * MESA_SHA256 build-arg (an empty default, verified at build time). */
-    expect(dockerfile).toContain('ARG MESA_SHA256=""');
+    /* the saddlemod heal law: the argan family doctrine — three explicit
+     * profile targets (max / balanced / lite) with the SADDLE_PROFILE stamp
+     * and the virtual hardware plan of each leg, no mesa machinery. */
+    expect(dockerfile).toContain("ARG SADDLE_PROFILE=max");
+    expect(dockerfile).toContain("SADDLE_PROFILE_CPU=");
+    expect(dockerfile).toContain("SADDLE_PROFILE_VCPUS=");
+    expect(dockerfile).toContain("SADDLE_PROFILE_RAM_GB=");
+    expect(dockerfile).toContain("SADDLE_PROFILE_GPU=");
+    expect(dockerfile).toContain("SADDLE_PROFILE_GPUS=");
+    expect(dockerfile).toContain("--target max");
+    expect(dockerfile).toContain("--target balanced");
+    expect(dockerfile).toContain("--target lite");
+    /* the digest law: no hardcoded sha-256 anywhere in the container
+     * sources — the base image resolves at build time on the runner. */
     expect(dockerfile).not.toMatch(/[a-f0-9]{64}/);
   });
 
-  it("the -vhe tag family never collides with the node engine and never rolls", async () => {
+  it("the profile tag family never collides with the node engine and never rolls", async () => {
     const publish = await readworkflow("publish.yml");
-    expect(publish).toContain('suffix="-vhe"');
-    expect(publish).toContain('if [ "${PROFILE}" != "max" ]; then suffix="-vhe-${PROFILE}"; fi');
-    expect(publish).toContain("No latest, no");
-    expect(publish).toContain("no rolling alias.");
-    /* the verify legs inspect the same tag family: max -> -vhe, balanced ->
-     * -vhe-balanced, lite -> -vhe-lite; inspecting the bare :<version> tag
-     * would verify the node-engine image of the ghcr lane instead. */
+    /* the saddlemod heal law: max rides the bare :<version> tag of the
+     * family pattern, balanced / lite carry the profile suffix, and no leg
+     * ever publishes a rolling alias. */
+    expect(publish).toContain('if [ "${PROFILE}" != "max" ]; then suffix="-${PROFILE}"; fi');
+    expect(publish).toContain("no rolling alias");
     const workflow = await parseworkflow("publish.yml");
     const verify = matrixof(workflow, "saddle-vhe-verify");
-    expect(verify.map((leg) => [leg.profile, leg.suffix])).toEqual([
-      ["max", "-vhe"],
-      ["balanced", "-vhe-balanced"],
-      ["lite", "-vhe-lite"],
+    expect(verify.map((leg) => [leg.profile, leg.suffix ?? ""])).toEqual([
+      ["max", ""],
+      ["balanced", "-balanced"],
+      ["lite", "-lite"],
     ]);
   });
 
-  it("the published vhe index answers the eleven architectures and the spoofing probe", async () => {
+  it("the published vhe index answers the eleven architectures and the honest console smokes", async () => {
     const publish = await readworkflow("publish.yml");
-    expect(publish).toContain('| . == ["386", "amd64", "amd64/v2", "arm/v6", "arm/v7", "arm64", "loong64", "mips64le", "ppc64le", "riscv64", "s390x"]');
-    expect(publish).toContain('grep -q "${EXPECTCPU}" <<< "${cpuinfo}"');
-    expect(publish).toContain('test "${actual_version}" = "${VERSION}"');
+    /* the saddlemod heal law: the spoofed /proc validations retired with
+     * the mesa machinery — the legs verify the image with an honest
+     * detached boot, the /health probe and the modalities plancount. */
+    expect(publish).toContain("linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64");
+    expect(publish).toContain("/health");
+    expect(publish).toContain("/api/v1/modalities");
   });
 
   it("the node engine ghcr lane carries the five-architecture family index", async () => {
@@ -261,7 +266,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
      * balanced and lite all live) instead of any single -vhe tag, and
      * the per-leg guard inside the publish matrix skips only the legs
      * that already ship so a re-run completes the missing siblings. */
-    expect(publish).toContain('. == \\"${version}-vhe\\" or . == \\"${version}-vhe-balanced\\" or . == \\"${version}-vhe-lite\\"');
+    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\"');
     expect(publish).toContain('if [ "${api_out}" = "3" ]');
     expect(publish).toContain('echo "skip=true" >> "$GITHUB_OUTPUT"');
     expect(publish).toContain("if: steps.meta.outputs.skip != 'true'");
@@ -319,27 +324,16 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(sums?.needs).toContain("saddle-container");
   });
 
-  it("the mesa resolver heals the mirror gap that killed the standalone-fold container", async () => {
+  it("the base image resolver answers the digest law — nothing hardcoded rides the container lane", async () => {
     const publish = await readworkflow("publish.yml");
-    /* the root cause the saddle container law closes: a MESA_VERSION bump
-     * nobody mirrored left the resolver dying on the absent mesa-cache
-     * release (set -euo pipefail on the download) and the container never
-     * published after the fold. The resolver now resolves the digest in
-     * tiers — the GitHub-computed digest of the cache asset, the cache
-     * tarball downloaded and hashed on the runner, and the upstream
-     * tarball that HEALS the mirror by creating the cache release — so
-     * the value never enters the repository and the lane survives every
-     * future bump. The 2.0.153 ladder lesson rides beside: the gh api
-     * error body rides stdout on 404, so the release capture validates
-     * the assets array before the legacy branch trusts it, and the
-     * devthink lane walks the same healing tier (create or upload). */
-    expect(publish).toContain('release_json="$(gh api "repos/${GH_REPO}/releases/tags/${release}" 2>/dev/null || true)"');
-    expect(publish).toContain("the ${release} mirror is absent; healing from upstream and publishing the cache.");
-    expect(publish).toContain('gh release create "${release}" "/tmp/${tarball}"');
-    expect(publish).toContain('sha="$(sha256sum "/tmp/${tarball}" | awk \'{print $1}\')"');
-    expect(publish).toContain("jq -e 'has(\"assets\")'");
-    expect(publish).toContain("the ${release} mirror lacks the ${tarball}; healing from upstream and publishing the cache.");
-    expect(publish).toContain('gh release upload "${release}" "/tmp/${tarball}" --repo "${GH_REPO}" --clobber');
+    /* the saddlemod heal law: the mesa resolver and its mirror healing
+     * retired with the from-source stages — the family doctrine resolves
+     * the base image digest at build time on the runner (the bases step
+     * deriving NODE_BASE) and no 64-hex digest ever enters the
+     * repository or the workflow body. */
+    expect(publish).toContain("NODE_BASE");
+    expect(publish).not.toContain("MESA_SHA256");
+    expect(publish).not.toMatch(/"[a-f0-9]{64}"/);
   });
 
   it("the family ghcr loop walks past the legacy saddle package honestly", async () => {

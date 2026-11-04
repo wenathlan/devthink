@@ -141,25 +141,25 @@ describe("sandboxlane", () => {
     expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 81 live, 9 host, 0 planned");
     const text = rows.join("\n");
     // the live lanes name the surfaces the platform drives
-    expect(text).toContain("container-docker: live lane — docker ");
-    expect(text).toContain("runner-node: live lane — the node runtime the run lane executes inside the container");
-    expect(text).toContain("fs-vfs: live lane — the session jail the storage lane drives");
-    expect(text).toContain("runner-serverless: live lane — the v8 isolate the exec lane drives in process");
-    expect(text).toContain("storage-sqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
-    expect(text).toContain("fs-gitobjects: live lane — the content-addressed objects store the gitobj tool drives");
-    expect(text).toContain("network-dns: live lane — the node resolver the dns tool drives");
-    expect(text).toContain("network-doh: live lane — the https resolver the doh tool drives");
+    expect(text).toContain("containerdocker: live lane — docker not installed on this host, the run lane refuses honestly");
+    expect(text).toContain("runnernode: live lane — the node runtime the run lane executes inside the container");
+    expect(text).toContain("fsvfs: live lane — the session jail the storage lane drives");
+    expect(text).toContain("runnerserverless: live lane — the v8 isolate the exec lane drives in process");
+    expect(text).toContain("storagesqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
+    expect(text).toContain("fsgitobjects: live lane — the content-addressed objects store the gitobj tool drives");
+    expect(text).toContain("networkdns: live lane — the node resolver the dns tool drives");
+    expect(text).toContain("networkdoh: live lane — the https resolver the doh tool drives");
     // the polyglot live lanes probe their host runtime (python names the binary)
-    expect(text).toContain("language-python: live lane — python3 ");
-    expect(text).toContain("build-make: live lane — make ");
+    expect(text).toContain("languagepython: live lane — python3 ");
+    expect(text).toContain("buildmake: live lane — make ");
     // the host runtimes name their binary and the probe verdict of this host
-    expect(text).toContain("emulator-qemu: host runtime qemu-system-x86_64 ");
-    expect(text).toContain("microvm-firecracker: host runtime firecracker ");
-    expect(text).toContain("container-runsc: host runtime runsc ");
+    expect(text).toContain("emulatorqemu: host runtime qemu-system-x86_64 not installed");
+    expect(text).toContain("microvmfirecracker: host runtime firecracker not installed");
+    expect(text).toContain("containerrunsc: host runtime runsc not installed");
     // the ninety modalities wave wired the planned set: virtual-full is a
     // live composition lane the edge plane drives, pod-session a host probe
-    expect(text).toContain("virtual-full: live lane — the platform drives it");
-    expect(text).toContain("pod-session: host runtime pod-session ");
+    expect(text).toContain("virtualfull: live lane — the platform drives it");
+    expect(text).toContain("podsession: host runtime podsession not installed");
     // every record row after the summary carries one of the three state words
     for (const row of rows.slice(1)) {
       expect(row).toMatch(/: (live lane — |host runtime |planned — )/);

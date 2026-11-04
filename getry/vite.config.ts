@@ -119,7 +119,7 @@ export default defineConfig({
        * specifier ("@wenathlan/devthink/oslabels"), and this bridge resolves
        * it to the monorepo source the sibling app carries — the label
        * catalog is never duplicated inside getry. */
-      "@wenathlan/devthink/oslabels": path.resolve(import.meta.dirname, "../devthink/oslabels.ts"),
+      "@wenathlan/devthink/oslabels": path.resolve(import.meta.dirname, "../devthink/os.ts"),
       "@wenathlan/getry/project": path.resolve(import.meta.dirname, "project.ts"),
       "@wenathlan/getry/quota": path.resolve(import.meta.dirname, "quota.ts"),
       "@wenathlan/getry/recovery": path.resolve(import.meta.dirname, "recovery.ts"),

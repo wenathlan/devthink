@@ -3042,10 +3042,16 @@ export function runparitygate(): void {
     "_headers",
     "_redirects",
     "Dockerfile",
+    ".dockerignore",
+    ".env.example",
+    ".dev.vars.example",
+    ".gitattributes",
+    ".npmrc",
+    ".nvmrc",
   ];
 
   /** the byte identical files across the family. */
-  const identicalFiles = ["biome.jsonc"];
+  const identicalFiles = ["biome.jsonc", ".nvmrc"];
 
   /** the saddle vm pins the family overrides never inherit (the saddle
    * exceptions the standardization law keeps). */

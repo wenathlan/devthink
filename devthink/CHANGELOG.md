@@ -1,6 +1,14 @@
+## 2.0.158
+
+The lane heal rung answers the frozen install curse and the fold regressions together: the eleven lockfiles regenerate against the union dependency tree, the Sol aliases ride the sol folders across every vite seat and runtime path, the bundlescan gate answers from the foundry seat, the entry faces (cjs, umd, pagebridge) return to their own single responsibility files so the node build lane never resolves the index artifact at build time, the stepoptions and DEFAULT_MODEL_ID collisions dissolve with block suffixes, the getry stdin bridges answer the providercli seat again and the byte budgets ride one more notch above the fold growth.
+
+## 2.0.157
+
+The 2.0.157 rung rides the synchronized version ladder: all twelve package.json seats (the root and the eleven apps) stamp the same number, the engine faces (devthink version.ts and manifest.json) answer the same rung, and the release approval flow fires the asset ladder from the healed tree — the logicfold, rootclean, saddlemod, designheal and mergeops folds land together with the eleven remote wave branches squash-merged into the main lane.
+
 # DevThink release notes
 
-## 2.0.158
+## 2.0.156
 
 This release is the lane heal rung of the ladder: the frozen install curse that reddened every workflow ends here. The 2.0.155 realignment had rewritten every version rung without regenerating the devthink lock, so the frozen lane refused the tree and ci, verify, family-desktop, family-mobile and the whole release ladder died at the install step — the lockfile heal regenerates the lock against the pinned CI bun (1.4.4) and the ladder rides green again. The version curve law lands with it: the internal family specifiers ride the tilde pins of the 2.0 house (~2.0.155, the devthink envelope at its published floor) so the wrong 2.1 curve the caret ranges floated to never resolves again, the lucide 1.68 leaf rides the eleven manifests in lockstep with the locks and the supply-chain age gates following, and the ssh2 native lottery dies in the seat pnpm 12 reads (the neverBuilt gate across the ten workspace files — the pure-js engine answers, node 26 never compiles the broken binding). The security rung rides the same wave: the seven polynomial-redos engines answer bounded windows (the semver extracts, the thinking-tag sweeps, the embedded JSON walk, the quota heuristic and the shader comment strip), the base image digests resolve at build time on the GitHub runners (the digest-never-hardcoded law the mesa pattern carried, now serving ubuntu, python and node across the eleven-architecture matrix), the pnpm and prisma tarballs answer checksum gates, and the postcss-selector-parser override reaches the workspace seat the dependabot finding waited for. The chrome containment law heals the interface: the caption controls never shrink out of the window on a squeezing resize, the explore title truncates in its seat, and the auth placeholder lifts to the honest 82% contrast. The release approval gate answers its dispatch again and the ladder runs the full twenty jobs from the healed tree.
 

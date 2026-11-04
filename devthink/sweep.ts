@@ -163,7 +163,7 @@ export async function runsweepsuite() {
       else if (entry.name.endsWith(".ts") || entry.name.endsWith(".tsx")) solsources.push(join(dir, entry.name));
     }
   }
-  await walksol("Sol");
+  await walksol("sol");
   solsources.sort();
   /* the flat tests village: the suites answer from the app tests folder
    * beside the sources (the old in-app tests home died with the flat move,
@@ -582,7 +582,7 @@ export interface sweepreport {
  * identical (the trail rows name the gate modules that carry the records
  * now). */
 export const sweeprecord: sweepreport = {
-  "release": "2.0.156",
+  "release": "2.0.159",
   "trails": [
     "devthink/agentcert.ts",
     "devthink/costcert.ts",
@@ -651,7 +651,7 @@ export const sweeprecord: sweepreport = {
       "family": "scans",
       "name": "no secret material appears in the bundle",
       "status": "fixed",
-      "detail": "no literal key, token or password value appears in the 318 shipped sources or the 29 compiled bundles"
+      "detail": "no literal key, token or password value appears in the 288 shipped sources or the 29 compiled bundles"
     },
     {
       "family": "scans",
