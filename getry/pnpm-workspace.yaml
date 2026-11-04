@@ -33,6 +33,13 @@ onlyBuiltDependencies:
   - ssh2
   - workerd
 dangerouslyAllowAllBuilds: true
+# the native build law (the node 26 v8 gate): ssh2's optional c++ binding
+# speaks the removed v8 context api (GetIsolate), so the gyp lottery dies
+# here in the seat pnpm 12 reads - the pure-js engine answers the lanes
+# and no install ever compiles the broken binding.
+neverBuiltDependencies:
+  - ssh2
+
 minimumReleaseAgeExclude:
   - zod@4.6.6 || 4.6.7
   - follow-redirects@1.16.1

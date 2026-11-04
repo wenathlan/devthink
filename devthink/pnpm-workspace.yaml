@@ -23,6 +23,13 @@ overrides:
 # the freshly published security fixes install before they age: pnpm 12
 # verifies the supply-chain age by default and these corrections ride the
 # exclusion so the family heals now, not after the waiting window.
+# the native build law (the node 26 v8 gate): ssh2's optional c++ binding
+# speaks the removed v8 context api (GetIsolate), so the gyp lottery dies
+# here in the seat pnpm 12 reads - the pure-js engine answers the lanes
+# and no install ever compiles the broken binding.
+neverBuiltDependencies:
+  - ssh2
+
 minimumReleaseAgeExclude:
   - zod@4.6.6 || 4.6.7
   - body-parser@2.4.0
