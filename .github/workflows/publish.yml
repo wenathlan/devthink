@@ -5583,7 +5583,8 @@ jobs:
             VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
-            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
+            NODE_BASE_TAG=node:26.13.0-slim
+            NODE_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodedigest }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -5664,6 +5665,7 @@ jobs:
       ubunturef: ${{ steps.bases.outputs.ubuntu }}
       pythonref: ${{ steps.bases.outputs.python }}
       noderef: ${{ steps.bases.outputs.node }}
+      nodedigest: ${{ steps.bases.outputs.nodedigest }}
     permissions:
       # contents: write is required to keep the SHA256SUMS asset of the
       # mesa-cache release in place (the GitHub-generated digest of the
@@ -5808,6 +5810,7 @@ jobs:
             echo "ubuntu=ubuntu:24.04@${ubuntu_digest}"
             echo "python=python:3.14.7-slim@${python_digest}"
             echo "node=node:26.13.0-slim@${node_digest}"
+            echo "nodedigest=${node_digest}"
           } >> "$GITHUB_OUTPUT"
           echo "base digests resolved at build time: ubuntu ${ubuntu_digest} / python ${python_digest} / node ${node_digest}"
 
@@ -5888,7 +5891,8 @@ jobs:
             VHE_PROFILE_RAM_GB=1024
             VHE_PROFILE_GPU=b200
             VHE_PROFILE_GPUS=8
-            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
+            NODE_BASE_TAG=node:26.13.0-slim
+            NODE_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodedigest }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -6086,7 +6090,8 @@ jobs:
             VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
-            NODE_BASE=${{ needs.saddle-vhe-resolve.outputs.noderef }}
+            NODE_BASE_TAG=node:26.13.0-slim
+            NODE_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodedigest }}
           labels: |
             org.opencontainers.image.title=saddle (the master virtualization engine)
             org.opencontainers.image.description=the ninety modalities the self-hosted edge answers (the ${{ matrix.profile }} profile)
@@ -6284,7 +6289,8 @@ jobs:
             --build-arg VHE_PROFILE_RAM_GB="1024" \
             --build-arg VHE_PROFILE_GPU="b200" \
             --build-arg VHE_PROFILE_GPUS="8" \
-            --build-arg NODE_BASE="${{ needs.saddle-vhe-resolve.outputs.noderef }}" \
+            --build-arg NODE_BASE_TAG="node:26.13.0-slim" \
+            --build-arg NODE_BASE_DIGEST="${{ needs.saddle-vhe-resolve.outputs.nodedigest }}" \
             --tag "$IMAGE" -f saddlebuildctx/saddle/Dockerfile saddlebuildctx
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest
