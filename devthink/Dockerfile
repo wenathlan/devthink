@@ -239,6 +239,13 @@ COPY devthink/package.json devthink/bun.lock ./
 # context provides it, and the COPY lands it at /vault where the file:
 # dependency of /devthink/package.json resolves (the exact resolution the
 # application-scoped context of the pre-union era could never answer).
+# the cadria sibling the transcode engine bridge resolves: the vitest and
+# tsconfig bridges of the application map @wenathlan/cadria/transcodeengine
+# onto the sibling tree the checkout carries beside the application (the
+# engine-ownership law the video move answers), so the family context
+# provides it and the COPY lands it at /cadria where the bridge paths
+# resolve (the same law the vault sibling below carries).
+COPY cadria /cadria
 COPY vault /vault
 
 # the toolchain: zip and unzip for the packaging steps (the extension
@@ -308,6 +315,13 @@ ARG TARGETARCH
 # ride the same family-context paths the deps stage copies.
 COPY devthink/package.json devthink/bun.lock ./
 
+# the cadria sibling the transcode engine bridge resolves: the vitest and
+# tsconfig bridges of the application map @wenathlan/cadria/transcodeengine
+# onto the sibling tree the checkout carries beside the application (the
+# engine-ownership law the video move answers), so the family context
+# provides it and the COPY lands it at /cadria where the bridge paths
+# resolve (the same law the vault sibling below carries).
+COPY cadria /cadria
 COPY vault /vault
 
 RUN set -eux; \

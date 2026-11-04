@@ -18,7 +18,8 @@
       "@wenathlan/debonair/audiofeatures": ["../debonair/audiofeatures.ts"],
       "@wenathlan/debonair/audiopipeline": ["../debonair/audiopipeline.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
-      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"]
+      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
+      "@wenathlan/saddle/security": ["../saddle/security.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],

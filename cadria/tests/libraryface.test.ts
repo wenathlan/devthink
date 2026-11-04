@@ -53,7 +53,7 @@ const SPECIFIER_LANE: readonly string[] = [
   "./imageexport",
   "./imageproject",
   "./labels",
-];
+  "./transcodeengine",];
 
 describe("the library face", () => {
   it("declares the engine surface the family law promises", async () => {

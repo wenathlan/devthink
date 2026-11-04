@@ -187,10 +187,12 @@ describe("containerpack", () => {
     expect(publish).toContain('. == ["amd64", "arm64", "ppc64le", "riscv64", "s390x"]');
     expect(publish).toContain("provenance: mode=max");
     expect(publish).toContain("sbom: true");
-    /* the action answers by its immutable commit sha with the moving tag
-    riding as the trailing comment (the 2.0.136 supply chain pin doctrine
-    the code scanning closure demanded; the digests ride the build records) */
-    expect(publish).toContain("aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0");
+    /* the trivy lane rides the redirector bypass: the github.com release
+    tarball with the curl retry loop and the explicit version pin (the
+    get.trivy.dev DNS died on the hosted runners - exit six, three strikes
+    across fresh runners; the supply chain doctrine the action pin carried
+    now rides the pinned download URL) */
+    expect(publish).toContain("aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz");
   });
 
   it("builds the release container archive from THE Dockerfile", async () => {

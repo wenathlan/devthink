@@ -11,6 +11,12 @@ export default defineConfig({
        * the mechanism is never duplicated inside cadria. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the aead seal bridge of the ownership law: the transcode engine
+       * channel imports the rfc 8439 seal the virtualization engine owns
+       * ("@wenathlan/saddle/security"); this bridge resolves the specifier
+       * to the monorepo source the sibling engine carries — the local copy
+       * the move retired never returns. */
+      "@wenathlan/saddle/security": path.resolve(import.meta.dirname, "../saddle/security.ts"),
 
       /** the storage lane bridge of the ownership law: the app's sqlite
        * mechanism rides the vault factory through the published library

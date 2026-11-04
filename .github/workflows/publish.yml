@@ -1877,15 +1877,35 @@ jobs:
           # fragile: the service evicts blobs and leaves orphan references
           # the next build reads as not-found), and nothing is published
           # beside the product image.
+      - name: Install trivy (the redirector bypass lane)
+        # get.trivy.dev DNS dies on the hosted runners (curl exit six,
+        # three strikes across fresh runners and reruns); the release
+        # tarball rides the github.com lane the tag resolve itself proved
+        # alive - the retry loop rides the curl flags and the explicit
+        # version pin (the supply chain doctrine the action pin carried).
+        if: steps.published.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          if command -v trivy >/dev/null 2>&1; then trivy --version; exit 0; fi
+          for i in 1 2 3 4 5 6; do
+            curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
+              "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz" \
+              -o /tmp/trivy.tar.gz && break
+            echo "trivy download attempt ${i} failed; sleeping before the next ride"
+            sleep 15
+          done
+          test -s /tmp/trivy.tar.gz
+          tar -xzf /tmp/trivy.tar.gz -C /tmp trivy
+          sudo install -m 0755 /tmp/trivy /usr/local/bin/trivy
+          trivy --version
       - name: scan container image
         if: steps.published.outputs.skip != 'true'
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: devthink:scan-${{ steps.release.outputs.version }}
-          scanners: vuln,secret,misconfig
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: "1"
+        run: |
+          trivy image devthink:scan-${{ steps.release.outputs.version }} \
+            --scanners vuln,secret,misconfig \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --exit-code 1
       - name: scan container image best practices
         # the dockle gate (the container best-practices complement the
         # trivy gate above answers nothing about: trivy reports what is
@@ -5093,14 +5113,33 @@ jobs:
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
+      - name: Install trivy (the redirector bypass lane)
+        # get.trivy.dev DNS dies on the hosted runners (curl exit six,
+        # three strikes across fresh runners and reruns); the release
+        # tarball rides the github.com lane the tag resolve itself proved
+        # alive - the retry loop rides the curl flags and the explicit
+        # version pin (the supply chain doctrine the action pin carried).
+        run: |
+          set -euo pipefail
+          if command -v trivy >/dev/null 2>&1; then trivy --version; exit 0; fi
+          for i in 1 2 3 4 5 6; do
+            curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
+              "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz" \
+              -o /tmp/trivy.tar.gz && break
+            echo "trivy download attempt ${i} failed; sleeping before the next ride"
+            sleep 15
+          done
+          test -s /tmp/trivy.tar.gz
+          tar -xzf /tmp/trivy.tar.gz -C /tmp trivy
+          sudo install -m 0755 /tmp/trivy /usr/local/bin/trivy
+          trivy --version
       - name: Scan the release image
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: saddle-vhe-release-scan:${{ needs.saddle-vhe-resolve.outputs.version }}
-          scanners: vuln,secret,misconfig
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-          exit-code: '1'
+        run: |
+          trivy image saddle-vhe-release-scan:${{ needs.saddle-vhe-resolve.outputs.version }} \
+            --scanners vuln,secret,misconfig \
+            --severity HIGH,CRITICAL \
+            --ignore-unfixed \
+            --exit-code 1
 
   saddle-vhe-publish:
     name: Publish saddle vhe ${{ matrix.profile }} image to GHCR (11-arch)

@@ -34,7 +34,7 @@ import { sha256Hex } from "./sha.ts";
 
 /** one account row: the person's identity on the site store (the password
  * never rides the row — only its salted digest). */
-export interface AccountRow {
+export interface SignupAccountRow {
   id: string;
   email: string;
   createdAt: string;
@@ -114,7 +114,7 @@ export const PASSWORD_FLOOR = 8;
  * @param email the candidate email.
  * @returns true when the email answers the shape.
  */
-export function emailValid(email: string): boolean {
+export function signupEmailValid(email: string): boolean {
   return EMAIL_PATTERN.test(email);
 }
 
@@ -140,7 +140,7 @@ export type SignupRefusal =
   | { kind: "wrong"; why: string };
 
 /** the signup answer: the account row, or the refusal. */
-export type SignupAnswer = { account: AccountRow } | { refusal: SignupRefusal };
+export type SignupAnswer = { account: SignupAccountRow } | { refusal: SignupRefusal };
 
 /**
  * Signs one person up — the account lands on the site store with only the
@@ -153,7 +153,7 @@ export type SignupAnswer = { account: AccountRow } | { refusal: SignupRefusal };
  */
 export function signupAccount(email: string, password: string): SignupAnswer {
   const trimmed = email.trim().toLowerCase();
-  if (!emailValid(trimmed)) {
+  if (!signupEmailValid(trimmed)) {
     return { refusal: { kind: "invalid", why: "the email does not answer the mail shape" } };
   }
   if (password.length < PASSWORD_FLOOR) {
@@ -178,7 +178,7 @@ export function signupAccount(email: string, password: string): SignupAnswer {
 }
 
 /** the signin answer: the account row with its databases, or the refusal. */
-export type SigninAnswer = { account: AccountRow; databases: DatabaseRow[] } | { refusal: SignupRefusal };
+export type SigninAnswer = { account: SignupAccountRow; databases: DatabaseRow[] } | { refusal: SignupRefusal };
 
 /**
  * Signs one person in — the digest of the presented password against the
@@ -208,7 +208,7 @@ export function signinAccount(email: string, password: string): SigninAnswer {
 }
 
 /** the account row of one id (the internal lane the routes ride). */
-export function accountOf(accountId: string): AccountRow | undefined {
+export function accountOf(accountId: string): SignupAccountRow | undefined {
   return queryOne<{ id: string; email: string; createdAt: string }>(
     "SELECT id, email, createdAt FROM accounts WHERE id = ?",
     [accountId],
@@ -216,7 +216,7 @@ export function accountOf(accountId: string): AccountRow | undefined {
 }
 
 /** the account row of one email (the credential lane the register route rides). */
-export function accountOfEmail(email: string): AccountRow | undefined {
+export function accountOfEmail(email: string): SignupAccountRow | undefined {
   return queryOne<{ id: string; email: string; createdAt: string }>(
     "SELECT id, email, createdAt FROM accounts WHERE email = ?",
     [email.trim().toLowerCase()],
@@ -241,13 +241,13 @@ export function databasesOfEmail(email: string): DatabaseRow[] {
  * @param password the verified password (its digest lands, never the word).
  * @returns the person account row.
  */
-export function ensurePersonAccount(email: string, password: string): AccountRow {
+export function ensurePersonAccount(email: string, password: string): SignupAccountRow {
   const existing = accountOfEmail(email);
   if (existing !== undefined) {
     return existing;
   }
   const landed = signupAccount(email, password);
-  if (landed.account !== undefined) {
+  if ("account" in landed) {
     return landed.account;
   }
   throw new Error(landed.refusal?.why ?? "the person row did not land");
@@ -261,7 +261,7 @@ export function ensurePersonAccount(email: string, password: string): AccountRow
  * @param password the presented password.
  * @returns the account row, or undefined when the door refuses.
  */
-export function accountVerified(email: string, password: string): AccountRow | undefined {
+export function accountVerified(email: string, password: string): SignupAccountRow | undefined {
   const row = queryOne<{ id: string; passwordDigest: string }>(
     "SELECT id, passwordDigest FROM accounts WHERE email = ?",
     [email.trim().toLowerCase()],

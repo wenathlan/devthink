@@ -233,6 +233,31 @@ describe("the engine door", () => {
     assert.equal("x-vault-token" in calls[1].headers, false, "the signin wire carries no bearer");
   });
 
+  it("registers the person's database through the public door — the key rides once", async () => {
+    const { fetch, calls } = seam([
+      jsonanswer(201, {
+        database: { id: "db-1", accountId: "acct-1", name: "the-first-app", quotaBytes: "943718400", createdAt: "2026-01-01T00:00:00Z" },
+        key: `vault_${"k".repeat(48)}`,
+        keyId: "key-1",
+        shown: "once",
+      }),
+    ]);
+    const client = vaultclient({ origin: ORIGIN, fetchImpl: fetch, token: "the-operator-token" });
+    const registered = await client.registerDatabase({ email: "a@family.test", password: "the-honest-password", name: "the-first-app" });
+    assert.equal(registered.ok, true);
+    if (registered.ok) {
+      assert.equal(registered.database.id, "db-1");
+      assert.equal(registered.database.quotaBytes, "943718400");
+      assert.equal(registered.key, `vault_${"k".repeat(48)}`);
+      assert.equal(registered.keyId, "key-1");
+    }
+    assert.equal("x-vault-token" in calls[0].headers, false, "the register wire carries no bearer");
+    assert.equal(calls[0].url, `${ORIGIN}/api/v1/databases`);
+    const body = JSON.parse(new TextDecoder().decode(calls[0].body as Uint8Array)) as Record<string, unknown>;
+    assert.equal(body.email, "a@family.test");
+    assert.equal(body.name, "the-first-app");
+  });
+
   it("rides the project list and the key lanes with the token header", async () => {
     const { fetch, calls } = seam([
       jsonanswer(200, {
