@@ -268,17 +268,34 @@ jobs:
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install trivy (the redirector bypass lane)
+        # get.trivy.dev DNS dies on the hosted runners (curl exit six,
+        # three strikes across fresh runners and reruns); the release
+        # tarball rides the github.com lane the tag resolve itself proved
+        # alive - the retry loop rides the curl flags and the explicit
+        # version pin (the supply chain doctrine the action pin carried).
+        run: |
+          set -euo pipefail
+          if command -v trivy >/dev/null 2>&1; then trivy --version; exit 0; fi
+          for i in 1 2 3 4 5 6; do
+            curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
+              "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz" \
+              -o /tmp/trivy.tar.gz && break
+            echo "trivy download attempt ${i} failed; sleeping before the next ride"
+            sleep 15
+          done
+          test -s /tmp/trivy.tar.gz
+          tar -xzf /tmp/trivy.tar.gz -C /tmp trivy
+          sudo install -m 0755 /tmp/trivy /usr/local/bin/trivy
+          trivy --version
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          scan-type: fs
-          scan-ref: .
-          scanners: vuln,secret,misconfig
-          format: sarif
-          output: trivy-results.sarif
-          severity: HIGH,CRITICAL
-          ignore-unfixed: false
-          exit-code: "1"
+        run: |
+          trivy fs . \
+            --scanners vuln,secret,misconfig \
+            --format sarif \
+            --output trivy-results.sarif \
+            --severity HIGH,CRITICAL \
+            --exit-code 1
       - name: Upload Trivy evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -457,6 +474,26 @@ jobs:
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install trivy (the redirector bypass lane)
+        # get.trivy.dev DNS dies on the hosted runners (curl exit six,
+        # three strikes across fresh runners and reruns); the release
+        # tarball rides the github.com lane the tag resolve itself proved
+        # alive - the retry loop rides the curl flags and the explicit
+        # version pin (the supply chain doctrine the action pin carried).
+        run: |
+          set -euo pipefail
+          if command -v trivy >/dev/null 2>&1; then trivy --version; exit 0; fi
+          for i in 1 2 3 4 5 6; do
+            curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
+              "https://github.com/aquasecurity/trivy/releases/download/v0.70.0/trivy_0.70.0_Linux-64bit.tar.gz" \
+              -o /tmp/trivy.tar.gz && break
+            echo "trivy download attempt ${i} failed; sleeping before the next ride"
+            sleep 15
+          done
+          test -s /tmp/trivy.tar.gz
+          tar -xzf /tmp/trivy.tar.gz -C /tmp trivy
+          sudo install -m 0755 /tmp/trivy /usr/local/bin/trivy
+          trivy --version
       - name: Setup docker buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Build image for scanning
@@ -503,15 +540,14 @@ jobs:
           exit-level: FATAL
           accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,smokebudget,apt_update_tries,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
       - name: Scan image with trivy (sarif report)
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: devthink-security-scan:latest
-          format: sarif
-          output: trivy-container.sarif
-          severity: CRITICAL,HIGH
-          scanners: vuln
-          ignore-unfixed: true
-          exit-code: "0"
+        run: |
+          trivy image devthink-security-scan:latest \
+            --format sarif \
+            --output trivy-container.sarif \
+            --severity CRITICAL,HIGH \
+            --scanners vuln \
+            --ignore-unfixed \
+            --exit-code 0
       - name: Upload trivy report to code scanning
         # fork pull requests run with a read-only token and cannot upload.
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
@@ -520,15 +556,13 @@ jobs:
           sarif_file: trivy-container.sarif
           category: trivy-container
       - name: Gate on critical vulnerabilities
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: devthink-security-scan:latest
-          format: table
-          severity: CRITICAL
-          scanners: vuln
-          ignore-unfixed: true
-          # non-zero exit code fails the job when critical CVEs exist.
-          exit-code: "1"
+        run: |
+          trivy image devthink-security-scan:latest \
+            --format table \
+            --severity CRITICAL \
+            --scanners vuln \
+            --ignore-unfixed \
+            --exit-code 1
 
   sbom:
     name: Software bill of materials

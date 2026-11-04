@@ -279,6 +279,9 @@ export default defineConfig({
   plugins: [nodebuiltinshim(), react(), tailwindcss(), familydevbridge()],
   resolve: {
     alias: {
+      // the transcode engine bridge of the ownership law (retires when the
+      // published cadria envelope carries the transcodeengine export entry)
+      "@wenathlan/cadria/transcodeengine": path.resolve(import.meta.dirname, "../cadria/transcodeengine.ts"),
       /** the exact-subpath bridge to the sibling saddle engine: the chat
        * sandbox lane imports the browser-pure engine through the published
        * library specifier ("@wenathlan/saddle/sandbox"), but the installed
@@ -313,6 +316,7 @@ export default defineConfig({
        * resolves the bare specifier and the memory face to the monorepo
        * source the sibling engine carries — the example job and every
        * future consumer answer the same seat. */
+      "@wenathlan/saddle/security": path.resolve(import.meta.dirname, "../saddle/security.ts"),
       "@wenathlan/saddle": path.resolve(import.meta.dirname, "../saddle/index.ts"),
       "@wenathlan/saddle/memory": path.resolve(import.meta.dirname, "../saddle/virtual.ts"),
       /** the getry engine bridge of the ownership law (pr16): the os gateway

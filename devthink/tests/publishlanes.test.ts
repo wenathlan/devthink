@@ -46,15 +46,18 @@ const matrixof = (workflow: workflow, job: string): vhmatrix[] =>
   ((workflow.jobs?.[job]?.strategy as { matrix?: { include?: vhmatrix[] } } | undefined)?.matrix?.include ??
     []) as vhmatrix[];
 
-/** the member family the release walks beside the os: the eight npm
- * envelopes of the publish mirror (getry rides the release ladder's own
- * loop — the gateway is born next and publishes through the family pack of
- * the release lane) with saddle always last, the heaviest pass of the
- * house. */
-const MIRRORFAMILY = ["argan", "cadria", "debonair", "forge", "foundry", "stealthhead", "vault", "saddle"];
-/** the release ladder's own family loop: the nine envelopes the family job
- * packs, saddle last, getry included. */
-const RELEASEFAMILY = ["argan", "cadria", "debonair", "forge", "foundry", "stealthhead", "vault", "getry", "saddle"];
+/** the member family the release walks beside the os: the ten npm
+ * envelopes of the publish mirror with saddle always last, the heaviest
+ * pass of the house — the distribution-completeness law answers the gap
+ * the mirror once carried (the gateway getry walked the release ladder's
+ * loop alone and the monetization cobaia walked no registry lane; both
+ * ride every lane now). */
+const MIRRORFAMILY = ["argan", "cadria", "cobaia", "debonair", "forge", "foundry", "getry", "stealthhead", "vault", "saddle"];
+/** the release ladder's own family loop: the ten envelopes the family job
+ * packs, saddle last — the distribution-completeness law rides both lanes
+ * (the gateway getry and the monetization cobaia answer beside the eight
+ * the lanes always carried). */
+const RELEASEFAMILY = ["argan", "cadria", "cobaia", "debonair", "forge", "foundry", "getry", "stealthhead", "vault", "saddle"];
 /** every application folder of the monorepo the version lockstep stamps. */
 const ALLAPPS = [
   "devthink",
@@ -126,9 +129,11 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
     const publish = await readworkflow("publish.yml");
     expect(publish).toContain("require('./${{ matrix.package }}/package.json').version");
     expect(publish).toContain("require('./saddle/package.json').version");
-    /* the deleted saddle-v* tag resolver never runs again: the vhe lane
-     * reads the saddle manifest of the checked out source. */
-    expect(publish).toContain("saddle-v* tag resolver never runs again");
+    /* the deleted saddle-v* tag resolver never runs again: the saddle
+     * block's lanes read the saddle manifest of the checked out source
+     * (the retirement of the extension lane kept the same resolver law —
+     * the block comment carries the deleted-tag doctrine). */
+    expect(publish).toContain("deleted tag pattern never answers a resolver again");
     expect(publish).toContain(
       "version=$(node -p \"JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version\")",
     );
@@ -281,7 +286,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     /* the security gate the publish rides behind: the trivy scan over the
      * same runtime target the publish legs build. */
     expect(publish).toContain("Saddle vhe security gate");
-    expect(publish).toContain("scanners: vuln,secret,misconfig");
+    expect(publish).toContain("--scanners vuln,secret,misconfig");
   });
 
   it("the saddle container archive lane answers the asset parity law", async () => {

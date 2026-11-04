@@ -28,6 +28,65 @@ afterEach(() => {
 });
 
 describe("the storage lane contract", () => {
+
+  /* ── the driver union (the 2.1.9 storage law) ───────────────────────── */
+
+  it("opens the node:sqlite builtin driver and answers the same helpers", () => {
+    const dir = tempdir();
+    const lane = openStorageLane({ url: path.join(dir, "builtin.db"), driver: "node:sqlite" });
+    expect(lane.driver).toBe("node:sqlite");
+    lane.exec("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, name TEXT)");
+    lane.execute("INSERT INTO t (name) VALUES (?)", ["builtin"]);
+    expect(lane.queryOne<{ name: string }>("SELECT name FROM t WHERE id = 1")?.name).toBe("builtin");
+    expect(lane.queryAll<{ name: string }>("SELECT name FROM t").length).toBe(1);
+    lane.close();
+  });
+
+  it("stamps the file mode the security seats demand (0o600, best effort, never :memory:)", () => {
+    const dir = tempdir();
+    const file = path.join(dir, "sealed.db");
+    const lane = openStorageLane({ url: file, driver: "node:sqlite", fileMode: 0o600 });
+    lane.exec("CREATE TABLE IF NOT EXISTS t (id INTEGER)");
+    lane.close();
+    const { statSync } = require("node:fs") as typeof import("node:fs");
+    expect(statSync(file).mode & 0o777).toBe(0o600);
+  });
+
+  it("wraps the builtin transaction through the explicit begin/commit ladder", () => {
+    const dir = tempdir();
+    const lane = openStorageLane({ url: path.join(dir, "tx.db"), driver: "node:sqlite" });
+    lane.exec("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, v TEXT)");
+    expect(() =>
+      lane.transaction(() => {
+        lane.execute("INSERT INTO t (v) VALUES (?)", ["doomed"]);
+        throw new Error("the body refused");
+      }),
+    ).toThrow("the body refused");
+    expect(lane.queryAll("SELECT * FROM t").length).toBe(0);
+    const answer = lane.transaction(() => {
+      lane.execute("INSERT INTO t (v) VALUES (?)", ["lands"]);
+      return 42;
+    });
+    expect(answer).toBe(42);
+    expect(lane.queryAll<{ v: string }>("SELECT v FROM t")[0]?.v).toBe("lands");
+    lane.close();
+  });
+
+  it("answers the injectable driver seat (the tests and the workbench resolution)", () => {
+    const dir = tempdir();
+    const builtin = (process as unknown as { getBuiltinModule: (id: string) => unknown }).getBuiltinModule("node:sqlite") as {
+      DatabaseSync: new (file: string) => unknown;
+    };
+    const lane = openStorageLane({
+      url: path.join(dir, "seat.db"),
+      driverSeat: () => builtin.DatabaseSync,
+    });
+    expect(lane.driver).toBe("seat");
+    lane.exec("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY)");
+    lane.execute("INSERT INTO t (id) VALUES (?)", [7]);
+    expect(lane.queryOne<{ id: number }>("SELECT id FROM t")?.id).toBe(7);
+    lane.close();
+  });
   it("walks the pragma ladder in the family order — busy_timeout before WAL, foreign keys armed", () => {
     expect(PRAGMA_BOOTSTRAP).toEqual(["busy_timeout = 30000", "journal_mode = WAL", "foreign_keys = ON"]);
     const dir = tempdir();
