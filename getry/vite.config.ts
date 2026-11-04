@@ -54,7 +54,13 @@ export default defineConfig({
       "@wenathlan/devthink/policy": path.resolve(import.meta.dirname, "../devthink/policy.ts"),
       "@wenathlan/devthink/protocol": path.resolve(import.meta.dirname, "../devthink/protocol.ts"),
       "@wenathlan/devthink/security": path.resolve(import.meta.dirname, "../devthink/security.ts"),
-      "@wenathlan/devthink/server": path.resolve(import.meta.dirname, "../devthink/server.ts"),
+      /* the @wenathlan/devthink/server self bridge was DELETED with the
+       * final double move of the gateway ownership wave (steps 4+5): the
+       * last getry consumers of the os server seam were the property lane
+       * (flipped in step 3) and the provider console barrel (moved to this
+       * app's providercli.ts, whose imports answer from in-package
+       * relatives) — nothing in getry imports the os server entry anymore,
+       * so the reverse-edge bridge retired with them. */
       "@wenathlan/devthink/storage": path.resolve(import.meta.dirname, "../devthink/storage.ts"),
       "@wenathlan/devthink/tools": path.resolve(import.meta.dirname, "../devthink/tools.ts"),
       "@wenathlan/devthink/types": path.resolve(import.meta.dirname, "../devthink/types.ts"),
@@ -77,6 +83,43 @@ export default defineConfig({
       "@wenathlan/getry/antigravity": path.resolve(import.meta.dirname, "antigravity.ts"),
       "@wenathlan/getry/oauth": path.resolve(import.meta.dirname, "oauth.ts"),
       "@wenathlan/getry/accounts": path.resolve(import.meta.dirname, "accounts.ts"),
+      /** the auth self bridge of the gateway ownership wave
+       * (wave/ownership.gateway): the devthink server compat shim speaks
+       * the moved auth family back through the published specifier
+       * ("@wenathlan/getry/auth"), and the graph lanes that pull the
+       * shim in through the devthink server bridge resolve it to this
+       * app's own source (the one owner of the moved family). */
+      "@wenathlan/getry/auth": path.resolve(import.meta.dirname, "auth.ts"),
+      /** the server self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 3 — the transport move): the
+       * sse/ndjson stream pipeline, the gateway route loop, the console
+       * static roots, the transport boot and the gateway config loader
+       * moved to this app's server.ts, and every lane that speaks the
+       * published specifier ("@wenathlan/getry/server") — the devthink
+       * server and config compat shims — resolves it to this app's own
+       * source: the one owner of the moved transport. */
+      "@wenathlan/getry/server": path.resolve(import.meta.dirname, "server.ts"),
+      /** the cli self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 4 — the console cli move): the gateway
+       * console cli family moved to this app's cli.ts, and every lane that
+       * speaks the published specifier ("@wenathlan/getry/cli") — the
+       * devthink server compat shim and the devthink router — resolves it
+       * to this app's own source: the one owner of the moved console. */
+      "@wenathlan/getry/cli": path.resolve(import.meta.dirname, "cli.ts"),
+      /** the providercli self bridge of the gateway ownership wave
+       * (wave/ownership.gateway, step 5 — the provider console move): the
+       * provider account console family moved to this app's providercli.ts,
+       * and every lane that speaks the published specifier
+       * ("@wenathlan/getry/providercli") — the devthink server compat shim
+       * and the devthink router — resolves it to this app's own source: the
+       * one owner of the moved console. */
+      "@wenathlan/getry/providercli": path.resolve(import.meta.dirname, "providercli.ts"),
+      /** the oslabels bridge of the ownership wave: the moved provider
+       * console reads the paired label catalog through the published os
+       * specifier ("@wenathlan/devthink/oslabels"), and this bridge resolves
+       * it to the monorepo source the sibling app carries — the label
+       * catalog is never duplicated inside getry. */
+      "@wenathlan/devthink/oslabels": path.resolve(import.meta.dirname, "../devthink/oslabels.ts"),
       "@wenathlan/getry/project": path.resolve(import.meta.dirname, "project.ts"),
       "@wenathlan/getry/quota": path.resolve(import.meta.dirname, "quota.ts"),
       "@wenathlan/getry/recovery": path.resolve(import.meta.dirname, "recovery.ts"),

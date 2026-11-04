@@ -2140,3 +2140,32 @@ const opencodePluginModule = {
 } as const;
 
 export default opencodePluginModule;
+
+/**
+ * The main provider plugin instance: chat.headers identification spoof,
+ * zero-config antigravity provider injection and the auth entry for the
+ * custom provider detected by model ids (when one exists).
+ * (the opencode server plugin entry moved from the devthink server tail
+ * with the provider console family of the gateway ownership wave, step 5 —
+ * three-line delegations to opencodeServer/buildOpencodeAuthHook; the
+ * providercli console re-exports them for compat.)
+ */
+export async function providerServer(input?: unknown, options?: Record<string, unknown>): Promise<Record<string, any>> {
+  return opencodeServer(input, options as any);
+}
+
+/**
+ * Standard auth entry for the provider id "google":
+ * `opencode auth login` → Google → OAuth (the provider family behind the scenes).
+ */
+export const googleAuth = async (): Promise<Record<string, any>> => ({
+  auth: buildOpencodeAuthHook("google"),
+});
+
+/**
+ * Standard auth entry for the provider id "antigravity":
+ * `opencode auth login` → Antigravity → OAuth (the provider family behind the scenes).
+ */
+export const antigravityAuth = async (): Promise<Record<string, any>> => ({
+  auth: buildOpencodeAuthHook("antigravity"),
+});

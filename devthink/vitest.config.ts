@@ -107,6 +107,25 @@ export default defineConfig({
       "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "../getry/nodeshim.ts"),
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "../getry/types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "../getry/constants.ts"),
+      /** the getry owner faces of the gateway ownership wave
+       * (wave/ownership.gateway), mirrored from vite.config.ts: the
+       * embedded gateway surfaces the grand merge interned in server.ts
+       * (the http transport server, the request auth family, the console
+       * cli and the provider cli) move to the getry owner root one face
+       * per step, and the consumers speak them through the published
+       * library specifiers ("@wenathlan/getry/server" and siblings) —
+       * these bridges resolve every specifier to the monorepo source the
+       * sibling app carries, so the node-side tests answer the same
+       * modules the dev server serves and the gateway logic keeps one
+       * owner (the auth family landed with step 2; the server, cli and
+       * providercli faces land with the steps that follow). the installed
+       * 2.0.154 envelope carries none of these export surfaces yet, so
+       * the bridge is the resolution of record until the published
+       * envelope catches up. */
+      "@wenathlan/getry/server": path.resolve(import.meta.dirname, "../getry/server.ts"),
+      "@wenathlan/getry/auth": path.resolve(import.meta.dirname, "../getry/auth.ts"),
+      "@wenathlan/getry/cli": path.resolve(import.meta.dirname, "../getry/cli.ts"),
+      "@wenathlan/getry/providercli": path.resolve(import.meta.dirname, "../getry/providercli.ts"),
       /** the devthink self bridges of the ownership wave
        * (wave/ownership.getry), mirrored from the getry side: the moved
        * gateway graph leans on the os-owned seams it grew beside (config,
@@ -126,6 +145,12 @@ export default defineConfig({
       "@wenathlan/devthink/policy": path.resolve(import.meta.dirname, "policy.ts"),
       "@wenathlan/devthink/security": path.resolve(import.meta.dirname, "security.ts"),
       "@wenathlan/devthink/server": path.resolve(import.meta.dirname, "server.ts"),
+      /* the oslabels self bridge of the provider console move (the gateway
+       * ownership wave, step 5): the moved console's barrel reads the
+       * paired label catalog through the published os specifier, and this
+       * server resolves it to this app's own source at test runtime the
+       * same way the other self specifiers above ride. */
+      "@wenathlan/devthink/oslabels": path.resolve(import.meta.dirname, "oslabels.ts"),
       "@wenathlan/devthink/storage": path.resolve(import.meta.dirname, "storage.ts"),
       "@wenathlan/devthink/types": path.resolve(import.meta.dirname, "types.ts"),
     },

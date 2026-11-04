@@ -373,6 +373,71 @@ export default defineConfig({
       "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "../getry/nodeshim.ts"),
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "../getry/types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "../getry/constants.ts"),
+      /** the hono seat bridges of the ownership wave (the mirror of the
+       * tsconfig pass): the gateway transport the getry seat owns imports
+       * the hono family, and this build walks the moved sources through
+       * the owner aliases above — the bundler resolution that walks up
+       * from the getry folder never sees this app's install (the
+       * workbench lane installs the devthink tree alone), so every hono
+       * specifier resolves onto this install's runtime entries the same
+       * way every bridge does. the exact-subpath keys ride first: the
+       * node adapter the build inlines speaks "hono/ws" and
+       * "hono/utils/mime" beside the family the transport imports
+       * (hono/cors, serve-static), and the bare prefix entries answer
+       * the last (the longer keys above must stay ahead of the two bare
+       * roots the prefix matching would otherwise shadow — a hono
+       * version bump that adds a new spoken subpath adds its entry
+       * here). */
+      "@hono/node-server/serve-static": path.resolve(
+        import.meta.dirname,
+        "node_modules/@hono/node-server/dist/serve-static.mjs",
+      ),
+      "@hono/node-server": path.resolve(
+        import.meta.dirname,
+        "node_modules/@hono/node-server/dist/index.mjs",
+      ),
+      "hono/cors": path.resolve(
+        import.meta.dirname,
+        "node_modules/hono/dist/middleware/cors/index.js",
+      ),
+      "hono/utils/mime": path.resolve(import.meta.dirname, "node_modules/hono/dist/utils/mime.js"),
+      "hono/ws": path.resolve(
+        import.meta.dirname,
+        "node_modules/hono/dist/helper/websocket/index.js",
+      ),
+      "hono": path.resolve(import.meta.dirname, "node_modules/hono/dist/index.js"),
+      /** the sdk seat bridge of the ownership wave (the mirror of the
+       * hono seats above): the zai transport lane the getry engine owns
+       * speaks the published sdk specifier through a lazy dynamic import
+       * (the keyless seat the browser graph inlines when the gateway
+       * engine family rides the owner aliases), and the bundler
+       * resolution that walks up from the getry folder never sees this
+       * app's install — the specifier resolves onto this install's
+       * runtime entry the same way every bridge does (the lane answers
+       * the neutral refusal the nodeshim family carries when no sdk seat
+       * exists, so the browser bundle never speaks the network). */
+      "z-ai-web-dev-sdk": path.resolve(
+        import.meta.dirname,
+        "node_modules/z-ai-web-dev-sdk/dist/index.js",
+      ),
+      /** the getry owner faces of the gateway ownership wave
+       * (wave/ownership.gateway): the embedded gateway surfaces the grand
+       * merge interned in server.ts (the http transport server, the
+       * request auth family, the console cli and the provider cli) move
+       * to the getry owner root one face per step, and the consumers
+       * speak them through the published library specifiers
+       * ("@wenathlan/getry/server" and siblings) — these bridges resolve
+       * every specifier to the monorepo source the sibling app carries,
+       * so the gateway logic keeps one owner (the auth family landed with
+       * step 2; the server, cli and providercli faces land with the steps
+       * that follow, their targets answer the day they land). the
+       * installed 2.0.154 envelope carries none of these export surfaces
+       * yet, so the bridge is the resolution of record until the
+       * published envelope catches up. */
+      "@wenathlan/getry/server": path.resolve(import.meta.dirname, "../getry/server.ts"),
+      "@wenathlan/getry/auth": path.resolve(import.meta.dirname, "../getry/auth.ts"),
+      "@wenathlan/getry/cli": path.resolve(import.meta.dirname, "../getry/cli.ts"),
+      "@wenathlan/getry/providercli": path.resolve(import.meta.dirname, "../getry/providercli.ts"),
       /** the devthink self bridges of the ownership wave
        * (wave/ownership.getry), mirrored from vitest.config.ts: the moved
        * gateway graph leans on the os-owned seams it grew beside (config,
@@ -391,6 +456,12 @@ export default defineConfig({
       "@wenathlan/devthink/policy": path.resolve(import.meta.dirname, "policy.ts"),
       "@wenathlan/devthink/security": path.resolve(import.meta.dirname, "security.ts"),
       "@wenathlan/devthink/server": path.resolve(import.meta.dirname, "server.ts"),
+      /* the oslabels self bridge of the provider console move (the gateway
+       * ownership wave, step 5): the moved console's barrel reads the
+       * paired label catalog through the published os specifier, and this
+       * server resolves it to this app's own source on the dev server and
+       * the web build the same way the other self specifiers above ride. */
+      "@wenathlan/devthink/oslabels": path.resolve(import.meta.dirname, "oslabels.ts"),
       "@wenathlan/devthink/storage": path.resolve(import.meta.dirname, "storage.ts"),
       "@wenathlan/devthink/types": path.resolve(import.meta.dirname, "types.ts"),
       /** the sibling engine's own self-alias, armed for the family dev
