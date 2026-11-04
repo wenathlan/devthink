@@ -10743,11 +10743,14 @@ span[data-tile] {
   filter: grayscale(0.8);
 }
 
-/* the ONE lockup of the window zone: mark, name, role line */
+/* the ONE lockup of the window zone: mark, name, role line. the lockup
+   shrinks before the controls ever leave the window (the resize law the
+   owner docket carries): the role line ellipsizes first, the app name
+   follows, and the caption glyphs never ride outside the frame. */
 .shell-window__lockup {
   display: inline-flex;
   min-width: 0;
-  flex: none;
+  flex: 0 1 auto;
   align-items: center;
   align-self: center;
   gap: 9px;
@@ -10769,6 +10772,8 @@ span[data-tile] {
   font-weight: 600;
   letter-spacing: -0.01em;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 /* the role line: spacing separates it from the name — the middot pseudo
    died with the separator purge (e10) */
@@ -10802,9 +10807,12 @@ span[data-tile] {
    min/max pair and the close button on the doctrine tokens — hover washes
    ride --win-hover/--win-active (the theme flips them), every shape is the
    pill (--win-pill 999px), the close rides --win-close rgb(232 17 35) and
-   saturates it on hover, and no control carries a white separator border */
+   saturates it on hover, and no control carries a white separator border.
+   the controls never shrink and never wrap (the resize law): the close X
+   stays inside the window on every width, the lockup absorbs the squeeze. */
 .shell-window__controls {
   display: flex;
+  flex: none;
   align-items: stretch;
   margin-left: auto;
 }
@@ -12242,8 +12250,12 @@ span[data-tile] {
   text-align: left;
   outline: none;
 }
+/* the placeholder seat rides the honest contrast law (the wcag sweep
+   the owner docket demands): 62% white over the 34% ink wash answered a
+   near-2:1 ratio on the light card — the 82% lift keeps the hint glyphs
+   readable on every theme the field block carries. */
 .dtw-login__name::placeholder {
-  color: rgb(255 255 255 / 62%);
+  color: rgb(255 255 255 / 82%);
 }
 .dtw-login__reveal,
 .dtw-login__submit {
