@@ -7,7 +7,7 @@
  */
 
 import { chachaopen, chachaseal } from "@wenathlan/saddle/security";
-import { KeyObject, createHash, cryptosign, cryptoverify, generateKeyPairSync } from "node:crypto";
+import { createHash, generateKeyPairSync, sign as cryptosign, verify as cryptoverify, type KeyObject } from "node:crypto";
 
 /* ===== block: transcodeengine ===== */
 /**

@@ -377,7 +377,7 @@ import { defineConfig } from "prisma/config";
 function resolveschemapath(): string {
   const candidates = [
     path.resolve(process.cwd(), "schema.prisma"),
-    path.resolve(process.cwd(), "Sol", "schema.prisma"),
+    path.resolve(process.cwd(), "sol", "schema.prisma"),
     path.resolve(process.cwd(), "prisma", "schema.prisma"),
   ];
   for (const candidate of candidates) {
@@ -812,7 +812,7 @@ async function cmdexport(dirarg: string | undefined): Promise<void> {
     console.log(`${colors.green}exported${colors.reset} ${name}`);
   }
   const schemaroot = resolve(process.cwd(), "schema.prisma");
-  const schemapath = existsSync(schemaroot) ? schemaroot : resolve(process.cwd(), "Sol", "schema.prisma");
+  const schemapath = existsSync(schemaroot) ? schemaroot : resolve(process.cwd(), "sol", "schema.prisma");
   if (existsSync(schemapath)) {
     writeFileSync(join(target, "schema.prisma"), readFileSync(schemapath, "utf8"));
     console.log(`${colors.green}exported${colors.reset} schema.prisma`);

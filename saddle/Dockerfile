@@ -1,4 +1,4 @@
-# saddle 2.0.158 — THE ENGINE CONTAINER FILE
+# saddle 2.0.159 — THE ENGINE CONTAINER FILE
 #
 # THE FAMILY CONTAINER DOCTRINE, THE SADDLE SHAPE: one versioned container
 # per engine, built like the site homes (argan, cadria) build theirs — a
@@ -16,9 +16,9 @@
 # THE THREE VARIANT PROFILES (the saddle-exclusive law: the only app of
 # the family that ships three) — select with the target flag:
 #
-#   docker build --target max       -t saddle:2.0.158 .
-#   docker build --target balanced  -t saddle:2.0.158-balanced .
-#   docker build --target lite      -t saddle:2.0.158-lite .
+#   docker build --target max       -t saddle:2.0.159 .
+#   docker build --target balanced  -t saddle:2.0.159-balanced .
+#   docker build --target lite      -t saddle:2.0.159-lite .
 #
 #   max       — the full profile catalog: the epyc 9965 class, 192 vcpu,
 #               384 threads, 1024 gib ram plan, the b200 gpu plan x8.
@@ -70,7 +70,7 @@ ARG NODE_BASE_DIGEST
 # ===== stage: solbuild — the locked npm tree and the console spa =====
 FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
-ARG SADDLE_VERSION=2.0.158
+ARG SADDLE_VERSION=2.0.159
 
 WORKDIR /app
 
@@ -98,7 +98,7 @@ RUN npm run web:build:pages \
 # ===== stage: base — the hardened runtime floor every profile shares =====
 FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
-ARG SADDLE_VERSION=2.0.158
+ARG SADDLE_VERSION=2.0.159
 ARG SADDLE_PROFILE=max
 ARG VHE_PROFILE_CPU="epyc9965"
 ARG VHE_PROFILE_VCPUS="192"

@@ -123,7 +123,7 @@
        * specifier ("@wenathlan/devthink/oslabels"), and this program
        * resolves it to the monorepo source the sibling app carries — the
        * label catalog is never duplicated inside getry. */
-      "@wenathlan/devthink/oslabels": ["../devthink/oslabels.ts"],
+      "@wenathlan/devthink/oslabels": ["../devthink/os.ts"],
       "@wenathlan/getry/project": ["./project.ts"],
       "@wenathlan/getry/quota": ["./quota.ts"],
       "@wenathlan/getry/recovery": ["./recovery.ts"],
