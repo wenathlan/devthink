@@ -406,6 +406,20 @@ export default defineConfig({
         "node_modules/hono/dist/helper/websocket/index.js",
       ),
       "hono": path.resolve(import.meta.dirname, "node_modules/hono/dist/index.js"),
+      /** the sdk seat bridge of the ownership wave (the mirror of the
+       * hono seats above): the zai transport lane the getry engine owns
+       * speaks the published sdk specifier through a lazy dynamic import
+       * (the keyless seat the browser graph inlines when the gateway
+       * engine family rides the owner aliases), and the bundler
+       * resolution that walks up from the getry folder never sees this
+       * app's install — the specifier resolves onto this install's
+       * runtime entry the same way every bridge does (the lane answers
+       * the neutral refusal the nodeshim family carries when no sdk seat
+       * exists, so the browser bundle never speaks the network). */
+      "z-ai-web-dev-sdk": path.resolve(
+        import.meta.dirname,
+        "node_modules/z-ai-web-dev-sdk/dist/index.js",
+      ),
       /** the getry owner faces of the gateway ownership wave
        * (wave/ownership.gateway): the embedded gateway surfaces the grand
        * merge interned in server.ts (the http transport server, the
