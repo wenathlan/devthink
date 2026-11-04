@@ -64,6 +64,7 @@
     "wavwriter.ts",
     "blobstore.ts",
     "render.ts",
+    "renderengine.ts",
     "gatewayapi.ts",
     "routetable.ts",
     "beatgrid.ts",

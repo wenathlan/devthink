@@ -34,7 +34,7 @@ import {
 import { formatClock } from "../../dawview.ts";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
-import { GENRES } from "../../genre.ts";
+import { GENRES } from "../../genrematrix.ts";
 import type { FeatureCard, GenreProfileCard, LibraryTrackRow, SignalBadge, VitrineTrackRow } from "../../katexis.ts";
 import { MASTERING, PROMPT_MAX_LENGTH } from "../../katexis.ts";
 import { label, labelfill } from "../../labels.ts";

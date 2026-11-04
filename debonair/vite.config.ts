@@ -66,6 +66,13 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "."),
     emptyOutDir: false,
     assetsDir: "",
+    /* the native binding never bundles for the browser: the storage lane
+     * rides the lazy db chunk the browser graph never loads, so the binding
+     * answers as an external of the chunk (the node lanes resolve it from
+     * their own install — the doctrine the vault storage comment pins). */
+    rolldownOptions: {
+      external: ["better-sqlite3"],
+    },
   },
   /** the config lives at the app root beside the engine: the theme pages import the
    * root logic files (katexis.ts and the data layer) and the "@" alias points into
