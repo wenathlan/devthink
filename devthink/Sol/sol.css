@@ -670,8 +670,18 @@ body,
   margin: 0;
 }
 
-html {
+/* the zoom lock law (the faun pattern the owner pinned in the reference):
+   the app root never chains its scroll to the browser chrome — a strip at
+   its end stops dead, no rubber band, no history swipe — and the same
+   root floors the touch gestures at manipulation, so the double-tap zoom
+   dies while the pan stays (the drag surfaces keep their own
+   touch-action: none — the chain only narrows, never widens). the pinch
+   door rides the viewport meta every html entry declares */
+html,
+body,
+#root {
   overscroll-behavior: none;
+  touch-action: manipulation;
 }
 
 body {
@@ -11904,6 +11914,25 @@ span[data-tile] {
   background: rgb(127 137 155 / 35%);
 }
 .shell-window__host *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* the explore modules strip rides the same honesty at the horizontal
+   door: the strip is a pan surface the global silence would render as a
+   clipped mystery, so it shows its affordance — the same thumb the
+   window bodies paint, sized for a horizontal rail */
+.dtv-x__strip {
+  scrollbar-width: thin;
+}
+.dtv-x__strip::-webkit-scrollbar {
+  height: 8px;
+  display: block;
+}
+.dtv-x__strip::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgb(127 137 155 / 35%);
+}
+.dtv-x__strip::-webkit-scrollbar-track {
   background: transparent;
 }
 
