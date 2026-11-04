@@ -369,6 +369,39 @@ export default defineConfig({
       "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "../getry/nodeshim.ts"),
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "../getry/types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "../getry/constants.ts"),
+      /** the hono seat bridges of the ownership wave (the mirror of the
+       * tsconfig pass): the gateway transport the getry seat owns imports
+       * the hono family, and this build walks the moved sources through
+       * the owner aliases above — the bundler resolution that walks up
+       * from the getry folder never sees this app's install (the
+       * workbench lane installs the devthink tree alone), so every hono
+       * specifier resolves onto this install's runtime entries the same
+       * way every bridge does. the exact-subpath keys ride first: the
+       * node adapter the build inlines speaks "hono/ws" and
+       * "hono/utils/mime" beside the family the transport imports
+       * (hono/cors, serve-static), and the bare prefix entries answer
+       * the last (the longer keys above must stay ahead of the two bare
+       * roots the prefix matching would otherwise shadow — a hono
+       * version bump that adds a new spoken subpath adds its entry
+       * here). */
+      "@hono/node-server/serve-static": path.resolve(
+        import.meta.dirname,
+        "node_modules/@hono/node-server/dist/serve-static.mjs",
+      ),
+      "@hono/node-server": path.resolve(
+        import.meta.dirname,
+        "node_modules/@hono/node-server/dist/index.mjs",
+      ),
+      "hono/cors": path.resolve(
+        import.meta.dirname,
+        "node_modules/hono/dist/middleware/cors/index.js",
+      ),
+      "hono/utils/mime": path.resolve(import.meta.dirname, "node_modules/hono/dist/utils/mime.js"),
+      "hono/ws": path.resolve(
+        import.meta.dirname,
+        "node_modules/hono/dist/helper/websocket/index.js",
+      ),
+      "hono": path.resolve(import.meta.dirname, "node_modules/hono/dist/index.js"),
       /** the getry owner faces of the gateway ownership wave
        * (wave/ownership.gateway): the embedded gateway surfaces the grand
        * merge interned in server.ts (the http transport server, the

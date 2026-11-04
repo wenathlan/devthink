@@ -25,6 +25,29 @@
        * vitest bridge does. retires when saddle 2.1.7 publishes the
        * export entry. */
       "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
+      /* the bare package seats of the moved-source subprocess lane (the
+       * gateway ownership wave): the getry cli test pins THIS tsconfig
+       * when tsx boots the owner console (cli.ts → server.ts → engine.ts →
+       * the os storage seam mapped to the monorepo source above), and the
+       * devthink sources that graph reaches import their bare packages
+       * (the prisma libsql adapter, the react of the gateway label tree,
+       * the prisma client types) — the node resolution that walks up from
+       * the devthink folder never sees this app's install (the getry lane
+       * installs this tree alone), so every specifier resolves onto this
+       * app's own node_modules copy the same way every bridge resolves:
+       * the first candidate answers the tsx runtime (the real entry the
+       * subprocess loads) and the tsc pass reads the adjacent declaration
+       * (the .mjs and .js candidates resolve their sibling .d.mts/.d.ts
+       * files, and react falls through to the @types seat — allowJs is
+       * off, so the js candidate never answers the declaration pass). */
+      "@prisma/adapter-libsql": [
+        "./node_modules/@prisma/adapter-libsql/dist/index-node.mjs"
+      ],
+      "@prisma/client": ["./node_modules/@prisma/client/default.js"],
+      "react": [
+        "./node_modules/react/index.js",
+        "./node_modules/@types/react/index.d.ts"
+      ],
       "@wenathlan/devthink/config": ["../devthink/config.ts"],
       "@wenathlan/devthink/constants": ["../devthink/constants.ts"],
       "@wenathlan/devthink/core": ["../devthink/core.ts"],

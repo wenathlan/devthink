@@ -18,15 +18,27 @@
       "@/*": ["./Sol/*", "./*"],
       "@wenathlan/saddle": ["./saddlefaces.ts"],
       "@wenathlan/saddle/memory": ["./saddlefacesmemory.ts"],
-      "hono": ["./node_modules/hono/dist/types/index.d.ts"],
-      "hono/cors": ["./node_modules/hono/dist/types/middleware/cors/index.d.ts"],
-      "@hono/node-server": ["./node_modules/@hono/node-server/dist/index.d.mts"],
-      "@hono/node-server/serve-static": ["./node_modules/@hono/node-server/dist/serve-static.d.mts"],
+      "hono": ["./honoface.ts"],
+      "hono/cors": ["./honocorsface.ts"],
+      "@hono/node-server": ["./hononodeserverface.ts"],
+      "@hono/node-server/serve-static": ["./honoservestaticface.ts"],
       /* the hono seat bridge of the ownership wave (the gateway transport
        * the getry seat owns imports the hono family, and the os lanes that
-       * typecheck the moved graph never install the getry tree — the
-       * resolution walks the devthink install the same way every bridge
-       * does). */
+       * walk the moved graph never install the getry tree — the resolution
+       * walks the devthink install the same way every bridge does). every
+       * entry answers BOTH seats the pinned tsconfig lanes serve, through
+       * the face modules the keys resolve onto: the tsc pass reads the
+       * declaration types the faces pin (the type imports below carry the
+       * declarations the packages ship), while the tsx subprocess lanes
+       * (the cli and e2e runners that boot the moved sources) load the
+       * real runtime entries the faces re-export through their relative
+       * node_modules paths — the one resolution node's walk from the
+       * moved sources never finds. the candidates are tsconfig-relative
+       * FILES on purpose: the paths pass resolves a file candidate from
+       * this tree the same way for every importer, while a directory
+       * candidate answers no subprocess lane (and a declaration-only
+       * candidate carries no runtime exports the way the first bridge
+       * attempt learned). */
       "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
