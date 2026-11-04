@@ -12,17 +12,20 @@
 # this Dockerfile carries BOTH container surfaces of the merged repository:
 #   1. the saddle virtual-hardware engine image (the five stages below:
 #      builder, python-bridge, qemu, qemu-runtime, runtime) — the default
-#      build target, published as ghcr.io/wenathlan/saddle:vhe-<version>
-#      across three profiles and eleven architectures;
+#      build target, published by the saddle-vhe lane of the publish
+#      workflow as ghcr.io/wenathlan/devthink:<version>-vhe plus the
+#      -vhe-balanced and -vhe-lite profile siblings, each across all
+#      eleven architectures (the registry coordinates the run recipes
+#      below mirror — the vhe family rides the devthink package);
 #   2. the saddle node-engine image (the saddle-build and saddle-runtime
 #      stages at the end of this file, folded from the former
 #      dockerfile.saddle) — an explicit build target
 #      (`docker build --target saddle-runtime .`), the node 26 storage and
-#      compute service published as ghcr.io/wenathlan/saddle:<version>
-#      across the eleven-arch family standard (amd64, amd64/v2, arm64,
-#      arm/v7, arm/v6, ppc64le, s390x, riscv64, 386, mips64le, loong64
-#      — the trixie slim base line; the stage also builds the web SPA so
-#      the image serves the self-hosted console via `node /app/webserver.ts`).
+#      compute service carrying the self-hosted console (the stage builds
+#      the web SPA so the image serves it via `node webserver.ts` on the
+#      slim trixie base line; its registry lane rides the family package
+#      coordinate ghcr.io/wenathlan/saddle:<version> once the publish
+#      workflow carries it — the buildable target is the contract).
 #
 # saddle v2 (grand merge) - virtual hardware engine, multi-stage, multi-arch image.
 #
@@ -108,7 +111,10 @@
 #     -v vmdata:/data/vmdata -v webdata:/data/web \
 #     -v ./vm.config.json:/engine/vm.config.json:ro \
 #     -e PORT=8080 -e NODE_ENV=production -p 31280:8080 \
-#     ghcr.io/wenathlan/saddle:vhe-2.0.154
+#     ghcr.io/wenathlan/devthink:2.0.155-vhe
+#     (the balanced and lite profiles answer at :2.0.155-vhe-balanced
+#     and :2.0.155-vhe-lite — same image family, per-profile
+#     /etc/virtual baking).
 #
 #   vheqemu (the guest runner; build it first with
 #   docker build --target qemu-runtime -t saddle/qemu:11.1.0 . because the
@@ -142,7 +148,7 @@
 #     -e VHE_GPU_PROFILE=b200 -e VHE_GPUS=8 -e VHE_MIG=1 \
 #     -e VHE_SMI_DRIVER=575.57.08 -e VHE_SMI_CUDA=12.9 \
 #     -e VHE_SMI_INTERVAL=30 -e VHE_SKIP_XVFB=1 -e VHE_SKIP_VALIDATE=1 \
-#     ghcr.io/wenathlan/saddle:vhe-2.0.154 /bin/bash -c '
+#     ghcr.io/wenathlan/devthink:2.0.155-vhe /bin/bash -c '
 #       while true; do
 #         /usr/local/bin/nvidia-smi "$VHE_GPU_PROFILE" "$VHE_GPUS" || true
 #         sleep "$VHE_SMI_INTERVAL"
@@ -159,7 +165,7 @@
 #     -v qemudata:/data/qemudata \
 #     -v ./qemubridge.py:/engine/qemubridge.py:ro \
 #     -e QMP_SOCKET=/run/vhe/vm.qmp -e PYTHONUNBUFFERED=1 \
-#     ghcr.io/wenathlan/saddle:vhe-2.0.154 \
+#     ghcr.io/wenathlan/devthink:2.0.155-vhe \
 #     python3 /engine/qemubridge.py --socket /run/vhe/vm.qmp status
 #
 #   saddle-node (the node-engine service, the former compose.yml
@@ -173,7 +179,7 @@
 #     --log-driver json-file --log-opt max-size=50m --log-opt max-file=5 \
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e SADDLE_MEMORY_ENGINE=ram -e SBOT_PLATFORM= -e SBOT_CDN_URL= \
-#     ghcr.io/wenathlan/saddle:2.0.154 \
+#     ghcr.io/wenathlan/saddle:2.0.155 \
 #     node dist/cli.js plan
 #
 #   observability (the former prometheus scraper of the full profile)
@@ -389,7 +395,7 @@ RUN set -eux; \
     }; \
     fixdep brace-expansion 5.0.11; \
     fixdep ip-address 10.3.1; \
-    fixdep tar 7.5.21; \
+    fixdep tar 7.5.22; \
     fixdep undici 6.29.1; \
     rm -rf /root/.npm 2>/dev/null || true
 
@@ -693,7 +699,7 @@ ENTRYPOINT ["/usr/bin/tini", "--", "qemu-system-x86_64"]
 # eleven-architecture matrix the registry resolves per platform).
 FROM --platform=$BUILDPLATFORM node:26.13.0-slim AS saddle-build
 
-ARG SADDLE_VERSION=2.0.154
+ARG SADDLE_VERSION=2.0.155
 WORKDIR /app
 
 ENV NPM_CONFIG_LEGACY_PEER_DEPS=true
@@ -1330,19 +1336,20 @@ RUN set -eux; \
 # healthcheck: the X display answers xdpyinfo and the virtual meminfo is in
 # place; start-period covers the Xvfb + shader-cache warmup. start-interval
 # probes every 5s during the grace window (compose 5.5.0 / docker 29.7.2
-# support the field).
+# support the field). the gpu sidecar recipe sets VHE_SKIP_XVFB=1 (no X
+# server on that lane) — the probe skips the display leg there and still
+# guards the virtual meminfo, so the gpu sidecar never reads permanently
+# unhealthy for the display it deliberately never starts.
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --start-interval=5s --retries=3 \
-    CMD xdpyinfo -display :99 >/dev/null 2>&1 \
-        && grep -q 'MemTotal' /etc/virtual/meminfo \
-        || exit 1
+    CMD case "$VHE_SKIP_XVFB" in 1) grep -q 'MemTotal' /etc/virtual/meminfo || exit 1;; *) xdpyinfo -display :99 >/dev/null 2>&1 && grep -q 'MemTotal' /etc/virtual/meminfo || exit 1;; esac
 
 # OCI labels for registry introspection.
 LABEL org.opencontainers.image.title="saddle virtual-hardware engine (the grand merge)" \
       org.opencontainers.image.description="100% software virtual hardware: per-profile CPU/memory spoofing via LD_PRELOAD (max/balanced/lite), mesa 26.2.1 llvmpipe/lavapipe/rusticl, QEMU 11.1.0 TCG/MTTCG, virtual nvidia-smi adapter + NVML/CUDA shims, node 26.7.0, python bridge" \
-      org.opencontainers.image.version="2.0.154" \
+      org.opencontainers.image.version="2.0.155" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://github.com/wenathlan/saddle" \
-      org.opencontainers.image.documentation="https://github.com/wenathlan/saddle/blob/main/README.md" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink" \
+      org.opencontainers.image.documentation="https://github.com/wenathlan/devthink/blob/main/saddle/README.md" \
       org.opencontainers.image.created="2026-08-23T00:00:00Z"
 
 WORKDIR /engine
@@ -1388,10 +1395,10 @@ CMD ["node", "/engine/webserver.ts"]
 
 FROM node:26.13.0-slim AS saddle-runtime
 
-ARG SADDLE_VERSION=2.0.154
+ARG SADDLE_VERSION=2.0.155
 LABEL org.opencontainers.image.title="Saddle" \
       org.opencontainers.image.description="Storage-backed browser and compute engine (the grand-merge node service)" \
-      org.opencontainers.image.source="https://github.com/wenathlan/saddle" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink" \
       org.opencontainers.image.version="$SADDLE_VERSION"
 
 WORKDIR /app
@@ -1442,17 +1449,21 @@ RUN apt-get update \
 # pure-node server stack - zero npm dependencies, the node 26 runtime
 # carries everything (node:sqlite, node:crypto, native type stripping
 # for the .ts sources). the console set closes the whole import graph:
-# webserver.ts pulls modalityregistry.ts, edgeplane.ts and
-# workloadlaw.ts; edgeplane.ts pulls foundation.ts and the edgelandes
-# family (edgelandes.ts, edgelandeshost.ts, edgelandesinproc.ts,
-# edgelandesvirtual.ts, edgelandesninety.ts); db.ts pulls labels.ts
-# whose ../vault/labelstore.ts import resolves at /vault (the family
-# context fix - the vault source lands beside /app the same way the
-# saddle-build stage lands it). with the graph closed, node
+# webserver.ts pulls the sandbox quartet (sandbox.ts, sandboxprofile.ts,
+# sandboxenvprofile.ts, sandboxquota.ts), db.ts, auth.ts, mesh.ts,
+# modalityregistry.ts, edgeplane.ts and workloadlaw.ts; edgeplane.ts
+# pulls foundation.ts and the one edgelandes keyword file (the edgelandes
+# fold retired the host/inproc/virtual/ninety arms into it); the lazy
+# script-lane surface (webserver.ts imports scriptlanes.ts on first use)
+# pulls execution.ts through scriptlanes.ts, so both ride the copy and
+# the lane answers real runs instead of the honest 503; db.ts pulls
+# labels.ts whose ../vault/labelstore.ts import resolves at /vault (the
+# family context fix - the vault source lands beside /app the same way
+# the saddle-build stage lands it). with the graph closed, node
 # webserver.ts starts clean; before the fix the container crashed at
 # boot with module-not-found.
 # run the console with: docker run saddle:<version> node webserver.ts
-COPY --from=saddle-build /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/sandboxprofile.ts /app/sandboxenvprofile.ts /app/sandboxquota.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/edgelandeshost.ts /app/edgelandesinproc.ts /app/edgelandesvirtual.ts /app/edgelandesninety.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+COPY --from=saddle-build /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/sandboxprofile.ts /app/sandboxenvprofile.ts /app/sandboxquota.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scriptlanes.ts /app/execution.ts /app/mime.types /app/init.sql /app/schema.prisma ./
 # the label store of the console stack: labels.ts (pulled by db.ts)
 # resolves ../vault/labelstore.ts at /vault - the same family context
 # fix the saddle-build stage applies.
