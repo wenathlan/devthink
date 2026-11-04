@@ -609,7 +609,11 @@ export type GatewayModel = {
  * falls back to the meta-model and nothing pretends otherwise.
  */
 export async function gatewayModels(base: string, timeoutMs = 6000): Promise<GatewayModel[]> {
-  const clean = base.trim().replace(/\/+$/, "");
+  let clean = base.trim();
+  // js/polynomial-redos (code-scanning): the trailing-slash trim runs as a
+  // linear loop — the anchored /\/+$/ replace can backtrack quadratically
+  // over a long run of '/'.
+  while (clean.endsWith("/")) clean = clean.slice(0, -1);
   if (!clean) return [];
   try {
     const ctrl = new AbortController();
@@ -664,7 +668,11 @@ export async function gatewayChat(
 
   /* the endpoint rides the configured base when the caller set one (the
    * deployed gateway of the family) and stays same-origin otherwise. */
-  const base = (opts?.base ?? "").trim().replace(/\/+$/, "");
+  let base = (opts?.base ?? "").trim();
+  // js/polynomial-redos (code-scanning): trailing slashes leave through a
+  // linear loop instead of the /\/+$/ replace that can backtrack
+  // quadratically on a long run of '/'.
+  while (base.endsWith("/")) base = base.slice(0, -1);
   const endpoint = `${base}/v1/chat/completions`;
   const body = JSON.stringify({ model: opts?.model ?? "devthink", messages });
 
@@ -762,7 +770,11 @@ export async function gatewayChatStream(
   const onExternalAbort = () => ctrl.abort();
   opts?.signal?.addEventListener("abort", onExternalAbort);
 
-  const base = (opts?.base ?? "").trim().replace(/\/+$/, "");
+  let base = (opts?.base ?? "").trim();
+  // js/polynomial-redos (code-scanning): trailing slashes leave through a
+  // linear loop instead of the /\/+$/ replace that can backtrack
+  // quadratically on a long run of '/'.
+  while (base.endsWith("/")) base = base.slice(0, -1);
   const endpoint = `${base}/v1/chat/completions`;
   const headers: Record<string, string> = { "Content-Type": "application/json", Accept: "text/event-stream" };
   if (opts?.sessionId) headers["x-session-id"] = opts.sessionId;
