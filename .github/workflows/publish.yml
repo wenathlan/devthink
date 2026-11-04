@@ -4693,6 +4693,38 @@ jobs:
           echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
           echo "mesa ${tarball}: ${sha} (resolved at build time)"
 
+      - name: Resolve the base-image digests (registry-computed)
+        id: basedigests
+        run: |
+          set -euo pipefail
+          # The family digest contract rides the resolver doctrine the mesa
+          # lane already answers: the manifest-list digests of the three
+          # base images resolve at build time from the registry — the
+          # sha256 values never enter the repository (the gateway family
+          # policy the publishlanes gate carries), and every one of the
+          # eleven architectures still resolves its own platform inside
+          # the same immutable registry index the digest pins.
+          digest_of() {
+            local name="$1" tag="$2"
+            local token; token="$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/${name}:pull" | jq -r .token)"
+            local digest; digest="$(curl -fsSL -H "Authorization: Bearer ${token}"               -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json"               "https://registry-1.docker.io/v2/library/${name}/manifests/${tag}" | sha256sum | cut -d' ' -f1)"
+            test -n "${digest}" && test "${#digest}" -eq 64
+            printf '%s' "${digest}"
+          }
+          ubuntu_tag=$(sed -n 's/^ARG UBUNTU_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          python_tag=$(sed -n 's/^ARG PYTHON_BASE_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          nodeslim_tag=$(sed -n 's/^ARG NODE_SLIM_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          test -n "${ubuntu_tag}" && test -n "${python_tag}" && test -n "${nodeslim_tag}"
+          ubuntudigest="$(digest_of "${ubuntu_tag%%:*}" "${ubuntu_tag#*:}")"
+          pythondigest="$(digest_of "${python_tag%%:*}" "${python_tag#*:}")"
+          nodeslimdigest="$(digest_of "${nodeslim_tag%%:*}" "${nodeslim_tag#*:}")"
+          {
+            echo "ubuntudigest=${ubuntudigest}"
+            echo "pythondigest=${pythondigest}"
+            echo "nodeslimdigest=${nodeslimdigest}"
+          } >> "$GITHUB_OUTPUT"
+          echo "base images: ubuntu ${ubuntudigest}, python ${pythondigest}, node-slim ${nodeslimdigest} (resolved at build time)"
+
       - name: Set up QEMU (the nine emulated legs of the eleven-arch index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
@@ -4749,6 +4781,9 @@ jobs:
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
             MESA_SHA256=${{ steps.mesa.outputs.sha256 }}
+            UBUNTU_DIGEST=${{ steps.basedigests.outputs.ubuntudigest }}
+            PYTHON_BASE_DIGEST=${{ steps.basedigests.outputs.pythondigest }}
+            NODE_SLIM_DIGEST=${{ steps.basedigests.outputs.nodeslimdigest }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -4853,6 +4888,9 @@ jobs:
       tag: ${{ steps.resolve.outputs.tag }}
       proceed: ${{ steps.resolve.outputs.proceed }}
       mesasha256: ${{ steps.mesa.outputs.sha256 }}
+      ubuntudigest: ${{ steps.basedigests.outputs.ubuntudigest }}
+      pythondigest: ${{ steps.basedigests.outputs.pythondigest }}
+      nodeslimdigest: ${{ steps.basedigests.outputs.nodeslimdigest }}
     permissions:
       # contents: write is required to keep the SHA256SUMS asset of the
       # mesa-cache release in place (the GitHub-generated digest of the
@@ -5031,6 +5069,38 @@ jobs:
           echo "sha256=${sha}" >> "$GITHUB_OUTPUT"
           echo "mesa ${tarball}: ${sha} (resolved at build time)"
 
+      - name: Resolve the base-image digests (registry-computed)
+        id: basedigests
+        run: |
+          set -euo pipefail
+          # The family digest contract rides the resolver doctrine the mesa
+          # lane already answers: the manifest-list digests of the three
+          # base images resolve at build time from the registry — the
+          # sha256 values never enter the repository (the gateway family
+          # policy the publishlanes gate carries), and every one of the
+          # eleven architectures still resolves its own platform inside
+          # the same immutable registry index the digest pins.
+          digest_of() {
+            local name="$1" tag="$2"
+            local token; token="$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/${name}:pull" | jq -r .token)"
+            local digest; digest="$(curl -fsSL -H "Authorization: Bearer ${token}"               -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json"               "https://registry-1.docker.io/v2/library/${name}/manifests/${tag}" | sha256sum | cut -d' ' -f1)"
+            test -n "${digest}" && test "${#digest}" -eq 64
+            printf '%s' "${digest}"
+          }
+          ubuntu_tag=$(sed -n 's/^ARG UBUNTU_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          python_tag=$(sed -n 's/^ARG PYTHON_BASE_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          nodeslim_tag=$(sed -n 's/^ARG NODE_SLIM_TAG="\([^"]*\)"$/\1/p' saddle/Dockerfile | head -n1)
+          test -n "${ubuntu_tag}" && test -n "${python_tag}" && test -n "${nodeslim_tag}"
+          ubuntudigest="$(digest_of "${ubuntu_tag%%:*}" "${ubuntu_tag#*:}")"
+          pythondigest="$(digest_of "${python_tag%%:*}" "${python_tag#*:}")"
+          nodeslimdigest="$(digest_of "${nodeslim_tag%%:*}" "${nodeslim_tag#*:}")"
+          {
+            echo "ubuntudigest=${ubuntudigest}"
+            echo "pythondigest=${pythondigest}"
+            echo "nodeslimdigest=${nodeslimdigest}"
+          } >> "$GITHUB_OUTPUT"
+          echo "base images: ubuntu ${ubuntudigest}, python ${pythondigest}, node-slim ${nodeslimdigest} (resolved at build time)"
+
   saddle-vhe-scan:
     name: Saddle vhe security gate (Trivy on the release image)
     needs: saddle-vhe-resolve
@@ -5110,6 +5180,9 @@ jobs:
             VHE_PROFILE_GPU=b200
             VHE_PROFILE_GPUS=8
             MESA_SHA256=${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}
+            UBUNTU_DIGEST=${{ needs.saddle-vhe-resolve.outputs.ubuntudigest }}
+            PYTHON_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.pythondigest }}
+            NODE_SLIM_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodeslimdigest }}
           cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
 
@@ -5282,6 +5355,9 @@ jobs:
             VHE_PROFILE_GPU=${{ matrix.profilegpu }}
             VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
             MESA_SHA256=${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}
+            UBUNTU_DIGEST=${{ needs.saddle-vhe-resolve.outputs.ubuntudigest }}
+            PYTHON_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.pythondigest }}
+            NODE_SLIM_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodeslimdigest }}
           labels: |
             org.opencontainers.image.title=saddle grand-merge vhe (e2ugh virtual hardware engine)
             org.opencontainers.image.description=100 percent software virtual hardware engine (${{ matrix.profile }} profile)
@@ -5466,6 +5542,9 @@ jobs:
             --build-arg VHE_PROFILE_GPU="b200" \
             --build-arg VHE_PROFILE_GPUS="8" \
             --build-arg MESA_SHA256="${{ needs.saddle-vhe-resolve.outputs.mesasha256 }}" \
+            --build-arg UBUNTU_DIGEST="${{ needs.saddle-vhe-resolve.outputs.ubuntudigest }}" \
+            --build-arg PYTHON_BASE_DIGEST="${{ needs.saddle-vhe-resolve.outputs.pythondigest }}" \
+            --build-arg NODE_SLIM_DIGEST="${{ needs.saddle-vhe-resolve.outputs.nodeslimdigest }}" \
             --tag "$IMAGE" -f saddlebuildctx/saddle/Dockerfile saddlebuildctx
           docker save "$IMAGE" | gzip -9 > "$archive"
       - name: checksum and manifest

@@ -28,8 +28,11 @@ ARG VAULT_VERSION=2.0.154
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY pnpmboot.package.json /tmp/pnpmboot/package.json
+COPY pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
- && npm install -g --no-fund --no-audit pnpm@12.3.4 \
+ && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
+ && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
  && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build \
@@ -44,8 +47,11 @@ ARG VAULT_VERSION=2.0.154
 # the binary the runtime copies answers the exact platform it rides.
 WORKDIR /deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY pnpmboot.package.json /tmp/pnpmboot/package.json
+COPY pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
- && npm install -g --no-fund --no-audit pnpm@12.3.4 \
+ && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
+ && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
  && pnpm install --prod --frozen-lockfile
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797

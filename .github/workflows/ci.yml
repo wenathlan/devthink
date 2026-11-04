@@ -274,7 +274,7 @@ jobs:
           # tree outside them answers no duplicate content above the
           # 512-byte stub floor.
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|^devthink/modalities\.ts$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then

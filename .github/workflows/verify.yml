@@ -503,7 +503,10 @@ jobs:
           mkdir -p prisma
           cp "$GITHUB_WORKSPACE/devthink/schema.prisma" prisma/schema.prisma
           cp "$GITHUB_WORKSPACE/devthink/prismaconfig.ts" prismaconfig.ts
-          npm install --no-save prisma@7.10.0
+          # the pinned-dependencies law of the supply-chain gate: the pinned
+          # prisma@7.10.0 CLI provisions through bun (the registry answers
+          # the integrity), and the npx pair resolves it from the tree.
+          bun add prisma@7.10.0
           npx prisma db push --config prismaconfig.ts
           npx prisma generate --config prismaconfig.ts
           DEVTHINK_CONSUMER_DB=1 node consumersmoke.mts

@@ -14,8 +14,11 @@ ARG GETRY_VERSION=2.0.134
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY pnpmboot.package.json /tmp/pnpmboot/package.json
+COPY pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
- && npm install -g --no-fund --no-audit pnpm@12.3.4 \
+ && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
+ && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
  && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
