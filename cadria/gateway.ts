@@ -32,7 +32,9 @@
 // this file — one timed-fetch family over the same routes, zero node imports,
 // so the pages import this one gateway module for both faces.
 
-import { serve } from "@hono/node-server";
+// the node-server adapter rides the lazy lane: the browser bundle never
+// resolves it (the fold law keeps the client surface importable from the
+// sol pages without dragging the node seat into the vite build).
 import { type Context, Hono } from "hono";
 import {
   type AnalysisReport,
@@ -439,11 +441,13 @@ const envHost = (): string =>
   typeof process.env.HOST === "string" && process.env.HOST.length > 0 ? process.env.HOST : DEFAULT_HOST;
 
 /** serveGateway — the node entry: boots the default app over @hono/node-server.
- * Port/host come from the arguments (programmatic use) falling back to PORT/HOST env. */
+ * Port/host come from the arguments (programmatic use) falling back to PORT/HOST env.
+ * The adapter resolves lazily so the browser bundle never carries the node seat. */
 export async function serveGateway(
   port: number = envPort(),
   hostname: string = envHost(),
-): Promise<ReturnType<typeof serve>> {
+): Promise<{ port: number; hostname: string; fetch: typeof globalThis.fetch }> {
+  const { serve } = await import("@hono/node-server");
   const application = await app;
   return serve({ fetch: application.fetch, port, hostname }, (info) => {
     console.log(`cadria-gateway listening on http://${info.address}:${info.port}`);
