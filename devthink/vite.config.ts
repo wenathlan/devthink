@@ -492,6 +492,14 @@ export default defineConfig({
     dedupe: ["react", "react-dom", "react-dom/client"],
   },
   root: import.meta.dirname,
+  /** the browser bundle never crashes on the node bare global: the gateway
+   * engine family the browser graph now reaches (the google genai sdk the
+   * getry providers ride, whose fetch compat shims read global.Request and
+   * global.Headers) answers through the standard identifier swap — the
+   * white-screen regression the pages deploy carried dies here. */
+  define: {
+    global: "globalThis",
+  },
   build: {
     /** the build answers at the application root: assetsDir empty keeps every
      * hashed bundle flat beside the entry html, emptyOutDir false never wipes
