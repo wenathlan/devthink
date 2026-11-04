@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/debonair",
-  "version": "2.0.158",
+  "version": "2.0.159",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -64,6 +64,7 @@
     "wavwriter.ts",
     "blobstore.ts",
     "render.ts",
+    "renderengine.ts",
     "gatewayapi.ts",
     "routetable.ts",
     "beatgrid.ts",
@@ -86,6 +87,11 @@
     "musictheory.ts",
     "onboardingstate.ts",
     "rhythmgrammar.ts",
+    "genrematrix.ts",
+    "db.ts",
+    "seed.ts",
+    "dawview.ts",
+    "labels.ts",
     "sandboxmodality.ts",
     "spectrum.ts",
     "midiwriter.ts",

@@ -91,7 +91,7 @@ import {
   setDatabaseQuota,
   signinAccount,
   signupAccount,
-} from "./signup.ts";
+} from "./accounts.ts";
 import { storage, storageDriverKind } from "./drizzle.ts";
 import {
   createProject,
@@ -348,7 +348,8 @@ export function listenVault(server: Server, options?: { port?: number; host?: st
 /** the one request entry — every fallible path guarded, every failure standardized. */
 async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
   try {
-    const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "vault.local"}`);
+    const rawurl = req.url ?? "/";
+    const url = new URL(rawurl, `http://${req.headers.host ?? "vault.local"}`);
     applyCors(res);
     if (req.method === "OPTIONS") {
       res.writeHead(204);
@@ -356,7 +357,12 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
       return;
     }
     const method = req.method ?? "GET";
-    const pathname = url.pathname;
+    /* the origin-form guard: a request target that starts with // is a
+     * double-slash path (the origin-form the spec allows), never a
+     * protocol-relative reference — the URL constructor would read it as
+     * authority and the seal would face the wrong pathname, so the raw
+     * target stays the pathname the lanes and the faun seal see. */
+    const pathname = rawurl.startsWith("//") ? rawurl : url.pathname;
     /* the raw-database law, one door earlier than every lane: a request
      * that names the raw database file — plain, encoded or the faun
      * spelling — refuses before the health probe, the api surface and

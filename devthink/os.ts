@@ -939,8 +939,6 @@ const seedOsStrings: OsStringRow[] = [
   /* -------------------------------- desktop ------------------------------- */
   { id: "desktop.aria", text: "DevThink desktop" },
   { id: "desktop.logoTitle", text: "DevThink" },
-  { id: "desktop.wordmark", text: "DevThink" },
-  { id: "desktop.tagline", text: "local OS — chat first" },
   { id: "desktop.menu.label", text: "Desktop menu" },
   { id: "desktop.menu.view", text: "View" },
   { id: "desktop.menu.view.medium", text: "medium icons" },
@@ -977,8 +975,6 @@ const seedOsStrings: OsStringRow[] = [
   { id: "boot.signin", text: "Sign in" },
   { id: "boot.localIdentity", text: "Local identity" },
   { id: "boot.aria", text: "DevThink is starting" },
-  { id: "boot.wordmark", text: "DevThink" },
-  { id: "boot.state", text: "opening the local os" },
 
   /* ---------------------------- workspace toasts --------------------------- */
   { id: "panel.toast.paired", text: "Local DevThink workspace paired." },

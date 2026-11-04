@@ -6,7 +6,12 @@
    as build residue, the sol/fonts sources ship with the tree. font-display
    swap answers the system ladder (Segoe UI Variable → Selawik) while the
    bytes arrive, and the weight range 100 900 serves the whole voice
-   without synthetic bold. */
+   without synthetic bold.
+   The Urbanist variable face joins the set self-hosted (the landing voice
+   of the reference): the Google Fonts latin variable woff2 captured once
+   into sol/fonts, zero network font fetches — the three reference tiers
+   (400/600/800 of .font-thin/medium/bold-tier and .saas-root) resolve
+   inside the same 100 900 range the sheet pattern pins. */
 @font-face {
   font-family: "Inter Variable";
   font-style: normal;
@@ -20,6 +25,13 @@
   font-weight: 100 900;
   font-display: swap;
   src: url("fonts/geist-mono-latin-wght-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Urbanist";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/urbanist-latin-wght-normal.woff2") format("woff2-variations");
 }
 
 /* DevThink Sol — the supreme OS theme, rebuilt from zero (the 8-d
@@ -10720,7 +10732,12 @@ span[data-tile] {
 }
 @media (max-width: 859px) {
   .shell-window {
-    min-width: 0;
+    /* the phone band keeps the doctrine floor but never exceeds the
+       viewport: the 320px spawn floor stands on wide-enough screens and
+       caps at the containing block on narrower ones, so a normal-state
+       frame never hangs past the edge of a phone (the close X stays
+       reachable on every width) */
+    min-width: min(320px, 100%);
     min-height: 0;
   }
   .shell-window[data-state="snapped-left"],
@@ -10818,13 +10835,17 @@ html[data-density="compact"] {
   color: var(--color-ink-3);
 }
 
-/* the session tab strip riding beside the lockup */
+/* the session tab strip riding beside the lockup — the strip clips its
+   own overflow (the resize law): when the lockup squeeze leaves the tabs
+   less than their natural width they never slide under the caption
+   controls, the scroller inside owns the horizontal scroll */
 .shell-window__tabs {
   display: flex;
   min-width: 0;
   flex: 1;
   align-items: flex-end;
   padding-left: 2px;
+  overflow: hidden;
 }
 
 /* the caption controls: the snap pair inside the bar, the fluent 46px
@@ -15297,29 +15318,29 @@ html[data-density="compact"] {
 .plans-current { margin-top: 12px !important; font-family: var(--font-mono, monospace); font-size: 0.82rem; color: var(--ink-3, #8a8f98); }
 .plans-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 .plans-card { display: flex; flex-direction: column; gap: 12px; padding: 20px 20px 16px; border: 1px solid var(--line, rgb(255 255 255 / 10%)); border-radius: 12px; background: var(--surface-1, #1c1f26); transition: border-color 150ms var(--ease-micro, ease), box-shadow 150ms var(--ease-micro, ease); }
-.plans-card.is-picked { border-color: var(--accent, #4cc2ff); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #4cc2ff) 40%, transparent), 0 14px 34px -18px color-mix(in srgb, var(--accent, #4cc2ff) 45%, transparent); }
-.plans-card-head { display: flex; align-items: center; gap: 9px; color: var(--accent, #4cc2ff); }
+.plans-card.is-picked { border-color: var(--win-accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--win-accent) 40%, transparent), 0 14px 34px -18px color-mix(in srgb, var(--win-accent) 45%, transparent); }
+.plans-card-head { display: flex; align-items: center; gap: 9px; color: var(--win-accent); }
 .plans-card-head h2 { margin: 0; font-size: 1.05rem; letter-spacing: 0.01em; }
 .plans-lines { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
 .plans-lines li { display: flex; align-items: baseline; gap: 8px; font-size: 0.86rem; color: var(--ink-2, #b8bcc4); }
-.plans-lines svg { flex: none; transform: translateY(2px); color: var(--accent, #4cc2ff); }
+.plans-lines svg { flex: none; transform: translateY(2px); color: var(--win-accent); }
 .plans-custom { display: grid; gap: 9px; padding: 12px; border: 1px dashed var(--line-strong, rgb(255 255 255 / 18%)); border-radius: 9px; }
 .plans-custom legend { padding: 0 6px; font-family: var(--font-mono, monospace); font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-3, #8a8f98); }
 .plans-custom label { display: grid; gap: 4px; font-size: 0.78rem; color: var(--ink-3, #8a8f98); }
 .plans-custom input { min-height: 34px; padding: 0 10px; border: 1px solid var(--line, rgb(255 255 255 / 10%)); border-radius: 7px; background: var(--surface-0, #14161b); color: var(--ink, #e8eaee); font: inherit; }
 .plans-pick { min-height: 36px; margin-top: auto; border: 1px solid var(--line-strong, rgb(255 255 255 / 18%)); border-radius: 8px; background: transparent; color: var(--ink, #e8eaee); font: inherit; cursor: pointer; transition: background 150ms var(--ease-micro, ease), border-color 150ms var(--ease-micro, ease); }
-.plans-pick:hover { background: color-mix(in srgb, var(--accent, #4cc2ff) 12%, transparent); border-color: var(--accent, #4cc2ff); }
-.plans-pick[aria-pressed="true"] { background: var(--accent, #4cc2ff); border-color: var(--accent, #4cc2ff); color: #10131a; font-weight: 600; }
+.plans-pick:hover { background: color-mix(in srgb, var(--win-accent) 12%, transparent); border-color: var(--win-accent); }
+.plans-pick[aria-pressed="true"] { background: var(--win-accent); border-color: var(--win-accent); color: #10131a; font-weight: 600; }
 .plans-badges h2, .plans-payment h2 { margin: 0 0 10px; font-size: 1.15rem; }
 .plans-badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .plans-badge { display: inline-flex; align-items: center; min-height: 26px; padding: 0 12px; border-radius: 999px; font-family: var(--font-mono, monospace); font-size: 0.74rem; letter-spacing: 0.05em; }
-.plans-badge.is-tier { border: 1px solid var(--accent, #4cc2ff); color: var(--accent, #4cc2ff); background: color-mix(in srgb, var(--accent, #4cc2ff) 10%, transparent); }
+.plans-badge.is-tier { border: 1px solid var(--win-accent); color: var(--win-accent); background: color-mix(in srgb, var(--win-accent) 10%, transparent); }
 .plans-badge.is-cap { border: 1px solid var(--line, rgb(255 255 255 / 10%)); color: var(--ink-2, #b8bcc4); }
 .plans-payment p { margin: 0; max-width: 60ch; color: var(--ink-2, #b8bcc4); line-height: 1.55; }
 .plans-actions { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
-.plans-confirm { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 18px; border: 0; border-radius: 9px; background: var(--accent, #4cc2ff); color: #10131a; font: inherit; font-weight: 600; cursor: pointer; }
+.plans-confirm { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 18px; border: 0; border-radius: 9px; background: var(--win-accent); color: #10131a; font: inherit; font-weight: 600; cursor: pointer; }
 .plans-confirm:disabled { opacity: 0.6; cursor: wait; }
-.plans-back { color: var(--accent, #4cc2ff); text-decoration: none; }
+.plans-back { color: var(--win-accent); text-decoration: none; }
 .plans-back:hover { text-decoration: underline; }
 
 /* ==========================================================================
@@ -22566,12 +22587,13 @@ button.dtc-recents__row {
    the fan-deck clay. The chrome rules (selection, focus, drag) scope to
    .saas-root — the landing root owns them — while the material classes
    stay global like the reference sheet. Nothing here removes or demotes
-   a class another page renders (the 8-d doctrine holds); the self-hosted
-   law retired the remote Urbanist stylesheet (the sweep forbids the
-   hardcoded origin) and the tiers answer the house Inter Variable face
-   sol.css ships beside the entry — the same woff2 every other surface
-   reads, zero network font fetches, the face never blanks under a frozen
-   CSP.
+   a class another page renders (the 8-d doctrine holds); the Urbanist
+   voice is SELF-HOSTED now (the variable latin woff2 of the Google Fonts
+   reference family captured into sol/fonts beside the Inter/Geist pair —
+   the @font-face at the head of this sheet serves the three tiers), so
+   the landing answers the reference typeface itself with zero network
+   font fetches, the face never blanks under a frozen CSP, and the house
+   Inter Variable stack stays the fallback behind it.
    ========================================================================== */
 
 /* the voice of the landing: Urbanist over the house stack */

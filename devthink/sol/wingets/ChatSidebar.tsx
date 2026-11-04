@@ -30,7 +30,7 @@ import {
 } from "@fluentui/react-icons";
 import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { chatBuckets, chatNav } from "../../chatlabels.ts";
+import { chatBuckets, chatNav } from "../../labels.ts";
 import { checkpointCount, type ChatSession, cx } from "../../chatstate.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { SolBotIcon, type SolBotState } from "./ChatSolboticon.tsx";

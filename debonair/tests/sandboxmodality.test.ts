@@ -72,7 +72,7 @@ describe("the modality option seat (the deploy decides)", () => {
     const refused = workermodality("turbo-vm");
     assert.ok(!refused.ok);
     assert.match(refused.message, /off the vocabulary/);
-    assert.match(refused.message, /runner-node/);
+    assert.match(refused.message, /runnernode/);
   });
 });
 

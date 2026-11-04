@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { copyseed } from "../copy.ts";
+import { copyseed } from "../uistore.ts";
 import {
   loaduicopy,
   uicopy,

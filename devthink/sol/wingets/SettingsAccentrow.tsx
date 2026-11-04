@@ -10,7 +10,7 @@
  * @vault the migration path — data lives in the Vault engine via the internal API (@wenathlan/vault); this localStorage seat is a session cache only, never the source of truth.
  */
 import { useState } from "react";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { ACCENTS, loadAccent, saveAccent, type AccentId } from "../../personalstore.ts";
 
 /** AccentRow — the swatch row of the Colors card. */

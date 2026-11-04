@@ -113,6 +113,10 @@
        label catalog through the published os specifier, so the declaration
        emit covers the seam the same way the os seam entries above ride. */
     "os.ts",
+    "graph.ts",
+    "hono.ts",
+    "commands.ts",
+    "engines.ts",
     "storage.ts",
     "security.ts",
     "policy.ts",

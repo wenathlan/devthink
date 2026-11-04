@@ -14,9 +14,14 @@ import { Component, type ReactNode, useSyncExternalStore } from "react";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import { Router as WouterRouter } from "wouter";
-import { installdevtoolsguard, ondevtoolstrip, showdevtoolsinterstitial } from "./devtoolsguard.ts";
-import { guardStatus, reportguardstrike } from "./guard.ts";
-import { seedLabels } from "./labels.ts";
+import {
+  guardStatus,
+  installdevtoolsguard,
+  ondevtoolstrip,
+  reportguardstrike,
+  showdevtoolsinterstitial,
+} from "./devtoolsguard.ts";
+import { seedLabels } from "./uistore.ts";
 import Sol from "./sol/Sol.tsx";
 import { loadDevtoolsWall } from "./personalstore.ts";
 import "@fontsource-variable/geist-mono";

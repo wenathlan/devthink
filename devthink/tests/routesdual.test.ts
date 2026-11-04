@@ -353,7 +353,7 @@ describe("the sync (both faces stay one design)", () => {
     for (const app of ["devthink", ...FAMILY_SLUGS]) {
       const index = readFileSync(join(reporoot, app, "index.html"), "utf8");
       expect(index, `${app} pins the zoom zero viewport`).toContain(
-        'content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"',
+        'name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"',
       );
       expect(index).toContain("user-scalable=no");
     }

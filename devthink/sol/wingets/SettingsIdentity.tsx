@@ -10,7 +10,7 @@
 import {PersonRegular} from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import {
   type BrowserIdentity,
   browserIdentity,

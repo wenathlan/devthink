@@ -51,7 +51,7 @@ import {
   StopFilled as Stop,
 } from "@fluentui/react-icons";
 import { type CSSProperties, type KeyboardEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
-import { chatLimit, chatText } from "../../chatlabels.ts";
+import { chatLimit, chatText } from "../../labels.ts";
 import {
   CHAT_THINKING_LEVELS,
   CHAT_TOOLS,
@@ -426,9 +426,10 @@ export function Composer({
     isolation: "isolate",
     /* the hero law (chat wave 7-a): the block well earns the 24px hero
      * radius via the stylesheet token — the resting pill keeps its own
-     * round morph; the focus-within elevation walk joins the morph on
-     * the same curve */
-    borderRadius: resting ? "9999px" : "var(--chat-r-hero, 24px)",
+     * round morph on the family pill token (--win-pill, the caption
+     * grammar's own 999px); the focus-within elevation walk joins the
+     * morph on the same curve */
+    borderRadius: resting ? "var(--win-pill, 999px)" : "var(--chat-r-hero, 24px)",
     padding: resting ? "6px 12px" : "12px",
     ...(resting ? wellResting : null),
     transition:

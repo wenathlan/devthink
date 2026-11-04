@@ -29,7 +29,7 @@ import { mintid } from "./bigintids.ts";
 import { composeFromProfile } from "./composer.ts";
 import type { GatewayProfileRow } from "./gatewayapi.ts";
 import { fetchProfile, listVitrine, mineProfile, pollRenderJob, publishTrack, queueRender } from "./generateclient.ts";
-import { GENRES, matchGenre } from "./genre.ts";
+import { GENRES, matchGenre } from "./genrematrix.ts";
 import type { IngestClientCode, IngestClientDeps, IngestClientResult } from "./ingest.ts";
 import { pollJob, uploadIngest } from "./ingest.ts";
 import { composeWithLlm, type LlmLaneCode } from "./llmlane.ts";

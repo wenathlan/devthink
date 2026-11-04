@@ -37,7 +37,7 @@ import {
 import type { SandboxSpec, SandboxState } from "@wenathlan/saddle/sandbox";
 import { bootSequence, commands, cpudata, createSandboxState, dispatch, gpudata } from "@wenathlan/saddle/sandbox";
 import { type FormEvent, type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
-import { chatLimit, chatText } from "../../chatlabels.ts";
+import { chatLimit, chatText } from "../../labels.ts";
 import { boot as sandboxboot, modalities as sandboxmodalities, run as sandboxrun } from "../../gateway.ts";
 import { compactToken } from "../../queue.ts";
 

@@ -10,7 +10,7 @@ package io.github.wenathlan.foundry;
  */
 final class Foundry {
   /** The version of the foundry envelope (the six-distribution completeness wave). */
-  public static final String VERSION = "2.0.158";
+  public static final String VERSION = "2.0.159";
   private Foundry() {
   }
 }

@@ -11,7 +11,67 @@
  * dedup kept the two names this fold alone answers) */
 import type { observation, regionrect } from "./types.js";
 import { maskformstate, maskobservation, masktypedvalues } from "./security.js";
-import { checksum } from "./data.js";
+import { checksum, columnspecof } from "./data.js";
+/** Collects the raw span carrying row shapes of one html table, separating nested tables into cell refs. */
+function collectrowshapes(table: HTMLTableElement): rowshape[] {
+  return [...table.rows].map((row) => ({
+    header: [...row.cells].every((cell) => cell.tagName === "TH") && row.cells.length > 0,
+    cells: [...row.cells].map((cell) => {
+      const nested = cell.querySelector("table");
+      return {
+        text: clean(nested ? `${nested.rows.length} rows` : (cell.textContent ?? "")),
+        header: cell.tagName === "TH",
+        rowspan: cell.rowSpan,
+        colspan: cell.colSpan,
+        ...(nested instanceof HTMLTableElement
+          ? { nested: { selector: elementselector(nested), rows: collectrowshapes(nested) } }
+          : {}),
+      };
+    }),
+  }));
+}
+
+/** Reads the reviewed table element into a grid result. */
+function readtable(target: Element | null, root: Document, fallbackselector: string | undefined): gridresult | null {
+  const table =
+    target instanceof HTMLTableElement
+      ? target
+      : fallbackselector
+        ? root.querySelector<HTMLTableElement>(fallbackselector)
+        : root.querySelector<HTMLTableElement>("table");
+  if (!table) return null;
+  return readgrid(collectrowshapes(table));
+}
+
+/** Reads the live pagination entries of a table container for the next control resolution. */
+function paginationentries(
+  root: Document,
+  scope: string | undefined,
+): Array<{ text: string; selector: string; current: boolean }> {
+  const container = scope ? root.querySelector(scope) : root;
+  if (!container) return [];
+  return [...container.querySelectorAll("a[href], button")].map((element) => ({
+    text: clean(element.textContent ?? ""),
+    selector: elementselector(element),
+    current:
+      element.getAttribute("aria-current") === "page" ||
+      element.classList.contains("active") ||
+      element.classList.contains("current"),
+  }));
+}
+
+/** Runs one reviewed data step on the page: table scraping into datasets and pagination following with fresh row waits. */
+
+/** Trims, lowercases and slugifies one header cell into a stable column key. */
+
+// the dataset family (headers, column specs, the csv/excel/json converters
+// and the column mapping) moved to its data owner (data.ts owns the
+// dataset family); the historical page import paths keep answering through
+// the re-exports below.
+export { columnspecof, mapcolumns, normalizeheader, parsecsv, tocsv, toexcel, tojson } from "./data.js";
+// the dataset converters (tocsv, toexcel, tojson) moved to their data owner
+// (data.ts owns the dataset family); the historical page import path keeps
+// answering through the re-export below.
 
 /* ===== block: page ===== */
 /** The page module of the 1.1.88 consolidation: every correlated variation of the page logic interned in this one file, so the module family carries one surface without duplicate variations. */
@@ -885,30 +945,6 @@ export interface gridresult {
   children: childtable[];
 }
 
-/** Trims, lowercases and slugifies one header cell into a stable column key. */
-export function normalizeheader(label: string): string {
-  const slug = label
-    .trim()
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, "-")
-    .replace(/^-+|-+$/g, "");
-  return slug || "column";
-}
-
-/** Builds one column spec from a header label with a unique stable key and the normalized name. */
-export function columnspecof(label: string, used: Set<string> = new Set()): columnspec {
-  const base = normalizeheader(label);
-  let key = base;
-  let suffix = 2;
-  while (used.has(key)) {
-    key = `${base}${suffix}`;
-    suffix += 1;
-  }
-  used.add(key);
-  return { key, label: label.trim(), kind: "text", normalized: label.trim().toLowerCase() };
-}
-
-/** Classifies a column as number only when every non-empty value parses as a number. */
 export function classifycolumn(values: string[]): "text" | "number" {
   const present = values.filter((value) => value.trim().length > 0);
   if (present.length === 0) return "text";
@@ -1098,155 +1134,6 @@ export function samplerows(
   return { rows: stamped, sources };
 }
 
-/** Escapes one csv field, wrapping values that carry the delimiter, quotes or line breaks. */
-function csvfield(value: string, delimiter: string): string {
-  return value.includes(delimiter) || value.includes('"') || value.includes("\n")
-    ? `"${value.replace(/"/g, '""')}"`
-    : value;
-}
-
-/** Serializes columns and rows into csv text. */
-export function tocsv(columns: columnspec[], rows: datasetrow[], delimiter = ","): string {
-  const lines = [columns.map((column) => csvfield(column.label || column.key, delimiter)).join(delimiter)];
-  for (const row of rows)
-    lines.push(columns.map((column) => csvfield(row[column.key] ?? "", delimiter)).join(delimiter));
-  return lines.join("\n");
-}
-
-/** Parses csv text into headers and raw rows, honoring quoted fields and escaped quotes. */
-export function parsecsv(text: string, delimiter = ","): { headers: string[]; rows: string[][] } {
-  const records: string[][] = [];
-  let field = "";
-  let record: string[] = [];
-  let quoted = false;
-  for (let index = 0; index < text.length; index += 1) {
-    const character = text[index]!;
-    if (quoted) {
-      if (character === '"') {
-        if (text[index + 1] === '"') {
-          field += '"';
-          index += 1;
-        } else quoted = false;
-      } else field += character;
-      continue;
-    }
-    if (character === '"') {
-      quoted = true;
-      continue;
-    }
-    if (character === delimiter) {
-      record.push(field);
-      field = "";
-      continue;
-    }
-    if (character === "\n" || character === "\r") {
-      if (character === "\r" && text[index + 1] === "\n") index += 1;
-      record.push(field);
-      field = "";
-      if (record.some((value) => value.length > 0) || record.length > 1) records.push(record);
-      record = [];
-      continue;
-    }
-    field += character;
-  }
-  record.push(field);
-  if (record.some((value) => value.length > 0) || record.length > 1) records.push(record);
-  const [headers = [], ...rows] = records;
-  return { headers, rows };
-}
-
-/** Maps parsed csv headers onto dataset column specs through a reviewed mapping of csv names to target keys. */
-export function mapcolumns(headers: string[], mapping: Record<string, string> = {}): columnspec[] {
-  const used = new Set<string>();
-  return headers.map((header) => {
-    const target = mapping[header] ?? mapping[normalizeheader(header)] ?? header;
-    return columnspecof(target, used);
-  });
-}
-
-/** Serializes columns and rows into a json dataset payload. */
-export function tojson(columns: columnspec[], rows: datasetrow[]): string {
-  return JSON.stringify({ columns, rows });
-}
-
-/** Escapes one xml text node. */
-function xmltext(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
-
-/** Serializes columns and rows into an Excel SpreadsheetML 2003 workbook that Excel opens natively. */
-export function toexcel(columns: columnspec[], rows: datasetrow[], name: string): string {
-  const head = columns
-    .map(
-      (column) => `<Cell ss:StyleID="head"><Data ss:Type="String">${xmltext(column.label || column.key)}</Data></Cell>`,
-    )
-    .join("");
-  const body = rows
-    .map(
-      (row) =>
-        `<Row>${columns
-          .map((column) => {
-            const value = row[column.key] ?? "";
-            const numeric = column.kind === "number" && value.trim() !== "" && Number.isFinite(Number(value));
-            return numeric
-              ? `<Cell><Data ss:Type="Number">${xmltext(value)}</Data></Cell>`
-              : `<Cell><Data ss:Type="String">${xmltext(value)}</Data></Cell>`;
-          })
-          .join("")}</Row>`,
-    )
-    .join("");
-  return `<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles><Style ss:ID="head"><Font ss:Bold="1"/></Style></Styles><Worksheet ss:Name="${xmltext(name || "dataset").slice(0, 31)}"><Table><Row>${head}</Row>${body}</Table></Worksheet></Workbook>`;
-}
-
-/** Collects the raw span carrying row shapes of one html table, separating nested tables into cell refs. */
-function collectrowshapes(table: HTMLTableElement): rowshape[] {
-  return [...table.rows].map((row) => ({
-    header: [...row.cells].every((cell) => cell.tagName === "TH") && row.cells.length > 0,
-    cells: [...row.cells].map((cell) => {
-      const nested = cell.querySelector("table");
-      return {
-        text: clean(nested ? `${nested.rows.length} rows` : (cell.textContent ?? "")),
-        header: cell.tagName === "TH",
-        rowspan: cell.rowSpan,
-        colspan: cell.colSpan,
-        ...(nested instanceof HTMLTableElement
-          ? { nested: { selector: elementselector(nested), rows: collectrowshapes(nested) } }
-          : {}),
-      };
-    }),
-  }));
-}
-
-/** Reads the reviewed table element into a grid result. */
-function readtable(target: Element | null, root: Document, fallbackselector: string | undefined): gridresult | null {
-  const table =
-    target instanceof HTMLTableElement
-      ? target
-      : fallbackselector
-        ? root.querySelector<HTMLTableElement>(fallbackselector)
-        : root.querySelector<HTMLTableElement>("table");
-  if (!table) return null;
-  return readgrid(collectrowshapes(table));
-}
-
-/** Reads the live pagination entries of a table container for the next control resolution. */
-function paginationentries(
-  root: Document,
-  scope: string | undefined,
-): Array<{ text: string; selector: string; current: boolean }> {
-  const container = scope ? root.querySelector(scope) : root;
-  if (!container) return [];
-  return [...container.querySelectorAll("a[href], button")].map((element) => ({
-    text: clean(element.textContent ?? ""),
-    selector: elementselector(element),
-    current:
-      element.getAttribute("aria-current") === "page" ||
-      element.classList.contains("active") ||
-      element.classList.contains("current"),
-  }));
-}
-
-/** Runs one reviewed data step on the page: table scraping into datasets and pagination following with fresh row waits. */
 export async function runpagedata(
   step: toolstep,
   target: Element | null,
@@ -6486,6 +6373,12 @@ function cssescape(value: string): string {
 }
 
 /** Computes the accessible style label of an element from aria hints, linked labels, title and content. */
+/** the folded bridge names of the a11y helpers (the former pagebridge seat
+ * imported them as label/selector — the aliases keep every historical call
+ * site answering without touching one line of the folded bodies). */
+const label = elementlabel;
+const selector = elementselector;
+
 export function elementlabel(element: Element): string {
   const aria = element.getAttribute("aria-label");
   let linked = "";
@@ -7861,11 +7754,6 @@ export function evaluatexpath(root: xnode, expression: string): xnode[] {
 
 
 
-/**
- * Page bridge for reviewed steps.
- * Correlated rules for the dispatch seam, semantic snapshots, target preview with resolution, dialog log reads and the original action set live in this file.
- */
-
 /** Routes one reviewed step to the execution environment the policy names: dom actions that need page events keep this pagecontext bridge because page events only fire in the live page, evaluate steps run inside the isolated world the background injects through the scripting api, parse heavy read kinds may offload into the offscreen worker pool behind the granted capability and a step carrying untrusted markup renders inside the sandboxframe — this bridge itself only ever executes the pagecontext steps. */
 export function routesenvironment(step: toolstep): "pagecontext" | "elsewhere" {
   if (step.environment !== undefined && step.environment !== "pagecontext") return "elsewhere";
@@ -7919,7 +7807,7 @@ export function previewtarget(
   window.setTimeout(clearpreview, 5000);
   return {
     ok: true,
-    summary: `Previewing ${elementlabel(target) || target.tagName.toLowerCase()} for five seconds.`,
+    summary: `Previewing ${label(target) || target.tagName.toLowerCase()} for five seconds.`,
     resolvedtarget: resolution.target,
   };
 }
@@ -7933,13 +7821,13 @@ export function capturesnapshot(): observation {
   ];
   const interactive = candidates
     .map((element) => ({
-      selector: elementselector(element),
+      selector: selector(element),
       role: element.getAttribute("role") || element.tagName.toLowerCase(),
-      label: elementlabel(element),
+      label: label(element),
     }))
     .filter((item) => item.label || item.role);
   const forms = [...document.querySelectorAll("input, textarea, select")].map((element) => ({
-    label: elementlabel(element),
+    label: label(element),
     type: element.getAttribute("type") || element.tagName.toLowerCase(),
     name: element.getAttribute("name") || "",
     ...(element instanceof HTMLSelectElement
@@ -7999,7 +7887,7 @@ function extractcontent(targetselector: string | undefined, root: Document): ste
 /** Scrolls one reviewed target into view without reading or changing other page state. */
 function scrolltarget(target: HTMLElement): stepresult {
   target.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
-  return { ok: true, summary: `Scrolled ${elementlabel(target) || target.tagName.toLowerCase()} into view.` };
+  return { ok: true, summary: `Scrolled ${label(target) || target.tagName.toLowerCase()} into view.` };
 }
 
 /** Dispatches hover events on one reviewed target. */
@@ -8010,7 +7898,7 @@ function hovertarget(target: HTMLElement): stepresult {
     );
   }
   target.dispatchEvent(new MouseEvent("mouseenter", { bubbles: false, cancelable: true }));
-  return { ok: true, summary: `Hover events delivered to ${elementlabel(target) || target.tagName.toLowerCase()}.` };
+  return { ok: true, summary: `Hover events delivered to ${label(target) || target.tagName.toLowerCase()}.` };
 }
 
 /** Selects one reviewed existing option; values outside the declared options are refused. */
@@ -8360,7 +8248,7 @@ async function performstepinner(step: toolstep, expectedorigin: string, rootdocu
       element.focus();
       result = { ok: true, summary: "Target focused." };
     } else if (step.kind === "inspect")
-      result = { ok: true, summary: `Target: ${elementlabel(element) || element.tagName.toLowerCase()}.` };
+      result = { ok: true, summary: `Target: ${label(element) || element.tagName.toLowerCase()}.` };
     else if (step.kind === "click") {
       element.click();
       result = { ok: true, summary: "Reviewed click completed." };
@@ -8451,7 +8339,7 @@ export function queryelements(query: string): { ok: boolean; selectors: string[]
     return { ok: true, selectors: [], summary: `The reviewed selector ${query} matched no element.` };
   return {
     ok: true,
-    selectors: matched.map((element) => elementselector(element)),
+    selectors: matched.map((element) => selector(element)),
     summary: `Resolved ${matched.length} element reference${matched.length === 1 ? "" : "s"} of the reviewed selector ${query}.`,
   };
 }
@@ -8910,40 +8798,3 @@ export function maskobservationstate(
 export function maskobservationsnapshot(shot: observation, shapes: string[]): observation {
   return maskobservation(shot, shapes);
 }
-
-Object.assign(globalThis, {
-  devthinkbridge: {
-    maskstepvalues,
-    maskobservationstate,
-    maskobservationsnapshot,
-    capturesnapshot,
-    previewtarget,
-    performstep,
-    readdialogs,
-    measurepage,
-    elementrect,
-    queryelements,
-    preparecapture,
-    scrollcapture,
-    restorecapture,
-    scrollcontainercapture,
-    waitsettle,
-    pdfsegment,
-    pdfbreaks,
-    videoframe,
-    videostate,
-    canvasdata,
-    streamelements,
-    mediaelements,
-    pageassets,
-    pageimages,
-    parsehtmlmarkup,
-    resourcerecords,
-    writecookies,
-    readcookies,
-    clearcookies,
-    revertemulationlayer,
-    flushconsole,
-  },
-});
-

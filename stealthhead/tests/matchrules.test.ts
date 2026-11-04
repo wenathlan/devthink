@@ -17,7 +17,7 @@ import {
   scoreround,
   seatplayers,
   transitionlobby,
-} from "../matchrules.ts";
+} from "../match.ts";
 
 /** finds one seeded lobby by id (the tests key on the seed rows). */
 function lobby(id: string): MatchLobby {

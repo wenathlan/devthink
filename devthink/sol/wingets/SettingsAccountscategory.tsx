@@ -9,7 +9,7 @@
  * identity.tsx. Loose component of the settings page, riding the dtw kit.
  */
 import { PersonRegular, PlugDisconnectedRegular } from "@fluentui/react-icons";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import type { AccountSessionState } from "../../account.ts";
 import { LocalAccount } from "./SettingsIdentity";
 import { SettingsRow } from "./SettingsRow";

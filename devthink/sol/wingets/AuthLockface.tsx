@@ -12,7 +12,7 @@
  */
 import { ChevronUpRegular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import { copy } from "../../copy.ts";
+import { copy } from "../../uistore.ts";
 
 export interface LockFaceProps {
   /** the unlock: the stage machine of the anchor lifts the lock into the

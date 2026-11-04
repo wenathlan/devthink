@@ -22,6 +22,7 @@ export default defineConfig({
        * entry retires when the published envelope carries the built
        * route table. */
       "@wenathlan/debonair/routetable": path.resolve(import.meta.dirname, "../debonair/routetable.ts"),
+      "@wenathlan/vault/routes": path.resolve(import.meta.dirname, "../vault/routes.ts"),
 
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published
@@ -128,13 +129,12 @@ export default defineConfig({
        * ("@wenathlan/getry/providers") — the devthink server compat shim
        * and the devthink router — resolves it to this app's own source at
        * test runtime: the one owner of the moved console. */
-      "@wenathlan/getry/providers": path.resolve(import.meta.dirname, "providers.ts"),
       /** the oslabels bridge of the ownership wave: the moved provider
        * console reads the paired label catalog through the published os
-       * specifier ("@wenathlan/devthink/oslabels"), and this bridge resolves
+       * specifier ("@wenathlan/devthink/os"), and this bridge resolves
        * it to the monorepo source the sibling app carries — the label
        * catalog is never duplicated inside getry. */
-      "@wenathlan/devthink/oslabels": path.resolve(import.meta.dirname, "../devthink/oslabels.ts"),
+      "@wenathlan/devthink/os": path.resolve(import.meta.dirname, "../devthink/os.ts"),
       "@wenathlan/getry/project": path.resolve(import.meta.dirname, "project.ts"),
       "@wenathlan/getry/quota": path.resolve(import.meta.dirname, "quota.ts"),
       "@wenathlan/getry/recovery": path.resolve(import.meta.dirname, "recovery.ts"),
@@ -143,8 +143,6 @@ export default defineConfig({
       "@wenathlan/getry/utils": path.resolve(import.meta.dirname, "utils.ts"),
       "@wenathlan/getry/versionregistry": path.resolve(import.meta.dirname, "versionregistry.ts"),
       "@wenathlan/getry/intelligence": path.resolve(import.meta.dirname, "intelligence.ts"),
-      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
-      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
       "@wenathlan/getry/json": path.resolve(import.meta.dirname, "json.ts"),
       "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "gateway.ts"),
       "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "gateway.ts"),

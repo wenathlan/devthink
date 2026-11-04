@@ -6,7 +6,7 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { GENRES, type GenreStyle, matchGenre, pickBpm } from "./genre.ts";
+import { GENRES, type GenreStyle, matchGenre, pickBpm } from "./genrematrix.ts";
 import { type ChordEvent, generateProgression, hashSeed, mulberry32, PROGRESSION_SETS } from "./harmonyengine.ts";
 import type { MixerStripRow } from "./katexis.ts";
 import { MASTERING, trackNameFromPrompt } from "./katexis.ts";

@@ -39,7 +39,7 @@ import { mintid } from "./bigintids.ts";
 import { type BlobResult, blobidvalid, gatewayblobstore } from "./blobstore.ts";
 import { composeSimilar } from "./composer.ts";
 import type { GatewayProfileRow, RenderJobValue, VitrineTrackValue, VitrineValue } from "./gatewayapi.ts";
-import { matchGenre } from "./genre.ts";
+import { matchGenre } from "./genrematrix.ts";
 import { gatewaylane, INGEST_CALL_TIMEOUT_MS, type IngestClientDeps, type IngestClientResult } from "./ingest.ts";
 import { hostallowed } from "./onboardingstate.ts";
 import type { PatternProject } from "./pattern.ts";

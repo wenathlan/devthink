@@ -17,7 +17,7 @@ import {
   PlugConnectedRegular,
   SearchRegular } from "@fluentui/react-icons";
 import { useState, type ComponentType } from "react";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import type { SettingsCategoryId } from "./Settingstypes";
 
 /** one rail entry: the category id, its fluent glyph and its copy key. */

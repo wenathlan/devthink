@@ -71,19 +71,19 @@ await mkdir(extensiondist, { recursive: true });
 /** The version stamp and license banner every bundle embeds: the version reads from package.json so no bundle carries a second version source, and the license name rides the same line. */
 const banner = `/*! devthink ${packagejson.version} — consent-first browser agent library — GPL-3.0-only — https://github.com/wenathlan/devthink */`;
 
-/** The byte budget of every build target: the bounds are build-time engineering bounds on the unminified variants (a minified variant stays strictly smaller than its unminified bundle) and an overgrown bundle fails the build before it ships. The grand merge consolidation interned the provider gateway adapters in the llm core surface, so the index family bounds ride one notch above the pre-merge engineering ceilings the surface outgrew. */
+/** The byte budget of every build target: the bounds are build-time engineering bounds on the unminified variants (a minified variant stays strictly smaller than its unminified bundle) and an overgrown bundle fails the build before it ships. The grand merge consolidation interned the provider gateway adapters in the llm core surface, and the logicfold waves interned the page bridge, the umd and cjs families beside the keyed os seat, so the index family bounds ride one notch above the pre-merge engineering ceilings the surface outgrew. */
 const bundlebudgets: Record<string, number> = {
-  index: 2_200_000,
-  indexcjs: 2_300_000,
-  neutral: 2_000_000,
-  umd: 2_300_000,
-  node: 2_300_000,
-  bun: 2_200_000,
-  deno: 2_200_000,
+  index: 2_500_000,
+  indexcjs: 2_600_000,
+  neutral: 2_400_000,
+  umd: 2_600_000,
+  node: 2_600_000,
+  bun: 2_500_000,
+  deno: 2_500_000,
   cli: 900_000,
   headless: 900_000,
   mcp: 1_400_000,
-  server: 2_400_000,
+  server: 2_600_000,
   http: 600_000,
   bridge: 160_000,
   companion: 60_000,
@@ -487,7 +487,7 @@ await build({
     the prisma stack), keep the runtime dependencies external exactly the way the server entry
     does, and inline the gateway owner modules through the family bridges the same way — the
     bundle stays the reviewed repository sources alone. */
-for (const modulename of ["config", "constants", "core", "data", "storage", "security", "tools", "types"]) {
+for (const modulename of ["config", "constants", "core", "data", "os", "graph", "hono", "commands", "engines", "storage", "security", "tools", "types"]) {
   await build({
     entryPoints: [`${modulename}.ts`],
     outfile: record(`${modulename}.js`),
@@ -1363,6 +1363,11 @@ const stagerootfiles = [
   "constants.js",
   "core.js",
   "data.js",
+  "os.js",
+  "graph.js",
+  "hono.js",
+  "commands.js",
+  "engines.js",
   "storage.js",
   "security.js",
   "tools.js",
@@ -1398,6 +1403,13 @@ const stagedeclarations = [
   "constants",
   "core",
   "data",
+  /* the os seam declaration of the provider console move: the paired label
+     catalog answers the published ./os specifier the console barrel reads. */
+  "os",
+  "graph",
+  "hono",
+  "commands",
+  "engines",
   "storage",
   "security",
   "tools",
@@ -2303,7 +2315,7 @@ export function convertElement(element: JsxElement, ctx: ConvertContext): IrNode
 export function convertWidget(source: string, cssTokens: Map<string, string>): { ir: IrNode; slots: string[] } {
   const contracts: Record<string, StyleDict> = {};
   for (const match of source.matchAll(/from\s+"\.\/([\w]+)\.tsx"/g)) {
-    const sibling = path.resolve(import.meta.dirname ?? ".", "Sol", "wingets", `${match[1]}.tsx`);
+    const sibling = path.resolve(import.meta.dirname ?? ".", "sol", "wingets", `${match[1]}.tsx`);
     if (existsSync(sibling)) Object.assign(contracts, collectStyleContracts(readFileSync(sibling, "utf8")));
   }
   const root = parseJsxRoot(source);
@@ -2347,7 +2359,7 @@ export function ${exportName}(props: ${exportName}Props = {}, options: RenderOpt
 /** converts every configured widget; returns the output files in memory */
 export function convertAll(): Array<{ output: string; content: string; slots: string[] }> {
   const root = import.meta.dirname ?? ".";
-  const css = readFileSync(path.resolve(root, "Sol", "sol.css"), "utf8");
+  const css = readFileSync(path.resolve(root, "sol", "sol.css"), "utf8");
   const tokens = parseCssTokens(css);
   return TERMINAL_WIDGETS.map((widget) => {
     const source = readFileSync(path.resolve(root, widget.source), "utf8");

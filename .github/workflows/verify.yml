@@ -109,7 +109,7 @@ jobs:
       - name: Validate every tracked JSON document of the metadata family
         run: cd devthink && node jsongate.ts
       - name: Verify the protocolv2 api freeze of the frozen contracts
-        run: cd devthink && node apifreezegate.ts
+        run: cd devthink && node apifreeze.ts
       - name: Run the penetration test checklist of the security hardening release
         run: cd devthink && node pentest.ts
       - name: Audit every content security policy of the extension surfaces
@@ -246,7 +246,7 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/>=([^ ]+)/)[1]")"
+          test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
           bun build/cli.js manifest
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
@@ -404,7 +404,7 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/>=([^ ]+)/)[1]")"
+          test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
           # the modes lane answers the runtime contract: the release truth
           # tests ride the ladder where their gates regenerate the artifacts
           bun x vitest run --exclude "tests/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge,sweep}.test.ts"

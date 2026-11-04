@@ -44,9 +44,14 @@ const FLOOR_CEILING_MB = 900 * 1024;
  */
 export function quotaFloorFromMb(value: string | undefined): bigint {
   const parsed = value === undefined ? Number.NaN : Number(value.trim());
+  /* only whole megabytes configure the floor — a decimal spell (1.5) is an
+   * invalid configuration the same as a word, so the family default answers
+   * instead of a rounded stray the owner never wrote. */
   const megabytes =
-    Number.isFinite(parsed) && parsed >= FLOOR_MIN_MB ? Math.min(parsed, FLOOR_CEILING_MB) : FLOOR_DEFAULT_MB;
-  return BigInt(Math.round(megabytes)) * 1024n * 1024n;
+    Number.isFinite(parsed) && Number.isInteger(parsed) && parsed >= FLOOR_MIN_MB
+      ? Math.min(parsed, FLOOR_CEILING_MB)
+      : FLOOR_DEFAULT_MB;
+  return BigInt(megabytes) * 1024n * 1024n;
 }
 
 /** @section verdict */

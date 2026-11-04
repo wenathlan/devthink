@@ -14,7 +14,7 @@ import assert from "node:assert/strict";
 import { afterAll, describe, it } from "vitest";
 import "./doorisolation.ts";
 import { queryAll, queryOne } from "../db.ts";
-import { API_KEY_PREFIX, apiKeyLookup, databaseIdValid, issueApiKey, registerDatabase, revokeApiKey, setDatabaseQuota, signinAccount, signupAccount } from "../signup.ts";
+import { API_KEY_PREFIX, apiKeyLookup, databaseIdValid, issueApiKey, registerDatabase, revokeApiKey, setDatabaseQuota, signinAccount, signupAccount } from "../accounts.ts";
 import { QUOTA_FLOOR_BYTES } from "../quota.ts";
 import { sha256Hex } from "../sha.ts";
 

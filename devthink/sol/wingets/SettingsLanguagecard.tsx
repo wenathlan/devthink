@@ -13,7 +13,7 @@
  */
 import { LocalLanguageRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { languageLadder, type LanguageRow } from "../../catalog.ts";
 
 /** the machine profile key the preference persists under.

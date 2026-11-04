@@ -145,7 +145,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   onClick={() => scrollto(item.id)}
                   aria-label={item.label}
                   aria-pressed={current}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ${current ? "scale-105 bg-gradient-to-tr from-indigo-600 to-sky-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
+                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,background-color,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-indigo-600 to-sky-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
                 >
                   {Glyph ? <Glyph className="h-4 w-4" aria-hidden="true" /> : null}
                   <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-medium-tier whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
@@ -219,12 +219,12 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                         type="button"
                         onClick={() => scrollto(tab.id)}
                         aria-label={tab.label}
-                        className={`group flex items-center rounded-xl px-3 py-2 transition-all ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
+                        className={`group flex items-center rounded-xl px-3 py-2 transition-[background-color,border-color,box-shadow,color] ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
                       >
                         {entry ? (
                           <entry.icon strokeWidth={1.7} className={`h-4 w-4 ${entry.color}`} aria-hidden="true" />
                         ) : null}
-                        <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
+                        <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-[max-width,margin-left,opacity] group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
                           {tab.label}
                         </span>
                       </button>
@@ -241,7 +241,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 aria-label={saaschrome.alerts}
               >
                 <Bell strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
-                <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-[max-width,margin-left,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                   {saaschrome.alerts}
                 </span>
               </button>
@@ -252,7 +252,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 aria-label={saaschrome.signin}
               >
                 <LogIn strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
-                <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-all group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
+                <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-[max-width,margin-left,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                   {saaschrome.signin}
                 </span>
               </button>
@@ -263,7 +263,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 aria-label={saaschrome.launch}
               >
                 <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
-                <span className="max-w-0 overflow-hidden text-xs font-bold-tier whitespace-nowrap opacity-0 transition-all group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
+                <span className="max-w-0 overflow-hidden text-xs font-bold-tier whitespace-nowrap opacity-0 transition-[max-width,margin-left,margin-right,opacity] group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
                   {saaschrome.launch}
                 </span>
               </button>

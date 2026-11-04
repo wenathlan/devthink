@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.158",
+  "version": "2.0.160",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -289,25 +289,30 @@
       "import": "./build/queue.js",
       "default": "./build/queue.js"
     },
+    "./os": {
+      "types": "./build/os.d.ts",
+      "import": "./build/os.js",
+      "default": "./build/os.js"
+    },
     "./graph": {
-      "types": "./graph.ts",
-      "import": "./graph.ts",
-      "default": "./graph.ts"
+      "types": "./build/graph.d.ts",
+      "import": "./build/graph.js",
+      "default": "./build/graph.js"
     },
     "./hono": {
-      "types": "./hono.ts",
-      "import": "./hono.ts",
-      "default": "./hono.ts"
+      "types": "./build/hono.d.ts",
+      "import": "./build/hono.js",
+      "default": "./build/hono.js"
     },
     "./commands": {
-      "types": "./commands.ts",
-      "import": "./commands.ts",
-      "default": "./commands.ts"
+      "types": "./build/commands.d.ts",
+      "import": "./build/commands.js",
+      "default": "./build/commands.js"
     },
     "./engines": {
-      "types": "./engines.ts",
-      "import": "./engines.ts",
-      "default": "./engines.ts"
+      "types": "./build/engines.d.ts",
+      "import": "./build/engines.js",
+      "default": "./build/engines.js"
     }
   },
   "bin": {

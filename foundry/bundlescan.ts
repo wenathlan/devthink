@@ -159,6 +159,15 @@ export function platformnames(name: string): boolean {
 export function wireformatnames(name: string): boolean {
   return (
     [
+      /* the openai compatible models wire field (the /v1/models answer
+       * carries context_length in the snake case the protocol speaks) and
+       * the griffel renderer export (the fluent styling engine publishes
+       * its unstable_ prefixed css rule api) stay allowlisted beside the
+       * manifest fields: their names belong to the protocols and the
+       * reviewed engines they speak, not to the os review. */
+      "context_length",
+      "unstable_filterCSSRule",
+
       "allowed_origins",
       "browser_specific_settings",
       "strict_min_version",
@@ -198,7 +207,11 @@ export function gatewaywirefields(name: string): boolean {
     "init_storage",
     "init_gateway",
     "init_gateway2",
-    "init_chatlabels",
+    /* the chatlabels fold of the 2.0.160 rung: the manifest merge retired
+     * the standalone chatlabels seat into the labels keyword file, so the
+     * lazy wrapper the merge mints answers init_labels beside the same
+     * precedent (the name belongs to the bundler, never the review). */
+    "init_labels",
     "init_queue",
     "init_thinking",
     "init_utils",

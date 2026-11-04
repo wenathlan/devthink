@@ -25,7 +25,7 @@ import { useLocation, useRoute } from "wouter";
 import { PairingPanel } from "@/wingets/SettingsPairing";
 import { islocalunlocked, restoreonce } from "../../account.ts";
 import { writeChatHandoff } from "../../chatstate.ts";
-import { copy } from "../../copy.ts";
+import { copy } from "../../uistore.ts";
 import { historypath, routeFromPathname, safegatewayurl } from "../../gateway.ts";
 import { panelgateverdict, resolveintrotarget } from "../../introtarget.ts";
 import type { DevThinkTab } from "../../paneltypes.ts";

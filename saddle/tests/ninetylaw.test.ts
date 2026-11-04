@@ -171,7 +171,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
 
   it("names docker when the profile lanes meet an absent daemon", async () => {
     for (const profile of ["max", "lite"] as const) {
-      const result = await runonedge({ modality: `container-${profile}`, code: "" });
+      const result = await runonedge({ modality: `container${profile}`, code: "" });
       if (result.status === "failed") {
         // docker rides the host: absent answers host-runtime-absent, a
         // present-but-failing daemon answers run-exited-nonzero — the

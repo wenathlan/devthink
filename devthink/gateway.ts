@@ -11,7 +11,8 @@
  * path — merged from nine root modules (gatewaybase.ts, authgate.ts,
  * gateway.ts, gatewayviewdefinition.ts, sandboxclient.ts,
  * storageusageclient.ts, compatibility.ts, deploybase.ts, routebase.ts)
- * with every export preserved under the same name and signature and the
+ * with every
+ * export preserved under the same name and signature and the
  * duplicated helpers deduped to one survivor each:
  *
  *   - D7 (the gateway-url normalizer): `normalizeGatewayBase` (§1) is the
@@ -51,8 +52,9 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import { readBrowserPreferences, saveBrowserPreference } from "./storage.ts";
-import { chatText } from "./chatlabels.ts";
+import { chatText } from "./labels.ts";
 
 /* ============================================================================
  * @section 1 — gatewaybase: the ONE opt-in gateway contract of the chat.

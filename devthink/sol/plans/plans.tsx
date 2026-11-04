@@ -18,7 +18,7 @@
 import { CheckmarkRegular, PaymentRegular, PersonRegular } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { copy, loadcopy } from "../../copy.ts";
+import { copy, loadcopy } from "../../uistore.ts";
 import {
   CAPABILITY_BADGES,
   loadplan,

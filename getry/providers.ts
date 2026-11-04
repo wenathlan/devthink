@@ -9,13 +9,13 @@
 import { getDefaultAccountManager } from "./accounts.js";
 import { ANTIGRAVITY_VERSION_FALLBACK, ANTIGRAVITY_VERSION_MIN_SUPPORTED, CLIENT_METADATA_STRING, CLOUDCODE_BASE_URL, CLOUDCODE_DAILY_BASE, CODE_ASSIST_PATH_MAP, ENDPOINTS, FALLBACK_PROJECT_ID, FILE_PATHS, GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, GEMINI_CLI_SCOPES, GEMINI_CLI_USER_AGENT, OAUTH_REVOKE_URL, OAUTH_TOKEN_URL, PLUGIN_VERSION, PROJECT_FALLBACK } from "./constants.js";
 import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import { ENDPOINT_ORDER, MODELS_2026_CATALOG, DEFAULT_MODEL_ID, UA_DEFAULT_MODEL, MODEL_BY_ID, ModelCatalogEntry, SEARCH_MODEL_PREVIEW, buildGoogleProviderModelConfigs, buildOpenCodeModelDefinitions, detectTargetProvider } from "./models.js";
+import { ENDPOINT_ORDER, MODELS_2026_CATALOG, DEFAULT_MODEL_ID, MODEL_BY_ID, ModelCatalogEntry, SEARCH_MODEL_PREVIEW, buildGoogleProviderModelConfigs, buildOpenCodeModelDefinitions, detectTargetProvider } from "./models.js";
 import { ANTIGRAVITY_CLI_CLIENT_ID, ANTIGRAVITY_CLI_CLIENT_SECRET, ANTIGRAVITY_CLI_GRPC_VERSION, ANTIGRAVITY_CLI_OAUTH_SCOPES, ANTIGRAVITY_CLI_REDIRECT_OFFICIAL, ANTIGRAVITY_CLI_VERSION_LATEST, GEMINI_OAUTH_CLIENT_ID, GEMINI_OAUTH_CLIENT_SECRET } from "./oauth.js";
 import { ChatEvent, parseEventStream } from "./streaming.js";
 import { DevThinkConfig, DevThinkPaths, VERSION_FALLBACK, atomicWrite, cfgDir, fetchVersionChain, loadConfigRaw, resolveCredential, saveConfigRaw, validateEmail, validateModelId, validateModelIdCharset, validateProjectId, validateSemver } from "@wenathlan/devthink/config";
 import { FETCH_TIMEOUT_MS } from "@wenathlan/devthink/constants";
 import { debugLogger, logsDir, redactSecrets } from "@wenathlan/devthink/core";
-import { osStringRows } from "@wenathlan/devthink/oslabels";
+import { osStringRows } from "@wenathlan/devthink/os";
 
 /* ===== block: providers ===== */
 /**
@@ -84,7 +84,7 @@ type ProviderDefinition = {
 };
 
 /** The known provider table: id → base url, wire protocol and credential env var. */
-const PROVIDERS: ProviderDefinition[] = [
+export const PROVIDERS: ProviderDefinition[] = [
   { id: "openai", baseUrl: "https://api.openai.com/v1", protocol: "openai", env: "OPENAI_API_KEY" },
   { id: "zai", baseUrl: "https://api.z.ai/api/paas/v4", protocol: "openai", env: "ZAI_API_KEY" },
   { id: "openrouter", baseUrl: "https://openrouter.ai/api/v1", protocol: "openai", env: "OPENROUTER_API_KEY" },
@@ -564,9 +564,8 @@ const CODE_ASSIST = (modelsMod.CODE_ASSIST_ENDPOINTS as any) ??
     DAILY: ENDPOINTS.DAILY,
     SANDBOX: ENDPOINTS.SANDBOX,
   };
-// v2.1.16 single-owner fix: the "antigravity-gemini-3.7-flash" literal comes
-// from models.js (DEFAULT_MODEL owner) instead of a local copy.
-// the DEFAULT_MODEL_ID import from ./models.js owns the seat (the dynamic local collided with it)
+// v2.1.16 single-owner fix: DEFAULT_MODEL_ID answers only from models.js
+// (the owner of the name) — the former local literal retired into the import.
 
 // system.js (debug logger singleton + logs dir) - audit trail on login (cli(5) feature)
 const debugLoggerImpl: any = (systemMod.debugLogger as any) ?? (systemPkg.debugLogger as any) ?? null;

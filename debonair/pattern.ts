@@ -8,7 +8,7 @@
 
 import { GENRES } from "./genrematrix.ts";
 import { IngestDocument, IngestSegment } from "./ingest.ts";
-import { NOTE_NAMES, SCALE_STEPS, noteName } from "./musictheory.ts";
+import { NOTE_NAMES as THEORY_NOTE_NAMES, SCALE_STEPS, noteName } from "./musictheory.ts";
 
 /* ===== block: patternenums ===== */
 // # patternenums — the pattern vocabulary and the payload contract of the
@@ -937,7 +937,7 @@ export const KEY_MODES: readonly string[] = ["major", "minor"];
 
 /** The twenty-four key names of the pool vocabulary: the twelve tonic
  * spellings of the theory kernel, each in both modes. */
-export const KEY_POOL_NAMES: readonly string[] = NOTE_NAMES.flatMap((name) =>
+export const KEY_POOL_NAMES: readonly string[] = THEORY_NOTE_NAMES.flatMap((name) =>
   KEY_MODES.map((mode) => `${name} ${mode}`),
 );
 

@@ -12,20 +12,20 @@
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
     "types": ["chrome", "node", "vite/client"],
     "paths": {
+      "@wenathlan/cadria/transcodeengine": ["../cadria/transcodeengine.ts"],
       "@wenathlan/cadria/transcode": ["../cadria/transcode.ts"],
+      "@wenathlan/devthink/os": ["./os.ts"],
+      "@wenathlan/getry/gateway": ["../getry/gateway.ts"],
       "z-ai-web-dev-sdk": [
         "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
       "@/*": ["./sol/*", "./*"],
       "@wenathlan/saddle": ["./saddlefaces.ts"],
       "@wenathlan/saddle/memory": ["./saddlefaces.ts"],
-      "hono": ["./hono.ts"],
-      /* the better-sqlite3 bridge: the getry seat compiles through this program
-         and the @types package answers the module from the install root. */
-      "better-sqlite3": ["./node_modules/@types/better-sqlite3"],
-      "hono/cors": ["./hono.ts"],
-      "@hono/node-server": ["./hono.ts"],
-      "@hono/node-server/serve-static": ["./hono.ts"],
+      "hono": ["./honoface.ts"],
+      "hono/cors": ["./honocorsface.ts"],
+      "@hono/node-server": ["./hononodeserverface.ts"],
+      "@hono/node-server/serve-static": ["./honoservestaticface.ts"],
       /* the hono seat bridge of the ownership wave (the gateway transport
        * the getry seat owns imports the hono family, and the os lanes that
        * walk the moved graph never install the getry tree — the resolution

@@ -28,7 +28,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { copy, copyseed } from "../copy.ts";
+import { copy, copyseed } from "../uistore.ts";
 import {
   isNavbarEdge,
   isNavbarMode,

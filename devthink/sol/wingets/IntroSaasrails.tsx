@@ -328,7 +328,7 @@ export function SaasExplorer({ scrollto, ontoast }: { scrollto: (id: string) => 
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") ontoast(`Playing ${reel.title}`);
                 }}
-                className={`group relative cursor-pointer overflow-hidden rounded-[24px] transition-all duration-300 ${heightClass} ${selected ? "z-20 scale-105 shadow-2xl ring-4 ring-slate-950" : "opacity-90 shadow-lg hover:opacity-100"} ${idx >= 4 ? "hidden sm:block" : ""} ${idx === 6 ? "hidden lg:block" : ""}`}
+                className={`group relative cursor-pointer overflow-hidden rounded-[24px] transition-[transform,opacity,box-shadow] duration-300 ${heightClass} ${selected ? "z-20 scale-105 shadow-2xl ring-4 ring-slate-950" : "opacity-90 shadow-lg hover:opacity-100"} ${idx >= 4 ? "hidden sm:block" : ""} ${idx === 6 ? "hidden lg:block" : ""}`}
               >
                 <div
                   className="h-full w-full transition duration-500 group-hover:scale-110"

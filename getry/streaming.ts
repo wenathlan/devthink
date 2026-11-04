@@ -3603,9 +3603,8 @@ export function computeExponentialDelay(attempt: number, base: number, max: numb
   return delay;
 }
 
-function sleepMs(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+// sleepMs answers from @wenathlan/devthink/queue (the owner of the timer
+// family) — the former local twin retired into the published import.
 
 /**
  * Fetches streamGenerateContent with exponential backoff, per-attempt timeout

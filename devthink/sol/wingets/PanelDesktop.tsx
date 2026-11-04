@@ -712,18 +712,14 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
       {/* the atmosphere bed: the radial light recipe stays the stylesheet's
           (the C1/C2 grain + textured textures read this hook) */}
       <div className="dt-desktop__light" aria-hidden="true" />
-      {/* the one mark of the desktop zone: the hero lockup (mark + wordmark + tagline) is the single sanctioned brand expression */}
-      <div className="dt-desktop__hero absolute top-[45%] left-1/2 grid -translate-x-1/2 -translate-y-1/2 animate-hero pointer-events-none justify-items-center gap-2.5 text-[#eef1f7] transition-[opacity] duration-[480ms] ease-window light:text-[#1a1a1a] max-[760px]:top-[34%]">
+      {/* the one mark of the desktop zone: the owner law of the reference —
+          the white logo stands alone, no wordmark and no tagline below it
+          (the mark IS the brand voice of the surface) */}
+      <div className="dt-desktop__hero absolute top-[45%] left-1/2 grid -translate-x-1/2 -translate-y-1/2 animate-hero pointer-events-none justify-items-center text-[#eef1f7] transition-[opacity] duration-[480ms] ease-window light:text-[#1a1a1a] max-[760px]:top-[34%]">
         {/* the one amber focus of the desktop zone: the Sol signal lives in
             the mark's star core (the active pin bar carries the other) */}
         <span className="block [&_svg]:block [&_svg]:h-auto [&_svg]:w-[clamp(116px,17vmin,158px)] max-[760px]:[&_svg]:w-[104px] [&_svg]:[filter:drop-shadow(0_18px_48px_rgb(0_0_0/55%))_drop-shadow(0_0_44px_rgb(231_233_238/16%))] light:[&_svg]:[filter:none]">
           <SolLogoMark size={150} title={osText("desktop.logoTitle")} accent />
-        </span>
-        <strong className="dt-desktop__wordmark mt-1.5 font-display text-[clamp(22px,2.8vw,30px)] leading-none font-bold tracking-[-0.02em] lowercase text-[#f3f5fa] [text-shadow:0_2px_18px_rgb(0_0_0/55%)] light:text-[#1a1a1a] light:[text-shadow:none]">
-          {osText("desktop.wordmark")}
-        </strong>
-        <span className="dt-desktop__tagline font-mono text-[10px] font-medium tracking-[.08em] indent-[.08em] lowercase text-[rgb(235_240_248/58%)] light:text-[rgb(0_0_0/60%)]">
-          {osText("desktop.tagline")}
         </span>
       </div>
       <div

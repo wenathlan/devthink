@@ -11,7 +11,7 @@
  * dtw kit.
  */
 import { useState } from "react";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import {
   loadAltTabMotion,
   loadDevtoolsWall,

@@ -1174,6 +1174,9 @@ export const librarysurfaceexports: readonly string[] = [
   "carddecision",
   "carrywarmselector",
   "castvote",
+  "catalogcommand",
+  "catalogcommands",
+  "catalogflag",
   "cdpallowlist",
   "cdpallowlistof",
   "cdpcommand",
@@ -1265,6 +1268,7 @@ export const librarysurfaceexports: readonly string[] = [
   "collectresults",
   "color",
   "columnspec",
+  "columnspecof",
   "companionhandshake",
   "companionhandshakeframe",
   "comparemetricdefaults",
@@ -1275,6 +1279,7 @@ export const librarysurfaceexports: readonly string[] = [
   "compareviewerpair",
   "comparisonrecord",
   "complete",
+  "completions",
   "composeenvelope",
   "composeworkflow",
   "concurrentwindow",
@@ -1375,6 +1380,7 @@ export const librarysurfaceexports: readonly string[] = [
   "crashinterrupted",
   "crashnativehost",
   "createlinepump",
+  "createmcpregistry",
   "createservesession",
   "credentialheadername",
   "credentialstep",
@@ -1621,6 +1627,7 @@ export const librarysurfaceexports: readonly string[] = [
   "exchangesreport",
   "executorregistry",
   "executorreport",
+  "exitclasses",
   "expandblocks",
   "expandtemplate",
   "expireapprovals",
@@ -1787,6 +1794,7 @@ export const librarysurfaceexports: readonly string[] = [
   "framereference",
   "framesof",
   "framingrules",
+  "freezeline",
   "frozenmessage",
   "frozenmessagecarriers",
   "frozenmessagecatalog",
@@ -1806,6 +1814,7 @@ export const librarysurfaceexports: readonly string[] = [
   "gatewayprefixgate",
   "gatewayretrycapvalid",
   "generatedvalueallowed",
+  "globalflags",
   "glyph",
   "grantallowlistentry",
   "grantdiffof",
@@ -1879,6 +1888,7 @@ export const librarysurfaceexports: readonly string[] = [
   "heightmapkey",
   "heightmaprecord",
   "heldkeysreport",
+  "helplines",
   "hideblackboxedframes",
   "highcontrasttokens",
   "highlightterms",
@@ -2054,6 +2064,7 @@ export const librarysurfaceexports: readonly string[] = [
   "listtools",
   "livebufferof",
   "livetokensof",
+  "loadplan",
   "loadreport",
   "loadreportof",
   "loadworkflow",
@@ -2067,6 +2078,7 @@ export const librarysurfaceexports: readonly string[] = [
   "localhostbind",
   "localrule",
   "localsensitivegrade",
+  "localstorageadapter",
   "locationconsent",
   "locationconsentcovers",
   "locationconsentgate",
@@ -2120,6 +2132,7 @@ export const librarysurfaceexports: readonly string[] = [
   "manualpreview",
   "manualrun",
   "manualrunpreview",
+  "mapcolumns",
   "mapentry",
   "mapresponse",
   "maptoolerror",
@@ -2178,6 +2191,7 @@ export const librarysurfaceexports: readonly string[] = [
   "memoryitemof",
   "memoryprovenance",
   "memoryreadscopegate",
+  "memorystorage",
   "memorystorageadapter",
   "memorytrend",
   "mergechunkwindows",
@@ -2338,6 +2352,7 @@ export const librarysurfaceexports: readonly string[] = [
   "nonceof",
   "normalizedtaburl",
   "normalizeendpoint",
+  "normalizeheader",
   "notebodyof",
   "notehistoryentry",
   "notelemetryinvariant",
@@ -2471,6 +2486,7 @@ export const librarysurfaceexports: readonly string[] = [
   "paralleloutcome",
   "parallelstep",
   "parsecompanionhandshake",
+  "parsecsv",
   "parseddocument",
   "parsedfield",
   "parseenvelope",
@@ -2518,6 +2534,7 @@ export const librarysurfaceexports: readonly string[] = [
   "pdfrecord",
   "pdfsegments",
   "pdftextlayout",
+  "peekplan",
   "perfbundle",
   "perfentry",
   "perfprovenancegate",
@@ -2556,6 +2573,7 @@ export const librarysurfaceexports: readonly string[] = [
   "pipelinetargetgate",
   "pixeldiff",
   "planallowlist",
+  "planbadge",
   "plancard",
   "plancardgroup",
   "plancardgroups",
@@ -2812,6 +2830,7 @@ export const librarysurfaceexports: readonly string[] = [
   "regionsteps",
   "regionvalid",
   "registeragent",
+  "registrylines",
   "regroupaftermoves",
   "rejectedcorrectionof",
   "rejectioncapture",
@@ -2917,6 +2936,7 @@ export const librarysurfaceexports: readonly string[] = [
   "respond",
   "responseentry",
   "responseenvelopeoutcomes",
+  "responseof",
   "restartbridge",
   "restorediscarded",
   "restoreoriginsgranted",
@@ -3084,6 +3104,7 @@ export const librarysurfaceexports: readonly string[] = [
   "safetygate",
   "safetyresponse",
   "safetyverdict",
+  "safeurl",
   "samplegate",
   "samplepolicy",
   "samplerows",
@@ -3095,6 +3116,7 @@ export const librarysurfaceexports: readonly string[] = [
   "sandboxrender",
   "sandboxrenderof",
   "sandboxrenderresult",
+  "saveplan",
   "saveworkflow",
   "sbomcomponentof",
   "sbomcoveragecheck",
@@ -3572,6 +3594,9 @@ export const librarysurfaceexports: readonly string[] = [
   "tlsmode",
   "tlsreport",
   "tlsstateof",
+  "tocsv",
+  "toexcel",
+  "tojson",
   "tokenhash",
   "tokenhashof",
   "tokenhashprefix",
@@ -3731,6 +3756,7 @@ export const librarysurfaceexports: readonly string[] = [
   "verifypublishersignature",
   "verifytoken",
   "verifywebhook",
+  "versionbanner",
   "versiondiff",
   "videostateread",
   "virtlistheight",
@@ -4407,6 +4433,9 @@ async function runapifreezesuite() {
   sizes.background = backgroundcases.size;
 
   /* 12. the pagebridge message surface matches the injected bridge. */
+  // the page bridge registration lives in its own entry (pagebridge.ts) —
+  // the keyed page.ts seat stays pure and the freeze reads the entry that
+  // injects the bridge.
   const pagebridgesource = await text("pagebridge.ts");
   const bridgemembers = [
     ...(/\ devthinkbridge: \{([^}]*)\}/.exec(pagebridgesource)?.[1] ?? "").matchAll(/[a-z][a-z0-9]*/g),
@@ -4449,10 +4478,15 @@ async function runapifreezesuite() {
   const seen = new Set<string>();
   const libraryexports = [...exportsmodules(indexsource, seen)].sort();
   const libraryfrozen = await frozenlist("apifreeze.ts", "librarysurfaceexports");
-  if (libraryexports.length !== libraryfrozen.length || libraryfrozen.some((name) => !libraryexports.includes(name)))
+  if (libraryexports.length !== libraryfrozen.length || libraryfrozen.some((name) => !libraryexports.includes(name))) {
+    if (process.env.APIFREEZE_DEBUG_DIFF === "1") {
+      console.error("NEW:", JSON.stringify(libraryexports.filter((n) => !libraryfrozen.includes(n))));
+      console.error("GONE:", JSON.stringify(libraryfrozen.filter((n) => !libraryexports.includes(n))));
+    }
     refuse(
       "The library surface of index.ts exposes symbols the frozen library manifest of apifreeze.ts declares nowhere.",
     );
+  }
   sizes.library = libraryexports.length;
 
   /* 14. every manifest permission maps to a consuming capability. */

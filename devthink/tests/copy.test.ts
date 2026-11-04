@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, it } from "vitest";
-import { copy, copyseed } from "../copy.ts";
+import { copy, copyseed } from "../uistore.ts";
 
 describe("the copy store", () => {
   it("answers the seed through the accessor (the offline build law)", () => {

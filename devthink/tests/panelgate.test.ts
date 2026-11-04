@@ -24,7 +24,7 @@ import { osText } from "../os.ts";
 
 const anchor = readFileSync(join(import.meta.dirname, "..", "sol", "panel", "panel.tsx"), "utf8");
 const family = readFileSync(join(import.meta.dirname, "..", "account.ts"), "utf8");
-const labels = readFileSync(join(import.meta.dirname, "..", "copy.ts"), "utf8");
+const labels = readFileSync(join(import.meta.dirname, "..", "uistore.ts"), "utf8");
 
 const session = { owner: "nathlan", createdAt: "2026-10-27T00:00:00.000Z", expiresAt: 1_800_000_000_000 };
 
@@ -176,19 +176,23 @@ describe("the panel face wave (the texture, the boot copy and the tile lift)", (
     return wave.slice(open + 1, close);
   }
 
-  it("the boot words ride the os table rows — no literal stays on the boot face", () => {
+  it("the boot voice rides the os table rows — no literal stays on the boot face", () => {
     /* the win11-fidelity wave B migrated the boot face words from the ui
      * store copy to the os label table (os.ts — the os table law the
      * desktop face answers); the uistore rows stay seeded for the surfaces
-     * that still read them, the boot face never quotes them again. */
+     * that still read them, the boot face never quotes them again. The
+     * logo-without-text law of the reference then retired the wordmark
+     * and state words under the mark: the face quotes boot.aria alone
+     * (the screen-reader voice of the status root), the retired rows
+     * left the os table with the markup that quoted them. */
     expect(panelboot).toContain('osText("boot.aria")');
-    expect(panelboot).toContain('osText("boot.wordmark")');
-    expect(panelboot).toContain('osText("boot.state")');
+    expect(panelboot).not.toContain('osText("boot.wordmark")');
+    expect(panelboot).not.toContain('osText("boot.state")');
+    expect(panelboot).not.toContain("boot-screen__name");
+    expect(panelboot).not.toContain("boot-screen__state");
     expect(panelboot).not.toContain('"DevThink is starting"');
     expect(panelboot).not.toContain('"opening the local os"');
     expect(osText("boot.aria")).toBe("DevThink is starting");
-    expect(osText("boot.wordmark")).toBe("DevThink");
-    expect(osText("boot.state")).toBe("opening the local os");
     const seed = uistoreseedrows();
     expect(seed["panel.boot.aria"]).toBe("DevThink is starting");
     expect(seed["panel.boot.name"]).toBe("DevThink");

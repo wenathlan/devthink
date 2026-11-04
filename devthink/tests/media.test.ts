@@ -18,6 +18,7 @@ import {
   mediapipeline,
   mediapipelineerror,
   type mediaprobe,
+  type passageframe,
   type stageid,
   nvencpresets,
   passagesecurechannel,
@@ -303,8 +304,11 @@ describe("the media contract (the saddle ownership transfer, wave a)", () => {
     const tampered = { frame: frames[0], payload: flipped };
     assert.throws(
       () => alice.open({ ...tampered.frame, payload: tampered.payload }),
-      (error: unknown) =>
-        error instanceof mediapipelineerror && error.code === "PASSAGE_OPEN" && /signature/i.test(error.message),
+      (error: unknown) => {
+        if (!(error instanceof mediapipelineerror)) return false;
+        const err = error as Error & { code?: string };
+        return err.code === "PASSAGE_OPEN" && /signature/i.test(err.message);
+      },
       "a flipped ciphertext byte must fail the ed25519 verification",
     );
     const reversed = Buffer.from(frames[0]?.signature ?? Buffer.alloc(0)).reverse();
@@ -324,10 +328,10 @@ describe("the media contract (the saddle ownership transfer, wave a)", () => {
     const split = alice.seal(big);
     assert.equal(split.length, Math.ceil(200000 / 65536), "the message splits at the 65536 mtu");
     assert.ok(
-      split.every((frame) => frame.truncated),
+      split.every((frame: passageframe) => frame.truncated),
       "every chunk is marked truncated",
     );
-    const reassembled = Buffer.concat(split.map((frame) => alice.open(frame)));
+    const reassembled = Buffer.concat(split.map((frame: passageframe) => alice.open(frame)));
     assert.equal(reassembled.equals(big), true, "the reassembled payload is byte identical");
   });
 });

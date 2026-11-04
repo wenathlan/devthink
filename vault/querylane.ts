@@ -27,7 +27,7 @@ import path from "node:path";
 import process from "node:process";
 import type { IncomingMessage } from "node:http";
 import { createHash, timingSafeEqual } from "node:crypto";
-import { databaseIdValid, databaseOf, apiKeyLookup } from "./signup.ts";
+import { databaseIdValid, databaseOf, apiKeyLookup } from "./accounts.ts";
 import { openStorageLane, type SqlParam, type StorageLane } from "./storage.ts";
 
 /** @section lanes */

@@ -45,7 +45,7 @@ import {
   storedaccountowner,
   verifyAccount,
 } from "../../account.ts";
-import { copy, loadcopy } from "../../copy.ts";
+import { copy, loadcopy } from "../../uistore.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gateway.ts";
 import { readBrowserPreferences } from "../../storage.ts";
 import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } from "../wingets";

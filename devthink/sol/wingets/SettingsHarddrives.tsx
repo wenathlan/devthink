@@ -20,7 +20,7 @@ import { AddRegular, CloudRegular, HardDriveRegular } from "@fluentui/react-icon
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
-import { copy } from "../../copy";
+import { copy } from "../../uistore";
 import { browserStoreSummary, DRIVES_KEY, drives, type HardDrive, newdrive, opendrive } from "../../storage.ts";
 
 export { DRIVES_KEY };

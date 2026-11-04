@@ -283,10 +283,18 @@ export function containerarchcoverage(): containerarchreport {
 
 /** renders the coverage table as report lines (the drivers append these
  * under their profile line so every run answers the eleven-arch law). */
+/** the display names of the two container drivers (the hyphen law the
+ * coverage table prints: the driver ids stay unhyphenated inside the
+ * registry, the rendered line answers the hyphenated family names). */
+const DRIVERDISPLAY: Readonly<Record<string, string>> = Object.freeze({
+  containermax: "container-max",
+  containerlite: "container-lite",
+});
+
 export function containerarchlines(): string[] {
   const coverage = containerarchcoverage();
   return [
-    `  arch standard: ${coverage.count} architectures covered by the ${coverage.drivers.join(" and ")} drivers (${coverage.carries} carried by the pinned base, ${coverage.count - coverage.carries} answered with the honest coded absence)`,
+    `  arch standard: ${coverage.count} architectures covered by the ${coverage.drivers.map((driver) => DRIVERDISPLAY[driver] ?? driver).join(" and ")} drivers (${coverage.carries} carried by the pinned base, ${coverage.count - coverage.carries} answered with the honest coded absence)`,
     ...coverage.rows.map(
       (row) =>
         `    ${row.id.padEnd(8)} ${row.platform.padEnd(16)} dockerarch ${row.dockerarch.padEnd(8)} ${row.baseimagecarries ? "base carries" : "ARCH_IMAGE_ABSENT"}`,

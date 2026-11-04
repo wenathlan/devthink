@@ -22,7 +22,7 @@
  */
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { copy, loadcopy } from "../../copy.ts";
+import { copy, loadcopy } from "../../uistore.ts";
 import { detectProviderFromState, exchangeoauthcodeclient, oauthVerifierKey, saveaccountsession } from "../../account.ts";
 
 /** The sign-in callback page served at /callback: the completing face of

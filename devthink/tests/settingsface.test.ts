@@ -15,7 +15,7 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { copy, copyseed } from "../copy.ts";
+import { copy, copyseed } from "../uistore.ts";
 
 const settingsdir = join(import.meta.dirname, "..", "sol", "settings");
 const wingetsdir = join(import.meta.dirname, "..", "sol", "wingets");

@@ -7,7 +7,7 @@
  * network code of its own.
  */
 import { useCallback, useMemo } from "react";
-import { chatLimit, chatPersona, chatThinkingLevels } from "./chatlabels.ts";
+import { chatLimit, chatPersona, chatThinkingLevels } from "./labels.ts";
 import { compactToken, createCompactId } from "./queue.ts";
 import {
   ChatStoppedError,
