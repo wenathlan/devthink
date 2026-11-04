@@ -91,6 +91,11 @@ jobs:
           test "$(npm --version)" = "$npm_version"
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the deterministic suite boots the getry gateway (the family law:
+        # the server seat answers from the getry root) — its hono runtime
+        # resolves from the getry node_modules this step materializes.
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
       - name: Build the root distribution before the deterministic suite
         run: cd devthink && node build.ts
       - name: Run the accessibility sweep over the built tree
@@ -360,6 +365,11 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the deterministic suite boots the getry gateway (the family law:
+        # the server seat answers from the getry root) — its hono runtime
+        # resolves from the getry node_modules this step materializes.
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
       - name: Build the root distribution
         run: cd devthink && node build.ts
       - name: Run the accessibility sweep over the built tree
@@ -472,6 +482,11 @@ jobs:
           node-version-file: devthink/.nvmrc
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the deterministic suite boots the getry gateway (the family law:
+        # the server seat answers from the getry root) — its hono runtime
+        # resolves from the getry node_modules this step materializes.
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
       - name: Build the root distribution
         run: cd devthink && node build.ts
       - name: Pack the distribution tarball into a temporary directory

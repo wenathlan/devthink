@@ -6024,7 +6024,7 @@ jobs:
         # no rolling aliases.
         include:
           - profile: max
-            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -6033,7 +6033,7 @@ jobs:
             profilegpus: 8
             expectcpu: EPYC 9965
           - profile: balanced
-            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -6042,7 +6042,7 @@ jobs:
             profilegpus: 2
             expectcpu: 9995WX
           - profile: lite
-            platforms: linux/amd64,linux/amd64/v2,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x,linux/riscv64,linux/386,linux/mips64le,linux/loong64
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32

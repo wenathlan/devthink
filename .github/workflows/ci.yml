@@ -69,6 +69,11 @@ jobs:
           deno-version: v2.x
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the deterministic suite boots the getry gateway (the family law:
+        # the server seat answers from the getry root) — its hono runtime
+        # resolves from the getry node_modules this step materializes.
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
       - name: Validate the CLI help contract of the built artifacts
         shell: bash
         run: |
