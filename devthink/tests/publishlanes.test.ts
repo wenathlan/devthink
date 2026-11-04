@@ -286,7 +286,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     /* the security gate the publish rides behind: the trivy scan over the
      * same runtime target the publish legs build. */
     expect(publish).toContain("Saddle vhe security gate");
-    expect(publish).toContain("scanners: vuln,secret,misconfig");
+    expect(publish).toContain("--scanners vuln,secret,misconfig");
   });
 
   it("the saddle container archive lane answers the asset parity law", async () => {
