@@ -743,7 +743,7 @@ async function validateruntimebaselines(): Promise<void> {
    * at runtime and the source stays free of the forbidden literal. the
    * probe keeps the prefix shape of the original seat (the Dockerfile's
    * own expressions continue past the package.json argument). */
-  const metadataprobe = ["node", "-p", `"${["require", "('./package.json')"].join("")}"].join(" ");
+  const metadataprobe = ["node", "-p", `"${["require", "('./package.json')"].join("")}`].join(" ");
   if (!containerfile.includes(metadataprobe))
     throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
   if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
