@@ -18,7 +18,7 @@ import {
   planPasses,
   type RenderCanvas,
   VersaRender,
-} from "../versawaserender.ts";
+} from "../versawase.ts";
 
 /** builds a w×h grayscale horizontal ramp (left black, right white, alpha full). */
 function gradientImage(width: number, height: number): ImageInput {

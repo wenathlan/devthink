@@ -16,7 +16,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { label } from "../../labels.ts";
-import { mountThreeScene, type Viewport } from "../../versawase3d.ts";
+import { mountThreeScene, type Viewport } from "../../versawase.ts";
 import {
   type ImageInput,
   VisualizeError,

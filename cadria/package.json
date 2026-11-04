@@ -47,14 +47,6 @@
     "docs",
     "tests",
     "versawase.ts",
-    "versawase3d.ts",
-    "versawaseanimate.ts",
-    "versawaserender.ts",
-    "versawasescheduler.ts",
-    "versawaseslices.ts",
-    "versawasegen.ts",
-    "versawaseshaders.ts",
-    "versawasecomposition.ts",
     "shadercomp.ts",
     "visualize.ts",
     "timelineedit.ts",
@@ -83,44 +75,44 @@
       "default": "./versawase.ts"
     },
     "./versawase3d": {
-      "types": "./versawase3d.ts",
-      "import": "./versawase3d.ts",
-      "default": "./versawase3d.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawaseanimate": {
-      "types": "./versawaseanimate.ts",
-      "import": "./versawaseanimate.ts",
-      "default": "./versawaseanimate.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawaserender": {
-      "types": "./versawaserender.ts",
-      "import": "./versawaserender.ts",
-      "default": "./versawaserender.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawasescheduler": {
-      "types": "./versawasescheduler.ts",
-      "import": "./versawasescheduler.ts",
-      "default": "./versawasescheduler.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawaseslices": {
-      "types": "./versawaseslices.ts",
-      "import": "./versawaseslices.ts",
-      "default": "./versawaseslices.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawasegen": {
-      "types": "./versawasegen.ts",
-      "import": "./versawasegen.ts",
-      "default": "./versawasegen.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawaseshaders": {
-      "types": "./versawaseshaders.ts",
-      "import": "./versawaseshaders.ts",
-      "default": "./versawaseshaders.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawasecomposition": {
-      "types": "./versawasecomposition.ts",
-      "import": "./versawasecomposition.ts",
-      "default": "./versawasecomposition.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./shadercomp": {
       "types": "./shadercomp.ts",
