@@ -76,7 +76,7 @@ minimumReleaseAgeExclude:
   - tailwindcss@4.3.4
   - vitest@5.1.0
   - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.1.8'
-  - '@wenathlan/devthink@2.0.154 || 2.0.155'
+  - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.1.7'
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
 # is allowBuilds). the honest-site surface builds exactly the engines its db

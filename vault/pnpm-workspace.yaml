@@ -114,5 +114,5 @@ minimumReleaseAgeExclude:
   - tailwindcss@4.3.4
   - vitest@5.1.0
   - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.1.8'
-  - '@wenathlan/devthink@2.0.154 || 2.0.155'
+  - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.1.7'
   - '@wenathlan/argan@2.0.154 || 2.0.155'
