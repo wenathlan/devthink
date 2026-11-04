@@ -253,7 +253,7 @@ export interface telemetryfreereport {
  * first layer: the inventory, the gates, the entries and the zero outbound
  * attempts, no timestamps, so the record replays byte identical. */
 export const telemetryfreerecord: telemetryfreereport = {
-  "release": "2.1.8",
+  "release": "2.0.155",
   "callsites": [
     {
       "bundle": "bun.js",
@@ -271,14 +271,14 @@ export const telemetryfreerecord: telemetryfreereport = {
     },
     {
       "bundle": "config.js",
-      "fetch": 5,
+      "fetch": 6,
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
     },
     {
       "bundle": "core.js",
-      "fetch": 5,
+      "fetch": 6,
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
@@ -320,14 +320,14 @@ export const telemetryfreerecord: telemetryfreereport = {
     },
     {
       "bundle": "server.js",
-      "fetch": 32,
+      "fetch": 31,
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
     },
     {
       "bundle": "storage.js",
-      "fetch": 4,
+      "fetch": 5,
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
@@ -372,7 +372,7 @@ export const telemetryfreerecord: telemetryfreereport = {
     {
       "name": "callsites",
       "ok": true,
-      "detail": "the bundle set carries its network call sites inventoried: 64 sites over 11 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); config.js (fetch 5, websocket 0, beacon 0); core.js (fetch 5, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0); security.js (fetch 1, websocket 0, beacon 0); server.js (fetch 32, websocket 0, beacon 0); storage.js (fetch 4, websocket 0, beacon 0)"
+      "detail": "the bundle set carries its network call sites inventoried: 66 sites over 11 bundles — bun.js (fetch 3, websocket 0, beacon 0); cli.js (fetch 2, websocket 0, beacon 0); config.js (fetch 6, websocket 0, beacon 0); core.js (fetch 6, websocket 0, beacon 0); deno.js (fetch 3, websocket 0, beacon 0); devthink.umd.js (fetch 3, websocket 0, beacon 0); index.js (fetch 3, websocket 0, beacon 0); index.neutral.js (fetch 3, websocket 0, beacon 0); security.js (fetch 1, websocket 0, beacon 0); server.js (fetch 31, websocket 0, beacon 0); storage.js (fetch 5, websocket 0, beacon 0)"
     },
     {
       "name": "gates",

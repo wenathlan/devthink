@@ -3,7 +3,7 @@
     "strict": true
   },
   "imports": {
-    "@wenathlan/devthink": "npm:@wenathlan/devthink@2.1.8"
+    "@wenathlan/devthink": "npm:@wenathlan/devthink@2.0.155"
   },
   "tasks": {
     "check": "deno check build/deno.js",
