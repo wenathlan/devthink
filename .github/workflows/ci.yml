@@ -166,6 +166,11 @@ jobs:
         # the merged application carries one package.json pinned to bun: the
         # single frozen install covers the engine and the web workbench alike
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the LTS typecheck walks the getry gateway the tsconfig paths map —
+        # its better-sqlite3 types resolve from the getry node_modules this
+        # step materializes (the same seat every other lane materializes).
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
       - name: Assert the LTS line
         run: |
           set -euo pipefail
