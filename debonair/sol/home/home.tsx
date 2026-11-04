@@ -23,7 +23,7 @@ import { ArrowRightRegular } from "@fluentui/react-icons";
 // to the composer through the session draft (debonair.draft).
 import { type CSSProperties, type FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { planTake, type TakePlan } from "../../arranger.ts";
+import { planTake, type TakePlan } from "../../arrangement.ts";
 import {
   listGenreProfileCards,
   listHeroBadges,

@@ -47,8 +47,8 @@
       "@wenathlan/getry/json": ["../getry/dist/types/getry/json.d.ts"],
       "@wenathlan/getry/jsonpolicy": ["../getry/dist/types/getry/jsonpolicy.d.ts"],
       "@wenathlan/getry/jsonschema": ["../getry/dist/types/getry/jsonschema.d.ts"],
-      "@wenathlan/getry/gatewayconfig": ["../getry/dist/types/getry/gatewayconfig.d.ts"],
-      "@wenathlan/getry/gatewayviewconfig": ["../getry/dist/types/getry/gatewayviewconfig.d.ts"],
+      "@wenathlan/getry/gatewayconfig": ["../getry/dist/types/getry/gateway.d.ts"],
+      "@wenathlan/getry/gatewayviewconfig": ["../getry/dist/types/getry/gateway.d.ts"],
       "@wenathlan/getry/gatewayprobe": ["../getry/dist/types/getry/gatewayprobe.d.ts"],
       "@wenathlan/getry/gatewaysmoke": ["../getry/dist/types/getry/gatewaysmoke.d.ts"],
       "@wenathlan/getry/nodeshim": ["../getry/dist/types/getry/nodeshim.d.ts"],
@@ -89,7 +89,7 @@
        * paired label catalog through the published os specifier, and the
        * declaration pass resolves it to this app's own source the same way
        * the other self specifiers above ride. */
-      "@wenathlan/devthink/oslabels": ["./oslabels.ts"],
+      "@wenathlan/devthink/oslabels": ["./os.ts"],
       "@wenathlan/devthink/storage": ["./storage.ts"],
       "@wenathlan/devthink/types": ["./types.ts"]
     }
@@ -112,7 +112,7 @@
        ownership wave, step 5): the moved console's barrel reads the paired
        label catalog through the published os specifier, so the declaration
        emit covers the seam the same way the os seam entries above ride. */
-    "oslabels.ts",
+    "os.ts",
     "storage.ts",
     "security.ts",
     "policy.ts",

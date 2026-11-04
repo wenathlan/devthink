@@ -39,7 +39,7 @@ import {
 } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
 import { isNavbarMode, NAVBAR_MODE_EVENT, type NavbarMode, saveNavbarMode } from "../../desktopstate.ts";
-import { osCalendarWeekdays, osText } from "../../oslabels.ts";
+import { osCalendarWeekdays, osText } from "../../os.ts";
 import { currentThemeLadder, flipThemeLadder } from "../../personalstore.ts";
 
 /** tracks the os reduced-motion preference */

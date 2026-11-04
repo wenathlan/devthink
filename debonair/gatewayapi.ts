@@ -105,10 +105,10 @@ import { INGEST_STEMS_SCHEMA_VERSION, parseWav, reconOf, runIngestJob } from "./
 import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern, validatePatternProject } from "./pattern.ts";
 import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./pattern.ts";
 import { classifyDocument, mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./pattern.ts";
-import type { ReconDocument } from "./reconpayload.ts";
-import { serializeRecon, validateRecon } from "./reconpayload.ts";
-import type { ReconChecksums, ReconRunErrorCode } from "./reconworker.ts";
-import { startReconJob as runReconWalk } from "./reconworker.ts";
+import type { ReconDocument } from "./recon.ts";
+import { serializeRecon, validateRecon } from "./recon.ts";
+import type { ReconChecksums, ReconRunErrorCode } from "./recon.ts";
+import { startReconJob as runReconWalk } from "./recon.ts";
 import {
   type RenderJobRow,
   type RenderJobSeat,

@@ -22,7 +22,7 @@ import {WindowAppsRegular as AppWindow, NavigationRegular as Compass, GlobeRegul
 import { type KeyboardEvent as ReactKeyboardEvent, useLayoutEffect, useRef, useState } from "react";
 import type { DesktopApp } from "../../appregistry.ts";
 import { familyurl } from "../../gateway.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 /** The localStorage key of the taskbar pin order (an id list). */
 const TASKBAR_PINS_KEY = "dt.taskbar.pins.v1";

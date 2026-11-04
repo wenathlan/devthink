@@ -75,7 +75,7 @@ import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import { coreModuleTable, osAppLabels, runnerBinaries, studioAssets, studioTracks } from "../../catalog.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";
 import {
   breadcrumbs as crumbtrail,

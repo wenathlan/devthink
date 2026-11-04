@@ -5,7 +5,7 @@
  */
 import {MoviesAndTvRegular} from "@fluentui/react-icons";
 import type { NativeApp } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 export function VideoEngine({ app }: { app: NativeApp | undefined }) {
   return (

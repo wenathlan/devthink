@@ -11,7 +11,7 @@
 
 import { AddRegular, DeleteRegular, EraserRegular, PinRegular, SubtractRegular } from "@fluentui/react-icons";
 import { type KeyboardEvent, useCallback, useMemo, useState } from "react";
-import { type ArrangerRole, RACK_LANES, type TakePlan } from "../../arranger.ts";
+import { type ArrangerRole, RACK_LANES, type TakePlan } from "../../arrangement.ts";
 import { label, labelfill } from "../../labels.ts";
 import {
   addNote,

@@ -25,7 +25,7 @@ import type { BlobStore } from "../blobstore.ts";
 import type { IngestJobValue } from "../gatewayapi.ts";
 import { postReference, servicelaneid } from "../ialane.ts";
 import { separate } from "../hpss.ts";
-import { RECON_LAYERS, RECON_SAMPLE_RATE, RECON_SCALE_NAMES, serializeRecon, validateRecon } from "../reconpayload.ts";
+import { RECON_LAYERS, RECON_SAMPLE_RATE, RECON_SCALE_NAMES, serializeRecon, validateRecon } from "../recon.ts";
 import { FFT_SIZE, frameSpectrum, keyOf } from "../spectrum.ts";
 import { encodeWav, wavInfo } from "../wavwriter.ts";
 import {

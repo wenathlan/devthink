@@ -18,7 +18,7 @@
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
 import { rebaseSchedule } from "../../arrangement.ts";
-import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arranger.ts";
+import { type ArrangerRole, beatSecondsOf, planTake, RACK_LANES, type TakePlan, validatePlan } from "../../arrangement.ts";
 import { TakeEngine } from "../../audio.ts";
 import { formatClock, formatGain } from "../../dawview.ts";
 import { label, labelfill } from "../../labels.ts";

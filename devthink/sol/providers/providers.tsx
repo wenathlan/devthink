@@ -26,7 +26,7 @@ import {
   saveBrowserCredential,
   saveBrowserPreference } from "../../storage.ts";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
-import { osProviders, osText } from "../../oslabels.ts";
+import { osProviders, osText } from "../../os.ts";
 import { ProviderCard } from "../wingets";
 import { ProvidersList } from "../wingets";
 

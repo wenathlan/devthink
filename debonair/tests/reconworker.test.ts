@@ -21,10 +21,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import Database from "better-sqlite3";
 import { afterAll, describe, it } from "vitest";
-import { planTake } from "../arranger.ts";
+import { planTake } from "../arrangement.ts";
 import { memoryblobstore } from "../blobstore.ts";
 import { onsetSecondsOf, reconBpmSeriesOf, reconOf, reconRootModeOf, reconScaleModeOf, segmentsof } from "../ingest.ts";
-import { RECON_NOTES_MAX, RECON_SCALE_NAMES, serializeRecon } from "../reconpayload.ts";
+import { RECON_NOTES_MAX, RECON_SCALE_NAMES, serializeRecon } from "../recon.ts";
 import {
   RECON_PHASES,
   RECON_RENDER_BIT_DEPTH,
@@ -35,7 +35,7 @@ import {
   renderRecon,
   renderReconPlan,
   startReconJob,
-} from "../reconworker.ts";
+} from "../recon.ts";
 import { renderjobseat } from "../render.ts";
 import {
   EXPORT_LABELS,

@@ -7,7 +7,7 @@
 
 import { WindowConsoleRegular } from "@fluentui/react-icons";
 import { catalogcommands, exitclasses, globalflags } from "../../commands.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 export function ConsoleReference({ running, onrun }: { running: boolean; onrun: (id: string) => void }) {
   return (

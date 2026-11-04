@@ -53,7 +53,7 @@
     "hpss.ts",
     "ingest.ts",
     "pattern.ts",
-    "reconpayload.ts",
+    "recon.ts",
     "composer.ts",
     "coverpalette.ts",
     "audio.ts",
@@ -61,7 +61,6 @@
     "wavwriter.ts",
     "blobstore.ts",
     "render.ts",
-    "reconworker.ts",
     "gatewayapi.ts",
     "routetable.ts",
     "beatgrid.ts",
@@ -73,7 +72,7 @@
     "reverseingest.ts",
     "timestretch.ts",
     "vocalsynth.ts",
-    "arranger.ts",
+    "arrangement.ts",
     "bigintids.ts",
     "fingerprint.ts",
     "harmonyengine.ts",
@@ -116,9 +115,9 @@
       "default": "./ingest.ts"
     },
     "./reconpayload": {
-      "types": "./reconpayload.ts",
-      "import": "./reconpayload.ts",
-      "default": "./reconpayload.ts"
+      "types": "./recon.ts",
+      "import": "./recon.ts",
+      "default": "./recon.ts"
     },
     "./patternminer": {
       "types": "./pattern.ts",
@@ -231,9 +230,9 @@
       "default": "./render.ts"
     },
     "./reconworker": {
-      "types": "./reconworker.ts",
-      "import": "./reconworker.ts",
-      "default": "./reconworker.ts"
+      "types": "./recon.ts",
+      "import": "./recon.ts",
+      "default": "./recon.ts"
     },
     "./gatewayapi": {
       "types": "./gatewayapi.ts",

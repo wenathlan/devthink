@@ -5,7 +5,7 @@
  */
 import {MusicNote2Regular} from "@fluentui/react-icons";
 import type { NativeApp } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 export function MusicEngine({ app }: { app: NativeApp | undefined }) {
   return (

@@ -18,11 +18,11 @@ import {
   isChatStop,
   type StreamHandlers,
   type ThinkingLevel,
-} from "./osgateway";
+} from "./os";
 import { arrayOf, isString, useStoredState, type Validator } from "./usestoredstate.ts";
 
 export { ChatStoppedError, isChatStop };
-export { type GatewayModel, gatewayModels } from "./osgateway";
+export { type GatewayModel, gatewayModels } from "./os";
 
 /* ------------------------------- types -------------------------------- */
 

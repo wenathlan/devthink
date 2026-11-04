@@ -13,7 +13,7 @@
  * "unlocked" and the overlay drops). Reduced transparency calms the veil;
  * reduced motion drops the entrance animation.
  */
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { LockFace } from "./AuthLockface.tsx";
 import { PowerMenu } from "./AuthPowermenu.tsx";
 

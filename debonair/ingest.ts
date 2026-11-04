@@ -52,7 +52,7 @@ import {
   type ReconFrame,
   type ReconHeader,
   type ReconLayerFrame,
-} from "./reconpayload.ts";
+} from "./recon.ts";
 import type { WorkerModality } from "./sandboxmodality.ts";
 import { chromaOf, FFT_SIZE, fftInPlace, frameSpectrum, HANN_TABLE, keyOf } from "./spectrum.ts";
 import { midiToHz } from "./tuning.ts";

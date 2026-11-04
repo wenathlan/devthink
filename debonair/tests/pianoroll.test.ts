@@ -6,7 +6,7 @@
 // answers the problems the plan's own grammar never allows.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { planTake, type TakePlan } from "../arranger.ts";
+import { planTake, type TakePlan } from "../arrangement.ts";
 import {
   addNote,
   type EditableNote,

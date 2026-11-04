@@ -387,7 +387,7 @@
         "name": "mcpregistry",
         "owner": "devthink",
         "source": "root",
-        "module": "mcpregistry.ts",
+        "module": "mcp.ts",
         "role": "the mcp server registry: configurations, states and health of the connected servers."
       },
       {

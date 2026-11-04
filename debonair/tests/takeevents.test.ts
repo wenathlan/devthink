@@ -6,7 +6,7 @@
 // onto the 16-step grid and the window slice cuts cleanly.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { planTake } from "../arranger.ts";
+import { planTake } from "../arrangement.ts";
 import { scalePcs } from "../musictheory.ts";
 import { eventsInWindow, positionAt, scheduleTake, sectionAt, validateSchedule } from "../take.ts";
 

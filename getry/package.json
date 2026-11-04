@@ -177,14 +177,14 @@
       "default": "./json.ts"
     },
     "./gatewayconfig": {
-      "types": "./gatewayconfig.ts",
-      "import": "./gatewayconfig.ts",
-      "default": "./gatewayconfig.ts"
+      "types": "./gateway.ts",
+      "import": "./gateway.ts",
+      "default": "./gateway.ts"
     },
     "./gatewayviewconfig": {
-      "types": "./gatewayviewconfig.ts",
-      "import": "./gatewayviewconfig.ts",
-      "default": "./gatewayviewconfig.ts"
+      "types": "./gateway.ts",
+      "import": "./gateway.ts",
+      "default": "./gateway.ts"
     },
     "./gatewayprobe": {
       "types": "./gatewayprobe.ts",

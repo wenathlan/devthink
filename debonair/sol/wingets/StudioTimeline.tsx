@@ -13,7 +13,7 @@
 
 import { CopyRegular, CutRegular, DeleteRegular } from "@fluentui/react-icons";
 import { type KeyboardEvent, type PointerEvent, useCallback, useMemo, useRef, useState } from "react";
-import { beatSecondsOf, ROLE_NAMES, type TakePlan } from "../../arranger.ts";
+import { beatSecondsOf, ROLE_NAMES, type TakePlan } from "../../arrangement.ts";
 import { formatClock } from "../../dawview.ts";
 import { label, labelfill } from "../../labels.ts";
 import {

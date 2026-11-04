@@ -46,7 +46,7 @@ import {
   reconScaleName,
   serializeRecon,
   validateRecon,
-} from "../reconpayload.ts";
+} from "../recon.ts";
 
 /** Builds one minimal but complete recon document from the frozen seat
  * lists — every numeric seat a legal value, the text seats inside their

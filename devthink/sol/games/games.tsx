@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { queuebinarylaunch } from "../../runner";
 import { Constructionface, GamesList } from "../wingets";
 import { type GamesFilter, GamesNav } from "../wingets";

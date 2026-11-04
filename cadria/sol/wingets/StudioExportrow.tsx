@@ -27,7 +27,7 @@ import {
   probeGateway,
   type SessionSave,
   saveToGateway,
-} from "../../studiogenerate.ts";
+} from "../../studio.ts";
 
 type ExportRowProps = {
   svg: string | null;

@@ -42,7 +42,7 @@ import {
   snapSpot,
   sortAppsByKind,
 } from "../desktopstate.ts";
-import { osText } from "../oslabels.ts";
+import { osText } from "../os.ts";
 import { uistoreseedrows } from "../uistore.ts";
 
 const desktop = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelDesktop.tsx"), "utf8");

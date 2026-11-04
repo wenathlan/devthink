@@ -25,7 +25,7 @@ import { BOOT_STAGE_GAP, bootgraph, bootrunnerhandler } from "../../consoleboot.
 import { gatewayReady } from "../../gateway.js";
 import { createrunner, type runstageview } from "../../graph.js";
 import { makeviewstate } from "../../graph.js";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { ConsoleReference, GraphView, Terminal, type TerminalRow, type TerminalState } from "../wingets";
 
 export * from "../wingets";

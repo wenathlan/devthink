@@ -57,7 +57,7 @@ import {
   useRef,
   useState } from "react";
 import { createPortal } from "react-dom";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 
 export type WindowState = "normal" | "maximized" | "minimized" | "snapped-left" | "snapped-right";

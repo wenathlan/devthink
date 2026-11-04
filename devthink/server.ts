@@ -548,7 +548,7 @@ import { uistoreget, uistoreingest, uistorelist } from "./uistore.ts";
    file's os lane (the paired database endpoint of the label file): the
    barrel moved to the getry owner with the provider console, so the os
    lane reads its label source through its own declaration now. */
-import { osStringRows } from "./oslabels.js";
+import { osStringRows } from "./os.js";
 
 /** createoslanes — register the nine os lanes of the workbench surface on
  * the hono app the gateway transport built (the os owns the lanes, the

@@ -85,7 +85,7 @@ import {
   saveNavbarEdge,
   saveNavbarMode,
 } from "../../desktopstate";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { loadrecententries, pushrecentapp, type RecentEntry } from "../../recentapps.ts";
 import { readBrowserPreferences } from "../../storage.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";

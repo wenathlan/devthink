@@ -18,7 +18,7 @@
 import {HomeRegular as Home} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { pagecontainerStyle, stagedEntrance } from "../wingets";
 import { ShellChrome } from "../wingets";
 import { useReducedMotion } from "../wingets";

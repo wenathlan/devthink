@@ -6,7 +6,7 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { ArrangerRole } from "./arranger.ts";
+import { ArrangerRole } from "./arrangement.ts";
 import { DEFAULT_MIX_LAW, NOISE_SECONDS, RENDER_TAIL_S, ROLE_TRIM, VOICE_RECIPES, seededNoiseChannel } from "./audio.ts";
 import { mintid } from "./bigintids.ts";
 import { db } from "./db.ts";

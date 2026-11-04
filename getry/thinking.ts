@@ -6,6 +6,11 @@
  * the rows below are the in-memory ladder of the theme: the self-hosted
  * gateway resolves the budgets on the live routes, and the static build
  * falls back to this module without ever touching the visitor machine.
+ *
+ * the logicfold3 fold retired the thinkingtypes.ts mirror this seat once
+ * carried (the declaration surface that repeated every export below as
+ * an `export declare` tombstone — zero import sites repo-wide) — every
+ * declaration it mirrored answers from this implementation alone.
  */
 
 /** the name of one thinking level. */

@@ -5,7 +5,7 @@
 // conservation and the determinism of the bytes.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { planTake } from "../arranger.ts";
+import { planTake } from "../arrangement.ts";
 import {
   buildTracksFromSchedule,
   decodeVlq,

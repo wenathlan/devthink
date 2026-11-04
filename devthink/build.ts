@@ -15,9 +15,8 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
 import type { platformtarget } from "./types.ts";
-/* the foundry seat owns the bundle scanner now (the gate wave): the build imports it across the app boundary, the scanner text law never moved. */
-import { stripstrings, underscorednames } from "../foundry/bundlescan.ts";
-import { cjswrap } from "./cjswrap.ts";
+import { stripstrings, underscorednames } from "./bundlescan.ts";
+import { cjswrap } from "./cjs.ts";
 import {
   changelogdigestworkflow,
   cjssample,
@@ -32,7 +31,7 @@ import { fixturepages, umdexample } from "./tests/pagefixtures.ts";
 import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts";
 import { frozenschemas } from "./tests/schemafixtures.ts";
 import { pxToCellX, pxToCellY } from "./density.ts";
-import { umdwrap } from "./umdwrap.ts";
+import { umdwrap } from "./umd.ts";
 import type { IrNode } from "./runtime.ts";
 
 /* ─── the build family lanes (the flat folder law: one keyword file per
@@ -219,7 +218,7 @@ await execute(process.execPath, [await resolveTsc(), "-p", join("..", "getry", "
 
 /* the ownership bridge of the thinking ladder: the getry engine owns the 7-level ladder and
    the os consumes it as a library — the declaration emit reads the owner's committed public
-   types (getry/thinkingtypes.ts, the declaration surface the path table of the build config
+   types (getry/thinking.ts, the declaration surface the path table of the build config
    carries, so the owner source never enters the program and the emit stays flat), while the
    runtime resolves the specifier through this node_modules link the same way the flat gate
    tree resolves its packages through the application node_modules (the tests village folded
@@ -383,8 +382,8 @@ const familybridges = {
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
-  "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gatewayconfig.ts"),
-  "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gatewayviewconfig.ts"),
+  "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gateway.ts"),
+  "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gateway.ts"),
   "@wenathlan/getry/gatewayprobe": join(root, "..", "getry", "gatewayprobe.ts"),
   "@wenathlan/getry/gatewaysmoke": join(root, "..", "getry", "gatewaysmoke.ts"),
   "@wenathlan/getry/nodeshim": join(root, "..", "getry", "nodeshim.ts"),
@@ -434,7 +433,7 @@ const familybridges = {
    * bundle inlines this app's own source for it the same way the other
    * self specifiers above ride — the catalog is never duplicated inside
    * getry. */
-  "@wenathlan/devthink/oslabels": join(root, "oslabels.ts"),
+  "@wenathlan/devthink/oslabels": join(root, "os.ts"),
   "@wenathlan/devthink/storage": join(root, "storage.ts"),
   "@wenathlan/devthink/types": join(root, "types.ts"),
   /** the label store bridge of the ownership law: the os copy mechanism rides

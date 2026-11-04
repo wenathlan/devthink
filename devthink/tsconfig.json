@@ -69,8 +69,8 @@
       "@wenathlan/getry/json": ["../getry/json.ts"],
       "@wenathlan/getry/jsonpolicy": ["../getry/jsonpolicy.ts"],
       "@wenathlan/getry/jsonschema": ["../getry/jsonschema.ts"],
-      "@wenathlan/getry/gatewayconfig": ["../getry/gatewayconfig.ts"],
-      "@wenathlan/getry/gatewayviewconfig": ["../getry/gatewayviewconfig.ts"],
+      "@wenathlan/getry/gatewayconfig": ["../getry/gateway.ts"],
+      "@wenathlan/getry/gatewayviewconfig": ["../getry/gateway.ts"],
       "@wenathlan/getry/gatewayprobe": ["../getry/gatewayprobe.ts"],
       "@wenathlan/getry/gatewaysmoke": ["../getry/gatewaysmoke.ts"],
       "@wenathlan/getry/nodeshim": ["../getry/nodeshim.ts"],
@@ -118,7 +118,7 @@
        * paired label catalog through the published os specifier, and this
        * program resolves it to this app's own source the same way the
        * other self specifiers above ride. */
-      "@wenathlan/devthink/oslabels": ["./oslabels.ts"],
+      "@wenathlan/devthink/oslabels": ["./os.ts"],
       "@wenathlan/devthink/storage": ["./storage.ts"],
       "@wenathlan/devthink/types": ["./types.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]

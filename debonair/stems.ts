@@ -7,7 +7,7 @@
 // themselves come from wavwriter when the UI bounces. Pure and multi-mode —
 // zero DOM, zero storage, zero audio.
 
-import type { ArrangerRole, TakePlan } from "./arranger.ts";
+import type { ArrangerRole, TakePlan } from "./arrangement.ts";
 import { MASTERING } from "./katexis.ts";
 import type { NoteEvent, TakeSchedule } from "./take.ts";
 

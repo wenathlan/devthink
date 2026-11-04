@@ -4,7 +4,7 @@
  * Windows 11 media grammar and the file open action beside it. The file
  * never uploads — the object URL lives for the stage lifetime only and the
  * revoke law keeps the device clean. Every string rides the label table
- * (oslabels.ts), every glyph rides the fluent set. Loose widget of the
+ * (os.ts), every glyph rides the fluent set. Loose widget of the
  * video page.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -17,7 +17,7 @@ import {
   Speaker0Regular,
   Speaker2Regular,
 } from "@fluentui/react-icons";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 /** the time readout of the transport: mm:ss under an hour, h:mm:ss above */
 function timecode(seconds: number): string {

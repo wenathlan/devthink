@@ -13,7 +13,7 @@
 import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { type Rung, releaseLadder } from "../../catalog.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 
 /** the entrance stagger step of the ladder (the engine .enter kit, 70ms). */
 const step = (i: number) => ({ "--i": i }) as CSSProperties;

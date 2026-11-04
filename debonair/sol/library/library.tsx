@@ -19,7 +19,7 @@
 import { PauseRegular, PlayFilled } from "@fluentui/react-icons";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { planTake, type TakePlan } from "../../arranger.ts";
+import { planTake, type TakePlan } from "../../arrangement.ts";
 import { listLibraryTracks } from "../../catalog.ts";
 import { formatClock } from "../../dawview.ts";
 import type { LibraryTrackRow } from "../../katexis.ts";

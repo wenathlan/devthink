@@ -13,7 +13,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { prefersReducedMotion } from "../../akash.ts";
 import { browserIdentity, readBrowserPreferences, saveBrowserPreference } from "../../storage.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { SolLogoMark } from "./PanelLogo.tsx";
 
 const BOOT_CSS = `

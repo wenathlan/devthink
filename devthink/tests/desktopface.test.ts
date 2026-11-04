@@ -39,7 +39,7 @@ import {
   loadDesktopLock,
   saveDesktopLock,
 } from "../desktopstate.ts";
-import { osText } from "../oslabels.ts";
+import { osText } from "../os.ts";
 import { currentThemeLadder } from "../personalstore.ts";
 
 const solcss = readFileSync(join(import.meta.dirname, "..", "Sol", "sol.css"), "utf8");
@@ -51,7 +51,7 @@ const tray = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "She
 const panel = readFileSync(join(import.meta.dirname, "..", "Sol", "panel", "panel.tsx"), "utf8");
 const personalstore = readFileSync(join(import.meta.dirname, "..", "personalstore.ts"), "utf8");
 const desktopstate = readFileSync(join(import.meta.dirname, "..", "desktopstate.ts"), "utf8");
-const oslabels = readFileSync(join(import.meta.dirname, "..", "oslabels.ts"), "utf8");
+const oslabels = readFileSync(join(import.meta.dirname, "..", "os.ts"), "utf8");
 
 /** extracts the appended desktopface block of the stylesheet — the pins
  * below read THIS block, so a later campaign append cannot silently move

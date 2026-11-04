@@ -76,7 +76,7 @@ import {
   sortAppsByName,
 } from "../../desktopstate.ts";
 import { familyurl } from "../../gateway.ts";
-import { osText } from "../../oslabels.ts";
+import { osText } from "../../os.ts";
 import { currentThemeLadder, saveThemeMirror } from "../../personalstore.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { DesktopMenu, type MenuEntry } from "./PanelDesktopmenu.tsx";

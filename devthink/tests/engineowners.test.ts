@@ -113,8 +113,8 @@ describe("the dedup contract — the 7-level thinking ladder", () => {
   const gatewaytypessource = readFileSync(new URL("../../getry/types.ts", import.meta.url), "utf8");
   const ostypessource = readFileSync(new URL("../types.ts", import.meta.url), "utf8");
   const utilsource = readFileSync(new URL("../../getry/utils.ts", import.meta.url), "utf8");
-  const viewconfigsource = readFileSync(new URL("../../getry/gatewayviewconfig.ts", import.meta.url), "utf8");
-  const osgatewaysource = readFileSync(new URL("../osgateway.ts", import.meta.url), "utf8");
+  const viewconfigsource = readFileSync(new URL("../../getry/gateway.ts", import.meta.url), "utf8");
+  const osgatewaysource = readFileSync(new URL("../os.ts", import.meta.url), "utf8");
 
   it("keeps the ladder in one place: getry owns the canonical rungs", () => {
     assert.equal(THINKINGLEVELS.length, 7);
