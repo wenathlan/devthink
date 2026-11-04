@@ -1572,7 +1572,12 @@ function staticCandidate(root: string, pathname: string): string | undefined {
     return undefined;
   }
   const resolved = path.resolve(root, relative);
-  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
+  if (resolved === root) {
+    // the bare root answers no file itself — the clean root rides back and
+    // the request-derived path only ever passes the prefix guard below
+    return root;
+  }
+  if (!resolved.startsWith(`${root}${path.sep}`)) {
     return undefined;
   }
   return resolved;
