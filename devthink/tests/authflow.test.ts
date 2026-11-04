@@ -1,6 +1,6 @@
 /**
  * authflow.test.ts — the pure guards of the entry flow. The authentication
- * page-app (Sol/auth/auth.tsx) rides them on the owner entry chain intro →
+ * page-app (sol/auth/auth.tsx) rides them on the owner entry chain intro →
  * explore → auth → panel: the post-session redirect (default /panel, a safe
  * ?next= override honored), the invitation passthrough (the pairing fields
  * carried untouched), the gateway normalization, the base-relative route

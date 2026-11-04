@@ -18,7 +18,7 @@ import {
   VIDEO_MIME,
   videoSha256,
   type VideoEncodeFormat,
-} from "../videoencoder.ts";
+} from "../video.ts";
 
 /** a deterministic gradient frame. */
 function frame(w: number, h: number, seed: number): PixelImage {

@@ -26,7 +26,7 @@ import {
   parseComposerPrompt,
   SIMILARITY_FLOOR,
 } from "../composer.ts";
-import { GENRES } from "../genrematrix.ts";
+import { GENRES } from "../genre.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
 import { SCALE_STEPS } from "../musictheory.ts";
 import {
@@ -37,8 +37,8 @@ import {
   PATTERN_VOICES,
   serializePattern,
   validatePatternProject,
-} from "../patternenums.ts";
-import { type GenreProfile, type IngestDocumentWithId, segmentVector } from "../patternminer.ts";
+} from "../pattern.ts";
+import { type GenreProfile, type IngestDocumentWithId, segmentVector } from "../pattern.ts";
 
 // ---------------------------------------------------------------------------
 // the fixtures (the honest corpora: the values the analyzed references answer)

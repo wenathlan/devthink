@@ -196,15 +196,15 @@ const confignames = [
   "config.mjs",
   "config.ts",
   "config.js",
-  "Sol/config.mjs",
-  "Sol/config.ts",
-  "Sol/config.js",
+  "sol/config.mjs",
+  "sol/config.ts",
+  "sol/config.js",
   "gatewayconfig.mjs",
   "gatewayconfig.ts",
   "gatewayconfig.js",
 ];
 
-/** config path — the scaffold target: config.mjs in cwd (the legacy Sol/config.mjs location stays a load candidate) */
+/** config path — the scaffold target: config.mjs in cwd (the legacy sol/config.mjs location stays a load candidate) */
 function configpath(): string {
   return resolve(process.cwd(), "config.mjs");
 }

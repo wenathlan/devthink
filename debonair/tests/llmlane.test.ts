@@ -14,7 +14,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { composeWithLlm, LLM_DEFAULT_MODEL, llmlaneorigin } from "../llmlane.ts";
-import { EMBEDDING_DIM, PATTERN_SCHEMA_VERSION } from "../patternenums.ts";
+import { EMBEDDING_DIM, PATTERN_SCHEMA_VERSION } from "../pattern.ts";
 
 /** The gateway origin every call rides (a public https host — the law). */
 const ORIGIN = "https://gateway.example.com";

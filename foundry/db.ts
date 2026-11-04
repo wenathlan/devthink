@@ -8,7 +8,7 @@
  * the same tables to the Sol pages over HTTPS (GET/POST /api/v1/onboarding —
  * the browser accessor is onboardingstate.ts); no server route lives here.
  */
-import { openStorageLane } from "@wenathlan/vault/storagelane";
+import { openStorageLane } from "@wenathlan/vault/storage";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
@@ -24,7 +24,7 @@ export const db = lane.db;
 export const { execute, queryAll, queryOne } = lane;
 
 /** the parameter types the helpers bind (re-exported seat of the lane). */
-export type { SqlParam } from "@wenathlan/vault/storagelane";
+export type { SqlParam } from "@wenathlan/vault/storage";
 
 
 const SCHEMA = `

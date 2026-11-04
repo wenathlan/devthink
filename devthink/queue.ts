@@ -1013,7 +1013,7 @@ export type SseEvent<T = Record<string, unknown>> = { type: string; data: T };
 
 /**
  * sseEvents — the drop-in extraction of the parser that used to live inside
- * Sol/panel/panel.tsx: every frame that carries both an `event:` name and a
+ * sol/panel/panel.tsx: every frame that carries both an `event:` name and a
  * JSON `data:` payload. Frames without either, and payloads that fail to
  * decode, are skipped (the stream keeps flowing) — same contract, now backed
  * by the canonical resilient core.

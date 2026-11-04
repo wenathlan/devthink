@@ -1487,36 +1487,36 @@ async function ramswapfilelane(_code: string, inputs: unknown, deadline: number)
  * edge plane, keyed by modality id; the dispatch plane refuses to boot
  * over a lane it cannot wire. */
 export const edgelaneexecutors: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
-  "container-docker": containerdockerlane,
-  "fs-vfs": fsvfslane,
-  "runner-node": runnernodelane,
-  "runner-bun": runnerbunlane,
-  "runner-wasm": runnerwasmlane,
-  "runner-babel": runnerbabellane,
-  "runner-webpack": runnerwebpacklane,
-  "runner-universal": runneruniversallane,
-  "language-python": languagepythonlane,
-  "language-java": languagejavalane,
+  "containerdocker": containerdockerlane,
+  "fsvfs": fsvfslane,
+  "runnernode": runnernodelane,
+  "runnerbun": runnerbunlane,
+  "runnerwasm": runnerwasmlane,
+  "runnerbabel": runnerbabellane,
+  "runnerwebpack": runnerwebpacklane,
+  "runneruniversal": runneruniversallane,
+  "languagepython": languagepythonlane,
+  "languagejava": languagejavalane,
   // the ninety law wave (the forty live law, wave w2 b1): the ten
   // promotions — the clr assembly lane, the docker profile pair and the
   // ghcr digest pin, the three storage adapter lanes and the three
   // kernel recipe lanes
-  "runtime-clr": runtimeclrlane,
-  "container-max": containermaxlane,
-  "container-lite": containerlitelane,
-  "container-ghcr": containerghcrlane,
-  "storage-s3": storages3lane,
-  "storage-libsql": storagelibsqllane,
-  "storage-mysql": storagemysqllane,
-  "ram-tmpfs": ramtmpfslane,
-  "ram-zram": ramzramlane,
-  "ram-swapfile": ramswapfilelane,
-  "container-runsc": hostprobelane("runsc"),
-  "emulator-qemu": hostprobelane("qemu-system-x86_64"),
-  "microvm-firecracker": hostprobelane("firecracker"),
-  "runtime-jvm": hostprobelane("java"),
-  "language-go": hostprobelane("go"),
-  "language-ruby": hostprobelane("ruby"),
+  "runtimeclr": runtimeclrlane,
+  "containermax": containermaxlane,
+  "containerlite": containerlitelane,
+  "containerghcr": containerghcrlane,
+  "storages3": storages3lane,
+  "storagelibsql": storagelibsqllane,
+  "storagemysql": storagemysqllane,
+  "ramtmpfs": ramtmpfslane,
+  "ramzram": ramzramlane,
+  "ramswapfile": ramswapfilelane,
+  "containerrunsc": hostprobelane("runsc"),
+  "emulatorqemu": hostprobelane("qemu-system-x86_64"),
+  "microvmfirecracker": hostprobelane("firecracker"),
+  "runtimejvm": hostprobelane("java"),
+  "languagego": hostprobelane("go"),
+  "languageruby": hostprobelane("ruby"),
 });
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -1553,28 +1553,28 @@ export interface BaseLaneSpec {
  * read them exactly. */
 export const baselanespecs: readonly BaseLaneSpec[] = Object.freeze([
   // the live seats: the engine executes through these today
-  { modality: "container-docker", kind: "live", runtime: "docker", present: probedocker },
-  { modality: "fs-vfs", kind: "live", runtime: "virtual-vfs", present: probevirtualmodule },
-  { modality: "runner-node", kind: "live", runtime: "node:vm", present: probenodevm },
-  { modality: "runner-bun", kind: "live", runtime: "bun", present: () => probehostbinary("bun") },
-  { modality: "runner-wasm", kind: "live", runtime: "webassembly", present: probewasm },
-  { modality: "runner-babel", kind: "live", runtime: "@babel/core", present: () => probemodule("@babel/core") },
-  { modality: "runner-webpack", kind: "live", runtime: "webpack", present: () => probemodule("webpack") },
-  { modality: "runner-universal", kind: "live", runtime: "bash", present: () => probehostbinary("bash") },
-  { modality: "language-python", kind: "live", runtime: "python3", present: () => probehostbinary("python3") },
-  { modality: "language-java", kind: "live", runtime: "java", present: () => probehostbinary("java") },
+  { modality: "containerdocker", kind: "live", runtime: "docker", present: probedocker },
+  { modality: "fsvfs", kind: "live", runtime: "virtual-vfs", present: probevirtualmodule },
+  { modality: "runnernode", kind: "live", runtime: "node:vm", present: probenodevm },
+  { modality: "runnerbun", kind: "live", runtime: "bun", present: () => probehostbinary("bun") },
+  { modality: "runnerwasm", kind: "live", runtime: "webassembly", present: probewasm },
+  { modality: "runnerbabel", kind: "live", runtime: "@babel/core", present: () => probemodule("@babel/core") },
+  { modality: "runnerwebpack", kind: "live", runtime: "webpack", present: () => probemodule("webpack") },
+  { modality: "runneruniversal", kind: "live", runtime: "bash", present: () => probehostbinary("bash") },
+  { modality: "languagepython", kind: "live", runtime: "python3", present: () => probehostbinary("python3") },
+  { modality: "languagejava", kind: "live", runtime: "java", present: () => probehostbinary("java") },
   // the host seats: the engine probes the runtime, execution is the next rung
-  { modality: "container-runsc", kind: "host", runtime: "runsc", present: () => probehostbinary("runsc") },
+  { modality: "containerrunsc", kind: "host", runtime: "runsc", present: () => probehostbinary("runsc") },
   {
-    modality: "emulator-qemu",
+    modality: "emulatorqemu",
     kind: "host",
     runtime: "qemu-system-x86_64",
     present: () => probehostbinary("qemu-system-x86_64"),
   },
-  { modality: "microvm-firecracker", kind: "host", runtime: "firecracker", present: () => probehostbinary("firecracker") },
-  { modality: "runtime-jvm", kind: "host", runtime: "java", present: () => probehostbinary("java") },
-  { modality: "language-go", kind: "host", runtime: "go", present: () => probehostbinary("go") },
-  { modality: "language-ruby", kind: "host", runtime: "ruby", present: () => probehostbinary("ruby") },
+  { modality: "microvmfirecracker", kind: "host", runtime: "firecracker", present: () => probehostbinary("firecracker") },
+  { modality: "runtimejvm", kind: "host", runtime: "java", present: () => probehostbinary("java") },
+  { modality: "languagego", kind: "host", runtime: "go", present: () => probehostbinary("go") },
+  { modality: "languageruby", kind: "host", runtime: "ruby", present: () => probehostbinary("ruby") },
 ]);
 
 /** the base lane ids in spec order — the pinned contract the merged
@@ -1725,7 +1725,7 @@ function resolutionreport(record: Record<string, unknown>): EdgeLaneOutput {
  * address, never caches one, and a resolver refusal answers
  * RESOLUTION_FAILED carrying the resolver's own message. */
 async function networkdnslane(code: string, _inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifest("network-dns", code);
+  const manifest = parsemanifest("networkdns", code);
   const resolver = new Resolver();
   const type = manifest.type === "AAAA" ? "AAAA" : "A";
   let addresses: string[];
@@ -1743,7 +1743,7 @@ async function networkdnslane(code: string, _inputs: unknown, deadline: number):
     );
   }
   return resolutionreport({
-    lane: "network-dns",
+    lane: "networkdns",
     surface: "node:dns",
     host: manifest.host,
     type,
@@ -1774,7 +1774,7 @@ interface DohAnswer {
  * class), never a pinned or invented address. An endpoint that answers
  * no 200 answers RESOLUTION_FAILED carrying the status. */
 async function networkdohlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifest("network-doh", code);
+  const manifest = parsemanifest("networkdoh", code);
   const endpointinput =
     typeof inputs === "object" && inputs !== null ? (inputs as Record<string, unknown>).endpoint : undefined;
   const endpoint = typeof endpointinput === "string" && /^https:\/\//.test(endpointinput) ? endpointinput : DEFAULTDOHENDPOINT;
@@ -1816,7 +1816,7 @@ async function networkdohlane(code: string, inputs: unknown, deadline: number): 
     .filter((answer) => answer.data !== undefined)
     .map((answer) => String(answer.data));
   return resolutionreport({
-    lane: "network-doh",
+    lane: "networkdoh",
     surface: "doh-json",
     endpoint,
     host: manifest.host,
@@ -1836,13 +1836,13 @@ async function networkdohlane(code: string, inputs: unknown, deadline: number): 
  * node resolver and the doh lane rides the engine's own fetch. */
 export const netlanespecs: readonly NetLaneSpec[] = Object.freeze([
   {
-    modality: "network-dns",
+    modality: "networkdns",
     kind: "live",
     runtime: "node:dns",
     present: () => true,
   },
   {
-    modality: "network-doh",
+    modality: "networkdoh",
     kind: "live",
     runtime: "doh-json",
     present: () => typeof fetch === "function",
@@ -1853,8 +1853,8 @@ export const netlanespecs: readonly NetLaneSpec[] = Object.freeze([
  * keyed by modality id — the dispatcher refuses to boot over a lane it
  * cannot wire. */
 export const edgelaneexecutorsnet: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
-  "network-dns": networkdnslane,
-  "network-doh": networkdohlane,
+  "networkdns": networkdnslane,
+  "networkdoh": networkdohlane,
 });
 
 /** the net lane ids in spec order — the pinned contract the dispatcher
@@ -2163,7 +2163,7 @@ function probedockersurface(): boolean {
  * engine parent — the honest bubblewrap seat this host may carry. */
 async function sandboxbubblewraplane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("bwrap")) {
-    absentruntime("sandbox-bubblewrap", "bwrap");
+    absentruntime("sandboxbubblewrap", "bwrap");
   }
   return withtempdirhost((dir) =>
     runscript(
@@ -2184,7 +2184,7 @@ async function sandboxbubblewraplane(code: string, inputs: unknown, deadline: nu
  * the private temp dir. */
 async function sandboxnsjaillane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("nsjail")) {
-    absentruntime("sandbox-nsjail", "nsjail");
+    absentruntime("sandboxnsjail", "nsjail");
   }
   return withtempdirhost(async (dir) => {
     const config = [
@@ -2266,7 +2266,7 @@ async function sandboxchrootlane(code: string, inputs: unknown, deadline: number
   const chrootpresent = probehostbinary("chroot");
   const fakepresent = probehostbinary("fakechroot");
   if (!chrootpresent && !fakepresent) {
-    absentruntime("sandbox-chroot", "chroot", "(and fakechroot, the unprivileged seat, is absent too)");
+    absentruntime("sandboxchroot", "chroot", "(and fakechroot, the unprivileged seat, is absent too)");
   }
   if (!fakepresent && !isroot()) {
     throw edgelaneerror(
@@ -2296,7 +2296,7 @@ async function sandboxchrootlane(code: string, inputs: unknown, deadline: number
  * pre-pulls anything outside its own process. */
 async function containerpodmanlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("podman")) {
-    absentruntime("container-podman", "podman");
+    absentruntime("containerpodman", "podman");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "script.sh"), code, "utf8");
@@ -2327,7 +2327,7 @@ async function containerpodmanlane(code: string, inputs: unknown, deadline: numb
  * monotonic counter, deterministic without crypto. */
 async function containercontainerdlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("ctr")) {
-    absentruntime("container-containerd", "ctr");
+    absentruntime("containercontainerd", "ctr");
   }
   return withtempdirhost(async (dir) => {
     const inputenv = await writeinputsfilehost(dir, inputs);
@@ -2424,12 +2424,12 @@ async function runocilane(
 /** container-runc: the oci process lane — spec.json plus a busybox
  * rootfs, run by runc under the deadline. */
 async function containerrunclane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  return runocilane("container-runc", "runc", code, inputs, deadline);
+  return runocilane("containerrunc", "runc", code, inputs, deadline);
 }
 
 /** container-crun: the same oci bundle law through the crun runtime. */
 async function containercrunlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  return runocilane("container-crun", "crun", code, inputs, deadline);
+  return runocilane("containercrun", "crun", code, inputs, deadline);
 }
 
 /** runs the code through one docker profile: the image and the
@@ -2458,7 +2458,7 @@ async function rundockerprofile(
  * more resources than the lite seat, the same honest spawn law. */
 async function containermaxlanehost(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probedockersurface()) {
-    absentruntime("container-max", "docker", "(no docker binary and no /var/run/docker.sock)");
+    absentruntime("containermax", "docker", "(no docker binary and no /var/run/docker.sock)");
   }
   return withtempdirhost((dir) =>
     rundockerprofile(dir, code, inputs, deadline, [
@@ -2480,7 +2480,7 @@ async function containermaxlanehost(code: string, inputs: unknown, deadline: num
  * memory and a tmpfs at /tmp: the tightest honest container seat. */
 async function containerlitelanehost(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probedockersurface()) {
-    absentruntime("container-lite", "docker", "(no docker binary and no /var/run/docker.sock)");
+    absentruntime("containerlite", "docker", "(no docker binary and no /var/run/docker.sock)");
   }
   return withtempdirhost((dir) =>
     rundockerprofile(dir, code, inputs, deadline, [
@@ -2507,7 +2507,7 @@ async function containerlitelanehost(code: string, inputs: unknown, deadline: nu
  * the image answers what it answers, nothing is faked. */
 async function containerghcrlanehost(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probedockersurface()) {
-    absentruntime("container-ghcr", "docker", "(no docker binary and no /var/run/docker.sock)");
+    absentruntime("containerghcr", "docker", "(no docker binary and no /var/run/docker.sock)");
   }
   return withtempdirhost(async (dir) => {
     const record = (inputs ?? {}) as { image?: unknown; script?: unknown };
@@ -2534,7 +2534,7 @@ async function containerghcrlanehost(code: string, inputs: unknown, deadline: nu
  * — both seats spawn under the deadline, the compile answers honestly. */
 async function runtimeclrlanehost(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("dotnet")) {
-    absentruntime("runtime-clr", "dotnet");
+    absentruntime("runtimeclr", "dotnet");
   }
   const scripttool = probehostbinary("dotnet-script");
   return withtempdirhost(async (dir) => {
@@ -2578,7 +2578,7 @@ async function runtimeclrlanehost(code: string, inputs: unknown, deadline: numbe
  * streams — a broken config answers RUN_EXITED_NONZERO, never a fake. */
 async function runtimeworkerdlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("workerd")) {
-    absentruntime("runtime-workerd", "workerd");
+    absentruntime("runtimeworkerd", "workerd");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "worker.js"), code, "utf8");
@@ -2619,7 +2619,7 @@ async function runtimeworkerdlane(code: string, inputs: unknown, deadline: numbe
  * screen is never touched (the engine host owns this surface). */
 async function screenxvfblane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("xvfb-run")) {
-    absentruntime("screen-xvfb", "xvfb-run");
+    absentruntime("screenxvfb", "xvfb-run");
   }
   return withtempdirhost((dir) =>
     runscript(
@@ -2683,7 +2683,7 @@ async function screenwaylandlane(code: string, inputs: unknown, deadline: number
  * bin on PATH), the honest emulation-free seat. */
 async function mobiletermuxlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("termux")) {
-    absentruntime("mobile-termux", "termux", "(the termux host prefix exists only inside a termux device host)");
+    absentruntime("mobiletermux", "termux", "(the termux host prefix exists only inside a termux device host)");
   }
   return withtempdirhost(async (dir) => {
     const record = (inputs ?? {}) as { termuxprefix?: unknown };
@@ -2710,7 +2710,7 @@ async function mobiletermuxlane(code: string, inputs: unknown, deadline: number)
  * never touched, nothing leaks outside the private dir. */
 async function buildbazellane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("bazel")) {
-    absentruntime("build-bazel", "bazel");
+    absentruntime("buildbazel", "bazel");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "MODULE.bazel"), "", "utf8");
@@ -2732,7 +2732,7 @@ async function buildbazellane(code: string, inputs: unknown, deadline: number): 
  * buck caches stay inside the private seat. */
 async function buildbucklane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("buck2")) {
-    absentruntime("build-buck", "buck2");
+    absentruntime("buildbuck", "buck2");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, ".buckconfig"), "[repositories]\nroot = .\n", "utf8");
@@ -2820,7 +2820,7 @@ function actionsrunnerroot(): string {
 async function ciactionslane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   const root = actionsrunnerroot();
   if (root.length === 0 && !probehostbinary("Runner.Listener")) {
-    absentruntime("ci-actions", "actions-runner", "(no Runner.Listener on PATH and no ACTIONS_RUNNER_ROOT directory)");
+    absentruntime("ciactions", "actions-runner", "(no Runner.Listener on PATH and no ACTIONS_RUNNER_ROOT directory)");
   }
   return withtempdirhost(async (dir) => {
     let runnerroot = root;
@@ -2849,7 +2849,7 @@ async function ciactionslane(code: string, inputs: unknown, deadline: number): P
  * naming the removal — the runtime exists, the capability is gone. */
 async function cigitlablane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("gitlab-runner")) {
-    absentruntime("ci-gitlab", "gitlab-runner");
+    absentruntime("cigitlab", "gitlab-runner");
   }
   return withtempdirhost(async (dir) => {
     const body = code
@@ -2891,7 +2891,7 @@ async function cigitlablane(code: string, inputs: unknown, deadline: number): Pr
  * never opens answers the deadline refusal, never a fake tunnel. */
 async function networktorlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("tor")) {
-    absentruntime("network-tor", "tor");
+    absentruntime("networktor", "tor");
   }
   return withtempdirhost(async (dir) => {
     const tordata = join(dir, "tordata");
@@ -2942,7 +2942,7 @@ async function networktorlane(code: string, inputs: unknown, deadline: number): 
 async function networki2plane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("i2prouter")) {
     absentruntime(
-      "network-i2p",
+      "networki2p",
       "i2p",
       "(the i2prouter binary is absent and the router console 7657 cannot be managed)",
     );
@@ -2987,7 +2987,7 @@ async function networki2plane(code: string, inputs: unknown, deadline: number): 
  * the coded privilege refusal, never a wrapped errno. */
 async function networkwireguardlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("wg")) {
-    absentruntime("network-wireguard", "wg");
+    absentruntime("networkwireguard", "wg");
   }
   return withtempdirhost(async (dir) => {
     const inputenv = (await writeinputsfilehost(dir, inputs)) ?? {};
@@ -3033,7 +3033,7 @@ async function networkwireguardlane(code: string, inputs: unknown, deadline: num
  * error and the lane wraps it, never invents a vault. */
 async function storageminiolane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("mc")) {
-    absentruntime("storage-minio", "mc");
+    absentruntime("storageminio", "mc");
   }
   return withtempdirhost(async (dir) => {
     const record = (inputs ?? {}) as { alias?: unknown; url?: unknown; accesskey?: unknown; secretkey?: unknown };
@@ -3054,7 +3054,7 @@ async function storageminiolane(code: string, inputs: unknown, deadline: number)
  * GARAGE_RPC_SECRET env when the caller sent them. */
 async function storagegaragelane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("garage")) {
-    absentruntime("storage-garage", "garage");
+    absentruntime("storagegarage", "garage");
   }
   return withtempdirhost(async (dir) => {
     const record = (inputs ?? {}) as { rpchost?: unknown; rpcsecret?: unknown };
@@ -3081,7 +3081,7 @@ async function storagegaragelane(code: string, inputs: unknown, deadline: number
  * an absent deno answers the coded absence, never a faked module run. */
 async function runnerdenolane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("deno")) {
-    absentruntime("runner-deno", "deno");
+    absentruntime("runnerdeno", "deno");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "main.ts"), code, "utf8");
@@ -3102,7 +3102,7 @@ async function runnerdenolane(code: string, inputs: unknown, deadline: number): 
  * streams. */
 async function languagerustlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("rustc")) {
-    absentruntime("language-rust", "rustc");
+    absentruntime("languagerust", "rustc");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "main.rs"), code, "utf8");
@@ -3120,7 +3120,7 @@ async function languagerustlane(code: string, inputs: unknown, deadline: number)
  * temp dir. */
 async function languagecargolane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("cargo")) {
-    absentruntime("language-cargo", "cargo");
+    absentruntime("languagecargo", "cargo");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(
@@ -3156,7 +3156,7 @@ async function languagecargolane(code: string, inputs: unknown, deadline: number
  * leaves the temp tree. */
 async function languagevlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("v")) {
-    absentruntime("language-v", "v");
+    absentruntime("languagev", "v");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "main.v"), code, "utf8");
@@ -3178,7 +3178,7 @@ async function languagevlane(code: string, inputs: unknown, deadline: number): P
  * — the first-run caches the host may own are never touched. */
 async function languagedotnetlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("dotnet")) {
-    absentruntime("language-dotnet", "dotnet");
+    absentruntime("languagedotnet", "dotnet");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "Program.cs"), code, "utf8");
@@ -3217,7 +3217,7 @@ async function languagedotnetlane(code: string, inputs: unknown, deadline: numbe
  * env — an honest spawn, nothing else. */
 async function languagephplane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("php")) {
-    absentruntime("language-php", "php");
+    absentruntime("languagephp", "php");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "main.php"), code, "utf8");
@@ -3231,7 +3231,7 @@ async function languagephplane(code: string, inputs: unknown, deadline: number):
  * the program rides a temp main.lua through the lua cli. */
 async function languagelualane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("lua")) {
-    absentruntime("language-lua", "lua");
+    absentruntime("languagelua", "lua");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "main.lua"), code, "utf8");
@@ -3247,7 +3247,7 @@ async function languagelualane(code: string, inputs: unknown, deadline: number):
  * tree — the local cache dies with the temp dir. */
 async function languageziglane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("zig")) {
-    absentruntime("language-zig", "zig");
+    absentruntime("languagezig", "zig");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "main.zig"), code, "utf8");
@@ -3266,7 +3266,7 @@ async function languageziglane(code: string, inputs: unknown, deadline: number):
  * build artifacts die with the temp dir. */
 async function languagenimlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("nim")) {
-    absentruntime("language-nim", "nim");
+    absentruntime("languagenim", "nim");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "main.nim"), code, "utf8");
@@ -3286,7 +3286,7 @@ async function languagenimlane(code: string, inputs: unknown, deadline: number):
  * the env surface. */
 async function buildmakelane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("make")) {
-    absentruntime("build-make", "make");
+    absentruntime("buildmake", "make");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "Makefile"), code, "utf8");
@@ -3301,7 +3301,7 @@ async function buildmakelane(code: string, inputs: unknown, deadline: number): P
  * targets through `ninja` — the build graph answers its own streams. */
 async function buildninjalane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("ninja")) {
-    absentruntime("build-ninja", "ninja");
+    absentruntime("buildninja", "ninja");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "build.ninja"), code, "utf8");
@@ -3318,7 +3318,7 @@ async function buildninjalane(code: string, inputs: unknown, deadline: number): 
  * absent wasmtime answers the coded absence, never a faked boot. */
 async function runnerwasilane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
   if (!probehostbinary("wasmtime")) {
-    absentruntime("runner-wasi", "wasmtime");
+    absentruntime("runnerwasi", "wasmtime");
   }
   return withtempdirhost(async (dir) => {
     await writeFile(join(dir, "module.wasm"), Buffer.from(String(code), "base64"));
@@ -3339,61 +3339,61 @@ async function runnerwasilane(code: string, inputs: unknown, deadline: number): 
  * the host carries it). The ids are pinned — the dispatcher merge and
  * the api surface read them exactly. */
 export const hostlanespecs: readonly HostLaneSpec[] = Object.freeze([
-  { modality: "sandbox-bubblewrap", kind: "live", runtime: "bwrap", present: () => probehostbinary("bwrap") },
-  { modality: "sandbox-nsjail", kind: "live", runtime: "nsjail", present: () => probehostbinary("nsjail") },
+  { modality: "sandboxbubblewrap", kind: "live", runtime: "bwrap", present: () => probehostbinary("bwrap") },
+  { modality: "sandboxnsjail", kind: "live", runtime: "nsjail", present: () => probehostbinary("nsjail") },
   {
-    modality: "sandbox-chroot",
+    modality: "sandboxchroot",
     kind: "live",
     runtime: "chroot",
     present: () => probehostbinary("chroot") || probehostbinary("fakechroot"),
   },
-  { modality: "container-podman", kind: "live", runtime: "podman", present: () => probehostbinary("podman") },
-  { modality: "container-containerd", kind: "live", runtime: "ctr", present: () => probehostbinary("ctr") },
-  { modality: "container-runc", kind: "live", runtime: "runc", present: () => probehostbinary("runc") },
-  { modality: "container-crun", kind: "live", runtime: "crun", present: () => probehostbinary("crun") },
-  { modality: "container-max", kind: "live", runtime: "docker", present: probedockersurface },
-  { modality: "container-lite", kind: "live", runtime: "docker", present: probedockersurface },
-  { modality: "container-ghcr", kind: "live", runtime: "docker", present: probedockersurface },
-  { modality: "runtime-clr", kind: "live", runtime: "dotnet", present: () => probehostbinary("dotnet") },
-  { modality: "runtime-workerd", kind: "live", runtime: "workerd", present: () => probehostbinary("workerd") },
-  { modality: "screen-xvfb", kind: "live", runtime: "xvfb-run", present: () => probehostbinary("xvfb-run") },
+  { modality: "containerpodman", kind: "live", runtime: "podman", present: () => probehostbinary("podman") },
+  { modality: "containercontainerd", kind: "live", runtime: "ctr", present: () => probehostbinary("ctr") },
+  { modality: "containerrunc", kind: "live", runtime: "runc", present: () => probehostbinary("runc") },
+  { modality: "containercrun", kind: "live", runtime: "crun", present: () => probehostbinary("crun") },
+  { modality: "containermax", kind: "live", runtime: "docker", present: probedockersurface },
+  { modality: "containerlite", kind: "live", runtime: "docker", present: probedockersurface },
+  { modality: "containerghcr", kind: "live", runtime: "docker", present: probedockersurface },
+  { modality: "runtimeclr", kind: "live", runtime: "dotnet", present: () => probehostbinary("dotnet") },
+  { modality: "runtimeworkerd", kind: "live", runtime: "workerd", present: () => probehostbinary("workerd") },
+  { modality: "screenxvfb", kind: "live", runtime: "xvfb-run", present: () => probehostbinary("xvfb-run") },
   {
-    modality: "screen-wayland",
+    modality: "screenwayland",
     kind: "live",
     runtime: "cage",
     present: () => probehostbinary("cage") || probehostbinary("weston"),
   },
-  { modality: "mobile-termux", kind: "live", runtime: "termux", present: () => probehostbinary("termux") },
-  { modality: "build-bazel", kind: "live", runtime: "bazel", present: () => probehostbinary("bazel") },
-  { modality: "build-buck", kind: "live", runtime: "buck2", present: () => probehostbinary("buck2") },
-  { modality: "build-turborepo", kind: "live", runtime: "turbo", present: () => turboseat().present },
+  { modality: "mobiletermux", kind: "live", runtime: "termux", present: () => probehostbinary("termux") },
+  { modality: "buildbazel", kind: "live", runtime: "bazel", present: () => probehostbinary("bazel") },
+  { modality: "buildbuck", kind: "live", runtime: "buck2", present: () => probehostbinary("buck2") },
+  { modality: "buildturborepo", kind: "live", runtime: "turbo", present: () => turboseat().present },
   {
-    modality: "ci-actions",
+    modality: "ciactions",
     kind: "live",
     runtime: "actions-runner",
     present: () => probehostbinary("Runner.Listener") || actionsrunnerroot().length > 0,
   },
-  { modality: "ci-gitlab", kind: "live", runtime: "gitlab-runner", present: () => probehostbinary("gitlab-runner") },
-  { modality: "network-tor", kind: "live", runtime: "tor", present: () => probehostbinary("tor") },
-  { modality: "network-i2p", kind: "live", runtime: "i2p", present: () => probehostbinary("i2prouter") },
-  { modality: "network-wireguard", kind: "live", runtime: "wg", present: () => probehostbinary("wg") },
-  { modality: "storage-minio", kind: "live", runtime: "mc", present: () => probehostbinary("mc") },
-  { modality: "storage-garage", kind: "live", runtime: "garage", present: () => probehostbinary("garage") },
+  { modality: "cigitlab", kind: "live", runtime: "gitlab-runner", present: () => probehostbinary("gitlab-runner") },
+  { modality: "networktor", kind: "live", runtime: "tor", present: () => probehostbinary("tor") },
+  { modality: "networki2p", kind: "live", runtime: "i2p", present: () => probehostbinary("i2prouter") },
+  { modality: "networkwireguard", kind: "live", runtime: "wg", present: () => probehostbinary("wg") },
+  { modality: "storageminio", kind: "live", runtime: "mc", present: () => probehostbinary("mc") },
+  { modality: "storagegarage", kind: "live", runtime: "garage", present: () => probehostbinary("garage") },
   // the wiring wave lanes: the language toolchains, the runner seats and
   // the build tail — kind host (the runtime probe rung), the executors
   // drive the runtimes when the hosts carry them
-  { modality: "build-make", kind: "host", runtime: "make", present: () => probehostbinary("make") },
-  { modality: "build-ninja", kind: "host", runtime: "ninja", present: () => probehostbinary("ninja") },
-  { modality: "language-cargo", kind: "host", runtime: "cargo", present: () => probehostbinary("cargo") },
-  { modality: "language-dotnet", kind: "host", runtime: "dotnet", present: () => probehostbinary("dotnet") },
-  { modality: "language-lua", kind: "host", runtime: "lua", present: () => probehostbinary("lua") },
-  { modality: "language-nim", kind: "host", runtime: "nim", present: () => probehostbinary("nim") },
-  { modality: "language-php", kind: "host", runtime: "php", present: () => probehostbinary("php") },
-  { modality: "language-rust", kind: "host", runtime: "rustc", present: () => probehostbinary("rustc") },
-  { modality: "language-v", kind: "host", runtime: "v", present: () => probehostbinary("v") },
-  { modality: "language-zig", kind: "host", runtime: "zig", present: () => probehostbinary("zig") },
-  { modality: "runner-deno", kind: "host", runtime: "deno", present: () => probehostbinary("deno") },
-  { modality: "runner-wasi", kind: "host", runtime: "wasmtime", present: () => probehostbinary("wasmtime") },
+  { modality: "buildmake", kind: "host", runtime: "make", present: () => probehostbinary("make") },
+  { modality: "buildninja", kind: "host", runtime: "ninja", present: () => probehostbinary("ninja") },
+  { modality: "languagecargo", kind: "host", runtime: "cargo", present: () => probehostbinary("cargo") },
+  { modality: "languagedotnet", kind: "host", runtime: "dotnet", present: () => probehostbinary("dotnet") },
+  { modality: "languagelua", kind: "host", runtime: "lua", present: () => probehostbinary("lua") },
+  { modality: "languagenim", kind: "host", runtime: "nim", present: () => probehostbinary("nim") },
+  { modality: "languagephp", kind: "host", runtime: "php", present: () => probehostbinary("php") },
+  { modality: "languagerust", kind: "host", runtime: "rustc", present: () => probehostbinary("rustc") },
+  { modality: "languagev", kind: "host", runtime: "v", present: () => probehostbinary("v") },
+  { modality: "languagezig", kind: "host", runtime: "zig", present: () => probehostbinary("zig") },
+  { modality: "runnerdeno", kind: "host", runtime: "deno", present: () => probehostbinary("deno") },
+  { modality: "runnerwasi", kind: "host", runtime: "wasmtime", present: () => probehostbinary("wasmtime") },
 ]);
 
 /** the host lane executor table: one executor per lane id, keyed by the
@@ -3401,43 +3401,43 @@ export const hostlanespecs: readonly HostLaneSpec[] = Object.freeze([
  * the first wave beside the twelve of the wiring wave; the dispatch
  * plane refuses to boot over a lane it cannot wire. */
 export const edgelaneexecutorshost: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
-  "sandbox-bubblewrap": sandboxbubblewraplane,
-  "sandbox-nsjail": sandboxnsjaillane,
-  "sandbox-chroot": sandboxchrootlane,
-  "container-podman": containerpodmanlane,
-  "container-containerd": containercontainerdlane,
-  "container-runc": containerrunclane,
-  "container-crun": containercrunlane,
-  "container-max": containermaxlanehost,
-  "container-lite": containerlitelanehost,
-  "container-ghcr": containerghcrlanehost,
-  "runtime-clr": runtimeclrlanehost,
-  "runtime-workerd": runtimeworkerdlane,
-  "screen-xvfb": screenxvfblane,
-  "screen-wayland": screenwaylandlane,
-  "mobile-termux": mobiletermuxlane,
-  "build-bazel": buildbazellane,
-  "build-buck": buildbucklane,
-  "build-turborepo": buildturborepolane,
-  "ci-actions": ciactionslane,
-  "ci-gitlab": cigitlablane,
-  "network-tor": networktorlane,
-  "network-i2p": networki2plane,
-  "network-wireguard": networkwireguardlane,
-  "storage-minio": storageminiolane,
-  "storage-garage": storagegaragelane,
-  "build-make": buildmakelane,
-  "build-ninja": buildninjalane,
-  "language-cargo": languagecargolane,
-  "language-dotnet": languagedotnetlane,
-  "language-lua": languagelualane,
-  "language-nim": languagenimlane,
-  "language-php": languagephplane,
-  "language-rust": languagerustlane,
-  "language-v": languagevlane,
-  "language-zig": languageziglane,
-  "runner-deno": runnerdenolane,
-  "runner-wasi": runnerwasilane,
+  "sandboxbubblewrap": sandboxbubblewraplane,
+  "sandboxnsjail": sandboxnsjaillane,
+  "sandboxchroot": sandboxchrootlane,
+  "containerpodman": containerpodmanlane,
+  "containercontainerd": containercontainerdlane,
+  "containerrunc": containerrunclane,
+  "containercrun": containercrunlane,
+  "containermax": containermaxlanehost,
+  "containerlite": containerlitelanehost,
+  "containerghcr": containerghcrlanehost,
+  "runtimeclr": runtimeclrlanehost,
+  "runtimeworkerd": runtimeworkerdlane,
+  "screenxvfb": screenxvfblane,
+  "screenwayland": screenwaylandlane,
+  "mobiletermux": mobiletermuxlane,
+  "buildbazel": buildbazellane,
+  "buildbuck": buildbucklane,
+  "buildturborepo": buildturborepolane,
+  "ciactions": ciactionslane,
+  "cigitlab": cigitlablane,
+  "networktor": networktorlane,
+  "networki2p": networki2plane,
+  "networkwireguard": networkwireguardlane,
+  "storageminio": storageminiolane,
+  "storagegarage": storagegaragelane,
+  "buildmake": buildmakelane,
+  "buildninja": buildninjalane,
+  "languagecargo": languagecargolane,
+  "languagedotnet": languagedotnetlane,
+  "languagelua": languagelualane,
+  "languagenim": languagenimlane,
+  "languagephp": languagephplane,
+  "languagerust": languagerustlane,
+  "languagev": languagevlane,
+  "languagezig": languageziglane,
+  "runnerdeno": runnerdenolane,
+  "runnerwasi": runnerwasilane,
 });
 
 /** the host lane ids in the spec order — the pinned contract the
@@ -3757,13 +3757,13 @@ function storedzlib(page: Uint8Array): Uint8Array {
  * oom guard and answers the mounted report — file count and total bytes
  * on stdout, the serialized tree manifest as the artifact. */
 async function ramtmpfslaneinproc(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ram-tmpfs", code);
+  const manifest = parsemanifestinproc("ramtmpfs", code);
   if (manifest.mount !== "tmpfs") {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", 'the ram-tmpfs lane requires the manifest field mount "tmpfs"');
   }
-  const entries = manifestfiles("ram-tmpfs", manifest.files, "files");
+  const entries = manifestfiles("ramtmpfs", manifest.files, "files");
   const totalbytes = entries.reduce((sum, entry) => sum + entry[1].byteLength, 0);
-  assertramquota("ram-tmpfs", totalbytes, inputs);
+  assertramquota("ramtmpfs", totalbytes, inputs);
   const tree = new Map(entries);
   const files: Record<string, string> = {};
   for (const [name, bytes] of tree) files[name] = tohex(bytes);
@@ -3780,10 +3780,10 @@ async function ramtmpfslaneinproc(code: string, inputs: unknown, _deadline: numb
  * answers the zero-copy subarray window view inside it and reports the
  * window bounds — the window bytes ride the artifact. */
 async function rammmaplane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ram-mmap", code);
-  const buffer = fromhex("ram-mmap", manifest.bytes, "bytes");
-  const window = manifestwindow("ram-mmap", manifest.window, "window");
-  assertramquota("ram-mmap", buffer.byteLength, inputs);
+  const manifest = parsemanifestinproc("rammmap", code);
+  const buffer = fromhex("rammmap", manifest.bytes, "bytes");
+  const window = manifestwindow("rammmap", manifest.window, "window");
+  assertramquota("rammmap", buffer.byteLength, inputs);
   const [offset, length] = window;
   if (length > buffer.byteLength - offset) {
     throw edgelaneerror(
@@ -3804,9 +3804,9 @@ async function rammmaplane(code: string, inputs: unknown, _deadline: number): Pr
  * (the upper layer wins every shared name) and answers the union — the
  * declared bytes are the merged tree only, never the double count. */
 async function ramoverlayfslane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ram-overlayfs", code);
-  const lower = manifestfiles("ram-overlayfs", manifest.lower, "lower");
-  const upper = manifestfiles("ram-overlayfs", manifest.upper, "upper");
+  const manifest = parsemanifestinproc("ramoverlayfs", code);
+  const lower = manifestfiles("ramoverlayfs", manifest.lower, "lower");
+  const upper = manifestfiles("ramoverlayfs", manifest.upper, "upper");
   const merged = new Map(lower);
   for (const [name, bytes] of upper) merged.set(name, bytes);
   let totalbytes = 0;
@@ -3815,7 +3815,7 @@ async function ramoverlayfslane(code: string, inputs: unknown, _deadline: number
     totalbytes += bytes.byteLength;
     files[name] = tohex(bytes);
   }
-  assertramquota("ram-overlayfs", totalbytes, inputs);
+  assertramquota("ramoverlayfs", totalbytes, inputs);
   return lanereport(
     rammime,
     { filecount: merged.size, totalbytes, lower: lower.length, upper: upper.length, merged: [...merged.keys()] },
@@ -3861,9 +3861,9 @@ function manifestwrites(lane: string, value: unknown, sectorsize: number, sector
  * sector writes and answers the sector map with the disk bytes as the
  * artifact. */
 async function ramloopramlane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ram-loopram", code);
-  const sectorsize = manifestuint("ram-loopram", manifest.sectorsize, "sectorsize");
-  const sectors = manifestuint("ram-loopram", manifest.sectors, "sectors");
+  const manifest = parsemanifestinproc("ramloopram", code);
+  const sectorsize = manifestuint("ramloopram", manifest.sectorsize, "sectorsize");
+  const sectors = manifestuint("ramloopram", manifest.sectors, "sectors");
   if (sectorsize < 1) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-loopram lane requires a positive sectorsize");
   }
@@ -3871,8 +3871,8 @@ async function ramloopramlane(code: string, inputs: unknown, _deadline: number):
   if (!Number.isSafeInteger(capacity)) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-loopram disk exceeds the representable byte range");
   }
-  assertramquota("ram-loopram", capacity, inputs);
-  const writes = manifestwrites("ram-loopram", manifest.writes ?? [], sectorsize, sectors);
+  assertramquota("ramloopram", capacity, inputs);
+  const writes = manifestwrites("ramloopram", manifest.writes ?? [], sectorsize, sectors);
   const disk = new Uint8Array(capacity);
   for (const [sector, bytes] of writes) disk.set(bytes, sector * sectorsize);
   const written = [...new Set(writes.map((write) => write[0]))].sort((left, right) => left - right);
@@ -3889,7 +3889,7 @@ async function ramloopramlane(code: string, inputs: unknown, _deadline: number):
  * repeated oid answers the last write) and answers the read object —
  * the object bytes ride the artifact. */
 async function ramgitramlane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ram-gitram", code);
+  const manifest = parsemanifestinproc("ramgitram", code);
   if (!Array.isArray(manifest.objects)) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-gitram lane requires an objects array in the manifest");
   }
@@ -3899,13 +3899,13 @@ async function ramgitramlane(code: string, inputs: unknown, _deadline: number): 
       throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-gitram lane requires {oid, data} object entries");
     }
     const record = entry as Record<string, unknown>;
-    const oid = manifesttext("ram-gitram", record.oid, "objects oid");
-    objects.set(oid, fromhex("ram-gitram", record.data, `objects ${oid} data`));
+    const oid = manifesttext("ramgitram", record.oid, "objects oid");
+    objects.set(oid, fromhex("ramgitram", record.data, `objects ${oid} data`));
   }
   let totalbytes = 0;
   for (const bytes of objects.values()) totalbytes += bytes.byteLength;
-  assertramquota("ram-gitram", totalbytes, inputs);
-  const read = manifesttext("ram-gitram", manifest.read, "read");
+  assertramquota("ramgitram", totalbytes, inputs);
+  const read = manifesttext("ramgitram", manifest.read, "read");
   const object = objects.get(read);
   if (object === undefined) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", `the ram-gitram read names the unknown oid ${read}`);
@@ -3922,8 +3922,8 @@ async function ramgitramlane(code: string, inputs: unknown, _deadline: number): 
  * every page with the real stored-block zlib wrapper and answers the
  * per page compression ratios — the compressed streams ride the artifact. */
 async function ramzramlaneinproc(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ram-zram", code);
-  const pagesize = manifestuint("ram-zram", manifest.pagesize, "pagesize");
+  const manifest = parsemanifestinproc("ramzram", code);
+  const pagesize = manifestuint("ramzram", manifest.pagesize, "pagesize");
   if (pagesize < 1) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-zram lane requires a positive pagesize");
   }
@@ -3931,7 +3931,7 @@ async function ramzramlaneinproc(code: string, inputs: unknown, _deadline: numbe
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-zram lane requires a pages array in the manifest");
   }
   const pages = manifest.pages.map((page, index) => {
-    const bytes = fromhex("ram-zram", page, `pages ${index}`);
+    const bytes = fromhex("ramzram", page, `pages ${index}`);
     if (bytes.byteLength > pagesize) {
       throw edgelaneerror(
         "INVALID_LANE_PAYLOAD",
@@ -3941,7 +3941,7 @@ async function ramzramlaneinproc(code: string, inputs: unknown, _deadline: numbe
     return bytes;
   });
   const rawbytes = pages.reduce((sum, page) => sum + page.byteLength, 0);
-  assertramquota("ram-zram", rawbytes, inputs);
+  assertramquota("ramzram", rawbytes, inputs);
   const streams = pages.map((page) => storedzlib(page));
   const compressedbytes = streams.reduce((sum, stream) => sum + stream.byteLength, 0);
   const ratios = streams.map((stream, index) =>
@@ -3960,14 +3960,14 @@ async function ramzramlaneinproc(code: string, inputs: unknown, _deadline: numbe
  * into the LRU pool (arrival order, the oldest page evicted beyond
  * poolsize) — the pool snapshot rides the artifact. */
 async function ramzswaplane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ram-zswap", code);
-  const poolsize = manifestuint("ram-zswap", manifest.poolsize, "poolsize");
+  const manifest = parsemanifestinproc("ramzswap", code);
+  const poolsize = manifestuint("ramzswap", manifest.poolsize, "poolsize");
   if (!Array.isArray(manifest.pages)) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-zswap lane requires a pages array in the manifest");
   }
-  const pages = manifest.pages.map((page, index) => fromhex("ram-zswap", page, `pages ${index}`));
+  const pages = manifest.pages.map((page, index) => fromhex("ramzswap", page, `pages ${index}`));
   const rawbytes = pages.reduce((sum, page) => sum + page.byteLength, 0);
-  assertramquota("ram-zswap", rawbytes, inputs);
+  assertramquota("ramzswap", rawbytes, inputs);
   const pool = new Map<number, Uint8Array>();
   let evicted = 0;
   pages.forEach((page, index) => {
@@ -3998,7 +3998,7 @@ async function ramzswaplane(code: string, inputs: unknown, _deadline: number): P
  * the sparse holes with zero bytes) and answers the read window — the
  * extent table and the read bytes ride the artifact. */
 async function ramswapfilelaneinproc(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ram-swapfile", code);
+  const manifest = parsemanifestinproc("ramswapfile", code);
   if (!Array.isArray(manifest.extents)) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-swapfile lane requires an extents array in the manifest");
   }
@@ -4008,15 +4008,15 @@ async function ramswapfilelaneinproc(code: string, inputs: unknown, _deadline: n
     if (!Array.isArray(entry) || entry.length !== 3) {
       throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-swapfile lane requires [start, length, hex] extent triples");
     }
-    const start = manifestuint("ram-swapfile", entry[0], "extents start");
-    const length = manifestuint("ram-swapfile", entry[1], "extents length");
+    const start = manifestuint("ramswapfile", entry[0], "extents start");
+    const length = manifestuint("ramswapfile", entry[1], "extents length");
     if (!Number.isSafeInteger(start + length)) {
       throw edgelaneerror(
         "INVALID_LANE_PAYLOAD",
         `the ram-swapfile extent at ${start} exceeds the representable byte range`,
       );
     }
-    const bytes = fromhex("ram-swapfile", entry[2], "extents bytes");
+    const bytes = fromhex("ramswapfile", entry[2], "extents bytes");
     if (bytes.byteLength !== length) {
       throw edgelaneerror(
         "INVALID_LANE_PAYLOAD",
@@ -4026,8 +4026,8 @@ async function ramswapfilelaneinproc(code: string, inputs: unknown, _deadline: n
     extents.push({ start, length, bytes });
     if (start + length > filebytes) filebytes = start + length;
   }
-  assertramquota("ram-swapfile", filebytes, inputs);
-  const [readstart, readlength] = manifestwindow("ram-swapfile", manifest.read, "read");
+  assertramquota("ramswapfile", filebytes, inputs);
+  const [readstart, readlength] = manifestwindow("ramswapfile", manifest.read, "read");
   if (readlength > filebytes - readstart) {
     throw edgelaneerror(
       "INVALID_LANE_PAYLOAD",
@@ -4144,12 +4144,12 @@ function capnpmessage(payload: Uint8Array): Uint8Array {
  * The origin-pin law: a manifest without an origin answers
  * INVALID_LANE_PAYLOAD. */
 async function deliverycdnlane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("delivery-cdn", code);
-  const origin = manifesttext("delivery-cdn", manifest.origin, "origin");
+  const manifest = parsemanifestinproc("deliverycdn", code);
+  const origin = manifesttext("deliverycdn", manifest.origin, "origin");
   if (!Array.isArray(manifest.assets)) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the delivery-cdn lane requires an assets array in the manifest");
   }
-  const assets = manifest.assets.map((name) => manifesttext("delivery-cdn", name, "assets entry"));
+  const assets = manifest.assets.map((name) => manifesttext("deliverycdn", name, "assets entry"));
   const entries = assets.map((name) => ({ name, key: `assets/${fnv1a(name)}` }));
   return lanereport(
     cdnmime,
@@ -4301,8 +4301,8 @@ function postgresstartup(username: string): Uint8Array {
  * fnv-1a 32 hash of the sql text); the daemon connection rides the host
  * lane, this lane never opens a socket. */
 async function storagelibsqllaneinproc(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("storage-libsql", code);
-  const sql = manifesttext("storage-libsql", manifest.sql, "sql");
+  const manifest = parsemanifestinproc("storagelibsql", code);
+  const sql = manifesttext("storagelibsql", manifest.sql, "sql");
   const statementid = fnv1a(sql);
   const envelope = { dialect: "libsql", sql, statementid };
   return lanereport(
@@ -4373,13 +4373,13 @@ async function storagepostgreslane(code: string, _inputs: unknown, _deadline: nu
  * the lane's own signer, never a claim of aws sigv4. The auth-token law:
  * inputs.secretkey mixes the signer. */
 async function storages3laneinproc(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("storage-s3", code);
-  const method = manifesttext("storage-s3", manifest.method, "method");
-  const bucket = manifesttext("storage-s3", manifest.bucket, "bucket");
+  const manifest = parsemanifestinproc("storages3", code);
+  const method = manifesttext("storages3", manifest.method, "method");
+  const bucket = manifesttext("storages3", manifest.bucket, "bucket");
   if (bucket.includes("/")) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the storage-s3 bucket must not carry a path separator");
   }
-  const key = manifesttext("storage-s3", manifest.key, "key");
+  const key = manifesttext("storages3", manifest.key, "key");
   if (key.startsWith("/")) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the storage-s3 key must be a relative path");
   }
@@ -4608,9 +4608,9 @@ async function runnerserverlesslane(code: string, inputs: unknown, deadline: num
       "the node:vm surface is absent from this engine host (the v8 isolate seat never fakes a module run)",
     );
   }
-  const manifest = parsemanifestinproc("runner-serverless", code);
-  const isolate = manifesttext("runner-serverless", manifest.isolate, "isolate");
-  const moduletext = manifesttext("runner-serverless", manifest.module, "module");
+  const manifest = parsemanifestinproc("runnerserverless", code);
+  const isolate = manifesttext("runnerserverless", manifest.isolate, "isolate");
+  const moduletext = manifesttext("runnerserverless", manifest.module, "module");
   const stdoutlines: string[] = [];
   const stderrlines: string[] = [];
   const push =
@@ -4669,8 +4669,8 @@ async function runnerserverlesslane(code: string, inputs: unknown, deadline: num
  * in-process vfs mount, the host filesystem is never touched, and a
  * repeated address answers the last write (the hash table law). */
 async function fsgitobjectslane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("fs-gitobjects", code);
-  const repo = manifesttext("fs-gitobjects", manifest.repo, "repo");
+  const manifest = parsemanifestinproc("fsgitobjects", code);
+  const repo = manifesttext("fsgitobjects", manifest.repo, "repo");
   if (!Array.isArray(manifest.objects)) {
     throw edgelaneerror("INVALID_LANE_PAYLOAD", "the fs-gitobjects lane requires an objects array in the manifest");
   }
@@ -4680,14 +4680,14 @@ async function fsgitobjectslane(code: string, _inputs: unknown, _deadline: numbe
       throw edgelaneerror("INVALID_LANE_PAYLOAD", "the fs-gitobjects lane requires {type, data} object entries");
     }
     const record = entry as Record<string, unknown>;
-    const type = manifesttext("fs-gitobjects", record.type, "objects type");
+    const type = manifesttext("fsgitobjects", record.type, "objects type");
     if (!gitobjecttypes.includes(type)) {
       throw edgelaneerror(
         "INVALID_LANE_PAYLOAD",
         `the fs-gitobjects object type ${type} is not one of the git object types (blob, tree, commit, tag)`,
       );
     }
-    const bytes = fromhex("fs-gitobjects", record.data, "objects data");
+    const bytes = fromhex("fsgitobjects", record.data, "objects data");
     const address = fnv1a(`${type} ${bytes.byteLength}\0${tohex(bytes)}`);
     files[`${repo}/objects/${address.slice(0, 2)}/${address.slice(2)}`] = tohex(bytes);
   }
@@ -4708,9 +4708,9 @@ async function fsgitobjectslane(code: string, _inputs: unknown, _deadline: numbe
  * the database size of one page) beside the query envelope; the daemon
  * connection rides the host lane, this lane never opens a file. */
 async function storagesqlitelane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("storage-sqlite", code);
-  const sql = manifesttext("storage-sqlite", manifest.sql, "sql");
-  const pagesize = manifestuint("storage-sqlite", manifest.pagesize, "pagesize");
+  const manifest = parsemanifestinproc("storagesqlite", code);
+  const sql = manifesttext("storagesqlite", manifest.sql, "sql");
+  const pagesize = manifestuint("storagesqlite", manifest.pagesize, "pagesize");
   if (pagesize < 512 || pagesize > 65536 || (pagesize & (pagesize - 1)) !== 0) {
     throw edgelaneerror(
       "INVALID_LANE_PAYLOAD",
@@ -4752,10 +4752,10 @@ async function storagesqlitelane(code: string, _inputs: unknown, _deadline: numb
  * the socket ride stays with the sandbox seat, this lane never opens
  * one. */
 async function networkdnslaneinproc(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("network-dns", code);
-  const name = manifesttext("network-dns", manifest.name, "name");
-  const qtype = manifesttext("network-dns", manifest.qtype, "qtype");
-  const { id, flags, query } = dnsquerymessage("network-dns", name, qtype);
+  const manifest = parsemanifestinproc("networkdns", code);
+  const name = manifesttext("networkdns", manifest.name, "name");
+  const qtype = manifesttext("networkdns", manifest.qtype, "qtype");
+  const { id, flags, query } = dnsquerymessage("networkdns", name, qtype);
   return lanereport(
     netmime,
     { name, qtype, querybytes: query.byteLength, id },
@@ -4771,17 +4771,17 @@ async function networkdnslaneinproc(code: string, _inputs: unknown, _deadline: n
  * stays with the sandbox seat, this lane never opens a socket, and a
  * plaintext resolver answers the honest refusal. */
 async function networkdohlaneinproc(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("network-doh", code);
-  const resolver = manifesttext("network-doh", manifest.resolver, "resolver");
+  const manifest = parsemanifestinproc("networkdoh", code);
+  const resolver = manifesttext("networkdoh", manifest.resolver, "resolver");
   if (!resolver.startsWith("https://")) {
     throw edgelaneerror(
       "INVALID_LANE_PAYLOAD",
       "the network-doh resolver must be an https url (the doh law refuses plaintext resolvers)",
     );
   }
-  const name = manifesttext("network-doh", manifest.name, "name");
-  const qtype = manifesttext("network-doh", manifest.qtype, "qtype");
-  const { query } = dnsquerymessage("network-doh", name, qtype);
+  const name = manifesttext("networkdoh", manifest.name, "name");
+  const qtype = manifesttext("networkdoh", manifest.qtype, "qtype");
+  const { query } = dnsquerymessage("networkdoh", name, qtype);
   const wire = Buffer.from(query).toString("base64url");
   const url = `${resolver}?dns=${wire}`;
   return lanereport(
@@ -4801,47 +4801,47 @@ async function networkdohlaneinproc(code: string, _inputs: unknown, _deadline: n
  * webcontainer seat rides node:vm. */
 export const inproclanespecs: readonly InprocLaneSpec[] = Object.freeze([
   // the ram family: the memory ladder recipes
-  { modality: "ram-tmpfs", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ram-mmap", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ram-overlayfs", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ram-loopram", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ram-gitram", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ram-zram", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ram-zswap", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ram-swapfile", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "ramtmpfs", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "rammmap", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "ramoverlayfs", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "ramloopram", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "ramgitram", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "ramzram", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "ramzswap", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "ramswapfile", kind: "live", runtime: "pure-ts", present: () => true },
   // the delivery family: the wire frame builders
-  { modality: "delivery-cdn", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "delivery-wss", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "delivery-webtransport", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "delivery-grpc", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "delivery-capnproto", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "deliverycdn", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "deliverywss", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "deliverywebtransport", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "deliverygrpc", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "deliverycapnproto", kind: "live", runtime: "pure-ts", present: () => true },
   // the storage wire family: the handshake speakers and the signer
-  { modality: "storage-libsql", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "storage-mysql", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "storage-postgres", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "storage-s3", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "storagelibsql", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "storagemysql", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "storagepostgres", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "storages3", kind: "live", runtime: "pure-ts", present: () => true },
   // the browser family: the server-side webcontainer seat (never the visitor's)
   {
-    modality: "browser-webcontainer",
+    modality: "browserwebcontainer",
     kind: "live",
     runtime: "node:vm",
     present: () => typeof vm.runInNewContext === "function",
   },
   // the local family: the explicit consent gate
-  { modality: "local-optin", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "localoptin", kind: "live", runtime: "pure-ts", present: () => true },
   // the wiring wave seats: the serverless runner, the git objects vfs,
   // the sqlite vault and the dns and doh resolvers (every one live —
   // the seats execute in-process, deterministic and seeded)
   {
-    modality: "runner-serverless",
+    modality: "runnerserverless",
     kind: "live",
     runtime: "node:vm",
     present: () => typeof vm.runInNewContext === "function",
   },
-  { modality: "fs-gitobjects", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "storage-sqlite", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "network-dns", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "network-doh", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "fsgitobjects", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "storagesqlite", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "networkdns", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "networkdoh", kind: "live", runtime: "pure-ts", present: () => true },
 ]);
 
 /** the in-process executor table: every lane of the group b contract,
@@ -4849,30 +4849,30 @@ export const inproclanespecs: readonly InprocLaneSpec[] = Object.freeze([
  * of the wiring wave; the dispatcher refuses to boot over a lane it
  * cannot wire. */
 export const edgelaneexecutorsinproc: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
-  "ram-tmpfs": ramtmpfslaneinproc,
-  "ram-mmap": rammmaplane,
-  "ram-overlayfs": ramoverlayfslane,
-  "ram-loopram": ramloopramlane,
-  "ram-gitram": ramgitramlane,
-  "ram-zram": ramzramlaneinproc,
-  "ram-zswap": ramzswaplane,
-  "ram-swapfile": ramswapfilelaneinproc,
-  "delivery-cdn": deliverycdnlane,
-  "delivery-wss": deliverywsslane,
-  "delivery-webtransport": deliverywebtransportlane,
-  "delivery-grpc": deliverygrpclane,
-  "delivery-capnproto": deliverycapnprotolane,
-  "storage-libsql": storagelibsqllaneinproc,
-  "storage-mysql": storagemysqllaneinproc,
-  "storage-postgres": storagepostgreslane,
-  "storage-s3": storages3laneinproc,
-  "browser-webcontainer": browserwebcontainerlane,
-  "local-optin": localoptinlane,
-  "runner-serverless": runnerserverlesslane,
-  "fs-gitobjects": fsgitobjectslane,
-  "storage-sqlite": storagesqlitelane,
-  "network-dns": networkdnslaneinproc,
-  "network-doh": networkdohlaneinproc,
+  "ramtmpfs": ramtmpfslaneinproc,
+  "rammmap": rammmaplane,
+  "ramoverlayfs": ramoverlayfslane,
+  "ramloopram": ramloopramlane,
+  "ramgitram": ramgitramlane,
+  "ramzram": ramzramlaneinproc,
+  "ramzswap": ramzswaplane,
+  "ramswapfile": ramswapfilelaneinproc,
+  "deliverycdn": deliverycdnlane,
+  "deliverywss": deliverywsslane,
+  "deliverywebtransport": deliverywebtransportlane,
+  "deliverygrpc": deliverygrpclane,
+  "deliverycapnproto": deliverycapnprotolane,
+  "storagelibsql": storagelibsqllaneinproc,
+  "storagemysql": storagemysqllaneinproc,
+  "storagepostgres": storagepostgreslane,
+  "storages3": storages3laneinproc,
+  "browserwebcontainer": browserwebcontainerlane,
+  "localoptin": localoptinlane,
+  "runnerserverless": runnerserverlesslane,
+  "fsgitobjects": fsgitobjectslane,
+  "storagesqlite": storagesqlitelane,
+  "networkdns": networkdnslaneinproc,
+  "networkdoh": networkdohlaneinproc,
 });
 
 /** the wired lane ids in spec order — the pinned contract the parallel
@@ -5258,7 +5258,7 @@ async function virtualfulllane(code: string, _inputs: unknown, deadline: number)
   ].join("\n");
   guarddeadline(startedat, deadline);
   const artifact = {
-    modality: "virtual-full",
+    modality: "virtualfull",
     verdict: "composed",
     manifest,
     machine: {
@@ -5320,7 +5320,7 @@ async function virtualvgpulane(code: string, _inputs: unknown, deadline: number)
   ].join("\n");
   guarddeadline(startedat, deadline);
   const artifact = {
-    modality: "virtual-vgpu",
+    modality: "virtualvgpu",
     verdict: "composed",
     manifest,
     device: { id: gpuspec.id, name: gpuspec.name, vrammib: gpuspec.vrammib, mig: gpuspec.mig },
@@ -5360,7 +5360,7 @@ async function virtualscreenlane(code: string, _inputs: unknown, deadline: numbe
   ].join("\n");
   guarddeadline(startedat, deadline);
   const artifact = {
-    modality: "virtual-screen",
+    modality: "virtualscreen",
     verdict: "composed",
     manifest,
     display: {
@@ -5404,7 +5404,7 @@ async function virtualdriverslane(code: string, inputs: unknown, deadline: numbe
   ].join("\n");
   guarddeadline(startedat, deadline);
   const artifact = {
-    modality: "virtual-drivers",
+    modality: "virtualdrivers",
     verdict: "composed",
     manifest,
     drivers: { virtualcpu: versions.kernel, virtualgpu: gpuspec.driver, virtualmemory: versions.engine },
@@ -5451,7 +5451,7 @@ async function virtualkvmlane(code: string, _inputs: unknown, deadline: number):
   ].join("\n");
   guarddeadline(startedat, deadline);
   const artifact = {
-    modality: "virtual-kvm",
+    modality: "virtualkvm",
     verdict: "composed-plan",
     manifest,
     qemu: { version: domain.qemuversioncheck(), argv },
@@ -5498,7 +5498,7 @@ async function microvmgpulesslane(code: string, _inputs: unknown, deadline: numb
   ].join("\n");
   guarddeadline(startedat, deadline);
   const artifact = {
-    modality: "microvm-gpuless",
+    modality: "microvmgpuless",
     verdict: "composed",
     manifest,
     memory: { memtotalkb: memory.memtotalkb, swapgb: memory.swapgb, free: memory.free },
@@ -5533,7 +5533,7 @@ async function gpuvirgllane(code: string, inputs: unknown, deadline: number): Pr
   ].join("\n");
   guarddeadline(startedat, deadline);
   const artifact = {
-    modality: "gpu-virgl",
+    modality: "gpuvirgl",
     verdict: "composed",
     manifest,
     device: {
@@ -5577,44 +5577,44 @@ export interface VirtualLaneSpec {
  * surface answers absent for that lane, never a fake presence). */
 export const virtuallanespecs: readonly VirtualLaneSpec[] = Object.freeze([
   {
-    modality: "virtual-full",
+    modality: "virtualfull",
     kind: "live",
     runtime: "sandbox-hardware",
     present: () => typeof getcpu === "function" && typeof bootSequence === "function",
   },
   {
-    modality: "virtual-vgpu",
+    modality: "virtualvgpu",
     kind: "live",
     runtime: "sandbox-mig",
     present: () => typeof nvidiaSmiTable === "function" && migprofiles.length > 0,
   },
   {
-    modality: "virtual-screen",
+    modality: "virtualscreen",
     kind: "live",
     runtime: "sandbox-display",
     present: () => typeof getgpu === "function" && typeof freeh === "function",
   },
   {
-    modality: "virtual-drivers",
+    modality: "virtualdrivers",
     kind: "live",
     runtime: "sandbox-drivers",
     present: () => typeof bootSequence === "function" && typeof getgpu === "function",
   },
   {
-    modality: "virtual-kvm",
+    modality: "virtualkvm",
     kind: "live",
     runtime: "qemu-planner",
     present: () =>
       true /* the kvm lane composes from the lazy domain: the probe answers the engine ships the composition seat */,
   },
   {
-    modality: "microvm-gpuless",
+    modality: "microvmgpuless",
     kind: "live",
     runtime: "mesa-llvmpipe",
     present: () => typeof glxinfoSummary === "function" && typeof mesaenv === "function",
   },
   {
-    modality: "gpu-virgl",
+    modality: "gpuvirgl",
     kind: "live",
     runtime: "virgl-virtio-gpu",
     present: () => typeof getgpu === "function" && typeof solvetopology === "function",
@@ -5624,13 +5624,13 @@ export const virtuallanespecs: readonly VirtualLaneSpec[] = Object.freeze([
 /** the lane executor table of the virtual lanes, keyed by modality id:
  * the dispatch plane refuses to boot over a lane it cannot wire. */
 export const edgelaneexecutorsvirtual: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
-  "virtual-full": virtualfulllane,
-  "virtual-vgpu": virtualvgpulane,
-  "virtual-screen": virtualscreenlane,
-  "virtual-drivers": virtualdriverslane,
-  "virtual-kvm": virtualkvmlane,
-  "microvm-gpuless": microvmgpulesslane,
-  "gpu-virgl": gpuvirgllane,
+  "virtualfull": virtualfulllane,
+  "virtualvgpu": virtualvgpulane,
+  "virtualscreen": virtualscreenlane,
+  "virtualdrivers": virtualdriverslane,
+  "virtualkvm": virtualkvmlane,
+  "microvmgpuless": microvmgpulesslane,
+  "gpuvirgl": gpuvirgllane,
 });
 
 /** the seven virtual lane ids derived from the spec table (the order is
@@ -5778,22 +5778,22 @@ function heavyweightprobelane(modality: string, runtime: string, present: () => 
  * server, the two mobile seats, the pod session and the two confidential
  * compute surfaces — every one kind host (the probe law). */
 export const heavyweightlanespecs: readonly HeavyweightLaneSpec[] = Object.freeze([
-  { modality: "browser-server", kind: "host", runtime: "chromium-headless", present: probebrowserserver },
-  { modality: "mobile-capacitor", kind: "host", runtime: "capacitor", present: probecapacitor },
-  { modality: "mobile-postmarketos", kind: "host", runtime: "qemu-system-x86_64", present: probepostmarketos },
-  { modality: "pod-session", kind: "host", runtime: "kubectl", present: probekubectl },
-  { modality: "confidential-sevsnp", kind: "host", runtime: "sev-snp", present: probesevsnp },
-  { modality: "confidential-tdx", kind: "host", runtime: "tdx", present: probetdx },
+  { modality: "browserserver", kind: "host", runtime: "chromium-headless", present: probebrowserserver },
+  { modality: "mobilecapacitor", kind: "host", runtime: "capacitor", present: probecapacitor },
+  { modality: "mobilepostmarketos", kind: "host", runtime: "qemu-system-x86_64", present: probepostmarketos },
+  { modality: "podsession", kind: "host", runtime: "kubectl", present: probekubectl },
+  { modality: "confidentialsevsnp", kind: "host", runtime: "sev-snp", present: probesevsnp },
+  { modality: "confidentialtdx", kind: "host", runtime: "tdx", present: probetdx },
 ]);
 
 /** the executor table of the heavyweight lanes, keyed by modality id. */
 export const edgelaneexecutorsheavy: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
-  "browser-server": heavyweightprobelane("browser-server", "chromium-headless", probebrowserserver),
-  "mobile-capacitor": heavyweightprobelane("mobile-capacitor", "capacitor", probecapacitor),
-  "mobile-postmarketos": heavyweightprobelane("mobile-postmarketos", "qemu-system-x86_64", probepostmarketos),
-  "pod-session": heavyweightprobelane("pod-session", "kubectl", probekubectl),
-  "confidential-sevsnp": heavyweightprobelane("confidential-sevsnp", "sev-snp", probesevsnp),
-  "confidential-tdx": heavyweightprobelane("confidential-tdx", "tdx", probetdx),
+  "browserserver": heavyweightprobelane("browserserver", "chromium-headless", probebrowserserver),
+  "mobilecapacitor": heavyweightprobelane("mobilecapacitor", "capacitor", probecapacitor),
+  "mobilepostmarketos": heavyweightprobelane("mobilepostmarketos", "qemu-system-x86_64", probepostmarketos),
+  "podsession": heavyweightprobelane("podsession", "kubectl", probekubectl),
+  "confidentialsevsnp": heavyweightprobelane("confidentialsevsnp", "sev-snp", probesevsnp),
+  "confidentialtdx": heavyweightprobelane("confidentialtdx", "tdx", probetdx),
 });
 
 /** the heavyweight lane ids in spec order. */

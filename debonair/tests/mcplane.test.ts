@@ -41,9 +41,9 @@ import {
   mcpRenderTrack,
   toolcatalog,
 } from "../mcplane.ts";
-import { validatePatternProject } from "../patternenums.ts";
-import type { GenreProfile } from "../patternminer.ts";
-import type { RenderTrackRow } from "../renderworker.ts";
+import { validatePatternProject } from "../pattern.ts";
+import type { GenreProfile } from "../pattern.ts";
+import type { RenderTrackRow } from "../render.ts";
 import { encodeWav } from "../wavwriter.ts";
 
 /** The gateway origin every call rides (a public https host — the law). */

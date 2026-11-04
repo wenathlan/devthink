@@ -25,7 +25,7 @@
       "hono/cors": ["../devthink/node_modules/hono/dist/types/middleware/cors/index.d.ts"],
       "@hono/node-server": ["../devthink/node_modules/@hono/node-server/dist/index.d.mts"],
       "@hono/node-server/serve-static": ["../devthink/node_modules/@hono/node-server/dist/serve-static.d.mts"],
-      "@/*": ["./Sol/*", "./*"],
+      "@/*": ["./sol/*", "./*"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       /* the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from the devthink side: the moved

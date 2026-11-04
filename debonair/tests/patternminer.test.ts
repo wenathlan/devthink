@@ -16,7 +16,7 @@ import assert from "node:assert/strict";
 import Database from "better-sqlite3";
 import { describe, it } from "vitest";
 import type { AudioReport } from "../analyze.ts";
-import { GENRES } from "../genrematrix.ts";
+import { GENRES } from "../genre.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
 
 // the seat answers before the module load: this suite rides its own
@@ -47,7 +47,7 @@ import {
   serializeProfile,
   similarityRank,
   validateGenreProfile,
-} from "../patternminer.ts";
+} from "../pattern.ts";
 
 // ---------------------------------------------------------------------------
 // the fixtures (the honest construction: the fields the miner reads)

@@ -28,7 +28,7 @@ import {
   queueRender,
 } from "../generateclient.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
-import { serializePattern, validatePatternProject } from "../patternenums.ts";
+import { serializePattern, validatePatternProject } from "../pattern.ts";
 import { singPattern } from "../vocalsynth.ts";
 
 // ---------------------------------------------------------------------------

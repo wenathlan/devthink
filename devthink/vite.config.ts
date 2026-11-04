@@ -1,4 +1,4 @@
-/** Style: DevThink Orbital Signal Room — a build straight at the application root (the owner doctrine: no dist, no public, no assets folder — the hashed bundles emit flat beside the entry) with a repository-scoped base path and preview-safe host handling. The config lives at the app root: the vite root is the app root, the theme component folders stay under Sol/ and the alias "@" maps to Sol. */
+/** Style: DevThink Orbital Signal Room — a build straight at the application root (the owner doctrine: no dist, no public, no assets folder — the hashed bundles emit flat beside the entry) with a repository-scoped base path and preview-safe host handling. The config lives at the app root: the vite root is the app root, the theme component folders stay under sol/ and the alias "@" maps to Sol. */
 
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -293,7 +293,7 @@ export default defineConfig({
     alias: {
       // the transcode engine bridge of the ownership law (retires when the
       // published cadria envelope carries the transcodeengine export entry)
-      "@wenathlan/cadria/transcodeengine": path.resolve(import.meta.dirname, "../cadria/transcodeengine.ts"),
+      "@wenathlan/cadria/transcode": path.resolve(import.meta.dirname, "../cadria/transcode.ts"),
       /** the exact-subpath bridge to the sibling saddle engine: the chat
        * sandbox lane imports the browser-pure engine through the published
        * library specifier ("@wenathlan/saddle/sandbox"), but the installed
@@ -376,8 +376,8 @@ export default defineConfig({
       "@wenathlan/getry/versionregistry": path.resolve(import.meta.dirname, "../getry/versionregistry.ts"),
       "@wenathlan/getry/intelligence": path.resolve(import.meta.dirname, "../getry/intelligence.ts"),
       "@wenathlan/getry/json": path.resolve(import.meta.dirname, "../getry/json.ts"),
-      "@wenathlan/getry/jsonpolicy": path.resolve(import.meta.dirname, "../getry/jsonpolicy.ts"),
-      "@wenathlan/getry/jsonschema": path.resolve(import.meta.dirname, "../getry/jsonschema.ts"),
+      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "../getry/json.ts"),
+      "@wenathlan/getry/json": path.resolve(import.meta.dirname, "../getry/json.ts"),
       "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "../getry/gatewayconfig.ts"),
       "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "../getry/gatewayviewconfig.ts"),
       "@wenathlan/getry/gatewayprobe": path.resolve(import.meta.dirname, "../getry/gatewayprobe.ts"),
@@ -449,7 +449,7 @@ export default defineConfig({
       "@wenathlan/getry/server": path.resolve(import.meta.dirname, "../getry/server.ts"),
       "@wenathlan/getry/auth": path.resolve(import.meta.dirname, "../getry/auth.ts"),
       "@wenathlan/getry/cli": path.resolve(import.meta.dirname, "../getry/cli.ts"),
-      "@wenathlan/getry/providercli": path.resolve(import.meta.dirname, "../getry/providercli.ts"),
+      "@wenathlan/getry/providers": path.resolve(import.meta.dirname, "../getry/providers.ts"),
       /** the devthink self bridges of the ownership wave
        * (wave/ownership.getry), mirrored from vitest.config.ts: the moved
        * gateway graph leans on the os-owned seams it grew beside (config,

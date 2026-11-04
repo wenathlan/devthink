@@ -39,7 +39,7 @@ the pure logics at the app root, each one a typed accessor over the content lane
 
 ## sol subapps
 
-the theme surface, one folder per page, mounted by the theme anchor Sol/Sol.tsx on wouter:
+the theme surface, one folder per page, mounted by the theme anchor sol/Sol.tsx on wouter:
 
 - home: the landing. left-aligned hero, the three steps (engine, static, honest), a four-card directory preview reading the one roster table (devthink, saddle, vault, cadria), the support strip and the reserved ad slot at the end of the content
 - apps: the directory. one card per deploy unit with the honest role and the deep link through familyurl, closed by the in-feed ad slot

@@ -1,8 +1,9 @@
 // # spectrum — the spectral frame law of the katexis engine (root layer):
 // the shared window, the magnitude math and the chroma projection every
 // analysis domain rides. the transform itself is the engine's one kernel —
-// audiofft's radix-2 cooley–tukey with its precomputed bit-reversal and
-// twiddle tables — imported here, never re-implemented: before the
+// the radix-2 cooley–tukey with its precomputed bit-reversal and
+// twiddle tables the audio.ts fft section carries —
+// imported here, never re-implemented: before the
 // unification this file carried a second fft kernel of its own, and two
 // kernels in one engine is the duplication the house law forbids. the
 // fingerprint builder, the analyzer, hpss and any future b-wave module
@@ -17,7 +18,7 @@ export const FFT_SIZE = 4096;
 export const HOP_SIZE = 1024;
 /** The Hann window table, precomputed once for FFT_SIZE (the symmetric
  * law — denominator size − 1 — every analysis caller's numbers ride; the
- * periodic windows audiofft serves belong to its own stft lane, a
+ * periodic windows the audio.ts fft section serves belong to its own stft lane, a
  * different contract, never silently swapped). */
 export const HANN_TABLE: readonly number[] = buildHann(FFT_SIZE);
 
@@ -40,12 +41,12 @@ export interface SpectrumFrame {
 
 /**
  * Computes the in-place radix-2 FFT of a complex signal (re, im arrays of
- * the same power-of-two length) — the audiofft kernel under the frame-law
- * signature the analysis callers ride. Plain number[] lanes keep their
+ * the same power-of-two length) — the fft kernel of the audio.ts fft section
+ * under the frame-law signature the analysis callers ride. Plain number[] lanes keep their
  * float64 precision through a scratch pair (the kernel's float64 seat);
  * typed-array lanes ride the kernel directly, precision following the
  * buffer. the kernel's own domain is the power-of-two range [256, 16384]
- * (audiofft's law — the house frames all ride 4096); a size off the domain
+ * (the fft kernel's own law — the house frames all ride 4096); a size off the domain
  * or a mismatched pair throws the kernel's FftError, honestly, never
  * silent garbage.
  *

@@ -4,7 +4,7 @@
 // prisma/schema.prisma and the seed module provides the first-run rows; the site api
 // serves the same tables to the Sol pages over HTTPS (see catalog.ts).
 
-import { openStorageLane } from "@wenathlan/vault/storagelane";
+import { openStorageLane } from "@wenathlan/vault/storage";
 import { labelManifest, LABEL_REVISION } from "./labels.ts";
 import {
   seedAnchors,
@@ -25,7 +25,7 @@ export const db = lane.db;
 export const { execute, queryAll, queryOne } = lane;
 
 /** the parameter types the helpers bind (re-exported seat of the lane). */
-export type { SqlParam } from "@wenathlan/vault/storagelane";
+export type { SqlParam } from "@wenathlan/vault/storage";
 
 
 const SCHEMA = `

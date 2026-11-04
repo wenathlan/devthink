@@ -4,7 +4,7 @@ The network, DNS and edge engine of the devthink family: authoritative zones, re
 
 ## Overview
 
-Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`, version 2.0.155). The engine lives as library-grade TypeScript modules at the app root; the web surface lives in `Sol/` and renders every row from the data layer (seed rows offline, the site API over HTTPS when configured). The published package exports `./mimetypes` for family consumers (the vault storage engine among them).
+Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`, version 2.0.155). The engine lives as library-grade TypeScript modules at the app root; the web surface lives in `sol/` and renders every row from the data layer (seed rows offline, the site API over HTTPS when configured). The published package exports `./mimetypes` for family consumers (the vault storage engine among them).
 
 ## Module inventory
 
@@ -23,8 +23,7 @@ Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`
 - `reveal.ts` — scroll reveal: an IntersectionObserver at 12% visibility adds the `in` class once per element.
 - `onboardingstate.ts` — the first-run state: the only writer of the intro/onboarding seen flags; DB is the source of truth over `GET`/`POST /api/v1/onboarding` (base `VITE_ONBOARDING_URL`, host-validated — localhost, loopback, private and reserved ranges refused), with the localStorage key `argan.onboarding.seen` as a pure cache mirror and a stable per-browser visitor id.
 - `sandboxmodality.ts` — the workload lane declaration: 4 mirrored lanes (`dnssec-validate`, `zonefile-parse-diff`, `catalog-registry-serve`, `label-store-seed`) with role, demand and boot budget; resolves the deploy's `ARGAN_SANDBOX_LANE` seat (local, join, or a pinned modality id).
-- `family.ts` — the family table: the 8 sibling slugs (cadria, debonair, forge, foundry, getry, saddle, stealthhead, vault) with the spec §12 accent and dot-ink of each; consumed by the shell rail, the landing footer and the family test.
-- `familyurl.ts` — the cross-app URL contract: `familyurl(slug)` answers the relative `"../" + slug + "/"` path so every family link survives any mount point.
+- `family.ts` — the family keyword file (the fold law): the family table — the 8 sibling slugs (cadria, debonair, forge, foundry, getry, saddle, stealthhead, vault) with the spec §12 accent and dot-ink of each, consumed by the shell rail, the landing footer and the family test — plus the retired `familyurl.ts` arm riding as the familyurl lane: the cross-app URL contract where `familyurl(slug)` answers the relative `"../" + slug + "/"` path so every family link survives any mount point.
 
 ## Data layer
 
@@ -36,24 +35,24 @@ Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`
 
 ## Sol surface
 
-- `Sol/Sol.tsx` — the theme anchor and route tree: `/intro`, `/onboarding`, `/`, `/zones`, `/dnssec`, `/gateway`, `/settings`, `/404` plus the catch-all.
-- `Sol/home/` — the landing: a dig-style local resolver over the served apex snapshot (query types A, AAAA, MX, NS, TXT, SOA, CAA; wildcard honored; honest ok/nodata/nxdomain verdicts), hero badges, the zones and library ledgers, publication steps, the apex CTA and the family footer; the entry gate decides between intro, onboarding and the landing.
-- `Sol/zones/` — the zones console: the zone ledger with the apex featured and the newest serial pulsing, the 5-step publication rail, the apex record set ledger and the verbatim zone file one summary away.
-- `Sol/dnssec/` — the DNSSEC console: the KSK/ZSK key ledger, the algorithm badges, the sign-pipeline output as a terminal and the 4-step rollover ladder.
-- `Sol/gateway/` — the gateway console: the transport table (8 transports — classic 53, DoT 853, DoH 443, DoH JSON, DoQ, DoH3, DNSCrypt, ODoH), the 3-step DoH-first rail and the staging Corefile terminal.
-- `Sol/settings/` — the settings console: three numbered sections (appearance, clean URLs, network) with the theme switch, the reduce-motion switch, resolver and locale selects and a live clean-URL demo.
-- `Sol/intro/`, `Sol/onboarding/` — the first-run flow: a 1.6s splash with the drawn mark and three Windows 11-style first-run frames; both mark their stage through `onboardingstate.ts`.
-- `Sol/shell/` — the app frame: full-bleed standalone law, the page rail, the family foot with one accent dot per sibling, the theme flip and the `ArganMark` icon.
-- `Sol/notfound/` — the single 404 (RCODE 3, NXDOMAIN).
-- `Sol/toast/` — the toast surface: a role=status live region with success, error and info tones.
-- `Sol/wingets/` — the shared widgets: `HomeEntrygate` (the first-run gate) and `ShellEmptystate` (glyph, one line of truth, one action, pending shimmer).
+- `sol/Sol.tsx` — the theme anchor and route tree: `/intro`, `/onboarding`, `/`, `/zones`, `/dnssec`, `/gateway`, `/settings`, `/404` plus the catch-all.
+- `sol/home/` — the landing: a dig-style local resolver over the served apex snapshot (query types A, AAAA, MX, NS, TXT, SOA, CAA; wildcard honored; honest ok/nodata/nxdomain verdicts), hero badges, the zones and library ledgers, publication steps, the apex CTA and the family footer; the entry gate decides between intro, onboarding and the landing.
+- `sol/zones/` — the zones console: the zone ledger with the apex featured and the newest serial pulsing, the 5-step publication rail, the apex record set ledger and the verbatim zone file one summary away.
+- `sol/dnssec/` — the DNSSEC console: the KSK/ZSK key ledger, the algorithm badges, the sign-pipeline output as a terminal and the 4-step rollover ladder.
+- `sol/gateway/` — the gateway console: the transport table (8 transports — classic 53, DoT 853, DoH 443, DoH JSON, DoQ, DoH3, DNSCrypt, ODoH), the 3-step DoH-first rail and the staging Corefile terminal.
+- `sol/settings/` — the settings console: three numbered sections (appearance, clean URLs, network) with the theme switch, the reduce-motion switch, resolver and locale selects and a live clean-URL demo.
+- `sol/intro/`, `sol/onboarding/` — the first-run flow: a 1.6s splash with the drawn mark and three Windows 11-style first-run frames; both mark their stage through `onboardingstate.ts`.
+- `sol/shell/` — the app frame: full-bleed standalone law, the page rail, the family foot with one accent dot per sibling, the theme flip and the `ArganMark` icon.
+- `sol/notfound/` — the single 404 (RCODE 3, NXDOMAIN).
+- `sol/toast/` — the toast surface: a role=status live region with success, error and info tones.
+- `sol/wingets/` — the shared widgets: `HomeEntrygate` (the first-run gate) and `ShellEmptystate` (glyph, one line of truth, one action, pending shimmer).
 
 ## Family integration
 
 - `@wenathlan/vault/storagelane` — the SQLite lane `db.ts` opens (`openStorageLane`, `SqlParam`).
 - `@wenathlan/vault/labelstore` — the label store factory `labels.ts` rides; the vite and vitest configs bridge the specifier to the monorepo source.
 - `saddle/workloadlaw.ts` — the `FAMILYLANES` engine of record that `sandboxmodality.ts` mirrors (rows mirrored, not imported; the vitest battery pins the mirror against the engine source through the library bridge).
-- `family.ts` + `familyurl.ts` — the 8 sibling deploy units in rail order, linked out through relative URLs.
+- `family.ts` — the 8 sibling deploy units in rail order, linked out through relative URLs (the familyurl lane of the fold answers the links).
 - Runtime dependencies include `@wenathlan/cadria`, `@wenathlan/debonair`, `@wenathlan/devthink`, `@wenathlan/getry`, `@wenathlan/saddle` and `@wenathlan/vault` (all `~2.0.155` family envelopes).
 
 ## Testing

@@ -28,7 +28,7 @@
     "targets": "all",
     "category": "DeveloperTool",
     "shortDescription": "The DevThink AI development workbench as a desktop shell",
-    "longDescription": "DevThink desktop shell wrapping the built workbench bundle: the same Sol/ surface the extension, the mobile apps and the container ship, framed as a native desktop application.",
+    "longDescription": "DevThink desktop shell wrapping the built workbench bundle: the same sol/ surface the extension, the mobile apps and the container ship, framed as a native desktop application.",
     "publisher": "wenathlan",
     "icon": [
       "icons/32x32.png",

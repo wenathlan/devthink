@@ -2,8 +2,8 @@
  * App.tsx — the root anchor of the getry Sol theme (layer 1 of the anchor
  * architecture) and the only TSX outside the theme: one static react mount,
  * one error boundary and the wouter router provider around the theme anchor.
- * The root imports only the theme anchor (Sol/Sol.tsx — the file named after
- * the theme folder, beside Sol/sol.css) and the theme stylesheet; the whole
+ * The root imports only the theme anchor (sol/Sol.tsx — the file named after
+ * the theme folder, beside sol/sol.css) and the theme stylesheet; the whole
  * route tree lives behind the anchor. data reaches the pages from the root
  * gateway logics (typed DB accessors over HTTPS with the in-memory seed
  * fallback); the visitor machine only loads the interface.
@@ -14,12 +14,12 @@ import { Component, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
 import { label, seedLabels } from "./labels";
-import Sol from "./Sol/Sol";
-import { Toaster } from "./Sol/toast/Toast.tsx";
+import Sol from "./sol/Sol";
+import { Toaster } from "./sol/toast/Toast.tsx";
 import { applyTheme } from "./theme";
 import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/inter";
-import "./Sol/sol.css";
+import "./sol/sol.css";
 
 // the copy law rides the boot: the seed refreshes the label store rows
 // (translated rows protected) before the first paint answers

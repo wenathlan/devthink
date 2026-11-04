@@ -31,7 +31,7 @@ import { DESKTOP_APPS, FAMILY_APP_IDS, isFamilyApp } from "../appregistry.ts";
 import { osAppLabels } from "../catalog.ts";
 import { familyurl } from "../gateway.ts";
 import { FAMILY_SLUGS, windowapp, windowcatalog } from "../window.ts";
-import { APP_ICONS } from "../Sol/wingets/ShellAppicons.tsx";
+import { APP_ICONS } from "../sol/wingets/ShellAppicons.tsx";
 
 const router = readFileSync(join(import.meta.dirname, "..", "Sol", "Sol.tsx"), "utf8");
 const workspace = readFileSync(join(import.meta.dirname, "..", "Sol", "wingets", "PanelWorkspace.tsx"), "utf8");
@@ -218,21 +218,21 @@ describe("the native anchors answer both doors with one design (the shared surfa
    * body and the page (the page mounts the same body unembedded beside
    * the shell). */
   const ANCHOR_PAGES: Record<string, string> = {
-    files: "Sol/files/files.tsx",
-    calculator: "Sol/calculator/calculator.tsx",
-    docs: "Sol/docs/docs.tsx",
-    image: "Sol/image/image.tsx",
-    games: "Sol/games/games.tsx",
-    console: "Sol/console/console.tsx",
-    usage: "Sol/usage/usage.tsx",
-    settings: "Sol/settings/settings.tsx",
-    projects: "Sol/projects/projects.tsx",
-    audio: "Sol/audio/audio.tsx",
-    video: "Sol/video/video.tsx",
-    providers: "Sol/providers/providers.tsx",
-    gateway: "Sol/gateway/gateway.tsx",
+    files: "sol/files/files.tsx",
+    calculator: "sol/calculator/calculator.tsx",
+    docs: "sol/docs/docs.tsx",
+    image: "sol/image/image.tsx",
+    games: "sol/games/games.tsx",
+    console: "sol/console/console.tsx",
+    usage: "sol/usage/usage.tsx",
+    settings: "sol/settings/settings.tsx",
+    projects: "sol/projects/projects.tsx",
+    audio: "sol/audio/audio.tsx",
+    video: "sol/video/video.tsx",
+    providers: "sol/providers/providers.tsx",
+    gateway: "sol/gateway/gateway.tsx",
   };
-  const CHATPAGE = "Sol/chat/chat.tsx";
+  const CHATPAGE = "sol/chat/chat.tsx";
 
   it("every windowed anchor answers a page file with the embedded contract", () => {
     for (const [id, page] of Object.entries(ANCHOR_PAGES)) {
@@ -347,12 +347,25 @@ describe("the sync (both faces stay one design)", () => {
       t.skip("the sibling app trees live in the repository checkout, not the standalone container context");
       return;
     }
-    // the PR18 law from the index: the viewport meta pins the zoom at the
-    // 100 percent baseline on every app of the family
+    // the designheal law from the index (the owner order, the Faun meta
+    // verbatim): the viewport meta pins the zoom at the 100 percent
+    // baseline on every app of the family
     for (const app of ["devthink", ...FAMILY_SLUGS]) {
       const index = readFileSync(join(reporoot, app, "index.html"), "utf8");
-      expect(index, `${app} pins the zoom zero viewport`).toContain("minimum-scale=1.0, maximum-scale=1.0");
+      expect(index, `${app} pins the zoom zero viewport`).toContain(
+        'content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"',
+      );
       expect(index).toContain("user-scalable=no");
+    }
+    // the faun lock answers every html entry of the os, never only the
+    // index: the design reference page and the extension popup serve their
+    // own doors and pin the same zoom zero viewport
+    for (const entry of ["design.html", "extensionpopup.html"]) {
+      const html = readFileSync(join(reporoot, "devthink", entry), "utf8");
+      expect(html, `devthink/${entry} pins the zoom zero viewport`).toContain(
+        "minimum-scale=1.0, maximum-scale=1.0",
+      );
+      expect(html).toContain("user-scalable=no");
     }
   });
 });

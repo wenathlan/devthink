@@ -1,6 +1,6 @@
 /**
  * desktopstate.ts — the pure state layer of the desktop icon field
- * (Sol/panel/desktop.tsx): persistence, clamping, snapping, sorting and the
+ * (sol/panel/desktop.tsx): persistence, clamping, snapping, sorting and the
  * Windows left-aligned column grid as free functions with no react — the
  * desktop component owns the pointer work, this module owns the math and
  * the storage. Positions are percentages of the desktop area (the center of
@@ -420,7 +420,7 @@ export function navbarDragVerdict(stance: NavbarStance, dx: number, dy: number):
 /* ------------------------------------------------------------------ */
 /* the desktop lock — the lock state of the desktop surface. The win11 */
 /* chain: boot → desktop, and the lock rides ON the desktop (the lock  */
-/* overlay of Sol/wingets/PanelDesktoplock.tsx) instead of gating the  */
+/* overlay of sol/wingets/PanelDesktoplock.tsx) instead of gating the  */
 /* entry: no screen ever blocks the desktop. The state persists on the */
 /* session (a reload of a locked tab stays locked, a fresh tab does    */
 /* not inherit it) and the dt-desktop-lock event re-faces the shell    */

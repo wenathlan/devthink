@@ -1109,7 +1109,7 @@ if (serverDirectEntry || serverBunEntry) {
  * namespaces, the version identity and the bypass aggregates) and the
  * opencode server plugin entries (providerServer/googleAuth/
  * antigravityAuth) — moved verbatim to the getry owner
- * (getry/providercli.ts, the "@wenathlan/getry/providercli" face: one
+ * (getry/providercli.ts, the "@wenathlan/getry/providers" face: one
  * owner, the family consumes). the sanctioned transforms moved with the
  * family: the getAccountManager() fallback twin was deleted (every call
  * site answers getDefaultAccountManager from the accounts owner), the
@@ -1123,8 +1123,8 @@ if (serverDirectEntry || serverBunEntry) {
  * compat consumer (the devthink router's provider family, the published
  * ./server entry) keeps resolving without an edit.
  */
-export * from "@wenathlan/getry/providercli";
-export type { ModelCatalogEntry, OpenCodeJsonLocation } from "@wenathlan/getry/providercli";
+export * from "@wenathlan/getry/providers";
+export type { ModelCatalogEntry, OpenCodeJsonLocation } from "@wenathlan/getry/providers";
 /* the CLI namespace equivalent of the barrel row the provider console
    carried (export * as CLI): the console family answers from the getry cli
    owner now, and the star above already carries its own CLI row — this

@@ -90,7 +90,7 @@
 
 import type { BlobPointer, BlobResult, BlobStore } from "./blobstore.ts";
 import { blobidvalid } from "./blobstore.ts";
-import { matchGenre } from "./genrematrix.ts";
+import { matchGenre } from "./genre.ts";
 import type {
   IngestDbHandle,
   IngestDocument,
@@ -102,9 +102,9 @@ import type {
   IngestStemsManifest,
 } from "./ingest.ts";
 import { INGEST_STEMS_SCHEMA_VERSION, parseWav, reconOf, runIngestJob } from "./ingest.ts";
-import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern, validatePatternProject } from "./patternenums.ts";
-import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./patternminer.ts";
-import { classifyDocument, mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./patternminer.ts";
+import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern, validatePatternProject } from "./pattern.ts";
+import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./pattern.ts";
+import { classifyDocument, mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./pattern.ts";
 import type { ReconDocument } from "./reconpayload.ts";
 import { serializeRecon, validateRecon } from "./reconpayload.ts";
 import type { ReconChecksums, ReconRunErrorCode } from "./reconworker.ts";
@@ -118,7 +118,7 @@ import {
   type RenderTrackSeat,
   type RenderTrackVisibility,
   startRenderJob as runRenderWalk,
-} from "./renderworker.ts";
+} from "./render.ts";
 import {
   type GatewayHandlerName,
   matchpath,

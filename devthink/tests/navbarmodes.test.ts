@@ -369,8 +369,8 @@ describe("the settings card (the mode and the edge controls)", () => {
 describe("the labels catalog carries the navbar grammar (no hardcoded strings, no competitor names)", () => {
   it("answers every mode and edge label through the ui store", () => {
     expect(uicopy("navbar.mode.aria")).toBe("Navbar mode");
-    expect(uicopy("navbar.mode.floating")).toBe("Floating");
-    expect(uicopy("navbar.mode.docked")).toBe("Docked");
+    expect(uicopy("navbar.mode.floating")).toBe("flutuante");
+    expect(uicopy("navbar.mode.docked")).toBe("fixado");
     expect(uicopy("navbar.edge.aria")).toBe("Dock edge");
     expect(uicopy("navbar.edge.bottom")).toBe("Bottom edge");
     expect(uicopy("navbar.edge.left")).toBe("Left edge");

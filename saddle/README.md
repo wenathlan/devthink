@@ -30,7 +30,7 @@ domain modules land beside the saddle domains:
 | `scheduler.ts`, `compute.ts`, `performance.ts` | job queues, batch compute and benchmark planning |
 | `media.ts`, `render.ts`, `quantum.ts`, `tiers.ts` | media pipeline, GPU registry, quantum simulation, tier policy |
 | `security.ts`, `alternatives.ts` | hardening gates and the alternative-stack catalog |
-| `index.html`, `App.tsx`, `Sol/` | the single SPA shell and the Sol theme (one tsx app with one stylesheet per theme) |
+| `index.html`, `App.tsx`, `sol/` | the single SPA shell and the Sol theme (one tsx app with one stylesheet per theme) |
 | `server.ts`, `sandbox.ts` | the zero-dependency self-hosted API of the 2.0.156 grand-merge envelope (`node server.ts`; the api answers its version at `/api/v1/health`) and the browser-pure engine port |
 | `vercel.json`, `netlify.toml` | the platform deploy adapters beside the surface they publish (the caddy ghost stays out of the tree) |
 | `specs/*` package exports | processors, gpus, cores, boards and the qemu/mttg/passage/docker envelopes |
@@ -282,7 +282,7 @@ intelligence.ts, modes.ts
                the saddle domain routing barrel files (bot, browser, delivery, integrations, profiles)
 server.ts, webserver.ts, api.ts, cli.ts
                the self-hosted api surfaces, the web console and the stable cli
-Sol/           the Sol theme — the platform's web surface (one tsx app, one stylesheet per theme)
+sol/           the Sol theme — the platform's web surface (one tsx app, one stylesheet per theme)
 specs          processors.json, gpus.json, cores.json, boards.json and the qemu/mttg/passage/docker/vm envelopes
 tests/         deterministic engine and extension coverage
 docs/          architecture, API, security, release and registry notes

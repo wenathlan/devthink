@@ -26,7 +26,7 @@ import {
   split,
   syncconflict,
   trim,
-} from "../timelineedit.ts";
+} from "../timeline.ts";
 
 function item(id: number, start: number, duration: number, sourceIn = 0, speed = 1): EditItem {
   return { id, start, duration, sourceIn, speed };

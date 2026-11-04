@@ -5,7 +5,7 @@
 
 import { planTake } from "./arranger.ts";
 import { formatClock } from "./dawview.ts";
-import { GENRES } from "./genrematrix.ts";
+import { GENRES } from "./genre.ts";
 import type {
   FeatureCard,
   GenreConfig,

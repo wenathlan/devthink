@@ -21,7 +21,7 @@ import {
   createaccountledger,
   quotaerror,
   usagefromrows,
-} from '../sandboxquota.ts';
+} from '../sandbox.ts';
 
 describe('the sandboxquota contract', () => {
   it('reserve and release keep the counters in balance', () => {

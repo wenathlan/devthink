@@ -17,12 +17,12 @@
 !.github/workflows
 .manus-logs
 node_modules
-Sol/node_modules
+sol/node_modules
 mobile
 dist
 distpackage
 build
-Sol/dist
+sol/dist
 release
 staging
 *.tgz

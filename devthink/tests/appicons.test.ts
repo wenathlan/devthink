@@ -22,9 +22,9 @@ import { renderToString } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { DESKTOP_APPS } from "../appregistry.ts";
 import type { ShellFolderId } from "../fileexplorer.ts";
-import { DriveIcon, PlatformMark, ShellFolderIcon } from "../Sol/wingets/FilesFoldericons.tsx";
-import { SolLogoMark } from "../Sol/wingets/PanelLogo.tsx";
-import { APP_ICONS } from "../Sol/wingets/ShellAppicons.tsx";
+import { DriveIcon, PlatformMark, ShellFolderIcon } from "../sol/wingets/FilesFoldericons.tsx";
+import { SolLogoMark } from "../sol/wingets/PanelLogo.tsx";
+import { APP_ICONS } from "../sol/wingets/ShellAppicons.tsx";
 
 /** the emoji pictograph class — one emoji glyph anywhere in a rendered icon
  * or a catalog label fails the zero-emoji law */

@@ -350,7 +350,7 @@ describe("the workflow contract", () => {
        .github/workflows — the saddle folder carries no workflow set of
        its own any more;
      - the interface (the Sol theme): every route is a page folder
-       (Sol/<page>/<Page>.tsx) with the shared components loose in the
+       (sol/<page>/<Page>.tsx) with the shared components loose in the
        page folders, and the static e2ugh console pages are fully
        absorbed into the tsx pages;
      - the native wrappers (android/ios) are generated on the runners
@@ -396,7 +396,7 @@ describe("the workflow contract", () => {
     for (const required of [
       "App.tsx",
       "index.html",
-      "Sol/sol.css",
+      "sol/sol.css",
       "api.ts",
       "localauth.ts",
       "sandbox.ts",
@@ -429,15 +429,15 @@ describe("the workflow contract", () => {
     assert.match(
       appsource,
       /import ['"]\.\/Sol\/sol\.css['"]/,
-      "App.tsx must import the Sol/sol.css stylesheet left behind by the retired main.tsx",
+      "App.tsx must import the sol/sol.css stylesheet left behind by the retired main.tsx",
     );
     /* every route is a page folder inside the Sol theme, fronted by its own
      * anchor file (the anchor architecture: folder/<folder>.tsx carries the
      * page mount and re-exports the loose components beside it; the theme
-     * anchor Sol/Sol.tsx owns the route table and App.tsx consumes only it). */
+     * anchor sol/Sol.tsx owns the route table and App.tsx consumes only it). */
     assert.ok(
       existsSync(join(reporoot, "Sol", "Sol.tsx")),
-      "Sol/Sol.tsx — the theme anchor owns the route table (the anchor architecture)",
+      "sol/Sol.tsx — the theme anchor owns the route table (the anchor architecture)",
     );
     for (const page of [
       "home",
@@ -455,7 +455,7 @@ describe("the workflow contract", () => {
     ]) {
       assert.ok(
         existsSync(join(reporoot, "Sol", page, `${page}.tsx`)),
-        `Sol/${page}/${page}.tsx — one page anchor per route folder (the anchor architecture)`,
+        `sol/${page}/${page}.tsx — one page anchor per route folder (the anchor architecture)`,
       );
     }
     /* the conversion configs live at the app root (the build-at-the-root

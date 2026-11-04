@@ -4,7 +4,7 @@
  * the real Windows clone). The charged defect this battery now pins
  * closed: the desktop surface wore a scattered constellation and a brand
  * hero instead of the system face — the LEFT-ALIGNED COLUMN GRID (the
- * real desktop law, Sol/desktopstate.ts gridSpots) is the default layout
+ * real desktop law, sol/desktopstate.ts gridSpots) is the default layout
  * of the icon field, the "sort by" actions reflow the SAME grid over a
  * sorted catalog and "reset layout" returns the catalog-order grid. The
  * battery walks the four layers of the row: the composition law (the

@@ -22,7 +22,7 @@
  *   chat/completions completions messages responses embeddings keys models
  *
  * the engine config loader (gateway-configloader.ts) probes the standard
- * Sol/config.mjs|ts|js locations of the working directory for the definition
+ * sol/config.mjs|ts|js locations of the working directory for the definition
  * a deployment loads; this catalog is the shipped example the gateway
  * console page renders — copy it to the location your serve reads, or
  * use the cli to scaffold a fresh config (gateway init) and edit the values

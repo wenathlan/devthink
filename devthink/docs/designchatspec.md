@@ -91,7 +91,7 @@ the canonical spec of the chat redesign operation, merged from the four referenc
 . zcode reference. /tmp/allan-refs/repo/docs/temp/zcode
 . synara reference. /tmp/allan-refs/repo/docs/temp/synara
 . t3code reference. /tmp/allan-refs/repo/docs/temp/t3code
-. the landed chat surface. devthink/Sol/chat
+. the landed chat surface. devthink/sol/chat
 . the rules mapping. devthink/docs/rulesofical.md
 . the owner rule file. upload/ofical2.txt
 

@@ -266,7 +266,7 @@ export function containerarchcoverage(): containerarchreport {
   return {
     count: CONTAINERARCHES.length,
     carries: CONTAINERARCHES.filter((row) => row.baseimagecarries).length,
-    drivers: Object.freeze(["container-max", "container-lite"]),
+    drivers: Object.freeze(["containermax", "containerlite"]),
     rows: Object.freeze(
       CONTAINERARCHES.map((row) => ({
         id: row.id,

@@ -17,11 +17,11 @@ function read(path: string): string {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
-const CSS = read("../Sol/sol.css");
+const CSS = read("../sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../Sol/shell/Shell.tsx");
+const MARK = read("../sol/shell/Shell.tsx");
 const TOML = read("../devthink.toml");
-const SOL = read("../Sol/Sol.tsx");
+const SOL = read("../sol/Sol.tsx");
 const FAVICON = read("../favicon.svg");
 const ICON = read("../icon.svg");
 const MANIFEST = read("../manifest.webmanifest");
@@ -122,10 +122,10 @@ describe("design contract", () => {
   });
 
   it("carries the flow contract sources (the entry gate behind the home anchor, the shared state module)", () => {
-    const GATE = read("../Sol/wingets/HomeEntrygate.tsx");
+    const GATE = read("../sol/wingets/HomeEntrygate.tsx");
     const STATE = read("../onboardingstate.ts");
-    const HOME = read("../Sol/home/home.tsx");
-    const ONBOARDING = read("../Sol/onboarding/onboarding.tsx");
+    const HOME = read("../sol/home/home.tsx");
+    const ONBOARDING = read("../sol/onboarding/onboarding.tsx");
     expect(GATE).toMatch(/navigate\("\/intro"/);
     expect(GATE).toMatch(/navigate\("\/onboarding"/);
     expect(HOME).toMatch(/EntryGate/);

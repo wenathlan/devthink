@@ -9,13 +9,13 @@
 // higher tempo dim) so the image-mapping wave can trust every dim by index.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
+import type { DescriptorStats } from "../audio.ts";
 import {
   audioSeed,
   audioSeedFromStats,
   DESCRIPTOR_DIMS,
-  type DescriptorStats,
-  descriptorSummary,
   DIM_ORDER,
+  descriptorSummary,
   fuseDescriptor,
   normalize01,
   zcurve,

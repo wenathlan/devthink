@@ -36,7 +36,7 @@ import {
   renderReconPlan,
   startReconJob,
 } from "../reconworker.ts";
-import { renderjobseat } from "../renderjobs.ts";
+import { renderjobseat } from "../render.ts";
 import {
   EXPORT_LABELS,
   exportTake,

@@ -4,10 +4,10 @@
 // module owns the one vocabulary both declarations read. the vocabulary
 // mirrors the saddle modalityregistry's own ids — "local" (the deploy's
 // own process, the honest default every walk declares) beside the three
-// saddle modalities the heavy jobs may ride: "runner-node" (the node
-// packages modality, live, process isolation), "container-docker" (the
+// saddle modalities the heavy jobs may ride: "runnernode" (the node
+// packages modality, live, process isolation), "containerdocker" (the
 // hardened container modality, live, namespace isolation) and
-// "microvm-firecracker" (the firecracker microvm, host, vm isolation).
+// "microvmfirecracker" (the firecracker microvm, host, vm isolation).
 // the ids are mirrored, not imported: the published 2.1.6 saddle
 // envelope does not carry the registry yet, and the family law bars a
 // relative path across apps — the day the registry publishes, the ids
@@ -30,16 +30,16 @@
 /** The sandbox modality one worker walk runs under — "local" (the
  * deploy's own process) or one of the saddle modality ids the deploy
  * resolves the lane onto. */
-export type WorkerModality = "local" | "runner-node" | "container-docker" | "microvm-firecracker";
+export type WorkerModality = "local" | "runnernode" | "containerdocker" | "microvmfirecracker";
 
 /** The modality vocabulary the declarations read (the saddle
  * modalityregistry ids mirrored — the string contract the deploy and the
  * platform speak). */
 export const WORKER_MODALITIES: readonly WorkerModality[] = [
   "local",
-  "runner-node",
-  "container-docker",
-  "microvm-firecracker",
+  "runnernode",
+  "containerdocker",
+  "microvmfirecracker",
 ];
 
 /** The environment name the deploy pins the modality through (the opt-in

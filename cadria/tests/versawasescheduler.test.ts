@@ -13,7 +13,7 @@ import {
   queueCensus,
   slotLoads,
   startJob,
-} from "../versawasescheduler.ts";
+} from "../versawase.ts";
 import type { RenderJob } from "../versawase.ts";
 
 const job = (id: string, frames: number, status: RenderJob["status"] = "queued"): RenderJob => ({

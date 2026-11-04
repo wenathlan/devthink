@@ -107,7 +107,7 @@ describe("the 11-architecture container standard", () => {
     const coverage = containerarchcoverage();
     assert.equal(coverage.count, 11);
     assert.equal(coverage.carries, 8);
-    assert.deepEqual(coverage.drivers, ["container-max", "container-lite"]);
+    assert.deepEqual(coverage.drivers, ["containermax", "containerlite"]);
     assert.equal(coverage.rows.length, 11);
     const carried = coverage.rows.filter((row) => row.baseimagecarries);
     assert.equal(carried.length, 8);

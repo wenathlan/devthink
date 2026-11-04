@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/cadria",
-  "version": "2.0.156",
+  "version": "2.0.157",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
@@ -47,33 +47,20 @@
     "docs",
     "tests",
     "versawase.ts",
-    "versawase3d.ts",
-    "versawaseanimate.ts",
-    "versawaserender.ts",
-    "versawasescheduler.ts",
-    "versawaseslices.ts",
-    "versawasegen.ts",
-    "versawaseshaders.ts",
-    "versawasecomposition.ts",
     "shadercomp.ts",
     "visualize.ts",
-    "timelineedit.ts",
-    "timelineview.ts",
+    "timeline.ts",
     "timeticks.ts",
-    "videodecode.ts",
+    "video.ts",
     "mediaprobe.ts",
-    "transcodeplan.ts",
-    "transcodeengine.ts",
+    "transcode.ts",
     "pixel.ts",
     "masks.ts",
     "blendmodes.ts",
     "colorconvert.ts",
     "easecurves.ts",
     "synth.ts",
-    "imagerender.ts",
-    "imageproject.ts",
-    "imagestyles.ts",
-    "imageexport.ts",
+    "image.ts",
     "labels.ts"
   ],
   "exports": {
@@ -83,44 +70,44 @@
       "default": "./versawase.ts"
     },
     "./versawase3d": {
-      "types": "./versawase3d.ts",
-      "import": "./versawase3d.ts",
-      "default": "./versawase3d.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawaseanimate": {
-      "types": "./versawaseanimate.ts",
-      "import": "./versawaseanimate.ts",
-      "default": "./versawaseanimate.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawaserender": {
-      "types": "./versawaserender.ts",
-      "import": "./versawaserender.ts",
-      "default": "./versawaserender.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawasescheduler": {
-      "types": "./versawasescheduler.ts",
-      "import": "./versawasescheduler.ts",
-      "default": "./versawasescheduler.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawaseslices": {
-      "types": "./versawaseslices.ts",
-      "import": "./versawaseslices.ts",
-      "default": "./versawaseslices.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawasegen": {
-      "types": "./versawasegen.ts",
-      "import": "./versawasegen.ts",
-      "default": "./versawasegen.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawaseshaders": {
-      "types": "./versawaseshaders.ts",
-      "import": "./versawaseshaders.ts",
-      "default": "./versawaseshaders.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./versawasecomposition": {
-      "types": "./versawasecomposition.ts",
-      "import": "./versawasecomposition.ts",
-      "default": "./versawasecomposition.ts"
+      "types": "./versawase.ts",
+      "import": "./versawase.ts",
+      "default": "./versawase.ts"
     },
     "./shadercomp": {
       "types": "./shadercomp.ts",
@@ -133,14 +120,14 @@
       "default": "./visualize.ts"
     },
     "./timelineedit": {
-      "types": "./timelineedit.ts",
-      "import": "./timelineedit.ts",
-      "default": "./timelineedit.ts"
+      "types": "./timeline.ts",
+      "import": "./timeline.ts",
+      "default": "./timeline.ts"
     },
     "./timelineview": {
-      "types": "./timelineview.ts",
-      "import": "./timelineview.ts",
-      "default": "./timelineview.ts"
+      "types": "./timeline.ts",
+      "import": "./timeline.ts",
+      "default": "./timeline.ts"
     },
     "./timeticks": {
       "types": "./timeticks.ts",
@@ -148,9 +135,9 @@
       "default": "./timeticks.ts"
     },
     "./videodecode": {
-      "types": "./videodecode.ts",
-      "import": "./videodecode.ts",
-      "default": "./videodecode.ts"
+      "types": "./video.ts",
+      "import": "./video.ts",
+      "default": "./video.ts"
     },
     "./mediaprobe": {
       "types": "./mediaprobe.ts",
@@ -158,9 +145,9 @@
       "default": "./mediaprobe.ts"
     },
     "./transcodeplan": {
-      "types": "./transcodeplan.ts",
-      "import": "./transcodeplan.ts",
-      "default": "./transcodeplan.ts"
+      "types": "./transcode.ts",
+      "import": "./transcode.ts",
+      "default": "./transcode.ts"
     },
     "./pixel": {
       "types": "./pixel.ts",
@@ -193,24 +180,24 @@
       "default": "./synth.ts"
     },
     "./imagerender": {
-      "types": "./imagerender.ts",
-      "import": "./imagerender.ts",
-      "default": "./imagerender.ts"
+      "types": "./image.ts",
+      "import": "./image.ts",
+      "default": "./image.ts"
     },
     "./imageproject": {
-      "types": "./imageproject.ts",
-      "import": "./imageproject.ts",
-      "default": "./imageproject.ts"
+      "types": "./image.ts",
+      "import": "./image.ts",
+      "default": "./image.ts"
     },
     "./imagestyles": {
-      "types": "./imagestyles.ts",
-      "import": "./imagestyles.ts",
-      "default": "./imagestyles.ts"
+      "types": "./image.ts",
+      "import": "./image.ts",
+      "default": "./image.ts"
     },
     "./imageexport": {
-      "types": "./imageexport.ts",
-      "import": "./imageexport.ts",
-      "default": "./imageexport.ts"
+      "types": "./image.ts",
+      "import": "./image.ts",
+      "default": "./image.ts"
     },
     "./labels": {
       "types": "./labels.ts",
@@ -218,9 +205,29 @@
       "default": "./labels.ts"
     },
     "./transcodeengine": {
-      "types": "./transcodeengine.ts",
-      "import": "./transcodeengine.ts",
-      "default": "./transcodeengine.ts"
+      "types": "./transcode.ts",
+      "import": "./transcode.ts",
+      "default": "./transcode.ts"
+    },
+    "./image": {
+      "types": "./image.ts",
+      "import": "./image.ts",
+      "default": "./image.ts"
+    },
+    "./timeline": {
+      "types": "./timeline.ts",
+      "import": "./timeline.ts",
+      "default": "./timeline.ts"
+    },
+    "./transcode": {
+      "types": "./transcode.ts",
+      "import": "./transcode.ts",
+      "default": "./transcode.ts"
+    },
+    "./video": {
+      "types": "./video.ts",
+      "import": "./video.ts",
+      "default": "./video.ts"
     }
   },
   "homepage": "https://github.com/wenathlan/devthink/tree/main/cadria",

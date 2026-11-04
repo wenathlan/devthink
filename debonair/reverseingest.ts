@@ -55,7 +55,7 @@ import {
   serializePattern,
   validatePatternProject,
   validatePatternTimeline,
-} from "./patternenums.ts";
+} from "./pattern.ts";
 import {
   RENDER_BIT_DEPTH,
   RENDER_SAMPLE_RATE,
@@ -64,7 +64,7 @@ import {
   type RenderStorePut,
   renderPatternMix,
   schedulePattern,
-} from "./renderworker.ts";
+} from "./render.ts";
 import type { NoteEvent } from "./take.ts";
 import { encodeWav } from "./wavwriter.ts";
 

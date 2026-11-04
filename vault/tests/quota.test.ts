@@ -73,7 +73,7 @@ describe("the limit parse", () => {
 describe("the quota rows", () => {
   it("lays the floor at creation and lets the owner redefine or remove it", async () => {
     const { closeStorage, storage } = await import("../drizzle.ts");
-    const { createProject } = await import("../objectsledger.ts");
+    const { createProject } = await import("../objects.ts");
     const { ensureQuota, readQuota, setQuota } = await import("../quota.ts");
     try {
       const answer = createProject("quota-project");

@@ -1,7 +1,7 @@
 /**
  * appregistry.ts — the shared desktop app catalog (root logic layer). One
- * source of truth consumed by the desktop icon grid (Sol/panel/desktop.tsx),
- * the Start menu (Sol/shell/ShellChrome.tsx), the launcher surfaces of
+ * source of truth consumed by the desktop icon grid (sol/panel/desktop.tsx),
+ * the Start menu (sol/shell/ShellChrome.tsx), the launcher surfaces of
  * explore and onboarding and the tile kit: the native surfaces of the
  * platform plus the marketing family apps, each with its own identity color
  * carried by the icon tile (the chrome itself stays neutral graphite).

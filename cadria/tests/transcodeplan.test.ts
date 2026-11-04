@@ -12,7 +12,7 @@ import {
   TranscodeError,
   type TranscodeRung,
   validateRung,
-} from "../transcodeplan.ts";
+} from "../transcode.ts";
 
 /** The probed source the plan tests build from (the mediaprobe.ts shape). */
 const SOURCE: SourceMedia = {

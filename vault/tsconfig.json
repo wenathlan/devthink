@@ -13,6 +13,6 @@
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"]
   },
-  "include": ["*.ts", "*.tsx", "Sol/**/*.ts", "Sol/**/*.tsx"],
+  "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

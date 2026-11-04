@@ -6,7 +6,7 @@
  * duplicated inside the os envelope — the engine lives in @wenathlan/cadria.
  */
 
-export { default } from "@wenathlan/cadria/transcodeengine";
+export { default } from "@wenathlan/cadria/transcode";
 export {
   buildffmpegcommand,
   createoptimal,
@@ -28,7 +28,7 @@ export {
   transcodemodecatalog,
   transcodemodecount,
   validatestagecatalog,
-} from "@wenathlan/cadria/transcodeengine";
+} from "@wenathlan/cadria/transcode";
 export type {
   encodertune,
   encodervendor,
@@ -45,4 +45,4 @@ export type {
   transcodemode,
   transcodemodeentry,
   nvencpreset,
-} from "@wenathlan/cadria/transcodeengine";
+} from "@wenathlan/cadria/transcode";

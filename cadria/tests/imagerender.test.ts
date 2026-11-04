@@ -30,7 +30,7 @@ import {
   WIPE_BAND,
   WIPE_SHIFT,
   Z_SPECULAR,
-} from "../imagerender.ts";
+} from "../image.ts";
 import type { Block, Palette } from "../synth.ts";
 
 /** a layout block shorthand. */

@@ -1,8 +1,8 @@
 /**
  * App — the global anchor (layer 1 of the anchor architecture) and the only
  * TSX outside the theme. The root manages the themes as single files: it
- * imports only the theme anchor (Sol/Sol.tsx — the file named after the theme
- * folder, beside Sol/sol.css) and the theme stylesheet, wraps the anchor in
+ * imports only the theme anchor (sol/Sol.tsx — the file named after the theme
+ * folder, beside sol/sol.css) and the theme stylesheet, wraps the anchor in
  * the global concerns it owns (the error boundary, the theme and tooltip
  * providers, the toaster and the wouter router provider) and renders it. The
  * whole route tree lives behind the theme anchor; no page or component of the
@@ -10,11 +10,11 @@
  */
 import { createRoot } from 'react-dom/client';
 import { Router as WouterRouter } from 'wouter';
-import Sol from './Sol/Sol';
-import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from './Sol/shell/Shell.tsx';
+import Sol from './sol/Sol';
+import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from './sol/shell/Shell.tsx';
 import '@fontsource-variable/geist-mono';
 import '@fontsource-variable/inter';
-import './Sol/sol.css';
+import './sol/sol.css';
 import { seedlabels } from './labels';
 
 // the copy law rides the boot: the seed refreshes the label store rows
@@ -22,7 +22,7 @@ import { seedlabels } from './labels';
 if (typeof window !== 'undefined') void seedlabels().catch(() => {});
 
 // NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in Sol/sol.css
+// - First choose a default theme according to your design style (dark or light bg), than change color palette in sol/sol.css
 //   to keep consistent foreground/background color across components
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 

@@ -1,15 +1,9 @@
 <!doctype html>
-<!-- web entry of the theme: the only html file in Sol. the entry is the
-     SOURCE (./App.tsx) — vite rewrites it into the hashed bundle at build
-     time (the hashed emit is gitignored; the pages workflow rebuilds) — and
-     the icon/manifest faces are the canonical unhashed files beside it, so
-     dev, preview and every deploy mount resolve without committed artifacts.
-     after a local `pnpm build`, restore this source face with `pnpm
-     restore:entry` — the deploy hosts rewrite it inside their own build. -->
+<!-- web entry of the theme: the only html file in sol -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
     <title>cadria — video, image and 3D studio of the DevThink OS</title>
     <meta name="description" content="cadria is the video, image and 3D studio of the DevThink OS: a multi-format player, a layer editor and a rack of creative anchors in one studio. Like After Effects × Photoshop × Figma × Blender." />
     <meta property="og:title" content="cadria" />

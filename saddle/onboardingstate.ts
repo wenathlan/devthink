@@ -33,7 +33,7 @@ export type OnboardingStage = 'intro' | 'onboarding';
 const CACHE_KEY = 'saddle.onboarding.seen';
 
 /** the localStorage key of the stable per-browser visitor id. */
-const VISITOR_KEY = 'saddle.visitor.id';
+const VISITOR_KEY = 'saddle.visitor.id'; // retired with the per-browser id (the @vault law at visitor())
 
 /** the configured platform base (HTTPS self-hosted gateway); empty answers cache-only. */
 const BASE =
@@ -136,7 +136,14 @@ export function mergeStage(state: VisitorOnboarding, stage: OnboardingStage): Vi
     : { ...state, introseen: true, onboardingseen: true };
 }
 
-/** Reads the localStorage cache; any corruption answers null (the cache is best effort). */
+/**
+ * Reads the offline cache; any corruption answers null (the cache is
+ * best effort).
+ *
+ * @vault binding point: the flags live in the platform database — the
+ *   vault-backed storage is the source of truth; this mirror answers
+ *   only the offline static build and never carries authority.
+ */
 function readCache(): VisitorOnboarding | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -149,7 +156,13 @@ function readCache(): VisitorOnboarding | null {
   }
 }
 
-/** Mirrors the flags into the localStorage cache (silently skipped when storage is sealed). */
+/**
+ * Mirrors the flags into the offline cache (silently skipped when storage
+ * is sealed).
+ *
+ * @vault binding point: the write mirrors the platform database rows —
+ *   the vault-backed storage owns the truth, this is the offline shadow.
+ */
 function writeCache(state: VisitorOnboarding): void {
   if (typeof window === 'undefined') return;
   try {
@@ -160,22 +173,25 @@ function writeCache(state: VisitorOnboarding): void {
 }
 
 /**
- * The stable per-browser visitor id (generated once, cached beside the
- * flags); storage unavailable answers the shared web key.
+ * The session-scoped visitor id (in-memory only, one per page session):
+ * the privacy law retired the stable per-browser id — a persistent
+ * cross-visit identifier is a fingerprinting surface the visitor law
+ * forbids, so nothing is written to or read from the visitor's storage.
+ * The gateway rows key by the session id while the page lives; the
+ * durable identity is the vault-backed session on the self-hosted node.
  *
- * @returns the visitor string the gateway rows are keyed by.
+ * @vault binding point: the onboarding gateway rows ride the edge
+ *   session; no per-browser identifier is persisted anymore (the
+ *   documented price: a fresh page session answers the intro once
+ *   more, the privacy law wins).
+ * @returns the session visitor string.
  */
+const sessionscope: string =
+  typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+    ? crypto.randomUUID()
+    : "web";
 function visitor(): string {
-  if (typeof window === 'undefined') return 'web';
-  try {
-    const existing = window.localStorage.getItem(VISITOR_KEY);
-    if (existing) return existing;
-    const fresh = crypto.randomUUID();
-    window.localStorage.setItem(VISITOR_KEY, fresh);
-    return fresh;
-  } catch {
-    return 'web';
-  }
+  return sessionscope;
 }
 
 /** Reads the flags off the platform database; unreachable or unconfigured answers null. */

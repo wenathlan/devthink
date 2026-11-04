@@ -8,7 +8,7 @@
 // advance) only ever land on boundaries the algebra itself knows about.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { EditIssue, EditItem, EditTrack } from "../timelineedit.ts";
+import type { EditIssue, EditItem, EditTrack } from "../timeline.ts";
 import {
   advanceplayhead,
   clipgeometry,
@@ -26,7 +26,7 @@ import {
   ticktopx,
   visiblewindow,
   ZOOM_LEVELS,
-} from "../timelineview.ts";
+} from "../timeline.ts";
 import { frameduration, MAX_TICKS, TICKS_PER_SECOND, tickofframe } from "../timeticks.ts";
 
 const R24 = { num: 24, den: 1 };

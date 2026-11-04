@@ -380,8 +380,8 @@ const familybridges = {
   "@wenathlan/getry/versionregistry": join(root, "..", "getry", "versionregistry.ts"),
   "@wenathlan/getry/intelligence": join(root, "..", "getry", "intelligence.ts"),
   "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
-  "@wenathlan/getry/jsonpolicy": join(root, "..", "getry", "jsonpolicy.ts"),
-  "@wenathlan/getry/jsonschema": join(root, "..", "getry", "jsonschema.ts"),
+  "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
+  "@wenathlan/getry/json": join(root, "..", "getry", "json.ts"),
   "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gatewayconfig.ts"),
   "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gatewayviewconfig.ts"),
   "@wenathlan/getry/gatewayprobe": join(root, "..", "getry", "gatewayprobe.ts"),
@@ -406,7 +406,7 @@ const familybridges = {
   "@wenathlan/getry/server": join(root, "..", "getry", "server.ts"),
   "@wenathlan/getry/auth": join(root, "..", "getry", "auth.ts"),
   "@wenathlan/getry/cli": join(root, "..", "getry", "cli.ts"),
-  "@wenathlan/getry/providercli": join(root, "..", "getry", "providercli.ts"),
+  "@wenathlan/getry/providers": join(root, "..", "getry", "providers.ts"),
   /** the devthink self bridges of the ownership wave
    * (wave/ownership.getry), mirrored from the vite/vitest/tsconfig
    * resolutions: the moved gateway graph leans on the os-owned seams it
@@ -2115,9 +2115,9 @@ export type ConvertContext = {
 /** the widgets the pipeline converts today (the shell + the two proof
  * widgets — the map generalizes to every winget) */
 export const TERMINAL_WIDGETS: ReadonlyArray<{ source: string; output: string; exportName: string }> = [
-  { source: "Sol/wingets/ShellControlshell.tsx", output: "shellterminal.ts", exportName: "ControlShellTerminal" },
-  { source: "Sol/wingets/ShellChip.tsx", output: "chipterminal.ts", exportName: "ChipTerminal" },
-  { source: "Sol/wingets/ShellKbd.tsx", output: "kbdterminal.ts", exportName: "KbdTerminal" },
+  { source: "sol/wingets/ShellControlshell.tsx", output: "shellterminal.ts", exportName: "ControlShellTerminal" },
+  { source: "sol/wingets/ShellChip.tsx", output: "chipterminal.ts", exportName: "ChipTerminal" },
+  { source: "sol/wingets/ShellKbd.tsx", output: "kbdterminal.ts", exportName: "KbdTerminal" },
 ];
 
 function attrValue(element: JsxElement, name: string): JsxAttr | undefined {

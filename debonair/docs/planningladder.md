@@ -44,7 +44,7 @@
 - [ ] 0030 K3 pianoroll.ts: validateNotes (bounds, overlap, duplicate ids) with machine codes — pure, JSDoc, table first
 - [ ] 0031 K3 pianoroll.ts: PianoRollError (typed codes: bad-note, out-of-window, overlap, bad-grid) — pure, JSDoc, table first
 
-- [ ] 0032 K3 Sol/studio/timeline: seconds ruler with formatClock, no percent anywhere
+- [ ] 0032 K3 sol/studio/timeline: seconds ruler with formatClock, no percent anywhere
 - [ ] 0033 K3 timeline: pointer drag to move clip through timelinemodel.moveClip + snapClip
 - [ ] 0034 K3 timeline: edge handles trim through trimClip (min duration honored)
 - [ ] 0035 K3 timeline: split at playhead through splitClip (.a/.b naming kept)
@@ -52,7 +52,7 @@
 - [ ] 0037 K3 timeline: clip selection state and visual pinned to sol.css tokens
 - [ ] 0038 K3 timeline: edits re-run takeevents.scheduleTake through the honest path
 - [ ] 0039 K3 timeline: re-render replaces the take in takestore (same id, newest state)
-- [ ] 0040 K3 Sol/studio/pianoroll: accessible grid (buttons, aria-labels, focus ring)
+- [ ] 0040 K3 sol/studio/pianoroll: accessible grid (buttons, aria-labels, focus ring)
 - [ ] 0041 K3 pianoroll: add/remove/move/resize/quantize wired to the pianoroll engine
 - [ ] 0042 K3 pianoroll: role filter (drums/bass/keys/lead) mirrors RACK_LANES
 - [ ] 0043 K3 pianoroll: re-schedule and audible re-render after each edit (no fake ui)
@@ -84,9 +84,9 @@
 
 ## wave K5 — live visualization (v2.30)
 
-- [ ] 0066 K5 Sol/studio/spectrum: canvas scope fed by the real analyser tap (no decor)
+- [ ] 0066 K5 sol/studio/spectrum: canvas scope fed by the real analyser tap (no decor)
 - [ ] 0067 K5 spectrum: frequency ladder labels in mono tabular style
-- [ ] 0068 K5 Sol/studio/waveform: overview density render from the take schedule
+- [ ] 0068 K5 sol/studio/waveform: overview density render from the take schedule
 - [ ] 0069 K5 playerbar: mini level meter follows the same analyser source
 - [ ] 0070 K5 playhead clock matches formatClock and stays aria-live polite
 - [ ] 0071 K5 reduced-motion: scopes freeze to a static frame when the media query hits
@@ -786,46 +786,46 @@
 - [ ] 0747 KS sol.css: focus visible ring on every interactive element
 - [ ] 0748 KS sol.css: touch targets at least 44px
 - [ ] 0749 KS sol.css: sticky footer/taskbar behavior at short and tall viewports
-- [ ] 0750 KS Sol/Sol.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0751 KS Sol/Sol.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0752 KS Sol/generate/generate.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0753 KS Sol/generate/generate.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0754 KS Sol/settings/settings.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0755 KS Sol/settings/settings.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0756 KS Sol/studio/VuMeter.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0757 KS Sol/studio/VuMeter.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0758 KS Sol/studio/audioengine.ts: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0759 KS Sol/studio/audioengine.ts: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0760 KS Sol/studio/StageStepper.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0761 KS Sol/studio/StageStepper.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0762 KS Sol/studio/tuning.ts: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0763 KS Sol/studio/tuning.ts: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0764 KS Sol/studio/studio.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0765 KS Sol/studio/studio.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0766 KS Sol/studio/Fader.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0767 KS Sol/studio/Fader.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0768 KS Sol/toast/Toast.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0769 KS Sol/toast/Toast.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0770 KS Sol/onboarding/onboarding.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0771 KS Sol/onboarding/onboarding.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0772 KS Sol/shell/Playerbar.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0773 KS Sol/shell/Playerbar.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0774 KS Sol/shell/Shell.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0775 KS Sol/shell/Shell.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0776 KS Sol/intro/intro.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0777 KS Sol/intro/intro.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0778 KS Sol/home/songcard.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0779 KS Sol/home/songcard.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0780 KS Sol/home/home.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0781 KS Sol/home/home.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0782 KS Sol/home/entrygate.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0783 KS Sol/home/entrygate.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0784 KS Sol/home/coverart.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0785 KS Sol/home/coverart.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0786 KS Sol/library/library.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0787 KS Sol/library/library.tsx: reads data through catalog/takestore seams (no hardcoded rows)
-- [ ] 0788 KS Sol/notfound/notfound.tsx: anchor naming (folder = page = anchor file), aria labels present
-- [ ] 0789 KS Sol/notfound/notfound.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0750 KS sol/Sol.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0751 KS sol/Sol.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0752 KS sol/generate/generate.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0753 KS sol/generate/generate.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0754 KS sol/settings/settings.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0755 KS sol/settings/settings.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0756 KS sol/studio/VuMeter.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0757 KS sol/studio/VuMeter.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0758 KS sol/studio/audioengine.ts: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0759 KS sol/studio/audioengine.ts: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0760 KS sol/studio/StageStepper.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0761 KS sol/studio/StageStepper.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0762 KS sol/studio/tuning.ts: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0763 KS sol/studio/tuning.ts: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0764 KS sol/studio/studio.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0765 KS sol/studio/studio.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0766 KS sol/studio/Fader.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0767 KS sol/studio/Fader.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0768 KS sol/toast/Toast.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0769 KS sol/toast/Toast.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0770 KS sol/onboarding/onboarding.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0771 KS sol/onboarding/onboarding.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0772 KS sol/shell/Playerbar.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0773 KS sol/shell/Playerbar.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0774 KS sol/shell/Shell.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0775 KS sol/shell/Shell.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0776 KS sol/intro/intro.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0777 KS sol/intro/intro.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0778 KS sol/home/songcard.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0779 KS sol/home/songcard.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0780 KS sol/home/home.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0781 KS sol/home/home.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0782 KS sol/home/entrygate.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0783 KS sol/home/entrygate.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0784 KS sol/home/coverart.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0785 KS sol/home/coverart.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0786 KS sol/library/library.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0787 KS sol/library/library.tsx: reads data through catalog/takestore seams (no hardcoded rows)
+- [ ] 0788 KS sol/notfound/notfound.tsx: anchor naming (folder = page = anchor file), aria labels present
+- [ ] 0789 KS sol/notfound/notfound.tsx: reads data through catalog/takestore seams (no hardcoded rows)
 
 ## wave KT — test suite ladder (contract of every engine)
 
