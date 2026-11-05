@@ -11,33 +11,36 @@
  * sections and rails wingets in the reference order: hero-os,
  * creators-doo, workspace-subapps, the sawtooth ribbon with studio-flow,
  * spatial-bento, explorer-wall, sonic-deck, advisor-dark and the
- * editorial footer. The voice rides the Urbanist tiers of sol.css (the
- * Google Fonts stylesheet injected once here; the house Inter Variable
- * answers wherever the frozen CSP keeps the remote face from loading),
- * the glyphs ride the lucide set of the reference and the materials ride
+ * editorial footer. The voice rides the codified Inter + Geist stack of
+ * sol.css (the owner law: the modern one, NOT Segoe — the Urbanist landing
+ * voice of the first cut is retired with its @font-face), and the glyphs
+ * ride the Fluent UI System Icons sheet — the Microsoft family the Win11
+ * law pins, every fluent glyph aliasing the seat the lucide reference set
+ * wore (the lucide import itself is purged from the shell). The materials
+ * ride
  * the landing block of sol.css — the tactile keys with the one
  * sanctioned indigo hover of the reference, never a blue glow elsewhere
  * and never a solid blue key in the hero. The launch paths funnel to the
  * login face: the panel is the last page of the chain.
  */
 
-import type { LucideIcon } from "lucide-react";
+import type { FluentIcon as LucideIcon } from "@fluentui/react-icons";
 import {
-  ArrowUpRight,
-  Bell,
-  Compass,
-  Film,
-  Headphones,
-  Layers,
-  LogIn,
-  Maximize2,
-  MessageSquare,
-  Music,
-  Sparkles,
-  Star,
-  Tv,
-  Users,
-} from "lucide-react";
+  AlertRegular as Bell,
+  ArrowEnterRegular as LogIn,
+  ArrowUpRightRegular as ArrowUpRight,
+  ChatRegular as MessageSquare,
+  FullScreenMaximizeRegular as Maximize2,
+  HeadphonesRegular as Headphones,
+  MoviesAndTvRegular as Film,
+  MusicNote2Regular as Music,
+  NavigationRegular as Compass,
+  PeopleRegular as Users,
+  SparkleRegular as Sparkles,
+  StackRegular as Layers,
+  StarRegular as Star,
+  TvRegular as Tv,
+} from "@fluentui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { saaschrome, saasheadertabs, saasrailstops } from "../../saascontent.ts";
@@ -46,11 +49,10 @@ import { SaasAdvisor, SaasCadria, SaasDebonair, SaasExplorer, SaasFooter } from 
 import { SaasCreators, SaasHero, SaasStudioFlow, SaasWorkspace } from "./IntroSaassections.tsx";
 import { SolLogoMark, SolWordmark } from "./PanelLogo.tsx";
 
-/** The SaaS voice rides the house ladder: the self-hosted law retired the
- * remote Urbanist stylesheet (the sweep forbids the hardcoded origin), and
- * the intro now speaks with the local Inter Variable face sol.css ships
- * beside the entry — the same woff2 every other surface reads, zero
- * network font fetches, the face never blanks under a frozen CSP. */
+/** The SaaS voice rides the codified house stack: the Inter + Geist tokens
+ * of sol.css (the --font-body / --font-display pair the whole shell
+ * inherits — the same woff2 every other surface reads, zero network font
+ * fetches, the face never blanks under a frozen CSP). */
 const SAAS_FONT_CSS = "";
 
 let saasCssReady = false;
@@ -68,10 +70,10 @@ function ensureSaasCss(): void {
 }
 ensureSaasCss();
 
-/** The lucide glyph and the ink color each header tab wears — the exact
- * reference pair (the OS spark in indigo, the explorer compass in sky, the
- * creators team in purple, the cadria film in pink, the debonair note in
- * blue). */
+/** The fluent glyph and the ink color each header tab wears — the semantic
+ * parity of the reference pair (the OS spark in indigo, the explorer compass
+ * in sky, the creators team in purple, the cadria film in pink, the debonair
+ * note in blue). */
 const TABICON: Record<string, { icon: LucideIcon; color: string }> = {
   "hero-os": { icon: Sparkles, color: "text-indigo-600" },
   "workspace-subapps": { icon: Compass, color: "text-sky-600" },
@@ -80,7 +82,7 @@ const TABICON: Record<string, { icon: LucideIcon; color: string }> = {
   "sonic-deck": { icon: Music, color: "text-blue-600" },
 };
 
-/** The lucide glyph each left rail stop wears — the exact reference set. */
+/** The fluent glyph each left rail stop wears — the semantic parity set. */
 const RAILICON: Record<string, LucideIcon> = {
   "hero-os": Sparkles,
   "creators-doo": Compass,
@@ -221,9 +223,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                         aria-label={tab.label}
                         className={`group flex items-center rounded-xl px-3 py-2 transition-[background-color,border-color,box-shadow,color] ${current ? "icon-frame-3d-active text-slate-950" : "icon-frame-3d text-slate-800"}`}
                       >
-                        {entry ? (
-                          <entry.icon strokeWidth={1.7} className={`h-4 w-4 ${entry.color}`} aria-hidden="true" />
-                        ) : null}
+                        {entry ? <entry.icon className={`h-4 w-4 ${entry.color}`} aria-hidden="true" /> : null}
                         <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-[max-width,margin-left,opacity] group-hover:ml-2 group-hover:max-w-[90px] group-hover:opacity-100">
                           {tab.label}
                         </span>
@@ -240,7 +240,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 className="icon-frame-3d group flex items-center rounded-full p-2.5 text-slate-800"
                 aria-label={saaschrome.alerts}
               >
-                <Bell strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
+                <Bell className="h-4 w-4" aria-hidden="true" />
                 <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-[max-width,margin-left,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                   {saaschrome.alerts}
                 </span>
@@ -251,7 +251,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 className="icon-frame-3d group hidden items-center rounded-full p-2.5 text-slate-800 sm:flex"
                 aria-label={saaschrome.signin}
               >
-                <LogIn strokeWidth={1.7} className="h-4 w-4" aria-hidden="true" />
+                <LogIn className="h-4 w-4" aria-hidden="true" />
                 <span className="max-w-0 overflow-hidden text-xs font-medium-tier whitespace-nowrap opacity-0 transition-[max-width,margin-left,opacity] group-hover:ml-2 group-hover:max-w-[70px] group-hover:opacity-100">
                   {saaschrome.signin}
                 </span>
