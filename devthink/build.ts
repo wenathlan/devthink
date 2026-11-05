@@ -349,6 +349,14 @@ await build({
 });
 /** The server library entry of the grand merge consolidation: the gateway lineage library surface (the embedded gateway http transport, the request auth, the console cli and the library barrel) and the maene lineage barrel (the provider account console, the provider family namespaces and the opencode server plugin entry) interned in server.ts — one tree shakable entry answers the whole server surface contract, so the ./server subpath resolves from the flat package exactly like every other entry. The runtime dependencies the gateway persistence and the hono server pull (the prisma stack, libsql, hono, the node adapter, ink and react) ride the package.json dependencies of the published artifact — the entry marks them external so the bundled code stays the reviewed repository sources alone and the dependency tree the consumer installs answers the rest. The thinking ladder rides the ownership law instead (pr16): the 7-level ladder is owned by the getry engine and the os consumes it as a library, so the server builds resolve the @wenathlan/getry/thinking specifier to the sibling owner source through the getrybridge alias — the same bridge the vite, vitest and tsconfig resolutions carry — and the bundle inlines the owner's rungs at build time (the generated build tree is a build artifact, never a second source of truth; the lockfile stays untouched because no registry dependency is declared). */
 const familybridges = {
+  /** the saddle owner bridge of the modality ladder (wave/engineregroup1):
+   * the sandbox lane reads the ninety-modality catalog through the
+   * published specifier and the bundle inlines the owner's real source —
+   * the catalog values (the records, the census) are runtime data, so the
+   * alias answers the saddle root exactly like the getry siblings (never a
+   * copy inside devthink: the owner source answers at build time; the
+   * typecheck programs keep answering the saddlefaces typed face). */
+  "@wenathlan/saddle/modalityregistry": join(root, "..", "saddle", "modalityregistry.ts"),
   "@wenathlan/getry/thinking": join(root, "..", "getry", "thinking.ts"),
   /** the getry engine module bridges of the ownership wave
    * (wave/ownership.getry): the gateway pipeline sources (engine, llm,
