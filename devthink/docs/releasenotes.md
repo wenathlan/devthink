@@ -1,6 +1,6 @@
 # Devthink 2.0.161
 
-The 2.0.161 rung answers the red-suite heal and the variant retirement above the ladder the rungs climb: the debonair genre import debt that killed forty-seven suites across the audio and video families retires (the genrematrix arms answer the genre keyword seat, the duplicate clamp dies, the seed library answers its lazy seat so the render cycle never meets a TDZ), the stale variant files the fold waves left behind leave their eleven roots (engineowners, patternenums, timelineview, sessions, speccatalog, reverseingest, matchrules, signup, chatlabels, copy, seedcatalog, guard and the audit pair fold into their keyed seats), the copy law answers one ui store, the version literals stamp the synchronized 2.0.161 rung from the Dockerfiles through the cli, deno and webserver seats, the saddle container carries the heredoc entrypoint, the docker run recipes, the pids contract and the eleven-arch platform legs of the publish matrix, the honesty wrap names every lane refusal, the hyphen tolerance answers the family display names on the edge plane, the desktop and boot heroes carry the white mark alone (the logo-without-text law), the tabs clip and the mobile floor harden the window chrome, the transition-all naming closes the doctrine self-violation and the self-hosted Urbanist answers the landing voice beside the frozen CSP law.
+The 2.0.161 rung answers the locksync heal and the staged family context above the ladder the rungs climb: the nine stale bun locks and the npm and pnpm locks ride the frozen 4.18.1 union tree green (the previous rung bumped the eleven manifests but only ten lockfiles followed - the frozen gates of the CI, the verify and the pages legs died on the react-resizable-panels drift), the hundred devDep mirrors retire beside the saddlelock standard, the vault engine closure stamps the copy list the logicfold2 rename retired (the objectsledger seat folds into objects and the nineteen-file closure answers), the five flat village containers (cobaia, stealthhead, forge, foundry and getry) ride the staged family context with their sibling owners - the copy-law vault beside every site home, the saddle engine ownership under forge, foundry, getry and debonair, the devthink config bridges and the debonair route table under getry, and the cadria synth palette beside the debonair audio engine - and the eleven app dossiers ride the organized folder.
 
 ## Distribution channels
 
@@ -115,7 +115,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 159 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 160 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 
