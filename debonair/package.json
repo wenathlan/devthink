@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/debonair",
-  "version": "2.0.161",
+  "version": "2.0.162",
   "description": "debonair is the audio and DAW app of the wenathlan family: the isolated marketing app for the operating system, it houses the katexis engine at the folder root and imports gateway, AI and workflow from devthink and versawase from cadria. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
   "keywords": [
     "debonair",
