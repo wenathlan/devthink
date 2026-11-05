@@ -9,10 +9,10 @@
  * reads through the dock while the shell keeps its border and the hero
  * radius (the --chat-r-hero token, 24px — the one content surface
  * earning the largest radius of the chat ladder). unfocused with one line
- * of draft the well rests as the round pill — the 9999px radius, the
- * compact paddings, the control bar joining the pill row by display
- * contents — and the block returns on focus, on a multiline draft or
- * while a picker is open. the bar's lead cluster holds the tool toggles
+ * of draft the well rests on the caption rung — the --win-pill ladder
+ * base, the compact paddings, the control bar joining the resting row by
+ * display contents — and the block returns on focus, on a multiline draft
+ * or while a picker is open. the bar's lead cluster holds the tool toggles
  * (each patches the system prompt of the next turn — see chatstate for
  * the honest notes) plus the sandbox action chip (not a mode: it opens
  * the saddle engine lane); the tail cluster holds the model control, the
@@ -401,7 +401,7 @@ export function Composer({
   };
 
   /* the resting pill (the t3code grammar): unfocused with a single line
-   * of draft the well collapses to the round pill; focus, a multiline
+   * of draft the well collapses to the round well; focus, a multiline
    * draft or an open picker returns the 1.2rem block. */
   const resting = !focusWithin && !multiline && !modelOpen && !thinkOpen && !toolOpen;
   /* the measured ladder: the tail labels leave under 640px of well. */
@@ -425,11 +425,11 @@ export function Composer({
     position: "relative",
     isolation: "isolate",
     /* the hero law (chat wave 7-a): the block well earns the 24px hero
-     * radius via the stylesheet token — the resting pill keeps its own
-     * round morph on the family pill token (--win-pill, the caption
-     * grammar's own 999px); the focus-within elevation walk joins the
-     * morph on the same curve */
-    borderRadius: resting ? "var(--win-pill, 999px)" : "var(--chat-r-hero, 24px)",
+     * radius via the stylesheet token — the resting morph reads the
+     * caption rung (--win-pill, the ladder base 10px the designref law
+     * pins — the freehand pill literal retired); the focus-within
+     * elevation walk joins the morph on the same curve */
+    borderRadius: resting ? "var(--win-pill, 10px)" : "var(--chat-r-hero, 24px)",
     padding: resting ? "6px 12px" : "12px",
     ...(resting ? wellResting : null),
     transition:

@@ -110,10 +110,14 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
             <span>{hero.keyprimary}</span>
             <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
           </button>
+          {/* the secondary key keeps the reference's surface grammar while
+              its hover border answers the §12B accent pair (#0067c0, the
+              light rung of --color-win) — the default light-indigo border
+              the first cut wore is purged by the no-default-blue law */}
           <button
             type="button"
             onClick={() => scrollto("creators-doo")}
-            className="surface-card flex items-center gap-2.5 rounded-full px-7 py-4 text-sm font-medium-tier text-slate-900 transition hover:border-indigo-300"
+            className="surface-card flex items-center gap-2.5 rounded-full px-7 py-4 text-sm font-medium-tier text-slate-900 transition hover:border-[#0067c0]/45"
           >
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-950 text-white">
               <Play className="ml-0.5 h-3 w-3 fill-current" aria-hidden="true" />
