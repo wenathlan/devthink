@@ -1,6 +1,5 @@
-# Cloudflare/Workers config (deploy, bindings, domain routes)
+# Cloudflare/Workers configuration (deploy, bindings, domain routes)
 name = "foundry"
-main = "index.html"
 compatibility_date = "2026-09-29"
 
 [assets]

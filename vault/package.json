@@ -2,19 +2,19 @@
   "name": "@wenathlan/vault",
   "version": "2.0.161",
   "description": "vault is the supabase clone of the wenathlan family: it owns the self-hosted database, auth and storage surface, and ships the documentation set and the tests directory as one package",
-  "bin": {
-    "vault": "./cli.ts"
-  },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
   "license": "GPL-3.0-only",
   "author": "Wenathlan",
+  "type": "module",
   "sideEffects": false,
   "main": "./index.ts",
   "types": "./index.ts",
+  "bin": {
+    "vault": "./cli.ts"
+  },
   "exports": {
     ".": {
       "types": "./index.ts",
@@ -213,22 +213,19 @@
   "peerDependencies": {
     "playwright": "^1.63.0"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "dev": "vite --host",
-    "engine": "node --experimental-strip-types api.ts",
-    "engine:check": "node --experimental-strip-types -e \"process.env.VAULT_PORT='0'; process.env.VAULT_TOKEN='check'; await import('./api.ts').then(async (m) => { const srv = m.createVaultServer?.() ?? null; if (!srv) { console.error('engine boot failed'); process.exit(1); } setTimeout(() => { process.exit(0); }, 400); })\"",
     "build": "vite build",
     "start": "vite preview --host",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "biome check .",
-    "restore:entry": "node -e \"const{readFileSync}=require('node:fs');const{execSync}=require('node:child_process');const script=/script[^>]*App\\.tsx/;const triad=/family=Inter[\\s\\S]*Geist\\+Mono/;const face=(h)=>script.test(h)&&triad.test(h);if(face(readFileSync('index.html','utf8'))){console.log('index.html already rides the source face');process.exit(0)}if(!face(execSync('git show HEAD:./index.html',{encoding:'utf8'}))){console.error('refusing: HEAD index.html is not the canonical source face yet (script App.tsx + the font triad) - land the source-face fix first; nothing was touched');process.exit(1)}execSync('git checkout -- index.html',{stdio:'inherit'});console.log('index.html restored from HEAD (the source face)')\""
+    "restore:entry": "node -e \"const{readFileSync}=require('node:fs');const{execSync}=require('node:child_process');const script=/script[^>]*App\\.tsx/;const triad=/family=Inter[\\s\\S]*Geist\\+Mono/;const face=(h)=>script.test(h)&&triad.test(h);if(face(readFileSync('index.html','utf8'))){console.log('index.html already rides the source face');process.exit(0)}if(!face(execSync('git show HEAD:./index.html',{encoding:'utf8'}))){console.error('refusing: HEAD index.html is not the canonical source face yet (script App.tsx + the font triad) - land the source-face fix first; nothing was touched');process.exit(1)}execSync('git checkout -- index.html',{stdio:'inherit'});console.log('index.html restored from HEAD (the source face)')\"",
+    "engine": "node --experimental-strip-types api.ts",
+    "engine:check": "node --experimental-strip-types -e \"process.env.VAULT_PORT='0'; process.env.VAULT_TOKEN='check'; await import('./api.ts').then(async (m) => { const srv = m.createVaultServer?.() ?? null; if (!srv) { console.error('engine boot failed'); process.exit(1); } setTimeout(() => { process.exit(0); }, 400); })\""
   },
   "dependencies": {
     "@fluentui/react-icons": "^2.0.345",
@@ -358,23 +355,26 @@
     "yaml": "^2.9.1",
     "zod": "^4.6.7"
   },
-  "packageManager": "pnpm@12.3.4",
   "overrides": {
     "body-parser": "^2.4.0",
+    "deepmerge-ts": "^8.0.0",
+    "esbuild": "^0.28.2",
     "fast-uri": "^3.1.9",
     "follow-redirects": "^1.16.2",
-    "minimatch": "^11.0.3",
     "glob": "^14.0.3",
-    "zod": "^4.6.7",
-    "esbuild": "^0.28.2",
-    "undici": "^7.30.1",
-    "uuid": "^11.1.1",
-    "postcss-selector-parser": "^7.1.6",
-    "deepmerge-ts": "^8.0.0",
     "katex": "^0.18.2",
+    "minimatch": "^11.0.3",
     "mysql2": "^3.24.6",
+    "postcss-selector-parser": "^7.1.6",
     "proxy-addr": "2.0.8",
     "shell-quote": "^1.11.0",
-    "source-map-js": "1.2.2"
-  }
+    "source-map-js": "1.2.2",
+    "undici": "^7.30.1",
+    "uuid": "^11.1.1",
+    "zod": "^4.6.7"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@12.3.4"
 }

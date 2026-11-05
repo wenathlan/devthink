@@ -1,18 +1,45 @@
 {
   "name": "@wenathlan/cobaia",
-  "packageManager": "pnpm@12.3.4",
   "version": "2.0.161",
   "description": "cobaia is the monetization surface of the wenathlan family: the content site that carries the plans, the support rails and the honest advertisement slots while the family apps stay clean; the name is provisional until the owner picks the official one",
-  "bin": {
-    "cobaia": "./cli.ts"
-  },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
   "author": "Wenathlan",
+  "type": "module",
   "sideEffects": false,
+  "bin": {
+    "cobaia": "./cli.ts"
+  },
+  "engines": {
+    "bare": "^1.18.0",
+    "bun": "^1.4.4",
+    "cargo": ">=1.85.0",
+    "chrome": "^16.0.912",
+    "cnpm": "^9.4.0",
+    "corepack": "^0.35.0",
+    "deno": "^2.9.5",
+    "dotnet": ">=8.0.0",
+    "ecmascript": "^5.0.0",
+    "firefox": ">=0.8.0",
+    "go": ">=1.24.0",
+    "iojs": "^1.0.0",
+    "java": ">=17",
+    "node": ">=26.13.0 <27",
+    "npm": "^12.2.1",
+    "pnpm": "^12.6.0",
+    "python": ">=3.11.0",
+    "rust": ">=1.85.0",
+    "teleport": ">=0.2.0",
+    "typescript": "^5.8.0",
+    "v": "^0.5.2",
+    "vscode": "^1.118.0",
+    "yarn": "^4.17.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.63.0"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -150,34 +177,6 @@
     "yaml": "^2.9.1",
     "zod": "^4.6.7"
   },
-  "engines": {
-    "bare": "^1.18.0",
-    "bun": "^1.4.4",
-    "cargo": ">=1.85.0",
-    "chrome": "^16.0.912",
-    "cnpm": "^9.4.0",
-    "corepack": "^0.35.0",
-    "deno": "^2.9.5",
-    "dotnet": ">=8.0.0",
-    "ecmascript": "^5.0.0",
-    "firefox": ">=0.8.0",
-    "go": ">=1.24.0",
-    "iojs": "^1.0.0",
-    "java": ">=17",
-    "node": ">=26.13.0 <27",
-    "npm": "^12.2.1",
-    "pnpm": "^12.6.0",
-    "python": ">=3.11.0",
-    "rust": ">=1.85.0",
-    "teleport": ">=0.2.0",
-    "typescript": "^5.8.0",
-    "v": "^0.5.2",
-    "vscode": "^1.118.0",
-    "yarn": "^4.17.1"
-  },
-  "peerDependencies": {
-    "playwright": "^1.63.0"
-  },
   "overrides": {
     "body-parser": "^2.4.0",
     "fast-uri": "^3.1.9",
@@ -195,5 +194,6 @@
     "proxy-addr": "2.0.8",
     "shell-quote": "^1.11.0",
     "source-map-js": "1.2.2"
-  }
+  },
+  "packageManager": "pnpm@12.3.4"
 }

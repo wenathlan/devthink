@@ -2,9 +2,14 @@
 # Generated programmatically from the known extension corpus: the live IANA
 # media types registry (2026-10-30 snapshot), the node mime-db, the apache httpd
 # mime.types, the nginx mime.types, the apache tika catalog, the rust mime_guess
-# table (the MimeTypeMap corpus), the go builtin table and the family catalog of
-# the argan gateway — with the family law rows pinned: .ts answers video/mp2t,
-# .tsx answers application/typescript.
+# table (the MimeTypeMap corpus), the go builtin table, the family catalog of
+# the argan gateway and the saddle golden table (the family's own mime lane —
+# every type and every extension mapping it carries rides this corpus, pinned
+# by the golden-table battery of tests/mimetypes.test.ts) — with the family law
+# rows pinned: .ts answers video/mp2t, .tsx answers application/typescript.
+# The nginx-style multi-part extension names (cwl.json, gpkg.tar, 1905.1, pcf.z)
+# ride the explicit lookup lane (mimeTypeFor answers the full dotted name); the
+# path lane keeps the last-segment law the internal root serves through.
 # The line order is the collision law: the family groups run application, video,
 # audio, image, font, model, chemical, message, multipart, text, then the legacy
 # trees alphabetical — the first row claiming an extension keeps it, exactly the
@@ -147,7 +152,7 @@ application/cstadata+xml
 application/csvm+json
 application/cu-seeme cu
 application/cwl cwl
-application/cwl+json
+application/cwl+json cwl.json
 application/cwl+yaml
 application/cwt
 application/cybercash
@@ -528,8 +533,8 @@ application/rtploopback
 application/rtx
 application/samlassertion+xml
 application/samlmetadata+xml
-application/sarif-external-properties+json sarif-external-properties
-application/sarif+json sarif
+application/sarif-external-properties+json sarif-external-properties sarif-external-properties.json
+application/sarif+json sarif sarif.json
 application/sbe
 application/sbml+xml sbml
 application/scaip+xml
@@ -582,7 +587,7 @@ application/soap+fastinfoset
 application/soap+xml
 application/sparql-query rq
 application/sparql-results+xml srx
-application/spdx+json
+application/spdx+json spdx.json
 application/spdx3+json
 application/spirits-event+xml
 application/sql sql
@@ -630,7 +635,7 @@ application/timestamp-reply tsr
 application/timestamped-data tsd
 application/tlsrpt+gzip
 application/tlsrpt+json
-application/tm+json jsontm
+application/tm+json jsontm tm.json tm.jsonld
 application/tnauthlist
 application/toc+cbor
 application/token-introspection+jwt
@@ -1078,7 +1083,7 @@ application/vnd.fafm+yaml
 application/vnd.familysearch.gedcom+zip gdz
 application/vnd.fastcopy-disk-image dim
 application/vnd.fdf fdf
-application/vnd.fdsn.mseed mseed mseed3
+application/vnd.fdsn.mseed mseed mseed3 msd
 application/vnd.fdsn.seed dataless seed
 application/vnd.fdsn.stationxml+xml
 application/vnd.ffsns
@@ -1130,7 +1135,7 @@ application/vnd.gentics.grd+json grd
 application/vnd.gentoo.catmetadata+xml
 application/vnd.gentoo.ebuild ebuild
 application/vnd.gentoo.eclass eclass
-application/vnd.gentoo.gpkg
+application/vnd.gentoo.gpkg gpkg.tar
 application/vnd.gentoo.manifest
 application/vnd.gentoo.pkgmetadata+xml
 application/vnd.gentoo.xpak xpak
@@ -1225,7 +1230,7 @@ application/vnd.ibm.secure-container sc
 application/vnd.ibus+json
 application/vnd.iccprofile icc icm
 application/vnd.idop+zip
-application/vnd.ieee.1905
+application/vnd.ieee.1905 1905.1
 application/vnd.igloader igl
 application/vnd.imagemeter.folder+zip imf
 application/vnd.imagemeter.image+zip imi
@@ -1893,7 +1898,7 @@ application/vnd.svr.receipt+json
 application/vnd.swiftview-ics
 application/vnd.sybyl.mol2 ml2 mol2 sy2
 application/vnd.sycle+xml scl
-application/vnd.syft+json
+application/vnd.syft+json syft.json
 application/vnd.symbian.install sis sisx
 application/vnd.syncml.devinf+wbxml
 application/vnd.syncml.devinf+xml
@@ -2193,7 +2198,7 @@ application/x-font-ghostscript gsf
 application/x-font-libgrx
 application/x-font-linux-psf psf
 application/x-font-otf otf
-application/x-font-pcf pcf
+application/x-font-pcf pcf pcf.z
 application/x-font-printer-metric pfm
 application/x-font-snf snf
 application/x-font-speedo
@@ -2826,7 +2831,7 @@ video/x-javafx
 video/x-jng jng
 video/x-la-asf lsf lsx
 video/x-m4v m4v
-video/x-matroska mk3d mks mkv
+video/x-matroska mk3d mks mkv mpv
 video/x-matroska-3d
 video/x-mjpeg
 video/x-mng mng
@@ -3806,6 +3811,12 @@ text/xml-external-parsed-entity
 text/yaml yaml yml
 drawing/x-dwf dwf
 haptics/ivs
+inode/blockdevice
+inode/chardevice
+inode/directory
+inode/directory-locked
+inode/fifo
+inode/socket
 x-conference/x-cooltalk ice
 x-shader/x-fragment
 x-shader/x-vertex
