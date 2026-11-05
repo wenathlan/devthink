@@ -75,7 +75,7 @@ COPY --from=solbuild /site/ /app/site/
 # (the source-is-the-library doctrine — api.ts and its import closure) and
 # the production dependency tree with the compiled better-sqlite3 seat.
 COPY --from=enginedeps /deps/node_modules/ /app/node_modules/
-COPY --from=solbuild /src/api.ts /src/chunks.ts /src/drizzle.ts /src/labels.ts /src/labelstore.ts /src/objectsledger.ts /src/onboardingstate.ts /src/quota.ts /src/sha.ts /src/storage.ts /src/uistore.ts /app/
+COPY --from=solbuild /src/accounts.ts /src/api.ts /src/chunks.ts /src/db.ts /src/decoy.ts /src/drizzle.ts /src/internalroot.ts /src/labels.ts /src/labelstore.ts /src/mimetypes.ts /src/objects.ts /src/onboardingstate.ts /src/protocols.ts /src/querylane.ts /src/quota.ts /src/routes.ts /src/sha.ts /src/storage.ts /src/uistore.ts /app/
 
 # the runtime state home: the sqlite stores mount here (a named volume —
 # never inside dist, never beside the served tree; the engine creates the
