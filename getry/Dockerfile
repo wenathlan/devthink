@@ -22,7 +22,7 @@ COPY app/pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --frozen-lockfile
+ && pnpm install --frozen-lockfile --ignore-scripts
 COPY app/ .
 # the copy-law vault sibling: the label store and routes bridges resolve the ../vault aliases, so the sibling sources land at /src/vault where those bridges answer inside the container.
 COPY vault/ /src/vault/
