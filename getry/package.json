@@ -1,14 +1,7 @@
 {
   "name": "@wenathlan/getry",
   "version": "2.0.161",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wenathlan/devthink"
-  },
   "description": "getry is the AI gateway of the wenathlan family: five provider gateways (v1 zai, v2 babel, v3 nvidia, v4 opencode+kilo, v5 openrouter) serving 35 OpenAI-compatible routes with the 7-level thinking system, the session store and the key rotation, described by schema.prisma and served as one static Sol surface. The envelope distributes the documentation set and the tests directory as one package.",
-  "bin": {
-    "getry": "./cli.ts"
-  },
   "keywords": [
     "getry",
     "gateway",
@@ -19,36 +12,19 @@
     "openai-compatible",
     "documentation"
   ],
+  "homepage": "https://github.com/wenathlan/devthink/tree/main/getry",
+  "bugs": {
+    "url": "https://github.com/wenathlan/devthink/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wenathlan/devthink"
+  },
   "license": "GPL-3.0-only",
-  "engines": {
-    "bare": "^1.18.0",
-    "bun": "^1.4.4",
-    "cargo": ">=1.85.0",
-    "chrome": "^16.0.912",
-    "cnpm": "^9.4.0",
-    "corepack": "^0.35.0",
-    "deno": "^2.9.5",
-    "dotnet": ">=8.0.0",
-    "ecmascript": "^5.0.0",
-    "firefox": ">=0.8.0",
-    "go": ">=1.24.0",
-    "iojs": "^1.0.0",
-    "java": ">=17",
-    "node": ">=26.13.0 <27",
-    "npm": "^12.2.1",
-    "pnpm": "^12.6.0",
-    "python": ">=3.11.0",
-    "rust": ">=1.85.0",
-    "teleport": ">=0.2.0",
-    "typescript": "^5.8.0",
-    "v": "^0.5.2",
-    "vscode": "^1.118.0",
-    "yarn": "^4.17.1"
-  },
-  "peerDependencies": {
-    "playwright": "^1.63.0"
-  },
   "type": "module",
+  "bin": {
+    "getry": "./cli.ts"
+  },
   "exports": {
     "./thinking": {
       "types": "./thinking.ts",
@@ -215,6 +191,39 @@
       "default": "./constants.ts"
     }
   },
+  "files": [
+    "README.md",
+    "docs",
+    "tests"
+  ],
+  "engines": {
+    "bare": "^1.18.0",
+    "bun": "^1.4.4",
+    "cargo": ">=1.85.0",
+    "chrome": "^16.0.912",
+    "cnpm": "^9.4.0",
+    "corepack": "^0.35.0",
+    "deno": "^2.9.5",
+    "dotnet": ">=8.0.0",
+    "ecmascript": "^5.0.0",
+    "firefox": ">=0.8.0",
+    "go": ">=1.24.0",
+    "iojs": "^1.0.0",
+    "java": ">=17",
+    "node": ">=26.13.0 <27",
+    "npm": "^12.2.1",
+    "pnpm": "^12.6.0",
+    "python": ">=3.11.0",
+    "rust": ">=1.85.0",
+    "teleport": ">=0.2.0",
+    "typescript": "^5.8.0",
+    "v": "^0.5.2",
+    "vscode": "^1.118.0",
+    "yarn": "^4.17.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.63.0"
+  },
   "scripts": {
     "db:generate": "prisma generate --schema schema.prisma",
     "dev": "vite --host",
@@ -354,20 +363,6 @@
     "yaml": "^2.9.1",
     "zod": "^4.6.7"
   },
-  "files": [
-    "README.md",
-    "docs",
-    "tests"
-  ],
-  "homepage": "https://github.com/wenathlan/devthink/tree/main/getry",
-  "bugs": {
-    "url": "https://github.com/wenathlan/devthink/issues"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
-  "packageManager": "pnpm@12.3.4",
   "overrides": {
     "esbuild": "^0.28.2",
     "deepmerge-ts": "^8.0.0",
@@ -385,5 +380,10 @@
     "zod": "^4.6.7",
     "undici": "^7.30.1",
     "shell-quote": "^1.11.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "packageManager": "pnpm@12.3.4"
 }

@@ -1,15 +1,16 @@
+// the devthink typescript baseline.
 {
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
     "strict": true,
     "noUncheckedIndexedAccess": false,
+    "lib": ["es2024", "dom", "dom.iterable"],
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
-    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
     "types": ["chrome", "node", "vite/client"],
     "paths": {
       "@wenathlan/cadria/transcodeengine": ["../cadria/transcodeengine.ts"],
