@@ -1,10 +1,18 @@
 /**
- * cleanurl.ts — the DEVTHINK CLEAN-URL MODULE (owner rule): the address
+ * cleanurl.ts — the DEVTHINK CLEAN-URL MODULE (superset seat): the address
  * bar is always clean. No route hash (#/settings), no redirect garbage
  * (utm_*, gclid, fbclid, index.html, //) is ever visible. In the os the
  * navigation is client-side state: `navigate(view)` sets the internal
  * state and seals the bar at "/" via history.replaceState.
+ *
+ * the three core symbols (cleanUrl, applyNow, syncCanonical) ride the
+ * family owner argan/cleanurl.ts per the dedup law — this seat keeps the
+ * os extras (the detailed walk, the view navigation, the hash janitor).
  */
+
+import { cleanUrl } from "../argan/cleanurl.ts";
+
+export { applyNow, cleanUrl, syncCanonical } from "../argan/cleanurl.ts";
 
 /** legacy static hash route: #/settings, #settings */
 const HASH_ROUTE = /^#\/?/;
@@ -90,17 +98,6 @@ export function cleanUrlDetailed(input: string, base?: string): CleanResult {
   }
 
   return { url: url.toString(), removed };
-}
-
-/**
- * clean form of a url as a plain string.
- *
- * @param input the dirty url.
- * @param base the optional origin to resolve against.
- * @returns the clean url.
- */
-export function cleanUrl(input: string, base?: string): string {
-  return cleanUrlDetailed(input, base).url;
 }
 
 /** the view type of the os (a gateway page or a page of one app). */
