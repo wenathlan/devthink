@@ -608,8 +608,8 @@ describe("the workflow contract", () => {
     );
     const tauri = readFileSync(join(reporoot, "tauri.conf.json"), "utf8");
     assert.ok(
-      tauri.includes('"frontendDist": "build/web"'),
-      "tauri.conf.json keeps frontendDist at the built web staging",
+      tauri.includes('"frontendDist": "."'),
+      "tauri.conf.json keeps frontendDist at the application root (the Publish Altier law: the build answers at the app root, never a build/web tree)",
     );
     const ignore = readFileSync(join(reporoot, "..", ".gitignore"), "utf8");
     assert.ok(
