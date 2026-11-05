@@ -1885,6 +1885,7 @@ function execcommand(
     {
       output: result.output,
       exitCode: result.exitCode,
+      code: result.code,
       durationMs: durationms,
     },
     headers,

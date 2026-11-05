@@ -173,6 +173,29 @@ export const format = (...parts: unknown[]): string =>
 export const promisify = <T>(fn: T): T => fn;
 
 // ---------------------------------------------------------------------------
+// @section zlib — the compression refusal (node:zlib)
+// ---------------------------------------------------------------------------
+
+/* the honest refusal the family doctrine pins: the compression lanes ride
+ * the node hosts (the png encoder's real deflate, the tar.xz lanes), and a
+ * browser graph that links the surface reads the functions without a call
+ * — the import stays linkable, the call throws the same way a host without
+ * the module would. every caller in the browser graph carries its guarded
+ * fallback or routes the workload through the engine's own edge seats. */
+
+export const deflateSync = (): never => absent("node:zlib deflateSync");
+export const inflateSync = (): never => absent("node:zlib inflateSync");
+export const gzipSync = (): never => absent("node:zlib gzipSync");
+export const gunzipSync = (): never => absent("node:zlib gunzipSync");
+export const deflate = (_input: unknown, _options: unknown, callback?: (error: Error) => void): void => {
+  if (typeof callback === "function") callback(new Error("[getry browser face] node:zlib deflate is absent on this host"));
+};
+export const inflate = (_input: unknown, _options: unknown, callback?: (error: Error) => void): void => {
+  if (typeof callback === "function") callback(new Error("[getry browser face] node:zlib inflate is absent on this host"));
+};
+export const zlibconstants: Record<string, never> = {};
+
+// ---------------------------------------------------------------------------
 // @section default — the combined surface every builtin specifier shares
 // ---------------------------------------------------------------------------
 
@@ -233,4 +256,10 @@ export default {
   inspect,
   format,
   promisify,
+  deflateSync,
+  inflateSync,
+  gzipSync,
+  gunzipSync,
+  deflate,
+  inflate,
 };

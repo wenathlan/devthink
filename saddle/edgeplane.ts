@@ -283,10 +283,11 @@ const ids = idfactory();
  * and the artifact (the lane artifact, or the stdout when the lane
  * produced none) is committed through the caller's storage adapter when
  * given. A planned or unknown modality answers MODALITY_NOT_LIVE; a
- * lane whose host runtime is absent answers HOST_RUNTIME_ABSENT naming
- * the runtime; a storage commit failure fails the run honestly
- * (STORAGE_FAILURE — an unpersisted artifact is a failed commit, the
- * engine law).
+ * registry record this plane wires no lane for answers
+ * LANE_NOT_WIRED_IN_PLANE; a lane whose host runtime is absent answers
+ * HOST_RUNTIME_ABSENT naming the runtime; a storage commit failure fails
+ * the run honestly (STORAGE_FAILURE — an unpersisted artifact is a
+ * failed commit, the engine law).
  *
  * @param request the edge run request (modality, code, inputs, deadline).
  * @param options the caller surfaces (the storage adapter for artifacts).
@@ -329,9 +330,10 @@ export async function runonedge(
           error: { code: "MODALITY_NOT_LIVE", message: `the modality id ${modality} is unknown to the registry` },
         };
       }
-      // a record the registry already drives live through another engine
-      // surface (the envelope sandbox lane) is never lied about here: the
-      // modality is live, this plane simply wires no lane for it yet.
+      // a record the registry carries is never lied about here: the
+      // registry declares the wiring truth, this plane simply wires no
+      // lane for the id — the refusal says exactly that and nothing the
+      // branch cannot verify.
       if (record.state === "planned") {
         return {
           runid,
@@ -351,7 +353,7 @@ export async function runonedge(
         status: "failed",
         error: {
           code: "LANE_NOT_WIRED_IN_PLANE",
-          message: `the modality ${modality} is ${record.state} in the registry, but this edge plane wires no lane for it yet — the other engine surfaces drive it`,
+          message: `the modality ${modality} is ${record.state} in the registry, but this edge plane wires no lane for it — no executor in the plane answers the id`,
         },
       };
     }

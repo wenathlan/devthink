@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Cobaia",
+  "version": "2.0.160",
+  "identifier": "com.wenathlan.cobaia",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "frontendDist": "build/web"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Cobaia",
+        "width": 1440,
+        "height": 900,
+        "minWidth": 960,
+        "minHeight": 640,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "category": "Business",
+    "shortDescription": "The Cobaia monetization surface as a desktop shell",
+    "longDescription": "Cobaia desktop shell wrapping the built theme bundle: the same sol/ surface the browser, the mobile apps and the container ship, framed as a native desktop application for the monetization and content site.",
+    "publisher": "wenathlan",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
+    "windows": {}
+  }
+}

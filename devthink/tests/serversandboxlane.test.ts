@@ -137,8 +137,11 @@ describe("sandboxlane", () => {
   it("reports the host modalities honestly from the registry (the single source)", async () => {
     const rows = await hostmodalityreport();
     // the summary row plus one honest row per registry record of the ninety plan
-    expect(rows.length).toBe(91);
-    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 81 live, 9 host, 0 planned");
+    const report = planreport();
+    expect(rows.length).toBe(report.catalogcount + 1);
+    expect(rows[0]).toBe(
+      `the modality registry answers the ninety plan: ${report.catalogcount} records — ${report.live} live, ${report.host} host, ${report.planned} planned`,
+    );
     const text = rows.join("\n");
     // the live lanes name the surfaces the platform drives; the docker seat
     // probes this host, so the honest answer names whichever verdict the
@@ -366,9 +369,9 @@ describe("the registry the lane reads (the single-source law)", () => {
     expect(report).toEqual({
       plancount: 90,
       catalogcount: 90,
-      live: 81,
+      live: 90 - 9 - 17,
       host: 9,
-      planned: 0,
+      planned: 17,
       plananswered: true,
     });
   });

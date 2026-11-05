@@ -412,19 +412,23 @@ function refrow(id: string, name: string, kind: "reference" | "upload", doc: Ing
   };
 }
 
-/** The first techno reference: 128 bpm, F minor, low-heavy. */
+/** The first techno reference: 128 bpm, F minor, the mid-heavy balance
+ * the techno timbre expectation carries (the arp and drone hints hold
+ * the mids, the raw kick rides low) — the measured features the signal
+ * gate reads, the name never decides the grouping. */
 const technoAlpha = refrow(
   ALPHA_ID,
   "techno reference alpha",
   "reference",
-  refdoc({ bpm: 128, tonic: 5, integrated: -9.5, bands: [0.5, 0.3, 0.2], ingestedAt: "2026-02-01T00:00:00.000Z" }),
+  refdoc({ bpm: 128, tonic: 5, integrated: -9.5, bands: [0.3, 0.55, 0.15], ingestedAt: "2026-02-01T00:00:00.000Z" }),
 );
-/** The second techno reference: 134 bpm, F minor, low-heavy alike. */
+/** The second techno reference: 134 bpm, F minor, the same mid-heavy
+ * measured balance. */
 const technoBeta = refrow(
   BETA_ID,
   "techno reference beta",
   "reference",
-  refdoc({ bpm: 134, tonic: 5, integrated: -8.5, bands: [0.5, 0.3, 0.2], ingestedAt: "2026-02-02T00:00:00.000Z" }),
+  refdoc({ bpm: 134, tonic: 5, integrated: -8.5, bands: [0.3, 0.55, 0.15], ingestedAt: "2026-02-02T00:00:00.000Z" }),
 );
 /** The trap reference: the foreign genre the techno walk never reads. */
 const trapGamma = refrow(

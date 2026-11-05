@@ -12,16 +12,16 @@
 
 /** the drizzle-kit configuration shape for dialect sqlite. */
 export interface drizzleconfig {
-  dialect: 'sqlite';
+  dialect: "sqlite";
   schema: string;
   out: string;
 }
 
 /** the configuration consumed by `drizzle-kit generate` and friends. */
 const config: drizzleconfig = {
-  dialect: 'sqlite',
-  schema: './init.sql',
-  out: './drizzleout',
+  dialect: "sqlite",
+  schema: "./init.sql",
+  out: "./drizzleout",
 };
 
 export default config;

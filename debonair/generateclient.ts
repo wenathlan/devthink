@@ -45,7 +45,7 @@ import { hostallowed } from "./onboardingstate.ts";
 import type { PatternProject } from "./pattern.ts";
 import { serializePattern, validatePatternProject } from "./pattern.ts";
 import type { GenreProfile, IngestDocumentWithId } from "./pattern.ts";
-import { mineGenre, PROFILE_GENRE_KEYS, ProfileError, validateGenreProfile } from "./pattern.ts";
+import { classifyFromSignal, mineGenre, PROFILE_GENRE_KEYS, ProfileError, validateGenreProfile } from "./pattern.ts";
 import type { RenderTrackRow } from "./render.ts";
 import { singPattern } from "./vocalsynth.ts";
 
@@ -346,7 +346,7 @@ function jobidvalid(parsed: unknown): { jobId: string } | null {
 export interface GenerateReference {
   /** The row id (the gateway's or the mirror's). */
   id: string;
-  /** The document name (the genre grouping law's honest carrier). */
+  /** The document name (display only — the genre grouping reads the mix). */
   name: string;
   /** The parametrized document (schema debonair.ingest/1). */
   document: unknown;
@@ -383,16 +383,21 @@ export type GenerateComposeResult =
 
 /**
  * Folds the references of one genre into the miner's own profile — the
- * grouping law the miner lane rides: the documents carry no genre
- * column, the name is the honest carrier and matchGenre (the same seat
- * the composer's prompt rides) decides which corpus feeds the profile.
+ * grouping law the miner lane rides: the signal gate (classifyFromSignal)
+ * reads the bpm, the key, the loudness and the band balance each
+ * reference's mix carried and the measured winner decides which corpus
+ * feeds the profile — never the document's name, and a reference whose
+ * signal carries too little collects into no genre.
  *
  * @param references the references the session holds.
  * @param genre the genre key of the fifteen.
  * @returns the profile, or null when no reference answers the genre.
  */
 function profileOfGenre(references: readonly GenerateReference[], genre: string): GenreProfile | null {
-  const ofGenre = references.filter((reference) => matchGenre(reference.name)?.id === genre);
+  const ofGenre = references.filter((reference) => {
+    const verdict = classifyFromSignal(reference.document as IngestDocumentWithId);
+    return verdict.ok && verdict.verdicts[0]?.genreId === genre;
+  });
   if (ofGenre.length === 0) return null;
   const documents: IngestDocumentWithId[] = ofGenre.map((reference) => ({
     ...(reference.document as IngestDocumentWithId),
@@ -451,7 +456,10 @@ export function composeTake(input: {
       message: `no reference of the genre "${genre}" answers the fold — ingest one on the bench`,
     };
   }
-  const ofGenre = input.references.filter((reference) => matchGenre(reference.name)?.id === genre);
+  const ofGenre = input.references.filter((reference) => {
+    const verdict = classifyFromSignal(reference.document as IngestDocumentWithId);
+    return verdict.ok && verdict.verdicts[0]?.genreId === genre;
+  });
   try {
     const report = composeSimilar(
       input.prompt,

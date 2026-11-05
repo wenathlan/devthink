@@ -1285,16 +1285,28 @@ const MINOR_SCALES: ReadonlySet<string> = new Set([
 
 /** the timbre hints that pull the expected band balance toward the lows,
  * the mids and the highs (the sub and kick hints ride low, the pad and
- * bell hints hold the mids, the hat and shimmer hints ride high). */
+ * bell hints hold the mids, the hat and shimmer hints ride high). Every
+ * hint of the style dictionary maps the band its instrument lives in —
+ * the even split only answers a genre whose hints ride no band, so the
+ * timbre seat stays a measured comparison instead of a constant. */
 const TIMBRE_LOW: ReadonlySet<string> = new Set([
   "808-sub",
   "sliding-808",
+  "screaming-808",
   "punchy-kick",
   "sub-bass",
   "rumble",
   "vinyl-crackle",
   "sample-chops",
   "warm-keys",
+  "disco-bass",
+  "four-on-floor",
+  "raw-kick",
+  "reese-bass",
+  "tight-kick",
+  "deep-bass",
+  "log-drum",
+  "upright-bass",
 ]);
 const TIMBRE_MID: ReadonlySet<string> = new Set([
   "dark-bells",
@@ -1305,6 +1317,24 @@ const TIMBRE_MID: ReadonlySet<string> = new Set([
   "ep-keys",
   "guitar-chops",
   "brass-stabs",
+  "horror-leads",
+  "filtered-chords",
+  "hypnotic-arp",
+  "analog-drone",
+  "sidechain-pad",
+  "festival-drop",
+  "amen-break",
+  "liquid-pads",
+  "granular-pad",
+  "field-recording",
+  "tape-saturation",
+  "jazz-keys",
+  "dusty-drums",
+  "silky-keys",
+  "pitched-vocal-stack",
+  "airy-pad",
+  "brushed-kit",
+  "rhodes",
 ]);
 const TIMBRE_HIGH: ReadonlySet<string> = new Set([
   "distorted-hats",
@@ -1315,6 +1345,15 @@ const TIMBRE_HIGH: ReadonlySet<string> = new Set([
   "sizzle",
   "white-noise-sweeps",
   "plucks",
+  "metal-hats",
+  "supersaw",
+  "slow-shimmer",
+  "bright-vocal-chain",
+  "plucky-synth",
+  "finger-snap",
+  "glitch-perc",
+  "brash-synth",
+  "shaker-groove",
 ]);
 
 /* ============================================================ *
@@ -1565,6 +1604,102 @@ export function classifyDocument(doc: IngestDocument, seat?: TrainedCorpusSeat):
       confidence: total > 0 ? round4(verdict.score / total) : 0,
     }))
     .sort((a, b) => b.score - a.score || (a.genreId < b.genreId ? -1 : a.genreId > b.genreId ? 1 : 0));
+}
+
+/* ============================================================ *
+ * the signal gate — the honest entry of the measured verdict.
+ * classifyDocument answers a ranking for any document handed to it
+ * (the tolerant coercion the analysis layer owns), but a mix the
+ * pipeline never measured (no tempo, no band mass, silence) has no
+ * business wearing a genre: the seats would answer from coercion
+ * defaults, a quiet guess dressed as a verdict. The gate measures
+ * first, answers the machine code with the missing seats when the
+ * signal carries too little, and rides the style law only over
+ * numbers the mix actually carried. Pure and deterministic: the
+ * same document answers the same gate bit-for-bit — no rng, no
+ * clock, no name (the verdict reads the mix report and the mix
+ * segments alone, never the document's name).
+ * ============================================================ */
+
+/** The machine code the signal gate refuses with (the seats the mix never measured). */
+export const GENRE_SIGNAL_ERROR_CODES = ["genre-insufficient-signal"] as const;
+
+/** Every machine code the signal gate answers. */
+export type GenreSignalErrorCode = (typeof GENRE_SIGNAL_ERROR_CODES)[number];
+
+/** The measured seats the honest verdict reads — true when the mix report
+ * (or the mix segments) carried the number, false when the seat would ride
+ * a coercion default. */
+export interface GenreSignalSeats {
+  /** The mix tempo the rhythm seat measured (finite and above zero). */
+  bpm: boolean;
+  /** The key tonic the key seat measured (a finite pitch class). */
+  key: boolean;
+  /** The integrated loudness the loudness seat measured (a finite lufs). */
+  loudness: boolean;
+  /** The band balance the mix segments measured (at least one second
+   * whose [low, mid, high] energies sum above zero). */
+  bands: boolean;
+}
+
+/** The typed verdict of the signal gate: the ranked fifteen over measured
+ * seats, or the machine refusal naming what the mix never carried. */
+export type GenreSignalVerdict =
+  | { ok: true; verdicts: GenreVerdict[] }
+  | { ok: false; code: GenreSignalErrorCode; missing: readonly string[] };
+
+/**
+ * Measures the signal seats of one ingest document — the same reads the
+ * style law's seats ride, each answering true only when the number is
+ * really there (a non-finite scalar or a band-less segment set reads
+ * false). Tolerant of malformed json the db lane may hand back: the
+ * missing seats stay missing, the gate refuses.
+ *
+ * @param doc one ingest document (the mix lane is the read).
+ * @returns the four measured-seat booleans.
+ */
+export function genreSignalSeats(doc: IngestDocument): GenreSignalSeats {
+  const mix = (doc ?? {}) as Partial<IngestDocument>;
+  const report = mix.mix as
+    | { rhythm?: { bpm?: number }; key?: { tonic?: number }; loudness?: { integrated?: number } }
+    | undefined;
+  const segments = Array.isArray(mix.segments) ? mix.segments : [];
+  let bandOwners = 0;
+  for (const segment of segments) {
+    const bands = Array.isArray(segment?.bands) ? segment.bands : [];
+    if (fin(bands[0] ?? 0) + fin(bands[1] ?? 0) + fin(bands[2] ?? 0) > 0) bandOwners += 1;
+  }
+  return {
+    bpm: Number.isFinite(report?.rhythm?.bpm) && (report?.rhythm?.bpm ?? 0) > 0,
+    key: Number.isFinite(report?.key?.tonic),
+    loudness: Number.isFinite(report?.loudness?.integrated),
+    bands: bandOwners > 0,
+  };
+}
+
+/**
+ * classifyFromSignal — the measured verdict behind the honest gate: the
+ * fifteen genres ranked over the seats the mix actually measured, the
+ * winner first. A mix the pipeline never measured (silence, a header-only
+ * container, a damaged report) answers the machine code
+ * "genre-insufficient-signal" with the missing seats named — never a
+ * ranking dressed up from coercion defaults, never a verdict read off the
+ * document's name. Deterministic: the same document answers the same gate
+ * bit-for-bit.
+ *
+ * @param doc one ingest document (the mix lane is the read).
+ * @param seat the optional trained corpus seat (the corpus lane's rows).
+ * @returns the ranked verdicts, or the typed insufficient-signal refusal.
+ */
+export function classifyFromSignal(doc: IngestDocument, seat?: TrainedCorpusSeat): GenreSignalVerdict {
+  const seats = genreSignalSeats(doc);
+  const missing: string[] = [];
+  if (!seats.bpm) missing.push("bpm");
+  if (!seats.key) missing.push("key");
+  if (!seats.loudness) missing.push("loudness");
+  if (!seats.bands) missing.push("bands");
+  if (missing.length > 0) return { ok: false, code: "genre-insufficient-signal", missing };
+  return { ok: true, verdicts: classifyDocument(doc, seat) };
 }
 
 /** The cosine of two equal-length vectors; zero when either norm is zero

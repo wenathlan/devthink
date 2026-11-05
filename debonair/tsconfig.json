@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
+    "types": ["vite/client", "node"],
     "paths": {
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
@@ -26,8 +27,7 @@
        * entry retires when the published envelope carries the built
        * workload law. */
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"]
-    },
-    "types": ["vite/client", "node"]
+    }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
