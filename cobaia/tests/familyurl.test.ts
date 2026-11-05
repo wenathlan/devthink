@@ -3,7 +3,10 @@
 // The suite watches the promise the directory and the footer make: every
 // family member resolves one level above this application, always with the
 // trailing slash, and pasted segments or stray slashes land on the same
-// address. Pure string shaping — no network, no side effects.
+// address. The os itself answers at the family root of the host (the pages
+// site root), so the devthink slug resolves to the root — never to a
+// "../devthink/" path no deploy carries. Pure string shaping — no network,
+// no side effects.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { familyurl } from "../familyurl.ts";
@@ -11,7 +14,7 @@ import { familyurl } from "../familyurl.ts";
 describe("the familyurl contract", () => {
   it("resolves a bare slug one level above, with the trailing slash", () => {
     assert.equal(familyurl("vault"), "../vault/");
-    assert.equal(familyurl("devthink"), "../devthink/");
+    assert.equal(familyurl("devthink"), "../");
   });
 
   it("trims stray slashes from pasted segments", () => {
@@ -20,7 +23,7 @@ describe("the familyurl contract", () => {
     assert.equal(familyurl("/forge"), "../forge/");
   });
 
-  it("resolves the whole roster the same way", () => {
+  it("resolves the whole roster the same way — the os at the family root, every application at its own segment", () => {
     const roster = [
       "devthink",
       "saddle",
@@ -34,7 +37,7 @@ describe("the familyurl contract", () => {
       "argan",
     ];
     for (const slug of roster) {
-      assert.equal(familyurl(slug), `../${slug}/`);
+      assert.equal(familyurl(slug), slug === "devthink" ? "../" : `../${slug}/`);
     }
   });
 });

@@ -5,7 +5,8 @@
 // Every test watches the contract the family promises: the url always climbs
 // one level into the sibling folder, is slash-terminated, survives slugs
 // that arrive decorated with slashes and answers for every member of the
-// family.
+// family — the os itself at the family root (the pages site root), never
+// one segment deep.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { familyurl } from "../familyurl.ts";
@@ -20,9 +21,9 @@ describe("familyurl", () => {
     assert.equal(familyurl("///cadria///"), "../cadria/");
   });
 
-  it("answers for every deploy unit of the family", () => {
+  it("answers for every deploy unit of the family — the os at the family root, every application at its own segment", () => {
     for (const slug of ["devthink", "cadria", "stealthhead", "foundry", "forge", "vault", "getry"]) {
-      assert.equal(familyurl(slug), `../${slug}/`);
+      assert.equal(familyurl(slug), slug === "devthink" ? "../" : `../${slug}/`);
     }
   });
 

@@ -5,8 +5,12 @@
  * sibling links back. The deploy units sit beside this one as sibling
  * folders on the shared origin, so the url resolves one level above this
  * application (../slug/), with the slug trimmed of any slashes so both bare
- * names and pasted segments resolve to the same address. Pure and
- * side-effect free: the helper only shapes strings.
+ * names and pasted segments resolve to the same address. The DevThink OS
+ * itself answers at the family root of the host (the pages site root — the
+ * real deploy of the os), never one segment deep, so the devthink slug
+ * resolves to the root while every other slug resolves to the sibling
+ * folder beside this one. Pure and side-effect free: the helper only shapes
+ * strings.
  */
 
 /**
@@ -17,6 +21,11 @@
  * deploy unit, always carrying the trailing slash.
  */
 export function familyurl(slug: string): string {
+  const clean = slug.replace(/^\/+|\/+$/g, "");
+  // the os answers at the family root itself: the devthink slug resolves to
+  // the root (the real deploy of the os), every other slug to the sibling
+  // folder one level up from this deploy unit
+  if (clean === "devthink") return "../";
   // biome-ignore lint/style/useTemplate: the verbatim family form of the recipe
-  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
+  return "../" + clean + "/";
 }

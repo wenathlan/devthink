@@ -12,15 +12,15 @@ import { familyurl } from "../familyurl.ts";
 
 describe("familyurl", () => {
   it("resolves a bare slug into the sibling folder", () => {
-    assert.equal(familyurl("devthink"), "../devthink/");
+    assert.equal(familyurl("devthink"), "../");
     assert.equal(familyurl("stealthhead"), "../stealthhead/");
     assert.equal(familyurl("debonair"), "../debonair/");
     assert.equal(familyurl("getry"), "../getry/");
   });
 
   it("strips decorative slashes from the slug", () => {
-    assert.equal(familyurl("/devthink"), "../devthink/");
-    assert.equal(familyurl("devthink/"), "../devthink/");
+    assert.equal(familyurl("/devthink"), "../");
+    assert.equal(familyurl("devthink/"), "../");
     assert.equal(familyurl("/debonair/"), "../debonair/");
     assert.equal(familyurl("//forge//"), "../forge/");
   });
@@ -40,7 +40,7 @@ describe("familyurl", () => {
       const url = familyurl(slug);
       assert.ok(url.startsWith("../"), `${url} must climb one deploy unit`);
       assert.ok(url.endsWith("/"), `${url} must be slash-terminated`);
-      assert.equal(url, `../${slug}/`);
+      assert.equal(url, slug === "devthink" ? "../" : `../${slug}/`);
     }
   });
 });

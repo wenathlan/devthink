@@ -69,8 +69,11 @@ export function familyrow(): readonly FamilyMember[] {
  * The family deploys share one origin, each application under its own
  * segment, so a family address is always the deploy base of this clone
  * followed by the sibling slug — vault is staged one level deep, hence the
- * relative "../" ride. Trailing and leading slashes on the slug are
- * tolerated and never doubled.
+ * relative "../" ride. The DevThink OS itself answers at the family root of
+ * the host (the pages site root — the real deploy of the os), never one
+ * segment deep, so the devthink slug resolves to the root while every
+ * other slug resolves to the sibling folder beside this one. Trailing and
+ * leading slashes on the slug are tolerated and never doubled.
  */
 
 /**
@@ -80,6 +83,11 @@ export function familyrow(): readonly FamilyMember[] {
  * @returns the relative url of the family application.
  */
 export function familyurl(slug: string): string {
+  const clean = slug.replace(/^\/{1,64}|\/{1,64}$/g, "");
+  // the os answers at the family root itself: the devthink slug resolves to
+  // the root (the real deploy of the os), every other slug to the sibling
+  // folder one level up from this deploy unit
+  if (clean === "devthink") return "../";
   // biome-ignore lint/style/useTemplate: the verbatim family form of the recipe
-  return "../" + slug.replace(/^\/{1,64}|\/{1,64}$/g, "") + "/";
+  return "../" + clean + "/";
 }

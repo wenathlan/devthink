@@ -1269,11 +1269,15 @@ export function deploybase(): string {
  * on the pages lane: "../<slug>/" rides one level up from the live route,
  * and on the nested pages tree that level is the repository segment's
  * parent — the site root — where no sibling lives, so the power clip asked
- * for "/saddle/" and answered the host's 404). The member apps themselves
- * keep their own verbatim relative recipe ("../<slug>/") — from their
- * nested mounts one level up IS the family root — and this section serves
- * only the os side of the contract. Leading and trailing slashes on the
- * slug are tolerated and never doubled.
+ * for "/saddle/" and answered the host's 404). The os itself answers at
+ * the family root the running build declares — never one segment deeper —
+ * so the devthink slug resolves to the root ("/devthink/" on the pages
+ * site, "/" on a baseless host) instead of a "/<root>/devthink/" path
+ * no deploy carries. The member apps themselves
+ * keep their own verbatim relative recipe ("../<slug>/", "../" for the
+ * os) — from their nested mounts one level up IS the family root — and
+ * this section serves only the os side of the contract. Leading and
+ * trailing slashes on the slug are tolerated and never doubled.
  *
  * @param slug the deploy unit segment (the app folder name).
  * @returns the in-site url of the family application ("/<root>/<slug>/").
@@ -1282,6 +1286,10 @@ export function familyurl(slug: string): string {
   const clean = slug.replace(/^\/+|\/+$/g, "");
   const buildbase = import.meta.env.BASE_URL;
   const root = buildbase && buildbase !== "/" && buildbase !== "./" ? buildbase.replace(/\/+$/, "") : "";
+  // the os IS the family root: the devthink slug resolves to the root the
+  // running build declares, never to a "/<root>/devthink/" path no deploy
+  // carries (the pages site serves the os at the site root itself)
+  if (clean === "devthink") return `${root}/`;
   return `${root}/${clean}/`;
 }
 

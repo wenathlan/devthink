@@ -70,9 +70,9 @@ describe("family table", () => {
     assert.equal(FAMILY_ACCENTS.vault.dotInk, "#072330");
   });
 
-  it("resolves every member through the familyurl contract", () => {
+  it("resolves every member through the familyurl contract — the os at the family root, every application at its own segment", () => {
     for (const slug of FAMILY_SLUGS) {
-      assert.equal(familyurl(slug), `../${slug}/`);
+      assert.equal(familyurl(slug), slug === "devthink" ? "../" : `../${slug}/`);
     }
   });
 

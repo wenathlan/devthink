@@ -9,9 +9,12 @@
  * the live location. the helper therefore builds a RELATIVE url — one level
  * up from the current deploy unit, then into the sibling folder — so the
  * rail foot of the window resolves the family from wherever the app is
- * mounted. pure and multi-mode: the same call runs in the browser (the rail
- * links of sol/shell/Shell.tsx) and in node (the unit tests), with zero
- * storage.
+ * mounted. the os itself answers at the family root of the host (the pages
+ * site root — the real deploy of the os), never one segment deep, so the
+ * devthink slug resolves to the root while every other slug resolves to
+ * the sibling folder beside this one. pure and multi-mode: the same call
+ * runs in the browser (the rail links of sol/shell/Shell.tsx) and in node
+ * (the unit tests), with zero storage.
  */
 
 /** resolves the url of a family deploy unit that shares this host.
@@ -21,6 +24,11 @@
  * @returns the relative path of the family application, slash-terminated.
  */
 export function familyurl(slug: string): string {
+  const clean = slug.replace(/^\/+|\/+$/g, "");
+  // the os answers at the family root itself: the devthink slug resolves to
+  // the root (the real deploy of the os), every other slug to the sibling
+  // folder one level up from this deploy unit
+  if (clean === "devthink") return "../";
   // biome-ignore lint/style/useTemplate: the family contract body stays verbatim — every app of the family copies this exact line
-  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
+  return "../" + clean + "/";
 }

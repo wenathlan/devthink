@@ -65,9 +65,13 @@ export function familyrow(): readonly FamilyMember[] {
  * familyurl.ts — the cross-application resolver of the forge (root layer).
  * The rail foot of the application window links every sibling deploy unit
  * of the family; each sibling is mounted one level up from this app, so the
- * helper builds the relative url from the slug directly. Pure and
- * side-effect free: no storage, no location read — the same call runs in
- * the browser (the rail links) and in node (unit tests).
+ * helper builds the relative url from the slug directly. The DevThink OS
+ * itself answers at the family root of the host (the pages site root — the
+ * real deploy of the os), never one segment deep, so the devthink slug
+ * resolves to the root while every other slug resolves to the sibling
+ * folder beside this one. Pure and side-effect free: no storage, no
+ * location read — the same call runs in the browser (the rail links) and
+ * in node (unit tests).
  */
 
 /**
@@ -78,6 +82,11 @@ export function familyrow(): readonly FamilyMember[] {
  * slash so the sibling's clean-url doctrine answers the request.
  */
 export function familyurl(slug: string): string {
+  const clean = slug.replace(/^\/+|\/+$/g, "");
+  // the os answers at the family root itself: the devthink slug resolves to
+  // the root (the real deploy of the os), every other slug to the sibling
+  // folder one level up from this deploy unit
+  if (clean === "devthink") return "../";
   // biome-ignore lint/style/useTemplate: the verbatim family form of the recipe
-  return "../" + slug.replace(/^\/+|\/+$/g, "") + "/";
+  return "../" + clean + "/";
 }

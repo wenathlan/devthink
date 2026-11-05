@@ -19,7 +19,8 @@ describe("familyurl", () => {
     expect(familyurl("///debonair///")).toBe("../debonair/");
   });
 
-  it("keeps the interior of the slug untouched", () => {
-    expect(familyurl("devthink")).toBe("../devthink/");
+  it("resolves the os at the family root itself, never one segment deep", () => {
+    expect(familyurl("devthink")).toBe("../");
+    expect(familyurl("/devthink/")).toBe("../");
   });
 });
