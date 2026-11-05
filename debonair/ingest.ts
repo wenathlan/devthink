@@ -58,8 +58,8 @@ import { chromaOf, FFT_SIZE, fftInPlace, frameSpectrum, HANN_TABLE, keyOf } from
 import { midiToHz } from "./tuning.ts";
 import type { WavBitDepth, WavFormatRow } from "./wavwriter.ts";
 import {
-  CHANNELS_MAX,
   CHANNELS_MIN,
+  channelsceiling,
   encodeWav,
   HEADER_LAYOUT,
   SAMPLE_RATE_MAX,
@@ -3004,8 +3004,8 @@ export function parseWav(bytes: Uint8Array): WavDecodeResult {
   }
   if (fmt === null) return decodeerr("bad-fmt", "wav carries no fmt chunk");
   if (data === null) return decodeerr("bad-data", "wav carries no data chunk");
-  if (fmt.channels < CHANNELS_MIN || fmt.channels > CHANNELS_MAX) {
-    return decodeerr("bad-fmt", `wav carries ${fmt.channels} channels, outside ${CHANNELS_MIN}..${CHANNELS_MAX}`);
+  if (fmt.channels < CHANNELS_MIN || fmt.channels > channelsceiling) {
+    return decodeerr("bad-fmt", `wav carries ${fmt.channels} channels, outside ${CHANNELS_MIN}..${channelsceiling}`);
   }
   if (fmt.sampleRate < SAMPLE_RATE_MIN || fmt.sampleRate > SAMPLE_RATE_MAX) {
     return decodeerr("bad-fmt", `wav carries ${fmt.sampleRate} hz, outside ${SAMPLE_RATE_MIN}..${SAMPLE_RATE_MAX}`);

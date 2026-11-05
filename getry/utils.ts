@@ -5,7 +5,15 @@
  */
 
 import { randomInt } from "node:crypto";
-import { DEFAULTTHINKINGLEVEL, THINKINGLEVELS, type ThinkingLevelName } from "@wenathlan/getry/thinking";
+import {
+  THINKINGLEVELS,
+  budgetof,
+  defaultthinkinglevel,
+  islevel,
+  listlevels,
+  type ThinkingLevel,
+  type ThinkingLevelName,
+} from "@wenathlan/getry/thinking";
 
 /** cors headers — open cors for all gateway routes */
 export const corsheaders: Record<string, string> = {
@@ -141,39 +149,45 @@ export function autoseed(n: unknown, fallback = 0): number {
   return clamp(Math.floor(Math.abs(v)), 0, 2147483647, fallback);
 }
 
-/** autothinking — normalize thinking level string to the canonical 7 level
- * ladder owned by the getry engine (pr16): the rung vocabulary answers the
- * owner's ThinkingLevelName and the default rung answers the owner's
- * DEFAULTTHINKINGLEVEL — never a second declaration. */
+/** autothinking — normalize thinking level string to the live ladder owned
+ * by the getry engine (pr16, the registerable fold): the rung vocabulary
+ * answers the owner's registered levels (any count — never a fixed 7) and
+ * the default rung answers the owner's defaultthinkinglevel — never a
+ * second declaration. */
 export function autothinking(level?: unknown): ThinkingLevelName {
-  if (!level || typeof level !== "string") return DEFAULTTHINKINGLEVEL;
+  if (!level || typeof level !== "string") return defaultthinkinglevel();
   const l = String(level).toLowerCase().trim();
-  if (l in thinkingbudgets) return l as ThinkingLevelName;
+  if (islevel(l)) return l;
   if (l === "disabled" || l === "off" || l === "false") return "none";
   if (l === "minimum") return "minimal";
   if (l === "med" || l === "mid") return "medium";
   if (l === "extra" || l === "ultra") return "xhigh";
   if (l === "maximum" || l === "full" || l === "all") return "max";
-  return DEFAULTTHINKINGLEVEL;
+  return defaultthinkinglevel();
 }
 
-/** thinking budgets — the 7 level token budgets derived from the getry
- * engine's THINKINGLEVELS (the one owner of the reasoning ladder, pr16):
- * never a local copy, the map answers the owner's rungs at load time. */
+/** thinking budgets — the token budgets of the live ladder derived from
+ * the getry engine (the one owner of the reasoning ladder, pr16): never a
+ * local copy, the map answers the owner's registered rungs at load time
+ * and budgetof answers the live truth at call time. */
 export const thinkingbudgets: Record<string, number> = Object.fromEntries(
-  THINKINGLEVELS.map((rung) => [rung.level, rung.budget]),
+  listlevels().map((rung) => [rung.level, rung.budget]),
 );
+
+/** the seed ladder re-exported for the hosts that inspect the family
+ * default — the live truth answers listlevels() on the engine. */
+export const thinkingseed: ThinkingLevel[] = THINKINGLEVELS;
 
 /** thinkingbudget — get token budget for a level */
 export function thinkingbudget(level?: string): number {
-  return thinkingbudgets[autothinking(level)] ?? 68000;
+  return budgetof(autothinking(level));
 }
 
 /** makethinker — create a thinking budget object */
 export function makethinker(level?: string) {
   const lvl = autothinking(level);
   if (lvl === "none") return { type: "disabled" as const };
-  return { type: "enabled" as const, budget: thinkingbudgets[lvl] };
+  return { type: "enabled" as const, budget: budgetof(lvl) };
 }
 
 /** safestringify — json stringify that never throws */
