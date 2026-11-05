@@ -1221,8 +1221,10 @@ jobs:
             # @wenathlan/vault/labelstore imports through the ../vault
             # aliases, so the vault sources ride every family context);
             # the workbench image builds from the repository root the
-            # family-context law its Dockerfile header records; the
-            # self-contained site homes build from their own folder.
+            # family-context law its Dockerfile header records; the flatctx
+            # wave staged every alias-carrying site home (cobaia,
+            # stealthhead, forge, foundry, getry) beside its siblings, and
+            # only the self-contained vault engine keeps its own folder.
             # the legacy saddle container package of the standalone era keeps
             # its own access list (the 2.1.x line the old repository
             # published there): the merged repository token answers
@@ -1269,16 +1271,20 @@ jobs:
                 # context whole beside the copy-law vault sibling (the
                 # map is symmetric with the cadria lane below)
                 rm -rf familybuildctx
-                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/cadria
+                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/cadria familybuildctx/saddle
                 cp -a "${app}/." familybuildctx/app/
                 cp -a vault/. familybuildctx/vault/
                 cp -a cadria/. familybuildctx/cadria/
+                cp -a saddle/. familybuildctx/saddle/
                 rm -rf familybuildctx/vault/node_modules \
                        familybuildctx/vault/dist \
                        familybuildctx/vault/build \
                        familybuildctx/cadria/node_modules \
                        familybuildctx/cadria/dist \
-                       familybuildctx/cadria/build
+                       familybuildctx/cadria/build \
+                       familybuildctx/saddle/node_modules \
+                       familybuildctx/saddle/dist \
+                       familybuildctx/saddle/build
                 docker build -t "${image}:${RELEASE_VERSION}" familybuildctx
                 ;;
               cadria)
@@ -1307,10 +1313,55 @@ jobs:
                 # records) and the runtime target the publish lane pins
                 docker build -t "${image}:${RELEASE_VERSION}" -f devthink/Dockerfile --target runtime .
                 ;;
+              cobaia|stealthhead)
+                # the copy-law vault sibling (the label store bridge the
+                # flat village form could not answer inside the app-only
+                # context - the vite step died on labels.ts)
+                rm -rf familybuildctx
+                mkdir -p familybuildctx/app familybuildctx/vault
+                cp -a "${app}/." familybuildctx/app/
+                cp -a vault/. familybuildctx/vault/
+                rm -rf familybuildctx/vault/node_modules \
+                       familybuildctx/vault/dist \
+                       familybuildctx/vault/build
+                docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
+                ;;
+              forge|foundry)
+                # the vault copy law plus the saddle engine ownership (the
+                # modes and sandbox bridges the ../saddle aliases own)
+                rm -rf familybuildctx
+                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle
+                cp -a "${app}/." familybuildctx/app/
+                cp -a vault/. familybuildctx/vault/
+                cp -a saddle/. familybuildctx/saddle/
+                rm -rf familybuildctx/vault/node_modules \
+                       familybuildctx/vault/dist \
+                       familybuildctx/vault/build \
+                       familybuildctx/saddle/node_modules \
+                       familybuildctx/saddle/dist \
+                       familybuildctx/saddle/build
+                docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
+                ;;
+              getry)
+                # the gateway sibling map: the vault copy law, the saddle
+                # modality registry, the devthink config bridges and the
+                # debonair route table all ride the context whole
+                rm -rf familybuildctx
+                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
+                cp -a "${app}/." familybuildctx/app/
+                cp -a vault/. familybuildctx/vault/
+                cp -a saddle/. familybuildctx/saddle/
+                cp -a devthink/. familybuildctx/devthink/
+                cp -a debonair/. familybuildctx/debonair/
+                rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
+                       familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
+                       familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
+                       familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
+                docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
+                ;;
               *)
-                # the self-contained site shape: the application folder is
-                # the context (the flat village form cobaia, forge, foundry,
-                # getry, stealthhead and vault carry)
+                # the self-contained engine shape: the application folder is
+                # the context (the vault engine owns its own closure)
                 docker build -t "${image}:${RELEASE_VERSION}" "./${app}"
                 ;;
             esac
