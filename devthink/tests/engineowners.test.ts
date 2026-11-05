@@ -125,15 +125,21 @@ describe("the dedup contract — the 7-level thinking ladder", () => {
   });
 
   it("makes the os consume the ladder through the library specifier, never a local copy", () => {
-    // the engine derives its budget map from the owner's THINKINGLEVELS (the
-    // specifier inside the getry root may ride the published self-package form
-    // or the relative form — the ladder lives in one place either way)
+    // the engine derives its budget map from the owner's live ladder (the
+    // registerable rungs of the engine freedom law, pr5 — any count, never
+    // a fixed seven; the specifier inside the getry root may ride the
+    // published self-package form or the relative form — the ladder lives
+    // in one place either way)
     assert.match(
       enginesource,
       /from "(?:@wenathlan\/getry\/thinking|\.\/thinking\.(?:js|ts))"/,
       "engine.ts must import the ladder from the getry owner, never from a second copy",
     );
-    assert.match(enginesource, /THINKINGLEVELS\.map/, "engine.ts must derive its budgets from THINKINGLEVELS");
+    assert.match(
+      enginesource,
+      /listlevels\(\)\.map/,
+      "engine.ts must derive its budgets from the owner's live ladder (listlevels)",
+    );
     // the hardcoded ladder literals are gone — a second copy is the duplication
     assert.doesNotMatch(
       enginesource,
@@ -162,14 +168,14 @@ describe("the dedup contract — the 7-level thinking ladder", () => {
   });
 
   it("retires every other ladder copy the family carried: utils, view config, os gateway", () => {
-    // utils.ts — the helper family derives from the owner
+    // utils.ts — the helper family derives from the owner's live ladder
     assert.match(utilsource, /from "(?:@wenathlan\/getry\/thinking|\.\/thinking\.(?:js|ts))"/);
-    assert.match(utilsource, /THINKINGLEVELS\.map/);
+    assert.match(utilsource, /listlevels\(\)\.map/);
     assert.doesNotMatch(utilsource, /minimal:\s*1400/, "utils.ts must not carry a hardcoded rung budget");
     assert.doesNotMatch(utilsource, /"none" \| "minimal" \| "low"/, "utils.ts must not redeclare the rung union");
     // gatewayviewconfig.ts — the shipped example config derives its budgets
     assert.match(viewconfigsource, /from "(?:@wenathlan\/getry\/thinking|\.\/thinking\.(?:js|ts))"/);
-    assert.match(viewconfigsource, /THINKINGLEVELS\.map/);
+    assert.match(viewconfigsource, /listlevels\(\)\.map/);
     assert.doesNotMatch(viewconfigsource, /minimal:\s*1400/, "the view config must not carry a hardcoded budget map");
     // osgateway.ts — the client speaks the owner's union
     assert.match(osgatewaysource, /import type \{ ThinkingLevelName \} from "@wenathlan\/getry\/thinking"/);
