@@ -112,9 +112,9 @@ jobs:
         run: |
           set -euo pipefail
           case "${{ matrix.app }}" in
-            devthink) cd "$APP" && bun install --frozen-lockfile ;;
-            saddle) npm --prefix "$APP" ci ;;
-            *) pnpm --dir "$APP" install --frozen-lockfile ;;
+            devthink) cd "$APP" && bun install --frozen-lockfile --ignore-scripts ;;
+            saddle) npm --prefix "$APP" ci --ignore-scripts ;;
+            *) pnpm --dir "$APP" install --frozen-lockfile --ignore-scripts ;;
           esac
       - name: build and stage the web surface
         # the build answers straight at the application root: the staging
