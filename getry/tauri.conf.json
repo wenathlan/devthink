@@ -5,7 +5,7 @@
   "identifier": "com.wenathlan.getry",
   "build": {
     "beforeDevCommand": "pnpm dev",
-    "frontendDist": "build/web"
+    "frontendDist": "."
   },
   "app": {
     "windows": [
