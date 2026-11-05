@@ -10,7 +10,7 @@ package io.github.wenathlan.cobaia;
  */
 final class Cobaia {
   /** The version of the cobaia envelope (the six-distribution completeness wave). */
-  public static final String VERSION = "2.0.160";
+  public static final String VERSION = "2.0.161";
   private Cobaia() {
   }
 }
