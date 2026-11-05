@@ -704,6 +704,12 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     SAMPLE_RATE_MIN: "number",
     HEADER_LAYOUT: "object",
     WAV_FORMAT: "object",
+    /* the engine freedom law (pr5): the live ceilings the environment
+     * registers and the 16 bit fmt field truth that bounds them. */
+    WAV_CHANNELS_FIELD_MAX: "number",
+    channelsceiling: "number",
+    durationceilingseconds: "number",
+    exportsizeceilingbytes: "number",
   },
   blobstore: {
     blobidvalid: "function",

@@ -4,6 +4,7 @@
 // float32 marker, the mono/stereo interleave, the 24-bit byte order and the
 // hard failures the export seam must see with their machine codes.
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { describe, it } from "vitest";
 import {
   CHANNELS_MAX,
@@ -163,17 +164,17 @@ describe("wavwriter — the registered ceilings (the engine freedom law)", () =>
   it("rides a registered channel ceiling past the family default", () => {
     const script =
       "const m = await import(" +
-      JSON.stringify(`${import.meta.dir}/../wavwriter.ts`) +
+      JSON.stringify(`${import.meta.dirname}/../wavwriter.ts`) +
       ");" +
       "const buses = Array.from({ length: 12 }, () => new Float32Array(480));" +
       "const problems = m.validateEncoding(buses, { sampleRate: 48000, bitDepth: 16 });" +
       "console.log(JSON.stringify({ ceiling: m.channelsceiling, codes: problems.map((p) => p.code) }));";
-    const proc = Bun.spawnSync(["bun", "-e", script], {
+    const proc = spawnSync("bun", ["-e", script], {
       env: { ...process.env, DEBONAIR_WAV_CHANNELS_MAX: "16" },
       stdout: "pipe",
       stderr: "pipe",
     });
-    assert.equal(proc.exitCode, 0, `the registered probe failed: ${proc.stderr.toString()}`);
+    assert.equal(proc.status, 0, `the registered probe failed: ${proc.stderr?.toString()}`);
     const answer = JSON.parse(proc.stdout.toString().trim().split("\n").at(-1) ?? "{}") as {
       ceiling: number;
       codes: string[];
@@ -185,12 +186,12 @@ describe("wavwriter — the registered ceilings (the engine freedom law)", () =>
   it("rides the unlimited words — no cap answers at all", () => {
     const script =
       "const m = await import(" +
-      JSON.stringify(`${import.meta.dir}/../wavwriter.ts`) +
+      JSON.stringify(`${import.meta.dirname}/../wavwriter.ts`) +
       ");" +
       "const buses = Array.from({ length: 9 }, () => new Float32Array(48000 * 4000));" +
       "const problems = m.validateEncoding(buses, { sampleRate: 48000, bitDepth: 16 });" +
       "console.log(JSON.stringify({ duration: String(m.durationceilingseconds), size: String(m.exportsizeceilingbytes), codes: problems.map((p) => p.code) }));";
-    const proc = Bun.spawnSync(["bun", "-e", script], {
+    const proc = spawnSync("bun", ["-e", script], {
       env: {
         ...process.env,
         DEBONAIR_WAV_MAX_DURATION_SECONDS: "unlimited",
@@ -200,7 +201,7 @@ describe("wavwriter — the registered ceilings (the engine freedom law)", () =>
       stdout: "pipe",
       stderr: "pipe",
     });
-    assert.equal(proc.exitCode, 0, `the unlimited probe failed: ${proc.stderr.toString()}`);
+    assert.equal(proc.status, 0, `the unlimited probe failed: ${proc.stderr?.toString()}`);
     const answer = JSON.parse(proc.stdout.toString().trim().split("\n").at(-1) ?? "{}") as {
       duration: string;
       size: string;

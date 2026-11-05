@@ -150,14 +150,18 @@ describe("sandboxlane", () => {
     expect(text).toMatch(/containerdocker: live lane — docker (available on this host|not installed on this host, the run lane refuses honestly)/);
     expect(text).toContain("runnernode: live lane — the node runtime the run lane executes inside the container");
     expect(text).toContain("fsvfs: live lane — the session jail the storage lane drives");
-    expect(text).toContain("runnerserverless: live lane — the v8 isolate the exec lane drives in process");
-    expect(text).toContain("storagesqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
-    expect(text).toContain("fsgitobjects: live lane — the content-addressed objects store the gitobj tool drives");
-    expect(text).toContain("networkdns: live lane — the node resolver the dns tool drives");
-    expect(text).toContain("networkdoh: live lane — the https resolver the doh tool drives");
+    // the saddle honesty rung (#441) moved the registry-only seats the
+    // engine never carried real executors for onto the planned shelf — the
+    // report answers the registry's honest state, never a wiring the lanes
+    // do not drive
+    expect(text).toContain("runnerserverless: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("storagesqlite: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("fsgitobjects: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("networkdns: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("networkdoh: planned — the catalog promise, no lane wires it yet");
     // the polyglot live lanes probe their host runtime (python names the binary)
     expect(text).toContain("languagepython: live lane — python3 ");
-    expect(text).toContain("buildmake: live lane — make ");
+    expect(text).toContain("buildmake: planned — the catalog promise, no lane wires it yet");
     // the host runtimes name their binary and the probe verdict of this host
     expect(text).toContain("emulatorqemu: host runtime qemu-system-x86_64 not installed");
     expect(text).toContain("microvmfirecracker: host runtime firecracker not installed");
