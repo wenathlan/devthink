@@ -10,6 +10,7 @@
 // an unknown extension answers undefined so the internal root serves the
 // honest octet-stream default, never a guess.
 import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
 import { describe, it } from "vitest";
 import {
   contentTypeFor,
@@ -107,5 +108,85 @@ describe("the catalog lookup lane", () => {
     for (const family of ["video", "audio", "image", "font", "model", "chemical", "message", "multipart", "text"]) {
       assert.ok(MIME_FAMILIES.includes(family), `the family ${family} rides the corpus`);
     }
+  });
+});
+
+/* the saddle golden table — the family's own mime lane (saddle/mime.types, the
+ * nginx-format registry the monorepo ships beside the sandbox engine). The
+ * golden-table law: every type row and every extension mapping it carries
+ * rides the vault corpus too — the family tables never fork. The battery runs
+ * in the monorepo form (the sibling table landed beside vault); the published
+ * package ships without the sibling, so the battery answers skipped there and
+ * the monorepo ci carries the law. */
+const GOLDEN_TABLE = new URL("../../saddle/mime.types", import.meta.url);
+const GOLDEN_LANDED = existsSync(GOLDEN_TABLE);
+
+/** Parses one nginx-format mime table: type then space-separated extensions,
+ * trailing semicolon stripped, comments and blanks dropped. */
+function goldenRows(text: string): { type: string; extensions: string[] }[] {
+  const rows: { type: string; extensions: string[] }[] = [];
+  for (const rawLine of text.split("\n")) {
+    const line = rawLine.trim().replace(/;$/, "");
+    if (line.length === 0 || line.startsWith("#")) continue;
+    const fields = line.split(/\s+/).filter(Boolean);
+    if (fields.length === 0) continue;
+    rows.push({ type: fields[0].toLowerCase(), extensions: fields.slice(1).map((e) => e.toLowerCase()) });
+  }
+  return rows;
+}
+
+describe("the saddle golden table (the family mime lane, one table, zero fork)", () => {
+  const rows = GOLDEN_LANDED ? goldenRows(readFileSync(GOLDEN_TABLE, "utf8")) : [];
+
+  it("lands in the monorepo and parses a real registry, never an empty read", () => {
+    assert.ok(GOLDEN_LANDED, "the saddle golden table landed beside vault (the monorepo form)");
+    assert.ok(rows.length > 2000, `the golden table carries ${rows.length} type rows`);
+  });
+
+  it("carries every golden type row in the vault corpus", (ctx) => {
+    const missing: string[] = [];
+    for (const row of rows) {
+      if (mimeTypeRow(row.type) === undefined) missing.push(row.type);
+    }
+    ctx.expect(missing).toEqual([]);
+  });
+
+  it("claims every golden extension mapping (the collision law answers the claimant)", (ctx) => {
+    const missing: string[] = [];
+    for (const row of rows) {
+      for (const extension of row.extensions) {
+        if (mimeTypeFor(extension) === undefined) missing.push(`${extension} -> ${row.type}`);
+      }
+    }
+    ctx.expect(missing).toEqual([]);
+  });
+
+  it("answers the golden multi-part lanes the nginx names carry", () => {
+    assert.equal(mimeTypeFor("cwl.json"), "application/cwl+json");
+    assert.equal(mimeTypeFor("sarif.json"), "application/sarif+json");
+    assert.equal(mimeTypeFor("spdx.json"), "application/spdx+json");
+    assert.equal(mimeTypeFor("tm.json"), "application/tm+json");
+    assert.equal(mimeTypeFor("tm.jsonld"), "application/tm+json");
+    assert.equal(mimeTypeFor("gpkg.tar"), "application/vnd.gentoo.gpkg");
+    assert.equal(mimeTypeFor("1905.1"), "application/vnd.ieee.1905");
+    assert.equal(mimeTypeFor("syft.json"), "application/vnd.syft+json");
+    assert.equal(mimeTypeFor("msd"), "application/vnd.fdsn.mseed");
+    assert.equal(mimeTypeFor("pcf.z"), "application/x-font-pcf");
+    assert.equal(mimeTypeFor("mpv"), "video/x-matroska");
+  });
+
+  it("carries the golden inode rows (the filesystem pseudo-family)", () => {
+    const inodeTypes = [
+      "inode/blockdevice",
+      "inode/chardevice",
+      "inode/directory",
+      "inode/directory-locked",
+      "inode/fifo",
+      "inode/socket",
+    ];
+    for (const type of inodeTypes) {
+      assert.equal(mimeTypeRow(type)?.family, "inode", `the row ${type} rides the inode family`);
+    }
+    assert.ok(MIME_FAMILIES.includes("inode"), "the inode family rides the catalog");
   });
 });
