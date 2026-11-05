@@ -5537,7 +5537,7 @@ jobs:
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
       - name: install
-        run: npm --prefix saddle ci
+        run: npm --prefix saddle ci --ignore-scripts
       - name: build engine
         run: npm --prefix saddle run build:engine
       - name: write target plan

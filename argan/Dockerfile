@@ -21,7 +21,7 @@ COPY app/pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --frozen-lockfile
+ && pnpm install --frozen-lockfile --ignore-scripts
 COPY app/ .
 # The vault sibling of the copy law: labels.ts imports the label store
 # through the @wenathlan/vault/labelstore bridge and the vite alias

@@ -101,10 +101,10 @@ jobs:
         run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
       - name: install the dependencies (pnpm leg)
         if: matrix.pm == 'pnpm'
-        run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
+        run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile --ignore-scripts
       - name: install the dependencies (npm leg)
         if: matrix.pm == 'npm'
-        run: npm --prefix "${{ matrix.app }}" ci
+        run: npm --prefix "${{ matrix.app }}" ci --ignore-scripts
       - name: build the web surface (bun leg)
         if: matrix.pm == 'bun'
         run: cd "${{ matrix.app }}" && npm run build:web
@@ -431,10 +431,10 @@ jobs:
         run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
       - name: install the dependencies (pnpm leg)
         if: matrix.pm == 'pnpm'
-        run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile
+        run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile --ignore-scripts
       - name: install the dependencies (npm leg)
         if: matrix.pm == 'npm'
-        run: npm --prefix "${{ matrix.app }}" ci
+        run: npm --prefix "${{ matrix.app }}" ci --ignore-scripts
       - name: build the web surface (bun leg)
         if: matrix.pm == 'bun'
         run: cd "${{ matrix.app }}" && npm run build:web

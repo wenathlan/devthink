@@ -23,7 +23,7 @@ COPY app/pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --frozen-lockfile
+ && pnpm install --frozen-lockfile --ignore-scripts
 COPY app/ .
 # the copy-law vault sibling: the sol sources import the label store through the @wenathlan/vault/labelstore bridge and the vite alias resolves the specifier to ../vault/labelstore.ts, so the sibling sources land at /src/vault where that bridge answers inside the container (the app-only context left the import unloadable and the vite step died on labels.ts).
 COPY vault/ /src/vault/
