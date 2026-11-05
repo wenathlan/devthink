@@ -69,8 +69,10 @@ model ProjectKey {
 
 /// one ledger row per stored object — the path, the mime, the real sha-256
 /// digest, the json manifest (the ordered chunk truth) and the bigint size
-/// pointer. deleted_at is the soft-delete tombstone; the sweep collects the
-/// tombstones and the orphan chunks no one references anymore.
+/// pointer. bucket is the retention group the object rides (the real
+/// dimension the shelf answers, defaulting to family-state). deleted_at is
+/// the soft-delete tombstone; the sweep collects the tombstones and the
+/// orphan chunks no one references anymore.
 model StorageObject {
   id        String     @id @default(cuid())
   projectId String
@@ -82,6 +84,8 @@ model StorageObject {
   /// the json manifest as text — the ordered chunk entries, the channel, the tier
   manifest  String
   channel   String     @default("blob")
+  /// the bucket the object rides — the retention group (family-state seat)
+  bucket    String     @default("family-state") @map("bucket")
   createdAt DateTime   @default(now())
   deletedAt DateTime?
   chunkRefs ChunkRef[]

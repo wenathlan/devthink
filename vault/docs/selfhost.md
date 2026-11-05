@@ -25,9 +25,12 @@ every layer is pinned by `tests/deploysafety.test.ts`:
 3. **`_headers` seals the database faces.** A stray `*.db`, `*.db-shm`,
    `*.db-wal` or `*.db-journal` inside the publish tree answers
    `no-store`, `noindex` and never renders inline.
-4. **The engine refuses the faces itself.** The api.ts static lane answers
-   404 for any database pathname, even a stray store inside the static
-   root — the seal holds where the engine owns the door.
+4. **The engine refuses the faces itself.** The api.ts surface answers
+   `403 VAULT_DBFILE` for any database pathname — the raw-database law
+   runs one door earlier than every lane (before the health probe, the
+   api surface and the static faces are ever consulted), and the static
+   lane refuses a database file inside the static root the same way: the
+   bytes never leave, whichever face the request names.
 
 ## The static lanes (netlify · vercel · workers · pages)
 
@@ -101,12 +104,18 @@ The routes the engine answers (the catalog lives in `api.ts`):
 | --- | --- |
 | `GET /api/health` | the open health probe (no bearer) |
 | `GET /api/v1/ui/copy` · `GET /api/v1/ui/copy/:key` | the interface copy (open — the words carry no secret) |
+| `GET /api/v1/protocols` · `GET /api/v1/protocols/:scheme` | the protocols pillar — every wire of the catalog answers its own static-safe route (open, read-only) |
 | `POST /api/v1/auth/signup` | the public account door — `{ email, password }`, 201 with the account id, the password only as its scrypt digest (rate limited per peer) |
 | `POST /api/v1/auth/signin` | the public password door — 200 with the signed `vs_` session bearer (the answer is the token alone; nothing saves in a browser) |
+| `POST /api/v1/databases` | the person's register door — verified `{ email, password, name, quotaBytes? }` provisions one app database with the 900MB floor and answers the first `vault_` api key shown exactly once (the store keeps only the sha-256 digest) |
+| `GET /api/v1/databases/:id` | the database row with its honest usage (the bearer door: the operator token, the database's own key, or the owner's account credentials) |
+| `POST /api/v1/databases/:id/keys` | issue one more `vault_` key for the database — the plaintext answers exactly once (the digest alone is stored) |
+| `GET` · `POST /api/v1/databases/:id/quota` | the per-database quota lane — read the row (`quotaBytes` decimal string or null), set the owner's word (`{ limitBytes }`: decimal bytes at any scale or null for unlimited) |
+| `POST /api/v1/query` | the helix-style query lane — `Authorization: Bearer vault_…` (or the operator token) plus the `x-database-id` header (or `databaseId` in the body), `{ query, params }` runs ONE statement on that database's own sqlite file: a read answers `{ kind: "read", columns, rows }`, a write answers `{ kind: "write", changes, lastInsertRowid }`; a wrong bearer answers 401 `VAULT_QUERY_AUTH`, a key asked for a foreign database answers 403 `VAULT_QUERY_SCOPE`, a write at the quota row answers 413 `VAULT_QUOTA` |
 | `POST` · `GET /api/v1/storage/projects` | create the owner scope (quota floor 900MB) / list the scopes paginated (`?limit=&offset=` — a session sees its own only) |
 | `POST` · `GET /api/v1/storage/projects/:id/keys` · `DELETE /api/v1/storage/projects/:id/keys/:keyid` | mint one `vk_` key (the secret answers once), list labels + last-used, revoke |
-| `POST /api/v1/storage/objects` | the deposit — raw body bytes, `x-project-id` / `x-object-path` / `x-object-mime` headers |
-| `GET /api/v1/storage/objects?project=` | the live rows of one project |
+| `POST /api/v1/storage/objects` | the deposit — raw body bytes, `x-project-id` / `x-object-path` / `x-object-mime` headers, and the optional `x-object-bucket` header (the retention group — defaults to `family-state`) |
+| `GET /api/v1/storage/objects?project=&bucket=` | the live rows of one project (all buckets, or one retention group when the `bucket` query pins it) |
 | `GET` · `DELETE /api/v1/storage/objects/:id` | the verified bytes back / the soft delete |
 | `GET` · `POST /api/v1/storage/quota?project=` | the usage and the user-defined limit |
 | `GET /api/v1/storage/usage?project=` | the usage census |

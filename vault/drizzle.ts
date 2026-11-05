@@ -77,6 +77,9 @@ export const storageObjects = sqliteTable("storage_objects", {
   manifest: text("manifest", { mode: "json" }).$type<ObjectManifest>().notNull(),
   /** the channel the object rode — blob or lfs, the storage.ts contract answer */
   channel: text("channel").notNull(),
+  /** the bucket the object rides (the retention group — the real dimension
+   * the shelf answers, defaulting to the family-state seat) */
+  bucket: text("bucket").notNull().default("family-state"),
   /** the creation datetime of the row */
   createdAt: text("created_at").notNull().default(sql`(datetime('now'))`),
   /** the soft-delete datetime — null while the object lives */
@@ -192,6 +195,7 @@ const BOOT_DDL: readonly string[] = [
      digest     TEXT NOT NULL,
      manifest   TEXT NOT NULL,
      channel    TEXT NOT NULL,
+     bucket     TEXT NOT NULL DEFAULT 'family-state',
      created_at TEXT NOT NULL DEFAULT (datetime('now')),
      deleted_at TEXT
    )`,
@@ -277,6 +281,23 @@ export function ensureStorageSchema(database: StorageDatabase): void {
     "projects",
     "account_id",
     "ALTER TABLE projects ADD COLUMN account_id TEXT REFERENCES accounts(id)",
+  );
+  /* the bucket-dimension ladder: a store opened before the bucket wave
+   * keeps its storage_objects table without the retention column, so the
+   * bucket climbs on the first boot after the upgrade (every standing row
+   * answers the family-state seat the default pins — never a null). */
+  ensureColumn(
+    database,
+    "storage_objects",
+    "bucket",
+    "ALTER TABLE storage_objects ADD COLUMN bucket TEXT NOT NULL DEFAULT 'family-state'",
+  );
+  /* the bucket index rides AFTER the ladder: on a store opened before the
+   * wave the column first climbs (the ALTER above), then the index lands —
+   * a CREATE INDEX inside the boot DDL alone would face a pre-wave table
+   * without the column and refuse the whole open. */
+  database.run(
+    sql.raw("CREATE INDEX IF NOT EXISTS storage_objects_bucket ON storage_objects(project_id, bucket)"),
   );
 }
 

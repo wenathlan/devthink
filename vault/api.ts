@@ -95,6 +95,7 @@ import {
 import { storage, storageDriverKind } from "./drizzle.ts";
 import {
   createProject,
+  DEFAULT_BUCKET,
   deleteObject,
   getObject,
   type LedgerObject,
@@ -909,11 +910,12 @@ function revokeProjectKeyRoute(res: ServerResponse, projectId: string, keyId: st
   sendError(res, 404, "VAULT_ABSENT", `the key "${keyId}" is not on the project "${projectId}"`);
 }
 
-/** POST /api/v1/storage/objects — the deposit: raw body bytes, path and mime from the headers. */
+/** POST /api/v1/storage/objects — the deposit: raw body bytes, path, mime and bucket from the headers. */
 async function postObject(req: IncomingMessage, res: ServerResponse, auth: RequestAuth): Promise<void> {
   const projectId = headerOf(req, "x-project-id");
   const objectPath = safeDecode(headerOf(req, "x-object-path"));
   const mime = headerOf(req, "x-object-mime") || "application/octet-stream";
+  const bucket = headerOf(req, "x-object-bucket") || DEFAULT_BUCKET;
   if (projectId === "" || objectPath === "") {
     sendError(res, 400, "VAULT_INVALID", "the deposit needs the x-project-id and x-object-path headers");
     return;
@@ -923,7 +925,7 @@ async function postObject(req: IncomingMessage, res: ServerResponse, auth: Reque
     return;
   }
   const bytes = await readBody(req);
-  const answer = putObject({ projectId, path: objectPath, mime, bytes });
+  const answer = putObject({ projectId, path: objectPath, mime, bytes, bucket });
   if (!("refusal" in answer)) {
     sendJson(res, 201, { object: jsonOfObject(answer.object), reused: answer.reused });
     return;
@@ -937,7 +939,8 @@ async function postObject(req: IncomingMessage, res: ServerResponse, auth: Reque
   sendError(res, 400, "VAULT_INVALID", answer.refusal.why);
 }
 
-/** GET /api/v1/storage/objects — the live rows of one project, newest first. */
+/** GET /api/v1/storage/objects — the live rows of one project (one retention
+ * group when the bucket query pins it), newest first. */
 function listObjectsRoute(res: ServerResponse, url: URL, auth: RequestAuth): void {
   const projectId = url.searchParams.get("project") ?? "";
   if (projectId === "") {
@@ -948,7 +951,8 @@ function listObjectsRoute(res: ServerResponse, url: URL, auth: RequestAuth): voi
     sendProjectForbidden(res, auth, projectId);
     return;
   }
-  sendJson(res, 200, { objects: listObjects(projectId).map(jsonOfObject) });
+  const bucket = url.searchParams.get("bucket");
+  sendJson(res, 200, { objects: listObjects(projectId, bucket === null ? undefined : bucket).map(jsonOfObject) });
 }
 
 /** GET /api/v1/storage/objects/:id — the verified bytes back, served as the stored mime (the project verdict runs first). */
@@ -1634,6 +1638,7 @@ function jsonOfObject(object: LedgerObject): Record<string, unknown> {
     size: object.size.toString(),
     digest: object.digest,
     channel: object.channel,
+    bucket: object.bucket,
     tier: object.tier,
     createdAt: object.createdAt,
   };
@@ -1705,7 +1710,7 @@ function applyCors(res: ServerResponse): void {
   res.setHeader("access-control-allow-methods", "GET, POST, DELETE, OPTIONS");
   res.setHeader(
     "access-control-allow-headers",
-    "content-type, authorization, x-vault-token, x-project-id, x-database-id, x-object-path, x-object-mime",
+    "content-type, authorization, x-vault-token, x-project-id, x-database-id, x-object-path, x-object-mime, x-object-bucket",
   );
 }
 

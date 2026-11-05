@@ -62,6 +62,25 @@ export * from "./objectface.ts";
 /** the project identity shape: 3-64 chars of lowercase letters, digits and dashes, starting alphanumeric. */
 const PROJECT_PATTERN = /^[a-z0-9][a-z0-9-]{2,63}$/;
 
+/** the bucket identity shape: 1-64 chars of lowercase letters, digits and
+ * dashes, starting alphanumeric — the same spelling the rehearsal shelf
+ * rides (family-state, site-assets, run-evidence, backups — never a
+ * surprise casing). */
+const BUCKET_PATTERN = /^[a-z0-9][a-z0-9-]{0,63}$/;
+
+/** the default bucket every deposit rides when the caller never named one
+ * (the family-state seat — the forever retention group, the safe default). */
+export const DEFAULT_BUCKET = "family-state";
+
+/**
+ * Validates a bucket identity — the retention group the object rides.
+ *
+ * @param bucket the candidate bucket name.
+ */
+export function bucketValid(bucket: string): boolean {
+  return BUCKET_PATTERN.test(bucket);
+}
+
 /**
  * Validates a project identity — the owner scope every object and quota hangs from.
  *
@@ -242,6 +261,9 @@ export interface PutInput {
   mime: string;
   /** the real bytes to keep */
   bytes: Uint8Array;
+  /** the bucket the object rides (the retention group — the real dimension
+   * the shelf answers; defaults to the family-state seat) */
+  bucket?: string;
 }
 
 /** One object of the ledger — the row answer with bigint pointers. */
@@ -260,6 +282,8 @@ export interface LedgerObject {
   digest: string;
   /** the channel the object rode — blob or lfs (the storage.ts contract) */
   channel: VaultChannel;
+  /** the bucket the object rides — the retention group (the real dimension) */
+  bucket: string;
   /** the tier the object rides — l3 cold or warm */
   tier: StorageTier;
   /** the creation datetime of the row */
@@ -295,6 +319,15 @@ export function putObject(input: PutInput): PutAnswer {
   }
   if (!mimeValid(input.mime)) {
     return { refusal: { kind: "invalid", why: "the mime must be a type/subtype pair" } };
+  }
+  const bucket = input.bucket ?? DEFAULT_BUCKET;
+  if (!bucketValid(bucket)) {
+    return {
+      refusal: {
+        kind: "invalid",
+        why: `the bucket "${bucket}" must be 1-64 chars of lowercase letters, digits and dashes, starting alphanumeric`,
+      },
+    };
   }
   const size = BigInt(input.bytes.length);
   const digest = sha256Hex(input.bytes);
@@ -347,7 +380,7 @@ export function putObject(input: PutInput): PutAnswer {
     }
     const manifest: ObjectManifest = { version: 1, digest, size: size.toString(), channel, tier, entries };
     tx.insert(storageObjects)
-      .values({ id, projectId: input.projectId, path: input.path, mime: input.mime, size, digest, manifest, channel })
+      .values({ id, projectId: input.projectId, path: input.path, mime: input.mime, size, digest, manifest, channel, bucket })
       .run();
     if (chunkIds.length > 0) {
       tx.insert(chunkRefs)
@@ -597,15 +630,22 @@ export function storageCensus(): CensusAnswer {
 
 /**
  * Lists the live objects of one project — newest first, bounded to five
- * hundred rows, the explicit projection only.
+ * hundred rows, the explicit projection only. The optional bucket filter
+ * narrows the answer to one retention group (the real bucket dimension —
+ * the shelf the browser face reads).
  *
  * @param projectId the owning project.
+ * @param bucket the retention group filter (every bucket when omitted).
  */
-export function listObjects(projectId: string): LedgerObject[] {
+export function listObjects(projectId: string, bucket?: string): LedgerObject[] {
+  const filters = [eq(storageObjects.projectId, projectId), isNull(storageObjects.deletedAt)];
+  if (bucket !== undefined) {
+    filters.push(eq(storageObjects.bucket, bucket));
+  }
   return storage
     .select(OBJECT_COLUMNS)
     .from(storageObjects)
-    .where(and(eq(storageObjects.projectId, projectId), isNull(storageObjects.deletedAt)))
+    .where(and(...filters))
     .orderBy(desc(storageObjects.createdAt), desc(storageObjects.id))
     .limit(500)
     .all()
@@ -626,6 +666,7 @@ const OBJECT_COLUMNS = {
   digest: storageObjects.digest,
   manifest: storageObjects.manifest,
   channel: storageObjects.channel,
+  bucket: storageObjects.bucket,
   createdAt: storageObjects.createdAt,
 };
 
@@ -639,6 +680,7 @@ type ObjectRowSql = {
   digest: string;
   manifest: ObjectManifest;
   channel: string;
+  bucket: string;
   createdAt: string;
 };
 
@@ -652,6 +694,7 @@ function ledgerObjectOf(row: ObjectRowSql): LedgerObject {
     size: BigInt(row.size),
     digest: row.digest,
     channel: row.channel === "lfs" ? "lfs" : "blob",
+    bucket: row.bucket,
     tier: row.manifest.tier,
     createdAt: row.createdAt,
   };
