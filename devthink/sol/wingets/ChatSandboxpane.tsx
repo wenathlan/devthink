@@ -72,8 +72,9 @@ export type SandboxRunner = (command: string) => SandboxRunResult | null | Promi
 
 /** the honest offline row — the one declaration a fallen lane makes: the
  * pane answers locally from here on and the deployed copy carries the
- * server lane. It prints once per pane session, never per command. */
-const OFFLINE_ROW = "offline — running locally. connect to enable the full suite.";
+ * server lane (the sentence rides the chat string store, key sb.offlineRow).
+ * It prints once per pane session, never per command. */
+const offlineRow = (): string => chatText("sb.offlineRow");
 
 /** newsessionid — the ephemeral per-pane session id of the server lane:
  * the route gate form (letters, digits and dashes, four to sixty four
@@ -224,7 +225,7 @@ export function SandboxPane({
     if (engineref.current === null) engineref.current = createSandboxState(DEFAULT_SPEC);
     if (!offlineref.current) {
       offlineref.current = true;
-      printrow(OFFLINE_ROW, "boot");
+      printrow(offlineRow(), "boot");
     }
   };
 
@@ -287,7 +288,7 @@ export function SandboxPane({
   const execlocal = (raw: string): SandboxRunResult => {
     const engine = engineref.current;
     const before = snapshotFiles(engine);
-    const result = engine !== null ? dispatch(raw, engine) : { output: "the sandbox is not running", exitCode: 1 };
+    const result = engine !== null ? dispatch(raw, engine) : { output: chatText("sb.notRunning"), exitCode: 1 };
     const changes = vfsChanges(before, snapshotFiles(engine));
     if (result.clear === true) {
       setRows([]);
@@ -436,7 +437,7 @@ export function SandboxPane({
         className="dtc-sb__out"
         role="log"
         aria-live="polite"
-        aria-label="Sandbox boot and command output"
+        aria-label={chatText("sb.outputAria")}
         ref={outref}
         tabIndex={open ? 0 : -1}
         onClick={() => {
@@ -463,7 +464,7 @@ export function SandboxPane({
           autoComplete="off"
           autoCapitalize="off"
           spellCheck={false}
-          aria-label="Run a sandbox command"
+          aria-label={chatText("sb.runAria")}
           disabled={!running}
           value={value}
           tabIndex={open ? 0 : -1}
