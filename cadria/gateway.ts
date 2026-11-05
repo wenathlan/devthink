@@ -414,10 +414,23 @@ export function createGateway(store: GenerationStore): Hono {
 
 // ---- default wiring + serve entry ----
 
+/** true when this module runs inside a node process (the gateway runtime);
+ * the browser lane never carries the sqlite seat — the storage law of the
+ * family rides node runtimes only, so the browser answers the memory store
+ * by design, never a failed resolution. */
+function isnode(): boolean {
+  return typeof process !== "undefined" && process.versions?.node != null;
+}
+
 /** defaultGateway — lazily resolves the real store: dynamic import of generation.ts
  * (the db agent's sqlite generationStore) inside try/catch, degrading to memoryStore()
- * when the module or its sqlite layer is absent. Never rejects, never hard-crashes. */
+ * when the module or its sqlite layer is absent. Never rejects, never hard-crashes.
+ * The browser graph reaches this module (the Sol pages import the client lane), so
+ * the sqlite seat loads only under node — the getry law: the driver rides behind a
+ * process guard, the browser never attempts the native resolution, and no dishonest
+ * warning fires for a lane that was never meant to carry sqlite. */
 export async function defaultGateway(): Promise<Hono> {
+  if (!isnode()) return createGateway(memoryStore());
   try {
     const mod = (await import("./generation.ts")) as Partial<{ generationStore: () => GenerationStore }>;
     if (typeof mod.generationStore !== "function") throw new Error("generation.ts did not export generationStore()");

@@ -23,7 +23,7 @@ import { useCallback, useMemo, useState } from "react";
 import { familyrow, familyurl } from "../../family";
 import type { HomeProps } from "../../hometypes.ts";
 import { labelfill } from "../../labels";
-import { lfsPointerFrom, storageModeFor } from "../../storage";
+import { lfsPointerFrom, storageModeFor } from "../../storageface.ts";
 import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
 import {
   Dbconsole,

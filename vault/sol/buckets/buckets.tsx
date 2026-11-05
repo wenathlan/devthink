@@ -19,7 +19,7 @@ import {
 import { useMemo, useState } from "react";
 import { type BucketRule, type BucketShelf, retentionLabel, seedRules, shelfOf } from "../../buckets.ts";
 import { label, labelfill } from "../../labels";
-import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
+import { formatBytes, seedVault, type VaultObject } from "../../objectface.ts";
 import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
 import { EmptyState, toast } from "../wingets";
 

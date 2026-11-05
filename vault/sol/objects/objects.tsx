@@ -30,7 +30,7 @@ import {
   type VaultObject,
   vaultCensus,
   verifyObject,
-} from "../../objects.ts";
+} from "../../objectface.ts";
 import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
 import { EmptyState, toast } from "../wingets";
 

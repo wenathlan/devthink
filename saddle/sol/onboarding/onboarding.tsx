@@ -98,7 +98,7 @@ export default function Onboarding() {
                                                                                 <li key={app.href} className="winonboard__fact">
                                                                                         <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
                                                                                         <span>
-                                                                                                <strong>{app.label}</strong> — {app.detail}
+                                                                                                <strong>{label(app.label)}</strong> — {label(app.detail)}
                                                                                         </span>
                                                                                 </li>
                                                                         );

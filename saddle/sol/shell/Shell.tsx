@@ -55,7 +55,7 @@ import { Link, useLocation } from 'wouter';
 import type { MediaSlot } from '../../catalog.ts';
 import { familyrow } from '../../family.ts';
 import { familyurl } from '../../familyurl.ts';
-import { label } from '../../labels.ts';
+import { label, labelfill, type LabelKey } from '../../labels.ts';
 import { cn } from '../../utils.ts';
 
 /* ============================ theme context ============================ */
@@ -462,83 +462,115 @@ export function SectionRail({ number, label }: SectionRailProps) {
 /** one legacy nav entry (the prop shape the page anchors type against) */
 export type NavLink = { label: string; href: string };
 
-/** one entry of the window rail: a page surface of the app with its glyph. */
+/** one entry of the window rail: a page surface of the app with its glyph.
+ * the words ride the label store — label and detail answer store keys. */
 export type StartApp = {
         href: string;
-        label: string;
-        detail: string;
+        label: LabelKey;
+        detail: LabelKey;
         icon: typeof LayoutDashboard;
 };
 
 /** one rail SECTION: a mono-labelled group of page entries. */
 export type RailSection = {
         id: string;
-        label: string;
+        label: LabelKey;
         apps: readonly StartApp[];
 };
 
 /** the rail of the app, SECTIONED: workspace, platform, library and
- * account — one entry per page route, the apex home first. exported for
- * the onboarding copy beside this folder. */
+ * account — one entry per page route, the apex home first. every word
+ * answers the label store (the shell rail keys of labels.ts), never a
+ * hardcoded string; exported for the onboarding copy beside this folder. */
 export const NAV_SECTIONS: readonly RailSection[] = [
         {
                 id: 'workspace',
-                label: 'workspace',
+                label: 'shell.rail.section.workspace',
                 apps: [
-                        { href: '/', label: 'home', detail: 'the thesis and the machine', icon: LayoutDashboard },
+                        {
+                                href: '/',
+                                label: 'shell.rail.home',
+                                detail: 'shell.rail.homeDetail',
+                                icon: LayoutDashboard,
+                        },
                         {
                                 href: '/dashboard',
-                                label: 'dashboard',
-                                detail: 'sessions, users and the admin panel',
+                                label: 'shell.rail.dashboard',
+                                detail: 'shell.rail.dashboardDetail',
                                 icon: Gauge,
                         },
-                        { href: '/console', label: 'console', detail: 'operations and events', icon: TerminalSquare },
+                        {
+                                href: '/console',
+                                label: 'shell.rail.console',
+                                detail: 'shell.rail.consoleDetail',
+                                icon: TerminalSquare,
+                        },
                         {
                                 href: '/playground',
-                                label: 'playground',
-                                detail: 'map requests, never run them',
+                                label: 'shell.rail.playground',
+                                detail: 'shell.rail.playgroundDetail',
                                 icon: FlaskConical,
                         },
                 ],
         },
         {
                 id: 'platform',
-                label: 'platform',
+                label: 'shell.rail.section.platform',
                 apps: [
-                        { href: '/compute', label: 'compute', detail: 'execution layers and tiers', icon: Cpu },
+                        {
+                                href: '/compute',
+                                label: 'shell.rail.compute',
+                                detail: 'shell.rail.computeDetail',
+                                icon: Cpu,
+                        },
                         {
                                 href: '/integrations',
-                                label: 'integrations',
-                                detail: 'surfaces and bridges',
+                                label: 'shell.rail.integrations',
+                                detail: 'shell.rail.integrationsDetail',
                                 icon: PlugZap,
                         },
                         {
                                 href: '/agent-browser',
-                                label: 'agentbrowser',
-                                detail: "the agent's own browser",
+                                label: 'shell.rail.agentbrowser',
+                                detail: 'shell.rail.agentbrowserDetail',
                                 icon: AppWindow,
                         },
                 ],
         },
         {
                 id: 'library',
-                label: 'library',
+                label: 'shell.rail.section.library',
                 apps: [
-                        { href: '/docs', label: 'docs', detail: 'the working notes', icon: BookOpen },
+                        {
+                                href: '/docs',
+                                label: 'shell.rail.docs',
+                                detail: 'shell.rail.docsDetail',
+                                icon: BookOpen,
+                        },
                         {
                                 href: '/architecture',
-                                label: 'architecture',
-                                detail: 'repo, CI, pages, buckets',
+                                label: 'shell.rail.architecture',
+                                detail: 'shell.rail.architectureDetail',
                                 icon: Boxes,
                         },
                 ],
         },
         {
                 id: 'account',
-                label: 'account',
+                label: 'shell.rail.section.account',
                 apps: [
-                        { href: '/login', label: 'login', detail: 'sign in to the node', icon: LogIn },
-                        { href: '/register', label: 'register', detail: 'create the local account', icon: UserPlus },
+                        {
+                                href: '/login',
+                                label: 'shell.rail.login',
+                                detail: 'shell.rail.loginDetail',
+                                icon: LogIn,
+                        },
+                        {
+                                href: '/register',
+                                label: 'shell.rail.register',
+                                detail: 'shell.rail.registerDetail',
+                                icon: UserPlus,
+                        },
                 ],
         },
 ];
@@ -560,8 +592,8 @@ function FamilyRail() {
                                         href={familyurl(member.slug)}
                                         target="_blank"
                                         rel="noreferrer"
-                                        title={`${member.slug} — opens in a new tab`}
-                                        aria-label={`open ${member.slug} in a new tab`}
+                                        title={labelfill('shell.rail.familyTitle', { slug: member.slug })}
+                                        aria-label={labelfill('shell.rail.familyAria', { slug: member.slug })}
                                         style={{ '--fam-dot': member.accent } as CSSProperties}
                                 >
                                         <span className="winapp__famdot" aria-hidden="true" />
@@ -591,7 +623,7 @@ function ThemeToggle() {
                 setTheme(next);
         }
         return (
-                <button type="button" className="winapp__theme" aria-label="toggle theme" onClick={toggle}>
+                <button type="button" className="winapp__theme" aria-label={label('shell.rail.themeAria')} onClick={toggle}>
                         {theme === 'dark' ? (
                                 <Sun fontSize={14} aria-hidden="true" />
                         ) : (
@@ -655,11 +687,11 @@ export function Shell({ children, themeButton = true }: ShellProps) {
         return (
                 <div className={`shell ${seat}`}>
                         <div className="winapp__body">
-                                <nav className="winapp__rail" aria-label="Pages">
+                                <nav className="winapp__rail" aria-label={label('shell.rail.aria')}>
                                         {NAV_SECTIONS.map((section) => (
                                                 <div key={section.id} className="winapp__section">
                                                         <p className="winapp__sectionlabel" aria-hidden="true">
-                                                                {section.label}
+                                                                {label(section.label)}
                                                         </p>
                                                         {section.apps.map((app) => {
                                                                 const Icon = app.icon;
@@ -668,12 +700,12 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                                                                                 key={app.href}
                                                                                 href={app.href}
                                                                                 className="winapp__raillink"
-                                                                                title={app.detail}
-                                                                                aria-label={app.label}
+                                                                                title={label(app.detail)}
+                                                                                aria-label={label(app.label)}
                                                                                 aria-current={isActive(app.href) ? 'page' : undefined}
                                                                         >
                                                                                 <Icon fontSize={16} strokeWidth={1.7} aria-hidden="true" />
-                                                                                <span className="winapp__raillabel">{app.label}</span>
+                                                                                <span className="winapp__raillabel">{label(app.label)}</span>
                                                                         </Link>
                                                                 );
                                                         })}
@@ -681,7 +713,7 @@ export function Shell({ children, themeButton = true }: ShellProps) {
                                         ))}
                                         <div className="winapp__railfoot">
                                                 <p className="winapp__familyhead" aria-hidden="true">
-                                                        family
+                                                        {label('shell.rail.family')}
                                                 </p>
                                                 <FamilyRail />
                                                 {themeButton ? <ThemeToggle /> : null}
@@ -732,7 +764,7 @@ export function PageShell({ section, label: pagelabel, title, intro, children, m
                                                 <figure
                                                         className="page-intro-art media-area"
                                                         style={{ aspectRatio: media.ratio }}
-                                                        aria-label="media area"
+                                                        aria-label={label('shell.media.aria')}
                                                 >
                                                         <figcaption>
                                                                 <span>{media.label}</span>

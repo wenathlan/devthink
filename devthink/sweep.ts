@@ -582,7 +582,7 @@ export interface sweepreport {
  * identical (the trail rows name the gate modules that carry the records
  * now). */
 export const sweeprecord: sweepreport = {
-  "release": "2.0.160",
+  "release": "2.0.161",
   "trails": [
     "devthink/agentcert.ts",
     "devthink/costcert.ts",

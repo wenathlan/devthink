@@ -492,12 +492,16 @@ export function SessionPanel({
             className="dtc-session__export"
             onClick={downloadSession}
             disabled={session.messages.length === 0}
-            aria-label="Export conversation as markdown"
-            title={session.messages.length === 0 ? "nothing to export yet" : "Download this conversation as markdown"}
+            aria-label={chatText("panel.exportAria")}
+            title={
+              session.messages.length === 0
+                ? chatText("panel.exportEmpty")
+                : chatText("panel.exportFull")
+            }
             tabIndex={open ? 0 : -1}
           >
             <ExportIcon fontSize={15} aria-hidden="true" />
-            <span>Export .md</span>
+            <span>{chatText("panel.exportKey")}</span>
           </button>
         ) : null}
       </section>

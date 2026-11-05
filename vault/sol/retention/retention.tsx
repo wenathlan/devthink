@@ -22,7 +22,7 @@ import {
 import { useMemo, useState } from "react";
 import { type BucketRule, retentionLabel, seedRules } from "../../buckets.ts";
 import { label, labelfill } from "../../labels";
-import { formatBytes, seedVault, type VaultObject } from "../../objects.ts";
+import { formatBytes, seedVault, type VaultObject } from "../../objectface.ts";
 import {
   firstDueTick,
   horizonTick,
