@@ -225,6 +225,17 @@ function nodebuiltinshim(): Plugin {
       "export const createInterface = () => { throw new Error(\"[devthink browser bundle] node:readline is absent on this host\"); };",
       "export default { createInterface };",
     ].join("\n"),
+    zlib: [
+      "const absent = (name) => { throw new Error(`[devthink browser bundle] node:zlib ${name} is absent on this host — the compression lanes ride the node hosts`); };",
+      "export const deflateSync = () => absent(\"deflateSync\");",
+      "export const inflateSync = () => absent(\"inflateSync\");",
+      "export const gzipSync = () => absent(\"gzipSync\");",
+      "export const gunzipSync = () => absent(\"gunzipSync\");",
+      "export const deflate = (_input, _options, callback) => { if (typeof callback === \"function\") callback(new Error(\"[devthink browser bundle] node:zlib deflate is absent on this host\")); };",
+      "export const inflate = (_input, _options, callback) => { if (typeof callback === \"function\") callback(new Error(\"[devthink browser bundle] node:zlib inflate is absent on this host\")); };",
+      "export const constants = {};",
+      "export default { deflateSync, inflateSync, gzipSync, gunzipSync, deflate, inflate, constants };",
+    ].join("\n"),
   };
   /* the ownership wave (wave/ownership.getry) moved the shim sources to the
    * getry engine root: the browser stubs (nodeshim.ts) and the neutral
@@ -362,6 +373,17 @@ export default defineConfig({
       "@wenathlan/saddle/security": path.resolve(import.meta.dirname, "../saddle/security.ts"),
       "@wenathlan/saddle": path.resolve(import.meta.dirname, "../saddle/index.ts"),
       "@wenathlan/saddle/memory": path.resolve(import.meta.dirname, "../saddle/virtual.ts"),
+      /** the debonair audio face bridge (the family dev seat): the cadria
+       * studio speaks the dsp surface through the published specifier
+       * ("@wenathlan/debonair/audio"), and the installed 2.0.155 envelope's
+       * exports map carries no ./audio key (the source file has always
+       * lived at the monorepo root) — the sibling dev pages the bridge
+       * middleware serves would die on the resolver's not-exported error
+       * before the studio mounts. the bridge resolves the specifier to the
+       * monorepo source the owner app carries, and retires when the
+       * published envelope's exports map gains the key the monorepo
+       * package.json now carries. */
+      "@wenathlan/debonair/audio": path.resolve(import.meta.dirname, "../debonair/audio.ts"),
       /** the getry engine bridge of the ownership law (pr16): the os gateway
        * imports the 7-level reasoning ladder through the published library
        * specifier ("@wenathlan/getry/thinking"), and this bridge resolves the
