@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { getIdentity, pairingStatus } from "../../account.js";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
 import { osText } from "../../os.ts";
+import { consoleCategories, consoleEntryArt } from "../../labels.ts";
 import { listProviders } from "@wenathlan/getry/providers";
 import { listSessions, readPreferences, type Session, savePreference } from "../../storage.js";
 import type { ChatEvent } from "@wenathlan/getry/streaming";
@@ -14,18 +15,11 @@ import {
   workspaceDestinations,
 } from "../../workspace.js";
 
-const categories = ["features", "bugs", "refactor", "snippets", "tasks", "notes", "all"] as const;
-const entryArt = [
-  "                 +++++",
-  "          +++++++++++++++",
-  "      ++++++     ++++++",
-  "    +++++         +++++",
-  "   +++++           +++++",
-  "    +++++         +++++",
-  "      ++++++   ++++++",
-  "          +++++++++++++",
-  "                 +++++",
-];
+/* the category rail and the entry art ride the label store (labels.ts):
+ * the seven console.categories tokens and the nine console.entryArt lines
+ * are seed rows the surface renders as-is — no art literal stays here */
+const categories = consoleCategories();
+const entryArt = consoleEntryArt();
 
 type Runtime = { config: DevThinkConfig; paths: DevThinkPaths };
 type Execute = (

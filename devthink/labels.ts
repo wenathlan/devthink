@@ -14,7 +14,7 @@
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 5;
+export const LABEL_REVISION = 6;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
@@ -357,6 +357,18 @@ const seedChatStrings: ChatStringRow[] = [
   { id: "panel.exportEmpty", text: "nothing to export yet" },
   { id: "panel.exportFull", text: "Download this conversation as markdown" },
   { id: "panel.exportKey", text: "Export .md" },
+  /* the session panel aria rows (the straggler sweep: the last raw labels
+   * of the inspector leave the widget) */
+  { id: "panel.sessionAria", text: "Session panel" },
+  { id: "panel.closeAria", text: "Close session panel" },
+  { id: "panel.identityAria", text: "Session identity" },
+  { id: "panel.projectAria", text: "Project instructions" },
+  { id: "panel.pinnedAria", text: "Pinned instructions" },
+  { id: "panel.memoryAria", text: "Saved memory" },
+  { id: "panel.deleteFact", text: "Delete fact: {fact}" },
+  { id: "panel.tagsAria", text: "Session tags" },
+  { id: "panel.removeTagAria", text: "Remove tag" },
+  { id: "panel.addTagAria", text: "Add a tag" },
   { id: "canvas.defaultTitle", text: "canvas" },
   { id: "canvas.empty", text: "the canvas is empty — the edit key begins the buffer." },
 ];
@@ -369,6 +381,47 @@ export type ChatStringId = (typeof seedChatStrings)[number]["id"];
 export function chatText(id: ChatStringId): string {
   const row = seedChatStrings.find((entry) => entry.id === id);
   return row ? row.text : "";
+}
+
+/* -------------------------------- console -------------------------------- */
+
+/** the category rail of the console terminal workspace (console.categories):
+ * the seven tokens the left/right arrows cycle, rail order — the all token
+ * answers the unfiltered stream. */
+export const seedConsoleCategories: string[] = [
+  "features",
+  "bugs",
+  "refactor",
+  "snippets",
+  "tasks",
+  "notes",
+  "all",
+];
+
+/** the console categories, rail order. */
+export function consoleCategories(): string[] {
+  return seedConsoleCategories;
+}
+
+/** the entry art of the console terminal workspace (console.entryArt): the
+ * nine template lines the boot screen renders — the art is data of the
+ * label store, never a literal of the widget, and the surface renders the
+ * rows as-is. */
+export const seedConsoleEntryArt: string[] = [
+  "                 +++++",
+  "          +++++++++++++++",
+  "      ++++++     ++++++",
+  "    +++++         +++++",
+  "   +++++           +++++",
+  "    +++++         +++++",
+  "      ++++++   ++++++",
+  "          +++++++++++++",
+  "                 +++++",
+];
+
+/** the console entry art lines, template order. */
+export function consoleEntryArt(): string[] {
+  return seedConsoleEntryArt;
 }
 
 /* -------------------------------- limits -------------------------------- */
