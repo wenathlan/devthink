@@ -256,6 +256,39 @@ export function flipThemeLadder(): ThemeChoice {
   return next;
 }
 
+/* ===== the family theme seat (the dedup law) ===== */
+/** the twin surface of the ladder choice — the six family app theme.ts
+ * doors import it as Theme (devthink wins the drift: the canonical default
+ * is the os dark — the argan light default and the forge light return
+ * retired with the fold, and the mirror-backed persistence replaces the
+ * twins' session-only law). */
+export type Theme = ThemeChoice;
+
+/** the design-engine surface name of the same two variants (the getry and
+ * stealthhead shells import it as ThemeName). */
+export type ThemeName = ThemeChoice;
+
+/** reads the theme currently applied — the twin surface of the ladder
+ * reader (the panel root, then the document root, then the mirror, then
+ * the dark default). */
+export function currentTheme(): Theme {
+  return currentThemeLadder();
+}
+
+/** ensures the document carries the os dark default before the first
+ * render — the twin surface the app anchors call once at boot. */
+export function initTheme(): Theme {
+  applyTheme("dark");
+  return "dark";
+}
+
+/** flips the theme ladder to the other face and returns the face that
+ * landed — the twin surface of the mirror-backed flip (the choice
+ * persists on the mirror: the devthink law the family rides). */
+export function toggleTheme(): Theme {
+  return flipThemeLadder();
+}
+
 /** the on/off flags of the component behaviors. */
 export type FlagChoice = "on" | "off";
 
