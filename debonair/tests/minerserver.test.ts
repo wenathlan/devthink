@@ -412,12 +412,13 @@ function refrow(id: string, name: string, kind: "reference" | "upload", doc: Ing
   };
 }
 
-/** The first techno reference: 128 bpm, F minor, low-heavy. */
+/** The first techno reference: 129 bpm (the signal-only band techno owns
+ * clear of the house ceiling), F minor, low-heavy. */
 const technoAlpha = refrow(
   ALPHA_ID,
   "techno reference alpha",
   "reference",
-  refdoc({ bpm: 128, tonic: 5, integrated: -9.5, bands: [0.5, 0.3, 0.2], ingestedAt: "2026-02-01T00:00:00.000Z" }),
+  refdoc({ bpm: 129, tonic: 5, integrated: -9.5, bands: [0.5, 0.3, 0.2], ingestedAt: "2026-02-01T00:00:00.000Z" }),
 );
 /** The second techno reference: 134 bpm, F minor, low-heavy alike. */
 const technoBeta = refrow(
@@ -426,12 +427,14 @@ const technoBeta = refrow(
   "reference",
   refdoc({ bpm: 134, tonic: 5, integrated: -8.5, bands: [0.5, 0.3, 0.2], ingestedAt: "2026-02-02T00:00:00.000Z" }),
 );
-/** The trap reference: the foreign genre the techno walk never reads. */
+/** The trap reference: the foreign genre the techno walk never reads —
+ * 145 bpm, the tempo heart the trap band owns clear of the techno ceiling
+ * (the name declares nothing, the signal does). */
 const trapGamma = refrow(
   GAMMA_ID,
   "trap reference gamma",
   "reference",
-  refdoc({ bpm: 140, tonic: 9, integrated: -9, bands: [0.4, 0.3, 0.3], ingestedAt: "2026-02-03T00:00:00.000Z" }),
+  refdoc({ bpm: 145, tonic: 9, integrated: -9, bands: [0.4, 0.3, 0.3], ingestedAt: "2026-02-03T00:00:00.000Z" }),
 );
 /** The techno upload: the visitor kind that sits every walk out. */
 const technoDelta = refrow(
@@ -633,8 +636,8 @@ describe("the mine walk end to end (the temp sqlite + seeded references)", () =>
     assert.equal(run.profile.schema, "debonair.profile/1");
     assert.equal(run.profile.genre, "techno");
     assert.equal(run.profile.trainedOn, 2);
-    assert.equal(run.profile.bpm.min, 128);
-    assert.equal(run.profile.bpm.median, 131);
+    assert.equal(run.profile.bpm.min, 129);
+    assert.equal(run.profile.bpm.median, 131.5);
     assert.equal(run.profile.bpm.max, 134);
     assert.equal(run.profile.keyPool[0]?.name, "F minor");
     assert.ok(run.profile.updatedAt.length > 0);
@@ -697,7 +700,7 @@ describe("the mine walk end to end (the temp sqlite + seeded references)", () =>
     assert.equal(row.genre, "techno");
     assert.deepEqual(row.referenceIds, [ALPHA_ID, BETA_ID]);
     assert.equal(row.profile.trainedOn, 2);
-    assert.equal(row.profile.bpm.min, 128);
+    assert.equal(row.profile.bpm.min, 129);
     assert.equal(row.profile.bpm.max, 134);
     assert.ok(row.createdAt.length > 0);
   });
