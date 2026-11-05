@@ -139,7 +139,7 @@ describe("the virtual hardware composition lanes answer the composition law", ()
     assert.ok(defaulted.stdout.includes("virtualmemory"), "the memory driver row rides the table");
     assert.ok(defaulted.stdout.includes("6.12.0-saddle"), "the kernel banner rides the cpu row");
     assert.ok(defaulted.stdout.includes("575.57.08"), "the nvml driver rides the gpu row");
-    assert.ok(defaulted.stdout.includes("2.0.127"), "the engine version rides the memory row");
+    assert.ok(defaulted.stdout.includes("2.0.162"), "the engine version rides the memory row");
     assert.equal(countdevices(defaulted.stdout), 4, "the quota defaults to 4 devices");
     const two = await runlane("virtualdrivers", "{}", { quota: 2 });
     assert.equal(countdevices(two.stdout), 2, "the quota law bounds the devices");

@@ -5239,7 +5239,7 @@ function driverversions(manifest: machinemanifest): { kernel: string; engine: st
   const boot = bootSequence(manifest.model, manifest.vcpus, manifest.ramgb, manifest.gpu);
   return {
     kernel: /Linux version (\S+) /.exec(boot[0])?.[1] ?? "6.12.0-saddle",
-    engine: /virtual hardware engine v([0-9.]+)/.exec(boot.join("\n"))?.[1] ?? "2.0.127",
+    engine: /virtual hardware engine v([0-9.]+)/.exec(boot.join("\n"))?.[1] ?? "2.0.162",
   };
 }
 
