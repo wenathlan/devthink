@@ -177,7 +177,19 @@ jobs:
         run: |
           set -euo pipefail
           UPDATE_SUMMARY="$(git diff --no-color --unified=0 -- package.json devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile .github/workflows | grep -E '^[+-][^+-]' | sed 's/^[+-]//' | sed 's/^[[:space:]]*//' | grep -v '^$' | sort -u | head -40 | sed 's/^/- /' || true)"
-          NOTE="This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (${PREVIOUS} plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: ${UPDATE_SUMMARY}. The version stamps ${NEXT} land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way."
+          NOTE="This release is the automated maintenance rung of the ladder: the DevThink \
+          maintenance workflow applied every non-breaking update available at run time — the npm \
+          dependency set, the engine recommendations and the versioned GitHub Actions references — \
+          derived the next patch number with plain arithmetic over package.json (${PREVIOUS} plus \
+          one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, \
+          recorded the permission baseline and regenerated the release metadata before the pull \
+          request below ran the complete verification pipeline. The updates of this rung: \
+          ${UPDATE_SUMMARY}. The version stamps ${NEXT} land across the metadata family with the \
+          apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps \
+          no long-lived branch behind: the automation branch of this rung squashes onto main when \
+          the verification pipeline answers green — and closes with its branch deleted when it \
+          answers red — so the repository keeps exactly one long-lived branch and the archive tag \
+          carries the rung either way."
           NEXT="$NEXT" NOTE="$NOTE" node <<'STAMP'
           const fs = require("node:fs");
           const next = process.env.NEXT;
@@ -303,7 +315,59 @@ jobs:
           # folder, so the staged set carries the modules the freeze steps
           # above now rewrite — the dead json pathspecs answered "pathspec
           # did not match" and the rung died at the landing.
-          git add package.json devthink/CHANGELOG.md devthink/README.md devthink/package.json devthink/bun.lock devthink/.nvmrc devthink/Dockerfile devthink/deno.json devthink/version.ts devthink/devthink.gemspec devthink/devthink.java devthink/devthinkcli.cs devthink/manifest.json devthink/tauri.conf.json devthink/design.html devthink/index.html devthink/pom.xml devthink/devthink.csproj devthink/docs devthink/tests/freezebaseline.ts devthink/tests/permbaseline.ts devthink/docs/releasenotes.md .github/workflows argan/package.json argan/argan.csproj argan/argan.gemspec argan/argan.java argan/pom.xml argan/Dockerfile cadria/package.json cadria/cadria.csproj cadria/cadria.gemspec cadria/cadria.java cadria/pom.xml cadria/Dockerfile cobaia/package.json debonair/package.json debonair/debonair.csproj debonair/debonair.gemspec debonair/debonair.java debonair/pom.xml debonair/Dockerfile getry/package.json stealthhead/package.json stealthhead/stealthhead.csproj stealthhead/stealthhead.gemspec stealthhead/stealthhead.java stealthhead/pom.xml forge/package.json foundry/package.json saddle/package.json vault/package.json
+          git add \
+            package.json \
+            devthink/CHANGELOG.md \
+            devthink/README.md \
+            devthink/package.json \
+            devthink/bun.lock \
+            devthink/.nvmrc \
+            devthink/Dockerfile \
+            devthink/deno.json \
+            devthink/version.ts \
+            devthink/devthink.gemspec \
+            devthink/devthink.java \
+            devthink/devthinkcli.cs \
+            devthink/manifest.json \
+            devthink/tauri.conf.json \
+            devthink/design.html \
+            devthink/index.html \
+            devthink/pom.xml \
+            devthink/devthink.csproj \
+            devthink/docs \
+            devthink/tests/freezebaseline.ts \
+            devthink/tests/permbaseline.ts \
+            devthink/docs/releasenotes.md \
+            .github/workflows \
+            argan/package.json \
+            argan/argan.csproj \
+            argan/argan.gemspec \
+            argan/argan.java \
+            argan/pom.xml \
+            argan/Dockerfile \
+            cadria/package.json \
+            cadria/cadria.csproj \
+            cadria/cadria.gemspec \
+            cadria/cadria.java \
+            cadria/pom.xml \
+            cadria/Dockerfile \
+            cobaia/package.json \
+            debonair/package.json \
+            debonair/debonair.csproj \
+            debonair/debonair.gemspec \
+            debonair/debonair.java \
+            debonair/pom.xml \
+            debonair/Dockerfile \
+            getry/package.json \
+            stealthhead/package.json \
+            stealthhead/stealthhead.csproj \
+            stealthhead/stealthhead.gemspec \
+            stealthhead/stealthhead.java \
+            stealthhead/pom.xml \
+            forge/package.json \
+            foundry/package.json \
+            saddle/package.json \
+            vault/package.json
           git commit -m "chore: land the automated maintenance rung v${NEXT}"
           # the archive tag preserves the automation branch verbatim before
           # the squash merge replaces it, so the ladder keeps its history

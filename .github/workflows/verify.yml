@@ -164,11 +164,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: cd devthink && node workflow.ts check
       - name: Run the runtime policy gate of the declared baselines
-        run: cd devthink && node runtimepolicy.ts
+        run: cd devthink && node runtime.ts
       - name: Run the release workflow npm gate
         run: cd devthink && node ../foundry/npmgate.ts
       - name: Run the workflow yaml and controls gate
-        run: cd devthink && node workflowcheck.ts
+        run: cd devthink && node workflow.ts
       - name: Run the native bridge smoke against a fake host process
         run: cd devthink && node nativesmoke.ts
       - name: Lint every example plan with the compiled CLI
@@ -302,7 +302,19 @@ jobs:
           cd devthink
           VERSION="$(node -p "require('./package.json').version")"
           test -f build/artifactmanifest.json
-          node -e "const { createHash } = require('node:crypto'); const { readFile } = require('node:fs/promises'); (async () => { const manifest = JSON.parse(await readFile('build/artifactmanifest.json', 'utf8')); const module = await import('./build/pack.js'); const files = []; for (const entry of manifest.artifacts) { const bytes = await readFile(entry.name); files.push({ name: entry.name, checksum: createHash('sha256').update(bytes).digest('hex') }); } const check = module.artifactmanifestcheck({ manifest, files }); if (!check.ok) throw new Error('The built set drifted from the artifact manifest: ' + JSON.stringify(check)); const names = manifest.artifacts.map(entry => entry.name); const version = '${VERSION}'; for (const required of ['build/devthink' + version + '.zip', 'build/devthink-firefox-' + version + '.xpi', 'build/devthink-safari-' + version + '.zip', 'build/devthink-vscode-' + version + '.vsix', 'build/devthink-site-' + version + '.zip', 'build/devthink-declarations-' + version + '.zip']) { if (!names.includes(required)) throw new Error('The artifact manifest misses the built artifact ' + required); } console.log(JSON.stringify({ artifacts: manifest.artifacts.length, ok: true })); })();"
+          node -e "const { createHash } = require('node:crypto'); const { readFile } = require('node:fs/promises'); \
+          (async () => { const manifest = JSON.parse(await readFile('build/artifactmanifest.json', 'utf8')); \
+          const module = await import('./build/pack.js'); const files = []; \
+          for (const entry of manifest.artifacts) { const bytes = await readFile(entry.name); \
+          files.push({ name: entry.name, checksum: createHash('sha256').update(bytes).digest('hex') }); } \
+          const check = module.artifactmanifestcheck({ manifest, files }); \
+          if (!check.ok) throw new Error('The built set drifted from the artifact manifest: ' + JSON.stringify(check)); \
+          const names = manifest.artifacts.map(entry => entry.name); const version = '${VERSION}'; \
+          for (const required of ['build/devthink' + version + '.zip', 'build/devthink-firefox-' + version + '.xpi', \
+          'build/devthink-safari-' + version + '.zip', 'build/devthink-vscode-' + version + '.vsix', \
+          'build/devthink-site-' + version + '.zip', 'build/devthink-declarations-' + version + '.zip']) { \
+          if (!names.includes(required)) throw new Error('The artifact manifest misses the built artifact ' + required); } \
+          console.log(JSON.stringify({ artifacts: manifest.artifacts.length, ok: true })); })();"
       - name: Build the container image and run its smoke
         # the context is THE REPOSITORY ROOT (the family-context law the
         # Dockerfile header records): the dependency union pins the vault

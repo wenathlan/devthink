@@ -1,9 +1,9 @@
 # Verifies GitHub Actions syntax, expressions, action inputs and reusable
 # workflow calls across every workflow file of the repository. A malformed
 # workflow must never reach main, so the gate fails on errors. The actions
-# ride version tags instead of hard coded commit digests: the supply chain
-# review tracks the tag through the release lane, and no internal
-# cryptographic pin lives baked inside a workflow file (the family policy).
+# ride immutable commit digests annotated with their release tags: the
+# maintenance ladder refreshes them through the workflow:updates pass,
+# and no artifact sha256 ever lives baked inside a workflow file (the family policy).
 # The lint runs on every pull request and every push that touches the
 # workflows folder - no composite actions folder exists anymore (the
 # one-workflow-file standard retired it), so the path filter covers the
@@ -43,9 +43,9 @@ jobs:
         # (the pr-check reporter has no pull request to annotate on a push)
         # and the shellcheck noise the house deliberately carries (the
         # single-quoted node scripts, the typed copy loops) stays out
-        # through .github/actionlint.yaml.
+        # through the shellcheck exclusions of actionlint-config.cfg.
         uses: reviewdog/action-actionlint@d290e336d5a743810aef4404f757dc862276d2ae # v1.73.4
         with:
           reporter: github-check
           fail_level: error
-          actionlint_flags: -config .github/workflows/actionlint-config.cfg
+          actionlint_flags: -config-file .github/workflows/actionlint-config.cfg

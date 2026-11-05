@@ -905,7 +905,7 @@ jobs:
             echo 'DIR="$(cd "$(dirname "$0")/.." && pwd)"'
             echo 'tar -xJf "$DIR"/devthink/devthink-v*-source.tar.xz -C "$HOME"'
             echo 'echo "DevThink unpacked into $HOME. Install Node (see the .nvmrc), then:"'
-            echo 'echo "  cd \"$HOME\"/devthink-*/devthink && npm ci && npm run serve"'
+            echo 'echo "  cd \"$HOME\"/devthink-*/devthink && npm ci && npm run server"'
           } > iso/install/install.sh
           {
             echo "# DevThink OS installer — unpacks the release source into the user home."

@@ -44,9 +44,20 @@ const seatversions = seats.map((seat) => ({
 const maintenance = readFileSync(join(reporoot, ".github", "workflows", "maintenance.yml"), "utf8");
 const changelog = readFileSync(join(approot, "CHANGELOG.md"), "utf8");
 
-/** the landing step's staged set — the one git add line the rung commits
- * the whole metadata family through */
-const stamp = maintenance.split("\n").find((line) => line.trim().startsWith("git add ")) ?? "";
+/** the landing step's staged set — the one git add command the rung
+ * commits the whole metadata family through, read the way the shell reads
+ * it: the backslash continuations of the block fold into the one command,
+ * so every pathspec the rung stages answers from the folded text */
+const stamp = (() => {
+  const lines = maintenance.split("\n");
+  const start = lines.findIndex((line) => line.trim().startsWith("git add "));
+  const folded: string[] = [];
+  for (const line of lines.slice(start < 0 ? lines.length : start)) {
+    folded.push(line);
+    if (!line.trimEnd().endsWith("\\")) break;
+  }
+  return folded.join("\n");
+})();
 
 describe("the rung lockstep (every seat stamps the same number)", () => {
   it("the root and the eleven app seats answer one version string", () => {

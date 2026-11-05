@@ -4691,7 +4691,9 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
          the security battery no longer duplicates the actionlint step. */
       "reviewdog/action-actionlint@",
       "fail_level: error",
-      "actionlint_flags: -config .github/workflows/actionlint-config.cfg",
+      /* the real actionlint flag is -config-file (the cli defines no -config
+         short form), so the pin rides the flag the lane actually passes */
+      "actionlint_flags: -config-file .github/workflows/actionlint-config.cfg",
     ],
     "ci.yml": [
       "runtime: [node, bun, deno]",

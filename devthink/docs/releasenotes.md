@@ -1,6 +1,6 @@
 # Devthink 2.0.162
 
-The 2.0.162 rung answers the locksync heal and the staged family context above the ladder the rungs climb: the nine stale bun locks and the npm and pnpm locks ride the frozen 4.18.1 union tree green (the previous rung bumped the eleven manifests but only ten lockfiles followed - the frozen gates of the CI, the verify and the pages legs died on the react-resizable-panels drift), the hundred devDep mirrors retire beside the saddlelock standard, the vault engine closure stamps the copy list the logicfold2 rename retired (the objectsledger seat folds into objects and the nineteen-file closure answers), the five flat village containers (cobaia, stealthhead, forge, foundry and getry) ride the staged family context with their sibling owners - the copy-law vault beside every site home, the saddle engine ownership under forge, foundry, getry and debonair, the devthink config bridges and the debonair route table under getry, and the cadria synth palette beside the debonair audio engine - and the eleven app dossiers ride the organized folder.
+The 2.0.162 rung answers the honesty heals and the container seat above the ladder the rungs climb: the vault capacity truth retires the browser quota phantom and the family mimetype table rides the storage engine (#440), the saddle honesty rung declares the seventeen registry-only modalities planned and the fake lanes answer typed refusals (#441), the katexis classifier and the client answer the measured signal - the genre line, the mine walk filter and the pad-timbre bands ride the signal gate with the typed genre-insufficient-signal refusal, and the pattern miner seat keeps the measured timbre law with the library face pins carrying the new signal exports (#447), the root catalog returns healed from the logic seat restore (#448), the builder carries the foundry bundle-scan owner beside the family siblings so the container release archive heals the cross-family import the dedup law carries (#449), the eleven config faces ride the same pattern sequence follow-up (#450) and the pnpm installs ride the no scripts doctrine follow-up (#451), and the contractcatchup, devboot and familyseat heals answer the frozen seats, the dev seat boot and the cadria studio audio exports the same rung carries.
 
 ## Distribution channels
 
@@ -115,7 +115,7 @@ Every artifact above attaches to the release of the immutable tag beside the che
 
 ## The chain to this candidate
 
-Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 160 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
+Every release from the 1.1.31 base to this candidate, grouped by the phases the roadmap declared: 161 released versions the changelog records, 69 roadmap sections the phases draw their titles from.
 
 ### The base (1.1.31)
 
