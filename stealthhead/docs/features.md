@@ -73,7 +73,7 @@ real feature list from the code, grouped by category. every entry names a functi
 
 - asset model — `WorldAsset` rows with name, kind, lfs path, sha-256 digest, size and a precompiled flag that is always true.
 - four kinds — `WorldAssetKind`: map, prop, character, effect.
-- asset catalog — `WORLDCATALOG` with 8 seeded GLB assets: 3 maps, 1 prop, 2 operators, 2 effects.
+- asset catalog — `WORLDCATALOG`: the honest empty shelf — zero seeded assets (a digest is computed by the build that ships the binary, never hardcoded).
 - render intent — `RENDERINTENT` pins the versawase engine of `@wenathlan/cadria` at the pre-compiled stage.
 - digest shape check — `ishashshape` validates 64-character hex sha-256 digests.
 - path normalization — `normalizepath` and `glbpath` produce the canonical assets/glb/ repository form.

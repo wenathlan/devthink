@@ -54,73 +54,16 @@ export type RenderIntent = {
 /** the render intent every world asset ships with. */
 export const RENDERINTENT: RenderIntent = { engine: "versawase", library: "@wenathlan/cadria", stage: "pre-compiled" };
 
-/** the in-memory seed the DB layer persists on first run. */
-export const WORLDCATALOG: WorldAsset[] = [
-  {
-    name: "steelhead dam",
-    kind: "map",
-    path: "assets/glb/steelhead.dam.glb",
-    sha256: "9f2c41a7c0d54b8eaf61d0b73e2c88a1d94f6027c3b5811e70ada9be4f2c119d",
-    size: 48231424,
-    precompiled: true,
-  },
-  {
-    name: "cold harbor",
-    kind: "map",
-    path: "assets/glb/cold.harbor.glb",
-    sha256: "3ab81c95e6f74d120cd9a5b0f8e37641d02ca9f5b61e8437f09d2cbe5a741e88",
-    size: 39871232,
-    precompiled: true,
-  },
-  {
-    name: "rift yard",
-    kind: "map",
-    path: "assets/glb/rift.yard.glb",
-    sha256: "c47de0192ab63f85d07e4b1c92a68350fe1bd2744a90c8361e5fb7d203a9c461",
-    size: 44118784,
-    precompiled: true,
-  },
-  {
-    name: "emberline crate set",
-    kind: "prop",
-    path: "assets/glb/emberline.crates.glb",
-    sha256: "7d90f3b26a184ce5b0912d74f3a6c821e0b5d9384c671af205e3d8b94a6c0f72",
-    size: 2411520,
-    precompiled: true,
-  },
-  {
-    name: "operator ember",
-    kind: "character",
-    path: "assets/glb/operator.ember.glb",
-    sha256: "b16a48d07f2c359e8417a0dc65b3f29107cd84ea5f206b39c1873de20a4bf5c3",
-    size: 8720384,
-    precompiled: true,
-  },
-  {
-    name: "operator tide",
-    kind: "character",
-    path: "assets/glb/operator.tide.glb",
-    sha256: "52c9e1fa37b84d06a590c3e72f14b8d6930ac5217be08f44d9c2a6e08137b0d5",
-    size: 8654848,
-    precompiled: true,
-  },
-  {
-    name: "muzzle ember fx",
-    kind: "effect",
-    path: "assets/glb/fx.muzzle.ember.glb",
-    sha256: "e0834b6d92a57c1f04b3d8e26a71c9f5402bd9638e1a74c50f3d629be7a1c842",
-    size: 638976,
-    precompiled: true,
-  },
-  {
-    name: "solstice banner fx",
-    kind: "effect",
-    path: "assets/glb/fx.solstice.banner.glb",
-    sha256: "1a6d93c07f48b25ed31a7f5c802e94b6d17c0f38a9427e15c6d0b38f42a95e70",
-    size: 512000,
-    precompiled: true,
-  },
-];
+/** The offline face of the world catalog — the honest empty shelf: no asset
+ * row ships until a real GLB binary lands, because a catalog row is an
+ * attestation (digest + byte size of a file that exists). A digest written
+ * by hand is a fake signature — the sha-256 of a real asset is computed
+ * during the build that ships it (the same law the release workflows
+ * follow with sha256sum), never hardcoded in the seed. When binaries land,
+ * rows enter through `catalogasset` with build-computed digests and the
+ * self-hosted DB serves them over `/api/v1/world`; the seed never fakes
+ * an asset a binary never answered for. */
+export const WORLDCATALOG: WorldAsset[] = [];
 
 /**
  * checks the shape of a sha-256 digest (64 hex characters).

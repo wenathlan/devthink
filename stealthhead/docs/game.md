@@ -96,7 +96,7 @@ the armory catalog (`WEAPONCATALOG`, 10 weapons):
 
 - the world gallery catalogs GLB scene assets as DB rows; the binaries live in git lfs and download separately, verified against the row sha-256 (the row is the source of truth).
 - render intent: engine `versawase`, library `@wenathlan/cadria`, stage `pre-compiled` — every asset ships precompiled, always.
-- catalog (`WORLDCATALOG`, 8 assets): steelhead dam, cold harbor, rift yard (maps, 48231424 / 39871232 / 44118784 bytes); emberline crate set (prop, 2411520); operator ember, operator tide (characters, 8720384 / 8654848); muzzle ember fx, solstice banner fx (effects, 638976 / 512000).
+- catalog (`WORLDCATALOG`): the honest empty shelf — zero seeded assets. A world row is an attestation (digest + byte size of a binary that exists); digests are computed during the build that ships the binary (sha256sum law), never hardcoded, so no row ships until a real GLB lands.
 - verification: `ishashshape` (64 hex chars), `normalizepath`, `glbpath` (assets/glb/...), `catalogasset` row builder, `verifyasset` (digest shape, path form, `.glb` suffix, precompiled flag).
 - `humansize` formats the byte sizes for the gallery badges.
 
