@@ -19,19 +19,20 @@
 
 import { useRef, useState } from "react";
 import {
-  ArrowLeft,
-  ArrowRight,
-  ArrowUpRight,
-  Clock,
-  Globe,
-  Heart,
-  Maximize2,
-  MessageSquare,
-  Play,
-  Plus,
-  Send,
-  Share2,
-} from "lucide-react";
+  AddRegular as Plus,
+  ArrowLeftRegular as ArrowLeft,
+  ArrowRightRegular as ArrowRight,
+  ArrowUpRightRegular as ArrowUpRight,
+  ChatRegular as MessageSquare,
+  ClockRegular as Clock,
+  FullScreenMaximizeRegular as Maximize2,
+  GlobeRegular as Globe,
+  HeartFilled,
+  HeartRegular as Heart,
+  PlayFilled as Play,
+  SendRegular as Send,
+  ShareRegular as Share2,
+} from "@fluentui/react-icons";
 import {
   saasadvisor,
   saascadria,
@@ -382,7 +383,7 @@ export function SaasDebonair({ scrollto, ontoast }: { scrollto: (id: string) => 
     <section id="sonic-deck" className="overflow-hidden bg-[#0A0B0E] pt-0 pb-24 text-white sm:pb-28">
       <div className="relative z-20 mb-8 w-full">
         <div className="h-2 w-full bg-[#FAF6F0]" aria-hidden="true" />
-        <div className="flex w-full justify-center">
+        <div className="-mt-[1px] flex w-full justify-center">
           <SaddleTabBridge fillColor="#FAF6F0" className="h-[44px]">
             <div className="flex items-center gap-2">
               <Studiomark app="debonair" className="h-6 w-6" />
@@ -498,10 +499,11 @@ export function SaasDebonair({ scrollto, ontoast }: { scrollto: (id: string) => 
                       }}
                       aria-label={track.title}
                     >
-                      <Heart
-                        className={`h-4 w-4 ${track.index != null && liked[track.index] ? "fill-[#1DB954] text-[#1DB954]" : "text-slate-500"}`}
-                        aria-hidden="true"
-                      />
+                      {track.index != null && liked[track.index] ? (
+                        <HeartFilled className="h-4 w-4 fill-[#1DB954] text-[#1DB954]" aria-hidden="true" />
+                      ) : (
+                        <Heart className="h-4 w-4 text-slate-500" aria-hidden="true" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -531,7 +533,7 @@ export function SaasAdvisor({ scrollto, ontoast }: { scrollto: (id: string) => v
     <section id="advisor-dark" className="relative overflow-hidden bg-white px-6 pt-0 pb-24 sm:px-10 sm:pb-32 lg:px-16">
       <div className="relative z-20 mb-12 w-full">
         <div className="h-2 w-full bg-[#0A0B0E]" aria-hidden="true" />
-        <div className="flex w-full justify-center">
+        <div className="-mt-[1px] flex w-full justify-center">
           <SaddleTabBridge fillColor="#0A0B0E" className="h-[44px]">
             <div className="flex items-center gap-2">
               <Studiomark app="doo" className="h-6 w-6" />
@@ -641,7 +643,7 @@ export function SaasFooter({
 }) {
   return (
     <>
-      <div className="ribbon-sawtooth-divider" aria-hidden="true" />
+      <div className="ribbon-sawtooth-divider ribbon-sawtooth-into-footer" aria-hidden="true" />
       <section
         id="editorial-bio"
         className="relative border-t border-slate-200/80 bg-[#F2F5FC] px-6 pt-20 pb-10 sm:px-10 lg:px-16"
