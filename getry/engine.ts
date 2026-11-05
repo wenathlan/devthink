@@ -30,7 +30,7 @@
  * through the published specifier — never duplicated beside the gateway. */
 import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./auth.js";
 import { getsessionmessages, savemsg } from "@wenathlan/devthink/storage";
-import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
+import { listlevels } from "@wenathlan/getry/thinking";
 import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
 import type {
   gatewayconfig,
@@ -67,13 +67,13 @@ import {
 // defaults — universal fallbacks when config omits values
 // ---------------------------------------------------------------------------
 
-/** default thinking budgets — the 7 level canonical map consumed from the
- * getry engine (the one owner of the reasoning ladder, pr16): the os derives
- * its budget map from the owner's THINKINGLEVELS and never carries a local
- * copy — the same ladder the gateway routes resolve, from one source of
- * truth. */
+/** default thinking budgets — the live ladder map consumed from the getry
+ * engine (the one owner of the reasoning ladder, pr16): the os derives its
+ * budget map from the owner's registered rungs (any count — never a fixed
+ * 7) and never carries a local copy — the same ladder the gateway routes
+ * resolve, from one source of truth. */
 const defaultbudgets: Record<thinkinglevel, number> = Object.fromEntries(
-  THINKINGLEVELS.map((rung) => [rung.level, rung.budget]),
+  listlevels().map((rung) => [rung.level, rung.budget]),
 ) as Record<thinkinglevel, number>;
 
 /** default retryable statuses — 429 rate limit plus transient 5xx */

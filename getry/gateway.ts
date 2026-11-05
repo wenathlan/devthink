@@ -7,7 +7,7 @@
  */
 
 import type { gatewaydefinition, thinkinglevel } from "./types.ts";
-import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
+import { listlevels } from "@wenathlan/getry/thinking";
 
 /**
  * gateway.ts — the gateway versions domain of getry (root layer).
@@ -256,10 +256,11 @@ export const gatewayConfig: gatewaydefinition = {
  * web-check projection and never leaks into the engine import graph. */
 
 
-/** the 7-level thinking budgets consumed from the getry engine (pr16): the
+/** the live thinking budgets consumed from the getry engine (pr16): the
  * ladder is owned by getry and every budget map of this catalog derives
- * from the owner's THINKINGLEVELS — never a second literal copy. */
-const ladderbudgets = Object.fromEntries(THINKINGLEVELS.map((rung) => [rung.level, rung.budget])) as Record<
+ * from the owner's registered rungs — never a second literal copy, never a
+ * fixed 7. */
+const ladderbudgets = Object.fromEntries(listlevels().map((rung) => [rung.level, rung.budget])) as Record<
   thinkinglevel,
   number
 >;

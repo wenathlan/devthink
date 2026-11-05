@@ -90,6 +90,43 @@ export const EXPORT_SIZE_LIMIT_BYTES = 52428800;
 /** The longest session the validator answers coherent, in seconds (a sanity ceiling, not a format one). */
 export const MAX_DURATION_SECONDS = 3600;
 
+/** The wav format truth no registration can pass: the fmt chunk declares the
+ * channel count in an unsigned 16 bit field — 65535 is the field width, not a
+ * product cap. */
+export const WAV_CHANNELS_FIELD_MAX = 65535;
+
+/** Reads one registered limit from the environment — the engine freedom law
+ * (pr5): every numeric ceiling of this encoder is a registered default a
+ * person overrides, never an engine law. the words "unlimited"/"none"
+ * (and 0 for the size/duration seams) answer no cap at all; an unset, empty
+ * or invalid value answers the family default. plans that want smaller
+ * numbers block in the devthink system layer, never here. */
+function limitFromEnv(name: string, fallback: number): number {
+  const raw = typeof process === "undefined" ? undefined : process.env?.[name];
+  if (raw === undefined) return fallback;
+  const trimmed = raw.trim().toLowerCase();
+  if (trimmed === "" || trimmed === "unlimited" || trimmed === "none" || trimmed === "null") {
+    return Number.POSITIVE_INFINITY;
+  }
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+/** The live channel ceiling — the registered default (DEBONAIR_WAV_CHANNELS_MAX)
+ * clamped by the 16 bit fmt field truth; the family default is 8. */
+export const channelsceiling = Math.min(
+  limitFromEnv("DEBONAIR_WAV_CHANNELS_MAX", CHANNELS_MAX),
+  WAV_CHANNELS_FIELD_MAX,
+);
+
+/** The live duration ceiling in seconds — the registered default
+ * (DEBONAIR_WAV_MAX_DURATION_SECONDS, unlimited rides); the family default is 3600. */
+export const durationceilingseconds = limitFromEnv("DEBONAIR_WAV_MAX_DURATION_SECONDS", MAX_DURATION_SECONDS);
+
+/** The live export size ceiling in bytes — the registered default
+ * (DEBONAIR_WAV_EXPORT_SIZE_LIMIT_BYTES, unlimited rides); the family default is 50 MB. */
+export const exportsizeceilingbytes = limitFromEnv("DEBONAIR_WAV_EXPORT_SIZE_LIMIT_BYTES", EXPORT_SIZE_LIMIT_BYTES);
+
 /** The options encodeWav accepts. */
 export interface WavOptions {
   /** The session sample rate in Hz (8000..192000). */
@@ -145,8 +182,8 @@ function assertShape(channels: readonly Float32Array[], sampleRate: number): voi
   if (!Number.isInteger(sampleRate) || sampleRate < SAMPLE_RATE_MIN || sampleRate > SAMPLE_RATE_MAX) {
     throw new WavError("bad-rate", `wav needs a rate inside ${SAMPLE_RATE_MIN}..${SAMPLE_RATE_MAX}, got ${sampleRate}`);
   }
-  if (channels.length < CHANNELS_MIN || channels.length > CHANNELS_MAX) {
-    throw new WavError("bad-channels", `wav carries ${CHANNELS_MIN}..${CHANNELS_MAX} channels, got ${channels.length}`);
+  if (channels.length < CHANNELS_MIN || channels.length > channelsceiling) {
+    throw new WavError("bad-channels", `wav carries ${CHANNELS_MIN}..${channelsceiling} channels, got ${channels.length}`);
   }
   const frames = channels[0].length;
   if (frames === 0) throw new WavError("empty-audio", "wav needs at least one frame per channel");
@@ -318,7 +355,7 @@ export function wavInfo(bytes: Uint8Array): WavInfo {
 
 /**
  * Answers the export invariants before bytes exist: the rate band, the channel band, the shared
- * shape, the session length and the 50 MB cap. The encoder stays pure; this is the verdict.
+ * shape, the session length and the registered export cap. The encoder stays pure; this is the verdict.
  *
  * @param channels the per-channel float buses.
  * @param options the sample rate and the target depth.
@@ -330,10 +367,10 @@ export function validateEncoding(channels: readonly Float32Array[], options: Wav
   if (!Number.isInteger(rate) || rate < SAMPLE_RATE_MIN || rate > SAMPLE_RATE_MAX) {
     problems.push({ code: "bad-rate", message: `rate ${rate} outside ${SAMPLE_RATE_MIN}..${SAMPLE_RATE_MAX}` });
   }
-  if (channels.length < CHANNELS_MIN || channels.length > CHANNELS_MAX) {
+  if (channels.length < CHANNELS_MIN || channels.length > channelsceiling) {
     problems.push({
       code: "bad-channels",
-      message: `${channels.length} channels outside ${CHANNELS_MIN}..${CHANNELS_MAX}`,
+      message: `${channels.length} channels outside ${CHANNELS_MIN}..${channelsceiling}`,
     });
   }
   const frames = channels.length > 0 ? channels[0].length : 0;
@@ -342,10 +379,10 @@ export function validateEncoding(channels: readonly Float32Array[], options: Wav
     if (channel.length !== frames) problems.push({ code: "bad-shape", message: "the channels disagree in length" });
   }
   const durationSeconds = rate > 0 ? frames / rate : 0;
-  if (!(durationSeconds > 0) || durationSeconds > MAX_DURATION_SECONDS) {
+  if (!(durationSeconds > 0) || durationSeconds > durationceilingseconds) {
     problems.push({
       code: "bad-duration",
-      message: `duration ${durationSeconds}s is not inside (0..${MAX_DURATION_SECONDS}]`,
+      message: `duration ${durationSeconds}s is not inside (0..${durationceilingseconds}]`,
     });
   }
   const formatId = BITDEPTH_TO_FORMAT[options.bitDepth];
@@ -355,10 +392,10 @@ export function validateEncoding(channels: readonly Float32Array[], options: Wav
     const format = WAV_FORMAT[formatId];
     const fmtBytes = format.isFloat ? HEADER_LAYOUT.fmtContentFloat : HEADER_LAYOUT.fmtContentPcm;
     const fileBytes = 20 + fmtBytes + frames * channels.length * format.bytesPerSample; // 20 = riff + both chunk headers
-    if (fileBytes > EXPORT_SIZE_LIMIT_BYTES) {
+    if (fileBytes > exportsizeceilingbytes) {
       problems.push({
         code: "oversize",
-        message: `a ${fileBytes} byte bounce passes the ${EXPORT_SIZE_LIMIT_BYTES} byte cap`,
+        message: `a ${fileBytes} byte bounce passes the ${exportsizeceilingbytes} byte cap`,
       });
     }
   }

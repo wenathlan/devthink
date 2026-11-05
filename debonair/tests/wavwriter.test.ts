@@ -5,7 +5,19 @@
 // hard failures the export seam must see with their machine codes.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { EXPORT_SIZE_LIMIT_BYTES, encodeWav, validateEncoding, WAV_FORMAT, WavError, wavInfo } from "../wavwriter.ts";
+import {
+  CHANNELS_MAX,
+  EXPORT_SIZE_LIMIT_BYTES,
+  MAX_DURATION_SECONDS,
+  channelsceiling,
+  durationceilingseconds,
+  encodeWav,
+  exportsizeceilingbytes,
+  validateEncoding,
+  WAV_FORMAT,
+  WavError,
+  wavInfo,
+} from "../wavwriter.ts";
 
 /** Reads a little-endian u16 out of the bytes. */
 const u16le = (bytes: Uint8Array, offset: number): number => bytes[offset] | (bytes[offset + 1] << 8);
@@ -133,5 +145,69 @@ describe("wavwriter — failures", () => {
     assert.equal(validateEncoding(huge, { sampleRate: 48000, bitDepth: 32 })[0].code, "oversize");
     assert.equal(EXPORT_SIZE_LIMIT_BYTES, 52428800);
     assert.equal(WAV_FORMAT.pcm24.bytesPerSample, 3);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// the registered ceilings — the engine freedom law (pr5): every numeric
+// ceiling of the encoder is a registered default, never an engine law
+// ---------------------------------------------------------------------------
+
+describe("wavwriter — the registered ceilings (the engine freedom law)", () => {
+  it("answers the family defaults when nothing is registered", () => {
+    assert.equal(exportsizeceilingbytes, EXPORT_SIZE_LIMIT_BYTES);
+    assert.equal(durationceilingseconds, MAX_DURATION_SECONDS);
+    assert.equal(channelsceiling, CHANNELS_MAX);
+  });
+
+  it("rides a registered channel ceiling past the family default", () => {
+    const script =
+      "const m = await import(" +
+      JSON.stringify(`${import.meta.dir}/../wavwriter.ts`) +
+      ");" +
+      "const buses = Array.from({ length: 12 }, () => new Float32Array(480));" +
+      "const problems = m.validateEncoding(buses, { sampleRate: 48000, bitDepth: 16 });" +
+      "console.log(JSON.stringify({ ceiling: m.channelsceiling, codes: problems.map((p) => p.code) }));";
+    const proc = Bun.spawnSync(["bun", "-e", script], {
+      env: { ...process.env, DEBONAIR_WAV_CHANNELS_MAX: "16" },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    assert.equal(proc.exitCode, 0, `the registered probe failed: ${proc.stderr.toString()}`);
+    const answer = JSON.parse(proc.stdout.toString().trim().split("\n").at(-1) ?? "{}") as {
+      ceiling: number;
+      codes: string[];
+    };
+    assert.equal(answer.ceiling, 16, "the registered channel ceiling rides");
+    assert.deepEqual(answer.codes, [], "twelve channels ride under a registered ceiling of sixteen");
+  });
+
+  it("rides the unlimited words — no cap answers at all", () => {
+    const script =
+      "const m = await import(" +
+      JSON.stringify(`${import.meta.dir}/../wavwriter.ts`) +
+      ");" +
+      "const buses = Array.from({ length: 9 }, () => new Float32Array(48000 * 4000));" +
+      "const problems = m.validateEncoding(buses, { sampleRate: 48000, bitDepth: 16 });" +
+      "console.log(JSON.stringify({ duration: String(m.durationceilingseconds), size: String(m.exportsizeceilingbytes), codes: problems.map((p) => p.code) }));";
+    const proc = Bun.spawnSync(["bun", "-e", script], {
+      env: {
+        ...process.env,
+        DEBONAIR_WAV_MAX_DURATION_SECONDS: "unlimited",
+        DEBONAIR_WAV_EXPORT_SIZE_LIMIT_BYTES: "none",
+        DEBONAIR_WAV_CHANNELS_MAX: "unlimited",
+      },
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    assert.equal(proc.exitCode, 0, `the unlimited probe failed: ${proc.stderr.toString()}`);
+    const answer = JSON.parse(proc.stdout.toString().trim().split("\n").at(-1) ?? "{}") as {
+      duration: string;
+      size: string;
+      codes: string[];
+    };
+    assert.equal(answer.duration, "Infinity", "the duration ceiling dissolves on the unlimited word");
+    assert.equal(answer.size, "Infinity", "the size ceiling dissolves on the unlimited word");
+    assert.deepEqual(answer.codes, [], "a nine channel multi hour bounce is sound when unlimited is registered");
   });
 });

@@ -333,9 +333,11 @@ export interface costestimate {
 // ---------------------------------------------------------------------------
 
 /** thinking levels ordered by budget ascending — the union is consumed from
- * the getry engine (the one owner of the 7-level reasoning ladder, pr16):
- * the os speaks the owner's ThinkingLevelName and never redeclares the rung
- * names, so the ladder can only ever drift in one place. */
+ * the getry engine (the one owner of the registerable reasoning ladder,
+ * pr16 and the pr5 engine freedom fold): the os speaks the owner's
+ * ThinkingLevelName and never redeclares the rung names — the rungs are
+ * what the person registers (any count), so the ladder can only ever drift
+ * in one place. */
 export type thinkinglevel = ThinkingLevelName;
 
 // ---------------------------------------------------------------------------
