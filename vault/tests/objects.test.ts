@@ -6,9 +6,16 @@
 // record passes storageRecordValid — and the rehearsal is deterministic
 // from the seed (the same seed always seals the same vault).
 import assert from "node:assert/strict";
+import { rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import Database from "better-sqlite3";
 import { describe, it } from "vitest";
+import "./quotaisolation.ts";
 import {
+  bucketValid,
   channelPreview,
+  DEFAULT_BUCKET,
   digestFor,
   digestShort,
   fnv1a,
@@ -163,5 +170,115 @@ describe("ledger render", () => {
     const blob = channelPreview("text/markdown", 1200);
     assert.equal(blob.channel, "blob");
     assert.match(blob.digestShape, /sha-1/);
+  });
+});
+
+describe("the real ledger bucket dimension (the retention group rides the row)", () => {
+  /** the throwaway project of this battery (the quotaisolation store answers). */
+  const project = `bucket-probe-${process.pid}`;
+
+  it("validates the bucket shape the way the project shape rides", () => {
+    assert.equal(DEFAULT_BUCKET, "family-state");
+    for (const name of ["family-state", "site-assets", "run-evidence", "backups", "a", "bucket-2"] as const) {
+      assert.equal(bucketValid(name), true, `${name} rides`);
+    }
+    for (const name of ["", "Not-A-Bucket", "bucket with spaces", "-nope", "UPPER", "x".repeat(65)]) {
+      assert.equal(bucketValid(name), false, `${name} refuses`);
+    }
+  });
+
+  it("seals every deposit onto its bucket and defaults to the family-state seat", async () => {
+    const { createProject, getObject, listObjects, putObject } = await import("../objects.ts");
+    const scope = createProject(project);
+    assert.ok(scope.project !== undefined, "the project lands");
+
+    const backup = putObject({
+      projectId: project,
+      path: "/backups/probe.tzst",
+      mime: "application/x-tzst",
+      bytes: new TextEncoder().encode("the backup bytes"),
+      bucket: "backups",
+    });
+    assert.ok(!("refusal" in backup), backup.refusal?.why);
+    if (!("refusal" in backup)) {
+      assert.equal(backup.object.bucket, "backups", "the named bucket rides the row");
+    }
+
+    const unseated = putObject({
+      projectId: project,
+      path: "/sites/probe.json",
+      mime: "application/json",
+      bytes: new TextEncoder().encode('{"law":true}'),
+    });
+    assert.ok(!("refusal" in unseated), unseated.refusal?.why);
+    if (!("refusal" in unseated)) {
+      assert.equal(unseated.object.bucket, "family-state", "the default seat answers");
+    }
+
+    const refused = putObject({
+      projectId: project,
+      path: "/sites/bad.bin",
+      mime: "application/octet-stream",
+      bytes: new TextEncoder().encode("no"),
+      bucket: "Not A Bucket",
+    });
+    assert.ok("refusal" in refused && refused.refusal.kind === "invalid", "a dishonest bucket name refuses");
+
+    const whole = listObjects(project);
+    assert.equal(whole.length, 2, "the unfiltered list answers every bucket");
+    const backups = listObjects(project, "backups");
+    assert.equal(backups.length, 1, "the shelf filter answers its own bucket");
+    assert.equal(backups[0]?.path, "/backups/probe.tzst");
+    assert.equal(backups[0]?.bucket, "backups");
+    const seated = listObjects(project, "family-state");
+    assert.equal(seated.length, 1, "the default seat filter answers its own row");
+    assert.equal(seated[0]?.path, "/sites/probe.json");
+    assert.equal(listObjects(project, "ghost-bucket").length, 0, "an empty bucket answers an honest empty");
+
+    const verified = getObject(backup && !("refusal" in backup) ? backup.object.id : "");
+    assert.ok(!("refusal" in verified) && verified.verified === true, "the verified read still answers");
+    if (!("refusal" in verified)) {
+      assert.equal(verified.object.bucket, "backups", "the read carries the bucket");
+    }
+  });
+
+  it("climbs the bucket ladder on a store opened before the wave", async () => {
+    const { openStorage } = await import("../drizzle.ts");
+    const file = join(tmpdir(), `vault-bucketladder-${process.pid}.test.db`);
+    for (const suffix of ["", "-wal", "-shm"]) {
+      rmSync(`${file}${suffix}`, { force: true });
+    }
+    /* the old shape: a storage_objects table the bucket wave never touched. */
+    const raw = new Database(file);
+    raw.exec(
+      `CREATE TABLE storage_objects (
+         id TEXT PRIMARY KEY, project_id TEXT NOT NULL, path TEXT NOT NULL,
+         mime TEXT NOT NULL, size INTEGER NOT NULL, digest TEXT NOT NULL,
+         manifest TEXT NOT NULL, channel TEXT NOT NULL,
+         created_at TEXT NOT NULL DEFAULT (datetime('now')), deleted_at TEXT
+       )`,
+    );
+    raw
+      .prepare(
+        "INSERT INTO storage_objects (id, project_id, path, mime, size, digest, manifest, channel) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      )
+      .run("obj-old", "p-old", "/old/row.bin", "application/octet-stream", 3, "d", "{}", "blob");
+    raw.close();
+    /* the open walks the ensureColumn ladder: the bucket climbs onto the
+     * standing table and every standing row answers the family-state seat. */
+    const climbed = openStorage(`file:${file}`);
+    const columns = climbed.$client.pragma("table_info(storage_objects)") as { name: string }[];
+    assert.ok(
+      columns.some((column) => column.name === "bucket"),
+      "the ladder added the bucket column",
+    );
+    const standing = climbed.$client.prepare("SELECT bucket FROM storage_objects WHERE id = ?").get("obj-old") as {
+      bucket: string;
+    };
+    assert.equal(standing.bucket, "family-state", "a standing row answers the default seat");
+    climbed.$client.close();
+    for (const suffix of ["", "-wal", "-shm"]) {
+      rmSync(`${file}${suffix}`, { force: true });
+    }
   });
 });

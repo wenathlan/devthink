@@ -79,6 +79,23 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "face.browse.emptyHint": "clear the filter or reseed the rehearsal to see the ledger again.",
   "face.browse.clear": "clear the filter",
   "face.browse.booting": "opening the ledger",
+  /* the live lane of the browse — the honest ledger declaration */
+  "face.browse.live": "live {count} objects · {bytes} — the engine answered the real ledger",
+  "face.browse.rehearsal":
+    "a seeded rehearsal of the safe — the engine lane is away, the declared seed answers (never live bytes)",
+  "face.browse.seal.live": "engine-verified",
+  /* the deposit widget — the live ledger door */
+  "face.browse.deposit.aria": "seal a deposit into the real ledger",
+  "face.browse.deposit.head": "deposit into the live ledger",
+  "face.browse.deposit.pathPlaceholder": "/uploads/note.txt",
+  "face.browse.deposit.pathAria": "the absolute path of the deposit",
+  "face.browse.deposit.mimePlaceholder": "text/plain",
+  "face.browse.deposit.mimeAria": "the content type of the deposit",
+  "face.browse.deposit.bodyPlaceholder": "the bytes to seal…",
+  "face.browse.deposit.bodyAria": "the bytes the engine seals",
+  "face.browse.deposit.cta": "seal the deposit",
+  "face.browse.deposit.busy": "sealing…",
+  "face.browse.deposit.away": "the engine lane is away — the deposit door opens when the configured origin answers.",
   /* --------------------------- db console ---------------------------- */
   "face.console.aria": "the database console of the vault",
   "face.console.head": "database console",
@@ -116,10 +133,12 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "face.signup.nameAria": "the name of the app database",
   "face.signup.cta": "open the database",
   "face.signup.busy": "opening the database…",
-  "face.signup.away": "the engine lane is away — the signup gate needs the configured origin before it can open a database.",
+  "face.signup.away":
+    "the engine lane is away — the signup gate needs the configured origin before it can open a database.",
   "face.signup.failure": "the gate refused: {message}",
   "face.signup.once.title": "your database is open",
-  "face.signup.once.warning": "shown exactly once — the vault stores only the sha-256 digest of this key; copy it now, it never answers again.",
+  "face.signup.once.warning":
+    "shown exactly once — the vault stores only the sha-256 digest of this key; copy it now, it never answers again.",
   "face.signup.once.databaseId": "database id",
   "face.signup.once.key": "api key (shown once)",
   "face.signup.once.copy": "copy the key",

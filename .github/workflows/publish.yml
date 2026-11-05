@@ -886,6 +886,152 @@ jobs:
           npm dist-tag add "@${GITHUB_REPOSITORY_OWNER}/${{ matrix.package }}@${RELEASE_VERSION}" latest --registry=https://npm.pkg.github.com
           echo "the github registry latest dist-tag of ${{ matrix.package }} now answers ${RELEASE_VERSION}."
 
+  family-gitlab:
+    needs: release-approval
+    # the family gitlab lane (the npmjs/GitHub/GitLab triad the spec
+    # demands): the vault storage engine publishes to the gitlab npm
+    # registry beside the npmjs and github mirrors - the same
+    # graceful-skip token gate the npmjs lane carries (GL_TOKEN is
+    # OPTIONAL - a repository without the secret skips the publication
+    # with a notice instead of hard-failing the release pipeline), the
+    # same conclusion guard, the same bounded retry and race tolerance,
+    # resolved per envelope folder. The matrix opens with the vault
+    # package (the engine the triad names); the documentation envelopes
+    # join as their gitlab homes answer.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      # the gitlab npm registry the lane publishes to (the instance-wide
+      # endpoint; a self-hosted gitlab pins its own host here).
+      GL_REGISTRY: https://gitlab.com/api/v4/packages/npm
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          registry-url: https://gitlab.com/api/v4/packages/npm/
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: package dry-run
+        run: cd "${{ matrix.package }}" && npm pack --dry-run >/dev/null
+      - name: check gitlab token availability
+        # the graceful-skip gate (the family contract, Regra 54: GL_TOKEN is
+        # OPTIONAL - a repository without the secret skips the publication
+        # with a notice instead of hard-failing the release pipeline). The
+        # token is only ever touched through env, never an `if:` condition
+        # (Regra 56).
+        id: token
+        shell: bash
+        env:
+          RAW_GL_TOKEN: ${{ secrets.GL_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_GL_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: skip notice when GL_TOKEN is not configured
+        if: steps.token.outputs.available != 'true'
+        run: |
+          echo "::notice::Secret GL_TOKEN is not configured; the gitlab.com npm publication of @wenathlan/${{ matrix.package }} is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the family envelope to the gitlab registry."
+      - name: publish the family envelope when absent
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          # the gitlab auth seat: the scoped registry token the lane rides
+          # (setup-node wrote the registry; the project npmrc pins the
+          # authToken for the same endpoint).
+          printf '@wenathlan:registry=%s\n//gitlab.com/api/v4/packages/npm/:_authToken=${NODE_AUTH_TOKEN}\n' "$GL_REGISTRY" >> .npmrc
+          if npm view "@wenathlan/${{ matrix.package }}@${RELEASE_VERSION}" version --registry="$GL_REGISTRY" >/dev/null 2>&1; then
+            echo "The ${{ matrix.package }} envelope version already exists on the gitlab registry; skipping publish."
+          else
+            attempt=0
+            published=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              if npm publish --registry="$GL_REGISTRY" --access public --tag latest; then
+                published=1
+                break
+              fi
+              # the dual-trigger race tolerance: a sibling firing may have
+              # landed the identical envelope while this leg built - an
+              # existence answer is a pass, never a retry burn.
+              if npm view "@wenathlan/${{ matrix.package }}@${RELEASE_VERSION}" version --registry="$GL_REGISTRY" >/dev/null 2>&1; then
+                echo "the gitlab registry already answers ${RELEASE_VERSION}; the publish race resolved with the same built content."
+                published=1
+                break
+              fi
+              echo "gitlab registry publish attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" -ne 1 ]; then
+              echo "::error::gitlab registry publish failed after ${attempt} attempts."
+              exit 1
+            fi
+          fi
+      - name: align the latest dist-tag with the release version
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd "${{ matrix.package }}"
+          npm dist-tag add "@wenathlan/${{ matrix.package }}@${RELEASE_VERSION}" latest --registry="$GL_REGISTRY"
+          echo "the gitlab registry latest dist-tag of ${{ matrix.package }} now answers ${RELEASE_VERSION}."
+
   detect-maven:
     name: detect Maven source
     # the conclusion guard (the saddle family pattern, Regra 56b): the

@@ -147,7 +147,38 @@ export interface ObjectRow {
   size: bigint;
   digest: string;
   channel: string;
+  bucket: string;
   createdAt: string;
+}
+
+/** the query lane answer the engine serves: one statement, one json shape —
+ * a read with its columns and rows, or a write with its change counters
+ * (the helix-style lane the /api/v1/query route answers). */
+export interface QueryAnswer {
+  ok: true;
+  /** the database the statement rode on (the routing the engine answers) */
+  databaseId: string;
+  /** read answers its rows, write answers its counters */
+  kind: "read" | "write";
+  /** the column names of a read (empty on a write) */
+  columns: string[];
+  /** the json-safe rows of a read (empty on a write) */
+  rows: unknown[][];
+  /** the change counter of a write (0 on a read) */
+  changes: number;
+  /** the last insert rowid of a write as a decimal string ("" on a read) */
+  lastInsertRowid: string;
+  /** the honest execution window the engine measured */
+  elapsedMs: number;
+}
+
+/** the deposit answer: the sealed row the engine returned (its real sha-256
+ * digest and bucket) beside the reuse count the catalog answered. */
+export interface DepositAnswer {
+  ok: true;
+  object: ObjectRow;
+  /** how many chunk windows the catalog already held (the reuse the pipeline answered) */
+  reused: number;
 }
 
 /** the quota verdict the plans lane reads (the usage, the user-defined
@@ -316,7 +347,19 @@ export function vaultclient(options: VaultClientOptions = {}): {
     keyId: string,
   ): Promise<{ ok: true; revoked: boolean; id: string } | LaneRefusal | LaneAway>;
   usage(project: string): Promise<UsageAnswer | LaneRefusal | LaneAway>;
-  listObjects(project: string): Promise<{ ok: true; rows: ObjectRow[] } | LaneRefusal | LaneAway>;
+  listObjects(project: string, bucket?: string): Promise<{ ok: true; rows: ObjectRow[] } | LaneRefusal | LaneAway>;
+  deposit(input: {
+    project: string;
+    path: string;
+    mime: string;
+    bytes: Uint8Array<ArrayBuffer>;
+    bucket?: string;
+  }): Promise<DepositAnswer | LaneRefusal | LaneAway>;
+  query(payload: {
+    databaseId: string;
+    sql: string;
+    params?: readonly (string | number | boolean | null)[];
+  }): Promise<QueryAnswer | LaneRefusal | LaneAway>;
   getQuota(project: string): Promise<QuotaAnswer | LaneRefusal | LaneAway>;
   setQuota(
     project: string,
@@ -471,7 +514,8 @@ export function vaultclient(options: VaultClientOptions = {}): {
         email: input.email,
         password: input.password,
         name: input.name,
-        quotaBytes: input.quotaBytes === undefined ? undefined : input.quotaBytes === null ? null : input.quotaBytes.toString(),
+        quotaBytes:
+          input.quotaBytes === undefined ? undefined : input.quotaBytes === null ? null : input.quotaBytes.toString(),
       });
       const answer = await call("POST", "/api/v1/databases", {
         headers: { "content-type": "application/json" },
@@ -675,8 +719,9 @@ export function vaultclient(options: VaultClientOptions = {}): {
       return refused(response);
     },
 
-    async listObjects(project) {
-      const answer = await call("GET", `/api/v1/storage/objects?project=${encodeURIComponent(project)}`);
+    async listObjects(project, bucket) {
+      const filter = bucket === undefined ? "" : `&bucket=${encodeURIComponent(bucket)}`;
+      const answer = await call("GET", `/api/v1/storage/objects?project=${encodeURIComponent(project)}${filter}`);
       if (!answer.ok) return answer;
       const { response } = answer;
       if (!response.ok) return refused(response);
@@ -700,10 +745,96 @@ export function vaultclient(options: VaultClientOptions = {}): {
               size: BigInt(row.size),
               digest: typeof row.digest === "string" ? row.digest : "",
               channel: typeof row.channel === "string" ? row.channel : "blob",
+              bucket: typeof row.bucket === "string" ? row.bucket : "family-state",
               createdAt: typeof row.createdAt === "string" ? row.createdAt : "",
             });
           }
           return { ok: true, rows };
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async deposit(input) {
+      const answer = await call("POST", "/api/v1/storage/objects", {
+        headers: {
+          "x-project-id": input.project,
+          "x-object-path": input.path,
+          "x-object-mime": input.mime,
+          ...(input.bucket === undefined ? {} : { "x-object-bucket": input.bucket }),
+        },
+        body: input.bytes,
+      });
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const row = parsed as Record<string, unknown>;
+          const object =
+            typeof row.object === "object" && row.object !== null ? (row.object as Record<string, unknown>) : undefined;
+          if (
+            object !== undefined &&
+            typeof object.id === "string" &&
+            typeof object.path === "string" &&
+            typeof object.size === "string" &&
+            typeof object.digest === "string"
+          ) {
+            return {
+              ok: true,
+              object: {
+                id: object.id,
+                projectId: typeof object.projectId === "string" ? object.projectId : "",
+                path: object.path,
+                mime: typeof object.mime === "string" ? object.mime : "",
+                size: BigInt(object.size),
+                digest: object.digest,
+                channel: typeof object.channel === "string" ? object.channel : "blob",
+                bucket: typeof object.bucket === "string" ? object.bucket : "family-state",
+                createdAt: typeof object.createdAt === "string" ? object.createdAt : "",
+              },
+              reused: typeof row.reused === "number" ? row.reused : 0,
+            };
+          }
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
+
+    async query(payload) {
+      const body = JSON.stringify({ query: payload.sql, params: payload.params ?? [] });
+      const answer = await call("POST", "/api/v1/query", {
+        headers: { "content-type": "application/json", "x-database-id": payload.databaseId },
+        body: new TextEncoder().encode(body) as Uint8Array<ArrayBuffer>,
+      });
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const row = parsed as Record<string, unknown>;
+          if (
+            typeof row.databaseId === "string" &&
+            (row.kind === "read" || row.kind === "write") &&
+            typeof row.elapsedMs === "number"
+          ) {
+            return {
+              ok: true,
+              databaseId: row.databaseId,
+              kind: row.kind,
+              columns: Array.isArray(row.columns) ? (row.columns as string[]) : [],
+              rows: Array.isArray(row.rows) ? (row.rows as unknown[][]) : [],
+              changes: typeof row.changes === "number" ? row.changes : 0,
+              lastInsertRowid: typeof row.lastInsertRowid === "string" ? row.lastInsertRowid : "",
+              elapsedMs: row.elapsedMs,
+            };
+          }
         }
       } catch {
         /* the parse fall lands in the refusal lane */
@@ -851,5 +982,41 @@ export function useVaultQuota(): { live: QuotaAnswer | null } {
       alive = false;
     };
   }, []);
+  return state;
+}
+
+/**
+ * useVaultObjects — the mount hook of the object browse lane: it loads the
+ * live object rows of the pinned project once per mount when the engine
+ * lane answers, so the browse table renders the REAL ledger (the paths,
+ * sizes and digests the engine answered) instead of the rehearsal shelf.
+ * The away lane keeps the declared rehearsal answering (never a blank,
+ * never an invented row) and the hook exposes the lane state so the winget
+ * says honestly which ledger it renders.
+ *
+ * @param reloadKey a token the caller bumps to walk the list lane again
+ *   (the deposit widget rides it — a fresh deposit re-reads the ledger).
+ * @returns the live rows when the lane answered (null otherwise) and the
+ *   lane key the render declares.
+ */
+export function useVaultObjects(reloadKey = 0): { live: ObjectRow[] | null; lane: "live" | "away" } {
+  const [state, setState] = useState<{ live: ObjectRow[] | null; lane: "live" | "away" }>({
+    live: null,
+    lane: "away",
+  });
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the reload token is the hook parameter the caller bumps — the mount-plus-reload window is the deposit lane's own law (the sibling hooks ride the mount-only window)
+  useEffect(() => {
+    let alive = true;
+    const project = vaultproject();
+    if (project === "") return;
+    const client = vaultclient();
+    void client.listObjects(project).then((answer) => {
+      if (!alive) return;
+      if (answer.ok) setState({ live: answer.rows, lane: "live" });
+    });
+    return () => {
+      alive = false;
+    };
+  }, [reloadKey]);
   return state;
 }
