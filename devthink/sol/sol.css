@@ -1,17 +1,15 @@
 @import "tailwindcss";
 
-/* The variable fonts the trylle ruler rides: the woff2 faces captured from
-   the reference (cdn.trylle.com marketing assets) live in the theme's
-   fonts folder beside the sheet — the root-level woff2 faces stay ignored
-   as build residue, the sol/fonts sources ship with the tree. font-display
-   swap answers the system ladder (Segoe UI Variable → Selawik) while the
-   bytes arrive, and the weight range 100 900 serves the whole voice
-   without synthetic bold.
-   The Urbanist variable face joins the set self-hosted (the landing voice
-   of the reference): the Google Fonts latin variable woff2 captured once
-   into sol/fonts, zero network font fetches — the three reference tiers
-   (400/600/800 of .font-thin/medium/bold-tier and .saas-root) resolve
-   inside the same 100 900 range the sheet pattern pins. */
+/* The codified type voice (the owner law, wave fluentface): Inter + Geist
+   with the system ladder behind — NOT Segoe. The woff2 faces self-hosted
+   in the theme's fonts folder beside the sheet (the trylle ruler's Inter
+   Variable for display AND body, Geist Mono Variable for the detail) —
+   font-display swap answers the system ladder while the bytes arrive, and
+   the weight range 100 900 serves the whole voice without synthetic bold.
+   The Urbanist landing face of the first cut is retired with its @font-face
+   (the homepage speaks the same codified voice the whole shell does); the
+   root-level woff2 faces stay ignored as build residue, the sol/fonts
+   sources ship with the tree. */
 @font-face {
   font-family: "Inter Variable";
   font-style: normal;
@@ -25,13 +23,6 @@
   font-weight: 100 900;
   font-display: swap;
   src: url("fonts/geist-mono-latin-wght-normal.woff2") format("woff2-variations");
-}
-@font-face {
-  font-family: "Urbanist";
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url("fonts/urbanist-latin-wght-normal.woff2") format("woff2-variations");
 }
 
 /* DevThink Sol — the supreme OS theme, rebuilt from zero (the 8-d
@@ -72,12 +63,16 @@
    1. TOKEN FOUNDATION — the one source of truth (Tailwind @theme)
    ========================================================================== */
 @theme {
-  /* ---- type: the trylle ruler — Inter Variable carries the whole voice
-     (display AND ui; the Segoe fallback keeps the Windows sensation
-     off-network), Geist Mono Variable the detail. ---- */
-  --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-sans:
-    "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik", ui-sans-serif, system-ui, sans-serif;
+  /* ---- type: the codified type voice (the owner law — Inter + Geist,
+     never a named Windows system face): Inter Variable carries display AND
+     body, the Geist name answers behind it, and the system ladder
+     (ui-sans-serif → system-ui) keeps the Windows sensation off-network
+     without a named system seat. Geist Mono Variable the detail. The
+     --font-body token is the voice; --font-sans
+     aliases it so the whole shell inherits one stack. ---- */
+  --font-display: "Inter Variable", "Inter", "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter Variable", "Inter", "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body);
   --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* ---- floors: the canvas the ladder stands on ---- */
@@ -22586,25 +22581,24 @@ button.dtc-recents__row {
 /* ==========================================================================
    9. THE LANDING MATERIALS — the nine-section reference face restored
    (PR8 P1). The SaaS landing of the intro rides these exact campaign
-   values: the Urbanist three-tier voice (400/600/800 with the reference
-   tracking), the tactile keys with their double shadows and inset rims,
-   the scooped-era surfaces, the obsidian grid of the workspace fan deck,
-   the sawtooth ribbon, the swing and float idles, the rank numerals and
-   the fan-deck clay. The chrome rules (selection, focus, drag) scope to
-   .saas-root — the landing root owns them — while the material classes
-   stay global like the reference sheet. Nothing here removes or demotes
-   a class another page renders (the 8-d doctrine holds); the Urbanist
-   voice is SELF-HOSTED now (the variable latin woff2 of the Google Fonts
-   reference family captured into sol/fonts beside the Inter/Geist pair —
-   the @font-face at the head of this sheet serves the three tiers), so
-   the landing answers the reference typeface itself with zero network
-   font fetches, the face never blanks under a frozen CSP, and the house
-   Inter Variable stack stays the fallback behind it.
+   values: the codified Inter + Geist voice (the owner law: the homepage
+   speaks the modern type voice, NOT Segoe — the Urbanist landing voice of
+   the first cut is retired with its @font-face; the tiers keep the
+   reference tracking 400/600/800), the tactile keys with their double
+   shadows and inset rims, the scooped-era surfaces, the obsidian grid of the
+   workspace fan deck, the aligned sawtooth ribbon, the swing and float
+   idles, the rank numerals and the fan-deck clay. The chrome rules
+   (selection, focus, drag) scope to .saas-root — the landing root owns them
+   — while the material classes stay global like the reference sheet.
+   Nothing here removes or demotes a class another page renders (the 8-d
+   doctrine holds); the landing voice is the codified house stack itself
+   (the --font-body / --font-display tokens every other surface answers —
+   zero network font fetches, the face never blanks under a frozen CSP).
    ========================================================================== */
 
-/* the voice of the landing: Urbanist over the house stack */
+/* the voice of the landing: the codified house stack itself */
 .saas-root {
-  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
   letter-spacing: -0.015em;
 }
 .saas-root ::selection {
@@ -22624,21 +22618,23 @@ button.dtc-recents__row {
   user-select: none;
 }
 
-/* the three tiers of the reference voice */
+/* the three tiers of the reference voice — the codified stack with the
+   reference tracking (the weights and spacing the reference tiers wore,
+   riding the Inter + Geist tokens instead of the retired Urbanist face) */
 .font-thin-tier {
-  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
   font-weight: 400;
   letter-spacing: -0.005em;
   line-height: 1.45;
 }
 .font-medium-tier {
-  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
   font-weight: 600;
   letter-spacing: -0.018em;
   line-height: 1.25;
 }
 .font-bold-tier {
-  font-family: "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-display);
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.02;
@@ -22849,22 +22845,32 @@ button.dtc-recents__row {
   animation: spinBadgeSlow 18s linear infinite;
 }
 
-/* the sawtooth ribbon and its whitewash center */
+/* the sawtooth ribbon and its whitewash center — the aligned cut law the
+   owner pinned after debonair: every wash OPAQUE (the exact composited
+   pixel over the ribbon base — transparency stays only on the native
+   studio banner), every layer phased at 50% so the saw mirrors about the
+   viewport center (the web example's symmetric alignment — the old 15px
+   half-tooth phase shift died), and the base a variable so the footer
+   instance crops flush into the section below it. */
 .ribbon-sawtooth-divider {
+  --ribbon-base: #f9f6f0;
   height: 30px;
   width: 100%;
   background-image:
-    linear-gradient(135deg, rgba(15, 23, 42, 0.92) 25%, transparent 25%),
-    linear-gradient(225deg, rgba(99, 102, 241, 0.75) 25%, transparent 25%),
-    linear-gradient(45deg, rgba(56, 189, 248, 0.45) 25%, transparent 25%),
-    linear-gradient(315deg, rgba(200, 75, 17, 0.75) 25%, #f9f6f0 25%);
+    linear-gradient(135deg, #22293a 25%, transparent 25%),
+    linear-gradient(225deg, #898af1 25%, transparent 25%),
+    linear-gradient(45deg, #a2dcf4 25%, transparent 25%),
+    linear-gradient(315deg, #d47649 25%, var(--ribbon-base) 25%);
   background-position:
-    15px 0,
-    15px 0,
-    0 0,
-    0 0;
+    50% 0,
+    50% 0,
+    50% 0,
+    50% 0;
   background-size: 30px 30px;
   background-repeat: repeat-x;
+}
+.ribbon-sawtooth-into-footer {
+  --ribbon-base: #f2f5fc;
 }
 .ribbon-whitewash-center {
   width: min(320px, 80vw);

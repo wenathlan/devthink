@@ -438,7 +438,11 @@ export const telemetryfreerecord: telemetryfreereport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runtelemetryfreesuite();
   for (const entry of report.entries) {

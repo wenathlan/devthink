@@ -7,8 +7,9 @@
  * 4.5s, and the sawtooth ribbon that hands into the studio flow bed. The
  * hero statement rides the ui store rows (the intro.hero.* rows of
  * uistore.ts — the exact reference words), every deck rides the landing
- * data layer (saascontent.ts) and the glyphs ride the lucide set of the
- * reference. The reference photography died with the owner image ban: the
+ * data layer (saascontent.ts) and the glyphs ride the Fluent UI System
+ * Icons sheet — the Microsoft family the Win11 law pins, every glyph
+ * aliasing the seat the lucide reference set wore. The reference photography died with the owner image ban: the
  * avatars answer as gradient chips and the hero cards carry no photos at
  * all. Loose components of the intro page — the anchor (intro.tsx) mounts
  * the page (saas.tsx) and the page composes these.
@@ -16,18 +17,18 @@
 
 import { useEffect, useState } from "react";
 import {
-  Activity,
-  ArrowRight,
-  ArrowUpRight,
-  AtSign,
-  Check,
-  Globe,
-  Play,
-  Plus,
-  Share2,
-  Star,
-  Waves,
-} from "lucide-react";
+  AddRegular as Plus,
+  ArrowRightRegular as ArrowRight,
+  ArrowUpRightRegular as ArrowUpRight,
+  CheckmarkRegular as Check,
+  GlobeRegular as Globe,
+  HeadphonesSoundWaveRegular as Waves,
+  MentionRegular as AtSign,
+  PlayFilled as Play,
+  PulseRegular as Activity,
+  ShareRegular as Share2,
+  StarFilled as Star,
+} from "@fluentui/react-icons";
 import {
   saascreators,
   saascreatorsintro,
