@@ -15,7 +15,7 @@
  * family session covers every device of the family deploy. The local
  * accountgate of the root accountgate.ts stays as the DECLARED offline
  * fallback only — the honest offline row names it when the lane never
- * answered. The provider row — continue with google and github
+ * answered. The provider row — continue with google, github and gitlab
  * wearing the official brand marks, plus the cli pairing button under
  * the same simple grammar (one button, zero manual configuration: the
  * invitation link consumes itself, the honest note answers a plain
