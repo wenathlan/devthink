@@ -13,7 +13,7 @@
 
 import { useMemo } from "react";
 import { seedRules } from "../../buckets.ts";
-import { formatBytes, seedVault, vaultCensus } from "../../objects.ts";
+import { formatBytes, seedVault, vaultCensus } from "../../objectface.ts";
 import { firstDueTick, sweepPlan } from "../../retention.ts";
 import { uicopy, uicopyfill } from "../../uistore.ts";
 import { useVaultUsage } from "../../vaultclient.ts";
