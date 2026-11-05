@@ -357,14 +357,19 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # application root, so COPY devthink carries them), and the sibling
 # engines the config bridges resolve (the getry thinking ladder of the
 # getrybridge alias and the direct village imports, the saddle sandbox
-# and isolation surfaces of the vite/vitest/tsconfig bridges). the
+# and isolation surfaces of the vite/vitest/tsconfig bridges, and the
+# foundry bundle scan the build entry borrows — the dedup law keeps the
+# strip and underscore helpers owned by the foundry engine, so the
+# builder answers the ../foundry/bundlescan.ts import the same way the
+# checkout does). the
 # application lands at /devthink and the siblings beside it, so every
-# ../devthink, ../getry and ../saddle reference of the village
+# ../devthink, ../getry, ../foundry and ../saddle reference of the village
 # answers inside the image exactly the way it answers in the checkout
 # (the root .dockerignore keeps the context to exactly these inputs — no
 # prebuilt build, no packaged artifacts, no caches).
 COPY devthink .
 COPY getry /getry
+COPY foundry /foundry
 COPY saddle /saddle
 # the root manifest the engines gate counts rides beside the application:
 # the engines suite opens ../package.json from the workdir, and the
