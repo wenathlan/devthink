@@ -808,7 +808,11 @@ export const costcertrecord: costcertreport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runcostcertsuite();
   for (const candidate of report.entries) {

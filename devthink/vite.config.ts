@@ -233,6 +233,16 @@ function nodebuiltinshim(): Plugin {
    * carries — the shims are never duplicated inside devthink. */
   const shimpath = path.resolve(import.meta.dirname, "../getry/nodeshim.ts");
   const prismashimpath = path.resolve(import.meta.dirname, "../getry/prismashim.ts");
+  /** the hono adapter browser face (the dev boot heal): the gateway graph
+   * the browser walks reaches the node adapter ("@hono/node-server" and
+   * the serve-static subpath) whose real entry probes process.versions.node
+   * at module scope — the optimizer's browser-external process answers
+   * undefined, the import dies with the generic failed-to-fetch and the
+   * whole os blanks before the first component mounts. The two specifiers
+   * resolve onto the getry-owned honest refusal face (the serve and
+   * serveStatic exports throw when called, never at import), the node
+   * lanes keep resolving the real adapter untouched. */
+  const honoshimpath = path.resolve(import.meta.dirname, "../getry/honoshim.ts");
   const shimmed = new Set(Object.keys(shims));
   return {
     name: "devthink-node-builtin-shim",
@@ -240,6 +250,9 @@ function nodebuiltinshim(): Plugin {
     resolveId(source) {
       if (source.startsWith("node:") && shimmed.has(source.slice("node:".length))) {
         return shimpath;
+      }
+      if (source === "@hono/node-server" || source === "@hono/node-server/serve-static") {
+        return honoshimpath;
       }
       /* the prisma client edge: the lazy db proxy of storage.ts
        * speaks a dynamic import("@prisma/client") on the first database
@@ -288,6 +301,24 @@ export default defineConfig({
     global: "globalThis",
   },
   base: pagesBasePath(process.env.VITE_BASE_PATH),
+  /** the dep-optimizer edge of the dev boot heal: the optimizer's esbuild
+   * scan bypasses the plugin container's resolveId (the enforce: pre hooks
+   * never run for imports the scanner walks inside pre-bundled deps), so
+   * the node adapter ("@hono/node-server" and its serve-static subpath,
+   * which the gateway graph reaches through the config bridge) bundled
+   * with vite's own browser-external process stub — the Proxy whose
+   * property reads answer undefined — and the adapter's module-scope
+   * versions.node gate threw before any component mounted. The exclude
+   * lane keeps the two specifiers out of the pre-bundle: their imports
+   * resolve at request time through the container, where the
+   * nodebuiltinshim face answers node:process with the neutral
+   * versions.node = "" table (the gate falls to the pre-23 path that
+   * never touches Readable.toWeb) or the honoshim refusal face claims
+   * the specifier outright — the build lanes were always safe (the
+   * scanner never rides them), the dev boot rides them now too. */
+  optimizeDeps: {
+    exclude: ["@hono/node-server", "@hono/node-server/serve-static"],
+  },
   plugins: [nodebuiltinshim(), react(), tailwindcss(), familydevbridge()],
   resolve: {
     alias: {
@@ -397,14 +428,21 @@ export default defineConfig({
        * the last (the longer keys above must stay ahead of the two bare
        * roots the prefix matching would otherwise shadow — a hono
        * version bump that adds a new spoken subpath adds its entry
-       * here). */
+       * here). the two node-adapter seats answer the getry-owned honoshim
+       * refusal face (the dev boot heal): the adapter never serves on a
+       * browser host — its entries read the node surface at module scope
+       * (the versions.node gate, the http.STATUS_CODES table) the dev
+       * optimizer's browser-external stubs cannot answer — so the
+       * browser graph links the honest refusal instead, while the node
+       * lanes keep walking their own tsconfig bridge (hono.ts) onto the
+       * real adapter the node_modules tree carries. */
       "@hono/node-server/serve-static": path.resolve(
         import.meta.dirname,
-        "node_modules/@hono/node-server/dist/serve-static.mjs",
+        "../getry/honoshim.ts",
       ),
       "@hono/node-server": path.resolve(
         import.meta.dirname,
-        "node_modules/@hono/node-server/dist/index.mjs",
+        "../getry/honoshim.ts",
       ),
       "hono/cors": path.resolve(
         import.meta.dirname,
@@ -536,11 +574,19 @@ export default defineConfig({
      * plus the /api surface on its own port, and the dev web speaks strictly
      * same-origin — the chat client never points at another origin in dev */
     proxy: {
-      "/v1": {
+      /* anchored lanes (the module-graph law): the plain "/api" prefix key
+       * vite matches by startsWith would swallow every root module that
+       * begins with the same letters — apifreeze.ts answered the gateway's
+       * 204 and the module import died with the generic failed-to-fetch,
+       * blanking the whole boot. the anchored forms only ride real routes
+       * that carry a path segment behind the lane (the /v1/chat/* contract
+       * and the /api/* surface), so root source modules keep vite's own
+       * static module serving. */
+      "^/v1/": {
         target: `http://127.0.0.1:${process.env.GATEWAY_PORT || 3001}`,
         changeOrigin: false,
       },
-      "/api": {
+      "^/api/": {
         target: `http://127.0.0.1:${process.env.GATEWAY_PORT || 3001}`,
         changeOrigin: false,
       },

@@ -642,7 +642,12 @@ export async function buildextension(options = {}) {
   return { output, manifest };
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url))
+if (
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  process.argv[1] === fileURLToPath(import.meta.url)
+)
   buildextension(parsearguments(process.argv.slice(2)))
     .then(({ output }) => {
       console.log(`extension artifact: ${output}`);
