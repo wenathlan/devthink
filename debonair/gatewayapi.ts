@@ -90,7 +90,6 @@
 
 import type { BlobPointer, BlobResult, BlobStore } from "./blobstore.ts";
 import { blobidvalid } from "./blobstore.ts";
-import { matchGenre } from "./genrematrix.ts";
 import type {
   IngestDbHandle,
   IngestDocument,
@@ -1311,17 +1310,16 @@ function renderwire(row: RenderTrackRow): VitrineTrackValue {
 }
 
 /** The vitrine row of one ingested reference — the stored mix's face
- * (the genre line rides the matrix's own matcher over the document name
- * first — the declared label the reference lane carries — and the style-law
- * classifier answers when the name declares nothing: the measured verdict
- * of the report the analysis walked, the grouping law the miner lane
- * rides). */
+ * (the genre line rides the measured verdict the style-law classifier
+ * answers over the analysis report — the bpm, the key mode, the loudness
+ * and the band balance the mix lane walked, never the document name: the
+ * filename declares nothing about the sound, the signal does). */
 function referencewire(row: IngestStampRow): VitrineTrackValue {
   return {
     kind: "reference",
     id: row.id,
     name: row.name,
-    genre: matchGenre(row.name)?.label ?? classifyDocument(row.document)[0]?.label ?? "",
+    genre: classifyDocument(row.document)[0]?.label ?? "",
     seconds: Math.round(row.durationSeconds),
     status: "ready",
     wavPointer: row.mixPointer,
@@ -1811,7 +1809,7 @@ export async function startMinerJob(
     .filter(
       (standing) =>
         standing.kind === "reference" &&
-        (matchGenre(standing.name)?.id ?? classifyDocument(standing.document)[0]?.genreId) === payload.genre,
+        classifyDocument(standing.document)[0]?.genreId === payload.genre,
     )
     .map((standing) => ({ ...standing.document, id: standing.id }));
   report("collect");
