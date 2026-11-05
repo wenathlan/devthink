@@ -21,7 +21,7 @@
        * publishes the ./modalityregistry export; the ambient modalitytypes.ts
        * mirror retired with the bridge — the catalog has one owner, the
        * engine). */
-      "@wenathlan/saddle/modalityregistry": ["./saddlefaces.ts"],
+      "@wenathlan/saddle/modalityregistry": ["./modalitytypes.ts"],
       /* the getry declaration face bridges of the ownership wave
        * (wave/ownership.getry): the gateway modules answer through the
        * published library specifiers ("@wenathlan/getry/llm" and siblings),
