@@ -325,7 +325,7 @@ export interface doccheckreport {
  * its fixed order with its outcome, no timestamps, so the record replays
  * byte identical. */
 export const doccheckrecord: doccheckreport = {
-  "release": "2.0.160",
+  "release": "2.0.161",
   "kindcount": 335,
   "kindentries": 335,
   "families": 12,
@@ -393,5 +393,9 @@ export const doccheckrecord: doccheckreport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) await rundocchecksuite();

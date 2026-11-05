@@ -1,4 +1,4 @@
-# saddle 2.0.160 — THE ENGINE CONTAINER FILE
+# saddle 2.0.161 — THE ENGINE CONTAINER FILE
 #
 # THE FAMILY CONTAINER DOCTRINE, THE SADDLE SHAPE: one versioned container
 # per engine, built like the site homes (argan, cadria) build theirs — a
@@ -16,14 +16,18 @@
 # THE THREE VARIANT PROFILES (the saddle-exclusive law: the only app of
 # the family that ships three) — select with the target flag:
 #
-#   docker build --target max       -t saddle:2.0.160 .
-#   docker build --target balanced  -t saddle:2.0.160-balanced .
-#   docker build --target lite      -t saddle:2.0.160-lite .
+#   docker build --target max       -t saddle:2.0.161 .
+#   docker build --target balanced  -t saddle:2.0.161-balanced .
+#   docker build --target lite      -t saddle:2.0.161-lite .
 #
 #   max       — the full profile catalog: the epyc 9965 class, 192 vcpu,
 #               384 threads, 1024 gib ram plan, the b200 gpu plan x8.
 #   balanced  — the threadripper pro 9995wx class, 96 vcpu, 192 threads,
-#               512 gib ram plan, the b200 gpu plan x2.
+#               512 gib ram plan, the b200 gpu plan x2. THE DEFAULT
+#               TARGET: the plain `docker build -f saddle/Dockerfile .`
+#               with no --target answers the balanced stage (the last
+#               stage of the file) — the SADDLE_PROFILE lane's documented
+#               default — and the publish legs always name their target.
 #   lite      — the ryzen 9950x3d class, 16 vcpu, 32 threads, 128 gib
 #               ram plan, the rtx 5090 gpu plan x1.
 #
@@ -31,7 +35,31 @@
 # assert), the catalog constants stay the publish matrix's single source,
 # and every profile ships the same engine graph — the same ninety
 # modalities, the same console, the same health surface; only the declared
-# hardware plan differs.
+# hardware plan differs. Each variant stage re-declares the six plan
+# build-args with its own honest defaults and re-stamps the plan ENV, so a
+# local `--target` leg answers its real hardware plan with no args passed
+# (the publish legs pass the matrix constants per leg and override the
+# defaults — one lane, two honest entries).
+#
+# THE ELEVEN-DEVICE BANK the profiles declare against (the exotic law's
+# hardware vocabulary): the quickCatalog of saddle/virtualhardware.json
+# carries exactly eleven virtual devices — seven cpu classes (epyc 9965,
+# epyc 9755, threadripper 7995wx, ryzen 9950x3d, ryzen 9950x3d2, ryzen
+# 9800x3d, xeon 6980p) and four gpu classes (rtx 5090, rtx pro 6000,
+# b200, h100) — and the three profiles stamp their plan (the cpu class,
+# the vcpu/thread counts, the ram plan, the gpu class and count) from
+# that bank; every device stays virtual (the engine presents it, the
+# visitor machine never lends its own).
+#
+# THE GUEST OS LANE the sandbox modalities answer (the owner's nickname
+# law, saddle/docs/ninetymodalities.md): the spec vocabulary boots linux
+# plus the nickname builds — marsh (marshmallow) resolves android,
+# grapenios and grafene os resolve grapheneos, omashi resolves omarchy —
+# and the owner's "v" names no guest os: it answers the languagev
+# compiler seat of the ninety modalities. The container lane itself rides
+# linux (the eleven-architecture standard below); the guest os vocabulary
+# is the sandbox spec surface the console answers, never a host
+# distribution this container installs.
 #
 # THE ELEVEN-ARCHITECTURE PLATFORM STANDARD (the pr15b law): every
 # profile answers the eleven architectures the container standard names —
@@ -46,7 +74,13 @@
 # loong64 and the wasm pair) answer the standard's honest coded absence
 # (ARCH_IMAGE_ABSENT), never a pretended build leg — the same honesty
 # law the containerarch table keeps for its own pinned base: a leg
-# never claims a manifest the base does not carry.
+# never claims a manifest the base does not carry. The base stage
+# declares the TARGETPLATFORM/TARGETARCH automatic build-args (the
+# devthink container's standard arch interface) and stamps the honesty
+# law into the build log with its arch guard: a leg the base carries
+# answers its leg line, a legacy builder without a platform axis answers
+# its documented note, and anything else answers the coded refusal
+# before a heavy step runs.
 #
 # THE CONTEXT LAW (the family context fix): this file COPYs from two
 # trees (saddle/ and the engine-ownership sibling vault/), so every build
@@ -81,7 +115,7 @@ ARG NODE_BASE_DIGEST
 # ===== stage: solbuild — the locked npm tree and the console spa =====
 FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
-ARG SADDLE_VERSION=2.0.160
+ARG SADDLE_VERSION=2.0.161
 
 WORKDIR /app
 
@@ -109,7 +143,17 @@ RUN npm run web:build:pages \
 # ===== stage: base — the hardened runtime floor every profile shares =====
 FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
-ARG SADDLE_VERSION=2.0.160
+ARG SADDLE_VERSION=2.0.161
+# the revision stamp the devthink container carries (DEVTHINK_REVISION
+# there): the publish legs pass the release sha at build time and the
+# revision label below declares the default-unknown local shape.
+ARG SADDLE_REVISION=unknown
+# the automatic platform args (the devthink standard arch interface):
+# the multi-arch node base resolves each leg's platform itself, and the
+# arch guard below reads TARGETARCH to stamp the eleven-architecture
+# law into the build log of every leg.
+ARG TARGETPLATFORM
+ARG TARGETARCH
 ARG SADDLE_PROFILE=max
 ARG VHE_PROFILE_CPU="epyc9965"
 ARG VHE_PROFILE_VCPUS="192"
@@ -123,7 +167,8 @@ LABEL org.opencontainers.image.title="saddle" \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink" \
-      org.opencontainers.image.documentation="https://github.com/wenathlan/devthink/tree/main/saddle"
+      org.opencontainers.image.documentation="https://github.com/wenathlan/devthink/tree/main/saddle" \
+      org.opencontainers.image.revision="${SADDLE_REVISION}"
 
 WORKDIR /app
 
@@ -143,6 +188,24 @@ ENV NODE_ENV=production \
     SADDLE_PROFILE_RAM_GB=${VHE_PROFILE_RAM_GB} \
     SADDLE_PROFILE_GPU=${VHE_PROFILE_GPU} \
     SADDLE_PROFILE_GPUS=${VHE_PROFILE_GPUS}
+
+# the arch-leg guard of the eleven-architecture standard: the pinned
+# node base resolves the platform of every leg buildx names, and this
+# echo layer stamps the honesty law into the build log — the four seats
+# the base carries answer their leg line, the legacy builder (no
+# platform axis) answers its documented note, and any other seat answers
+# the coded refusal before the heavy steps below could run (buildx
+# itself fails such a leg at base resolution first; the guard keeps the
+# law loud on every builder).
+RUN case "${TARGETARCH:-}" in \
+      amd64|arm64|ppc64le|s390x) \
+        echo "arch leg ${TARGETARCH} of ${TARGETPLATFORM:-<unresolved>}: one of the four seats the pinned node base carries of the eleven-architecture standard" ;; \
+      "") \
+        echo "arch leg unresolved: the legacy builder carries no platform axis; buildkit answers TARGETARCH per leg" ;; \
+      *) \
+        echo "the eleven-architecture standard answers the ${TARGETARCH} seat with the honest coded absence (ARCH_IMAGE_ABSENT): the pinned node base carries no such manifest" >&2; \
+        exit 1 ;; \
+    esac
 
 COPY --from=solbuild /app/package.json /app/package-lock.json ./
 RUN apt-get update \
@@ -196,45 +259,123 @@ RUN apt-get update \
 # the solbuild stage lands it). with the graph closed, node
 # webserver.ts starts clean; before the fix the container crashed at
 # boot with module-not-found.
+#
+# The two lazy engine seats ride the same closed graph (the exotic law:
+# the ninety modalities answer real runs inside the container, never the
+# guarded absence): webserver.ts mounts the edge artifact vault through
+# a first-use import of virtual.ts (the guarded loader degrades to null
+# when the module is absent, so a container without it answers no
+# artifact persistence), and edgelandes.ts lazily mounts virtual.ts for
+# its virtual-file, s3 and persistence recipe seats plus tiers.ts for
+# the kernel recipe seat — copying both keeps those seats live inside
+# the container, and their import closures stay inside the set
+# (virtual.ts pulls foundation.ts only; tiers.ts pulls node builtins
+# only).
 # run the console with: docker run saddle:<version>
-COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scriptlanes.ts /app/execution.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scriptlanes.ts /app/execution.ts /app/virtual.ts /app/tiers.ts /app/mime.types /app/init.sql /app/schema.prisma ./
 # the label store of the console stack: labels.ts (pulled by db.ts)
 # resolves ../vault/labelstore.ts at /vault - the same family context
 # fix the solbuild stage applies.
 COPY --from=solbuild /vault/labelstore.ts /vault/labelstore.ts
 COPY --from=solbuild /out/spa ./
 
+# the writable state home of the engine console (the vault engine
+# container's /app/data pattern): db.ts resolves the sqlite store at
+# import time (SADDLE_DB, else ./saddle.db under the working directory)
+# and every directory the COPY chain staged stays root-owned, so the
+# unprivileged node user needs a home it owns before the database file
+# can open — without it the console crashed at boot on the sqlite
+# cantopen refusal. An operator pins the persistent volume here; the
+# engine creates the store on first boot.
+RUN mkdir -p /app/data && chown -R node:node /app/data
+
 USER node
 
 # the console service doors: the webserver answers the engine api and the
 # staged spa on the saddle port (the source-is-library law runs the .ts
-# graph natively - node 26 strips the types, zero npm dependencies).
+# graph natively - node 26 strips the types, zero npm dependencies), the
+# port pin keeps the webserver's random-port fallback from ever
+# answering, and the sqlite store opens under the writable state home
+# above.
 ENV SADDLE_PORT=8080 \
-    SADDLE_HOST=0.0.0.0
+    SADDLE_HOST=0.0.0.0 \
+    SADDLE_DB=/app/data/saddle.db
 
 EXPOSE 8080
 
-# the health probe rides the public /health route the webserver answers
-# (node fetch, zero wget dependency on the slim debian base; the callback
-# spells function() — no arrow, no equal sign — so the dockle CIS-DI-0010
-# heuristic never reads a credential pair into the recorded healthcheck).
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD ["node", "-e", "fetch('http://127.0.0.1:8080/health').then(function(r){if(!r.ok)process.exit(1)}).catch(function(){process.exit(1)})"]
+# the health probe rides the PUBLIC /api/v1/health route the webserver
+# answers (the engine's own health surface: the ok flag, the version, the
+# db healthcheck — never the spa shell the extensionless /health path
+# serves, which would answer 200 html even with the engine sealed). The
+# port follows SADDLE_PORT with the 8080 fallback (node fetch, zero wget
+# dependency on the slim debian base; the callback spells function() — no
+# arrow, no equal sign — so the dockle CIS-DI-0010 heuristic never reads
+# a credential pair into the recorded healthcheck).
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD ["node", "-e", "fetch('http://127.0.0.1:'+(process.env.SADDLE_PORT||8080)+'/api/v1/health').then(function(r){return r.json()}).then(function(j){if(!j.ok)process.exit(1)}).catch(function(){process.exit(1)})"]
 
 ENTRYPOINT ["node", "webserver.ts"]
 
 # ===== the variant profile targets (the saddle-exclusive three) =====
-# max — the full profile catalog (the default the plain `docker build`
-# answers when no target is named is the last stage of the file: lite
-# below; the publish lanes always name their target).
+# Every variant stage re-declares the six plan build-args with its own
+# honest defaults and re-stamps the plan ENV: a local `--target` leg
+# answers its real hardware plan with no args passed (the pre-fix file
+# stamped the max plan under every profile name when the caller passed
+# no VHE_PROFILE_* args), and the publish legs pass the matrix constants
+# per leg and override the defaults — the publish matrix stays the single
+# source of the catalog either way.
+
+# max — the full profile catalog: the epyc 9965 class, 192 vcpu, 384
+# threads, 1024 gib ram, the b200 gpu plan x8 (the bare version tag the
+# registry lane answers).
 FROM base AS max
-ENV SADDLE_PROFILE=max
+ARG VHE_PROFILE_CPU="epyc9965"
+ARG VHE_PROFILE_VCPUS="192"
+ARG VHE_PROFILE_THREADS="384"
+ARG VHE_PROFILE_RAM_GB="1024"
+ARG VHE_PROFILE_GPU="b200"
+ARG VHE_PROFILE_GPUS="8"
+ENV SADDLE_PROFILE=max \
+    SADDLE_PROFILE_CPU=${VHE_PROFILE_CPU} \
+    SADDLE_PROFILE_VCPUS=${VHE_PROFILE_VCPUS} \
+    SADDLE_PROFILE_THREADS=${VHE_PROFILE_THREADS} \
+    SADDLE_PROFILE_RAM_GB=${VHE_PROFILE_RAM_GB} \
+    SADDLE_PROFILE_GPU=${VHE_PROFILE_GPU} \
+    SADDLE_PROFILE_GPUS=${VHE_PROFILE_GPUS}
 
-# balanced — the threadripper pro class, the b200 plan x2.
-FROM base AS balanced
-ENV SADDLE_PROFILE=balanced
-
-# lite — the ryzen class, the rtx 5090 plan x1 (the default target: the
-# plain `docker build -f saddle/Dockerfile .` with no --target answers
-# lite, the lightest leg the family carries).
+# lite — the ryzen 9950x3d class, 16 vcpu, 32 threads, 128 gib ram, the
+# rtx 5090 gpu plan x1 (the -lite suffix tag the registry lane answers).
 FROM base AS lite
-ENV SADDLE_PROFILE=lite
+ARG VHE_PROFILE_CPU="ryzen9950x3d"
+ARG VHE_PROFILE_VCPUS="16"
+ARG VHE_PROFILE_THREADS="32"
+ARG VHE_PROFILE_RAM_GB="128"
+ARG VHE_PROFILE_GPU="rtx5090"
+ARG VHE_PROFILE_GPUS="1"
+ENV SADDLE_PROFILE=lite \
+    SADDLE_PROFILE_CPU=${VHE_PROFILE_CPU} \
+    SADDLE_PROFILE_VCPUS=${VHE_PROFILE_VCPUS} \
+    SADDLE_PROFILE_THREADS=${VHE_PROFILE_THREADS} \
+    SADDLE_PROFILE_RAM_GB=${VHE_PROFILE_RAM_GB} \
+    SADDLE_PROFILE_GPU=${VHE_PROFILE_GPU} \
+    SADDLE_PROFILE_GPUS=${VHE_PROFILE_GPUS}
+
+# balanced — the threadripper pro 9995wx class, 96 vcpu, 192 threads,
+# 512 gib ram, the b200 gpu plan x2 (the -balanced suffix tag the
+# registry lane answers). THE DEFAULT TARGET: the last stage of the
+# file — the plain `docker build -f saddle/Dockerfile .` with no
+# --target answers the balanced profile (the SADDLE_PROFILE lane's
+# documented default).
+FROM base AS balanced
+ARG VHE_PROFILE_CPU="threadripperpro9995wx"
+ARG VHE_PROFILE_VCPUS="96"
+ARG VHE_PROFILE_THREADS="192"
+ARG VHE_PROFILE_RAM_GB="512"
+ARG VHE_PROFILE_GPU="b200"
+ARG VHE_PROFILE_GPUS="2"
+ENV SADDLE_PROFILE=balanced \
+    SADDLE_PROFILE_CPU=${VHE_PROFILE_CPU} \
+    SADDLE_PROFILE_VCPUS=${VHE_PROFILE_VCPUS} \
+    SADDLE_PROFILE_THREADS=${VHE_PROFILE_THREADS} \
+    SADDLE_PROFILE_RAM_GB=${VHE_PROFILE_RAM_GB} \
+    SADDLE_PROFILE_GPU=${VHE_PROFILE_GPU} \
+    SADDLE_PROFILE_GPUS=${VHE_PROFILE_GPUS}

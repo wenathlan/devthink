@@ -619,7 +619,10 @@ async function runreleasewalk(): Promise<void> {
 
 /** Reads whether node loaded this module as the direct entry: the release metadata lanes run `node release.ts check|notes|sync` (the check:metadata, notes:release and sync:metadata scripts), and no library face imports this module for its walk — the maintenance sync imports only the pat publish walk folded below — so the lane fires on its own entry and never on an import. */
 const releasewalkmain =
-  typeof process !== "undefined" && process.argv[1] !== undefined && process.argv[1].endsWith("release.ts");
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  process.argv[1].endsWith("release.ts");
 if (releasewalkmain) void runreleasewalk();
 
 /* ── Merged from the release publish pat walk ── */

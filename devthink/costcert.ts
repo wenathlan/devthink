@@ -725,7 +725,7 @@ export interface costcertreport {
  * order with its outcome, no timestamps, so the record replays byte
  * identical. */
 export const costcertrecord: costcertreport = {
-  "release": "2.0.160",
+  "release": "2.0.161",
   "checklist": "docs/costcert.md",
   "entries": [
     {
@@ -808,7 +808,11 @@ export const costcertrecord: costcertreport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runcostcertsuite();
   for (const candidate of report.entries) {

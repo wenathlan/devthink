@@ -970,7 +970,7 @@ export interface soakreport {
  * first layer: every check in its fixed order with its outcome, no
  * timestamps, so the record replays byte identical. */
 export const soakrecord: soakreport = {
-  "release": "2.0.160",
+  "release": "2.0.161",
   "checklist": "docs/soak.md",
   "soak": {
     "retentionwindow": 8,
@@ -1062,7 +1062,11 @@ export const soakrecord: soakreport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runsoaksuite();
   for (const candidate of report.entries) {

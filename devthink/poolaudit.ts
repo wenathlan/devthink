@@ -276,7 +276,7 @@ export interface poolcoveragereport {
  * of the 626 item pool, no timestamps, so the record replays byte
  * identical. */
 export const poolcoveragerecord: poolcoveragereport = {
-  "release": "2.0.160",
+  "release": "2.0.161",
   "corpus": 4373,
   "pool": {
     "total": 626,
@@ -400,7 +400,11 @@ export const poolcoveragerecord: poolcoveragereport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runpoolauditsuite();
   for (const check of report.checks) {

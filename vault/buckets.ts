@@ -9,7 +9,7 @@
 // the same seed always musters the same shelf. No clocks, no network.
 // This module is the testable core of the /buckets page.
 
-import { mulberry32, VAULT_BUCKETS, type VaultObject } from "./objects.ts";
+import { mulberry32, VAULT_BUCKETS, type VaultObject } from "./objectface.ts";
 
 /** the retention policy of one bucket: 0 days = sealed forever. */
 export interface BucketRule {

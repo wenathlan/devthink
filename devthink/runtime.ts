@@ -781,7 +781,8 @@ async function validateruntimebaselines(): Promise<void> {
 /** Reads whether node loaded this module as the direct entry: the validate chain and the verify workflow run the gate lane as `node runtime.ts`, and no bundled library face matches a direct entry path (the browser faces carry no process at all), so the gate fires on its own lane and never on an import. */
 const invokeddirectly =
   typeof process !== "undefined" &&
-  process.argv[1] !== undefined &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
   (process.argv[1].endsWith("runtime.ts") || process.argv[1].endsWith("runtime"));
 
 if (invokeddirectly)

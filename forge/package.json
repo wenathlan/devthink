@@ -1,61 +1,17 @@
 {
   "name": "@wenathlan/forge",
-  "version": "2.0.160",
+  "version": "2.0.161",
   "description": "forge is the sandbox runner surface of the wenathlan family: it runs the sandbox runners on the saddle engine boundary and ships the documentation set and the tests directory as one package",
-  "bin": {
-    "forge": "./cli.ts"
-  },
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/wenathlan/devthink"
   },
   "license": "GPL-3.0-only",
   "author": "Wenathlan",
+  "type": "module",
   "sideEffects": false,
-  "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "start": "vite preview --host",
-    "preview": "vite preview --host",
-    "check": "tsc --noEmit",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "biome check .",
-    "restore:entry": "node -e \"const{readFileSync}=require('node:fs');const{execSync}=require('node:child_process');const script=/script[^>]*App\\.tsx/;const triad=/family=Bricolage\\+Grotesque[\\s\\S]*Outfit[\\s\\S]*JetBrains\\+Mono/;const face=(h)=>script.test(h)&&triad.test(h);if(face(readFileSync('index.html','utf8'))){console.log('index.html already rides the source face');process.exit(0)}if(!face(execSync('git show HEAD:./index.html',{encoding:'utf8'}))){console.error('refusing: HEAD index.html is not the canonical source face yet (script App.tsx + the font triad) - land the source-face fix first; nothing was touched');process.exit(1)}execSync('git checkout -- index.html',{stdio:'inherit'});console.log('index.html restored from HEAD (the source face)')\""
-  },
-  "dependencies": {
-    "@fluentui/react-icons": "^2.0.345",
-    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
-    "@fontsource-variable/geist-mono": "^5.3.0",
-    "@fontsource-variable/inter": "^5.3.0",
-    "@fontsource-variable/jetbrains-mono": "^5.3.0",
-    "@fontsource-variable/outfit": "^5.3.0",
-    "@hono/node-server": "^2.1.6",
-    "@libsql/client": "^0.18.0",
-    "@prisma/adapter-libsql": "^7.10.1",
-    "@prisma/client": "^7.10.1",
-    "@wenathlan/cadria": "~2.0.155",
-    "@wenathlan/debonair": "~2.0.155",
-    "@wenathlan/devthink": "~2.0.154",
-    "@wenathlan/getry": "~2.0.155",
-    "@wenathlan/saddle": "~2.0.155",
-    "@wenathlan/argan": "~2.0.155",
-    "@wenathlan/vault": "~2.0.155",
-    "better-sqlite3": "^13.0.3",
-    "drizzle-orm": "^0.45.4",
-    "gsap": "^3.15.1",
-    "hono": "^4.13.16",
-    "ink": "^7.1.1",
-    "lucide-react": "^1.68.0",
-    "motion": "^12.43.0",
-    "react": "^19.3.1",
-    "react-devtools-core": "^8.0.0",
-    "react-dom": "^19.3.1",
-    "three": "^0.187.0",
-    "wouter": "^3.13.0",
-    "z-ai-web-dev-sdk": "^0.0.18"
+  "bin": {
+    "forge": "./cli.ts"
   },
   "files": [
     "docs",
@@ -90,8 +46,49 @@
   "peerDependencies": {
     "playwright": "^1.63.0"
   },
-  "publishConfig": {
-    "access": "public"
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "start": "vite preview --host",
+    "preview": "vite preview --host",
+    "check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "restore:entry": "node -e \"const{readFileSync}=require('node:fs');const{execSync}=require('node:child_process');const script=/script[^>]*App\\.tsx/;const triad=/family=Bricolage\\+Grotesque[\\s\\S]*Outfit[\\s\\S]*JetBrains\\+Mono/;const face=(h)=>script.test(h)&&triad.test(h);if(face(readFileSync('index.html','utf8'))){console.log('index.html already rides the source face');process.exit(0)}if(!face(execSync('git show HEAD:./index.html',{encoding:'utf8'}))){console.error('refusing: HEAD index.html is not the canonical source face yet (script App.tsx + the font triad) - land the source-face fix first; nothing was touched');process.exit(1)}execSync('git checkout -- index.html',{stdio:'inherit'});console.log('index.html restored from HEAD (the source face)')\""
+  },
+  "dependencies": {
+    "@fluentui/react-icons": "^2.0.345",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/outfit": "^5.3.0",
+    "@hono/node-server": "^2.1.6",
+    "@libsql/client": "^0.18.0",
+    "@prisma/adapter-libsql": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "@wenathlan/cadria": "~2.0.155",
+    "@wenathlan/debonair": "~2.0.155",
+    "@wenathlan/devthink": "~2.0.154",
+    "@wenathlan/getry": "~2.0.155",
+    "@wenathlan/saddle": "~2.0.155",
+    "@wenathlan/argan": "~2.0.155",
+    "@wenathlan/vault": "~2.0.155",
+    "better-sqlite3": "^13.0.3",
+    "drizzle-orm": "^0.45.4",
+    "gsap": "^3.15.1",
+    "hono": "^4.13.16",
+    "ink": "^7.1.1",
+    "lucide-react": "^1.68.0",
+    "motion": "^12.43.0",
+    "react": "^19.3.1",
+    "react-devtools-core": "^8.0.0",
+    "react-dom": "^19.3.1",
+    "three": "^0.187.0",
+    "wouter": "^3.13.0",
+    "z-ai-web-dev-sdk": "^0.0.18"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.5",
@@ -189,25 +186,28 @@
     "yaml": "^2.9.1",
     "zod": "^4.6.7"
   },
-  "packageManager": "pnpm@12.3.4",
   "overrides": {
-    "esbuild": "^0.28.2",
-    "deepmerge-ts": "^8.0.0",
-    "mysql2": "^3.24.6",
-    "uuid": "^11.1.1",
-    "postcss-selector-parser": "^7.1.6",
     "body-parser": "^2.4.0",
+    "deepmerge-ts": "^8.0.0",
+    "esbuild": "^0.28.2",
     "fast-uri": "^3.1.9",
     "follow-redirects": "^1.16.2",
-    "minimatch": "^11.0.3",
     "glob": "^14.0.3",
-    "zod": "^4.6.7",
-    "undici": "^7.30.1",
     "katex": "^0.18.2",
+    "minimatch": "^11.0.3",
+    "mysql2": "^3.24.6",
+    "postcss-selector-parser": "^7.1.6",
     "proxy-addr": "2.0.8",
     "shell-quote": "^1.11.0",
-    "source-map-js": "1.2.2"
+    "source-map-js": "1.2.2",
+    "undici": "^7.30.1",
+    "uuid": "^11.1.1",
+    "zod": "^4.6.7"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "packageManager": "pnpm@12.3.4",
   "pnpm": {
     "overrides": {
       "esbuild": "^0.28.2",

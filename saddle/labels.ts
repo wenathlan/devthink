@@ -16,10 +16,11 @@ import { createLabelStore } from "../vault/labelstore.ts";
 
 
 /** the label revision of the manifest: bump on every copy wave so the seed
- * refreshes the store rows of the changed strings. (5: the compute face
- * copy wave — the catalog, boot ladder and edge-law banner prose the wingets
- * carried inline moved into the store, zero invented copy.) */
-export const LABEL_REVISION = 5;
+ * refreshes the store rows of the changed strings. (6: the shell rail copy
+ * wave — the sectioned navigation labels, the app details, the family foot
+ * and the rail chrome prose the Shell carried inline moved into the store,
+ * zero invented copy.) */
+export const LABEL_REVISION = 6;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -771,6 +772,41 @@ export const labelmanifest = {
     'The site reached a path no saddle surface claims. The session stayed clean — head back to the home page or open the agent browser.',
   'notfound.backHome': 'Back home',
   'notfound.agentBrowser': 'Open the agent browser',
+  // the shell rail (the sectioned navigation of the app surface: the four
+  // rail sections, one label and one detail per page entry, the family foot
+  // and the rail chrome — the words the Shell and the onboarding facts read)
+  'shell.rail.aria': 'Pages',
+  'shell.rail.section.workspace': 'workspace',
+  'shell.rail.section.platform': 'platform',
+  'shell.rail.section.library': 'library',
+  'shell.rail.section.account': 'account',
+  'shell.rail.home': 'home',
+  'shell.rail.homeDetail': 'the thesis and the machine',
+  'shell.rail.dashboard': 'dashboard',
+  'shell.rail.dashboardDetail': 'sessions, users and the admin panel',
+  'shell.rail.console': 'console',
+  'shell.rail.consoleDetail': 'operations and events',
+  'shell.rail.playground': 'playground',
+  'shell.rail.playgroundDetail': 'map requests, never run them',
+  'shell.rail.compute': 'compute',
+  'shell.rail.computeDetail': 'execution layers and tiers',
+  'shell.rail.integrations': 'integrations',
+  'shell.rail.integrationsDetail': 'surfaces and bridges',
+  'shell.rail.agentbrowser': 'agentbrowser',
+  'shell.rail.agentbrowserDetail': "the agent's own browser",
+  'shell.rail.docs': 'docs',
+  'shell.rail.docsDetail': 'the working notes',
+  'shell.rail.architecture': 'architecture',
+  'shell.rail.architectureDetail': 'repo, CI, pages, buckets',
+  'shell.rail.login': 'login',
+  'shell.rail.loginDetail': 'sign in to the node',
+  'shell.rail.register': 'register',
+  'shell.rail.registerDetail': 'create the local account',
+  'shell.rail.family': 'family',
+  'shell.rail.familyTitle': '{slug} — opens in a new tab',
+  'shell.rail.familyAria': 'open {slug} in a new tab',
+  'shell.rail.themeAria': 'toggle theme',
+  'shell.media.aria': 'media area',
 } as const;
 
 export type LabelKey = keyof typeof labelmanifest & string;

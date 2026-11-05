@@ -38,6 +38,14 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "."),
     emptyOutDir: false,
     assetsDir: "",
+    /* the native binding never bundles for the browser (the debonair
+     * precedent): the storage lane rides the lazy chunks the browser graph
+     * never loads, so the binding answers as an external of those chunks
+     * (the node lanes resolve it from their own install — the doctrine the
+     * storage lane comment pins). */
+    rolldownOptions: {
+      external: ["better-sqlite3"],
+    },
   },
   /** the theme sources live in the Sol folder of this app root: the pages import
    * the root logics (api, db, storage, utils) across the theme boundary from

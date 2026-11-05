@@ -3,8 +3,8 @@
  * (PR8 P1): the nine narrative sections answer in the reference order —
  * hero-os, creators-doo, workspace-subapps, the sawtooth ribbon with
  * studio-flow, spatial-bento, explorer-wall, sonic-deck, advisor-dark and
- * the editorial footer — with the exact campaign tokens (the Urbanist
- * three-tier voice, the four-stop engine switch, the gaussian field of
+ * the editorial footer — with the exact campaign tokens (the codified
+ * Inter + Geist three-tier voice the fluentface law pins, the four-stop engine switch, the gaussian field of
  * five radiais, the tactile keys, the obsidian fan deck, the stroked rank
  * numerals and the sawtooth ribbon). The owner laws stay pinned: no
  * saddle cloud key on the rail, no solid blue key in the hero, no stock
@@ -240,8 +240,8 @@ describe("the hero (the reference statement)", () => {
   });
 });
 
-describe("the voice (the Urbanist law of the reference)", () => {
-  it("the three tiers ride Urbanist with the exact reference tracking", () => {
+describe("the voice (the codified Inter + Geist law of the fluentface)", () => {
+  it("the three tiers ride the codified tokens with the exact reference tracking", () => {
     const thin = landingrule(".font-thin-tier");
     const medium = landingrule(".font-medium-tier");
     const bold = landingrule(".font-bold-tier");
@@ -251,21 +251,23 @@ describe("the voice (the Urbanist law of the reference)", () => {
     expect(medium).toContain("letter-spacing: -0.018em");
     expect(bold).toContain("font-weight: 800");
     expect(bold).toContain("letter-spacing: -0.035em");
-    for (const tier of [thin, medium, bold]) {
-      expect(tier).toContain('"Urbanist"');
-      expect(tier).toContain('"Inter Variable"');
-    }
+    // the codified type voice the owner pinned: the tiers answer the
+    // --font-body / --font-display tokens (the Inter + Geist stack), never
+    // a private family of their own
+    expect(thin).toContain("font-family: var(--font-body);");
+    expect(medium).toContain("font-family: var(--font-body);");
+    expect(bold).toContain("font-family: var(--font-display);");
   });
 
-  it("the face stays self-hosted and falls back to the house voice", () => {
+  it("the face stays self-hosted — the homepage speaks the house voice, never a remote sheet", () => {
     // the self-hosted law retired the remote Urbanist stylesheet (the sweep
-    // forbids the hardcoded origin): the seat may carry no remote @import,
-    // and the tiers answer the house Inter Variable face sol.css ships
+    // forbids the hardcoded origin) and then the fluentface law retired
+    // the Urbanist @font-face itself: the landing speaks the same
+    // codified Inter + Geist stack every other surface reads
     expect(saas).not.toContain("fonts.googleapis.com");
     expect(saas).not.toContain("@import url(");
     const root = landingrule(".saas-root");
-    expect(root).toContain('"Urbanist"');
-    expect(root).toContain('"Inter Variable"');
+    expect(root).toContain("font-family: var(--font-body);");
     expect(root).toContain("letter-spacing: -0.015em");
   });
 });
@@ -400,16 +402,16 @@ describe("the surfaces (the era kit restored)", () => {
     expect(saas).toContain("bg-[#F2F5FC]");
   });
 
-  it("the sawtooth ribbon rides the four reference washes", () => {
+  it("the sawtooth ribbon rides the four reference washes — opaque, the aligned cut law", () => {
     const ribbon = landingrule(".ribbon-sawtooth-divider");
-    for (const wash of [
-      "rgba(15, 23, 42, 0.92)",
-      "rgba(99, 102, 241, 0.75)",
-      "rgba(56, 189, 248, 0.45)",
-      "rgba(200, 75, 17, 0.75)",
-    ]) {
-      expect(ribbon, `the ribbon carries the wash ${wash}`).toContain(wash);
+    // the fluentface law: the four washes ride their exact opaque
+    // composited pixels (the old alpha washes died — transparency stays
+    // only on the native studio banner) and the base answers through the
+    // --ribbon-base variable so each instance crops flush
+    for (const wash of ["#22293a", "#898af1", "#a2dcf4", "#d47649"]) {
+      expect(ribbon, `the ribbon carries the opaque wash ${wash}`).toContain(wash);
     }
+    expect(ribbon).toContain("var(--ribbon-base)");
     expect(ribbon).toContain("background-size: 30px 30px");
   });
 

@@ -207,7 +207,7 @@ export function gatewaywirefields(name: string): boolean {
     "init_storage",
     "init_gateway",
     "init_gateway2",
-    /* the chatlabels fold of the 2.0.160 rung: the manifest merge retired
+    /* the chatlabels fold of the 2.0.161 rung: the manifest merge retired
      * the standalone chatlabels seat into the labels keyword file, so the
      * lazy wrapper the merge mints answers init_labels beside the same
      * precedent (the name belongs to the bundler, never the review). */

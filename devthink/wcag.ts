@@ -624,7 +624,7 @@ export interface wcagreport {
  * first layer: every check in its fixed order with its outcome, no
  * timestamps, so the record replays byte identical. */
 export const wcagrecord: wcagreport = {
-  "release": "2.0.160",
+  "release": "2.0.161",
   "checklist": "docs/wcag.md",
   "surfaces": [
     "site",
@@ -777,7 +777,11 @@ export const wcagrecord: wcagreport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runwcagsuite();
   for (const candidate of report.entries) {

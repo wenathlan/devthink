@@ -2,10 +2,11 @@
 // (wave w2 b1, rebased onto the ninety wave): the ten promotions this
 // law wired live still ride the registry live and carry their executors
 // — and the waves that merged after widened the same truth to the full
-// plan (the census answers 81 live, 9 host and 0 planned of the ninety
-// the owner charged, the lane table answers 66 live and 24 host lanes
-// — the wiring wave closed the last seventeen gaps), so the battery
-// pins the post-merge truth. each promoted lane
+// plan (the census answers 64 live, 9 host and 17 planned of the ninety
+// the owner charged — the seventeen registry-only ids the honesty audit
+// named declare planned, the record never pretends a wiring the engine
+// does not drive — and the lane table answers 66 live and 24 host
+// lanes), so the battery pins the post-merge truth. each promoted lane
 // refuses honestly when its runtime or its configuration is absent —
 // the error names the requirement (the clr lane names the assembly
 // signature and the dotnet runtime, the profile lanes and the ghcr lane
@@ -95,9 +96,9 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     const report = planreport();
     assert.equal(report.plancount, 90);
     assert.equal(report.catalogcount, 90);
-    assert.equal(report.live, 81, "the ninety wave answered the full plan live");
+    assert.equal(report.live, 64, "the audit rung answered the honest live set");
     assert.equal(report.host, 9);
-    assert.equal(report.planned, 0);
+    assert.equal(report.planned, 17, "the seventeen registry-only ids declare planned");
     assert.equal(report.live + report.host + report.planned, MODALITIES.length);
     assert.equal(report.plananswered, true);
   });

@@ -943,7 +943,7 @@ export function gallerydriftof(previous: recipereport | null, current: reciperep
  * stay the live measurements the recorded run took; the gallery drift diff
  * never reads them). */
 export const reciperecord: recipereport = {
-  "release": "2.0.160",
+  "release": "2.0.161",
   "mode": "sync",
   "gallery": {
     "version": "2.0.0",
@@ -1862,7 +1862,11 @@ export const reciperecord: recipereport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runrecipessuite();
   if (syncmode()) {

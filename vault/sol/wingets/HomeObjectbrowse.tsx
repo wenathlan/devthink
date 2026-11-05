@@ -11,7 +11,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { digestShort, formatBytes, seedVault, VAULT_BUCKETS, type VaultObject, verifyObject } from "../../objects.ts";
+import { digestShort, formatBytes, seedVault, VAULT_BUCKETS, type VaultObject, verifyObject } from "../../objectface.ts";
 import { uicopy, uicopyfill } from "../../uistore.ts";
 import { FACE_SEED } from "./HomePlanstable.tsx";
 import { Skeleton } from "./HomeSkeleton.tsx";

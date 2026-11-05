@@ -319,7 +319,7 @@ export interface matrixverifyreport {
  * fixed order with its outcome, no timestamps, so the record replays byte
  * identical. */
 export const matrixverifyrecord: matrixverifyreport = {
-  "release": "2.0.160",
+  "release": "2.0.161",
   "matrix": {
     "browsers": [
       "chromium",
@@ -358,7 +358,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.160"
+      "detail": "manifest and help answered for 2.0.161"
     },
     {
       "family": "mcp",
@@ -447,7 +447,11 @@ export const matrixverifyrecord: matrixverifyreport = {
   }
 };
 
-const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const invokeddirectly =
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runmatrixverifysuite();
   for (const candidate of report.cells) {

@@ -8,20 +8,20 @@
 // one project keeps covering the Sol surface.
 {
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
     "target": "ES2024",
-    "lib": ["ES2024", "dom", "dom.iterable"],
-    "jsx": "react-jsx",
     "noEmit": true,
-    "allowImportingTsExtensions": true,
+    "module": "NodeNext",
     "strict": false,
     "noCheck": true,
+    "lib": ["es2024", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
     "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "NodeNext",
     "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["./sol/*", "./*"],

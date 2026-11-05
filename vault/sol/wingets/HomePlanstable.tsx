@@ -11,7 +11,7 @@
 
 import { useMemo } from "react";
 import { type BucketShelf, retentionLabel, seedRules, shelfOf } from "../../buckets.ts";
-import { formatBytes, seedVault } from "../../objects.ts";
+import { formatBytes, seedVault } from "../../objectface.ts";
 import { uicopy, uicopyfill } from "../../uistore.ts";
 import { useVaultQuota } from "../../vaultclient.ts";
 
