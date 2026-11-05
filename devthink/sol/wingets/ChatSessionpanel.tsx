@@ -197,14 +197,14 @@ export function SessionPanel({
   };
 
   return (
-    <aside className="dtc-session" data-open={open ? "true" : "false"} aria-hidden={!open} aria-label="Session panel">
+    <aside className="dtc-session" data-open={open ? "true" : "false"} aria-hidden={!open} aria-label={chatText("panel.sessionAria")}>
       <div className="dtc-session__head">
         <h2>Session</h2>
         <button
           type="button"
           className="dtc-tb-btn"
           onClick={onClose}
-          aria-label="Close session panel"
+          aria-label={chatText("panel.closeAria")}
           title="Close panel"
           tabIndex={open ? 0 : -1}
         >
@@ -238,7 +238,7 @@ export function SessionPanel({
         </dl>
       </section>
 
-      <section className="dtc-session__sec" aria-label="Session identity">
+      <section className="dtc-session__sec" aria-label={chatText("panel.identityAria")}>
         <p className="dtc-session__label">Identity</p>
         {session?.birth ? (
           <dl className="dtc-ident">
@@ -260,14 +260,14 @@ export function SessionPanel({
         )}
       </section>
 
-      <section className="dtc-session__sec" aria-label="Project instructions">
+      <section className="dtc-session__sec" aria-label={chatText("panel.projectAria")}>
         <p className="dtc-session__label">Project</p>
         <textarea
           className="dtc-project__input"
           value={instructionDraft}
           onChange={(event) => editInstructions(event.target.value)}
           placeholder={chatText("panel.instructionsPlaceholder")}
-          aria-label="Pinned instructions"
+          aria-label={chatText("panel.pinnedAria")}
           rows={3}
           tabIndex={open ? 0 : -1}
         />
@@ -277,7 +277,7 @@ export function SessionPanel({
       </section>
 
       {PANEL_FEATURES.memory ? (
-        <section className="dtc-session__sec" aria-label="Saved memory">
+        <section className="dtc-session__sec" aria-label={chatText("panel.memoryAria")}>
           <p className="dtc-session__label">Memory</p>
           {memoryDraft.length > 0 ? (
             <ul className="dtc-memory__list">
@@ -288,7 +288,7 @@ export function SessionPanel({
                     type="button"
                     className="dtc-memory__del"
                     onClick={() => forgetFact(index)}
-                    aria-label={`Delete fact: ${fact}`}
+                    aria-label={chatText("panel.deleteFact").replace("{fact}", fact)}
                     title="Delete this fact"
                     tabIndex={open ? 0 : -1}
                   >
@@ -304,7 +304,7 @@ export function SessionPanel({
       ) : null}
 
       {session ? (
-        <section className="dtc-session__sec" aria-label="Session tags">
+        <section className="dtc-session__sec" aria-label={chatText("panel.tagsAria")}>
           <p className="dtc-session__label">Tags</p>
           {onTagsChange ? (
             <form className="dtc-tags" onSubmit={submitTag}>
@@ -315,7 +315,7 @@ export function SessionPanel({
                     type="button"
                     className="dtc-tag__del"
                     onClick={() => dropTag(tag)}
-                    aria-label="Remove tag"
+                    aria-label={chatText("panel.removeTagAria")}
                     title="Remove this tag"
                     tabIndex={open ? 0 : -1}
                   >
@@ -328,7 +328,7 @@ export function SessionPanel({
                 value={tagDraft}
                 onChange={(event) => setTagDraft(event.target.value)}
                 placeholder="add a tag"
-                aria-label="Add a tag"
+                aria-label={chatText("panel.addTagAria")}
                 spellCheck={false}
                 autoComplete="off"
                 tabIndex={open ? 0 : -1}
