@@ -54,7 +54,6 @@ export const SESSIONSEED: SessionContextRow[] = [
     model: "devthink",
     modelVariant: "deepseek-v4",
     messageCount: 12,
-    modelVariant: null,
     lastMessageAt: "2026-09-30T14:07:41.000Z",
     contextWindow: 163840,
     rotationIndex: 2,
