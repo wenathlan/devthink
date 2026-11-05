@@ -2132,7 +2132,7 @@ export type ConvertContext = {
 /** the widgets the pipeline converts today (the shell + the two proof
  * widgets — the map generalizes to every winget) */
 export const TERMINAL_WIDGETS: ReadonlyArray<{ source: string; output: string; exportName: string }> = [
-  { source: "sol/wingets/ShellControlshell.tsx", output: "shellterminal.ts", exportName: "ControlShellTerminal" },
+  { source: "sol/wingets/Controlshell.tsx", output: "shellterminal.ts", exportName: "ControlShellTerminal" },
   { source: "sol/wingets/ShellChip.tsx", output: "chipterminal.ts", exportName: "ChipTerminal" },
   { source: "sol/wingets/ShellKbd.tsx", output: "kbdterminal.ts", exportName: "KbdTerminal" },
 ];

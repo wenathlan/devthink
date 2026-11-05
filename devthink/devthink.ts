@@ -797,7 +797,7 @@ function document(): string {
           "the same tsx rides the browser and the terminal: the build converts the widgets, the tokens stay one, the platforms split only on dpi.",
         actions: "explore",
         children: [
-          "the shell (sol/wingets/ShellControlshell.tsx) converted by the terminal lane of build.ts",
+          "the shell (sol/wingets/Controlshell.tsx) converted by the terminal lane of build.ts",
           "flex → rows and columns · colors → ansi · hairlines → ─ rules",
         ],
       },

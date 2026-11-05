@@ -34,6 +34,7 @@ export * from "./ConsoleReference.tsx";
 export { default as Terminal } from "./ConsoleTerminal.tsx";
 export * from "./ConsoleTerminal.tsx";
 export * from "./Constructionface.tsx";
+export * from "./Controlshell.tsx";
 /* the ink terminal ui never rides the web barrel: the CLI entry imports it
  * directly (devthink.ts), and the browser bundle would otherwise link the
  * terminal renderer into the page graph — the one interface law keeps the
@@ -102,7 +103,6 @@ export * from "./ShellChip.tsx";
 export * from "./Shellchrome.tsx";
 export { default as ShellConn } from "./ShellConn.tsx";
 export * from "./ShellConn.tsx";
-export * from "./ShellControlshell.tsx";
 export * from "./ShellDockmagnify.tsx";
 export { default as ShellDot } from "./ShellDot.tsx";
 export * from "./ShellDot.tsx";
