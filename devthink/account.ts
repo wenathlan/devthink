@@ -787,22 +787,24 @@ export async function gatedrequest(target: string | URL, options: gatedrequestop
 // section is the browser surface, so the primitives are the web crypto
 // twins, never the node builtins the cli file carries.
 
-/** The provider family of the row: the two owner accounts the bots ride. */
-export type OAuthProvider = "google" | "github";
+/** The provider family of the row: the three owner accounts the bots ride. */
+export type OAuthProvider = "google" | "github" | "gitlab";
 
 /** The providers in row order — the buttons render in this order. */
-export const OAUTH_PROVIDERS: readonly OAuthProvider[] = ["google", "github"];
+export const OAUTH_PROVIDERS: readonly OAuthProvider[] = ["google", "github", "gitlab"];
 
 /** The authorize endpoints of the family, one per provider. */
 export const OAUTH_AUTHORIZE_ENDPOINTS: Readonly<Record<OAuthProvider, string>> = Object.freeze({
   google: "https://accounts.google.com/o/oauth2/v2/auth",
   github: "https://github.com/login/oauth/authorize",
+  gitlab: "https://gitlab.com/oauth/authorize",
 });
 
 /** The scope sets of the family — the identity floor, nothing more. */
 export const OAUTH_SCOPES: Readonly<Record<OAuthProvider, string>> = Object.freeze({
   google: "openid email profile",
   github: "read:user user:email",
+  gitlab: "read_user",
 });
 
 /** The token endpoints the gateway exchange redeems the code against —
@@ -810,6 +812,7 @@ export const OAUTH_SCOPES: Readonly<Record<OAuthProvider, string>> = Object.free
 export const OAUTH_TOKEN_ENDPOINTS: Readonly<Record<OAuthProvider, string>> = Object.freeze({
   google: "https://oauth2.googleapis.com/token",
   github: "https://github.com/login/oauth/access_token",
+  gitlab: "https://gitlab.com/oauth/token",
 });
 
 /** The profile endpoints the gateway exchange reads the identity from —
@@ -817,6 +820,7 @@ export const OAUTH_TOKEN_ENDPOINTS: Readonly<Record<OAuthProvider, string>> = Ob
 export const OAUTH_PROFILE_ENDPOINTS: Readonly<Record<OAuthProvider, string>> = Object.freeze({
   google: "https://openidconnect.googleapis.com/v1/userinfo",
   github: "https://api.github.com/user",
+  gitlab: "https://gitlab.com/api/v4/user",
 });
 
 /** The env names the client ids ride (the ids land with the gateway
@@ -824,6 +828,7 @@ export const OAUTH_PROFILE_ENDPOINTS: Readonly<Record<OAuthProvider, string>> = 
 export const OAUTH_ID_ENV: Readonly<Record<OAuthProvider, string>> = Object.freeze({
   google: "VITE_OAUTH_GOOGLE_ID",
   github: "VITE_OAUTH_GITHUB_ID",
+  gitlab: "VITE_OAUTH_GITLAB_ID",
 });
 
 /** The env name the callback base rides. */
@@ -839,6 +844,7 @@ export const OAUTH_STATE_MARKER = "devthink";
 const OAUTH_PKCE: Readonly<Record<OAuthProvider, boolean>> = Object.freeze({
   google: true,
   github: true,
+  gitlab: true,
 });
 
 /** One provider of the honest readiness table. */
@@ -927,7 +933,7 @@ export function detectProviderFromState(state: string | null | undefined): OAuth
   const provider = rest.slice(0, separator);
   const random = rest.slice(separator + 1);
   if (!random) return null;
-  if (provider !== "google" && provider !== "github") return null;
+  if (provider !== "google" && provider !== "github" && provider !== "gitlab") return null;
   return provider;
 }
 
