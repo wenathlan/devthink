@@ -3876,10 +3876,11 @@ jobs:
     # answer - the person who downloads the release loads every sibling
     # container with `docker load`, none of them rides the registry alone.
     # the lane builds the same docker file the family-ghcr lane pushes
-    # (the staged context the 2.0.153 family context fix introduced: the
-    # application nested under app/ with the copy-law vault sibling beside
-    # it, the engine-ownership debonair sibling under cadria, the flat
-    # village form for the rest), saves the built image as the tar.gz and
+    # (the staged context the 2.0.153 family context fix introduced and
+    # the flatctx wave completed: every site home nested under app/ with
+    # the siblings its vite alias bridges resolve beside it - only the
+    # self-contained vault engine keeps its own-folder form), saves the
+    # built image as the tar.gz and
     # attaches it with its checksum and manifest; --clobber keeps the
     # re-run idempotent (Regra 39).
     if: >-
@@ -3946,15 +3947,17 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: stage the family build context
         # the same staged tree the family-ghcr lane builds (the release
-        # ladder mirror): the three site homes ride the app/-nested
-        # context with the copy-law vault sibling, cadria stages the
-        # debonair engine beside it, and the flat village form builds from
-        # its own folder.
+        # ladder mirror): every site home rides the app/-nested context
+        # with the siblings its vite alias bridges resolve - the copy-law
+        # vault sibling, the saddle engine ownership (debonair, forge,
+        # foundry, getry), the cadria and debonair engine pairs, and the
+        # devthink config bridges getry owns - while the vault engine
+        # builds from its own self-contained folder.
         shell: bash
         run: |
           set -euo pipefail
           case "${{ matrix.app }}" in
-            argan|debonair)
+            argan)
               rm -rf familybuildctx
               mkdir -p familybuildctx/app familybuildctx/vault
               cp -a "${{ matrix.app }}/." familybuildctx/app/
@@ -3962,6 +3965,71 @@ jobs:
               rm -rf familybuildctx/vault/node_modules \
                      familybuildctx/vault/dist \
                      familybuildctx/vault/build
+              ;;
+            debonair)
+              # the engine-ownership sibling map: debonair resolves the
+              # cadria synth palette through the ../cadria vite aliases
+              # and the saddle workload law through the ../saddle ones,
+              # so both siblings ride the context whole beside the
+              # copy-law vault sibling
+              rm -rf familybuildctx
+              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/cadria familybuildctx/saddle
+              cp -a debonair/. familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              cp -a cadria/. familybuildctx/cadria/
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/vault/node_modules \
+                     familybuildctx/vault/dist \
+                     familybuildctx/vault/build \
+                     familybuildctx/cadria/node_modules \
+                     familybuildctx/cadria/dist \
+                     familybuildctx/cadria/build \
+                     familybuildctx/saddle/node_modules \
+                     familybuildctx/saddle/dist \
+                     familybuildctx/saddle/build
+              ;;
+            cobaia|stealthhead)
+              # the copy-law vault sibling (the label store bridge the
+              # flat village form could not answer inside the app-only
+              # context - the vite step died on labels.ts)
+              rm -rf familybuildctx
+              mkdir -p familybuildctx/app familybuildctx/vault
+              cp -a "${{ matrix.app }}/." familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              rm -rf familybuildctx/vault/node_modules \
+                     familybuildctx/vault/dist \
+                     familybuildctx/vault/build
+              ;;
+            forge|foundry)
+              # the vault copy law plus the saddle engine ownership (the
+              # modes and sandbox bridges the ../saddle aliases own)
+              rm -rf familybuildctx
+              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle
+              cp -a "${{ matrix.app }}/." familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/vault/node_modules \
+                     familybuildctx/vault/dist \
+                     familybuildctx/vault/build \
+                     familybuildctx/saddle/node_modules \
+                     familybuildctx/saddle/dist \
+                     familybuildctx/saddle/build
+              ;;
+            getry)
+              # the gateway sibling map: the vault copy law, the saddle
+              # modality registry, the devthink config bridges and the
+              # debonair route table all ride the context whole
+              rm -rf familybuildctx
+              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
+              cp -a getry/. familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              cp -a saddle/. familybuildctx/saddle/
+              cp -a devthink/. familybuildctx/devthink/
+              cp -a debonair/. familybuildctx/debonair/
+              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
+                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
+                     familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
+                     familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
               ;;
             cadria)
               # the engine-ownership sibling map: cadria resolves the
@@ -3991,7 +4059,7 @@ jobs:
           image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${{ matrix.app }}"
           archive="${{ matrix.app }}.container.${version}.tar.gz"
           case "${{ matrix.app }}" in
-            argan|debonair|cadria)
+            argan|debonair|cadria|cobaia|forge|foundry|getry|stealthhead)
               # the staged family shape demands the explicit -f: the
               # dockerfile stays at ${{ matrix.app }}/Dockerfile outside the
               # staged context, exactly the way the family-ghcr lane
@@ -3999,8 +4067,8 @@ jobs:
               docker build --tag "${image}:${version}" -f "${{ matrix.app }}/Dockerfile" familybuildctx
               ;;
             *)
-              # the self-contained site shape: the application folder is
-              # the context (the flat village form).
+              # the self-contained engine shape: the application folder is
+              # the context (the vault engine owns its own closure).
               docker build --tag "${image}:${version}" "./${{ matrix.app }}"
               ;;
           esac

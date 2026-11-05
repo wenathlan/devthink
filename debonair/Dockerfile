@@ -39,6 +39,13 @@ COPY vault/ /src/vault/
 # debonair stages cadria for the synth palette - sources only, the
 # build never installs the sibling, the alias reads the .ts files).
 COPY cadria/ /src/cadria/
+# The saddle sibling of the workload law: the sol sources import the
+# workload law through the @wenathlan/saddle/workloadlaw bridge and the
+# vite alias resolves the specifier to ../saddle/workloadlaw.ts, so the
+# sibling sources land at /src/saddle where that bridge answers inside
+# the container (sources only - the build never installs the sibling,
+# the alias reads the .ts file).
+COPY saddle/ /src/saddle/
 RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
