@@ -6,7 +6,7 @@ Security fixes target the maintained `2.x` line and later maintained releases.
 
 | Version | Supported |
 | --- | --- |
-| 2.0.0 | Yes |
+| 2.0.x (the family ladder) | Yes |
 | 1.1.x | No |
 
 ## Supported authentication
@@ -21,7 +21,7 @@ DevThink does not capture browser cookies, replay third-party web sessions, solv
 
 ## Reporting a vulnerability
 
-Do not open a public issue containing credentials, session cookies, private URLs, or exploit details. Remove sensitive data from logs and send a minimal report through the repository’s private security reporting channel. Revoke any credential that may have appeared in a local file or public commit before reporting.
+Do not open a public issue containing credentials, session cookies, private URLs, or exploit details. Remove sensitive data from logs and send a minimal report through the repository’s private security reporting channel at https://github.com/wenathlan/devthink/security/advisories/new. Security advisories and published fixes are tracked at https://github.com/wenathlan/devthink/security/advisories. Revoke any credential that may have appeared in a local file or public commit before reporting.
 
 ## Static web boundary
 

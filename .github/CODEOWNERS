@@ -1,0 +1,11 @@
+# DevThink monorepo - CODEOWNERS
+# Repository organization: @wenathlan
+# Valid individual owner with repository write access
+# Project: devthink (the os application and the family applications of the
+# monorepo: argan, cadria, cobaia, debonair, forge, foundry, getry, saddle,
+# stealthhead and vault)
+# All repository paths are owned by the listed individual GitHub account.
+# This is the CODEOWNERS seat GitHub enforces (root, .github or docs);
+# the per-application CODEOWNERS files of devthink/ and saddle/ carry the
+# same ownership map for their own seats.
+* @iakadion

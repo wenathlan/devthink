@@ -41,10 +41,10 @@ Private disclosure: do not publish exploit details in a public issue
 before maintainers have had a reasonable opportunity to investigate and
 coordinate a fix. Remove sensitive data from logs and send a minimal
 report through the repository's private security reporting channel at
-https://github.com/wenathlan/saddle/security/advisories/new. Revoke any
+https://github.com/wenathlan/devthink/security/advisories/new. Revoke any
 credential that may have appeared in a local file or public commit
 before reporting. Security advisories and published fixes are tracked
-at https://github.com/wenathlan/saddle/security/advisories.
+at https://github.com/wenathlan/devthink/security/advisories.
 
 Security testing must be authorized by the owner of the target system.
 Development and CI scanning of artifacts is allowed within the
@@ -55,7 +55,7 @@ systems is not allowed.
 ## Supply chain
 
 - Security advisories for the npm package line are published at
-  https://github.com/wenathlan/saddle/security/advisories.
+  https://github.com/wenathlan/devthink/security/advisories.
 - The version tag is the supply-chain contract for every GitHub Actions
   reference (the family standard: digests and checksums are computed on
   the GitHub runners at run time — release `SHA256SUMS` assets,
