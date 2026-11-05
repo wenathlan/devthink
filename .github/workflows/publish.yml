@@ -2,8 +2,9 @@ name: DevThink Publish
 
 # THE POST-RELEASE LANES OF THE MERGED REPOSITORY, ONE FILE (the 2.0.16
 # grouping pass): every lane that fires when the DevThink Release ladder
-# completes - the six registry publishes (npmjs, the github npm registry,
-# maven, nuget, rubygems and the five-architecture ghcr container index),
+# completes - the seven registry publishes (npmjs, the github npm registry,
+# maven, nuget, rubygems, gradle and the five-architecture ghcr container
+# index),
 # the platform artifact lanes (the compiled desktop binaries, the tauri
 # bundles, the android and ios mobile artifacts, the container archive, the
 # browser extension package and the target plans) and the SHA256SUMS
@@ -25,10 +26,12 @@ name: DevThink Publish
 # THE FAMILY DISTRIBUTION LANES (the 2.0.46 five-package wave): beside
 # every application registry lane rides its family mirror - the
 # family-npmjs, family-githubnpm, family-maven, family-nuget,
-# family-rubygems and family-ghcr jobs publish every documentation
-# envelope (the six-distribution completeness law of the distpack
-# ladder, closed by the distfamily wave: every application envelope
-# rides the nuget, maven, rubygems, npmjs and github npm lanes - the
+# family-gradle, family-rubygems and family-ghcr jobs publish every
+# documentation envelope (the six-distribution completeness law of the
+# distpack ladder, closed by the distfamily wave: every application
+# envelope rides the nuget, maven, rubygems, npmjs and github npm lanes,
+# and the gradleseat wave seats the gradle rung beside them under the
+# com.wenathlan coordinates the gradle consumer resolves - the
 # ten siblings in the canonical pass order, saddle walking npmjs last
 # beside its engine lanes and answering the devthink maven registry
 # the family coordinates carry) through the same registries, the same
@@ -1751,6 +1754,406 @@ jobs:
             echo "::error::gem push failed after ${attempt} attempts."
             exit 1
           fi
+
+  detect-gradle:
+    name: detect Gradle source
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) proceeds; the publish job below
+    # cascades off this one.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-24.04
+    # the resolve/existence lane stays bounded (the family contract: every
+    # resolve-shaped job carries its own ceiling).
+    timeout-minutes: 15
+    outputs:
+      present: ${{ steps.gradle.outputs.present }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - id: gradle
+        shell: bash
+        run: |
+          if test -f devthink/build.gradle.kts; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
+  gradle:
+    name: publish the single gradle distribution
+    needs: [detect-gradle, release-approval]
+    if: needs.detect-gradle.outputs.present == 'true'
+    runs-on: ubuntu-latest
+    # the extension release-gate doctrine (the 2.0.18 port, the approval
+    # gate repair): every registry publish answers through the explicit
+    # release-approval gate job this lane needs - the one review the owner
+    # grants for the whole publish wave.
+    timeout-minutes: 20
+    # least-privilege: the job's own writes (the e2ugh job-permission
+    # doctrine): packages write pushes the registry distribution, contents
+    # write attaches it to the release assets below.
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./devthink/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: install locked dependencies
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: assemble the rich dist set the module embeds
+        run: cd devthink && node build.ts
+      - name: setup java
+        # the java line the maven lane carries (the family runtime
+        # doctrine, Regra 54/125): the gradle rung rides the same temurin
+        # 26 interpreter the mvn legs resolve with - the module reads the
+        # credentials from the env, so no settings handoff rides beside it.
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          java-version: '26'
+          distribution: temurin
+      - name: install the pinned gradle distribution
+        # the pinned distribution line (the family runtime doctrine, Regra
+        # 54/125: never a floating `gradle` alias): the house already runs
+        # the 9.5.1 line the mobile wrapper resolved (the saddle android
+        # compatibility rung - the 9.7.1 wrapper red the mobile leg against
+        # the plugin line), so the gradle registry lane rides the same
+        # distribution - downloaded from services.gradle.org with the
+        # official checksum verified, never a cached alias, and the bin
+        # folder rides the GITHUB_PATH so every step below answers
+        # `gradle` the way the maven legs answer `mvn`.
+        run: |
+          set -euo pipefail
+          GRADLE_VERSION="9.5.1"
+          curl -sSfL -o "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
+          curl -sSfL -o "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip.sha256" "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256"
+          expected="$(tr -d '[:space:]' < "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip.sha256")"
+          actual="$(sha256sum "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" | awk '{print $1}')"
+          if [[ "$expected" != "$actual" ]]; then
+            echo "The gradle ${GRADLE_VERSION} distribution checksum does not match; the pinned toolchain refuses the download." >&2
+            exit 1
+          fi
+          unzip -q "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" -d "$RUNNER_TEMP"
+          "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin/gradle" --no-daemon --version >/dev/null
+          echo "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin" >> "$GITHUB_PATH"
+      - name: pack the single distribution with the classifier zips attached
+        # the maven lane mold (package before deploy): publishToMavenLocal
+        # stages the module the lane then uploads - the module metadata
+        # (.module), the pom, the jar and both classifier zips land in the
+        # local repository under the com.wenathlan coordinates the gradle
+        # rung owns, so the retain and the existence check read the same
+        # final-form files the registry serves.
+        run: |
+          set -euo pipefail
+          cd devthink
+          VERSION="${{ steps.release.outputs.version }}"
+          gradle --no-daemon -PreleaseVersion="${VERSION}" publishToMavenLocal
+          # the single jar embeds every consumption mode and the publication attaches both classifier zips
+          test -f "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}.jar"
+          test -f "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}.module"
+          test -f "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}.pom"
+          test -f "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}-extension.zip"
+          test -f "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}-declarations.zip"
+      - name: publish the single gradle distribution
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd devthink
+          VERSION="${{ steps.release.outputs.version }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          # the module metadata is the gradle rung's own artifact: the
+          # existence check curls the .module file the gradle consumer
+          # resolves, so a re-run over an already published rung skips the
+          # re-upload instead of reddening on the registry's immutable
+          # version refusal.
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}.module"; then
+            echo "The single gradle distribution devthink-${VERSION} is already published; skipping the re-upload."
+          else
+            published=false
+            for attempt in 1 2 3; do
+              if gradle --no-daemon --stacktrace -PreleaseVersion="${VERSION}" publish; then published=true; break; fi
+              echo "The gradle publish attempt ${attempt} of the single distribution failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            test "$published" = true
+          fi
+      - name: retain the single distribution module, pom, jar and the classifier zips
+        # the public naming law (the family asset naming gate): the gradle
+        # lane attaches under its own dotted grammar - devthink.gradle.<version>
+        # - so the maven lane's devthink-<version> assets never collide and
+        # the SHA256SUMS umbrella never flips between two lanes' bytes.
+        run: |
+          set -euo pipefail
+          cd devthink
+          VERSION="${{ steps.release.outputs.version }}"
+          stage="gradlerelease"
+          mkdir -p "$stage"
+          cp "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}.pom" "${stage}/devthink.gradle.${VERSION}.pom"
+          cp "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}.module" "${stage}/devthink.gradle.${VERSION}.module"
+          cp "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}.jar" "${stage}/devthink.gradle.${VERSION}.jar"
+          cp "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}-extension.zip" "${stage}/devthink.gradle.${VERSION}.extension.zip"
+          cp "$HOME/.m2/repository/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}-declarations.zip" "${stage}/devthink.gradle.${VERSION}.declarations.zip"
+          # the checksum umbrella over the gradle set the lane attaches -
+          # the same checksum discipline every asset family carries, and
+          # never over itself (the SHA256SUMS umbrella law).
+          sha256sum "${stage}"/devthink.gradle."${VERSION}".* | sed "s#${stage}/##" > "${stage}/sha256.gradle.${VERSION}"
+          test -s "${stage}/sha256.gradle.${VERSION}"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-gradle-${{ steps.release.outputs.version }}
+          path: devthink/gradlerelease/*
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        # the audit gap fix mold (the SBOM/SHA256SUMS umbrella lost the
+        # registry channel coverage when the lanes moved out of release.yml):
+        # the registry publish lane also attaches the artifacts it publishes
+        # to the GitHub release (the asset-lane attach mold of
+        # container/desktop); --clobber keeps the re-run idempotent
+        # (Regra 39).
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" devthink/gradlerelease/* --clobber
+
+  family-gradle:
+    needs: release-approval
+    # the family gradle lane: every application envelope publishes its own
+    # com.wenathlan.<app> module (the nine documentation envelopes carry
+    # the README, the documentation set, the zero-build site and the tests
+    # directory as jar resources; the saddle engine envelope compiles its
+    # Saddle.java adapter into the one real jar of the family) into the
+    # same GitHub Packages maven registry the single gradle distribution
+    # uses - under the com.wenathlan coordinates, so the gradle rung never
+    # collides with the io.github.wenathlan versions the family maven lane
+    # owns - with the module metadata (the .module file the gradle
+    # consumer resolves) beside the pom and the jar, the existence
+    # pre-check, the bounded retry, the checksum umbrella and the release
+    # asset attachment the asset families carry (the family container
+    # archive lane mold: every leg answers its own dotted asset set with
+    # its checksum).
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # the canonical family pass order the maven family lane carries
+        # (the distfamily law): the saddle engine module joins the nine
+        # documentation modules - its coordinates answer the com.wenathlan
+        # group and the devthink registry this lane deploys, so the one
+        # existence path and the one bounded retry serve every leg alike.
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup java
+        # the java line the maven family lane carries: the gradle family
+        # legs ride the same temurin 26 interpreter the mvn family legs
+        # resolve with.
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          java-version: '26'
+          distribution: temurin
+      - name: install the pinned gradle distribution
+        # the pinned 9.5.1 line the single gradle lane carries: every
+        # family leg downloads the same checksum-verified distribution the
+        # application lane resolves, so the gradle rung answers one line
+        # across the whole family.
+        run: |
+          set -euo pipefail
+          GRADLE_VERSION="9.5.1"
+          curl -sSfL -o "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
+          curl -sSfL -o "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip.sha256" "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256"
+          expected="$(tr -d '[:space:]' < "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip.sha256")"
+          actual="$(sha256sum "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" | awk '{print $1}')"
+          if [[ "$expected" != "$actual" ]]; then
+            echo "The gradle ${GRADLE_VERSION} distribution checksum does not match; the pinned toolchain refuses the download." >&2
+            exit 1
+          fi
+          unzip -q "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" -d "$RUNNER_TEMP"
+          "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin/gradle" --no-daemon --version >/dev/null
+          echo "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin" >> "$GITHUB_PATH"
+      - name: pack the family envelope module
+        # the maven family lane mold (package before deploy): the leg
+        # stages the module in the local repository and asserts the
+        # module metadata, the pom and the jar the retain step copies.
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          cd "${{ matrix.package }}"
+          gradle --no-daemon -PreleaseVersion="${VERSION}" publishToMavenLocal
+          test -f "$HOME/.m2/repository/com/wenathlan/${{ matrix.package }}/${VERSION}/${{ matrix.package }}-${VERSION}.jar"
+          test -f "$HOME/.m2/repository/com/wenathlan/${{ matrix.package }}/${VERSION}/${{ matrix.package }}-${VERSION}.module"
+          test -f "$HOME/.m2/repository/com/wenathlan/${{ matrix.package }}/${VERSION}/${{ matrix.package }}-${VERSION}.pom"
+      - name: publish the family envelope when absent
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PKG="${{ matrix.package }}"
+          cd "${PKG}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}.module"; then
+            echo "The family gradle distribution ${PKG}-${VERSION} is already published; skipping the re-upload."
+          else
+            published=false
+            for attempt in 1 2 3; do
+              if gradle --no-daemon --stacktrace -PreleaseVersion="${VERSION}" publish; then published=true; break; fi
+              echo "The gradle publish attempt ${attempt} of the ${PKG} envelope failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            test "$published" = true
+          fi
+      - name: retain and checksum the family envelope module
+        # the public naming law (the family asset naming gate): every leg
+        # attaches under its own dotted grammar - <app>.gradle.<version> -
+        # beside the checksum umbrella over the set, the same discipline
+        # the family container archive lane carries for its tar.gz.
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PKG="${{ matrix.package }}"
+          repo="$HOME/.m2/repository/com/wenathlan/${PKG}/${VERSION}"
+          cp "${repo}/${PKG}-${VERSION}.pom" "${PKG}.gradle.${VERSION}.pom"
+          cp "${repo}/${PKG}-${VERSION}.module" "${PKG}.gradle.${VERSION}.module"
+          cp "${repo}/${PKG}-${VERSION}.jar" "${PKG}.gradle.${VERSION}.jar"
+          sha256sum "${PKG}.gradle.${VERSION}."* > "${PKG}.sha256.gradle.${VERSION}"
+          test -s "${PKG}.sha256.gradle.${VERSION}"
+          # the family asset naming gate: no underscore ever rides a
+          # published asset (the four names the leg attaches answer the
+          # check, never the whole repository root).
+          ! printf '%s\n' \
+            "${PKG}.gradle.${VERSION}.pom" \
+            "${PKG}.gradle.${VERSION}.module" \
+            "${PKG}.gradle.${VERSION}.jar" \
+            "${PKG}.sha256.gradle.${VERSION}" | grep -q "_"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-family-gradle-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.gradle.${{ steps.release.outputs.version }}.pom
+            ${{ matrix.package }}.gradle.${{ steps.release.outputs.version }}.module
+            ${{ matrix.package }}.gradle.${{ steps.release.outputs.version }}.jar
+            ${{ matrix.package }}.sha256.gradle.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag),
+        # and --clobber keeps the re-run idempotent over its own names,
+        # which carry the application prefix and never collide with
+        # another lane's grammar.
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.gradle.${VERSION}.pom" \
+            "${{ matrix.package }}.gradle.${VERSION}.module" \
+            "${{ matrix.package }}.gradle.${VERSION}.jar" \
+            "${{ matrix.package }}.sha256.gradle.${VERSION}" --clobber
 
   ghcr:
     needs: release-approval
@@ -6479,6 +6882,12 @@ jobs:
       - maven
       - nuget
       - rubygems
+      # the gradleseat wave rides the same umbrella law: the single
+      # gradle lane and the family gradle matrix attach their module
+      # sets (the pom, the module metadata, the jar and the checksum)
+      # before the SHA256SUMS rebuild answers, so the umbrella covers
+      # the gradle rung's assets the way it covers the maven ones.
+      - gradle
       - ghcr
       - digest
       - desktop
@@ -6488,6 +6897,9 @@ jobs:
       - ios
       - container
       - family-container
+      # the family gradle legs attach their dotted module sets beside the
+      # family container archives before the umbrella answers.
+      - family-gradle
       # the five hundred asset ladder attaches its metadata sets and its
       # family reports before the umbrella answers, so the SHA256SUMS
       # signature covers the expanded asset set the ladder ships.
