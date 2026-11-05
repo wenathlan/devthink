@@ -142,11 +142,14 @@ export type SandboxState = {
 };
 
 /** command result matching the api exec contract; clear is set by the
- * clear command so the terminal can wipe the screen. */
+ * clear command so the terminal can wipe the screen. code carries the
+ * machine refusal code of a structured honest answer — the sandbox never
+ * pretends a binary the image does not carry. */
 export type DispatchResult = {
   output: string;
   exitCode: number;
   clear?: boolean;
+  code?: string;
 };
 
 /** optional exec context provided by the api host. */
@@ -1452,8 +1455,8 @@ function helpText(): string {
     ['uname -a', 'kernel and architecture line'],
     ['ls /etc/virtual', 'virtual hardware definition files'],
     ['env', 'mesa llvmpipe environment variables'],
-    ['docker --version', 'docker engine version'],
-    ['qemu-system-x86_64 --version', 'qemu bridge version'],
+    ['docker --version', 'honest refusal: the binary is absent from the sandbox image'],
+    ['qemu-system-x86_64 --version', 'honest refusal: the binary is absent from the sandbox image'],
     ['uptime', 'sandbox uptime and load average'],
     ['whoami', 'current user'],
     ['neofetch', 'saddle ascii logo and sandbox specs'],
@@ -1826,15 +1829,18 @@ export function dispatch(
       }
       case 'env':
         return { output: envText(state), exitCode: 0 };
+      /* the honesty law: the sandbox image carries no container daemon
+       * and no emulator binary, so the shell never fakes a version
+       * banner — the answer is the structured honest refusal, the
+       * machine code rides the result and the message names the absence
+       * and the real surface (the host container and qemu runtimes ride
+       * the edge plane lanes, never a pretended guest binary). */
       case 'docker':
-        return { output: 'Docker version 29.7.2, build 5ea4c1f', exitCode: 0 };
       case 'qemu-system-x86_64':
         return {
-          output: [
-            'QEMU emulator version 11.1.0 (saddle bridge)',
-            'Copyright (c) 2003-2026 Fabrice Bellard and the QEMU Project developers',
-          ].join('\n'),
-          exitCode: 0,
+          output: `bash: ${head}: the ${head} binary is absent from this sandbox image (SANDBOX_IMAGE_ABSENT) — the sandbox mounts no container daemon and no emulator, the engine drives the host container and qemu lanes through the edge plane`,
+          exitCode: 127,
+          code: 'SANDBOX_IMAGE_ABSENT',
         };
       case 'uptime':
         return { output: uptimeLine(state), exitCode: 0 };
