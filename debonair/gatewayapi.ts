@@ -75,13 +75,14 @@
 // columns carry no genre — the queue owns the ask the way it owns the
 // upload bytes), the collect phase reads the genre's reference documents
 // off the shelf (kind "reference" only — the visitor uploads never feed
-// a genre profile — grouped by the genre matrix's own matcher over the
-// document name, the grouping law the pattern miner names: the documents
-// carry no genre column, the name is the reference lane's honest carrier
-// and matchGenre is the same seat the composer's prompt rides), the mine
-// phase answers the profile document (a genre with no references fails
-// honestly — never a zero profile), the store phase lands the row in the
-// genre_profiles seat. the vitrine routes read the same seat (wave
+// a genre profile — grouped by the measured verdict the signal gate
+// answers over the mix the analysis walked: the bpm, the key, the
+// loudness and the band balance the pipeline measured, never the
+// document's name, and a document whose signal carries too little
+// collects into no genre — the honest absence the empty-set law rides),
+// the mine phase answers the profile document (a genre with no references
+// fails honestly — never a zero profile), the store phase lands the row
+// in the genre_profiles seat. the vitrine routes read the same seat (wave
 // PV3.005): the list answers the newest row per genre (a retrain lands a
 // fresh row, the vitrine shows the freshest), the profile read answers
 // the freshest document of one genre. the browser never runs the miner —
@@ -90,7 +91,6 @@
 
 import type { BlobPointer, BlobResult, BlobStore } from "./blobstore.ts";
 import { blobidvalid } from "./blobstore.ts";
-import { matchGenre } from "./genrematrix.ts";
 import type {
   IngestDbHandle,
   IngestDocument,
@@ -104,7 +104,7 @@ import type {
 import { INGEST_STEMS_SCHEMA_VERSION, parseWav, reconOf, runIngestJob } from "./ingest.ts";
 import { PATTERN_SCHEMA_VERSION, parsePattern, serializePattern, validatePatternProject } from "./pattern.ts";
 import type { GenreProfile, IngestDocumentWithId, ProfileErrorCode } from "./pattern.ts";
-import { classifyDocument, mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./pattern.ts";
+import { classifyFromSignal, mineGenre, PROFILE_GENRE_KEYS, ProfileError } from "./pattern.ts";
 import type { ReconDocument } from "./recon.ts";
 import { serializeRecon, validateRecon } from "./recon.ts";
 import type { ReconChecksums, ReconRunErrorCode } from "./recon.ts";
@@ -548,7 +548,12 @@ export interface VitrineTrackValue {
   id: string;
   /** The display name. */
   name: string;
-  /** The genre line (the plan's mood label, or the document's genre match). */
+  /** The genre line (the plan's mood label for a rendered take; the
+   * measured verdict of the mix for a reference — the signal gate's
+   * answer over the bpm, the key, the loudness and the band balance the
+   * analysis walked. A reference whose signal carries too little answers
+   * the honest empty line — the typed genre-insufficient-signal refusal
+   * the gate answered, never a genre read off the file name). */
   genre: string;
   /** The duration in seconds. */
   seconds: number;
@@ -1311,17 +1316,19 @@ function renderwire(row: RenderTrackRow): VitrineTrackValue {
 }
 
 /** The vitrine row of one ingested reference — the stored mix's face
- * (the genre line rides the matrix's own matcher over the document name
- * first — the declared label the reference lane carries — and the style-law
- * classifier answers when the name declares nothing: the measured verdict
- * of the report the analysis walked, the grouping law the miner lane
- * rides). */
+ * (the genre line rides the measured verdict alone: the signal gate
+ * (classifyFromSignal) reads the bpm, the key, the loudness and the band
+ * balance the analysis walked and answers the ranked fifteen — the name
+ * of the file never decides. A reference whose signal carries too little
+ * answers the honest empty line, the typed genre-insufficient-signal
+ * refusal surfaced as the absence it is). */
 function referencewire(row: IngestStampRow): VitrineTrackValue {
+  const verdict = classifyFromSignal(row.document);
   return {
     kind: "reference",
     id: row.id,
     name: row.name,
-    genre: matchGenre(row.name)?.label ?? classifyDocument(row.document)[0]?.label ?? "",
+    genre: verdict.ok ? (verdict.verdicts[0]?.label ?? "") : "",
     seconds: Math.round(row.durationSeconds),
     status: "ready",
     wavPointer: row.mixPointer,
@@ -1796,11 +1803,11 @@ export async function startMinerJob(
   };
   // phase: collect — the genre's reference documents read off the shelf:
   // kind "reference" only (the visitor uploads never feed a genre
-  // profile), grouped by the genre matrix's own matcher over the document
-  // name first (the declared label the reference lane carries) and the
-  // style-law classifier second — the measured verdict of the report the
-  // analysis walked collects the documents whose names declare nothing,
-  // the grouping law the pattern miner carries
+  // profile), grouped by the measured verdict of the signal gate — the
+  // bpm, the key, the loudness and the band balance the analysis walked
+  // decide which genre a reference feeds, never the document's name, and
+  // a document whose signal carries too little collects into no genre
+  // (the honest absence the empty-set law rides)
   let shelf: IngestStampRow[];
   try {
     shelf = await env.db.liststampedrows();
@@ -1808,11 +1815,11 @@ export async function startMinerJob(
     return failwalk("db-failed", 500, `the shelf refused the list: ${errmsgof(error)}`);
   }
   const references: IngestDocumentWithId[] = shelf
-    .filter(
-      (standing) =>
-        standing.kind === "reference" &&
-        (matchGenre(standing.name)?.id ?? classifyDocument(standing.document)[0]?.genreId) === payload.genre,
-    )
+    .filter((standing) => standing.kind === "reference")
+    .filter((standing) => {
+      const verdict = classifyFromSignal(standing.document);
+      return verdict.ok && verdict.verdicts[0]?.genreId === payload.genre;
+    })
     .map((standing) => ({ ...standing.document, id: standing.id }));
   report("collect");
   // phase: mine — the profile document (a genre with no references fails
