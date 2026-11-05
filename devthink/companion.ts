@@ -447,4 +447,10 @@ function main(): void {
 }
 
 /** The entry guard: the companion runs its main loop only when the host launched this module as the process entry, so the build recipe and the test suite import the exports without side effects. */
-if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) main();
+if (
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+)
+  main();

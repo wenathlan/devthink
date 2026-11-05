@@ -778,8 +778,8 @@ describe("the workflow contract", () => {
         `the ${profile} profile target rides the variant catalog`,
       );
       assert.ok(
-        new RegExp(`^ENV SADDLE_PROFILE=${profile}$`, "m").test(containerfile),
-        `the ${profile} profile pins its SADDLE_PROFILE env`,
+        new RegExp(`^ENV SADDLE_PROFILE=${profile}(?:\\s|$)`, "m").test(containerfile),
+        `the ${profile} profile pins its SADDLE_PROFILE env (the single-line form or the head of the profile's multi-line env block)`,
       );
     }
     assert.ok(

@@ -3148,5 +3148,8 @@ export function runparitygate(): void {
 
 /** Reads whether node loaded this module as the direct entry: the ci config parity lane runs `node config.ts` from the os app root, and no library face (the cli, the server barrel, the published ./config entry, the tests) matches a direct entry path, so the gate fires on its own lane and never on an import. */
 const paritygatemain =
-  typeof process !== "undefined" && process.argv[1] !== undefined && process.argv[1].endsWith("config.ts");
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  process.argv[1].endsWith("config.ts");
 if (paritygatemain) runparitygate();

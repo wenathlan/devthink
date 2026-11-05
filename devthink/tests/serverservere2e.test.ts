@@ -17,6 +17,7 @@ import type { AddressInfo } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { planreport } from "@wenathlan/saddle/modalityregistry";
 
 // ---------------------------------------------------------------------------
 // mock upstream — records requests and replies with scripted bodies
@@ -384,8 +385,11 @@ describe("the engine lanes over the wire", () => {
     const data = await res.json();
     const rows = data["rows"] as string[];
     // the summary row plus one honest row per record of the ninety plan
-    expect(rows).toHaveLength(91);
-    expect(rows[0]).toBe("the modality registry answers the ninety plan: 90 records — 81 live, 9 host, 0 planned");
+    const report = planreport();
+    expect(rows).toHaveLength(report.catalogcount + 1);
+    expect(rows[0]).toBe(
+      `the modality registry answers the ninety plan: ${report.catalogcount} records — ${report.live} live, ${report.host} host, ${report.planned} planned`,
+    );
     // every record row declares its state — live lane, host runtime or planned
     for (const row of rows.slice(1)) expect(row).toMatch(/: (live lane — |host runtime |planned — )/);
   });

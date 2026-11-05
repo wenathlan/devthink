@@ -19,41 +19,26 @@ import {
 
 /** the records the platform lanes drive today — the honest live set the
  * report and the lanes agree on (the run lane executes node inside the
- * container, the storage lane drives the session jail, the exec lane
- * drives every host runtime of the polyglot languages and the builds, and
- * the edge plane lanes of wave sv2 drive the babel, webpack and universal
- * sh lanes server-side) */
+ * container, the storage lane drives the session jail, and the edge plane
+ * lanes of wave sv2 drive the babel, webpack and universal sh lanes
+ * server-side). the seventeen registry-only ids the owner's audit named
+ * (the host runtimes and the inproc seats the engine never carried real
+ * executors for) left the live set for the honest planned shelf — the
+ * record never pretends a wiring the engine does not drive */
 const LIVESET = [
-  "buildmake",
-  "buildninja",
   "containerdocker",
-  "fsgitobjects",
   "fsvfs",
-  "languagecargo",
-  "languagedotnet",
   "languagego",
   "languagejava",
-  "languagelua",
-  "languagenim",
-  "languagephp",
   "languagepython",
   "languageruby",
-  "languagerust",
-  "languagev",
-  "languagezig",
-  "networkdns",
-  "networkdoh",
   "runnerbabel",
   "runnerbun",
-  "runnerdeno",
   "runnernode",
-  "runnerserverless",
   "runneruniversal",
-  "runnerwasi",
   "runnerwebpack",
   "runnerwasm",
   "runtimejvm",
-  "storagesqlite",
   "sandboxbubblewrap",
   "sandboxnsjail",
   "sandboxchroot",

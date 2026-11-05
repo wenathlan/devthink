@@ -4770,5 +4770,8 @@ export const apifreezebaseline: apifreezebaseline = ${JSON.stringify(freeze, nul
 
 /* the direct-entry guard of the gate lane: node runs the freeze gate only when it loads this module as the main script (validate:apifreeze, apifreeze:sync, the matrix cell, the workflow gates and the freeze test's sync respawn), never when the library, the tests or the browser bundles import the frozen contracts — the process probe keeps the guard inert in the browser where process never exists. */
 const freezegatemain =
-  typeof process !== "undefined" && process.argv[1] !== undefined && process.argv[1].endsWith("apifreeze.ts");
+  typeof process !== "undefined" &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
+  process.argv[1].endsWith("apifreeze.ts");
 if (freezegatemain) void runapifreezesuite();

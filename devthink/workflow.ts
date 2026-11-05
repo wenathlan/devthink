@@ -4971,7 +4971,8 @@ async function syncworkflowactiontags(): Promise<void> {
 /** Reads whether node loaded this module as the direct entry: the validate chain and the verify workflow run the gate lanes as `node workflow.ts` (the yaml controls gate) and `node workflow.ts check` or `node workflow.ts sync` (the action tag update lane), and no bundled library face matches a direct entry path (the browser faces carry no process at all), so the gates fire on their own lane and never on an import. */
 const workflowgatemain =
   typeof process !== "undefined" &&
-  process.argv[1] !== undefined &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string" &&
   (process.argv[1].endsWith("workflow.ts") || process.argv[1].endsWith("workflow"));
 
 if (workflowgatemain) {

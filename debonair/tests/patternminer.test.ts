@@ -695,8 +695,26 @@ describe("the genre verdict", () => {
     const trapIn = inside.find((verdict) => verdict.genreId === "trap");
     const trapOut = outside.find((verdict) => verdict.genreId === "trap");
     assert.ok(trapIn && trapOut && trapIn.score > trapOut.score, "the gaussian decays the far tempo");
-    const ambientOut = outside.find((verdict) => verdict.genreId === "ambient");
-    assert.ok(ambientOut && ambientOut.score > trapOut.score, "the 60 bpm document favors the ambient range");
+    // the measured timbre law (the katexis signal seat): the even split
+    // answers the genre whose hints ride no band, so the slow document
+    // favors the ambient range exactly when its measured bands answer the
+    // pad timbre the ambient hints declare — the bands the mix carried
+    // decide beside the tempo, never alone.
+    const padOutside = classifyDocument(
+      docOf("bpm-pad", {
+        bpm: 60,
+        tonic: 9,
+        mode: "minor",
+        integrated: -9,
+        segmentAt: () => ({ onsets: 0.5, bands: [0.2, 0.55, 0.25] }),
+      }),
+    );
+    const ambientOut = padOutside.find((verdict) => verdict.genreId === "ambient");
+    const trapPad = padOutside.find((verdict) => verdict.genreId === "trap");
+    assert.ok(
+      ambientOut && trapPad && ambientOut.score > trapPad.score,
+      "the 60 bpm pad-timbre document favors the ambient range",
+    );
   });
 
   it("the seats carry the documented weights", () => {
