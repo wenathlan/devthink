@@ -764,23 +764,13 @@ describe("the workflow contract", () => {
       /^  saddle-face:$/m.test(compose),
       "the compose seats the saddle-face service (the vault precedent's face seat)",
     );
-    assert.ok(
-      compose.includes("condition: service_healthy"),
-      "the compose gates the face on the engine health lane",
-    );
-    assert.match(
-      compose,
-      /\/api\/v1\/health/,
-      "the compose documents the real health lane the engine image rides",
-    );
+    assert.ok(compose.includes("condition: service_healthy"), "the compose gates the face on the engine health lane");
+    assert.match(compose, /\/api\/v1\/health/, "the compose documents the real health lane the engine image rides");
     assert.ok(
       compose.includes('"8089:8080"'),
       "the compose publishes the face on the saddle host door 8089:8080 (the one distinct door the collision law maps)",
     );
-    assert.ok(
-      compose.includes("restart: unless-stopped"),
-      "the compose keeps the pair answering across host reboots",
-    );
+    assert.ok(compose.includes("restart: unless-stopped"), "the compose keeps the pair answering across host reboots");
     assert.ok(
       /^  saddledata:$/m.test(compose),
       "the compose carries the named state volume the engine's sqlite home rides",
