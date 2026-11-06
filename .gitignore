@@ -425,3 +425,9 @@ polar/
 allan/
 allanclone.sh
 allanclone.log
+# polar auth state (PR20 single-state law) — device flow artifacts never ride the repo
+.auth-status
+.device-flow-current.json
+.polar-scopes.txt
+.poll-plan.txt
+node_modules
