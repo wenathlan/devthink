@@ -14,7 +14,7 @@ import {
   formatOf,
   pourOrder,
   seedImages,
-} from "../imagestore.ts";
+} from "../pipeline.ts";
 
 describe("the formats", () => {
   it("answers the three real clone formats in floor order", () => {

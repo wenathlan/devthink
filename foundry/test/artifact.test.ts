@@ -17,7 +17,7 @@ import {
   seedArtifacts,
   utf8Bytes,
   verifyArtifact,
-} from "../artifact.ts";
+} from "../pipeline.ts";
 
 describe("fnv-1a", () => {
   it("answers the canonical vectors", () => {

@@ -5,7 +5,7 @@
  *
  * Sandboxes — the machine room of the foundry: the herd answers on the
  * cold → warm → hot ladder, the machine drives it (warm, heat, cool,
- * freeze, step) through the real state machine (sandbox.ts) and refuses
+ * freeze, step) through the real state machine (pipeline.ts) and refuses
  * what the machine does not do — with the honest refusal on the readout.
  * The herd is a SEEDED REHEARSAL (the seed is shown); every number is
  * tabular and every state is a dot plus text.
@@ -29,7 +29,7 @@ import {
   type SandboxAction,
   seedHerd,
   step,
-} from "../../sandbox.ts";
+} from "../../pipeline.ts";
 import { labelfill, label } from "../../labels.ts";
 import { EmptyState } from "../wingets";
 

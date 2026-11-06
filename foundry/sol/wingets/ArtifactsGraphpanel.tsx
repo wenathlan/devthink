@@ -5,7 +5,7 @@
  *
  * The foundry draws its packaging line the way the owner asked everything
  * to be drawn: by graphs and nodes, stage by stage. The panel reads the
- * root engine (graphplan.ts — the foundry's own pipeline logic) and
+ * root engine (pipeline.ts — the foundry's own pipeline logic) and
  * projects the rehearsed run into an SVG map: one trylle card per step
  * riding its topological stage, one hairline bezier per wire. States ride
  * the windows hands — the running stage wears the WINDOWS accent #4cc2ff
@@ -27,7 +27,7 @@ import {
   type planstate,
   plantally,
   type runplan,
-} from "../../graphplan.ts";
+} from "../../pipeline.ts";
 import { labelfill, label } from "../../labels.ts";
 
 /** the drawn card of one plan node (the trylle surface the graph rides) */

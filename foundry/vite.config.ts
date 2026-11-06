@@ -48,7 +48,7 @@ export default defineConfig({
       "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
 
       /** the runner-mode ladder bridge of the ownership law (wave 3): the
-       * app's runner seam (runner.ts) rides the five runtime targets
+       * app's runner seam (pipeline.ts) rides the five runtime targets
        * through the published library specifier
        * ("@wenathlan/saddle/modes"), and this bridge resolves the
        * specifier to the monorepo source the sibling engine carries — the

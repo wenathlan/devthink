@@ -16,7 +16,7 @@ import {
   type Sandbox,
   seedHerd,
   step,
-} from "../sandbox.ts";
+} from "../pipeline.ts";
 
 /** one hand-built sandbox */
 function boxOf(patch: Partial<Sandbox>): Sandbox {
