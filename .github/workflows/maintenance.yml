@@ -642,9 +642,14 @@ jobs:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: setup node
+        # the registry-url is the seat the auth ride needs: setup-node
+        # writes the .npmrc that maps NODE_AUTH_TOKEN to the registry —
+        # without it every dist-tag write answers E401.
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 26.13.0
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
       - name: arm the npm token
         # the same graceful gate the publish lanes carry: no token, no
         # publish attempt - the lane reports and exits green.
