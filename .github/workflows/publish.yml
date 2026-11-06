@@ -7183,12 +7183,12 @@ jobs:
           # partial family always re-proceeds, and the per-leg guard
           # inside the publish matrix skips only the legs that already
           # ship, so a re-run completes exactly the missing lanes.
-          api_out="$(gh api "/users/${OWNER}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${version}\" or . == \"${version}-balanced\" or . == \"${version}-lite\" or . == \"${version}-linux\" or . == \"${version}-omarchy\" or . == \"${version}-vanillaos\" or . == \"${version}-android\" or . == \"${version}-grapheneos\" or . == \"${version}-maruos\" or . == \"${version}-v\" or . == \"${version}-windows\")] | length" 2>/dev/null || true)"
+          api_out="$(gh api "/users/${OWNER}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${version}\" or . == \"${version}-balanced\" or . == \"${version}-lite\" or . == \"${version}-linux\" or . == \"${version}-omarchy\" or . == \"${version}-vanillaos\" or . == \"${version}-android\" or . == \"${version}-grapheneos\" or . == \"${version}-maruos\" or . == \"${version}-v\" or . == \"${version}-windows\" or . == \"${version}-postmarketos\" or . == \"${version}-lineageos\" or . == \"${version}-calyxos\" or . == \"${version}-archlinux\" or . == \"${version}-alpine\" or . == \"${version}-debian\" or . == \"${version}-fedora\" or . == \"${version}-nixos\" or . == \"${version}-void\")] | length" 2>/dev/null || true)"
           case "${api_out}" in
             ''|*[!0-9]*) api_out=0 ;;
           esac
-          if [ "${api_out}" = "11" ]; then
-            echo "GHCR container ${OWNER}/saddle carries the complete ${version} family (the three profile lanes, the four os-distribution flavor lanes and the four catalog lanes); the duplicate dispatch will no-op."
+          if [ "${api_out}" = "20" ]; then
+            echo "GHCR container ${OWNER}/saddle carries the complete ${version} family (the three profile lanes, the four os-distribution flavor lanes and the thirteen catalog lanes); the duplicate dispatch will no-op."
             exit 0
           fi
           if [ "${api_out}" != "0" ]; then
@@ -7643,6 +7643,24 @@ jobs:
             suffix: "-v"
           - osprofile: windows
             suffix: "-windows"
+          - osprofile: postmarketos
+            suffix: "-postmarketos"
+          - osprofile: lineageos
+            suffix: "-lineageos"
+          - osprofile: calyxos
+            suffix: "-calyxos"
+          - osprofile: archlinux
+            suffix: "-archlinux"
+          - osprofile: alpine
+            suffix: "-alpine"
+          - osprofile: debian
+            suffix: "-debian"
+          - osprofile: fedora
+            suffix: "-fedora"
+          - osprofile: nixos
+            suffix: "-nixos"
+          - osprofile: void
+            suffix: "-void"
     steps:
       - name: Check out the verified tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -7767,10 +7785,10 @@ jobs:
           # lanes carry the seat suffix and the catalog lanes carry the
           # no-base seat suffix): the devthink node-engine image owns its
           # own ghcr lane - inspecting it here would verify the wrong
-          # image. eleven legs: seven runnable lanes (the three profile
+          # image. twenty legs: seven runnable lanes (the three profile
           # lanes beside the four os-distribution flavor lanes, each
           # asserting the four-arch index, the health smoke, the ninety
-          # modalities and both profile stamps) and four catalog lanes
+          # modalities and both profile stamps) and thirteen catalog lanes
           # (the scratch manifest images whose config carries the profile
           # row — verified through the labels and the embedded json,
           # never a pretended boot).
@@ -7818,6 +7836,42 @@ jobs:
             suffix: "-windows"
             mode: catalog
             expectosprofile: windows
+          - profile: catalog
+            suffix: "-postmarketos"
+            mode: catalog
+            expectosprofile: postmarketos
+          - profile: catalog
+            suffix: "-lineageos"
+            mode: catalog
+            expectosprofile: lineageos
+          - profile: catalog
+            suffix: "-calyxos"
+            mode: catalog
+            expectosprofile: calyxos
+          - profile: catalog
+            suffix: "-archlinux"
+            mode: catalog
+            expectosprofile: archlinux
+          - profile: catalog
+            suffix: "-alpine"
+            mode: catalog
+            expectosprofile: alpine
+          - profile: catalog
+            suffix: "-debian"
+            mode: catalog
+            expectosprofile: debian
+          - profile: catalog
+            suffix: "-fedora"
+            mode: catalog
+            expectosprofile: fedora
+          - profile: catalog
+            suffix: "-nixos"
+            mode: catalog
+            expectosprofile: nixos
+          - profile: catalog
+            suffix: "-void"
+            mode: catalog
+            expectosprofile: void
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0

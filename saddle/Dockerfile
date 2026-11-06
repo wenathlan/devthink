@@ -526,3 +526,102 @@ LABEL org.opencontainers.image.title="saddle (the windows os-distribution catalo
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/windows.json /saddle/osprofile.json
+
+FROM scratch AS ospostmarketos
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="postmarketos"
+ENV SADDLE_OS_PROFILE=postmarketos
+LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution catalog lane)" \
+      org.opencontainers.image.description="the postmarketos os-distribution seat as a catalog lane: postmarketos is the alpine-based mobile distribution real devices boot — no runnable container base exists for this seat, the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/postmarketos.json /saddle/osprofile.json
+
+FROM scratch AS oslineageos
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="lineageos"
+ENV SADDLE_OS_PROFILE=lineageos
+LABEL org.opencontainers.image.title="saddle (the lineageos os-distribution catalog lane)" \
+      org.opencontainers.image.description="the lineageos os-distribution seat as a catalog lane: lineageos is the community android continuation — the aftermarket mobile seat on the arm64 legs, the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/lineageos.json /saddle/osprofile.json
+
+FROM scratch AS oscalyxos
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="calyxos"
+ENV SADDLE_OS_PROFILE=calyxos
+LABEL org.opencontainers.image.title="saddle (the calyxos os-distribution catalog lane)" \
+      org.opencontainers.image.description="the calyxos os-distribution seat as a catalog lane: calyxos is the privacy-focused android distribution, the hardened mobile seat beside grapheneos — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/calyxos.json /saddle/osprofile.json
+
+FROM scratch AS osarchlinux
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="archlinux"
+ENV SADDLE_OS_PROFILE=archlinux
+LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution catalog lane)" \
+      org.opencontainers.image.description="the archlinux os-distribution seat as a catalog lane: archlinux is the rolling-release distribution omarchy builds on, the pacman desktop seat — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/archlinux.json /saddle/osprofile.json
+
+FROM scratch AS osalpine
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="alpine"
+ENV SADDLE_OS_PROFILE=alpine
+LABEL org.opencontainers.image.title="saddle (the alpine os-distribution catalog lane)" \
+      org.opencontainers.image.description="the alpine os-distribution seat as a catalog lane: alpine is the musl-based lightweight distribution, the small-footprint seat the musl legs answer — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/alpine.json /saddle/osprofile.json
+
+FROM scratch AS osdebian
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="debian"
+ENV SADDLE_OS_PROFILE=debian
+LABEL org.opencontainers.image.title="saddle (the debian os-distribution catalog lane)" \
+      org.opencontainers.image.description="the debian os-distribution seat as a catalog lane: debian is the universal operating system, the apt desktop seat the widest hardware matrix answers — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/debian.json /saddle/osprofile.json
+
+FROM scratch AS osfedora
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="fedora"
+ENV SADDLE_OS_PROFILE=fedora
+LABEL org.opencontainers.image.title="saddle (the fedora os-distribution catalog lane)" \
+      org.opencontainers.image.description="the fedora os-distribution seat as a catalog lane: fedora is the red-hat-upstream community distribution, the rpm desktop seat beside the apt rows — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/fedora.json /saddle/osprofile.json
+
+FROM scratch AS osnixos
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="nixos"
+ENV SADDLE_OS_PROFILE=nixos
+LABEL org.opencontainers.image.title="saddle (the nixos os-distribution catalog lane)" \
+      org.opencontainers.image.description="the nixos os-distribution seat as a catalog lane: nixos is the declarative distribution the nix package manager builds, the reproducible-system seat — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/nixos.json /saddle/osprofile.json
+
+FROM scratch AS osvoid
+ARG SADDLE_VERSION=2.0.166
+ARG SADDLE_OS_PROFILE="void"
+ENV SADDLE_OS_PROFILE=void
+LABEL org.opencontainers.image.title="saddle (the void os-distribution catalog lane)" \
+      org.opencontainers.image.description="the void os-distribution seat as a catalog lane: void is the independent source-rolling distribution, the xbps seat the musl legs answer beside alpine — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/void.json /saddle/osprofile.json

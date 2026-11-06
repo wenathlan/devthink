@@ -367,9 +367,11 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(publish).toContain("no rolling alias");
     const workflow = await parseworkflow("publish.yml");
     const verify = matrixof(workflow, "saddle-vhe-verify");
-    /* the eleven verify legs: the three profile lanes, the four
-     * os-distribution flavor lanes (runnable) and the four catalog lanes
-     * (the no-base seats: grapheneos, maruos, v, windows). */
+    /* the twenty verify legs: the three profile lanes, the four
+     * os-distribution flavor lanes (runnable) and the thirteen catalog
+     * lanes (the no-base seats: grapheneos, maruos, v, windows and the
+     * nine honest osdistrib additions the owner's more-than-fifteen
+     * directive rides). */
     expect(verify.map((leg) => [leg.profile, leg.suffix ?? "", leg.mode])).toEqual([
       ["max", "", "runnable"],
       ["balanced", "-balanced", "runnable"],
@@ -382,9 +384,32 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
       ["catalog", "-maruos", "catalog"],
       ["catalog", "-v", "catalog"],
       ["catalog", "-windows", "catalog"],
+      ["catalog", "-postmarketos", "catalog"],
+      ["catalog", "-lineageos", "catalog"],
+      ["catalog", "-calyxos", "catalog"],
+      ["catalog", "-archlinux", "catalog"],
+      ["catalog", "-alpine", "catalog"],
+      ["catalog", "-debian", "catalog"],
+      ["catalog", "-fedora", "catalog"],
+      ["catalog", "-nixos", "catalog"],
+      ["catalog", "-void", "catalog"],
     ]);
     const catalog = matrixof(workflow, "saddle-vhe-catalog");
-    expect(catalog.map((leg) => leg.osprofile)).toEqual(["grapheneos", "maruos", "v", "windows"]);
+    expect(catalog.map((leg) => leg.osprofile)).toEqual([
+      "grapheneos",
+      "maruos",
+      "v",
+      "windows",
+      "postmarketos",
+      "lineageos",
+      "calyxos",
+      "archlinux",
+      "alpine",
+      "debian",
+      "fedora",
+      "nixos",
+      "void",
+    ]);
   });
 
   it("the published vhe index answers the base-carried build legs and the honest console smokes", async () => {
@@ -418,13 +443,13 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     /* the bare startswith(${version}) once saw the node-engine tag and
      * no-opped the vhe publication; the match carries the lane suffixes.
      * the partial-publish freeze fix tightens the same lesson: the
-     * no-op now demands the complete eleven-lane family (the three
-     * profile lanes, the four os-distribution flavor lanes and the four
-     * catalog lanes all live) instead of any single tag, and the per-leg
-     * guard inside the publish matrix skips only the legs that already
-     * ship so a re-run completes the missing siblings. */
-    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\" or . == \\"${version}-linux\\" or . == \\"${version}-omarchy\\" or . == \\"${version}-vanillaos\\" or . == \\"${version}-android\\" or . == \\"${version}-grapheneos\\" or . == \\"${version}-maruos\\" or . == \\"${version}-v\\" or . == \\"${version}-windows\\"');
-    expect(publish).toContain('if [ "${api_out}" = "11" ]');
+     * no-op now demands the complete twenty-lane family (the three
+     * profile lanes, the four os-distribution flavor lanes and the
+     * thirteen catalog lanes all live) instead of any single tag, and
+     * the per-leg guard inside the publish matrix skips only the legs
+     * that already ship so a re-run completes the missing siblings. */
+    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\" or . == \\"${version}-linux\\" or . == \\"${version}-omarchy\\" or . == \\"${version}-vanillaos\\" or . == \\"${version}-android\\" or . == \\"${version}-grapheneos\\" or . == \\"${version}-maruos\\" or . == \\"${version}-v\\" or . == \\"${version}-windows\\" or . == \\"${version}-postmarketos\\" or . == \\"${version}-lineageos\\" or . == \\"${version}-calyxos\\" or . == \\"${version}-archlinux\\" or . == \\"${version}-alpine\\" or . == \\"${version}-debian\\" or . == \\"${version}-fedora\\" or . == \\"${version}-nixos\\" or . == \\"${version}-void\\"');
+    expect(publish).toContain('if [ "${api_out}" = "20" ]');
     expect(publish).toContain('echo "skip=true" >> "$GITHUB_OUTPUT"');
     expect(publish).toContain("if: steps.meta.outputs.skip != 'true'");
   });
