@@ -29,8 +29,7 @@
 - `oauth.ts` / `accounts.ts` / `recovery.ts` / `project.ts` — the provider oauth family, multi-account manager, recovery and project id discovery.
 - `db.ts` — the database contract: typed rows, in-memory seeds, HTTPS accessors, the health-aware round-robin key picker (`nextkeyrow`) and the better-sqlite3 mirror (onboarding states, labels and the `gateway_versions` route table).
 - `prismaconfig.ts` / `prismashim.ts` / `nodeshim.ts` — prisma schema path resolution and runtime shims.
-- `gatewayprobe.ts` — manual chat round trip against a deployed gateway (`GET /v1/models`, `POST /v1/chat/completions`).
-- `gatewaysmoke.ts` — offline container smoke: one full request cycle against the recorded openaicompat fixture.
+- `gatewaycheck.ts` — the two gateway check seats in one file: the offline container smoke (one full request cycle against the recorded openaicompat fixture) and the manual probe (chat round trip against a deployed gateway, `GET /v1/models`, `POST /v1/chat/completions`).
 - `registernvidiakeys.ts` — registers the 22 nvidia api keys into the `nvidiaKey` table.
 - `cli.ts` / `providercli.ts` — the gateway cli and the provider cli.
 - `versionregistry.ts`, `request.ts`, `search.ts`, `fingerprint.ts`, `constants.ts`, `antigravity.ts` — the antigravity/gemini-cli provider lineage: version resolution, request building, search, fingerprinting, endpoint constants.
