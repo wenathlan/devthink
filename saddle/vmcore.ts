@@ -361,7 +361,7 @@ export function executerv64(
         else if (funct3 === 5) {
           const shamt = (word >>> 20) & 0x3f;
           if (((word >>> 26) & 0x3f) === 0x10) write(left >> BigInt(shamt));
-          else write((left & MASK64) >>> BigInt(shamt));
+          else write(BigInt.asUintN(64, (left & MASK64) >> BigInt(shamt)));
         }
         else if (funct3 === 2) write(left < BigInt(immi(word)) ? 1n : 0n);
         else if (funct3 === 3) write((left & MASK64) < BigInt(Number(BigInt(immi(word)) & MASK64)) ? 1n : 0n);
@@ -379,7 +379,7 @@ export function executerv64(
         else if (funct3 === 5) {
           const shamt = (word >>> 20) & 0x1f;
           if (((word >>> 25) & 0x7f) === 0x20) write(sign32((left & MASK32) >> BigInt(shamt)));
-          else write(sign32((left & MASK32) >>> BigInt(shamt)));
+          else write(sign32(BigInt.asUintN(32, (left & MASK32) >> BigInt(shamt))));
         }
         else trapped = illegal(pc, word);
         break;
@@ -432,13 +432,25 @@ export function executerv64(
         } else if (funct7 === 0x00 || funct7 === 0x20) {
           const negate = funct7 === 0x20;
           if (funct3 === 0) write(negate ? BigInt(left) - BigInt(right) : BigInt(left) + BigInt(right));
-          else if (funct3 === 1) write(negate ? trapped = illegal(pc, word) : left << BigInt(right & 0x3fn));
+          else if (funct3 === 1) {
+            if (negate) trapped = illegal(pc, word);
+            else write(left << BigInt(right & 0x3fn));
+          }
           else if (funct3 === 2) write(left < right ? 1n : 0n);
           else if (funct3 === 3) write((left & MASK64) < (right & MASK64) ? 1n : 0n);
-          else if (funct3 === 4) write(negate ? trapped = illegal(pc, word) : BigInt(left) ^ BigInt(right));
-          else if (funct3 === 5) write(negate ? left >> BigInt(right & 0x3fn) : (left & MASK64) >>> BigInt(right & 0x3fn));
-          else if (funct3 === 6) write(negate ? trapped = illegal(pc, word) : BigInt(left) | BigInt(right));
-          else if (funct3 === 7) write(negate ? trapped = illegal(pc, word) : BigInt(left) & BigInt(right));
+          else if (funct3 === 4) {
+            if (negate) trapped = illegal(pc, word);
+            else write(BigInt(left) ^ BigInt(right));
+          }
+          else if (funct3 === 5) write(negate ? left >> BigInt(right & 0x3fn) : BigInt.asUintN(64, (left & MASK64) >> BigInt(right & 0x3fn)));
+          else if (funct3 === 6) {
+            if (negate) trapped = illegal(pc, word);
+            else write(BigInt(left) | BigInt(right));
+          }
+          else if (funct3 === 7) {
+            if (negate) trapped = illegal(pc, word);
+            else write(BigInt(left) & BigInt(right));
+          }
           else trapped = illegal(pc, word);
         } else trapped = illegal(pc, word);
         if (trapped !== undefined) break;
