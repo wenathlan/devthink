@@ -103,6 +103,42 @@ jobs:
         with:
           bun-version: 1.4.4
           cache: false
+      - name: Set up Bun for the owner installs
+        # the dedup law rides the builds: the sibling sources re-export the
+        # owner modules (argan/reveal.ts answers ../devthink/reveal.ts, and
+        # the devthink owner imports react), so the per-app legs resolve
+        # modules the app's own tree never carries. the owner installs ride
+        # bun on every leg (every family app tracks a bun.lock), a ~5s
+        # binary the pnpm and npm legs borrow for this step alone.
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+          cache: false
+      - name: Install the owner dependencies of the cross-app imports
+        # the owner geometry the checkout keeps: this step walks the app's
+        # ROOT sources (the dedup re-exports and the vite config aliases —
+        # the places a ../<app>/ specifier means the sibling beside the
+        # app, never the intra-app relatives the sol tree carries) and
+        # installs every owner's frozen lockfile beside the app, so the
+        # vite builds resolve the owner sources' own imports (react of the
+        # reveal owner, the labelstore owner's graph) exactly the way the
+        # checkout does — the per-app legs installed only the app tree and
+        # the owner sources died on the resolve (the dedup-wave regression
+        # this step heals).
+        shell: bash
+        run: |
+          set -euo pipefail
+          app="${{ matrix.app }}"
+          owners="$(grep -hoE '[\"'\'']\.\./[a-z]+/' "$app"/*.ts "$app"/*.tsx 2>/dev/null \
+            | sort -u | sed 's|^[\"'\'']\.\./||; s|/$||' || true)"
+          for owner in $owners; do
+            if [ -f "$owner/bun.lock" ]; then
+              echo "installing the $owner owner lockfile for the $app build"
+              (cd "$owner" && bun install --frozen-lockfile --ignore-scripts)
+            else
+              echo "::warning::the $app build references $owner sources but $owner tracks no bun.lock"
+            fi
+          done
       - name: Install and build the theme (bun leg)
         if: matrix.pm == 'bun'
         # the application pins bun: the install reads the committed bun.lock
