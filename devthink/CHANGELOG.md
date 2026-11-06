@@ -7,6 +7,9 @@ The 2.0.163 rung answers the PR13/PR14 lockstep law the owner's wave charged: ev
 ## 2.0.162 — the depsunion addendum (the eleven manifests answer one dependency union)
 
 The depsunion rung answers the PR4/PR6 dependency law across the twelve manifests: the eleven official apps and the root envelope carry the identical dependency union — 30 dependencies and 94 devDependencies, nothing removed from any seat — and this manifest's drifted family pins (~2.0.159/~2.0.160) return to the synchronized ~2.0.155 tilde floor the ten siblings ride, with the engines rows healing the same way (bun ^1.4.4, npm ^12.2.1). The engines catalog grows to 25 rows with Babel (^7.28.0) joining Bun, Cargo, CorePack, Deno and PNPM beside the V 0.5.2 catalog entry (catalog only) — Node stays the maestro orchestrating the engine ladder with priority for its natives while Python / Go / Rust / Cargo / PNPM / V stay allowed. The overrides block syncs to the family's 18 rows (the saddle xcode uuid pin and the @grpc/grpc-js 1.14.5 floor reach every manifest), the per-app lockfiles stay as tracked with no new lockfile created (pnpm-lock.yaml keeps the single-lockfile example seat), and better-sqlite3 stays in the checklist as the storage layer.
+## 2.0.163
+
+The 2.0.163 rung answers the changelog head heal and the mirror truth above the ladder the rungs climb: the release notes heading the maintenance gate stamps returns above the 2.0.162 section (the rung ladder unblocked), the certification records re-stamp at the derived rung with the sweep seat walking ahead of the matrix the same rung carries, and the healed tree rides the container build gate the 2.0.162 publish legs died on - the saddle container publication lane the owner ordered flows from this rung.
 
 ## 2.0.162
 

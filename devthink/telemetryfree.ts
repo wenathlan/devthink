@@ -355,7 +355,7 @@ export const telemetryfreerecord: telemetryfreereport = {
     },
     {
       "bundle": "server.js",
-      "fetch": 31,
+      "fetch": 32,
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
@@ -407,7 +407,7 @@ export const telemetryfreerecord: telemetryfreereport = {
     {
       "name": "callsites",
       "ok": true,
-      "detail": "the bundle set carries its network call sites inventoried: 84 sites over 16 bundles — bun.js (fetch 5, websocket 0, beacon 0); cli.js (fetch 3, websocket 0, beacon 0); config.js (fetch 6, websocket 0, beacon 0); core.js (fetch 6, websocket 0, beacon 0); deno.js (fetch 5, websocket 0, beacon 0); devthink.umd.js (fetch 5, websocket 0, beacon 0); headless.js (fetch 1, websocket 0, beacon 0); index.js (fetch 5, websocket 0, beacon 0); index.neutral.js (fetch 5, websocket 0, beacon 0); mcp.js (fetch 1, websocket 0, beacon 0); os.js (fetch 3, websocket 0, beacon 0); policy.js (fetch 1, websocket 0, beacon 0); protocol.js (fetch 1, websocket 0, beacon 0); security.js (fetch 1, websocket 0, beacon 0); server.js (fetch 31, websocket 0, beacon 0); storage.js (fetch 5, websocket 0, beacon 0)"
+      "detail": "the bundle set carries its network call sites inventoried: 85 sites over 16 bundles — bun.js (fetch 5, websocket 0, beacon 0); cli.js (fetch 3, websocket 0, beacon 0); config.js (fetch 6, websocket 0, beacon 0); core.js (fetch 6, websocket 0, beacon 0); deno.js (fetch 5, websocket 0, beacon 0); devthink.umd.js (fetch 5, websocket 0, beacon 0); headless.js (fetch 1, websocket 0, beacon 0); index.js (fetch 5, websocket 0, beacon 0); index.neutral.js (fetch 5, websocket 0, beacon 0); mcp.js (fetch 1, websocket 0, beacon 0); os.js (fetch 3, websocket 0, beacon 0); policy.js (fetch 1, websocket 0, beacon 0); protocol.js (fetch 1, websocket 0, beacon 0); security.js (fetch 1, websocket 0, beacon 0); server.js (fetch 32, websocket 0, beacon 0); storage.js (fetch 5, websocket 0, beacon 0)"
     },
     {
       "name": "gates",

@@ -61,6 +61,29 @@
 # is the sandbox spec surface the console answers, never a host
 # distribution this container installs.
 #
+# THE OS DISTRIBUTION SEATS the saddle container carries (the osdistrib
+# law, saddle/containerarch.ts — the owner's sentence: "iniciar
+# distribuição do container saddle com por exemplo, grapheneos, omarchy
+# e outros sistemas dentro do saddle"): the container starts its
+# distribution catalog with the seven system seats the OSDISTRIBUTIONS
+# registry pins — grapheneos (a privacy and security hardened version of
+# android), omarchy (the arch linux-based distribution created by dhh),
+# vanilla os (based on ubuntu), maru os (firmware, not an application),
+# the v seat (the vlang platform the dependency catalog pins at 0.5.2,
+# never a guest distribution), the normal linux baseline and android —
+# every seat paired with the architecture legs the eleven-architecture
+# standard already carries (the mobile and firmware seats ride the arm64
+# legs, the desktop and baseline seats ride amd64 and arm64) and bound
+# to the max/balanced/lite engine plan trio the engineplans table owns.
+# The distribution matrix needs NO new build legs: the seats ride the
+# existing arch axis of this file (the amd64 and arm64 legs the pinned
+# base already resolves), so the publish lanes and the build matrix stay
+# untouched — the registry is the catalog the container lanes stamp and
+# the modality system reads (saddle/docs/osdistributions.md). The
+# 50gb-per-plan example the owner's law names stays PLAN CONFIG the
+# devthink plan logic stamps, never a container cap: the engines are
+# unlimited.
+#
 # THE ELEVEN-ARCHITECTURE PLATFORM STANDARD (the pr15 law): every
 # profile answers the eleven architecture seats the container standard
 # names — the CONTAINERARCHIDS of saddle/containerarch.ts (linux-x64,

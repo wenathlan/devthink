@@ -394,7 +394,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "gates",
       "name": "the pool audit gate runs green over the 626 item pool",
       "outcome": "pass",
-      "detail": "Pool audit of 626 items against 4373 shipped symbols: 623 implemented, 3 planned, 0 unknown, the record in tests/devthink.poolaudit.ts."
+      "detail": "Pool audit of 626 items against 4371 shipped symbols: 623 implemented, 3 planned, 0 unknown, the record in tests/devthink.poolaudit.ts."
     },
     {
       "family": "gates",
