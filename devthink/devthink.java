@@ -15,7 +15,7 @@ import java.util.List;
  */
 final class DevThink {
   /** The version of the merged product (the grand-merge envelope carrier). */
-  public static final String VERSION = "2.0.165";
+  public static final String VERSION = "2.0.166";
   private DevThink() {
   }
 

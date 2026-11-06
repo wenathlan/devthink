@@ -319,7 +319,7 @@ export interface matrixverifyreport {
  * fixed order with its outcome, no timestamps, so the record replays byte
  * identical. */
 export const matrixverifyrecord: matrixverifyreport = {
-  "release": "2.0.165",
+  "release": "2.0.166",
   "matrix": {
     "browsers": [
       "chromium",

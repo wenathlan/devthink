@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.166
+
+The 2.0.166 rung answers the manifest law the owner wave ordered: the root envelope answers engines alone (the header, the private seat, the description and the essential scripts beside the twenty-five engine rows — every dependency the root carried distributes to the eleven app seats), and the eleven application manifests answer one canonical template — the same key sequence (name, version, description, license, type, sideEffects, the library faces, the engines catalog, the scripts, the three dependency groups and the public publishConfig) with the decorative seats retired (keywords, homepage, bugs, repository, author, packageManager, pnpm, peerDependencies and the saddle private / module / browser / peerDependenciesMeta / optionalDependencies / systemLibraries extras that never had a reader). The dependency union answers the history law: the hundred seventy-one names — the seven family seats at ~2.0.165 and the hundred sixty-four external seats at their registry latest (the prisma rung stays the stable 7.10.1 floor while its latest tag rides the 8.0.0-rc.30 preview) — and the three groups (dependencies, devDependencies and overrides) answer the identical map the owner law demands, the xcode uuid nest keeping its override-only seat. The eleven locks regenerate under the pinned bun 1.4.4 and the version cascade stamps the rung across the packaging family (the eleven pom revision properties, the eleven tauri seats, the deno, extension and site manifests and the version.ts mirrors).
+
 ## 2.0.165
 
 The 2.0.165 rung rides the healed resolutions the lockfile waves landed: the ten frozen lanes answer the regenerated locks (#476, #477), and the release chain the container publication lanes answer rides green gates from this rung - the saddle container publication the owner ordered flows.

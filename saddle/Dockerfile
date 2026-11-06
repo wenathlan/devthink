@@ -1,4 +1,4 @@
-# saddle 2.0.165 — THE ENGINE CONTAINER FILE
+# saddle 2.0.166 — THE ENGINE CONTAINER FILE
 #
 # THE FAMILY CONTAINER DOCTRINE, THE SADDLE SHAPE: one versioned container
 # per engine, built like the site homes (argan, cadria) build theirs — a
@@ -154,7 +154,7 @@ ARG NODE_BASE_DIGEST
 # ===== stage: solbuild — the locked npm tree and the console spa =====
 FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
-ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_VERSION=2.0.166
 
 WORKDIR /app
 
@@ -182,7 +182,7 @@ RUN npm run web:build:pages \
 # ===== stage: base — the hardened runtime floor every profile shares =====
 FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
-ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_VERSION=2.0.166
 # the revision stamp the devthink container carries (DEVTHINK_REVISION
 # there): the publish legs pass the release sha at build time and the
 # revision label below declares the default-unknown local shape.
@@ -484,7 +484,7 @@ LABEL org.opencontainers.image.title="saddle (the android os-distribution lane)"
 #   docker build --target osv          -t saddle:2.0.165-v .
 #   docker build --target oswindows    -t saddle:2.0.165-windows .
 FROM scratch AS osgrapheneos
-ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_VERSION=2.0.166
 ARG SADDLE_OS_PROFILE="grapheneos"
 ENV SADDLE_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="saddle (the grapheneos os-distribution catalog lane)" \
@@ -495,7 +495,7 @@ LABEL org.opencontainers.image.title="saddle (the grapheneos os-distribution cat
 COPY osprofiles/grapheneos.json /saddle/osprofile.json
 
 FROM scratch AS osmaruos
-ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_VERSION=2.0.166
 ARG SADDLE_OS_PROFILE="maruos"
 ENV SADDLE_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="saddle (the maru os os-distribution catalog lane)" \
@@ -506,7 +506,7 @@ LABEL org.opencontainers.image.title="saddle (the maru os os-distribution catalo
 COPY osprofiles/maruos.json /saddle/osprofile.json
 
 FROM scratch AS osv
-ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_VERSION=2.0.166
 ARG SADDLE_OS_PROFILE="v"
 ENV SADDLE_OS_PROFILE=v
 LABEL org.opencontainers.image.title="saddle (the v os-distribution catalog lane)" \
@@ -517,7 +517,7 @@ LABEL org.opencontainers.image.title="saddle (the v os-distribution catalog lane
 COPY osprofiles/v.json /saddle/osprofile.json
 
 FROM scratch AS oswindows
-ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_VERSION=2.0.166
 ARG SADDLE_OS_PROFILE="windows"
 ENV SADDLE_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="saddle (the windows os-distribution catalog lane)" \
