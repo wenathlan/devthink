@@ -4720,10 +4720,17 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "nest past four directories",
       "duplicates another",
       /* the consolidation pass: the cross-bundler verification the retired
-         webpack.yml workflow carried rides the CI battery as its webpack job */
+         webpack.yml workflow carried rides the CI battery as its webpack job.
+         the 7.3.1 cli seat reds the variadic --target parse (the commander
+         14 argParser walks prev as the non-iterable default), so the lane
+         answers the config-file walk: the generated webpack.config.mjs
+         carries the same entry, output, mode and target seats the flags
+         rode, and the -c invocation the pinned rung reads stays the law. */
       "Pack the core bundle through webpack",
       "npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack",
-      "webpack --entry ./build/index.js",
+      "webpack -c ./build/webpack.config.mjs",
+      "entry: \"./build/index.js\"",
+      "target: \"node\"",
       "build/webpack/devthink.webpack.js",
     ],
     "pages.yml": [

@@ -102,8 +102,8 @@ jobs:
               const value = overrides[name];
               if (value !== null && typeof value === "object") {
                 // the object-valued seat (the xcode uuid pin) answers in
-                // the scoped selector form pnpm's workspace schema reads —
-                // the "parent>child" key carries the same meaning npm's
+                // the scoped selector form the pnpm workspace schema reads —
+                // the "parent>child" key carries the same meaning the npm
                 // nested override block stamps, and the string scalar the
                 // schema demands stays the value both forms pin.
                 return Object.keys(value).map(function (key) {
@@ -247,7 +247,7 @@ jobs:
     # live in the upstream osv-scan job, which the v2.5.1 lane does not
     # carry either, and the platform's own per-job default stays the only
     # backstop the lane keeps.
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.5.1
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@6e4298ebc4db23e847df9b2e2de2939d6f066c67 # v2.5.1
     with:
       fail-on-vuln: true
       scan-args: |-
@@ -324,7 +324,7 @@ jobs:
           if-no-files-found: warn
       - name: Upload Trivy results
         if: always()
-        uses: github/codeql-action/upload-sarif@v4.38.0
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: trivy-results.sarif
 
@@ -487,7 +487,7 @@ jobs:
           # upstream without any license label — the documented
           # exclusion below answers that upstream reality: a build-time
           # tool, excluded by name, never a silent walkaround. the
-          # family's own @wenathlan seats answer the repository license
+          # family @wenathlan seats answer the repository license
           # (GPL-3.0-only, the root LICENSE the eleven manifests stamp
           # again so every future publish carries the field) — the
           # registry rungs the manifestemplate wave published without
@@ -597,7 +597,7 @@ jobs:
       - name: Upload trivy report to code scanning
         # fork pull requests run with a read-only token and cannot upload.
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-        uses: github/codeql-action/upload-sarif@v4.38.0
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: trivy-container.sarif
           category: trivy-container
@@ -715,12 +715,12 @@ jobs:
         # the exact-version pin (Regra 56a/125: one version per action in
         # every workflow, never the bare moving @v4 major tag): the latest
         # codeql-action release line, verified via the GitHub API.
-        uses: github/codeql-action/init@v4.38.0
+        uses: github/codeql-action/init@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4.38.0
+        uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           category: "/language:${{ matrix.language }}"
 
@@ -757,7 +757,7 @@ jobs:
         # the exact-version pin (Regra 56a/125: one version per action in
         # every workflow, never the bare moving @v4 major tag) - the same
         # codeql-action release the codeql and security lanes pin.
-        uses: github/codeql-action/upload-sarif@v4.38.0
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: scorecard-results.sarif
           category: ossf-scorecard
