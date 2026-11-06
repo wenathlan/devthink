@@ -151,6 +151,13 @@ export function platformnames(name: string): boolean {
     /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/.test(name) ||
     name.endsWith("_exports") ||
     name.endsWith("_default") ||
+    /* the esbuild lazy-module initializers the code-split bundles carry:
+     * the bundler synthesizes init_<module> helpers for the dynamic
+     * imports the engine seats ride (the vmcore law the stagingtruth
+     * wave landed) — their names belong to the bundler's interop seam,
+     * not to the review, the same law the _exports and _default seats
+     * already carry */
+    /^init_[a-z][A-Za-z0-9]*$/.test(name) ||
     wireformatnames(name)
   );
 }
