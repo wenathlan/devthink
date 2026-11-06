@@ -605,7 +605,13 @@ async function runreleasewalk(): Promise<void> {
             /# argan [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
             `# argan ${version} — THE SITE CONTAINER FILE`,
           )
-          .replace(/ARG ARGAN_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG ARGAN_VERSION=${version}`),
+          // the g flag the 2.0.163 completeness law rides on the seven site and
+          // engine seats answers the three site seats this block carried first:
+          // argan, cadria and debonair answer two ARG stamps the file carries
+          // (the solbuild stage and the final stage), so the flagless form
+          // stamped the first occurrence alone and the final stage kept the
+          // stale rung — the version drift the about row law retires here.
+          .replace(/ARG ARGAN_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG ARGAN_VERSION=${version}`),
     ],
     [
       "../cadria/Dockerfile",
@@ -615,7 +621,7 @@ async function runreleasewalk(): Promise<void> {
             /# cadria [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
             `# cadria ${version} — THE SITE CONTAINER FILE`,
           )
-          .replace(/ARG CADRIA_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG CADRIA_VERSION=${version}`),
+          .replace(/ARG CADRIA_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG CADRIA_VERSION=${version}`),
     ],
     [
       "../debonair/Dockerfile",
@@ -625,7 +631,7 @@ async function runreleasewalk(): Promise<void> {
             /# debonair [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
             `# debonair ${version} — THE SITE CONTAINER FILE`,
           )
-          .replace(/ARG DEBONAIR_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG DEBONAIR_VERSION=${version}`),
+          .replace(/ARG DEBONAIR_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG DEBONAIR_VERSION=${version}`),
     ],
     /* The 2.0.163 container stamp completeness wave (the pr14 lockstep fix:
        the seven site and engine container files the walk never carried are

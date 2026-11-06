@@ -91,10 +91,12 @@ describe("the publishing pipeline", () => {
       "sbom",
       "attest",
       /* the thousand asset ladder lanes: the per-architecture container
-       * seats of the eight site homes and the per-app registry and
-       * provenance seats of the eleven applications, both feeding the
+       * seats of the eight site homes, the os-distribution catalog seats
+       * of the ten family containers and the per-app registry and
+       * provenance seats of the eleven applications, all feeding the
        * artifact manifest through the releaseassets needs row */
       "containerseats",
+      "oscatalogseats",
       "familyseats",
       "releaseassets",
       "npmjs",

@@ -700,8 +700,12 @@ describe.skipIf(!inrepo)("the release assets census (the thousand plus law)", ()
      * attestations record and the checksum umbrella of every application),
      * the per-arch container seats (the eight site homes across the seven
      * non-amd64 legs of the eight-arch runtime index, every leg with the
-     * image save, the checksum and the manifest record), the per-channel
-     * checksum umbrellas of the release walk and the os lanes it carries,
+     * image save, the checksum and the manifest record), the
+     * os-distribution catalog seats (the ten family containers across the
+     * thirteen catalog lanes of the osprofiles catalog, every seat with
+     * the image save, the checksum and the manifest record), the
+     * per-channel checksum umbrellas of the release walk and the os lanes
+     * it carries,
      * beside the publish mirror's own deterministic ladders (the metadata
      * ladder, the family reports, the family container archives, the
      * gradle and go module seats). the os rides its own publish lanes
@@ -722,6 +726,7 @@ describe.skipIf(!inrepo)("the release assets census (the thousand plus law)", ()
     const envelopes = 10; /* the family tgz the release ladder packs (the ten member envelopes, saddle last) */
     const familyseats = 11 * 7; /* source snapshot + sources jar + javadoc jar + sbom pair + attestations record + checksum umbrella per application */
     const containerseats = 8 * 7 * 3; /* the eight site homes x the seven non-amd64 arch legs x (image save + checksum + manifest) */
+    const oscatalogseats = 10 * 13 * 3; /* the ten family containers x the thirteen os-distribution catalog lanes x (image save + checksum + manifest) */
     const walkoslanes = 19; /* the thirteen base assets, the sbom, the attestations record, the iso, the wasm cores, the manifest and the sums */
     const channelchecksums = 11; /* one umbrella per distribution channel the walk stages (github answers the release-level sums, nuget answers the publish mirror) */
     /* the publish mirror's deterministic ladders */
@@ -739,6 +744,7 @@ describe.skipIf(!inrepo)("the release assets census (the thousand plus law)", ()
       envelopes +
       familyseats +
       containerseats +
+      oscatalogseats +
       walkoslanes +
       channelchecksums +
       publishmetadata +
@@ -749,8 +755,8 @@ describe.skipIf(!inrepo)("the release assets census (the thousand plus law)", ()
     expect(desktopperapp).toBe(28);
     expect(metadataapps).toBe(11);
     expect(census).toBeGreaterThanOrEqual(1000);
-    expect(census).toBe(9 * 28 + 72 + 165 + 10 + 77 + 168 + 19 + 11 + 260 + 27 + 40 + 30);
-    expect(census).toBe(1131);
+    expect(census).toBe(9 * 28 + 72 + 165 + 10 + 77 + 168 + 19 + 11 + 260 + 27 + 40 + 30 + 390);
+    expect(census).toBe(1521);
   });
 
   it("the thousand asset ladder lanes walk the release workflow itself", async () => {
@@ -931,5 +937,115 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     const release = await readworkflow("release.yml");
     expect(release).toContain('publish_output="$(npm publish "./${tarball}"');
     expect(release).toContain("for tarball in familypack/*.tgz; do");
+  });
+});
+
+describe.skipIf(!inrepo)("the family os-distribution catalog lanes (the container-lane law)", () => {
+  /** the ten container homes the catalog lanes walk: every application
+   * folder whose Dockerfile carries the thirteen scratch os targets — the
+   * saddle engine owns its own vhe catalog lane in the publish mirror and
+   * never duplicates itself here. */
+  const CATALOGAPPS = [
+    "devthink",
+    "argan",
+    "cadria",
+    "cobaia",
+    "debonair",
+    "forge",
+    "foundry",
+    "getry",
+    "stealthhead",
+    "vault",
+  ];
+  /** the thirteen os-distribution catalog profiles the scratch targets
+   * stamp, in the canonical order the osprofiles catalog rows walk. */
+  const CATALOGPROFILES = [
+    "grapheneos",
+    "maruos",
+    "v",
+    "windows",
+    "postmarketos",
+    "lineageos",
+    "calyxos",
+    "archlinux",
+    "alpine",
+    "debian",
+    "fedora",
+    "nixos",
+    "void",
+  ];
+
+  it("the publish mirror walks the family-oscatalog lane — ten apps x thirteen profiles behind the resolve and approval gates", async () => {
+    /* the container-lane law the publish mirror owns: every family
+     * container answers its thirteen os-distribution catalog lanes on the
+     * registry (the scratch profile images the GHCR mirror pushes), the
+     * lane riding behind the same release-resolve and release-approval
+     * gates every registry lane of the mirror answers. */
+    const publish = await parseworkflow("publish.yml");
+    const lane = publish.jobs?.["family-oscatalog"] as
+      | { needs?: string[]; strategy?: { matrix?: { app?: string[]; osprofile?: string[] } } }
+      | undefined;
+    expect(lane?.needs).toEqual(["release-resolve", "release-approval"]);
+    expect(lane?.strategy?.matrix?.app).toEqual(CATALOGAPPS);
+    expect(lane?.strategy?.matrix?.osprofile).toEqual(CATALOGPROFILES);
+  });
+
+  it("the release ladder saves the thirteen catalog seats of every family container and the releaseassets collection waits for the lane", async () => {
+    /* the os-catalog seat lane mirrors the per-architecture container
+     * seats: the same assemble need, the same ten x thirteen matrix the
+     * publish mirror walks, and the portable save (docker save of the
+     * built scratch target) feeding the releaseassets collection through
+     * the needs row the artifact manifest reads. */
+    const release = await parseworkflow("release.yml");
+    const seats = release.jobs?.oscatalogseats as
+      | {
+          needs?: string;
+          strategy?: { matrix?: { app?: string[]; osprofile?: string[] } };
+          permissions?: Record<string, string>;
+        }
+      | undefined;
+    expect(seats?.needs).toBe("assemble");
+    expect(seats?.strategy?.matrix?.app).toEqual(CATALOGAPPS);
+    expect(seats?.strategy?.matrix?.osprofile).toEqual(CATALOGPROFILES);
+    expect(seats?.permissions?.contents).toBe("read");
+    const releaseassets = release.jobs?.releaseassets as { needs?: string[] } | undefined;
+    expect(releaseassets?.needs).toContain("oscatalogseats");
+    /* the seat grammar and the render the lane carries: the scratch
+     * target build answers the portable save with its checksum and
+     * manifest records, the artifact name the releaseassets pattern
+     * matches, and the import law renders the json the stages COPY. */
+    const source = await readworkflow("release.yml");
+    expect(source).toContain('import { OSPROFILES } from "./saddle/osprofiles.ts"');
+    expect(source).toContain("node osprofile-dump.ts && rm -f osprofile-dump.ts");
+    expect(source).toContain('test -s "oscatalogseatctx/osprofiles/${{ matrix.osprofile }}.json"');
+    expect(source).toContain('--target "os${PROFILE}"');
+    expect(source).toContain('-t "${APP}-oscatalog:${VERSION}-${PROFILE}"');
+    expect(source).toContain('seat="release/${APP}.oscatalog.${VERSION}.${PROFILE}.tar.gz"');
+    expect(source).toContain('docker save "${APP}-oscatalog:${VERSION}-${PROFILE}" | gzip > "${seat}"');
+    expect(source).toContain('> "release/${APP}.sha256.oscatalog.${VERSION}.${PROFILE}"');
+    expect(source).toContain('> "release/${APP}.manifest.oscatalog.${VERSION}.${PROFILE}.json"');
+    expect(source).toContain(
+      "release-oscatalogseats-${{ matrix.app }}-${{ matrix.osprofile }}-${{ needs.assemble.outputs.version }}",
+    );
+  });
+
+  it("the import law — the osprofile json renders at build time and never commits, and every family Dockerfile carries the thirteen scratch targets in order", async () => {
+    for (const app of CATALOGAPPS) {
+      /* the catalog lives in the saddle alone: the json the scratch
+       * stages COPY renders at build time from saddle/osprofiles.ts, so
+       * no application folder ever carries a committed osprofiles
+       * directory — a committed json would duplicate the catalog the
+       * import law keeps single-sourced in the engine. */
+      expect(existsSync(join(repoRoot, app, "osprofiles")), `${app} never commits osprofiles json`).toBe(false);
+      const dockerfile = await readFile(join(repoRoot, app, "Dockerfile"), "utf8");
+      const targets = [...dockerfile.matchAll(/^FROM scratch AS (os[a-z]+)$/gm)].map((match) => match[1]);
+      expect(targets, `${app} drifts from the thirteen catalog targets`).toEqual(
+        CATALOGPROFILES.map((profile) => `os${profile}`),
+      );
+    }
+    /* the catalog source the render reads: every lane id the matrices
+     * walk resolves onto a row the saddle owns. */
+    const catalog = await readFile(join(repoRoot, "saddle", "osprofiles.ts"), "utf8");
+    for (const profile of CATALOGPROFILES) expect(catalog).toContain(`id: "${profile}"`);
   });
 });

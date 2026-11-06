@@ -426,11 +426,13 @@ jobs:
             echo "placeholder): the eleven applications answer fifteen site and next archive forms"
             echo "each (165) and seven registry and provenance seats each (77); the eight site"
             echo "homes answer seven per-architecture container seats each beside their checksum and"
-            echo "manifest records (168); the ten family envelopes, the eleven per-channel checksum"
-            echo "umbrellas and the os lanes complete the release walk (450); the publish mirror"
-            echo "adds the per-application metadata ladder (260), the family container archives"
-            echo "(27), the gradle (40) and go module (30) seats; the desktop (252) and mobile (72)"
-            echo "lanes complete the family. 1131 assets the census test of the repository pins —"
+            echo "manifest records (168); the ten family containers answer thirteen"
+            echo "os-distribution catalog seats each beside their checksum and manifest records"
+            echo "(390); the ten family envelopes, the eleven per-channel checksum umbrellas and"
+            echo "the os lanes complete the release walk (840); the publish mirror adds the"
+            echo "per-application metadata ladder (260), the family container archives (27), the"
+            echo "gradle (40) and go module (30) seats; the desktop (252) and mobile (72) lanes"
+            echo "complete the family. 1521 assets the census test of the repository pins —"
             echo "the artifact manifest of this release lists every walk asset with its name, its"
             echo "byte size, its sha256 checksum and its channels."
             echo
@@ -816,6 +818,101 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
+  oscatalogseats:
+    name: Save the os-distribution catalog seats of the family containers
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    # THE OS-CATALOG SEAT LANE (the thousand asset ladder, the
+    # container-lane law): every family container answers the release
+    # with its thirteen os-distribution catalog seats beside the
+    # per-architecture saves — the scratch profile images the publish
+    # mirror pushes to the registry answer their portable archives too
+    # (docker save of the built scratch target), so the person who
+    # downloads the release loads every catalog lane offline (docker
+    # load), and the asset census the release notes carry walks past
+    # the thousand floor with the catalog family beside the seats the
+    # other lanes ship. the import law rides here the same way the
+    # saddle catalog lane owns it: the osprofiles json renders from
+    # saddle/osprofiles.ts at build time, never commits.
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [devthink, argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
+        osprofile: [grapheneos, maruos, v, windows, postmarketos, lineageos, calyxos, archlinux, alpine, debian, fedora, nixos, void]
+    steps:
+      - name: Checkout the DevThink release source
+        # the ref rides the workflow's own trusted context (the dispatch tag
+        # or the pushed ref) — the same trusted-context law the assemble
+        # lane adopted: the metadata lockstep already proved the tag points
+        # at this commit.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
+          fetch-depth: 1
+      - name: Set up Node (the type-stripping read of the catalog)
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: devthink/.nvmrc
+      - name: Set up the buildx builder
+        # the scratch catalog targets carry no base and no RUN step at
+        # all (the scratch law), so the lane needs no emulator — the
+        # builder stands the same way the container lane stands its legs.
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Render the os-distribution catalog json from the saddle catalog
+        # the import law: the osprofiles json the scratch stages COPY
+        # renders from saddle/osprofiles.ts at build time — the dump
+        # script this step writes is a runtime artifact, never a
+        # committed source, and the catalog lives in the saddle alone.
+        run: |
+          set -euo pipefail
+          APP="${{ matrix.app }}"
+          rm -rf oscatalogseatctx
+          mkdir -p "oscatalogseatctx/${APP}" oscatalogseatctx/osprofiles release
+          cp "${APP}/Dockerfile" "oscatalogseatctx/${APP}/Dockerfile"
+          cat > osprofile-dump.ts <<'DUMP'
+          import { writeFileSync } from "node:fs";
+          import { OSPROFILES } from "./saddle/osprofiles.ts";
+          for (const profile of OSPROFILES) {
+            writeFileSync(`oscatalogseatctx/osprofiles/${profile.id}.json`, JSON.stringify(profile, null, 2) + "\n");
+          }
+          console.log(`the os profile catalog answered ${OSPROFILES.length} seats`);
+          DUMP
+          node osprofile-dump.ts && rm -f osprofile-dump.ts
+          test -s "oscatalogseatctx/osprofiles/${{ matrix.osprofile }}.json"
+      - name: Build and save the catalog seat
+        # the scratch profile target the publish mirror's family catalog
+        # lane pushes to the registry answers its portable archive here:
+        # the same image, docker-saved and gzipped beside the per-arch
+        # saves the container lane ships.
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          APP="${{ matrix.app }}"
+          PROFILE="${{ matrix.osprofile }}"
+          docker buildx build \
+            --target "os${PROFILE}" \
+            -t "${APP}-oscatalog:${VERSION}-${PROFILE}" \
+            -f "oscatalogseatctx/${APP}/Dockerfile" \
+            oscatalogseatctx \
+            --load
+          seat="release/${APP}.oscatalog.${VERSION}.${PROFILE}.tar.gz"
+          docker save "${APP}-oscatalog:${VERSION}-${PROFILE}" | gzip > "${seat}"
+          test -s "${seat}"
+          sha256sum "${seat}" | sed "s#release/##" > "release/${APP}.sha256.oscatalog.${VERSION}.${PROFILE}"
+          printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "oscatalog",\n  "osprofile": "%s",\n  "image": "ghcr.io/wenathlan/%s:%s-%s",\n  "archive": "%s.oscatalog.%s.%s.tar.gz",\n  "signing": "caller-owned"\n}\n' \
+            "$VERSION" "$APP" "$PROFILE" "$APP" "$VERSION" "$PROFILE" "$APP" "$VERSION" "$PROFILE" \
+            > "release/${APP}.manifest.oscatalog.${VERSION}.${PROFILE}.json"
+      - name: Upload the catalog seats
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-oscatalogseats-${{ matrix.app }}-${{ matrix.osprofile }}-${{ needs.assemble.outputs.version }}
+          path: release/*
+          if-no-files-found: error
+          retention-days: 90
+
   familyseats:
     name: Cut the per-app registry and provenance seats of the family
     needs: [assemble, nextzips, family, containerseats]
@@ -993,11 +1090,12 @@ jobs:
     # the asset collection waits for every producing lane: the nextzips job
     # builds the per-platform archive set of the family envelopes, the
     # containerseats job saves the per-architecture container seats, the
-    # familyseats job cuts the per-app registry and provenance seats and
-    # the release notes carry them beside the npm tarballs — a missing
-    # needs row raced the collection ahead of the lane and the assets
-    # landed short.
-    needs: [assemble, vsix, firefox, site, nextzips, sbom, attest, iso, wasm, family, containerseats, familyseats]
+    # oscatalogseats job saves the os-distribution catalog seats of the
+    # family containers, the familyseats job cuts the per-app registry
+    # and provenance seats and the release notes carry them beside the
+    # npm tarballs — a missing needs row raced the collection ahead of
+    # the lane and the assets landed short.
+    needs: [assemble, vsix, firefox, site, nextzips, sbom, attest, iso, wasm, family, containerseats, familyseats, oscatalogseats]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

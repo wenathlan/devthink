@@ -5384,6 +5384,192 @@ jobs:
             "${{ matrix.app }}.sha256.container.${version}" \
             "${{ matrix.app }}.manifest.container.${version}.json" --clobber
 
+  family-oscatalog:
+    name: Publish the ${{ matrix.app }} os-distribution catalog lane ${{ matrix.osprofile }} to GHCR
+    # THE FAMILY CATALOG LANES OF THE OS-DISTRIBUTION AXIS (the owner's
+    # container-lane law, the family half): every family container answers
+    # the same thirteen os-distribution catalog seats the saddle engine
+    # answers — the profiles with no runnable container base never pretend
+    # a runnable image, the lane publishes the profile itself as a
+    # scratch-based image manifest whose config carries the profile row the
+    # saddle osprofiles catalog renders at build time (the import law: the
+    # catalog data lives in the saddle alone, the family legs render
+    # osprofiles/<id>.json from saddle/osprofiles.ts, no json ever commits
+    # to a family tree), so the registry reader finds every container of
+    # the family carrying more than eleven lanes — the honest runnable
+    # image the family-ghcr lane pushes beside the thirteen catalog seats
+    # this lane owns.
+    needs: [release-resolve, release-approval]
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # the ten family legs of the catalog axis (the owner's eleven-app
+        # container-lane law): the saddle engine answers its own thirteen
+        # catalog seats in the vhe block, so the family-oscatalog lane
+        # seats the ten remaining containers of the family.
+        app: [devthink, argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
+        # the thirteen os-distribution seats the saddle osprofiles catalog
+        # answers — the same seat list the saddle-vhe-catalog lane carries,
+        # one scratch lane per seat per app.
+        osprofile: [grapheneos, maruos, v, windows, postmarketos, lineageos, calyxos, archlinux, alpine, debian, fedora, nixos, void]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: setup node
+        # node 26 carries the type-stripping read of the saddle catalog (the
+        # same seat the saddle-vhe-catalog lane resolves): the render step
+        # imports the osprofiles.ts source straight, no build step between.
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Log in to GHCR
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve the release version
+        id: releaseversion
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # the automatic workflow_run path resolves the latest release and
+          # detaches the working tree onto its tag (the publishghcr
+          # resolver mold), so every leg builds the tagged source.
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.app }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.app }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Resolve the lane tag (the per-leg guard)
+        # the per-leg guard the saddle-vhe-catalog lane answers, seated on
+        # the app package: the lane tag version-seat pair is immutable
+        # registry content, so a leg whose tag already ships skips the
+        # push instead of re-writing the same manifest; the guard reads
+        # the owner's package versions through the api, the package named
+        # after the app leg.
+        id: meta
+        env:
+          VERSION: ${{ steps.releaseversion.outputs.version }}
+          IMAGE: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.app }}
+          PROFILE: ${{ matrix.osprofile }}
+          APP: ${{ matrix.app }}
+          OWNER: ${{ github.repository_owner }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          img="${IMAGE,,}"
+          ver="${VERSION}"
+          echo "tag=${img}:${ver}-${PROFILE}" >> "$GITHUB_OUTPUT"
+          echo "resolved catalog lane tag: ${img}:${ver}-${PROFILE}"
+          # the build-arg names the family os stages read (the versionarg
+          # law the family-ghcr lane answers): the matrix carries the
+          # lowercase app name while the Dockerfile ARGs uppercase it, so
+          # the lane resolves the uppercase prefixes the same tr pass the
+          # family registry lane uses.
+          argprefix="$(echo "${APP}" | tr '[:lower:]' '[:upper:]')"
+          echo "versionarg=${argprefix}_VERSION" >> "$GITHUB_OUTPUT"
+          echo "profilearg=${argprefix}_OS_PROFILE" >> "$GITHUB_OUTPUT"
+          leg_out="$(gh api "/users/${OWNER,,}/packages/container/${APP}/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${ver}-${PROFILE}\")] | length" 2>/dev/null || true)"
+          case "${leg_out}" in
+            ''|*[!0-9]*) leg_out=0 ;;
+          esac
+          if [ "${leg_out}" != "0" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "catalog lane ${ver}-${PROFILE} already ships on the registry; this leg will skip."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Stage the catalog context and render the profile config from the saddle catalog
+        # the catalog target builds alone — the scratch stage never resolves
+        # the solbuild parent chain, so the staged context carries the app
+        # Dockerfile and the rendered catalog json alone (the import law
+        # keeps the json generated from the saddle source at build time,
+        # never committed, never duplicated).
+        if: steps.meta.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP="${{ matrix.app }}"
+          rm -rf oscatalogctx
+          mkdir -p "oscatalogctx/${APP}" oscatalogctx/osprofiles
+          cp "${APP}/Dockerfile" "oscatalogctx/${APP}/Dockerfile"
+          cat > osprofile-dump.ts <<'DUMP'
+          import { mkdirSync, writeFileSync } from "node:fs";
+          import { OSPROFILES } from "./saddle/osprofiles.ts";
+          mkdirSync("oscatalogctx/osprofiles", { recursive: true });
+          for (const profile of OSPROFILES) {
+            writeFileSync(`oscatalogctx/osprofiles/${profile.id}.json`, JSON.stringify(profile, null, 2) + "\n");
+          }
+          console.log(`the os profile catalog answered ${OSPROFILES.length} seats`);
+          DUMP
+          node osprofile-dump.ts
+          rm -f osprofile-dump.ts
+          test -s "oscatalogctx/osprofiles/${{ matrix.osprofile }}.json"
+          printf '%s\n' '**/node_modules' '**/dist' '**/.git' > oscatalogctx/.dockerignore
+      - name: Build and push the catalog lane
+        # the scratch target of the profile: no runnable base (the digest
+        # law rides trivially — a scratch stage pins no base at all), the
+        # profile config and the stamps the config carries.
+        if: steps.meta.outputs.skip != 'true'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./oscatalogctx
+          file: ./oscatalogctx/${{ matrix.app }}/Dockerfile
+          target: os${{ matrix.osprofile }}
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tag }}
+          build-args: |
+            ${{ steps.meta.outputs.versionarg }}=${{ steps.releaseversion.outputs.version }}
+            ${{ steps.meta.outputs.profilearg }}=${{ matrix.osprofile }}
+          labels: |
+            org.opencontainers.image.title=${{ matrix.app }} (the ${{ matrix.osprofile }} os-distribution catalog lane)
+            org.opencontainers.image.description=the ${{ matrix.osprofile }} os-distribution seat the saddle catalog answers for the ${{ matrix.app }} container — no runnable container base exists for this seat, the lane publishes the profile config the engine reads.
+            org.opencontainers.image.version=${{ steps.releaseversion.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
   family-metadata:
     name: family release metadata ${{ matrix.app }}
     needs: release-resolve
