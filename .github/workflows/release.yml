@@ -191,7 +191,20 @@ jobs:
         run: |
           set -euo pipefail
           git tag "v${VERSION}"
-          git push origin "v${VERSION}"
+          # the api ref seat (the app-push heal): the git push of the tag
+          # rode the checkout's persisted app token, and an app token
+          # without the workflows permission may never push a ref whose
+          # range the server answers with workflow files - the v2.0.166
+          # rung died exactly there ("refusing to allow a GitHub App to
+          # create or update workflow .github/workflows/publish.yml").
+          # the tag rides the contents api instead: creating the ref over
+          # the commit main already carries moves no file, so the GH_TOKEN
+          # the step prefers (OWNER_PAT, the app token standing in when it
+          # does not) answers the ref the same way the ladder always did.
+          tag_sha="$(git rev-parse "v${VERSION}^{commit}")"
+          gh api "repos/${GITHUB_REPOSITORY}/git/refs" \
+            -f "ref=refs/tags/v${VERSION}" \
+            -f "sha=${tag_sha}"
           # the source archive of the tagged tree (the family release
           # artifacts lane): git archive materializes exactly the tracked
           # files of the tagged commit under the family asset name
