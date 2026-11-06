@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.164",
+  "version": "2.0.165",
   "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
   "keywords": [
     "ai",
@@ -189,7 +189,7 @@
   "engines": {
     "babel": "^7.28.0",
     "bare": "^1.18.0",
-    "bun": "^1.4.4",
+    "bun": ">=1.4.4 <2",
     "cargo": ">=1.85.0",
     "chrome": "^16.0.912",
     "cnpm": "^9.4.0",
@@ -202,7 +202,7 @@
     "iojs": "^1.0.0",
     "java": ">=17",
     "node": ">=26.13.0 <27",
-    "npm": "^12.2.1",
+    "npm": ">=12.2.2 <13",
     "pnpm": "^12.6.0",
     "python": ">=3.11.0",
     "rust": ">=1.85.0",

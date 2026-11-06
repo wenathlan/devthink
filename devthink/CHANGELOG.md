@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.165
+
+The 2.0.165 rung rides the healed resolutions the lockfile waves landed: the ten frozen lanes answer the regenerated locks (#476, #477), and the release chain the container publication lanes answer rides green gates from this rung - the saddle container publication the owner ordered flows.
+
 ## 2.0.164
 
 The 2.0.164 rung answers the maintenance metadata the 2.0.163 gate ladder refused: the pnpm recommendation rides the 12.18.0 pin across the five pipeline seats and the packageManager stamp (the sync the rung stamp now carries beside the metadata family), and the healed release chain rides the green gates the container publication lanes answer - the saddle container publication the owner ordered flows from this rung.

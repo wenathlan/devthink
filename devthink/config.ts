@@ -3170,13 +3170,22 @@ export function runparitygate(): void {
   }
 
   /** law two: the overrides union rides identical in every non saddle app and
-   * the saddle vm pins stay saddle (the family reference is the os app). */
+   * the saddle vm pins stay saddle (the family reference is the os app). The
+   * exempt keys leave BOTH sides of the comparison: the depsunion rung
+   * pushed the saddle vm pins (@grpc/grpc-js, the xcode uuid) into every
+   * manifest of the family — the envelope reference carries them beside the
+   * ten siblings — so deleting them from the app side alone inverts the
+   * parity (every manifest fails against a reference that still holds the
+   * keys the deletion removed). The symmetric deletion keeps both eras
+   * honest: a family-wide pin compares equal on both sides, and a future
+   * saddle-only pin stays exempt the way the law always meant. */
   const sortedEntries = (overrides: Record<string, unknown>) =>
     JSON.stringify(Object.entries(overrides).sort(([a], [b]) => a.localeCompare(b)));
-  const familyOverrides = sortedEntries(manifests.get("devthink")?.overrides ?? {});
+  const withoutExempt = (overrides: Record<string, unknown>) =>
+    Object.fromEntries(Object.entries(overrides).filter(([key]) => !saddleExempt.includes(key)));
+  const familyOverrides = sortedEntries(withoutExempt(manifests.get("devthink")?.overrides ?? {}));
   for (const app of appDirs) {
-    const overrides = { ...(manifests.get(app)?.overrides ?? {}) };
-    for (const key of saddleExempt) delete overrides[key];
+    const overrides = withoutExempt({ ...(manifests.get(app)?.overrides ?? {}) });
     if (sortedEntries(overrides) !== familyOverrides) {
       console.error(`DRIFT ${app}/package.json overrides differ from the family union`);
       failures += 1;
