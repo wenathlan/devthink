@@ -19,8 +19,10 @@ import { edgelaneexecutorshost, hostlaneids, hostlanespecs, probehostbinary } fr
 
 /** the thirty-seven host binary lane ids the pinned contract charges
  * (parallel waves and the dispatcher merge read these exactly): the
- * twenty-five of the first wave in their spec order, then the twelve
- * of the wiring wave in alphabetical order. */
+ * twenty-five of the first wave (the nineteen beside the six pr15
+ * completion seats — the wasme, exe, binary, sh and yaml runners and
+ * the port dock) in their spec order, then the twelve of the wiring
+ * wave in alphabetical order. */
 const HOSTBINLANES = [
   "sandboxbubblewrap",
   "sandboxnsjail",
@@ -35,18 +37,18 @@ const HOSTBINLANES = [
   "runtimeclr",
   "runtimeworkerd",
   "screenxvfb",
-  "screenwayland",
   "mobiletermux",
   "buildbazel",
-  "buildbuck",
-  "buildturborepo",
   "ciactions",
-  "cigitlab",
   "networktor",
   "networki2p",
   "networkwireguard",
-  "storageminio",
-  "storagegarage",
+  "runnerwasme",
+  "runnerexe",
+  "runnerbinary",
+  "runnersh",
+  "runneryaml",
+  "portsdock",
   "buildmake",
   "buildninja",
   "languagecargo",

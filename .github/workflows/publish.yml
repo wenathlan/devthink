@@ -68,7 +68,7 @@ name: DevThink Publish
 # carry; the vhe lanes answer the same release law (the saddle container
 # law): the resolver, the security gate, the multi-arch registry push, the
 # published-image verify and the container archive lane fire with the
-# family publish wave, while the deep validation lane (the twelve-leg
+# family publish wave, while the deep validation lane (the nine-leg
 # matrix of the three profiles across the four base-carried build legs)
 # keeps its dispatch-only shape. The saddle lanes read
 # the saddle application folder and stamp the version their own manifest
@@ -5116,17 +5116,19 @@ jobs:
           cp "${app}/biome.jsonc" "${stage}/${app}.biome.${version}.jsonc"
       - name: write the per-architecture container manifests
         # the container seat of the application across the eleven
-        # architectures of the family container standard - the
-        # CONTAINERARCHIDS of saddle/containerarch.ts (x64, arm64, armv7,
-        # riscv64, ppc64le, s390x, 386, mips64le, loong64, wasm32,
-        # wasip1): one manifest per standard seat per application, the
-        # same grammar the container archive lane stamps, so the operator
-        # reading the release answers the image coordinate of every
-        # platform the registry family serves. The availability column
-        # mirrors the standard's pinned-base honesty law (eight carried
-        # seats, three the honest ARCH_IMAGE_ABSENT coded absence) - the
-        # build lanes of each application answer the legs its own pinned
-        # base honestly carries, never a pretended pull.
+        # architecture seats of the family container standard - the
+        # CONTAINERARCHIDS of saddle/containerarch.ts (linux-x64,
+        # darwin-arm64, windows-x64, linux-arm64, darwin-x64,
+        # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
+        # darwin-arm64-v8, windows-x64-gnu): one manifest per standard
+        # seat per application, the same grammar the container archive
+        # lane stamps, so the operator reading the release answers the
+        # image coordinate of every platform the registry family serves.
+        # The availability column mirrors the standard's pinned-base
+        # honesty law (five container-carried seats, six target seats the
+        # honest ARCH_TARGET_NOT_CONTAINER coded absence) - the build
+        # lanes of each application answer the legs its own pinned base
+        # honestly carries, never a pretended pull.
         shell: bash
         env:
           APP: ${{ matrix.app }}
@@ -5141,20 +5143,20 @@ jobs:
           image="ghcr.io/${owner}/${app}"
           test -f "${app}/Dockerfile"
           for entry in \
-            "x64 linux/amd64 amd64 linux carried" \
-            "arm64 linux/arm64 arm64 linux carried" \
-            "armv7 linux/arm/v7 arm linux carried" \
-            "riscv64 linux/riscv64 riscv64 linux carried" \
-            "ppc64le linux/ppc64le ppc64le linux carried" \
-            "s390x linux/s390x s390x linux carried" \
-            "386 linux/386 386 linux carried" \
-            "mips64le linux/mips64le mips64le linux carried" \
-            "loong64 linux/loong64 loong64 linux arch_image_absent" \
-            "wasm32 wasm32/wasip1 wasm32 wasm32 arch_image_absent" \
-            "wasip1 wasip1/wasm wasip1 wasip1 arch_image_absent"; do
-            read -r arch platform dockerarch os availability <<< "${entry}"
+            "linux-x64 linux/amd64 amd64 linux linux-x64 carried" \
+            "darwin-arm64 target - darwin darwin-arm64 arch_target_not_container" \
+            "windows-x64 target - windows win32-x64 arch_target_not_container" \
+            "linux-arm64 linux/arm64 arm64 linux linux-arm64 carried" \
+            "darwin-x64 target - darwin darwin-x64 arch_target_not_container" \
+            "windows-arm64 target - windows win32-arm64 arch_target_not_container" \
+            "linux-x64-musl linux/amd64 amd64 linux linux-x64-musl carried" \
+            "linux-riscv64 linux/riscv64 riscv64 linux linux-riscv64 carried" \
+            "wasm32 target - wasm wasm32-wasip1 arch_target_not_container" \
+            "darwin-arm64-v8 linux/arm64/v8 arm64 darwin darwin-arm64-v8 carried" \
+            "windows-x64-gnu target - windows win32-x64-gnu arch_target_not_container"; do
+            read -r arch platform dockerarch os target availability <<< "${entry}"
             printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "container",\n  "architecture": "%s",\n  "dockerarch": "%s",\n  "os": "%s",\n  "target": "%s",\n  "availability": "%s",\n  "image": "%s:%s",\n  "dockerfile": "%s/Dockerfile",\n  "signing": "caller-owned"\n}\n' \
-              "$version" "$app" "$arch" "$dockerarch" "$os" "$platform" "$availability" "$image" "$version" "$app" \
+              "$version" "$app" "$arch" "$dockerarch" "$os" "$target" "$availability" "$image" "$version" "$app" \
               > "${stage}/${app}.manifest.container.${arch}.${version}.json"
           done
       - name: checksum the metadata set
@@ -5489,7 +5491,7 @@ jobs:
           const version = process.env.VERSION;
           const stage = "release-family";
           const apps = ["argan", "cadria", "cobaia", "debonair", "devthink", "forge", "foundry", "getry", "saddle", "stealthhead", "vault"];
-          const arches = ["amd64", "amd64v2", "arm64", "armv7", "armv6", "ppc64le", "s390x", "riscv64", "386", "mips64le", "loong64"];
+          const arches = ["linux-x64", "darwin-arm64", "windows-x64", "linux-arm64", "darwin-x64", "windows-arm64", "linux-x64-musl", "linux-riscv64", "wasm32", "darwin-arm64-v8", "windows-x64-gnu"];
           const categories = ["docs.zip", "enginemap.json", "api.txt", "tests.json", "schema.zip", "dependencies.json", "changelog.md", "notice.txt", "solmap.json", "webassets.json", "biome.jsonc"];
           const perApplication = categories.length + arches.length + 1;
           const metadataAssets = [];
@@ -6109,8 +6111,8 @@ jobs:
     # matrix and the saddle docker contexts) stays a dispatch-shaped probe
     # (the saddle container law opens the publish chain - the resolver, the
     # scan, the registry push, the verify and the archive - to the release
-    # wave; the twelve-leg validation matrix (PR15b: 3 profiles x the
-    # four build legs the pinned node base carries of the
+    # wave; the nine-leg validation matrix (PR15: 3 profiles x the
+    # three build legs of the container-carried seats the pinned node base answers of the
     # eleven-architecture standard) answers the maintenance dispatch
     # alone, where its
     # cost belongs). The grand-merge era validated a spoofed /proc the
@@ -6122,8 +6124,8 @@ jobs:
     defaults:
       run:
         shell: bash
-    # 240 min: a cold-cache emulated leg (QEMU ppc64le/s390x) still rides
-    # past a short ceiling on lockfile churn. The warm registry cache
+    # 240 min: a cold-cache emulated arm64 leg (QEMU) still rides past a
+    # short ceiling on lockfile churn. The warm registry cache
     # keeps the legs far under this; the ceiling only matters on
     # cold-cache rebuilds after Dockerfile/lockfile churn.
     timeout-minutes: 240
@@ -6136,16 +6138,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # THE ELEVEN-ARCH CONTAINER LAW (PR15b): the standard covers the
-        # eleven architectures of saddle/containerarch.ts (x64, arm64,
-        # armv7, riscv64, ppc64le, s390x, 386, mips64le, loong64, wasm32,
-        # wasip1) and the build legs follow the pinned node base's honest
-        # manifest list - the four linux seats it carries (amd64 the
-        # native x64 leg; arm64, ppc64le and s390x ride QEMU emulation).
-        # The seven seats the base does not ship answer the standard's
-        # honest coded absence (ARCH_IMAGE_ABSENT), never a pretended
-        # build leg. 3 profiles x 4 build legs = 12 validation legs.
-        platform: [linux/amd64, linux/arm64, linux/ppc64le, linux/s390x]
+        # THE ELEVEN-ARCH CONTAINER LAW (PR15): the standard covers the
+        # eleven architecture seats of saddle/containerarch.ts (linux-x64,
+        # darwin-arm64, windows-x64, linux-arm64, darwin-x64,
+        # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
+        # darwin-arm64-v8, windows-x64-gnu) and the build legs follow the
+        # container-carried seats the pinned node base honestly answers:
+        # the amd64 leg serves linux-x64 and linux-x64-musl, the arm64 leg
+        # serves linux-arm64 and the arm64/v8 leg serves the
+        # darwin-arm64-v8 abi seat (the arm64 legs ride QEMU emulation on
+        # the amd64 runner). The linux-riscv64 seat the containerarch
+        # standard carries on the bash:5 driver base answers the honest
+        # coded absence here (the node engine base ships no riscv64
+        # manifest), and the six target seats (the darwin and windows
+        # seats and wasm32) answer ARCH_TARGET_NOT_CONTAINER, never a
+        # pretended build leg. 3 profiles x 3 build legs = 9 validation
+        # legs.
+        platform: [linux/amd64, linux/arm64, linux/arm64/v8]
         profile: [max, balanced, lite]
         include:
           - profile: max
@@ -6180,13 +6189,14 @@ jobs:
         id: slug
         run: echo "slug=$(echo '${{ matrix.platform }}' | cut -d/ -f2)" >> "$GITHUB_OUTPUT"
 
-      - name: Set up QEMU (the three emulated legs of the build index)
+      - name: Set up QEMU (the emulated legs of the build index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
-          # the build index minus the native x64 leg: every platform the
-          # amd64 runner cannot execute installs its binfmt handler here
-          # (the family pin - only the emulated legs).
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # the build index minus the native amd64 leg: every platform
+          # the amd64 runner cannot execute installs its binfmt handler
+          # here (the family pin - only the emulated legs, the arm64 pair
+          # of the standard's container-carried seats).
+          platforms: linux/arm64,linux/arm64/v8
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -6512,13 +6522,14 @@ jobs:
         with:
           ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
 
-      - name: Set up QEMU (the three emulated legs of the build index)
+      - name: Set up QEMU (the emulated legs of the build index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
-          # the build index minus the native x64 leg: every platform the
-          # amd64 runner cannot execute installs its binfmt handler here
-          # (the family pin - only the emulated legs).
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # the build index minus the native amd64 leg: every platform
+          # the amd64 runner cannot execute installs its binfmt handler
+          # here (the family pin - only the emulated legs, the arm64 pair
+          # of the standard's container-carried seats).
+          platforms: linux/arm64,linux/arm64/v8
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -6612,9 +6623,10 @@ jobs:
     defaults:
       run:
         shell: bash
-    # 330 min: the build index (PR15b) carries three emulated legs under
-    # QEMU beside the native amd64 leg - the cold-cache publish legs ran
-    # past the old 180-minute ceiling and were killed by the timeout.
+    # 330 min: the build index (PR15) carries the two emulated arm64
+    # legs under QEMU beside the native amd64 leg - the cold-cache
+    # publish legs ran past the old 180-minute ceiling and were killed by
+    # the timeout.
     # 5.5h stays under the 6h hosted-runner job cap with headroom for
     # mirror races; the warm registry cache completes the legs far under
     # the ceiling (a cold-cache QEMU pass can still redden on rare
@@ -6629,19 +6641,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # THE ELEVEN-ARCH CONTAINER LAW (PR15b): the standard covers the
-        # eleven architectures of saddle/containerarch.ts (x64, arm64,
-        # armv7, riscv64, ppc64le, s390x, 386, mips64le, loong64, wasm32,
-        # wasip1) and all three profiles ship the build legs the pinned
-        # eleven-architecture family standard rides every profile leg (the
-        # arch law: buildx carries the full linux platform surface, the
-        # native amd64 seat beside the QEMU-emulated ten); each carries a single version tag
-        # on the saddle container package (max -> :<version>,
-        # balanced/lite carry the profile suffix). One tag per version,
-        # no rolling aliases.
+        # THE ELEVEN-ARCH CONTAINER LAW (PR15): the standard covers the
+        # eleven architecture seats of saddle/containerarch.ts (linux-x64,
+        # darwin-arm64, windows-x64, linux-arm64, darwin-x64,
+        # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
+        # darwin-arm64-v8, windows-x64-gnu) and all three profiles ship
+        # the build legs of the container-carried seats the pinned node
+        # base honestly answers (the amd64 leg serves linux-x64 and
+        # linux-x64-musl, the arm64 legs serve linux-arm64 and the
+        # darwin-arm64-v8 abi seat under QEMU emulation); each carries a
+        # single version tag on the saddle container package (max ->
+        # :<version>, balanced/lite carry the profile suffix). One tag
+        # per version, no rolling aliases.
         include:
           - profile: max
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/arm64,linux/arm64/v8
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -6650,7 +6664,7 @@ jobs:
             profilegpus: 8
             expectcpu: EPYC 9965
           - profile: balanced
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/arm64,linux/arm64/v8
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -6659,7 +6673,7 @@ jobs:
             profilegpus: 2
             expectcpu: 9995WX
           - profile: lite
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/amd64,linux/arm64,linux/arm64/v8
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -6673,13 +6687,14 @@ jobs:
         with:
           ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
 
-      - name: Set up QEMU (the three emulated legs of the build index)
+      - name: Set up QEMU (the emulated legs of the build index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
-          # the build index minus the native x64 leg: every platform the
-          # amd64 runner cannot execute installs its binfmt handler here
-          # (the family pin - only the emulated legs).
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # the build index minus the native amd64 leg: every platform
+          # the amd64 runner cannot execute installs its binfmt handler
+          # here (the family pin - only the emulated legs, the arm64 pair
+          # of the standard's container-carried seats).
+          platforms: linux/arm64,linux/arm64/v8
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -6717,7 +6732,7 @@ jobs:
           # that follows a partial family (max shipped, balanced/lite
           # missing) skips only the leg whose tag already answers on the
           # registry, so the re-run completes exactly the missing profiles
-          # instead of re-pushing the nine-QEMU-arch legs that already
+          # instead of re-pushing the emulated legs that already
           # ship (60+ minutes of build time each, cold cache).
           leg_out="$(gh api "/users/${OWNER,,}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${ver}${suffix}\")] | length" 2>/dev/null || true)"
           case "${leg_out}" in
@@ -6831,11 +6846,15 @@ jobs:
           set -euo pipefail
           image_ref="${IMAGE,,}:${VERSION}${SUFFIX}"
           # Every published profile index must carry the build surface of
-          # the eleven-arch standard (PR15b: the four linux legs the
-          # pinned node base honestly carries - amd64 the native x64 leg,
-          # arm64, ppc64le and s390x under QEMU; the seven seats the base
-          # does not ship answer the standard's honest coded absence,
-          # never a pretended build leg).
+          # the eleven-arch standard (PR15: the container-carried legs
+          # the pinned node base honestly answers - the amd64 leg that
+          # serves linux-x64 and linux-x64-musl, the arm64 leg that
+          # serves linux-arm64 and the arm64/v8 leg that serves the
+          # darwin-arm64-v8 abi seat under QEMU; the linux-riscv64 seat
+          # the bash:5 driver base carries answers the honest coded
+          # absence on the node engine base, and the six target seats
+          # answer ARCH_TARGET_NOT_CONTAINER, never a pretended build
+          # leg).
           echo "inspecting ${image_ref}"
           docker buildx imagetools inspect --raw "${image_ref}" | jq -e '
             [
@@ -6844,7 +6863,7 @@ jobs:
               | if .platform.variant then "\(.platform.architecture)/\(.platform.variant)" else .platform.architecture end
             ]
             | sort
-            | . == ["amd64", "arm64", "ppc64le", "s390x"]
+            | . == ["amd64", "arm64", "arm64/v8"]
           '
           docker pull --quiet --platform linux/amd64 "${image_ref}"
           actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"

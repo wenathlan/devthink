@@ -26,21 +26,18 @@ import { getmodality } from "../modalityregistry.ts";
 const DEADLINEMS = 5000;
 
 /** the twenty-four lane ids in spec order (the pinned group b contract):
- * the nineteen of the first wave, then the five seats of the wiring wave. */
+ * the nineteen of the first wave, the five seats of the wiring wave,
+ * then the five pr15 completion seats (the virtual hardware
+ * presentation lanes and the virtual file store). */
 const LANES = [
   "ramtmpfs",
   "rammmap",
   "ramoverlayfs",
-  "ramloopram",
-  "ramgitram",
   "ramzram",
-  "ramzswap",
   "ramswapfile",
   "deliverycdn",
   "deliverywss",
-  "deliverywebtransport",
   "deliverygrpc",
-  "deliverycapnproto",
   "storagelibsql",
   "storagemysql",
   "storagepostgres",
@@ -52,6 +49,11 @@ const LANES = [
   "storagesqlite",
   "networkdns",
   "networkdoh",
+  "virtualvcpu",
+  "virtualprocessor",
+  "virtualgpu",
+  "hardwarevirtual",
+  "virtualfile",
 ] as const;
 
 /** the ram lanes: every one answers the oom guard law. */
@@ -59,16 +61,15 @@ const RAMLANES = [
   "ramtmpfs",
   "rammmap",
   "ramoverlayfs",
-  "ramloopram",
-  "ramgitram",
   "ramzram",
-  "ramzswap",
   "ramswapfile",
 ] as const;
 
 /** the json manifest lanes: every one refuses non-json payloads (the
  * first wave json seats beside the five manifest seats of the wiring
- * wave). */
+ * wave and the four virtual hardware presentation seats — the virtual
+ * file lane's manifest rides the inputs surface, its code field is the
+ * file content itself). */
 const JSONLANES = [
   ...RAMLANES,
   "deliverycdn",
@@ -79,6 +80,10 @@ const JSONLANES = [
   "storagesqlite",
   "networkdns",
   "networkdoh",
+  "virtualvcpu",
+  "virtualprocessor",
+  "virtualgpu",
+  "hardwarevirtual",
 ] as const;
 
 /** one deterministic sample payload per lane (the determinism and mime laws run every lane). */
@@ -86,16 +91,11 @@ const SAMPLES: Record<string, { code: string; inputs?: unknown }> = {
   "ramtmpfs": { code: '{"mount":"tmpfs","files":{"boot.bin":"00ff10","note.txt":"48656c6c6f"}}' },
   "rammmap": { code: '{"window":[2,3],"bytes":"0011223344"}' },
   "ramoverlayfs": { code: '{"lower":{"a":"0011","b":"0022"},"upper":{"a":"ffee","c":"4455"}}' },
-  "ramloopram": { code: '{"sectorsize":16,"sectors":4,"writes":[[1,"aabb"],[3,"cc"]]}' },
-  "ramgitram": { code: '{"objects":[{"oid":"obj1","data":"0011"},{"oid":"obj2","data":"2233"}],"read":"obj2"}' },
   "ramzram": { code: '{"pagesize":8,"pages":["00112233","ff"]}' },
-  "ramzswap": { code: '{"poolsize":2,"pages":["0011","2233","4455"]}' },
   "ramswapfile": { code: '{"extents":[[0,2,"aabb"],[4,2,"ccdd"]],"read":[0,6]}' },
   "deliverycdn": { code: '{"origin":"https://mirror.example","assets":["a.js","b.css"]}' },
   "deliverywss": { code: "hello wss lane" },
-  "deliverywebtransport": { code: "quic datagram" },
   "deliverygrpc": { code: "grpc payload" },
-  "deliverycapnproto": { code: "capnp" },
   "storagelibsql": { code: '{"sql":"select 1"}' },
   "storagemysql": { code: "saddle" },
   "storagepostgres": { code: "saddle" },
@@ -109,6 +109,11 @@ const SAMPLES: Record<string, { code: string; inputs?: unknown }> = {
   "storagesqlite": { code: '{"sql":"select 1 as answer","pagesize":4096}' },
   "networkdns": { code: '{"name":"example.dev","qtype":"A"}' },
   "networkdoh": { code: '{"resolver":"https://dns.devthink.test/dns-query","name":"example.dev","qtype":"AAAA"}' },
+  "virtualvcpu": { code: '{"vcpus":8}' },
+  "virtualprocessor": { code: '{"cpu":"epyc9965"}' },
+  "virtualgpu": { code: '{"gpu":"b200","count":2}' },
+  "hardwarevirtual": { code: '{"vcpus":4,"cpu":"epyc9965","gpu":"b200","gpus":1,"memorygb":16}' },
+  "virtualfile": { code: "hello virtual file", inputs: { path: "note.txt" } },
 };
 
 /** runs one lane under the test deadline. */
@@ -230,10 +235,13 @@ describe("the in-process lanes answer the group b contract", () => {
     }
   });
 
-  it("enforces the ram quota law under the default and the declared budget", async () => {
-    // the default 64 mb ceiling: a manifest declaring a 102.4 mb loop disk refuses before any allocation
-    const oversize = JSON.stringify({ sectorsize: 512, sectors: 200000, writes: [] });
-    await assert.rejects(() => runlane("ramloopram", oversize), refuses("RAM_QUOTA_EXCEEDED"));
+  it("enforces the ram quota law under the declared budget", async () => {
+    // the declared-ceiling probe: a mapping declaring more bytes than
+    // the declared budget refuses before any window work (the loop-disk
+    // seat that carried the 102.4 mb default probe retired with the
+    // pr15 cull — the same guard answers under the declared budget)
+    const oversize = JSON.stringify({ window: [0, 2], bytes: "00".repeat(1024 * 1024 + 1) });
+    await assert.rejects(() => runlane("rammmap", oversize, { budgetmb: 1 }), refuses("RAM_QUOTA_EXCEEDED"));
     // every ram recipe answers the guard under a zero byte budget
     for (const id of RAMLANES) {
       await assert.rejects(
@@ -266,29 +274,48 @@ describe("the in-process lanes answer the group b contract", () => {
     assert.equal(astext(frame.slice(5)), "grpc payload", "the payload rides the frame");
   });
 
-  it("frames the capnproto segment word aligned", async () => {
-    const output = await runlane("deliverycapnproto", "capnp");
-    const manifest = artifactof(output);
-    const message = decodehex(manifest.messagehex as string);
-    assert.equal(message.byteLength % 8, 0, "the message length is word aligned");
+  it("answers the pr15 presentation seat laws (the topology, the banks, the composition and the file store)", async () => {
+    // vcpu: the balanced topology of eight (one socket, four cores, two
+    // threads) and the qemu flag
+    const vcpu = artifactof(await runlane("virtualvcpu", SAMPLES["virtualvcpu"].code));
     assert.deepEqual(
-      [message[0], message[1], message[2], message[3]],
-      [0, 0, 0, 0],
-      "the one segment header (segments minus one)",
+      [vcpu.sockets, vcpu.cores, vcpu.threads],
+      [1, 4, 2],
+      "the balanced topology of eight vcpu",
     );
-    const words = message[4] | (message[5] << 8) | (message[6] << 16) | (message[7] << 24);
-    assert.equal(words, (message.byteLength - 8) / 8, "the header answers the word count");
-    assert.equal(astext(message.slice(8, 13)), "capnp", "the payload rides the segment");
-  });
-
-  it("frames the webtransport datagram with the quic varint", async () => {
-    const output = await runlane("deliverywebtransport", "quic datagram");
-    const manifest = artifactof(output);
-    const frame = decodehex(manifest.framehex as string);
-    assert.equal(frame[0], 0x01, "the deterministic stream id varint");
-    assert.equal(frame[1], 0x40, "the datagram frame type");
-    assert.equal(frame[2], 13, "the varint payload length");
-    assert.equal(astext(frame.slice(3)), "quic datagram", "the payload rides the frame");
+    assert.equal(vcpu.qemuflag, "-smp 8,sockets=1,cores=4,threads=2", "the qemu -smp flag");
+    // an unsolvable count refuses honestly
+    await assert.rejects(() => runlane("virtualvcpu", '{"vcpus":500}'), refuses("VCPU_TOPOLOGY_INVALID"));
+    // processor: the device bank identity of the epyc class
+    const processor = artifactof(await runlane("virtualprocessor", SAMPLES["virtualprocessor"].code));
+    assert.equal(processor.id, "epyc9965");
+    assert.equal(processor.cpumhz, 2250, "the base clock in mhz");
+    await assert.rejects(
+      () => runlane("virtualprocessor", '{"cpu":"sparc64"}'),
+      refuses("PROCESSOR_CLASS_UNKNOWN"),
+    );
+    // gpu: the b200 bank of two (384 gb total vram, mig grammar)
+    const gpu = artifactof(await runlane("virtualgpu", SAMPLES["virtualgpu"].code));
+    assert.equal(gpu.id, "b200");
+    assert.equal(gpu.count, 2);
+    assert.equal(gpu.totalvramgb, 384, "the total vram plan");
+    assert.ok((gpu.migprofiles as string[]).includes("2g.40gb"), "the mig slice grammar");
+    await assert.rejects(() => runlane("virtualgpu", '{"gpu":"voodoo"}'), refuses("GPU_CLASS_UNKNOWN"));
+    // hardware virtual: the composed machine plan
+    const machine = artifactof(await runlane("hardwarevirtual", SAMPLES["hardwarevirtual"].code));
+    assert.equal(machine.machine, "q35", "the machine grammar");
+    assert.equal(machine.memorygb, 16, "the ram plan");
+    assert.equal(machine.processor.id, "epyc9965", "the composed processor");
+    assert.equal(machine.gpu.count, 1, "the composed gpu bank");
+    // virtual file: the sha256-sealed record round-trips through the store
+    const written = artifactof(await runlane("virtualfile", "hello virtual file", { path: "roundtrip.txt" }));
+    assert.equal(written.path, "roundtrip.txt");
+    assert.equal(written.bytes, 18, "the utf8 byte count");
+    assert.match(written.sha256 as string, /^[0-9a-f]{64}$/, "the sha256 seal");
+    const readback = artifactof(await runlane("virtualfile", "", { read: "roundtrip.txt" }));
+    assert.equal(readback.sha256, written.sha256, "the read answers the same seal");
+    assert.equal(readback.content, "hello virtual file", "the content round-trips");
+    await assert.rejects(() => runlane("virtualfile", "", { read: "absent.txt" }), refuses("VIRTUAL_FILE_ABSENT"));
   });
 
   it("speaks the mysql and postgres handshake byte laws", async () => {
@@ -354,19 +381,6 @@ describe("the in-process lanes answer the group b contract", () => {
     // overlayfs: the upper layer wins, the union answers
     const overlay = artifactof(await runlane("ramoverlayfs", SAMPLES["ramoverlayfs"].code));
     assert.deepEqual(overlay.files, { a: "ffee", b: "0022", c: "4455" });
-    // loopram: the sector map and the disk bytes
-    const loop = artifactof(await runlane("ramloopram", SAMPLES["ramloopram"].code));
-    const disk = decodehex(loop.disk as string);
-    assert.equal(disk.byteLength, 64, "the four sector disk");
-    assert.deepEqual(loop.written, [1, 3], "the sector map");
-    assert.equal(disk[16], 0xaa, "the sector 1 write");
-    assert.equal(disk[17], 0xbb, "the sector 1 write");
-    assert.equal(disk[48], 0xcc, "the sector 3 write");
-    assert.equal(disk[0], 0x00, "the unwritten sectors read zero");
-    // gitram: the hash table answers the read object
-    const git = artifactof(await runlane("ramgitram", SAMPLES["ramgitram"].code));
-    assert.equal(git.oid, "obj2");
-    assert.equal(git.bytes, "2233");
     // swapfile: the extent table read answers the holes as zeros
     const swap = artifactof(await runlane("ramswapfile", SAMPLES["ramswapfile"].code));
     assert.equal(swap.bytes, "aabb0000ccdd", "the read answers the extent bytes and the zero hole");

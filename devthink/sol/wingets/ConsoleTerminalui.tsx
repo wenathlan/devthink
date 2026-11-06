@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { getIdentity, pairingStatus } from "../../account.js";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
 import { osText } from "../../os.ts";
-import { consoleCategories, consoleEntryArt } from "../../labels.ts";
+import { consoleCategories, label } from "../../labels.ts";
 import { listProviders } from "@wenathlan/getry/providers";
 import { listSessions, readPreferences, type Session, savePreference } from "../../storage.js";
 import type { ChatEvent } from "@wenathlan/getry/streaming";
@@ -15,11 +15,12 @@ import {
   workspaceDestinations,
 } from "../../workspace.js";
 
-/* the category rail and the entry art ride the label store (labels.ts):
- * the seven console.categories tokens and the nine console.entryArt lines
- * are seed rows the surface renders as-is — no art literal stays here */
+/* the category rail and every boot line ride the label store (labels.ts):
+ * the seven console.categories tokens and the console.* manifest rows are
+ * the copy of the face — no literal stays here, and the block art of
+ * the first cut is gone with the minimal-text law (the boot face answers
+ * the name, the one-line tagline and the hint — nothing else) */
 const categories = consoleCategories();
-const entryArt = consoleEntryArt();
 
 type Runtime = { config: DevThinkConfig; paths: DevThinkPaths };
 type Execute = (
@@ -55,25 +56,17 @@ function TerminalEntry({
       justifyContent="space-between"
     >
       <Box justifyContent="space-between">
-        <Text color="#807970">DEVTHINK</Text>
+        <Text color="#807970">{label("console.boot.name")}</Text>
         <Text color="#8ab4f8">{userId}</Text>
       </Box>
       <Box flexDirection="column" alignItems="center">
-        <Box flexDirection="column" alignItems="center">
-          {entryArt.map((line, index) => (
-            /* biome-ignore lint/suspicious/noArrayIndexKey: the entry art is a static template whose lines never reorder */
-            <Text key={`${line}-${index}`} color="#382c23">
-              {line}
-            </Text>
-          ))}
-        </Box>
-        <Box marginTop={-1}>
+        <Box>
           <Text color="#ff5f00" bold>
-            DEVTHINK
+            {label("console.boot.name")}
           </Text>
         </Box>
         <Box marginTop={1}>
-          <Text color="#746f66">begin with one intention</Text>
+          <Text color="#746f66">{label("console.boot.tagline")}</Text>
         </Box>
         <Box marginTop={2}>
           <Text color="#282724">+{"-".repeat(Math.max(16, width - 2))}+</Text>
@@ -81,14 +74,14 @@ function TerminalEntry({
         <Text color="#e8e1d7">
           | <Text color="#ff5f00">{"> "}</Text>
           <Text color={draft ? "#e8e1d7" : "#746f66"}>
-            {clip(draft || "Ask anything...", Math.max(12, width - 22))}
+            {clip(draft || label("console.input.placeholder"), Math.max(12, width - 22))}
           </Text>
           <Text color="#8ab4f8"> {provider}</Text>
           <Text color="#ff5f00"> [open]</Text> |
         </Text>
         <Text color="#282724">+{"-".repeat(Math.max(16, width - 2))}+</Text>
       </Box>
-      <Text color="#746f66">enter opens a local workspace, esc exits</Text>
+      <Text color="#746f66">{label("console.boot.hint")}</Text>
     </Box>
   );
 }
@@ -281,7 +274,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
     setEntries((current) => [
       ...current,
       { role: "user", title: active, body: prompt },
-      { role: "devthink", title: "connecting", body: "listening for events..." },
+      { role: "devthink", title: label("console.status.connecting"), body: label("console.status.listening") },
     ]);
     setDraft("");
     setPending(true);
@@ -295,7 +288,7 @@ function TerminalWorkspace({ runtime, execute, version }: { runtime: Runtime; ex
               ? {
                   ...entry,
                   title: event.type === "start" ? "streaming" : "devthink",
-                  body: partial || "connecting to local provider...",
+                  body: partial || label("console.status.provider"),
                 }
               : entry,
           ),

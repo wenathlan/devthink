@@ -61,20 +61,23 @@
 # is the sandbox spec surface the console answers, never a host
 # distribution this container installs.
 #
-# THE ELEVEN-ARCHITECTURE PLATFORM STANDARD (the pr15b law): every
-# profile answers the eleven architectures the container standard names —
-# the CONTAINERARCHIDS of saddle/containerarch.ts: x64, arm64, armv7,
-# riscv64, ppc64le, s390x, 386, mips64le, loong64, wasm32, wasip1 (the
-# wasm pair rides the oci artifact shapes wasm32/wasip1 and wasip1/wasm
-# the wasm runtimes consume). The build legs follow the pinned node
-# base's honest manifest list — the four linux seats it carries
-# (linux/amd64 the native x64 leg; linux/arm64, linux/ppc64le and
-# linux/s390x ride qemu emulation in the publish workflow). The seven
-# seats the node base does not ship (armv7, riscv64, 386, mips64le,
-# loong64 and the wasm pair) answer the standard's honest coded absence
-# (ARCH_IMAGE_ABSENT), never a pretended build leg — the same honesty
-# law the containerarch table keeps for its own pinned base: a leg
-# never claims a manifest the base does not carry. The base stage
+# THE ELEVEN-ARCHITECTURE PLATFORM STANDARD (the pr15 law): every
+# profile answers the eleven architecture seats the container standard
+# names — the CONTAINERARCHIDS of saddle/containerarch.ts (linux-x64,
+# darwin-arm64, windows-x64, linux-arm64, darwin-x64, windows-arm64,
+# linux-x64-musl, linux-riscv64, wasm32, darwin-arm64-v8,
+# windows-x64-gnu). The build legs follow the container-carried seats
+# the pinned node base honestly answers: the amd64 leg serves linux-x64
+# and linux-x64-musl, the arm64 leg serves linux-arm64, and the arm64/v8
+# leg serves the darwin-arm64-v8 abi seat (the arm64 legs ride qemu
+# emulation in the publish workflow). The linux-riscv64 seat the
+# containerarch standard carries on the bash:5 driver base answers the
+# honest coded absence on this node engine base (the pinned base ships
+# no riscv64 manifest), and the six target seats (the darwin and
+# windows seats and wasm32) answer the standard's honest coded absence
+# (ARCH_TARGET_NOT_CONTAINER), never a pretended build leg — the same
+# honesty law the containerarch table keeps for its own pinned base: a
+# leg never claims a manifest the base does not carry. The base stage
 # declares the TARGETPLATFORM/TARGETARCH automatic build-args (the
 # devthink container's standard arch interface) and stamps the honesty
 # law into the build log with its arch guard: a leg the base carries
@@ -191,19 +194,21 @@ ENV NODE_ENV=production \
 
 # the arch-leg guard of the eleven-architecture standard: the pinned
 # node base resolves the platform of every leg buildx names, and this
-# echo layer stamps the honesty law into the build log — the four seats
-# the base carries answer their leg line, the legacy builder (no
-# platform axis) answers its documented note, and any other seat answers
-# the coded refusal before the heavy steps below could run (buildx
-# itself fails such a leg at base resolution first; the guard keeps the
-# law loud on every builder).
+# echo layer stamps the honesty law into the build log — the two arches
+# the base carries answer their leg line (the amd64 leg serves the
+# linux-x64 and linux-x64-musl seats, the arm64 leg serves the
+# linux-arm64 seat and the darwin-arm64-v8 abi seat through its v8
+# variant), the legacy builder (no platform axis) answers its documented
+# note, and any other arch answers the coded refusal before the heavy
+# steps below could run (buildx itself fails such a leg at base
+# resolution first; the guard keeps the law loud on every builder).
 RUN case "${TARGETARCH:-}" in \
-      amd64|arm64|ppc64le|s390x) \
-        echo "arch leg ${TARGETARCH} of ${TARGETPLATFORM:-<unresolved>}: one of the four seats the pinned node base carries of the eleven-architecture standard" ;; \
+      amd64|arm64) \
+        echo "arch leg ${TARGETARCH} of ${TARGETPLATFORM:-<unresolved>}: one of the two arches the pinned node base carries — the legs of the container-carried seats of the eleven-architecture standard (linux-x64 and linux-x64-musl on amd64, linux-arm64 and the darwin-arm64-v8 abi seat on arm64)" ;; \
       "") \
         echo "arch leg unresolved: the legacy builder carries no platform axis; buildkit answers TARGETARCH per leg" ;; \
       *) \
-        echo "the eleven-architecture standard answers the ${TARGETARCH} seat with the honest coded absence (ARCH_IMAGE_ABSENT): the pinned node base carries no such manifest" >&2; \
+        echo "the eleven-architecture standard answers the ${TARGETARCH} arch with the honest coded absence (ARCH_TARGET_NOT_CONTAINER for the target seats, ARCH_IMAGE_ABSENT for the riscv64 seat the node engine base does not ship): the pinned node base carries no such manifest" >&2; \
         exit 1 ;; \
     esac
 

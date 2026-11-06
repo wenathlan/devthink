@@ -71,7 +71,11 @@ it("keeps transport-neutral export graphs free of Node-only imports", async () =
       const specifier = match[1];
       if (!specifier.startsWith(".")) continue;
       const child = resolve(dirname(filename), specifier);
-      pending.push(child.endsWith(".js") ? child : `${child}.js`);
+      /* the source-is-library law rides explicit .ts imports (node strips
+       * the types natively, the browser lanes bundle through vite), so the
+       * walker keeps the .ts specifiers as they are and appends .js only
+       * to the extensionless ones */
+      pending.push(/\.[cm]?[jt]s$/.test(child) ? child : `${child}.js`);
     }
   }
   assert.equal(seen.has(resolve(root, "..", "foundation.ts")), true);

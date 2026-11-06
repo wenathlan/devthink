@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+/* The prose faces never seed the sheet (the compiled-artifact purge): the
+   automatic source scan of Tailwind reads every tracked file of the app
+   root, and the doctrine words the battery asserts against — the banned
+   all-keyword literals of the designref pins, the changelog prose, the
+   docs pages — are valid class-name candidates the scan would extract
+   and emit as dead utilities (the deployed bundle carried exactly that
+   dead all-properties rule). The negative sources below keep the scan on
+   the real faces: the sol sources, the root logic and the html entries.
+   Tests, docs and markdown never style the product. */
+@source not "../tests";
+@source not "../docs";
+@source not "../*.md";
+
 /* The codified type voice (the owner law, wave fluentface): Inter + Geist
    with the system ladder behind — NOT Segoe. The woff2 faces self-hosted
    in the theme's fonts folder beside the sheet (the trylle ruler's Inter

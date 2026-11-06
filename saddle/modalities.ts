@@ -796,7 +796,7 @@ interface BabelModule {
  * @returns the transformed program.
  * @throws a typed HOST_RUNTIME_ABSENT error when the module is absent.
  */
-async function compilethroughbabel(code: string): Promise<string> {
+export async function compilethroughbabel(code: string): Promise<string> {
   let babelmodule: BabelModule;
   try {
     babelmodule = (await import("@babel/core")) as BabelModule;
@@ -828,7 +828,7 @@ async function compilethroughbabel(code: string): Promise<string> {
  * @param deadline the run deadline in milliseconds.
  * @returns the captured stdout lines and the completion value.
  */
-async function runinisolatedcontext(
+export async function runinisolatedcontext(
   code: string,
   inputs: unknown,
   deadline: number,
@@ -858,7 +858,7 @@ async function runinisolatedcontext(
  * @returns the captured answer of the first export.
  * @throws a typed WASM_INSTANTIATION_FAILED error on invalid bytes.
  */
-async function instantiatewasm(code: string): Promise<string> {
+export async function instantiatewasm(code: string): Promise<string> {
   const compact = code.replace(/\s/g, "");
   const bytes = Uint8Array.from(atob(compact), (character) => character.charCodeAt(0));
   if (bytes.byteLength < 8) {
@@ -869,7 +869,11 @@ async function instantiatewasm(code: string): Promise<string> {
   let instance: WebAssembly.Instance;
   try {
     const module = new WebAssembly.Module(bytes);
-    const importobject: Record<string, Record<string, unknown>> = {};
+    /* the import object answers the dom contract of the instantiate
+     * signature (WebAssembly.Imports — Record<string, ModuleImports>): the
+     * loose Record<string, Record<string, unknown>> annotation failed the
+     * strict walk, so the seat types the shim the way the lib declares it. */
+    const importobject: Record<string, WebAssembly.ModuleImports> = {};
     for (const spec of WebAssembly.Module.imports(module)) {
       importobject[spec.module] ??= {};
       if (spec.kind === "function") importobject[spec.module][spec.name] = () => 0;
@@ -1150,7 +1154,11 @@ export function framewebsockettext(payload: string): string {
   const mask = Array.from({ length: 4 }, () => Math.floor(Math.random() * 256));
   head.push(...mask);
   const masked = Array.from(bytes, (byte, index) => byte ^ mask[index % 4]);
-  return Uint8Array.from([...head, ...masked])
+  /* the hex walk spreads the buffer into a plain array first: the typed
+   * array map coerces its callback answer back through ToNumber, so a
+   * string answer lost every byte the hex letters carry (0xab answered
+   * NaN, then 0) — the spread keeps every value a string of the join. */
+  return [...Uint8Array.from([...head, ...masked])]
     .map((value) => value.toString(16).padStart(2, "0"))
     .join("");
 }
@@ -1166,7 +1174,9 @@ export function framewebsockettext(payload: string): string {
 export function framegrpcmessage(payload: string): string {
   const bytes = new TextEncoder().encode(payload);
   const head = [0x00, (bytes.byteLength >>> 24) & 0xff, (bytes.byteLength >>> 16) & 0xff, (bytes.byteLength >>> 8) & 0xff, bytes.byteLength & 0xff];
-  return Uint8Array.from([...head, ...bytes])
+  /* the spread before the hex map: the typed array map would coerce the
+   * string answers back through ToNumber and flatten the hex letters. */
+  return [...Uint8Array.from([...head, ...bytes])]
     .map((value) => value.toString(16).padStart(2, "0"))
     .join("");
 }
@@ -1239,7 +1249,9 @@ export function buildpostgresstartup(user: string, database: string): string {
   const body = new TextEncoder().encode(`\u0000\u0003\u0000\u0000${parameters}`);
   const length = body.byteLength + 4;
   const head = [(length >>> 24) & 0xff, (length >>> 16) & 0xff, (length >>> 8) & 0xff, length & 0xff];
-  return Uint8Array.from([...head, ...Array.from(body)])
+  /* the spread before the hex map: the typed array map would coerce the
+   * string answers back through ToNumber and flatten the hex letters. */
+  return [...Uint8Array.from([...head, ...Array.from(body)])]
     .map((value) => value.toString(16).padStart(2, "0"))
     .join("");
 }
@@ -4564,7 +4576,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       },
     }),
   },
-]);
+];
 
 /** The count of the ninety — derived from the table's real length
  * (never a hardcoded line, so the count cannot drift from the table). */

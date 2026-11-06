@@ -19,9 +19,10 @@ import { localstorage } from "../virtual.ts";
 
 /** the sixty-six live lane ids the pinned contract charges (parallel
  * waves read these exactly): the twenty-five first wave host binary
- * lanes, the twenty-four in-process lanes (the nineteen of the first
- * wave beside the five wiring wave seats), the seven virtual hardware
- * lanes and the ten base live lanes. */
+ * lanes (the nineteen beside the six pr15 completion seats), the
+ * twenty-four in-process lanes (the nineteen of the first wave beside
+ * the five wiring wave seats and the five pr15 completion seats), the
+ * seven virtual hardware lanes and the ten base live lanes. */
 const LIVELANES = [
   "sandboxbubblewrap",
   "sandboxnsjail",
@@ -36,31 +37,26 @@ const LIVELANES = [
   "runtimeclr",
   "runtimeworkerd",
   "screenxvfb",
-  "screenwayland",
   "mobiletermux",
   "buildbazel",
-  "buildbuck",
-  "buildturborepo",
   "ciactions",
-  "cigitlab",
   "networktor",
   "networki2p",
   "networkwireguard",
-  "storageminio",
-  "storagegarage",
+  "runnerwasme",
+  "runnerexe",
+  "runnerbinary",
+  "runnersh",
+  "runneryaml",
+  "portsdock",
   "ramtmpfs",
   "rammmap",
   "ramoverlayfs",
-  "ramloopram",
-  "ramgitram",
   "ramzram",
-  "ramzswap",
   "ramswapfile",
   "deliverycdn",
   "deliverywss",
-  "deliverywebtransport",
   "deliverygrpc",
-  "deliverycapnproto",
   "storagelibsql",
   "storagemysql",
   "storagepostgres",
@@ -72,6 +68,11 @@ const LIVELANES = [
   "storagesqlite",
   "networkdns",
   "networkdoh",
+  "virtualvcpu",
+  "virtualprocessor",
+  "virtualgpu",
+  "hardwarevirtual",
+  "virtualfile",
   "virtualfull",
   "virtualvgpu",
   "virtualscreen",
@@ -93,7 +94,9 @@ const LIVELANES = [
 
 /** the twenty-four host lane ids the pinned contract charges: the
  * twelve wiring wave host binary seats in alphabetical order, the six
- * heavyweight probes and the six base host lanes. */
+ * heavyweight probes (the browser server, the confidential compute,
+ * the three provider seats and the principal container dock) and the
+ * six base host lanes. */
 const HOSTLANES = [
   "buildmake",
   "buildninja",
@@ -108,11 +111,11 @@ const HOSTLANES = [
   "runnerdeno",
   "runnerwasi",
   "browserserver",
-  "mobilecapacitor",
-  "mobilepostmarketos",
-  "podsession",
   "confidentialsevsnp",
-  "confidentialtdx",
+  "runneraws",
+  "runnertwob",
+  "runnerdaytona",
+  "containerdockprincipal",
   "containerrunsc",
   "emulatorqemu",
   "microvmfirecracker",
@@ -308,8 +311,9 @@ describe("the edge plane answers the visitor law", () => {
     const machinerun = await runonedge({ modality: "virtualdrivers", code: "{}" });
     assert.equal(machinerun.status, "succeeded", JSON.stringify(machinerun.error));
     // the heavyweight lanes answer their probe honestly (present or
-    // absent, never a faked boot)
-    const heavy = await runonedge({ modality: "podsession", code: "" });
+    // absent, never a faked boot) — the principal container dock probes
+    // the docker daemon surface
+    const heavy = await runonedge({ modality: "containerdockprincipal", code: "" });
     assert.ok(heavy.status === "succeeded" || heavy.error?.code === "HOST_RUNTIME_ABSENT");
     // the host binary lanes name their runtime when absent
     const jail = await runonedge({ modality: "sandboxbubblewrap", code: "echo hi" });

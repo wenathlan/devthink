@@ -14,7 +14,7 @@
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 6;
+export const LABEL_REVISION = 7;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
@@ -208,6 +208,19 @@ export const labelManifest = {
   "explore.state.kind.binary": "app",
   "explore.modules.waves": "04 · the modules",
   "explore.download.waves": "05 · the builds",
+
+  /* ---------------------------- console · the terminal --------------------- */
+  // the boot face of the console terminal answers the minimal-text law: the
+  // name, the one-line tagline and the hint — the block art of the first
+  // cut is gone, and every line of the input well and the connect states
+  // rides the manifest the same way the web copy does.
+  "console.boot.name": "DEVTHINK",
+  "console.boot.tagline": "begin with one intention",
+  "console.boot.hint": "enter opens a local workspace, esc exits",
+  "console.input.placeholder": "Ask anything",
+  "console.status.connecting": "connecting",
+  "console.status.listening": "listening for events",
+  "console.status.provider": "connecting to local provider",
 } as const;
 
 export type LabelKey = keyof typeof labelManifest & string;
@@ -401,27 +414,6 @@ export const seedConsoleCategories: string[] = [
 /** the console categories, rail order. */
 export function consoleCategories(): string[] {
   return seedConsoleCategories;
-}
-
-/** the entry art of the console terminal workspace (console.entryArt): the
- * nine template lines the boot screen renders — the art is data of the
- * label store, never a literal of the widget, and the surface renders the
- * rows as-is. */
-export const seedConsoleEntryArt: string[] = [
-  "                 +++++",
-  "          +++++++++++++++",
-  "      ++++++     ++++++",
-  "    +++++         +++++",
-  "   +++++           +++++",
-  "    +++++         +++++",
-  "      ++++++   ++++++",
-  "          +++++++++++++",
-  "                 +++++",
-];
-
-/** the console entry art lines, template order. */
-export function consoleEntryArt(): string[] {
-  return seedConsoleEntryArt;
 }
 
 /* -------------------------------- limits -------------------------------- */

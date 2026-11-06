@@ -6,7 +6,7 @@ DevThink opens as a landing-grade local command surface, then becomes a browser-
 
 ## Entry state
 
-The entry state contains the canonical DevThink ANSI art as a large, dim background layer. An oversized `DEVTHINK` wordmark sits above it in the foreground. The only primary operation is a natural-language command field with a direct run affordance. A nonempty submitted request creates the local identity, preserves the label as the first session intent, and opens the route-addressable workspace. The temporary workspace route remains available as a secondary local-first path.
+The entry state answers the minimal-text law: the `DEVTHINK` wordmark with a one-line tagline beneath it and the hint at the bottom edge — no ANSI art, no block ornament, nothing else. The only primary operation is a natural-language command field with a direct run affordance. A nonempty submitted request creates the local identity, preserves the label as the first session intent, and opens the route-addressable workspace. The temporary workspace route remains available as a secondary local-first path.
 
 ## Browser workspace
 
@@ -14,7 +14,7 @@ The workspace uses two compact levels of navigation. The first level is a browse
 
 | Area | Web rendering | CLI rendering |
 | --- | --- | --- |
-| entry art | blurred ANSI backdrop behind the foreground wordmark | dim canonical ANSI mark behind the terminal title |
+| entry art | none — the wordmark and the one-line tagline answer alone | the wordmark, the tagline and the hint (no block art) |
 | first command | creates local identity and opens a workspace route | starts or labels the interactive local session |
 | session tab | browser-style active tab with a small state signal | compact session label above the task strip |
 | task strip | focusable rounded category controls | keyboard-selectable category controls |
@@ -27,4 +27,4 @@ The base stays nearly black. Panels use layered charcoal rather than flat cards.
 
 ## Motion and accessibility
 
-Entry artwork moves only through a slow opacity-and-transform drift. The accepted first command crosses into the workspace with a short fade and upward reveal; command execution itself remains immediate. Every interactive tab has an accessible name, visible focus and ordinary button semantics. Reduced-motion preferences remove all decorative movement. The web stays static-host portable, and the CLI retains the ANSI fallback when a full interactive terminal cannot render Ink.
+Entry artwork never answers; the boot face stays still. The accepted first command crosses into the workspace with a short fade and upward reveal; command execution itself remains immediate. Every interactive tab has an accessible name, visible focus and ordinary button semantics. Reduced-motion preferences remove all decorative movement. The web stays static-host portable, and the CLI retains the ANSI fallback when a full interactive terminal cannot render Ink.

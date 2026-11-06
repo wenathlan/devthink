@@ -19,90 +19,95 @@ import {
 
 /** the records the platform lanes drive today — the honest live set the
  * report and the lanes agree on (the run lane executes node inside the
- * container, the storage lane drives the session jail, and the edge plane
- * lanes of wave sv2 drive the babel, webpack and universal sh lanes
- * server-side). the seventeen registry-only ids the owner's audit named
- * (the host runtimes and the inproc seats the engine never carried real
- * executors for) left the live set for the honest planned shelf — the
- * record never pretends a wiring the engine does not drive */
+ * container, the storage lane drives the session jail, and the edge
+ * plane lanes drive the babel, webpack and universal sh lanes
+ * server-side; the pr15 completion wave seated the wasme, exe, binary,
+ * sh and yaml runner seats, the port dock, the container dock
+ * principal, the virtual file store and the virtual hardware
+ * presentation seats). the seventeen registry-only ids the owner's
+ * audit named (the host runtimes and the inproc seats the engine never
+ * carried real executors for) left the live set for the honest planned
+ * shelf — the record never pretends a wiring the engine does not drive */
 const LIVESET = [
+  "browserwebcontainer",
+  "buildbazel",
+  "ciactions",
+  "containercontainerd",
+  "containercrun",
   "containerdocker",
+  "containerdockprincipal",
+  "containerghcr",
+  "containerlite",
+  "containermax",
+  "containerpodman",
+  "containerrunc",
+  "deliverycdn",
+  "deliverygrpc",
+  "deliverywss",
   "fsvfs",
+  "gpuvirgl",
+  "hardwarevirtual",
   "languagego",
   "languagejava",
   "languagepython",
   "languageruby",
-  "runnerbabel",
-  "runnerbun",
-  "runnernode",
-  "runneruniversal",
-  "runnerwebpack",
-  "runnerwasm",
-  "runtimejvm",
-  "sandboxbubblewrap",
-  "sandboxnsjail",
-  "sandboxchroot",
-  "containerpodman",
-  "containercontainerd",
-  "containerrunc",
-  "containercrun",
-  "containermax",
-  "containerlite",
-  "containerghcr",
-  "runtimeclr",
-  "runtimeworkerd",
-  "screenxvfb",
-  "screenwayland",
+  "localoptin",
+  "microvmgpuless",
   "mobiletermux",
-  "buildbazel",
-  "buildbuck",
-  "buildturborepo",
-  "ciactions",
-  "cigitlab",
-  "networktor",
   "networki2p",
+  "networktor",
   "networkwireguard",
-  "storageminio",
-  "storagegarage",
-  "ramtmpfs",
+  "portsdock",
   "rammmap",
   "ramoverlayfs",
-  "ramloopram",
-  "ramgitram",
-  "ramzram",
-  "ramzswap",
   "ramswapfile",
-  "deliverycdn",
-  "deliverywss",
-  "deliverywebtransport",
-  "deliverygrpc",
-  "deliverycapnproto",
+  "ramtmpfs",
+  "ramzram",
+  "runnerbabel",
+  "runnerbinary",
+  "runnerbun",
+  "runnerexe",
+  "runnernode",
+  "runnersh",
+  "runneruniversal",
+  "runnerwasm",
+  "runnerwasme",
+  "runnerwebpack",
+  "runneryaml",
+  "runtimeclr",
+  "runtimejvm",
+  "runtimeworkerd",
+  "sandboxbubblewrap",
+  "sandboxchroot",
+  "sandboxnsjail",
+  "screenxvfb",
   "storagelibsql",
   "storagemysql",
   "storagepostgres",
   "storages3",
-  "browserwebcontainer",
-  "localoptin",
-  "virtualfull",
-  "virtualvgpu",
-  "virtualscreen",
   "virtualdrivers",
+  "virtualfile",
+  "virtualfull",
+  "virtualgpu",
   "virtualkvm",
-  "microvmgpuless",
-  "gpuvirgl",
+  "virtualprocessor",
+  "virtualscreen",
+  "virtualvcpu",
+  "virtualvgpu",
 ] as const;
 
-/** the records whose host runtime the sandbox lane probes on PATH */
+/** the records whose host runtime the sandbox lane probes (the three
+ * provider seats the heavyweight probes answer beside the confidential,
+ * emulation and container-runtime seats). */
 const HOSTSET = [
+  "browserserver",
   "confidentialsevsnp",
-  "confidentialtdx",
   "containerrunsc",
   "emulatorqemu",
   "microvmfirecracker",
-  "browserserver",
-  "mobilecapacitor",
-  "mobilepostmarketos",
-  "podsession",
+  "runneraws",
+  "runnerdaytona",
+  "runnertwob",
 ] as const;
 
 describe("the modality registry", () => {
@@ -176,12 +181,27 @@ describe("the modality registry", () => {
     for (const modality of lite) assert.notEqual(modality.isolation, "hardware");
     const tight = resolvejoin({ base: "max", gpu: false, network: false, bootbudget: 50 });
     for (const modality of tight) assert.ok(modality.bootms <= 50, `${modality.id} boots in ${modality.bootms}`);
-    const none = resolvejoin({ base: "max", gpu: true, network: false, bootbudget: 50 });
+    // a gpu demand with no network under the tight budget answers the
+    // virtual gpu presentation seat (gpu true, network false, hot boot)
+    // — the presentation seats satisfy the join the machine images
+    // cannot (the pr15 completion wave seated them)
+    const gpuonly = resolvejoin({ base: "max", gpu: true, network: false, bootbudget: 50 });
+    assert.ok(gpuonly.length >= 1, "the gpu presentation seat answers the join");
+    for (const modality of gpuonly) {
+      assert.equal(modality.gpu, true);
+      assert.equal(modality.network, false);
+      assert.ok(modality.bootms <= 50, `${modality.id} boots in ${modality.bootms}`);
+    }
+    assert.ok(gpuonly.some((modality) => modality.id === "virtualgpu"), "the virtual gpu seat rides the answer");
+    // an impossible demand still answers the empty join: a gpu with no
+    // network under a 5 ms budget (the virtual gpu seat boots at 25 ms —
+    // no gpu seat answers that fast)
+    const none = resolvejoin({ base: "max", gpu: true, network: false, bootbudget: 5 });
     assert.equal(none.length, 0);
   });
 
   it("answers records by id", () => {
-    assert.equal(getmodality("podsession")?.family, "pod");
+    assert.equal(getmodality("containerdockprincipal")?.family, "container");
     assert.equal(getmodality("no-such-modality"), undefined);
   });
 });

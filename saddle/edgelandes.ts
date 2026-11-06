@@ -56,6 +56,24 @@ import {
   solvetopology,
   vulkanSummary,
 } from "./sandbox.ts";
+/* the master engine table of the ninety modalities owns the presentation
+ * helpers the pr15 completion lanes mirror (the topology solver, the
+ * processor and gpu device banks, the payload magic sniffers, the yaml
+ * interpreter, the babel bridge, the node:vm background surface and the
+ * in-process wasm instantiation) — the lanes reuse the same engines the
+ * modality seats execute through, so the lane answer and the seat answer
+ * can never drift apart (the registry derives from the table; the plane
+ * wires the same table's engines). */
+import {
+  compilethroughbabel,
+  instantiatewasm,
+  interpretyaml,
+  presentgpubank,
+  presentprocessor,
+  runinisolatedcontext,
+  sniffpayloadmagic,
+  solvectputopology,
+} from "./modalities.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* SECTION: edgelandes.ts — the base contract lanes (the first seat).   */
@@ -3133,6 +3151,209 @@ async function runnerwasilane(code: string, inputs: unknown, deadline: number): 
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
+/* Section 12.5: the pr15 completion lanes — the runner script seats    */
+/* and the port dock (the six live lanes the master engine table        */
+/* widened the plan with: the wasme toolchain, the exe and binary       */
+/* execution gates, the sh lane, the yaml babel lane and the port       */
+/* processing dock — every one a real implementation the modality       */
+/* seats of modalities.ts own the vocabulary of).                       */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** rethrows one typed error of the master engine table's helpers as the
+ * coded lane error the plane contract demands (every lane failure is an
+ * edgelaneerror — the engine table's plain typed errors never leak). */
+function aslanelerror(lane: string, error: unknown): never {
+  const typed = error as { code?: string; message?: string };
+  if (typeof typed?.code === "string" && typed.code.length > 0) {
+    throw edgelaneerror(typed.code, `the lane ${lane} refuses: ${errormessage(error)}`);
+  }
+  throw edgelaneerror("LANE_EXECUTION_FAILED", `the lane ${lane} failed: ${errormessage(error)}`);
+}
+
+/** runner-wasme: the wasme toolchain lane. The code field is the payload
+ * the seat sniffs: wasm bytes (base64) instantiate in-process through
+ * the engine's own webassembly — the same instantiation the master
+ * engine table's wasme seat executes — and any other payload answers
+ * the coded refusal naming the wasmedge cli plan the lane stamps (the
+ * lane runs modules, it never fakes a toolchain run on foreign bytes). */
+async function runnerwasmelane(code: string, _inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  const kind = sniffpayloadmagic(code);
+  if (kind !== "wasm") {
+    throw edgelaneerror(
+      "INVALID_LANE_PAYLOAD",
+      `the lane runnerwasme requires base64 wasm module bytes in the code field (sniffed ${kind}) — the wasmedge plan is [wasmedge --dir .:. module.wasm]`,
+    );
+  }
+  try {
+    const stdout = await instantiatewasm(code);
+    return lanereport(
+      "application/wasm",
+      { toolchain: "wasmedge", instantiation: "in-process", result: stdout, deadlinems: deadline },
+      { toolchain: "wasmedge (in-process instantiation)", result: stdout },
+    );
+  } catch (error) {
+    aslanelerror("runnerwasme", error);
+  }
+}
+
+/** runner-exe: the exe execution lane. The mz gate answers first (the
+ * seat's own signature law) and the run rides wine — the host runtime
+ * the lane names honestly when it is absent, never a faked windows
+ * boot. */
+async function runnerexelane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("wine")) {
+    absentruntime("runnerexe", "wine");
+  }
+  const kind = sniffpayloadmagic(code);
+  if (kind !== "exe") {
+    throw edgelaneerror(
+      "MZ_SIGNATURE_ABSENT",
+      `the lane runnerexe refuses the payload: the mz signature is absent (sniffed ${kind})`,
+    );
+  }
+  return withtempdirhost(async (dir) => {
+    await writeFile(join(dir, "payload.exe"), Buffer.from(code.replace(/\s/g, ""), "base64"));
+    const inputenv = await writeinputsfilehost(dir, inputs);
+    const run = await runhostprocesshost("wine", ["payload.exe"], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** runner-binary: the binary execution lane. The elf gate answers first
+ * (the seat's own magic law), then the payload lands executable in the
+ * private dir and the kernel's exec surface runs it under the deadline —
+ * the honest rung a linux engine host answers. */
+async function runnerbinarylane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  const kind = sniffpayloadmagic(code);
+  if (kind !== "elf") {
+    throw edgelaneerror(
+      "ELF_MAGIC_ABSENT",
+      `the lane runnerbinary refuses the payload: the elf magic is absent (sniffed ${kind})`,
+    );
+  }
+  return withtempdirhost(async (dir) => {
+    const payload = join(dir, "payload");
+    await writeFile(payload, Buffer.from(code.replace(/\s/g, ""), "base64"), { mode: 0o755 });
+    const inputenv = await writeinputsfilehost(dir, inputs);
+    const run = await runhostprocesshost(payload, [], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** runner-sh: the sh execution lane — the pr15 law verbatim (execução de
+ * SHs): the code field is the shell program, the lane runs it through
+ * bash inside the private dir under the deadline, the inputs ride the
+ * env surface the other host lanes share. */
+async function runnershlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probehostbinary("bash")) {
+    absentruntime("runnersh", "bash");
+  }
+  return withtempdirhost(async (dir) => {
+    const inputenv = await writeinputsfilehost(dir, inputs);
+    const run = await runhostprocesshost("bash", ["-c", code], { cwd: dir, deadline, env: inputenv });
+    return { stdout: run.stdout, stderr: run.stderr };
+  });
+}
+
+/** runner-yaml: the yml and yaml interpretation lane with babel
+ * compilation — the pr15 law verbatim (interpretação de YML / YAML com
+ * compilação via Babel para permitir execução em segundo plano /
+ * Docker). The code field is the yaml document: the lane interprets it
+ * through the master engine table's own interpreter, compiles the
+ * embedded run/script program through the babel bridge and executes it
+ * in the isolated node:vm background surface; a document that carries
+ * no program answers the interpreted manifest (the interpretation is
+ * real work, never a refusal), and an image field stamps the docker
+ * plan the container lane rides. */
+async function runneryamllane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
+  if (!probemodule("@babel/core")) {
+    absentruntime("runneryaml", "yaml-babel", "(the babel bridge module @babel/core the compilation rides)");
+  }
+  let manifest: unknown;
+  try {
+    manifest = interpretyaml(code);
+  } catch (error) {
+    aslanelerror("runneryaml", error);
+  }
+  const document = (manifest ?? {}) as { run?: unknown; script?: unknown; image?: unknown; background?: unknown };
+  const program = typeof document.run === "string" ? document.run : typeof document.script === "string" ? document.script : "";
+  const lines: string[] = [`yaml manifest interpreted: ${JSON.stringify(manifest).slice(0, 512)}`];
+  let artifact: unknown = { manifest };
+  if (program.length > 0) {
+    const compiled = await compilethroughbabel(program);
+    const run = await runinisolatedcontext(compiled, inputs, Math.max(1, deadline));
+    lines.push(`babel compilation: ${compiled.length} bytes compiled for background execution`);
+    if (run.stdout.length > 0) lines.push(run.stdout);
+    artifact = { manifest, compiledbytes: compiled.length, background: document.background ?? true };
+  }
+  if (typeof document.image === "string" && document.image.length > 0) {
+    lines.push(`docker plan: docker run ${document.image} (the background execution the compose shape plans)`);
+    artifact = { ...(artifact as object), dockervalue: ["docker", "run", "--rm", document.image] };
+  }
+  return lanereport("application/vnd.devthink.run+json", { steps: lines.length, report: lines.join("\n") }, artifact);
+}
+
+/** the engine port range the dock allocates from — the same range the
+ * master engine table's port dock owns (the edge host ports the
+ * container docks publish, never the visitor machine's). */
+const PORTDOCKLANERANGE = Object.freeze({ first: 30000, last: 32767 });
+
+/** the port dock lane's allocation table (per-sandbox bindings in the
+ * engine range, the honest collision refusal and the docker publish
+ * flags — the lane-side registry mirroring the port processing seat). */
+const portdocklanebindings = new Map<number, { sandbox: string; container: number; protocol: "tcp" | "udp" }>();
+
+/** ports-dock: the port processing dock lane. The code field is the
+ * {"sandbox":"name","container":8080,"protocol":"tcp"} manifest (or
+ * {"sandbox":"name","release":true} to free the bindings): the lane
+ * allocates one free engine port for the sandbox, answers the docker
+ * publish flags and refuses honestly when the range answers no seat —
+ * the same dock law the master engine table's port seat owns. */
+async function portsdocklane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifestinproc("portsdock", code);
+  const sandbox = manifesttext("portsdock", manifest.sandbox, "sandbox");
+  if (manifest.release === true) {
+    let released = 0;
+    for (const [port, binding] of portdocklanebindings) {
+      if (binding.sandbox === sandbox) {
+        portdocklanebindings.delete(port);
+        released += 1;
+      }
+    }
+    return lanereport(
+      "application/vnd.devthink.net+json",
+      { sandbox, released, bound: portdocklanebindings.size },
+      { sandbox, released },
+    );
+  }
+  const container = manifestuint("portsdock", manifest.container ?? 8080, "container");
+  const protocol = manifest.protocol === "udp" ? "udp" : "tcp";
+  let hostport = 0;
+  for (let port = PORTDOCKLANERANGE.first; port <= PORTDOCKLANERANGE.last; port += 1) {
+    if (!portdocklanebindings.has(port)) {
+      hostport = port;
+      break;
+    }
+  }
+  if (hostport === 0) {
+    throw edgelaneerror(
+      "PORT_DOCK_EXHAUSTED",
+      `the lane portsdock refuses: the engine port range ${PORTDOCKLANERANGE.first}-${PORTDOCKLANERANGE.last} answers no free seat`,
+    );
+  }
+  portdocklanebindings.set(hostport, { sandbox, container, protocol });
+  const flags: string[] = [];
+  for (const [port, binding] of portdocklanebindings) {
+    if (binding.sandbox === sandbox) flags.push("-p", `${port}:${binding.container}/${binding.protocol}`);
+  }
+  return lanereport(
+    "application/vnd.devthink.net+json",
+    { sandbox, hostport, container, protocol, flags },
+    { sandbox, hostport, container, protocol, flags },
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
 /* Section 13: the lane table — the specs, the executors, the ids. */
 /* ════════════════════════════════════════════════════════════════════ */
 
@@ -3172,6 +3393,32 @@ export const hostlanespecs: readonly HostLaneSpec[] = Object.freeze([
   { modality: "networktor", kind: "live", runtime: "tor", present: () => probehostbinary("tor") },
   { modality: "networki2p", kind: "live", runtime: "i2p", present: () => probehostbinary("i2prouter") },
   { modality: "networkwireguard", kind: "live", runtime: "wg", present: () => probehostbinary("wg") },
+  // the pr15 completion lanes: the runner script seats and the port dock
+  // (kind live — the wasme seat instantiates in-process, the exe and
+  // binary seats gate the payload magic and drive their host runtimes,
+  // the sh lane runs bash, the yaml lane rides the babel bridge, the
+  // port dock allocates the engine port range)
+  {
+    modality: "runnerwasme",
+    kind: "live",
+    runtime: "wasmedge",
+    present: () => probewasm() || probehostbinary("wasmedge"),
+  },
+  { modality: "runnerexe", kind: "live", runtime: "wine", present: () => probehostbinary("wine") },
+  {
+    modality: "runnerbinary",
+    kind: "live",
+    runtime: "execve",
+    present: () => process.platform === "linux",
+  },
+  { modality: "runnersh", kind: "live", runtime: "bash", present: () => probehostbinary("bash") },
+  {
+    modality: "runneryaml",
+    kind: "live",
+    runtime: "yaml-babel",
+    present: () => probemodule("@babel/core"),
+  },
+  { modality: "portsdock", kind: "live", runtime: "port-dock", present: () => true },
   // the wiring wave lanes: the language toolchains, the runner seats and
   // the build tail — kind host (the runtime probe rung), the executors
   // drive the runtimes when the hosts carry them
@@ -3218,6 +3465,12 @@ const edgelaneexecutorstable: Readonly<Record<string, EdgeLaneExecutor>> = Objec
   "networktor": networktorlane,
   "networki2p": networki2plane,
   "networkwireguard": networkwireguardlane,
+  "runnerwasme": runnerwasmelane,
+  "runnerexe": runnerexelane,
+  "runnerbinary": runnerbinarylane,
+  "runnersh": runnershlane,
+  "runneryaml": runneryamllane,
+  "portsdock": portsdocklane,
   "buildmake": buildmakelane,
   "buildninja": buildninjalane,
   "languagecargo": languagecargolane,
@@ -4412,6 +4665,147 @@ async function networkdohlaneinproc(code: string, _inputs: unknown, _deadline: n
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
+/* Section 7.5: the pr15 completion lanes — the virtual hardware         */
+/* presentation seats and the virtual file store (the five in-process    */
+/* lanes the master engine table widened the plan with: the vcpu         */
+/* topology plan, the cpu class presentation, the gpu bank              */
+/* presentation, the hardware virtual composition and the virtual file  */
+/* store — every one the same engine the modality seats of              */
+/* modalities.ts execute through, so the lane answer and the seat       */
+/* answer never drift apart).                                           */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** the registry mimes the five presentation lanes answer (the artifact
+ * mime test pins them against the modality registry records). */
+const VIRTUALMIME = Object.freeze({
+  sandbox: "application/vnd.devthink.sandbox+json",
+  gpu: "application/vnd.devthink.gpu+json",
+  vfs: "application/vnd.devthink.vfs+json",
+});
+
+/** virtual-vcpu: the vcpu topology plan lane. The code field is the
+ * {"vcpus":n} manifest: the lane solves the sockets x cores x threads
+ * topology (the master engine table's own solver) and answers the plan
+ * with the qemu -smp flag — every cpu virtual, the visitor cpu is never
+ * read (the critical law). */
+async function virtualvcpulane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifestinproc("virtualvcpu", code);
+  const vcpus = manifestuint("virtualvcpu", manifest.vcpus ?? 4, "vcpus");
+  let topology: ReturnType<typeof solvectputopology>;
+  try {
+    topology = solvectputopology(vcpus);
+  } catch (error) {
+    aslanelerror("virtualvcpu", error);
+  }
+  return lanereport(
+    VIRTUALMIME.sandbox,
+    { vcpus, ...topology },
+    { vcpus, sockets: topology.sockets, cores: topology.cores, threads: topology.threads, qemuflag: topology.qemuflag },
+  );
+}
+
+/** virtual-processor: the cpu class presentation lane. The code field is
+ * the {"cpu":"epyc9965"} manifest: the lane presents the device bank's
+ * processor identity (model, base clock, tdp) the vm stamps — a virtual
+ * identity the engine presents on the edge, never the visitor cpu. */
+async function virtualprocessorlane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifestinproc("virtualprocessor", code);
+  const classid = manifesttext("virtualprocessor", manifest.cpu ?? "epyc9965", "cpu");
+  let processor: ReturnType<typeof presentprocessor>;
+  try {
+    processor = presentprocessor(classid);
+  } catch (error) {
+    aslanelerror("virtualprocessor", error);
+  }
+  return lanereport(VIRTUALMIME.sandbox, { ...processor }, { ...processor });
+}
+
+/** virtual-gpu: the gpu bank presentation lane. The code field is the
+ * {"gpu":"b200","count":1} manifest: the lane presents the device bank's
+ * gpu plan (the class, the count, the vram, the mig grammar) — the
+ * virtual device plan, never the visitor gpu. */
+async function virtualgpulane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifestinproc("virtualgpu", code);
+  const gpuid = manifesttext("virtualgpu", manifest.gpu ?? "b200", "gpu");
+  const count = manifestuint("virtualgpu", manifest.count ?? 1, "count");
+  let bank: ReturnType<typeof presentgpubank>;
+  try {
+    bank = presentgpubank(gpuid, count);
+  } catch (error) {
+    aslanelerror("virtualgpu", error);
+  }
+  return lanereport(VIRTUALMIME.gpu, { ...bank }, { ...bank });
+}
+
+/** hardware-virtual: the hardware virtual composition lane. The code
+ * field is the machine manifest {"vcpus":4,"cpu":"epyc9965","gpu":"b200",
+ * "gpus":1,"memorygb":16}: the lane composes the full machine plan (the
+ * topology, the processor identity, the gpu bank, the ram plan, the q35
+ * drive grammar) — every device virtual, the report says composed. */
+async function hardwarevirtuallane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = parsemanifestinproc("hardwarevirtual", code);
+  const vcpus = manifestuint("hardwarevirtual", manifest.vcpus ?? 4, "vcpus");
+  const cpuid = manifesttext("hardwarevirtual", manifest.cpu ?? "epyc9965", "cpu");
+  const gpuid = manifesttext("hardwarevirtual", manifest.gpu ?? "b200", "gpu");
+  const gpus = manifestuint("hardwarevirtual", manifest.gpus ?? 1, "gpus");
+  const memorygb = manifestuint("hardwarevirtual", manifest.memorygb ?? 16, "memorygb");
+  let composition: Record<string, unknown>;
+  try {
+    composition = {
+      processor: presentprocessor(cpuid),
+      topology: solvectputopology(vcpus),
+      gpu: presentgpubank(gpuid, gpus),
+      memorygb,
+      machine: "q35",
+      drives: [{ path: "/sandbox/vm/rootfs.qcow2", format: "qcow2", if: "virtio" }],
+      law: "every device virtual — the engine presents its own hardware on the edge, the visitor machine never lends its own",
+    };
+  } catch (error) {
+    aslanelerror("hardwarevirtual", error);
+  }
+  return lanereport(VIRTUALMIME.sandbox, { composed: true, ...composition }, composition);
+}
+
+/** the lane-side virtual file store: the in-memory file records the
+ * virtual file lane owns (path-keyed, sha256-sealed — nothing ever
+ * touches a visitor disk, the critical law; the store keeps only the
+ * per-path record so the lane answers deterministic bytes). */
+const virtualfilestorelane = new Map<string, { path: string; bytes: Uint8Array; sha256: string }>();
+
+/** virtual-file: the virtual file store lane. The code field is the file
+ * content and the manifest rides the inputs surface ({path, owner} to
+ * write, {read} to read back): the lane writes the record into the
+ * engine's own in-memory store, seals it with sha256 and answers the
+ * record — the same store law the master engine table's virtual file
+ * seat owns. */
+async function virtualfilelane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
+  const manifest = (inputs ?? {}) as { path?: unknown; owner?: unknown; read?: unknown };
+  if (typeof manifest.read === "string" && manifest.read.length > 0) {
+    const record = virtualfilestorelane.get(manifest.read);
+    if (record === undefined) {
+      throw edgelaneerror(
+        "VIRTUAL_FILE_ABSENT",
+        `the lane virtualfile refuses: the virtual file ${manifest.read} is absent from the store`,
+      );
+    }
+    return lanereport(
+      VIRTUALMIME.vfs,
+      { path: record.path, bytes: record.bytes.byteLength, sha256: record.sha256 },
+      { path: record.path, bytes: record.bytes.byteLength, sha256: record.sha256, content: new TextDecoder().decode(record.bytes) },
+    );
+  }
+  const path = typeof manifest.path === "string" && manifest.path.length > 0 ? manifest.path : "payload";
+  const bytes = utf8.encode(code);
+  const sha256 = createHash("sha256").update(bytes).digest("hex");
+  virtualfilestorelane.set(path, { path, bytes, sha256 });
+  return lanereport(
+    VIRTUALMIME.vfs,
+    { path, bytes: bytes.byteLength, sha256 },
+    { path, bytes: bytes.byteLength, sha256 },
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
 /* Section 8: the lane tables — the specs, the executors and the ids. */
 /* ════════════════════════════════════════════════════════════════════ */
 
@@ -4457,12 +4851,21 @@ export const inproclanespecs: readonly InprocLaneSpec[] = Object.freeze([
   { modality: "storagesqlite", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "networkdns", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "networkdoh", kind: "live", runtime: "pure-ts", present: () => true },
+  // the pr15 completion seats: the virtual hardware presentation lanes
+  // and the virtual file store (every one live — the seats compose the
+  // engine's own device banks in-process, deterministic and seeded)
+  { modality: "virtualvcpu", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "virtualprocessor", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "virtualgpu", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "hardwarevirtual", kind: "live", runtime: "pure-ts", present: () => true },
+  { modality: "virtualfile", kind: "live", runtime: "pure-ts", present: () => true },
 ]);
 
 /** the in-process executor table: every lane of the group b contract,
  * keyed by modality id — the nineteen of the first wave beside the five
- * of the wiring wave; the dispatcher refuses to boot over a lane it
- * cannot wire. */
+ * of the wiring wave and the five pr15 completion seats (the virtual
+ * hardware presentation and the virtual file store); the dispatcher
+ * refuses to boot over a lane it cannot wire. */
 export const edgelaneexecutorsinproc: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
   "ramtmpfs": ramtmpfslaneinproc,
   "rammmap": rammmaplane,
@@ -4483,6 +4886,11 @@ export const edgelaneexecutorsinproc: Readonly<Record<string, EdgeLaneExecutor>>
   "storagesqlite": storagesqlitelane,
   "networkdns": networkdnslaneinproc,
   "networkdoh": networkdohlaneinproc,
+  "virtualvcpu": virtualvcpulane,
+  "virtualprocessor": virtualprocessorlane,
+  "virtualgpu": virtualgpulane,
+  "hardwarevirtual": hardwarevirtuallane,
+  "virtualfile": virtualfilelane,
 });
 
 /** the wired lane ids in spec order — the pinned contract the parallel
@@ -5257,9 +5665,10 @@ export const virtuallaneids: readonly string[] = Object.freeze(virtuallanespecs.
 
 // # edgelandesninety — the merge seat of the ninety modalities wave: the
 // six heavyweight host lanes the plane probes (the browser server, the
-// mobile seats, the pod session and the confidential compute — every one
-// an honest probe lane that names its runtime and never fakes a boot) and
-// the merged lane tables the dispatch plane reads. the lane groups of the
+// confidential compute, the three provider seats and the principal
+// container dock — every one an honest probe lane that names its runtime
+// and never fakes a boot) and the merged lane tables the dispatch plane
+// reads. the lane groups of the
 // wave (edgelandeshost.ts — the host binary lanes, edgelandesinproc.ts
 // — the in-process lanes and edgelandesvirtual.ts — the virtual hardware
 // composition lanes) each own their executors, edgelandes.ts owns the
@@ -5325,6 +5734,33 @@ function probesevsnp(): boolean {
   return existsSync("/dev/sev");
 }
 
+/** probes the aws provider surface: the sigv4 credential pair the aws
+ * seat signs its ec2 requests with (the engine-side configuration, never
+ * a visitor surface). */
+function probeaws(): boolean {
+  return (process.env.AWS_ACCESS_KEY_ID ?? "").length > 0 && (process.env.AWS_SECRET_ACCESS_KEY ?? "").length > 0;
+}
+
+/** probes the 2b provider surface: the api key the 2b sandbox session
+ * seat authorizes its create requests with. */
+function probetwob(): boolean {
+  return (process.env.TWOB_API_KEY ?? "").length > 0;
+}
+
+/** probes the daytona provider surface: the api key the daytona
+ * workspace seat authorizes its create requests with. */
+function probedaytona(): boolean {
+  return (process.env.DAYTONA_API_KEY ?? "").length > 0;
+}
+
+/** probes the principal container dock surface: the docker binary on
+ * PATH or the daemon socket — the surface the container family lanes
+ * (container-max, container-lite, container-ghcr) ride beside the
+ * principal dock's own probe. */
+function probeprincipaldock(): boolean {
+  return probehostbinary("docker") || existsSync("/var/run/docker.sock");
+}
+
 /** resolves one engine module through the node resolver without loading
  * it — the honest seat check for the optional module surfaces. */
 function probemoduleseat(specifier: string): boolean {
@@ -5361,19 +5797,31 @@ function heavyweightprobelane(modality: string, runtime: string, present: () => 
 /* ════════════════════════════════════════════════════════════════════ */
 
 /** the heavyweight lanes of the ninety modalities wave: the browser
- * server and the sev-snp confidential compute surface — every one
- * kind host (the probe law). the pr15 cull retired the capacitor,
- * postmarketos, pod and tdx seats (the ninety stay at ninety through
- * the master engine table of modalities.ts). */
+ * server, the sev-snp confidential compute surface, the three provider
+ * seats (the aws sigv4 credentials, the 2b api key, the daytona api
+ * key) and the principal container dock's docker daemon surface — every
+ * one kind host (the probe law). the pr15 cull retired the capacitor,
+ * postmarketos, pod and tdx seats, and the pr15 completion wave seated
+ * the provider and principal dock probes the master engine table of
+ * modalities.ts widened the plan with (the ninety stay at ninety through
+ * the master engine table). */
 export const heavyweightlanespecs: readonly HeavyweightLaneSpec[] = Object.freeze([
   { modality: "browserserver", kind: "host", runtime: "chromium-headless", present: probebrowserserver },
   { modality: "confidentialsevsnp", kind: "host", runtime: "sev-snp", present: probesevsnp },
+  { modality: "runneraws", kind: "host", runtime: "aws-sigv4", present: probeaws },
+  { modality: "runnertwob", kind: "host", runtime: "2b-api", present: probetwob },
+  { modality: "runnerdaytona", kind: "host", runtime: "daytona-api", present: probedaytona },
+  { modality: "containerdockprincipal", kind: "host", runtime: "docker-daemon", present: probeprincipaldock },
 ]);
 
 /** the executor table of the heavyweight lanes, keyed by modality id. */
 export const edgelaneexecutorsheavy: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
   "browserserver": heavyweightprobelane("browserserver", "chromium-headless", probebrowserserver),
   "confidentialsevsnp": heavyweightprobelane("confidentialsevsnp", "sev-snp", probesevsnp),
+  "runneraws": heavyweightprobelane("runneraws", "aws-sigv4", probeaws),
+  "runnertwob": heavyweightprobelane("runnertwob", "2b-api", probetwob),
+  "runnerdaytona": heavyweightprobelane("runnerdaytona", "daytona-api", probedaytona),
+  "containerdockprincipal": heavyweightprobelane("containerdockprincipal", "docker-daemon", probeprincipaldock),
 });
 
 /** the heavyweight lane ids in spec order. */

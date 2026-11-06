@@ -74,13 +74,22 @@ function familydevbridge(): Plugin {
             const entry = path.join(siblingroot(slug), rest === "" ? "index.html" : rest);
             try {
               const html = readFileSync(entry, "utf8");
-              // the relative asset references walk the /@fs lane of the
-              // sibling root — the exact urls vite's html transform keeps
-              // untouched (the module scripts, the stylesheets, the icons
-              // and the manifests all serve through the fs allow list)
+              // the relative AND root-absolute asset references walk the
+              // /@fs lane of the sibling root — the exact urls vite's html
+              // transform keeps untouched (the module scripts, the
+              // stylesheets, the icons and the manifests all serve through
+              // the fs allow list). the root-absolute arm matters: a
+              // sibling entry that drifts to "/App.tsx" (the debonair
+              // drift of the window era) would otherwise load the OS entry
+              // itself inside the family window — the os mounts in the
+              // frame, answers its own family route and re-embeds the app
+              // recursively (the broken clip the owner reported); the arm
+              // keeps one drifted entry honest in dev, and protocol
+              // relative "//host" urls and full "https://" urls never
+              // match (the lookahead refuses the second slash)
               const rewritten = html.replace(
-                /(src|href)="\.\/([^"]+)"/g,
-                (_whole: string, attr: string, ref: string) =>
+                /(src|href)="(\.\/|\/(?!\/))([^"]+)"/g,
+                (_whole: string, attr: string, _prefix: string, ref: string) =>
                   `${attr}="/@fs${siblingroot(slug)}/${ref}"`,
               );
               const transformed = await server.transformIndexHtml(`/${slug}/`, rewritten);

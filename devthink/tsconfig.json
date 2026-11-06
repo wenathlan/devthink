@@ -27,6 +27,14 @@
       "hono/cors": ["./honocorsface.ts"],
       "@hono/node-server": ["./hononodeserverface.ts"],
       "@hono/node-server/serve-static": ["./honoservestaticface.ts"],
+      /* the babel seat face of the saddle engine bridge (the yaml and babel
+       * seats of modalities.ts import @babel/core through a guarded dynamic
+       * import — no install of the family declares the package, so the
+       * strict walk of the os program resolves the specifier through the
+       * face the way the hono seat documents above; the face carries the
+       * typed slice and no runtime, the guarded caller reports the absent
+       * seat honestly. retires when an install carries the real package. */
+      "@babel/core": ["./babelcoreface.ts"],
       /* the hono seat bridge of the ownership wave (the gateway transport
        * the getry seat owns imports the hono family, and the os lanes that
        * walk the moved graph never install the getry tree — the resolution
