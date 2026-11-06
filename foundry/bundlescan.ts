@@ -225,6 +225,11 @@ export function gatewaywirefields(name: string): boolean {
      * init_validate wrapper beside every precedent above — the name
      * belongs to the bundler, never the review. */
     "init_validate",
+    /* the stagingtruth wave's vmcore seat: the machine core the qemu
+     * fallback rides defers lazily through the engine seat's dynamic
+     * import, so its wrapper joins the list the way every module
+     * wrapper does — the name belongs to the bundler, never the review */
+    "init_vmcore",
     "chat_id",
     "session_id",
     "api_key",

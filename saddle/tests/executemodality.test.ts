@@ -44,6 +44,12 @@ const HONESTREFUSALS = new Set([
   "PROVIDER_CONFIG_ABSENT",
   "PROVIDER_ANSWERED_ERROR",
   "ENGINE_SPAWNER_ABSENT",
+  "ENGINE_STAGER_ABSENT",
+  /* the payload gates the exec seats ride: the mz, elf and wasme magic
+   * laws refuse foreign bytes with their own honest codes */
+  "MZ_SIGNATURE_ABSENT",
+  "ELF_MAGIC_ABSENT",
+  "WASM_BYTES_ABSENT",
 ]);
 
 /** Dispatches one seat and asserts the honest shape: the seat identity
