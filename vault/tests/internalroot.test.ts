@@ -33,7 +33,7 @@ beforeAll(async () => {
   writeFileSync(join(root, "index.html"), "<!doctype html><title>the vault site</title>");
   writeFileSync(join(root, "docs", "page.ts"), "export const law = true;\n");
   writeFileSync(join(root, "docs", "app.tsx"), "export const face = true;\n");
-  writeFileSync(join(root, "docs", "data.json"), "{\"law\":true}\n");
+  writeFileSync(join(root, "docs", "data.json"), '{"law":true}\n');
   writeFileSync(join(root, "docs", "asset.woff2"), new Uint8Array([0, 1, 2]));
   writeFileSync(join(root, "docs", "blob.zzzznope"), "unknown bytes");
   writeFileSync(join(root, "vault.db"), "the raw database bytes");
@@ -54,7 +54,15 @@ describe("the faun law (the database-file refusal)", () => {
       assert.ok(DATABASE_FILE_EXTENSIONS.includes(extension), `the law list carries ${extension}`);
       assert.equal(databaseFileRefused(`/vault${extension}`), true, `${extension} is refused`);
     }
-    for (const extension of [".db-journal", ".sqlite-wal", ".sqlite-shm", ".sqlite3-wal", ".sqlite3-shm"]) {
+    for (const extension of [
+      ".db-journal",
+      ".sqlite-wal",
+      ".sqlite-shm",
+      ".sqlite-journal",
+      ".sqlite3-wal",
+      ".sqlite3-shm",
+      ".sqlite3-journal",
+    ]) {
       assert.equal(databaseFileRefused(`/vault${extension}`), true, `${extension} is refused (the sibling spellings)`);
     }
   });

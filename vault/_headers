@@ -32,3 +32,46 @@
   X-Robots-Tag: noindex, nofollow, noarchive
   Content-Type: application/octet-stream
   Content-Disposition: attachment
+# the backup spellings a stray face could dodge the .db seal with — the
+# sqlite families the engine's own static lane refuses (internalroot.ts),
+# sealed here the same way, blocked outright in _redirects.
+/*.sqlite
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.sqlite-wal
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.sqlite-shm
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.sqlite-journal
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.sqlite3
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.sqlite3-wal
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.sqlite3-shm
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment
+/*.sqlite3-journal
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Content-Type: application/octet-stream
+  Content-Disposition: attachment

@@ -10,13 +10,14 @@
 // codes.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { onsetSecondsOf } from "../ingest.ts";
+import { sha256hex } from "../blobstore.ts";
+import { ingestPayload, onsetSecondsOf, pcmhash, type SoundPayload } from "../ingest.ts";
 import { LANE_STEPS, type PatternProject, type PatternTimeline, serializePattern } from "../pattern.ts";
-import { renderPlan, type RenderBlobStore } from "../render.ts";
+import { type RenderBlobStore, renderPlan } from "../render.ts";
 import { reverseIngestPayload, timelineEvents } from "../reverseingest.ts";
 import { FFT_SIZE, frameSpectrum } from "../spectrum.ts";
 import { midiToHz } from "../tuning.ts";
-import { wavInfo } from "../wavwriter.ts";
+import { encodeWav, wavInfo } from "../wavwriter.ts";
 
 /** The mastering rate the reconstruction rides. */
 const SR = 48000;
@@ -186,7 +187,7 @@ describe("reverseingest — the pattern payload (the render lane parity)", () =>
     assert.ok(result.wavPointer, "the store seat must answer the pointer");
     assert.equal(result.wavPointer?.bytes, result.wav.length);
     assert.equal(store.blobs.length, 1);
-    assert.deepEqual([...store.blobs[0]?.bytes ?? []], [...result.wav]);
+    assert.deepEqual([...(store.blobs[0]?.bytes ?? [])], [...result.wav]);
   });
 });
 
@@ -260,8 +261,114 @@ describe("reverseingest — the timeline payload (the reassembly)", () => {
     const first = rmsOfSecond(result.pcm, 0);
     const second = rmsOfSecond(result.pcm, 1);
     const third = rmsOfSecond(result.pcm, 2);
-    assert.ok(first > second * 1.3, `the louder frame must own the louder second (${first.toFixed(4)} vs ${second.toFixed(4)})`);
+    assert.ok(
+      first > second * 1.3,
+      `the louder frame must own the louder second (${first.toFixed(4)} vs ${second.toFixed(4)})`,
+    );
     assert.ok(third < 0.02, `the silent frame answers silence, not ${third.toFixed(4)}`);
+  });
+});
+
+describe("reverseingest — the v1 soundpayload (the whole-song decomposition, the digest verification)", () => {
+  /** The synthetic source: a 110 hz sawtooth over a click train, 3 s at
+   * the writer band floor — the proven shape the ingest lane locks onto. */
+  const RATE = 8000;
+  const SECONDS = 3;
+
+  /** Encodes the synthetic take as the wav bytes a visitor would upload. */
+  function sourcewav(): Uint8Array {
+    const mono = new Float32Array(RATE * SECONDS);
+    for (let i = 0; i < mono.length; i++) {
+      const t = i / RATE;
+      const bass = 0.4 * Math.sign(Math.sin(2 * Math.PI * 110 * t));
+      const gate = t % 0.5 < 0.02 ? 0.8 : 0;
+      mono[i] = Math.max(-1, Math.min(1, bass * 0.7 + gate));
+    }
+    return encodeWav([mono], { sampleRate: RATE, bitDepth: 16 });
+  }
+
+  /** The whole-song payload the forward ingest answers for the source. */
+  function soundpayload(): SoundPayload {
+    const answer = ingestPayload(sourcewav(), { name: "the whole song.wav", at: "2026-01-01T00:00:00.000Z" });
+    if (!answer.ok) throw new Error(`the fixture ingest failed: ${answer.code}`);
+    return answer.payload;
+  }
+
+  it("reconstructs the whole-song decomposition and verifies its last mile", async () => {
+    const payload = soundpayload();
+    const result = await reverseIngestPayload(payload);
+    assert.ok(result.ok, `the reverse ingest refused the soundpayload: ${result.ok ? "" : result.message}`);
+    if (!result.ok) return;
+    assert.equal(result.schema, "debonair.soundpayload/1");
+    assert.equal(result.sampleRate, RATE);
+    assert.ok(Math.abs(result.durationSeconds - SECONDS) < 0.01, `the reconstruction spans ${result.durationSeconds}s`);
+    const info = wavInfo(result.wav);
+    assert.equal(info.sampleRate, RATE);
+    assert.equal(info.channels, 1);
+    // the last mile: the playable bytes decode back onto the pcm the
+    // answer carries — verified, never assumed
+    assert.ok(result.verification.roundTrip, "the wav must decode back onto the reconstruction");
+    // the recorded hash rides the answer beside the render's own digest —
+    // the comparison verifies the reconstruction, it never replaces it
+    assert.equal(result.verification.sourcePcmHash, payload.document?.pcmhash ?? null);
+    assert.equal(result.verification.renderPcmHash, pcmhash(result.pcm));
+  });
+
+  it("is digest-deterministic: the same payload answers the same bytes and digest", async () => {
+    const payload = soundpayload();
+    const first = await reverseIngestPayload(payload);
+    const second = await reverseIngestPayload(JSON.parse(JSON.stringify(payload)) as SoundPayload);
+    assert.ok(first.ok && second.ok);
+    if (!first.ok || !second.ok) return;
+    assert.deepEqual([...first.wav], [...second.wav], "the same payload must answer the same bytes");
+    assert.equal(first.verification.wavSha256, second.verification.wavSha256);
+    assert.equal(first.verification.renderPcmHash, second.verification.renderPcmHash);
+    assert.equal(first.verification.wavSha256, sha256hex(first.wav));
+  });
+
+  it("rides the recorded hash into the synthesis — a tampered hash answers a different digest", async () => {
+    const payload = soundpayload();
+    const honest = await reverseIngestPayload(payload);
+    assert.ok(honest.ok);
+    if (!honest.ok) return;
+    const tampered: SoundPayload = {
+      ...payload,
+      document: payload.document === null ? null : { ...payload.document, pcmhash: payload.document.pcmhash + 1 },
+    };
+    const altered = await reverseIngestPayload(tampered);
+    assert.ok(altered.ok);
+    if (!altered.ok) return;
+    // the recorded hash is no longer comparison-only decoration: it seeds
+    // the rebuild, so a different hash answers a different reconstruction
+    assert.notEqual(altered.verification.wavSha256, honest.verification.wavSha256);
+    assert.notEqual(altered.verification.renderPcmHash, honest.verification.renderPcmHash);
+    assert.equal(altered.verification.sourcePcmHash, tampered.document?.pcmhash ?? null);
+  });
+
+  it("refuses the container-only envelope with empty-payload", async () => {
+    const shallow = soundpayload();
+    const containerOnly: SoundPayload = {
+      ...shallow,
+      analysis: "container-only",
+      document: null,
+      energy: [],
+      beats: null,
+    };
+    const result = await reverseIngestPayload(containerOnly);
+    assert.ok(!result.ok && result.code === "empty-payload", "the container-only lane must answer empty-payload");
+  });
+
+  it("carries the verification on every door (the pattern and the timeline too)", async () => {
+    const score = await reverseIngestPayload(serializePattern(patternPayload()), { seed: "verified" });
+    const timeline = await reverseIngestPayload(timelinePayload(), { seed: "verified" });
+    assert.ok(score.ok && timeline.ok);
+    if (!score.ok || !timeline.ok) return;
+    for (const answer of [score, timeline]) {
+      assert.ok(answer.verification.roundTrip, "the wav must decode back onto the reconstruction");
+      assert.equal(answer.verification.renderPcmHash, pcmhash(answer.pcm));
+      assert.equal(answer.verification.wavSha256, sha256hex(answer.wav));
+      assert.equal(answer.verification.sourcePcmHash, null, "the pattern family records no pcm hash");
+    }
   });
 });
 
@@ -274,7 +381,11 @@ describe("reverseingest — the machine codes", () => {
   });
 
   it("refuses an empty payload with empty-payload", async () => {
-    const silent: PatternProject = { ...patternPayload(), drums: { kick: [...SILENT], snare: [...SILENT], hat: [...SILENT], clap: [...SILENT] }, notes: [] };
+    const silent: PatternProject = {
+      ...patternPayload(),
+      drums: { kick: [...SILENT], snare: [...SILENT], hat: [...SILENT], clap: [...SILENT] },
+      notes: [],
+    };
     const score = await reverseIngestPayload(silent);
     assert.ok(!score.ok && score.code === "empty-payload");
     const quiet: PatternTimeline = { ...timelinePayload(), frames: [] };
