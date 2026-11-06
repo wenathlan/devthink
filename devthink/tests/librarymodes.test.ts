@@ -437,6 +437,7 @@ describe("the library modes of 1.1.81", () => {
       version: string;
       sideEffects?: boolean;
       exports: Record<string, Record<string, string>>;
+        publishConfig?: unknown;
     };
     /* the manifestemplate law: the engines ride the root manifest alone —
      * the application manifest answers the three dependency tags and the
