@@ -8450,6 +8450,9 @@ jobs:
             exit 0
           fi
           gh release download "${tag}" --dir "${workdir}" --clobber
+          # LAW: every sha256 of this umbrella is born on the runner,
+          # computed by sha256sum over the real downloaded release
+          # assets - never from a constant, never hardcoded here.
           # the umbrella never covers itself.
           rm -f "${workdir}/SHA256SUMS.txt"
           shopt -s nullglob
@@ -8474,4 +8477,26 @@ jobs:
           count="$(wc -l < SHA256SUMS.txt)"
           echo "Release ${tag}: ${count} assets checksummed."
           cat SHA256SUMS.txt
-          gh release upload "${tag}" SHA256SUMS.txt --clobber
+          # the asset update tolerates the release API's transient HTTP
+          # 5xx answers: three attempts with a linear 20s/40s/60s
+          # backoff, failing only after the third attempt; non-5xx
+          # errors are not transient and fail the lane immediately.
+          sums_uploaded=0
+          sums_err=""
+          for attempt in 1 2 3; do
+            if sums_err="$(gh release upload "${tag}" SHA256SUMS.txt --clobber 2>&1)"; then
+              sums_uploaded=1
+              break
+            fi
+            if ! printf '%s' "${sums_err}" | grep -qE 'HTTP 5[0-9][0-9]'; then
+              echo "::error::SHA256SUMS asset update failed with a non-transient error: ${sums_err}"
+              exit 1
+            fi
+            echo "SHA256SUMS asset update attempt ${attempt}/3 hit a transient HTTP 5xx; retrying with linear backoff."
+            echo "${sums_err}"
+            sleep "$((attempt * 20))"
+          done
+          if [ "${sums_uploaded}" -ne 1 ]; then
+            echo "::error::SHA256SUMS asset update failed after ${attempt} attempts against transient HTTP 5xx."
+            exit 1
+          fi
