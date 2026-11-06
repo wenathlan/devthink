@@ -375,12 +375,26 @@ jobs:
         run: |
           cd devthink
           node build.ts
-          # the cross-bundler rung rides exact-pinned registry fetches (the
-          # same pin law every lane of the battery answers): npx resolves
-          # the two immutable webpack rungs the lane verified — webpack-cli
-          # 6.0.1 (the webpack bin) with its webpack 5.112.2 peer — instead
-          # of a floating npm install the dependency scan flags unpinned.
-          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./build/index.js --output-path ./build/webpack --output-filename devthink.webpack.js --mode production --target node
+          # the cross-bundler rung rides the config-file walk: the frozen
+          # tree's own webpack-cli seat (7.3.1 beside its commander 14) reds
+          # the variadic --target parse ("prev is not iterable") so the same
+          # flags ride the generated config the -c lane carries — the pinned
+          # webpack rung (5.112.2, the peer the lane verified) stays the
+          # bundler, the entry, output, mode and target seats stay the law.
+          cat > ./build/webpack.config.mjs <<'EOF'
+          // the cross-bundler lane config: the node bundle the CLI flag walk
+          // can no longer carry rides the config the pinned rung reads
+          export default {
+            mode: "production",
+            target: "node",
+            entry: "./build/index.js",
+            output: {
+              path: new URL("./webpack/", import.meta.url).pathname,
+              filename: "devthink.webpack.js",
+            },
+          };
+          EOF
+          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack -c ./build/webpack.config.mjs
           test -s ./build/webpack/devthink.webpack.js
           du -h ./build/webpack/devthink.webpack.js
 
@@ -503,18 +517,26 @@ jobs:
           else
             bun install --frozen-lockfile --ignore-scripts
           fi
-          # the ownership bridges alias the sibling sources (the os seams,
-          # the vault label store, the engines the app consumes) into every
-          # app build: the dependency union law makes the eleven manifests
-          # carry the identical seat map, so the app's own tree serves the
-          # aliased sources — the symlink seats every sibling the clean
-          # checkout would otherwise leave without a node_modules the
-          # aliased imports resolve against
-          for sibling in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
-            if [ "$sibling" != "${{ matrix.app }}" ] && [ -d "$sibling" ] && [ ! -e "$sibling/node_modules" ] && [ -d "${{ matrix.app }}/node_modules" ]; then
-              ln -s "../${{ matrix.app }}/node_modules" "$sibling/node_modules"
+          # the ownership bridges walk the os sources (reveal.ts and os.ts)
+          # whose bare imports — react and wouter — resolve from the os
+          # tree's own node_modules the ancestor walk reads: the clean
+          # checkout leaves the sibling bare, so the os install seats the
+          # resolver every family build walks (the debonair and vault
+          # bridges import only local seats, the os tree alone carries
+          # the bare family imports the eleven builds read) — the step
+          # already cd'd into the matrix app, so the os sibling answers
+          # one honest hop up from the app root the same way the vite
+          # aliases resolve it, and the manager follows the lane the leg
+          # set up: the pnpm legs ride pnpm, the lockless bun legs (the
+          # saddle seat the package manager step never pins) ride the
+          # bun lock the os tree answers just as green.
+          if [ "${{ matrix.app }}" != "devthink" ] && [ -f ../devthink/pnpm-lock.yaml ]; then
+            if command -v pnpm >/dev/null 2>&1; then
+              (cd ../devthink && pnpm install --frozen-lockfile --ignore-scripts)
+            else
+              (cd ../devthink && bun install --frozen-lockfile --ignore-scripts)
             fi
-          done
+          fi
 
       - name: Build the app surface
         if: steps.suite.outputs.present == 'true'

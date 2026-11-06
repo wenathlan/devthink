@@ -94,20 +94,24 @@ jobs:
             // the @-scoped names (@grpc/grpc-js and its seats) and the @
             // sign is a reserved YAML indicator a bare key may never open
             // with — every name materializes as a quoted key, and the one
-            // object-valued seat (the xcode uuid pin) answers as the
-            // nested block the pnpm reader walks, so the workspace the
-            // audit folder reads stays valid YAML the same way the
-            // manifest itself stays valid JSON under its quoting.
+            // object-valued seat (the xcode uuid pin) answers in the
+            // scoped "parent>child" selector form the pnpm workspace
+            // schema reads, so the audit folder stays valid YAML the same
+            // way the manifest itself stays valid JSON under its quoting.
             const lines = Object.keys(overrides).map(function (name) {
               const value = overrides[name];
               if (value !== null && typeof value === "object") {
-                const nested = Object.keys(value).map(function (key) {
-                  return "    " + JSON.stringify(key) + ": " + JSON.stringify(value[key]);
-                });
-                return "  " + JSON.stringify(name) + ":\n" + nested.join("\n");
+                // the object-valued seat (the xcode uuid pin) answers in
+                // the scoped selector form the pnpm workspace schema reads —
+                // the "parent>child" key carries the same meaning the npm
+                // nested override block stamps, and the string scalar the
+                // schema demands stays the value both forms pin.
+                return Object.keys(value).map(function (key) {
+                  return "  " + JSON.stringify(name + ">" + key) + ": " + JSON.stringify(value[key]);
+                }).join("\n");
               }
               return "  " + JSON.stringify(name) + ": " + JSON.stringify(value);
-            });
+            }).filter(function (line) { return line.length > 0; });
             fs.writeFileSync("auditwork/pnpm-workspace.yaml", "overrides:\n" + lines.join("\n") + "\n");
           '
           pnpm --dir auditwork install --lockfile-only
@@ -482,10 +486,18 @@ jobs:
           # the vite build plugin (vite-plugin-manus-runtime) publishes
           # upstream without any license label — the documented
           # exclusion below answers that upstream reality: a build-time
-          # tool, excluded by name, never a silent walkaround.
+          # tool, excluded by name, never a silent walkaround. the
+          # family @wenathlan seats answer the repository license
+          # (GPL-3.0-only, the root LICENSE the eleven manifests stamp
+          # again so every future publish carries the field) — the
+          # registry rungs the manifestemplate wave published without
+          # the label answer UNKNOWN to the checker, so the name-only
+          # exclusion bridges the published past until the next rung:
+          # the family code is this repository's own, never a third
+          # party the gate exists to police.
           npx --yes license-checker@25.0.1 --production \
             --onlyAllow="MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;PSF-2.0;BlueOak-1.0.0;MPL-2.0;LGPL-3.0-or-later;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);(AFL-2.1 OR BSD-3-Clause);MIT OR Apache-2.0;Apache-2.0 AND MIT;MIT AND ISC;ISC*;Custom: https://gsap.com/GSAP-share-image.png;Custom: https://github.com/wenathlan/devthink" \
-            --excludePackages="vite-plugin-manus-runtime@0.0.59" \
+            --excludePackages="vite-plugin-manus-runtime@0.0.59;@wenathlan/argan;@wenathlan/cadria;@wenathlan/cobaia;@wenathlan/debonair;@wenathlan/devthink;@wenathlan/forge;@wenathlan/foundry;@wenathlan/getry;@wenathlan/saddle;@wenathlan/stealthhead;@wenathlan/vault" \
             --summary
 
   container-scan:

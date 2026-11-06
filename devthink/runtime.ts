@@ -683,9 +683,15 @@ async function validateruntimebaselines(): Promise<void> {
     return v[2] >= f[2];
   }
 
-  const nodeversion = minimum(packagejson.engines?.node, "Node");
-  const npmversion = minimum(packagejson.engines?.npm, "npm");
-  const bunversion = minimum(packagejson.engines?.bun, "Bun");
+  /* the engines seat answers the one-hop-up root manifest (the
+   * manifestemplate law emptied the app copy the gate once read): the
+   * same root law the locksync battery walks — every container and
+   * every policy read resolves the /package.json the repository root
+   * carries, never the app copy the wave retired. */
+  const rootpackagejson = JSON.parse(await readFile(join(repoRoot, "package.json"), "utf8"));
+  const nodeversion = minimum(rootpackagejson.engines?.node, "Node");
+  const npmversion = minimum(rootpackagejson.engines?.npm, "npm");
+  const bunversion = minimum(rootpackagejson.engines?.bun, "Bun");
   if (nvmversion !== nodeversion)
     throw new Error(`.nvmrc (${nvmversion}) must equal the declared Node minimum (${nodeversion}).`);
   /* the 2.0.16 family container splits the baseline in two: the build stages
@@ -742,8 +748,12 @@ async function validateruntimebaselines(): Promise<void> {
    * bundle never carries a require seat), so the Dockerfile probe composes
    * at runtime and the source stays free of the forbidden literal. the
    * probe keeps the prefix shape of the original seat (the Dockerfile's
-   * own expressions continue past the package.json argument). */
-  const metadataprobe = ["node", "-p", `"${["require", "('./package.json')"].join("")}`].join(" ");
+   * own expressions continue past the package.json argument) — the root
+   * manifest law the container wave stamped: the probe reads the
+   * /package.json the context root carries, the same one-hop-up seat the
+   * engines walk answers, never the app copy the manifestemplate law
+   * emptied. */
+  const metadataprobe = ["node", "-p", `"${["require", "('/package.json')"].join("")}`].join(" ");
   if (!containerfile.includes(metadataprobe))
     throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
   if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
@@ -760,7 +770,10 @@ async function validateruntimebaselines(): Promise<void> {
     !satisfiesfloor(verifybun[1], bunversion)
   )
     throw new Error("verify workflow must smoke-test the declared Bun baseline.");
-  if (!/^(?:bun|pnpm)@\d+\.\d+\.\d+$/.test(packagejson.packageManager ?? ""))
+  /* the manager pin rides the root manifest beside the engines (the
+   * seatfloor wave retired the per-app packageManager stamps the same
+   * manifestemplate law retired): the one pin the whole tree answers. */
+  if (!/^(?:bun|pnpm)@\d+\.\d+\.\d+$/.test(rootpackagejson.packageManager ?? ""))
     throw new Error("packageManager must pin a full bun or pnpm version.");
   console.log(
     JSON.stringify(
@@ -768,7 +781,7 @@ async function validateruntimebaselines(): Promise<void> {
         node: nodeversion,
         npm: npmversion,
         bun: bunversion,
-        pnpm: packagejson.packageManager,
+        pnpm: rootpackagejson.packageManager,
         protocolmajor: 2,
         protocolfloor: 2,
       },
