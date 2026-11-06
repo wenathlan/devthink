@@ -165,8 +165,11 @@ const workflowpins: [string, [RegExp, string][]][] = [
     ],
   ],
 ];
+/* the manifestemplate law: the application manifests carry no engines and
+   no packageManager — the rung stamps the floors in the root manifest
+   alone (the render below), so the application manifest render the 2.0.128
+   era carried retires. the .nvmrc walks the same node pin beside it. */
 const edits = [
-  ["package.json", `${JSON.stringify(next, null, 2)}\n`],
   [".nvmrc", `${nodepin}\n`],
   /* the 2.0.128 node standardization wave: the family envelopes and the
      monorepo root answer the one node declaration the ladder pins — the
@@ -190,10 +193,10 @@ const edits = [
   ]),
   [
     join(repoRoot, "package.json"),
-    (await readFile(join(repoRoot, "package.json"), "utf8")).replace(
-      /"node": "[^"]+"/,
-      `"node": "${next.engines.node}"`,
-    ),
+    (await readFile(join(repoRoot, "package.json"), "utf8"))
+      .replace(/"node": "[^"]+"/, `"node": "${next.engines.node}"`)
+      .replace(/"npm": "[^"]+"/, `"npm": "${next.engines.npm}"`)
+      .replace(/"bun": "[^"]+"/, `"bun": "${next.engines.bun}"`),
   ],
   /* the 2.0.133 publish regression lane: the saddle engineversions anchor
      (the nodecurrent the dumpstate probe advertises) walked nowhere — the
