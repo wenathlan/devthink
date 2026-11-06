@@ -311,6 +311,17 @@ jobs:
           # program from shell expansion; the dollar braces belong to JS.
           # shellcheck disable=SC2016
           node -e 'const fs=require("node:fs"); const expected=process.env.RELEASE_VERSION; const actual=JSON.parse(fs.readFileSync("package.json","utf8")).version; if (actual !== expected) throw new Error(`package.json is ${actual}; expected ${expected}`);'
+      - name: stamp the provenance repository the sigstore law validates
+        # the manifest law (#501) retired the repository seat from the
+        # source manifests, but the npmjs provenance attestation validates
+        # the repository url the packed package.json carries (the E422 the
+        # 2.0.166 rung answered: "repository.url" is "", expected to match
+        # the provenance) — the staged distpackage stamps it runner-side so
+        # the sigstore bundle and the registry agree without the source
+        # manifest carrying the decorative seat again.
+        run: |
+          node -e 'const fs=require("node:fs"); const p="devthink/distpackage/package.json"; const m=JSON.parse(fs.readFileSync(p,"utf8")); m.repository={type:"git",url:"https://github.com/wenathlan/devthink"}; fs.writeFileSync(p, JSON.stringify(m,null,2)+"\n");'
+          grep -q '"url": "https://github.com/wenathlan/devthink"' devthink/distpackage/package.json
       - name: check npm token availability
         # the graceful-skip gate (the family contract, Regra 54: NPM_TOKEN
         # is OPTIONAL - a repository without the secret skips the
@@ -555,7 +566,12 @@ jobs:
         if: matrix.package == 'saddle' && steps.token.outputs.available == 'true'
         run: |
           set -euo pipefail
-          npm --prefix saddle ci --ignore-scripts
+          # the manifest law (#498) answers one dependency rung through the
+          # bun lock alone — the npm package-lock the ci lane froze on
+          # retired with the union, so the engine build resolves the
+          # manifest live (install, never the frozen ci) and the compile
+          # walks the same 172-name floor the bun lane pins.
+          npm --prefix saddle install --ignore-scripts --no-audit --no-fund
           test -f saddle/index.ts
           test -f saddle/cli.ts
           test -f saddle/browser.ts
@@ -4282,7 +4298,7 @@ jobs:
           node-version: 26.13.0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.18.0
       - name: set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # pnpm invocations that touch it delegate to this exact bun build.
@@ -4703,7 +4719,7 @@ jobs:
           node-version: 26.13.0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.18.0
       - name: set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # pnpm invocations that touch it delegate to this exact bun build.
@@ -4865,7 +4881,7 @@ jobs:
           node-version: 26.13.0
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.18.0
       - name: set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # pnpm invocations that touch it delegate to this exact bun build.
