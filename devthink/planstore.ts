@@ -61,6 +61,19 @@ export const TIER_BADGES: Readonly<Record<Tier, TierBadge>> = Object.freeze({
   enterprise: { label: "enterprise", detail: "defines own disk and ram, the technology follows" },
 });
 
+/** The tier rows the plans cards render (the keys, never the words — the
+ * copy store answers the lines): the rows live here in the data layer, the
+ * tsx never declares them (the data-seam law of the entry flow). */
+export const TIER_ROWS: readonly { tier: Tier; key: string; lines: readonly string[] }[] = Object.freeze([
+  { tier: "free", key: "free", lines: ["plans.tier.free.line1", "plans.tier.free.line2", "plans.tier.free.line3"] },
+  { tier: "pro", key: "pro", lines: ["plans.tier.pro.line1", "plans.tier.pro.line2", "plans.tier.pro.line3"] },
+  {
+    tier: "enterprise",
+    key: "enterprise",
+    lines: ["plans.tier.enterprise.line1", "plans.tier.enterprise.line2", "plans.tier.enterprise.line3"],
+  },
+] as const);
+
 /** The capability badges the platform stamps beside the tier badge (the
  * robot, the android, the audio and the media lanes the apps carry). */
 export const CAPABILITY_BADGES: readonly string[] = Object.freeze([

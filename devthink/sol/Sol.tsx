@@ -99,7 +99,7 @@ export default function Sol() {
         <Switch>
           <Route path="/" component={IntroAnchor} />
           <Route path="/onboarding" component={OnboardingAnchor} />
-          <Route path="/panel" component={() => <PanelAnchor />} />
+          <Route path="/panel" component={PanelAnchor} />
           <Route path="/auth" component={AuthAnchor} />
           <Route path="/callback" component={CallbackAnchor} />
           <Route path="/chat" component={ChatAnchor} />
