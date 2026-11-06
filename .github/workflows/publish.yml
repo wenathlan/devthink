@@ -129,6 +129,59 @@ env:
   CACHE_IMAGE: ghcr.io/${{ github.repository }}-buildcache
 
 jobs:
+  release-resolve:
+    name: release resolve
+    # THE ONE RESOLVER SEAT (the rate-limit heal the publish wave owns):
+    # the workflow_run path fires every lane at once and the thirty-one
+    # resolvers each asked the api for the latest release - a hundred
+    # calls per run, seven runs an hour, the installation rate limit the
+    # registry answers burned and eighty-one lanes reddened on the 403.
+    # The one seat resolves the tag a single time and every lane below
+    # reads the job output, so the publish wave costs one api call
+    # instead of a hundred - the asset lanes never wait on the approval
+    # review, only on this light resolve.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - name: resolve the release tag once for the whole wave
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            # the bounded retry the rate-limit window taught: the single
+            # remaining api call the wave makes tolerates the transient
+            # 403 with the linear backoff before it reddens the wave.
+            attempt=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              tag="$(gh release view --json tagName --jq .tagName)" && break
+              echo "the release resolve attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 20))"
+            done
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
   release-approval:
     name: release approval gate
     # the explicit approval point of the publish wave (the release approval
@@ -158,7 +211,7 @@ jobs:
           echo "the release-approval environment granted this publish wave: every registry lane below flows."
 
   npmjs:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the conclusion guard (the saddle family pattern, Regra 56b): the
     # workflow_run dual-trigger fires on EVERY completion of the DevThink
     # Release workflow - a FAILED release run must never reach the publish
@@ -202,7 +255,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -372,7 +425,7 @@ jobs:
           echo "the latest dist-tag now answers ${RELEASE_VERSION}."
 
   family-npmjs:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family npmjs lane: the documentation envelopes publish to
     # npmjs.com beside the devthink application package - the same
     # graceful-skip token gate, the same provenance signature, the same
@@ -426,7 +479,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -597,7 +650,7 @@ jobs:
           echo "the latest dist-tag of ${{ matrix.package }} now answers ${RELEASE_VERSION}."
 
   githubnpm:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the conclusion guard (the saddle family pattern, Regra 56b): the
     # workflow_run dual-trigger fires on EVERY completion of the DevThink
     # Release workflow - a FAILED release run must never reach the publish
@@ -639,7 +692,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -780,7 +833,7 @@ jobs:
           echo "the github registry latest dist-tag now answers ${RELEASE_VERSION}."
 
   family-githubnpm:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family github npm lane: the four documentation envelopes publish
     # to npm.pkg.github.com beside the devthink application package - the
     # same bounded retry, the same race tolerance and the same latest
@@ -820,7 +873,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -893,7 +946,7 @@ jobs:
           echo "the github registry latest dist-tag of ${{ matrix.package }} now answers ${RELEASE_VERSION}."
 
   family-gitlab:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family gitlab lane (the npmjs/GitHub/GitLab triad the spec
     # demands): the vault storage engine publishes to the gitlab npm
     # registry beside the npmjs and github mirrors - the same
@@ -937,7 +990,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -1070,7 +1123,7 @@ jobs:
 
   maven:
     name: publish the single maven distribution
-    needs: [detect-maven, release-approval]
+    needs: [release-resolve, detect-maven, release-approval]
     if: needs.detect-maven.outputs.present == 'true'
     runs-on: ubuntu-latest
     # the extension release-gate doctrine (the 2.0.18 port, the approval
@@ -1098,7 +1151,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -1207,7 +1260,7 @@ jobs:
           gh release upload "$RELEASE_TAG" "devthink/mavenrelease/devthink-${VERSION}.pom" "devthink/mavenrelease/devthink-${VERSION}.jar" "devthink/mavenrelease/devthink${VERSION}.zip" "devthink/mavenrelease/devthink-declarations-${VERSION}.zip" --clobber
 
   family-maven:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family maven lane: every application envelope deploys its own
     # com.wenathlan.<app> jar (the nine documentation envelopes
     # carry the README, the documentation set, the zero-build site and
@@ -1250,7 +1303,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -1348,7 +1401,7 @@ jobs:
 
   nuget:
     name: publish the rich NuGet content package
-    needs: [detect-nuget, release-approval]
+    needs: [release-resolve, detect-nuget, release-approval]
     if: needs.detect-nuget.outputs.present == 'true'
     runs-on: ubuntu-latest
     # the extension release-gate doctrine (the 2.0.18 port, the approval
@@ -1376,7 +1429,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -1467,7 +1520,7 @@ jobs:
           gh release upload "$RELEASE_TAG" "devthink/nuget/devthink.${VERSION}.nupkg" --clobber
 
   family-nuget:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family nuget lane: every documentation envelope packs its own
     # the <app> content package (the README, the documentation
     # set, the zero-build site and the tests directory under
@@ -1502,7 +1555,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -1759,7 +1812,7 @@ jobs:
         run: cd devthink && gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"
 
   family-rubygems:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family rubygems lane: every documentation envelope builds its
     # gem from the folder gemspec (the envelope version the metadata
     # lockstep stamps rides the <APP>_VERSION environment the lane
@@ -1795,7 +1848,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -1935,7 +1988,7 @@ jobs:
 
   gradle:
     name: publish the single gradle distribution
-    needs: [detect-gradle, release-approval]
+    needs: [release-resolve, detect-gradle, release-approval]
     if: needs.detect-gradle.outputs.present == 'true'
     runs-on: ubuntu-latest
     # the extension release-gate doctrine (the 2.0.18 port, the approval
@@ -1963,7 +2016,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -2118,7 +2171,7 @@ jobs:
           gh release upload "$RELEASE_TAG" devthink/gradlerelease/* --clobber
 
   family-gradle:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family gradle lane: every application envelope publishes its own
     # com.wenathlan.<app> module (the nine documentation envelopes carry
     # the README, the documentation set, the zero-build site and the tests
@@ -2168,7 +2221,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -2336,7 +2389,7 @@ jobs:
 
   goget:
     name: publish the single go module distribution
-    needs: [detect-goget, release-approval]
+    needs: [release-resolve, detect-goget, release-approval]
     if: needs.detect-goget.outputs.present == 'true'
     runs-on: ubuntu-latest
     # the extension release-gate doctrine (the 2.0.18 port, the approval
@@ -2366,7 +2419,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -2519,7 +2572,7 @@ jobs:
           gh release upload "$RELEASE_TAG" devthink/gogetrelease/* --clobber
 
   family-goget:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family go get lane: every application envelope rides the go
     # module rung beside the maven, nuget, rubygems and gradle rungs -
     # each leg verifies its module against the pinned go toolchain, syncs
@@ -2571,7 +2624,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -2707,7 +2760,7 @@ jobs:
             "${{ matrix.package }}.sha256.goget.${VERSION}" --clobber
 
   ghcr:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the conclusion guard (the saddle family pattern, Regra 56b): the
     # workflow_run dual-trigger fires on EVERY completion of the DevThink
     # Release workflow - a FAILED release run must never reach the heavy
@@ -2751,7 +2804,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -3064,7 +3117,7 @@ jobs:
           echo "the referrers fallback cleanup walked the package page clean."
 
   family-ghcr:
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the family container registry lane: every family site home (argan,
     # cadria, cobaia, debonair, forge, foundry, getry, stealthhead and the
     # self-contained vault engine) publishes one versioned static container
@@ -3105,7 +3158,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -3308,6 +3361,7 @@ jobs:
 
   desktop:
     name: desktop ${{ matrix.name }}
+    needs: release-resolve
     # the desktop lane of the merged repository wires to reality: the
     # merged product carries no tauri envelope (the retired lane gated on
     # desktop/Cargo.toml and desktop/tauri.conf.json, which the merge does
@@ -3388,7 +3442,7 @@ jobs:
           # detaches the working tree onto its tag (the publishghcr
           # resolver mold), so the matrix always compiles the tagged source.
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -3537,6 +3591,7 @@ jobs:
 
   desktop-tauri:
     name: desktop tauri ${{ matrix.platform }}-${{ matrix.architecture }}
+    needs: release-resolve
     # the tauri lane of the saddle desktop surface (the GUI shell beside
     # the compiled binary lane above): a desktop application is not a
     # virtualization surface - the whole lane ports. the rust shell is
@@ -3615,7 +3670,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -3966,6 +4021,7 @@ jobs:
 
   android:
     name: android release artifacts
+    needs: release-resolve
     # the mobile lane folds to the saddle pattern: the workbench at the
     # application root is the single static UI source (the mobile shell
     # doctrine of the repository), the lane builds it with the workspace's
@@ -4010,7 +4066,7 @@ jobs:
           # detaches the working tree onto its tag (the publishghcr
           # resolver mold), so the wrapper always builds the tagged source.
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -4401,6 +4457,7 @@ jobs:
 
   ios-simulator:
     name: iOS simulator artifact
+    needs: release-resolve
     # the same saddle fold on the macos leg: the workbench builds, the
     # identity relocates onto the app root, cap add/sync runs with
     # working-directory: devthink and the simulator build archives the app.
@@ -4433,7 +4490,7 @@ jobs:
           # detaches the working tree onto its tag (the publishghcr
           # resolver mold), so the simulator always builds the tagged source.
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -4571,6 +4628,7 @@ jobs:
 
   ios:
     name: ios ipa
+    needs: release-resolve
     # the saddle signed iOS lane: the real ipa archive with the caller's
     # Apple distribution certificate and provisioning profile. the lane
     # only runs on explicit dispatch (build_ios: true) or the repository
@@ -4594,7 +4652,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -4784,6 +4842,7 @@ jobs:
 
   container:
     name: container release archive
+    needs: release-resolve
     # the lane builds the tar.gz release archive from THE Dockerfile (the
     # one container file of the repository): the default runtime target -
     # the multi stage build whose builder validated the whole chain and
@@ -4820,7 +4879,7 @@ jobs:
           # detaches the working tree onto its tag (the publishghcr
           # resolver mold), so the archive always builds the tagged source.
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -4896,6 +4955,7 @@ jobs:
 
   family-container:
     name: family container release archive ${{ matrix.app }}
+    needs: release-resolve
     # THE FAMILY CONTAINER ARCHIVE LAW (the asset parity expansion of the
     # saddle container law): every family site home answers the release
     # with the same portable container archive the os and the saddle
@@ -4943,7 +5003,7 @@ jobs:
           # detaches the working tree onto its tag (the publishghcr
           # resolver mold), so every leg builds the tagged source.
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -5139,6 +5199,7 @@ jobs:
 
   family-metadata:
     name: family release metadata ${{ matrix.app }}
+    needs: release-resolve
     # THE FIVE HUNDRED ASSET LADDER (the expansion the owner demanded:
     # the release the ladder cuts answers with MORE than five hundred
     # real assets - "os assets não tão passando de quinhentos"): every
@@ -5193,7 +5254,7 @@ jobs:
           # detaches the working tree onto its tag (the publishghcr
           # resolver mold), so every leg reads the tagged source.
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -5686,6 +5747,7 @@ jobs:
 
   family-map:
     name: the family map, the registries and the release audit trail
+    needs: release-resolve
     # THE FAMILY LEVEL OF THE FIVE HUNDRED ASSET LADDER: beside the
     # per-application metadata sets the family-map lane attaches the
     # whole-family reports - the family map (every application with its
@@ -5725,7 +5787,7 @@ jobs:
           # detaches the working tree onto its tag (the publishghcr
           # resolver mold), so the lane reads the tagged source.
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -6032,6 +6094,7 @@ jobs:
 
   package:
     name: package the browser extension
+    needs: release-resolve
     # the extension lane of the merged repository: the interface files live
     # flat at the web root (the 2.0.12 flat merge dissolved the interface
     # folder - the manifest the
@@ -6069,7 +6132,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -6191,6 +6254,7 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     name: Plan ${{ matrix.target }} ${{ matrix.format }}
+    needs: release-resolve
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -6254,7 +6318,7 @@ jobs:
         id: releaseversion
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
           CHECKOUT_TAG: "true"
         run: |
           set -euo pipefail
@@ -6386,7 +6450,7 @@ jobs:
     # (the .digest pin, the human-readable reference and the json record)
     # so the release carries the exact image the registry answers for the
     # version beside the tag and the latest alias.
-    needs: ghcr
+    needs: [release-resolve, ghcr]
     if: >-
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
       (github.event_name != 'workflow_run' ||
@@ -6424,7 +6488,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           # the release-version resolver, inlined from the retired composite
@@ -6488,6 +6552,7 @@ jobs:
 
   saddle-target-plans:
     name: Saddle plan ${{ matrix.target }} ${{ matrix.format }}
+    needs: release-resolve
     # the saddle target-plans lane of the standalone board, folded in: the
     # packager targetcli is the saddle motor surface, so the lane reads the
     # saddle application folder and writes every target plan the matrix
@@ -6556,7 +6621,7 @@ jobs:
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
         run: |
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
@@ -6810,7 +6875,7 @@ jobs:
     # owns is a registry publish, and no registry publish of the wave rides
     # around the approval gate - the whole chain resolves, scans, publishes
     # and archives behind the one review the gate asks for.
-    needs: release-approval
+    needs: [release-resolve, release-approval]
     # the release resolver of the vhe lane answering the release law (the
     # saddle container law): the version answers the saddle manifest of the
     # checked out source (the deleted saddle-v* tag resolver never runs
@@ -6875,7 +6940,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           OWNER: ${{ github.repository_owner }}
-          REQUESTED_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+          REQUESTED_TAG: ${{ needs.release-resolve.outputs.tag || inputs.release_tag || github.event.release.tag_name }}
         run: |
           set -euo pipefail
           # the release-law resolver (the ghcr lane mold): the release and
@@ -7529,6 +7594,7 @@ jobs:
     # reaches the download at all, and releases with no checksummable
     # assets skip cleanly instead of blocking the publish cascade.
     needs:
+      - release-resolve
       - npmjs
       - githubnpm
       - maven
@@ -7599,7 +7665,7 @@ jobs:
         id: releaseversion
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
           CHECKOUT_TAG: "false"
         run: |
           set -euo pipefail
