@@ -1,5 +1,6 @@
-// # containerarch.ts — the 11-architecture standard of the saddle
-// engine (the pr15 law, the family platform axis): every container and
+// # containerarch.ts — the 11-architecture standard and the os
+// distribution catalog of the saddle engine (the pr15 law, the family
+// platform axis): every container and
 // every engine target of the family answers the eleven standardized
 // architecture seats the owner's law names — linux-x64, darwin-arm64,
 // windows-x64, linux-arm64, darwin-x64, windows-arm64, linux-x64-musl,
@@ -15,7 +16,27 @@
 // legs the pinned base honestly carries (the native x64 leg beside the
 // arm64, ppc64le and s390x QEMU-emulated legs) and the seven honest
 // coded absences (ARCH_LEG_NOT_BUILT) the publish lanes never pretend
-// to build.
+// to build. beside both tables the file carries the os distribution
+// catalog — the seven system seats the saddle container starts its
+// distribution with (the osdistrib law, the owner's sentence: "iniciar
+// distribuição do container saddle com por exemplo, grapheneos,
+// omarchy e outros sistemas dentro do saddle"): grapheneos (a privacy
+// and security hardened version of android), omarchy (the arch
+// linux-based distribution created by dhh), vanilla os (based on
+// ubuntu), maru os (firmware, not an application), the v seat (the v
+// language platform the dependency catalog pins at 0.5.2, never a
+// guest distribution), the normal linux baseline and android — one
+// honest row per seat: the true base fact, the package grammar, the
+// architecture seats of the eleven-seat standard the seat rides (the
+// amd64 and arm64 legs the pairing derives), the engine plan profiles
+// it binds (the max, balanced and lite trio the engineplans table
+// owns — reused, never duplicated) and the virtual device presentation
+// (vgpu and vcpu — virtual devices the engine presents, never the
+// visitor machine's own). the plan-resource law rides the catalog as
+// data: the 50 gb per plan example the owner's law names is PLAN CONFIG
+// the devthink system plan logic stamps, never an engine cap — the
+// engine limits law of engineplans.ts stays the law of record and the
+// engines are unlimited.
 //
 // THE HONEST AVAILABILITY LAW (the same law the pre-pr15 table kept):
 // a row never claims a build the pinned base cannot answer. the linux
@@ -27,15 +48,20 @@
 // npm lanes build them, the container drivers answer the honest
 // ARCH_TARGET_NOT_CONTAINER coded absence, never a pretended pull.
 //
-// THE VISITOR LAW (the critical law): every seat of the standard is a
-// TARGET the engine builds and drives on its own twenty-four hour
-// internet infrastructure — the standard never describes the visitor
-// machine (no visitor gpu, no visitor cpu, no visitor browser, no
-// visitor local storage, no localforage — the engine owns every cycle
-// it spends through saddle and vault edge processing).
+// THE VISITOR LAW (the critical law): every seat of the standard and
+// every system seat of the os distribution catalog is a TARGET or a
+// hosted GUEST the engine builds and drives on its own twenty-four
+// hour internet infrastructure — the standard and the catalog never
+// describe the visitor machine (no visitor gpu, no visitor cpu, no
+// visitor browser, no visitor local storage, no localforage — the
+// engine owns every cycle it spends through saddle and vault edge
+// processing).
 //
-// Pure data and pure functions: zero storage, zero node-only imports,
-// the browser-pure bundle keeps carrying it.
+// Pure data and pure functions: zero storage, zero node-only imports
+// (the one import the catalog takes — engineplans.ts — is itself pure
+// data and pure functions), the browser-pure bundle keeps carrying it.
+
+import { ENGINELIMITS, ENGINEPLANS, type EngineLimitsLaw, type EngineProfileId } from "./engineplans.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: the standard table — one honest row per architecture.   */
@@ -403,6 +429,373 @@ export function containerbuildarchcoverage(): {
       })),
     ),
   };
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 1c: the os distribution seats — the seven system seats the  */
+/* saddle container carries (the osdistrib law).                       */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** the seven os distribution seat ids the owner's law names, in the
+ * order the law's sentence rides them: grapheneos and omarchy first
+ * (the named examples), vanilla os, maru os and the v seat beside
+ * them, then the normal linux baseline and android. */
+export const OSDISTRIBUTIONIDS: readonly string[] = Object.freeze([
+  "grapheneos",
+  "omarchy",
+  "vanillaos",
+  "maruos",
+  "v",
+  "linux",
+  "android",
+]);
+
+/** the honest class of one os distribution seat (the catalog law): a
+ * firmware is never an application, a language os seat is never a
+ * guest distribution, a mobile seat builds on android and a desktop
+ * seat is a desktop distribution. */
+export type osdistributionkind = "distribution" | "firmware" | "languageos" | "desktop" | "mobile";
+
+/** the package format grammar one os distribution seat answers (the
+ * installer vocabulary the seats mount inside the sandbox). */
+export type osdistributionpackage = "apk" | "apt" | "pacman" | "abuild" | "vpm";
+
+/** one honest row of the os distribution catalog: the seat id, the
+ * display label, the honest kind, the upstream base (the true fact the
+ * owner's law pins), the package grammar, the architecture seats of
+ * the eleven-architecture standard the seat rides, the engine plan
+ * profiles it binds, the virtual device presentation and the honest
+ * note the catalog prints. */
+export interface osdistributionrow {
+  /** the seat id of the catalog (the resolver reads it). */
+  readonly id: string;
+  /** the short display label. */
+  readonly label: string;
+  /** the honest class of the seat (the catalog law). */
+  readonly kind: osdistributionkind;
+  /** the upstream base the distribution builds on (the true fact). */
+  readonly base: string;
+  /** the package format grammar the seat answers. */
+  readonly package: osdistributionpackage;
+  /** the architecture seats of the eleven-architecture standard the
+   * seat rides (the arch pairing the container matrix reads). */
+  readonly archs: readonly string[];
+  /** the engine plan profiles the seat binds (the tier law — the ids
+   * reuse the engineplans table, never a duplicated tier list). */
+  readonly profiles: readonly EngineProfileId[];
+  /** whether the seat presents a vgpu path through the virtual drivers
+   * (the vgpu law: a virtual device the engine presents, never the
+   * visitor machine's own gpu). */
+  readonly vgpu: boolean;
+  /** whether the seat rides the virtual cpu bank (the vcpu law: the
+   * engine presents the virtual cpus the plan allocates — the count
+   * arrives from the engine plan profile, never hardcoded here). */
+  readonly vcpu: boolean;
+  /** the honest note the catalog prints for the row. */
+  readonly note: string;
+}
+
+/** the engine plan profile ids the os distribution seats bind — derived
+ * from the engineplans table itself (the reuse law: the max, balanced
+ * and lite tier ids stay the engineplans table's own, the catalog never
+ * duplicates a tier list). */
+export const OSDISTRIBUTIONPROFILEIDS: readonly EngineProfileId[] = Object.freeze(ENGINEPLANS.map((row) => row.id));
+
+/** the seven rows of the os distribution catalog — every system the
+ * owner's law names inside the saddle container, one honest row each
+ * with its true fact, its arch pairing and its tier binding: the
+ * mobile seats (grapheneos, android) and the firmware seat (maru os)
+ * ride the arm64 legs, the desktop and baseline seats (omarchy,
+ * vanilla os, linux) ride the amd64 and arm64 legs, the v seat rides
+ * the amd64 and arm64 legs beside its binary targets, and every seat
+ * binds the full engine plan trio (the tier axis scales the virtual
+ * hardware plan, never the catalog). */
+export const OSDISTRIBUTIONS: readonly osdistributionrow[] = Object.freeze([
+  {
+    id: "grapheneos",
+    label: "grapheneos",
+    kind: "mobile",
+    base: "android",
+    package: "apk",
+    archs: ["linux-arm64", "darwin-arm64-v8"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "grapheneos is a privacy and security hardened version of android: the hardened mobile seat the catalog carries on the arm64 legs the standard answers.",
+  },
+  {
+    id: "omarchy",
+    label: "omarchy",
+    kind: "desktop",
+    base: "arch linux",
+    package: "pacman",
+    archs: ["linux-x64", "linux-x64-musl", "linux-arm64"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "omarchy is the arch linux-based distribution created by dhh: the desktop seat the catalog carries with the pacman package grammar on the amd64 and arm64 legs.",
+  },
+  {
+    id: "vanillaos",
+    label: "vanilla os",
+    kind: "distribution",
+    base: "ubuntu",
+    package: "apt",
+    archs: ["linux-x64", "linux-x64-musl", "linux-arm64"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "vanilla os is based on ubuntu: the atomic desktop seat the catalog carries beside the plain linux baseline on the amd64 and arm64 legs.",
+  },
+  {
+    id: "maruos",
+    label: "maru os",
+    kind: "firmware",
+    base: "android firmware with a debian desktop",
+    package: "abuild",
+    archs: ["linux-arm64", "darwin-arm64-v8"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: false,
+    vcpu: true,
+    note: "maru os is firmware, not an application: the catalog carries the seat honestly on the arm64 legs, the engine never installs it as a guest application.",
+  },
+  {
+    id: "v",
+    label: "v",
+    kind: "languageos",
+    base: "the v language platform (vlang, the 0.5.2 catalog seat)",
+    package: "vpm",
+    archs: ["linux-x64", "linux-arm64", "darwin-arm64", "darwin-x64", "windows-x64", "wasm32"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: false,
+    vcpu: true,
+    note: "the v seat names the v language platform the dependency catalog pins at 0.5.2, never a guest distribution: the languagev compiler seat of the ninety modalities answers it (the owner's nickname law).",
+  },
+  {
+    id: "linux",
+    label: "linux",
+    kind: "distribution",
+    base: "the plain linux baseline the engine container rides",
+    package: "apt",
+    archs: ["linux-x64", "linux-x64-musl", "linux-arm64", "linux-riscv64"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "the normal linux seat: the default distribution the saddle container itself rides (the container lane law), every linux seat the standard carries answers it.",
+  },
+  {
+    id: "android",
+    label: "android",
+    kind: "mobile",
+    base: "the android application platform",
+    package: "apk",
+    archs: ["linux-arm64", "darwin-arm64-v8"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "the android seat: the mobile platform the grapheneos hardening builds on, the catalog carries it on the arm64 legs the standard answers.",
+  },
+]);
+
+/** the count of the os distribution catalog — derived from the rows'
+ * real length, never a hardcoded count. */
+export const OSDISTRIBUTIONCOUNT = OSDISTRIBUTIONS.length;
+
+/** the plan-resource law the os distribution catalog answers (the
+ * owner's law: "por exemplo, 50gb por plano via config") — the storage
+ * quota is PLAN CONFIG data the devthink system plan logic owns (the
+ * example row names 50), never an engine cap: the engine limits law of
+ * engineplans.ts rides the row verbatim (the reuse law — the engines
+ * stay unlimited on every axis). */
+export interface osdistributionplanlaw {
+  /** the example per-plan storage quota the owner's law names (50 gb)
+   * — plan config data a plan row stamps, never an engine cap. */
+  readonly examplestoragegb: 50;
+  /** where the quota lives: the devthink system plan logic (config). */
+  readonly quotaowner: "devthink";
+  /** the engine side of the law — the engineplans limits law verbatim:
+   * unlimited on every axis, no ceiling ever bakes into the catalog. */
+  readonly enginelimits: EngineLimitsLaw;
+}
+
+/** the plan-resource law of record (the osdistrib law): the 50 gb per
+ * plan example is config data the plan rows stamp, the engine itself
+ * stays unlimited. */
+export const OSDISTRIBUTIONPLANLAW: osdistributionplanlaw = Object.freeze({
+  examplestoragegb: 50,
+  quotaowner: "devthink",
+  enginelimits: ENGINELIMITS,
+});
+
+/** answers one os distribution row by seat id — undefined when the id
+ * is not one of the seven the owner's law names.
+ *
+ * @param id the seat id (grapheneos, omarchy, vanillaos, maruos, v,
+ *   linux, android).
+ * @returns the row, or undefined for an unknown id.
+ */
+export function getosdistribution(id: string): osdistributionrow | undefined {
+  return OSDISTRIBUTIONS.find((row) => row.id === id);
+}
+
+/** the coded refusal of the catalog resolver: a system seat the
+ * catalog does not carry. The name carries the catalog's shape so the
+ * message names the law (the seven seats), never a bare invalid-input. */
+export function osdistributionerror(id: string): Error & { code: string } {
+  const error = new Error(
+    `the os distribution catalog carries no system seat "${id}": the seven seats the owner's law names are ${OSDISTRIBUTIONIDS.join(", ")}`,
+  ) as Error & { code: string };
+  error.name = "osdistributionerror";
+  error.code = "OS_DISTRIBUTION_UNKNOWN";
+  return error;
+}
+
+/** resolves the distribution the caller asked for against the catalog:
+ * an undefined or null input answers the linux row (the normal baseline
+ * the container lane itself rides), a known id answers its row, and
+ * anything else throws the coded OS_DISTRIBUTION_UNKNOWN refusal naming
+ * the seven seats — the resolver never silently rewrites the caller's
+ * distribution.
+ *
+ * @param input the caller system seat id (the drivers and the modality
+ *   seats hand it through).
+ * @returns the honest row of the catalog.
+ */
+export function resolveosdistribution(input: unknown): osdistributionrow {
+  if (input === undefined || input === null) return getosdistribution("linux") as osdistributionrow;
+  if (typeof input !== "string") throw osdistributionerror(String(input));
+  const row = getosdistribution(input.trim().toLowerCase());
+  if (row === undefined) throw osdistributionerror(input);
+  return row;
+}
+
+/** answers the os distribution seats that ride one architecture seat
+ * of the eleven-architecture standard (the arch join the modality
+ * system reads when it hosts a distribution on a seat).
+ *
+ * @param arch the architecture seat id (a containerarch id).
+ * @returns the distribution rows that carry the seat, catalog order.
+ */
+export function osdistributionsforarch(arch: string): readonly osdistributionrow[] {
+  return OSDISTRIBUTIONS.filter((row) => row.archs.includes(arch));
+}
+
+/** answers the os distribution seats that ride one engine plan profile
+ * of the tier axis (the profile join — every seat binds the full trio
+ * the engineplans table names: the tier scales the virtual hardware
+ * plan, never the catalog).
+ *
+ * @param profile the engine plan profile id (max, balanced or lite).
+ * @returns the distribution rows that bind the profile, catalog order.
+ * @throws the coded refusal when the profile is not one of the trio
+ *   the engineplans table owns.
+ */
+export function osdistributionsforprofile(profile: string): readonly osdistributionrow[] {
+  if (!OSDISTRIBUTIONPROFILEIDS.includes(profile as EngineProfileId)) {
+    throw Object.assign(
+      new Error(
+        `the engine plan trio carries no profile "${profile}": the profiles the engineplans table names are ${OSDISTRIBUTIONPROFILEIDS.join(", ")}`,
+      ),
+      { code: "OS_DISTRIBUTION_PROFILE_UNKNOWN" },
+    );
+  }
+  return OSDISTRIBUTIONS.filter((row) => row.profiles.includes(profile as EngineProfileId));
+}
+
+/** answers the docker arch legs one os distribution seat rides — the
+ * honest join of the seat's architecture pairings against the standard
+ * (the amd64 and arm64 legs the owner's law names): every carried seat
+ * the row pairs contributes its dockerarch leg, the target seats the
+ * row pairs contribute none (the binary and npm lanes own them).
+ *
+ * @param id the seat id of the catalog.
+ * @returns the distinct docker arch legs the seat rides in the
+ *   standard's own row order, empty for an unknown id.
+ */
+export function osdistributiondockerarchs(id: string): readonly string[] {
+  const row = getosdistribution(id);
+  if (row === undefined) return Object.freeze([]);
+  const legs = CONTAINERARCHES.filter(
+    (seat) => seat.availability === "carried" && seat.dockerarch.length > 0 && row.archs.includes(seat.id),
+  ).map((seat) => seat.dockerarch);
+  return Object.freeze([...new Set(legs)]);
+}
+
+/** the honest coverage report of the os distribution catalog: the count
+ * the owner's law charges (seven), the architecture seats of the
+ * standard the catalog pairs, the engine plan trio every seat binds,
+ * the plan-resource law of record and the per-seat rows with their
+ * derived docker legs — the report the container lanes stamp and the
+ * tests pin. */
+export interface osdistributionreport {
+  /** the system seats the catalog covers (seven). */
+  count: number;
+  /** the distinct architecture seats of the standard the catalog pairs,
+   * in the standard's own order. */
+  arches: readonly string[];
+  /** the engine plan profiles every seat binds (the engineplans trio). */
+  profiles: readonly EngineProfileId[];
+  /** the plan-resource law of record (the 50 gb example as plan config,
+   * the engine unlimited). */
+  planlaw: osdistributionplanlaw;
+  /** the per-seat coverage rows (id, label, kind, base, package, archs,
+   * docker legs, profiles, vgpu, vcpu, note). */
+  rows: readonly {
+    id: string;
+    label: string;
+    kind: osdistributionkind;
+    base: string;
+    package: osdistributionpackage;
+    archs: readonly string[];
+    dockerarchs: readonly string[];
+    profiles: readonly EngineProfileId[];
+    vgpu: boolean;
+    vcpu: boolean;
+    note: string;
+  }[];
+}
+
+/** answers the honest coverage report of the os distribution catalog —
+ * the seven system seats with their arch pairings joined to the docker
+ * legs, the tier binding reused from the engineplans table and the
+ * plan-resource law riding as config data. */
+export function osdistributioncoverage(): osdistributionreport {
+  const arches = CONTAINERARCHIDS.filter((id) => OSDISTRIBUTIONS.some((row) => row.archs.includes(id)));
+  return {
+    count: OSDISTRIBUTIONS.length,
+    arches: Object.freeze(arches),
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    planlaw: OSDISTRIBUTIONPLANLAW,
+    rows: Object.freeze(
+      OSDISTRIBUTIONS.map((row) => ({
+        id: row.id,
+        label: row.label,
+        kind: row.kind,
+        base: row.base,
+        package: row.package,
+        archs: row.archs,
+        dockerarchs: osdistributiondockerarchs(row.id),
+        profiles: row.profiles,
+        vgpu: row.vgpu,
+        vcpu: row.vcpu,
+        note: row.note,
+      })),
+    ),
+  };
+}
+
+/** renders the os distribution catalog as report lines (the container
+ * lanes append these under their profile line so every run answers the
+ * seven system seats the owner's law names inside the saddle). */
+export function osdistributionlines(): string[] {
+  const coverage = osdistributioncoverage();
+  return [
+    `  os distributions: ${coverage.count} system seats the saddle container carries (every seat binds the ${coverage.profiles.join("/")} engine plan trio, the plan law keeps 50gb an example of plan config — the engine unlimited)`,
+    ...coverage.rows.map(
+      (row) =>
+        `    ${row.id.padEnd(11)} ${row.kind.padEnd(13)} ${row.dockerarchs.join("+").padEnd(15)} ${row.vgpu ? "vgpu" : "no vgpu"}  ${row.note}`,
+    ),
+  ];
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
