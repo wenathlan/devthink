@@ -914,7 +914,11 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     expect(publishindex).toBeGreaterThan(buildindex);
     const build = steps[buildindex];
     expect(build?.if).toBe("matrix.package == 'saddle' && steps.token.outputs.available == 'true'");
-    expect(build?.run).toContain("npm --prefix saddle ci --ignore-scripts");
+    /* the npmjsprovenance heal (#513) retired the frozen ci lane — the
+     * engine build resolves the manifest live (install, never the frozen
+     * ci the retired package-lock froze on), so the expectation walks the
+     * install command the publish mirror stamps. */
+    expect(build?.run).toContain("npm --prefix saddle install --ignore-scripts --no-audit --no-fund");
     for (const entry of LANEASSERTIONS) expect(build?.run).toContain(`test -f saddle/${entry}`);
   });
 
