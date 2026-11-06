@@ -1,3 +1,765 @@
+// # dns.ts — the one keyword file of the dns zone domain: the
+// consolidation law of the root (one keyword file per domain) merged the
+// four wave files of the name resolution lane into this seat — the
+// DNSSEC validation math (the former dnssec.ts body below), the planned
+// change set engine between two versions of a zone (zonediff.ts), the
+// clean URL bar of the SPA (cleanurl.ts) and the gateway protocol mesh
+// (protocols.ts) — every export preserved verbatim, zero logic changes,
+// the wire surfaces untouched (PROTOCOLS: 231 rows across the fifteen
+// family groups, the dns family carrying the argan home transports).
+// The consolidation notes: the four sources share no duplicated helpers
+// and no same-name declarations — the dedupe ride and the group-suffix
+// ride of the law are both empty here — so every section keeps its own
+// private helpers verbatim (parseZoneTimestamp / decodeBase64 /
+// ownerLabelCount of the dnssec section, NAMEFIELDS / TTLUNITS / parseTtl
+// / isTtlToken / absolutize / normalizeData / tokenize / groupRecords /
+// targetSet / pickPrimary of the zonediff section, HASH_ROUTE / BASENAME
+// / TRACKERS / isTracker of the cleanurl section), and the two argan
+// imports the sources carried (nextSerial + RecordSetRow of zonediff,
+// BadgeTone of protocols) fold into the single argan.ts import below.
+
+import { type BadgeTone, nextSerial, type RecordSetRow } from "./argan.ts";
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* SECTION: dnssec.ts — the DNSSEC validation math (the first seat).    */
+/* ════════════════════════════════════════════════════════════════════ */
+
+// # dnssec — the DNSSEC validation math of the family, housed at the argan root.
+// Library-grade module shipped inside the published packages (npm, maven with the Spring
+// Boot rider): it owns the domain types and pure, generic helpers only — zero consumer
+// data. The scope here is the clock and structure half of the validation chain (the
+// discipline dnssec-js models with its DatePeriod): RRSIG presentation parsing, the
+// RFC 4034 Appendix B key tag, the signature validity window with skew, the RRset/RRSIG
+// TTL equality rule and the DS→DNSKEY structural match over the IANA registries. The
+// heavyweight half — the cryptographic signature verification itself — belongs to the
+// crypto layer and is deliberately out of scope; every verdict here names the exact
+// failed check through typed codes, traceable from the resolver answer back to the row.
+
+/** The IANA DNSSEC algorithm numbers the validator answers for (RFC 8624 set). */
+export const DNSSECALGORITHMS: ReadonlyMap<number, string> = new Map([
+  [5, "RSASHA1"],
+  [7, "RSASHA1NSEC3SHA1"],
+  [8, "RSASHA256"],
+  [10, "RSASHA512"],
+  [13, "ECDSAP256SHA256"],
+  [14, "ECDSAP384SHA384"],
+  [15, "ED25519"],
+  [16, "ED448"],
+]);
+
+/** The IANA DS digest type numbers the validator answers for. */
+export const DNSSECDIGESTTYPES: ReadonlyMap<number, string> = new Map([
+  [1, "SHA-1"],
+  [2, "SHA-256"],
+  [4, "SHA-384"],
+]);
+
+/** One parsed RRSIG record (the presentation fields of RFC 4034 §3.1). */
+export interface RrSig {
+  /** the record type the signature covers, uppercase ("A", "DNSKEY") */
+  typeCovered: string;
+  algorithm: number;
+  /** the label count the signer used (wildcard owner names drop the leftmost `*`) */
+  labels: number;
+  /** the ttl the signed rrset originally carried */
+  originalTtl: number;
+  /** signature expiration, epoch ms (inclusive) */
+  expiration: number;
+  /** signature inception, epoch ms (inclusive) */
+  inception: number;
+  keyTag: number;
+  /** the signer zone name, lowercase, trailing dot kept */
+  signerName: string;
+  /** the signature itself, presentation base64 (unverified here) */
+  signature: string;
+}
+
+/** One parsed DNSKEY record (the presentation fields of RFC 4034 §2.1). */
+export interface DnsKey {
+  flags: number;
+  protocol: number;
+  algorithm: number;
+  /** the public key, presentation base64 */
+  publicKey: string;
+}
+
+/** One parsed DS record (the presentation fields of RFC 4036 §5.1.4). */
+export interface DsRecord {
+  keyTag: number;
+  algorithm: number;
+  digestType: number;
+  /** the digest, presentation hex (uncompared here) */
+  digest: string;
+}
+
+/** One verdict of the structural validators: ok, or the typed code of the failed check. */
+export type DnssecVerdict = { ok: true } | { ok: false; code: DnssecFailureCode; detail: string };
+
+/** The typed codes every failed check answers with — traceable from the answer to the row. */
+export type DnssecFailureCode =
+  | "expired-signature"
+  | "not-yet-valid-signature"
+  | "ttl-mismatch"
+  | "ttl-exceeds-original"
+  | "label-count-mismatch"
+  | "unknown-algorithm"
+  | "unknown-digest-type"
+  | "key-tag-mismatch"
+  | "algorithm-mismatch"
+  | "not-a-zone-key"
+  | "protocol-mismatch";
+
+/** Error raised by the presentation parsers for lines they cannot read. */
+export class DnssecValidationError extends Error {
+  constructor(message: string, options?: { cause?: unknown }) {
+    super(message, options);
+    this.name = "DnssecValidationError";
+  }
+}
+
+/** Parses a zone-file UTC timestamp (YYYYMMDDHHmmSS) into epoch ms. */
+function parseZoneTimestamp(token: string): number {
+  if (!/^\d{14}$/.test(token)) throw new DnssecValidationError(`dnssec: unreadable timestamp "${token}"`);
+  const year = Number.parseInt(token.slice(0, 4), 10);
+  const month = Number.parseInt(token.slice(4, 6), 10);
+  const day = Number.parseInt(token.slice(6, 8), 10);
+  const hour = Number.parseInt(token.slice(8, 10), 10);
+  const minute = Number.parseInt(token.slice(10, 12), 10);
+  const second = Number.parseInt(token.slice(12, 14), 10);
+  return Date.UTC(year, month - 1, day, hour, minute, second);
+}
+
+/**
+ * Parses one RRSIG record from its presentation format:
+ * `<typeCovered> <algorithm> <labels> <originalTtl> <expiration> <inception> <keyTag> <signer> <signature>`.
+ * Dates are zone-file UTC (YYYYMMDDHHmmSS). Throws `DnssecValidationError` on bad rows.
+ *
+ * @param line the presentation line (the rdata, with or without the leading "RRSIG").
+ * @returns the parsed signature.
+ */
+export function parseRrSig(line: string): RrSig {
+  const fields = line.trim().split(/\s+/);
+  if (fields[0]?.toUpperCase() === "RRSIG") fields.shift();
+  if (fields.length < 9) throw new DnssecValidationError(`dnssec: RRSIG needs 9 fields, got ${fields.length}`);
+  const algorithm = Number.parseInt(fields[1], 10);
+  const labels = Number.parseInt(fields[2], 10);
+  const originalTtl = Number.parseInt(fields[3], 10);
+  const expiration = parseZoneTimestamp(fields[4]);
+  const inception = parseZoneTimestamp(fields[5]);
+  const keyTag = Number.parseInt(fields[6], 10);
+  if (!Number.isFinite(algorithm) || algorithm <= 0)
+    throw new DnssecValidationError(`dnssec: bad algorithm "${fields[1]}"`);
+  if (!Number.isFinite(labels) || labels < 0) throw new DnssecValidationError(`dnssec: bad label count "${fields[2]}"`);
+  if (!Number.isFinite(originalTtl) || originalTtl < 0)
+    throw new DnssecValidationError(`dnssec: bad original ttl "${fields[3]}"`);
+  if (expiration < inception) throw new DnssecValidationError("dnssec: signature expires before it starts");
+  if (!Number.isFinite(keyTag) || keyTag < 0 || keyTag > 65535)
+    throw new DnssecValidationError(`dnssec: bad key tag "${fields[6]}"`);
+  return {
+    typeCovered: fields[0].toUpperCase(),
+    algorithm,
+    labels,
+    originalTtl,
+    expiration,
+    inception,
+    keyTag,
+    signerName: `${fields[7].toLowerCase()}${fields[7].endsWith(".") ? "" : "."}`,
+    signature: fields[8],
+  };
+}
+
+/** Decodes presentation base64 into bytes — dependency-free, node and browser. */
+function decodeBase64(value: string): Uint8Array {
+  const clean = value.replace(/[^A-Za-z0-9+/]/g, "");
+  const padded = clean.padEnd(Math.ceil(clean.length / 4) * 4, "=");
+  const bytes: number[] = [];
+  let buffer = 0;
+  let bits = 0;
+  for (const char of padded) {
+    if (char === "=") break;
+    const index = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".indexOf(char);
+    if (index === -1) throw new DnssecValidationError(`dnssec: bad base64 character "${char}"`);
+    buffer = (buffer << 6) | index;
+    bits += 6;
+    if (bits >= 8) {
+      bits -= 8;
+      bytes.push((buffer >> bits) & 0xff);
+    }
+  }
+  return Uint8Array.from(bytes);
+}
+
+/** Builds the DNSKEY rdata wire format (flags, protocol, algorithm, public key). */
+export function dnsKeyRdata(key: DnsKey): Uint8Array {
+  const publicKey = decodeBase64(key.publicKey);
+  const rdata = new Uint8Array(4 + publicKey.length);
+  rdata[0] = (key.flags >> 8) & 0xff;
+  rdata[1] = key.flags & 0xff;
+  rdata[2] = key.protocol;
+  rdata[3] = key.algorithm;
+  rdata.set(publicKey, 4);
+  return rdata;
+}
+
+/**
+ * Computes the DNSSEC key tag of a DNSKEY record (RFC 4034 Appendix B): a 16-bit
+ * ones'-complement checksum over the rdata wire format.
+ *
+ * @param key the DNSKEY record.
+ * @returns the key tag (0-65535).
+ */
+export function keyTag(key: DnsKey): number {
+  const rdata = dnsKeyRdata(key);
+  let accumulator = 0;
+  for (let index = 0; index < rdata.length; index++) {
+    accumulator += index & 1 ? rdata[index] : rdata[index] << 8;
+    accumulator += (accumulator >> 16) & 0xffff;
+  }
+  return accumulator & 0xffff;
+}
+
+/**
+ * Validates the RRSIG validity window against the reference clock (RFC 4035 §5.3.1):
+ * inception ≤ now ≤ expiration, with an explicit skew for resolver clock drift.
+ *
+ * @param sig the parsed signature.
+ * @param now the reference clock in epoch ms (defaults to the real clock).
+ * @param skewMs the tolerated clock drift in ms (default 0 — resolvers answer for themselves).
+ * @returns the verdict with `expired-signature` or `not-yet-valid-signature` on failure.
+ */
+export function validateSignatureWindow(sig: RrSig, now: number = Date.now(), skewMs = 0): DnssecVerdict {
+  if (now - skewMs > sig.expiration) {
+    return { ok: false, code: "expired-signature", detail: `expired at ${new Date(sig.expiration).toISOString()}` };
+  }
+  if (now + skewMs < sig.inception) {
+    return { ok: false, code: "not-yet-valid-signature", detail: `starts at ${new Date(sig.inception).toISOString()}` };
+  }
+  return { ok: true };
+}
+
+/**
+ * Validates the RRSIG ttl against the RRset it covers (RFC 4035 §5.3.2): the
+ * signature ttl must equal the rrset ttl and never exceed the original ttl the
+ * signer recorded.
+ *
+ * @param sigTtl the ttl the RRSIG record itself carries.
+ * @param sig the parsed signature.
+ * @param rrsetTtl the ttl of the covered rrset.
+ * @returns the verdict with `ttl-mismatch` or `ttl-exceeds-original` on failure.
+ */
+export function validateSignatureTtl(sig: RrSig, sigTtl: number, rrsetTtl: number): DnssecVerdict {
+  if (sigTtl !== rrsetTtl) {
+    return { ok: false, code: "ttl-mismatch", detail: `rrsig ttl ${sigTtl} differs from rrset ttl ${rrsetTtl}` };
+  }
+  if (sigTtl > sig.originalTtl) {
+    return { ok: false, code: "ttl-exceeds-original", detail: `ttl ${sigTtl} exceeds the original ${sig.originalTtl}` };
+  }
+  return { ok: true };
+}
+
+/** Counts the labels of an owner name (empty trailing root label excluded). */
+function ownerLabelCount(name: string): number {
+  const trimmed = name.trim().toLowerCase();
+  if (trimmed === "" || trimmed === ".") return 0;
+  return trimmed.replace(/\.$/, "").split(".").length;
+}
+
+/**
+ * Validates the RRSIG label count against the owner name it signs (RFC 4035 §5.3.2):
+ * the count must match the owner's labels, with a leading wildcard dropped on both
+ * sides (`*.example.com.` signs as `example.com.` = 2 labels).
+ *
+ * @param sig the parsed signature.
+ * @param ownerName the rrset owner name (absolute, trailing dot).
+ * @returns the verdict with `label-count-mismatch` on failure.
+ */
+export function validateSignatureLabels(sig: RrSig, ownerName: string): DnssecVerdict {
+  const labels = ownerLabelCount(ownerName);
+  const isWildcard = ownerName.trim().toLowerCase().startsWith("*.");
+  const signedLabels = isWildcard ? labels - 1 : labels;
+  if (sig.labels !== signedLabels) {
+    return {
+      ok: false,
+      code: "label-count-mismatch",
+      detail: `rrsig covers ${sig.labels} labels, owner carries ${signedLabels}`,
+    };
+  }
+  return { ok: true };
+}
+
+/**
+ * Validates the structural match between a DS record and the DNSKEY it refers to
+ * (RFC 4035 §5.2): the key tag and the algorithm must agree, the digest type must
+ * be one of the IANA registry and the key must be a zone key answering on
+ * protocol 3. The digest comparison itself belongs to the crypto layer.
+ *
+ * @param ds the delegation signer record.
+ * @param key the child DNSKEY record.
+ * @returns the verdict with the typed code of the failed check.
+ */
+export function validateDsMatch(ds: DsRecord, key: DnsKey): DnssecVerdict {
+  if (!DNSSECALGORITHMS.has(ds.algorithm)) {
+    return {
+      ok: false,
+      code: "unknown-algorithm",
+      detail: `algorithm ${ds.algorithm} is not in the RFC 8624 registry`,
+    };
+  }
+  if (!DNSSECDIGESTTYPES.has(ds.digestType)) {
+    return {
+      ok: false,
+      code: "unknown-digest-type",
+      detail: `digest type ${ds.digestType} is not in the IANA registry`,
+    };
+  }
+  if (ds.algorithm !== key.algorithm) {
+    return {
+      ok: false,
+      code: "algorithm-mismatch",
+      detail: `ds algorithm ${ds.algorithm} differs from dnskey ${key.algorithm}`,
+    };
+  }
+  if (ds.keyTag !== keyTag(key)) {
+    return { ok: false, code: "key-tag-mismatch", detail: `ds names tag ${ds.keyTag}, dnskey computes ${keyTag(key)}` };
+  }
+  const ZONEKEYFLAG = 0x0100;
+  if ((key.flags & ZONEKEYFLAG) === 0) {
+    return { ok: false, code: "not-a-zone-key", detail: `dnskey flags ${key.flags} miss the zone key bit` };
+  }
+  if (key.protocol !== 3) {
+    return { ok: false, code: "protocol-mismatch", detail: `dnskey protocol ${key.protocol} is not 3` };
+  }
+  return { ok: true };
+}
+
+/**
+ * Validates one structural link of the chain of trust: the DS of the parent zone
+ * against a DNSKEY of the child, and (when the child key is the secure entry
+ * point, flags 257) the key tag the chain walks through. The signature math is
+ * out of scope by design; this answers "does the chain structurally hold".
+ *
+ * @param ds the parent's DS record for the child zone.
+ * @param key the child DNSKEY candidate.
+ * @returns the verdict over the whole structural link.
+ */
+export function validateChainLink(ds: DsRecord, key: DnsKey): DnssecVerdict {
+  const dsVerdict = validateDsMatch(ds, key);
+  if (!dsVerdict.ok) return dsVerdict;
+  return { ok: true };
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* SECTION: zonediff.ts — the planned change set (the second seat).     */
+/* ════════════════════════════════════════════════════════════════════ */
+
+// # zonediff — the planned change set between two versions of a zone, housed at the argan root.
+// Library-grade module shipped inside the published packages (npm, maven with the Spring
+// Boot rider): it owns the domain types and pure, generic helpers only — zero consumer
+// data. The shape follows the plan discipline of external-dns (the kubernetes-sigs
+// planner): records group by owner name and type, the targets compare as a set (round
+// robin order never produces a change) and an unconfigured TTL never triggers an update.
+// Wire: the Sol zone pages serve the verbatim RecordSetRow tables of argan.ts; this
+// module parses those same lines into normalized records, diffs them and suggests the
+// next YYYYMMDDNN serial through argan.nextSerial — a publication never hardcodes a row.
+
+/** One normalized zone record (owner name, type, ttl and rdata). */
+export interface ZoneRecord {
+  /** absolute owner name, lowercase, trailing dot kept ("www.example.com.") */
+  name: string;
+  /** record type, uppercase ("A", "NS", "CNAME") */
+  type: string;
+  /** time to live in seconds; undefined inherits the zone default and never triggers an update */
+  ttl?: number;
+  /** normalized rdata: name tokens absolute and lowercase, the rest verbatim */
+  data: string;
+}
+
+/** One planned change of the diff (the external-dns create/update/delete vocabulary). */
+export interface RecordChange {
+  action: "create" | "delete" | "update";
+  name: string;
+  type: string;
+  /** the record as it exists in the current version (absent for creates) */
+  before?: ZoneRecord;
+  /** the record as planned in the desired version (absent for deletes) */
+  after?: ZoneRecord;
+  /** what made the row a change: the target set or only the ttl */
+  reason: "targets" | "ttl";
+}
+
+/** The planned change set between two versions of one zone. */
+export interface ZoneDiff {
+  creates: RecordChange[];
+  deletes: RecordChange[];
+  updates: RecordChange[];
+}
+
+/** Error raised by the zone-file parser for lines it cannot read (carries the line number). */
+export class ZoneDiffError extends Error {
+  /** the 1-based line number the parser choked on */
+  readonly line: number;
+
+  constructor(message: string, line: number, options?: { cause?: unknown }) {
+    super(message, options);
+    this.name = "ZoneDiffError";
+    this.line = line;
+  }
+}
+
+/** The rdata fields of each name-bearing type that hold domain names (field indexes). */
+const NAMEFIELDS: Record<string, readonly number[]> = {
+  NS: [0],
+  CNAME: [0],
+  PTR: [0],
+  DNAME: [0],
+  MX: [1],
+  SRV: [3],
+  SOA: [0, 1],
+};
+
+/** TTL unit multipliers for the RFC 2308 spellings ("1h30m"). */
+const TTLUNITS: Record<string, number> = { s: 1, m: 60, h: 3600, d: 86400, w: 604800 };
+
+/** Parses a TTL token: plain seconds ("300") or unit spellings ("1h30m"). */
+function parseTtl(token: string): number {
+  if (/^\d+$/.test(token)) return Number.parseInt(token, 10);
+  const lower = token.toLowerCase();
+  const units = lower.match(/\d+[smhdw]/g);
+  if (!units || units.join("") !== lower) return Number.NaN;
+  return units.reduce((total, part) => total + Number.parseInt(part, 10) * TTLUNITS[part.slice(-1)], 0);
+}
+
+/** Whether the token reads as a TTL (plain seconds or unit spellings). */
+function isTtlToken(token: string): boolean {
+  return /^\d+[smhdw]*$/i.test(token) && !Number.isNaN(parseTtl(token));
+}
+
+/** Makes a record name absolute and lowercase against the zone origin ("@" is the apex). */
+function absolutize(name: string, origin: string): string {
+  const lower = name.toLowerCase();
+  if (lower === "@") return origin;
+  if (lower.endsWith(".")) return lower;
+  return `${lower}.${origin}`;
+}
+
+/** Normalizes the rdata of one record: the name fields absolute and lowercase, the rest verbatim. */
+function normalizeData(type: string, data: string, origin: string): string {
+  const fields = data.split(/\s+/);
+  const nameFields = NAMEFIELDS[type];
+  if (nameFields) {
+    for (const index of nameFields) {
+      const token = fields[index];
+      if (token && token !== "@" && !/^\d+$/.test(token)) fields[index] = absolutize(token, origin);
+      else if (token === "@") fields[index] = origin;
+    }
+  }
+  return fields.join(" ");
+}
+
+/** Splits one zone-file line into its tokens, honoring quoted strings and `;` comments. */
+function tokenize(line: string): string[] {
+  const tokens: string[] = [];
+  let current = "";
+  let quoted = false;
+  for (const char of line) {
+    if (char === '"') {
+      quoted = !quoted;
+      continue;
+    }
+    if (char === ";" && !quoted) break;
+    if (!quoted && /\s/.test(char)) {
+      if (current) tokens.push(current);
+      current = "";
+      continue;
+    }
+    current += char;
+  }
+  if (current) tokens.push(current);
+  return tokens;
+}
+
+/**
+ * Parses a master zone file (RFC 1035 §5.1) into normalized records. Honored syntax:
+ * comments and blank lines are dropped, `$ORIGIN` and `$TTL` directives, `@` as the
+ * apex, owner inheritance on lines that start with whitespace, parenthesized
+ * continuations joined into one record and the `[ttl] [class]` / `[class] [ttl]`
+ * header orders. Quoted strings keep their inner spaces (presentation quotes are
+ * stripped). Throws `ZoneDiffError` with the offending line number.
+ *
+ * @param text the zone file text (current or desired version).
+ * @param defaultOrigin the zone origin when the file declares none ("example.com.").
+ * @param defaultTtl the TTL applied to records without one (a `$TTL` directive wins).
+ * @returns the normalized records in file order.
+ */
+export function parseZoneRecords(text: string, defaultOrigin: string, defaultTtl?: number): ZoneRecord[] {
+  const bare = defaultOrigin.toLowerCase();
+  const origin = bare.endsWith(".") ? bare : `${bare}.`;
+  const records: ZoneRecord[] = [];
+  let zoneTtl = defaultTtl;
+  let originNow = origin;
+  let owner = origin;
+  let pending: { tokens: string[]; line: number; inheritsOwner: boolean } | null = null;
+  const lines = text.split(/\r?\n/);
+
+  for (let index = 0; index < lines.length; index++) {
+    const raw = lines[index];
+    const number = index + 1;
+    const tokens = tokenize(raw);
+    if (pending) {
+      const closing = tokens.indexOf(")");
+      pending.tokens.push(...(closing === -1 ? tokens : tokens.slice(0, closing)));
+      if (closing === -1) continue;
+      emitRecord(pending.tokens, pending.line, pending.inheritsOwner);
+      pending = null;
+      continue;
+    }
+    if (tokens.length === 0) continue;
+    const directive = tokens[0].toUpperCase();
+    if (directive === "$ORIGIN") {
+      if (!tokens[1]) throw new ZoneDiffError("zonediff: $ORIGIN needs a name", number);
+      const declared = tokens[1].toLowerCase();
+      originNow = declared.endsWith(".") ? declared : `${declared}.`;
+      continue;
+    }
+    if (directive === "$TTL") {
+      zoneTtl = parseTtl(tokens[1] ?? "");
+      if (Number.isNaN(zoneTtl)) throw new ZoneDiffError(`zonediff: unreadable $TTL "${tokens[1]}"`, number);
+      continue;
+    }
+    if (directive === "$INCLUDE" || directive === "$GENERATE") {
+      throw new ZoneDiffError(`zonediff: ${directive} directives are not supported`, number);
+    }
+    const opening = tokens.indexOf("(");
+    if (opening !== -1) {
+      pending = { tokens: tokens.slice(0, opening), line: number, inheritsOwner: /^[ \t]/.test(raw) };
+      continue;
+    }
+    emitRecord(tokens, number, /^[ \t]/.test(raw));
+  }
+  if (pending) throw new ZoneDiffError("zonediff: unclosed parenthesis at end of file", pending.line);
+
+  return records;
+
+  /** Emits one parsed record from a complete token row (header, then rdata). */
+  function emitRecord(tokens: string[], number: number, inheritsOwner: boolean): void {
+    let cursor = 0;
+    if (!inheritsOwner) {
+      owner = absolutize(tokens[0], originNow);
+      cursor = 1;
+    }
+    let ttl: number | undefined;
+    for (let guard = 0; guard < 2 && cursor < tokens.length; guard++) {
+      const token = tokens[cursor];
+      if (ttl === undefined && isTtlToken(token)) {
+        ttl = parseTtl(token);
+        cursor += 1;
+        continue;
+      }
+      if (token.toUpperCase() === "IN") {
+        cursor += 1;
+        continue;
+      }
+      break;
+    }
+    const type = (tokens[cursor] ?? "").toUpperCase();
+    if (!/^[A-Z]{1,10}$/.test(type))
+      throw new ZoneDiffError(`zonediff: unreadable record type "${tokens[cursor]}"`, number);
+    cursor += 1;
+    const data = normalizeData(type, tokens.slice(cursor).join(" "), originNow);
+    if (!data) throw new ZoneDiffError(`zonediff: ${type} record without rdata`, number);
+    records.push({ name: owner, type, ttl: ttl ?? zoneTtl, data });
+  }
+}
+
+/** Groups records by "name type" — the external-dns plan key. */
+function groupRecords(records: readonly ZoneRecord[]): Map<string, ZoneRecord[]> {
+  const groups = new Map<string, ZoneRecord[]>();
+  for (const record of records) {
+    const key = `${record.name} ${record.type}`;
+    const group = groups.get(key);
+    if (group) group.push(record);
+    else groups.set(key, [record]);
+  }
+  return groups;
+}
+
+/** The sorted, de-duplicated rdata set of one record group (round robin order erased). */
+function targetSet(group: readonly ZoneRecord[]): string[] {
+  return [...new Set(group.map((record) => record.data))].sort();
+}
+
+/** Picks the representative record of a group (lowest ttl first, then lowest data). */
+function pickPrimary(group: readonly ZoneRecord[]): ZoneRecord {
+  return [...group].sort((left, right) => (left.ttl ?? 0) - (right.ttl ?? 0) || left.data.localeCompare(right.data))[0];
+}
+
+/**
+ * Diffs the current version of a zone against the desired version. Records are
+ * normalized first (names absolute and lowercase, ttl numeric), so identical rows
+ * diff to an empty set. The change vocabulary follows external-dns: creates,
+ * deletes and updates — an update carries both sides and its reason (targets or
+ * ttl). A desired ttl of undefined inherits the zone default and never updates.
+ *
+ * @param current the records the zone serves now.
+ * @param desired the records the zone should serve.
+ * @returns the planned change set (empty arrays when the versions agree).
+ */
+export function diffZones(current: readonly ZoneRecord[], desired: readonly ZoneRecord[]): ZoneDiff {
+  const now = groupRecords(current);
+  const next = groupRecords(desired);
+  const diff: ZoneDiff = { creates: [], deletes: [], updates: [] };
+  for (const [key, nextGroup] of next) {
+    const nowGroup = now.get(key);
+    if (!nowGroup) {
+      for (const after of nextGroup)
+        diff.creates.push({ action: "create", name: after.name, type: after.type, after, reason: "targets" });
+      continue;
+    }
+    const before = pickPrimary(nowGroup);
+    const after = pickPrimary(nextGroup);
+    const targetsDiffer = targetSet(nowGroup).join("\u0000") !== targetSet(nextGroup).join("\u0000");
+    if (targetsDiffer) {
+      diff.updates.push({ action: "update", name: before.name, type: before.type, before, after, reason: "targets" });
+      continue;
+    }
+    if (after.ttl !== undefined && before.ttl !== after.ttl) {
+      diff.updates.push({ action: "update", name: before.name, type: before.type, before, after, reason: "ttl" });
+    }
+  }
+  for (const [key, nowGroup] of now) {
+    if (next.has(key)) continue;
+    for (const before of nowGroup)
+      diff.deletes.push({ action: "delete", name: before.name, type: before.type, before, reason: "targets" });
+  }
+  return diff;
+}
+
+/**
+ * Parses two verbatim zone files and diffs them in one call — the convenience over
+ * {@link parseZoneRecords} + {@link diffZones}.
+ *
+ * @param currentText the zone file text the server answers now.
+ * @param desiredText the reviewed zone file text to publish.
+ * @param origin the zone origin ("example.com.").
+ * @returns the planned change set.
+ */
+export function diffZoneFiles(currentText: string, desiredText: string, origin: string): ZoneDiff {
+  return diffZones(parseZoneRecords(currentText, origin), parseZoneRecords(desiredText, origin));
+}
+
+/**
+ * Parses the verbatim zone rows the Sol zone pages serve (the `RecordSetRow` tables
+ * of argan.ts) into normalized records — the bridge from the rendered zone table to
+ * the diff. Record and directive rows are parsed verbatim; blank rows are dropped.
+ *
+ * @param rows the record-set rows (record, directive and blank rows mixed).
+ * @param origin the zone origin ("example.com.").
+ * @returns the normalized records of the rows.
+ */
+export function recordsFromRows(rows: readonly RecordSetRow[], origin: string): ZoneRecord[] {
+  const text = rows
+    .filter((row) => row.kind !== "blank")
+    .map((row) => row.line)
+    .join("\n");
+  return parseZoneRecords(text, origin);
+}
+
+/**
+ * Suggests the zone serial for a publication: an empty diff keeps the serial
+ * untouched, any planned change bumps the YYYYMMDDNN revision through
+ * argan.nextSerial.
+ *
+ * @param diff the planned change set.
+ * @param serial the serial the zone carries now.
+ * @returns the serial to publish.
+ */
+export function serialForPublication(diff: ZoneDiff, serial: string): string {
+  const empty = diff.creates.length === 0 && diff.deletes.length === 0 && diff.updates.length === 0;
+  return empty ? serial : nextSerial(serial);
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* SECTION: cleanurl.ts — the clean URL bar (the third seat).           */
+/* ════════════════════════════════════════════════════════════════════ */
+
+// the argan unit of the family.
+// # cleanurl — the clean URL bar of the family, typed for the SPA
+// Hash routes become paths, index.html and duplicate slashes disappear, campaign
+// trackers are stripped with replaceState (no reload, no history pollution) and the
+// canonical link stays in sync. Navigation itself is handled by wouter Link, so no
+// click interception and no reload binding live here.
+
+const HASH_ROUTE = /^#\/?/;
+const BASENAME = /(^|\/)index\.html?$/;
+const TRACKERS: readonly RegExp[] = [
+  /^(utm_|gclid|fbclid|msclkid|dclid|mc_|ref_?src$)/i,
+  /^igshid$/i,
+  /^yclid$/i,
+  /^twclid$/i,
+  /^_tt/i,
+  /^srsltid$/i,
+];
+
+function isTracker(key: string): boolean {
+  return TRACKERS.some((pattern) => pattern.test(key));
+}
+
+/** Builds the clean form of a url of this site; foreign origins come back untouched. */
+export function cleanUrl(input: string, origin: string = window.location.origin): string {
+  let url: URL;
+  try {
+    url = new URL(input, origin);
+  } catch {
+    return input;
+  }
+  if (url.origin !== origin) return input;
+
+  let out = url;
+
+  // 1) a route in the hash becomes a real path: /#/settings -> /settings
+  if (HASH_ROUTE.test(out.hash)) {
+    const path = out.hash.replace(HASH_ROUTE, "/");
+    out = new URL(path + out.search, origin);
+  } else if (out.hash) {
+    out = new URL(out.pathname + out.search, origin);
+  }
+
+  // 2) index.html and duplicated slashes disappear
+  out.pathname = out.pathname.replace(BASENAME, "/").replace(/\/{2,}/g, "/");
+
+  // 3) campaign trackers leave the url
+  let hadTrackers = false;
+  Array.from(out.searchParams.keys()).forEach((key) => {
+    if (isTracker(key)) {
+      out.searchParams.delete(key);
+      hadTrackers = true;
+    }
+  });
+  if (hadTrackers) out.search = out.searchParams.toString();
+
+  return out.toString();
+}
+
+/** Normalizes the current address without reloading or polluting the history. */
+export function applyNow(): boolean {
+  const cleaned = cleanUrl(window.location.href);
+  if (cleaned === window.location.href) return false;
+  window.history.replaceState(window.history.state, "", cleaned);
+  return true;
+}
+
+/** Keeps <link rel=canonical> and og:url in sync with the clean url (SEO, sharing). */
+export function syncCanonical(): void {
+  const canonical = document.querySelector('link[rel="canonical"]');
+  canonical?.setAttribute("href", window.location.origin + window.location.pathname);
+  const og = document.querySelector('meta[property="og:url"]');
+  og?.setAttribute("content", window.location.origin + window.location.pathname);
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* SECTION: protocols.ts — the protocol mesh (the fourth seat).         */
+/* ════════════════════════════════════════════════════════════════════ */
+
 // # protocols — the protocol mesh of the family gateway, housed at the argan root.
 // Library-grade module shipped inside the published packages (npm, maven with the Spring
 // Boot rider): it owns the registry rows and pure, generic helpers only — zero consumer
@@ -8,8 +770,6 @@
 // (protocol-native or TLS cryptography), opportunistic (STARTTLS or TLS-on-demand) or
 // cleartext — and the helper layer answers lookups, group filters and the tls-capable
 // count the owner law pins above one hundred.
-
-import type { BadgeTone } from "./argan";
 
 /** The hierarchical family keyword every protocol row carries (the pane groups). */
 export type ProtocolGroup =

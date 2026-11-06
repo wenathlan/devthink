@@ -17,7 +17,7 @@ import {
   protocolSchemes,
   protocolTone,
   tlsCapableProtocols,
-} from "../protocols.ts";
+} from "../dns.ts";
 
 /** The schemes the owner law names (the transfer and application wires of the mesh). */
 const LAW_SCHEMES: readonly string[] = [

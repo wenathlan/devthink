@@ -14,7 +14,7 @@
 import { useEffect, useState } from "react";
 import type { OptionChoice } from "../../argan.ts";
 import { listOptionChoices } from "../../catalog.ts";
-import { applyNow } from "../../cleanurl";
+import { applyNow } from "../../dns";
 import { label } from "../../labels";
 import { reduceMotionApplied, setReduceMotion } from "../../motionpref";
 import { currentTheme, toggleTheme } from "../../theme";

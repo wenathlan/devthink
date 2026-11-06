@@ -6,13 +6,13 @@
  * state and seals the bar at "/" via history.replaceState.
  *
  * the three core symbols (cleanUrl, applyNow, syncCanonical) ride the
- * family owner argan/cleanurl.ts per the dedup law — this seat keeps the
+ * family owner argan/dns.ts per the dedup law — this seat keeps the
  * os extras (the detailed walk, the view navigation, the hash janitor).
  */
 
-import { cleanUrl } from "../argan/cleanurl.ts";
+import { cleanUrl } from "../argan/dns.ts";
 
-export { applyNow, cleanUrl, syncCanonical } from "../argan/cleanurl.ts";
+export { applyNow, cleanUrl, syncCanonical } from "../argan/dns.ts";
 
 /** legacy static hash route: #/settings, #settings */
 const HASH_ROUTE = /^#\/?/;
