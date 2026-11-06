@@ -3,247 +3,6 @@
   "version": "2.0.166",
   "private": false,
   "description": "getry is the AI gateway of the wenathlan family: five provider gateways (v1 zai, v2 babel, v3 nvidia, v4 opencode+kilo, v5 openrouter) serving 35 OpenAI-compatible routes with the 7-level thinking system, the session store and the key rotation, described by schema.prisma and served as one static Sol surface. The envelope distributes the documentation set and the tests directory as one package.",
-  "license": "GPL-3.0-only",
-  "type": "module",
-  "sideEffects": false,
-  "bin": {
-    "getry": "./cli.ts"
-  },
-  "exports": {
-    "./thinking": {
-      "types": "./thinking.ts",
-      "default": "./thinking.ts"
-    },
-    "./validate": {
-      "types": "./validate.ts",
-      "import": "./validate.ts",
-      "default": "./validate.ts"
-    },
-    "./engine": {
-      "types": "./engine.ts",
-      "import": "./engine.ts",
-      "default": "./engine.ts"
-    },
-    "./llm": {
-      "types": "./llm.ts",
-      "import": "./llm.ts",
-      "default": "./llm.ts"
-    },
-    "./streaming": {
-      "types": "./streaming.ts",
-      "import": "./streaming.ts",
-      "default": "./streaming.ts"
-    },
-    "./streamfallback": {
-      "types": "./streaming.ts",
-      "import": "./streaming.ts",
-      "default": "./streaming.ts"
-    },
-    "./models": {
-      "types": "./models.ts",
-      "import": "./models.ts",
-      "default": "./models.ts"
-    },
-    "./request": {
-      "types": "./request.ts",
-      "import": "./request.ts",
-      "default": "./request.ts"
-    },
-    "./providers": {
-      "types": "./providers.ts",
-      "import": "./providers.ts",
-      "default": "./providers.ts"
-    },
-    "./antigravity": {
-      "types": "./antigravity.ts",
-      "import": "./antigravity.ts",
-      "default": "./antigravity.ts"
-    },
-    "./oauth": {
-      "types": "./oauth.ts",
-      "import": "./oauth.ts",
-      "default": "./oauth.ts"
-    },
-    "./accounts": {
-      "types": "./accounts.ts",
-      "import": "./accounts.ts",
-      "default": "./accounts.ts"
-    },
-    "./auth": {
-      "types": "./auth.ts",
-      "import": "./auth.ts",
-      "default": "./auth.ts"
-    },
-    "./server": {
-      "types": "./server.ts",
-      "import": "./server.ts",
-      "default": "./server.ts"
-    },
-    "./cli": {
-      "types": "./cli.ts",
-      "import": "./cli.ts",
-      "default": "./cli.ts"
-    },
-    "./providercli": {
-      "types": "./providers.ts",
-      "import": "./providers.ts",
-      "default": "./providers.ts"
-    },
-    "./project": {
-      "types": "./project.ts",
-      "import": "./project.ts",
-      "default": "./project.ts"
-    },
-    "./quota": {
-      "types": "./quota.ts",
-      "import": "./quota.ts",
-      "default": "./quota.ts"
-    },
-    "./recovery": {
-      "types": "./recovery.ts",
-      "import": "./recovery.ts",
-      "default": "./recovery.ts"
-    },
-    "./fingerprint": {
-      "types": "./fingerprint.ts",
-      "import": "./fingerprint.ts",
-      "default": "./fingerprint.ts"
-    },
-    "./search": {
-      "types": "./search.ts",
-      "import": "./search.ts",
-      "default": "./search.ts"
-    },
-    "./utils": {
-      "types": "./utils.ts",
-      "import": "./utils.ts",
-      "default": "./utils.ts"
-    },
-    "./versionregistry": {
-      "types": "./versionregistry.ts",
-      "import": "./versionregistry.ts",
-      "default": "./versionregistry.ts"
-    },
-    "./intelligence": {
-      "types": "./intelligence.ts",
-      "import": "./intelligence.ts",
-      "default": "./intelligence.ts"
-    },
-    "./json": {
-      "types": "./json.ts",
-      "import": "./json.ts",
-      "default": "./json.ts"
-    },
-    "./jsonpolicy": {
-      "types": "./json.ts",
-      "import": "./json.ts",
-      "default": "./json.ts"
-    },
-    "./jsonschema": {
-      "types": "./json.ts",
-      "import": "./json.ts",
-      "default": "./json.ts"
-    },
-    "./gatewayconfig": {
-      "types": "./gateway.ts",
-      "import": "./gateway.ts",
-      "default": "./gateway.ts"
-    },
-    "./gatewayviewconfig": {
-      "types": "./gateway.ts",
-      "import": "./gateway.ts",
-      "default": "./gateway.ts"
-    },
-    "./gatewayprobe": {
-      "types": "./gatewayprobe.ts",
-      "import": "./gatewayprobe.ts",
-      "default": "./gatewayprobe.ts"
-    },
-    "./gatewaysmoke": {
-      "types": "./gatewaysmoke.ts",
-      "import": "./gatewaysmoke.ts",
-      "default": "./gatewaysmoke.ts"
-    },
-    "./nodeshim": {
-      "types": "./nodeshim.ts",
-      "import": "./nodeshim.ts",
-      "default": "./nodeshim.ts"
-    },
-    "./types": {
-      "types": "./types.ts",
-      "import": "./types.ts",
-      "default": "./types.ts"
-    },
-    "./constants": {
-      "types": "./constants.ts",
-      "import": "./constants.ts",
-      "default": "./constants.ts"
-    }
-  },
-  "files": [
-    "README.md",
-    "docs",
-    "tests",
-    "accounts.ts",
-    "antigravity.ts",
-    "auth.ts",
-    "cli.ts",
-    "constants.ts",
-    "db.ts",
-    "engine.ts",
-    "fingerprint.ts",
-    "gateway.ts",
-    "gatewayprobe.ts",
-    "gatewaysmoke.ts",
-    "intelligence.ts",
-    "json.ts",
-    "labels.ts",
-    "llm.ts",
-    "models.ts",
-    "nodeshim.ts",
-    "oauth.ts",
-    "project.ts",
-    "providers.ts",
-    "quota.ts",
-    "recovery.ts",
-    "request.ts",
-    "search.ts",
-    "server.ts",
-    "streaming.ts",
-    "tests/gatewayserver.ts",
-    "thinking.ts",
-    "types.ts",
-    "utils.ts",
-    "validate.ts",
-    "versionregistry.ts"
-  ],
-  "engines": {
-    "babel": "^7.28.0",
-    "bare": "^1.18.0",
-    "bun": ">=1.4.4 <2",
-    "cargo": ">=1.85.0",
-    "chrome": "^16.0.912",
-    "cnpm": "^9.4.0",
-    "corepack": "^0.35.0",
-    "deno": "^2.9.5",
-    "dotnet": ">=8.0.0",
-    "ecmascript": "^5.0.0",
-    "firefox": ">=0.8.0",
-    "go": ">=1.24.0",
-    "iojs": "^1.0.0",
-    "java": ">=17",
-    "node": ">=26.13.0 <27",
-    "npm": ">=12.2.2 <13",
-    "pnpm": "^12.6.0",
-    "python": ">=3.11.0",
-    "rust": ">=1.85.0",
-    "teleport": ">=0.2.0",
-    "typescript": "^5.8.0",
-    "v": "^0.5.2",
-    "vscode": "^1.118.0",
-    "yaml": "^2.9.1",
-    "yarn": "^4.17.1"
-  },
   "scripts": {
     "db:generate": "prisma generate --schema schema.prisma",
     "dev": "vite --host",
@@ -780,10 +539,219 @@
       "uuid": "11.1.1"
     }
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+  "type": "module",
+  "sideEffects": false,
+  "bin": {
+    "getry": "./cli.ts"
   },
+  "exports": {
+    "./thinking": {
+      "types": "./thinking.ts",
+      "default": "./thinking.ts"
+    },
+    "./validate": {
+      "types": "./validate.ts",
+      "import": "./validate.ts",
+      "default": "./validate.ts"
+    },
+    "./engine": {
+      "types": "./engine.ts",
+      "import": "./engine.ts",
+      "default": "./engine.ts"
+    },
+    "./llm": {
+      "types": "./llm.ts",
+      "import": "./llm.ts",
+      "default": "./llm.ts"
+    },
+    "./streaming": {
+      "types": "./streaming.ts",
+      "import": "./streaming.ts",
+      "default": "./streaming.ts"
+    },
+    "./streamfallback": {
+      "types": "./streaming.ts",
+      "import": "./streaming.ts",
+      "default": "./streaming.ts"
+    },
+    "./models": {
+      "types": "./models.ts",
+      "import": "./models.ts",
+      "default": "./models.ts"
+    },
+    "./request": {
+      "types": "./request.ts",
+      "import": "./request.ts",
+      "default": "./request.ts"
+    },
+    "./providers": {
+      "types": "./providers.ts",
+      "import": "./providers.ts",
+      "default": "./providers.ts"
+    },
+    "./antigravity": {
+      "types": "./antigravity.ts",
+      "import": "./antigravity.ts",
+      "default": "./antigravity.ts"
+    },
+    "./oauth": {
+      "types": "./oauth.ts",
+      "import": "./oauth.ts",
+      "default": "./oauth.ts"
+    },
+    "./accounts": {
+      "types": "./accounts.ts",
+      "import": "./accounts.ts",
+      "default": "./accounts.ts"
+    },
+    "./auth": {
+      "types": "./auth.ts",
+      "import": "./auth.ts",
+      "default": "./auth.ts"
+    },
+    "./server": {
+      "types": "./server.ts",
+      "import": "./server.ts",
+      "default": "./server.ts"
+    },
+    "./cli": {
+      "types": "./cli.ts",
+      "import": "./cli.ts",
+      "default": "./cli.ts"
+    },
+    "./providercli": {
+      "types": "./providers.ts",
+      "import": "./providers.ts",
+      "default": "./providers.ts"
+    },
+    "./project": {
+      "types": "./project.ts",
+      "import": "./project.ts",
+      "default": "./project.ts"
+    },
+    "./quota": {
+      "types": "./quota.ts",
+      "import": "./quota.ts",
+      "default": "./quota.ts"
+    },
+    "./recovery": {
+      "types": "./recovery.ts",
+      "import": "./recovery.ts",
+      "default": "./recovery.ts"
+    },
+    "./fingerprint": {
+      "types": "./fingerprint.ts",
+      "import": "./fingerprint.ts",
+      "default": "./fingerprint.ts"
+    },
+    "./search": {
+      "types": "./search.ts",
+      "import": "./search.ts",
+      "default": "./search.ts"
+    },
+    "./utils": {
+      "types": "./utils.ts",
+      "import": "./utils.ts",
+      "default": "./utils.ts"
+    },
+    "./versionregistry": {
+      "types": "./versionregistry.ts",
+      "import": "./versionregistry.ts",
+      "default": "./versionregistry.ts"
+    },
+    "./intelligence": {
+      "types": "./intelligence.ts",
+      "import": "./intelligence.ts",
+      "default": "./intelligence.ts"
+    },
+    "./json": {
+      "types": "./json.ts",
+      "import": "./json.ts",
+      "default": "./json.ts"
+    },
+    "./jsonpolicy": {
+      "types": "./json.ts",
+      "import": "./json.ts",
+      "default": "./json.ts"
+    },
+    "./jsonschema": {
+      "types": "./json.ts",
+      "import": "./json.ts",
+      "default": "./json.ts"
+    },
+    "./gatewayconfig": {
+      "types": "./gateway.ts",
+      "import": "./gateway.ts",
+      "default": "./gateway.ts"
+    },
+    "./gatewayviewconfig": {
+      "types": "./gateway.ts",
+      "import": "./gateway.ts",
+      "default": "./gateway.ts"
+    },
+    "./gatewayprobe": {
+      "types": "./gatewayprobe.ts",
+      "import": "./gatewayprobe.ts",
+      "default": "./gatewayprobe.ts"
+    },
+    "./gatewaysmoke": {
+      "types": "./gatewaysmoke.ts",
+      "import": "./gatewaysmoke.ts",
+      "default": "./gatewaysmoke.ts"
+    },
+    "./nodeshim": {
+      "types": "./nodeshim.ts",
+      "import": "./nodeshim.ts",
+      "default": "./nodeshim.ts"
+    },
+    "./types": {
+      "types": "./types.ts",
+      "import": "./types.ts",
+      "default": "./types.ts"
+    },
+    "./constants": {
+      "types": "./constants.ts",
+      "import": "./constants.ts",
+      "default": "./constants.ts"
+    }
+  },
+  "files": [
+    "README.md",
+    "docs",
+    "tests",
+    "accounts.ts",
+    "antigravity.ts",
+    "auth.ts",
+    "cli.ts",
+    "constants.ts",
+    "db.ts",
+    "engine.ts",
+    "fingerprint.ts",
+    "gateway.ts",
+    "gatewayprobe.ts",
+    "gatewaysmoke.ts",
+    "intelligence.ts",
+    "json.ts",
+    "labels.ts",
+    "llm.ts",
+    "models.ts",
+    "nodeshim.ts",
+    "oauth.ts",
+    "project.ts",
+    "providers.ts",
+    "quota.ts",
+    "recovery.ts",
+    "request.ts",
+    "search.ts",
+    "server.ts",
+    "streaming.ts",
+    "tests/gatewayserver.ts",
+    "thinking.ts",
+    "types.ts",
+    "utils.ts",
+    "validate.ts",
+    "versionregistry.ts"
+  ],
   "trustedDependencies": [
     "@parcel/watcher",
     "@swc/core",

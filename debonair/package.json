@@ -3,258 +3,6 @@
   "version": "2.0.166",
   "private": false,
   "description": "debonair is the audio and DAW app of the wenathlan family: the exclusive owner of the kathesis engine — the complete audio and music DAW infrastructure and sound AI (music studio, mixer, effects rack, transport, sampler, synthesis, voice, mixing, mastering, the v1 payload ingest and its reverse ingest) — housed at the app root beside the katexis site vocabulary, importing gateway, AI and workflow from devthink, versawase from cadria, storage from vault and the sandbox lanes from saddle. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
-  "license": "GPL-3.0-only",
-  "type": "module",
-  "sideEffects": false,
-  "bin": {
-    "debonair": "./cli.ts"
-  },
-  "exports": {
-    "./analyze": {
-      "types": "./analyze.ts",
-      "import": "./analyze.ts",
-      "default": "./analyze.ts"
-    },
-    "./hpss": {
-      "types": "./hpss.ts",
-      "import": "./hpss.ts",
-      "default": "./hpss.ts"
-    },
-    "./ingest": {
-      "types": "./ingest.ts",
-      "import": "./ingest.ts",
-      "default": "./ingest.ts"
-    },
-    "./reconpayload": {
-      "types": "./recon.ts",
-      "import": "./recon.ts",
-      "default": "./recon.ts"
-    },
-    "./patternminer": {
-      "types": "./pattern.ts",
-      "import": "./pattern.ts",
-      "default": "./pattern.ts"
-    },
-    "./demix": {
-      "types": "./demix.ts",
-      "import": "./demix.ts",
-      "default": "./demix.ts"
-    },
-    "./formant": {
-      "types": "./formant.ts",
-      "import": "./formant.ts",
-      "default": "./formant.ts"
-    },
-    "./genrecorpus": {
-      "types": "./genre.ts",
-      "import": "./genre.ts",
-      "default": "./genre.ts"
-    },
-    "./reverseingest": {
-      "types": "./reverseingest.ts",
-      "import": "./reverseingest.ts",
-      "default": "./reverseingest.ts"
-    },
-    "./timestretch": {
-      "types": "./timestretch.ts",
-      "import": "./timestretch.ts",
-      "default": "./timestretch.ts"
-    },
-    "./patternenums": {
-      "types": "./pattern.ts",
-      "import": "./pattern.ts",
-      "default": "./pattern.ts"
-    },
-    "./composer": {
-      "types": "./composer.ts",
-      "import": "./composer.ts",
-      "default": "./composer.ts"
-    },
-    "./coverpalette": {
-      "types": "./coverpalette.ts",
-      "import": "./coverpalette.ts",
-      "default": "./coverpalette.ts"
-    },
-    "./audio": {
-      "types": "./audio.ts",
-      "import": "./audio.ts",
-      "default": "./audio.ts"
-    },
-    "./take": {
-      "types": "./take.ts",
-      "import": "./take.ts",
-      "default": "./take.ts"
-    },
-    "./wavwriter": {
-      "types": "./wavwriter.ts",
-      "import": "./wavwriter.ts",
-      "default": "./wavwriter.ts"
-    },
-    "./blobstore": {
-      "types": "./blobstore.ts",
-      "import": "./blobstore.ts",
-      "default": "./blobstore.ts"
-    },
-    "./audioattributes": {
-      "types": "./audio.ts",
-      "import": "./audio.ts",
-      "default": "./audio.ts"
-    },
-    "./audiodecode": {
-      "types": "./audio.ts",
-      "import": "./audio.ts",
-      "default": "./audio.ts"
-    },
-    "./audioengine": {
-      "types": "./audio.ts",
-      "import": "./audio.ts",
-      "default": "./audio.ts"
-    },
-    "./audiofeatures": {
-      "types": "./audio.ts",
-      "import": "./audio.ts",
-      "default": "./audio.ts"
-    },
-    "./audiopipeline": {
-      "types": "./audio.ts",
-      "import": "./audio.ts",
-      "default": "./audio.ts"
-    },
-    "./beatgrid": {
-      "types": "./beatgrid.ts",
-      "import": "./beatgrid.ts",
-      "default": "./beatgrid.ts"
-    },
-    "./speechalign": {
-      "types": "./speechalign.ts",
-      "import": "./speechalign.ts",
-      "default": "./speechalign.ts"
-    },
-    "./stems": {
-      "types": "./stems.ts",
-      "import": "./stems.ts",
-      "default": "./stems.ts"
-    },
-    "./renderworker": {
-      "types": "./render.ts",
-      "import": "./render.ts",
-      "default": "./render.ts"
-    },
-    "./reconworker": {
-      "types": "./recon.ts",
-      "import": "./recon.ts",
-      "default": "./recon.ts"
-    },
-    "./gatewayapi": {
-      "types": "./gatewayapi.ts",
-      "import": "./gatewayapi.ts",
-      "default": "./gatewayapi.ts"
-    },
-    "./routetable": {
-      "types": "./routetable.ts",
-      "import": "./routetable.ts",
-      "default": "./routetable.ts"
-    },
-    "./pattern": {
-      "types": "./pattern.ts",
-      "import": "./pattern.ts",
-      "default": "./pattern.ts"
-    },
-    "./genre": {
-      "types": "./genre.ts",
-      "import": "./genre.ts",
-      "default": "./genre.ts"
-    },
-    "./render": {
-      "types": "./render.ts",
-      "import": "./render.ts",
-      "default": "./render.ts"
-    },
-    "./kathesis": {
-      "types": "./kathesis.ts",
-      "import": "./kathesis.ts",
-      "default": "./kathesis.ts"
-    }
-  },
-  "files": [
-    "README.md",
-    "docs",
-    "tests",
-    "cli.ts",
-    "analyze.ts",
-    "hpss.ts",
-    "ingest.ts",
-    "pattern.ts",
-    "recon.ts",
-    "composer.ts",
-    "coverpalette.ts",
-    "audio.ts",
-    "take.ts",
-    "wavwriter.ts",
-    "blobstore.ts",
-    "render.ts",
-    "renderengine.ts",
-    "kathesis.ts",
-    "gatewayapi.ts",
-    "routetable.ts",
-    "beatgrid.ts",
-    "speechalign.ts",
-    "stems.ts",
-    "demix.ts",
-    "formant.ts",
-    "genre.ts",
-    "reverseingest.ts",
-    "timestretch.ts",
-    "vocalsynth.ts",
-    "arrangement.ts",
-    "bigintids.ts",
-    "fingerprint.ts",
-    "harmonyengine.ts",
-    "katexis.ts",
-    "limiter.ts",
-    "loudness.ts",
-    "mixergraph.ts",
-    "musictheory.ts",
-    "onboardingstate.ts",
-    "rhythmgrammar.ts",
-    "genrematrix.ts",
-    "db.ts",
-    "seed.ts",
-    "dawview.ts",
-    "labels.ts",
-    "sandboxmodality.ts",
-    "spectrum.ts",
-    "midiwriter.ts",
-    "timelinemodel.ts",
-    "tuning.ts"
-  ],
-  "engines": {
-    "babel": "^7.28.0",
-    "bare": "^1.18.0",
-    "bun": ">=1.4.4 <2",
-    "cargo": ">=1.85.0",
-    "chrome": "^16.0.912",
-    "cnpm": "^9.4.0",
-    "corepack": "^0.35.0",
-    "deno": "^2.9.5",
-    "dotnet": ">=8.0.0",
-    "ecmascript": "^5.0.0",
-    "firefox": ">=0.8.0",
-    "go": ">=1.24.0",
-    "iojs": "^1.0.0",
-    "java": ">=17",
-    "node": ">=26.13.0 <27",
-    "npm": ">=12.2.2 <13",
-    "pnpm": "^12.6.0",
-    "python": ">=3.11.0",
-    "rust": ">=1.85.0",
-    "teleport": ">=0.2.0",
-    "typescript": "^5.8.0",
-    "v": "^0.5.2",
-    "vscode": "^1.118.0",
-    "yaml": "^2.9.1",
-    "yarn": "^4.17.1"
-  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -790,10 +538,230 @@
       "uuid": "11.1.1"
     }
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+  "type": "module",
+  "sideEffects": false,
+  "bin": {
+    "debonair": "./cli.ts"
   },
+  "exports": {
+    "./analyze": {
+      "types": "./analyze.ts",
+      "import": "./analyze.ts",
+      "default": "./analyze.ts"
+    },
+    "./hpss": {
+      "types": "./hpss.ts",
+      "import": "./hpss.ts",
+      "default": "./hpss.ts"
+    },
+    "./ingest": {
+      "types": "./ingest.ts",
+      "import": "./ingest.ts",
+      "default": "./ingest.ts"
+    },
+    "./reconpayload": {
+      "types": "./recon.ts",
+      "import": "./recon.ts",
+      "default": "./recon.ts"
+    },
+    "./patternminer": {
+      "types": "./pattern.ts",
+      "import": "./pattern.ts",
+      "default": "./pattern.ts"
+    },
+    "./demix": {
+      "types": "./demix.ts",
+      "import": "./demix.ts",
+      "default": "./demix.ts"
+    },
+    "./formant": {
+      "types": "./formant.ts",
+      "import": "./formant.ts",
+      "default": "./formant.ts"
+    },
+    "./genrecorpus": {
+      "types": "./genre.ts",
+      "import": "./genre.ts",
+      "default": "./genre.ts"
+    },
+    "./reverseingest": {
+      "types": "./reverseingest.ts",
+      "import": "./reverseingest.ts",
+      "default": "./reverseingest.ts"
+    },
+    "./timestretch": {
+      "types": "./timestretch.ts",
+      "import": "./timestretch.ts",
+      "default": "./timestretch.ts"
+    },
+    "./patternenums": {
+      "types": "./pattern.ts",
+      "import": "./pattern.ts",
+      "default": "./pattern.ts"
+    },
+    "./composer": {
+      "types": "./composer.ts",
+      "import": "./composer.ts",
+      "default": "./composer.ts"
+    },
+    "./coverpalette": {
+      "types": "./coverpalette.ts",
+      "import": "./coverpalette.ts",
+      "default": "./coverpalette.ts"
+    },
+    "./audio": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+    },
+    "./take": {
+      "types": "./take.ts",
+      "import": "./take.ts",
+      "default": "./take.ts"
+    },
+    "./wavwriter": {
+      "types": "./wavwriter.ts",
+      "import": "./wavwriter.ts",
+      "default": "./wavwriter.ts"
+    },
+    "./blobstore": {
+      "types": "./blobstore.ts",
+      "import": "./blobstore.ts",
+      "default": "./blobstore.ts"
+    },
+    "./audioattributes": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+    },
+    "./audiodecode": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+    },
+    "./audioengine": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+    },
+    "./audiofeatures": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+    },
+    "./audiopipeline": {
+      "types": "./audio.ts",
+      "import": "./audio.ts",
+      "default": "./audio.ts"
+    },
+    "./beatgrid": {
+      "types": "./beatgrid.ts",
+      "import": "./beatgrid.ts",
+      "default": "./beatgrid.ts"
+    },
+    "./speechalign": {
+      "types": "./speechalign.ts",
+      "import": "./speechalign.ts",
+      "default": "./speechalign.ts"
+    },
+    "./stems": {
+      "types": "./stems.ts",
+      "import": "./stems.ts",
+      "default": "./stems.ts"
+    },
+    "./renderworker": {
+      "types": "./render.ts",
+      "import": "./render.ts",
+      "default": "./render.ts"
+    },
+    "./reconworker": {
+      "types": "./recon.ts",
+      "import": "./recon.ts",
+      "default": "./recon.ts"
+    },
+    "./gatewayapi": {
+      "types": "./gatewayapi.ts",
+      "import": "./gatewayapi.ts",
+      "default": "./gatewayapi.ts"
+    },
+    "./routetable": {
+      "types": "./routetable.ts",
+      "import": "./routetable.ts",
+      "default": "./routetable.ts"
+    },
+    "./pattern": {
+      "types": "./pattern.ts",
+      "import": "./pattern.ts",
+      "default": "./pattern.ts"
+    },
+    "./genre": {
+      "types": "./genre.ts",
+      "import": "./genre.ts",
+      "default": "./genre.ts"
+    },
+    "./render": {
+      "types": "./render.ts",
+      "import": "./render.ts",
+      "default": "./render.ts"
+    },
+    "./kathesis": {
+      "types": "./kathesis.ts",
+      "import": "./kathesis.ts",
+      "default": "./kathesis.ts"
+    }
+  },
+  "files": [
+    "README.md",
+    "docs",
+    "tests",
+    "cli.ts",
+    "analyze.ts",
+    "hpss.ts",
+    "ingest.ts",
+    "pattern.ts",
+    "recon.ts",
+    "composer.ts",
+    "coverpalette.ts",
+    "audio.ts",
+    "take.ts",
+    "wavwriter.ts",
+    "blobstore.ts",
+    "render.ts",
+    "renderengine.ts",
+    "kathesis.ts",
+    "gatewayapi.ts",
+    "routetable.ts",
+    "beatgrid.ts",
+    "speechalign.ts",
+    "stems.ts",
+    "demix.ts",
+    "formant.ts",
+    "genre.ts",
+    "reverseingest.ts",
+    "timestretch.ts",
+    "vocalsynth.ts",
+    "arrangement.ts",
+    "bigintids.ts",
+    "fingerprint.ts",
+    "harmonyengine.ts",
+    "katexis.ts",
+    "limiter.ts",
+    "loudness.ts",
+    "mixergraph.ts",
+    "musictheory.ts",
+    "onboardingstate.ts",
+    "rhythmgrammar.ts",
+    "genrematrix.ts",
+    "db.ts",
+    "seed.ts",
+    "dawview.ts",
+    "labels.ts",
+    "sandboxmodality.ts",
+    "spectrum.ts",
+    "midiwriter.ts",
+    "timelinemodel.ts",
+    "tuning.ts"
+  ],
   "trustedDependencies": [
     "@parcel/watcher",
     "@swc/core",

@@ -187,8 +187,11 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
     };
     expect(devthink.name).toBe("@wenathlan/devthink");
     expect(devthink.private).not.toBe(true);
-    expect(devthink.publishConfig?.access).toBe("public");
-    expect(devthink.publishConfig?.registry).toBe("https://registry.npmjs.org/");
+    /* the manifestemplate law: the public registry identity answers the
+     * publish workflow's explicit --access public flag, never a
+     * publishConfig tag the application manifest carries */
+    expect(devthink.publishConfig, "the app manifest carries no publishConfig tag").toBeUndefined();
+    expect(publish).toContain("--access public");
   });
 
   it("the graceful skip answers the absent token alone", async () => {
@@ -235,7 +238,7 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
     };
     expect(saddle.name).toBe("@wenathlan/saddle");
     expect(saddle.private).toBe(false);
-    expect(saddle.publishConfig?.access).toBe("public");
+    expect(saddle.publishConfig, "the app manifest carries no publishConfig tag").toBeUndefined();
   });
 });
 

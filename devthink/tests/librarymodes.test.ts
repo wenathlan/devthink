@@ -436,9 +436,13 @@ describe("the library modes of 1.1.81", () => {
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as {
       version: string;
       sideEffects?: boolean;
-      publishConfig?: { registry?: string };
-      engines: Record<string, string>;
       exports: Record<string, Record<string, string>>;
+    };
+    /* the manifestemplate law: the engines ride the root manifest alone —
+     * the application manifest answers the three dependency tags and the
+     * functional essentials, never an engines floor of its own */
+    const rootmanifest = JSON.parse(await readFile("../package.json", "utf8")) as {
+      engines: Record<string, string>;
     };
     const root = packagejson.exports["."];
     if (root === undefined) throw new Error("The package exports map carries no root entry.");
@@ -466,9 +470,9 @@ describe("the library modes of 1.1.81", () => {
     expect(packagejson.exports["./progress"]?.import).toBe("./build/progress.js");
     expect(packagejson.exports["./cli"]?.import).toBe("./build/cli.js");
     expect(packagejson.sideEffects).toBe(false);
-    expect(packagejson.publishConfig?.registry).toBe("https://registry.npmjs.org/");
+    expect(packagejson.publishConfig, "the app manifest carries no publishConfig tag").toBeUndefined();
     const nvmversion = (await readFile(".nvmrc", "utf8")).trim();
-    expect(packagejson.engines.node).toContain(nvmversion);
+    expect(rootmanifest.engines.node).toContain(nvmversion);
     /* the forge rides outside the application container: the image builds from the application tree alone */
     if (!existsSync(join(repoRoot, ".github/workflows/verify.yml"))) return;
     const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8");
@@ -479,7 +483,7 @@ describe("the library modes of 1.1.81", () => {
      * baseline reads the floor of either declaration (the verify lane may
      * smoke a newer patch of the floor — the satisfaction, never the
      * equality) */
-    const bundeclared = String(packagejson.engines.bun ?? "");
+    const bundeclared = String(rootmanifest.engines.bun ?? "");
     const bunfloor =
       bundeclared.match(/>=([\d.]+)/)?.[1] ?? bundeclared.match(/^[~^]?([\d.]+)/)?.[1] ?? "";
     const verifybun = verifyworkflow.match(/bun-version: (\d+\.\d+\.\d+)/)?.[1] ?? "";

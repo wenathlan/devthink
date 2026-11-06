@@ -3,198 +3,6 @@
   "version": "2.0.166",
   "private": false,
   "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
-  "license": "GPL-3.0-only",
-  "type": "module",
-  "sideEffects": false,
-  "main": "./build/index.js",
-  "types": "./build/index.d.ts",
-  "bin": {
-    "devthink": "./build/cli.js"
-  },
-  "exports": {
-    ".": {
-      "types": "./build/index.d.ts",
-      "browser": "./build/index.neutral.js",
-      "import": "./build/index.js",
-      "require": "./build/index.cjs",
-      "default": "./build/index.js"
-    },
-    "./policy": {
-      "types": "./build/policy.d.ts",
-      "import": "./build/policy.js",
-      "default": "./build/policy.js"
-    },
-    "./protocol": {
-      "types": "./build/protocol.d.ts",
-      "import": "./build/protocol.js",
-      "default": "./build/protocol.js"
-    },
-    "./memory": {
-      "types": "./build/memory.d.ts",
-      "import": "./build/memory.js",
-      "default": "./build/memory.js"
-    },
-    "./progress": {
-      "types": "./build/progress.d.ts",
-      "import": "./build/progress.js",
-      "default": "./build/progress.js"
-    },
-    "./cli": {
-      "import": "./build/cli.js",
-      "require": "./build/cli.js",
-      "default": "./build/cli.js"
-    },
-    "./umd": {
-      "types": "./build/umd.d.ts",
-      "default": "./build/devthink.umd.js"
-    },
-    "./node": {
-      "types": "./build/node.d.ts",
-      "require": "./build/node.cjs"
-    },
-    "./bun": {
-      "types": "./build/bun.d.ts",
-      "import": "./build/bun.js"
-    },
-    "./deno": {
-      "types": "./build/deno.d.ts",
-      "import": "./build/deno.js"
-    },
-    "./headless": {
-      "types": "./build/headless.d.ts",
-      "import": "./build/headless.js"
-    },
-    "./mcp": {
-      "types": "./build/mcp.d.ts",
-      "import": "./build/mcp.js",
-      "default": "./build/mcp.js"
-    },
-    "./bridge": {
-      "types": "./build/bridge.d.ts",
-      "import": "./build/bridge.js",
-      "default": "./build/bridge.js"
-    },
-    "./pack": {
-      "types": "./build/pack.d.ts",
-      "import": "./build/pack.js",
-      "default": "./build/pack.js"
-    },
-    "./crossbrowser": {
-      "types": "./build/crossbrowser.d.ts",
-      "import": "./build/crossbrowser.js",
-      "default": "./build/crossbrowser.js"
-    },
-    "./http": {
-      "types": "./build/http.d.ts",
-      "import": "./build/http.js",
-      "default": "./build/http.js"
-    },
-    "./server": {
-      "types": "./build/server.d.ts",
-      "import": "./build/server.js",
-      "default": "./build/server.js"
-    },
-    "./config": {
-      "types": "./build/config.d.ts",
-      "import": "./build/config.js",
-      "default": "./build/config.js"
-    },
-    "./constants": {
-      "types": "./build/constants.d.ts",
-      "import": "./build/constants.js",
-      "default": "./build/constants.js"
-    },
-    "./core": {
-      "types": "./build/core.d.ts",
-      "import": "./build/core.js",
-      "default": "./build/core.js"
-    },
-    "./data": {
-      "types": "./build/data.d.ts",
-      "import": "./build/data.js",
-      "default": "./build/data.js"
-    },
-    "./storage": {
-      "types": "./build/storage.d.ts",
-      "import": "./build/storage.js",
-      "default": "./build/storage.js"
-    },
-    "./security": {
-      "types": "./build/security.d.ts",
-      "import": "./build/security.js",
-      "default": "./build/security.js"
-    },
-    "./tools": {
-      "types": "./build/tools.d.ts",
-      "import": "./build/tools.js",
-      "default": "./build/tools.js"
-    },
-    "./types": {
-      "types": "./build/types.d.ts",
-      "import": "./build/types.js",
-      "default": "./build/types.js"
-    },
-    "./queue": {
-      "types": "./build/queue.d.ts",
-      "import": "./build/queue.js",
-      "default": "./build/queue.js"
-    },
-    "./os": {
-      "types": "./build/os.d.ts",
-      "import": "./build/os.js",
-      "default": "./build/os.js"
-    },
-    "./graph": {
-      "types": "./build/graph.d.ts",
-      "import": "./build/graph.js",
-      "default": "./build/graph.js"
-    },
-    "./hono": {
-      "types": "./build/hono.d.ts",
-      "import": "./build/hono.js",
-      "default": "./build/hono.js"
-    },
-    "./commands": {
-      "types": "./build/commands.d.ts",
-      "import": "./build/commands.js",
-      "default": "./build/commands.js"
-    },
-    "./engines": {
-      "types": "./build/engines.d.ts",
-      "import": "./build/engines.js",
-      "default": "./build/engines.js"
-    }
-  },
-  "files": [
-    "distpackage"
-  ],
-  "engines": {
-    "babel": "^7.28.0",
-    "bare": "^1.18.0",
-    "bun": ">=1.4.4 <2",
-    "cargo": ">=1.85.0",
-    "chrome": "^16.0.912",
-    "cnpm": "^9.4.0",
-    "corepack": "^0.35.0",
-    "deno": "^2.9.5",
-    "dotnet": ">=8.0.0",
-    "ecmascript": "^5.0.0",
-    "firefox": ">=0.8.0",
-    "go": ">=1.24.0",
-    "iojs": "^1.0.0",
-    "java": ">=17",
-    "node": ">=26.13.0 <27",
-    "npm": ">=12.2.2 <13",
-    "pnpm": "^12.6.0",
-    "python": ">=3.11.0",
-    "rust": ">=1.85.0",
-    "teleport": ">=0.2.0",
-    "typescript": "^5.8.0",
-    "v": "^0.5.2",
-    "vscode": "^1.118.0",
-    "yaml": "^2.9.1",
-    "yarn": "^4.17.1"
-  },
   "scripts": {
     "antigravity": "bun --watch llm.ts",
     "apifreeze:sync": "node apifreeze.ts sync",
@@ -773,11 +581,176 @@
       "uuid": "11.1.1"
     }
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+  "type": "module",
+  "sideEffects": false,
+  "bin": {
+    "devthink": "./build/cli.js"
   },
-  "packageManager": "pnpm@12.18.0",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "browser": "./build/index.neutral.js",
+      "import": "./build/index.js",
+      "require": "./build/index.cjs",
+      "default": "./build/index.js"
+    },
+    "./policy": {
+      "types": "./build/policy.d.ts",
+      "import": "./build/policy.js",
+      "default": "./build/policy.js"
+    },
+    "./protocol": {
+      "types": "./build/protocol.d.ts",
+      "import": "./build/protocol.js",
+      "default": "./build/protocol.js"
+    },
+    "./memory": {
+      "types": "./build/memory.d.ts",
+      "import": "./build/memory.js",
+      "default": "./build/memory.js"
+    },
+    "./progress": {
+      "types": "./build/progress.d.ts",
+      "import": "./build/progress.js",
+      "default": "./build/progress.js"
+    },
+    "./cli": {
+      "import": "./build/cli.js",
+      "require": "./build/cli.js",
+      "default": "./build/cli.js"
+    },
+    "./umd": {
+      "types": "./build/umd.d.ts",
+      "default": "./build/devthink.umd.js"
+    },
+    "./node": {
+      "types": "./build/node.d.ts",
+      "require": "./build/node.cjs"
+    },
+    "./bun": {
+      "types": "./build/bun.d.ts",
+      "import": "./build/bun.js"
+    },
+    "./deno": {
+      "types": "./build/deno.d.ts",
+      "import": "./build/deno.js"
+    },
+    "./headless": {
+      "types": "./build/headless.d.ts",
+      "import": "./build/headless.js"
+    },
+    "./mcp": {
+      "types": "./build/mcp.d.ts",
+      "import": "./build/mcp.js",
+      "default": "./build/mcp.js"
+    },
+    "./bridge": {
+      "types": "./build/bridge.d.ts",
+      "import": "./build/bridge.js",
+      "default": "./build/bridge.js"
+    },
+    "./pack": {
+      "types": "./build/pack.d.ts",
+      "import": "./build/pack.js",
+      "default": "./build/pack.js"
+    },
+    "./crossbrowser": {
+      "types": "./build/crossbrowser.d.ts",
+      "import": "./build/crossbrowser.js",
+      "default": "./build/crossbrowser.js"
+    },
+    "./http": {
+      "types": "./build/http.d.ts",
+      "import": "./build/http.js",
+      "default": "./build/http.js"
+    },
+    "./server": {
+      "types": "./build/server.d.ts",
+      "import": "./build/server.js",
+      "default": "./build/server.js"
+    },
+    "./config": {
+      "types": "./build/config.d.ts",
+      "import": "./build/config.js",
+      "default": "./build/config.js"
+    },
+    "./constants": {
+      "types": "./build/constants.d.ts",
+      "import": "./build/constants.js",
+      "default": "./build/constants.js"
+    },
+    "./core": {
+      "types": "./build/core.d.ts",
+      "import": "./build/core.js",
+      "default": "./build/core.js"
+    },
+    "./data": {
+      "types": "./build/data.d.ts",
+      "import": "./build/data.js",
+      "default": "./build/data.js"
+    },
+    "./storage": {
+      "types": "./build/storage.d.ts",
+      "import": "./build/storage.js",
+      "default": "./build/storage.js"
+    },
+    "./security": {
+      "types": "./build/security.d.ts",
+      "import": "./build/security.js",
+      "default": "./build/security.js"
+    },
+    "./tools": {
+      "types": "./build/tools.d.ts",
+      "import": "./build/tools.js",
+      "default": "./build/tools.js"
+    },
+    "./types": {
+      "types": "./build/types.d.ts",
+      "import": "./build/types.js",
+      "default": "./build/types.js"
+    },
+    "./queue": {
+      "types": "./build/queue.d.ts",
+      "import": "./build/queue.js",
+      "default": "./build/queue.js"
+    },
+    "./os": {
+      "types": "./build/os.d.ts",
+      "import": "./build/os.js",
+      "default": "./build/os.js"
+    },
+    "./graph": {
+      "types": "./build/graph.d.ts",
+      "import": "./build/graph.js",
+      "default": "./build/graph.js"
+    },
+    "./hono": {
+      "types": "./build/hono.d.ts",
+      "import": "./build/hono.js",
+      "default": "./build/hono.js"
+    },
+    "./commands": {
+      "types": "./build/commands.d.ts",
+      "import": "./build/commands.js",
+      "default": "./build/commands.js"
+    },
+    "./engines": {
+      "types": "./build/engines.d.ts",
+      "import": "./build/engines.js",
+      "default": "./build/engines.js"
+    }
+  },
+  "files": [
+    "distpackage"
+  ],
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@swc/core",
+    "pnpm",
+    "protobufjs"
+  ],
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "devthink": {
     "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) — family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root. The ownership law (pr16) rides the owner field: one engine, one owner, the family consumes — the manifest of record is engines.ts at the app root.",
     "engines": [
@@ -866,11 +839,5 @@
         "role": "the root orchestrator: the node maestro that commands every engine of this manifest."
       }
     ]
-  },
-  "trustedDependencies": [
-    "@parcel/watcher",
-    "@swc/core",
-    "pnpm",
-    "protobufjs"
-  ]
+  }
 }

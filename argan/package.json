@@ -3,53 +3,6 @@
   "version": "2.0.166",
   "private": false,
   "description": "argan is the DNS and gateway library of the wenathlan family: zones, records, dnssec and handshake — the system network library whose site shares the unified database. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
-  "license": "GPL-3.0-only",
-  "type": "module",
-  "sideEffects": false,
-  "bin": {
-    "argan": "./cli.ts"
-  },
-  "exports": {
-    "./mimetypes": {
-      "types": "./mimetypes.ts",
-      "import": "./mimetypes.ts",
-      "default": "./mimetypes.ts"
-    }
-  },
-  "files": [
-    "README.md",
-    "docs",
-    "tests",
-    "cli.ts",
-    "mimetypes.ts"
-  ],
-  "engines": {
-    "babel": "^7.28.0",
-    "bare": "^1.18.0",
-    "bun": ">=1.4.4 <2",
-    "cargo": ">=1.85.0",
-    "chrome": "^16.0.912",
-    "cnpm": "^9.4.0",
-    "corepack": "^0.35.0",
-    "deno": "^2.9.5",
-    "dotnet": ">=8.0.0",
-    "ecmascript": "^5.0.0",
-    "firefox": ">=0.8.0",
-    "go": ">=1.24.0",
-    "iojs": "^1.0.0",
-    "java": ">=17",
-    "node": ">=26.13.0 <27",
-    "npm": ">=12.2.2 <13",
-    "pnpm": "^12.6.0",
-    "python": ">=3.11.0",
-    "rust": ">=1.85.0",
-    "teleport": ">=0.2.0",
-    "typescript": "^5.8.0",
-    "v": "^0.5.2",
-    "vscode": "^1.118.0",
-    "yaml": "^2.9.1",
-    "yarn": "^4.17.1"
-  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -585,10 +538,25 @@
       "uuid": "11.1.1"
     }
   },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+  "type": "module",
+  "sideEffects": false,
+  "bin": {
+    "argan": "./cli.ts"
   },
+  "exports": {
+    "./mimetypes": {
+      "types": "./mimetypes.ts",
+      "import": "./mimetypes.ts",
+      "default": "./mimetypes.ts"
+    }
+  },
+  "files": [
+    "README.md",
+    "docs",
+    "tests",
+    "cli.ts",
+    "mimetypes.ts"
+  ],
   "trustedDependencies": [
     "@parcel/watcher",
     "@swc/core",
