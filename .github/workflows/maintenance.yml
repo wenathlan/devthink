@@ -241,8 +241,14 @@ jobs:
         # ladder re-stamps every record through the records:sync pass over
         # the twelve gates (agentcert through wcag) before the validation
         # walks the suite - the same re-stamp the release commit carries
-        # when a version lands by hand.
-        run: cd devthink && bun run records:sync
+        # when a version lands by hand. The sweep seat walks FIRST: the
+        # matrixverify cell of the chain reads the committed sweep record
+        # and refuses a record that still stamps the previous rung, so the
+        # chain order the records:sync line carries (matrixverify fourth,
+        # sweep tenth) deadlocks on the first firing after every stamp -
+        # the sweep sync rewrites the record the matrix reads before the
+        # matrix checks it, then the full chain re-stamps the rest.
+        run: cd devthink && node sweep.ts sync && bun run records:sync
       - name: Validate with the proposed Node version
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
