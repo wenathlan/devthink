@@ -15,13 +15,13 @@
         "@libsql/client": "^0.18.0",
         "@prisma/adapter-libsql": "^7.10.1",
         "@prisma/client": "^7.10.1",
-        "@wenathlan/argan": "~2.0.160",
-        "@wenathlan/cadria": "~2.0.160",
-        "@wenathlan/debonair": "~2.0.159",
+        "@wenathlan/argan": "~2.0.155",
+        "@wenathlan/cadria": "~2.0.155",
+        "@wenathlan/debonair": "~2.0.155",
         "@wenathlan/devthink": "~2.0.154",
-        "@wenathlan/getry": "~2.0.160",
-        "@wenathlan/saddle": "~2.0.160",
-        "@wenathlan/vault": "~2.0.160",
+        "@wenathlan/getry": "~2.0.155",
+        "@wenathlan/saddle": "~2.0.155",
+        "@wenathlan/vault": "~2.0.155",
         "better-sqlite3": "^13.0.3",
         "drizzle-orm": "^0.45.4",
         "gsap": "^3.15.1",
@@ -138,6 +138,7 @@
     },
   },
   "overrides": {
+    "@grpc/grpc-js": "1.14.5",
     "body-parser": "^2.4.0",
     "deepmerge-ts": "^8.0.0",
     "esbuild": "^0.28.2",
@@ -304,7 +305,7 @@
 
     "@griffel/style-types": ["@griffel/style-types@1.4.3", "", { "dependencies": { "csstype": "^3.2.3" } }, "sha512-sFxMK19oFUPQSmyCKT1Pvj5Nu/ODvhMczqhGjVAoksDTXUj1za40WA0CXqV3o+xxKWPec+K/rbS78jJLmomsQA=="],
 
-    "@grpc/grpc-js": ["@grpc/grpc-js@1.14.6", "", { "dependencies": { "@grpc/proto-loader": "^0.8.0", "@js-sdsl/ordered-map": "^4.4.2" } }, "sha512-SgC/B3/VZ8lTyOZ4Cwk6f1skWhmkNAaVfiX90qd5u1rRXGKk1//8FTUEN9GvOUq7rfWIqAYkA3CoyumYVpOS6g=="],
+    "@grpc/grpc-js": ["@grpc/grpc-js@1.14.5", "", { "dependencies": { "@grpc/proto-loader": "^0.8.0", "@js-sdsl/ordered-map": "^4.4.2" } }, "sha512-7VZM+SVdEcUUqSQeNI3zM8Qs/BhQKZndPo2h5VkYkAM8Iz0wJIa8mKV5ekQGqG8UUsnkQ0NMxIxwkIHYvj0qOw=="],
 
     "@grpc/proto-loader": ["@grpc/proto-loader@0.7.15", "", { "dependencies": { "lodash.camelcase": "^4.3.0", "long": "^5.0.0", "protobufjs": "^7.2.5", "yargs": "^17.7.2" }, "bin": { "proto-loader-gen-types": "build/bin/proto-loader-gen-types.js" } }, "sha512-tMXdRCfYVixjuFK+Hk0Q1s38gV9zDiDJfWL3h1rv4Qc39oILCu1TRTDt7+fGUI8K4G1Fj125Hx/ru3azECWTyQ=="],
 
