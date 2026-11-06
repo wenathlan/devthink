@@ -201,7 +201,7 @@ describe("the faun block of the static hosts (the raw store never ships)", () =>
     ]) {
       assert.match(
         REDIRECTS,
-        new RegExp(`^\\/\\*\\.${face.replace(/\./g, "\\.")}\\s+\\/index\\.html\\s+410!$`, "m"),
+        new RegExp(`^\\/\\*\\.${face.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+\\/index\\.html\\s+410!$`, "m"),
         `the /*.${face} block rule must stand`,
       );
     }
