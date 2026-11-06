@@ -1,4 +1,4 @@
-package io.github.wenathlan.foundry;
+package com.wenathlan.foundry;
 
 /**
  * The foundry version envelope carrier.

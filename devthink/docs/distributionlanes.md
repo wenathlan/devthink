@@ -6,7 +6,7 @@ The eleven distribution lanes of the PR14 law and the honest status each lane an
 | --- | --- | --- | --- |
 | npmjs | package.json — @wenathlan/devthink | live | the single npmjs lane of the release ladder publishes the flat distribution tarball |
 | GitHub Packages npm | package.json — @wenathlan/devthink | live | the githubnpm lane publishes the same envelope idempotently |
-| Maven | pom.xml — io.github.wenathlan:devthink | live | the single maven lane deploys the aggregator with its module jars and classifier zips |
+| Maven | pom.xml — com.wenathlan:devthink | live | the single maven lane deploys the aggregator with its module jars and classifier zips |
 | NuGet | devthink.csproj | live | the single nuget lane packs the distribution package |
 | Gradle | build.gradle.kts — com.wenathlan:devthink | live | the single gradle lane publishes the module |
 | Ruby Gems | devthink.gemspec | live | the single rubygems lane pushes the gem |

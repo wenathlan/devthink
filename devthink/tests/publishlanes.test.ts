@@ -203,15 +203,15 @@ describe.skipIf(!inrepo)("the registry family seats (the distfamily law)", () =>
   it("the family maven lane walks the one registry path every leg deploys", async () => {
     const publish = await readworkflow("publish.yml");
     /* the existence pre-check and the deploy target share the
-     * io/github/wenathlan coordinate path the saddle pom now answers —
+     * com/wenathlan coordinate path the saddle pom now answers —
      * one lane, one registry, ten legs. */
     expect(publish).toContain('PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"');
-    expect(publish).toContain('"$PUBLISH/io/github/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}.jar"');
+    expect(publish).toContain('"$PUBLISH/com/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}.jar"');
   });
 
   it("the saddle maven envelope answers the family coordinates the lane deploys", async () => {
     const pom = await readFile(join(repoRoot, "saddle", "pom.xml"), "utf8");
-    expect(pom).toContain("<groupId>io.github.wenathlan</groupId>");
+    expect(pom).toContain("<groupId>com.wenathlan</groupId>");
     expect(pom).toContain("<artifactId>saddle</artifactId>");
     expect(pom).toContain("https://maven.pkg.github.com/wenathlan/devthink");
     /* the standalone saddle registry the standalone era declared answers
