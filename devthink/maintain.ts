@@ -9,6 +9,10 @@ const mode = process.argv[2] ?? "check";
 if (!new Set(["check", "sync"]).has(mode)) throw new Error("Use check or sync.");
 const allowmajors = process.argv.includes("--allow-majors");
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
+/* the manifestemplate law seats the engines in the root manifest alone: the
+   floors the ladder reads answer one hop up, the root envelope the law owns,
+   and the manager seat answers the root pnpm floor the engines carry. */
+const rootmanifest = JSON.parse(await readFile(join(repoRoot, "package.json"), "utf8"));
 /** One release entry of the nodejs.org distribution index the ladder walks. */
 interface noderelease {
   version: string;
@@ -62,13 +66,13 @@ const imageavailable = await (async () => {
 const floorof = (declaration: unknown): string | undefined =>
   /^>=(\d+)\.\d+\.\d+/.exec(String(declaration ?? ""))?.[1] ??
   /^\^?(\d+)\.\d+\.\d+/.exec(String(declaration ?? "").trim())?.[1];
-const declarednode = floorof(packagejson.engines?.node);
-const declarednpm = floorof(packagejson.engines?.npm);
-const declaredbun = floorof(packagejson.engines?.bun);
+const declarednode = floorof(rootmanifest.engines?.node);
+const declarednpm = floorof(rootmanifest.engines?.npm);
+const declaredbun = floorof(rootmanifest.engines?.bun);
 /* the merged repository carries the manager the union law pins (packageManager:
    bun@X of the bun era or pnpm@X of the union) while the other lane stays the
    workflow pins: the pnpm baseline reads the workflows, never the root field. */
-const declaredrootpm = /^(?:bun|pnpm)@(\d+)\./.exec(packagejson.packageManager ?? "")?.[1];
+const declaredrootpm = floorof(rootmanifest.engines?.pnpm);
 const pnpmpin =
   /pnpm\/action-setup@.*\s*?\r?\n(?:.*\r?\n){0,3}?.*version: (\d+\.\d+\.\d+)/.exec(
     await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8"),
@@ -83,15 +87,15 @@ const latestbunmajor = bunversion.split(".")[0];
 const latestpnpmmajor = pnpmversion.split(".")[0];
 const nodemajor = allowmajors || latestnodemajor === declarednode ? latestnodemajor : declarednode;
 const npmnext =
-  allowmajors || latestnpmmajor === declarednpm ? npmversion : (floorof(packagejson.engines.npm) as string);
+  allowmajors || latestnpmmajor === declarednpm ? npmversion : (floorof(rootmanifest.engines.npm) as string);
 const bunnext =
-  allowmajors || latestbunmajor === declaredbun ? bunversion : (floorof(packagejson.engines.bun) as string);
+  allowmajors || latestbunmajor === declaredbun ? bunversion : (floorof(rootmanifest.engines.bun) as string);
 const pnpmnext = allowmajors || latestpnpmmajor === declaredpnpm ? pnpmversion : pnpmpin;
 const next = {
   ...packagejson,
   engines: {
     ...packagejson.engines,
-    node: `>=${allowmajors || latestnodemajor === declarednode ? nodeversion : (floorof(packagejson.engines.node) as string)} <${Number(nodemajor) + 1}`,
+    node: `>=${allowmajors || latestnodemajor === declarednode ? nodeversion : (floorof(rootmanifest.engines.node) as string)} <${Number(nodemajor) + 1}`,
     npm: `>=${npmnext} <${Number(npmnext.split(".")[0]) + 1}`,
     bun: `>=${bunnext} <${Number(bunnext.split(".")[0]) + 1}`,
   },
