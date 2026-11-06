@@ -420,3 +420,10 @@ polar/
 # application lock lives inside its application folder, and the anchored
 # pattern leaves the per-application bun.lock files tracked)
 /bun.lock
+
+# polar auth state (PR20 single-state law) — device flow artifacts never ride the repo
+.auth-status
+.device-flow-current.json
+.polar-scopes.txt
+.poll-plan.txt
+node_modules
