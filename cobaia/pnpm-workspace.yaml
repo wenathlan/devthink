@@ -29,94 +29,75 @@ minimumReleaseAgeExclude:
   - fast-uri@3.1.9
   - follow-redirects@1.16.1
   - zod@4.6.6
-  - '@biomejs/biome@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-android-arm64@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-android-x64@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-darwin-arm64@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-darwin-x64@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-linux-arm64-musl@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-linux-arm64@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-linux-x64-musl@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4 || 2.6.5'
-  - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4 || 2.6.5'
+  - '@biomejs/biome@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-android-arm64@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-android-x64@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-darwin-arm64@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-darwin-x64@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-linux-arm64-musl@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-linux-arm64@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-linux-x64-musl@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-linux-x64@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-win32-arm64@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
+  - '@biomejs/cli-win32-x64@2.6.3 || 2.6.4 || 2.6.5 || 2.6.6'
   - '@types/node@26.6.6'
   - '@capacitor/android@8.6.0'
   - '@capacitor/cli@8.6.0'
   - '@capacitor/core@8.6.0'
   - '@capacitor/ios@8.6.0'
   - '@opencode-ai/sdk@1.19.5'
-  - react-resizable-panels@4.15.1 || 4.15.2 || 4.15.3 || 4.16.0 || 4.16.1 || 4.17.0 || 4.18.0 || 4.18.1
+  - react-resizable-panels@4.15.1 || 4.15.2 || 4.15.3 || 4.16.0 || 4.16.1 || 4.17.0 || 4.18.0 || 4.18.1 || 4.19.0
   - '@types/google.maps@3.66.9'
-  - lucide-react@1.64.0 || 1.65.0 || 1.66.0 || 1.67.0 || 1.68.0 || 1.70.0
+  - lucide-react@1.64.0 || 1.65.0 || 1.66.0 || 1.67.0 || 1.68.0 || 1.69.0 || 1.70.0
   - playwright@1.65.0
   - playwright-core@1.65.0
   - '@anthropic-ai/sdk@1.6.0'
   - '@hookform/resolvers@7.0.3'
   - '@tanstack/query-core@5.106.1'
   - '@tanstack/react-query@5.106.1'
-  - openai@7.52.0
-  - '@wenathlan/argan@2.0.165'
-  - '@wenathlan/cadria@2.0.165'
-  - '@wenathlan/debonair@2.0.165'
-  - '@wenathlan/devthink@2.0.165'
-  - '@wenathlan/getry@2.0.165'
-  - '@wenathlan/saddle@2.0.165'
-  - '@wenathlan/vault@2.0.165'
+  - openai@7.52.0 || 7.53.0
+  - '@wenathlan/argan@2.0.155 || 2.0.165 || 2.0.166'
+  - '@wenathlan/cadria@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.166 || 2.1.8'
+  - '@wenathlan/debonair@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.166 || 2.1.8'
+  - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.166 || 2.1.7'
+  - '@wenathlan/getry@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.166'
+  - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.166 || 2.1.8'
+  - '@wenathlan/vault@2.0.152 || 2.0.153 || 2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.166 || 2.1.8'
   - jsdom@31.0.0
-  - lucide-react@1.69.0
   - pnpm@12.18.0
   - "@pnpm/exe.linux-x64@12.18.0"
   - '@fluentui/react-icons@2.0.345'
-  - '@wenathlan/vault@2.0.152 || 2.0.153 || 2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.1.8'
   - hono@4.13.16
-  - '@wenathlan/cadria@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.1.8'
-  - '@wenathlan/debonair@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.1.8'
-  - '@wenathlan/getry@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
-  - '@tailwindcss/node@4.3.4'
-  - '@tailwindcss/oxide-android-arm64@4.3.4'
-  - '@tailwindcss/oxide-darwin-arm64@4.3.4'
-  - '@tailwindcss/oxide-darwin-x64@4.3.4'
-  - '@tailwindcss/oxide-freebsd-x64@4.3.4'
-  - '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.4'
-  - '@tailwindcss/oxide-linux-arm64-gnu@4.3.4'
-  - '@tailwindcss/oxide-linux-arm64-musl@4.3.4'
-  - '@tailwindcss/oxide-linux-x64-gnu@4.3.4'
-  - '@tailwindcss/oxide-linux-x64-musl@4.3.4'
-  - '@tailwindcss/oxide-wasm32-wasi@4.3.4'
-  - '@tailwindcss/oxide-win32-arm64-msvc@4.3.4'
-  - '@tailwindcss/oxide-win32-x64-msvc@4.3.4'
-  - '@tailwindcss/oxide@4.3.4'
-  - '@tailwindcss/postcss@4.3.4'
-  - '@tailwindcss/vite@4.3.4'
+  - '@tailwindcss/node@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-android-arm64@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-darwin-arm64@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-darwin-x64@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-freebsd-x64@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-linux-arm64-gnu@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-linux-arm64-musl@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-linux-x64-gnu@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-linux-x64-musl@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-wasm32-wasi@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-win32-arm64-msvc@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide-win32-x64-msvc@4.3.4 || 4.3.5'
+  - '@tailwindcss/oxide@4.3.4 || 4.3.5'
+  - '@tailwindcss/postcss@4.3.4 || 4.3.5'
+  - '@tailwindcss/vite@4.3.4 || 4.3.5'
   - '@vitejs/plugin-react@6.2.1'
   - '@vitest/mocker@5.1.0'
   - '@vitest/spy@5.1.0'
-  - tailwindcss@4.3.4
+  - tailwindcss@4.3.4 || 4.3.5
   - vitest@5.1.0
-  - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.1.8'
-  - '@wenathlan/devthink@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.1.7'
-  - '@wenathlan/argan@2.0.155 || 2.0.165'
   - gsap@3.15.1
-  - '@anthropic-ai/sdk@1.6.0'
-  - '@hookform/resolvers@7.0.3'
-  - '@tanstack/query-core@5.106.1'
-  - '@tanstack/react-query@5.106.1'
-  - jsdom@31.0.0
-  - openai@7.52.0
-  - playwright-core@1.65.0
-  - playwright@1.65.0
-  - '@wenathlan/argan@2.0.166'
-  - '@wenathlan/cadria@2.0.166'
   - '@wenathlan/cobaia@2.0.166'
-  - '@wenathlan/debonair@2.0.166'
-  - '@wenathlan/devthink@2.0.166'
   - '@wenathlan/forge@2.0.166'
   - '@wenathlan/foundry@2.0.166'
-  - '@wenathlan/getry@2.0.166'
-  - '@wenathlan/saddle@2.0.166'
   - '@wenathlan/stealthhead@2.0.166'
-  - '@wenathlan/vault@2.0.166'
+  - framer-motion@14.10.1
+  - motion-dom@14.10.1
+  - motion@14.10.1
+  - zustand@5.1.0
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
 # is allowBuilds). THE 2.0.155 BUILDS GATE HEAL: the four-entry map froze

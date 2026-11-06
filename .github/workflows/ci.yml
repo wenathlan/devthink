@@ -525,9 +525,16 @@ jobs:
           # the bare family imports the eleven builds read) — the step
           # already cd'd into the matrix app, so the os sibling answers
           # one honest hop up from the app root the same way the vite
-          # aliases resolve it.
+          # aliases resolve it, and the manager follows the lane the leg
+          # set up: the pnpm legs ride pnpm, the lockless bun legs (the
+          # saddle seat the package manager step never pins) ride the
+          # bun lock the os tree answers just as green.
           if [ "${{ matrix.app }}" != "devthink" ] && [ -f ../devthink/pnpm-lock.yaml ]; then
-            (cd ../devthink && pnpm install --frozen-lockfile --ignore-scripts)
+            if command -v pnpm >/dev/null 2>&1; then
+              (cd ../devthink && pnpm install --frozen-lockfile --ignore-scripts)
+            else
+              (cd ../devthink && bun install --frozen-lockfile --ignore-scripts)
+            fi
           fi
 
       - name: Build the app surface
