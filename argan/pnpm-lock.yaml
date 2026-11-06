@@ -7,96 +7,153 @@ importers:
     configDependencies: {}
     packageManagerDependencies:
       pnpm:
-        specifier: 12.3.4
-        version: 12.3.4
+        specifier: 12.18.0
+        version: 12.18.0
 
 packages:
 
-  '@pnpm/exe.darwin-arm64@12.3.4':
-    resolution: {integrity: sha512-PAyUol8T1+/+ViOiXAt51ECA+QnfXCqz6foL4bW+LsoX0NcVd5XVEM2mRQu+LV4oc7uRz9zf9U0P+XFfuQeDAw==}
+  '@pnpm/exe.android-arm64@12.18.0':
+    resolution: {integrity: sha512-fOF6IwgvnUKEmVedGqiAsNPfN2Ry8GvaqzSQOiF3RJFbpBfPKO/6YT54s1GjToyYinRxw9preHHPe4y2N3SzhA==}
+    cpu: [arm64]
+    os: [android]
+
+  '@pnpm/exe.android-x64@12.18.0':
+    resolution: {integrity: sha512-6OiolnaCsB3/GcJ9XNrenbUH3zFHRJ+5QynrMUUEyThbgnnCzWxa199hpQlOmxN4rAXuYQ0IYgWFNUZxyzg31Q==}
+    cpu: [x64]
+    os: [android]
+
+  '@pnpm/exe.darwin-arm64@12.18.0':
+    resolution: {integrity: sha512-zkq+4YzVIX39ETYLyC3W7LY7MpHEU/J3nRhHl4i2yPld2Cf2+rEKRh3ejJ4AmaQ77HHJLCktY4Z3jq0fpcxFXg==}
     cpu: [arm64]
     os: [darwin]
 
-  '@pnpm/exe.darwin-x64@12.3.4':
-    resolution: {integrity: sha512-fxP9JCk0Cdye+ePuj+GJJLMUMTqHGWRdb1dtv4How876uQ2ehxvenpgiYAir/ceO9PsYUZkFTtyZdx+rRu5QOA==}
+  '@pnpm/exe.darwin-x64@12.18.0':
+    resolution: {integrity: sha512-qMsL9qx92unOTa6hgkfiTJv8ceZaTx0IQg7InhYDVX2ZrTECujaVEEVypnJK5m3eGUsP1KD7Y4qIgleCwfRsYw==}
     cpu: [x64]
     os: [darwin]
 
-  '@pnpm/exe.linux-arm64-musl@12.3.4':
-    resolution: {integrity: sha512-FBOt0/7ye6O6q4AllVV5QMviB6qE6fqkeczV/+MDWQsmo+QJrlfsh6X7CpH/tClVpBZEyIbjpUoT8bNhCYBxEg==}
+  '@pnpm/exe.freebsd-x64@12.18.0':
+    resolution: {integrity: sha512-/9vy/4ms52cU4MjZ5NhHd6N2d9L9W0kARf5/ff2tweAHu0VeUzs/0qp/7ZHFuddm2Wa/m0AKQoPum9AVUCqKsw==}
+    cpu: [x64]
+    os: [freebsd]
+
+  '@pnpm/exe.linux-arm64-musl@12.18.0':
+    resolution: {integrity: sha512-Vp+TIMPPyackVCXkOdEKH/RmAn/r07EcIyrgZYQK7VrkksqZOie0GnWIx+85mPqeFEYCRtXIZAFJ9L4ceTndDg==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@pnpm/exe.linux-arm64@12.3.4':
-    resolution: {integrity: sha512-t71AVA7LRqiKTyZ5xMYaZc2n5DfdpMbfokZuiIOXHBOM03ECnF0t4iYwaBDqJgVjlKYUOwaF/bRQajGNA4cJ4w==}
+  '@pnpm/exe.linux-arm64@12.18.0':
+    resolution: {integrity: sha512-2dpyVBCHT+FfpuQh9i+7MXAqNWYLCvD5vYr5p6Eimxoga8USLnjbUgyj72AOrO0hjc5ri3TEFP3jiyBHjkSZpQ==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.linux-x64-musl@12.3.4':
-    resolution: {integrity: sha512-RPmk7Jb/aYaFvL2iyDN/AtMY+hUEsue732WmXpcuQ9tBpMnGyA5py7Z3+e+qmQaJ0zY/4ni9jJiyPBQHujmv6w==}
+  '@pnpm/exe.linux-ppc64@12.18.0':
+    resolution: {integrity: sha512-BBOOOfNJ2QwIIya3eKqOjiN4WNTszfRz7HCvw9XggcT7+ftMjNP8XJ/GfW+ltCBeUFR9d8WBVsr2m/NLjX2CZQ==}
+    cpu: [ppc64]
+    os: [linux]
+    libc: [glibc]
+
+  '@pnpm/exe.linux-riscv64@12.18.0':
+    resolution: {integrity: sha512-7kMN77xSOYJX8GPSH5RbNAc5oM61LMmcSUukDDUwllnZPXm8GRPskCNsTWy8SCw01Kr1FB+5SwGNMiTdiziLNQ==}
+    cpu: [riscv64]
+    os: [linux]
+    libc: [glibc]
+
+  '@pnpm/exe.linux-s390x@12.18.0':
+    resolution: {integrity: sha512-htuSCpEcmDzhKoJqXbPkvfr176dBHU0QIF5mWcRiqxRXAB/1JoYiMYotfjWpk+ztgpB9qlx4XnWlLFAf7gzc6g==}
+    cpu: [s390x]
+    os: [linux]
+    libc: [glibc]
+
+  '@pnpm/exe.linux-x64-musl@12.18.0':
+    resolution: {integrity: sha512-Uj+vzfIQ62kDP10x36yHZIXVs5ohdNtiPYwn5FhCLlNScHPo0OAI+ShGDtLofiBXKE7umu71Jmjm7N8a8zVcDw==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@pnpm/exe.linux-x64@12.3.4':
-    resolution: {integrity: sha512-2ZqOlSPkfwX1h5cR+FPiWf8+F+2hZT/3TvhUK5sigHqwaQCIiq8R7CGxhndKs63JtcLi2a1Qpo+wX/EoyfjyJQ==}
+  '@pnpm/exe.linux-x64@12.18.0':
+    resolution: {integrity: sha512-OJ+X2wcraldCwj75pCIerWARQSRpdfj0eBTs/2ODyhfeW46ylOnjTIE/GKra6Mn6E72/gBmXS8igrUioa+F9fQ==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
 
-  '@pnpm/exe.win32-arm64@12.3.4':
-    resolution: {integrity: sha512-ANyrHqyqco6SXBysUTRF74itDyyraea7IbFsKFdNXTjcFnfycTDx37EwuhdpPYFNSIh2JhUG4fByclsRfiHX7w==}
+  '@pnpm/exe.win32-arm64@12.18.0':
+    resolution: {integrity: sha512-wEY6jiACGcbhhi5yD59doHqNTndS7AaujaPmtWAu1DKkHru2hy5fJ9yUGecW72Ypaw2/I3BEprfMOopap2NQtw==}
     cpu: [arm64]
     os: [win32]
 
-  '@pnpm/exe.win32-x64@12.3.4':
-    resolution: {integrity: sha512-WH/KqBPY/hq2Tb7SgQltEZytimcjgKRaCRL/aM9CI0c67iKc5TVmHUhIiL3Ux9FB4bWn36i6XewUcScQI+zG8w==}
+  '@pnpm/exe.win32-x64@12.18.0':
+    resolution: {integrity: sha512-5FJkghO7RLRkQpWxeVEygW9XsmnNuxzPfXbgwFWCHsFyFhpDn/vOdL88ToQEM0Kt5igdW5s6U0/IDH8Dvkt3pg==}
     cpu: [x64]
     os: [win32]
 
-  pnpm@12.3.4:
-    resolution: {integrity: sha512-lhqkH7B32joEpEHZ+OFevAyW2o73ELLrZ7+e58sGEOq9SPH9hfUc/+c4RnhfoPh8VqOocqHYk/hEZ0G1zORUVw==}
-    engines: {node: '>=18.*'}
+  pnpm@12.18.0:
+    resolution: {integrity: sha512-nXiC1dyCFH7PxOBiqjSDTgrQKWcQoYN6ERWuASEn02txCeMhrBWYod0KZVl2gbHpmRfhLtDXSerpEYeUM2O+sw==}
+    engines: {node: '>=18'}
     hasBin: true
 
 snapshots:
 
-  '@pnpm/exe.darwin-arm64@12.3.4':
+  '@pnpm/exe.android-arm64@12.18.0':
     optional: true
 
-  '@pnpm/exe.darwin-x64@12.3.4':
+  '@pnpm/exe.android-x64@12.18.0':
     optional: true
 
-  '@pnpm/exe.linux-arm64-musl@12.3.4':
+  '@pnpm/exe.darwin-arm64@12.18.0':
     optional: true
 
-  '@pnpm/exe.linux-arm64@12.3.4':
+  '@pnpm/exe.darwin-x64@12.18.0':
     optional: true
 
-  '@pnpm/exe.linux-x64-musl@12.3.4':
+  '@pnpm/exe.freebsd-x64@12.18.0':
     optional: true
 
-  '@pnpm/exe.linux-x64@12.3.4':
+  '@pnpm/exe.linux-arm64-musl@12.18.0':
     optional: true
 
-  '@pnpm/exe.win32-arm64@12.3.4':
+  '@pnpm/exe.linux-arm64@12.18.0':
     optional: true
 
-  '@pnpm/exe.win32-x64@12.3.4':
+  '@pnpm/exe.linux-ppc64@12.18.0':
     optional: true
 
-  pnpm@12.3.4:
+  '@pnpm/exe.linux-riscv64@12.18.0':
+    optional: true
+
+  '@pnpm/exe.linux-s390x@12.18.0':
+    optional: true
+
+  '@pnpm/exe.linux-x64-musl@12.18.0':
+    optional: true
+
+  '@pnpm/exe.linux-x64@12.18.0':
+    optional: true
+
+  '@pnpm/exe.win32-arm64@12.18.0':
+    optional: true
+
+  '@pnpm/exe.win32-x64@12.18.0':
+    optional: true
+
+  pnpm@12.18.0:
     optionalDependencies:
-      '@pnpm/exe.darwin-arm64': 12.3.4
-      '@pnpm/exe.darwin-x64': 12.3.4
-      '@pnpm/exe.linux-arm64': 12.3.4
-      '@pnpm/exe.linux-arm64-musl': 12.3.4
-      '@pnpm/exe.linux-x64': 12.3.4
-      '@pnpm/exe.linux-x64-musl': 12.3.4
-      '@pnpm/exe.win32-arm64': 12.3.4
-      '@pnpm/exe.win32-x64': 12.3.4
+      '@pnpm/exe.android-arm64': 12.18.0
+      '@pnpm/exe.android-x64': 12.18.0
+      '@pnpm/exe.darwin-arm64': 12.18.0
+      '@pnpm/exe.darwin-x64': 12.18.0
+      '@pnpm/exe.freebsd-x64': 12.18.0
+      '@pnpm/exe.linux-arm64': 12.18.0
+      '@pnpm/exe.linux-arm64-musl': 12.18.0
+      '@pnpm/exe.linux-ppc64': 12.18.0
+      '@pnpm/exe.linux-riscv64': 12.18.0
+      '@pnpm/exe.linux-s390x': 12.18.0
+      '@pnpm/exe.linux-x64': 12.18.0
+      '@pnpm/exe.linux-x64-musl': 12.18.0
+      '@pnpm/exe.win32-arm64': 12.18.0
+      '@pnpm/exe.win32-x64': 12.18.0
 
 ---
 lockfileVersion: '9.0'
@@ -362,7 +419,7 @@ importers:
         version: 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
       '@wenathlan/vault':
         specifier: ~2.0.165
-        version: 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+        version: 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       add:
         specifier: ^2.0.9
         version: 2.0.9
@@ -472,8 +529,8 @@ importers:
         specifier: ^0.18.2
         version: 0.18.10
       lucide-react:
-        specifier: ^1.69.0
-        version: 1.69.0(@types/react@19.3.0)(react@19.3.1)
+        specifier: ^1.70.0
+        version: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       minimatch:
         specifier: ^11.0.1
         version: 11.0.4
@@ -640,7 +697,7 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
       zustand:
-        specifier: ^5.0.15
+        specifier: ^5.0.16
         version: 5.0.16(@types/react@19.3.0)(immer@11.2.9)(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
 
 packages:
@@ -4179,20 +4236,12 @@ packages:
   '@webassemblyjs/wast-printer@1.14.1':
     resolution: {integrity: sha512-kPSSXE6De1XOR820C90RIo2ogvZG+c3KiHzqUoO/F34Y2shGzesfqv7o57xrxovZJH/MetF5UjroJ/R/3isoiw==}
 
-  '@wenathlan/argan@2.0.155':
-    resolution: {integrity: sha512-1eoYqAGTA+cnQjnmMsNQsUbnscx/wE+ug1fwVhKQenLnff6Vu/cfHgXPZMZPbBVuGci98+BQUBfYi909AouysQ==}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yarn: ^4.17.1}
-
   '@wenathlan/argan@2.0.165':
     resolution: {integrity: sha512-sNk989kGqwx22OAQm23K5aTIhbw5D7q5LqqbKRqncFWX5smtPKuxCWqxOAM2qLTj3jIlltpStkSArThc7nIIyw==}
     engines: {babel: ^7.28.0, bare: ^1.18.0, bun: ^1.4.4, cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: ^12.2.1, pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yaml: ^2.9.1, yarn: ^4.17.1}
     hasBin: true
     peerDependencies:
       playwright: ^1.63.0
-
-  '@wenathlan/cadria@2.0.155':
-    resolution: {integrity: sha512-PMXtM+uj6O71HfkIbYpE5zGltnoJ9WFgXuspLRyv4Lsu8OUz0MoOlubWy7p8WVQk5BjJxkuvSdmPbhRVmE4NmQ==}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yarn: ^4.17.1}
 
   '@wenathlan/cadria@2.0.165':
     resolution: {integrity: sha512-cqNal/oOmWoi/RZ7+nImImrAwHlgE75MdxwiB5ZnKLzx90o3Usbr+qucORIWu0zFx8nbzozJgXSJyWjCr0jWhQ==}
@@ -4201,10 +4250,6 @@ packages:
     peerDependencies:
       playwright: ^1.63.0
 
-  '@wenathlan/debonair@2.0.155':
-    resolution: {integrity: sha512-8mXNDdSYyaPXSe+19BDRCWTTlZP8v2s9A14qVuSBreCwTJVJu+0/1HRrGvz2gPeuHObMMH1Nuapk3s19kTp73g==}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yarn: ^4.17.1}
-
   '@wenathlan/debonair@2.0.165':
     resolution: {integrity: sha512-UJTU9NpVgPj6wsYORsG3XHgoeWDrkecUMInX1O5IyAxFzB7EyHyx8rkupWvcgAXfoW4BsqjW+hck6cSLcJfpig==}
     engines: {babel: ^7.28.0, bare: ^1.18.0, bun: ^1.4.4, cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: ^12.2.1, pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yaml: ^2.9.1, yarn: ^4.17.1}
@@ -4212,19 +4257,10 @@ packages:
     peerDependencies:
       playwright: ^1.63.0
 
-  '@wenathlan/devthink@2.0.154':
-    resolution: {integrity: sha512-5BgkAqMfeGvGPIqc1fIKrehbdL3rpOTDNVHghADTeMTmSK/1/DC/ppjw4iimZ8DlwGdvsp6PgP3njuTO/xJCPQ==}
-    engines: {bun: '>=1.4.4 <2', deno: '>=2.0.0 <3', node: '>=26.13.0 <27', npm: '>=12.2.1 <13'}
-    hasBin: true
-
   '@wenathlan/devthink@2.0.165':
     resolution: {integrity: sha512-dmYbhfA5CdhxlrwdL0zVetddRgprjMzYbvqEMt0htPPkPZR3PPqC1miacHi5nlzcKg1CsE8VidVER63XOfF+dA==}
     engines: {babel: ^7.28.0, bare: ^1.18.0, bun: '>=1.4.4 <2', cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: '>=12.2.2 <13', pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yaml: ^2.9.1, yarn: ^4.17.1}
     hasBin: true
-
-  '@wenathlan/getry@2.0.155':
-    resolution: {integrity: sha512-Vx66FaMCWP9FvkemqXIa0lkRA/NCJwtVxIK1fBybujGJUCY92wBaK63QauJM7Jzv/L9zXy2aedpuTjJSS1jydg==}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yarn: ^4.17.1}
 
   '@wenathlan/getry@2.0.165':
     resolution: {integrity: sha512-HC0Eco8G/EXodADlb4jTzpcwQRoap8VBhfB8IrAogKn/BpV94pLW4m+FCz19wMjAmSnUVImlR2gCQFSj/Bvsfw==}
@@ -4232,16 +4268,6 @@ packages:
     hasBin: true
     peerDependencies:
       playwright: ^1.63.0
-
-  '@wenathlan/saddle@2.0.155':
-    resolution: {integrity: sha512-FvgqZh89DOASfAF1F/26aGhCbWMrzfvhkJrAvoT5UHGV7hjHm/Y3K/R6HToNCd4YgjN1oOGMW6WliX+0cPn4wA==}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yarn: ^4.17.1}
-    hasBin: true
-    peerDependencies:
-      playwright: ^1.63.0
-    peerDependenciesMeta:
-      playwright:
-        optional: true
 
   '@wenathlan/saddle@2.0.165':
     resolution: {integrity: sha512-dypUNxoOQv63wDYOnPoyvMwUQ65tN5vTz/Gno2b4imqDlyVAXbdxzKKYIOuclse035jym+EwNxCwqaWjjQ+s7A==}
@@ -4252,20 +4278,6 @@ packages:
     peerDependenciesMeta:
       playwright:
         optional: true
-
-  '@wenathlan/saddle@2.1.6':
-    resolution: {integrity: sha512-P5t4blGys3LsCtzuPolf7AqZecn8t/AY0OUw2Umag3zyCMyndzX+sro5UcFi8o4b3iKItI1nbr6sue1b+e4G2w==}
-    engines: {node: '>=26.7.0', npm: '>=12.0.2'}
-    hasBin: true
-    peerDependencies:
-      playwright: ^1.63.0
-    peerDependenciesMeta:
-      playwright:
-        optional: true
-
-  '@wenathlan/vault@2.0.155':
-    resolution: {integrity: sha512-Hb0Hw/aHRXfGOLssnO3NdNVyv2Pf4FNy/vTxDBb6cCO2vqlXxU5iK+mVU7k7y0Msg6lTpMwSW62MmJ3bCsUb8A==}
-    engines: {bare: ^1.18.0, bun: ^1.4.2, cargo: '>=1.85.0', chrome: ^16.0.912, cnpm: ^9.4.0, corepack: ^0.35.0, deno: ^2.9.5, dotnet: '>=8.0.0', ecmascript: ^5.0.0, firefox: '>=0.8.0', go: '>=1.24.0', iojs: ^1.0.0, java: '>=17', node: '>=26.13.0 <27', npm: ^12.1.0, pnpm: ^12.6.0, python: '>=3.11.0', rust: '>=1.85.0', teleport: '>=0.2.0', typescript: ^5.8.0, v: ^0.5.2, vscode: ^1.118.0, yarn: ^4.17.1}
 
   '@wenathlan/vault@2.0.165':
     resolution: {integrity: sha512-PlSlLS/53HLQX4GvoX3jmZ+ymR1Kys/GbQS5jeiBxg1e/J+3HYJA8kqUX/Y4GBcKRBQ7mPSV9jQGUSDcDIbomw==}
@@ -4715,10 +4727,6 @@ packages:
 
   commander@12.1.0:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
-    engines: {node: '>=18'}
-
-  commander@13.1.0:
-    resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
 
   commander@14.0.3:
@@ -6304,8 +6312,8 @@ packages:
     resolution: {integrity: sha512-5J9ysMYUpYIg9RF2vJpy9SinEmSviFSe0GyPpCQ4L5QSkLAgeLXlTAOu2ZwWUU5m+0SBl6gUU1R1ZQB3aKypfA==}
     engines: {bun: '>=1.0.0', deno: '>=1.30.0', node: '>=8.0.0'}
 
-  lucide-react@1.69.0:
-    resolution: {integrity: sha512-UTFECm4yEgkgMN0kfLuxWcmlk+4u02Jrqehgk3ZXRx/Ud68OpP7hjkp67bvkBHmIpMaZCIveF1QDYeupO7XmYQ==}
+  lucide-react@1.70.0:
+    resolution: {integrity: sha512-gCTPPN1MlQUBtUgdsUv+0CAUj+X8hifRUiRBw4E5v7lvDIOIpx0EZezdGQMSimS8pKA6esvullJub4GYr0mCHA==}
     peerDependencies:
       '@types/react': '*'
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -11947,73 +11955,6 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
 
-  '@wenathlan/argan@2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
-    dependencies:
-      '@fluentui/react-icons': 2.0.345(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/geist-mono': 5.3.0
-      '@fontsource-variable/inter': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
-      '@hono/node-server': 2.1.6(hono@4.13.16)
-      '@libsql/client': 0.18.0
-      '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      better-sqlite3: 13.0.3
-      drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
-      gsap: 3.15.1
-      hono: 4.13.16
-      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      three: 0.187.0
-      wouter: 3.13.0(react@19.3.1)
-      z-ai-web-dev-sdk: 0.0.18
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@emotion/is-prop-valid'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@netlify/db'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/react'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - playwright
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - supports-color
-      - typescript
-      - utf-8-validate
-
   '@wenathlan/argan@2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
     dependencies:
       '@fluentui/react-icons': 2.0.345(react@19.3.1)
@@ -12026,19 +11967,18 @@ snapshots:
       '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
       '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/argan': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/cadria': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/debonair': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/devthink': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/getry': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/saddle': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/vault': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       better-sqlite3: 13.0.3
       drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
       gsap: 3.15.1
       hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
+      lucide-react: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       playwright: 1.65.0
       react: 19.3.1
@@ -12074,72 +12014,6 @@ snapshots:
       - kysely
       - mysql2
       - pg
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - supports-color
-      - typescript
-      - utf-8-validate
-
-  '@wenathlan/cadria@2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
-    dependencies:
-      '@fluentui/react-icons': 2.0.345(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/geist-mono': 5.3.0
-      '@fontsource-variable/inter': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
-      '@hono/node-server': 2.1.6(hono@4.13.16)
-      '@libsql/client': 0.18.0
-      '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      better-sqlite3: 13.0.3
-      drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
-      gsap: 3.15.1
-      hono: 4.13.16
-      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      three: 0.187.0
-      wouter: 3.13.0(react@19.3.1)
-      z-ai-web-dev-sdk: 0.0.18
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@emotion/is-prop-valid'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@netlify/db'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/react'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - playwright
       - postgres
       - prisma
       - sql.js
@@ -12160,19 +12034,18 @@ snapshots:
       '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
       '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/argan': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/argan': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/debonair': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/devthink': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/getry': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/saddle': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/vault': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       better-sqlite3: 13.0.3
       drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
       gsap: 3.15.1
       hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
+      lucide-react: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       playwright: 1.65.0
       react: 19.3.1
@@ -12208,72 +12081,6 @@ snapshots:
       - kysely
       - mysql2
       - pg
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - supports-color
-      - typescript
-      - utf-8-validate
-
-  '@wenathlan/debonair@2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
-    dependencies:
-      '@fluentui/react-icons': 2.0.345(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/geist-mono': 5.3.0
-      '@fontsource-variable/inter': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
-      '@hono/node-server': 2.1.6(hono@4.13.16)
-      '@libsql/client': 0.18.0
-      '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      better-sqlite3: 13.0.3
-      drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
-      gsap: 3.15.1
-      hono: 4.13.16
-      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      three: 0.187.0
-      wouter: 3.13.0(react@19.3.1)
-      z-ai-web-dev-sdk: 0.0.18
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@emotion/is-prop-valid'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@netlify/db'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/react'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - playwright
       - postgres
       - prisma
       - sql.js
@@ -12294,19 +12101,18 @@ snapshots:
       '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
       '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/argan': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/argan': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/cadria': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/devthink': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/getry': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/saddle': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/vault': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       better-sqlite3: 13.0.3
       drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
       gsap: 3.15.1
       hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
+      lucide-react: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       playwright: 1.65.0
       react: 19.3.1
@@ -12350,68 +12156,6 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@wenathlan/devthink@2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
-    dependencies:
-      '@fluentui/react-icons': 2.0.345(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/geist-mono': 5.3.0
-      '@fontsource-variable/inter': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
-      '@hono/node-server': 2.1.6(hono@4.13.16)
-      '@libsql/client': 0.18.0
-      '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.1.6(playwright@1.65.0)(supports-color@8.1.1)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      gsap: 3.15.1
-      hono: 4.13.16
-      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      three: 0.187.0
-      wouter: 3.13.0(react@19.3.1)
-      z-ai-web-dev-sdk: 0.0.18
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@emotion/is-prop-valid'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@netlify/db'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/react'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - playwright
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - supports-color
-      - typescript
-      - utf-8-validate
-
   '@wenathlan/devthink@2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
     dependencies:
       '@fluentui/react-icons': 2.0.345(react@19.3.1)
@@ -12424,85 +12168,18 @@ snapshots:
       '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
       '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/argan': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/argan': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/cadria': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/debonair': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/getry': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/saddle': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/vault': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       better-sqlite3: 13.0.3
       drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
       gsap: 3.15.1
       hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      three: 0.187.0
-      wouter: 3.13.0(react@19.3.1)
-      z-ai-web-dev-sdk: 0.0.18
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@emotion/is-prop-valid'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@netlify/db'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/react'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - playwright
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - supports-color
-      - typescript
-      - utf-8-validate
-
-  '@wenathlan/getry@2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
-    dependencies:
-      '@fluentui/react-icons': 2.0.345(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/geist-mono': 5.3.0
-      '@fontsource-variable/inter': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
-      '@hono/node-server': 2.1.6(hono@4.13.16)
-      '@libsql/client': 0.18.0
-      '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      better-sqlite3: 13.0.3
-      drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
-      gsap: 3.15.1
-      hono: 4.13.16
-      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
+      lucide-react: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react: 19.3.1
       react-devtools-core: 8.0.0
@@ -12558,19 +12235,18 @@ snapshots:
       '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
       '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/argan': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/argan': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/cadria': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/debonair': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/devthink': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/saddle': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/vault': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       better-sqlite3: 13.0.3
       drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
       gsap: 3.15.1
       hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
+      lucide-react: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       playwright: 1.65.0
       react: 19.3.1
@@ -12579,76 +12255,6 @@ snapshots:
       three: 0.187.0
       wouter: 3.13.0(react@19.3.1)
       z-ai-web-dev-sdk: 0.0.18
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@emotion/is-prop-valid'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@netlify/db'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/react'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - supports-color
-      - typescript
-      - utf-8-validate
-
-  '@wenathlan/saddle@2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
-    dependencies:
-      '@fluentui/react-icons': 2.0.345(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/geist-mono': 5.3.0
-      '@fontsource-variable/inter': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
-      '@hono/node-server': 2.1.6(hono@4.13.16)
-      '@libsql/client': 0.18.0
-      '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      better-sqlite3: 13.0.3
-      drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
-      gsap: 3.15.1
-      hono: 4.13.16
-      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      three: 0.187.0
-      wouter: 3.13.0(react@19.3.1)
-      z-ai-web-dev-sdk: 0.0.18
-    optionalDependencies:
-      commander: 15.0.0
-      dockerode: 5.0.1(supports-color@8.1.1)
-      express: 5.3.0(supports-color@8.1.1)
-      playwright: 1.65.0
     transitivePeerDependencies:
       - '@aws-sdk/client-rds-data'
       - '@cloudflare/workers-types'
@@ -12696,19 +12302,18 @@ snapshots:
       '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
       '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/argan': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
+      '@wenathlan/argan': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/cadria': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/debonair': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/devthink': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/getry': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/vault': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
       better-sqlite3: 13.0.3
       drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
       gsap: 3.15.1
       hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
+      lucide-react: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react: 19.3.1
       react-devtools-core: 8.0.0
@@ -12756,16 +12361,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@wenathlan/saddle@2.1.6(playwright@1.65.0)(supports-color@8.1.1)':
-    optionalDependencies:
-      commander: 13.1.0
-      dockerode: 5.0.1(supports-color@8.1.1)
-      express: 5.3.0(supports-color@8.1.1)
-      playwright: 1.65.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@wenathlan/vault@2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)':
+  '@wenathlan/vault@2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)':
     dependencies:
       '@fluentui/react-icons': 2.0.345(react@19.3.1)
       '@fontsource-variable/bricolage-grotesque': 5.3.0
@@ -12777,84 +12373,18 @@ snapshots:
       '@libsql/client': 0.18.0
       '@prisma/adapter-libsql': 7.10.1
       '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/argan': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/argan': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/cadria': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/debonair': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/devthink': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/getry': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
+      '@wenathlan/saddle': 2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
       better-sqlite3: 13.0.3
       drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
       gsap: 3.15.1
       hono: 4.13.16
       ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
-      motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      react-devtools-core: 8.0.0
-      react-dom: 19.3.1(react@19.3.1)
-      three: 0.187.0
-      wouter: 3.13.0(react@19.3.1)
-      z-ai-web-dev-sdk: 0.0.18
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@electric-sql/pglite'
-      - '@emotion/is-prop-valid'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@netlify/db'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@tidbcloud/serverless'
-      - '@types/better-sqlite3'
-      - '@types/pg'
-      - '@types/react'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - bufferutil
-      - bun-types
-      - expo-sqlite
-      - gel
-      - knex
-      - kysely
-      - mysql2
-      - pg
-      - postgres
-      - prisma
-      - sql.js
-      - sqlite3
-      - typescript
-      - utf-8-validate
-
-  '@wenathlan/vault@2.0.165(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)':
-    dependencies:
-      '@fluentui/react-icons': 2.0.345(react@19.3.1)
-      '@fontsource-variable/bricolage-grotesque': 5.3.0
-      '@fontsource-variable/geist-mono': 5.3.0
-      '@fontsource-variable/inter': 5.3.0
-      '@fontsource-variable/jetbrains-mono': 5.3.0
-      '@fontsource-variable/outfit': 5.3.0
-      '@hono/node-server': 2.1.6(hono@4.13.16)
-      '@libsql/client': 0.18.0
-      '@prisma/adapter-libsql': 7.10.1
-      '@prisma/client': 7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      '@wenathlan/argan': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/cadria': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/debonair': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/devthink': 2.0.154(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/getry': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/saddle': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(playwright@1.65.0)(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(supports-color@8.1.1)(typescript@7.0.2)
-      '@wenathlan/vault': 2.0.155(@electric-sql/pglite@0.4.3)(@opentelemetry/api@1.10.0)(@types/better-sqlite3@9.6.0)(@types/react@19.3.0)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2)
-      better-sqlite3: 13.0.3
-      drizzle-orm: 0.45.4(@electric-sql/pglite@0.4.3)(@libsql/client@0.18.0)(@opentelemetry/api@1.10.0)(@prisma/client@7.10.1(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))(typescript@7.0.2))(@types/better-sqlite3@9.6.0)(better-sqlite3@13.0.3)(bun-types@1.4.4)(mysql2@3.24.6(@types/node@26.6.6))(postgres@3.4.7)(prisma@7.10.1(@types/node@26.6.6)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(better-sqlite3@13.0.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2))
-      gsap: 3.15.1
-      hono: 4.13.16
-      ink: 7.1.1(@types/react@19.3.0)(react-devtools-core@8.0.0)(react@19.3.1)
-      lucide-react: 1.69.0(@types/react@19.3.0)(react@19.3.1)
+      lucide-react: 1.70.0(@types/react@19.3.0)(react@19.3.1)
       motion: 12.43.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       playwright: 1.65.0
       react: 19.3.1
@@ -12894,7 +12424,6 @@ snapshots:
       - prisma
       - sql.js
       - sqlite3
-      - supports-color
       - typescript
       - utf-8-validate
 
@@ -13381,9 +12910,6 @@ snapshots:
   comma-separated-tokens@2.0.3: {}
 
   commander@12.1.0: {}
-
-  commander@13.1.0:
-    optional: true
 
   commander@14.0.3: {}
 
@@ -15074,7 +14600,7 @@ snapshots:
 
   lru.min@1.1.5: {}
 
-  lucide-react@1.69.0(@types/react@19.3.0)(react@19.3.1):
+  lucide-react@1.70.0(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       react: 19.3.1
     optionalDependencies:

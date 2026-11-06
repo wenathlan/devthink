@@ -90,24 +90,24 @@ jobs:
             delete manifest.packageManager;
             fs.writeFileSync("auditwork/package.json", JSON.stringify(manifest, null, 2) + "\n");
             const overrides = manifest.overrides ?? {};
-            const lines = [];
-            for (const [name, value] of Object.entries(overrides)) {
+            // the override union the manifestemplate wave stamps carries
+            // the @-scoped names (@grpc/grpc-js and its seats) and the @
+            // sign is a reserved YAML indicator a bare key may never open
+            // with — every name materializes as a quoted key, and the one
+            // object-valued seat (the xcode uuid pin) answers as the
+            // nested block the pnpm reader walks, so the workspace the
+            // audit folder reads stays valid YAML the same way the
+            // manifest itself stays valid JSON under its quoting.
+            const lines = Object.keys(overrides).map(function (name) {
+              const value = overrides[name];
               if (value !== null && typeof value === "object") {
-                /* the nested override seats (the xcode uuid pin) ride the
-                 * pnpm selector grammar — the parent>child keys the pnpm
-                 * workspace reader walks instead of the object form the
-                 * npm manifest carries */
-                for (const [child, childValue] of Object.entries(value)) {
-                  lines.push("  " + JSON.stringify(name + ">" + child) + ": " + JSON.stringify(childValue));
-                }
-              } else {
-                /* the @-scoped seats ride quoted keys - the strict yaml
-                 * parser pnpm carries refuses an unquoted @ character the
-                 * manifestemplate union (the overrides mirror the dependency
-                 * seats, scoped names included) otherwise writes */
-                lines.push("  " + JSON.stringify(name) + ": " + JSON.stringify(value));
+                const nested = Object.keys(value).map(function (key) {
+                  return "    " + JSON.stringify(key) + ": " + JSON.stringify(value[key]);
+                });
+                return "  " + JSON.stringify(name) + ":\n" + nested.join("\n");
               }
-            }
+              return "  " + JSON.stringify(name) + ": " + JSON.stringify(value);
+            });
             fs.writeFileSync("auditwork/pnpm-workspace.yaml", "overrides:\n" + lines.join("\n") + "\n");
           '
           pnpm --dir auditwork install --lockfile-only
@@ -464,24 +464,28 @@ jobs:
           # (free to use, no copyleft, no field-of-use restriction) — the
           # animation layer the design doctrine calls for, accepted by its
           # exact license-checker label.
-          # The sharp libvips binary seats carry LGPL-3.0-or-later (the
-          # image codec library the sharp runtime wheels bundle — a
-          # runtime binary dependency, not a source seat: the LGPL label
-          # the runtime image gate already documents beside its container
-          # scan). The compound SPDX forms (AFL-2.1 OR BSD-3-Clause, the
-          # dual-licensed lodash lineage, the AND compounds) and the
-          # Custom github seat (the family's own unlabeled envelopes)
-          # ride the same honest list so no latent label reddens the
-          # ladder on a fresh resolution.
           bun install --frozen-lockfile --production --ignore-scripts
-          # vite-plugin-manus-runtime publishes no license label upstream
-          # (the manus runtime vite plugin, a declared seat of the
-          # dependency union): the exclusion rides the package@version
-          # form the checker's semicolon list demands, documented here so
-          # the walk stays honest about every labeled seat it allows
+          # the family seats the manifestemplate wave distributed answer
+          # the wider label set the 172-dependency production tree walks:
+          # the sharp libvips binary seats carry LGPL-3.0-or-later (the
+          # standard prebuilt sharp deployment, the weak-copyleft binary
+          # artifact alone — MPL-2.0 already rides the list as the file
+          # copyleft precedent), the biome seats answer MIT OR Apache-2.0
+          # (both allowed alone, dual permissive), the swc native core
+          # answers Apache-2.0 AND MIT (a conjunction of two allowed
+          # seats), victory-vendor answers MIT AND ISC the same way,
+          # argparse answers PSF-2.0 (the Python Software Foundation
+          # label the Python-2.0 row already blesses), json-schema
+          # answers the classic AFL-2.1 OR BSD-3-Clause pair (the BSD
+          # side alone is allowed), and the family's own published OS
+          # package stamps the repository URL its license row links.
+          # the vite build plugin (vite-plugin-manus-runtime) publishes
+          # upstream without any license label — the documented
+          # exclusion below answers that upstream reality: a build-time
+          # tool, excluded by name, never a silent walkaround.
           npx --yes license-checker@25.0.1 --production \
             --onlyAllow="MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;PSF-2.0;BlueOak-1.0.0;MPL-2.0;LGPL-3.0-or-later;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);(AFL-2.1 OR BSD-3-Clause);MIT OR Apache-2.0;Apache-2.0 AND MIT;MIT AND ISC;ISC*;Custom: https://gsap.com/GSAP-share-image.png;Custom: https://github.com/wenathlan/devthink" \
-            --excludePackages=vite-plugin-manus-runtime@0.0.59 \
+            --excludePackages="vite-plugin-manus-runtime@0.0.59" \
             --summary
 
   container-scan:

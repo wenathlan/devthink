@@ -9,11 +9,15 @@
 // the answer is one law in three seats: every package.json of the family
 // stamps the same number, that number never leaves the 2.0.x curve the
 // house pinned, and the maintenance rung stages every seat so the ladder
-// never desyncs again. the engine faces beside the package stamps answer
+// never desyncs again. the container cut ships the family subset the
+// lanes build, so the seat walk answers the package.json files the
+// running tree carries — the subset law the config parity gate walks —
+// and the automation-tree walk answers only where the landing step
+// ships (the repository), never inside the container the app lanes cut. the engine faces beside the package stamps answer
 // the release walk (release.ts check) and the notes battery; this
 // battery pins the surfaces those cannot reach: the lockstep itself, the
 // curve refusal and the staged set of the landing.
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -37,11 +41,23 @@ const seats = [
 ];
 
 const rootversion = (JSON.parse(readFileSync(join(reporoot, "package.json"), "utf8")) as { version: string }).version;
-const seatversions = seats.map((seat) => ({
+
+/** the seats the running tree carries: the full repository answers all
+ * eleven, while the container cut ships the family subset the lanes
+ * build — the walk answers the seats it finds, the same graceful subset
+ * law the config parity gate already walks, and the lockstep holds over
+ * every seat that ships together. */
+const presentseats = seats.filter((seat) => existsSync(join(reporoot, seat, "package.json")));
+const seatversions = presentseats.map((seat) => ({
   seat,
   version: (JSON.parse(readFileSync(join(reporoot, seat, "package.json"), "utf8")) as { version: string }).version,
 }));
-const maintenance = readFileSync(join(reporoot, ".github", "workflows", "maintenance.yml"), "utf8");
+
+/** the automation tree ships only in the repository: the container cut
+ * carries the app surfaces, never the workflow ladder, so the staged-set
+ * walk answers where the landing step lives and skips where it cannot. */
+const maintenancepath = join(reporoot, ".github", "workflows", "maintenance.yml");
+const maintenance = existsSync(maintenancepath) ? readFileSync(maintenancepath, "utf8") : "";
 const changelog = readFileSync(join(approot, "CHANGELOG.md"), "utf8");
 
 /** the landing step's staged set — the one git add command the rung
@@ -60,8 +76,9 @@ const stamp = (() => {
 })();
 
 describe("the rung lockstep (every seat stamps the same number)", () => {
-  it("the root and the eleven app seats answer one version string", () => {
+  it("the root and every app seat the tree carries answer one version string", () => {
     expect(rootversion, "the root carries a version stamp").toMatch(/^\d+\.\d+\.\d+$/);
+    expect(presentseats.length, "the tree carries at least one app seat beside the root").toBeGreaterThan(0);
     for (const { seat, version } of seatversions) {
       expect(version, `${seat} stamps the root rung`).toBe(rootversion);
     }
@@ -79,12 +96,15 @@ describe("the rung lockstep (every seat stamps the same number)", () => {
 });
 
 describe("the maintenance rung (the stamp ladder carries every seat)", () => {
-  it("the git add of the landing step stages all eleven app package.json paths", () => {
-    expect(stamp, "the landing step carries a git add line").toContain("git add ");
-    for (const seat of seats) {
-      expect(stamp, `${seat} rides the staged set`).toContain(`${seat}/package.json`);
-    }
-  });
+  it.skipIf(maintenance === "")(
+    "the git add of the landing step stages all eleven app package.json paths",
+    () => {
+      expect(stamp, "the landing step carries a git add line").toContain("git add ");
+      for (const seat of seats) {
+        expect(stamp, `${seat} rides the staged set`).toContain(`${seat}/package.json`);
+      }
+    },
+  );
 
   it("the changelog answers the current rung — no stamp lands without its notes", () => {
     expect(changelog, `the changelog carries the ${rootversion} section`).toMatch(

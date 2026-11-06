@@ -18,11 +18,12 @@
  * database over GET/POST /api/v1/plan, https only, the base url arrives
  * through VITE_DT_ONBOARDING_URL and every candidate host passes the same
  * public law onboardingstate carries (localhost, loopback, private and
- * reserved refused). The localStorage key devthink.plan is purely the
- * offline cache of the database (never the source of truth) and module
- * memory covers the session; the payment step stays a placeholder until
- * the gateway wave wires the processor — the choice stamps the badge now,
- * the charge lands when the processor exists.
+ * reserved refused). The plan never touches the browser: module memory
+ * covers the session alone (the cadastro law — no localStorage cache, the
+ * database is the only durable seat the plan rides); the payment step
+ * stays a placeholder until the gateway wave wires the processor — the
+ * choice stamps the badge now, the charge lands when the processor
+ * exists.
  */
 import { ispublichttpsbase, onboardingapibase, visitorid } from "./onboardingstate.ts";
 
@@ -35,11 +36,11 @@ import { ispublichttpsbase, onboardingapibase, visitorid } from "./onboardingsta
 // database over GET/POST /api/v1/plan, https only, the base url arrives
 // through VITE_DT_ONBOARDING_URL and every candidate host passes the same
 // public law onboardingstate carries (localhost, loopback, private and
-// reserved refused). The localStorage key devthink.plan is purely the
-// offline cache of the database (never the source of truth) and module
-// memory covers the session; the payment step stays a placeholder until
-// the gateway wave wires the processor — the choice stamps the badge now,
-// the charge lands when the processor exists.
+// reserved refused). The plan never touches the browser: module memory
+// covers the session alone (the cadastro law — no localStorage cache, the
+// database is the only durable seat the plan rides); the payment step
+// stays a placeholder until the gateway wave wires the processor — the
+// choice stamps the badge now, the charge lands when the processor exists.
 
 
 /** The tiers the os sells. */
@@ -106,9 +107,6 @@ export interface PlanView {
   since: string;
 }
 
-/** The localStorage cache key (the db mirror, never the source of truth). */
-const CACHE_KEY = "devthink.plan";
-
 /** The platform route the plan rides (the gateway serves /api/v1/*). */
 const API_PATH = "/api/v1/plan";
 
@@ -130,27 +128,16 @@ function parseplan(payload: unknown): PlanView | null {
   return view;
 }
 
-/** Reads the cache best effort. */
+/** Reads the session seat: module memory only (the cadastro law — the
+ * plan never rides the browser's storage, the database is the one seat). */
 function readcache(): PlanView | null {
-  if (memory) return memory;
-  try {
-    const raw = window.localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    memory = parseplan(JSON.parse(raw));
-    return memory;
-  } catch {
-    return null;
-  }
+  return memory;
 }
 
-/** Writes the cache best effort (the memory keeps the session honest). */
+/** Writes the session seat: module memory only (the browser keeps at most
+ * the session state in memory, never a storage key). */
 function writecache(view: PlanView): void {
   memory = view;
-  try {
-    window.localStorage.setItem(CACHE_KEY, JSON.stringify(view));
-  } catch {
-    /* the cache is best effort */
-  }
 }
 
 /** One platform call: https, validated host, hard timeout, json in/out. */

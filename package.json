@@ -30,6 +30,7 @@
     "yaml": "^2.9.1",
     "yarn": "^4.17.1"
   },
+  "packageManager": "pnpm@12.18.0",
   "scripts": {
     "dev": "cd devthink && (bun server.ts serve &) && bunx vite --port 3000 --host 0.0.0.0",
     "gateway": "cd devthink && bun server.ts serve",

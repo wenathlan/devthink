@@ -1,0 +1,1325 @@
+name: DevThink Containers
+
+# THE ELEVEN CONTAINER LANES OF THE REGISTRY STANDARD (the containerlanes
+# wave, the owner's law: "as 11 lanes do docker não foram publicadas e
+# padronizadas em todos os aplicativos, e saddle não tem +15 distribuições
+# no docker e mais de 7 contando com webpack, nem os outros apps que
+# deveriam ter 11+"): every application of the eleven answers its own
+# ghcr.io/wenathlan/<app> container package - the ten sibling lanes
+# (argan, cadria, cobaia, debonair, devthink, forge, foundry, getry,
+# stealthhead and the self-contained vault engine) riding the
+# app-containers matrix with the same multi-arch index, the same
+# per-architecture seat tags, the same documented best-effort lanes and
+# the same idempotent publish the family-ghcr mirror of the publish
+# workflow proved, while the saddle engine walks its own saddle-containers
+# lane set (the fifteen-plus docker distribution law: the three profile
+# umbrellas beside their twelve architecture seats and the four
+# os-distribution flavor lanes - nineteen distinct published tags, every
+# one a real buildx product). the standalone file answers the gap the
+# registry census recorded (the ghcr package page answered only the
+# saddle package beside its buildcache: the sibling containers never
+# published, because the publish mirror rides the workflow_run dual
+# trigger the release ladder completion gates and the dispatch firing
+# never carried the sibling lanes) - this workflow fires on the release
+# published event AND the workflow_dispatch lane, so an operator
+# standardizing the registry answers every container with one dispatch.
+#
+# THE SADDLE WEBPACK SEAT rides the same wave (the pr14 law, the owner's
+# sentence "6 por app versão Webpack + npmjs"): the webpack-bundled
+# saddle engine distribution walks its six registry channels - npmjs,
+# the github npm registry, maven, nuget, gradle and rubygems, every leg
+# packing the real webpack bundle the engine build produces through the
+# exact-pinned webpack rung the ci battery verifies - beside the npmjs
+# envelope the family-npmjs mirror of the publish workflow already
+# ships, so the saddle distribution count answers seven lanes the
+# webpack axis owns (the six channel legs of the matrix beside the base
+# envelope: mais de sete contando com webpack, the law the owner
+# demanded).
+#
+# Every job keeps its own conclusion guard (the saddle family pattern,
+# Regra 56b), the one resolver seat (the rate-limit heal: one api call
+# per wave, every lane reads the job output), the idempotent publish
+# (a version tag is immutable content - a re-run over an already
+# published index skips the build and only completes the missing seat
+# tags) and the least-privilege job permissions the publish lanes carry
+# (contents: read beside packages: write, the id-token and attestations
+# seats only where the provenance signature rides).
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing DevThink tag to publish the container lanes for; empty resolves the latest release.
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  # the event-scoped group (the family concurrency doctrine, Regra 52):
+  # the release published and dispatch firings are distinct lanes that
+  # never cancel one another; only a superseded firing of the SAME event
+  # and ref waits behind the running one (cancel-in-progress stays false
+  # so no publish leg is ever cancelled mid-push).
+  group: devthink-containers-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+  REGISTRY: ghcr.io
+  # the saddle lane family caches its multi-profile layers in the same
+  # registry cache image the publish workflow's vhe block carries (the
+  # one buildcache package the ghcr census already answers).
+  CACHE_IMAGE: ghcr.io/${{ github.repository }}-buildcache
+
+jobs:
+  release-resolve:
+    name: release resolve
+    # THE ONE RESOLVER SEAT (the rate-limit heal the publish wave owns):
+    # one api call resolves the tag a single time and every lane below
+    # reads the job output, so the container wave costs one api call
+    # instead of one per lane - the same doctrine the publish mirror
+    # consolidated its thirty-one resolvers into.
+    if: >-
+      github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - name: resolve the release tag once for the whole wave
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            # the bounded retry the rate-limit window taught: the single
+            # remaining api call the wave makes tolerates the transient
+            # 403 with the linear backoff before it reddens the wave.
+            attempt=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              tag="$(gh release view --json tagName --jq .tagName)" && break
+              echo "the release resolve attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 20))"
+            done
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          {
+            echo "tag=${tag}"
+            echo "version=${version}"
+          } >> "$GITHUB_OUTPUT"
+
+  app-containers:
+    name: Publish the ${{ matrix.app }} container lanes to GHCR (the eleven-container standard)
+    needs: [release-resolve]
+    # the conclusion guard (the saddle family pattern, Regra 56b): a
+    # release firing whose tag carries no v-prefix never reaches the
+    # container lanes, and a dispatch without a resolvable release
+    # reddens the resolver above before any build starts.
+    if: >-
+      needs.release-resolve.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      # one application failing its publish must not kill the sibling
+      # legs - every folder answers its own container lane to the end.
+      fail-fast: false
+      matrix:
+        # THE ELEVEN CONTAINER LANES (the owner's law, the standardized
+        # half): the ten sibling applications ride this matrix while the
+        # saddle engine walks its own saddle-containers job below (the
+        # fifteen-plus distribution law demands the profile seats a
+        # plain matrix leg cannot carry) - together the eleven
+        # application containers of the monorepo, every one published
+        # under ghcr.io/wenathlan/<app>.
+        #
+        # THE TWELVE-LANE-PLUS AXIS PER APP (the owner's sentence "nem os
+        # outros apps que deveriam ter 11+"): every app container answers
+        # the version tag, the latest alias, the per-architecture seat
+        # tags of every base-carried arch (one real tag per arch, stamped
+        # off the published index) and the documented best-effort lanes
+        # (the buildx-supported arches whose pinned base carries no
+        # manifest today - the lanes stay named, fail closed and never
+        # block the wave). the site homes answer the eight arches their
+        # pinned nginxinc/nginx-unprivileged:1.29-alpine runtime base
+        # honestly resolves (verified against the live registry manifest
+        # list: 386, amd64, arm/v6, arm/v7, arm64, ppc64le, riscv64,
+        # s390x), the workbench engine answers the five arches the
+        # verified node 26 tarballs and the debian trixie base honestly
+        # carry (amd64, arm64, ppc64le, s390x, riscv64) and the vault
+        # engine compiles its better-sqlite3 seat per-arch inside the
+        # node:26-alpine base, so its carried set is the amd64 and arm64
+        # legs the base answers - 8+4, 5+7 or 2+10 beside the version
+        # tag and the latest alias: fourteen lanes every app, honestly
+        # counted, more than eleven.
+        app: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, stealthhead, vault]
+        include:
+          - app: argan
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: ARGAN_VERSION
+          - app: cadria
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: CADRIA_VERSION
+          - app: cobaia
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: COBAIA_VERSION
+          - app: debonair
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: DEBONAIR_VERSION
+          - app: devthink
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/riscv64
+            exotic: linux/386,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: DEVTHINK_VERSION
+          - app: forge
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: FORGE_VERSION
+          - app: foundry
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: FOUNDRY_VERSION
+          - app: getry
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: GETRY_VERSION
+          - app: stealthhead
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            versionarg: STEALTHHEAD_VERSION
+          - app: vault
+            platforms: linux/amd64,linux/arm64
+            exotic: linux/386,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/mips64le,linux/mips64,linux/ppc64le,linux/riscv64,linux/s390x,linux/loong64
+            versionarg: VAULT_VERSION
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.app }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.app }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "revision=$(git rev-parse HEAD)"
+          } >> "$GITHUB_OUTPUT"
+      - name: login ghcr
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: setup qemu
+        # multi-arch emulation for the non-native architectures of the
+        # per-app index: every platform the amd64 runner cannot execute
+        # installs its binfmt handler here (the family pin - only the
+        # emulated legs the base-carried axis names).
+        uses: docker/setup-qemu-action@99012661954931238ded8c8c007157a8430204e1 # v4.4.0
+        with:
+          platforms: linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+      - name: setup buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: check published image state
+        # the idempotent publish: a version tag is immutable content, so a
+        # re-run over an already published app container skips the build
+        # and the push and only completes the seat tags below (a missing
+        # or partial index rebuilds and completes the push).
+        id: published
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          image_ref="ghcr.io/${{ github.repository_owner }}/${{ matrix.app }}:${version}"
+          if docker buildx imagetools inspect --raw "${image_ref,,}" >/dev/null 2>&1; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "the ${image_ref,,} is already published; the seat stamping below stays idempotent."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: stage the site build context for the container install
+        # the same staged familybuildctx shape the family-ghcr mirror of
+        # the publish workflow proved: the application rides the context
+        # nested under app/ (the uniform shape the site Dockerfiles
+        # read), the pnpm supply-chain release-age window pins to zero
+        # for the container install (the frozen lockfile keeps answering
+        # the same integrity-checked versions), the copy-law vault
+        # sibling rides every family context beside the app (the
+        # @wenathlan/vault/labelstore bridge resolves the ../vault vite
+        # aliases) and the engine-ownership sibling map stages the
+        # cross-app consumers each home declares (the single place a new
+        # sibling registers). the workbench builds from the repository
+        # root (the family-context law its Dockerfile header records)
+        # and the self-contained vault engine keeps its own folder.
+        if: steps.published.outputs.skip != 'true' && matrix.app != 'devthink' && matrix.app != 'vault'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf familybuildctx
+          mkdir -p familybuildctx/app
+          cp -a "${{ matrix.app }}/." familybuildctx/app/
+          printf '\nminimumReleaseAge: 0\n' >> familybuildctx/app/pnpm-workspace.yaml
+          mkdir -p familybuildctx/vault
+          cp -a vault/. familybuildctx/vault/
+          rm -rf familybuildctx/vault/node_modules \
+                 familybuildctx/vault/dist \
+                 familybuildctx/vault/build
+          case "${{ matrix.app }}" in
+            argan|cobaia|stealthhead)
+              # the copy-law pair the base staging already answers (app +
+              # vault): these site homes consume no further sibling
+              # through the vite aliases, so the case registers the shape
+              # the map documents for each leg
+              ;;
+            cadria)
+              # the engine-ownership sibling map: cadria resolves the
+              # debonair audio engine through the ../debonair vite
+              # aliases, so the sibling rides the context whole (sources
+              # only - the build never installs it)
+              mkdir -p familybuildctx/debonair
+              cp -a debonair/. familybuildctx/debonair/
+              rm -rf familybuildctx/debonair/node_modules \
+                     familybuildctx/debonair/dist \
+                     familybuildctx/debonair/build
+              ;;
+            debonair)
+              # the symmetric engine-ownership map: debonair resolves the
+              # cadria synth palette and the saddle workload law through
+              # the ../cadria and ../saddle aliases, so both siblings
+              # ride the context whole
+              mkdir -p familybuildctx/cadria familybuildctx/saddle
+              cp -a cadria/. familybuildctx/cadria/
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/cadria/node_modules familybuildctx/cadria/dist familybuildctx/cadria/build \
+                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
+              ;;
+            forge|foundry)
+              # the vault copy law plus the saddle engine ownership (the
+              # modes and sandbox bridges the ../saddle aliases own)
+              mkdir -p familybuildctx/saddle
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/saddle/node_modules \
+                     familybuildctx/saddle/dist \
+                     familybuildctx/saddle/build
+              ;;
+            getry)
+              # the gateway sibling map: the vault copy law, the saddle
+              # modality registry, the devthink config bridges and the
+              # debonair route table all ride the context whole
+              mkdir -p familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
+              cp -a saddle/. familybuildctx/saddle/
+              cp -a devthink/. familybuildctx/devthink/
+              cp -a debonair/. familybuildctx/debonair/
+              rm -rf familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
+                     familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
+                     familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
+              ;;
+          esac
+      - name: resolve the context shape
+        # the workbench owns the repository-root context the family law
+        # records and the vault engine owns its own closure, while every
+        # site home answers the staged familybuildctx shape
+        id: resolve-context
+        if: steps.published.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "${{ matrix.app }}" in
+            devthink) echo "context=." >> "$GITHUB_OUTPUT" ;;
+            vault) echo "context=./vault" >> "$GITHUB_OUTPUT" ;;
+            *) echo "context=familybuildctx" >> "$GITHUB_OUTPUT" ;;
+          esac
+      - name: resolve the build args (the version and revision stamps)
+        # the version stamp answers the per-app ARG every Dockerfile
+        # declares, and the revision stamp rides the workbench engine
+        # alone (the site homes pin no revision ARG, so the args block
+        # never carries an empty line the builder would read).
+        id: buildargs
+        if: steps.published.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "args<<ARGS"
+            echo "${{ matrix.versionarg }}=${{ steps.release.outputs.version }}"
+            if [ "${{ matrix.app }}" = "devthink" ]; then
+              echo "DEVTHINK_REVISION=${{ steps.release.outputs.revision }}"
+            fi
+            echo "ARGS"
+          } >> "$GITHUB_OUTPUT"
+      - name: build and push the app container
+        if: steps.published.outputs.skip != 'true'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ${{ steps.resolve-context.outputs.context }}
+          file: ./${{ matrix.app }}/Dockerfile
+          # the runner stage is the explicit target of the workbench
+          # engine (the single-binary stages of the same file stay
+          # behind their own --target)
+          target: ${{ matrix.app == 'devthink' && 'runtime' || '' }}
+          push: true
+          platforms: ${{ matrix.platforms }}
+          build-args: ${{ steps.buildargs.outputs.args }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.app }}:${{ steps.release.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/${{ matrix.app }}:latest
+      - name: stamp the per-architecture seat tags (the arch-lane axis)
+        # THE SEAT LANES (the standardized distribution surface the
+        # owner's "11+" demands): every base-carried arch of the
+        # published index answers its own real tag - the seat is stamped
+        # off the per-arch manifest digest of the just-published index
+        # through docker buildx imagetools, so `docker pull --platform
+        # linux/arm64 <app>:<version>-linux-arm64` resolves exactly the
+        # arm64 image the multi-arch push shipped (never a rebuild, never
+        # a placeholder - the digest is the registry's own answer). the
+        # stamping stays idempotent: a re-run re-creates the same seat
+        # tag over the same digest content.
+        shell: bash
+        env:
+          PLATFORMS: ${{ matrix.platforms }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${{ matrix.app }}"
+          image_ref="${image}:${version}"
+          index="$(docker buildx imagetools inspect --raw "${image_ref}")"
+          for platform in ${PLATFORMS//,/ }; do
+            slug="${platform//\//-}"
+            arch="${platform#linux/}"
+            digest="$(printf '%s' "${index}" | jq -r --arg a "${arch}" 'first(.manifests[] | select(.platform.os == "linux" and (.platform.architecture + (if .platform.variant then "/" + .platform.variant else "" end)) == $a) | .digest) // ""')"
+            if [ -z "${digest}" ]; then
+              echo "::warning::the ${platform} seat never answered on the published index; the seat stays documented, the wave continues."
+              continue
+            fi
+            docker buildx imagetools create -t "${image}:${version}-${slug}" "${image}@${digest}"
+            echo "the ${platform} seat ships as ${image}:${version}-${slug}"
+          done
+      - name: build the documented best-effort lanes (fail closed, never block the wave)
+        # the honest best-effort half of the lane axis: the arches
+        # buildx supports whose pinned runtime base carries no manifest
+        # today. each lane builds its own per-arch tag, and a lane whose
+        # base cannot resolve fails closed with a warning - the lane
+        # stays documented in the census, the wave never reddens on an
+        # arch no base ships (continue-on-error rides the step for the
+        # same law).
+        if: steps.published.outputs.skip != 'true'
+        continue-on-error: true
+        shell: bash
+        env:
+          EXOTIC: ${{ matrix.exotic }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -uo pipefail
+          version="${{ steps.release.outputs.version }}"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${{ matrix.app }}"
+          context="${{ steps.resolve-context.outputs.context || '.' }}"
+          file="./${{ matrix.app }}/Dockerfile"
+          targetargs=""
+          if [ "${{ matrix.app }}" = "devthink" ]; then
+            context="."
+            targetargs="--target runtime"
+          fi
+          for arch in ${EXOTIC//,/ }; do
+            slug="${arch//\//-}"
+            echo "--- best-effort lane ${arch} (documented: no pinned base carries this manifest today) ---"
+            if docker buildx build \
+              --platform "${arch}" \
+              ${targetargs} \
+              --build-arg "${{ matrix.versionarg }}=${version}" \
+              --tag "${image}:${version}-${slug}" \
+              --push "${context}" "--file=${file}"; then
+              echo "the best-effort lane ${arch} answered - a base variant carries it now; the lane ships as :${version}-${slug}."
+            else
+              echo "::warning::the best-effort lane ${arch} failed closed - the pinned runtime base carries no ${arch} manifest; the lane stays documented in the census, the wave continues."
+            fi
+          done
+      - name: verify the published lane set (the eleven-plus census)
+        # the lane census the owner's law charges: the published index
+        # must carry every arch the pinned base resolves, the seat tags
+        # must answer per arch and the census line names the lane count -
+        # the version tag, the latest alias, the per-arch seats and the
+        # documented best-effort lanes, more than eleven every app,
+        # every one honestly named.
+        shell: bash
+        env:
+          PLATFORMS: ${{ matrix.platforms }}
+          EXOTIC: ${{ matrix.exotic }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${{ matrix.app }}"
+          docker buildx imagetools inspect --raw "${image}:${version}" | jq -e '[.manifests[] | select(.platform.os == "linux")] | length > 0'
+          carried="$(printf '%s' "${PLATFORMS}" | tr ',' '\n' | wc -l)"
+          exotic="$(printf '%s' "${EXOTIC}" | tr ',' '\n' | wc -l)"
+          seats=0
+          for platform in ${PLATFORMS//,/ }; do
+            slug="${platform//\//-}"
+            if docker buildx imagetools inspect --raw "${image}:${version}-${slug}" >/dev/null 2>&1; then
+              seats=$((seats + 1))
+            fi
+          done
+          lanes=$((1 + 1 + carried + exotic))
+          test "${lanes}" -gt 11
+          echo "the ${{ matrix.app }} container answers ${lanes} lanes (the version tag, the latest alias, ${carried} base-carried arches with ${seats} live seat tags + ${exotic} documented best-effort lanes): more than eleven, the container-lane law answered."
+
+  saddle-containers:
+    name: Publish the saddle ${{ matrix.profile }}${{ matrix.osprofile && format('-{0}', matrix.osprofile) || '' }} container lanes to GHCR (the fifteen-plus law)
+    needs: [release-resolve]
+    if: >-
+      needs.release-resolve.result == 'success'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    # 330 min: the build index carries the three emulated legs (arm64,
+    # ppc64le and s390x) under QEMU beside the native amd64 leg - the
+    # same ceiling the saddle vhe lane of the publish workflow carries
+    # (a cold-cache QEMU pass can redden on rare mirror races; the
+    # registry cache the rerun answers completes the leg).
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # THE FIFTEEN-PLUS DOCKER DISTRIBUTION LAW (the owner's sentence
+        # "saddle não tem +15 distribuições no docker"): the three
+        # profile lanes ship the build legs of the container-carried
+        # seats the pinned node base honestly answers (the native amd64
+        # leg beside the arm64, ppc64le and s390x legs under QEMU
+        # emulation) - and every profile leg stamps its four
+        # per-architecture seat tags off the published index
+        # (<version>-max-linux-amd64, -max-linux-arm64,
+        # -max-linux-ppc64le, -max-linux-s390x, the balanced and lite
+        # seats beside them: twelve arch-seat lanes), so the saddle tag
+        # census answers NINETEEN distinct published tags - the three
+        # profile umbrellas (<version> for max, -balanced, -lite), the
+        # twelve architecture seats and the four os-distribution flavor
+        # lanes (-linux, -omarchy, -vanillaos, -android) - more than
+        # fifteen, every one a real buildx product the registry answers.
+        # the os-distribution flavor lanes stamp their OSDISTRIBUTIONS
+        # catalog profile into the image config the same way the vhe
+        # lane family of the publish workflow stamps it.
+        include:
+          - profile: max
+            target: max
+            suffix: ""
+            seatprefix: "max"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: balanced
+            target: balanced
+            suffix: "-balanced"
+            seatprefix: "balanced"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: lite
+            suffix: "-lite"
+            seatprefix: "lite"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+          # the os-distribution flavor lanes: the same engine graph on
+          # the same honest base legs with the catalog profile stamped -
+          # the linux seat is the baseline flavor, omarchy the arch-based
+          # desktop seat, vanillaos the ubuntu-based atomic seat and
+          # android the mobile seat the grapheneos hardening builds on
+          # (every flavor binds the max plan: the tier axis stays the
+          # profile lanes' own).
+          - profile: max
+            target: oslinux
+            osprofile: linux
+            suffix: "-linux"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: max
+            target: osomarchy
+            osprofile: omarchy
+            suffix: "-omarchy"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: max
+            target: osvanillaos
+            osprofile: vanillaos
+            suffix: "-vanillaos"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: max
+            target: osandroid
+            osprofile: android
+            suffix: "-android"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-resolve.outputs.tag }}
+
+      - name: Set up Node (the version resolution step)
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+
+      - name: Resolve the saddle version and the base digest (GitHub-computed)
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${REQUESTED_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A semantic release tag such as v1.2.14 is required." >&2
+            exit 1
+          fi
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          git checkout --detach "$tag"
+          version=$(node -p "JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version")
+          if [[ "v${version}" != "$tag" ]]; then
+            echo "Release tag ${tag} does not match the saddle manifest version ${version}." >&2
+            exit 1
+          fi
+          # the digest-never-hardcoded law (the owner rule): no 64-hex
+          # digest ever lands in a source file - the node base digest
+          # resolves on this GitHub runner at build time and rides the
+          # build-args, the same bases idiom the publish workflow's vhe
+          # resolver carries (the bare-hex law: the Dockerfile composes
+          # name@sha256:${NODE_BASE_DIGEST} itself).
+          token="$(curl -fsSL "https://auth.docker.io/token?service=registry.docker.io&scope=repository:library/node:pull" | jq -r .token)"
+          node_digest="$(curl -fsSI -H "Authorization: Bearer ${token}" \
+            -H "Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+            "https://registry-1.docker.io/v2/library/node/manifests/26.13.0-slim" \
+            | tr -d '\r' | awk 'tolower($1)=="docker-content-digest:"{print $2}')"
+          if ! [[ "${node_digest}" =~ ^sha256:[a-f0-9]{64}$ ]]; then
+            echo "the node base digest resolved to an unexpected shape: ${node_digest}" >&2; exit 1
+          fi
+          {
+            echo "version=${version}"
+            echo "tag=${tag}"
+            echo "nodedigest=${node_digest#sha256:}"
+          } >> "$GITHUB_OUTPUT"
+          echo "the saddle ${version} lanes ride the node base digest ${node_digest} resolved at build time."
+
+      - name: Set up QEMU (the emulated legs of the build index)
+        uses: docker/setup-qemu-action@99012661954931238ded8c8c007157a8430204e1 # v4.4.0
+        with:
+          # the build index minus the native amd64 leg: every platform
+          # the amd64 runner cannot execute installs its binfmt handler
+          # here (the family pin - only the emulated legs).
+          platforms: linux/arm64,linux/ppc64le,linux/s390x
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve the lane tag (the per-leg guard)
+        # the per-leg guard of the partial-publish freeze fix: a re-run
+        # that follows a partial family skips only the leg whose tag
+        # already answers on the registry, so the re-run completes
+        # exactly the missing lanes (the seat stamping below stays
+        # idempotent - a seat tag re-created over the same digest
+        # content is a registry no-op).
+        id: meta
+        env:
+          VERSION: ${{ steps.resolve.outputs.version }}
+          IMAGE: ${{ env.REGISTRY }}/saddle
+          SUFFIX: ${{ matrix.suffix }}
+          OWNER: ${{ github.repository_owner }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          img="${IMAGE,,}"
+          ver="${VERSION}"
+          suffix="${SUFFIX}"
+          echo "tag=${img}:${ver}${suffix}" >> "$GITHUB_OUTPUT"
+          echo "resolved lane tag: ${img}:${ver}${suffix}"
+          leg_out="$(gh api "/users/${OWNER,,}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${ver}${suffix}\")] | length" 2>/dev/null || true)"
+          case "${leg_out}" in
+            ''|*[!0-9]*) leg_out=0 ;;
+          esac
+          if [ "${leg_out}" != "0" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "tag ${ver}${suffix} already ships on the registry; this leg will skip the build (the seat stamping still completes)."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stage the saddle build context (the engine-ownership sibling)
+        # the label store law rides the sibling import: the saddle labels
+        # resolve ../vault/labelstore.ts, so the vault rides the context
+        # beside the saddle the way the vhe lanes of the publish
+        # workflow stage it (sources only - the build never installs the
+        # sibling, the vite step reads the .ts file directly).
+        if: steps.meta.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf saddlebuildctx
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          cp -a saddle/. saddlebuildctx/saddle/
+          cp -a vault/. saddlebuildctx/vault/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+                 saddlebuildctx/vault/tests
+          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+
+      - name: Build and push the multi-arch lane image
+        # the per-leg guard: a leg whose tag already ships on the
+        # registry skips the build (the partial-publish freeze fix - the
+        # re-run completes only the missing lanes of the family).
+        if: steps.meta.outputs.skip != 'true'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./saddlebuildctx
+          file: ./saddlebuildctx/saddle/Dockerfile
+          # the lane target the matrix names (max, balanced, lite - the
+          # profile variant stages - or oslinux, osomarchy, osvanillaos,
+          # osandroid - the os-distribution flavor stages): the same
+          # variant stages the Dockerfile documents.
+          target: ${{ matrix.target }}
+          platforms: ${{ matrix.platforms }}
+          push: true
+          tags: ${{ steps.meta.outputs.tag }}
+          build-args: |
+            SADDLE_VERSION=${{ steps.resolve.outputs.version }}
+            VHE_PROFILE_CPU=${{ matrix.profilecpu }}
+            VHE_PROFILE_VCPUS=${{ matrix.profilevcpus }}
+            VHE_PROFILE_THREADS=${{ matrix.profilethreads }}
+            VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
+            VHE_PROFILE_GPU=${{ matrix.profilegpu }}
+            VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
+            NODE_BASE_TAG=node:26.13.0-slim
+            NODE_BASE_DIGEST=${{ steps.resolve.outputs.nodedigest }}
+          labels: |
+            org.opencontainers.image.title=saddle (the master virtualization engine, the ${{ matrix.profile }} lane of the containerlanes wave)
+            org.opencontainers.image.description=the ninety modalities the self-hosted edge answers (the ${{ matrix.osprofile || matrix.profile }} lane, the fifteen-plus docker distribution law)
+            org.opencontainers.image.version=${{ steps.resolve.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
+          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
+          provenance: mode=max
+          sbom: true
+
+      - name: Stamp the per-architecture seat tags (the arch-seat lanes of the profile legs)
+        # THE SEAT LANES (the fifteen-plus law's arch half): every
+        # profile leg of the matrix (max, balanced, lite) stamps its four
+        # per-architecture seat tags off the published index - the seat
+        # resolves exactly the per-arch manifest digest the multi-arch
+        # push shipped through docker buildx imagetools, so `docker pull
+        # --platform linux/arm64 saddle:<version>-max-linux-arm64`
+        # answers the arm64 image of the max profile (never a rebuild,
+        # never a placeholder). twelve seat lanes beside the three
+        # profile umbrellas and the four os-distribution flavor lanes:
+        # nineteen distinct published tags, the more-than-fifteen
+        # directive answered.
+        if: matrix.seatprefix != ''
+        shell: bash
+        env:
+          VERSION: ${{ steps.resolve.outputs.version }}
+          IMAGE: ${{ env.REGISTRY }}/saddle
+          SEATPREFIX: ${{ matrix.seatprefix }}
+          SUFFIX: ${{ matrix.suffix }}
+          PLATFORMS: ${{ matrix.platforms }}
+        run: |
+          set -euo pipefail
+          img="${IMAGE,,}"
+          ver="${VERSION}"
+          index="$(docker buildx imagetools inspect --raw "${img}:${ver}${SUFFIX}")"
+          for platform in ${PLATFORMS//,/ }; do
+            slug="${platform//\//-}"
+            arch="${platform#linux/}"
+            digest="$(printf '%s' "${index}" | jq -r --arg a "${arch}" 'first(.manifests[] | select(.platform.os == "linux" and .platform.architecture == $a) | .digest) // ""')"
+            if [ -z "${digest}" ]; then
+              echo "::warning::the ${platform} seat never answered on the ${SEATPREFIX} index; the seat stays documented, the wave continues."
+              continue
+            fi
+            docker buildx imagetools create -t "${img}:${ver}-${SEATPREFIX}-${slug}" "${img}@${digest}"
+            echo "the ${SEATPREFIX} ${platform} seat ships as ${img}:${ver}-${SEATPREFIX}-${slug}"
+          done
+
+      - name: The lane census line (the nineteen-tag family)
+        shell: bash
+        run: |
+          set -euo pipefail
+          ver="${{ steps.resolve.outputs.version }}"
+          echo "the saddle ${ver} container family answers nineteen lanes: the three profile umbrellas (${ver}, ${ver}-balanced, ${ver}-lite), the twelve architecture seats (-max-linux-*, -balanced-linux-*, -lite-linux-*), the four os-distribution flavor lanes (-linux, -omarchy, -vanillaos, -android) - more than fifteen docker distributions, the owner's law answered."
+
+  saddle-webpack:
+    name: Publish the saddle webpack distribution to ${{ matrix.channel }} (the seven-lane webpack seat)
+    needs: [release-resolve]
+    if: >-
+      needs.release-resolve.result == 'success'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # THE SEVEN-LANE WEBPACK SEAT (the pr14 law, the owner's sentence
+        # "6 por app versão Webpack + npmjs" - and the containerlanes
+        # complaint "mais de 7 contando com webpack"): the webpack-bundled
+        # saddle engine distribution walks its six registry channels -
+        # npmjs, the github npm registry, maven, nuget, gradle and
+        # rubygems, every leg a real publish of the real webpack bundle
+        # the engine build produces - beside the npmjs envelope the
+        # family-npmjs mirror of the publish workflow already ships for
+        # the saddle leg, so the webpack axis owns SEVEN distribution
+        # lanes of the saddle engine (the six channel legs of this
+        # matrix + the base npmjs envelope), more than seven counting
+        # with webpack, the law the owner demanded.
+        channel: [npmjs, githubnpm, maven, nuget, gradle, rubygems]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          # the github npm registry leg resolves the github packages
+          # registry through the setup (the npmjs leg overrides with the
+          # explicit --registry flag the public lane demands)
+          registry-url: https://npm.pkg.github.com
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./saddle/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the saddle manifest version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: build the engine bundle and pack it through webpack
+        # the cross-bundler rung the ci battery verifies, carried to the
+        # saddle engine: the tsc engine build (scriptsbuildengine.ts, the
+        # build:engine manifest entry) produces distpackage/index.js and
+        # the exact-pinned webpack fetch (webpack 5.112.2 with its
+        # webpack-cli 6.0.1 peer - the same pin law every lane of the
+        # battery answers, never a floating npm install) packs the one
+        # entry into the one webpack bundle the six channel legs
+        # distribute - a real, non-empty, single-file engine
+        # distribution.
+        env:
+          SADDLE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd saddle
+          npm install --ignore-scripts --no-audit --no-fund
+          node scriptsbuildengine.ts
+          test -f distpackage/index.js
+          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./distpackage/index.js --output-path ./distpackage/webpack --output-filename saddle.webpack.js --mode production --target node
+          test -s distpackage/webpack/saddle.webpack.js
+          du -h distpackage/webpack/saddle.webpack.js
+      - name: stage the webpack envelope manifest (the npm and gem seats)
+        # the webpack distribution owns its own envelope coordinates
+        # (@wenathlan/saddle-webpack on the npm lanes, the com.wenathlan
+        # coordinates with the webpack classifier on maven, the
+        # Saddle.Webpack package id on nuget, the saddle-webpack module
+        # on gradle and the saddle-webpack gem on rubygems) - the same
+        # name-per-channel doctrine the family envelopes carry, so the
+        # webpack variant never collides with the engine envelope the
+        # publish lanes own.
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          mkdir -p saddlewebpack/dist
+          cp saddle/distpackage/webpack/saddle.webpack.js saddlewebpack/dist/
+          node -e "const fs=require('fs');fs.writeFileSync('saddlewebpack/package.json',JSON.stringify({name:'@wenathlan/saddle-webpack',version:process.argv[1],description:'the webpack-bundled saddle engine distribution (the containerlanes wave webpack seat - one entry, one output, the exact-pinned webpack rung the ci battery verifies)',main:'./dist/saddle.webpack.js',files:['dist'],license:'GPL-3.0-only',repository:{type:'git',url:'git+https://github.com/wenathlan/devthink.git'}},null,2)+'\n')" "${version}"
+          cat > saddlewebpack/saddle-webpack.gemspec <<'GEMSPEC'
+          # frozen_string_literal: true
+          # the webpack distribution gem of the saddle engine (the
+          # containerlanes wave): one file, the webpack bundle, no
+          # native extension, no host hardware.
+          Gem::Specification.new do |spec|
+            spec.name = "saddle-webpack"
+            spec.version = ENV.fetch("SADDLE_VERSION", "2.0.166")
+            spec.authors = ["wenathlan"]
+            spec.summary = "the webpack-bundled saddle engine distribution"
+            spec.description = "the webpack-bundled distribution of the saddle virtual-hardware engine - one entry, one output, the exact-pinned webpack rung the ci battery verifies"
+            spec.homepage = "https://github.com/wenathlan/devthink"
+            spec.license = "GPL-3.0-only"
+            spec.files = Dir["dist/**/*"]
+            spec.required_ruby_version = ">= 3.0"
+          end
+          GEMSPEC
+          cat > saddlewebpack/Saddle.Webpack.csproj <<'CSPROJ'
+          <Project Sdk="Microsoft.NET.Sdk">
+            <PropertyGroup>
+              <TargetFramework>net8.0</TargetFramework>
+              <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+              <PackageId>Saddle.Webpack</PackageId>
+              <Version Condition="'$(PackageVersion)' == ''">2.0.166</Version>
+              <Authors>wenathlan</Authors>
+              <Description>the webpack-bundled distribution of the saddle virtual-hardware engine (the containerlanes wave webpack seat)</Description>
+              <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
+              <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
+              <RepositoryType>git</RepositoryType>
+              <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+              <PackageTags>virtual-hardware;webpack;saddle;engine</PackageTags>
+              <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+              <IncludeSymbols>false</IncludeSymbols>
+            </PropertyGroup>
+            <ItemGroup>
+              <None Include="dist/saddle.webpack.js" Pack="true" PackagePath="content" />
+            </ItemGroup>
+          </Project>
+          CSPROJ
+          cat > saddlewebpack/build.gradle.kts <<'GRADLE'
+          // the webpack distribution module of the saddle engine (the
+          // containerlanes wave): the maven-publish plugin renders the
+          // module metadata around the one webpack bundle artifact, the
+          // same releaseVersion property the family envelopes read.
+          plugins {
+              `maven-publish`
+          }
+          val envelopeVersion = (findProperty("releaseVersion") as String?) ?: "2.0.166"
+          group = "com.wenathlan"
+          version = envelopeVersion
+          publishing {
+              publications {
+                  create<MavenPublication>("saddleWebpack") {
+                      artifact(file("dist/saddle.webpack.js")) {
+                          extension = "js"
+                          classifier = "webpack"
+                      }
+                  }
+              }
+              repositories {
+                  maven {
+                      name = "GitHub"
+                      url = uri("https://maven.pkg.github.com/wenathlan/devthink")
+                      credentials {
+                          username = System.getenv("GITHUB_ACTOR")
+                          password = System.getenv("GITHUB_TOKEN")
+                      }
+                  }
+              }
+          }
+          GRADLE
+          cp saddle/README.md saddlewebpack/ 2>/dev/null || true
+          test -s saddlewebpack/package.json
+          test -s saddlewebpack/dist/saddle.webpack.js
+
+      # THE NPMJS LEG (channel one of six): the graceful-skip token gate,
+      # the existence pre-check, the bounded retry and the explicit
+      # latest tag - the family npmjs lane idiom carried to the webpack
+      # envelope, publishing to the public registry through the explicit
+      # --registry flag (the job setup resolves the github registry for
+      # the sibling leg).
+      - name: check npm token availability
+        if: matrix.channel == 'npmjs'
+        id: token
+        env:
+          RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_NPM_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: skip notice when NPM_TOKEN is not configured
+        if: matrix.channel == 'npmjs' && steps.token.outputs.available != 'true'
+        run: |
+          echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com publication of @wenathlan/saddle-webpack is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the webpack envelope."
+      - name: publish the webpack envelope to npmjs
+        if: matrix.channel == 'npmjs' && steps.token.outputs.available == 'true'
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          # the public registry auth line the setup-node step did not
+          # write (the job setup resolves the github registry for the
+          # sibling leg): the scoped view and the publish both answer
+          # the token through the npmrc line the family npmjs lane
+          # answers through its own registry-url setup.
+          printf '//registry.npmjs.org/:_authToken=%s\n' "${NODE_AUTH_TOKEN}" >> "$HOME/.npmrc"
+          cd saddlewebpack
+          if npm view "@wenathlan/saddle-webpack@${RELEASE_VERSION}" version --registry https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "The saddle-webpack envelope version already exists; skipping publish."
+          else
+            attempt=0
+            published=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              publish_output=""
+              if publish_output="$(npm publish --access public --tag latest --registry https://registry.npmjs.org 2>&1)"; then
+                published=1
+                break
+              fi
+              if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
+                echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
+                published=1
+                break
+              fi
+              printf '%s\n' "${publish_output}"
+              echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" -ne 1 ]; then
+              echo "::error::npm publish failed after ${attempt} attempts."
+              exit 1
+            fi
+          fi
+          npm dist-tag add "@wenathlan/saddle-webpack@${RELEASE_VERSION}" latest --registry https://registry.npmjs.org
+          echo "the npmjs webpack lane answered: @wenathlan/saddle-webpack@${RELEASE_VERSION}."
+
+      # THE GITHUB PACKAGES NPM LEG (channel two of six): the repository
+      # token answers the github npm registry, the existence pre-check
+      # reads the same registry, the bounded retry mirrors the family
+      # githubnpm lane.
+      - name: publish the webpack envelope to the github npm registry
+        if: matrix.channel == 'githubnpm'
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd saddlewebpack
+          if npm view "@wenathlan/saddle-webpack@${RELEASE_VERSION}" version >/dev/null 2>&1; then
+            echo "The saddle-webpack github packages version already exists; skipping publish."
+          else
+            attempt=0
+            published=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              publish_output=""
+              if publish_output="$(npm publish --access public --tag latest 2>&1)"; then
+                published=1
+                break
+              fi
+              if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
+                echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
+                published=1
+                break
+              fi
+              printf '%s\n' "${publish_output}"
+              echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" -ne 1 ]; then
+              echo "::error::npm publish failed after ${attempt} attempts."
+              exit 1
+            fi
+          fi
+          echo "the github npm webpack lane answered: @wenathlan/saddle-webpack@${RELEASE_VERSION} on npm.pkg.github.com."
+
+      # THE MAVEN LEG (channel three of six): the webpack bundle deploys
+      # as the classified artifact of the com.wenathlan:saddle
+      # coordinates (the -webpack classifier jar the maven consumer
+      # resolves beside the engine jar), through the same settings.xml
+      # server id and the same existence pre-check the family maven
+      # lane carries.
+      - name: setup java (the maven and gradle legs)
+        if: matrix.channel == 'maven' || matrix.channel == 'gradle'
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          java-version: '26'
+          distribution: temurin
+          server-id: github
+          settings-path: ${{ github.workspace }}
+      - name: install the pinned gradle distribution (the gradle leg)
+        # the pinned distribution line (the family runtime doctrine, Regra
+        # 54/125: never a floating `gradle` alias): the house runs the
+        # 9.5.1 line the mobile wrapper resolved, so the gradle webpack
+        # lane rides the same distribution - downloaded from
+        # services.gradle.org with the official checksum verified, never
+        # a cached alias (the same install the family gradle lane
+        # carries).
+        if: matrix.channel == 'gradle'
+        run: |
+          set -euo pipefail
+          GRADLE_VERSION="9.5.1"
+          curl -sSfL -o "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
+          curl -sSfL -o "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip.sha256" "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256"
+          expected="$(tr -d '[:space:]' < "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip.sha256")"
+          actual="$(sha256sum "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" | awk '{print $1}')"
+          if [[ "$expected" != "$actual" ]]; then
+            echo "The gradle ${GRADLE_VERSION} distribution checksum does not match; the pinned toolchain refuses the download." >&2
+            exit 1
+          fi
+          unzip -q "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin/gradle" --version
+      - name: publish the webpack bundle to the maven registry
+        if: matrix.channel == 'maven'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/saddle/${VERSION}/saddle-${VERSION}-webpack.jar"; then
+            echo "The maven webpack distribution saddle-${VERSION}-webpack.jar is already published; skipping the re-upload."
+          else
+            published=false
+            for attempt in 1 2 3; do
+              if mvn --batch-mode --settings saddle/settings.xml deploy:deploy-file \
+                -Durl="$PUBLISH" \
+                -DrepositoryId=github \
+                -DgroupId=com.wenathlan \
+                -DartifactId=saddle \
+                -Dversion="${VERSION}" \
+                -Dclassifier=webpack \
+                -Dpackaging=jar \
+                -Dfile=saddlewebpack/dist/saddle.webpack.js; then published=true; break; fi
+              echo "The maven webpack deploy attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            test "$published" = true
+          fi
+          echo "the maven webpack lane answered: com.wenathlan:saddle:${VERSION}:webpack."
+
+      # THE NUGET LEG (channel four of six): the Saddle.Webpack content
+      # package packs through dotnet pack (the webpack bundle rides the
+      # package content folder) and pushes to the github nuget registry
+      # with the same bounded retry the family nuget lane carries.
+      - name: setup dotnet (the nuget leg)
+        if: matrix.channel == 'nuget'
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          # the pinned SDK line (the family runtime doctrine, Regra 54/125:
+          # never `latest`): the same .NET 10 servicing SDK the family
+          # nuget lane pins, so the pack is deterministic run over run.
+          dotnet-version: 10.0.112
+      - name: pack and publish the webpack content package to nuget
+        if: matrix.channel == 'nuget'
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          cd saddlewebpack
+          dotnet pack Saddle.Webpack.csproj --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
+          NUPKG="$(find nuget -maxdepth 1 -name "Saddle.Webpack.${VERSION}.nupkg" -print -quit)"
+          test -n "${NUPKG}" && test -f "${NUPKG}"
+          pushed=false
+          for attempt in 1 2 3; do
+            if dotnet nuget push "${NUPKG}" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            echo "The nuget webpack push attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
+            sleep "$((attempt * 5))"
+          done
+          test "$pushed" = true
+          echo "the nuget webpack lane answered: Saddle.Webpack ${VERSION}."
+
+      # THE GRADLE LEG (channel five of six): the saddle-webpack module
+      # publishes through the maven-publish plugin (the webpack bundle
+      # rides the classified js artifact of the module), with the same
+      # existence pre-check and bounded retry the family gradle lane
+      # carries.
+      - name: publish the webpack module to the gradle maven repository
+        if: matrix.channel == 'gradle'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/saddle-webpack/${VERSION}/saddle-webpack-${VERSION}-webpack.js"; then
+            echo "The gradle webpack distribution saddle-webpack-${VERSION} is already published; skipping the re-upload."
+          else
+            published=false
+            for attempt in 1 2 3; do
+              if gradle --no-daemon -PreleaseVersion="${VERSION}" publish; then published=true; break; fi
+              echo "The gradle webpack publish attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            test "$published" = true
+          fi
+          echo "the gradle webpack lane answered: com.wenathlan:saddle-webpack:${VERSION}."
+
+      # THE RUBYGEMS LEG (channel six of six): the saddle-webpack gem
+      # builds from the staged gemspec and pushes to the github rubygems
+      # registry with the credentials idiom and the immutable-envelope
+      # tolerance the family rubygems lane carries.
+      - name: setup ruby (the rubygems leg)
+        if: matrix.channel == 'rubygems'
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+        with:
+          # the pinned ruby line the family rubygems lane answers
+          ruby-version: 3.4.10
+      - name: configure github credentials (the rubygems leg)
+        if: matrix.channel == 'rubygems'
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.gem"
+          printf '%s\n' "---" ":github: Bearer ${GITHUB_TOKEN}" > "$HOME/.gem/credentials"
+          chmod 0600 "$HOME/.gem/credentials"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: publish the webpack gem to the github rubygems registry
+        if: matrix.channel == 'rubygems'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SADDLE_VERSION: ${{ steps.release.outputs.version }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}/download/saddle-webpack/saddle-webpack-${VERSION}.gem"; then
+            echo "The rubygems webpack distribution saddle-webpack-${VERSION} is already published; skipping the re-upload."
+          else
+            cd saddlewebpack
+            env SADDLE_VERSION="${VERSION}" gem build saddle-webpack.gemspec
+            test -f "saddle-webpack-${VERSION}.gem"
+            attempt=0
+            published=0
+            until [ "$attempt" -ge 3 ]; do
+              attempt=$((attempt + 1))
+              if pushlog="$(gem push saddle-webpack-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}" 2>&1)"; then
+                echo "$pushlog"
+                published=1
+                break
+              fi
+              echo "$pushlog"
+              if echo "$pushlog" | grep -q "has already been pushed"; then
+                echo "::notice::the registry already carries saddle-webpack ${VERSION}; the immutable envelope is present."
+                published=1
+                break
+              fi
+              echo "gem push attempt ${attempt}/3 failed; retrying with backoff."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" -ne 1 ]; then
+              echo "::error::gem push failed after ${attempt} attempts."
+              exit 1
+            fi
+          fi
+          echo "the rubygems webpack lane answered: saddle-webpack ${VERSION}."
+
+      - name: the webpack census line (the seven-lane seat)
+        run: |
+          set -euo pipefail
+          echo "the saddle webpack seat answers seven distribution lanes: the six webpack channel legs of this matrix (npmjs, githubnpm, maven, nuget, gradle, rubygems - this leg rode ${{ matrix.channel }}) beside the base npmjs envelope the family-npmjs mirror of the publish workflow ships: mais de sete contando com webpack, the owner's law answered."

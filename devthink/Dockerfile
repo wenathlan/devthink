@@ -232,6 +232,8 @@ ARG TARGETARCH
 # typescript, vitest). the paths ride the family context (the repository
 # root), so the manifests arrive from the devthink subtree of the context.
 COPY devthink/package.json devthink/bun.lock ./
+# the engines live in the root manifest alone (the manifestemplate law): the root book rides beside the app manifest so the floor probes read the seat the law owns
+COPY package.json /package.json
 
 # the vault sibling the dependency union pins: the manifest declares
 # "@wenathlan/vault": "file:../vault", so the frozen install resolves the
@@ -318,6 +320,8 @@ ARG TARGETARCH
 # the builder adds no install cost. the manifests and the vault sibling
 # ride the same family-context paths the deps stage copies.
 COPY devthink/package.json devthink/bun.lock ./
+# the engines live in the root manifest alone (the manifestemplate law): the root book rides beside the app manifest so the floor probes read the seat the law owns
+COPY package.json /package.json
 
 # the cadria sibling the transcode engine bridge resolves: the vitest and
 # tsconfig bridges of the application map @wenathlan/cadria/transcodeengine
