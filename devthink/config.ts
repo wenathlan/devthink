@@ -3060,14 +3060,14 @@ import { fileURLToPath } from "node:url";
  * lane rides the direct entry only (the ci config parity lane), never the
  * library imports of the configuration surface above (the walk reads
  * existsSync, readFileSync and join from the module's top imports). the
- * gate exports for the vitest parity cell (tests/configparity.test.ts)
+ * gate exports for the vitest parity cell (test/configparity.test.ts)
  * because the direct node entry cannot resolve the getry specifiers of
  * the module's own surface without the vitest alias lane — the ci job
  * rides the cell the same way the family suite does. */
 export function runparitygate(): void {
-  /* the tests-village migration moved this gate from the repository tests/
+  /* the tests-village migration moved this gate from the repository test/
    * root into the app root, so the repository root stays one hop up — the two
-   * hops of the old devthink/tests/ home pointed outside the tree and answered
+   * hops of the old devthink/test/ home pointed outside the tree and answered
    * MISSING for every app. */
   const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 

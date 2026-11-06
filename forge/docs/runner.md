@@ -62,4 +62,4 @@ forge is the deployable clone of pure execution of the wenathlan family: it runs
 
 ## tests
 
-- `tests/fleet.test.ts`, `tests/queue.test.ts`, `tests/runstream.test.ts`, `tests/family.test.ts`, `tests/sandboxmodality.test.ts`, `tests/design.test.ts` — vitest suites pinning the engines and the mirrors (`bunx vitest run tests/<suite>.test.ts`).
+- `test/fleet.test.ts`, `test/queue.test.ts`, `test/runstream.test.ts`, `test/family.test.ts`, `test/sandboxmodality.test.ts`, `test/design.test.ts` — vitest suites pinning the engines and the mirrors (`bunx vitest run test/<suite>.test.ts`).

@@ -122,7 +122,7 @@ for (const file of tracked) {
     }
   }
   /* The structural object contract applies to the manifest family alone:
-     the mining evidence fixtures under tests/code are arrays at the top
+     the mining evidence fixtures under test/code are arrays at the top
      level by design (recorded repository evidence, not configuration),
      so a generic object demand would fail the evidence trees the grand
      merge deliberately tracks. */

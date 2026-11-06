@@ -3,13 +3,13 @@ import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
-import { permdiffbaseline as recordedbaseline } from "./tests/permbaseline.ts";
+import { permdiffbaseline as recordedbaseline } from "./test/permbaseline.ts";
 
 const execute = promisify(execFile);
 const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const baselinepath = "tests/permbaseline.ts";
+const baselinepath = "test/permbaseline.ts";
 const justificationdoc = "docs/extensionpermissions.md";
 const tableheading = "## permdiff justification table";
 const failures: string[] = [];
@@ -28,7 +28,7 @@ function baselinemodule(report: {
   permissionhash: string;
   permissionset: { required: string[]; optional: string[]; optionalhost: string[] };
 }) {
-  return `/** The versioned permission baseline of the permdiff gate as one dense typescript module: the recorded permission set of the release it stamps, the diff it answered against, its justification rows and the permission set hash the audit trail records. The container builds and the fresh checkouts carry no git history, so this checked-in baseline stays the source the gate trusts; the sync mode of tests/permdiff.ts rewrites this module after the justification review, and the readiness review reads it for the permission diff verdict. */
+  return `/** The versioned permission baseline of the permdiff gate as one dense typescript module: the recorded permission set of the release it stamps, the diff it answered against, its justification rows and the permission set hash the audit trail records. The container builds and the fresh checkouts carry no git history, so this checked-in baseline stays the source the gate trusts; the sync mode of test/permdiff.ts rewrites this module after the justification review, and the readiness review reads it for the permission diff verdict. */
 
 /** The permission baseline the gate records: the release it stamps, the previous release it diffed against, the source that resolved the comparison, the added, removed and reordered entries with their justification rows, the clean verdict and the permission set hash. */
 export interface permdiffbaseline {

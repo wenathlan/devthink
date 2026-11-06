@@ -20,7 +20,7 @@ pnpm dev
 The suite rides the node built-in runner — zero extra dependencies, exactly as the test headers document:
 
 ```bash
-pnpm test        # node --test "tests/*.test.ts" — the engine, the algebra, the view models
+pnpm test        # node --test "test/*.test.ts" — the engine, the algebra, the view models
 pnpm typecheck   # tsc --noEmit
 ```
 

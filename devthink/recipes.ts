@@ -7,9 +7,9 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { syncmode, syncrecord } from "./records.ts";
 import type { actionkind, classconsent, consentprovider, sensitiveclass } from "./types.ts";
-import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts";
-import { plan as planschematext } from "./tests/schemafixtures.ts";
-import { fixturepages } from "./tests/pagefixtures.ts";
+import { gallery as gallerytext, recipeplans } from "./test/recipesfixtures.ts";
+import { plan as planschematext } from "./test/schemafixtures.ts";
+import { fixturepages } from "./test/pagefixtures.ts";
 
 const execute = promisify(execFile);
 const mode = process.argv[2] ?? "check";
@@ -653,7 +653,7 @@ export async function runrecipessuite(): Promise<recipereport> {
         };
         const run = await library.runflow({
           request: {
-            planpath: `tests/recipesfixtures.ts#${entry.id}`,
+            planpath: `test/recipesfixtures.ts#${entry.id}`,
             options: {
               format: "json",
               outputdir: "artifacts",

@@ -8,7 +8,7 @@ import { agentcertrecord } from "./agentcert.ts";
 import { costcertrecord } from "./costcert.ts";
 import { doccheckrecord } from "./doccheck.ts";
 import { pentestrecord } from "./pentest.ts";
-import { reviewedorigins } from "./tests/reviewedorigins.ts";
+import { reviewedorigins } from "./test/reviewedorigins.ts";
 import type { agentrecord } from "./types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
@@ -168,9 +168,9 @@ export async function runsweepsuite() {
   /* the flat tests village: the suites answer from the app tests folder
    * beside the sources (the old in-app tests home died with the flat move,
    * the village moved back inside the app tree with the tests migration). */
-  const testfiles = (await readdir("tests"))
+  const testfiles = (await readdir("test"))
     .filter((file) => file.endsWith(".ts"))
-    .map((file) => join("tests", file))
+    .map((file) => join("test", file))
     .sort();
   const scanfiles = [...rootsources, ...solsources, ...testfiles];
 
@@ -255,7 +255,7 @@ export async function runsweepsuite() {
   const commandstext = await readFile("commands.ts", "utf8");
   const catalogorigins = [...commandstext.matchAll(/origin:\s*"https:\/\/([a-z0-9.-]+)"/g)].map((match) => match[1]);
   const reservedsuffixes = [".example", ".invalid", ".test", ".localhost"];
-  /* the reviewed provider endpoint catalog of the merged lineages reads its data module (devthink/tests/reviewedorigins.ts, migrated from devthink/artifacts/reviewedorigins.json when the flat folder law dissolved the artifacts folder) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
+  /* the reviewed provider endpoint catalog of the merged lineages reads its data module (devthink/test/reviewedorigins.ts, migrated from devthink/artifacts/reviewedorigins.json when the flat folder law dissolved the artifacts folder) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
   const reviewedoriginhosts = reviewedorigins.origins;
   const allowlist = [
     "example.com",

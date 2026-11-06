@@ -22,7 +22,7 @@
           <include>README.md</include>
           <include>docs/**</include>
           <include>site/**</include>
-          <include>tests/**</include>
+          <include>test/**</include>
         </includes>
       </resource>
     </resources>

@@ -8,7 +8,7 @@
 #     webserver.ts with its sqlite/auth/mesh/sandbox modules plus the Sol
 #     theme sources the saddle-build stage compiles into the SPA);
 #   saddle stages: package.json + lockfile, the full root source tree and
-#     tests/scripts/buildengine.mjs (the build gate).
+#     test/scripts/buildengine.mjs (the build gate).
 # The entrypoint bootstrap stays embedded in the Dockerfile heredoc (the one
 # container file standard) and the orchestration rides on the docker run
 # recipes in the Dockerfile header. Everything else stays out of the context
@@ -36,9 +36,9 @@ LICENSE
 
 # tests never ship inside the containers (the build engine script is the
 # one exception: the saddle build stage runs it)
-tests/
-!tests/scripts/
-!tests/scripts/buildengine.mjs
+test/
+!test/scripts/
+!test/scripts/buildengine.mjs
 
 # local development state never enters the build
 node_modules

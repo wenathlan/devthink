@@ -1,6 +1,6 @@
 # Cost certification
 
-The costcert gate of `tests/costcert.ts` proves the shared accounting of the multi agent layer reconciles: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence. The gate records every executed check with its outcome in the committed `costcertrecord` const of `tests/devthink.costcert.ts` in a fixed order with no timestamps so reruns stay byte identical, and exits nonzero on any accounting mismatch. The coordination scenarios whose costs the accounting covers live in `docs/agentscenarios.md`.
+The costcert gate of `test/costcert.ts` proves the shared accounting of the multi agent layer reconciles: every check replays one recorded run or one live accounting family and recomputes the cost lines from the recorded evidence. The gate records every executed check with its outcome in the committed `costcertrecord` const of `test/devthink.costcert.ts` in a fixed order with no timestamps so reruns stay byte identical, and exits nonzero on any accounting mismatch. The coordination scenarios whose costs the accounting covers live in `docs/agentscenarios.md`.
 
 ## The accounting verification method
 
@@ -26,14 +26,14 @@ The provider rule the refunds follow: a cancelled call bills only the chunks tha
 
 ## The reconciliation invariants
 
-Every run of the gate answers the invariants the artifact test of `tests/costcert.test.ts` rechecks: the summary total equals the recorded check count, the passed count equals the passing outcomes, the failed count equals the failing outcomes, the totals sum back to the whole, and the artifact carries no failing check. The cost per agent panel of the multi agent dashboard folds the same per agent usage the checks reconcile, so the panel and the certification read one set of numbers.
+Every run of the gate answers the invariants the artifact test of `test/costcert.test.ts` rechecks: the summary total equals the recorded check count, the passed count equals the passing outcomes, the failed count equals the failing outcomes, the totals sum back to the whole, and the artifact carries no failing check. The cost per agent panel of the multi agent dashboard folds the same per agent usage the checks reconcile, so the panel and the certification read one set of numbers.
 
 ## Rerunning the certification
 
 Run one command from the repository root after a build:
 
 ```bash
-pnpm build && node tests/costcert.ts
+pnpm build && node test/costcert.ts
 ```text
 
-The gate prints one line per check with its outcome, prints the summary json, records every executed check with its family, its module and its detail in the committed record of `tests/devthink.costcert.ts` (the `costcertrecord` const the flat folder law migrated from the former artifact, refreshed by `pnpm records:sync`), and exits nonzero on any accounting mismatch. The gate runs beside the coordination gate through `pnpm validate:agents` inside `pnpm validate` and inside the verify workflow, and the record test runs the gate itself over a built tree, so every lane that builds before the vitest suite verifies the reconciliation without depending on gate ordering.
+The gate prints one line per check with its outcome, prints the summary json, records every executed check with its family, its module and its detail in the committed record of `test/devthink.costcert.ts` (the `costcertrecord` const the flat folder law migrated from the former artifact, refreshed by `pnpm records:sync`), and exits nonzero on any accounting mismatch. The gate runs beside the coordination gate through `pnpm validate:agents` inside `pnpm validate` and inside the verify workflow, and the record test runs the gate itself over a built tree, so every lane that builds before the vitest suite verifies the reconciliation without depending on gate ordering.

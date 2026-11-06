@@ -20,7 +20,7 @@ pnpm dev
 # The family contract (wave 6-a)
 
 - `family.ts` — the single table of the eight siblings beside getry with the
-  spec §12 accent of each one; the shell rail foot and `tests/family.test.ts`
+  spec §12 accent of each one; the shell rail foot and `test/family.test.ts`
   both consume this one table.
 - `familyurl.ts` — the verbatim relative-url contract (`"../" + slug + "/"`,
   consolidated to the family variant) that keeps every cross-app link

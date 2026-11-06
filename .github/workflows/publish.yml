@@ -5565,12 +5565,12 @@ jobs:
           const app = process.env.APP;
           const version = process.env.VERSION;
           const stage = path.join("release-metadata", app);
-          const tests = fs.readdirSync(path.join(app, "tests"), { withFileTypes: true })
+          const tests = fs.readdirSync(path.join(app, "test"), { withFileTypes: true })
             .filter(entry => entry.isFile() && entry.name.endsWith(".ts"))
             .map(entry => entry.name)
             .sort()
             .map(name => {
-              const source = fs.readFileSync(path.join(app, "tests", name), "utf8");
+              const source = fs.readFileSync(path.join(app, "test", name), "utf8");
               return { file: name, bytes: Buffer.byteLength(source, "utf8"), lines: source.split("\n").length };
             });
           if (tests.length === 0) throw new Error(app + " carries no tracked test modules");
@@ -6036,7 +6036,7 @@ jobs:
               license: manifest.license ?? "undeclared",
               private: manifest.private === true,
               docs: count("docs"),
-              tests: count("tests"),
+              tests: count("test"),
               solRoutes: fs.existsSync(path.join(app, "sol"))
                 ? fs.readdirSync(path.join(app, "sol"), { withFileTypes: true }).filter(entry => entry.isDirectory()).length
                 : 0,
@@ -6963,7 +6963,7 @@ jobs:
           rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
                  saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
                  saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
-                 saddlebuildctx/vault/tests
+                 saddlebuildctx/vault/test
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Resolve the node base digest (the local-build lane)
@@ -7309,7 +7309,7 @@ jobs:
           rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
                  saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
                  saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
-                 saddlebuildctx/vault/tests
+                 saddlebuildctx/vault/test
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build image for the security scan
@@ -7583,7 +7583,7 @@ jobs:
           rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
                  saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
                  saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
-                 saddlebuildctx/vault/tests
+                 saddlebuildctx/vault/test
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build and push the multi-arch image
@@ -7741,7 +7741,7 @@ jobs:
           rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
                  saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
                  saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
-                 saddlebuildctx/vault/tests
+                 saddlebuildctx/vault/test
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
           cat > osprofile-dump.ts <<'DUMP'
           import { mkdirSync, writeFileSync } from "node:fs";
@@ -8067,7 +8067,7 @@ jobs:
           rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
                  saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
                  saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
-                 saddlebuildctx/vault/tests
+                 saddlebuildctx/vault/test
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: build the saddle vhe container

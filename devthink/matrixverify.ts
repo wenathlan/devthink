@@ -394,7 +394,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "gates",
       "name": "the pool audit gate runs green over the 626 item pool",
       "outcome": "pass",
-      "detail": "Pool audit of 626 items against 4378 shipped symbols: 623 implemented, 3 planned, 0 unknown, the record in tests/devthink.poolaudit.ts."
+      "detail": "Pool audit of 626 items against 4378 shipped symbols: 623 implemented, 3 planned, 0 unknown, the record in test/devthink.poolaudit.ts."
     },
     {
       "family": "gates",
@@ -412,7 +412,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "gates",
       "name": "the permission diff gate runs green over the versioned baseline",
       "outcome": "pass",
-      "detail": "Permission set hash: 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over 11 permission entries; the baseline of tests/permbaseline.ts carries the recorded set of the release."
+      "detail": "Permission set hash: 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over 11 permission entries; the baseline of test/permbaseline.ts carries the recorded set of the release."
     },
     {
       "family": "gates",

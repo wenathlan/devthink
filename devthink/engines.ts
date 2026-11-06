@@ -282,7 +282,7 @@ export function dispatchtable(): readonly EngineDispatch[] {
 // engine → consumers. Every official app declares its engine here, no
 // engine ever carries two owners, and every consumer row is an official
 // app slug that is not the owner itself. The vitest gate
-// (tests/engineowners.test.ts) walks this table and refuses the
+// (test/engineowners.test.ts) walks this table and refuses the
 // drift before any pipeline runs. Pure data, zero imports: the manifest
 // never depends on the engines it describes.
 

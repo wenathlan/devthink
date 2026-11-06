@@ -57,4 +57,4 @@ Argan is the DNS and gateway library of the wenathlan family (`@wenathlan/argan`
 
 ## Testing
 
-Seven vitest batteries at `tests/`: `design.test.ts`, `dnssec.test.ts`, `family.test.ts`, `mimetypes.test.ts` (pins the 3217 count), `protocols.test.ts` (pins 231 rows and the 144 TLS-capable wires), `sandboxmodality.test.ts` and `zonediff.test.ts`.
+Seven vitest batteries at `test/`: `design.test.ts`, `dnssec.test.ts`, `family.test.ts`, `mimetypes.test.ts` (pins the 3217 count), `protocols.test.ts` (pins 231 rows and the 144 TLS-capable wires), `sandboxmodality.test.ts` and `zonediff.test.ts`.

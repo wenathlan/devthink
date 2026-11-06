@@ -21,7 +21,7 @@
 
 ## 2. Structure law (tree)
 
-- One app per folder; `sol/` is the theme, `docs/` and `tests/` are the only siblings.
+- One app per folder; `sol/` is the theme, `docs/` and `test/` are the only siblings.
 - Page = folder = app = anchor: the anchor carries the folder name, lowercase; zero
   nested page folders; `Sol.tsx` imports every anchor; `app.tsx` routes.
 - Pure logic lives at the app root as flat `.ts` files (window.ts, chatstate.ts,

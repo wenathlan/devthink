@@ -9,7 +9,7 @@
 ## where the app stands (inherited, verified this session)
 
 - native app at `debonair/debonair/` (house tree: pure ts engines at the root,
-  sol/ theme, docs/, tests/). 28 engines + kathesis b2 (spectrum, fingerprint,
+  sol/ theme, docs/, test/). 28 engines + kathesis b2 (spectrum, fingerprint,
   analyze, vocalsynth). 261 vitest cases green, tsc 0, biome 0. commit 504b8ae
   on branch kathesis/b2-wave, pushed.
 - served in the sandbox by the next.js gateway (single launcher page, iframe of

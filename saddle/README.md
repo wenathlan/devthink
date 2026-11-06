@@ -170,7 +170,7 @@ The package export map is defined by the root manifest. Runnable public examples
 
 ## Browser extension
 
-The extension surface migrated to the devthink app with the wave 2 regrouping: it is a TypeScript-first Manifest V3 reference surface (popup, service worker, isolated content bridge, read-only page-world `pagefacts` boundary, snapshot diffs and persisted window/tab/frame context for explicit resume) that runs in the user's browser, so it is not a VM modality of the engine — its module, tracked assets and tests now live at `devthink/browserextension.ts`, the devthink root `extension*` asset family and `devthink/tests/browserextension.test.ts` (see `docs/browser.md` for the migration map).
+The extension surface migrated to the devthink app with the wave 2 regrouping: it is a TypeScript-first Manifest V3 reference surface (popup, service worker, isolated content bridge, read-only page-world `pagefacts` boundary, snapshot diffs and persisted window/tab/frame context for explicit resume) that runs in the user's browser, so it is not a VM modality of the engine — its module, tracked assets and tests now live at `devthink/browserextension.ts`, the devthink root `extension*` asset family and `devthink/test/browserextension.test.ts` (see `docs/browser.md` for the migration map).
 
 ```bash
 # build an isolated JavaScript artifact from the devthink app root using the version supplied by the caller or release tag
@@ -284,7 +284,7 @@ server.ts, webserver.ts, api.ts, cli.ts
                the self-hosted api surfaces, the web console and the stable cli
 sol/           the Sol theme — the platform's web surface (one tsx app, one stylesheet per theme)
 specs          processors.json, gpus.json, cores.json, boards.json and the qemu/mttg/passage/docker/vm envelopes
-tests/         deterministic engine and extension coverage
+test/         deterministic engine and extension coverage
 docs/          architecture, API, security, release and registry notes
 ```
 

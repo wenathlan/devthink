@@ -1859,7 +1859,7 @@ export const seedOsGatewayStructure = `devthink/
   prismaconfig.ts           # prisma 7 config (datasource url, client output)
   Dockerfile                # the one container file
   .github/workflows/        # ci release publish npm maven nuget ghcr security maintenance
-  tests/                    # vitest tests flat *.test.ts
+  test/                    # vitest tests flat *.test.ts
   package.json              # @wenathlan/devthink public`;
 
 /** the repository structure block of the gateway view. */

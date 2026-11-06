@@ -55,7 +55,7 @@ The declaration files derive from the source with no hand written drift: the bui
 
 ## one import per runtime
 
-One example per runtime lives in the repository under `tests/code` (`bun.ts`, `cjs.js`, `deno.ts` and `umd.html`), the build copies the runtime examples into `dist/fixtures`, and the umd example ships as `dist/umd-example.html` with its bundle reference rewritten to the dist root.
+One example per runtime lives in the repository under `test/code` (`bun.ts`, `cjs.js`, `deno.ts` and `umd.html`), the build copies the runtime examples into `dist/fixtures`, and the umd example ships as `dist/umd-example.html` with its bundle reference rewritten to the dist root.
 
 node with require (the cjs mode, the stable getter object):
 
@@ -102,4 +102,4 @@ Every platform primitive flows through one adapter contract: the storage, clock,
 
 ## the verification lanes
 
-The verify workflow runs the multi runtime matrix: a require smoke against `dist/index.cjs`, an import smoke against `dist/index.js`, a global smoke against `dist/devthink.umd.js`, a deno check over the deno entry and the vitest suite once under bun. The library modes suite of `tests/librarymodes.test.ts` builds every platform target of the matrix in one run and loads each bundle, keeps the deno entry free of node shims, covers the cjs getter object, the adapter probes per platform, the declaration emission for every entry point and the build matrix across all platform targets.
+The verify workflow runs the multi runtime matrix: a require smoke against `dist/index.cjs`, an import smoke against `dist/index.js`, a global smoke against `dist/devthink.umd.js`, a deno check over the deno entry and the vitest suite once under bun. The library modes suite of `test/librarymodes.test.ts` builds every platform target of the matrix in one run and loads each bundle, keeps the deno entry free of node shims, covers the cjs getter object, the adapter probes per platform, the declaration emission for every entry point and the build matrix across all platform targets.

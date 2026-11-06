@@ -16,7 +16,7 @@ export type PanelSyncReport = { adminCount: number; hosts: string[]; digest: str
 function familyHosts(repoRoot: string): string[] {
   return readdirSync(repoRoot)
     .filter((name) => statSync(join(repoRoot, name)).isDirectory())
-    .filter((name) => !name.startsWith(".") && !["build", "release", "node_modules", "tests", "docs"].includes(name))
+    .filter((name) => !name.startsWith(".") && !["build", "release", "node_modules", "test", "docs"].includes(name))
     .map((name) => `${name}.devthink.pro`);
 }
 
