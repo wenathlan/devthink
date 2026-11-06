@@ -21,7 +21,7 @@
  */
 
 /** The seen flags of the entry flow, exactly the columns of the DB table. */
-export type onboardingstateview = {
+export type VisitorOnboarding = {
   /** the animated intro already played for this visitor. */
   introseen: boolean;
   /** the frame-a-frame onboarding tour already finished (or was skipped). */
@@ -41,7 +41,7 @@ export const VISITOR_KEY = "dt.visitor.id";
 export const ONBOARDING_BASE_ENV = "VITE_DT_ONBOARDING_URL";
 
 /** The in-memory state of this page load (covers client-side re-navigation). */
-let memorystate: onboardingstateview | null = null;
+let memorystate: VisitorOnboarding | null = null;
 
 /**
  * Validates one candidate API base: https only, on a public host —
@@ -142,10 +142,10 @@ function minttoken(length: number): string {
  * Parses one persisted cache payload into the strict view (anything that is
  * not a well-formed flag pair answers null — the cache never lies).
  */
-function parsecache(payload: string | null): onboardingstateview | null {
+function parsecache(payload: string | null): VisitorOnboarding | null {
   if (!payload) return null;
   try {
-    const parsed = JSON.parse(payload) as Partial<onboardingstateview> | null;
+    const parsed = JSON.parse(payload) as Partial<VisitorOnboarding> | null;
     if (typeof parsed !== "object" || parsed === null) return null;
     if (typeof parsed.introseen !== "boolean" || typeof parsed.onboardingseen !== "boolean") return null;
     return { introseen: parsed.introseen, onboardingseen: parsed.onboardingseen };
@@ -155,7 +155,7 @@ function parsecache(payload: string | null): onboardingstateview | null {
 }
 
 /** Writes one view into the localStorage cache (best effort). */
-function writecache(view: onboardingstateview): void {
+function writecache(view: VisitorOnboarding): void {
   try {
     window.localStorage.setItem(ONBOARDING_CACHE_KEY, JSON.stringify(view));
   } catch {
@@ -164,7 +164,7 @@ function writecache(view: onboardingstateview): void {
 }
 
 /** Merges two views: a seen flag only ever moves upward. */
-function mergeviews(left: onboardingstateview, right: onboardingstateview): onboardingstateview {
+function mergeviews(left: VisitorOnboarding, right: VisitorOnboarding): VisitorOnboarding {
   return {
     introseen: left.introseen || right.introseen,
     onboardingseen: left.onboardingseen || right.onboardingseen,
@@ -179,7 +179,7 @@ function mergeviews(left: onboardingstateview, right: onboardingstateview): onbo
  *
  * @returns the best locally-known state (defaults both flags false).
  */
-export function peekonboardingstate(): onboardingstateview {
+export function peekonboardingstate(): VisitorOnboarding {
   if (memorystate) return memorystate;
   try {
     const cached = parsecache(window.localStorage.getItem(ONBOARDING_CACHE_KEY));
@@ -198,7 +198,7 @@ export function peekonboardingstate(): onboardingstateview {
  *
  * @returns the merged visitor state (the flags only ever move upward).
  */
-export async function readonboardingstate(): Promise<onboardingstateview> {
+export async function readonboardingstate(): Promise<VisitorOnboarding> {
   if (memorystate) return memorystate;
   const local = peekonboardingstate();
   const base = onboardingapibase();
@@ -208,8 +208,8 @@ export async function readonboardingstate(): Promise<onboardingstateview> {
       url.searchParams.set("visitor", visitorid());
       const response = await fetch(url, { method: "GET" });
       if (response.ok) {
-        const payload = (await response.json()) as Partial<onboardingstateview> | null;
-        const remote: onboardingstateview = {
+        const payload = (await response.json()) as Partial<VisitorOnboarding> | null;
+        const remote: VisitorOnboarding = {
           introseen: payload?.introseen === true,
           onboardingseen: payload?.onboardingseen === true,
         };
@@ -235,9 +235,9 @@ export async function readonboardingstate(): Promise<onboardingstateview> {
  * @param stage the stage the visitor just saw ("intro" or "onboarding").
  * @returns the resulting visitor state (optimistic when the API is absent).
  */
-export async function writeonboardingstage(stage: onboardingstage): Promise<onboardingstateview> {
+export async function writeonboardingstage(stage: onboardingstage): Promise<VisitorOnboarding> {
   const current = await readonboardingstate();
-  const next: onboardingstateview = {
+  const next: VisitorOnboarding = {
     introseen: current.introseen || stage === "intro" || stage === "onboarding",
     onboardingseen: current.onboardingseen || stage === "onboarding",
   };
@@ -252,8 +252,8 @@ export async function writeonboardingstage(stage: onboardingstage): Promise<onbo
         body: JSON.stringify({ visitor: visitorid(), stage }),
       });
       if (response.ok) {
-        const payload = (await response.json()) as Partial<onboardingstateview> | null;
-        const remote: onboardingstateview = {
+        const payload = (await response.json()) as Partial<VisitorOnboarding> | null;
+        const remote: VisitorOnboarding = {
           introseen: payload?.introseen === true,
           onboardingseen: payload?.onboardingseen === true,
         };
