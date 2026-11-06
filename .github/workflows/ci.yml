@@ -200,7 +200,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.18.0
       - name: Set up Bun
         # the merged application pins bun (packageManager bun@1.4.2): the
         # frozen install and the build scripts run through the pinned bun
@@ -472,7 +472,7 @@ jobs:
         if: steps.suite.outputs.present == 'true' && hashFiles(format('{0}/pnpm-lock.yaml', matrix.app)) != ''
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.18.0
 
       - name: Install the locked tree
         if: steps.suite.outputs.present == 'true'
@@ -481,9 +481,10 @@ jobs:
           set -euo pipefail
           cd "${{ matrix.app }}"
           if [ -f pnpm-lock.yaml ]; then
-            # the family pins one pnpm rung - every pnpm manifest of the
-            # matrix carries packageManager pnpm@12.3.4 and the lockless
-            # legs answer bun
+            # the family pins one pnpm rung - the 12.18.0 number every
+            # lock of the tree regenerates under (the manifestemplate
+            # wave retired the per-app packageManager stamps, so the one
+            # rung lives here) and the lockless legs answer bun
             pnpm install --frozen-lockfile --ignore-scripts
           else
             bun install --frozen-lockfile --ignore-scripts
