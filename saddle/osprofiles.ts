@@ -43,7 +43,7 @@ export type OSProfileKind = "distribution" | "firmware" | "languageos" | "deskto
 
 /** The package format the host profile answers (the installer grammar
  * the modality seats may mount inside the sandbox). */
-export type OSProfilePackage = "apk" | "apt" | "pacman" | "abuild" | "exe" | "msi" | "vpm" | "none";
+export type OSProfilePackage = "apk" | "apt" | "pacman" | "abuild" | "exe" | "msi" | "vpm" | "rpm" | "nix" | "xbps" | "none";
 
 /** One guest operating system host profile of the catalog. */
 export interface OSProfileRecord {
@@ -71,7 +71,7 @@ export interface OSProfileRecord {
 /* ════════════════════════════════════════════════════════════════════ */
 
 /** The guest operating system host profiles of the engine (the pr15
- * catalog): the eight profiles the spec names, every one a catalog row
+ * catalog): the seventeen profiles the spec names — the eight the first wave stamped beside the nine honest osdistrib additions the owner more-than-fifteen directive rides — every one a catalog row
  * the modality seats may host — the engine presents the profile, the
  * sandbox boots it on the self-hosted edge, the visitor machine never
  * lends its own hardware (the critical law). */
@@ -156,6 +156,96 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     gpu: true,
     note: "the android guest profile: the mobile lanes and the grapheneos profile build on it (the sandbox hosts android-shaped workloads on the edge).",
   },
+  {
+    id: "postmarketos",
+    name: "postmarketos",
+    kind: "mobile",
+    base: "alpine linux",
+    package: "apk",
+    archs: ["linux-arm64", "linux-arm64-v8", "linux-x64"],
+    gpu: false,
+    note: "postmarketos is the alpine-based mobile distribution real devices boot: the community mobile seat the catalog carries beside lineageos and calyxos, never a runnable container base — the lane publishes the profile config the engine reads.",
+  },
+  {
+    id: "lineageos",
+    name: "lineageos",
+    kind: "mobile",
+    base: "android",
+    package: "apk",
+    archs: ["linux-arm64", "linux-arm64-v8"],
+    gpu: false,
+    note: "lineageos is the community android continuation: the aftermarket mobile seat on the arm64 legs the sandbox hosts on the self-hosted edge.",
+  },
+  {
+    id: "calyxos",
+    name: "calyxos",
+    kind: "mobile",
+    base: "android",
+    package: "apk",
+    archs: ["linux-arm64", "linux-arm64-v8"],
+    gpu: false,
+    note: "calyxos is the privacy-focused android distribution: the hardened mobile seat beside grapheneos the sandbox may host, never the visitor machine.",
+  },
+  {
+    id: "archlinux",
+    name: "archlinux",
+    kind: "desktop",
+    base: "arch linux",
+    package: "pacman",
+    archs: ["linux-x64", "linux-arm64"],
+    gpu: true,
+    note: "archlinux is the rolling-release distribution omarchy builds on: the pacman desktop seat on the amd64 and arm64 legs the catalog carries.",
+  },
+  {
+    id: "alpine",
+    name: "alpine",
+    kind: "distribution",
+    base: "musl libc busybox",
+    package: "apk",
+    archs: ["linux-x64", "linux-arm64", "linux-x64-musl", "linux-arm64-musl"],
+    gpu: false,
+    note: "alpine is the musl-based lightweight distribution: the small-footprint seat the musl legs answer, the postmarketos base the mobile seat builds on.",
+  },
+  {
+    id: "debian",
+    name: "debian",
+    kind: "desktop",
+    base: "the debian project",
+    package: "apt",
+    archs: ["linux-x64", "linux-arm64", "linux-riscv64", "linux-ppc64le"],
+    gpu: true,
+    note: "debian is the universal operating system: the apt desktop seat the widest hardware matrix answers, the vanillaos upstream the atomic seat builds on.",
+  },
+  {
+    id: "fedora",
+    name: "fedora",
+    kind: "desktop",
+    base: "red hat linux upstream",
+    package: "rpm",
+    archs: ["linux-x64", "linux-arm64"],
+    gpu: true,
+    note: "fedora is the red-hat-upstream community distribution: the rpm desktop seat beside the apt rows the package grammar grows.",
+  },
+  {
+    id: "nixos",
+    name: "nixos",
+    kind: "distribution",
+    base: "the nix package manager",
+    package: "nix",
+    archs: ["linux-x64", "linux-arm64"],
+    gpu: false,
+    note: "nixos is the declarative distribution the nix package manager builds: the reproducible-system seat the catalog carries, the package grammar the nix rows answer.",
+  },
+  {
+    id: "void",
+    name: "void",
+    kind: "distribution",
+    base: "xbps",
+    package: "xbps",
+    archs: ["linux-x64", "linux-arm64", "linux-x64-musl", "linux-arm64-musl"],
+    gpu: false,
+    note: "void is the independent source-rolling distribution: the xbps seat the musl legs answer beside alpine, the package grammar the xbps rows grow.",
+  }
 ]);
 
 /** The count of the catalog — derived from the rows' real length. */
