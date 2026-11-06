@@ -287,12 +287,12 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
   it("the webpack bundle is the real exact-pinned cross-bundler product the ci battery verifies", async () => {
     const containers = await readworkflow("containers.yml");
     /* the cross-bundler rung the ci battery verifies, carried to the
-     * saddle engine: the tsc engine build (scriptsbuildengine.ts, the
-     * build:engine manifest entry) produces distpackage/index.js and
-     * the exact-pinned webpack fetch (webpack 5.112.2 with its
-     * webpack-cli 6.0.1 peer) packs the one entry into the one webpack
-     * bundle the six channel legs distribute. */
-    expect(containers).toContain("node scriptsbuildengine.ts");
+     * saddle engine: the tsc engine build (scripts.ts buildengine, the
+     * lane-word dispatcher the scripts consolidation seated) produces
+     * distpackage/index.js and the exact-pinned webpack fetch (webpack
+     * 5.112.2 with its webpack-cli 6.0.1 peer) packs the one entry into
+     * the one webpack bundle the six channel legs distribute. */
+    expect(containers).toContain("node scripts.ts buildengine");
     expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
     expect(containers).toContain("--output-filename saddle.webpack.js");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
