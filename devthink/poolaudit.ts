@@ -276,12 +276,8 @@ export interface poolcoveragereport {
  * of the 626 item pool, no timestamps, so the record replays byte
  * identical. */
 export const poolcoveragerecord: poolcoveragereport = {
-  "release": "2.0.163",
-<<<<<<< HEAD
-  "corpus": 4373,
-=======
+  "release": "2.0.164",
   "corpus": 4371,
->>>>>>> devthink/main
   "pool": {
     "total": 626,
     "implemented": 623,

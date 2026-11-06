@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.163",
+  "version": "2.0.164",
   "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
   "keywords": [
     "ai",
@@ -423,7 +423,7 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "packageManager": "pnpm@12.16.1",
+  "packageManager": "pnpm@12.18.0",
   "devthink": {
     "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) — family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root. The ownership law (pr16) rides the owner field: one engine, one owner, the family consumes — the manifest of record is engines.ts at the app root.",
     "engines": [
