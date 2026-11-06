@@ -35,9 +35,10 @@
  */
 
 import { createHash } from 'node:crypto';
+import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { DatabaseSync, type StatementSync } from 'node:sqlite';
+import type { DatabaseSync, StatementSync } from 'node:sqlite';
 import { deflateRawSync, gunzipSync, gzipSync, inflateRawSync } from 'node:zlib';
 
 /* ------------------------------------------------------------------ */
@@ -350,7 +351,14 @@ export class sqlitekv implements Disposable {
   constructor(path?: string) {
     this.path = path ?? process.env.SADDLE_TIERS_DB ?? join(tmpdir(), 'saddle-tiers.db');
     this.#db = guard('sqlitekv', `sqlitekv open ${this.path}`, () => {
-      const db = new DatabaseSync(this.path);
+      // the lazy driver law (the vaulthandoff pattern): the native
+      // node:sqlite module loads at open time alone through createRequire
+      // so a runtime without the builtin (the bun rungs before 1.4.4, the
+      // node rungs before 22.5) answers the honest guarded refusal here
+      // instead of crashing the whole module graph at import time.
+      const require = createRequire(import.meta.url);
+      const driversqlite = require('node:sqlite') as typeof import('node:sqlite');
+      const db = new driversqlite.DatabaseSync(this.path);
       db.exec(
         'PRAGMA journal_mode = WAL; PRAGMA synchronous = NORMAL; ' +
           'PRAGMA cache_size = 10000; PRAGMA temp_store = MEMORY;',
