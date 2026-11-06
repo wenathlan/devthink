@@ -1,21 +1,23 @@
-// # infrawave.test — the root book gate (the single-file law the owner
-// charged and the deletions violated four times): the INFRA.md logic book
-// answers at the repository root with the family law, the logic registry
-// and the keyword modules. the repository context asserts the book lives;
-// the container cut ships the app surfaces without the automation tree,
-// so the gate answers the book where the repository ships it — the same
-// context law the curveguard battery walks.
+// # infrawave.test — the docs book gate (the single-file law the owner
+// charged and the deletions violated four times): the infra.md logic book
+// answers inside the devthink docs seat with the family law, the logic
+// registry and the keyword modules — the repository root carries only the
+// first-layer law (the twelve folders beside .gitignore and package.json),
+// so the book rides the docs tree the app ships. the container cut ships
+// the app surfaces without the automation tree, so the gate answers the
+// book where the app docs carry it — the same context law the curveguard
+// battery walks.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const approot = join(import.meta.dirname, "..");
 const reporoot = join(approot, "..");
-const bookpath = join(reporoot, "INFRA.md");
+const bookpath = join(approot, "docs", "infra.md");
 const automationtree = existsSync(join(reporoot, ".github"));
 
-describe("the root book answers the single-file law", () => {
-  it.skipIf(!automationtree)("the INFRA.md book exists at the repository root", () => {
+describe("the docs book answers the single-file law", () => {
+  it.skipIf(!automationtree)("the infra.md book exists at the devthink docs seat", () => {
     expect(existsSync(bookpath), "the deletions reddened the tree four times; the book returns").toBe(true);
   });
 
