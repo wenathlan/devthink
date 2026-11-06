@@ -84,6 +84,13 @@ export function storageRecordValid(record: StorageRecord): boolean {
   );
 }
 
+/** the mime family prefixes the storage mode serves — the blob families
+ * (text, application) first, the lfs masters (image, video, audio, model)
+ * after (moved verbatim from the home face: the kind universe is a property
+ * of the storage mode logic, so the table lives beside the logic and the
+ * deposit chips read it, never a list of their own). */
+export const STORAGE_KINDS: readonly string[] = ["text/", "application/", "image/", "video/", "audio/", "model/"];
+
 /** Chooses the storage mode for a candidate upload: small text-like rows ride in-DB git blobs, binary masters ride LFS. */
 export function storageModeFor(size: number | bigint, mime: string): "blob" | "lfs" {
   const binary = /^(image|video|audio|model)\//.test(mime) || mime === "application/octet-stream";

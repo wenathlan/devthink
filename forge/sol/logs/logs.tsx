@@ -21,22 +21,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   formatLogTime,
   linesWithin,
+  LOG_SEED,
   logCensus,
   logDuration,
   logOutcome,
   logText,
+  PRESET_SEEDS,
   runLogLines,
 } from "../../runstream.ts";
 import { labelfill, label } from "../../labels";
 import { EmptyState } from "../wingets";
 
-/** the seed of the replayed run (shown on the page, pinned by the tests) */
-export const LOG_SEED = 421337;
 /** the replay cadence: the wall clock multiplier over the run clock */
 const PLAY_MS = 120;
-
-/** the seeds the page offers as one-click replays (stable, memorable) */
-const PRESET_SEEDS: readonly number[] = [421337, 90012, 5124, 77031];
 
 /** The logs page: the deterministic replay of one run. */
 export default function Logs() {

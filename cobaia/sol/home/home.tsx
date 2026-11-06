@@ -11,8 +11,9 @@
  * three how-it-works steps on hairline seams (01 engine · 02 static · 03
  * honest), a four-card preview of the directory leading to /apps, the
  * support strip, and the one reserved ad slot at the end of the content.
- * No entry gate and no first-run flow: cobaia is a content site — the home
- * renders directly, every page is public.
+ * The home rides the entrada: the entry gate consults the first-run flow
+ * (intro → onboarding) before the landing shows — the family law every
+ * sibling app already answers.
  * Styled entirely by sol/sol.css.
  */
 import type { CSSProperties } from "react";
@@ -21,7 +22,7 @@ import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label, labelfill } from "../../labels";
 import { roster } from "../../roster.ts";
-import { AdSlot, BrandMark } from "../wingets";
+import { AdSlot, BrandMark, EntryGate } from "../wingets";
 
 /** the featured deploy units of the landing preview (the full directory
  * lives on /apps): the OS, the engine, the store and one studio — read
@@ -41,6 +42,15 @@ const STEPS: readonly { n: LabelKey; title: LabelKey; text: LabelKey }[] = [
 ];
 
 export function Home() {
+  return (
+    <EntryGate>
+      <HomeSurface />
+    </EntryGate>
+  );
+}
+
+/** the home surface the gate reveals: the landing itself. */
+function HomeSurface() {
   useContent();
   return (
     <div className="cb-page">

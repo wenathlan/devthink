@@ -5,14 +5,15 @@
  * concatenation. The schema mirrors schema.prisma (the documentation of
  * record) and the boot DDL is the idempotent seed-on-first-run: the tables
  * exist after the first open, always. The platform gateway serves the same
- * tables over HTTPS (GET/POST /api/v1/onboarding); no server route lives
- * here.
+ * tables over HTTPS (GET/POST /api/v1/onboarding, GET /api/v1/ui/content);
+ * no server route lives here.
  */
 import { openStorageLane } from "@wenathlan/vault/storage";
+import { CONTENTKINDS, type contentrow, seedAdsLabel, seedAdsEmpty, seedAdsSlots, seedPlans, seedPosts, seedRoster, seedSupportLinks } from "./content";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
-export const tables = ["onboarding_states", "labels"] as const;
+export const tables = ["onboarding_states", "labels", "content_rows"] as const;
 
 /** the one storage lane of the site store (WAL, foreign keys, patient locks — the app's own file, the shared mechanism of the vault). */
 const lane = openStorageLane({ defaultFile: "./cobaia.db" });
@@ -40,6 +41,12 @@ CREATE TABLE IF NOT EXISTS labels (
   revision   INTEGER NOT NULL DEFAULT 0,
   updatedAt  TEXT NOT NULL DEFAULT (datetime('now')),
   translated INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS content_rows (
+  kind     TEXT NOT NULL,
+  ordinal  INTEGER NOT NULL,
+  payload  TEXT NOT NULL,
+  PRIMARY KEY (kind, ordinal)
 );
 `;
 
@@ -214,6 +221,83 @@ export function seedLabelRows(): { seeded: number; protected: number } {
  * store never blocks the boot, the manifest always answers the wingets. */
 try {
   seedLabelRows();
+} catch {
+  /* the manifest answers; the store catches up on the next boot */
+}
+
+/* --------------------------------------------------------------------- */
+/* content rows — the site content the pages render                       */
+/* --------------------------------------------------------------------- */
+
+/** the manifest seed of one content kind: the rows in ordinal order. */
+function seedrowsOf(kind: (typeof CONTENTKINDS)[number]): readonly unknown[] {
+  switch (kind) {
+    case "posts":
+      return seedPosts;
+    case "roster":
+      return seedRoster;
+    case "plans":
+      return seedPlans;
+    case "supportlinks":
+      return [seedSupportLinks];
+    case "ads.slots":
+      return [seedAdsSlots];
+    case "ads.label":
+      return [seedAdsLabel];
+    case "ads.empty":
+      return [seedAdsEmpty];
+  }
+}
+
+/** Encodes the manifest rows of every kind as content rows (kind, ordinal,
+ * json payload) — the encoding the api answers and the client loader parses. */
+function seedContentRows(): contentrow[] {
+  const rows: contentrow[] = [];
+  for (const kind of CONTENTKINDS) {
+    seedrowsOf(kind).forEach((value, ordinal) => {
+      rows.push({ kind, ordinal, payload: JSON.stringify(value) });
+    });
+  }
+  return rows;
+}
+
+/**
+ * Ingests the content manifest into the content_rows table — idempotent:
+ * every manifest row upserts over its (kind, ordinal) seat, so the db stays
+ * the single living config of the site content the pages render (the
+ * content law: the literals live in the manifest, the rows live here).
+ *
+ * @returns the number of rows seated.
+ */
+export function seedContentTable(): number {
+  ensureSchema();
+  for (const row of seedContentRows()) {
+    execute(
+      `INSERT INTO content_rows (kind, ordinal, payload) VALUES (?, ?, ?)
+       ON CONFLICT(kind, ordinal) DO UPDATE SET payload = excluded.payload`,
+      [row.kind, row.ordinal, row.payload],
+    );
+  }
+  return seedContentRows().length;
+}
+
+/**
+ * Reads every content row of the store, ordered by kind then ordinal — the
+ * rows the platform gateway answers over GET /api/v1/ui/content.
+ *
+ * @returns the content rows of the site store.
+ */
+export function readContentRows(): contentrow[] {
+  return queryAll<Pick<contentrow, "kind" | "ordinal" | "payload">>(
+    "SELECT kind, ordinal, payload FROM content_rows ORDER BY kind ASC, ordinal ASC",
+  ).map((row) => ({ kind: row.kind as contentrow["kind"], ordinal: row.ordinal, payload: row.payload }));
+}
+
+/* the content law rides the db boot beside the labels: the manifest rows
+ * land in the content_rows table from the first open, always (idempotent,
+ * best effort — the manifest keeps answering when the store is sealed). */
+try {
+  seedContentTable();
 } catch {
   /* the manifest answers; the store catches up on the next boot */
 }

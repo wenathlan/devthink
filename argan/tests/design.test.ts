@@ -144,4 +144,14 @@ describe("design contract", () => {
     expect(DB).toMatch(/getonboardingstate/);
     expect(DB).toMatch(/setonboardingstage/);
   });
+
+  it("reads the record type chips from the catalog lane — no hardcoded type table in a face", () => {
+    const HOME = read("../sol/home/home.tsx");
+    const CATALOG = read("../catalog.ts");
+    const SEED = read("../seed.ts");
+    expect(HOME).toMatch(/listRecordTypes/);
+    expect(HOME).not.toMatch(/const CHIP_TYPES/);
+    expect(CATALOG).toMatch(/listRecordTypes/);
+    expect(SEED).toMatch(/seedRecordTypes/);
+  });
 });

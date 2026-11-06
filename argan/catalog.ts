@@ -18,6 +18,7 @@ import { MIMETYPES, type MimeTypeRow } from "./mimetypes";
 import { PROTOCOLS, type ProtocolSpec } from "./protocols";
 import {
   seedConfigBlocks,
+  seedRecordTypes,
   seedDnssecAlgorithms,
   seedDnssecKeyCards,
   seedDohFirstCards,
@@ -60,6 +61,12 @@ export function listZones(): Promise<ZoneSnapshot[]> {
 
 export function listApexRecordSets(): Promise<RecordSetRow[]> {
   return table("record-sets", seedRecordSets);
+}
+
+/** Serves the record type universe the resolve chips offer (the db rows over
+ * HTTPS when configured, the seed offline — the types are catalog data). */
+export function listRecordTypes(): Promise<string[]> {
+  return table("record-types", seedRecordTypes);
 }
 
 export function listPublicationSteps(): Promise<PublicationStep[]> {

@@ -23,7 +23,7 @@ import { useCallback, useMemo, useState } from "react";
 import { familyrow, familyurl } from "../../family";
 import type { HomeProps } from "../../hometypes.ts";
 import { labelfill } from "../../labels";
-import { lfsPointerFrom, storageModeFor } from "../../storageface.ts";
+import { lfsPointerFrom, STORAGE_KINDS, storageModeFor } from "../../storageface.ts";
 import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
 import {
   Dbconsole,
@@ -138,10 +138,6 @@ function activeKind(line: string): string | undefined {
   return line.trim().split(/\s+/).filter(Boolean)[1];
 }
 
-/** The mime families a deposit line can carry — the real families of
- * storageModeFor (the blob families first, the lfs masters after). */
-const KINDS = ["text/", "application/", "image/", "video/", "audio/", "model/"] as const;
-
 /**
  * The prompt-giga deposit field: a giant mono input for the artifact line,
  * the embedded seal key (which answers a toast and walks to the console),
@@ -180,7 +176,7 @@ function DepositField({ onSeal }: { onSeal: () => void }) {
       </div>
       <fieldset className="vt-chips">
         <legend className="vt-chips__legend">{uicopy("home.deposit.kinds")}</legend>
-        {KINDS.map((kind) => (
+        {STORAGE_KINDS.map((kind) => (
           <button
             key={kind}
             type="button"

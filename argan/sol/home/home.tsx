@@ -28,6 +28,7 @@ import type {
 import {
   listApexRecordSets,
   listHeroBadges,
+  listRecordTypes,
   listLibraryCards,
   listPublicationSteps,
   listTransports,
@@ -35,6 +36,7 @@ import {
 } from "../../catalog.ts";
 import { familyrow, familyurl } from "../../family";
 import { label, labelfill } from "../../labels";
+import { seedRecordTypes } from "../../seed";
 import { ArganMark, type NavLink, Shell } from "../shell/Shell";
 import { EntryGate } from "../wingets";
 
@@ -47,9 +49,6 @@ const FOOTER_LINKS: readonly NavLink[] = [
 
 /** the apex the landing resolves against (the zone argan is authoritative for) */
 const APEX = "devthink.pro";
-
-/** the record types the resolve chips offer (intersected with the served rows) */
-const CHIP_TYPES: readonly string[] = ["A", "AAAA", "MX", "NS", "TXT", "SOA", "CAA"];
 
 /** the verdict of an honest local resolve: answered, empty answer or no name */
 type DigStatus = "ok" | "nodata" | "nxdomain";
@@ -70,10 +69,9 @@ function labelOf(raw: string): string {
 }
 
 /** parses a dig-style query: "dig <name> [TYPE]" — the verb is optional */
-function parseDig(raw: string, fallbackType: string): { label: string; type: string } {
+function parseDig(raw: string, fallbackType: string, known: ReadonlySet<string>): { label: string; type: string } {
   const parts = raw.trim().split(/\s+/).filter(Boolean);
   const words = parts[0]?.toLowerCase() === "dig" ? parts.slice(1) : parts;
-  const known = new Set<string>(CHIP_TYPES);
   let name = "";
   let type = fallbackType;
   for (const word of words) {
@@ -121,6 +119,7 @@ function HomeLanding() {
   const [transports, setTransports] = useState<readonly DnsTransport[]>([]);
   const [steps, setSteps] = useState<readonly PublicationStep[]>([]);
   const [recordSets, setRecordSets] = useState<readonly RecordSetRow[]>([]);
+  const [recordTypes, setRecordTypes] = useState<readonly string[]>(seedRecordTypes);
   const [qtype, setQtype] = useState("A");
   const [query, setQuery] = useState("");
   const [answer, setAnswer] = useState<DigAnswer | null>(null);
@@ -145,12 +144,15 @@ function HomeLanding() {
     listApexRecordSets().then((rows) => {
       if (live) setRecordSets(rows);
     });
+    listRecordTypes().then((rows) => {
+      if (live) setRecordTypes(rows);
+    });
     return () => {
       live = false;
     };
   }, []);
 
-  const chipTypes = CHIP_TYPES.filter((type) => recordSets.some((row) => row.kind === "record" && row.type === type));
+  const chipTypes = recordTypes.filter((type) => recordSets.some((row) => row.kind === "record" && row.type === type));
   const apexZone = zones.find((zone) => zone.origin === APEX);
   const ttlLine = recordSets.find((row) => row.kind === "directive" && row.line.startsWith("$TTL"))?.line ?? "";
   const apexRecords = recordSets.filter((row) => row.kind === "record");
@@ -158,7 +160,7 @@ function HomeLanding() {
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (recordSets.length === 0) return;
-    const parsed = parseDig(query, qtype);
+    const parsed = parseDig(query, qtype, new Set(recordTypes));
     const verdict = resolveDig(recordSets, parsed.label, parsed.type);
     setAnswer({ label: parsed.label, type: parsed.type, status: verdict.status, rows: verdict.rows });
   };

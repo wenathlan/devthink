@@ -178,4 +178,12 @@ describe("design contract", () => {
     const HOME = read("../sol/home/home.tsx");
     assert.match(HOME, /familyrow/, "the landing footer reads the same table");
   });
+
+  it("reads the deposit kind chips from the storage face — no mime family table in a widget", () => {
+    const STORAGEFACE = read("../storageface.ts");
+    const HOME = read("../sol/home/home.tsx");
+    assert.match(STORAGEFACE, /export const STORAGE_KINDS/, "the kind universe lives beside storageModeFor");
+    assert.match(HOME, /STORAGE_KINDS/, "the deposit chips read the storage face table");
+    assert.doesNotMatch(HOME, /const KINDS/, "the face never declares its own mime family table");
+  });
 });

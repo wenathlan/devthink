@@ -29,3 +29,26 @@ model OnboardingState {
   onboardingseen Boolean  @default(false)
   updatedAt      DateTime @updatedAt
 }
+
+/// one interface copy row: the id is the page.widget.key path, the text
+/// rides the english source of truth (labels.ts), and the translated flag
+/// protects a runtime translation from the seed overwrite
+model Label {
+  id         String   @id
+  text       String
+  revision   Int      @default(0)
+  updatedAt  DateTime @updatedAt
+  translated Boolean  @default(false)
+}
+
+/// one content row of the site: the kind names the manifest table, the
+/// ordinal pins the row order inside the kind, and the payload carries the
+/// json encoding of the row (the platform gateway serves the rows over
+/// GET /api/v1/ui/content — the content law: the pages render db rows,
+/// the manifest is only the build seed)
+model ContentRow {
+  @@id([kind, ordinal])
+  kind    String
+  ordinal Int
+  payload String
+}
