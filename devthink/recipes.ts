@@ -943,7 +943,7 @@ export function gallerydriftof(previous: recipereport | null, current: reciperep
  * stay the live measurements the recorded run took; the gallery drift diff
  * never reads them). */
 export const reciperecord: recipereport = {
-  "release": "2.0.164",
+  "release": "2.0.165",
   "mode": "sync",
   "gallery": {
     "version": "2.0.0",
@@ -1099,7 +1099,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 1800,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1121,7 +1121,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 3200,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 4,
+      "durationms": 2,
       "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1165,7 +1165,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 3400,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1188,7 +1188,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 6500,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 5 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1301,7 +1301,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 2000,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1385,7 +1385,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 3300,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1428,7 +1428,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 6800,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 5 steps, waited at 2 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1449,7 +1449,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 1800,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1470,7 +1470,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 1900,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1492,7 +1492,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 3500,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 5 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1513,7 +1513,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 6400,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1555,7 +1555,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 3900,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 12,
+      "durationms": 9,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1639,7 +1639,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 2000,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1661,7 +1661,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 3800,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 4 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1682,7 +1682,7 @@ export const reciperecord: recipereport = {
       "expecteddurationms": 6100,
       "capabilities": [],
       "outcome": "pass",
-      "durationms": 1,
+      "durationms": 0,
       "detail": "the dry run walked 3 steps, waited at 0 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1751,7 +1751,7 @@ export const reciperecord: recipereport = {
         "tabs"
       ],
       "outcome": "pass",
-      "durationms": 2,
+      "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     },
     {
@@ -1848,7 +1848,7 @@ export const reciperecord: recipereport = {
         "tabs"
       ],
       "outcome": "pass",
-      "durationms": 0,
+      "durationms": 1,
       "detail": "the dry run walked 3 steps, waited at 1 consent gates and sealed its chain with exit code 0"
     }
   ],
@@ -1858,7 +1858,7 @@ export const reciperecord: recipereport = {
     "failed": 0,
     "checks": 19,
     "checksok": 19,
-    "durationms": 1997
+    "durationms": 2067
   }
 };
 

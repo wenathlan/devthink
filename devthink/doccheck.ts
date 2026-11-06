@@ -225,12 +225,21 @@ export async function rundocchecksuite(): Promise<doccheckreport> {
     `the flow documentation carries ${mermaidblocks} mermaid diagrams with ${modulelinks} module link lines`,
   ]);
 
-  /* 7. the changelog covers every released version and the roadmap covers the planned chain. */
+  /* 7. the changelog covers every released version and the roadmap covers the planned chain.
+   * The plain version seats alone answer the coverage: the registry lanes
+   * mint the app-scoped tags beside the family release (argan/v2.0.164
+   * through vault/v2.0.164, the per-app registry seats the container and
+   * package lanes publish), and the v* glob would match them — slicing the
+   * v off vault/v2.0.164 leaves ault/v2.0.164, a version no changelog
+   * section ever names. The strict semver shape reads the family's plain
+   * release seats alone, the way the coverage always meant. */
   const changelogproblems = [];
   const roadmapproblems = [];
   let tags: string[] = [];
   try {
-    tags = (await execute("git", ["tag", "-l", "v*"])).stdout.split("\n").filter((tag) => tag !== "");
+    tags = (await execute("git", ["tag", "-l", "v*"])).stdout
+      .split("\n")
+      .filter((tag) => /^v\d+\.\d+\.\d+$/.test(tag));
   } catch {
     tags = [];
   }
@@ -325,7 +334,7 @@ export interface doccheckreport {
  * its fixed order with its outcome, no timestamps, so the record replays
  * byte identical. */
 export const doccheckrecord: doccheckreport = {
-  "release": "2.0.164",
+  "release": "2.0.165",
   "kindcount": 335,
   "kindentries": 335,
   "families": 12,

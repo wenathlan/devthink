@@ -218,6 +218,13 @@ export function gatewaywirefields(name: string): boolean {
     "init_auth",
     "init_engine",
     "init_server",
+    /* the lockfile heal of the 2.0.164 rung (#476, #477): the
+     * regenerated resolutions rode the getry validate module into the
+     * server cycle the family bridges fold (the auth and validate
+     * seats import each other at call time), so the bundler mints the
+     * init_validate wrapper beside every precedent above — the name
+     * belongs to the bundler, never the review. */
+    "init_validate",
     "chat_id",
     "session_id",
     "api_key",

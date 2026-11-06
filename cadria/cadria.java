@@ -10,7 +10,7 @@ package io.github.wenathlan.cadria;
  */
 final class Cadria {
   /** The version of the cadria envelope (the family five-package wave). */
-  public static final String VERSION = "2.0.164";
+  public static final String VERSION = "2.0.165";
   private Cadria() {
   }
 }
