@@ -375,12 +375,26 @@ jobs:
         run: |
           cd devthink
           node build.ts
-          # the cross-bundler rung rides exact-pinned registry fetches (the
-          # same pin law every lane of the battery answers): npx resolves
-          # the two immutable webpack rungs the lane verified — webpack-cli
-          # 6.0.1 (the webpack bin) with its webpack 5.112.2 peer — instead
-          # of a floating npm install the dependency scan flags unpinned.
-          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./build/index.js --output-path ./build/webpack --output-filename devthink.webpack.js --mode production --target node
+          # the cross-bundler rung rides the config-file walk: the frozen
+          # tree's own webpack-cli seat (7.3.1 beside its commander 14) reds
+          # the variadic --target parse ("prev is not iterable") so the same
+          # flags ride the generated config the -c lane carries — the pinned
+          # webpack rung (5.112.2, the peer the lane verified) stays the
+          # bundler, the entry, output, mode and target seats stay the law.
+          cat > ./build/webpack.config.mjs <<'EOF'
+          // the cross-bundler lane config: the node bundle the CLI flag walk
+          // can no longer carry rides the config the pinned rung reads
+          export default {
+            mode: "production",
+            target: "node",
+            entry: "./build/index.js",
+            output: {
+              path: new URL("./webpack/", import.meta.url).pathname,
+              filename: "devthink.webpack.js",
+            },
+          };
+          EOF
+          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack -c ./build/webpack.config.mjs
           test -s ./build/webpack/devthink.webpack.js
           du -h ./build/webpack/devthink.webpack.js
 
