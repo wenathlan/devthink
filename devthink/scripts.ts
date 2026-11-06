@@ -579,7 +579,10 @@ if (scriptslane === "nextconvert") {
 // standard shape with the forbidden folders blocked and the deploy at the root)
 // and the next personalized (no src, the app/ bridge at the root next to the house
 // tree). Every shape carries the platform file set at its root (.npmrc, .nvmrc,
-// biome, tsconfig, vercel, netlify, wrangler, the dev vars example, the manifest).
+// biome, tsconfig, vercel, netlify, wrangler, the dev vars example, the manifest)
+// and answers in three forms: the tar.xz, the Brotli overlay and the zip twin of
+// the owner spec (the five distribution zips per application — the windows-native
+// extraction seat), fifteen assets per application.
 // The archives exist only in the release assets; the repository carries only the
 // original folder of each application — the tree itself never carries a src/ or
 // a Next scaffold for any app, the gateway included.
@@ -681,6 +684,19 @@ const packxz = (dir: string, outxz: string) => {
   if (!existsSync(dest)) throw new Error("the archive was not generated: " + dest);
   const head = readFileSync(dest).subarray(0, 6).toString("latin1");
   if (!head.startsWith("\u00FD7zXZ\u0000")) throw new Error("the archive is not a valid xz: " + dest);
+};
+
+const packzip = (dir: string, outzip: string) => {
+  const srcdir = INSIDE(dir);
+  const dest = INSIDE(outzip);
+  const rel = path.relative(srcdir, dest).split(path.sep).join("/");
+  // the zip twin of every archive (the owner spec: the five distribution
+  // zips per application) - the windows-native extraction seat beside the
+  // maximum-compression tar.xz, the same tree through the zip container.
+  execFileSync("zip", ["-qr", rel, "."], { cwd: srcdir, stdio: "pipe" });
+  if (!existsSync(dest)) throw new Error("the zip was not generated: " + dest);
+  const head = readFileSync(dest).subarray(0, 2).toString("latin1");
+  if (!head.startsWith("PK")) throw new Error("the archive is not a valid zip: " + dest);
 };
 
 const overlay = (archive: string) => {
@@ -902,6 +918,8 @@ for (const app of CONVERT) {
   const raw = INSIDE(path.join(work, "site"));
   copytree(appdir, raw, false);
   packxz(raw, INSIDE(path.join(out, `${app}.${versionof(app)}.tar.xz`)));
+  // 1b. the zip twin of the complete site (the owner spec name: <app>.web.<v>.zip)
+  packzip(raw, INSIDE(path.join(out, `${app}.web.${versionof(app)}.zip`)));
 
   // 2. the next normal: the plain standard template with no folder blocking
   const themeof = (stage: string) => themefolder(INSIDE(path.join(stage, "src")));
@@ -909,26 +927,30 @@ for (const app of CONVERT) {
   copytree(appdir, INSIDE(path.join(normal, "src")), false);
   scaffold(app, normal, themeof(normal), "normal");
   packxz(normal, INSIDE(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)));
+  packzip(normal, INSIDE(path.join(out, `${app}.next.normal.${versionof(app)}.zip`)));
 
   // 3. the next zai: the standard template the platform accepts + the deploy kit
   const zai = INSIDE(path.join(work, "nextzai"));
   copytree(appdir, INSIDE(path.join(zai, "src")), false);
   scaffold(app, zai, themeof(zai), "zai");
   packxz(zai, INSIDE(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)));
+  packzip(zai, INSIDE(path.join(out, `${app}.next.zai.${versionof(app)}.zip`)));
 
   // 4. the next fifty: the blocked shape with the deploy reading the root
   const fifty = INSIDE(path.join(work, "nextfifty"));
   copytree(appdir, INSIDE(path.join(fifty, "src")), false);
   scaffold(app, fifty, themeof(fifty), "fifty");
   packxz(fifty, INSIDE(path.join(out, `${app}.next.fifty.${versionof(app)}.tar.xz`)));
+  packzip(fifty, INSIDE(path.join(out, `${app}.next.fifty.${versionof(app)}.zip`)));
 
   // 5. the next personalized: no src, app/ sits at the root next to the house tree
   const personal = INSIDE(path.join(work, "personalized"));
   copytree(appdir, personal, false);
   scaffold(app, personal, themefolder(personal), "personalized");
   packxz(personal, INSIDE(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)));
+  packzip(personal, INSIDE(path.join(out, `${app}.next.personalized.${versionof(app)}.zip`)));
   console.log(
-    `${app}: site + next.normal + next.zai + next.fifty + next.personalized (theme: ${themeof(normal) || "none"})`,
+    `${app}: site + next.normal + next.zai + next.fifty + next.personalized, every shape with the tar.xz + brotli + zip forms (theme: ${themeof(normal) || "none"})`,
   );
 }
 

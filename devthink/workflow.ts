@@ -4666,6 +4666,18 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "find . -maxdepth 1 -type f ! -name SHA256SUMS.txt",
       "sort -z | xargs -0 sha256sum",
       'gh release edit "${{ needs.assemble.outputs.tag }}" --repo "$GITHUB_REPOSITORY" --draft=false',
+      /* the thousand asset ladder lanes: the per-architecture container
+       * seats and the per-app registry and provenance seats feed the
+       * artifact manifest through the releaseassets needs row, the
+       * per-channel checksum umbrellas answer beside the sums, and the
+       * release body carries the census section the owner law pins */
+      "THE THOUSAND ASSET LADDER",
+      "containerseats",
+      "familyseats",
+      "for arch in 386 armv6 armv7 arm64 ppc64le riscv64 s390x; do",
+      "sha256.channel.",
+      "The asset census (the thousand plus law)",
+      "SPDX-2.3",
     ],
     "security.yml": [
       "dependency-review-action",

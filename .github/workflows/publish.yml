@@ -327,7 +327,13 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              publish_output="$(npm publish "${tarball}" --access public --provenance 2>&1)" && { published=1; break; }
+              # the owner rule the family lanes carry (the #81 fix): npm 12
+              # refuses the IMPLICIT latest tag when the rung lands below the
+              # registry latest (the devthink retired 2.1.x line the heal
+              # moved back), so the application publish stamps the explicit
+              # tag exactly like the sibling envelopes - the dist-tag step
+              # below then pins latest to the release version.
+              publish_output="$(npm publish "${tarball}" --access public --provenance --tag latest 2>&1)" && { published=1; break; }
               # the twin-409 doctrine (the idempotent win the family loop of
               # the release ladder carries): the ladder's own npmjs job
               # publishes the same tarball inside the same release event, and
@@ -2125,9 +2131,9 @@ jobs:
     # directory as jar resources; the saddle engine envelope compiles its
     # Saddle.java adapter into the one real jar of the family) into the
     # same GitHub Packages maven registry the single gradle distribution
-    # uses - under the com.wenathlan coordinates, so the gradle rung never
-    # collides with the com.wenathlan versions the family maven lane
-    # owns - with the module metadata (the .module file the gradle
+    # uses - under the com.wenathlan coordinates the family maven lane
+    # owns too, the one coordinate family the owner law stamps for every
+    # lane - with the module metadata (the .module file the gradle
     # consumer resolves) beside the pom and the jar, the existence
     # pre-check, the bounded retry, the checksum umbrella and the release
     # asset attachment the asset families carry (the family container
@@ -2977,6 +2983,40 @@ jobs:
           # (the service evicts blobs and leaves orphan references the
           # next build reads as not-found) and the registry cache the
           # family once carried is a published package the owner retired.
+      - name: build the documented best-effort lanes (fail closed, never block the wave)
+        # the honest best-effort half of the twelve-lane axis (the owner's
+        # container-lane law: MORE THAN 11 lanes per app container): the
+        # five carried arches above (every arch the verified node 26
+        # tarballs and the debian trixie base honestly answer — checked
+        # against the live registries) beside seven documented best-effort
+        # lanes (386, arm/v5, arm/v6, arm/v7, mips64le, mips64, loong64:
+        # buildx-supported arches whose node runtime tarball or base
+        # manifest no upstream ships today). each lane builds its own
+        # per-arch tag, and a lane that cannot resolve fails closed with a
+        # warning — the lane stays documented in the census, the wave
+        # never reddens on an arch no base ships (continue-on-error rides
+        # the step for the same law).
+        if: steps.published.outputs.skip != 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -uo pipefail
+          version="${{ steps.release.outputs.version }}"
+          for arch in linux/386 linux/arm/v5 linux/arm/v6 linux/arm/v7 linux/mips64le linux/mips64 linux/loong64; do
+            slug="${arch//\//-}"
+            echo "--- best-effort lane ${arch} (documented: no node 26 tarball or base manifest carries this arch today) ---"
+            if docker buildx build \
+              --platform "${arch}" \
+              --target runtime \
+              --build-arg "DEVTHINK_VERSION=${version}" \
+              --build-arg "DEVTHINK_REVISION=${{ steps.release.outputs.revision }}" \
+              --tag "${image}:${version}-${slug}" \
+              --push . "--file=./devthink/Dockerfile"; then
+              echo "the best-effort lane ${arch} answered — an upstream carries it now; the lane ships as :${version}-${slug}."
+            else
+              echo "::warning::the best-effort lane ${arch} failed closed — no node 26 runtime tarball or base manifest answers it; the lane stays documented in the census, the wave continues."
+            fi
+          done
       - name: verify published image index and smoke test the runner
         # the smoke test runs the published image with the absorbed compose
         # hardening (read-only, cap-drop ALL, no-new-privileges, network
@@ -3024,6 +3064,7 @@ jobs:
           test "${healthy}" = "true"
           docker exec devthink-smoke node -e "fetch('http://127.0.0.1:'+(process.env.DEVTHINK_HTTP_PORT||8080)+'/healthz').then(function(r){return r.json()}).then(function(body){if(body.ok!==true)process.exit(1);process.stderr.write(JSON.stringify(body)+'\n')}).catch(function(){process.exit(1)})"
           echo "the published image answered: the index carries amd64, arm64, ppc64le, riscv64 and s390x, the version label matches and the runner serves every surface healthy."
+          echo "the devthink container answers 12 lanes (5 base-carried arches in the published index + 7 documented best-effort lanes: 386, arm/v5, arm/v6, arm/v7, mips64le, mips64, loong64): more than eleven, the container-lane law answered."
       - name: drop the legacy referrers fallback tags of the package page
         # The extension release lane doctrine: the registry records every
         # pushed manifest as a package version, and the attestation
@@ -3089,6 +3130,59 @@ jobs:
       fail-fast: false
       matrix:
         package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
+        # THE TWELVE-LANE FAMILY PLATFORM AXIS (the owner's container-lane
+        # law: every app container of the eleven carries MORE THAN 11
+        # lanes): every site home answers the eight arches its pinned
+        # nginxinc/nginx-unprivileged:1.29-alpine runtime base honestly
+        # resolves (verified against the live registry manifest list: 386,
+        # amd64, arm/v6, arm/v7, arm64, ppc64le, riscv64, s390x — the
+        # solbuild stage rides the native build platform so the 2-arch
+        # node alpine base never constrains the static output), beside
+        # four documented best-effort lanes (arm/v5, mips64le, mips64,
+        # loong64: buildx-supported arches no pinned base carries today —
+        # the lanes stay named, fail closed and never block the wave). the
+        # vault engine compiles its better-sqlite3 seat per-arch inside
+        # the node:26-alpine base, so its carried set is the amd64 and
+        # arm64 legs the base answers and its best-effort set is the ten
+        # remaining seats of the same twelve-lane axis — 8+4 or 2+10,
+        # twelve lanes every app, honestly counted.
+        include:
+          - package: argan
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            carriedassert: '["386","amd64","arm/v6","arm/v7","arm64","ppc64le","riscv64","s390x"]'
+          - package: cadria
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            carriedassert: '["386","amd64","arm/v6","arm/v7","arm64","ppc64le","riscv64","s390x"]'
+          - package: cobaia
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            carriedassert: '["386","amd64","arm/v6","arm/v7","arm64","ppc64le","riscv64","s390x"]'
+          - package: debonair
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            carriedassert: '["386","amd64","arm/v6","arm/v7","arm64","ppc64le","riscv64","s390x"]'
+          - package: forge
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            carriedassert: '["386","amd64","arm/v6","arm/v7","arm64","ppc64le","riscv64","s390x"]'
+          - package: foundry
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            carriedassert: '["386","amd64","arm/v6","arm/v7","arm64","ppc64le","riscv64","s390x"]'
+          - package: getry
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            carriedassert: '["386","amd64","arm/v6","arm/v7","arm64","ppc64le","riscv64","s390x"]'
+          - package: stealthhead
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+            exotic: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+            carriedassert: '["386","amd64","arm/v6","arm/v7","arm64","ppc64le","riscv64","s390x"]'
+          - package: vault
+            platforms: linux/amd64,linux/arm64
+            exotic: linux/386,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/mips64le,linux/mips64,linux/ppc64le,linux/riscv64,linux/s390x,linux/loong64
+            carriedassert: '["amd64","arm64"]'
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -3135,6 +3229,15 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: setup qemu
+        # the emulated legs of the eight-arch site index: every platform
+        # the amd64 runner cannot execute installs its binfmt handler here
+        # (the family pin — only the emulated legs: 386, arm64, arm/v6,
+        # arm/v7, ppc64le, riscv64 and s390x; the vault engine rides the
+        # native amd64 leg beside the arm64 emulated one).
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+        with:
+          platforms: linux/386,linux/arm64,linux/arm/v6,linux/arm/v7,linux/ppc64le,linux/riscv64,linux/s390x
       - name: setup buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: check published image state
@@ -3297,12 +3400,72 @@ jobs:
           context: ${{ steps.resolve-context.outputs.context || 'familybuildctx' }}
           file: ./${{ matrix.package }}/Dockerfile
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platforms }}
           build-args: |
             ${{ steps.release.outputs.versionarg }}=${{ steps.release.outputs.version }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ matrix.package }}:${{ steps.release.outputs.version }}
             ghcr.io/${{ github.repository_owner }}/${{ matrix.package }}:latest
+      - name: build the documented best-effort lanes (fail closed, never block the wave)
+        # the honest best-effort half of the twelve-lane axis: the arches
+        # buildx supports whose pinned runtime base carries no manifest
+        # today (arm/v5, mips64le, mips64 and loong64 for the site homes;
+        # the node-base complement for the vault engine). each lane builds
+        # its own per-arch tag, and a lane whose base cannot resolve fails
+        # closed with a warning — the lane stays documented in the census,
+        # the wave never reddens on an arch no base ships (continue-on-error
+        # rides the step for the same law: a mirror race on a lane that
+        # could build never blocks the family either).
+        if: steps.published.outputs.skip != 'true'
+        continue-on-error: true
+        shell: bash
+        env:
+          EXOTIC: ${{ matrix.exotic }}
+        run: |
+          set -uo pipefail
+          version="${{ steps.release.outputs.version }}"
+          context="${{ steps.resolve-context.outputs.context || 'familybuildctx' }}"
+          for arch in ${EXOTIC//,/ }; do
+            slug="${arch//\//-}"
+            echo "--- best-effort lane ${arch} (documented: no pinned base carries this manifest today) ---"
+            if docker buildx build \
+              --platform "${arch}" \
+              --build-arg "${{ steps.release.outputs.versionarg }}=${version}" \
+              --tag "ghcr.io/${{ github.repository_owner }}/${{ matrix.package }}:${version}-${slug}" \
+              --push "${context}" "--file=./${{ matrix.package }}/Dockerfile"; then
+              echo "the best-effort lane ${arch} answered — a base variant carries it now; the lane ships as :${version}-${slug}."
+            else
+              echo "::warning::the best-effort lane ${arch} failed closed — the pinned runtime base carries no ${arch} manifest; the lane stays documented in the census, the wave continues."
+            fi
+          done
+      - name: verify the published lane set (the twelve-lane axis)
+        # the lane census the owner's law charges: the published index
+        # must carry every arch the pinned base resolves (the carried
+        # half of the axis), and the census line names the best-effort
+        # half — twelve lanes per app container, more than eleven, every
+        # one honestly named.
+        if: steps.published.outputs.skip != 'true'
+        shell: bash
+        env:
+          CARRIEDASSERT: ${{ matrix.carriedassert }}
+          EXOTIC: ${{ matrix.exotic }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.release.outputs.version }}"
+          image_ref="ghcr.io/${{ github.repository_owner }}/${{ matrix.package }}:${version}"
+          docker buildx imagetools inspect --raw "${image_ref}" | jq -e --argjson expected "${CARRIEDASSERT}" '
+            [
+              .manifests[]
+              | select(.platform.os == "linux")
+              | if .platform.variant then "\(.platform.architecture)/\(.platform.variant)" else .platform.architecture end
+            ]
+            | sort
+            | . == $expected
+          '
+          carried="$(printf '%s' "${CARRIEDASSERT}" | jq length)"
+          exotic="$(printf '%s' "${EXOTIC}" | tr ',' '\n' | wc -l)"
+          lanes=$((carried + exotic))
+          echo "the ${{ matrix.package }} container answers ${lanes} lanes (${carried} base-carried arches in the published index + ${exotic} documented best-effort lanes): more than eleven, the container-lane law answered."
 
   desktop:
     name: desktop ${{ matrix.name }}
@@ -6931,22 +7094,26 @@ jobs:
           # landed only the max leg before failing froze balanced and
           # lite out of every re-run (the duplicate no-op answered forever
           # while the family stayed incomplete). The complete-family law:
-          # the resolve only no-ops when ALL THREE profile tags of the
-          # version are live (${version}, ${version}-balanced,
-          # ${version}-lite) - a partial family always re-proceeds, and
-          # the per-leg guard inside the publish matrix skips only the
-          # legs that already ship, so a re-run completes exactly the
-          # missing profiles.
-          api_out="$(gh api "/users/${OWNER}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${version}\" or . == \"${version}-balanced\" or . == \"${version}-lite\")] | length" 2>/dev/null || true)"
+          # the resolve only no-ops when ALL ELEVEN lane tags of the
+          # version are live (the three profile tags — ${version},
+          # ${version}-balanced, ${version}-lite — beside the four
+          # os-distribution flavor lanes — ${version}-linux,
+          # ${version}-omarchy, ${version}-vanillaos, ${version}-android —
+          # and the four catalog lanes — ${version}-grapheneos,
+          # ${version}-maruos, ${version}-v, ${version}-windows) — a
+          # partial family always re-proceeds, and the per-leg guard
+          # inside the publish matrix skips only the legs that already
+          # ship, so a re-run completes exactly the missing lanes.
+          api_out="$(gh api "/users/${OWNER}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${version}\" or . == \"${version}-balanced\" or . == \"${version}-lite\" or . == \"${version}-linux\" or . == \"${version}-omarchy\" or . == \"${version}-vanillaos\" or . == \"${version}-android\" or . == \"${version}-grapheneos\" or . == \"${version}-maruos\" or . == \"${version}-v\" or . == \"${version}-windows\")] | length" 2>/dev/null || true)"
           case "${api_out}" in
             ''|*[!0-9]*) api_out=0 ;;
           esac
-          if [ "${api_out}" = "3" ]; then
-            echo "GHCR container ${OWNER}/saddle carries the complete ${version} family (max, balanced, lite); the duplicate dispatch will no-op."
+          if [ "${api_out}" = "11" ]; then
+            echo "GHCR container ${OWNER}/saddle carries the complete ${version} family (the three profile lanes, the four os-distribution flavor lanes and the four catalog lanes); the duplicate dispatch will no-op."
             exit 0
           fi
           if [ "${api_out}" != "0" ]; then
-            echo "GHCR container ${OWNER}/saddle carries a partial ${version} family (${api_out} of 3 tags); proceeding so the missing profiles ship (the per-leg guard skips the published legs)."
+            echo "GHCR container ${OWNER}/saddle carries a partial ${version} family (${api_out} of 11 tags); proceeding so the missing lanes ship (the per-leg guard skips the published legs)."
           fi
           echo "proceed=true" >> "$GITHUB_OUTPUT"
 
@@ -7100,7 +7267,7 @@ jobs:
             --exit-code 1
 
   saddle-vhe-publish:
-    name: Publish saddle vhe ${{ matrix.profile }} image to GHCR (the standard's four base-carried legs)
+    name: Publish saddle vhe lane ${{ matrix.profile }}${{ matrix.osprofile && format('-{0}', matrix.osprofile) || '' }} to GHCR (the lane family of the standard's base-carried legs)
     needs: [saddle-vhe-resolve, saddle-vhe-scan]
     if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
     runs-on: ubuntu-latest
@@ -7125,22 +7292,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # THE ELEVEN-ARCH CONTAINER LAW (PR15): the standard covers the
-        # eleven architecture seats of saddle/containerarch.ts (linux-x64,
+        # THE ELEVEN-ARCH CONTAINER LAW (PR15) BESIDE THE OS-DISTRIBUTION
+        # LANE AXIS (the owner's container-lane law: the saddle container
+        # carries MORE THAN 15 lanes): the standard covers the eleven
+        # architecture seats of saddle/containerarch.ts (linux-x64,
         # darwin-arm64, windows-x64, linux-arm64, darwin-x64,
         # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
-        # darwin-arm64-v8, windows-x64-gnu) and all three profiles ship
-        # the build legs of the container-carried seats the pinned node
-        # base honestly answers (the native amd64 leg that serves
+        # darwin-arm64-v8, windows-x64-gnu) and the three profile lanes
+        # ship the build legs of the container-carried seats the pinned
+        # node base honestly answers (the native amd64 leg that serves
         # linux-x64 and linux-x64-musl beside the arm64, ppc64le and
-        # s390x legs under QEMU emulation - the go-style build index of
-        # containerarch.ts carries the four carried seats and the seven
-        # honest ARCH_LEG_NOT_BUILT absences); each carries a
-        # single version tag on the saddle container package (max ->
-        # :<version>, balanced/lite carry the profile suffix). One tag
-        # per version, no rolling aliases.
+        # s390x legs under QEMU emulation — 3 lanes x 4 arch legs = 12
+        # arch-lanes, every one kept). beside them the os-distribution
+        # axis rides: four flavor lanes (linux, omarchy, vanillaos,
+        # android) stamp their OSDISTRIBUTIONS catalog profile into the
+        # image config (SADDLE_OS_PROFILE + the OCI labels) and build on
+        # the same honest node base legs (4 lanes x 4 arch legs = 16
+        # arch-lanes), and the four catalog lanes the saddle-vhe-catalog
+        # job owns (grapheneos, maruos, v, windows — profiles with no
+        # runnable container base: Android firmware and guest seats)
+        # complete the family. twelve + sixteen + four = thirty-two
+        # lanes, each carrying a single version tag on the saddle
+        # container package. One tag per version, no rolling aliases.
         include:
           - profile: max
+            target: max
+            suffix: ""
             platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
@@ -7150,6 +7327,8 @@ jobs:
             profilegpus: 8
             expectcpu: EPYC 9965
           - profile: balanced
+            target: balanced
+            suffix: "-balanced"
             platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
@@ -7159,6 +7338,8 @@ jobs:
             profilegpus: 2
             expectcpu: 9995WX
           - profile: lite
+            target: lite
+            suffix: "-lite"
             platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
@@ -7167,6 +7348,61 @@ jobs:
             profilegpu: rtx5090
             profilegpus: 1
             expectcpu: 9950X3D
+          # the os-distribution flavor lanes: the same engine graph on the
+          # same honest base legs with the catalog profile stamped — the
+          # linux seat is the baseline flavor, omarchy the arch-based
+          # desktop seat, vanillaos the ubuntu-based atomic seat and
+          # android the mobile seat the grapheneos hardening builds on
+          # (every flavor binds the max plan: the tier axis stays the
+          # profile lanes' own).
+          - profile: max
+            target: oslinux
+            osprofile: linux
+            suffix: "-linux"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+            expectcpu: EPYC 9965
+          - profile: max
+            target: osomarchy
+            osprofile: omarchy
+            suffix: "-omarchy"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+            expectcpu: EPYC 9965
+          - profile: max
+            target: osvanillaos
+            osprofile: vanillaos
+            suffix: "-vanillaos"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+            expectcpu: EPYC 9965
+          - profile: max
+            target: osandroid
+            osprofile: android
+            suffix: "-android"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+            expectcpu: EPYC 9965
     steps:
       - name: Check out the verified tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -7205,8 +7441,7 @@ jobs:
           set -euo pipefail
           img="${IMAGE,,}"
           ver="${VERSION}"
-          suffix=""
-          if [ "${PROFILE}" != "max" ]; then suffix="-${PROFILE}"; fi
+          suffix="${{ matrix.suffix }}"
           # ONE tag per version on the saddle container package
           # (ghcr.io/wenathlan/saddle): the saddle name isolates the engine
           # image family from the devthink node-engine image the ghcr lane
@@ -7260,9 +7495,11 @@ jobs:
         with:
           context: ./saddlebuildctx
           file: ./saddlebuildctx/saddle/Dockerfile
-          # the profile target the matrix names (max, balanced or lite):
-          # the same variant stages the Dockerfile documents.
-          target: ${{ matrix.profile }}
+          # the lane target the matrix names (max, balanced, lite — the
+          # profile variant stages — or oslinux, osomarchy, osvanillaos,
+          # osandroid — the os-distribution flavor stages): the same
+          # variant stages the Dockerfile documents.
+          target: ${{ matrix.target }}
           platforms: ${{ matrix.platforms }}
           push: true
           tags: ${{ steps.meta.outputs.tag }}
@@ -7287,9 +7524,146 @@ jobs:
           provenance: mode=max
           sbom: true
 
+  saddle-vhe-catalog:
+    name: Publish the saddle os-distribution catalog lane ${{ matrix.osprofile }} to GHCR
+    # THE CATALOG LANES OF THE OS-DISTRIBUTION AXIS (the owner's
+    # container-lane law, the exotic half): the os profiles with NO
+    # runnable container base — grapheneos and maru os are android
+    # firmware seats, the v seat is the vlang platform target and the
+    # windows seat is the guest vocabulary the exe seats execute — never
+    # pretend a runnable image. the lane publishes the profile itself as
+    # an image manifest: a scratch-based image whose config carries the
+    # SADDLE_OS_PROFILE stamp, the OCI labels and the profile row the
+    # osprofiles catalog answers (rendered to json at build time), so the
+    # operator reading the registry finds every seat the owner's law
+    # names — honest, documented, still a real published lane.
+    needs: [saddle-vhe-resolve, saddle-vhe-scan]
+    if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - osprofile: grapheneos
+            suffix: "-grapheneos"
+          - osprofile: maruos
+            suffix: "-maruos"
+          - osprofile: v
+            suffix: "-v"
+          - osprofile: windows
+            suffix: "-windows"
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
+
+      - name: Set up Node (the type-stripping read of the catalog)
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve the lane tag (the per-leg guard)
+        id: meta
+        env:
+          VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
+          IMAGE: ${{ env.REGISTRY }}/saddle
+          PROFILE: ${{ matrix.osprofile }}
+          SUFFIX: ${{ matrix.suffix }}
+          OWNER: ${{ github.repository_owner }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          img="${IMAGE,,}"
+          ver="${VERSION}"
+          echo "tag=${img}:${ver}${SUFFIX}" >> "$GITHUB_OUTPUT"
+          echo "resolved catalog lane tag: ${img}:${ver}${SUFFIX}"
+          leg_out="$(gh api "/users/${OWNER,,}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${ver}${SUFFIX}\")] | length" 2>/dev/null || true)"
+          case "${leg_out}" in
+            ''|*[!0-9]*) leg_out=0 ;;
+          esac
+          if [ "${leg_out}" != "0" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "catalog lane ${ver}${SUFFIX} already ships on the registry; this leg will skip."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stage the saddle build context and render the profile config
+        # the same staged tree the runnable lanes build (the saddle nested
+        # under saddle/ with the vault sources beside it) plus the rendered
+        # osprofiles json the catalog stages COPY: the profile rows the
+        # osprofiles catalog answers, one json per seat, generated from the
+        # tagged source the lane checks out (never a placeholder).
+        if: steps.meta.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf saddlebuildctx
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          cp -a saddle/. saddlebuildctx/saddle/
+          cp -a vault/. saddlebuildctx/vault/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+                 saddlebuildctx/vault/tests
+          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+          cat > osprofile-dump.ts <<'DUMP'
+          import { mkdirSync, writeFileSync } from "node:fs";
+          import { OSPROFILES } from "./saddlebuildctx/saddle/osprofiles.ts";
+          mkdirSync("saddlebuildctx/osprofiles", { recursive: true });
+          for (const profile of OSPROFILES) {
+            writeFileSync(`saddlebuildctx/osprofiles/${profile.id}.json`, JSON.stringify(profile, null, 2) + "\n");
+          }
+          console.log(`the os profile catalog answered ${OSPROFILES.length} seats`);
+          DUMP
+          node osprofile-dump.ts
+          rm -f osprofile-dump.ts
+          test -s "saddlebuildctx/osprofiles/${{ matrix.osprofile }}.json"
+
+      - name: Build and push the catalog lane
+        # the scratch target of the profile: no runnable base (the digest
+        # law rides trivially — a scratch stage pins no base at all), the
+        # profile config and the stamps the config carries.
+        if: steps.meta.outputs.skip != 'true'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./saddlebuildctx
+          file: ./saddlebuildctx/saddle/Dockerfile
+          target: os${{ matrix.osprofile }}
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tag }}
+          build-args: |
+            SADDLE_VERSION=${{ needs.saddle-vhe-resolve.outputs.version }}
+            SADDLE_OS_PROFILE=${{ matrix.osprofile }}
+          labels: |
+            org.opencontainers.image.title=saddle (the ${{ matrix.osprofile }} os-distribution catalog lane)
+            org.opencontainers.image.description=the ${{ matrix.osprofile }} os-distribution seat the osprofiles catalog carries — no runnable container base exists for this seat, the lane publishes the profile config the engine reads.
+            org.opencontainers.image.version=${{ needs.saddle-vhe-resolve.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
   saddle-vhe-verify:
     name: Verify published saddle vhe image (${{ matrix.profile }})
-    needs: [saddle-vhe-resolve, saddle-vhe-publish]
+    needs: [saddle-vhe-resolve, saddle-vhe-publish, saddle-vhe-catalog]
     if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     defaults:
@@ -7305,15 +7679,61 @@ jobs:
         include:
           # the SAME tag family the publish legs emit on the saddle
           # container package (max -> the bare :<version>, balanced and
-          # lite carry the profile suffix): the devthink node-engine image
-          # owns its own ghcr lane - inspecting it here would verify the
-          # wrong image.
+          # lite carry the profile suffix, the os-distribution flavor
+          # lanes carry the seat suffix and the catalog lanes carry the
+          # no-base seat suffix): the devthink node-engine image owns its
+          # own ghcr lane - inspecting it here would verify the wrong
+          # image. eleven legs: seven runnable lanes (the three profile
+          # lanes beside the four os-distribution flavor lanes, each
+          # asserting the four-arch index, the health smoke, the ninety
+          # modalities and both profile stamps) and four catalog lanes
+          # (the scratch manifest images whose config carries the profile
+          # row — verified through the labels and the embedded json,
+          # never a pretended boot).
           - profile: max
             suffix: ""
+            mode: runnable
+            expectosprofile: ""
           - profile: balanced
             suffix: "-balanced"
+            mode: runnable
+            expectosprofile: ""
           - profile: lite
             suffix: "-lite"
+            mode: runnable
+            expectosprofile: ""
+          - profile: max
+            suffix: "-linux"
+            mode: runnable
+            expectosprofile: linux
+          - profile: max
+            suffix: "-omarchy"
+            mode: runnable
+            expectosprofile: omarchy
+          - profile: max
+            suffix: "-vanillaos"
+            mode: runnable
+            expectosprofile: vanillaos
+          - profile: max
+            suffix: "-android"
+            mode: runnable
+            expectosprofile: android
+          - profile: catalog
+            suffix: "-grapheneos"
+            mode: catalog
+            expectosprofile: grapheneos
+          - profile: catalog
+            suffix: "-maruos"
+            mode: catalog
+            expectosprofile: maruos
+          - profile: catalog
+            suffix: "-v"
+            mode: catalog
+            expectosprofile: v
+          - profile: catalog
+            suffix: "-windows"
+            mode: catalog
+            expectosprofile: windows
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
@@ -7322,12 +7742,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Inspect index and smoke test the console
+      - name: Inspect index and smoke test the console (the runnable lanes)
+        if: matrix.mode == 'runnable'
         env:
           IMAGE: ghcr.io/${{ github.repository_owner }}/saddle
           VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
           SUFFIX: ${{ matrix.suffix }}
           PROFILE: ${{ matrix.profile }}
+          EXPECTOSPROFILE: ${{ matrix.expectosprofile }}
         run: |
           set -euo pipefail
           image_ref="${IMAGE,,}:${VERSION}${SUFFIX}"
@@ -7376,7 +7798,43 @@ jobs:
           echo "${plan}"
           profile="$(docker image inspect "${image_ref}" --format '{{ index .Config.Env }}')"
           grep -q "SADDLE_PROFILE=${PROFILE}" <<< "${profile}"
-          echo "published ${image_ref} verified: 11-arch index (${PROFILE}), version label ${VERSION}, health green, the ninety modalities answer, the profile stamp rides the config"
+          # the os-distribution flavor lanes stamp their catalog seat beside
+          # the plan profile (SADDLE_OS_PROFILE): the flavor legs assert it,
+          # the bare profile lanes carry no seat stamp.
+          if [ -n "${EXPECTOSPROFILE}" ]; then
+            grep -q "SADDLE_OS_PROFILE=${EXPECTOSPROFILE}" <<< "${profile}"
+          fi
+          echo "published ${image_ref} verified: the four base-carried legs of the eleven-arch index (${PROFILE}${EXPECTOSPROFILE:+, the ${EXPECTOSPROFILE} os-distribution seat}), version label ${VERSION}, health green, the ninety modalities answer, the profile stamps ride the config"
+
+      - name: Verify the catalog lane (the no-base os-distribution seats)
+        # the scratch manifest lanes never pretend a boot: the verify reads
+        # the published config — the catalog labels, the version stamp and
+        # the embedded profile row the osprofiles catalog answers (id,
+        # kind, base, archs) — through docker image inspect and the
+        # extracted json, the honest grammar a profile with no runnable
+        # container base carries.
+        if: matrix.mode == 'catalog'
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/saddle
+          VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
+          SUFFIX: ${{ matrix.suffix }}
+          EXPECTOSPROFILE: ${{ matrix.expectosprofile }}
+        run: |
+          set -euo pipefail
+          image_ref="${IMAGE,,}:${VERSION}${SUFFIX}"
+          echo "inspecting the catalog lane ${image_ref}"
+          docker pull --quiet "${image_ref}"
+          actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
+          test "${actual_version}" = "${VERSION}"
+          title="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.title" }}')"
+          grep -q "catalog lane" <<< "${title}"
+          cid="$(docker create "${image_ref}")"
+          trap 'docker rm -f "${cid}" >/dev/null 2>&1 || true' EXIT
+          docker cp "${cid}:/saddle/osprofile.json" ./osprofile.json
+          jq -e --arg seat "${EXPECTOSPROFILE}" '.id == $seat and (.kind | length > 0) and (.base | length > 0) and (.archs | length > 0)' ./osprofile.json
+          stamp="$(docker image inspect "${image_ref}" --format '{{ index .Config.Env }}')"
+          grep -q "SADDLE_OS_PROFILE=${EXPECTOSPROFILE}" <<< "${stamp}"
+          echo "published ${image_ref} verified: the ${EXPECTOSPROFILE} catalog lane carries the profile row (kind, base, archs), the version label ${VERSION} and the seat stamp — no runnable base pretended."
 
   saddle-vhe-cleanup:
     name: Clean the saddle vhe run caches

@@ -411,3 +411,107 @@ ENV SADDLE_PROFILE=balanced \
     SADDLE_PROFILE_RAM_GB=${VHE_PROFILE_RAM_GB} \
     SADDLE_PROFILE_GPU=${VHE_PROFILE_GPU} \
     SADDLE_PROFILE_GPUS=${VHE_PROFILE_GPUS}
+
+# ===== the os-distribution flavor lanes (the container-lane law) =====
+# THE OS-DISTRIBUTION AXIS BESIDE THE PROFILE AXIS (the owner's
+# container-lane law: the saddle container carries MORE THAN 15 lanes):
+# the four seats of the OSDISTRIBUTIONS catalog that ride the same honest
+# node base legs — linux (the baseline seat), omarchy (the arch
+# linux-based desktop distribution created by dhh), vanilla os (the
+# ubuntu-based atomic distribution) and android (the mobile platform the
+# grapheneos hardening builds on) — answer four flavor targets that stamp
+# the catalog seat into the image config (SADDLE_OS_PROFILE + the OCI
+# labels), binding the max plan the baseline seat rides. the flavor is
+# the GUEST SEAT the engine hosts (the catalog law of
+# saddle/containerarch.ts: the engine presents the profile, it never
+# installs a host distribution) — the same engine graph, the same ninety
+# modalities, the same health surface, one honest seat stamp per lane:
+#
+#   docker build --target oslinux      -t saddle:2.0.165-linux .
+#   docker build --target osomarchy    -t saddle:2.0.165-omarchy .
+#   docker build --target osvanillaos  -t saddle:2.0.165-vanillaos .
+#   docker build --target osandroid    -t saddle:2.0.165-android .
+FROM max AS oslinux
+ARG SADDLE_OS_PROFILE="linux"
+ENV SADDLE_OS_PROFILE=linux
+LABEL org.opencontainers.image.title="saddle (the linux os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the linux os-distribution seat of the catalog: the baseline distribution the container itself rides."
+
+FROM max AS osomarchy
+ARG SADDLE_OS_PROFILE="omarchy"
+ENV SADDLE_OS_PROFILE=omarchy
+LABEL org.opencontainers.image.title="saddle (the omarchy os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the omarchy os-distribution seat of the catalog: the arch linux-based distribution created by dhh, hosted as the desktop guest profile."
+
+FROM max AS osvanillaos
+ARG SADDLE_OS_PROFILE="vanillaos"
+ENV SADDLE_OS_PROFILE=vanillaos
+LABEL org.opencontainers.image.title="saddle (the vanilla os os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the vanilla os os-distribution seat of the catalog: the ubuntu-based atomic distribution, hosted as the desktop guest profile."
+
+FROM max AS osandroid
+ARG SADDLE_OS_PROFILE="android"
+ENV SADDLE_OS_PROFILE=android
+LABEL org.opencontainers.image.title="saddle (the android os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the android os-distribution seat of the catalog: the mobile platform the grapheneos hardening builds on, hosted as the mobile guest profile."
+
+# ===== the os-distribution catalog lanes (the no-base seats) =====
+# THE EXOTIC HALF OF THE AXIS: the os distribution seats with NO runnable
+# container base — grapheneos (a privacy and security hardened version of
+# android) and maru os (firmware, not an application) are android
+# firmware seats, the v seat is the vlang platform target (never a guest
+# distribution) and the windows seat is the guest vocabulary the exe
+# seats execute — never pretend a runnable image. the catalog lane
+# publishes the profile itself: a scratch-based image (no base at all —
+# the digest law rides trivially) whose config carries the seat stamp and
+# whose single file is the profile row the osprofiles catalog answers,
+# rendered to json beside the build context (osprofiles/<id>.json, the
+# publish lane generates it from the tagged source):
+#
+#   docker build --target osgrapheneos -t saddle:2.0.165-grapheneos .
+#   docker build --target osmaruos     -t saddle:2.0.165-maruos .
+#   docker build --target osv          -t saddle:2.0.165-v .
+#   docker build --target oswindows    -t saddle:2.0.165-windows .
+FROM scratch AS osgrapheneos
+ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_OS_PROFILE="grapheneos"
+ENV SADDLE_OS_PROFILE=grapheneos
+LABEL org.opencontainers.image.title="saddle (the grapheneos os-distribution catalog lane)" \
+      org.opencontainers.image.description="the grapheneos os-distribution seat as a catalog lane: a privacy and security hardened version of android — no runnable container base exists for an android firmware seat, the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/grapheneos.json /saddle/osprofile.json
+
+FROM scratch AS osmaruos
+ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_OS_PROFILE="maruos"
+ENV SADDLE_OS_PROFILE=maruos
+LABEL org.opencontainers.image.title="saddle (the maru os os-distribution catalog lane)" \
+      org.opencontainers.image.description="the maru os os-distribution seat as a catalog lane: maru os is firmware, not an application — no runnable container base exists for a firmware seat, the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/maruos.json /saddle/osprofile.json
+
+FROM scratch AS osv
+ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_OS_PROFILE="v"
+ENV SADDLE_OS_PROFILE=v
+LABEL org.opencontainers.image.title="saddle (the v os-distribution catalog lane)" \
+      org.opencontainers.image.description="the v os-distribution seat as a catalog lane: the v language platform target the languagev compiler seat of the ninety modalities answers, never a guest distribution — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/v.json /saddle/osprofile.json
+
+FROM scratch AS oswindows
+ARG SADDLE_VERSION=2.0.165
+ARG SADDLE_OS_PROFILE="windows"
+ENV SADDLE_OS_PROFILE=windows
+LABEL org.opencontainers.image.title="saddle (the windows os-distribution catalog lane)" \
+      org.opencontainers.image.description="the windows os-distribution seat as a catalog lane: the guest vocabulary the exe seats execute — the container standard answers the windows seats as binary targets, the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${SADDLE_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/windows.json /saddle/osprofile.json

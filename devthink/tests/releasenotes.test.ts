@@ -53,6 +53,26 @@ describe("generated release notes", () => {
       [`devthink-attestations-${version}.json`, "provenance"],
       [`devthink-artifactmanifest-${version}.json`, "provenance"],
       [`devthink-container.digest`, "container"],
+      /* the thousand asset ladder families: the sibling envelopes, the zip
+       * twins of the site and next archives, the per-app source, maven and
+       * provenance seats, the per-architecture container seats and the
+       * per-channel checksum umbrellas */
+      [`wenathlan-argan-${version}.tgz`, "npmjs"],
+      [`argan.${version}.tar.xz`, "site"],
+      [`argan.web.${version}.zip`, "site"],
+      [`argan.next.zai.${version}.tar.xz.br`, "site"],
+      [`argan.next.personalized.${version}.zip`, "site"],
+      [`argan.${version}.source.tar.xz`, "chromium"],
+      [`argan-${version}-sources.jar`, "maven"],
+      [`argan-${version}-javadoc.jar`, "maven"],
+      [`argan.${version}.sbom.cyclonedx.json`, "provenance"],
+      [`argan.${version}.sbom.spdx.json`, "provenance"],
+      [`argan.${version}.attestations.json`, "provenance"],
+      [`argan.container.${version}.arm64.tar.gz`, "container"],
+      [`argan.sha256.container.${version}.riscv64`, "container"],
+      [`argan.manifest.container.${version}.s390x.json`, "container"],
+      [`saddle.${version}.sha256`, "github"],
+      [`sha256.channel.site.${version}`, "github"],
     ];
     for (const [name, channel] of expectedartifacts) {
       expect(releasenotes).toContain(`\`${name}\``);
@@ -62,6 +82,35 @@ describe("generated release notes", () => {
     expect(releasenotes).toContain("`SHA256SUMS.txt`");
     expect(releasenotes).toContain("`RELEASENOTES.md`");
     expect(releasenotes).toContain("the verification step downloads every asset and verifies the checksums");
+  });
+
+  it("carries the asset census of the thousand plus law with the axis math", async () => {
+    /* the thousand asset ladder the owner ordered ("os assets não passam
+     * 1000"): the release notes carry the census section — the axis math
+     * of every deterministic lane and the total above one thousand — so
+     * the release body answers the count question the owner asks, and the
+     * channel sections enumerate the family seat names the lanes attach. */
+    const packagejson = JSON.parse(await readFile("package.json", "utf8"));
+    const version = String(packagejson.version);
+    const releasenotes = await readFile("docs/releasenotes.md", "utf8");
+    expect(releasenotes).toContain("## The asset census (the thousand plus law)");
+    expect(releasenotes).toContain("never a placeholder");
+    expect(releasenotes).toContain("| **The census** | | **1131** |");
+    expect(releasenotes).toContain("11 applications × 15 forms");
+    expect(releasenotes).toContain("11 applications × 7 seats");
+    expect(releasenotes).toContain("8 site homes × 7 arch legs × 3 records");
+    expect(releasenotes).toContain("tests/publishlanes.test.ts");
+    /* the github channel section enumerates the walk catalog: the family
+     * seat names, the container seats and the channel umbrellas answer
+     * beside the os names */
+    expect(releasenotes).toContain(`- \`argan.container.${version}.386.tar.gz\``);
+    expect(releasenotes).toContain(`- \`argan.container.${version}.s390x.tar.gz\``);
+    expect(releasenotes).toContain(`- \`vault.next.fifty.${version}.zip\``);
+    expect(releasenotes).toContain(`- \`wenathlan-stealthhead-${version}.tgz\``);
+    expect(releasenotes).toContain(`- \`getry.${version}.sbom.spdx.json\``);
+    expect(releasenotes).toContain(`- \`sha256.channel.provenance.${version}\``);
+    const githubsection = releasenotes.slice(releasenotes.indexOf("### github channel"));
+    expect(githubsection.split("\n- \`").length - 1).toBeGreaterThan(400);
   });
 });
 

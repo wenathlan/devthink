@@ -16,8 +16,10 @@
  * honestly by the family ghcr loop (the repository token holds no write
  * there; the -vhe lane owns the saddle containers). the release assets
  * census — the structural floor every release-triggered lane promises
- * clears the three hundred plus law, so the regression that once lost the
- * four hundred asset era of the 133/134 rungs can never land silently
+ * clears the thousand plus law (the owner order the thousand asset ladder
+ * answers: the release assets and the release notes carry MORE than one
+ * thousand real assets), so the regression that once lost the four
+ * hundred asset era of the 133/134 rungs can never land silently
  * again: the census answers at the pull request gate, before a release
  * ever ships. the registry family seats — the distfamily law: the four
  * github-packages family matrices answer every application envelope
@@ -139,6 +141,56 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
     expect(release).toContain("the latecomer answers already published.");
   });
 
+  it("the devthink npm seat rides the release ladder with the sibling guarantees (the npm lane root cause)", async () => {
+    /* the owner complaint (the devthink package never answered npmjs while
+     * the family envelopes published): the devthink application publishes
+     * through its own single lanes — the release ladder's npmjs job and the
+     * publish mirror's npmjs/githubnpm jobs — never through the family
+     * matrices, so the seat answers the ladder edge that feeds the assemble
+     * lane: the assemble needs edge rides the yaml flow sequence form
+     * [metadata, verify] (a bare scalar with a stray closing bracket answers
+     * an unknown job on the registry's parser and no npm lane — application
+     * or family — ever fires), and the application publish carries the
+     * EXPLICIT latest tag the sibling envelopes answer (the #81 fix): the
+     * devthink registry latest sits on the retired 2.1.x line the heal
+     * documents, npm 12 refuses the IMPLICIT latest tag for a rung below
+     * it, and a refusal is never a transient failure — the bounded retry
+     * burned all three attempts of the 2.0.151 rung on the refusal while
+     * the family loop (which stamps the tag) published around it. */
+    const release = await readworkflow("release.yml");
+    expect(release).toContain("needs: [metadata, verify]");
+    expect(release).not.toContain("needs: etadata, verify]");
+    /* the assemble lane feeds the npmjs job the built tarball publishes */
+    expect(release).toContain("needs: [assemble, releaseassets, release-approval]");
+    /* the devthink npm seat carries the same guarantees the sibling
+     * envelopes answer: the explicit latest tag beside the provenance
+     * signature on BOTH npmjs lanes of the application package. */
+    expect(release).toContain(
+      'npm publish "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz" --registry=https://registry.npmjs.org --access public --provenance --tag latest',
+    );
+    const publish = await readworkflow("publish.yml");
+    expect(publish).toContain('npm publish "${tarball}" --access public --provenance --tag latest');
+    /* the publish mirror seats the application package beside the family:
+     * the npmjs job answers the public registry, the githubnpm job answers
+     * the github packages registry — the dual npm law of the PR14 seat. */
+    const parsed = await parseworkflow("publish.yml");
+    expect(parsed.jobs?.npmjs).toBeDefined();
+    expect(parsed.jobs?.githubnpm).toBeDefined();
+    expect(publish).toContain("registry-url: https://registry.npmjs.org");
+    expect(publish).toContain("registry-url: https://npm.pkg.github.com");
+    /* the application manifest answers the public registry identity the
+     * siblings carry (the saddle pin beside the devthink one) */
+    const devthink = JSON.parse(await readFile(join(repoRoot, "devthink", "package.json"), "utf8")) as {
+      name?: string;
+      private?: boolean;
+      publishConfig?: { access?: string; registry?: string };
+    };
+    expect(devthink.name).toBe("@wenathlan/devthink");
+    expect(devthink.private).not.toBe(true);
+    expect(devthink.publishConfig?.access).toBe("public");
+    expect(devthink.publishConfig?.registry).toBe("https://registry.npmjs.org/");
+  });
+
   it("the graceful skip answers the absent token alone", async () => {
     const publish = await readworkflow("publish.yml");
     expect(publish).toContain("skip notice when NPM_TOKEN is not configured");
@@ -228,7 +280,22 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   it("the three vhe profiles answer the owner doctrine — max, light and palatial ride max, balanced and lite", async () => {
     const publish = await parseworkflow("publish.yml");
     const profiles = matrixof(publish, "saddle-vhe-publish");
-    expect(profiles.map((leg) => leg.profile)).toEqual(["max", "balanced", "lite"]);
+    /* the seven runnable publish legs: the three profile lanes (max,
+     * balanced, lite — nothing removed) beside the four os-distribution
+     * flavor lanes the container-lane law adds (linux, omarchy,
+     * vanillaos, android — every flavor binds the max plan, the tier
+     * axis stays the profile lanes' own). */
+    expect(profiles.map((leg) => leg.profile)).toEqual(["max", "balanced", "lite", "max", "max", "max", "max"]);
+    expect(profiles.map((leg) => leg.osprofile ?? "")).toEqual(["", "", "", "linux", "omarchy", "vanillaos", "android"]);
+    expect(profiles.map((leg) => [leg.target, leg.suffix ?? ""])).toEqual([
+      ["max", ""],
+      ["balanced", "-balanced"],
+      ["lite", "-lite"],
+      ["oslinux", "-linux"],
+      ["osomarchy", "-omarchy"],
+      ["osvanillaos", "-vanillaos"],
+      ["osandroid", "-android"],
+    ]);
     /* the virtual hardware identity of each profile: the cpu model, the
      * core/thread counts, the memory plan in gibibytes, the gpu profile and
      * count — the constants the runtime stage bakes and the verify leg
@@ -289,17 +356,32 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   it("the profile tag family never collides with the node engine and never rolls", async () => {
     const publish = await readworkflow("publish.yml");
     /* the saddlemod heal law: max rides the bare :<version> tag of the
-     * family pattern, balanced / lite carry the profile suffix, and no leg
+     * family pattern, balanced / lite carry the profile suffix, the
+     * os-distribution lanes carry the seat suffix (the matrix suffix
+     * field owns the grammar — the container-lane law wave), and no leg
      * ever publishes a rolling alias. */
-    expect(publish).toContain('if [ "${PROFILE}" != "max" ]; then suffix="-${PROFILE}"; fi');
+    expect(publish).toContain('suffix="${{ matrix.suffix }}"');
     expect(publish).toContain("no rolling alias");
     const workflow = await parseworkflow("publish.yml");
     const verify = matrixof(workflow, "saddle-vhe-verify");
-    expect(verify.map((leg) => [leg.profile, leg.suffix ?? ""])).toEqual([
-      ["max", ""],
-      ["balanced", "-balanced"],
-      ["lite", "-lite"],
+    /* the eleven verify legs: the three profile lanes, the four
+     * os-distribution flavor lanes (runnable) and the four catalog lanes
+     * (the no-base seats: grapheneos, maruos, v, windows). */
+    expect(verify.map((leg) => [leg.profile, leg.suffix ?? "", leg.mode])).toEqual([
+      ["max", "", "runnable"],
+      ["balanced", "-balanced", "runnable"],
+      ["lite", "-lite", "runnable"],
+      ["max", "-linux", "runnable"],
+      ["max", "-omarchy", "runnable"],
+      ["max", "-vanillaos", "runnable"],
+      ["max", "-android", "runnable"],
+      ["catalog", "-grapheneos", "catalog"],
+      ["catalog", "-maruos", "catalog"],
+      ["catalog", "-v", "catalog"],
+      ["catalog", "-windows", "catalog"],
     ]);
+    const catalog = matrixof(workflow, "saddle-vhe-catalog");
+    expect(catalog.map((leg) => leg.osprofile)).toEqual(["grapheneos", "maruos", "v", "windows"]);
   });
 
   it("the published vhe index answers the base-carried build legs and the honest console smokes", async () => {
@@ -328,17 +410,18 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(publish).toContain('. == ["amd64", "arm64", "ppc64le", "riscv64", "s390x"]');
   });
 
-  it("the pre-deploy existence check matches the -vhe suffix — the saddle lesson", async () => {
+  it("the pre-deploy existence check matches the lane family — the saddle lesson", async () => {
     const publish = await readworkflow("publish.yml");
     /* the bare startswith(${version}) once saw the node-engine tag and
-     * no-opped the vhe publication; the match carries the -vhe suffix.
+     * no-opped the vhe publication; the match carries the lane suffixes.
      * the partial-publish freeze fix tightens the same lesson: the
-     * no-op now demands the complete three-profile family (max,
-     * balanced and lite all live) instead of any single -vhe tag, and
-     * the per-leg guard inside the publish matrix skips only the legs
-     * that already ship so a re-run completes the missing siblings. */
-    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\"');
-    expect(publish).toContain('if [ "${api_out}" = "3" ]');
+     * no-op now demands the complete eleven-lane family (the three
+     * profile lanes, the four os-distribution flavor lanes and the four
+     * catalog lanes all live) instead of any single tag, and the per-leg
+     * guard inside the publish matrix skips only the legs that already
+     * ship so a re-run completes the missing siblings. */
+    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\" or . == \\"${version}-linux\\" or . == \\"${version}-omarchy\\" or . == \\"${version}-vanillaos\\" or . == \\"${version}-android\\" or . == \\"${version}-grapheneos\\" or . == \\"${version}-maruos\\" or . == \\"${version}-v\\" or . == \\"${version}-windows\\"');
+    expect(publish).toContain('if [ "${api_out}" = "11" ]');
     expect(publish).toContain('echo "skip=true" >> "$GITHUB_OUTPUT"');
     expect(publish).toContain("if: steps.meta.outputs.skip != 'true'");
   });
@@ -437,7 +520,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 });
 
-describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
+describe.skipIf(!inrepo)("the release assets census (the thousand plus law)", () => {
   /** the file-bundle kinds the desktop collect step ships: the -f guard of
    * the find walk skips the .app directory (it never rides as a file), so
    * the census counts the bundle kinds that land as files. */
@@ -513,11 +596,11 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
     expect(source).toContain("manifest.android.${version}.json");
   });
 
-  it("the next conversion walks the eleven applications with the ten-asset grammar", async () => {
+  it("the next conversion walks the eleven applications with the fifteen-asset grammar", async () => {
     const convert = await readFile(join(repoRoot, "devthink", "scripts.ts"), "utf8");
     /* the CONVERT list: every site application of the monorepo, the os
      * included — cobaia joined the conversion lane (wave/firststation):
-     * the monetization surface walks the same ten-asset grammar as the
+     * the monetization surface walks the same fifteen-asset grammar as the
      * rest of the family. */
     const list = /const CONVERT = \[([^\]]+)\]/.exec(convert)?.[1] ?? "";
     const apps = [...list.matchAll(/"([a-z]+)"/g)].map((match) => match[1]);
@@ -535,8 +618,8 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
       "getry",
     ]);
     /* the complete site archive plus the four next shapes (normal, zai,
-     * fifty, personalized), every archive carrying the brotli overlay: ten
-     * assets per application. */
+     * fifty, personalized), every archive carrying the brotli overlay and
+     * the zip twin of the owner spec: fifteen assets per application. */
     expect(convert).toContain("packxz(raw, INSIDE(path.join(out, `${app}.${versionof(app)}.tar.xz`)))");
     expect(convert).toContain("packxz(normal, INSIDE(path.join(out, `${app}.next.normal.${versionof(app)}.tar.xz`)))");
     expect(convert).toContain("packxz(zai, INSIDE(path.join(out, `${app}.next.zai.${versionof(app)}.tar.xz`)))");
@@ -545,6 +628,17 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
       "packxz(personal, INSIDE(path.join(out, `${app}.next.personalized.${versionof(app)}.tar.xz`)))",
     );
     expect(convert).toContain('if (file.endsWith(".tar.xz")) overlay(INSIDE(path.join(out, file)))');
+    /* the zip twins (the thousand asset ladder): the five distribution
+     * zips of the owner spec — the web seat of the site archive and the
+     * zip twin of every next shape, the windows-native extraction form
+     * beside the tar.xz and the brotli overlay. */
+    expect(convert).toContain("packzip(raw, INSIDE(path.join(out, `${app}.web.${versionof(app)}.zip`)))");
+    expect(convert).toContain("packzip(normal, INSIDE(path.join(out, `${app}.next.normal.${versionof(app)}.zip`)))");
+    expect(convert).toContain("packzip(zai, INSIDE(path.join(out, `${app}.next.zai.${versionof(app)}.zip`)))");
+    expect(convert).toContain("packzip(fifty, INSIDE(path.join(out, `${app}.next.fifty.${versionof(app)}.zip`)))");
+    expect(convert).toContain(
+      "packzip(personal, INSIDE(path.join(out, `${app}.next.personalized.${versionof(app)}.zip`)))",
+    );
   });
 
   it("the release ladder packs the nine family envelopes with saddle last", async () => {
@@ -565,23 +659,28 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
     }
   });
 
-  it("the structural census clears the 300 plus law", async () => {
+  it("the structural census clears the thousand plus law", async () => {
     /* the census counts the deterministic assets every release-triggered
      * lane attaches: the family desktop legs (the file bundles, the
      * manifest and the sha256 record of each platform), the family android
      * legs (the universal apk plus the four abi splits, the aab, the
      * sha256, the manifest), the next conversion (the site archive and the
-     * four next shapes of the eleven applications — cobaia joined the
-     * conversion lane, each with the brotli overlay) and the nine family
-     * envelopes the release ladder packs. the os rides its own publish
-     * lanes (the desktop bundles, the mobile artifacts, the container
-     * digest records, the extension packages, the iso and the wasm cores)
-     * beside this floor. the wave of the first station expanded the
-     * surfaces: the windows legs answer the msi seat beside the nsis
-     * installer, the android lane walks the abi splits (four standalone
-     * apks beside the universal build) and cobaia rides the conversion —
-     * a lane or a matrix leg deleted reddens the census before a release
-     * ever ships. */
+     * four next shapes of the eleven applications — every shape with the
+     * tar.xz, the brotli overlay and the zip twin), the ten family
+     * envelopes the release ladder packs, the per-app seat lane (the
+     * source snapshot, the maven classifier pair, the sbom pair, the
+     * attestations record and the checksum umbrella of every application),
+     * the per-arch container seats (the eight site homes across the seven
+     * non-amd64 legs of the eight-arch runtime index, every leg with the
+     * image save, the checksum and the manifest record), the per-channel
+     * checksum umbrellas of the release walk and the os lanes it carries,
+     * beside the publish mirror's own deterministic ladders (the metadata
+     * ladder, the family reports, the family container archives, the
+     * gradle and go module seats). the os rides its own publish lanes
+     * (the desktop bundles, the mobile artifacts, the container digest
+     * records, the extension packages, the iso and the wasm cores) beside
+     * this floor — a lane or a matrix leg deleted reddens the census
+     * before a release ever ships. */
     const desktop = await parseworkflow("family-desktop.yml");
     const matrix = (
       desktop.jobs?.desktop as { strategy?: { matrix?: { include?: Array<{ bundles?: string }> } } } | undefined
@@ -591,13 +690,78 @@ describe.skipIf(!inrepo)("the release assets census (the 300 plus law)", () => {
     const desktopperapp = bundles + platforms * 2; /* bundle files + manifest + sha256 per platform */
     const desktopfamily = 9 * desktopperapp;
     const androidfamily = 9 * 8; /* universal apk + four abi splits + aab + sha256 + manifest */
-    const nextfamily = 11 * 10; /* site archive + four next shapes of the eleven apps, brotli overlays included */
-    const envelopes = 9; /* the family tgz the release ladder packs */
-    const census = desktopfamily + androidfamily + nextfamily + envelopes;
+    const nextfamily = 11 * 15; /* site archive + four next shapes of the eleven apps, brotli overlays and zip twins included */
+    const envelopes = 10; /* the family tgz the release ladder packs (the ten member envelopes, saddle last) */
+    const familyseats = 11 * 7; /* source snapshot + sources jar + javadoc jar + sbom pair + attestations record + checksum umbrella per application */
+    const containerseats = 8 * 7 * 3; /* the eight site homes x the seven non-amd64 arch legs x (image save + checksum + manifest) */
+    const walkoslanes = 19; /* the thirteen base assets, the sbom, the attestations record, the iso, the wasm cores, the manifest and the sums */
+    const channelchecksums = 11; /* one umbrella per distribution channel the walk stages (github answers the release-level sums, nuget answers the publish mirror) */
+    /* the publish mirror's deterministic ladders */
+    const publish = await parseworkflow("publish.yml");
+    const metadatamatrix = (publish.jobs?.["family-metadata"]?.strategy as { matrix?: { app?: string[] } })?.matrix;
+    const metadataapps = metadatamatrix?.app?.length ?? 0; /* the eleven applications of the metadata ladder */
+    const publishmetadata = metadataapps * 23 + 7; /* 11 metadata assets + 11 arch manifests + the checksum, beside the seven family reports */
+    const publishcontainers = 9 * 3; /* the family container archives: tar.gz + checksum + manifest per site home */
+    const publishgradle = 10 * 4; /* pom + module + jar + checksum per member envelope */
+    const publishgoget = 10 * 3; /* module zip + go.mod + checksum per member envelope */
+    const census =
+      desktopfamily +
+      androidfamily +
+      nextfamily +
+      envelopes +
+      familyseats +
+      containerseats +
+      walkoslanes +
+      channelchecksums +
+      publishmetadata +
+      publishcontainers +
+      publishgradle +
+      publishgoget;
     expect(bundles).toBe(14); /* 3+3 linux, 2+2+2 windows (nsis and msi), 1+1 macos file bundles */
     expect(desktopperapp).toBe(28);
-    expect(census).toBeGreaterThanOrEqual(300);
-    expect(census).toBe(9 * 28 + 72 + 110 + 9);
+    expect(metadataapps).toBe(11);
+    expect(census).toBeGreaterThanOrEqual(1000);
+    expect(census).toBe(9 * 28 + 72 + 165 + 10 + 77 + 168 + 19 + 11 + 260 + 27 + 40 + 30);
+    expect(census).toBe(1131);
+  });
+
+  it("the thousand asset ladder lanes walk the release workflow itself", async () => {
+    /* the two lanes the release walk owns: the per-arch container seats of
+     * the eight site homes (the seven non-amd64 legs — the amd64 leg
+     * answers the single-arch save the publish mirror attaches) and the
+     * per-app seat lane (the source, maven and provenance seats of every
+     * application), both feeding the artifact manifest through the
+     * releaseassets needs row. */
+    const release = await parseworkflow("release.yml");
+    const containerseats = release.jobs?.containerseats as
+      | { strategy?: { matrix?: { app?: string[] } }; needs?: string[] }
+      | undefined;
+    expect(containerseats?.strategy?.matrix?.app).toEqual([
+      "argan",
+      "cadria",
+      "cobaia",
+      "debonair",
+      "forge",
+      "foundry",
+      "getry",
+      "stealthhead",
+    ]);
+    expect(containerseats?.needs).toBe("assemble");
+    const familyseats = release.jobs?.familyseats as { needs?: string[] } | undefined;
+    expect(familyseats?.needs).toEqual(["assemble", "nextzips", "family", "containerseats"]);
+    const releaseassets = release.jobs?.releaseassets as { needs?: string[] } | undefined;
+    expect(releaseassets?.needs).toContain("containerseats");
+    expect(releaseassets?.needs).toContain("familyseats");
+    /* the per-arch seat grammar and the seat count assertion the lane carries */
+    const source = await readworkflow("release.yml");
+    expect(source).toContain("for arch in 386 armv6 armv7 arm64 ppc64le riscv64 s390x; do");
+    expect(source).toContain('test "$count" -eq 21');
+    expect(source).toContain("if (seats !== 77) throw new Error('the family seat lane answers 77 seats, found ' + seats);");
+    expect(source).toContain("THE THOUSAND ASSET LADDER");
+    /* the per-channel checksum umbrellas and the census block the release
+     * body carries */
+    expect(source).toContain("sha256.channel.");
+    expect(source).toContain("The asset census (the thousand plus law)");
   });
 });
 
