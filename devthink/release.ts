@@ -316,16 +316,13 @@ async function chainsectionsof(changelog: string) {
 }
 
 /** The version catalog block of docs/runtimeversions.md: the current devthink release beside the runtime baselines the release was verified against; the maintenance workflow re-runs the synchronization after each release so the catalog never drifts from package.json. */
-function versioncatalogof(version: string, rootmanifest: { engines?: Record<string, string | undefined> }) {
-  /* the manifestemplate law seats the engines in the root manifest alone: the
-     baselines answer the root envelope, and the manager row reads the root
-     pnpm floor (the packageManager tag the wave retired lives nowhere). */
+function versioncatalogof(version: string, packagejson: { engines?: Record<string, string | undefined>; packageManager?: string }) {
   const rows = [
     ["devthink release", version],
-    ["node baseline", enginebaseline(rootmanifest.engines?.node)],
-    ["npm baseline", enginebaseline(rootmanifest.engines?.npm)],
-    ["package manager baseline", enginebaseline(rootmanifest.engines?.pnpm)],
-    ["bun baseline", enginebaseline(rootmanifest.engines?.bun)],
+    ["node baseline", enginebaseline(packagejson.engines?.node)],
+    ["npm baseline", enginebaseline(packagejson.engines?.npm)],
+    ["package manager baseline", String(packagejson.packageManager ?? "").replace(/^[A-Za-z]+@/, "")],
+    ["bun baseline", enginebaseline(packagejson.engines?.bun)],
   ];
   for (const [, value] of rows)
     if (!/^[0-9A-Za-z.-]+$/.test(value))
@@ -338,12 +335,16 @@ function versioncatalogof(version: string, rootmanifest: { engines?: Record<stri
 /** The release metadata walk lane — the devfold fold wrapped the walk's former top-level flow (the check, notes and sync modes the check:metadata, notes:release and sync:metadata scripts run over `node release.ts <mode>`) into this private lane function so the module stays import-safe: the maintenance sync imports the pat publish walk folded below without ever executing this lane, and the lane fires only when node loads this file as the direct entry. */
 async function runreleasewalk(): Promise<void> {
   const mode = process.argv[2] ?? "check";
+  /* the manifestemplate law (#501): the engines floor and the
+   * packageManager stamp live in the ROOT manifest alone — the walk
+   * reads the app version from the envelope and the baselines from the
+   * root, so the catalog never loses a baseline the template moved. */
   const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
-  /* the engines ride the root manifest alone (the manifestemplate law): the
-     version catalog baselines answer the root envelope one hop up. */
   const rootmanifest = JSON.parse(await readFile("../package.json", "utf8")) as {
     engines?: Record<string, string | undefined>;
+    packageManager?: string;
   };
+  const catalogsource = { ...packagejson, ...rootmanifest };
   const version = packagejson.version;
   if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("package.json version must be SemVer.");
   const changelog = await readFile("CHANGELOG.md", "utf8");
@@ -725,7 +726,7 @@ async function runreleasewalk(): Promise<void> {
     [
       "docs/runtimeversions.md",
       (content) => {
-        const catalog = versioncatalogof(version, rootmanifest);
+        const catalog = versioncatalogof(version, catalogsource);
         return /## Version catalog/.test(content)
           ? content.replace(/## Version catalog[\s\S]*$/, catalog)
           : `${content.replace(/\s*$/, "\n")}\n${catalog}`;
