@@ -7,7 +7,7 @@
  * (.tzst / .tar.gz / .tar.xz) with their honest traits, the conversion
  * plan the floor keeps (unpack the tar layer, recompress, seal) and the
  * size estimates per format. The shelf is a seeded rehearsal; the plan is
- * the real conversion logic (imagestore.ts).
+ * the real conversion logic (pipeline.ts).
  */
 
 import { ArrowRightRegular, ArrowSyncRegular, LayerRegular } from "@fluentui/react-icons";
@@ -23,7 +23,7 @@ import {
   type ImageFormat,
   pourOrder,
   seedImages,
-} from "../../imagestore.ts";
+} from "../../pipeline.ts";
 import { labelfill, label } from "../../labels.ts";
 import { EmptyState } from "../wingets";
 

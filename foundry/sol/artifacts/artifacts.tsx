@@ -7,7 +7,7 @@
  * with its fnv-1a checksum over a canonical identity string (name · ext ·
  * bytes · payload), re-verified on the page and rendered as the manifest.
  * The line is a seeded rehearsal (the seed is shown); the seal is the real
- * engine (artifact.ts) — the same bytes in node and in the browser.
+ * engine (pipeline.ts) — the same bytes in node and in the browser.
  */
 
 import { ArrowSyncRegular, CheckmarkCircleRegular, PlayFilled, ShieldCheckmarkRegular } from "@fluentui/react-icons";
@@ -17,11 +17,13 @@ import {
   artifactLine,
   fnv1aHex,
   manifest,
+  PIPELINE,
+  planrehearsal,
+  type planstate,
   sealArtifact,
   seedArtifacts,
   verifyArtifact,
-} from "../../artifact.ts";
-import { PIPELINE, planrehearsal, type planstate } from "../../graphplan.ts";
+} from "../../pipeline.ts";
 import { labelfill, label } from "../../labels.ts";
 import { EmptyState } from "../wingets";
 import { GraphPanel as GraphPanel } from "../wingets";

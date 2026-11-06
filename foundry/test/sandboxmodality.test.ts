@@ -20,7 +20,7 @@ import {
   laneof,
   lanesandbox,
   lanesandboxfromenv,
-} from "../sandboxmodality.ts";
+} from "../pipeline.ts";
 
 describe("the workload lane mirror (the engine catalog lockstep)", () => {
   it("answers the engine catalog rows for foundry — the byte pin", () => {
