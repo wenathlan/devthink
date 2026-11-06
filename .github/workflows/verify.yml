@@ -99,6 +99,14 @@ jobs:
         # the server seat answers from the getry root) — its hono runtime
         # resolves from the getry node_modules this step materializes.
         run: cd getry && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the saddle family dependencies
+        # the gate ladder typecheck walks the sibling sources (the
+        # ../saddle/modalities.ts lane the deterministic suite reads) —
+        # the importing file's own seat resolves @libsql/client from
+        # the saddle node_modules, so the sibling install answers the
+        # resolver the same way the ci ownership bridges answer the
+        # family builds (the frozen lock the saddle locksync healed).
+        run: cd saddle && bun install --frozen-lockfile --ignore-scripts
       - name: Build the root distribution before the deterministic suite
         run: cd devthink && node build.ts
       - name: Run the accessibility sweep over the built tree
