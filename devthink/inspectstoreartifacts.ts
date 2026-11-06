@@ -9,7 +9,7 @@ import { promisify } from "node:util";
 
 const execute = promisify(execFile);
 const root = process.cwd();
-const artifacts = join(root, "tests", "artifacts");
+const artifacts = join(root, "test", "artifacts");
 const output = join(root, "docs", "artifactinventory.md");
 const index = await readFile(join(root, "docs", "userstorecatalog.md"), "utf8");
 const identifiers = [...new Set([...index.matchAll(/\| \d+ \| .*? \| ([a-z]{32}) \|/g)].map((match) => match[1]))];

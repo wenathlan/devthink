@@ -178,7 +178,7 @@ owns every cycle it spends through saddle and vault edge processing.
 
 ## the pinning battery
 
-`saddle/tests/osdistrib.test.ts` (nine tests, green): the sixteen seats
+`saddle/test/osdistrib.test.ts` (nine tests, green): the sixteen seats
 in law order (the seven named seats plus the nine honest additions,
 more than fifteen), the true facts verbatim per named seat and per
 addition seat, the arch pairing honesty (every

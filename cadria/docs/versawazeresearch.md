@@ -189,8 +189,8 @@ edge design this wave documents and wires:
   materials), the source validator, the catalog and library cross-checks.
 - `versawasecomposition.ts` — the composition document, the gl-transitions
   catalog, the JSON round trip, the fingerprint, the Saddle slice plan.
-- `tests/versawasegen.test.ts`, `tests/versawaseshaders.test.ts`,
-  `tests/versawasecomposition.test.ts` — the batteries pinning every promise
+- `test/versawasegen.test.ts`, `test/versawaseshaders.test.ts`,
+  `test/versawasecomposition.test.ts` — the batteries pinning every promise
   above (counts from the parametrization, analytic normals, outward winding,
   seed determinism, ear-clipped concave caps, modifier validity, validator
   damage catching, round-trip byte stability, typed refusals, slice coverage).

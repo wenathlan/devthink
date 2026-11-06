@@ -547,7 +547,7 @@
   },
   "files": [
     "docs",
-    "tests",
+    "test",
     "README.md",
     "cli.ts"
   ],

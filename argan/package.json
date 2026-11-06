@@ -553,7 +553,7 @@
   "files": [
     "README.md",
     "docs",
-    "tests",
+    "test",
     "cli.ts",
     "mimetypes.ts"
   ],

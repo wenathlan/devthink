@@ -12,7 +12,7 @@
  *
  * The devfold wave folded the last two riders of the family into their own
  * lanes: the next conversion (the release workflow now runs
- * `node devthink/scripts.ts nextconvert` and tests/publishlanes.test.ts
+ * `node devthink/scripts.ts nextconvert` and test/publishlanes.test.ts
  * reads this file for the conversion grammar) and the repo.case build each
  * answer the lane check below, which stands in for the direct-entry guard
  * of their standalone era the way the section guard always has.
@@ -643,7 +643,7 @@ const SKIP = new Set([
   ".next",
   "build",
   "docs",
-  "tests",
+  "test",
   ".github",
   "coverage",
 ]);
@@ -2688,7 +2688,7 @@ if (scriptslane === "scaffoldtemplates") {
 // the loose .ts logics, the theme root files (App.tsx the global anchor,
 // index.html, the platform deploy copies, the manifest and the drizzle schema)
 // and the theme stylesheet lives inside the theme as sol/sol.css, docs/ and
-// tests/ exist beside it, and the sol/ folder carries the component folders:
+// test/ exist beside it, and the sol/ folder carries the component folders:
 // one folder per page with loose TSX components beside the shared shell and
 // toast folders. The anchor architecture rides the tree: App.tsx imports only
 // the theme anchor (sol/Sol.tsx, the file named after the theme folder) and
@@ -2720,7 +2720,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   const tema = path.join(root, "sol");
   w(
     path.join(root, "README.md"),
-    `# ${nome}\n\n${papel}.\n\nHouse tree: one folder per app, no src/ — the app root carries the loose .ts logics and the theme root files (App.tsx the router, index.html, the platform deploy copies, the manifest and the schema), the theme stylesheet lives inside the theme as sol/sol.css, docs/ and tests/ exist beside it, and the sol/ folder carries the component folders: one folder per page with loose TSX components beside the shared shell. The complete site archive and the Next conversions (done by the workflow, no folder duplication) travel as tar.xz assets in the release.\n`,
+    `# ${nome}\n\n${papel}.\n\nHouse tree: one folder per app, no src/ — the app root carries the loose .ts logics and the theme root files (App.tsx the router, index.html, the platform deploy copies, the manifest and the schema), the theme stylesheet lives inside the theme as sol/sol.css, docs/ and test/ exist beside it, and the sol/ folder carries the component folders: one folder per page with loose TSX components beside the shared shell. The complete site archive and the Next conversions (done by the workflow, no folder duplication) travel as tar.xz assets in the release.\n`,
   );
   w(
     path.join(root, "App.tsx"),
@@ -2859,7 +2859,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   };
   for (const logica of logicas) w(path.join(root, logica), corpo[logica] ?? `// ${logica}\nexport {};\n`);
   w(path.join(root, "docs", ".gitkeep"), "");
-  w(path.join(root, "tests", ".gitkeep"), "");
+  w(path.join(root, "test", ".gitkeep"), "");
   console.log("generated: " + nome);
 };
 

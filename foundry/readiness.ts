@@ -8,9 +8,9 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 /* the foundry seat carries the gate; every evidence read crosses back to the devthink tree it audits (the gate wave moved the machinery, not the walks). */
-import { apifreezebaseline } from "../devthink/tests/freezebaseline.ts";
-import { permdiffbaseline } from "../devthink/tests/permbaseline.ts";
-import { frozenschemas } from "../devthink/tests/schemafixtures.ts";
+import { apifreezebaseline } from "../devthink/test/freezebaseline.ts";
+import { permdiffbaseline } from "../devthink/test/permbaseline.ts";
+import { frozenschemas } from "../devthink/test/schemafixtures.ts";
 import { syncmode, syncrecord } from "../devthink/records.ts";
 import { agentcertrecord } from "../devthink/agentcert.ts";
 import { costcertrecord } from "../devthink/costcert.ts";
@@ -23,11 +23,11 @@ import { soakrecord } from "../devthink/soak.ts";
 import { sweeprecord } from "../devthink/sweep.ts";
 import { telemetryfreerecord } from "../devthink/telemetryfree.ts";
 import { wcagrecord } from "../devthink/wcag.ts";
-import { readinessmigrateautoma } from "../devthink/tests/readinessautoma.ts";
-import { readinessmigrateselenium } from "../devthink/tests/readinessselenium.ts";
-import { readinessmigratetabular } from "../devthink/tests/readinesstabular.ts";
-import { readinessmigrateuivision } from "../devthink/tests/readinessuivision.ts";
-import { readinessmigratev1 } from "../devthink/tests/readinessv1.ts";
+import { readinessmigrateautoma } from "../devthink/test/readinessautoma.ts";
+import { readinessmigrateselenium } from "../devthink/test/readinessselenium.ts";
+import { readinessmigratetabular } from "../devthink/test/readinesstabular.ts";
+import { readinessmigrateuivision } from "../devthink/test/readinessuivision.ts";
+import { readinessmigratev1 } from "../devthink/test/readinessv1.ts";
 
 const execute = promisify(execFile);
 const repoRoot = resolve(process.cwd(), "..");
@@ -151,7 +151,7 @@ async function migrateplanbridge() {
         const committed = migratecommitted[format];
         const drifted = JSON.stringify({ goal: fresh.goal, origin: fresh.origin, steps: fresh.steps }) !== JSON.stringify({ goal: committed.goal, origin: committed.origin, steps: committed.steps });
         if (drifted)
-          failures.push(`${fixture} drifted from the committed conversion record tests/readiness.${format}.ts`);
+          failures.push(`${fixture} drifted from the committed conversion record test/readiness.${format}.ts`);
       } catch (error) {
         failures.push(`${fixture} refused the conversion: ${error instanceof Error ? error.message : String(error)}`);
       }
@@ -214,14 +214,14 @@ export async function runreadinesssuite() {
   gate(
     verdicts,
     "the cold start and budget gates hold their recorded budgets",
-    existsSync("docs/perfbudgets.md") && existsSync("tests/stepmeter.test.ts") && existsSync("tests/runbudget.test.ts"),
-    "docs/perfbudgets.md carries the startup and memory budgets while tests/stepmeter.test.ts and tests/runbudget.test.ts verify the cold start and the memory budget enforcement gates",
+    existsSync("docs/perfbudgets.md") && existsSync("test/stepmeter.test.ts") && existsSync("test/runbudget.test.ts"),
+    "docs/perfbudgets.md carries the startup and memory budgets while test/stepmeter.test.ts and test/runbudget.test.ts verify the cold start and the memory budget enforcement gates",
   );
   gate(
     verdicts,
     "the battery aware and network aware gates hold their tests",
-    existsSync("tests/resourceaware.test.ts"),
-    "tests/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads",
+    existsSync("test/resourceaware.test.ts"),
+    "test/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads",
   );
   gate(
     verdicts,
@@ -506,12 +506,12 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the cold start and budget gates hold their recorded budgets",
       "ok": true,
-      "evidence": "docs/perfbudgets.md carries the startup and memory budgets while tests/stepmeter.test.ts and tests/runbudget.test.ts verify the cold start and the memory budget enforcement gates"
+      "evidence": "docs/perfbudgets.md carries the startup and memory budgets while test/stepmeter.test.ts and test/runbudget.test.ts verify the cold start and the memory budget enforcement gates"
     },
     {
       "gate": "the battery aware and network aware gates hold their tests",
       "ok": true,
-      "evidence": "tests/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads"
+      "evidence": "test/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads"
     },
     {
       "gate": "the pentest checklist holds zero failed entries",

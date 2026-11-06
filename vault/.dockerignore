@@ -38,4 +38,4 @@ staging
 __pycache__
 *.pyc
 *.pyo
-tests/tmp
+test/tmp

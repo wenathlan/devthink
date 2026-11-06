@@ -18,6 +18,6 @@
     <None Include="README.md" Pack="true" PackagePath="/" />
     <None Include="docs/**/*" Pack="true" PackagePath="contentFiles/any/any/docs/" />
     <None Include="site/**/*" Pack="true" PackagePath="contentFiles/any/any/site/" />
-    <None Include="tests/**/*" Pack="true" PackagePath="contentFiles/any/any/tests/" />
+    <None Include="test/**/*" Pack="true" PackagePath="contentFiles/any/any/test/" />
   </ItemGroup>
 </Project>

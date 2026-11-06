@@ -15,7 +15,7 @@ Contributions must not import, paste, decompile or repackage source from third-p
 1. Fork the repository and create a branch from `main`.
 2. Install the dependencies with `bun install`. The repository pins bun 1.4.0 through the `packageManager` field and keeps `bun.lock` as the single root lockfile; the static workbench under `web/` carries its own pnpm lockfile mirror (`pnpm --dir web install`).
 3. Generate the Prisma client with `bun run db:generate` before running the type gate — the gateway family types ride the generated client of `web/schema.prisma` through `prismaconfig.ts`.
-4. The provider family suites run under node as well: `bun run test:node` (node `--experimental-strip-types --test` over the core and `tests/provider/`).
+4. The provider family suites run under node as well: `bun run test:node` (node `--experimental-strip-types --test` over the core and `test/provider/`).
 
 ## Gates that must pass
 
@@ -36,7 +36,7 @@ Before opening a pull request, run the validate chain and the package check; `bu
 - `web/` is organized as pages in folders; there is no `main.tsx` — the entry and app surfaces own React mounting.
 - `web/gatewayview/` holds the embedded gateway console page (`Gateway.tsx`) with the shipped version catalog (`config.ts`) and its view-side structural contract (`definition.ts`); `web/schema.prisma` at the web root is the database schema, and `web/console/` draws the canonical design of the cli.
 - `web/` carries the extension surfaces (popup, sidepanel, options, dashboard, transparency) built from the one design file `web/index.html`.
-- `docs/` holds the numbered reference documentation; `tests/` holds the flat suite of the application village (the `tests/provider/` lineage of the merged family rides the core).
+- `docs/` holds the numbered reference documentation; `test/` holds the flat suite of the application village (the `test/provider/` lineage of the merged family rides the core).
 
 ## Commit messages
 
@@ -44,7 +44,7 @@ Use conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test
 
 ## Adding a cli command
 
-A new cli command lives behind the same contract as the existing surface: the pure logic (parsing, findings, summaries, exit code mapping) lands in `cli.ts` with its typed contracts in `types.ts`, the impure terminal work (argument parsing, file reads, stdout writes) stays in `devthink.ts`, the command shares the policy, protocol, memory or progress module it validates instead of keeping a copy, the vitest suite grows a case in `tests/clitools.test.ts`, the exit codes map onto the documented failure classes, the help lists the command with its one line description, and the docs update covers the configuration page and the readme command table. The merged family CLIs follow the same shape: a `gateway <command>` routes through the server console family, a `provider <command>` routes through the `devthink.ts` provider entry, and both answer the `devthink` router rather than shipping their own bins.
+A new cli command lives behind the same contract as the existing surface: the pure logic (parsing, findings, summaries, exit code mapping) lands in `cli.ts` with its typed contracts in `types.ts`, the impure terminal work (argument parsing, file reads, stdout writes) stays in `devthink.ts`, the command shares the policy, protocol, memory or progress module it validates instead of keeping a copy, the vitest suite grows a case in `test/clitools.test.ts`, the exit codes map onto the documented failure classes, the help lists the command with its one line description, and the docs update covers the configuration page and the readme command table. The merged family CLIs follow the same shape: a `gateway <command>` routes through the server console family, a `provider <command>` routes through the `devthink.ts` provider entry, and both answer the `devthink` router rather than shipping their own bins.
 
 ## Adding a build target
 
@@ -52,7 +52,7 @@ A new build target lives behind the same contract as the existing modes: the tar
 
 ## Running the site locally from static files
 
-The static site runs fully from its own assets: open `web/index.html` from a local file or serve the built `dist/site` directory from any static host, type the relay url of your relay and the pairing code from the extension options, and the chatbridge pairs through the servercontract. The test relay of the vitest suite (`tests/testrelay.ts`) implements the same contract on a localhost random port for the e2e round trip, and the container runner of the one `Dockerfile` serves the static site for local bridge testing — no serverless function file exists in the repository.
+The static site runs fully from its own assets: open `web/index.html` from a local file or serve the built `dist/site` directory from any static host, type the relay url of your relay and the pairing code from the extension options, and the chatbridge pairs through the servercontract. The test relay of the vitest suite (`test/testrelay.ts`) implements the same contract on a localhost random port for the e2e round trip, and the container runner of the one `Dockerfile` serves the static site for local bridge testing — no serverless function file exists in the repository.
 
 ## Adding a tool to the catalog
 
@@ -60,7 +60,7 @@ A new tool of the mcp toolcatalog lives behind the same contract as the existing
 
 ## Adding a native surface
 
-A new native surface of the companion process lives behind the same contract as the existing desktop surfaces: the surface definition lands in the `nativesurfacecatalog()` of `bridge.ts` with its surface name, its call class (read, interaction or sensitive — the class must match the consent posture, because a dialog that addresses the user stays sensitive and a notification stays interaction) and its description; the companion answers it in `companion.ts` behind the consent stamps of the calling frame; the vitest suite grows the enumeration and the consent refusal assertions in `tests/nativebridge.test.ts`; the options page gains its consent checkbox beside the os dialog and notification surfaces; and the `docs/nativebridge.md` consent model gains the surface with its grant boundary. A surface never opens from a class grant alone, the sensitive class routes through the human approval gate, and the surface result returns to the plan engine as structured details with the secret exclusion applied.
+A new native surface of the companion process lives behind the same contract as the existing desktop surfaces: the surface definition lands in the `nativesurfacecatalog()` of `bridge.ts` with its surface name, its call class (read, interaction or sensitive — the class must match the consent posture, because a dialog that addresses the user stays sensitive and a notification stays interaction) and its description; the companion answers it in `companion.ts` behind the consent stamps of the calling frame; the vitest suite grows the enumeration and the consent refusal assertions in `test/nativebridge.test.ts`; the options page gains its consent checkbox beside the os dialog and notification surfaces; and the `docs/nativebridge.md` consent model gains the surface with its grant boundary. A surface never opens from a class grant alone, the sensitive class routes through the human approval gate, and the surface result returns to the plan engine as structured details with the secret exclusion applied.
 
 ## Adding a release channel
 

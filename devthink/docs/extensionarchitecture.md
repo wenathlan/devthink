@@ -19,7 +19,7 @@ Browser extension service workers are event driven and not a reliable 24-hour co
 | `protocol.ts` | Schema validation and messages across UI, background and configured endpoint. | Library module. |
 | `extension/` | Manifest V3 user interface, background service worker and active-tab bridge. | `extension/dist/`. |
 | `cli/` | Local commands for manifest validation, build, package and feature inventory. | `dist/cli.js`. |
-| `tests/` | Unit tests, deterministic fixtures and helper scripts. | Test-only. |
+| `test/` | Unit tests, deterministic fixtures and helper scripts. | Test-only. |
 | `docs/` | Research, source evidence, architecture, configuration and release records. | Not packaged. |
 
 ## Three-layer message flow

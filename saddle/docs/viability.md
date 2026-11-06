@@ -310,7 +310,7 @@ applied to e2ugh v2: the 8-document consolidation (readme, architecture,
 hardware, virtualization, security, performance, alternatives, viability)
 absorbs the redundant document families identified in the analysis phase,
 workflows ship in `.github/workflows` from the start, and the tree stays
-flat (root plus `libs/`, `docs/`, `tests/`, `.github/workflows/`) with the
+flat (root plus `libs/`, `docs/`, `test/`, `.github/workflows/`) with the
 same checks the reports codified (counts, flat
 naming, JSON validity, deduplication, version pins) now enforced by CI
 rather than by a post-hoc report.

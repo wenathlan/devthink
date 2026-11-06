@@ -405,13 +405,13 @@ async function cmdmigrateplan(
   for (const note of conversion.notes) console.error(note);
 }
 
-/** Lists the example gallery of the 2.0.0 platform release and validates one entry: the recipes command reads the gallery index the packages ship (gallery.json at the installed package root, the dist build copy second, the repository source fallback tests/code/recipes/gallery.json last), prints every entry with its category, difficulty, fixture page and description, and validates one named entry by loading its plan through the same frozen grammar and the same lint engine the planlint command runs. The --dryrun flag walks the entry through the same dry flow driver the extension runs with a recording consent provider, so a gallery recipe imports, lints and dry runs through the terminal exactly as the ci runner walks it — the gallery never drifts from the code. */
+/** Lists the example gallery of the 2.0.0 platform release and validates one entry: the recipes command reads the gallery index the packages ship (gallery.json at the installed package root, the dist build copy second, the repository source fallback test/code/recipes/gallery.json last), prints every entry with its category, difficulty, fixture page and description, and validates one named entry by loading its plan through the same frozen grammar and the same lint engine the planlint command runs. The --dryrun flag walks the entry through the same dry flow driver the extension runs with a recording consent provider, so a gallery recipe imports, lints and dry runs through the terminal exactly as the ci runner walks it — the gallery never drifts from the code. */
 async function cmdrecipes(
   args: string[],
   state: { config: cliconfiguration; verbosity: "quiet" | "normal" | "verbose"; json: boolean },
 ): Promise<void> {
   const { positional, flags } = parseflags(args);
-  const candidates = ["gallery.json", "build/gallery.json", "tests/code/recipes/gallery.json"];
+  const candidates = ["gallery.json", "build/gallery.json", "test/code/recipes/gallery.json"];
   let gallery:
     | {
         entries: Array<{
@@ -438,7 +438,7 @@ async function cmdrecipes(
   }
   if (gallery === undefined)
     throw new Error(
-      "The recipes command needs the gallery index the installed package ships (gallery.json at the package root), the build copy (build/gallery.json) or the repository source (tests/code/recipes/gallery.json); run from the package root or run pnpm build first.",
+      "The recipes command needs the gallery index the installed package ships (gallery.json at the package root), the build copy (build/gallery.json) or the repository source (test/code/recipes/gallery.json); run from the package root or run pnpm build first.",
     );
   const id = positional[0];
   if (id === undefined) {
@@ -462,7 +462,7 @@ async function cmdrecipes(
       ? `fixtures/recipes/${id}.json`
       : gallerypath.startsWith("build/")
         ? `build/fixtures/recipes/${id}.json`
-        : `tests/code/recipes/${id}.json`,
+        : `test/code/recipes/${id}.json`,
     `fixtures/recipes/${id}.json`,
     `build/fixtures/recipes/${id}.json`,
   ];
@@ -526,7 +526,7 @@ async function cmdrecipes(
         planpath,
         options: {
           format: "human",
-          outputdir: "tests/artifacts",
+          outputdir: "test/artifacts",
           interactive: false,
           dryrun: true,
           grantspath: "gallery",
@@ -3065,7 +3065,7 @@ export function importselenium(input: { source: unknown; now: number }): convers
     throw new Error("The selenium side file must be a json object.");
   const root = input.source as Record<string, unknown>;
   const unknownroot = Object.keys(root).filter(
-    (key) => !["id", "version", "name", "url", "tests", "suites"].includes(key),
+    (key) => !["id", "version", "name", "url", "test", "suites"].includes(key),
   );
   if (unknownroot.length > 0)
     throw new Error(

@@ -1,5 +1,5 @@
 /** The containerfile gateway smoke of the 1.1.83 family: it starts the localhost fixture server, loads the built gateway module and runs one full request cycle against the recorded openaicompat fixture offline — no provider endpoint, no key, no external network — so the container image proves the gateway call path before it ships. */
-import { startgatewayfixtureserver } from "./tests/gatewayserver.ts";
+import { startgatewayfixtureserver } from "./test/gatewayserver.ts";
 import type { baseurlconfig } from "./types.ts";
 
 const server = await startgatewayfixtureserver();

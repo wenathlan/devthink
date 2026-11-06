@@ -12,7 +12,7 @@ The engine keeps its runtime sqlite stores beside the working directory —
 (the interface copy) — with their `-wal` and `-shm` sidecars. A deploy lane
 that publishes the **application root** ships the whole database over
 https: the store, the write-ahead log, everything. The seal is layered and
-every layer is pinned by `tests/deploysafety.test.ts`:
+every layer is pinned by `test/deploysafety.test.ts`:
 
 1. **The build emits into `dist`, never the root.** `vite.config.ts`
    declares `outDir: dist` and the build copies the deploy faces

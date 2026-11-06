@@ -734,7 +734,7 @@
   "files": [
     "README.md",
     "docs",
-    "tests",
+    "test",
     "cli.ts",
     "versawase.ts",
     "versa.ts",

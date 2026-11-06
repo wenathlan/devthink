@@ -9,7 +9,7 @@
 ## 0. The asset census (the thousand plus law)
 
 The deterministic census every release-triggered lane answers, derived from the
-workflow matrices by `tests/publishlanes.test.ts` (the release notes carry the same
+workflow matrices by `test/publishlanes.test.ts` (the release notes carry the same
 table through the asset census section the notes generator renders):
 
 | Axis | Product | Assets |
@@ -104,7 +104,7 @@ boot      initautotranslate() lives in the theme anchor (Sol.tsx); the observer 
 copy      technical-direct tone, sentence case headings, no marketing verbs, same
           paragraph count, JSX markup preserved, final grep proves zero pt-BR left
 never     translate Storage/Working Set/Runner, VHD/FUSE/VRAM, class names, the
-          language <option> labels; docs/ and tests/ stay untranslated
+          language <option> labels; docs/ and test/ stay untranslated
 ```
 
 ## 6. Mimetypes registry (recovered)

@@ -9,7 +9,7 @@
    dead all-properties rule). The negative sources below keep the scan on
    the real faces: the sol sources, the root logic and the html entries.
    Tests, docs and markdown never style the product. */
-@source not "../tests";
+@source not "../test";
 @source not "../docs";
 @source not "../*.md";
 

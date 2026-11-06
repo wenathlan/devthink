@@ -165,7 +165,7 @@ opencode.json
 antigravity-accounts.json
 antigravity-logs
 
-# Generated build output stays out of the repository (the runners generate everything): the flat staged npm package of tests/build.mjs never commits
+# Generated build output stays out of the repository (the runners generate everything): the flat staged npm package of test/build.mjs never commits
 distpackage/
 
 # the prisma test databases are runtime artifacts the test runs create
@@ -216,7 +216,7 @@ db/*.db-wal
 *.db-shm
 *.db-wal
 
-# the docs audit scratch (tests/docsaudit.mjs writes beside the repo root)
+# the docs audit scratch (test/docsaudit.mjs writes beside the repo root)
 /shyz-audit/
 
 # the polar lane stays machine-local — polar.sh polls the github device flow
@@ -407,7 +407,7 @@ saddle/registerSW.js
 saddle/sw.js
 saddle/*.woff2
 
-# the probe artifacts of the build scripts (tests/devthink.scripts.*probe.ts
+# the probe artifacts of the build scripts (test/devthink.scripts.*probe.ts
 # write their screenshots and browser profiles into the repository-root
 # artifacts/ folder — anchored so the typed gate records the tests village
 # carries and the foundry/sol/artifacts/ theme folder stay untouched)

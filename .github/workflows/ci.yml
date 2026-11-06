@@ -258,7 +258,7 @@ jobs:
   structure:
     # the gateway family structure gate (the 2.0.18 port): the repository
     # tree answers a flat grouping contract - the application folder adds one
-    # layer, no tracked file nests past four directories (the deepest evidence trees ride tests/code/recipes
+    # layer, no tracked file nests past four directories (the deepest evidence trees ride test/code/recipes
     # and the web page folders at exactly that line) and no tracked file
     # duplicates the content of another outside the recorded evidence
     # trees (a copy nobody deduplicated answers this gate).
@@ -275,7 +275,7 @@ jobs:
         run: |
           set -euo pipefail
           # every application follows the house flat contract: the sol theme
-          # folders and the grouped docs/tests trees stay inside the ceiling,
+          # folders and the grouped docs/test trees stay inside the ceiling,
           # and no app carries a nested src/ tree of its own.
           deep="$(git ls-files | awk -F/ 'NF > 5')"
           if [ -n "${deep}" ]; then
@@ -289,7 +289,7 @@ jobs:
         run: |
           set -euo pipefail
           # the recorded evidence trees carry deliberate copies (the
-          # tests/code mining corpus and the antigravity archives) and the
+          # test/code mining corpus and the antigravity archives) and the
           # zero-build sites ship their own engine copy per deploy unit
           # (engine.css, engine.js, clean-url.js|ts) the way a standalone
           # static site must; the devthink modalities vendor rides the same
@@ -307,7 +307,7 @@ jobs:
           # same hash-verified lock, the digest-pinning law of the
           # security heal).
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/test/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then
@@ -422,7 +422,7 @@ jobs:
 
       - name: Run the config parity gate
         working-directory: devthink
-        run: bunx vitest run tests/configparity.test.ts
+        run: bunx vitest run test/configparity.test.ts
 
   family-tests:
     # the family test lane: the ten family apps carry their own vitest
@@ -471,7 +471,7 @@ jobs:
         run: |
           set -euo pipefail
           glob='*.test'
-          if find "${{ matrix.app }}/tests" -name "${glob}.ts" 2>/dev/null | grep -q .; then
+          if find "${{ matrix.app }}/test" -name "${glob}.ts" 2>/dev/null | grep -q .; then
             echo "present=true" >> "$GITHUB_OUTPUT"
           else
             echo "present=false" >> "$GITHUB_OUTPUT"

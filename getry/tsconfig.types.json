@@ -132,7 +132,7 @@
       "@wenathlan/getry/nodeshim": ["./nodeshim.ts"],
       "@wenathlan/getry/types": ["./types.ts"],
       "@wenathlan/getry/constants": ["./constants.ts"],
-      "@wenathlan/getry/tests/researchfixtures": ["./tests/researchfixtures.ts"]
+      "@wenathlan/getry/test/researchfixtures": ["./test/researchfixtures.ts"]
     }
   },
   "include": [
@@ -168,5 +168,5 @@
     "types.ts",
     "constants.ts"
   ],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "tests", "Sol"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "test", "Sol"]
 }

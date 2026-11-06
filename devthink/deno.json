@@ -7,6 +7,6 @@
   },
   "tasks": {
     "check": "deno check build/deno.js",
-    "smoke": "deno run tests/code/deno.ts"
+    "smoke": "deno run test/code/deno.ts"
   }
 }

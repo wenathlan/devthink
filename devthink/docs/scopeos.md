@@ -75,7 +75,7 @@ the claims above are checked against the tree on 2026-10-13:
 - the manifest of the 15 engines lives in the package.json under the
   devthink key, with the maestro note and one entry per engine.
 - the python lane lives in pythonscripts.ts with its test at
-  tests/pythonscripts.test.ts answering green without a real interpreter.
+  test/pythonscripts.test.ts answering green without a real interpreter.
 
 ## the line in practice
 

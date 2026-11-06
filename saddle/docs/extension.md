@@ -5,7 +5,7 @@
 > `saddle/browser.ts`), with its tracked assets at the devthink root
 > (`extensionmanifest.json`, `extensionpopup.html`, `extensionpopup.css`,
 > `extensionicon32.png`, `extensionicon64.png`, `extensionicon128.png`)
-> and its test battery at `devthink/tests/browserextension.test.ts`. The
+> and its test battery at `devthink/test/browserextension.test.ts`. The
 > saddle is exclusively the virtualization engine; everything that runs
 > in the user's browser belongs to devthink, the owner of the family
 > extension product. The notes below describe the bridge design and stay

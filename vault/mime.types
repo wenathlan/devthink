@@ -5,7 +5,7 @@
 # table (the MimeTypeMap corpus), the go builtin table, the family catalog of
 # the argan gateway and the saddle golden table (the family's own mime lane —
 # every type and every extension mapping it carries rides this corpus, pinned
-# by the golden-table battery of tests/mimetypes.test.ts) — with the family law
+# by the golden-table battery of test/mimetypes.test.ts) — with the family law
 # rows pinned: .ts answers video/mp2t, .tsx answers application/typescript.
 # The nginx-style multi-part extension names (cwl.json, gpkg.tar, 1905.1, pcf.z)
 # ride the explicit lookup lane (mimeTypeFor answers the full dotted name); the

@@ -718,7 +718,7 @@
   "files": [
     "README.md",
     "docs",
-    "tests",
+    "test",
     "accounts.ts",
     "antigravity.ts",
     "auth.ts",
@@ -745,7 +745,7 @@
     "search.ts",
     "server.ts",
     "streaming.ts",
-    "tests/gatewayserver.ts",
+    "test/gatewayserver.ts",
     "thinking.ts",
     "types.ts",
     "utils.ts",

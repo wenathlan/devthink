@@ -319,7 +319,7 @@ jobs:
           # family envelopes beside it — a rung missing one stamped file
           # would answer drift red in the verify pipeline below. the flat
           # typed folder law (the tests → testes move) renamed the freeze
-          # and permission baselines from the retired devthink/tests/*.json
+          # and permission baselines from the retired devthink/test/*.json
           # artifacts into the dense typescript modules of the testes
           # folder, so the staged set carries the modules the freeze steps
           # above now rewrite — the dead json pathspecs answered "pathspec
@@ -344,8 +344,8 @@ jobs:
             devthink/pom.xml \
             devthink/devthink.csproj \
             devthink/docs \
-            devthink/tests/freezebaseline.ts \
-            devthink/tests/permbaseline.ts \
+            devthink/test/freezebaseline.ts \
+            devthink/test/permbaseline.ts \
             devthink/docs/releasenotes.md \
             .github/workflows \
             argan/package.json \

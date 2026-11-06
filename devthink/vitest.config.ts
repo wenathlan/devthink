@@ -64,13 +64,13 @@ export default defineConfig({
       /** the getry research corpus bridge of the ownership law (the build
        * family consolidation carried it): the researchcatalog lane of the
        * one build file reads the corpus fixtures through the published
-       * library specifier ("@wenathlan/getry/tests/researchfixtures"),
+       * library specifier ("@wenathlan/getry/test/researchfixtures"),
        * and this bridge resolves the specifier to the monorepo source the
        * sibling app carries — the corpus is never duplicated inside
        * devthink, the lane answers from its one owner. */
-      "@wenathlan/getry/tests/researchfixtures": path.resolve(
+      "@wenathlan/getry/test/researchfixtures": path.resolve(
         import.meta.dirname,
-        "../getry/tests/researchfixtures.ts",
+        "../getry/test/researchfixtures.ts",
       ),
       /** the queue self-bridge of the ownership law: the getry owner's llm
        * module (imported through the family bridges) walks the house
@@ -165,7 +165,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["tests/*.test.ts"],
+    include: ["test/*.test.ts"],
     environment: "node",
     /* the timeout floor stays thirty seconds on every native runner and scales through the env the emulated arm64 container leg sets (the 2.0.9 multi platform build proved a qemu-interpreted second answers the same green suite three to ten times slower), so an emulated runner never fails a test a native runner passed — the five second floor the house carried answered the cold-runner lottery: every lane that spawns subprocesses (the deno esm load, the matrix cell walk, the library modes) rides past it on a cold cache and the same test passes green on the retry, so the floor moves to the budget a subprocess walk actually needs while every fast test keeps answering in milliseconds */
     testTimeout: Number(process.env.DEVTHINK_TEST_TIMEOUT_MS ?? 30000),

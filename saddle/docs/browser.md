@@ -17,7 +17,7 @@ What moved with the surface:
 | `popup.html` | `devthink/extensionpopup.html` |
 | `popup.css` | `devthink/extensionpopup.css` |
 | `icon32.png` / `icon64.png` / `icon128.png` | `devthink/extensionicon32.png` / `extensionicon64.png` / `extensionicon128.png` |
-| `tests/extension.test.ts` | `devthink/tests/browserextension.test.ts` |
+| `test/extension.test.ts` | `devthink/test/browserextension.test.ts` |
 
 The tracked assets carry the `extension` prefix at the devthink root because devthink already owns its own extension surface (`manifest.json` of record, `popup.ts`, `design.html`) — no root name collides. The build adapter (section 17 of the migrated module) is self-referential: it extracts the seven script sections from `devthink/browserextension.ts` itself, reads `extensionmanifest.json` for the versioned manifest and copies the extension-prefixed assets into an isolated unpacked artifact (default output `build/browserextension`, so it never touches the `build/extension` directory owned by the devthink extension build). The `@wenathlan/saddle/extension` package export and the `extension:build` script retired with the migration — consumers import the surface from the devthink app.
 

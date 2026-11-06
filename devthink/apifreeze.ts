@@ -5,7 +5,7 @@
  * The api freeze gate lane rides at the bottom of this file: the verification script the release chain runs when node loads this module as the main script (validate:apifreeze, apifreeze:sync, the matrix cell and the workflow gates), while the library and the browser surfaces import the frozen contracts above without ever executing the lane.
  */
 
-import type { apifreezebaseline } from "./tests/freezebaseline.ts";
+import type { apifreezebaseline } from "./test/freezebaseline.ts";
 import { actionkindids, protocolmajorversion, protocolversion } from "./types.ts";
 import { packageversion, protocolfloormajor } from "./version.ts";
 
@@ -4063,11 +4063,11 @@ async function runapifreezesuite() {
    * carry init_freezebaseline into index.js) — the node runtime resolves
    * the module relative to this file the same way the standalone gate
    * always did. */
-  const freezeimport = ["./tests", "freezebaseline.ts"].join("/");
+  const freezeimport = ["./test", "freezebaseline.ts"].join("/");
   const { apifreezebaseline: storedbaseline } = await import(freezeimport);
   const packagejson = JSON.parse(await readFile("package.json", "utf8"));
   const release = String(packagejson.version);
-  const baselinepath = "tests/freezebaseline.ts";
+  const baselinepath = "test/freezebaseline.ts";
   const capsdirectory = "build/caps";
   const schemadirectory = "build/schemas";
   const schemalabel = "schemas";
@@ -4714,7 +4714,7 @@ async function runapifreezesuite() {
 
   /** Renders the freezebaseline module text of one recorded freeze: the header, the interface and the dense record the gate imports stay one reviewable unit the sync rewrites whole, so the checked-in baseline and the regenerated baseline never drift in shape. */
   function baselinemodule(freeze: apifreezebaseline) {
-    return `/** The versioned api freeze baseline as one dense typescript module: the release stamp, the freeze date, the seven frozen surfaces, their sizes and the sha256 digests of every frozen schema and contract list. The gate of tests/apifreeze.ts verifies every digest against the built tree and refuses an unversioned hash change; the sync mode rewrites this module after a release bump; the readiness review walks the schema digests for the freeze stability verdict and the freeze test re-stamps a stale release stamp before it asserts. */
+    return `/** The versioned api freeze baseline as one dense typescript module: the release stamp, the freeze date, the seven frozen surfaces, their sizes and the sha256 digests of every frozen schema and contract list. The gate of test/apifreeze.ts verifies every digest against the built tree and refuses an unversioned hash change; the sync mode rewrites this module after a release bump; the readiness review walks the schema digests for the freeze stability verdict and the freeze test re-stamps a stale release stamp before it asserts. */
 
 /** The freeze record the gate keeps: the release it stamps, the fixed freeze date, the seven surfaces of the scope, their frozen sizes and the digest table over the schemas and the contract lists. */
 export interface apifreezebaseline {

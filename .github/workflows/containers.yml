@@ -763,7 +763,7 @@ jobs:
           rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
                  saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
                  saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
-                 saddlebuildctx/vault/tests
+                 saddlebuildctx/vault/test
           printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build and push the multi-arch lane image
