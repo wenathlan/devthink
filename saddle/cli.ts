@@ -32,7 +32,7 @@ import {
   runscriptbackground,
   scriptRunStatus,
   type ScriptPlan,
-} from "./scriptlanes.ts";
+} from "./scripts.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: cli/main.ts — the saddle command-line entry point (the bin "saddle" resolves to this source through the source-is-library law (node 26 strips the types, the shebang hands the file to the runtime)). */
@@ -164,7 +164,7 @@ async function rendergpus() {
 /* ══════════════════════════════════════════════════════════════════ */
 /* Section 3: the script lanes renderer — the sh/yml/yaml execution   */
 /* surface of the engine lane (PR15): run, background, status, docker */
-/* and compile ride the very scriptlanes.ts functions the webserver   */
+/* and compile ride the very scripts.ts functions the webserver        */
 /* routes serve, so the bin and the api speak one lane.               */
 /* ══════════════════════════════════════════════════════════════════ */
 /**

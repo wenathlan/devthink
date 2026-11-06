@@ -1,6 +1,6 @@
 /**
  * babelcoreface.ts — the typed face of the @babel/core seat the saddle
- * engine bridges (the yaml and babel seats of modalities.ts, scriptlanes.ts
+ * engine bridges (the yaml and babel seats of modalities.ts, scripts.ts
  * and edgelandes.ts). The seat is OPTIONAL at runtime by the owner law: the
  * guarded dynamic import answers the honest HOST_RUNTIME_ABSENT refusal
  * when the package is absent from the install, and no install of the family

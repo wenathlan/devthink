@@ -1,3 +1,65 @@
+// # scripts.ts — the one keyword file of the scripts engine domain: the
+// consolidation law of the root (one keyword file per domain) merged the
+// four script seats of the saddle engine into this seat — the script
+// lanes (the former scriptlanes.ts body below: the sh execution through
+// the universal runner, the yml and yaml interpretation through the
+// house yaml subset, the babel compile roundtrip, the detached
+// background runs on the house job queue and the docker-ready
+// descriptors for the container lane), the tsc build engine of the
+// distpackage tree (scriptsbuildengine.ts), the cargo audit security
+// gate (scriptssecuritygate.ts) and the flat native surface validation
+// (scriptsvalidateflatnative.ts) — every export preserved verbatim, zero
+// logic changes.
+// The consolidation notes: no declaration collided across the four
+// sources (the three executable seats keep their top-level bindings
+// block-scoped inside their lane guards), so no group suffix rides this
+// seat; the executable seats answer the dispatcher law the devthink root
+// keyword file set — the lane word on argv[2] names the script the run
+// answers (node scripts.ts buildengine / node scripts.ts securitygate
+// <cargo-audit-report> / node scripts.ts validateflatnative — the
+// package manifest lanes build:engine and native:check:flat walk the
+// first and the last) and the dispatcher retires the lane word from argv
+// before the section runs, so every script keeps the argv contract of
+// its standalone era; the engine import graph (index.ts, cli.ts,
+// webserver.ts and the suite) imports the script lane surface this file
+// exports without ever tripping the dispatch — only a direct
+// `node scripts.ts` entry answers the lanes.
+
+import { execFileSync, spawn } from "node:child_process";
+import { existsSync } from "node:fs";
+import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { createRequire } from "node:module";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { runInNewContext } from "node:vm";
+import { jobqueue, runrecord, runstatuses, transitionrun } from "./execution.ts";
+import { aserror, idfactory, saddleerror, validationerror } from "./foundation.ts";
+
+/** The lane word every merged script answers: argv[2] names the lane and
+ * the dispatcher retires the word before the section runs, so each
+ * script keeps the argv contract of its standalone era (the report path
+ * of the security gate stays argv[2] exactly the way the former file
+ * read it). the entry check keeps the dispatch honest when this keyword
+ * file rides the engine import graph — only a direct `node scripts.ts`
+ * run answers the lanes, an import from index.ts, cli.ts, webserver.ts
+ * or the suite never trips the guard. */
+const scriptslanes = new Set(["buildengine", "securitygate", "validateflatnative"]);
+const scriptsentry = process.argv[1]?.endsWith("scripts.ts") || process.argv[1]?.endsWith("scripts");
+const scriptslane = scriptsentry ? process.argv[2] : undefined;
+if (scriptsentry) {
+  if (scriptslanes.has(scriptslane ?? "")) process.argv.splice(2, 1);
+  else {
+    console.error(`usage: node scripts.ts <lane> [lane arguments] — lanes: ${[...scriptslanes].join(", ")}`);
+    process.exit(1);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* SECTION: scriptlanes.ts — the script lanes of the saddle engine     */
+/* (the module surface the import graph consumes: the six sections     */
+/* below ride the former file verbatim).                               */
+/* ════════════════════════════════════════════════════════════════════ */
+
 /**
  * scriptlanes.ts — the script lanes of the saddle engine: sh execution
  * through the universal runner, yml and yaml workflow descriptors
@@ -29,11 +91,6 @@
  *   every fallible path, and deadlines enforced with a timeout kill on
  *   the child process.
  */
-
-import { spawn } from "node:child_process";
-import { runInNewContext } from "node:vm";
-import { jobqueue, runrecord, runstatuses, transitionrun } from "./execution.ts";
-import { aserror, idfactory, saddleerror, validationerror } from "./foundation.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: the server context law and the plan nouns — the lanes never touch the visitor machine. */
@@ -771,4 +828,225 @@ export function dockerdescriptor(plan: ScriptPlan): { dockerfile: string; entryp
     "",
   ].join("\n");
   return { dockerfile, entrypoint: "bash /app/plan.sh" };
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* SECTION: scriptsbuildengine.ts — the tsc build engine of the        */
+/* distpackage tree (the executable seat the lane word buildengine     */
+/* answers: node scripts.ts buildengine — the package manifest         */
+/* build:engine lane; the body rides the former file verbatim inside   */
+/* the lane guard, argv untouched after the dispatcher retired the     */
+/* lane word).                                                         */
+/* ════════════════════════════════════════════════════════════════════ */
+if (scriptslane === "buildengine") {
+await rm("distpackage", { recursive: true, force: true });
+/* the compiler rides node directly: windows refuses spawning a bare
+ * tsc.cmd shell (spawnSync EINVAL on the .cmd shim) and the house law keeps
+ * the toolchain in the global node modules, so the tsc entry is resolved
+ * through require paths instead of a shell command */
+function compilerentry() {
+  const require = createRequire(import.meta.url);
+  for (const base of ["typescript/bin/tsc", "../typescript/bin/tsc", "../../../typescript/bin/tsc"]) {
+    try {
+      const entry = require.resolve(base);
+      if (existsSync(entry)) return entry;
+    } catch {
+      /* not here: walk the next candidate */
+    }
+  }
+  return "tsc";
+}
+const entry = compilerentry();
+const args = entry.endsWith(".js") ? [entry, "--project", "tsconfig.json"] : ["--project", "tsconfig.json"];
+execFileSync(entry.endsWith(".js") ? process.execPath : entry, args, {
+  stdio: "inherit",
+  env: { ...process.env, NODE_PATH: [process.env.NODE_PATH, "C:/Users/nathalan/node_modules"].filter(Boolean).join(";") },
+});
+
+// the target manifest CLI: the grand merge folded packager/targetcli.ts
+// into distribution.ts (Section 7) whose CLI main only activates when
+// argv[1] ends with targetcli.js - the historical entry point that the
+// targets workflow invokes. The build regenerates the thin wrapper so
+// the contract distpackage/packager/targetcli.js keeps working (nothing lost).
+await mkdir("distpackage/packager", { recursive: true });
+await writeFile(
+  "distpackage/packager/targetcli.js",
+  '// generated by scriptsbuildengine.ts - the thin CLI wrapper that\n// activates the target manifest CLI absorbed into distribution.ts\n// (Section 7); its CLI main runs when argv[1] ends with targetcli.js (the wrapper resolves the root source — node 26 strips the types).\nimport "../../distribution.ts";\n',
+);
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* SECTION: scriptssecuritygate.ts — the cargo audit security gate     */
+/* (the executable seat the lane word securitygate answers:            */
+/* node scripts.ts securitygate <cargo-audit-report-path> — the report */
+/* path stays argv[2] after the dispatcher retired the lane word, and  */
+/* the SECURITY_SUMMARY_PATH override, the glib acceptance and the     */
+/* exit code ride the former file verbatim).                           */
+/* ════════════════════════════════════════════════════════════════════ */
+if (scriptslane === "securitygate") {
+const reportPath = process.argv[2];
+const summaryPath =
+  process.env.SECURITY_SUMMARY_PATH ?? "build/security/cargo-audit-summary.md";
+const acceptedAdvisory = "RUSTSEC-2024-0429";
+
+if (!reportPath) {
+  throw new TypeError("cargo audit report path is required");
+}
+
+/** Returns the advisory identifiers attached to one cargo audit finding. */
+function advisoryids(finding) {
+  const advisory = finding?.advisory ?? {};
+  return [advisory.id, finding?.id, ...(advisory.aliases ?? [])]
+    .filter(Boolean)
+    .map(String);
+}
+
+/** Returns a stable package label for a cargo audit finding. */
+function packagelabel(finding) {
+  const packageinfo = finding?.package ?? {};
+  return `${packageinfo.name ?? "unknown"}@${packageinfo.version ?? "unknown"}`;
+}
+
+const raw = await readFile(reportPath, "utf8");
+let report;
+try {
+  report = JSON.parse(raw);
+} catch (error) {
+  throw new Error(`cargo audit produced invalid JSON: ${error.message}`);
+}
+
+const findings = Array.isArray(report?.vulnerabilities?.list)
+  ? report.vulnerabilities.list
+  : [];
+const accepted = findings.filter(
+  (finding) =>
+    advisoryids(finding).includes(acceptedAdvisory) &&
+    packagelabel(finding).startsWith("glib@"),
+);
+const unexpected = findings.filter((finding) => !accepted.includes(finding));
+const warnings = Object.values(report?.warnings ?? {}).flatMap((value) =>
+  Array.isArray(value) ? value : [],
+);
+const status =
+  unexpected.length > 0
+    ? "fail"
+    : accepted.length > 0
+      ? "accepted-risk"
+      : "pass";
+const lines = [
+  "# Cargo audit security gate",
+  "",
+  `Status: **${status}**`,
+  `Findings: ${findings.length}`,
+  `Accepted transitive glib findings: ${accepted.length}`,
+  `Unexpected findings: ${unexpected.length}`,
+  `Warnings: ${warnings.length}`,
+  "",
+  "## Findings",
+  "",
+];
+
+if (findings.length === 0)
+  lines.push("No RustSec vulnerability findings were returned.", "");
+for (const finding of findings) {
+  const ids = advisoryids(finding).join(", ") || "unknown-advisory";
+  const classification = accepted.includes(finding)
+    ? "accepted transitive glib risk"
+    : "release blocking";
+  lines.push(`- ${classification}: ${ids} (${packagelabel(finding)})`);
+}
+
+lines.push(
+  "",
+  "The accepted glib entry is limited to the Tauri GTK3 transitive dependency documented in `docs/tauri-glib-risk-1.8.11.md`; any other advisory fails this gate.",
+  "",
+);
+await mkdir(new URL(".", `file://${process.cwd()}/${summaryPath}`).pathname, {
+  recursive: true,
+}).catch(() => {});
+await writeFile(summaryPath, `${lines.join("\n")}\n`);
+console.log(lines.join("\n"));
+if (unexpected.length > 0) process.exitCode = 1;
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* SECTION: scriptsvalidateflatnative.ts — the flat native surface     */
+/* validation (the executable seat the lane word validateflatnative    */
+/* answers: node scripts.ts validateflatnative — the package manifest  */
+/* native:check:flat lane; import.meta.url resolves to this saddle     */
+/* seat in the very directory the former file lived in, so the         */
+/* repositoryRoot walk rides the former file verbatim).                */
+/* ════════════════════════════════════════════════════════════════════ */
+if (scriptslane === "validateflatnative") {
+/** Returns whether a path exists without turning a missing generated path into a failure. */
+async function exists(path) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Verifies the 2.1.0 tree contract: the native wrappers (android, ios,
+ * desktop, extension) are generated on the runners into build/native/*
+ * and never tracked, the interface is one flat tsx tree (page folders +
+ * loose modules, no nested support folders, no legacy window-global
+ * localauth.ts), and the static e2ugh console pages stay absorbed in the
+ * tsx pages. the tree never goes back to tracked wrappers.
+ */
+async function validateFlatNative() {
+  const repositoryRoot = fileURLToPath(new URL(".", import.meta.url));
+  const webRoot = join(repositoryRoot, "web");
+  const forbiddenDirectories = [
+    "android",
+    "ios",
+    "desktop",
+    "extension",
+    "pages",
+    "components",
+    "hooks",
+    "lib",
+    "contexts",
+  ];
+  const forbiddenFiles = [
+    "const.ts",
+    "localauth.js",
+    "login.html",
+    "register.html",
+    "console.html",
+    "dashboard.html",
+    "login.js",
+    "register.js",
+    "console.js",
+    "dashboard.js",
+  ];
+
+  for (const directory of forbiddenDirectories) {
+    const path = join(webRoot, directory);
+    if (await exists(path)) {
+      throw new Error(`Forbidden native wrapper directory exists: ${path}`);
+    }
+  }
+  for (const file of forbiddenFiles) {
+    const path = join(webRoot, file);
+    if (await exists(path)) {
+      throw new Error(`Forbidden flat-interface file exists: ${path}`);
+    }
+  }
+
+  const canonicalTodo = join(repositoryRoot, "docs", "todo.md");
+  if (!(await exists(canonicalTodo))) {
+    throw new Error(`Canonical operational checklist is missing: ${canonicalTodo}`);
+  }
+}
+
+try {
+  await validateFlatNative();
+  console.log("Flat native surface validation passed.");
+} catch (error) {
+  console.error("Flat native surface validation failed.", error);
+  process.exitCode = 1;
+}
 }

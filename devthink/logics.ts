@@ -139,7 +139,7 @@ export const DOMAIN_OF_APP: Record<string, string> = {
  *  2. sandbox lanes -> saddle        HOLDS: sandboxmodality.ts duplicated in
  *     debonair, saddle, getry, argan, cadria, forge, foundry, stealthhead,
  *     vault (plus devthink/sandboxlane.ts); canonical home is saddle
- *     (saddle/sandbox.ts, saddle/modes.ts, saddle/scriptlanes.ts) and forge
+ *     (saddle/sandbox.ts, saddle/modes.ts, saddle/scripts.ts) and forge
  *     + foundry already import @wenathlan/saddle/modes.
  *  3. family roster -> devthink      HOLDS: family.ts (FAMILY_SLUGS,
  *     FamilyMember, FAMILY_ACCENTS, familyrow) duplicated in 9 apps;
@@ -736,10 +736,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "saddle", file: "runtimeprobe.ts", domain: "virtualization", symbols: [] },
   { app: "saddle", file: "sandbox.ts", domain: "virtualization", symbols: ["CpuSpec", "GpuSpec", "MigProfile", "SandboxSpec", "CpuTopology", "SandboxFile", "SandboxFs", "SandboxState"] },
   { app: "saddle", file: "scheduler.ts", domain: "virtualization", symbols: ["shardplan", "plantypecheckshards", "sharedmemorycache", "projectgraph", "miglayoutplan", "planmiglayout", "vcpuhotplug", "ramhotplug"] },
-  { app: "saddle", file: "scriptlanes.ts", domain: "virtualization", symbols: ["ScriptStep", "ScriptPlan", "ScriptRunOptions", "ScriptStepResult", "ScriptRunResult", "ScriptRunRecord", "assertservercontext", "interpretsh"] },
-  { app: "saddle", file: "scriptsbuildengine.ts", domain: "virtualization", symbols: [] },
-  { app: "saddle", file: "scriptssecuritygate.ts", domain: "virtualization", symbols: [] },
-  { app: "saddle", file: "scriptsvalidateflatnative.ts", domain: "virtualization", symbols: [] },
+  { app: "saddle", file: "scripts.ts", domain: "virtualization", symbols: ["ScriptStep", "ScriptPlan", "ScriptRunOptions", "ScriptStepResult", "ScriptRunResult", "ScriptRunRecord", "assertservercontext", "interpretsh"] },
   { app: "saddle", file: "security.ts", domain: "virtualization", symbols: ["pqtmechanism", "rfc10024mechanisms", "rfc10024negotiator", "pqcauditentry", "pqcaudittrail", "noinfer", "policydefault", "policypreset"] },
   { app: "saddle", file: "seedcatalog.ts", domain: "virtualization", symbols: ["seedMediaSlots", "seedAgentSessions"] },
   { app: "saddle", file: "server.ts", domain: "virtualization", symbols: ["nodeserver"] },
