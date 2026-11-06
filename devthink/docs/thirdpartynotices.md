@@ -11,7 +11,7 @@ GPL-3.0-only. Three of the absorbed lineages were originally published
 under the MIT license; their original grants are acknowledged here so the
 lineage license history stays recorded:
 
-- **gateway** (io.github.wenathlan:gateway, @wenathlan/gateway, v1.1.13) —
+- **gateway** (com.wenathlan:gateway, @wenathlan/gateway, v1.1.13) —
   the embedded provider gateway engine, MIT, "Copyright (c) 2026 wenathlan".
   Its release history is preserved verbatim in the CHANGELOG.md lineage
   sections.

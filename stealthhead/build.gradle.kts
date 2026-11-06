@@ -4,8 +4,8 @@
 // the maven-publish plugin renders the module metadata
 // (stealthhead-<version>.module) beside the pom and the jar, so the gradle
 // consumer resolves the same documentation set the maven consumer
-// downloads from the same GitHub Packages registry without ever
-// colliding with the com.wenathlan versions the maven lane owns.
+// downloads from the same GitHub Packages registry under the one
+// com.wenathlan coordinate the owner law stamps for both lanes.
 // The releaseVersion property answers the lane override the way the pom
 // revision property does, and the default reads the envelope package.json
 // the metadata lockstep stamps — the module file carries no version

@@ -7,8 +7,8 @@
 // core, the cli, the headless entry and the mcp server) and the
 // publication attaches the extension and declarations classifier zips
 // the build helper attaches for the maven consumer — the same GitHub
-// Packages registry, never colliding with the com.wenathlan
-// versions the maven lane owns. The releaseVersion property answers the
+// Packages registry under the one com.wenathlan coordinate the owner
+// law stamps for both lanes. The releaseVersion property answers the
 // lane override the way the pom revision property does, and the default
 // reads the envelope package.json the metadata lockstep stamps — the
 // module file carries no version literal the rung ladder would have to

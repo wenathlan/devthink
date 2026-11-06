@@ -109,6 +109,35 @@ describe("artifactmanifest", () => {
     expect(artifactchannelof("devthink-site-1.1.87.zip", "1.1.87")).toContain("site");
     expect(artifactchannelof("devthink-declarations-1.1.87.zip", "1.1.87")).toContain("declarations");
     expect(artifactchannelof("devthink-sbom-1.1.87.json", "1.1.87")).toContain("provenance");
+    /* the family seat grammar of the thousand asset ladder: the sibling
+     * envelopes ride the npm channels, the site and next archives (the
+     * tar.xz, the brotli overlay and the zip twin) ride the site channel,
+     * the source and maven seats ride the chromium and maven channels, the
+     * sbom pair and the attestations record ride the provenance channel,
+     * the per-arch container seats ride the container channel, and the
+     * per-app and per-channel checksum umbrellas ride the github channel */
+    expect(artifactchannelof("wenathlan-argan-1.1.87.tgz", "1.1.87")).toContain("npmjs");
+    expect(artifactchannelof("wenathlan-vault-1.1.87.tgz", "1.1.87")).toContain("githubpackages");
+    expect(artifactchannelof("argan.1.1.87.tar.xz", "1.1.87")).toContain("site");
+    expect(artifactchannelof("argan.1.1.87.tar.xz.br", "1.1.87")).toContain("site");
+    expect(artifactchannelof("argan.web.1.1.87.zip", "1.1.87")).toContain("site");
+    expect(artifactchannelof("argan.next.normal.1.1.87.tar.xz", "1.1.87")).toContain("site");
+    expect(artifactchannelof("argan.next.zai.1.1.87.zip", "1.1.87")).toContain("site");
+    expect(artifactchannelof("argan.next.fifty.1.1.87.tar.xz.br", "1.1.87")).toContain("site");
+    expect(artifactchannelof("argan.next.personalized.1.1.87.zip", "1.1.87")).toContain("site");
+    expect(artifactchannelof("argan.1.1.87.source.tar.xz", "1.1.87")).toContain("chromium");
+    expect(artifactchannelof("devthink-1.1.87-source.tar.xz", "1.1.87")).toContain("chromium");
+    expect(artifactchannelof("argan-1.1.87-sources.jar", "1.1.87")).toContain("maven");
+    expect(artifactchannelof("argan-1.1.87-javadoc.jar", "1.1.87")).toContain("maven");
+    expect(artifactchannelof("argan.1.1.87.sbom.cyclonedx.json", "1.1.87")).toContain("provenance");
+    expect(artifactchannelof("argan.1.1.87.sbom.spdx.json", "1.1.87")).toContain("provenance");
+    expect(artifactchannelof("argan.1.1.87.attestations.json", "1.1.87")).toContain("provenance");
+    expect(artifactchannelof("argan.container.1.1.87.arm64.tar.gz", "1.1.87")).toContain("container");
+    expect(artifactchannelof("argan.container.1.1.87.386.tar.gz", "1.1.87")).toContain("container");
+    expect(artifactchannelof("argan.sha256.container.1.1.87.riscv64", "1.1.87")).toContain("container");
+    expect(artifactchannelof("argan.manifest.container.1.1.87.s390x.json", "1.1.87")).toContain("container");
+    expect(artifactchannelof("argan.1.1.87.sha256", "1.1.87")).toEqual(["github"]);
+    expect(artifactchannelof("sha256.channel.site.1.1.87", "1.1.87")).toEqual(["github"]);
     /* an unrecognized name still rides the github asset channel because every release artifact attaches to the release */
     expect(artifactchannelof("unknown-artifact.bin", "1.1.87")).toEqual(["github"]);
     /* the dist bundles ride the npm channels */

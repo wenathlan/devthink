@@ -10,7 +10,25 @@ function enginebaseline(declaration: unknown) {
   return caret === null ? "" : caret[1];
 }
 
-/** The release artifact names of one version: the list mirrors the channel resolution of the artifactmanifest module so the notes, the manifest and the docs speak the same catalog; the publishing pipeline tests assert the mirror never drifts. */
+/** The member family the thousand asset ladder walks beside the os: the ten sibling envelopes (saddle last, the heaviest pass of the house). */
+const familyseatenvelopes = ["argan", "cadria", "cobaia", "debonair", "forge", "foundry", "getry", "saddle", "stealthhead", "vault"];
+
+/** Every application of the release: the os beside the ten member envelopes. */
+const familyseatapps = ["devthink", ...familyseatenvelopes];
+
+/** The eight site homes whose pinned multi-arch runtime base carries the per-arch container save axis (the engine seats — devthink, saddle, vault — answer their own registry index lanes). */
+const familyseatsiteapps = ["argan", "cadria", "cobaia", "debonair", "forge", "foundry", "getry", "stealthhead"];
+
+/** The seven non-amd64 architecture seats of the eight-arch runtime index: the amd64 leg answers the single-arch container save the publish mirror attaches, so no seat lands twice. */
+const familyseatarches = ["386", "armv6", "armv7", "arm64", "ppc64le", "riscv64", "s390x"];
+
+/** The distribution channels that answer a per-channel checksum umbrella: every channel the release walk stages at least one asset for (the github channel answers the release-level SHA256SUMS umbrella, nuget answers the publish mirror's own lane). */
+const familyseatchannels = ["npmjs", "githubpackages", "maven", "container", "vscode", "firefox", "safari", "chromium", "site", "declarations", "provenance"];
+
+/** The five next shapes every application converts: the site archive and the four next templates, each riding the tar.xz, the brotli overlay and the zip twin. */
+const familyseatshapes = ["", "next.normal.", "next.zai.", "next.fifty.", "next.personalized."];
+
+/** The release artifact names of one version: the list mirrors the channel resolution of the artifactmanifest module so the notes, the manifest and the docs speak the same catalog; the publishing pipeline tests assert the mirror never drifts. The thousand asset ladder families ride beside the os names: the ten sibling envelopes, the fifteen site and next archive forms of every application, the seven registry and provenance seats of every application, the per-architecture container seats of the eight site homes and the per-channel checksum umbrellas. */
 function releaseartifactnames(version: string) {
   return [
     `wenathlan-devthink-${version}.tgz`,
@@ -34,6 +52,38 @@ function releaseartifactnames(version: string) {
     `devthink-artifactmanifest-${version}.json`,
     "SHA256SUMS.txt",
     "RELEASENOTES.md",
+    /* the sibling envelopes the family lane packs */
+    ...familyseatenvelopes.map((app) => `wenathlan-${app}-${version}.tgz`),
+    /* the site and next archives of every application: five shapes (the site and the four next templates), each with the tar.xz, the brotli overlay and the zip twin */
+    ...familyseatapps.flatMap((app) =>
+      familyseatshapes.flatMap((shape) => [
+        `${app}.${shape}${version}.tar.xz`,
+        `${app}.${shape}${version}.tar.xz.br`,
+        shape === ""
+          ? `${app}.web.${version}.zip`
+          : `${app}.${shape}${version}.zip`,
+      ]),
+    ),
+    /* the registry and provenance seats of every application: the source snapshot, the maven sources and javadoc classifiers, the sbom pair, the attestations record and the checksum umbrella */
+    ...familyseatapps.flatMap((app) => [
+      `${app}.${version}.source.tar.xz`,
+      `${app}-${version}-sources.jar`,
+      `${app}-${version}-javadoc.jar`,
+      `${app}.${version}.sbom.cyclonedx.json`,
+      `${app}.${version}.sbom.spdx.json`,
+      `${app}.${version}.attestations.json`,
+      `${app}.${version}.sha256`,
+    ]),
+    /* the per-architecture container seats of the eight site homes: the image save, the checksum and the manifest record of every arch */
+    ...familyseatsiteapps.flatMap((app) =>
+      familyseatarches.flatMap((arch) => [
+        `${app}.container.${version}.${arch}.tar.gz`,
+        `${app}.sha256.container.${version}.${arch}`,
+        `${app}.manifest.container.${version}.${arch}.json`,
+      ]),
+    ),
+    /* the per-channel checksum umbrellas */
+    ...familyseatchannels.map((channel) => `sha256.channel.${channel}.${version}`),
   ];
 }
 
@@ -53,8 +103,8 @@ function channelsectionsof(version: string) {
     "",
     channel(
       "npm channel",
-      [`wenathlan-devthink-${version}.tgz`],
-      `The library tarball publishes to npmjs and GitHub Packages under the \`@wenathlan/devthink\` scope; the same tarball attaches to the release assets.`,
+      [`wenathlan-devthink-${version}.tgz`, ...familyseatenvelopes.map((app) => `wenathlan-${app}-${version}.tgz`)],
+      `The library tarball publishes to npmjs and GitHub Packages under the \`@wenathlan/devthink\` scope; the same tarball attaches to the release assets beside the ten sibling envelopes the family lane packs — every application of the monorepo answers the one registry channel.`,
     ),
     "",
     channel(
@@ -70,14 +120,26 @@ function channelsectionsof(version: string) {
         `devthink-${version}.jar`,
         `devthink${version}.zip`,
         `devthink-declarations-${version}.zip`,
+        ...familyseatapps.flatMap((app) => [`${app}-${version}-sources.jar`, `${app}-${version}-javadoc.jar`]),
       ],
-      `The single com.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.`,
+      `The single com.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar, and every application of the family answers the sources and javadoc classifier seats the maven convention carries.`,
     ),
     "",
     channel(
       "container channel",
-      ["devthink-container.txt", "devthink-container.digest", "devthink-container.json"],
-      `The multi stage image publishes for the five linux architectures of the family union surface — the index answers linux/amd64, linux/arm64, linux/ppc64le, linux/s390x and linux/riscv64 beside the per platform attestation entries — with the version tag and the latest channel alias the 2.0.16 realignment carries: the version tag stays the immutable coordinate an operator pins, the latest alias moves to the version this pipeline published (the maene dist-tag doctrine the npm lanes always carried, so docker pull devthink:latest answers the current release), and no referrers fallback tag rides the package because the digest files embed the exact image hash as release assets. The node runtime arrives from the verified nodejs.org tarballs on the debian trixie slim base whose manifest carries every architecture of the index. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting.`,
+      [
+        "devthink-container.txt",
+        "devthink-container.digest",
+        "devthink-container.json",
+        ...familyseatsiteapps.flatMap((app) =>
+          familyseatarches.flatMap((arch) => [
+            `${app}.container.${version}.${arch}.tar.gz`,
+            `${app}.sha256.container.${version}.${arch}`,
+            `${app}.manifest.container.${version}.${arch}.json`,
+          ]),
+        ),
+      ],
+      `The multi stage image publishes for the five linux architectures of the family union surface — the index answers linux/amd64, linux/arm64, linux/ppc64le, linux/s390x and linux/riscv64 beside the per platform attestation entries — with the version tag and the latest channel alias the 2.0.16 realignment carries: the version tag stays the immutable coordinate an operator pins, the latest alias moves to the version this pipeline published (the maene dist-tag doctrine the npm lanes always carried, so docker pull devthink:latest answers the current release), and no referrers fallback tag rides the package because the digest files embed the exact image hash as release assets. The node runtime arrives from the verified nodejs.org tarballs on the debian trixie slim base whose manifest carries every architecture of the index. The image exposes the mcp server, the static site and the socket relay speaking the servercontract for self hosting. Beside the index the eight site homes answer the per-architecture save seats: the seven non-amd64 legs of the eight-arch runtime index the pinned nginx base carries, every leg a docker load away for the air-gapped operator, with the amd64 leg answering the single-arch save the publish mirror attaches.`,
     ),
     "",
     channel(
@@ -106,14 +168,28 @@ function channelsectionsof(version: string) {
     "",
     channel(
       "chromium channel",
-      [`devthink${version}.zip`, `devthink-${version}-source.tar.xz`, `devthink-nativehost-${version}.template.json`],
-      `The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.`,
+      [
+        `devthink${version}.zip`,
+        `devthink-${version}-source.tar.xz`,
+        `devthink-nativehost-${version}.template.json`,
+        ...familyseatapps.map((app) => `${app}.${version}.source.tar.xz`),
+      ],
+      `The chromium extension zip, the immutable source snapshot and the native host manifest template of the release, beside the per-application source snapshot seats — the git archive of every tagged application tree at the maximum xz level.`,
     ),
     "",
     channel(
       "site channel",
-      [`devthink-site-${version}.zip`],
-      `The hashed static site of the chatbridge surface with its immutable cache header configuration.`,
+      [
+        `devthink-site-${version}.zip`,
+        ...familyseatapps.flatMap((app) =>
+          familyseatshapes.flatMap((shape) => [
+            `${app}.${shape}${version}.tar.xz`,
+            `${app}.${shape}${version}.tar.xz.br`,
+            shape === "" ? `${app}.web.${version}.zip` : `${app}.${shape}${version}.zip`,
+          ]),
+        ),
+      ],
+      `The hashed static site of the chatbridge surface with its immutable cache header configuration, beside the site and next archive family of every application: the complete site archive in the house pattern and the four next shapes (normal, zai, fifty, personalized), each riding the maximum-compression tar.xz, the brotli quality 11 overlay and the zip twin the owner spec names — fifteen forms per application.`,
     ),
     "",
     channel(
@@ -128,15 +204,40 @@ function channelsectionsof(version: string) {
         `devthink-sbom-${version}.json`,
         `devthink-attestations-${version}.json`,
         `devthink-artifactmanifest-${version}.json`,
+        ...familyseatapps.flatMap((app) => [
+          `${app}.${version}.sbom.cyclonedx.json`,
+          `${app}.${version}.sbom.spdx.json`,
+          `${app}.${version}.attestations.json`,
+        ]),
       ],
-      `The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.`,
+      `The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels, beside the per-application seat family: the sbom pair (the cyclonedx inventory and the spdx 2.3 twin) and the attestations record of every application over its own asset set.`,
     ),
     "",
     channel(
       "github channel",
       names.slice(),
-      "Every artifact above attaches to the release of the immutable tag beside the checksums file and these notes; the release stays a draft until the verification step downloads every asset and verifies the checksums.",
+      "Every artifact above attaches to the release of the immutable tag beside the checksums file and these notes; the release stays a draft until the verification step downloads every asset and verifies the checksums. The checksum umbrellas answer beside the release-level SHA256SUMS: the per-application umbrella of every family member and the per-channel umbrella of every distribution channel the walk stages (npmjs, githubpackages, maven, container, vscode, firefox, safari, chromium, site, declarations and provenance — the github channel answers the release-level umbrella, nuget answers the publish mirror's own lane).",
     ),
+    "",
+    "## The asset census (the thousand plus law)",
+    "",
+    "The release answers with more than one thousand deterministic assets across the family axes, every one a real build product derived from the tagged tree (never a placeholder):",
+    "",
+    "| Axis | Product | Assets |",
+    "| --- | --- | ---: |",
+    "| The site and next archives | 11 applications × 15 forms (five shapes, each with the tar.xz, the brotli overlay and the zip twin) | 165 |",
+    "| The registry and provenance seats | 11 applications × 7 seats (source snapshot, sources jar, javadoc jar, the sbom pair, the attestations record, the checksum umbrella) | 77 |",
+    "| The per-architecture container seats | 8 site homes × 7 arch legs × 3 records (image save, checksum, manifest) | 168 |",
+    "| The family envelopes | 10 sibling tarballs the family lane packs | 10 |",
+    "| The os lanes | 13 base assets, the sbom, the attestations record, the iso, the wasm cores, the manifest and the sums | 19 |",
+    "| The per-channel checksum umbrellas | 11 distribution channels with staged assets | 11 |",
+    "| The publish mirror metadata ladder | 11 applications × 23 metadata assets + 7 family reports | 260 |",
+    "| The publish mirror family seats | 9 container archives, 10 gradle module sets, 10 go module sets | 97 |",
+    "| The desktop lane | 9 member applications × 28 platform assets | 252 |",
+    "| The mobile lane | 9 member applications × 8 android assets | 72 |",
+    "| **The census** | | **1131** |",
+    "",
+    "The census test of the repository (tests/publishlanes.test.ts) derives every row from the workflow matrices and pins the total above one thousand, so a lane or a matrix leg deleted reddens the gate before a release ever ships. The artifact manifest of this release lists every walk asset with its name, its byte size, its sha256 checksum and its channels.",
     "",
   ].join("\n");
 }

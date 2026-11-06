@@ -8,7 +8,11 @@
 # registry lanes pass it at build time, nothing is hardcoded beside the
 # stamp.
 
-FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
+# the solbuild leg rides the NATIVE build platform (the cross-arch static
+# law: the vite output is arch-independent, so the 8-arch runtime index
+# below never waits on the 2-arch node alpine base — each leg resolves only
+# the nginx base the multi-arch lane carries).
+FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
 
 ARG FORGE_VERSION=2.0.165
 

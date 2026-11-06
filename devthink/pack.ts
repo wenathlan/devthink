@@ -41,7 +41,7 @@ export function artifactchannels(): string[] {
   ];
 }
 
-/** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. The mappings answer under the devthink release asset names the merged release lane assembles (the names the release notes and their tests record) beside the extension lineage names the channel history still accepts (the historical artifact names of the 1.1.x line the artifact manifest tests exercise as accepted aliases). */
+/** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. The mappings answer under the devthink release asset names the merged release lane assembles (the names the release notes and their tests record) beside the extension lineage names the channel history still accepts (the historical artifact names of the 1.1.x line the artifact manifest tests exercise as accepted aliases) and the family seat grammar of the thousand asset ladder (the sibling envelopes, the site and next archives with their brotli overlays and zip twins, the per-app source, maven and provenance seats, the per-architecture container saves and the per-channel checksum umbrellas — every name the expanded release walk attaches resolves onto its true channel set instead of falling to the bare github default). */
 export function artifactchannelof(name: string, version: string): string[] {
   const channels: string[] = ["github"];
   if (name.startsWith("build/")) return ["npmjs", "githubpackages"];
@@ -68,6 +68,23 @@ export function artifactchannelof(name: string, version: string): string[] {
   if (name === `devthink-artifactmanifest-${version}.json`) return ["github", "provenance"];
   if (name === `extension-${version}-source.zip`) return ["github", "chromium"];
   if (name === "RELEASENOTES.md" || name === "SHA256SUMS.txt") return ["github"];
+  /* the thousand asset ladder — the family seat grammar: the sibling envelopes ride the npm channels beside the os tarball, the source seats ride the chromium channel beside the os source archives, the site and next archives (the tar.xz twin, the brotli overlay and the zip twin of every shape) ride the site channel, the maven classifier seats ride the maven channel, the per-app sboms and attestations records ride the provenance channel, the per-architecture container saves with their checksum and manifest records ride the container channel, and the per-app and per-channel checksum umbrellas ride the github channel the release-level SHA256SUMS umbrella already owns. the version anchored suffix checks keep the grammar honest: a name answers its seat only under the release version it stamps. */
+  if (name.startsWith("wenathlan-") && name.endsWith(`-${version}.tgz`))
+    return ["github", "npmjs", "githubpackages"];
+  if (name.endsWith(`.${version}.source.tar.xz`) || name.endsWith(`-${version}-source.tar.xz`))
+    return ["github", "chromium"];
+  if (name.endsWith(`-${version}-sources.jar`) || name.endsWith(`-${version}-javadoc.jar`))
+    return ["github", "maven"];
+  if (name.endsWith(`.${version}.sbom.cyclonedx.json`) || name.endsWith(`.${version}.sbom.spdx.json`))
+    return ["github", "provenance"];
+  if (name.endsWith(`.${version}.attestations.json`)) return ["github", "provenance"];
+  if (name.includes(".manifest.container.") || name.includes(".sha256.container."))
+    return ["github", "container"];
+  if (name.includes(`.container.${version}.`) && name.endsWith(".tar.gz")) return ["github", "container"];
+  if (name.endsWith(`.${version}.tar.xz.br`)) return ["github", "site"];
+  if (name.endsWith(`.${version}.tar.xz`) || name.endsWith(`.${version}.zip`)) return ["github", "site"];
+  if (name.endsWith(`.${version}.sha256`)) return ["github"];
+  if (name.startsWith("sha256.channel.")) return ["github"];
   return channels;
 }
 

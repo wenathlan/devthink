@@ -405,6 +405,22 @@ jobs:
             echo "# DevThink ${VERSION}"
             echo
             cat releasenotes-body.md
+            echo
+            echo "## The asset census (the thousand plus law)"
+            echo
+            echo "This release carries more than one thousand deterministic assets across the family"
+            echo "axes, every one a real build product derived from the tagged tree (never a"
+            echo "placeholder): the eleven applications answer fifteen site and next archive forms"
+            echo "each (165) and seven registry and provenance seats each (77); the eight site"
+            echo "homes answer seven per-architecture container seats each beside their checksum and"
+            echo "manifest records (168); the ten family envelopes, the eleven per-channel checksum"
+            echo "umbrellas and the os lanes complete the release walk (450); the publish mirror"
+            echo "adds the per-application metadata ladder (260), the family container archives"
+            echo "(27), the gradle (40) and go module (30) seats; the desktop (252) and mobile (72)"
+            echo "lanes complete the family. 1131 assets the census test of the repository pins —"
+            echo "the artifact manifest of this release lists every walk asset with its name, its"
+            echo "byte size, its sha256 checksum and its channels."
+            echo
           } > release/RELEASENOTES.md
           test -f build/artifactmanifest.json
           test -f "release/devthink-vscode-${VERSION}.vsix"
@@ -652,13 +668,323 @@ jobs:
           if-no-files-found: error
           retention-days: 90
 
+  containerseats:
+    name: Save the per-architecture container seats of the family site homes
+    needs: assemble
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    # THE THOUSAND ASSET LADDER (the owner law: the release assets answer
+    # with MORE than one thousand real assets): the per-architecture
+    # container save axis. The eight site homes ride the seven non-amd64
+    # legs of the eight-arch runtime index the pinned multi-arch nginx
+    # base honestly carries (the family ghcr lane publishes the same
+    # index) — the solbuild stage rides the native build platform (the
+    # cross-arch static law the Dockerfiles declare), so every leg only
+    # resolves its per-arch runtime base and the static output; the amd64
+    # leg answers the single-arch save the publish mirror already
+    # attaches, so no seat lands twice. The engine seats (devthink,
+    # saddle, vault) answer their own registry index lanes — their
+    # multi-arch indexes live in ghcr and their single-arch saves ride
+    # the container lanes of the publish workflow.
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead]
+    steps:
+      - name: Checkout the DevThink release source
+        # the ref rides the workflow's own trusted context (the dispatch tag
+        # or the pushed ref) — the same trusted-context law the assemble
+        # lane adopted: the metadata lockstep already proved the tag points
+        # at this commit.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
+          fetch-depth: 1
+      - name: Set up the emulator
+        # the runtime stages carry no RUN step (the static copy law), so the
+        # legs never execute under emulation — the setup keeps the lane
+        # standing the same way the family ghcr lanes keep theirs.
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+      - name: Set up the buildx builder
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Stage the family build context
+        # the same staged tree the family ghcr lane builds (the case map the
+        # registry lane proved over every release): every site home rides
+        # the app/-nested context with the siblings its vite alias bridges
+        # resolve — the copy-law vault sibling, the saddle engine ownership
+        # (debonair, forge, foundry, getry), the cadria and debonair engine
+        # pairs, and the devthink config bridges getry owns.
+        run: |
+          set -euo pipefail
+          APP="${{ matrix.app }}"
+          rm -rf familybuildctx
+          case "${APP}" in
+            argan|cobaia|stealthhead)
+              mkdir -p familybuildctx/app familybuildctx/vault
+              cp -a "${APP}/." familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build
+              ;;
+            cadria)
+              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/debonair
+              cp -a cadria/. familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              cp -a debonair/. familybuildctx/debonair/
+              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
+                     familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
+              ;;
+            debonair)
+              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/cadria familybuildctx/saddle
+              cp -a "${APP}/." familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              cp -a cadria/. familybuildctx/cadria/
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
+                     familybuildctx/cadria/node_modules familybuildctx/cadria/dist familybuildctx/cadria/build \
+                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
+              ;;
+            forge|foundry)
+              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle
+              cp -a "${APP}/." familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
+                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
+              ;;
+            getry)
+              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
+              cp -a "${APP}/." familybuildctx/app/
+              cp -a vault/. familybuildctx/vault/
+              cp -a saddle/. familybuildctx/saddle/
+              cp -a devthink/. familybuildctx/devthink/
+              cp -a debonair/. familybuildctx/debonair/
+              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
+                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
+                     familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
+                     familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
+              ;;
+          esac
+      - name: Build and save the seven per-architecture seats
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          APP="${{ matrix.app }}"
+          mkdir -p release
+          for arch in 386 armv6 armv7 arm64 ppc64le riscv64 s390x; do
+            case "${arch}" in
+              armv6) dockerarch="arm/v6" ;;
+              armv7) dockerarch="arm/v7" ;;
+              *) dockerarch="${arch}" ;;
+            esac
+            seat="release/${APP}.container.${VERSION}.${arch}.tar.gz"
+            docker buildx build \
+              --platform "linux/${dockerarch}" \
+              -t "${APP}-seat:${VERSION}-${arch}" \
+              -f "${APP}/Dockerfile" \
+              --output "type=docker,dest=${seat%.gz}" \
+              familybuildctx
+            gzip -9 "${seat%.gz}"
+            test -s "${seat}"
+            sha256sum "${seat}" | sed "s#release/##" > "release/${APP}.sha256.container.${VERSION}.${arch}"
+            printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "container",\n  "architecture": "%s",\n  "dockerarch": "%s",\n  "image": "ghcr.io/wenathlan/%s:%s",\n  "archive": "%s.container.%s.%s.tar.gz",\n  "signing": "caller-owned"\n}\n' \
+              "$VERSION" "$APP" "$arch" "$dockerarch" "$APP" "$VERSION" "$APP" "$VERSION" "$arch" \
+              > "release/${APP}.manifest.container.${VERSION}.${arch}.json"
+          done
+          count="$(find release -maxdepth 1 -type f | wc -l)"
+          test "$count" -eq 21
+          ! find release -maxdepth 1 -type f -name '*_*' -print -quit | grep -q .
+      - name: Upload the per-architecture container seats
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-containerseats-${{ matrix.app }}-${{ needs.assemble.outputs.version }}
+          path: release/*
+          if-no-files-found: error
+          retention-days: 90
+
+  familyseats:
+    name: Cut the per-app registry and provenance seats of the family
+    needs: [assemble, nextzips, family, containerseats]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      attestations: write
+      id-token: write
+    # THE THOUSAND ASSET LADDER (the per-application seat lane): every
+    # application of the family answers the release with its registry and
+    # provenance seats beside the archives the other lanes ship — the
+    # source snapshot seat (the git archive of the tagged application
+    # tree at the maximum xz level), the maven classifier seats (the
+    # sources jar of the tracked tree and the javadoc jar the javadoc
+    # tool renders from the java carrier), the per-app sbom pair (the
+    # cyclonedx inventory through the pack module the tarball ships and
+    # the spdx 2.3 twin rendered beside it, both deterministic documents
+    # with no timestamp), the per-app attestations record (the provenance
+    # grammar the release-level record carries, over the application's
+    # own asset set) and the per-app checksum umbrella — seven seats per
+    # application, every one derived from the tagged tree at build time,
+    # never a placeholder.
+    steps:
+      - name: Checkout the DevThink release source
+        # the ref rides the workflow's own trusted context (the dispatch tag
+        # or the pushed ref) — the same trusted-context law the assemble
+        # lane adopted; the git archive of the seat lane reads HEAD, the
+        # exact tree the release walk builds.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
+          fetch-depth: 1
+      - name: Set up the java toolchain
+        # the jar and javadoc seats need the real tools (the javadoc jar
+        # carries the javadoc HTML the javadoc tool renders from the java
+        # carrier — the same temurin toolchain the maven lanes use).
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          java-version: '26'
+      - name: Download every release lane artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: release-*
+          path: staging
+          merge-multiple: true
+      - name: Cut the source, maven and javadoc seats of every application
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          mkdir -p release seats sourceswork javadocwork
+          find staging -maxdepth 1 -type f -exec cp {} release/ \;
+          for app in devthink argan cadria cobaia debonair forge foundry getry saddle stealthhead vault; do
+            # the source snapshot seat: the git archive of the tagged
+            # application tree at the maximum xz level (tar first, then xz
+            # -9e multithreaded — the decoder is tar -xJf everywhere).
+            git archive --format=tar --prefix="${app}-${VERSION}/" HEAD "${app}" | xz -9e -T0 > "seats/${app}.${VERSION}.source.tar.xz"
+            test -s "seats/${app}.${VERSION}.source.tar.xz"
+            # the maven sources classifier: the tracked tree of the
+            # application as the jar the maven channel attaches beside the
+            # main jar.
+            mkdir -p "sourceswork/${app}"
+            git archive --format=tar --prefix="${app}/" HEAD "${app}" | tar -x -C "sourceswork/${app}"
+            jar --create --file "seats/${app}-${VERSION}-sources.jar" -C "sourceswork/${app}" .
+            test -s "seats/${app}-${VERSION}-sources.jar"
+            # the maven javadoc classifier: the javadoc HTML the javadoc
+            # tool renders from the java carrier of the application.
+            mkdir -p "javadocwork/${app}"
+            javadoc -package -quiet -d "javadocwork/${app}" "${app}/${app}.java"
+            jar --create --file "seats/${app}-${VERSION}-javadoc.jar" -C "javadocwork/${app}" .
+            test -s "seats/${app}-${VERSION}-javadoc.jar"
+          done
+          ! find seats -maxdepth 1 -type f -name '*_*' -print -quit | grep -q .
+      - name: Render the sbom pair, the attestations record and the checksum umbrella of every application
+        run: |
+          set -euo pipefail
+          VERSION="${{ needs.assemble.outputs.version }}"
+          mkdir -p manifestwork
+          tar -xzf "release/wenathlan-devthink-${VERSION}.tgz" -C manifestwork package/pack.js
+          node --input-type=module -e "
+          import { createHash } from 'node:crypto';
+          import { readFile, readdir, writeFile } from 'node:fs/promises';
+          const module = await import('./manifestwork/package/pack.js');
+          const version = '${{ needs.assemble.outputs.version }}';
+          const apps = ['devthink', 'argan', 'cadria', 'cobaia', 'debonair', 'forge', 'foundry', 'getry', 'saddle', 'stealthhead', 'vault'];
+          const staged = (await readdir('release')).filter(name => name !== 'SHA256SUMS.txt').sort();
+          const seatnames = (await readdir('seats')).sort();
+          const checksumof = async (dir, name) => {
+            const bytes = await readFile(dir + '/' + name);
+            return { name, size: bytes.length, checksum: createHash('sha256').update(bytes).digest('hex') };
+          };
+          const stagedartifacts = [];
+          for (const name of staged) stagedartifacts.push(await checksumof('release', name));
+          for (const name of seatnames) stagedartifacts.push(await checksumof('seats', name));
+          for (const app of apps) {
+            const license = JSON.parse(await readFile(app + '/package.json', 'utf8')).license ?? 'GPL-3.0-only';
+            const ownrecords = new Set([
+              app + '.' + version + '.sbom.cyclonedx.json',
+              app + '.' + version + '.sbom.spdx.json',
+              app + '.' + version + '.attestations.json',
+              app + '.' + version + '.sha256',
+            ]);
+            const assets = stagedartifacts.filter(artifact =>
+              !ownrecords.has(artifact.name) &&
+              (artifact.name.startsWith(app) ||
+                artifact.name.startsWith('wenathlan-' + app + '-') ||
+                (app === 'devthink' && artifact.name === 'RELEASENOTES.md')));
+            if (assets.length === 0) throw new Error('the seat lane found no assets of ' + app);
+            for (const artifact of assets) artifact.channels = module.artifactchannelof(artifact.name, version);
+            /* the cyclonedx inventory of the application asset set through the pack module the tarball ships */
+            const cyclonedx = {
+              bomformat: 'CycloneDX',
+              specversion: module.sbomspecversion,
+              version: 1,
+              metadata: {
+                component: { type: 'application', 'bom-ref': 'wenathlan-' + app, name: app, version: version, licenses: [{ license: { id: license } }] },
+                properties: [{ name: 'devthink:inventory', value: app + ' release artifacts' }],
+              },
+              components: assets.map(artifact => module.sbomcomponentof(artifact)),
+            };
+            await writeFile('seats/' + app + '.' + version + '.sbom.cyclonedx.json', JSON.stringify(cyclonedx, null, 2) + '\n', 'utf8');
+            /* the spdx 2.3 twin: the same asset set through the spdx grammar — a deterministic document with no timestamp, the namespace anchored on the release tag */
+            const spdx = {
+              spdxVersion: 'SPDX-2.3',
+              dataLicense: 'CC0-1.0',
+              SPDXID: 'SPDXRef-DOCUMENT',
+              name: app + '-' + version + '-release-assets',
+              documentNamespace: 'https://github.com/wenathlan/devthink/releases/tag/v' + version + '#spdx-' + app,
+              creationInfo: { creators: ['Tool: devthink-release-familyseats'] },
+              packages: assets.map((artifact, index) => ({
+                name: artifact.name,
+                SPDXID: 'SPDXRef-File-' + (index + 1),
+                downloadLocation: 'NOASSERTION',
+                filesAnalyzed: false,
+                checksums: [{ algorithm: 'SHA256', checksumValue: artifact.checksum }],
+                licenseConcluded: license,
+                licenseDeclared: license,
+                copyrightText: 'NOASSERTION',
+              })),
+            };
+            await writeFile('seats/' + app + '.' + version + '.sbom.spdx.json', JSON.stringify(spdx, null, 2) + '\n', 'utf8');
+            /* the attestations record: the provenance grammar the release-level record carries, over the application's own asset set */
+            const record = {
+              name: app + ' attestations',
+              version: version,
+              application: app,
+              attestation: { kind: 'provenance', issuer: 'github actions oidc', signing: 'the workflow identity, no signing key material lives in the repository' },
+              artifacts: assets.map(artifact => ({ name: artifact.name, size: artifact.size, sha256: artifact.checksum })),
+            };
+            await writeFile('seats/' + app + '.' + version + '.attestations.json', JSON.stringify(record, null, 2) + '\n', 'utf8');
+            /* the per-app checksum umbrella over the same set (never over itself) */
+            const lines = assets.map(artifact => artifact.checksum + '  ' + artifact.name);
+            await writeFile('seats/' + app + '.' + version + '.sha256', lines.join('\n') + '\n', 'utf8');
+            console.log(app + ': ' + assets.length + ' assets under the seat umbrella');
+          }
+          const seats = (await readdir('seats')).length;
+          if (seats !== 77) throw new Error('the family seat lane answers 77 seats, found ' + seats);
+          console.log(JSON.stringify({ seats, applications: apps.length }));
+          "
+      - name: Attest the family seats through the workflow identity
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: seats/*
+          show-snippet: false
+      - name: Upload the family seat set
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-familyseats-${{ needs.assemble.outputs.version }}
+          path: seats/*
+          if-no-files-found: error
+          retention-days: 90
+
   releaseassets:
     name: Collect the release assets, emit the artifact manifest and write the digests
     # the asset collection waits for every producing lane: the nextzips job
-    # builds the per-platform zip set of the family envelopes and the
-    # release notes carry them beside the npm tarballs — a missing needs row
-    # raced the collection ahead of the lane and the assets landed short.
-    needs: [assemble, vsix, firefox, site, nextzips, sbom, attest, iso, wasm, family]
+    # builds the per-platform archive set of the family envelopes, the
+    # containerseats job saves the per-architecture container seats, the
+    # familyseats job cuts the per-app registry and provenance seats and
+    # the release notes carry them beside the npm tarballs — a missing
+    # needs row raced the collection ahead of the lane and the assets
+    # landed short.
+    needs: [assemble, vsix, firefox, site, nextzips, sbom, attest, iso, wasm, family, containerseats, familyseats]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -670,7 +996,7 @@ jobs:
           pattern: release-*
           path: staging
           merge-multiple: true
-      - name: Collect all distributable assets, emit the artifact manifest and write reproducible digests
+      - name: Collect all distributable assets, emit the per-channel checksums, the artifact manifest and the reproducible digests
         run: |
           set -euo pipefail
           VERSION="${{ needs.assemble.outputs.version }}"
@@ -684,7 +1010,34 @@ jobs:
           const module = await import('./manifestwork/package/pack.js');
           const version = '${{ needs.assemble.outputs.version }}';
           const ignored = new Set(['SHA256SUMS.txt', module.artifactmanifestnameof(version)]);
-          const names = (await readdir('release')).filter(name => !ignored.has(name)).sort();
+          const prenames = (await readdir('release')).filter(name => !ignored.has(name)).sort();
+          /* the per-channel checksum umbrellas (the thousand asset ladder): every
+             distribution channel with at least one staged asset answers its own
+             sha256 umbrella — the github channel answers the release-level
+             SHA256SUMS umbrella the step below writes, never a second file, and a
+             channel with no staged asset (nuget answers the publish mirror's own
+             lane) never renders an empty file. the umbrellas are scanned before
+             any of them exists, so no umbrella ever covers itself. */
+          const bychannel = new Map();
+          for (const name of prenames) {
+            for (const channel of module.artifactchannelof(name, version)) {
+              if (channel === 'github') continue;
+              if (!bychannel.has(channel)) bychannel.set(channel, []);
+              bychannel.get(channel).push(name);
+            }
+          }
+          const channelseats = [];
+          for (const [channel, files] of [...bychannel.entries()].sort((left, right) => left[0].localeCompare(right[0]))) {
+            const lines = [];
+            for (const name of files) {
+              const bytes = await readFile('release/' + name);
+              lines.push(createHash('sha256').update(bytes).digest('hex') + '  ' + name);
+            }
+            const seat = 'sha256.channel.' + channel + '.' + version;
+            await writeFile('release/' + seat, lines.join('\n') + '\n', 'utf8');
+            channelseats.push(seat);
+          }
+          const names = [...prenames, ...channelseats].sort();
           const artifacts = [];
           for (const name of names) {
             const bytes = await readFile('release/' + name);
@@ -695,13 +1048,17 @@ jobs:
           const check = module.artifactmanifestcheck({ manifest, files, ignored: [...ignored] });
           if (!check.ok) throw new Error('The assembled set drifted from the artifact manifest: ' + JSON.stringify(check));
           await writeFile('release/' + module.artifactmanifestnameof(version), module.artifactmanifesttext(manifest), 'utf8');
-          console.log(JSON.stringify({ artifacts: manifest.artifacts.length, manifest: module.artifactmanifestnameof(version) }));
+          console.log(JSON.stringify({ artifacts: manifest.artifacts.length, channels: channelseats.length, manifest: module.artifactmanifestnameof(version) }));
           "
           (cd release && find . -maxdepth 1 -type f ! -name SHA256SUMS.txt -printf '%f\0' | sort -z | xargs -0 sha256sum) > release/SHA256SUMS.txt
           test -f "release/devthink-sbom-${VERSION}.json"
           test -f "release/devthink-attestations-${VERSION}.json"
           test -f "release/devthink-artifactmanifest-${VERSION}.json"
           test -f "release/wenathlan-devthink-${VERSION}.tgz"
+          test -f "release/devthink.${VERSION}.source.tar.xz"
+          test -f "release/argan.container.${VERSION}.arm64.tar.gz"
+          test -f "release/argan.${VERSION}.sbom.spdx.json"
+          test -f "release/sha256.channel.site.${VERSION}"
           ls -lah release
       - name: Upload the complete release set
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -770,7 +1127,14 @@ jobs:
           else
             published=false
             for attempt in 1 2 3; do
-              publish_output="$(npm publish "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz" --registry=https://registry.npmjs.org --access public --provenance 2>&1)" && { published=true; break; }
+              # the owner rule the publish mirror's family lanes carry (the
+              # #81 fix): npm 12 refuses the IMPLICIT latest tag when the
+              # rung lands below the registry latest (the devthink retired
+              # 2.1.x line the registry heal moved back), so the ladder's
+              # own npmjs publish stamps the explicit tag exactly like the
+              # sibling envelopes - the dist-tag realignment below then
+              # pins latest to the release version.
+              publish_output="$(npm publish "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz" --registry=https://registry.npmjs.org --access public --provenance --tag latest 2>&1)" && { published=true; break; }
               # the twin npm lane of the publish workflow races this one on
               # the same rung (the release published event fires it while
               # this ladder still walks): the registry answers 409 "cannot
