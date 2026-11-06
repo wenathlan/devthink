@@ -148,7 +148,7 @@ describe("the pill radius purge (the §12B ladder owns every shape)", () => {
     ).toContain("border-radius: var(--sol-radius);");
     for (const chip of [".dtc-compactpill", ".dtc-welcome__ghost", ".dtc-tasks__chip"]) {
       expect(
-        solcss.match(new RegExp(`^${chip.replace(/[.]/g, "\\.")} \\{[^}]*\\}`, "m"))?.[0],
+        solcss.match(new RegExp(`^${chip.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")} \\{[^}]*\\}`, "m"))?.[0],
         `${chip} reads the base rung`,
       ).toContain("border-radius: var(--sol-radius);");
     }
