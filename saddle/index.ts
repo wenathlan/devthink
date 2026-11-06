@@ -1475,6 +1475,8 @@ export * from './modes.ts';
  * runner, the yml/yaml interpretation through the house yaml subset with
  * the babel compile roundtrip, the detached background runs on the house
  * job queue and the docker-ready descriptors (the PR15 lane surface the
- * webserver routes and the script cli command consume). */
-export * from './scriptlanes.ts';
+ * webserver routes and the script cli command consume) — riding the one
+ * scripts keyword file beside its build-engine, security-gate and
+ * flat-native validation lanes (the consolidation law of the root). */
+export * from './scripts.ts';
 export * from './virtual.ts';

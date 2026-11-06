@@ -294,8 +294,9 @@ RUN apt-get update \
 # edgeplane.ts
 # pulls foundation.ts and the one edgelandes keyword file (the edgelandes
 # fold retired the host/inproc/virtual/ninety arms into it); the lazy
-# script-lane surface (webserver.ts imports scriptlanes.ts on first use)
-# pulls execution.ts through scriptlanes.ts, so both ride the copy and
+# script-lane surface (webserver.ts imports the one scripts keyword
+# file on first use — the scripts fold retired the scriptlanes seat into
+# it) pulls execution.ts through scripts.ts, so both ride the copy and
 # the lane answers real runs instead of the honest 503; db.ts pulls
 # labels.ts whose ../vault/labelstore.ts import resolves at /vault (the
 # family context fix - the vault source lands beside /app the same way
@@ -315,7 +316,7 @@ RUN apt-get update \
 # (virtual.ts pulls foundation.ts only; tiers.ts pulls node builtins
 # only).
 # run the console with: docker run saddle:<version>
-COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scriptlanes.ts /app/execution.ts /app/virtual.ts /app/tiers.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scripts.ts /app/execution.ts /app/virtual.ts /app/tiers.ts /app/mime.types /app/init.sql /app/schema.prisma ./
 # the label store of the console stack: labels.ts (pulled by db.ts)
 # resolves ../vault/labelstore.ts at /vault - the same family context
 # fix the solbuild stage applies.

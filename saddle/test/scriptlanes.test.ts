@@ -18,7 +18,7 @@ import {
   runscriptbackground,
   SCRIPTLANES_NODE_BASE,
   scriptRunStatus,
-} from "../scriptlanes.ts";
+} from "../scripts.ts";
 
 /** the runtime probes: the babel compile lane rides the optional
  * @babel/core and the cross-check rides the optional yaml package —

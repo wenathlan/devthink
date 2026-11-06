@@ -100,7 +100,7 @@ import { MODALITIES, MODALITYPLANCOUNT, planreport } from './modalityregistry.ts
 import { edgelandesreport, runonedge } from './edgeplane.ts';
 import type { EdgeStorageAdapter } from './edgeplane.ts';
 import { CATALOGAPPS, familyjoin, workloadreport } from './workloadlaw.ts';
-import type { ScriptPlan } from './scriptlanes.ts';
+import type { ScriptPlan } from './scripts.ts';
 import { tmpdir } from 'node:os';
 
 /* ------------------------------------------------------------------ */
@@ -1926,10 +1926,10 @@ async function edgestorage(): Promise<EdgeStorageAdapter | null> {
 /* ------------------------------------------------------------------ */
 
 /** the script lane module surface the routes consume: the values load
- * lazily (scriptlanes.ts belongs to the engine graph whose .js
+ * lazily (scripts.ts belongs to the engine graph whose .js
  * specifiers only bundler hosts resolve from source), the types ride
  * the erased type-only import at the top. */
-type ScriptLaneModule = typeof import('./scriptlanes.ts');
+type ScriptLaneModule = typeof import('./scripts.ts');
 
 /** the memoized script lane module: undefined means not loaded yet,
  * null means this host cannot load it (both load lanes refused). */
@@ -1937,8 +1937,8 @@ let scriptlane: ScriptLaneModule | null | undefined;
 
 /**
  * loads the script lanes module once per process: the source lane
- * first (scriptlanes.ts — resolvable on bundler hosts like vite,
- * vitest and bun), then the built engine tree (dist/scriptlanes.js —
+ * first (scripts.ts — resolvable on bundler hosts like vite,
+ * vitest and bun), then the built engine tree (dist/scripts.js —
  * what "npm run build:engine" emits and what the container image
  * carries beside this server). a host that can load neither keeps the
  * lane honestly absent and the routes answer the 503 refusal below,
@@ -1951,10 +1951,10 @@ async function scriptlanes(): Promise<ScriptLaneModule | null> {
     return scriptlane;
   }
   try {
-    scriptlane = (await import('./scriptlanes.ts')) as ScriptLaneModule;
+    scriptlane = (await import('./scripts.ts')) as ScriptLaneModule;
   } catch {
     try {
-      scriptlane = (await import('./dist/scriptlanes.ts')) as ScriptLaneModule;
+      scriptlane = (await import('./dist/scripts.ts')) as ScriptLaneModule;
     } catch {
       scriptlane = null;
     }

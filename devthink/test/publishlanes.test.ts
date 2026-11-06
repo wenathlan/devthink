@@ -875,7 +875,7 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     expect(scripts.prepublishOnly).toContain("pack:check");
     expect(scripts["pack:check"]).toContain("npm run check");
     expect(scripts.check).toContain("tsc -p tsconfig.json --noEmit");
-    expect(scripts["build:engine"]).toContain("scriptsbuildengine.ts");
+    expect(scripts["build:engine"]).toContain("scripts.ts buildengine");
     expect(scripts.build).toBe("npm run build:engine");
   });
 
