@@ -1,11 +1,11 @@
 // The stealthhead gradle distribution module (the gradleseat wave): the
-// documentation envelope the maven lane ships as the io.github.wenathlan
+// documentation envelope the maven lane ships as the com.wenathlan
 // artifact rides the gradle rung under the com.wenathlan coordinates —
 // the maven-publish plugin renders the module metadata
 // (stealthhead-<version>.module) beside the pom and the jar, so the gradle
 // consumer resolves the same documentation set the maven consumer
 // downloads from the same GitHub Packages registry without ever
-// colliding with the io.github.wenathlan versions the maven lane owns.
+// colliding with the com.wenathlan versions the maven lane owns.
 // The releaseVersion property answers the lane override the way the pom
 // revision property does, and the default reads the envelope package.json
 // the metadata lockstep stamps — the module file carries no version

@@ -28,7 +28,7 @@ describe("mavenpack", () => {
 
   it("records the devthink coordinates and the license the pom carries", async () => {
     const rootpom = await readFile("pom.xml", "utf8");
-    expect(rootpom).toContain("<groupId>io.github.wenathlan</groupId>");
+    expect(rootpom).toContain("<groupId>com.wenathlan</groupId>");
     expect(rootpom).toContain("<artifactId>devthink</artifactId>");
     expect(rootpom).toContain("<packaging>jar</packaging>");
     expect(rootpom).toContain("<url>https://github.com/wenathlan/devthink</url>");

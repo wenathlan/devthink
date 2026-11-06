@@ -1,4 +1,4 @@
-package io.github.wenathlan.argan;
+package com.wenathlan.argan;
 
 /**
  * The argan version envelope carrier.

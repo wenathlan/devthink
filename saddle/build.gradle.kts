@@ -1,11 +1,12 @@
 // The saddle gradle distribution module (the gradleseat wave): the
-// engine envelope the maven lane ships as the io.github.wenathlan
+// engine envelope the maven lane ships as the com.wenathlan
 // artifact rides the gradle rung under the com.wenathlan coordinates —
 // the maven-publish plugin renders the module metadata
 // (saddle-<version>.module) beside the pom and the jar, and the one real
 // jar of the family compiles the Saddle.java adapter the maven envelope
-// compiles (the io.wenathlan.saddle class assembles the engine CLI
-// argument vectors; the release 17 compile target mirrors the maven
+// compiles (the com.wenathlan.saddle class assembles the engine CLI
+// argument vectors — the coordinate migration the unified naming law
+// stamps; the release 17 compile target mirrors the maven
 // compiler release the pom pins). The releaseVersion property answers
 // the lane override the way the pom revision property does, and the
 // default reads the envelope package.json the metadata lockstep stamps —

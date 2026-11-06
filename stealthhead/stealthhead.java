@@ -1,4 +1,4 @@
-package io.github.wenathlan.stealthhead;
+package com.wenathlan.stealthhead;
 
 /**
  * The stealthhead version envelope carrier.

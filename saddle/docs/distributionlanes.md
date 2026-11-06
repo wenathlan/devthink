@@ -6,7 +6,7 @@ The eleven distribution lanes of the PR14 law and the honest status each lane an
 | --- | --- | --- | --- |
 | npmjs | package.json — @wenathlan/saddle | live | the family-npmjs lane publishes the engine envelope (the heaviest pass, always last) |
 | GitHub Packages npm | package.json — @wenathlan/saddle | live | the family-githubnpm lane publishes the same envelope idempotently |
-| Maven | pom.xml — io.github.wenathlan:saddle | live | the family-maven lane deploys the one real jar of the family (the Saddle.java adapter) |
+| Maven | pom.xml — com.wenathlan:saddle | live | the family-maven lane deploys the one real jar of the family (the Saddle.java adapter) |
 | NuGet | saddle.csproj | live | the family-nuget lane packs the engine envelope |
 | Gradle | build.gradle.kts — com.wenathlan:saddle | live | the family-gradle lane publishes the module beside the maven coordinates |
 | Ruby Gems | saddle.gemspec | live | the family-rubygems lane pushes the gem carrying the SaddleCli.rb process adapter |

@@ -4797,7 +4797,10 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "schedule:",
       "allow_major_updates",
       "apply_cache_cleanup",
-      "extension-mcp",
+      /* the com.wenathlan coordinate migration: the retire default walks
+         the legacy io coordinate family the unified naming law retires */
+      "io.github.wenathlan.devthink",
+      "io.wenathlan.saddle",
       "Retire the merged maven packages the single distribution replaced",
       "node-version-file: devthink/.nvmrc",
       "npm install --global",

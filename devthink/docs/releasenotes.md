@@ -26,7 +26,7 @@ The nupkg carries the cli, headless and mcp entries as content files beside the 
 - `devthink2.0.165.zip`
 - `devthink-declarations-2.0.165.zip`
 
-The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
+The single com.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
 ### container channel
 

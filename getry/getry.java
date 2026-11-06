@@ -1,4 +1,4 @@
-package io.github.wenathlan.getry;
+package com.wenathlan.getry;
 
 /**
  * The getry version envelope carrier.
