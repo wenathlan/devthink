@@ -260,6 +260,10 @@ COPY vault /vault
 # apt-get install so a 404 on install re-fetches a fresh index that
 # references the new package versions, and the stale list cache is cleared
 # between the retries.
+# the engines seat rides the root manifest alone (the manifestemplate
+# law): the bun floor reads one hop up from /package.json the context
+# root carries — the same law the engineseat wave charges.
+COPY package.json /package.json
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
@@ -271,7 +275,7 @@ RUN set -eux; \
     done; \
     test "$apt_update_tries" -gt 0; \
     rm -rf /var/lib/apt/lists/*; \
-    bunversion="$(node -p "require('./package.json').engines.bun.match(/>=?\s*(\d+\.\d+\.\d+[^\s>]*)/)?.[1] ?? require('./package.json').engines.bun.replace(/^[~^]/,'')")"; \
+    bunversion="$(node -p "require('/package.json').engines.bun.match(/>=?\s*(\d+\.\d+\.\d+[^\s>]*)/)?.[1] ?? require('/package.json').engines.bun.replace(/^[~^]/,'')")"; \
     test "${bunversion}" != ""; \
     npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
@@ -323,7 +327,10 @@ COPY devthink/package.json devthink/bun.lock ./
 # resolve (the same law the vault sibling below carries).
 COPY cadria /cadria
 COPY vault /vault
-
+# the engines seat rides the root manifest alone (the manifestemplate
+# law): the bun floor reads one hop up from /package.json the context
+# root carries — the same law the engineseat wave charges.
+COPY package.json /package.json
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
@@ -335,7 +342,7 @@ RUN set -eux; \
     done; \
     test "$apt_update_tries" -gt 0; \
     rm -rf /var/lib/apt/lists/*; \
-    bunversion="$(node -p "require('./package.json').engines.bun.match(/>=?\s*(\d+\.\d+\.\d+[^\s>]*)/)?.[1] ?? require('./package.json').engines.bun.replace(/^[~^]/,'')")"; \
+    bunversion="$(node -p "require('/package.json').engines.bun.match(/>=?\s*(\d+\.\d+\.\d+[^\s>]*)/)?.[1] ?? require('/package.json').engines.bun.replace(/^[~^]/,'')")"; \
     test "${bunversion}" != ""; \
     npm install --global "bun@${bunversion}"; \
     test "$(bun --version)" = "${bunversion}"
