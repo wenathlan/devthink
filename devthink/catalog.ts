@@ -90,7 +90,7 @@ async function catalogRows<T>(kind: CatalogKind, seeds: T[]): Promise<T[]> {
   if (cached) return cached as T[];
   let rows: T[] = seeds;
   try {
-    const base = (import.meta.env?.VITE_CATALOG_URL as string | undefined)?.replace(/\/$/, "") ?? "";
+    const base = (import.meta.env.VITE_CATALOG_URL as string | undefined)?.replace(/\/$/, "") ?? "";
     if (base) {
       const answer = await fetch(`${base}/catalog/${kind}`, { headers: { accept: "application/json" } });
       if (answer.ok) {

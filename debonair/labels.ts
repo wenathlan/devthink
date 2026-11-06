@@ -17,7 +17,7 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 6;
+export const LABEL_REVISION = 7;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -33,7 +33,16 @@ export const LABEL_MANIFEST = {
   // the app boundary (App.tsx, the boot anchor)
   "app.boundary.body": "debonair could not render this page frame.",
   "app.boundary.reload": "reload the page",
+  // the construction face (the in-construction pass of every platform
+  // route: the honest status the owner ordered, one voice for all pages)
+  "construction.aria": "debonair is in construction",
+  "construction.title": "debonair",
+  "construction.status": "in construction",
+  "construction.subtitle": "The audio DAW is in construction.",
+  "construction.action": "back to home",
+  "construction.replay": "watch the opening again",
   // the home page anchor (the landing) and the song card widget
+  "home.eyebrow": "debonair · home",
   "home.cta": "Open studio",
   "home.brand": "debonair",
   "home.hero.title1": "Describe a track.",
@@ -344,6 +353,7 @@ export const LABEL_MANIFEST = {
   "ingest.phase.readyDetail": "the document is complete",
   "ingest.phase.error": "failed",
   "ingest.phase.errorDetail": "the file did not survive the bench",
+  "ingest.eyebrow": "debonair · ingest",
   "ingest.doc.eyebrow": "the document",
   "ingest.doc.meta": "· {clock} · {khz} kHz · schema {schema}",
   "ingest.doc.palette": "the palette the audio answered",
