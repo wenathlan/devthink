@@ -94,8 +94,8 @@ jobs:
             // the @-scoped names (@grpc/grpc-js and its seats) and the @
             // sign is a reserved YAML indicator a bare key may never open
             // with — every name materializes as a quoted key so the
-            // workspace the audit folder reads stays valid YAML the way
-            // the manifest's own JSON quoting keeps it valid JSON.
+            // workspace the audit folder reads stays valid YAML the same
+            // way the manifest itself stays valid JSON under its quoting.
             const lines = Object.keys(overrides).map(function (name) {
               return "  " + JSON.stringify(name) + ": " + JSON.stringify(overrides[name]);
             });
