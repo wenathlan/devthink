@@ -1,5 +1,17 @@
 # Forge release notes
 
+## 2.0.162 — the depsunion rung (the eleven manifests answer one dependency union)
+
+### Changed
+
+| Area | Change |
+| --- | --- |
+| The dependency union | Forge carries the synchronized family manifest: the eleven official apps and the root envelope answer the identical union — 30 dependencies and 94 devDependencies — and no seat loses a row; the internal family pins ride the ~2.0.155 tilde floor everywhere (the devthink drift of ~2.0.159/~2.0.160 returns to the family number). |
+| The engine catalog | The engines block answers 25 rows: Babel (^7.28.0) joins Bun, Cargo, CorePack, Deno and PNPM beside the V 0.5.2 catalog entry (catalog only, the PR4 law), Node stays the maestro orchestrating the engine ladder with priority for its natives, and Python / Go / Rust / Cargo / PNPM / V stay allowed. |
+| The overrides union | The overrides block syncs to the family's 18 rows — the saddle xcode uuid pin and the @grpc/grpc-js 1.14.5 floor reach every manifest beside the root envelope. |
+| The lockfile law | The per-app lockfiles stay as tracked (bun.lock, pnpm-lock.yaml, package-lock.json where present); the sync creates no new lockfile and pnpm-lock.yaml keeps the single-lockfile example seat. |
+| The storage layer | better-sqlite3 (^13.0.3) stays in the checklist as the storage layer for the database and cache seats. |
+
 ## 2.0.158 — the docstd rung (the document family answers one template)
 
 ### Changed

@@ -194,6 +194,53 @@ describe("pixel resize", () => {
   });
 });
 
+describe("pixel round trips", () => {
+  it("answers the identical buffer for a same-size bilinear resize", () => {
+    const image = rampImage(5, 4);
+    const out = resizeimage(image, { width: 5, height: 4 });
+    assert.deepEqual(new Uint8ClampedArray(out.data), image.data);
+  });
+
+  it("survives a downscale→upscale round trip on solid fields", () => {
+    const image = solidImage(8, 8, [60, 120, 200, 255]);
+    const small = resizeimage(image, { width: 4, height: 4 });
+    const back = resizeimage(small, { width: 8, height: 8 });
+    for (let at = 0; at < back.data.length; at += 4)
+      assert.deepEqual([back.data[at], back.data[at + 1], back.data[at + 2], back.data[at + 3]], [60, 120, 200, 255]);
+  });
+
+  it("keeps the ramp monotonic and brighter at the far end through a resize round trip", () => {
+    const image = rampImage(8, 1);
+    const small = resizeimage(image, { width: 4, height: 1 });
+    const back = resizeimage(small, { width: 8, height: 1 });
+    for (let x = 1; x < 8; x += 1) assert.ok(back.data[x * 4] >= back.data[(x - 1) * 4], `the round trip stays monotonic at ${x}`);
+    assert.ok(back.data[7 * 4] > back.data[0], "the far end stays brighter than the near end");
+    assert.ok(back.data[0] > 0, "the near end blurs up from the resampling, never below");
+  });
+
+  it("inverts a brightness move inside the clamp band", () => {
+    const image = solidImage(3, 3, [60, 90, 120, 255]);
+    const brightened = adjustimage(image, { brightness: 1.5 });
+    const restored = adjustimage(brightened, { brightness: 1 / 1.5 });
+    assert.ok(Math.abs(restored.data[0] - 60) <= 1);
+    assert.ok(Math.abs(restored.data[1] - 90) <= 1);
+    assert.ok(Math.abs(restored.data[2] - 120) <= 1);
+  });
+
+  it("answers the identity convolution twice over", () => {
+    const image = rampImage(5, 5);
+    const once = convolveimage(image, pixelkernels.identity);
+    const twice = convolveimage(once, pixelkernels.identity);
+    assert.deepEqual(new Uint8ClampedArray(twice.data), image.data);
+  });
+
+  it("walks the whole pipeline and back through a neutral resize", () => {
+    const image = solidImage(4, 4, [128, 128, 128, 255]);
+    const out = runpixel(image, { kernel: pixelkernels.identity, blurRadius: 0, resize: { width: 4, height: 4 } });
+    assert.deepEqual(new Uint8ClampedArray(out.data), image.data);
+  });
+});
+
 describe("pixel pipeline", () => {
   it("runs the documented order: adjust, tint, convolve, blur, resize", () => {
     const image = rampImage(6, 4);

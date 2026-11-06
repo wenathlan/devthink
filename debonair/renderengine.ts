@@ -16,6 +16,16 @@ import { mintid } from "./bigintids.ts";
 import { FormantEvent, Vowel, renderFormantPhrase } from "./formant.ts";
 import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { MASTERING, trackNameFromPrompt } from "./katexis.ts";
+import {
+  biquadOf,
+  expRampOf,
+  linearRampOf,
+  runBiquad,
+  sawOf,
+  squareOf,
+  targetOf,
+  triangleOf,
+} from "./kathesis.ts";
 import { limitTruePeak } from "./limiter.ts";
 import { dbToLinear } from "./mixergraph.ts";
 import { DRUM_LANE_KEYS, LANE_STEPS, PATTERN_SCHEMA_VERSION, PatternProject, PatternVoice, parsePattern, validatePatternProject } from "./pattern.ts";
@@ -205,115 +215,11 @@ export function schedulePattern(plan: PatternProject): PatternSchedule {
 
 // ---------------------------------------------------------------------------
 // the dsp primitives (the webaudio automation and filter laws, closed form)
+// — the seats kathesis.ts owns since the engine core wave: the ramps, the
+// rbj biquad set and the oscillator voices answer from the one source the
+// whole family reads (the render lane imports them verbatim — the math
+// never drifts between the desk, the bounce and the engine core).
 // ---------------------------------------------------------------------------
-
-/** The exponential ramp of the webaudio automation law: v(t) = from *
- * (to/from)^(dt/seconds), holding the end values outside the span. */
-function expRampOf(from: number, to: number, dt: number, seconds: number): number {
-  if (dt <= 0) return from;
-  if (dt >= seconds) return to;
-  return from * (to / from) ** (dt / seconds);
-}
-
-/** The linear ramp of the webaudio automation law, holding the ends. */
-function linearRampOf(from: number, to: number, dt: number, seconds: number): number {
-  if (dt <= 0) return from;
-  if (dt >= seconds) return to;
-  return from + ((to - from) * dt) / seconds;
-}
-
-/** The set-target curve of the webaudio automation law: target + (from -
- * target) * exp(-dt/tc). */
-function targetOf(target: number, from: number, dt: number, tc: number): number {
-  if (dt <= 0) return from;
-  return target + (from - target) * Math.exp(-dt / tc);
-}
-
-/** One running biquad filter — the rbj coefficients of the webaudio
- * biquad's transfer function (the spec-pinned response), direct form 1. */
-interface BiquadFilter {
-  b0: number;
-  b1: number;
-  b2: number;
-  a1: number;
-  a2: number;
-  x1: number;
-  x2: number;
-  y1: number;
-  y2: number;
-}
-
-/**
- * Builds one biquad filter voice — the rbj cookbook coefficients of the
- * webaudio biquad law (the same transfer function the browser node pins,
- * q the recipes carry or the node's default 1).
- *
- * @param type the filter family: lowpass, highpass or bandpass.
- * @param hz the cutoff frequency.
- * @param q the resonance (the webaudio default is 1).
- * @param sampleRate the render rate.
- * @returns the primed filter (zero state).
- */
-function biquadOf(type: "lowpass" | "highpass" | "bandpass", hz: number, q: number, sampleRate: number): BiquadFilter {
-  const omega = (2 * Math.PI * hz) / sampleRate;
-  const cos = Math.cos(omega);
-  const alpha = Math.sin(omega) / (2 * q);
-  const a0 = 1 + alpha;
-  let b0 = 0;
-  let b1 = 0;
-  let b2 = 0;
-  if (type === "lowpass") {
-    b0 = (1 - cos) / 2;
-    b1 = 1 - cos;
-    b2 = (1 - cos) / 2;
-  } else if (type === "highpass") {
-    b0 = (1 + cos) / 2;
-    b1 = -(1 + cos);
-    b2 = (1 + cos) / 2;
-  } else {
-    // the constant-peak bandpass the webaudio spec pins
-    b0 = alpha;
-    b1 = 0;
-    b2 = -alpha;
-  }
-  return {
-    b0: b0 / a0,
-    b1: b1 / a0,
-    b2: b2 / a0,
-    a1: (-2 * cos) / a0,
-    a2: (1 - alpha) / a0,
-    x1: 0,
-    x2: 0,
-    y1: 0,
-    y2: 0,
-  };
-}
-
-/** Steps one biquad over one input sample (direct form 1). */
-function runBiquad(filter: BiquadFilter, x: number): number {
-  const y =
-    filter.b0 * x + filter.b1 * filter.x1 + filter.b2 * filter.x2 - filter.a1 * filter.y1 - filter.a2 * filter.y2;
-  filter.x2 = filter.x1;
-  filter.x1 = x;
-  filter.y2 = filter.y1;
-  filter.y1 = y;
-  return y;
-}
-
-/** The sawtooth voice of the webaudio oscillator law (phase in [0,1)). */
-function sawOf(phase: number): number {
-  return 2 * phase - 1;
-}
-
-/** The square voice of the webaudio oscillator law. */
-function squareOf(phase: number): number {
-  return phase < 0.5 ? 1 : -1;
-}
-
-/** The triangle voice of the webaudio oscillator law. */
-function triangleOf(phase: number): number {
-  return (2 / Math.PI) * Math.asin(Math.sin(2 * Math.PI * phase));
-}
 
 /** Reads the shared noise take at one instant — the buffer source's own
  * law: one second of seeded noise, silence past its end. */

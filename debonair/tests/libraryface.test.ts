@@ -60,6 +60,7 @@ const patternselfmodule = await import("@wenathlan/debonair/pattern");
 const genreselfmodule = await import("@wenathlan/debonair/genre");
 const rendeselfmodule = await import("@wenathlan/debonair/render");
 const wavwritermodule = await import("@wenathlan/debonair/wavwriter");
+const kathesismodule = await import("@wenathlan/debonair/kathesis");
 
 /** The engine subpaths the library publishes, in the map's own order: the
  * nine pure pipeline seats first, the two keyword seats the audio fold wave
@@ -101,6 +102,7 @@ const SUBPATHS = [
   "pattern",
   "genre",
   "render",
+  "kathesis",
 ] as const;
 
 type Subpath = (typeof SUBPATHS)[number];
@@ -176,6 +178,7 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   pattern: patternselfmodule,
   genre: genreselfmodule,
   render: rendeselfmodule,
+  kathesis: kathesismodule,
 };
 
 /** The runtime seat a named export answers — the honest ladder: functions
@@ -471,6 +474,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
   patternminer: {
     BAND_LABELS: "object",
     BPM_BUCKETS: "number",
+    BPM_BUCKET_EDGES: "object",
     CHROMA_BINS: "number",
     CHROMA_DIM: "number",
     DRUM_LANE_KEYS: "object",
@@ -527,6 +531,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
   patternenums: {
     BAND_LABELS: "object",
     BPM_BUCKETS: "number",
+    BPM_BUCKET_EDGES: "object",
     CHROMA_BINS: "number",
     CHROMA_DIM: "number",
     DRUM_LANE_KEYS: "object",
@@ -894,6 +899,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
   pattern: {
     BAND_LABELS: "object",
     BPM_BUCKETS: "number",
+    BPM_BUCKET_EDGES: "object",
     CHROMA_BINS: "number",
     CHROMA_DIM: "number",
     DRUM_LANE_KEYS: "object",
@@ -994,6 +1000,79 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     schedulePattern: "function",
     startRenderJob: "function",
     updaterenderjob: "function",
+  },
+  kathesis: {
+    /* the engine core seat the engine wave landed: the kathesis registry
+     * (the seat table + the payload generations v1/v2/v3 with the
+     * vector-one fold), the dsp primitives the render lane imports (the
+     * ramps, the rbj biquad set with the magnitude walk, the webaudio
+     * oscillator voices), the wavetable tiers, the adsr seat, the eq
+     * chain, the delay lines, the freeverb plate, the drive law, the
+     * effects rack, the sampler voice and the sound-ai pair (the markov
+     * model over payload events + the spectral envelope resynthesis). */
+    ADSR_MELODIC: "object",
+    ADSR_PERCUSSIVE: "object",
+    ADSR_SEGMENT_TCS: "number",
+    AdsrEnvelope: "function",
+    DRIVE_AMOUNT_BAND: "object",
+    DelayLine: "function",
+    ENGINE_HOUSES: "string",
+    ENGINE_NAME: "string",
+    ENGINE_SCHEMA_GENERATION: "string",
+    EffectsRack: "function",
+    FREEVERB_ALLPASS_FEEDBACK: "number",
+    FREEVERB_ALLPASS_TUNINGS: "object",
+    FREEVERB_COMB_TUNINGS: "object",
+    FREEVERB_STEREO_SPREAD: "number",
+    FeedbackDelay: "function",
+    KATHESIS_SEATS: "object",
+    NOTE_DURATION_BUCKETS: "object",
+    ORGAN_PARTIALS: "object",
+    PAYLOAD_GENERATIONS: "object",
+    PULSE_DUTY: "number",
+    PingPongDelay: "function",
+    RACK_LEAD: "object",
+    REFERENCE_EQ_BANDS: "object",
+    REVERB_ROOM: "object",
+    ReverbSeat: "function",
+    SOFTSAW_ROLLOFF: "number",
+    SOUND_MODEL_SCHEMA_VERSION: "string",
+    SPECTRAL_ENVELOPE_BANDS: "number",
+    VELOCITY_BUCKETS: "number",
+    WAVETABLE_PEAK: "number",
+    WAVETABLE_SHAPES: "object",
+    WAVETABLE_SIZE: "number",
+    WAVETABLE_TIERS: "object",
+    WavetableOscillator: "function",
+    adsrLevelAt: "function",
+    biquadMagnitudeDb: "function",
+    biquadOf: "function",
+    buildEqChain: "function",
+    buildWavetable: "function",
+    driveSample: "function",
+    emptySoundModel: "function",
+    eqResponseDb: "function",
+    expRampOf: "function",
+    generateFromSoundModel: "function",
+    linearRampOf: "function",
+    onePoleOf: "function",
+    payloadGenerationOf: "function",
+    renderRack: "function",
+    renderSamplerNote: "function",
+    resynthesizeSpectral: "function",
+    runBiquad: "function",
+    runEqChain: "function",
+    runOnePole: "function",
+    sawOf: "function",
+    seatOf: "function",
+    spectralEnvelopeOf: "function",
+    squareOf: "function",
+    targetOf: "function",
+    tierIndexOf: "function",
+    trainSoundModel: "function",
+    triangleOf: "function",
+    vectorOneTimelineToPatternTimeline: "function",
+    wavetableStack: "function",
   },
 };
 

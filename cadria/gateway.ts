@@ -462,8 +462,21 @@ export async function serveGateway(
 ): Promise<{ port: number; hostname: string; fetch: typeof globalThis.fetch }> {
   const { serve } = await import("@hono/node-server");
   const application = await app;
-  return serve({ fetch: application.fetch, port, hostname }, (info) => {
-    console.log(`cadria-gateway listening on http://${info.address}:${info.port}`);
+  // the adaptor answers the http/https/http2 server union, whose members do
+  // not all carry the port/hostname/fetch shape this contract promises — so
+  // the promise resolves from the listening callback instead, with the real
+  // bound address/port the server reports and the app's own fetch. the union
+  // never leaks into the contract.
+  return new Promise((resolve) => {
+    serve({ fetch: application.fetch, port, hostname }, (info) => {
+      console.log(`cadria-gateway listening on http://${info.address}:${info.port}`);
+      // the app fetch answers the hono signature (request, env, ctx) and may
+      // return a bare Response; the contract promises the dom fetch
+      // signature (always a promise), so the resolver wraps one in the other
+      // — a request object either way, never a re-typed lie.
+      const fetch: typeof globalThis.fetch = async (input, init) => application.fetch(new Request(input, init));
+      resolve({ port: info.port, hostname: info.address, fetch });
+    });
   });
 }
 

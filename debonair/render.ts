@@ -15,9 +15,9 @@ import type {
   RenderJobPatch,
   RenderJobRow,
   RenderJobSeat,
-  RenderTrackFilter,
   RenderTrackRow,
   RenderTrackSeat,
+  RenderTrackVisibility,
 } from "./renderengine.ts";
 
 export * from "./renderengine.ts";

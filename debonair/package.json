@@ -1,7 +1,7 @@
 {
   "name": "@wenathlan/debonair",
-  "version": "2.0.162",
-  "description": "debonair is the audio and DAW app of the wenathlan family: the isolated marketing app for the operating system, it houses the katexis engine at the folder root and imports gateway, AI and workflow from devthink and versawase from cadria. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
+  "version": "2.0.163",
+  "description": "debonair is the audio and DAW app of the wenathlan family: the exclusive owner of the kathesis engine — the complete audio and music DAW infrastructure and sound AI (music studio, mixer, effects rack, transport, sampler, synthesis, voice, mixing, mastering, the v1 payload ingest and its reverse ingest) — housed at the app root beside the katexis site vocabulary, importing gateway, AI and workflow from devthink, versawase from cadria, storage from vault and the sandbox lanes from saddle. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
   "keywords": [
     "debonair",
     "katexis",
@@ -185,6 +185,11 @@
       "types": "./render.ts",
       "import": "./render.ts",
       "default": "./render.ts"
+    },
+    "./kathesis": {
+      "types": "./kathesis.ts",
+      "import": "./kathesis.ts",
+      "default": "./kathesis.ts"
     }
   },
   "files": [
@@ -204,6 +209,7 @@
     "blobstore.ts",
     "render.ts",
     "renderengine.ts",
+    "kathesis.ts",
     "gatewayapi.ts",
     "routetable.ts",
     "beatgrid.ts",
@@ -238,6 +244,7 @@
     "tuning.ts"
   ],
   "engines": {
+    "babel": "^7.28.0",
     "bare": "^1.18.0",
     "bun": "^1.4.4",
     "cargo": ">=1.85.0",
@@ -260,6 +267,7 @@
     "typescript": "^5.8.0",
     "v": "^0.5.2",
     "vscode": "^1.118.0",
+    "yaml": "^2.9.1",
     "yarn": "^4.17.1"
   },
   "peerDependencies": {
@@ -286,12 +294,12 @@
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
+    "@wenathlan/argan": "~2.0.155",
     "@wenathlan/cadria": "~2.0.155",
     "@wenathlan/debonair": "~2.0.155",
     "@wenathlan/devthink": "~2.0.154",
     "@wenathlan/getry": "~2.0.155",
     "@wenathlan/saddle": "~2.0.155",
-    "@wenathlan/argan": "~2.0.155",
     "@wenathlan/vault": "~2.0.155",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
@@ -404,22 +412,26 @@
     "zod": "^4.6.7"
   },
   "overrides": {
-    "esbuild": "^0.28.2",
-    "postcss-selector-parser": "^7.1.6",
     "uuid": "^11.1.1",
-    "body-parser": "^2.4.0",
-    "fast-uri": "^3.1.9",
+    "deepmerge-ts": "^8.0.0",
+    "esbuild": "^0.28.2",
     "follow-redirects": "^1.16.2",
     "minimatch": "^11.0.3",
     "glob": "^14.0.3",
+    "mysql2": "^3.24.6",
+    "postcss-selector-parser": "^7.1.6",
+    "source-map-js": "1.2.2",
+    "proxy-addr": "2.0.8",
+    "body-parser": "^2.4.0",
+    "fast-uri": "^3.1.9",
     "zod": "^4.6.7",
     "undici": "^7.30.1",
-    "deepmerge-ts": "^8.0.0",
     "katex": "^0.18.2",
-    "mysql2": "^3.24.6",
-    "proxy-addr": "2.0.8",
     "shell-quote": "^1.11.0",
-    "source-map-js": "1.2.2"
+    "xcode": {
+      "uuid": "11.1.1"
+    },
+    "@grpc/grpc-js": "1.14.5"
   },
   "publishConfig": {
     "access": "public",

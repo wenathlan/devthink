@@ -20,6 +20,23 @@
       "@wenathlan/debonair/audiopipeline": ["../debonair/audio.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
+      /* the storage lane bridge of the ownership law (the tsconfig arm — the
+       * vitest arm already carries the same bridge): the app's sqlite seat
+       * (db.ts) rides the vault factory through the published library
+       * specifier ("@wenathlan/vault/storage"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * bootstrap and the helpers are never duplicated inside cadria. the
+       * entry retires when the published envelope carries the built storage
+       * lane. */
+      "@wenathlan/vault/storage": ["../vault/storage.ts"],
+      /* the sibling's native dependency bridge: vault/storage.ts imports
+       * better-sqlite3, but the vault envelope carries no node_modules of
+       * its own and module resolution walks up from the importing file, so
+       * the bridge resolves the specifier against THIS app's installed
+       * declaration — the engine consumes the app's installs, never a
+       * duplicated copy. the entry retires when the sibling envelope
+       * carries its own resolvable install. */
+      "better-sqlite3": ["./node_modules/@types/better-sqlite3/index.d.ts"],
       "@wenathlan/saddle/security": ["../saddle/security.ts"],
       /* the workload law bridge of the family: the app's sandbox lane seat
        * answers the engine catalog rows through the published specifier

@@ -187,8 +187,9 @@
     "distpackage"
   ],
   "engines": {
+    "babel": "^7.28.0",
     "bare": "^1.18.0",
-    "bun": ">=1.4.4 <2",
+    "bun": "^1.4.4",
     "cargo": ">=1.85.0",
     "chrome": "^16.0.912",
     "cnpm": "^9.4.0",
@@ -201,7 +202,7 @@
     "iojs": "^1.0.0",
     "java": ">=17",
     "node": ">=26.13.0 <27",
-    "npm": ">=12.2.2 <13",
+    "npm": "^12.2.1",
     "pnpm": "^12.6.0",
     "python": ">=3.11.0",
     "rust": ">=1.85.0",
@@ -209,6 +210,7 @@
     "typescript": "^5.8.0",
     "v": "^0.5.2",
     "vscode": "^1.118.0",
+    "yaml": "^2.9.1",
     "yarn": "^4.17.1"
   },
   "peerDependencies": {
@@ -278,13 +280,13 @@
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
-    "@wenathlan/cadria": "~2.0.160",
-    "@wenathlan/debonair": "~2.0.159",
+    "@wenathlan/argan": "~2.0.155",
+    "@wenathlan/cadria": "~2.0.155",
+    "@wenathlan/debonair": "~2.0.155",
     "@wenathlan/devthink": "~2.0.154",
-    "@wenathlan/getry": "~2.0.160",
-    "@wenathlan/saddle": "~2.0.160",
-    "@wenathlan/argan": "~2.0.160",
-    "@wenathlan/vault": "~2.0.160",
+    "@wenathlan/getry": "~2.0.155",
+    "@wenathlan/saddle": "~2.0.155",
+    "@wenathlan/vault": "~2.0.155",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
     "gsap": "^3.15.1",
@@ -396,22 +398,26 @@
     "zod": "^4.6.7"
   },
   "overrides": {
-    "esbuild": "^0.28.2",
-    "deepmerge-ts": "^8.0.0",
-    "mysql2": "^3.24.6",
     "uuid": "^11.1.1",
+    "deepmerge-ts": "^8.0.0",
+    "esbuild": "^0.28.2",
+    "follow-redirects": "^1.16.2",
+    "minimatch": "^11.0.3",
+    "glob": "^14.0.3",
+    "mysql2": "^3.24.6",
     "postcss-selector-parser": "^7.1.6",
     "source-map-js": "1.2.2",
-    "shell-quote": "^1.11.0",
-    "katex": "^0.18.2",
     "proxy-addr": "2.0.8",
     "body-parser": "^2.4.0",
     "fast-uri": "^3.1.9",
-    "follow-redirects": "^1.16.2",
     "zod": "^4.6.7",
     "undici": "^7.30.1",
-    "minimatch": "^11.0.3",
-    "glob": "^14.0.3"
+    "katex": "^0.18.2",
+    "shell-quote": "^1.11.0",
+    "xcode": {
+      "uuid": "11.1.1"
+    },
+    "@grpc/grpc-js": "1.14.5"
   },
   "publishConfig": {
     "access": "public",

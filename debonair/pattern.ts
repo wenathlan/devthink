@@ -974,8 +974,9 @@ const ONSETS_CEILING = 4;
  * edge inclusive — a value lands in the first bucket whose upper edge
  * clears it, below the table folds into bucket 0, above it into the last
  * (the analyze band 60..190 rides inside, the matrix bands 60..176 land
- * whole). */
-const BPM_BUCKET_EDGES: readonly number[] = [60, 80, 100, 120, 140, 160, 180, 200, 240];
+ * whole). exported since the kathesis sound model rides the same edges
+ * (the one bucket law the family reads). */
+export const BPM_BUCKET_EDGES: readonly number[] = [60, 80, 100, 120, 140, 160, 180, 200, 240];
 
 /** The bucket count of the bpm histogram (derived from the edges table). */
 export const BPM_BUCKETS = BPM_BUCKET_EDGES.length - 1;

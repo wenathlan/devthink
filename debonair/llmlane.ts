@@ -177,7 +177,8 @@ export async function composeWithLlm(options: ComposeWithLlmOptions): Promise<Ll
     options.deps,
   );
   if (!wire.ok) return { ok: false, error: wire.error as LlmLaneError };
-  const content = wire.data.choices[0]?.message?.content ?? "";
+  const rawContent: unknown = wire.data.choices[0]?.message?.content;
+  const content = typeof rawContent === "string" ? rawContent : "";
   const parsed = patternFromLlm(content);
   if (!parsed.ok) {
     return {

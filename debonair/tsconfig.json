@@ -14,7 +14,14 @@
     "types": ["vite/client", "node"],
     "paths": {
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
-      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
+      /* the storage lane bridge of the family: the site store (db.ts) opens
+       * the self-hosted sqlite runtime through the published specifier
+       * ("@wenathlan/vault/storage"), and this bridge resolves the specifier
+       * to the monorepo source the sibling engine carries — the installed
+       * 2.0.155 envelope still answers the pre-lane storage face, while the
+       * source tree owns openStorageLane and the SqlParam bind type. the
+       * entry retires when the published envelope carries the lane. */
+      "@wenathlan/vault/storage": ["../vault/storage.ts"],
       "@wenathlan/cadria/synth": ["../cadria/synth.ts"],
       "@wenathlan/debonair/audio": ["./audio.ts"],
       "@wenathlan/debonair/audioattributes": ["./audio.ts"],
@@ -26,7 +33,30 @@
        * mirror era is over, the rows are the owner's own objects. the
        * entry retires when the published envelope carries the built
        * workload law. */
-      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"]
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
+      /* the thinking ladder bridge of the family: the os seat the reveal
+       * door re-exports (devthink/reveal.ts → os.ts) speaks the published
+       * thinking specifier ("@wenathlan/getry/thinking"), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the same bridge the devthink baseline pins. */
+      "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
+      /* the sqlite seat bridge of the storage lane: the vault source the
+       * storage bridge resolves to imports better-sqlite3 by its bare
+       * specifier, and the sibling tree carries no install of its own — the
+       * strict walk of this program resolves the specifier through the
+       * typed seat this app's own install carries (the declaration the
+       * runtime rides, the same @types package every family install
+       * pins). the entry retires when the sibling tree owns its install. */
+      "better-sqlite3": ["./node_modules/@types/better-sqlite3/index.d.ts"],
+      /* the babel seat face of the saddle engine bridge: the yaml and babel
+       * seats of saddle/modalities.ts (reached through the workload law
+       * bridge above) import @babel/core through a guarded dynamic import —
+       * no install of the family declares the package, so the strict walk
+       * of this program resolves the specifier through the typed face the
+       * devthink baseline pins; the face carries the typed slice and no
+       * runtime, the guarded caller reports the absent seat honestly.
+       * retires when an install carries the real package. */
+      "@babel/core": ["../devthink/babelcoreface.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],

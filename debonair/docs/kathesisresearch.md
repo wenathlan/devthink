@@ -250,10 +250,48 @@ honored:
   (the v1 node), the energy chunks 100 ms; sub-100 ms transients live in
   the onset lists, not the frame vectors.
 
+
 ---
 
-*end of the kathesis research record. written by the T4-E wave; read-only
-research over the allan blobs plus the implementation the wave lands at
-the debonair root. the dissection of the reference blobs itself lives in
-docs/referencestudy.md; this document is the payload-lane research and
-design record that PR17 cites.*
+## 6. the W4-A landing — the engine core seat (kathesis.ts)
+
+the W4-A wave (PR17 + PR19) landed the engine core seat at the debonair
+root: `kathesis.ts`, the one keyword file the engine laws pin for the
+synthesis, effects and sound-ai primitives. the seat answers:
+
+| seat | the law it owns |
+| --- | --- |
+| the engine registry | `KATHESIS_SEATS` — the thirteen seats the platform law names (music-studio, mixer, effects-rack, transport, sampler, synthesis, voice, mixing, mastering, ingest, reverse-ingest, sound-ai, sandbox) each answered by the module that owns it, every module verified to exist |
+| the payload generations | `PAYLOAD_GENERATIONS` — the v1/v2/v3 registry this document records, in code: v1 the detailed decomposition law (the `debonair.*/1` schema family), v2 the historical vector-one contracts, v3 the recon seat law (`debonair.recon/3`); `payloadGenerationOf` recognizes every literal, and `vectorOneTimelineToPatternTimeline` folds a historical v2 timeline onto the v1 contract (the labels lower, the out-of-vocabulary transient folds onto the generic hit, the clamps ride the one validator of record) so the old payloads still walk the reverse ingest |
+| the dsp primitives | the webaudio automation ramps, the full rbj cookbook biquad set (the render trio extended with notch, allpass, peaking and both shelves) with the unit-circle magnitude walk, the one-pole — the render lane imports them verbatim (the one dsp source law, zero duplication) |
+| the wavetable seat | band-limited additive tables (sine, saw, square, triangle, soft saw, pulse, organ) in the mip-tier ladder (the harmonic ceiling that keeps high notes inside nyquist) behind the phase-accumulator oscillator with morph, detune and drift |
+| the adsr seat | the closed-form level law and the streaming gate/release state machine |
+| the eq chain | the parametric cascade (peaking, shelves, pass, notch) with the summed magnitude response in db — beside the reference nine-band flat law of the historical v2 desk |
+| the delay seat | the fractional delay line, the damped feedback delay (the echo send) and the ping-pong stereo pair |
+| the reverb seat | the freeverb law — eight parallel combs and four series allpasses per channel, the stereo spread, room size and damping |
+| the drive + the rack | the tanh soft-clip law of the reference master bus; the ordered slot chain (gain → eq → drive → delay → reverb) any lane renders through |
+| the sampler voice | a float32 take pitched by the ratio law, looped between the loop points, gated by the adsr seat, routed through an optional rack |
+| the sound ai | the markov model over payload events (`trainSoundModel` / `generateFromSoundModel` — note transitions, drum lane histograms, the velocity, duration and bpm histograms, the scale affinity, the root mass; seeded deterministic, validated through the one pattern contract, the empty model refuses honestly) beside the spectral envelope pair (`spectralEnvelopeOf` the mel-band extraction, `resynthesizeSpectral` the additive bank under it) |
+
+the published library face carries the seat as `@wenathlan/debonair/kathesis`
+(the exports map, the tarball files array and the libraryface surface pin
+all moved together). the test battery `tests/kathesis.test.ts` (36 rows)
+pins the dsp behavior (the biquad responses, the wavetable tier law, the
+adsr machine, the echo tap seats, the plate tail, the drive ceiling, the
+sampler ratio and loop laws) and walks the generated document through the
+v1 law's own doors — the schedule bridge, the render lane and the reverse
+ingest — so the sound-ai's answer plays.
+
+*the W4-A record closes the loop this document opened: the v1 pattern the
+corpus proved (ingest → the detailed payload → the reverse ingest that
+plays) now rides an engine core with the real dsp seats the mission
+names, and the sound ai learns from the payloads themselves.*
+
+
+---
+
+*end of the kathesis research record. written by the T4-E wave, extended
+by the W4-A landing; read-only research over the allan blobs plus the
+implementation the waves land at the debonair root. the dissection of the
+reference blobs itself lives in docs/referencestudy.md; this document is
+the payload-lane research and design record that PR17 cites.*

@@ -143,6 +143,7 @@
     "quantum.ts"
   ],
   "engines": {
+    "babel": "^7.28.0",
     "bare": "^1.18.0",
     "bun": "^1.4.4",
     "cargo": ">=1.85.0",
@@ -165,6 +166,7 @@
     "typescript": "^5.8.0",
     "v": "^0.5.2",
     "vscode": "^1.118.0",
+    "yaml": "^2.9.1",
     "yarn": "^4.17.1"
   },
   "peerDependencies": {
@@ -235,12 +237,12 @@
     "@libsql/client": "^0.18.0",
     "@prisma/adapter-libsql": "^7.10.1",
     "@prisma/client": "^7.10.1",
+    "@wenathlan/argan": "~2.0.155",
     "@wenathlan/cadria": "~2.0.155",
     "@wenathlan/debonair": "~2.0.155",
     "@wenathlan/devthink": "~2.0.154",
     "@wenathlan/getry": "~2.0.155",
     "@wenathlan/saddle": "~2.0.155",
-    "@wenathlan/argan": "~2.0.155",
     "@wenathlan/vault": "~2.0.155",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",

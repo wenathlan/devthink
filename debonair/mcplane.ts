@@ -295,8 +295,10 @@ export type McpToolErrorCode =
 export interface McpToolError {
   code: McpToolErrorCode;
   message: string;
-  /** The gateway client's own machine code (present on lane-refused). */
-  lane?: { code: IngestClientCode; status: number | null };
+  /** The gateway client's own machine code (present on lane-refused) — the
+   * ingest client codes and the llm lane codes ride the same seat (the
+   * compose tool answers the llm lane's refusals beside the ingest ones). */
+  lane?: { code: IngestClientCode | LlmLaneCode; status: number | null };
 }
 
 /** The typed answer of one tool call — never a throw. */
