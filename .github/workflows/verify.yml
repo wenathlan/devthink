@@ -86,7 +86,10 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
+          # the manifestemplate law seats the engines in the root manifest
+          # alone: every floor probe reads one hop up from the app root,
+          # so the app copy #501 emptied never reddens the ladder again.
+          npm_version="$(node -p "const m=String(require('../package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
           npm install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
       - name: Install root dependencies
@@ -251,7 +254,9 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
+          # the engine seat the manifestemplate law owns: the bun floor
+          # answers from the root manifest, one hop above the app root.
+          test "$(bun --version)" = "$(node -p "require('../package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
           bun build/cli.js manifest
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
@@ -426,7 +431,9 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          test "$(bun --version)" = "$(node -p "require('./package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
+          # the engine seat the manifestemplate law owns: the bun floor
+          # answers from the root manifest, one hop above the app root.
+          test "$(bun --version)" = "$(node -p "require('../package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
           # the modes lane answers the runtime contract: the release truth
           # tests ride the ladder where their gates regenerate the artifacts
           bun x vitest run --exclude "tests/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge,sweep}.test.ts"
