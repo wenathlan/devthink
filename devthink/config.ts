@@ -2996,8 +2996,54 @@ export const atomicWrite = (p: string, c: string): void => {
  * barrel, the configloader test lane, the published ./config entry) keeps
  * resolving without an edit; the private builtindefault / tryimport /
  * searchbases helpers moved with loadconfig and stay private in the owner.
+ *
+ * the browser purity law (the dev boot correction): the four async loaders
+ * answer through the lazy lane — the computed specifier keeps every
+ * bundler from resolving the getry server owner at module scope, because
+ * the static re-export dragged the hono transport stack into every web
+ * consumer of this config face and killed the dev boot on the externalized
+ * node:process stub — while the pure validator answers its corrected seat
+ * (getry/validate.ts) directly. The contracts are verbatim: the loaders
+ * stay async with the same shapes, the validator stays synchronous, and
+ * every node caller resolves the same family owners.
  */
-export { loadconfig, reloadconfig, getversion, listversions, validateconfig } from "@wenathlan/getry/server";
+
+/** the server face the lazy lane resolves on first call (type-only: the
+ * specifier rides the type position and never enters the runtime graph). */
+type gatewayserverface = typeof import("@wenathlan/getry/server");
+
+/** loadconfig — the lazy lane over the server owner: the transport loads
+ * on first call, never at module scope. */
+export function loadconfig(): ReturnType<gatewayserverface["loadconfig"]> {
+  return import(/* @vite-ignore */ ["@wenathlan/getry/", "server"].join("")).then(
+    (m: gatewayserverface) => m.loadconfig(),
+  );
+}
+
+/** reloadconfig — the lazy lane twin of loadconfig. */
+export function reloadconfig(): ReturnType<gatewayserverface["reloadconfig"]> {
+  return import(/* @vite-ignore */ ["@wenathlan/getry/", "server"].join("")).then(
+    (m: gatewayserverface) => m.reloadconfig(),
+  );
+}
+
+/** getversion — the lazy lane: one version of the loaded registry. */
+export function getversion(id: string): ReturnType<gatewayserverface["getversion"]> {
+  return import(/* @vite-ignore */ ["@wenathlan/getry/", "server"].join("")).then(
+    (m: gatewayserverface) => m.getversion(id),
+  );
+}
+
+/** listversions — the lazy lane: every version id of the registry. */
+export function listversions(): ReturnType<gatewayserverface["listversions"]> {
+  return import(/* @vite-ignore */ ["@wenathlan/getry/", "server"].join("")).then(
+    (m: gatewayserverface) => m.listversions(),
+  );
+}
+
+/** validateconfig — the pure owner seat (getry/validate.ts): synchronous,
+ * transport-free, the same single owner the server face re-exports. */
+export { validateconfig } from "@wenathlan/getry/validate";
 
 /* ── Merged from the family config parity gate ── */
 import { createHash } from "node:crypto";
