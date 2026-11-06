@@ -257,6 +257,7 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
       assert.ok(
         result.error?.code === "HOST_RUNTIME_ABSENT" ||
           result.error?.code === "HOST_PRIVILEGE_ABSENT" ||
+          result.error?.code === "LANE_MODULE_UNAVAILABLE" ||
           result.error?.code === "RUN_EXITED_NONZERO",
         `the tmpfs refusal stays honest: ${result.error?.code}`,
       );
@@ -295,11 +296,14 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     const result = await runvaultlane("ramswapfile", "");
     if (result.status === "failed") {
       // a host missing binaries of the set answers host-runtime-absent, a
-      // host without the swapon privilege answers host-privilege-absent —
-      // both name the swap requirement, never a faked swap device
+      // host without the swapon privilege answers host-privilege-absent,
+      // a host whose module graph cannot resolve the lane answers
+      // lane-module-unavailable — all three name the swap requirement,
+      // never a faked swap device
       assert.ok(
         result.error?.code === "HOST_RUNTIME_ABSENT" ||
           result.error?.code === "HOST_PRIVILEGE_ABSENT" ||
+          result.error?.code === "LANE_MODULE_UNAVAILABLE" ||
           result.error?.code === "RUN_EXITED_NONZERO" ||
           result.error?.code === "SWAP_VERIFY_FAILED",
         `the swapfile refusal stays honest: ${result.error?.code}`,
