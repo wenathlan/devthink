@@ -27,20 +27,9 @@ import {
   peekplan,
   saveplan,
   TIER_BADGES,
+  TIER_ROWS,
   type Tier,
 } from "../../planstore.ts";
-
-/** The tier rows the cards render (the keys, never the words — the copy
- * store answers the lines). */
-const TIER_ROWS: readonly { tier: Tier; key: string; lines: readonly string[] }[] = [
-  { tier: "free", key: "free", lines: ["plans.tier.free.line1", "plans.tier.free.line2", "plans.tier.free.line3"] },
-  { tier: "pro", key: "pro", lines: ["plans.tier.pro.line1", "plans.tier.pro.line2", "plans.tier.pro.line3"] },
-  {
-    tier: "enterprise",
-    key: "enterprise",
-    lines: ["plans.tier.enterprise.line1", "plans.tier.enterprise.line2", "plans.tier.enterprise.line3"],
-  },
-];
 
 /** Badge — the pill the identity wears (the tier and the capability rows). */
 function Badge({ label, detail, tone }: { label: string; detail?: string; tone: "tier" | "cap" }) {

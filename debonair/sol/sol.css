@@ -2347,6 +2347,235 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
   }
 }
 
+/* ==========================================================================
+   the construction face — debonair (the bigthree wave): the honest surface
+   every platform route answers while the detailed engine wave builds. The
+   scene is composed, never a dry text notice: the white-sun bloom high over
+   the deep canvas, the frozen waveform hanging as a faint hologram behind
+   the panel (the audio identity drawn as material — bars via gradients, no
+   live claim), the glass panel with the amber mark seated on it, the scan
+   pass drifting down the glass, the mono eyebrow, the pulsing status chip
+   and the two ways on. The accent is the app's own --accent (the white sun
+   — never a second hue), the focus ring answers the windows accent, and
+   the reduced-motion hard stop below stills every pass of the scene.
+   ========================================================================== */
+
+.dbnconstr {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 100dvh;
+  padding: clamp(28px, 5vh, 64px) clamp(16px, 4vw, 40px);
+}
+/* inside the app shell the stage already owns the viewport: the face
+   centers in the shell body and never forces the stage to scroll */
+.winapp__stage > main.shell > .dbnconstr {
+  min-height: auto;
+  margin-block: auto;
+}
+/* the ONE light of the face: the white-sun bloom high over the panel */
+.dbnconstr__light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    560px 420px at 50% 0%,
+    color-mix(in srgb, var(--accent) 10%, transparent),
+    transparent 70%
+  );
+}
+/* the waveform hologram: the frozen 48-bar walk the retired landing
+   breathed on, drawn as pure material — vertical bars via repeating
+   gradients, masked at the edges, breathing between two faint tints so
+   the stage never sits dead. decorative only, aria-hidden at the source */
+.dbnconstr__wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: min(52vmin, 380px);
+  z-index: -1;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent) 14%, transparent) 0 3px,
+    transparent 3px 11px
+  );
+  -webkit-mask-image: radial-gradient(72% 60% at 50% 50%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(72% 60% at 50% 50%, #000 0%, transparent 78%);
+  opacity: 0.3;
+  animation: dbnconstrHolo 9s var(--ease-silk) 1.2s infinite alternate;
+}
+/* the glass panel of the scene: the ladder surface with the hairline and
+   the soft fluent shadow, overflow hidden so the scan pass reads inside */
+.dbnconstr__panel {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  width: min(620px, 100%);
+  padding: clamp(26px, 5vw, 44px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--surface-1) 86%, transparent);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 1px 2px rgb(0 0 0 / 28%), 0 10px 28px -18px rgb(0 0 0 / 55%);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+/* the scan pass of the panel: hairline rows drifting down the glass at
+   construction tempo, fading at the top and bottom edges so the pass
+   reads as material, never as texture */
+.dbnconstr__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 2px,
+    color-mix(in oklab, var(--ink) 3%, transparent) 2px 3px
+  );
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+  opacity: 0.7;
+  animation: dbnconstrScan 3.2s linear infinite;
+}
+/* the app's own mark seated on the panel — the amber squircle with the
+   waveform dance riding inside the glyph strokes (the drawn brand mark of
+   the shell, never a second hue of the theme) */
+.dbnconstr__mark {
+  display: block;
+  width: 88px;
+  height: 88px;
+}
+/* the construction chip: the quiet status of the face — a mono rail with
+   the pulsing dot, never a pill, never a second hue */
+.dbnconstr__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 5px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--sol-track-label);
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.dbnconstr__pulsedot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dbnconstrPulse 2.8s var(--ease-silk) infinite;
+}
+.dbnconstr__title {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.dbnconstr__lede {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: clamp(0.92rem, 1.4vw, 1rem);
+  text-wrap: pretty;
+}
+.dbnconstr__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: 8px;
+}
+/* the quiet second way on: the mono cue of the stage grammar (the primary
+   way rides the machined .btn key above it) */
+.dbnconstr__cue {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 2px;
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--accent) 42%, transparent);
+  text-underline-offset: 5px;
+  transition:
+    color var(--sol-micro) var(--ease-silk),
+    text-decoration-color var(--sol-micro) var(--ease-silk);
+}
+.dbnconstr__cue:hover {
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+}
+.dbnconstr__cue:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 3px;
+}
+@keyframes dbnconstrScan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 3px;
+  }
+}
+@keyframes dbnconstrPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+@keyframes dbnconstrHolo {
+  from {
+    opacity: 0.22;
+  }
+  to {
+    opacity: 0.36;
+  }
+}
+/* the reduced-motion pass of the scene: the scan and the pulse die (the
+   hard stop of the guards above still owns every other animation) */
+@media (prefers-reduced-motion: reduce) {
+  .dbnconstr__panel::before,
+  .dbnconstr__pulsedot {
+    animation: none;
+  }
+  .dbnconstr__wave {
+    animation: none;
+  }
+}
+/* the transparency floor of the scene: the glass goes solid under the
+   reduced-transparency preference */
+@media (prefers-reduced-transparency: reduce) {
+  .dbnconstr__panel {
+    background: var(--surface-1);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
 /* the zoom lock (the owner law, wave designheal): the viewport pins the
    scale and the touch lane answers pan-x pan-y only — no pinch may
    rescale the interface on any host. */

@@ -392,6 +392,11 @@ cmake_install.cmake
 # the local vite build artifacts of the saddle pages staging (outDir is the
 # app root for the pages staging)
 # the saddle in-place engine emission (the tsc lane stamps the built faces beside the sources for the container seats — the emitted js and the declarations never ride the repository)
+# the staged workspace root of the engine (every host seat stages its
+# payload under the engine root at dispatch time and releases it best
+# effort — the .saddle-engine folder is a runtime artifact any host that
+# runs the engine carries, so it never rides the tree)
+.saddle-engine/
 saddle/*.js
 saddle/*.d.ts
 saddle/index-*.js
