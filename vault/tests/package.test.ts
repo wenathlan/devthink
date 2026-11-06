@@ -131,11 +131,15 @@ describe("the package surface", () => {
     assert.equal(packagejson.types, "./index.ts", "types answers the barrel");
     assert.equal(packagejson.exports["."].import, "./index.ts", "the dot specifier answers the barrel");
     assert.match(packagejson.version, /^\d+\.\d+\.\d+$/, "the version stays a semver the release lane walks");
-    /* the engines floor is not a constant to freeze: it walks with the node
-     * pin the maintenance rung stamps, so the assertion derives the bounded
-     * form from the .nvmrc beside this manifest (the saddle derivation). */
+    /* the manifestemplate law: the engines floor rides the root manifest
+     * alone (the eleven application manifests answer the three dependency
+     * tags and the functional essentials), so the derivation reads the
+     * root package.json the tree stamps and this manifest answers the
+     * absence the template demands. */
     const nodepin = (await readFile(resolve(root, "../.nvmrc"), "utf8")).trim();
     const nodemajor = Number(nodepin.split(".")[0]);
-    assert.equal(packagejson.engines.node, `>=${nodepin} <${nodemajor + 1}`);
+    const rootmanifest = JSON.parse(await readFile(resolve(root, "../../package.json"), "utf8"));
+    assert.equal(rootmanifest.engines.node, `>=${nodepin} <${nodemajor + 1}`);
+    assert.equal(packagejson.engines, undefined, "the app manifest carries no engines — the root owns the floors");
   });
 });

@@ -35,25 +35,28 @@ it("imports every declared package export target in Node", async () => {
   }
 });
 
-it("declares runtime metadata and an optional browser provider peer", async () => {
+it("declares runtime metadata with the engines floor riding the root manifest", async () => {
   const root = dirname(fileURLToPath(new URL(import.meta.url)));
   const packagejson = JSON.parse(await readFile(resolve(root, "../package.json"), "utf8"));
   assert.equal(packagejson.private, false);
-  /* the 2.0.133 publish regression taught the lesson: the engines floor is
-     not a constant to freeze in a test — it walks with the node pin the
-     maintenance rung stamps, so the assertion derives the bounded form from
-     the .nvmrc the rung carries beside this manifest (a rung that walks one
-     without the other answers red here, never in the publish lane again) */
+  /* the manifestemplate law: the engines live in the root manifest alone
+     (the eleven application manifests answer the three dependency tags and
+     the functional essentials, nothing else), so the floor derivation
+     reads the root package.json the tree stamps and the app manifest
+     answers the absence the template demands */
   const nodepin = (await readFile(resolve(root, "../.nvmrc"), "utf8")).trim();
   const nodemajor = Number(nodepin.split(".")[0]);
-  assert.equal(packagejson.engines.node, `>=${nodepin} <${nodemajor + 1}`);
-  /* the family pin law: every manifest in the tree answers to the same
-     pnpm rung the envelope stamps (the ten sibling apps and the engine
-     carry pnpm@12.3.4), so the surface test pins the manifest to the
-     family rung instead of the npm rung the old lane carried */
-  assert.equal(packagejson.packageManager, "pnpm@12.3.4");
-  assert.equal(packagejson.peerDependencies.playwright, "^1.63.0");
-  assert.equal(packagejson.peerDependenciesMeta.playwright.optional, true);
+  const rootmanifest = JSON.parse(await readFile(resolve(root, "../../package.json"), "utf8"));
+  assert.equal(rootmanifest.engines.node, `>=${nodepin} <${nodemajor + 1}`);
+  assert.equal(packagejson.engines, undefined, "the app manifest carries no engines — the root owns the floors");
+  assert.equal(packagejson.packageManager, undefined, "the app manifest carries no packageManager flag");
+  assert.equal(packagejson.peerDependencies, undefined, "the app manifest carries no peerDependencies tag");
+  assert.equal(packagejson.peerDependenciesMeta, undefined, "the app manifest carries no peerDependenciesMeta tag");
+  assert.equal(packagejson.publishConfig, undefined, "the app manifest carries no publishConfig tag");
+  assert.ok(packagejson.dependencies["js-yaml"], "the js-yaml dependency rides the union");
+  assert.ok(packagejson.devDependencies["js-yaml"], "the js-yaml dependency rides the dev union");
+  assert.ok(packagejson.overrides["js-yaml"], "the js-yaml override rides the union");
+  assert.equal(packagejson.overrides["js-yaml"], packagejson.dependencies["js-yaml"], "the three tags answer the same specifier");
   assert.equal(packagejson.exports["./browser-playwright"], "./browser.ts");
 });
 
