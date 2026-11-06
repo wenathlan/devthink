@@ -906,11 +906,13 @@ const seedOsStrings: OsStringRow[] = [
   { id: "alttab.state.open", text: "open" },
 
   /* ------------------------------- jump menu ------------------------------ */
+  { id: "jump.open", text: "Open" },
   { id: "jump.openWindow", text: "Open window" },
   { id: "jump.openApp", text: "Open {app}" },
   { id: "jump.openAppSite", text: "Open {app} site" },
   { id: "jump.unpin", text: "Unpin from taskbar" },
   { id: "jump.pin", text: "Pin to taskbar" },
+  { id: "jump.options.aria", text: "{app} options" },
 
   /* ------------------------------ tray flyouts ---------------------------- */
   { id: "tray.quick.heading", text: "quick settings" },

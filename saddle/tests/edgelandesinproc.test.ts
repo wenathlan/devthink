@@ -1,5 +1,5 @@
 // # edgelandesinproc.test — the in-process lane battery of the ninety
-// modalities wave (group b): the twenty-four lanes of edgelandesinproc.ts
+// modalities wave (group b): the twenty-three lanes of edgelandesinproc.ts
 // answer the group b contract — the frozen lane tables agree with the
 // executor map, every lane is deterministic (the same payload answers
 // the same stdout and artifact bytes twice), the oom guard refuses every
@@ -9,8 +9,10 @@
 // varint datagram, the mysql and postgres handshakes, the s3 canonical
 // request), the stored-block zlib stream of zram decodes back to the
 // raw pages (the compression is real, not claimed), the webcontainer
-// seat runs modules through node:vm and fails honestly, the local
-// opt-in gate refuses every run without the declared consent, every
+// seat runs modules through node:vm and fails honestly (the local-optin
+// consent gate retired with the visitor-law hardening — the critical
+// law is absolute, no seat may touch the visitor machine under any
+// consent token), every
 // json lane refuses a non-json payload and every artifact answers the
 // mime its registry record declares. The wiring wave seats answer the
 // same laws: the serverless isolate, the git fan-out, the sqlite
@@ -25,8 +27,9 @@ import { getmodality } from "../modalityregistry.ts";
 /** the hard deadline every lane test rides under. */
 const DEADLINEMS = 5000;
 
-/** the twenty-four lane ids in spec order (the pinned group b contract):
- * the nineteen of the first wave, the five seats of the wiring wave,
+/** the twenty-three lane ids in spec order (the pinned group b contract):
+ * the eighteen of the first wave (the local-optin consent gate retired
+ * with the visitor-law hardening), the five seats of the wiring wave,
  * then the five pr15 completion seats (the virtual hardware
  * presentation lanes and the virtual file store). */
 const LANES = [
@@ -43,7 +46,6 @@ const LANES = [
   "storagepostgres",
   "storages3",
   "browserwebcontainer",
-  "localoptin",
   "runnerserverless",
   "fsgitobjects",
   "storagesqlite",
@@ -101,7 +103,6 @@ const SAMPLES: Record<string, { code: string; inputs?: unknown }> = {
   "storagepostgres": { code: "saddle" },
   "storages3": { code: '{"method":"GET","bucket":"vault","key":"edge/report.json","payload":""}' },
   "browserwebcontainer": { code: "export const answer = 42;" },
-  "localoptin": { code: "", inputs: { consent: true } },
   "runnerserverless": { code: '{"isolate":"ninety","module":"export const answer = 6 * 7;"}' },
   "fsgitobjects": {
     code: '{"repo":"vault","objects":[{"type":"blob","data":"48656c6c6f"},{"type":"tree","data":"aabb"}]}',
@@ -199,13 +200,13 @@ function decodestoredzlib(stream: Uint8Array): Uint8Array {
 }
 
 describe("the in-process lanes answer the group b contract", () => {
-  it("declares the twenty-four in-process lanes exactly with frozen tables", () => {
-    assert.equal(inproclaneids.length, 24);
+  it("declares the twenty-three in-process lanes exactly with frozen tables", () => {
+    assert.equal(inproclaneids.length, 23);
     const specids = inproclanespecs.map((spec) => spec.modality);
     assert.deepEqual([...inproclaneids], [...LANES]);
     assert.deepEqual(specids, [...LANES]);
     assert.deepEqual(Object.keys(edgelaneexecutorsinproc), [...LANES]);
-    assert.equal(new Set(specids).size, 24, "the lane ids are unique");
+    assert.equal(new Set(specids).size, 23, "the lane ids are unique");
     assert.ok(Object.isFrozen(inproclaneids), "the id table is frozen");
     assert.ok(Object.isFrozen(inproclanespecs), "the spec table is frozen");
     assert.ok(Object.isFrozen(edgelaneexecutorsinproc), "the executor table is frozen");
@@ -410,19 +411,6 @@ describe("the in-process lanes answer the group b contract", () => {
     assert.equal(seatedreport.exports.seen, "x", "the frozen inputs surface reaches the module");
     // a module that throws rejects honestly (the vm error surfaces as the lane failure)
     await assert.rejects(() => runlane("browserwebcontainer", "throw new Error('boom')"), refuses("VM_MODULE_FAILED"));
-  });
-
-  it("gates the local opt-in lane behind the declared consent", async () => {
-    await assert.rejects(() => runlane("localoptin", ""), refuses("LOCAL_CONSENT_REQUIRED"));
-    await assert.rejects(() => runlane("localoptin", "", { consent: "true" }), refuses("LOCAL_CONSENT_REQUIRED"));
-    await assert.rejects(() => runlane("localoptin", "", null), refuses("LOCAL_CONSENT_REQUIRED"));
-    const granted = await runlane("localoptin", "", { consent: true });
-    assert.deepEqual(JSON.parse(granted.stdout), {
-      consent: true,
-      scope: "declared",
-      law: "the visitor machine stays untouched",
-    });
-    assert.deepEqual(artifactof(granted), JSON.parse(granted.stdout), "the artifact carries the consent manifest");
   });
 
   it("pins the cdn origin", async () => {

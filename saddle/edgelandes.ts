@@ -3546,12 +3546,16 @@ for (const id of Object.keys(edgelaneexecutorshost)) {
 
 // # edgelandesinproc.ts — the in-process modality lanes of the ninety
 // modalities waves (group b): the ram recipes, the delivery wire frames,
-// the storage wire handshakes, the webcontainer seat and the local
-// opt-in gate of the first wave plus the five seats of the wiring wave
-// (the serverless runner, the git objects vfs, the sqlite vault and the
-// dns and doh resolvers) — twenty-four registry modalities wired as
+// the storage wire handshakes and the webcontainer seat of the first
+// wave plus the five seats of the wiring wave (the serverless runner,
+// the git objects vfs, the sqlite vault and the dns and doh resolvers)
+// — twenty-three registry modalities wired as
 // honest pure typescript execution lanes that run inside the engine
-// process itself.
+// process itself (the local-optin consent gate the first wave carried
+// retired with the visitor-law hardening: the engine never touches the
+// visitor machine under any consent token, and the podsession host
+// probe the seat ninety of the master engine table now names rides the
+// heavyweight probe group instead).
 // No host binary is spawned and no network socket is opened: the code
 // field is the program or payload the lane interprets (a ram recipe
 // manifest, a wire payload, a sql manifest, a javascript module) and the
@@ -3559,9 +3563,9 @@ for (const id of Object.keys(edgelaneexecutorshost)) {
 // handshake packets, captured exports. The laws every lane keeps:
 // - the visitor law: everything runs server-side in the engine process,
 //   the visitor browser, gpu, cpu and storage are never touched (the
-//   local-optin lane is the only lane that may even name the visitor
-//   machine, and only under declared consent — and even then it answers
-//   a manifest, it never touches the machine);
+//   retired local-optin consent gate once claimed the only sanctioned
+//   naming of the visitor machine — the critical law is absolute now, no
+//   seat may touch or name the visitor machine under any consent token);
 // - the oom guard: every ram recipe reads its byte ceiling from
 //   inputs.budgetmb (the default 64 mb) and refuses to materialize a
 //   single byte over it (RAM_QUOTA_EXCEEDED), reading the declared size
@@ -3607,8 +3611,6 @@ const cdnmime = "application/vnd.devthink.cdn+json";
 const storagemime = "application/vnd.devthink.storage+json";
 /** the artifact mime of the browser family (the registry record declares it). */
 const browsermime = "application/vnd.devthink.browser+json";
-/** the artifact mime of the local family (the registry record declares it). */
-const localmime = "application/vnd.devthink.local+json";
 /** the artifact mime of the runner family (the registry record declares it). */
 const runmime = "application/vnd.devthink.run+json";
 /** the artifact mime of the fs family (the registry record declares it). */
@@ -4379,24 +4381,6 @@ async function browserwebcontainerlane(code: string, inputs: unknown, deadline: 
   return output;
 }
 
-/** local-optin: the consent gate lane — the only lane of the plane that
- * may even name the visitor machine, and only under declared consent.
- * The lane refuses every run whose inputs do not declare consent exactly
- * true (LOCAL_CONSENT_REQUIRED), and even under consent the lane stays
- * in-process: it answers the consent manifest, the visitor machine is
- * never touched. */
-async function localoptinlane(_code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const consent = typeof inputs === "object" && inputs !== null && (inputs as Record<string, unknown>).consent === true;
-  if (!consent) {
-    throw edgelaneerror(
-      "LOCAL_CONSENT_REQUIRED",
-      "the local opt-in lane refuses to run without the declared consent (inputs.consent true)",
-    );
-  }
-  const manifest = { consent: true, scope: "declared", law: "the visitor machine stays untouched" };
-  return lanereport(localmime, manifest, manifest);
-}
-
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 7: the wiring wave seats — the serverless runner, the git    */
 /* objects vfs, the sqlite vault and the network resolvers.             */
@@ -4836,8 +4820,6 @@ export const inproclanespecs: readonly InprocLaneSpec[] = Object.freeze([
     runtime: "node:vm",
     present: () => typeof vm.runInNewContext === "function",
   },
-  // the local family: the explicit consent gate
-  { modality: "localoptin", kind: "live", runtime: "pure-ts", present: () => true },
   // the wiring wave seats: the serverless runner, the git objects vfs,
   // the sqlite vault and the dns and doh resolvers (every one live —
   // the seats execute in-process, deterministic and seeded)
@@ -4880,7 +4862,6 @@ export const edgelaneexecutorsinproc: Readonly<Record<string, EdgeLaneExecutor>>
   "storagepostgres": storagepostgreslane,
   "storages3": storages3laneinproc,
   "browserwebcontainer": browserwebcontainerlane,
-  "localoptin": localoptinlane,
   "runnerserverless": runnerserverlesslane,
   "fsgitobjects": fsgitobjectslane,
   "storagesqlite": storagesqlitelane,
@@ -5664,10 +5645,11 @@ export const virtuallaneids: readonly string[] = Object.freeze(virtuallanespecs.
 /* ══════════════════════════════════════════════════════════════════════ */
 
 // # edgelandesninety — the merge seat of the ninety modalities wave: the
-// six heavyweight host lanes the plane probes (the browser server, the
-// confidential compute, the three provider seats and the principal
-// container dock — every one an honest probe lane that names its runtime
-// and never fakes a boot) and the merged lane tables the dispatch plane
+// seven heavyweight host lanes the plane probes (the browser server, the
+// confidential compute, the three provider seats, the principal
+// container dock and the pod session runtime — every one an honest probe
+// lane that names its runtime and never fakes a boot) and the merged lane
+// tables the dispatch plane
 // reads. the lane groups of the
 // wave (edgelandeshost.ts — the host binary lanes, edgelandesinproc.ts
 // — the in-process lanes and edgelandesvirtual.ts — the virtual hardware
@@ -5761,6 +5743,14 @@ function probeprincipaldock(): boolean {
   return probehostbinary("docker") || existsSync("/var/run/docker.sock");
 }
 
+/** probes the pod session surface: the podsession binary on PATH — the
+ * co-located container pod runtime the sandbox lane drives on the edge
+ * host (a heavyweight host probe: the execution wiring is the next rung,
+ * and the visitor machine is never asked for anything). */
+function probepodsession(): boolean {
+  return probehostbinary("podsession");
+}
+
 /** resolves one engine module through the node resolver without loading
  * it — the honest seat check for the optional module surfaces. */
 function probemoduleseat(specifier: string): boolean {
@@ -5793,18 +5783,21 @@ function heavyweightprobelane(modality: string, runtime: string, present: () => 
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
-/* Section 4: the heavyweight lane table — the six probes of the wave. */
+/* Section 4: the heavyweight lane table — the seven probes of the      */
+/* wave.                                                                 */
 /* ════════════════════════════════════════════════════════════════════ */
 
 /** the heavyweight lanes of the ninety modalities wave: the browser
  * server, the sev-snp confidential compute surface, the three provider
  * seats (the aws sigv4 credentials, the 2b api key, the daytona api
- * key) and the principal container dock's docker daemon surface — every
- * one kind host (the probe law). the pr15 cull retired the capacitor,
- * postmarketos, pod and tdx seats, and the pr15 completion wave seated
- * the provider and principal dock probes the master engine table of
- * modalities.ts widened the plan with (the ninety stay at ninety through
- * the master engine table). */
+ * key), the principal container dock's docker daemon surface and the
+ * pod session runtime the sandbox lane probes — every one kind host
+ * (the probe law). the pr15 cull retired the capacitor, postmarketos
+ * and tdx seats, and the pr15 completion wave seated the provider and
+ * principal dock probes the master engine table of modalities.ts
+ * widened the plan with; the podsession seat the wave originally
+ * charged rides the host probe rung again in its seat ninety (the
+ * ninety stay at ninety through the master engine table). */
 export const heavyweightlanespecs: readonly HeavyweightLaneSpec[] = Object.freeze([
   { modality: "browserserver", kind: "host", runtime: "chromium-headless", present: probebrowserserver },
   { modality: "confidentialsevsnp", kind: "host", runtime: "sev-snp", present: probesevsnp },
@@ -5812,6 +5805,7 @@ export const heavyweightlanespecs: readonly HeavyweightLaneSpec[] = Object.freez
   { modality: "runnertwob", kind: "host", runtime: "2b-api", present: probetwob },
   { modality: "runnerdaytona", kind: "host", runtime: "daytona-api", present: probedaytona },
   { modality: "containerdockprincipal", kind: "host", runtime: "docker-daemon", present: probeprincipaldock },
+  { modality: "podsession", kind: "host", runtime: "podsession", present: probepodsession },
 ]);
 
 /** the executor table of the heavyweight lanes, keyed by modality id. */
@@ -5822,6 +5816,7 @@ export const edgelaneexecutorsheavy: Readonly<Record<string, EdgeLaneExecutor>> 
   "runnertwob": heavyweightprobelane("runnertwob", "2b-api", probetwob),
   "runnerdaytona": heavyweightprobelane("runnerdaytona", "daytona-api", probedaytona),
   "containerdockprincipal": heavyweightprobelane("containerdockprincipal", "docker-daemon", probeprincipaldock),
+  "podsession": heavyweightprobelane("podsession", "podsession", probepodsession),
 });
 
 /** the heavyweight lane ids in spec order. */
@@ -5833,18 +5828,20 @@ export const heavyweightlaneids: readonly string[] = Object.freeze(heavyweightla
 
 /** the merged lane spec table of the plane: beside the thirty-seven
  * host binary lanes (the twenty-five of the first wave, the twelve host
- * seats of the wiring wave), the twenty-four in-process lanes (the
- * nineteen of the first wave, the five seats of the wiring wave), the
- * seven virtual hardware lanes and the six heavyweight probes, the
- * sixteen base contract lanes edgelandes.ts owns (the docker surface,
- * the engine vfs, the node:vm, bun, wasm, babel and webpack runners, the
- * bash, python and java seats and the six host probes the plane drove
- * before the waves merged) — ninety merged lanes exactly, the ninety the
- * plan wires through the plane (sixty-six live, twenty-four host), every
- * modality the ninety plan answers through one spec surface. the order
- * walks the groups in their file order, then the heavyweight probes,
- * then the base contract seats — the order the edge plane table always
- * answered, so the pinned lane contracts read the same sequence. */
+ * seats of the wiring wave), the twenty-three in-process lanes (the
+ * eighteen of the first wave — the local-optin consent gate retired
+ * with the visitor-law hardening — the five seats of the wiring wave),
+ * the seven virtual hardware lanes and the seven heavyweight probes,
+ * the sixteen base contract lanes edgelandes.ts owns (the docker
+ * surface, the engine vfs, the node:vm, bun, wasm, babel and webpack
+ * runners, the bash, python and java seats and the six host probes the
+ * plane drove before the waves merged) — ninety merged lanes exactly,
+ * the ninety the plan wires through the plane (sixty-five live,
+ * twenty-five host), every modality the ninety plan answers through one
+ * spec surface. the order walks the groups in their file order, then the
+ * heavyweight probes, then the base contract seats — the order the edge
+ * plane table always answered, so the pinned lane contracts read the
+ * same sequence. */
 export const edgelanespecsall: readonly (HeavyweightLaneSpec & { kind: "live" | "host" })[] = Object.freeze([
   ...hostlanespecs,
   ...inproclanespecs,

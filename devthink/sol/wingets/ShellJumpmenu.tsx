@@ -182,7 +182,7 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
       ref={listRef}
       className="acrylic-menu fixed z-(--z-menu) w-60 min-w-[200px] origin-top-left rounded-md p-1.5 transition-[transform,opacity] duration-150 ease-micro data-[hide=true]:pointer-events-none data-[hide=true]:scale-[0.97] data-[hide=true]:opacity-0"
       role="menu"
-      aria-label={`${app.name} options`}
+      aria-label={osText("jump.options.aria").replace("{app}", app.name)}
       data-hide={open ? undefined : "true"}
       data-flyout-keep="true"
       onKeyDown={onKeyDown}
@@ -195,7 +195,7 @@ export function JumpList({ app, open, x, y, pinned, onOpen, onTogglePin, onClose
         <span className={ICON_CLASS} aria-hidden="true">
           <Play fontSize={16} />
         </span>
-        Open
+        {osText("jump.open")}
       </button>
       {entries.map((entry) => (
         <button key={entry.id} type="button" role="menuitem" className={ITEM_CLASS} onClick={() => runEntry(entry)}>

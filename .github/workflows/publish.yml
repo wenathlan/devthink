@@ -6111,8 +6111,8 @@ jobs:
     # matrix and the saddle docker contexts) stays a dispatch-shaped probe
     # (the saddle container law opens the publish chain - the resolver, the
     # scan, the registry push, the verify and the archive - to the release
-    # wave; the nine-leg validation matrix (PR15: 3 profiles x the
-    # three build legs of the container-carried seats the pinned node base answers of the
+    # wave; the twelve-leg validation matrix (PR15: 3 profiles x the
+    # four build legs of the container-carried seats the pinned node base answers of the
     # eleven-architecture standard) answers the maintenance dispatch
     # alone, where its
     # cost belongs). The grand-merge era validated a spoofed /proc the
@@ -6144,17 +6144,16 @@ jobs:
         # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
         # darwin-arm64-v8, windows-x64-gnu) and the build legs follow the
         # container-carried seats the pinned node base honestly answers:
-        # the amd64 leg serves linux-x64 and linux-x64-musl, the arm64 leg
-        # serves linux-arm64 and the arm64/v8 leg serves the
-        # darwin-arm64-v8 abi seat (the arm64 legs ride QEMU emulation on
-        # the amd64 runner). The linux-riscv64 seat the containerarch
+        # the native amd64 leg that serves linux-x64 and linux-x64-musl
+        # beside the arm64, ppc64le and s390x legs under QEMU emulation
+        # on the amd64 runner. The linux-riscv64 seat the containerarch
         # standard carries on the bash:5 driver base answers the honest
         # coded absence here (the node engine base ships no riscv64
         # manifest), and the six target seats (the darwin and windows
         # seats and wasm32) answer ARCH_TARGET_NOT_CONTAINER, never a
-        # pretended build leg. 3 profiles x 3 build legs = 9 validation
+        # pretended build leg. 3 profiles x 4 build legs = 12 validation
         # legs.
-        platform: [linux/amd64, linux/arm64, linux/arm64/v8]
+        platform: [linux/amd64, linux/arm64, linux/ppc64le, linux/s390x]
         profile: [max, balanced, lite]
         include:
           - profile: max
@@ -6194,9 +6193,9 @@ jobs:
         with:
           # the build index minus the native amd64 leg: every platform
           # the amd64 runner cannot execute installs its binfmt handler
-          # here (the family pin - only the emulated legs, the arm64 pair
-          # of the standard's container-carried seats).
-          platforms: linux/arm64,linux/arm64/v8
+          # here (the family pin - only the emulated legs: arm64, ppc64le
+          # and s390x).
+          platforms: linux/arm64,linux/ppc64le,linux/s390x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -6527,9 +6526,9 @@ jobs:
         with:
           # the build index minus the native amd64 leg: every platform
           # the amd64 runner cannot execute installs its binfmt handler
-          # here (the family pin - only the emulated legs, the arm64 pair
-          # of the standard's container-carried seats).
-          platforms: linux/arm64,linux/arm64/v8
+          # here (the family pin - only the emulated legs: arm64, ppc64le
+          # and s390x).
+          platforms: linux/arm64,linux/ppc64le,linux/s390x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -6623,10 +6622,10 @@ jobs:
     defaults:
       run:
         shell: bash
-    # 330 min: the build index (PR15) carries the two emulated arm64
-    # legs under QEMU beside the native amd64 leg - the cold-cache
-    # publish legs ran past the old 180-minute ceiling and were killed by
-    # the timeout.
+    # 330 min: the build index (PR15) carries the three emulated legs
+    # (arm64, ppc64le and s390x) under QEMU beside the native amd64 leg -
+    # the cold-cache publish legs ran past the old 180-minute ceiling and
+    # were killed by the timeout.
     # 5.5h stays under the 6h hosted-runner job cap with headroom for
     # mirror races; the warm registry cache completes the legs far under
     # the ceiling (a cold-cache QEMU pass can still redden on rare
@@ -6647,15 +6646,17 @@ jobs:
         # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
         # darwin-arm64-v8, windows-x64-gnu) and all three profiles ship
         # the build legs of the container-carried seats the pinned node
-        # base honestly answers (the amd64 leg serves linux-x64 and
-        # linux-x64-musl, the arm64 legs serve linux-arm64 and the
-        # darwin-arm64-v8 abi seat under QEMU emulation); each carries a
+        # base honestly answers (the native amd64 leg that serves
+        # linux-x64 and linux-x64-musl beside the arm64, ppc64le and
+        # s390x legs under QEMU emulation - the go-style build index of
+        # containerarch.ts carries the four carried seats and the seven
+        # honest ARCH_LEG_NOT_BUILT absences); each carries a
         # single version tag on the saddle container package (max ->
         # :<version>, balanced/lite carry the profile suffix). One tag
         # per version, no rolling aliases.
         include:
           - profile: max
-            platforms: linux/amd64,linux/arm64,linux/arm64/v8
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -6664,7 +6665,7 @@ jobs:
             profilegpus: 8
             expectcpu: EPYC 9965
           - profile: balanced
-            platforms: linux/amd64,linux/arm64,linux/arm64/v8
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -6673,7 +6674,7 @@ jobs:
             profilegpus: 2
             expectcpu: 9995WX
           - profile: lite
-            platforms: linux/amd64,linux/arm64,linux/arm64/v8
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -6692,9 +6693,9 @@ jobs:
         with:
           # the build index minus the native amd64 leg: every platform
           # the amd64 runner cannot execute installs its binfmt handler
-          # here (the family pin - only the emulated legs, the arm64 pair
-          # of the standard's container-carried seats).
-          platforms: linux/arm64,linux/arm64/v8
+          # here (the family pin - only the emulated legs: arm64, ppc64le
+          # and s390x).
+          platforms: linux/arm64,linux/ppc64le,linux/s390x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -6846,12 +6847,11 @@ jobs:
           set -euo pipefail
           image_ref="${IMAGE,,}:${VERSION}${SUFFIX}"
           # Every published profile index must carry the build surface of
-          # the eleven-arch standard (PR15: the container-carried legs
-          # the pinned node base honestly answers - the amd64 leg that
-          # serves linux-x64 and linux-x64-musl, the arm64 leg that
-          # serves linux-arm64 and the arm64/v8 leg that serves the
-          # darwin-arm64-v8 abi seat under QEMU; the linux-riscv64 seat
-          # the bash:5 driver base carries answers the honest coded
+          # the eleven-arch standard (PR15: the four container-carried
+          # legs the pinned node base honestly answers - the native amd64
+          # leg that serves linux-x64 and linux-x64-musl beside the
+          # arm64, ppc64le and s390x legs under QEMU; the linux-riscv64
+          # seat the bash:5 driver base carries answers the honest coded
           # absence on the node engine base, and the six target seats
           # answer ARCH_TARGET_NOT_CONTAINER, never a pretended build
           # leg).
@@ -6863,7 +6863,7 @@ jobs:
               | if .platform.variant then "\(.platform.architecture)/\(.platform.variant)" else .platform.architecture end
             ]
             | sort
-            | . == ["amd64", "arm64", "arm64/v8"]
+            | . == ["amd64", "arm64", "ppc64le", "s390x"]
           '
           docker pull --quiet --platform linux/amd64 "${image_ref}"
           actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"

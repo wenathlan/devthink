@@ -19,9 +19,13 @@ import {
   CONTAINERARCHES,
   CONTAINERARCHIDS,
   CONTAINERBASEIMAGE,
+  CONTAINERBUILDARCHES,
+  CONTAINERBUILDARCHIDS,
   containerarchcoverage,
   containerarchlines,
+  containerbuildarchcoverage,
   getcontainerarch,
+  getcontainerbuildarch,
   resolvecontainerarch,
 } from "../containerarch.ts";
 
@@ -157,5 +161,53 @@ describe("the 11-architecture container standard", () => {
         `${id} answers its availability honestly`,
       );
     }
+  });
+
+  it("carries the eleven go-style build architecture seats the publish lanes stamp", () => {
+    // the build index answers the go-style arch vocabulary beside the
+    // npm-style standard seats: the four base-carried legs (the native
+    // x64 leg beside the three QEMU-emulated seats) and the seven honest
+    // coded absences the publish lanes never pretend to build
+    assert.deepEqual(CONTAINERBUILDARCHIDS, [
+      "x64",
+      "arm64",
+      "armv7",
+      "riscv64",
+      "ppc64le",
+      "s390x",
+      "386",
+      "mips64le",
+      "loong64",
+      "wasm32",
+      "wasip1",
+    ]);
+    assert.equal(CONTAINERBUILDARCHES.length, 11);
+    assert.equal(new Set(CONTAINERBUILDARCHES.map((row) => row.arch)).size, 11, "every build arch rides exactly once");
+    for (const row of CONTAINERBUILDARCHES) {
+      assert.ok(row.platform.length > 0, `${row.arch} carries its platform spec`);
+      assert.ok(row.note.length > 0, `${row.arch} carries the honest note`);
+      if (!row.baseimagecarries) {
+        assert.ok(row.note.includes("ARCH_LEG_NOT_BUILT"), `${row.arch} names the coded refusal in its note`);
+      }
+    }
+  });
+
+  it("answers the build index coverage the publish lanes read", () => {
+    const coverage = containerbuildarchcoverage();
+    assert.equal(coverage.count, 11);
+    assert.equal(coverage.carries, 4, "the native x64 leg beside the three QEMU-emulated legs");
+    assert.equal(coverage.absences, 7, "the seven seats the base does not ship answer the coded absence");
+    assert.deepEqual(coverage.carriedplatforms, ["linux/amd64", "linux/arm64", "linux/ppc64le", "linux/s390x"]);
+    assert.equal(getcontainerbuildarch("armv7")?.baseimagecarries, false);
+    assert.equal(getcontainerbuildarch("ppc64le")?.baseimagecarries, true);
+    assert.equal(getcontainerbuildarch("wasip1")?.platform, "wasm32-wasip1");
+    assert.equal(getcontainerbuildarch("no-such-arch"), undefined);
+    // the go-style vocabulary never leaks into the standard's resolver:
+    // the eleven seats of the standard stay the resolvable ids
+    assert.throws(() => resolvecontainerarch("armv7"), /armv7/);
+    assert.throws(
+      () => resolvecontainerarch("ppc64le"),
+      (error: Error & { code?: string }) => error.code === "CONTAINER_ARCH_UNKNOWN",
+    );
   });
 });

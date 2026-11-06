@@ -122,13 +122,14 @@ interface LaneSpec {
 /** the lane table of the edge plane: the ninety merged lane specs of
  * edgelandesninety.ts — the thirty-seven host binary lanes (the
  * twenty-five live of the first wave and the twelve host seats of the
- * wiring wave), the twenty-four in-process lanes, the seven virtual
- * hardware lanes, the six heavyweight probes and the sixteen base
- * contract lanes (the docker surface, the engine vfs, the node:vm, bun,
- * wasm, babel and webpack runners, the bash, python and java seats and
- * the six host probes) the completion wave lifted from this file's
+ * wiring wave), the twenty-three in-process lanes (the local-optin
+ * consent gate retired with the visitor-law hardening), the seven
+ * virtual hardware lanes, the seven heavyweight probes and the sixteen
+ * base contract lanes (the docker surface, the engine vfs, the node:vm,
+ * bun, wasm, babel and webpack runners, the bash, python and java seats
+ * and the six host probes) the completion wave lifted from this file's
  * inline table into the owning edgelandes.ts — ninety lanes in total,
- * sixty-six live and twenty-four host, every modality of the ninety
+ * sixty-five live and twenty-five host, every modality of the ninety
  * plan wired through the one merged spec surface, the same ids in the
  * same order the table always answered. The ids are pinned — parallel
  * waves and the api routes read them exactly. */

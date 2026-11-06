@@ -1,5 +1,5 @@
 // # edgeplane.test — the edge execution plane answers the visitor law:
-// the lane table declares the sixty-six live lanes and the twenty-four
+// the lane table declares the sixty-five live lanes and the twenty-five
 // host lanes exactly, the visitor guard refuses any browser-shaped
 // scope, every in-process and host lane executes server-side (node:vm,
 // webassembly, babel, bun, bash, python3, java), the artifact commits
@@ -17,12 +17,13 @@ import { assertvisitorfree, edgelandesreport, edgelanes, runonedge } from "../ed
 import { getmodality } from "../modalityregistry.ts";
 import { localstorage } from "../virtual.ts";
 
-/** the sixty-six live lane ids the pinned contract charges (parallel
+/** the sixty-five live lane ids the pinned contract charges (parallel
  * waves read these exactly): the twenty-five first wave host binary
  * lanes (the nineteen beside the six pr15 completion seats), the
- * twenty-four in-process lanes (the nineteen of the first wave beside
- * the five wiring wave seats and the five pr15 completion seats), the
- * seven virtual hardware lanes and the ten base live lanes. */
+ * twenty-three in-process lanes (the nineteen of the first wave beside
+ * the five wiring wave seats and the five pr15 completion seats, the
+ * local-optin consent gate retired with the visitor-law hardening),
+ * the seven virtual hardware lanes and the ten base live lanes. */
 const LIVELANES = [
   "sandboxbubblewrap",
   "sandboxnsjail",
@@ -62,7 +63,6 @@ const LIVELANES = [
   "storagepostgres",
   "storages3",
   "browserwebcontainer",
-  "localoptin",
   "runnerserverless",
   "fsgitobjects",
   "storagesqlite",
@@ -92,10 +92,11 @@ const LIVELANES = [
   "languagejava",
 ] as const;
 
-/** the twenty-four host lane ids the pinned contract charges: the
- * twelve wiring wave host binary seats in alphabetical order, the six
+/** the twenty-five host lane ids the pinned contract charges: the
+ * twelve wiring wave host binary seats in alphabetical order, the seven
  * heavyweight probes (the browser server, the confidential compute,
- * the three provider seats and the principal container dock) and the
+ * the three provider seats, the principal container dock and the pod
+ * session runtime) and the
  * six base host lanes. */
 const HOSTLANES = [
   "buildmake",
@@ -116,6 +117,7 @@ const HOSTLANES = [
   "runnertwob",
   "runnerdaytona",
   "containerdockprincipal",
+  "podsession",
   "containerrunsc",
   "emulatorqemu",
   "microvmfirecracker",
@@ -135,7 +137,7 @@ const WASMMODULEBYTES = new Uint8Array([
 ]);
 
 describe("the edge plane answers the visitor law", () => {
-  it("declares the sixty-six live lanes and the twenty-four host lanes exactly", () => {
+  it("declares the sixty-five live lanes and the twenty-five host lanes exactly", () => {
     const lanes = edgelanes();
     const liveids = lanes.filter((lane) => lane.kind === "live").map((lane) => lane.modality);
     const hostids = lanes.filter((lane) => lane.kind === "host").map((lane) => lane.modality);
@@ -301,11 +303,15 @@ describe("the edge plane answers the visitor law", () => {
     } else {
       assert.ok(ramrun.stdout.includes("tmpfs"), "the real recipe run names the tmpfs mount");
     }
-    // the consent gate refuses without the declared consent — the visitor
-    // machine law the local-optin lane guards
-    const refused = await runonedge({ modality: "localoptin", code: "{}" });
-    assert.equal(refused.status, "failed");
-    assert.equal(refused.error?.code, "LOCAL_CONSENT_REQUIRED");
+    // the pod session lane answers its heavyweight probe honestly (present
+    // or absent, never a faked boot) — the seat ninety host probe the
+    // visitor-law hardening seated in place of the retired local-optin
+    // consent gate
+    const podrun = await runonedge({ modality: "podsession", code: "" });
+    assert.ok(podrun.status === "succeeded" || podrun.error?.code === "HOST_RUNTIME_ABSENT");
+    if (podrun.status === "failed") {
+      assert.ok(podrun.error?.message.includes("podsession"), "the refusal names the pod session runtime");
+    }
     // the virtual hardware lanes compose the machine payloads: the full
     // machine answers its report composed, never booted
     const machinerun = await runonedge({ modality: "virtualdrivers", code: "{}" });
@@ -352,10 +358,11 @@ describe("the edge plane answers the visitor law", () => {
     }
     // the rehearsal map stays whole and directly importable — the law
     // moves the default, it never deletes the rehearsal surface. the
-    // wiring wave seated five more rehearsal lanes: the map rides at
-    // twenty-four
+    // wiring wave seated five more rehearsal lanes and the
+    // visitor-law hardening retired the local-optin gate: the map rides
+    // at twenty-three
     const { edgelaneexecutorsinproc } = await import("../edgelandes.ts");
-    assert.equal(Object.keys(edgelaneexecutorsinproc).length, 24, "the rehearsal map keeps its twenty-four lanes");
+    assert.equal(Object.keys(edgelaneexecutorsinproc).length, 23, "the rehearsal map keeps its twenty-three lanes");
   });
 
   it("wires the wave four lanes into the plane honestly (a real run or the coded absence)", async () => {

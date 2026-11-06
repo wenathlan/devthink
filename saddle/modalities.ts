@@ -4539,41 +4539,39 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
   },
   {
     num: 90,
-    name: "local opt in",
-    slug: "localoptin",
+    name: "pod session",
+    slug: "podsession",
     lane: "sandbox",
-    isolation: "process",
-    state: "live",
-    drivers: [],
-    hardening: ["explicit-consent"],
-    boot: "hot",
-    bootms: 10,
+    isolation: "namespace",
+    state: "host",
+    drivers: ["podsession", "shared-namespace"],
+    hardening: ["pod-isolation", "dropped-caps"],
+    boot: "warm",
+    bootms: 400,
     gpu: false,
-    network: false,
-    mime: "application/vnd.devthink.local+json",
-    archs: ALLARCHS,
-    osprofiles: ALLOSPROFILES,
-    resources: INPROCENVELOPE,
-    execute: inprocseat({
-      slug: "localoptin",
+    network: true,
+    mime: "application/vnd.devthink.pod+json",
+    archs: LINUXARCHS,
+    osprofiles: LINUXOSPROFILES,
+    resources: BASEENVELOPE,
+    execute: hostspawnseat({
+      slug: "podsession",
       num: 90,
       lane: "sandbox",
-      operate: async (request) => {
-        const inputs = (request.inputs ?? {}) as { consent?: string };
-        if (inputs.consent !== "explicit-opt-in") {
-          throw Object.assign(
-            new Error(
-              "the local opt-in lane is sealed: the explicit consent token is absent — the engine never touches the visitor machine without it (the critical law)",
-            ),
-            { code: "CONSENT_ABSENT" },
-          );
-        }
-        return {
-          stdout:
-            "local opt-in: the explicit consent token verified — the lane stays the only seat that may touch the visitor machine, and only under declared consent",
-          artifact: { consent: "explicit-opt-in" },
-        };
-      },
+      binary: "podsession",
+      argv: ({ file }) => [
+        "podsession",
+        "run",
+        "--pod",
+        "edge-pod-90",
+        "--network",
+        "none",
+        "--read-only",
+        "--",
+        file,
+      ],
+      hardening: ["pod-isolation", "dropped-caps", "no-new-privileges"],
+      probe: "the host must carry podsession (the pod session seat — the co-located container pod the sandbox lane drives on the edge, never the visitor machine)",
     }),
   },
 ];

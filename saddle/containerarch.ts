@@ -8,7 +8,14 @@
 // architecture, the npm-style target triple the binary lanes stamp,
 // the docker --platform spec the container drivers pass where a linux
 // container seat exists, and the honest availability of that seat
-// against the pinned multi-arch base.
+// against the pinned multi-arch base. beside the standard seats the
+// file carries the build architecture table — the eleven go-style arch
+// seats the container build legs stamp (x64, arm64, armv7, riscv64,
+// ppc64le, s390x, 386, mips64le, loong64, wasm32, wasip1): the four
+// legs the pinned base honestly carries (the native x64 leg beside the
+// arm64, ppc64le and s390x QEMU-emulated legs) and the seven honest
+// coded absences (ARCH_LEG_NOT_BUILT) the publish lanes never pretend
+// to build.
 //
 // THE HONEST AVAILABILITY LAW (the same law the pre-pr15 table kept):
 // a row never claims a build the pinned base cannot answer. the linux
@@ -243,6 +250,160 @@ export const CONTAINERARCHES: readonly containerarchrow[] = Object.freeze([
     note: "the gnu abi seat of the windows x64 target: the mingw grammar the binary lanes build — the container drivers answer ARCH_TARGET_NOT_CONTAINER.",
   },
 ]);
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 1b: the build architecture seats — the go-style arch        */
+/* vocabulary the container build legs stamp.                          */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** the eleven build architecture seat ids of the container build index
+ * — the go-style arch names the docker --platform axis and the publish
+ * lanes stamp (x64, arm64, armv7, riscv64, ppc64le, s390x, 386,
+ * mips64le, loong64, wasm32, wasip1), the vocabulary the build legs
+ * and the base-carried coverage report answer through. */
+export const CONTAINERBUILDARCHIDS: readonly string[] = Object.freeze([
+  "x64",
+  "arm64",
+  "armv7",
+  "riscv64",
+  "ppc64le",
+  "s390x",
+  "386",
+  "mips64le",
+  "loong64",
+  "wasm32",
+  "wasip1",
+]);
+
+/** one honest row of the build architecture table: the go-style arch
+ * seat, the docker --platform spec the build legs stamp for it, whether
+ * the pinned multi-arch base honestly carries the leg (the vhe build
+ * index the publish lanes carry) and the honest note the coverage
+ * report prints. */
+export interface containerbuildarchrow {
+  /** the go-style arch seat id of the build index. */
+  readonly arch: string;
+  /** the docker --platform spec the build legs stamp for the seat. */
+  readonly platform: string;
+  /** whether the pinned base honestly carries the build leg. */
+  readonly baseimagecarries: boolean;
+  /** the honest note the coverage report prints for the row. */
+  readonly note: string;
+}
+
+/** the eleven build architecture rows of the container build index: the
+ * four legs the pinned multi-arch base honestly carries (the native x64
+ * amd64 leg beside the arm64, ppc64le and s390x QEMU-emulated legs) and
+ * the seven seats the base does not ship — every one of those answers
+ * the honest ARCH_LEG_NOT_BUILT coded absence, never a pretended build
+ * leg (the node engine family index adds the riscv64 leg beside the
+ * four; the vhe container index answers the coded absence for it). */
+export const CONTAINERBUILDARCHES: readonly containerbuildarchrow[] = Object.freeze([
+  {
+    arch: "x64",
+    platform: "linux/amd64",
+    baseimagecarries: true,
+    note: "the native 64-bit x86 build leg the amd64 runner executes (the base's amd64 manifest).",
+  },
+  {
+    arch: "arm64",
+    platform: "linux/arm64",
+    baseimagecarries: true,
+    note: "the 64-bit arm build leg under QEMU emulation (the base's arm64 manifest).",
+  },
+  {
+    arch: "armv7",
+    platform: "linux/arm/v7",
+    baseimagecarries: false,
+    note: "the 32-bit arm v7 seat answers ARCH_LEG_NOT_BUILT — the publish lanes carry no armv7 leg.",
+  },
+  {
+    arch: "riscv64",
+    platform: "linux/riscv64",
+    baseimagecarries: false,
+    note: "the risc-v seat answers ARCH_LEG_NOT_BUILT on the vhe container index (the node engine family index builds the riscv64 leg beside the four).",
+  },
+  {
+    arch: "ppc64le",
+    platform: "linux/ppc64le",
+    baseimagecarries: true,
+    note: "the powerpc little-endian build leg under QEMU emulation (the base's ppc64le manifest).",
+  },
+  {
+    arch: "s390x",
+    platform: "linux/s390x",
+    baseimagecarries: true,
+    note: "the ibm z big-endian build leg under QEMU emulation (the base's s390x manifest).",
+  },
+  {
+    arch: "386",
+    platform: "linux/386",
+    baseimagecarries: false,
+    note: "the 32-bit x86 seat answers ARCH_LEG_NOT_BUILT — the publish lanes carry no 386 leg.",
+  },
+  {
+    arch: "mips64le",
+    platform: "linux/mips64le",
+    baseimagecarries: false,
+    note: "the mips64 little-endian seat answers ARCH_LEG_NOT_BUILT — the publish lanes carry no mips64le leg.",
+  },
+  {
+    arch: "loong64",
+    platform: "linux/loong64",
+    baseimagecarries: false,
+    note: "the loongarch 64-bit seat answers ARCH_LEG_NOT_BUILT — the publish lanes carry no loong64 leg.",
+  },
+  {
+    arch: "wasm32",
+    platform: "wasm32",
+    baseimagecarries: false,
+    note: "the webassembly seat answers ARCH_LEG_NOT_BUILT on the container index — the wasm runtimes own it as an oci artifact target.",
+  },
+  {
+    arch: "wasip1",
+    platform: "wasm32-wasip1",
+    baseimagecarries: false,
+    note: "the wasi preview 1 seat answers ARCH_LEG_NOT_BUILT on the container index — the wasm lanes build the wasip1 target.",
+  },
+]);
+
+/** answers one build architecture row by its go-style arch seat id —
+ * undefined when the id is not one of the eleven the build index names.
+ *
+ * @param arch the go-style arch seat id (x64, arm64, armv7, ...).
+ * @returns the build row, or undefined for an unknown arch.
+ */
+export function getcontainerbuildarch(arch: string): containerbuildarchrow | undefined {
+  return CONTAINERBUILDARCHES.find((row) => row.arch === arch);
+}
+
+/** the honest coverage report of the build index: the eleven go-style
+ * arch seats, the legs the pinned base carries (four — the native x64
+ * leg beside the three QEMU-emulated seats) and the seven honest coded
+ * absences — the table the publish lanes and the coverage lines read. */
+export function containerbuildarchcoverage(): {
+  count: number;
+  carries: number;
+  absences: number;
+  carriedplatforms: readonly string[];
+  rows: readonly { arch: string; platform: string; baseimagecarries: boolean; note: string }[];
+} {
+  const carried = CONTAINERBUILDARCHES.filter((row) => row.baseimagecarries);
+  return {
+    count: CONTAINERBUILDARCHES.length,
+    carries: carried.length,
+    absences: CONTAINERBUILDARCHES.length - carried.length,
+    carriedplatforms: Object.freeze(carried.map((row) => row.platform)),
+    rows: Object.freeze(
+      CONTAINERBUILDARCHES.map((row) => ({
+        arch: row.arch,
+        platform: row.platform,
+        baseimagecarries: row.baseimagecarries,
+        note: row.note,
+      })),
+    ),
+  };
+}
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 2: the resolver and the coverage report the drivers read.  */
