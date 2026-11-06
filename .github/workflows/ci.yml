@@ -177,6 +177,12 @@ jobs:
           node --version
           major="$(node -p "process.versions.node.split('.')[0]")"
           test "${major}" = "24"
+      - name: Seat the saddle sources the typecheck imports
+        # the same seat the static workbench lane carries: the ownership
+        # bridges walk the saddle engine sources beside the workbench tree
+        # and the dependency union law serves them from the app's own
+        # node_modules
+        run: ln -s ../devthink/node_modules saddle/node_modules
       - name: Generate the prisma client the typecheck imports
         # the database module imports the PrismaClient the generated
         # .prisma/client tree declares — a fresh install carries the stub
@@ -224,6 +230,14 @@ jobs:
         # this step materializes (the same seat the deterministic suite
         # boots).
         run: cd getry && bun install --frozen-lockfile --ignore-scripts
+      - name: Seat the saddle sources the typecheck imports
+        # the ownership bridges walk the saddle engine sources beside the
+        # workbench tree (@libsql/client and the better-sqlite3 seats the
+        # modalities map imports): the dependency union law makes the
+        # manifests carry the identical seat map, so the workbench's own
+        # tree serves the sibling sources the clean checkout would
+        # otherwise leave unresolved
+        run: ln -s ../devthink/node_modules saddle/node_modules
       - name: Generate the prisma client the typecheck imports
         # the database module imports the PrismaClient the generated
         # .prisma/client tree declares — a fresh install carries the stub
@@ -490,6 +504,23 @@ jobs:
             bun install --frozen-lockfile --ignore-scripts
           fi
 
+      - name: Seat the sibling sources the ownership bridges read
+        if: steps.suite.outputs.present == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          # the ownership bridges alias the sibling sources (the os seams,
+          # the vault label store, the engines the app consumes) into every
+          # app build: the dependency union law makes the eleven manifests
+          # carry the identical seat map, so the app's own tree serves the
+          # aliased sources — the symlink seats every sibling the clean
+          # checkout would otherwise leave without a node_modules the
+          # aliased imports resolve against
+          for sibling in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
+            if [ "$sibling" != "${{ matrix.app }}" ] && [ -d "$sibling" ] && [ ! -e "$sibling/node_modules" ] && [ -d "${{ matrix.app }}/node_modules" ]; then
+              ln -s "../${{ matrix.app }}/node_modules" "$sibling/node_modules"
+            fi
+          done
       - name: Build the app surface
         if: steps.suite.outputs.present == 'true'
         working-directory: ${{ matrix.app }}

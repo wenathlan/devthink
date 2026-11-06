@@ -437,6 +437,10 @@ describe("the library modes of 1.1.81", () => {
       version: string;
       sideEffects?: boolean;
       exports: Record<string, Record<string, string>>;
+      /* the manifestemplate law retired the publishConfig seat — the
+       * assertion below reads it as the loose record the manifest may or
+       * may not carry, so the typecheck never pins the retired tag */
+      publishConfig?: Record<string, unknown>;
     };
     /* the manifestemplate law: the engines ride the root manifest alone —
      * the application manifest answers the three dependency tags and the

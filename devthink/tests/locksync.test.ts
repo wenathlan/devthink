@@ -93,8 +93,10 @@ describe("the lockfile seat (the frozen-lockfile install law)", () => {
       const pins = overridepins(join(reporoot, app, "pnpm-workspace.yaml"));
       const lockspecs = new Map<string, string>();
       for (const section of ["dependencies", "devDependencies"] as const)
-        for (const [name, entry] of Object.entries(root?.[section] ?? {}))
-          if (entry && typeof entry === "object" && "specifier" in entry) lockspecs.set(name, entry.specifier);
+        for (const [name, entry] of Object.entries(root?.[section] ?? {})) {
+          const specifier = (entry as { specifier?: string } | string | undefined)?.["specifier"];
+          if (typeof specifier === "string") lockspecs.set(name, specifier);
+        }
       const drifted: string[] = [];
       for (const [name, spec] of manifestseats(manifest))
         if (spec.startsWith("file:")) continue; /* the sibling sources the context stages, never a registry seat */
