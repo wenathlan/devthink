@@ -504,7 +504,7 @@ jobs:
             const lock = fs.readFileSync("bun.lock", "utf8");
             const rows = deps.flatMap((name) => {
               const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-              const match = lock.match(new RegExp("\\"" + escaped + "@(\\d+\\.\\d+\\.\\d+)\\""));
+              const match = lock.match(new RegExp("\\\"" + escaped + "@(\\d+\\.\\d+\\.\\d+)\\\""));
               return match ? [name + "@" + match[1]] : [];
             });
             console.log(rows.join(";"));
