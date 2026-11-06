@@ -1,14 +1,24 @@
-// # osdistrib.test — the seven system seats of the os distribution
+// # osdistrib.test — the sixteen system seats of the os distribution
 // catalog the saddle container carries (the osdistrib law, the owner's
-// pr15 sentence: "iniciar distribuição do container saddle com por
-// exemplo, grapheneos, omarchy e outros sistemas dentro do saddle" —
-// the container starts its distribution catalog with grapheneos,
-// omarchy and the other systems inside the saddle): one honest row per
+// sentences: "iniciar distribuição do container saddle com por
+// exemplo, grapheneos, omarchy e outros sistemas dentro do saddle"
+// and "o saddle nao ta com mais de 15 devido as disvbriçoe s com
+// sistem aoperacional como graphene os e etc" — the catalog rides
+// more than fifteen system seats): one honest row per
 // system seat (grapheneos a privacy and security hardened version of
 // android, omarchy the arch linux-based distribution created by dhh,
 // vanilla os based on ubuntu, maru os firmware not an application, the
 // v seat the vlang platform the catalog pins at 0.5.2, the normal
-// linux baseline and android), the arch pairing against the
+// linux baseline and android — the seven named law seats — beside the
+// nine honest additions the more-than-fifteen directive rides:
+// postmarketos the alpine-based mobile distribution, lineageos the
+// community android continuation, calyxos the privacy-focused android
+// distribution, archlinux the rolling-release distribution omarchy
+// builds on, alpine the musl-based lightweight distribution, debian
+// the universal operating system, fedora the red-hat-upstream
+// community distribution, nixos the declarative distribution the nix
+// package manager builds and void the independent source-rolling
+// distribution), the arch pairing against the
 // eleven-architecture standard (every paired seat a real seat of the
 // standard, the amd64 and arm64 legs the owner's law names derived by
 // the join), the engine plan profile binding (the max, balanced and
@@ -38,17 +48,37 @@ import {
 } from "../containerarch.ts";
 import { ENGINELIMITS, ENGINEPLANS } from "../engineplans.ts";
 
-/** the seven system seat ids the owner's law names, in the order the
- * law's sentence rides them (grapheneos and omarchy first — the named
- * examples — then vanilla os, maru os, the v seat, the normal linux
- * baseline and android). */
-const LAWIDS = ["grapheneos", "omarchy", "vanillaos", "maruos", "v", "linux", "android"] as const;
+/** the sixteen system seat ids the catalog carries, in the law order
+ * (the seven named law seats first — grapheneos and omarchy, vanilla
+ * os, maru os, the v seat, the normal linux baseline and android —
+ * then the nine honest additions the more-than-fifteen directive
+ * rides: postmarketos, lineageos, calyxos, archlinux, alpine, debian,
+ * fedora, nixos and void). */
+const LAWIDS = [
+  "grapheneos",
+  "omarchy",
+  "vanillaos",
+  "maruos",
+  "v",
+  "linux",
+  "android",
+  "postmarketos",
+  "lineageos",
+  "calyxos",
+  "archlinux",
+  "alpine",
+  "debian",
+  "fedora",
+  "nixos",
+  "void",
+] as const;
 
 /** the honest docker arch legs each system seat rides (the join of the
  * seat's architecture pairings against the carried seats of the
  * eleven-architecture standard — the mobile and firmware seats ride the
  * arm64 legs, the desktop and baseline seats ride amd64 and arm64, the
- * linux seat carries the riscv64 leg beside them). */
+ * linux and alpine seats carry the riscv64 leg beside them, the musl
+ * seats alpine and void answer the musl legs on the amd64 leg). */
 const LAWLEGS: Readonly<Record<string, string[]>> = {
   grapheneos: ["arm64"],
   omarchy: ["amd64", "arm64"],
@@ -57,25 +87,52 @@ const LAWLEGS: Readonly<Record<string, string[]>> = {
   v: ["amd64", "arm64"],
   linux: ["amd64", "arm64", "riscv64"],
   android: ["arm64"],
+  postmarketos: ["arm64"],
+  lineageos: ["arm64"],
+  calyxos: ["arm64"],
+  archlinux: ["amd64", "arm64"],
+  alpine: ["amd64", "arm64", "riscv64"],
+  debian: ["amd64", "arm64"],
+  fedora: ["amd64", "arm64"],
+  nixos: ["amd64", "arm64"],
+  void: ["amd64", "arm64"],
 };
 
 /** the seats that never present a vgpu path (the honest virtual device
  * law: the firmware seat and the language os seat carry no gpu path,
- * every other seat presents a virtual one). */
+ * every other seat — including every one of the nine additions —
+ * presents a virtual one). */
 const NOVGPU = new Set(["maruos", "v"]);
 
+/** the nine honest additions the more-than-fifteen directive rides
+ * (the ids after the seven named law seats). */
+const ADDITIONIDS = [
+  "postmarketos",
+  "lineageos",
+  "calyxos",
+  "archlinux",
+  "alpine",
+  "debian",
+  "fedora",
+  "nixos",
+  "void",
+] as const;
+
 describe("the os distribution catalog of the saddle container", () => {
-  it("carries exactly the seven system seats the owner's law names", () => {
+  it("carries exactly the sixteen system seats the owner's law charges (more than fifteen)", () => {
     assert.deepEqual(OSDISTRIBUTIONIDS, [...LAWIDS]);
-    assert.equal(OSDISTRIBUTIONS.length, 7);
-    assert.equal(OSDISTRIBUTIONCOUNT, 7, "the count derives from the rows' real length");
+    assert.equal(OSDISTRIBUTIONS.length, 16);
+    assert.equal(OSDISTRIBUTIONCOUNT, 16, "the count derives from the rows' real length");
     const ids = OSDISTRIBUTIONS.map((row) => row.id);
-    assert.equal(new Set(ids).size, 7, "every system seat rides exactly once");
+    assert.equal(new Set(ids).size, 16, "every system seat rides exactly once");
     for (const row of OSDISTRIBUTIONS) {
       assert.ok(row.label.length > 0, `${row.id} carries a label`);
       assert.ok(row.note.length > 0, `${row.id} carries the honest note`);
       assert.ok(row.base.length > 0, `${row.id} carries its true base fact`);
-      assert.ok(["apk", "apt", "pacman", "abuild", "vpm"].includes(row.package), `${row.id} answers a package grammar`);
+      assert.ok(
+        ["apk", "apt", "pacman", "abuild", "vpm", "rpm", "nix", "xbps"].includes(row.package),
+        `${row.id} answers a package grammar`,
+      );
     }
   });
 
@@ -128,6 +185,79 @@ describe("the os distribution catalog of the saddle container", () => {
     assert.ok(android.base.includes("android"), "android builds on the android platform");
   });
 
+  it("carries the true fact per addition seat (the nine honest additions, the owner's more-than-fifteen directive)", () => {
+    // postmarketos is the alpine-based mobile distribution real devices boot
+    const postmarketos = getosdistribution("postmarketos");
+    assert.ok(postmarketos !== undefined);
+    assert.equal(postmarketos.kind, "mobile");
+    assert.equal(postmarketos.base, "alpine linux");
+    assert.equal(postmarketos.package, "apk");
+    assert.ok(postmarketos.note.includes("alpine-based mobile distribution"), "the alpine mobile fact rides the note");
+    // lineageos is the community android continuation
+    const lineageos = getosdistribution("lineageos");
+    assert.ok(lineageos !== undefined);
+    assert.equal(lineageos.kind, "mobile");
+    assert.equal(lineageos.base, "android");
+    assert.equal(lineageos.package, "apk");
+    assert.ok(lineageos.note.includes("community android continuation"), "the continuation fact rides the note");
+    // calyxos is the privacy-focused android distribution
+    const calyxos = getosdistribution("calyxos");
+    assert.ok(calyxos !== undefined);
+    assert.equal(calyxos.kind, "mobile");
+    assert.equal(calyxos.base, "android");
+    assert.equal(calyxos.package, "apk");
+    assert.ok(calyxos.note.includes("privacy-focused android distribution"), "the privacy fact rides the note");
+    // archlinux is the rolling-release distribution omarchy builds on
+    const archlinux = getosdistribution("archlinux");
+    assert.ok(archlinux !== undefined);
+    assert.equal(archlinux.kind, "desktop");
+    assert.equal(archlinux.base, "arch linux");
+    assert.equal(archlinux.package, "pacman");
+    assert.ok(archlinux.note.includes("rolling-release distribution omarchy builds on"), "the omarchy base fact rides the note");
+    // alpine is the musl-based lightweight distribution
+    const alpine = getosdistribution("alpine");
+    assert.ok(alpine !== undefined);
+    assert.equal(alpine.kind, "distribution");
+    assert.equal(alpine.base, "musl libc busybox");
+    assert.equal(alpine.package, "apk");
+    assert.ok(alpine.note.includes("musl-based lightweight distribution"), "the musl fact rides the note");
+    // debian is the universal operating system
+    const debian = getosdistribution("debian");
+    assert.ok(debian !== undefined);
+    assert.equal(debian.kind, "desktop");
+    assert.equal(debian.base, "the debian project");
+    assert.equal(debian.package, "apt");
+    assert.ok(debian.note.includes("universal operating system"), "the universal fact rides the note");
+    // fedora is the red-hat-upstream community distribution
+    const fedora = getosdistribution("fedora");
+    assert.ok(fedora !== undefined);
+    assert.equal(fedora.kind, "desktop");
+    assert.equal(fedora.base, "red hat linux upstream");
+    assert.equal(fedora.package, "rpm");
+    assert.ok(fedora.note.includes("red-hat-upstream community distribution"), "the red hat fact rides the note");
+    // nixos is the declarative distribution the nix package manager builds
+    const nixos = getosdistribution("nixos");
+    assert.ok(nixos !== undefined);
+    assert.equal(nixos.kind, "distribution");
+    assert.equal(nixos.base, "the nix package manager");
+    assert.equal(nixos.package, "nix");
+    assert.ok(nixos.note.includes("declarative distribution the nix package manager builds"), "the declarative fact rides the note");
+    // void is the independent source-rolling distribution
+    const voidlinux = getosdistribution("void");
+    assert.ok(voidlinux !== undefined);
+    assert.equal(voidlinux.kind, "distribution");
+    assert.equal(voidlinux.base, "xbps");
+    assert.equal(voidlinux.package, "xbps");
+    assert.ok(voidlinux.note.includes("independent source-rolling distribution"), "the independent fact rides the note");
+    // the nine additions all present a vgpu path and ride the vcpu bank
+    for (const id of ADDITIONIDS) {
+      const row = getosdistribution(id);
+      assert.ok(row !== undefined);
+      assert.equal(row.vgpu, true, `${id} presents a vgpu path`);
+      assert.equal(row.vcpu, true, `${id} rides the vcpu bank`);
+    }
+  });
+
   it("pairs every seat with the eleven-architecture standard honestly", () => {
     for (const row of OSDISTRIBUTIONS) {
       assert.ok(row.archs.length > 0, `${row.id} pairs at least one architecture seat`);
@@ -138,8 +268,8 @@ describe("the os distribution catalog of the saddle container", () => {
         );
       }
       // the derived docker legs follow the owner's law: amd64 and arm64
-      // are the legs the seat rides, riscv64 the extra leg only the
-      // normal linux baseline carries
+      // are the legs the seat rides, riscv64 the extra leg the normal
+      // linux baseline and the alpine seat carry
       assert.deepEqual(osdistributiondockerarchs(row.id), LAWLEGS[row.id], `${row.id} rides its honest legs`);
     }
     // the mobile, firmware and language seats that never leave the arm64
@@ -147,12 +277,23 @@ describe("the os distribution catalog of the saddle container", () => {
     assert.deepEqual(osdistributiondockerarchs("grapheneos"), ["arm64"]);
     assert.deepEqual(osdistributiondockerarchs("maruos"), ["arm64"]);
     assert.deepEqual(osdistributiondockerarchs("android"), ["arm64"]);
+    assert.deepEqual(osdistributiondockerarchs("postmarketos"), ["arm64"]);
+    assert.deepEqual(osdistributiondockerarchs("lineageos"), ["arm64"]);
+    assert.deepEqual(osdistributiondockerarchs("calyxos"), ["arm64"]);
     // the desktop and baseline seats pair both legs the owner names
     assert.deepEqual(osdistributiondockerarchs("omarchy"), ["amd64", "arm64"]);
     assert.deepEqual(osdistributiondockerarchs("vanillaos"), ["amd64", "arm64"]);
     assert.deepEqual(osdistributiondockerarchs("v"), ["amd64", "arm64"]);
+    assert.deepEqual(osdistributiondockerarchs("archlinux"), ["amd64", "arm64"]);
+    assert.deepEqual(osdistributiondockerarchs("debian"), ["amd64", "arm64"]);
+    assert.deepEqual(osdistributiondockerarchs("fedora"), ["amd64", "arm64"]);
+    assert.deepEqual(osdistributiondockerarchs("nixos"), ["amd64", "arm64"]);
+    assert.deepEqual(osdistributiondockerarchs("void"), ["amd64", "arm64"]);
+    // the alpine seat carries the riscv64 leg beside both legs, the
+    // musl legs the alpine and void seats answer ride the amd64 leg
+    assert.deepEqual(osdistributiondockerarchs("alpine"), ["amd64", "arm64", "riscv64"]);
     // an unknown seat answers the empty pairing, never a pretended leg
-    assert.deepEqual(osdistributiondockerarchs("nixos"), []);
+    assert.deepEqual(osdistributiondockerarchs("guix"), []);
   });
 
   it("binds the engine plan trio every seat rides — reused from engineplans, never duplicated", () => {
@@ -218,8 +359,8 @@ describe("the os distribution catalog of the saddle container", () => {
     for (const id of OSDISTRIBUTIONIDS) {
       assert.equal(resolveosdistribution(id).id, id);
     }
-    assert.equal(getosdistribution("nixos"), undefined, "an unknown id answers no row");
-    assert.throws(() => resolveosdistribution("nixos"), /seven seats the owner's law names/);
+    assert.equal(getosdistribution("guix"), undefined, "an unknown id answers no row");
+    assert.throws(() => resolveosdistribution("guix"), /sixteen seats the owner's law names/);
     assert.throws(
       () => resolveosdistribution("windows"),
       (error: Error & { code?: string }) => error.code === "OS_DISTRIBUTION_UNKNOWN",
@@ -227,7 +368,12 @@ describe("the os distribution catalog of the saddle container", () => {
     const refusal = osdistributionerror("templeos");
     assert.equal(refusal.name, "osdistributionerror");
     assert.equal(refusal.code, "OS_DISTRIBUTION_UNKNOWN");
-    assert.ok(refusal.message.includes("grapheneos, omarchy, vanillaos, maruos, v, linux, android"));
+    assert.ok(
+      refusal.message.includes(
+        "grapheneos, omarchy, vanillaos, maruos, v, linux, android, postmarketos, lineageos, calyxos, archlinux, alpine, debian, fedora, nixos, void",
+      ),
+      "the refusal names the sixteen seats in law order",
+    );
     assert.throws(() => resolveosdistribution(42), /os distribution catalog carries no system seat/);
   });
 
@@ -236,8 +382,8 @@ describe("the os distribution catalog of the saddle container", () => {
     // standard, catalog order
     assert.deepEqual(
       osdistributionsforarch("linux-riscv64").map((row) => row.id),
-      ["linux"],
-      "only the normal linux baseline carries the riscv64 seat",
+      ["linux", "alpine"],
+      "the normal linux baseline and the alpine seat carry the riscv64 seat",
     );
     assert.deepEqual(
       osdistributionsforarch("windows-x64").map((row) => row.id),
@@ -255,23 +401,35 @@ describe("the os distribution catalog of the saddle container", () => {
     );
     assert.deepEqual(
       osdistributionsforarch("linux-x64").map((row) => row.id),
-      ["omarchy", "vanillaos", "v", "linux"],
+      ["omarchy", "vanillaos", "v", "linux", "archlinux", "alpine", "debian", "fedora", "nixos", "void"],
+    );
+    assert.deepEqual(
+      osdistributionsforarch("linux-x64-musl").map((row) => row.id),
+      ["omarchy", "vanillaos", "linux", "alpine", "void"],
+      "the musl seat the omarchy, vanilla os, linux, alpine and void seats answer",
     );
     assert.deepEqual(
       osdistributionsforarch("linux-arm64").map((row) => row.id),
       [...LAWIDS],
       "every system seat rides the linux-arm64 seat of the standard",
     );
+    assert.deepEqual(
+      osdistributionsforarch("darwin-arm64-v8").map((row) => row.id),
+      ["grapheneos", "maruos", "android", "postmarketos", "lineageos", "calyxos"],
+      "the mobile and firmware seats ride the arm64/v8 abi seat",
+    );
     assert.deepEqual(osdistributionsforarch("linux-nope"), [], "an unknown arch answers no seat");
   });
 
   it("answers the coverage report and the table lines the container lanes stamp", () => {
     const coverage = osdistributioncoverage();
-    assert.equal(coverage.count, 7);
+    assert.equal(coverage.count, 16);
     assert.deepEqual(coverage.profiles, ["max", "balanced", "lite"]);
     assert.equal(coverage.planlaw.examplestoragegb, 50);
     assert.equal(coverage.planlaw.quotaowner, "devthink");
     // the arch seats the catalog pairs follow the standard's own order
+    // (the nine additions pair no seat the seven named seats do not
+    // already carry — the arch axis stays the standard's own)
     assert.deepEqual(coverage.arches, [
       "linux-x64",
       "darwin-arm64",
@@ -283,7 +441,7 @@ describe("the os distribution catalog of the saddle container", () => {
       "wasm32",
       "darwin-arm64-v8",
     ]);
-    assert.equal(coverage.rows.length, 7);
+    assert.equal(coverage.rows.length, 16);
     for (const row of coverage.rows) {
       const source = getosdistribution(row.id);
       assert.ok(source !== undefined);
@@ -295,8 +453,8 @@ describe("the os distribution catalog of the saddle container", () => {
     }
     // the rendered lines: the header law plus one line per system seat
     const lines = osdistributionlines();
-    assert.ok(lines.length >= 8, "the header line plus one line per system seat");
-    assert.ok(lines[0]?.includes("7 system seats"));
+    assert.ok(lines.length >= 17, "the header line plus one line per system seat");
+    assert.ok(lines[0]?.includes("16 system seats"));
     assert.ok(lines[0]?.includes("max/balanced/lite"));
     assert.ok(lines[0]?.includes("50gb an example of plan config"));
     assert.ok(lines[0]?.includes("the engine unlimited"));

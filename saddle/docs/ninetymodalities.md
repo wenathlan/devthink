@@ -192,8 +192,12 @@ covers every name the owner used.
 
 the container side of the same law rides its own registry: the
 OSDISTRIBUTIONS catalog of saddle/containerarch.ts (section 1c) carries
-the seven system seats the saddle container starts its distribution with
-— grapheneos, omarchy, vanilla os, maru os, the v seat, the normal linux
-baseline and android — with the arch pairings, the engine plan trio
+the sixteen system seats the saddle container holds (the owner's
+more-than-fifteen directive: "o saddle nao ta com mais de 15 devido as
+disvbriçoe s com sistem aoperacional como graphene os e etc") — the
+seven named seats (grapheneos, omarchy, vanilla os, maru os, the v
+seat, the normal linux baseline and android) beside the nine honest
+additions (postmarketos, lineageos, calyxos, archlinux, alpine, debian,
+fedora, nixos and void) — with the arch pairings, the engine plan trio
 binding and the plan-resource law. see
 [osdistributions.md](osdistributions.md) for the record.

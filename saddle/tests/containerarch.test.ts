@@ -11,7 +11,10 @@
 // honest availability law (the six target seats the pinned base cannot
 // answer as containers declare ARCH_TARGET_NOT_CONTAINER, never a
 // pretended pull) and the coverage report the drivers stamp on every
-// profile run. runnable with vitest:
+// profile run. the same source file also carries the os distribution
+// catalog — the sixteen system seats the saddle container carries (the
+// osdistrib law, the owner's more-than-fifteen directive) — pinned by
+// the sister battery tests/osdistrib.test.ts. runnable with vitest:
 // pnpm vitest run tests/containerarch.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";

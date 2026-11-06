@@ -17,15 +17,26 @@
 // arm64, ppc64le and s390x QEMU-emulated legs) and the seven honest
 // coded absences (ARCH_LEG_NOT_BUILT) the publish lanes never pretend
 // to build. beside both tables the file carries the os distribution
-// catalog — the seven system seats the saddle container starts its
-// distribution with (the osdistrib law, the owner's sentence: "iniciar
-// distribuição do container saddle com por exemplo, grapheneos,
-// omarchy e outros sistemas dentro do saddle"): grapheneos (a privacy
-// and security hardened version of android), omarchy (the arch
-// linux-based distribution created by dhh), vanilla os (based on
-// ubuntu), maru os (firmware, not an application), the v seat (the v
-// language platform the dependency catalog pins at 0.5.2, never a
-// guest distribution), the normal linux baseline and android — one
+// catalog — the sixteen system seats the saddle container carries
+// (the osdistrib law, the owner's sentences: "iniciar distribuição do
+// container saddle com por exemplo, grapheneos, omarchy e outros
+// sistemas dentro do saddle" and "o saddle nao ta com mais de 15
+// devido as disvbriçoe s com sistem aoperacional como graphene os e
+// etc" — the more-than-fifteen directive): the seven named law seats
+// — grapheneos (a privacy and security hardened version of android),
+// omarchy (the arch linux-based distribution created by dhh), vanilla
+// os (based on ubuntu), maru os (firmware, not an application), the
+// v seat (the v language platform the dependency catalog pins at
+// 0.5.2, never a guest distribution), the normal linux baseline and
+// android — beside the nine honest additions the directive rides:
+// postmarketos (the alpine-based mobile distribution), lineageos
+// (the community android continuation), calyxos (the privacy-focused
+// android distribution), archlinux (the rolling-release distribution
+// omarchy builds on), alpine (the musl-based lightweight
+// distribution), debian (the universal operating system), fedora
+// (the red-hat-upstream community distribution), nixos (the
+// declarative distribution the nix package manager builds) and void
+// (the independent source-rolling distribution) — one
 // honest row per seat: the true base fact, the package grammar, the
 // architecture seats of the eleven-seat standard the seat rides (the
 // amd64 and arm64 legs the pairing derives), the engine plan profiles
@@ -432,14 +443,17 @@ export function containerbuildarchcoverage(): {
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
-/* Section 1c: the os distribution seats — the seven system seats the  */
-/* saddle container carries (the osdistrib law).                       */
+/* Section 1c: the os distribution seats — the sixteen system seats */
+/* the saddle container carries (the osdistrib law).             */
 /* ════════════════════════════════════════════════════════════════════ */
 
-/** the seven os distribution seat ids the owner's law names, in the
- * order the law's sentence rides them: grapheneos and omarchy first
- * (the named examples), vanilla os, maru os and the v seat beside
- * them, then the normal linux baseline and android. */
+/** the sixteen os distribution seat ids the catalog carries, in the
+ * law order: the seven named law seats first — grapheneos and
+ * omarchy (the named examples), vanilla os, maru os and the v seat
+ * beside them, then the normal linux baseline and android — followed
+ * by the nine honest additions the more-than-fifteen directive
+ * rides: postmarketos, lineageos, calyxos, archlinux, alpine,
+ * debian, fedora, nixos and void. */
 export const OSDISTRIBUTIONIDS: readonly string[] = Object.freeze([
   "grapheneos",
   "omarchy",
@@ -448,6 +462,15 @@ export const OSDISTRIBUTIONIDS: readonly string[] = Object.freeze([
   "v",
   "linux",
   "android",
+  "postmarketos",
+  "lineageos",
+  "calyxos",
+  "archlinux",
+  "alpine",
+  "debian",
+  "fedora",
+  "nixos",
+  "void",
 ]);
 
 /** the honest class of one os distribution seat (the catalog law): a
@@ -457,8 +480,12 @@ export const OSDISTRIBUTIONIDS: readonly string[] = Object.freeze([
 export type osdistributionkind = "distribution" | "firmware" | "languageos" | "desktop" | "mobile";
 
 /** the package format grammar one os distribution seat answers (the
- * installer vocabulary the seats mount inside the sandbox). */
-export type osdistributionpackage = "apk" | "apt" | "pacman" | "abuild" | "vpm";
+ * installer vocabulary the seats mount inside the sandbox): the apk,
+ * apt, pacman, abuild and vpm grammars the seven named seats ride
+ * beside the rpm, nix and xbps grammars the nine honest additions
+ * carry (fedora the rpm seat, nixos the nix seat, void the xbps
+ * seat). */
+export type osdistributionpackage = "apk" | "apt" | "pacman" | "abuild" | "vpm" | "rpm" | "nix" | "xbps";
 
 /** one honest row of the os distribution catalog: the seat id, the
  * display label, the honest kind, the upstream base (the true fact the
@@ -501,15 +528,18 @@ export interface osdistributionrow {
  * duplicates a tier list). */
 export const OSDISTRIBUTIONPROFILEIDS: readonly EngineProfileId[] = Object.freeze(ENGINEPLANS.map((row) => row.id));
 
-/** the seven rows of the os distribution catalog — every system the
- * owner's law names inside the saddle container, one honest row each
- * with its true fact, its arch pairing and its tier binding: the
- * mobile seats (grapheneos, android) and the firmware seat (maru os)
- * ride the arm64 legs, the desktop and baseline seats (omarchy,
- * vanilla os, linux) ride the amd64 and arm64 legs, the v seat rides
- * the amd64 and arm64 legs beside its binary targets, and every seat
- * binds the full engine plan trio (the tier axis scales the virtual
- * hardware plan, never the catalog). */
+/** the sixteen rows of the os distribution catalog — every system the
+ * owner's law names inside the saddle container plus the nine honest
+ * additions the more-than-fifteen directive rides, one honest row
+ * each with its true fact, its arch pairing and its tier binding:
+ * the mobile seats (grapheneos, android, postmarketos, lineageos,
+ * calyxos) and the firmware seat (maru os) ride the arm64 legs, the
+ * desktop and baseline seats (omarchy, vanilla os, archlinux,
+ * debian, fedora, nixos, linux) ride the amd64 and arm64 legs, the
+ * musl seats (alpine, void) answer the musl legs beside them, the
+ * v seat rides the amd64 and arm64 legs beside its binary targets,
+ * and every seat binds the full engine plan trio (the tier axis
+ * scales the virtual hardware plan, never the catalog). */
 export const OSDISTRIBUTIONS: readonly osdistributionrow[] = Object.freeze([
   {
     id: "grapheneos",
@@ -595,6 +625,114 @@ export const OSDISTRIBUTIONS: readonly osdistributionrow[] = Object.freeze([
     vcpu: true,
     note: "the android seat: the mobile platform the grapheneos hardening builds on, the catalog carries it on the arm64 legs the standard answers.",
   },
+  {
+    id: "postmarketos",
+    label: "postmarketos",
+    kind: "mobile",
+    base: "alpine linux",
+    package: "apk",
+    archs: ["linux-arm64", "darwin-arm64-v8"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "postmarketos is the alpine-based mobile distribution real devices boot: the community mobile seat the catalog carries on the arm64 legs.",
+  },
+  {
+    id: "lineageos",
+    label: "lineageos",
+    kind: "mobile",
+    base: "android",
+    package: "apk",
+    archs: ["linux-arm64", "darwin-arm64-v8"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "lineageos is the community android continuation: the aftermarket mobile seat on the arm64 legs.",
+  },
+  {
+    id: "calyxos",
+    label: "calyxos",
+    kind: "mobile",
+    base: "android",
+    package: "apk",
+    archs: ["linux-arm64", "darwin-arm64-v8"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "calyxos is the privacy-focused android distribution: the hardened mobile seat beside grapheneos.",
+  },
+  {
+    id: "archlinux",
+    label: "archlinux",
+    kind: "desktop",
+    base: "arch linux",
+    package: "pacman",
+    archs: ["linux-x64", "linux-arm64"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "archlinux is the rolling-release distribution omarchy builds on: the pacman desktop seat on the amd64 and arm64 legs.",
+  },
+  {
+    id: "alpine",
+    label: "alpine",
+    kind: "distribution",
+    base: "musl libc busybox",
+    package: "apk",
+    archs: ["linux-x64", "linux-arm64", "linux-x64-musl", "linux-riscv64"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "alpine is the musl-based lightweight distribution: the small-footprint seat the musl legs answer.",
+  },
+  {
+    id: "debian",
+    label: "debian",
+    kind: "desktop",
+    base: "the debian project",
+    package: "apt",
+    archs: ["linux-x64", "linux-arm64"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "debian is the universal operating system: the apt desktop seat the widest hardware matrix answers.",
+  },
+  {
+    id: "fedora",
+    label: "fedora",
+    kind: "desktop",
+    base: "red hat linux upstream",
+    package: "rpm",
+    archs: ["linux-x64", "linux-arm64"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "fedora is the red-hat-upstream community distribution: the rpm desktop seat beside the apt rows.",
+  },
+  {
+    id: "nixos",
+    label: "nixos",
+    kind: "distribution",
+    base: "the nix package manager",
+    package: "nix",
+    archs: ["linux-x64", "linux-arm64"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "nixos is the declarative distribution the nix package manager builds: the reproducible-system seat the catalog carries.",
+  },
+  {
+    id: "void",
+    label: "void",
+    kind: "distribution",
+    base: "xbps",
+    package: "xbps",
+    archs: ["linux-x64", "linux-arm64", "linux-x64-musl"],
+    profiles: OSDISTRIBUTIONPROFILEIDS,
+    vgpu: true,
+    vcpu: true,
+    note: "void is the independent source-rolling distribution: the xbps seat the musl legs answer beside alpine.",
+  },
 ]);
 
 /** the count of the os distribution catalog — derived from the rows'
@@ -628,10 +766,11 @@ export const OSDISTRIBUTIONPLANLAW: osdistributionplanlaw = Object.freeze({
 });
 
 /** answers one os distribution row by seat id — undefined when the id
- * is not one of the seven the owner's law names.
+ * is not one of the sixteen the catalog carries.
  *
  * @param id the seat id (grapheneos, omarchy, vanillaos, maruos, v,
- *   linux, android).
+ *   linux, android, postmarketos, lineageos, calyxos, archlinux,
+ *   alpine, debian, fedora, nixos, void).
  * @returns the row, or undefined for an unknown id.
  */
 export function getosdistribution(id: string): osdistributionrow | undefined {
@@ -640,10 +779,10 @@ export function getosdistribution(id: string): osdistributionrow | undefined {
 
 /** the coded refusal of the catalog resolver: a system seat the
  * catalog does not carry. The name carries the catalog's shape so the
- * message names the law (the seven seats), never a bare invalid-input. */
+ * message names the law (the sixteen seats), never a bare invalid-input. */
 export function osdistributionerror(id: string): Error & { code: string } {
   const error = new Error(
-    `the os distribution catalog carries no system seat "${id}": the seven seats the owner's law names are ${OSDISTRIBUTIONIDS.join(", ")}`,
+    `the os distribution catalog carries no system seat "${id}": the sixteen seats the owner's law names are ${OSDISTRIBUTIONIDS.join(", ")}`,
   ) as Error & { code: string };
   error.name = "osdistributionerror";
   error.code = "OS_DISTRIBUTION_UNKNOWN";
@@ -654,7 +793,7 @@ export function osdistributionerror(id: string): Error & { code: string } {
  * an undefined or null input answers the linux row (the normal baseline
  * the container lane itself rides), a known id answers its row, and
  * anything else throws the coded OS_DISTRIBUTION_UNKNOWN refusal naming
- * the seven seats — the resolver never silently rewrites the caller's
+ * the sixteen seats — the resolver never silently rewrites the caller's
  * distribution.
  *
  * @param input the caller system seat id (the drivers and the modality
@@ -722,13 +861,13 @@ export function osdistributiondockerarchs(id: string): readonly string[] {
 }
 
 /** the honest coverage report of the os distribution catalog: the count
- * the owner's law charges (seven), the architecture seats of the
+ * the owner's law charges (sixteen), the architecture seats of the
  * standard the catalog pairs, the engine plan trio every seat binds,
  * the plan-resource law of record and the per-seat rows with their
  * derived docker legs — the report the container lanes stamp and the
  * tests pin. */
 export interface osdistributionreport {
-  /** the system seats the catalog covers (seven). */
+  /** the system seats the catalog covers (sixteen). */
   count: number;
   /** the distinct architecture seats of the standard the catalog pairs,
    * in the standard's own order. */
@@ -756,7 +895,7 @@ export interface osdistributionreport {
 }
 
 /** answers the honest coverage report of the os distribution catalog —
- * the seven system seats with their arch pairings joined to the docker
+ * the sixteen system seats with their arch pairings joined to the docker
  * legs, the tier binding reused from the engineplans table and the
  * plan-resource law riding as config data. */
 export function osdistributioncoverage(): osdistributionreport {
@@ -786,7 +925,7 @@ export function osdistributioncoverage(): osdistributionreport {
 
 /** renders the os distribution catalog as report lines (the container
  * lanes append these under their profile line so every run answers the
- * seven system seats the owner's law names inside the saddle). */
+ * sixteen system seats the owner's law names inside the saddle). */
 export function osdistributionlines(): string[] {
   const coverage = osdistributioncoverage();
   return [
