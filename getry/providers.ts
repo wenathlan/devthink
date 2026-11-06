@@ -3135,7 +3135,13 @@ export * as Recovery from "./recovery.js";
 export * as RequestHelpers from "./request.js";
 export * as Request from "./request.js";
 export * as Search from "./search.js";
-export * as CLI from "./cli.js";
+// the CLI namespace left the providers barrel (the browser purity law):
+// cli.js value-imports node:process (stdin, stdout) and ./server.js, so the
+// namespace re-export dragged the whole hono server stack into every
+// browser consumer of this barrel — the dev boot died on the externalized
+// node:process stub and the serve-static module. The CLI keeps its own
+// published face (@wenathlan/getry/cli) and the os server re-exports it
+// directly from the owner; nothing in the tree consumed providers.CLI.
 export * as Streaming from "./streaming.js";
 export * as Version from "./versionregistry.js";
 

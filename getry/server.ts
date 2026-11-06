@@ -753,46 +753,14 @@ export async function listversions(): Promise<string[]> {
   return Object.keys(def.versions);
 }
 
-/** validateconfig — check a gateway definition for common errors
- * returns a list of human readable problems — empty when valid */
-export function validateconfig(def: gatewaydefinition): string[] {
-  const problems: string[] = [];
-  if (!def.versions || Object.keys(def.versions).length === 0) {
-    problems.push("no versions defined — add at least one version to versions map");
-    return problems;
-  }
-  for (const [id, cfg] of Object.entries(def.versions)) {
-    const prefix = `version ${id}:`;
-    if (!cfg.id) problems.push(`${prefix} missing id`);
-    if (cfg.id !== id) problems.push(`${prefix} id mismatch — map key is ${id} but id is ${cfg.id}`);
-    if (!cfg.providername) problems.push(`${prefix} missing providername`);
-    if (!cfg.upstreams || cfg.upstreams.length === 0) problems.push(`${prefix} no upstreams configured`);
-    if (!cfg.auth) problems.push(`${prefix} missing auth config`);
-    if (!cfg.models || cfg.models.length === 0) problems.push(`${prefix} no models configured`);
-    if (!cfg.metamodel?.id) problems.push(`${prefix} missing metamodel id`);
-    // rotation models must exist in the catalog — the catalog may itself be
-    // missing (already reported above) so the lookup guards against it
-    if (cfg.rotation?.models) {
-      const ids = new Set((cfg.models ?? []).map((m) => m.id));
-      for (const rm of cfg.rotation.models) {
-        if (!ids.has(rm)) problems.push(`${prefix} rotation model ${rm} not in models catalog`);
-      }
-    }
-    // defaultmodel must exist
-    if (
-      cfg.defaultmodel &&
-      !(cfg.models ?? []).find((m) => m.id === cfg.defaultmodel) &&
-      cfg.defaultmodel !== cfg.metamodel?.id
-    ) {
-      problems.push(`${prefix} defaultmodel ${cfg.defaultmodel} not in models catalog`);
-    }
-    // auth env var must be set when required from env — a version with a
-    // missing auth block already carries its problem above; the dereference
-    // below used to crash the whole validation with a type error instead of
-    // reporting the remaining problems
-    if (cfg.auth?.required && cfg.auth?.keysources?.includes("env") && !cfg.auth?.envvar) {
-      problems.push(`${prefix} auth requires env keys but envvar is not set`);
-    }
-  }
-  return problems;
-}
+/* validateconfig moved to the pure owner (validate.ts — the ownership
+ * correction of the gateway step 3 fold): the checks never needed the
+ * transport, and the import plus re-export below keeps this server face
+ * answering the same symbol (the createserver lane reads it at line ~547,
+ * every external consumer resolves the export) while the devthink config
+ * bridge resolves the pure module directly — the browser graph never
+ * loads the hono stack the validator used to drag along. The contract is
+ * verbatim: one definition in, one problem list out, synchronous always. */
+import { validateconfig } from "./validate.js";
+export { validateconfig };
+

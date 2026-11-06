@@ -30,6 +30,11 @@
       "types": "./thinking.ts",
       "default": "./thinking.ts"
     },
+    "./validate": {
+      "types": "./validate.ts",
+      "import": "./validate.ts",
+      "default": "./validate.ts"
+    },
     "./engine": {
       "types": "./engine.ts",
       "import": "./engine.ts",

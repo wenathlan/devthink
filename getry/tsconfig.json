@@ -118,6 +118,7 @@
        * source here (the one owner of the moved modules) until the
        * published envelope carries the export surfaces the wave added. */
       "@wenathlan/getry/thinking": ["./thinking.ts"],
+      "@wenathlan/getry/validate": ["./validate.ts"],
       "@wenathlan/getry/engine": ["./engine.ts"],
       "@wenathlan/getry/llm": ["./llm.ts"],
       "@wenathlan/getry/streaming": ["./streaming.ts"],

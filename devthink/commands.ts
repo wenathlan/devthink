@@ -7,7 +7,7 @@
  */
 
 import { checksum } from "./data.js";
-import { parseoptions } from "./policy.js";
+import { parseoptions } from "./parseoptions.js";
 import { assigntasktab, tasktabs } from "./progress.js";
 import { artifactinventoryentry, capturename, cleanuprule, clipentry, closedtabrecord, deeplinkpattern, downloadrecord, downloadstate, linkbatch, mimefilter, navpause, navtrailentry, netlogrecord, planprogress, preconnecttarget, prefetchplan, quarantineentry, ratelimitwindow, safetyverdict, scanverdict, tabgrouprecord, tablayout, tabquery, tabwatchevent, toolstep, urlvisit } from "./types.js";
 

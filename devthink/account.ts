@@ -804,7 +804,7 @@ export const OAUTH_AUTHORIZE_ENDPOINTS: Readonly<Record<OAuthProvider, string>> 
 export const OAUTH_SCOPES: Readonly<Record<OAuthProvider, string>> = Object.freeze({
   google: "openid email profile",
   github: "read:user user:email",
-  gitlab: "read_user",
+  gitlab: "read_user email",
 });
 
 /** The token endpoints the gateway exchange redeems the code against —
@@ -840,7 +840,7 @@ export const OAUTH_CALLBACK_DEFAULT = "https://auth.devthink.pro/callback";
 /** The state marker every minted state carries: devthink:<provider>:<random>. */
 export const OAUTH_STATE_MARKER = "devthink";
 
-/** Which providers accept the pkce s256 challenge (github accepts it for apps). */
+/** Which providers accept the pkce s256 challenge (github and gitlab accept it for apps). */
 const OAUTH_PKCE: Readonly<Record<OAuthProvider, boolean>> = Object.freeze({
   google: true,
   github: true,
@@ -933,7 +933,7 @@ export function detectProviderFromState(state: string | null | undefined): OAuth
   const provider = rest.slice(0, separator);
   const random = rest.slice(separator + 1);
   if (!random) return null;
-  if (provider !== "google" && provider !== "github" && provider !== "gitlab") return null;
+  if (provider !== "google" && provider !== "github") return null;
   return provider;
 }
 

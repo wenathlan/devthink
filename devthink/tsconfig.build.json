@@ -44,6 +44,7 @@
        * every other @wenathlan/getry/* face above (the ambient declaration
        * the mirror carried retired with it; the rungs have one owner). */
       "@wenathlan/getry/thinking": ["../getry/dist/types/getry/thinking.d.ts"],
+      "@wenathlan/getry/validate": ["../getry/dist/types/getry/validate.d.ts"],
       "@wenathlan/getry/llm": ["../getry/dist/types/getry/llm.d.ts"],
       "@wenathlan/getry/streaming": ["../getry/dist/types/getry/streaming.d.ts"],
       "@wenathlan/getry/models": ["../getry/dist/types/getry/models.d.ts"],

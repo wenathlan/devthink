@@ -13,7 +13,7 @@
  */
 import { type FormEvent, useMemo, useState } from "react";
 import { copy } from "../../uistore";
-import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../mcp";
+import { type CustomProvider, createmcpregistry, localstorageadapter, type McpEndpoint } from "../../mcpregistry";
 
 /** the one localStorage key the registry rides (mcpregistry.ts contract).
  *

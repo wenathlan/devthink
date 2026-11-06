@@ -74,6 +74,7 @@ export default defineConfig({
        * source here (the one owner of the moved modules) until the
        * published envelope carries the export surfaces the wave added. */
       "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "thinking.ts"),
+      "@wenathlan/getry/validate": path.resolve(import.meta.dirname, "validate.ts"),
       "@wenathlan/getry/engine": path.resolve(import.meta.dirname, "engine.ts"),
       "@wenathlan/getry/llm": path.resolve(import.meta.dirname, "llm.ts"),
       "@wenathlan/getry/streaming": path.resolve(import.meta.dirname, "streaming.ts"),

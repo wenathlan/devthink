@@ -1036,19 +1036,13 @@ export function needstarget(kind: actionkind): boolean {
   return targetactions.has(kind);
 }
 
-/** Parses the reviewed JSON options of a step; malformed payloads are rejected early. */
-export function parseoptions(step: toolstep): Record<string, unknown> {
-  if (step.options === undefined) return {};
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(step.options);
-  } catch {
-    throw new Error("Step options must be a JSON object.");
-  }
-  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
-    throw new Error("Step options must be a JSON object.");
-  return parsed as Record<string, unknown>;
-}
+/** Parses the reviewed JSON options of a step; malformed payloads are rejected early.
+ * Moved to the pure owner (parseoptions.ts — the browser purity law): the
+ * command catalog the console page resolves needed this one helper, and the
+ * static edge dragged the whole correlated cluster into the web graph; the
+ * import and re-export below keep this face answering the same symbol. */
+import { parseoptions } from "./parseoptions.js";
+export { parseoptions };
 
 /** Maps an action kind to the optional browser permission it requires, if any. */
 export function requiredcapability(kind: actionkind): string | undefined {

@@ -60,6 +60,7 @@ export default defineConfig({
        * to the monorepo source the sibling app carries — the ladder is never
        * duplicated inside devthink, the engine answers from its one owner. */
       "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "../getry/thinking.ts"),
+      "@wenathlan/getry/validate": path.resolve(import.meta.dirname, "../getry/validate.ts"),
       /** the getry research corpus bridge of the ownership law (the build
        * family consolidation carried it): the researchcatalog lane of the
        * one build file reads the corpus fixtures through the published
