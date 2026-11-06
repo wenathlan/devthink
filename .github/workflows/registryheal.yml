@@ -8,8 +8,11 @@ name: DevThink Registry Heal
 # the first heal carried answered E403 (the granular token that bypasses
 # two-factor authentication may never unpublish), so the heal moves the
 # latest dist-tag of every poisoned package back to the last honest rung
-# the manifests of main already resolve (2.0.154 for the saddle and the library apps —
-# the rung the family curve realignment stamps from). The ladder then walks the ordinary flow: the
+# the manifests of main already resolve — the rung reads each app's own
+# package.json live at dispatch time (the dynamic rung law: the emergency
+# era froze 2.0.154 in the script and the frozen pin regressed every later
+# rung — the heal reads the synchronized manifest instead, so the honest
+# rung rides the version cascade and the lane never lags the curve). The ladder then walks the ordinary flow: the
 # maintenance rung derives the next rung, the release cuts the tag from
 # the healed main, and the publish answers envelopes the tree actually
 # builds — the fresh latest supersedes every caret range the same hour.
@@ -44,6 +47,13 @@ jobs:
         run: |
           echo "The confirm input must read healtags (the lane refuses to run by accident)."
           exit 1
+      - name: Check out the synchronized manifests
+        # the dynamic rung law: the honest rung reads the app manifests of
+        # main at dispatch time, so the heal needs the working tree (the
+        # pinned family checkout the release lanes carry).
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -58,8 +68,9 @@ jobs:
           set -euo pipefail
           heal() {
             package="$1"
-            honest="$2"
-            echo "::group::@wenathlan/$package latest -> $honest"
+            honest="$(node -p "require('./${package}/package.json').version")"
+            test -n "$honest"
+            echo "::group::@wenathlan/$package latest -> $honest (the ${package} manifest rung)"
             current="$(npm view "@wenathlan/$package" dist-tags.latest || echo absent)"
             if [ "$current" = "$honest" ]; then
               echo "the latest tag already answers $honest — skipping"
@@ -69,21 +80,18 @@ jobs:
             fi
             echo "::endgroup::"
           }
-          heal saddle 2.0.154
-          heal devthink 2.0.154
-          heal argan 2.0.154
-          heal cadria 2.0.154
-          heal debonair 2.0.154
-          heal forge 2.0.154
-          heal foundry 2.0.154
-          heal stealthhead 2.0.154
-          heal vault 2.0.154
+          # the full eleven: cobaia and getry join the heal set (the report
+          # loop already walked them — a heal that skips a published seat
+          # leaves the poison the lane exists to clear).
+          for package in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
+            heal "$package"
+          done
       - name: Report the healed dist-tags
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
-          for package in devthink argan cadria debonair forge foundry getry saddle stealthhead vault; do
+          for package in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
             latest="$(npm view "@wenathlan/$package" dist-tags.latest || echo absent)"
             echo "@wenathlan/$package latest = ${latest}"
           done
