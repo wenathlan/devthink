@@ -1,78 +1,48 @@
 /**
- * browser-local account fallback for the static edge (github pages,
- * netlify, vercel clones, file://): when no api backend answers at the
- * resolved base, the auth pages switch to local browser accounts so the
- * full interface still works on hosting without a server. local
- * accounts live ONLY in this browser (localstorage, pbkdf2-hashed
- * passwords through webcrypto); they never sync to the main node and
- * never hold real authority - the self-hosted node keeps the real
- * scrypt/cookie sessions (see the saddle readme, static-first design).
+ * the account seat of the auth faces — rewritten by the cadastro law (the
+ * vault family law, PR16): the registration answers the database alone.
  *
- * @vault binding point: this module is the documented binding point for
- *   the static-edge account shelf — the privacy law routes every
- *   browser-local read and write through this one seat (the wingets
- *   call localaccountnames(), never the raw storage), and the
- *   vault-backed session API on the self-hosted node owns the real
- *   authority. The storage here is the offline fallback, never the
- *   source of truth.
+ * the former browser-local account registry is DEAD: no account data may
+ * persist in the visitor's browser — not the account map (the old
+ * localStorage key saddle_local_users), not the IndexedDB mirror (the old
+ * saddle-auth store), not the session row (the old saddle_local_session
+ * key). the register and login faces ride the internal api of the
+ * self-hosted node (POST /api/v1/auth/register, POST /api/v1/auth/login —
+ * scrypt hashes, cookie sessions, the sqlite store auth.ts owns), and when
+ * no api answers the faces refuse honestly: "the api lane is away" — the
+ * browser is never the fallback account store (the owner's order: cadastro
+ * never saves in the browser).
  *
- * typed ES module conversion of web/localauth.js (the window-global
- * IIFE): same storage keys, same seed, same keyfile format, same
- * returns. the module is shared by the Login, Register and Dashboard
- * pages and exposes:
- *   probe(base)          - true when the api answers
- *   available()          - local accounts exist
- *   register(u, p)       - creates a local account (throws on conflict)
- *   login(u, p)          - verifies and opens a local session
- *   session()            - the open local session or null
- *   logout()             - closes the local session
- *   exportaccounts()     - keyfile backup download
- *   importaccounts(file) - keyfile restore (merge)
- *   roleof(u)            - "admin" only for the CODEOWNERS names
+ * this module keeps the exported surface the faces and the dashboard
+ * wingets import (the binding point contract), now answering the law:
+ *   probe(base)          - true when the api answers (the only door the faces need)
+ *   available()          - false: the browser never holds accounts (the law)
+ *   register(u, p)       - refuses: the registration answers the database alone
+ *   login(u, p)          - refuses: the sign-in answers the database alone
+ *   session()            - the in-memory session or null (never storage)
+ *   logout()             - clears the in-memory session
+ *   exportaccounts()     - 0: no browser accounts exist to export
+ *   importaccounts(file) - refuses: the browser never holds accounts
+ *   roleof(u)            - "admin" only for the CODEOWNERS names (pure law)
+ *   localaccountnames()  - []: the browser registry is dead (the law)
  *
- * built-in admins: the CODEOWNERS accounts (iakadion, inathlan,
- * aasblor, nasblor) are seeded as local admin accounts when the
- * bootstrap seed rides the build env (VITE_SADDLE_ADMIN_SEED_PASSWORD).
- * the public repository carries no hardcoded credential — the seed
- * password is a pipeline secret injected at build time, and when the
- * env is absent the seed is skipped (locally created accounts still
- * work; only the CODEOWNERS accounts carry the admin role anywhere).
- * clearing the browser storage never locks the interface out: the seed
- * is re-applied whenever the env is present and the store is missing
- * the admin entries, so "the account never comes back" cannot happen
- * on the static edge (vercel / netlify / github pages).
+ * built-in admins: the CODEOWNERS accounts (iakadion, inathlan, aasblor,
+ * nasblor) live on the self-hosted node's store only (auth.ts seeds them
+ * from SADDLE_ADMIN_SEED_PASSWORD, the server-side twin); the browser seed
+ * is dead — no credential, no hash and no session ever lands on the
+ * visitor's machine.
  */
-
-/** localstorage key carrying the local account map. */
-const userskey = 'saddle_local_users';
-
-/** localstorage key carrying the open local session. */
-const sessionkey = 'saddle_local_session';
-
-/** pbkdf2 iteration count, kept in lockstep with the stored records. */
-const iterations = 150000;
-
-/** IndexedDB mirror coordinates (database / object store names). */
-const idbname = 'saddle-auth';
-const idbstore = 'accounts';
 
 /** the ONLY admin usernames: the CODEOWNERS list. mirror changes to
  * .github CODEOWNERS here (the two files are the same contract). */
 const adminlist = ['iakadion', 'inathlan', 'aasblor', 'nasblor'];
 
-/** bootstrap credentials for the seeded admins: the CODEOWNERS shared
- * password rides the build env as a pipeline secret (never hardcoded
- * in the public repository) and stays in lockstep with the self-hosted
- * node (auth.ts resolves SADDLE_ADMIN_SEED_PASSWORD the same way this
- * module resolves the build twin) and the database seed. when the env
- * is absent the seed is skipped entirely. */
-const adminseedpassword: string =
-        (import.meta.env.VITE_SADDLE_ADMIN_SEED_PASSWORD as string | undefined) ?? '';
-
-/** role of a local account: "admin" only for the CODEOWNERS names. */
+/** role of an account: "admin" only for the CODEOWNERS names. */
 export type LocalAccountRole = 'admin' | 'user';
 
-/** one stored local account (salt + hash, never the plaintext). */
+/** one stored local account (salt + hash, never the plaintext) — the shape
+ * of the dead registry, kept for the backup payload contract; the browser
+ * stores none of them (the cadastro law). */
 export type LocalAccountRecord = {
         salt: string;
         hash: string;
@@ -83,7 +53,8 @@ export type LocalAccountRecord = {
         seeded?: boolean;
 };
 
-/** the open local session (12h lifetime, localstorage only). */
+/** the open in-memory session (12h lifetime, module memory only — the
+ * browser holds at most the session token in memory, never storage). */
 export type LocalSession = {
         user: string;
         mode: 'local';
@@ -92,7 +63,8 @@ export type LocalSession = {
         expiresat: number;
 };
 
-/** the backup keyfile payload produced by exportaccounts. */
+/** the backup keyfile payload the dead registry produced (kept for the
+ * import contract; import now refuses — the browser holds no accounts). */
 export type AccountsBackupPayload = {
         format: 'saddle-local-accounts/1';
         exportedat: string;
@@ -102,257 +74,38 @@ export type AccountsBackupPayload = {
 /** the exported admin allowlist (a defensive copy). */
 export const adminusers: readonly string[] = adminlist.slice();
 
+/** the in-memory session seat: the only session the browser may hold, and
+ * only for the life of the page (the cadastro law — no storage keys). */
+let memorysession: LocalSession | null = null;
+
+/** the honest refusal every local account lane answers: the api lane is
+ * away and the browser is never the account store. */
+const API_AWAY =
+        'the api lane is away — accounts answer the database alone, never this browser (the cadastro law).';
+
 /**
- * Reads the local account names through the one binding point (the
- * wingets never touch window.localStorage directly — the raw reads the
+ * Reads the local account names through the one binding point (the wingets
+ * never touch the browser's local storage directly — the raw reads the
  * dashboards carried retired with the privacy law).
  *
  * @vault binding point: saddle/localauth.ts — the static-edge account
- *   registry is the fallback only when no backend answers; the real
- *   sessions ride the self-hosted node's scrypt/cookie surface and the
- *   vault-backed storage owns the authority (the migration law: this
- *   mirror answers until the session API carries the shelf).
- * @returns the account names in the local registry (empty when none).
+ *   registry is dead by the cadastro law: the browser never holds an
+ *   account, so the list is always empty and the real sessions ride the
+ *   self-hosted node's scrypt/cookie surface (the migration law answered).
+ * @returns the account names in the local registry (always empty — the law).
  */
 export function localaccountnames(): string[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem(userskey);
-    const parsed = raw ? JSON.parse(raw) : {};
-    if (parsed !== null && typeof parsed === 'object') {
-      return Object.keys(parsed as Record<string, unknown>);
-    }
-  } catch {
-    /* no registry or unreadable storage: the empty list applies */
-  }
-  return [];
-}
-
-function readusers(): Record<string, LocalAccountRecord> {
-        try {
-                const raw = window.localStorage.getItem(userskey);
-                const parsed = raw ? JSON.parse(raw) : {};
-                return parsed && typeof parsed === 'object'
-                        ? (parsed as Record<string, LocalAccountRecord>)
-                        : {};
-        } catch {
-                return {};
-        }
-}
-
-function writeusers(map: Record<string, LocalAccountRecord>): void {
-        window.localStorage.setItem(userskey, JSON.stringify(map));
-        void mirrorusers(map);
+        return [];
 }
 
 /**
- * re-seeds the built-in admin accounts whenever the store is missing
- * them (first visit, cleared storage, private mode). the seed is
- * idempotent: an admin the operator re-registered with a custom
- * password is never overwritten. skipped entirely when the build env
- * carries no seed password (the public repository never hardcodes one).
- */
-async function ensureadminseed(): Promise<void> {
-        if (!adminseedpassword) return;
-        const users = readusers();
-        let changed = false;
-        for (const name of adminlist) {
-                if (!Object.hasOwn(users, name)) {
-                        const salt = randomsalt();
-                        const password = adminseedpassword;
-                        users[name] = {
-                                salt,
-                                hash: await derive(password, salt),
-                                iterations,
-                                algorithm: 'pbkdf2-sha256',
-                                createdat: new Date().toISOString(),
-                                role: 'admin',
-                                seeded: true,
-                        };
-                        changed = true;
-                }
-        }
-        if (changed) writeusers(users);
-}
-
-/* ---------------- persistence: the IndexedDB mirror ----------------
- * user accounts live in localStorage AND in an IndexedDB store; the
- * mirror is repaired in both directions on load, so a tool that
- * clears only one of them (or a partial eviction) never loses the
- * accounts - "the account never comes back" cannot happen. the
- * mirror also powers the explicit backup file: accounts can be
- * exported to a json keyfile and re-imported after a full wipe. */
-
-function openidb(): Promise<IDBDatabase | null> {
-        return new Promise((resolve) => {
-                try {
-                        if (!window.indexedDB) {
-                                resolve(null);
-                                return;
-                        }
-                        const request = window.indexedDB.open(idbname, 1);
-                        request.onupgradeneeded = () => {
-                                request.result.createObjectStore(idbstore);
-                        };
-                        request.onsuccess = () => {
-                                resolve(request.result);
-                        };
-                        request.onerror = () => {
-                                resolve(null);
-                        };
-                } catch {
-                        resolve(null);
-                }
-        });
-}
-
-function idbread(db: IDBDatabase): Promise<Record<string, LocalAccountRecord> | null> {
-        return new Promise((resolve) => {
-                try {
-                        const tx = db.transaction(idbstore, 'readonly');
-                        const get = tx.objectStore(idbstore).get('users');
-                        get.onsuccess = () => {
-                                const result = get.result as Record<string, LocalAccountRecord> | undefined;
-                                resolve(result ?? null);
-                        };
-                        get.onerror = () => {
-                                resolve(null);
-                        };
-                } catch {
-                        resolve(null);
-                }
-        });
-}
-
-function idbwrite(db: IDBDatabase, map: Record<string, LocalAccountRecord>): Promise<boolean> {
-        return new Promise((resolve) => {
-                try {
-                        const tx = db.transaction(idbstore, 'readwrite');
-                        tx.objectStore(idbstore).put(map, 'users');
-                        tx.oncomplete = () => {
-                                resolve(true);
-                        };
-                        tx.onerror = () => {
-                                resolve(false);
-                        };
-                } catch {
-                        resolve(false);
-                }
-        });
-}
-
-/** mirrors the account map into IndexedDB (fire and forget). */
-async function mirrorusers(map: Record<string, LocalAccountRecord>): Promise<void> {
-        const db = await openidb();
-        if (db) await idbwrite(db, map);
-}
-
-/** restores localStorage from the IndexedDB mirror when the primary
- *  store lost the accounts (partial clear). */
-async function restorefrommirror(): Promise<void> {
-        try {
-                const raw = window.localStorage.getItem(userskey);
-                if (raw !== null && Object.keys(JSON.parse(raw)).length > 0) {
-                        return; /* primary store still carries accounts */
-                }
-        } catch {
-                /* fall through to the mirror */
-        }
-        const db = await openidb();
-        if (!db) return;
-        const mirrored = await idbread(db);
-        if (mirrored && typeof mirrored === 'object' && Object.keys(mirrored).length > 0) {
-                window.localStorage.setItem(userskey, JSON.stringify(mirrored));
-        }
-}
-
-/**
- * exports every account (salt + hash only, never plaintext passwords)
- * as a downloadable backup keyfile.
+ * checks whether local accounts exist on this browser.
  *
- * @returns the number of exported accounts.
+ * @returns false always — the browser never holds accounts (the cadastro
+ * law).
  */
-export async function exportaccounts(): Promise<number> {
-        const map = readusers();
-        const payload: AccountsBackupPayload = {
-                format: 'saddle-local-accounts/1',
-                exportedat: new Date().toISOString(),
-                accounts: map,
-        };
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'saddle-accounts-backup.json';
-        document.body.append(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 2000);
-        return Object.keys(map).length;
-}
-
-/**
- * imports accounts from a backup keyfile (merges; the seed and
- * operator-owned entries are never overwritten).
- *
- * @param file the keyfile chosen by the operator.
- * @returns the number of imported accounts.
- * @throws when the file is not a saddle accounts backup.
- */
-export async function importaccounts(file: File): Promise<number> {
-        const text = await file.text();
-        const payload = JSON.parse(text) as Partial<AccountsBackupPayload> | null;
-        if (payload?.format !== 'saddle-local-accounts/1' || typeof payload.accounts !== 'object') {
-                throw new Error('not a saddle accounts backup file.');
-        }
-        const users = readusers();
-        let imported = 0;
-        for (const [name, record] of Object.entries(payload.accounts)) {
-                if (!/^[a-z0-9.-]{3,32}$/.test(name)) continue;
-                if (!record || typeof record.salt !== 'string' || typeof record.hash !== 'string') continue;
-                if (Object.hasOwn(users, name)) continue;
-                users[name] = record;
-                imported += 1;
-        }
-        writeusers(users);
-        return imported;
-}
-
-function randomsalt(): string {
-        const bytes = new Uint8Array(16);
-        crypto.getRandomValues(bytes);
-        return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-function tohex(buffer: ArrayBuffer): string {
-        return Array.from(new Uint8Array(buffer), (b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-/** pbkdf2-sha256 hash of the password with the account salt. */
-async function derive(password: string, salt: string): Promise<string> {
-        const encoder = new TextEncoder();
-        const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
-                'deriveBits',
-        ]);
-        const bits = await crypto.subtle.deriveBits(
-                {
-                        name: 'PBKDF2',
-                        salt: encoder.encode(salt),
-                        iterations,
-                        hash: 'SHA-256',
-                },
-                key,
-                256,
-        );
-        return tohex(bits);
-}
-
-/** constant-time-ish string compare (length-safe). */
-function safecompare(a: string, b: string): boolean {
-        if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
-        let diff = 0;
-        for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-        return diff === 0;
+export function available(): boolean {
+        return false;
 }
 
 /**
@@ -377,96 +130,76 @@ export async function probe(base: string): Promise<boolean> {
 }
 
 /**
- * creates a local browser account and opens the local session.
+ * creates a local browser account and opens the local session — REFUSED by
+ * the cadastro law: the registration answers the database alone (POST
+ * /api/v1/auth/register on the self-hosted node), and the browser is never
+ * the fallback account store.
  *
  * @param username the account name (validated by the caller).
- * @param password the plaintext password (hashed before storage).
- * @returns true on success.
- * @throws when the username already exists on this browser.
+ * @param password the plaintext password (never stored anywhere in the browser).
+ * @returns never — the promise always rejects with the honest refusal.
  */
-export async function register(username: string, password: string): Promise<boolean> {
-        const users = readusers();
-        if (Object.hasOwn(users, username)) {
-                throw new Error('that username is already registered on this browser.');
-        }
-        const salt = randomsalt();
-        const hash = await derive(password, salt);
-        users[username] = {
-                salt,
-                hash,
-                iterations,
-                algorithm: 'pbkdf2-sha256',
-                createdat: new Date().toISOString(),
-                role: roleof(username),
-        };
-        writeusers(users);
-        opensession(username);
-        return true;
+export async function register(_username: string, _password: string): Promise<boolean> {
+        throw new Error(API_AWAY);
 }
 
 /**
- * verifies the password against the stored account and opens the
- * local session.
+ * verifies the password against a stored account and opens the local
+ * session — REFUSED by the cadastro law: the sign-in answers the database
+ * alone (POST /api/v1/auth/login on the self-hosted node); no account
+ * record exists in the browser to verify against.
  *
  * @param username the account name.
  * @param password the plaintext password.
- * @returns true on success.
- * @throws when the account is missing or the password is wrong.
+ * @returns never — the promise always rejects with the honest refusal.
  */
-export async function login(username: string, password: string): Promise<boolean> {
-        const users = readusers();
-        const account = users[username];
-        if (!account) throw new Error('no local account for that username on this browser.');
-        const hash = await derive(password, account.salt);
-        if (!safecompare(hash, account.hash)) throw new Error('wrong password.');
-        opensession(username);
-        return true;
-}
-
-function opensession(username: string): void {
-        const session: LocalSession = {
-                user: username,
-                mode: 'local',
-                role: roleof(username),
-                issuedat: Date.now(),
-                expiresat: Date.now() + 12 * 60 * 60 * 1000,
-        };
-        window.localStorage.setItem(sessionkey, JSON.stringify(session));
+export async function login(_username: string, _password: string): Promise<boolean> {
+        throw new Error(API_AWAY);
 }
 
 /**
- * reads the open local session.
+ * reads the open in-memory session (module memory only — the browser holds
+ * at most the session token in memory, never a storage key; the dead
+ * registry could never open one again, so the seat answers null).
  *
- * @returns the session when valid and unexpired, null otherwise.
+ * @returns the in-memory session when valid and unexpired, null otherwise.
  */
 export function session(): LocalSession | null {
-        try {
-                const raw = window.localStorage.getItem(sessionkey);
-                if (!raw) return null;
-                const parsed = JSON.parse(raw) as Partial<LocalSession> | null;
-                if (parsed?.mode !== 'local' || typeof parsed.user !== 'string') return null;
-                if (typeof parsed.expiresat !== 'number' || parsed.expiresat < Date.now()) {
-                        window.localStorage.removeItem(sessionkey);
-                        return null;
-                }
-                return parsed as LocalSession;
-        } catch {
+        if (memorysession === null) return null;
+        if (memorysession.expiresat < Date.now()) {
+                memorysession = null;
                 return null;
         }
+        return memorysession;
 }
 
-/** closes the local session. */
+/** closes the in-memory session (the only session seat the law leaves). */
 export function logout(): void {
-        window.localStorage.removeItem(sessionkey);
+        memorysession = null;
 }
 
 /**
- * checks whether local accounts exist on this browser.
+ * exports every account (salt + hash only, never plaintext passwords) as a
+ * downloadable backup keyfile — the browser registry is dead, so the
+ * export answers nothing.
  *
- * @returns true when at least one account is stored.
+ * @returns 0 always — no browser accounts exist to export (the cadastro law).
  */
-export function available(): boolean {
-        return Object.keys(readusers()).length > 0;
+export async function exportaccounts(): Promise<number> {
+        return 0;
+}
+
+/**
+ * imports accounts from a backup keyfile (merges; the seed and
+ * operator-owned entries are never overwritten) — REFUSED by the cadastro
+ * law: the browser never holds accounts, so no keyfile may restore them
+ * there.
+ *
+ * @param file the keyfile chosen by the operator.
+ * @returns never — the promise always rejects with the honest refusal.
+ */
+export async function importaccounts(_file: File): Promise<number> {
+        throw new Error(API_AWAY);
 }
 
 /**
@@ -478,16 +211,3 @@ export function available(): boolean {
 export function roleof(username: string): LocalAccountRole {
         return adminlist.includes(String(username).toLowerCase()) ? 'admin' : 'user';
 }
-
-/**
- * boot order: restore from the mirror first (so the seed sees the
- * accounts that survived a partial clear), then re-seed the admin
- * allowlist when missing. runs once at module load, exactly like the
- * window-global original.
- */
-async function boot(): Promise<void> {
-        await restorefrommirror();
-        await ensureadminseed();
-}
-
-void boot();
