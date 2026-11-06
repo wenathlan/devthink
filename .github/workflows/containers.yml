@@ -922,7 +922,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: build the engine bundle and pack it through webpack
         # the cross-bundler rung the ci battery verifies, carried to the
-        # saddle engine: the tsc engine build (scriptsbuildengine.ts, the
+        # saddle engine: the tsc engine build (scripts.ts buildengine, the
         # build:engine manifest entry) produces distpackage/index.js and
         # the exact-pinned webpack fetch (webpack 5.112.2 with its
         # webpack-cli 6.0.1 peer - the same pin law every lane of the
@@ -936,7 +936,7 @@ jobs:
           set -euo pipefail
           cd saddle
           npm install --ignore-scripts --no-audit --no-fund
-          node scriptsbuildengine.ts
+          node scripts.ts buildengine
           test -f distpackage/index.js
           npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./distpackage/index.js --output-path ./distpackage/webpack --output-filename saddle.webpack.js --mode production --target node
           test -s distpackage/webpack/saddle.webpack.js
