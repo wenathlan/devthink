@@ -138,7 +138,6 @@
     },
   },
   "overrides": {
-    "@grpc/grpc-js": "1.14.5",
     "body-parser": "^2.4.0",
     "deepmerge-ts": "^8.0.0",
     "esbuild": "^0.28.2",
