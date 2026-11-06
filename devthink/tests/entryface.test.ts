@@ -160,8 +160,9 @@ describe("the chrome keys (the reference grammar)", () => {
     }
   });
 
-  it("the rail active pill rides the reference indigo-to-sky gradient", () => {
-    expect(saas).toContain("from-indigo-600 to-sky-500");
+  it("the rail active pill rides the warm family — the no-blue law the owner ordered", () => {
+    expect(saas).toContain("from-purple-600 to-rose-500");
+    expect(saas).not.toContain("from-indigo-600 to-sky-500");
   });
 
   it("the quick dock and the toast channel are restored", () => {
@@ -199,18 +200,19 @@ describe("the hero (the reference statement)", () => {
     expect(seed["intro.hero.keysecondary"]).toBe("Why DevThink?");
   });
 
-  it("the switch track rides the four reference stops — the multicolor drift is back", () => {
+  it("the switch track rides the warm stops — the blue head never returns", () => {
     const track = landingrule(".hero-inline-switch");
-    for (const hex of ["#60a5fa", "#a855f7", "#ec4899", "#f97316"]) {
-      expect(track, `the switch carries the reference stop ${hex}`).toContain(hex);
+    for (const hex of ["#a855f7", "#ec4899", "#f97316"]) {
+      expect(track, `the switch carries the warm stop ${hex}`).toContain(hex);
     }
+    expect(track, "the sky-blue head the owner reported never rides the switch").not.toContain("#60a5fa");
   });
 
-  it("the gaussian field rides the five reference radiais with the blur and the pulse", () => {
+  it("the gaussian field rides the five warm radiais with the blur and the pulse", () => {
     const field = landingrule(".hero-gaussian-shader");
     for (const hex of [
-      "rgba(56, 189, 248, 0.82)",
-      "rgba(99, 102, 241, 0.78)",
+      "rgba(139, 92, 246, 0.78)",
+      "rgba(244, 114, 182, 0.75)",
       "rgba(168, 85, 247, 0.78)",
       "rgba(236, 72, 153, 0.78)",
       "rgba(251, 146, 60, 0.82)",
@@ -446,8 +448,8 @@ describe("the login face (the contained shadow law)", () => {
     expect(card).toContain("backdrop-filter: blur(30px) saturate(1.35)");
     // the drop stays the contained two-step of the mica card — the wide
     // freehand drops of the first cut never return
-    expect(card).toContain("0 16px 40px rgb(0 0 0 / 22%)");
-    expect(card).not.toContain("0 12px 32px");
+    expect(card).toContain("0 12px 28px rgb(0 0 0 / 16%)");
+    expect(card).not.toContain("0 16px 40px");
     expect(card).not.toContain("0 32px 80px");
   });
 

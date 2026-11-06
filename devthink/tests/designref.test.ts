@@ -218,7 +218,11 @@ describe("the login contained shadow (the leak the owner reported stays dead)", 
   it("the sign-in card carries one contained drop and never the window token union", () => {
     const card = solcss.match(/^\.dtw-login__card \{[^}]*\}/m)?.[0] ?? "";
     expect(card, "the login card rule lives in the sheet").not.toBe("");
-    expect(card).toContain("0 16px 40px rgb(0 0 0 / 22%)");
+    expect(card).toContain("0 12px 28px rgb(0 0 0 / 16%)");
+    /* the tighter heal the owner ordered: the 0 16px 40px / 22% reach the
+     * first contained cut carried still read as a leaking wash on the
+     * translucent mica — the 0 12px 28px / 16% seat is the whole law now */
+    expect(card).not.toContain("0 16px 40px");
     /* the leaking signature: the doubled elevation that stacked the
      * window token union (the 0 32px 64px reach plus its 0 0 8px halo)
      * beyond the card edge — none of it may ride the mica card again */

@@ -478,15 +478,17 @@ describe("the login shadow law (the design band drop and the --win-shad-* tokens
     expect(card).toBeGreaterThan(-1);
     const cardblock = solcss.slice(card, card + 2400);
     expect(cardblock).toContain("box-shadow:");
-    // the owner's leak order (wave/firststation): the sign-in card once
-    // stacked the contained drop AND var(--win-shad-window) — the doubled
-    // elevation painted the reported leaking shadow. the card now answers
-    // the one contained two-step (the inset hairline plus the design band
-    // drop 0 16px 40px rgb(0 0 0 / 22%)) and the house window token stays
-    // on the shell windows that own it, never on the login card — the
-    // union of the two seats was the leak, the retired -18px drop stays
-    // forbidden
-    expect(cardblock).toContain("0 16px 40px rgb(0 0 0 / 22%)");
+    // the owner's leak order (wave/firststation, healed again on the
+    // lockfile-design wave): the sign-in card once stacked the contained
+    // drop AND var(--win-shad-window) — the doubled elevation painted the
+    // reported leaking shadow. the card now answers the one contained
+    // two-step (the inset hairline plus the tightened design band drop
+    // 0 12px 28px rgb(0 0 0 / 16%) — the 40px/22% reach still read as a
+    // wash on the translucent mica) and the house window token stays on
+    // the shell windows that own it, never on the login card — the union
+    // of the two seats was the leak, the retired drops stay forbidden
+    expect(cardblock).toContain("0 12px 28px rgb(0 0 0 / 16%)");
+    expect(cardblock).not.toContain("0 16px 40px");
     expect(cardblock).not.toContain("var(--win-shad-window)");
     expect(cardblock).not.toContain("0 16px 40px -18px");
   });

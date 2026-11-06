@@ -12130,7 +12130,7 @@ html[data-density="compact"] {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: rgb(255 255 255 / 62%);
+  color: rgb(255 255 255 / 82%);
   font: 400 12.5px var(--font-sans, var(--dt-sans));
   animation: dtwloginhint 2.6s var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1)) infinite;
 }
@@ -12140,7 +12140,7 @@ html[data-density="compact"] {
 @keyframes dtwloginhint {
   0%,
   100% {
-    opacity: 0.55;
+    opacity: 0.72;
   }
   50% {
     opacity: 1;
@@ -12180,7 +12180,7 @@ html[data-density="compact"] {
   padding: 0;
   border: 1px solid color-mix(in oklab, var(--color-veil) 16%, transparent);
   border-radius: var(--radius-2xl);
-  background-color: color-mix(in oklab, var(--color-night) 52%, transparent);
+  background-color: color-mix(in oklab, var(--color-night) 68%, transparent);
   background-image:
     radial-gradient(140% 100% at 50% 0%, color-mix(in oklab, var(--color-veil) 10%, transparent), transparent 58%),
     var(--noise);
@@ -12195,7 +12195,7 @@ html[data-density="compact"] {
    * window token; one contained drop is the whole law). */
   box-shadow:
     inset 0 1px 0 color-mix(in oklab, var(--color-veil) 24%, transparent),
-    0 16px 40px rgb(0 0 0 / 22%);
+    0 12px 28px rgb(0 0 0 / 16%);
   -webkit-backdrop-filter: blur(30px) saturate(1.35);
   backdrop-filter: blur(30px) saturate(1.35);
   animation: dtwloginpane 150ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
@@ -21041,6 +21041,18 @@ button.dtc-recents__row {
 [data-theme="light"] .dtw-login__failure {
   color: #b42318;
 }
+/* the entry-row light sync: the mask-ink field the dark rung carries
+ * paints a gray slab on the light card — the light seat answers the
+ * veil family the light face owns (the owner report: the password row
+ * read as a dark hole inside the light account card). */
+[data-theme="light"] .dtw-login__row {
+  background: color-mix(in oklab, var(--color-veil) 10%, transparent);
+  border-color: color-mix(in oklab, var(--color-veil) 22%, transparent);
+}
+[data-theme="light"] .dtw-login__row:focus-within {
+  background: color-mix(in oklab, var(--color-veil) 14%, transparent);
+  border-color: color-mix(in oklab, var(--color-veil) 34%, transparent);
+}
 [data-theme="light"] .dtw-login--signin .dtw-login__net,
 [data-theme="light"] .dtw-login--signin .dtw-login__power {
   color: rgb(23 26 35 / 88%);
@@ -22779,7 +22791,10 @@ button.dtc-recents__row {
 
 /* the hero engine switch: the four-stop drift of the reference */
 .hero-inline-switch {
-  background: linear-gradient(125deg, #60a5fa 0%, #a855f7 48%, #ec4899 78%, #f97316 100%);
+  /* the no-blue law of the hero inline switch: the gradient rides the
+   * warm family only (violet, pink, orange) — the sky-blue head the
+   * first cut carried never returns (the owner order: no blue glows). */
+  background: linear-gradient(125deg, #a855f7 0%, #ec4899 55%, #f97316 100%);
   box-shadow:
     0 12px 26px -6px rgba(168, 85, 247, 0.45),
     inset 0 2px 4px rgba(255, 255, 255, 0.55);
@@ -22802,9 +22817,12 @@ button.dtc-recents__row {
   }
 }
 .hero-gaussian-shader {
+  /* the five radiais answer the warm family only (violet, rose, purple,
+   * pink, orange) — the sky and indigo glows the owner reported never
+   * return (the no-blue-glow law of the hero field). */
   background:
-    radial-gradient(circle at 14% 70%, rgba(56, 189, 248, 0.82) 0%, transparent 48%),
-    radial-gradient(circle at 36% 80%, rgba(99, 102, 241, 0.78) 0%, transparent 50%),
+    radial-gradient(circle at 14% 70%, rgba(139, 92, 246, 0.78) 0%, transparent 48%),
+    radial-gradient(circle at 36% 80%, rgba(244, 114, 182, 0.75) 0%, transparent 50%),
     radial-gradient(circle at 58% 65%, rgba(168, 85, 247, 0.78) 0%, transparent 48%),
     radial-gradient(circle at 78% 75%, rgba(236, 72, 153, 0.78) 0%, transparent 48%),
     radial-gradient(circle at 92% 65%, rgba(251, 146, 60, 0.82) 0%, transparent 45%);

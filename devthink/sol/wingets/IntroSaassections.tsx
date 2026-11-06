@@ -96,7 +96,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
               className={`hero-switch-thumb block h-9 w-9 rounded-full transition-transform duration-300 sm:h-11 sm:w-11 ${agentsmode ? "translate-x-12 sm:translate-x-14" : "translate-x-0"}`}
             />
           </button>
-          <span className={agentsmode ? "text-slate-950" : "text-indigo-600"}>
+          <span className={agentsmode ? "text-slate-950" : "text-purple-600"}>
             {agentsmode ? hero.modeagents : hero.modestudios}
           </span>
         </h1>

@@ -147,7 +147,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   onClick={() => scrollto(item.id)}
                   aria-label={item.label}
                   aria-pressed={current}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,background-color,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-indigo-600 to-sky-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
+                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,background-color,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-purple-600 to-rose-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
                 >
                   {Glyph ? <Glyph className="h-4 w-4" aria-hidden="true" /> : null}
                   <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-medium-tier whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
