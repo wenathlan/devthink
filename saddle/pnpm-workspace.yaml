@@ -1,0 +1,120 @@
+# the vulnerability overrides of the family security gate: pnpm 12 reads
+# overrides here, the pnpm lockfile regenerates against these pins and the
+# OSV scan of the committed lockfile answers clean. The bun install of the
+# workbench reads the same pins from the package.json overrides block.
+overrides:
+  undici: ^7.30.1
+  zod: ^4.6.7
+  follow-redirects: ^1.16.2
+  glob: ^14.0.2
+  minimatch: ^11.0.1
+  fast-uri: ^3.1.9
+  body-parser: ^2.4.0
+  esbuild: ^0.28.2
+  deepmerge-ts: ^8.0.0
+  mysql2: ^3.23.1
+  uuid: ^11.1.1
+  postcss-selector-parser: ^7.1.6
+  source-map-js: 1.2.2
+  shell-quote: ^1.11.0
+  katex: ^0.18.2
+  proxy-addr: 2.0.8
+
+# the freshly published security fixes install before they age: pnpm 12
+# verifies the supply-chain age by default and these corrections ride the
+# exclusion so the family heals now, not after the waiting window.
+# the native build law (the node 26 v8 gate): ssh2's optional c++ binding
+# speaks the removed v8 context api (GetIsolate), so the gyp lottery dies
+# here in the seat pnpm 12 reads - the pure-js engine answers the lanes
+# and no install ever compiles the broken binding.
+neverBuiltDependencies:
+  - ssh2
+
+minimumReleaseAgeExclude:
+  - zod@4.6.6 || 4.6.7
+  - body-parser@2.4.0
+  - fast-uri@3.1.9
+  - follow-redirects@1.16.1
+  - undici@7.30.1
+  - react-hook-form@7.91.0
+  - '@fluentui/react-icons@2.0.345'
+  - lucide-react@1.65.0 || 1.67.0 || 1.68.0 || 1.70.0
+  - playwright@1.65.0
+  - playwright-core@1.65.0
+  - '@anthropic-ai/sdk@1.6.0'
+  - '@hookform/resolvers@7.0.3'
+  - '@tanstack/query-core@5.106.1'
+  - '@tanstack/react-query@5.106.1'
+  - openai@7.52.0
+  - '@wenathlan/argan@2.0.165'
+  - '@wenathlan/cadria@2.0.165'
+  - '@wenathlan/debonair@2.0.165'
+  - '@wenathlan/devthink@2.0.165'
+  - '@wenathlan/getry@2.0.165'
+  - '@wenathlan/saddle@2.0.165'
+  - '@wenathlan/vault@2.0.165'
+  - jsdom@31.0.0
+  - pnpm@12.18.0
+  - "@pnpm/exe.linux-x64@12.18.0"
+  - react-resizable-panels@4.15.3 || 4.16.0 || 4.16.1 || 4.17.0 || 4.18.0
+  - '@wenathlan/vault@2.0.153 || 2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
+  - '@wenathlan/getry@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
+  - hono@4.13.16
+  - '@wenathlan/cadria@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
+  - '@wenathlan/debonair@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
+  - '@hono/node-server@2.1.6'
+  - '@tailwindcss/node@4.3.4'
+  - '@tailwindcss/oxide-android-arm64@4.3.4'
+  - '@tailwindcss/oxide-darwin-arm64@4.3.4'
+  - '@tailwindcss/oxide-darwin-x64@4.3.4'
+  - '@tailwindcss/oxide-freebsd-x64@4.3.4'
+  - '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.4'
+  - '@tailwindcss/oxide-linux-arm64-gnu@4.3.4'
+  - '@tailwindcss/oxide-linux-arm64-musl@4.3.4'
+  - '@tailwindcss/oxide-linux-x64-gnu@4.3.4'
+  - '@tailwindcss/oxide-linux-x64-musl@4.3.4'
+  - '@tailwindcss/oxide-wasm32-wasi@4.3.4'
+  - '@tailwindcss/oxide-win32-arm64-msvc@4.3.4'
+  - '@tailwindcss/oxide-win32-x64-msvc@4.3.4'
+  - '@tailwindcss/oxide@4.3.4'
+  - '@tailwindcss/postcss@4.3.4'
+  - '@tailwindcss/vite@4.3.4'
+  - '@vitejs/plugin-react@6.2.1'
+  - '@vitest/mocker@5.1.0'
+  - '@vitest/spy@5.1.0'
+  - tailwindcss@4.3.4
+  - vitest@5.1.0
+  - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
+  - gsap@3.15.1
+  - '@biomejs/biome@2.6.5'
+  - '@biomejs/cli-android-arm64@2.6.5'
+  - '@biomejs/cli-android-x64@2.6.5'
+  - '@biomejs/cli-darwin-arm64@2.6.5'
+  - '@biomejs/cli-darwin-x64@2.6.5'
+  - '@biomejs/cli-linux-arm64-musl@2.6.5'
+  - '@biomejs/cli-linux-arm64@2.6.5'
+  - '@biomejs/cli-linux-x64-musl@2.6.5'
+  - '@biomejs/cli-linux-x64@2.6.5'
+  - '@biomejs/cli-win32-arm64@2.6.5'
+  - '@biomejs/cli-win32-x64@2.6.5'
+  - '@wenathlan/argan@2.0.155 || 2.0.165'
+  - '@anthropic-ai/sdk@1.6.0'
+  - '@hookform/resolvers@7.0.3'
+  - '@tanstack/query-core@5.106.1'
+  - '@tanstack/react-query@5.106.1'
+  - '@wenathlan/devthink@2.0.165'
+  - jsdom@31.0.0
+  - openai@7.52.0
+  - playwright-core@1.65.0
+  - playwright@1.65.0
+  - '@wenathlan/argan@2.0.166'
+  - '@wenathlan/cadria@2.0.166'
+  - '@wenathlan/cobaia@2.0.166'
+  - '@wenathlan/debonair@2.0.166'
+  - '@wenathlan/devthink@2.0.166'
+  - '@wenathlan/forge@2.0.166'
+  - '@wenathlan/foundry@2.0.166'
+  - '@wenathlan/getry@2.0.166'
+  - '@wenathlan/saddle@2.0.166'
+  - '@wenathlan/stealthhead@2.0.166'
+  - '@wenathlan/vault@2.0.166'
