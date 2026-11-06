@@ -51,6 +51,18 @@ minimumReleaseAgeExclude:
   - lucide-react@1.64.0 || 1.65.0 || 1.66.0 || 1.67.0 || 1.68.0
   - playwright@1.65.0
   - playwright-core@1.65.0
+  - '@anthropic-ai/sdk@1.6.0'
+  - '@hookform/resolvers@7.0.3'
+  - '@tanstack/query-core@5.106.1'
+  - '@tanstack/react-query@5.106.1'
+  - openai@7.52.0
+  - '@wenathlan/argan@2.0.165'
+  - '@wenathlan/cadria@2.0.165'
+  - '@wenathlan/debonair@2.0.165'
+  - '@wenathlan/devthink@2.0.165'
+  - '@wenathlan/getry@2.0.165'
+  - '@wenathlan/saddle@2.0.165'
+  - '@wenathlan/vault@2.0.165'
   - jsdom@31.0.0
   - lucide-react@1.69.0
   - pnpm@12.18.0
