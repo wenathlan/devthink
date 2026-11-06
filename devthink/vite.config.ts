@@ -413,6 +413,12 @@ export default defineConfig({
        * is never duplicated inside devthink, the engine answers from its one
        * owner (see engines.ts, the ownership manifest). */
       "@wenathlan/getry/thinking": path.resolve(import.meta.dirname, "../getry/thinking.ts"),
+      /** the pure validator bridge of the browser purity law: the os config
+       * face re-exports validateconfig through the published pure seat
+       * ("@wenathlan/getry/validate") so the web graph never loads the hono
+       * transport stack the server owner drags along — the specifier
+       * resolves to the sibling app's pure module (see getry/validate.ts). */
+      "@wenathlan/getry/validate": path.resolve(import.meta.dirname, "../getry/validate.ts"),
       /** the queue self-bridge (mirrored from vitest.config.ts): the getry
        * llm module walks the retry.backoff parser through the published
        * specifier and the build resolves it to this app's own source — the
