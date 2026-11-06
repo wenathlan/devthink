@@ -93,11 +93,20 @@ jobs:
             // the override union the manifestemplate wave stamps carries
             // the @-scoped names (@grpc/grpc-js and its seats) and the @
             // sign is a reserved YAML indicator a bare key may never open
-            // with — every name materializes as a quoted key so the
-            // workspace the audit folder reads stays valid YAML the same
-            // way the manifest itself stays valid JSON under its quoting.
+            // with — every name materializes as a quoted key, and the one
+            // object-valued seat (the xcode uuid pin) answers as the
+            // nested block the pnpm reader walks, so the workspace the
+            // audit folder reads stays valid YAML the same way the
+            // manifest itself stays valid JSON under its quoting.
             const lines = Object.keys(overrides).map(function (name) {
-              return "  " + JSON.stringify(name) + ": " + JSON.stringify(overrides[name]);
+              const value = overrides[name];
+              if (value !== null && typeof value === "object") {
+                const nested = Object.keys(value).map(function (key) {
+                  return "    " + JSON.stringify(key) + ": " + JSON.stringify(value[key]);
+                });
+                return "  " + JSON.stringify(name) + ":\n" + nested.join("\n");
+              }
+              return "  " + JSON.stringify(name) + ": " + JSON.stringify(value);
             });
             fs.writeFileSync("auditwork/pnpm-workspace.yaml", "overrides:\n" + lines.join("\n") + "\n");
           '
