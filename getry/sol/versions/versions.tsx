@@ -14,10 +14,13 @@ import { WindowConsoleRegular } from "@fluentui/react-icons";
  * rows (version tag as the giant display column, provider tag chip, state
  * as a live-dot, the seven routes as chips) with the canonical parser
  * pattern as the rail, and the quick-start calls below. every row reads
- * gateway.ts; nothing is invented.
+ * the db route table lane (listversionrows: the sqlite mirror of the
+ * gateway runtime, the family seed of gateway.ts under the static build);
+ * nothing is invented.
  */
 import { useEffect, useState } from "react";
-import { type GatewayVersion, listversions, liveversions, PARSERSTEPS, totalroutes } from "../../gateway";
+import { listversionrows } from "../../db";
+import { type GatewayVersion, PARSERSTEPS } from "../../gateway";
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast.tsx";
@@ -79,10 +82,20 @@ function Gaterow({ version }: { version: GatewayVersion }) {
  * @returns the versions element.
  */
 export default function Versions() {
-  const [versions] = useState<GatewayVersion[]>(() => listversions());
+  // the route table rides the db lane (listversionrows): the node runtime
+  // answers the sqlite mirror rows, the static build falls back to the
+  // family seed — the page never hardcodes a replica row.
+  const [versions, setVersions] = useState<GatewayVersion[]>([]);
 
   useEffect(() => {
     observeReveals();
+    let live = true;
+    void listversionrows().then((rows) => {
+      if (live) setVersions(rows);
+    });
+    return () => {
+      live = false;
+    };
   }, []);
 
   return (
@@ -118,11 +131,11 @@ export default function Versions() {
               </div>
               <div className="railmeta__row">
                 <span>{label("versions.glance.live")}</span>
-                <strong>{liveversions().length}</strong>
+                <strong>{versions.filter((version) => version.badge === "live").length}</strong>
               </div>
               <div className="railmeta__row">
                 <span>{label("versions.glance.routes")}</span>
-                <strong>{totalroutes()}</strong>
+                <strong>{versions.reduce((sum, version) => sum + version.routes.length, 0)}</strong>
               </div>
               <div className="railmeta__row">
                 <span>{label("versions.glance.mask")}</span>

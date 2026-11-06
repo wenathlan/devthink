@@ -1,4 +1,4 @@
-# vault 2.0.162 — THE ENGINE CONTAINER FILE
+# vault 2.0.163 — THE ENGINE CONTAINER FILE
 #
 # The family container doctrine in the engine shape: the container IS the
 # vault engine, not a static mirror of the source tree. Stage one (solbuild)
@@ -24,7 +24,7 @@
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
 
-ARG VAULT_VERSION=2.0.162
+ARG VAULT_VERSION=2.0.163
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -40,7 +40,7 @@ RUN pnpm build \
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS enginedeps
 
-ARG VAULT_VERSION=2.0.162
+ARG VAULT_VERSION=2.0.163
 
 # the production-only dependency tree of the engine: better-sqlite3
 # compiles against the same alpine toolchain the solbuild leg installs, so
@@ -56,7 +56,7 @@ RUN apk add --no-cache python3 make g++ \
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797
 
-ARG VAULT_VERSION=2.0.162
+ARG VAULT_VERSION=2.0.163
 
 LABEL org.opencontainers.image.title="vault" \
       org.opencontainers.image.description="vault — the storage engine of the platform: every app imports the storage from it, and only from it." \

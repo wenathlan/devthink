@@ -331,6 +331,11 @@ async function runreleasewalk(): Promise<void> {
     ["../getry/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
     ["../getry/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
     ["../cobaia/package.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    /* The 2.0.163 cobaia tauri stamp heal: the monetization envelope joined
+       the package.json lockstep at the 2.0.127 root wave but its tauri
+       manifest never rode the 2.0.128 tauri stamp wave — the desktop
+       packaging answered a version the release never shipped. */
+    ["../cobaia/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
     [
       "../saddle/package.json",
       (content) =>
@@ -511,6 +516,86 @@ async function runreleasewalk(): Promise<void> {
             `# debonair ${version} — THE SITE CONTAINER FILE`,
           )
           .replace(/ARG DEBONAIR_VERSION=[0-9][0-9A-Za-z.-]*/, `ARG DEBONAIR_VERSION=${version}`),
+    ],
+    /* The 2.0.163 container stamp completeness wave (the pr14 lockstep fix:
+       the seven site and engine container files the walk never carried are
+       the drift the owner's law names — cobaia, forge, foundry, getry,
+       stealthhead (the site seats) and saddle, vault (the engine seats)
+       answered the 2.0.134 literals while every sibling carrier walked the
+       release rungs, so the container build defaults drifted twenty-eight
+       rungs behind the envelopes the registry lanes publish. Every entry
+       walks the same two stamps the argan seat established (the header
+       literal and the ARG default the lanes override at build time), the
+       engine seats carrying their ENGINE header form. */
+    [
+      "../cobaia/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# cobaia [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+            `# cobaia ${version} — THE SITE CONTAINER FILE`,
+          )
+          .replace(/ARG COBAIA_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG COBAIA_VERSION=${version}`),
+    ],
+    [
+      "../forge/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# forge [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+            `# forge ${version} — THE SITE CONTAINER FILE`,
+          )
+          .replace(/ARG FORGE_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG FORGE_VERSION=${version}`),
+    ],
+    [
+      "../foundry/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# foundry [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+            `# foundry ${version} — THE SITE CONTAINER FILE`,
+          )
+          .replace(/ARG FOUNDRY_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG FOUNDRY_VERSION=${version}`),
+    ],
+    [
+      "../getry/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# getry [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+            `# getry ${version} — THE SITE CONTAINER FILE`,
+          )
+          .replace(/ARG GETRY_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG GETRY_VERSION=${version}`),
+    ],
+    [
+      "../stealthhead/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# stealthhead [0-9][0-9A-Za-z.-]* — THE SITE CONTAINER FILE/,
+            `# stealthhead ${version} — THE SITE CONTAINER FILE`,
+          )
+          .replace(/ARG STEALTHHEAD_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG STEALTHHEAD_VERSION=${version}`),
+    ],
+    [
+      "../saddle/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# saddle [0-9][0-9A-Za-z.-]* — THE ENGINE CONTAINER FILE/,
+            `# saddle ${version} — THE ENGINE CONTAINER FILE`,
+          )
+          .replace(/ARG SADDLE_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG SADDLE_VERSION=${version}`),
+    ],
+    [
+      "../vault/Dockerfile",
+      (content) =>
+        content
+          .replace(
+            /# vault [0-9][0-9A-Za-z.-]* — THE ENGINE CONTAINER FILE/,
+            `# vault ${version} — THE ENGINE CONTAINER FILE`,
+          )
+          .replace(/ARG VAULT_VERSION=[0-9][0-9A-Za-z.-]*/g, `ARG VAULT_VERSION=${version}`),
     ],
     ["devthinkcli.cs", (content) => content.replace(/Version = "[0-9A-Za-z.-]+"/, `Version = "${version}"`)],
     [

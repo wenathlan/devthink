@@ -30,7 +30,7 @@
  * through the published specifier — never duplicated beside the gateway. */
 import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./auth.js";
 import { getsessionmessages, savemsg } from "@wenathlan/devthink/storage";
-import { listlevels } from "@wenathlan/getry/thinking";
+import { listlevels, TWOCALLSTHRESHOLD, twocallspattern } from "@wenathlan/getry/thinking";
 import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
 import type {
   gatewayconfig,
@@ -991,8 +991,11 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
     const level = autothinking(body["thinking"] ?? body["reasoning_effort"]);
     const thinkingbudget = budgets[level] ?? 0;
     const responsemax = Number(body["max_tokens"] ?? cfg.metamodel.maxoutput ?? 32768);
-    const threshold = cfg.thinking?.twocalls?.threshold ?? 98304;
-    const twocalls = thinkingbudget + responsemax > threshold || level !== "none";
+    const threshold = cfg.thinking?.twocalls?.threshold ?? TWOCALLSTHRESHOLD;
+    // the two-calls verdict answers from the thinking seat (the one owner
+    // of the pattern math — the config budget override rides in, the
+    // ladder answers when no map overrides it)
+    const twocalls = twocallspattern({ level, responsemax, threshold, budget: thinkingbudget });
 
     try {
       if (twocalls) {

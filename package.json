@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.162",
+  "version": "2.0.163",
   "private": true,
   "description": "DevThink monorepo envelope. The operating system and superplatform; the complete tree lives here: devthink (the OS), argan, cadria, debonair, stealthhead, forge, foundry, vault, getry (the gateway) and saddle (the sandbox engine), plus cobaia (the monetization surface). Features of the retired apps (bob, gl, owni, extension, etc.) are embedded into the family.",
   "repository": {
@@ -63,6 +63,7 @@
     "gsap": "^3.15.1",
     "hono": "^4.13.16",
     "ink": "^7.1.1",
+    "js-yaml": "^5.5.0",
     "lucide-react": "^1.68.0",
     "motion": "^12.43.0",
     "react": "^19.3.1",

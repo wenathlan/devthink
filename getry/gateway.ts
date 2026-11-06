@@ -6,8 +6,8 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import type { gatewaydefinition, thinkinglevel } from "./types.ts";
-import { listlevels } from "@wenathlan/getry/thinking";
+import type { gatewaydefinition, modeldef, thinkinglevel } from "./types.ts";
+import { listlevels, providerchain, type thinkingproviderrow } from "@wenathlan/getry/thinking";
 
 /**
  * gateway.ts — the gateway versions domain of getry (root layer).
@@ -145,6 +145,36 @@ export function totalroutes(): number {
  */
 export function liveversions(): GatewayVersion[] {
   return GATEWAYVERSIONS.filter((version) => version.badge === "live");
+}
+
+/**
+ * builds the cross-provider thinking chain for one level over the catalog
+ * this module owns: every gateway version's provider row (the
+ * GATEWAYVERSIONS lifecycle badges) wired with the model rows of the
+ * matching gatewayViewConfig version, routed through the thinking seat's
+ * providerchain — the tier routing (the level selects the model tier), the
+ * budget fit and the live-first order all answer from the seat (the one
+ * owner of the routing math), the rows from this catalog (the one owner of
+ * the data). the family consumers (devthink and siblings) call this
+ * through the @wenathlan/getry/gatewayconfig face and never rebuild the
+ * chain themselves.
+ *
+ * @law the level routes the chain — the data rides the catalog rows, the
+ *      math rides the thinking seat, nothing duplicates
+ * @param level the thinking level to route.
+ * @returns the ordered provider/model candidates (live providers first,
+ *          tier-exact models first within each provider).
+ */
+export function thinkingchain(level: thinkinglevel): { provider: string; model: modeldef }[] {
+  const catalog: thinkingproviderrow[] = GATEWAYVERSIONS.map((version) => ({
+    provider: version.provider,
+    badge: version.badge,
+    models: gatewayViewConfig.versions[version.v]?.models ?? [],
+  }));
+  return providerchain(catalog, level).map((candidate) => ({
+    provider: candidate.provider,
+    model: candidate.model as modeldef,
+  }));
 }
 
 /* ===== block: gatewayconfig ===== */

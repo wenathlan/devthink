@@ -196,6 +196,7 @@
     "README.md",
     "docs",
     "tests",
+    "cli.ts",
     "analyze.ts",
     "hpss.ts",
     "ingest.ts",

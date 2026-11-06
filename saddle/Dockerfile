@@ -1,4 +1,4 @@
-# saddle 2.0.162 — THE ENGINE CONTAINER FILE
+# saddle 2.0.163 — THE ENGINE CONTAINER FILE
 #
 # THE FAMILY CONTAINER DOCTRINE, THE SADDLE SHAPE: one versioned container
 # per engine, built like the site homes (argan, cadria) build theirs — a
@@ -118,7 +118,7 @@ ARG NODE_BASE_DIGEST
 # ===== stage: solbuild — the locked npm tree and the console spa =====
 FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
-ARG SADDLE_VERSION=2.0.162
+ARG SADDLE_VERSION=2.0.163
 
 WORKDIR /app
 
@@ -146,7 +146,7 @@ RUN npm run web:build:pages \
 # ===== stage: base — the hardened runtime floor every profile shares =====
 FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
-ARG SADDLE_VERSION=2.0.162
+ARG SADDLE_VERSION=2.0.163
 # the revision stamp the devthink container carries (DEVTHINK_REVISION
 # there): the publish legs pass the release sha at build time and the
 # revision label below declares the default-unknown local shape.

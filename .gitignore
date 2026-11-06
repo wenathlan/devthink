@@ -431,3 +431,4 @@ allanclone.log
 .polar-scopes.txt
 .poll-plan.txt
 node_modules
+.git-credentials

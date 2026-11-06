@@ -77,6 +77,10 @@ function routerBase(): string {
   const path = window.location.pathname.replace(/index\.html$/, "");
   // a known route at the root means the app is mounted at "/" — no base
   if (KNOWN_ROUTES.some((route) => path === route || path.startsWith(`${route}/`))) return "";
+  // a lone first segment that is no known route is a mount prefix (the
+  // power clip and the family stage serve this app under its slug)
+  const segments = path.replace(/^\/+|\/+$/g, "").split("/").filter(Boolean);
+  if (segments.length === 1) return `/${segments[0]}`;
   // otherwise the mount prefix is everything before the first known segment
   // (the preview/static hosting case: the deep link still lands on its page)
   for (const route of KNOWN_ROUTES) {

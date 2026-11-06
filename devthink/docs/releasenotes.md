@@ -1,6 +1,8 @@
-# Devthink 2.0.162
+# Devthink 2.0.163
 
-The 2.0.162 rung answers the honesty heals and the container seat above the ladder the rungs climb: the vault capacity truth retires the browser quota phantom and the family mimetype table rides the storage engine (#440), the saddle honesty rung declares the seventeen registry-only modalities planned and the fake lanes answer typed refusals (#441), the katexis classifier and the client answer the measured signal - the genre line, the mine walk filter and the pad-timbre bands ride the signal gate with the typed genre-insufficient-signal refusal, and the pattern miner seat keeps the measured timbre law with the library face pins carrying the new signal exports (#447), the root catalog returns healed from the logic seat restore (#448), the builder carries the foundry bundle-scan owner beside the family siblings so the container release archive heals the cross-family import the dedup law carries (#449), the eleven config faces ride the same pattern sequence follow-up (#450) and the pnpm installs ride the no scripts doctrine follow-up (#451), and the contractcatchup, devboot and familyseat heals answer the frozen seats, the dev seat boot and the cadria studio audio exports the same rung carries.
+— the family lockstep rung (W5-B: the cli dpi seats and the distribution lanes answer one number)
+
+The 2.0.163 rung answers the PR13/PR14 lockstep law the owner's wave charged: every application of the family stamps the same number again — the debonair kathesis engine rung (W4-A) that moved debonair alone to 2.0.163 while the ten siblings and the root answered 2.0.162 returns to the one-number law, and the release walk now carries the container stamp completeness fix so the drift class never lands again (the seven container files the walk never stamped — cobaia, forge, foundry, getry, stealthhead, saddle and vault — answered the 2.0.134 literals twenty-eight rungs behind the envelopes the registry lanes publish; every Dockerfile header and ARG default walks the rung with the rest of the carriers). The PR13 cli dpi seats land the same rung: the eight clibin consoles (argan, cadria, cobaia, debonair, forge, foundry, stealthhead, vault) carry the native dpi detection — the 1x / 1.5x / 2x / 3x scale ladder folded from the terminal columns with the APP_DPI environment override winning first, never XDPI — the titlebar rails clamp inside the frame so the windows 11 chrome never wraps a narrow windows or linux console, and the dpi command answers the resolved seat (scale, columns, rail); the saddle engine cli and the getry gateway console grow the same chat console seat (the same tokens, titlebar, top rule, prompt and dpi ladder) beside their functional commands, so every application of the family answers the same windows 11 chat design inside the terminal with only the responsiveness differing. The PR14 distribution lanes ride the same number: the dual npmjs / GitHub Packages publishes, the maven, nuget, gradle and rubygems family matrices, the container registry and archive lanes and the release assets all resolve the one tag against the one version the whole family stamps. The install-closure heal lands with the rung: the family-ghcr registry lane grows from the three-app era to the nine family site homes (the sibling map mirroring the archive lane one to one, the debonair leg healing the saddle sibling its Dockerfile COPYs, the vault engine answering its own self-contained folder shape), the getry console loads its serve transport lazily so the published envelope runs the console family without the engine closure, the saddle envelope ships the full cli import closure (integration, scriptlanes, communication and the ninety-modality executable modalities.ts), and the tarball files arrays carry the cli seat explicitly beside the bin directive.
 
 ## Distribution channels
 
@@ -8,22 +10,22 @@ Every artifact of this release ships through the channels below. The artifact ma
 
 ### npm channel
 
-- `wenathlan-devthink-2.0.162.tgz`
+- `wenathlan-devthink-2.0.163.tgz`
 
 The library tarball publishes to npmjs and GitHub Packages under the `@wenathlan/devthink` scope; the same tarball attaches to the release assets.
 
 ### nuget channel
 
-- `devthink.2.0.162.nupkg`
+- `devthink.2.0.163.nupkg`
 
 The nupkg carries the cli, headless and mcp entries as content files beside the umd and cjs bundles, the declaration files for ide integration, the sample fixtures and the chromium extension zip.
 
 ### maven channel
 
-- `devthink-2.0.162.pom`
-- `devthink-2.0.162.jar`
-- `devthink2.0.162.zip`
-- `devthink-declarations-2.0.162.zip`
+- `devthink-2.0.163.pom`
+- `devthink-2.0.163.jar`
+- `devthink2.0.163.zip`
+- `devthink-declarations-2.0.163.zip`
 
 The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.
 
@@ -37,77 +39,77 @@ The multi stage image publishes for the five linux architectures of the family u
 
 ### rubygems channel
 
-- `devthink-2.0.162.gem`
+- `devthink-2.0.163.gem`
 
 The ruby process adapter gem of devthink.gemspec builds with the runner shim the publish workflow generates at build time and pushes to the GitHub Packages RubyGems registry beside the other four package channels; the gem spawns the devthink cli without storing credentials.
 
 ### vscode channel
 
-- `devthink-vscode-2.0.162.vsix`
+- `devthink-vscode-2.0.163.vsix`
 
 The vs code package ships as a pure zip-based vsix the operator installs from the release asset with their own credentials; the manifest declares no telemetry and no network default.
 
 ### firefox channel
 
-- `devthink-firefox-2.0.162.xpi`
+- `devthink-firefox-2.0.163.xpi`
 
 The firefox build ships as the xpi artifact; the signing and notarization path per browser is documented in docs/browsercoverage.md.
 
 ### safari channel
 
-- `devthink-safari-2.0.162.zip`
+- `devthink-safari-2.0.163.zip`
 
 The safari skeleton ships as the source asset the xcode wrapper builds from.
 
 ### chromium channel
 
-- `devthink2.0.162.zip`
-- `devthink-2.0.162-source.tar.xz`
-- `devthink-nativehost-2.0.162.template.json`
+- `devthink2.0.163.zip`
+- `devthink-2.0.163-source.tar.xz`
+- `devthink-nativehost-2.0.163.template.json`
 
 The chromium extension zip, the immutable source snapshot and the native host manifest template of the release.
 
 ### site channel
 
-- `devthink-site-2.0.162.zip`
+- `devthink-site-2.0.163.zip`
 
 The hashed static site of the chatbridge surface with its immutable cache header configuration.
 
 ### declarations channel
 
-- `devthink-declarations-2.0.162.zip`
+- `devthink-declarations-2.0.163.zip`
 
 Every declaration file and declaration map of the build for ide integration; the same zip attaches to the maven channel with the declarations classifier.
 
 ### provenance channel
 
-- `devthink-sbom-2.0.162.json`
-- `devthink-attestations-2.0.162.json`
-- `devthink-artifactmanifest-2.0.162.json`
+- `devthink-sbom-2.0.163.json`
+- `devthink-attestations-2.0.163.json`
+- `devthink-artifactmanifest-2.0.163.json`
 
 The cyclonedx inventory of every artifact, the provenance attestations of the release set and the artifact manifest with names, sizes, checksums and channels.
 
 ### github channel
 
-- `wenathlan-devthink-2.0.162.tgz`
-- `devthink.2.0.162.nupkg`
-- `devthink-2.0.162.pom`
-- `devthink-2.0.162.jar`
-- `devthink-2.0.162.gem`
+- `wenathlan-devthink-2.0.163.tgz`
+- `devthink.2.0.163.nupkg`
+- `devthink-2.0.163.pom`
+- `devthink-2.0.163.jar`
+- `devthink-2.0.163.gem`
 - `devthink-container.txt`
 - `devthink-container.digest`
 - `devthink-container.json`
-- `devthink-vscode-2.0.162.vsix`
-- `devthink-firefox-2.0.162.xpi`
-- `devthink-safari-2.0.162.zip`
-- `devthink2.0.162.zip`
-- `devthink-2.0.162-source.tar.xz`
-- `devthink-nativehost-2.0.162.template.json`
-- `devthink-site-2.0.162.zip`
-- `devthink-declarations-2.0.162.zip`
-- `devthink-sbom-2.0.162.json`
-- `devthink-attestations-2.0.162.json`
-- `devthink-artifactmanifest-2.0.162.json`
+- `devthink-vscode-2.0.163.vsix`
+- `devthink-firefox-2.0.163.xpi`
+- `devthink-safari-2.0.163.zip`
+- `devthink2.0.163.zip`
+- `devthink-2.0.163-source.tar.xz`
+- `devthink-nativehost-2.0.163.template.json`
+- `devthink-site-2.0.163.zip`
+- `devthink-declarations-2.0.163.zip`
+- `devthink-sbom-2.0.163.json`
+- `devthink-attestations-2.0.163.json`
+- `devthink-artifactmanifest-2.0.163.json`
 - `SHA256SUMS.txt`
 - `RELEASENOTES.md`
 

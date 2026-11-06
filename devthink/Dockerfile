@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.162 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.163 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -111,7 +111,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.162
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.163
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -153,7 +153,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.162
+#     ghcr.io/wenathlan/devthink:2.0.163
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -377,6 +377,17 @@ COPY saddle /saddle
 # of the fifteen engines reads the field that grows without limit).
 COPY package.json /package.json
 
+# the sibling dependency law (the checkout geometry the suite answers): the
+# vitest bridges resolve @wenathlan/getry/server onto the sibling source at
+# /getry, and that source imports its own runtime graph (hono,
+# @hono/node-server) the devthink install never carries — the runner lanes
+# install the sibling beside the app the same way, so the builder does too
+# (frozen, scripts off: the pure hono graph never rides a native build).
+# the foundry and saddle sources the bridges pull are dependency-pure (the
+# scanner and the registry import nothing outside the family), so getry is
+# the only sibling the install owes.
+RUN cd /getry && bun install --frozen-lockfile --ignore-scripts
+
 # the library build: every build target the publishing pipeline ships — the
 # esm/cjs/neutral library bundles, the cli, the headless entry, the mcp
 # server, the relay, the extension surface with its manifest and icons, the
@@ -484,7 +495,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.162
+ARG DEVTHINK_VERSION=2.0.163
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -548,7 +559,7 @@ RUN set -eux; \
 # the file)
 # ---------------------------------------------------------------------------
 FROM debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4 AS runtime
-ARG DEVTHINK_VERSION=2.0.162
+ARG DEVTHINK_VERSION=2.0.163
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball
 # the nodefetch stage extracted lands under /usr/local (bin/node, the npm

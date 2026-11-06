@@ -2112,7 +2112,6 @@ jobs:
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
-          VERSION="${{ steps.release.outputs.version }}"
           gh release upload "$RELEASE_TAG" devthink/gradlerelease/* --clobber
 
   family-gradle:
@@ -2660,13 +2659,17 @@ jobs:
 
   family-ghcr:
     needs: release-approval
-    # the family container lane: the three site homes (argan, cadria,
-    # debonair) publish one versioned static container each beside the
-    # application image. stealthhead rides the registry lanes only until
-    # its site surface lands - the folder carries no site/ yet, so a
-    # static container would serve nothing. The publish state check and
-    # the latest alias mirror the application lane; the static COPY build
-    # answers every architecture the multi-arch base image publishes
+    # the family container registry lane: every family site home (argan,
+    # cadria, cobaia, debonair, forge, foundry, getry, stealthhead and the
+    # self-contained vault engine) publishes one versioned static container
+    # each beside the application image - the 2.0.163 registry sync wave
+    # retires the three-app era the lane carried (the "no site/ yet" gap
+    # closed when the family-container archive lane began proving every
+    # build; the registry lane and the archive lane now answer the same
+    # nine legs, the os rides its own ghcr lane and the saddle engine
+    # answers the vhe lanes of the saddle block). The publish state check
+    # and the latest alias mirror the application lane; the static COPY
+    # build answers every architecture the multi-arch base image publishes
     # without an emulator.
     if: >-
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
@@ -2681,7 +2684,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [argan, cadria, debonair]
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2778,10 +2781,18 @@ jobs:
         # the app. The app-only context the lane staged before left the
         # label store bridge unloadable inside the container and the build
         # died on the vite step ([UNLOADABLE_DEPENDENCY] Could not load
-        # ../vault/labelstore.ts) - the vault sibling stages for all three
-        # site homes, not a per-app case entry, because the copy law is the
+        # ../vault/labelstore.ts) - the vault sibling stages for every
+        # site home, not a per-app case entry, because the copy law is the
         # one consumption every family app shares.
-        if: steps.published.outputs.skip != 'true'
+        #
+        # The 2.0.163 registry sync wave: the sibling map below mirrors the
+        # family-container archive lane case map one to one (the map the
+        # archive lane proved over every release since 2.0.161), and the
+        # debonair leg heals the saddle sibling its Dockerfile COPYs that
+        # the three-app era never staged. The vault engine skips the staged
+        # shape entirely - its container builds from its own self-contained
+        # folder the archive lane proved (the resolve-shape step below).
+        if: steps.published.outputs.skip != 'true' && matrix.package != 'vault'
         shell: bash
         run: |
           set -euo pipefail
@@ -2800,6 +2811,12 @@ jobs:
                  familybuildctx/vault/dist \
                  familybuildctx/vault/build
           case "${{ matrix.package }}" in
+            argan|cobaia|stealthhead)
+              # the copy-law pair the base staging already answers (app +
+              # vault): these site homes consume no further sibling
+              # through the vite aliases, so the case registers the shape
+              # the map documents for each leg
+              ;;
             cadria)
               # the engine-ownership sibling map: cadria resolves the
               # debonair audio engine through the ../debonair vite
@@ -2815,23 +2832,65 @@ jobs:
             debonair)
               # the engine-ownership sibling map is symmetric: debonair
               # resolves the cadria synth palette through the
-              # ../cadria/synthpalette vite aliases (coverpalette.ts), so
-              # the cadria sibling rides the context whole (sources only -
-              # the build never installs it, the aliases read the .ts
-              # files directly) the same way the cadria lane stages the
-              # debonair audio engine above
-              mkdir -p familybuildctx/cadria
+              # ../cadria/synthpalette vite aliases (coverpalette.ts) and
+              # the saddle workload law through the ../saddle ones, so both
+              # siblings ride the context whole (sources only - the build
+              # never installs them, the aliases read the .ts files
+              # directly) the same way the cadria lane stages the debonair
+              # audio engine above
+              mkdir -p familybuildctx/cadria familybuildctx/saddle
               cp -a cadria/. familybuildctx/cadria/
+              cp -a saddle/. familybuildctx/saddle/
               rm -rf familybuildctx/cadria/node_modules \
                      familybuildctx/cadria/dist \
-                     familybuildctx/cadria/build
+                     familybuildctx/cadria/build \
+                     familybuildctx/saddle/node_modules \
+                     familybuildctx/saddle/dist \
+                     familybuildctx/saddle/build
+              ;;
+            forge|foundry)
+              # the vault copy law plus the saddle engine ownership: the
+              # modes and sandbox bridges the ../saddle aliases own (the
+              # map the archive lane proved for both runner homes)
+              mkdir -p familybuildctx/saddle
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/saddle/node_modules \
+                     familybuildctx/saddle/dist \
+                     familybuildctx/saddle/build
+              ;;
+            getry)
+              # the gateway sibling map: the vault copy law, the saddle
+              # modality registry, the devthink config bridges and the
+              # debonair route table all ride the context whole (the map
+              # the archive lane proved for the gateway home)
+              mkdir -p familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
+              cp -a saddle/. familybuildctx/saddle/
+              cp -a devthink/. familybuildctx/devthink/
+              cp -a debonair/. familybuildctx/debonair/
+              rm -rf familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
+                     familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
+                     familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
               ;;
           esac
+      - name: resolve the context shape
+        # the vault engine owns its own closure: its container builds from
+        # its own folder (the self-contained shape the archive lane proved)
+        # while every site home answers the staged familybuildctx shape
+        id: resolve-context
+        if: steps.published.outputs.skip != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.package }}" = "vault" ]; then
+            echo "context=./vault" >> "$GITHUB_OUTPUT"
+          else
+            echo "context=familybuildctx" >> "$GITHUB_OUTPUT"
+          fi
       - name: build and push the site container
         if: steps.published.outputs.skip != 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          context: familybuildctx
+          context: ${{ steps.resolve-context.outputs.context || 'familybuildctx' }}
           file: ./${{ matrix.package }}/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
@@ -3768,7 +3827,14 @@ jobs:
             const splitrelease = [
               "    splits {",
               "        abi {",
-              "            enable true",
+              // the bundle collision law (issuetracker.google.com/402800800):
+              // a bundle task never rides the same invocation as the abi
+              // splits — the shrunk-resources stage answers one file per
+              // split and buildReleasePreBundle refuses the many — so the
+              // splits answer the assemble invocations alone and the bundle
+              // lane runs its own invocation with the splits asleep (the
+              // per-abi apks, the universal apk and the aab all ship)
+              "            enable gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27assemble\x27) } && !gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27bundle\x27) }",
               "            reset()",
               "            include \x27armeabi-v7a\x27, \x27arm64-v8a\x27, \x27x86\x27, \x27x86_64\x27",
               "            universalApk true",
@@ -3844,7 +3910,12 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
+          # the bundle collision law rides the invocation split: the abi
+          # splits answer the assemble lane alone (per-abi apks beside the
+          # universal), and the bundle lane runs its own invocation with
+          # the splits asleep — one shrunk-resources file, the aab ships
+          ./gradlew --no-daemon --stacktrace assembleRelease
+          ./gradlew --no-daemon --stacktrace bundleRelease
 
       - name: collect android artifacts
         shell: bash
@@ -5154,6 +5225,11 @@ jobs:
             "wasm32 target - wasm wasm32-wasip1 arch_target_not_container" \
             "darwin-arm64-v8 linux/arm64/v8 arm64 darwin darwin-arm64-v8 carried" \
             "windows-x64-gnu target - windows win32-x64-gnu arch_target_not_container"; do
+            # the platform column of the seat table is the positional
+            # placeholder the manifest grammar stamps "container" for - the
+            # manifest output never reads it, so shellcheck stays quiet on
+            # the deliberately unused field.
+            # shellcheck disable=SC2034
             read -r arch platform dockerarch os target availability <<< "${entry}"
             printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "container",\n  "architecture": "%s",\n  "dockerarch": "%s",\n  "os": "%s",\n  "target": "%s",\n  "availability": "%s",\n  "image": "%s:%s",\n  "dockerfile": "%s/Dockerfile",\n  "signing": "caller-owned"\n}\n' \
               "$version" "$app" "$arch" "$dockerarch" "$os" "$target" "$availability" "$image" "$version" "$app" \
@@ -5343,7 +5419,12 @@ jobs:
           const crypto = require("node:crypto");
           const version = process.env.VERSION;
           const stage = "release-family";
-          const source = "devthink/docs/mimetypes.txt";
+          // the tracked registry the storage engine owns (the rootclean2
+          // fold retired the old devthink/docs/mimetypes.txt seat; the
+          // family mimetype table rides vault/mime.types since the
+          // capacity-truth wave — the IANA, mime-db, apache, nginx, tika,
+          // rust, go and family catalogs the generated corpus unites)
+          const source = "vault/mime.types";
           const lines = fs.readFileSync(source, "utf8").split("\n");
           const counts = new Map();
           let entries = 0;
@@ -6875,7 +6956,7 @@ jobs:
           cid="$(docker run -d --rm --platform linux/amd64 "${image_ref}")"
           trap 'docker rm -f "${cid}" >/dev/null 2>&1 || true' EXIT
           up=1
-          for i in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             if docker exec "${cid}" node -e "fetch('http://127.0.0.1:8080/health').then((r)=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))" 2>/dev/null; then
               up=0
               break

@@ -8,7 +8,10 @@
  * @module vault/cli
  * @family wave/clibin
  * @law same design as web / desktop, difference only responsiveness / DPI
- * @seat 2026 · rung 2.0.157 · hierarchical JSDoc, tokens/flags, no hardcoded
+ * @dpi native detection, never XDPI — the 1x / 1.5x / 2x / 3x scale ladder
+ *   folds the chrome to the terminal cell grid (windows terminal, conpty
+ *   and every linux pty), the <APP>_DPI environment override wins first.
+ * @seat 2026 · rung 2.0.163 · hierarchical JSDoc, tokens/flags, no hardcoded
  *   data — the version is read from package.json at runtime and the engine
  *   one-liner is quoted from the app docs.
  * @runtime node strips the types; the shebang hands the file to the runtime
@@ -43,15 +46,55 @@ const APP = "vault" as const;
 const ENGINE =
   "deployable clone of storage only (the network DB) — keeps every site database and receives the data backups (README)" as const;
 
-/** the titlebar bar: the app name on the left rail, the window controls on the right — the windows 11 chrome inside the terminal. */
+/** the titlebar bar: the app name on the left rail, the window controls on the right — the windows 11 chrome inside the terminal, the rail folded through the dpi frame. */
 function titlebar(): string {
-  return `${ACCENT}┌ ${APP} ─ cli${RESET}  ${INK}${BAR.repeat(24)} ─ ❐ ✕${RESET}`;
+  return `${ACCENT}┌ ${APP} ─ cli${RESET}  ${INK}${BAR.repeat(FRAME.rail)} ─ ❐ ✕${RESET}`;
 }
 
-/** the top rule: the 28px divider of the web surface folded to one terminal line. */
+/** the top rule: the 28px divider of the web surface folded to one terminal line, scaled by the dpi seat. */
 function toprule(): string {
-  return `${FOCUS}${BAR.repeat(3)} ${APP} ${BAR.repeat(3)}${RESET}`;
+  const rail = Math.max(3, Math.round(3 * FRAME.scale));
+  return `${FOCUS}${BAR.repeat(rail)} ${APP} ${BAR.repeat(rail)}${RESET}`;
 }
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 1b: the dpi conversion — native detection, the 1x / 1.5x / 2x / 3x scale ladder and the terminal clamp (the pr13 law: DPI never XDPI — the same design as the web / desktop surface, only the responsiveness folds to the cell grid of the terminal, inside windows terminal and every linux pty). */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** the scale ladder the native detection resolves (the automatic scaling law). */
+const SCALESTEPS = [1, 1.5, 2, 3] as const;
+
+/** the dpi frame the chrome renders inside: the resolved scale seat, the terminal columns and the rail length the titlebar draws. */
+interface dpiframe {
+  /** the scale seat of the ladder (1, 1.5, 2 or 3). */
+  scale: number;
+  /** the columns the terminal answers (windows terminal, conpty, xterm, tmux — every pty reports them). */
+  columns: number;
+  /** the titlebar rail length in cells (the pixel rail folded to the grid and clamped so the line never wraps). */
+  rail: number;
+}
+
+/** resolves the dpi frame natively, zero dependencies: the columns come from stdout (every windows and linux terminal answers them), the scale seat from the column ladder — the explicit <APP>_DPI environment override wins first (the native scaling knob) — and the rail clamps inside the frame so the chrome never wraps a narrow console. */
+function detectdpiframe(): dpiframe {
+  const columns = Number.isFinite(stdout.columns) && Number(stdout.columns) > 0 ? Number(stdout.columns) : 80;
+  const override = Number(process.env[`${APP.toUpperCase()}_DPI`] ?? "");
+  const scale =
+    Number.isFinite(override) && override > 0 && SCALESTEPS.includes(override as (typeof SCALESTEPS)[number])
+      ? override
+      : columns >= 200
+        ? 3
+        : columns >= 160
+          ? 2
+          : columns >= 120
+            ? 1.5
+            : 1;
+  /* the rail folds the 24-cell rail of the 1x seat through the scale seat and clamps inside the frame with room for the name, the controls and the reset runs (the escapes are zero-width). */
+  const rail = Math.max(4, Math.min(Math.round(24 * scale), columns - APP.length - 16));
+  return { scale, columns, rail };
+}
+
+/** the dpi frame the console booted with (resolved once, before any chrome prints — a piped stdin answers the deterministic 80-column seat). */
+const FRAME = detectdpiframe();
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 2: the runtime reads — no hardcoded data; the version comes from package.json at runtime. */
@@ -77,6 +120,7 @@ function help(): string[] {
     `${INK}commands${RESET}`,
     `  help      ${INK}this list${RESET}`,
     `  version   ${INK}the package version, read from package.json at runtime${RESET}`,
+    `  dpi       ${INK}the resolved dpi seat of this terminal (scale, columns, rail)${RESET}`,
     `  engine    ${INK}the engine ownership one-liner of the app${RESET}`,
     `  exit      ${INK}close the console${RESET}`,
   ];
@@ -101,6 +145,7 @@ export async function main(): Promise<void> {
     if (command === "exit") rl.close();
     else if (command === "help") for (const row of help()) console.log(row);
     else if (command === "version") console.log(`${ACCENT}${APP}${RESET} ${version}`);
+    else if (command === "dpi") console.log(`${ACCENT}${APP}${RESET} ${INK}dpi seat ${FRAME.scale}x on ${FRAME.columns} columns — rail ${FRAME.rail} cells, ladder 1x / 1.5x / 2x / 3x${RESET}`);
     else if (command === "engine") console.log(`${INK}${ENGINE}${RESET}`);
     else if (command.length > 0) console.log(`${HOVER}✕${RESET} ${INK}unknown command: ${command} — type help${RESET}`);
     if (command === "exit") break;

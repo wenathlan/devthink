@@ -14,7 +14,8 @@
 import { mkdtemp, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { argv } from "node:process";
+import { argv, stdin, stdout } from "node:process";
+import { createInterface } from "node:readline/promises";
 import { eventbus } from "./foundation.ts";
 import { localmemory, localstorage } from "./virtual.ts";
 import { engine, inprocess, scheduler } from "./execution.ts";
@@ -44,7 +45,8 @@ import {
 export async function main(args = argv.slice(2)) {
   const command = args[0] ?? "help";
   /* Help stays short and lists only stable local commands. */
-  if (["help", "--help", "-h"].includes(command)) { console.log("saddle <command>\n\ncommands\n  help\n  modes\n  plan [qemu|docker|toml]\n  vm [qemu|docker|toml]\n  vmlint\n  gpus\n  runexample\n  script <run|background|status|docker|compile> [file|runid]\n  mcp"); return; }
+  if (["help", "--help", "-h"].includes(command)) { console.log("saddle <command>\n\ncommands\n  help\n  chat\n  modes\n  plan [qemu|docker|toml]\n  vm [qemu|docker|toml]\n  vmlint\n  gpus\n  runexample\n  script <run|background|status|docker|compile> [file|runid]\n  mcp"); return; }
+  if (command === "chat") { await renderchat(); return; }
   if (command === "modes") { console.log(JSON.stringify(modecatalog(), null, 2)); return; }
   if (command === "plan") { await renderplan(args[1]); return; }
   /* The vm/vmlint/gpus triad makes the nominal npm aliases (vm:create, */
@@ -269,6 +271,101 @@ async function renderscript(subcommand = "help", target = "") {
     process.stderr.write(`script lane failed: ${error instanceof Error ? error.message : String(error)}\n`);
     process.exitCode = 1;
   }
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 4: the chat console — the pr13 creation workspace seat: the */
+/* same windows 11 chat console the family clibin seats render, with   */
+/* the same tokens, the same titlebar and the same dpi ladder (native  */
+/* detection, 1x / 1.5x / 2x / 3x, never xdpi — the difference from    */
+/* the web / desktop surface is only the responsiveness).              */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** the chat accent of the prompt and the titlebar name (ansi 117 — the family accent #a3d7e6). */
+const CHATACCENT = "\x1b[38;5;117m" as const;
+/** the focus ink of the active top rule (ansi 75 — the family focus #4cc2ff). */
+const CHATFOCUS = "\x1b[38;5;75m" as const;
+/** the hover red of the unknown-command rows (ansi 203 — rgb(232, 17, 35)). */
+const CHATHOVER = "\x1b[38;5;203m" as const;
+/** the dim ink of the description rows (the minimal text law). */
+const CHATINK = "\x1b[2m" as const;
+/** the reset token that closes every colored run. */
+const CHATRESET = "\x1b[0m" as const;
+/** the single glyph of the rules and the rails. */
+const CHATBAR = "─" as const;
+/** the engine ownership one-liner of the seat, quoted from the README. */
+const CHATENGINE = "storage-backed jobs, ninety sandbox modalities and portable runners — the master engine of virtualization (README)" as const;
+/** the scale ladder the native detection resolves (the automatic scaling law). */
+const CHATSCALESTEPS = [1, 1.5, 2, 3] as const;
+
+/** the dpi frame the chat chrome renders inside: the resolved scale seat, the terminal columns and the rail length the titlebar draws. */
+interface chatframe {
+  /** the scale seat of the ladder (1, 1.5, 2 or 3). */
+  scale: number;
+  /** the columns the terminal answers (windows terminal, conpty, xterm, tmux — every pty reports them). */
+  columns: number;
+  /** the titlebar rail length in cells (the pixel rail folded to the grid and clamped so the line never wraps). */
+  rail: number;
+}
+
+/** resolves the dpi frame natively, zero dependencies: the columns come from stdout (every windows and linux terminal answers them), the scale seat from the column ladder — the explicit SADDLE_DPI environment override wins first (the native scaling knob). */
+function chatdetectframe(): chatframe {
+  const columns = Number.isFinite(stdout.columns) && Number(stdout.columns) > 0 ? Number(stdout.columns) : 80;
+  const override = Number(process.env.SADDLE_DPI ?? "");
+  const scale =
+    Number.isFinite(override) && override > 0 && CHATSCALESTEPS.includes(override as (typeof CHATSCALESTEPS)[number])
+      ? override
+      : columns >= 200
+        ? 3
+        : columns >= 160
+          ? 2
+          : columns >= 120
+            ? 1.5
+            : 1;
+  const rail = Math.max(4, Math.min(Math.round(24 * scale), columns - "saddle".length - 16));
+  return { scale, columns, rail };
+}
+
+/** runs the chat console: the titlebar, the top rule, the ❯ prompt and the dispatch (help, version, dpi, engine, exit) — the same chat look the web / desktop surfaces carry, an eof on stdin closing the console the same way exit does. */
+async function renderchat(): Promise<void> {
+  const frame = chatdetectframe();
+  let seatversion = "0.0.0";
+  try {
+    seatversion = String((JSON.parse(await readFile(new URL("./package.json", import.meta.url), "utf8")) as { version?: string }).version ?? "0.0.0");
+  } catch {
+    /* the guarded best-effort read answers the zero literal the version row prints */
+  }
+  const rl = createInterface({ input: stdin, output: stdout });
+  let eof = false;
+  rl.on("close", () => { eof = true; });
+  const rule = CHATBAR.repeat(Math.max(3, Math.round(3 * frame.scale)));
+  console.log(`${CHATACCENT}┌ saddle ─ cli${CHATRESET}  ${CHATINK}${CHATBAR.repeat(frame.rail)} ─ ❐ ✕${CHATRESET}`);
+  console.log(`${CHATFOCUS}${rule} saddle ${rule}${CHATRESET}`);
+  console.log(`${CHATACCENT}saddle${CHATRESET} ${CHATINK}v${seatversion}${CHATRESET}`);
+  console.log(`${CHATINK}the saddle console — same design as web / desktop, only the DPI differs. type help.${CHATRESET}`);
+  rl.setPrompt(`${CHATACCENT}❯${CHATRESET} `);
+  rl.prompt();
+  for await (const raw of rl) {
+    const line = raw.trim();
+    const command = line.length > 0 ? line.split(/\s+/)[0]!.toLowerCase() : "";
+    if (command === "exit") rl.close();
+    else if (command === "help") {
+      console.log(`${CHATINK}commands${CHATRESET}`);
+      console.log(`  help      ${CHATINK}this list${CHATRESET}`);
+      console.log(`  version   ${CHATINK}the package version, read from package.json at runtime${CHATRESET}`);
+      console.log(`  dpi       ${CHATINK}the resolved dpi seat of this terminal (scale, columns, rail)${CHATRESET}`);
+      console.log(`  engine    ${CHATINK}the engine ownership one-liner of the app${CHATRESET}`);
+      console.log(`  exit      ${CHATINK}close the console${CHATRESET}`);
+    }
+    else if (command === "version") console.log(`${CHATACCENT}saddle${CHATRESET} ${seatversion}`);
+    else if (command === "dpi") console.log(`${CHATACCENT}saddle${CHATRESET} ${CHATINK}dpi seat ${frame.scale}x on ${frame.columns} columns — rail ${frame.rail} cells, ladder 1x / 1.5x / 2x / 3x${CHATRESET}`);
+    else if (command === "engine") console.log(`${CHATINK}${CHATENGINE}${CHATRESET}`);
+    else if (command.length > 0) console.log(`${CHATHOVER}✕${CHATRESET} ${CHATINK}unknown command: ${command} — type help${CHATRESET}`);
+    if (command === "exit") break;
+    /* the prompt is cosmetic chrome: a piped stdin that already reached eof skips it, the buffered lines still answer. */
+    if (!eof) rl.prompt();
+  }
+  console.log(`${CHATINK}saddle console closed.${CHATRESET}`);
 }
 
 if (import.meta.url === `file://${argv[1]}`) main().catch((error) => { console.error(error); process.exitCode = 1; });

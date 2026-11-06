@@ -20,6 +20,7 @@
 
 /// <reference types="better-sqlite3" />
 
+import { GATEWAYROUTES, GATEWAYVERSIONS, type GatewayRoute, type GatewayVersion } from "./gateway";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels";
 
 /** fetch budget for the HTTPS answers of the self-hosted DB. */
@@ -305,6 +306,42 @@ export function rotationsummary(keys: ApiKeyRow[]): { active: number; rotating: 
   };
 }
 
+/** one step of the key rotation: the row the caller authenticates with
+ * plus the cursor the next rotation resumes from (persist it per session —
+ * the same cursor discipline the session rotation index rides). */
+export type keyrotationpick = { row: ApiKeyRow; cursor: number };
+
+/**
+ * picks the next key of a provider pool by health-aware round-robin: the
+ * eligible pool (active, status active, not past a parseable expiry) is
+ * walked under a wrapping cursor, and the healthy seats (never rate
+ * limited, never erroring) lead the walk — an erroring key only rides
+ * when nothing healthy remains, a revoked, expired or inactive key never
+ * rides at all. the row is the internal api the gateway authenticates
+ * with: the render paths answer maskkey shapes, never the material.
+ *
+ * @law keys never leak — selection answers the row, rendering masks
+ * @param keys the key rows of the pool.
+ * @param cursor the persisted cursor of the previous pick (0 the first
+ *        time, the `cursor` of the previous answer afterwards).
+ * @param now the reference clock in epoch ms (defaults to the real clock).
+ * @returns the picked row and the next cursor, or null when the pool
+ *          holds no eligible key.
+ */
+export function nextkeyrow(keys: readonly ApiKeyRow[], cursor = 0, now = Date.now()): keyrotationpick | null {
+  const expired = (row: ApiKeyRow): boolean => {
+    if (!row.expiresAt) return false;
+    const at = Date.parse(row.expiresAt);
+    return Number.isFinite(at) && at <= now;
+  };
+  const eligible = keys.filter((row) => row.active && row.status === "active" && !expired(row));
+  if (eligible.length === 0) return null;
+  const healthy = eligible.filter((row) => !row.rateLimitHit && row.errorCount === 0);
+  const pool = healthy.length > 0 ? healthy : eligible;
+  const start = ((Math.trunc(cursor) % pool.length) + pool.length) % pool.length;
+  return { row: pool[start], cursor: (start + 1) % pool.length };
+}
+
 /* ============================== sqlite mirror ==============================
    the local runtime of the gateway: better-sqlite3 over DATABASE_URL (the
    family convention), prepared statements only — every statement is bound,
@@ -346,6 +383,22 @@ CREATE TABLE IF NOT EXISTS labels (
 );
 `;
 
+/** the gateway_versions schema of the sqlite mirror (idempotent — the
+ * route table store): one row per provider gateway, the route kinds
+ * riding as a json array. the instance rows live here; the TS catalog of
+ * gateway.ts holds the family seed and the shapes alone. */
+const GATEWAYVERSIONS_SCHEMA = `
+CREATE TABLE IF NOT EXISTS gateway_versions (
+  v        TEXT PRIMARY KEY,
+  provider TEXT NOT NULL,
+  pattern  TEXT NOT NULL,
+  badge    TEXT NOT NULL DEFAULT 'live',
+  models   TEXT NOT NULL,
+  note     TEXT NOT NULL,
+  routes   TEXT NOT NULL DEFAULT '[]'
+);
+`;
+
 /** the prepared statements of the mirror, created once per process. */
 type OnboardingStatements = {
   select: import("better-sqlite3").Statement;
@@ -359,15 +412,26 @@ type LabelStatements = {
   upsert: import("better-sqlite3").Statement;
 };
 
+/** the prepared gateway version statements of the mirror. */
+type VersionStatements = {
+  selectAll: import("better-sqlite3").Statement;
+  upsert: import("better-sqlite3").Statement;
+};
+
 /** the cached driver bundle (null until the first node call). */
-let mirror: { db: import("better-sqlite3").Database; statements: OnboardingStatements; labels: LabelStatements } | null =
-  null;
+let mirror: {
+  db: import("better-sqlite3").Database;
+  statements: OnboardingStatements;
+  labels: LabelStatements;
+  versions: VersionStatements;
+} | null = null;
 
 /**
  * Boots the sqlite mirror exactly once per process: opens DATABASE_URL
  * (creating parent folders), rides WAL and the busy timeout, creates the
- * onboarding_states and labels tables when absent (idempotent seed-on-
- * first-run) and prepares every statement — never concatenated SQL.
+ * onboarding_states, labels and gateway_versions tables when absent
+ * (idempotent seed-on-first-run) and prepares every statement — never
+ * concatenated SQL.
  *
  * @returns the open database with its prepared statements.
  */
@@ -375,6 +439,7 @@ async function openMirror(): Promise<{
   db: import("better-sqlite3").Database;
   statements: OnboardingStatements;
   labels: LabelStatements;
+  versions: VersionStatements;
 }> {
   if (mirror) return mirror;
   const nodefs = await import(/* @vite-ignore */ "node:fs");
@@ -388,6 +453,7 @@ async function openMirror(): Promise<{
   db.pragma("journal_mode = WAL");
   db.exec(ONBOARDING_SCHEMA);
   db.exec(LABELS_SCHEMA);
+  db.exec(GATEWAYVERSIONS_SCHEMA);
   mirror = {
     db,
     statements: {
@@ -413,6 +479,22 @@ async function openMirror(): Promise<{
            revision = excluded.revision,
            updatedAt = excluded.updatedAt,
            translated = excluded.translated`,
+      ),
+    },
+    versions: {
+      selectAll: db.prepare(
+        "SELECT v, provider, pattern, badge, models, note, routes FROM gateway_versions ORDER BY v ASC",
+      ),
+      upsert: db.prepare(
+        `INSERT INTO gateway_versions (v, provider, pattern, badge, models, note, routes)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(v) DO UPDATE SET
+           provider = excluded.provider,
+           pattern = excluded.pattern,
+           badge = excluded.badge,
+           models = excluded.models,
+           note = excluded.note,
+           routes = excluded.routes`,
       ),
     },
   };
@@ -578,3 +660,151 @@ export async function seedLabelRows(): Promise<{ seeded: number; protected: numb
  * the manifest always answers the wingets; the browser never runs this —
  * the visitor machine mirrors the rows through seedLabels in labels.ts. */
 if (isnode()) void seedLabelRows().catch(() => {});
+
+/* --------------------------------------------------------------------- */
+/* gateway versions — the route table rows                                */
+/* --------------------------------------------------------------------- */
+
+/** one raw gateway_versions row of the mirror. */
+type VersionSqlRow = {
+  v: string;
+  provider: string;
+  pattern: string;
+  badge: string;
+  models: string;
+  note: string;
+  routes: string;
+};
+
+/** Projects one raw mirror row into the gateway version projection: the
+ * badge keeps its live/paused vocabulary, the route kinds parse back from
+ * the json cell (a cell that fails to parse answers the canonical route
+ * kinds — the row never loses its routes to a bad write). */
+function versionRowOf(row: VersionSqlRow): GatewayVersion {
+  let routes: string[] = [];
+  try {
+    const parsed: unknown = JSON.parse(row.routes);
+    if (Array.isArray(parsed)) routes = parsed.filter((entry): entry is string => typeof entry === "string");
+  } catch {
+    routes = [];
+  }
+  return {
+    v: row.v,
+    provider: row.provider,
+    pattern: row.pattern,
+    badge: row.badge === "paused" ? "paused" : "live",
+    models: row.models,
+    note: row.note,
+    routes: (routes.length > 0 ? routes : [...GATEWAYROUTES]) as GatewayRoute[],
+  };
+}
+
+/**
+ * Ingests the family seed of gateway.ts into the gateway_versions table —
+ * the data-driven route table law: the TS catalog holds the seed and the
+ * shapes, the instance rows live in the database. idempotent and
+ * registration-safe: a seed row lands only when absent, so a row the
+ * person registered or edited through savegatewayversion never gets
+ * overwritten by a later seed.
+ *
+ * @returns the count of seed rows that landed (0 outside a node process).
+ */
+export async function seedGatewayVersionRows(): Promise<number> {
+  if (!isnode()) return 0;
+  const { versions } = await openMirror();
+  const known = new Set(
+    (versions.selectAll.all() as VersionSqlRow[]).map((row) => row.v),
+  );
+  let seeded = 0;
+  for (const version of GATEWAYVERSIONS) {
+    if (known.has(version.v)) continue;
+    versions.upsert.run(
+      version.v,
+      version.provider,
+      version.pattern,
+      version.badge,
+      version.models,
+      version.note,
+      JSON.stringify(version.routes),
+    );
+    seeded += 1;
+  }
+  return seeded;
+}
+
+/**
+ * Writes one gateway version row of the route table (idempotent upsert —
+ * the internal api the registration lanes call; a written row never falls
+ * back to the seed).
+ *
+ * @param version the row to write.
+ * @returns the stored projection (undefined outside a node process).
+ */
+export async function savegatewayversion(version: GatewayVersion): Promise<GatewayVersion | undefined> {
+  if (!isnode()) return undefined;
+  const { versions } = await openMirror();
+  versions.upsert.run(
+    version.v,
+    version.provider,
+    version.pattern,
+    version.badge,
+    version.models,
+    version.note,
+    JSON.stringify(version.routes),
+  );
+  const row = (versions.selectAll.all() as VersionSqlRow[]).find((entry) => entry.v === version.v);
+  if (!row) throw new Error(`gateway version "${version.v}" write did not land`);
+  return versionRowOf(row);
+}
+
+/**
+ * Reads every gateway version row of the mirror ordered by version tag —
+ * the node lane of the route table (the browser lane rides
+ * listversionrows over HTTPS with the seed fallback).
+ *
+ * @returns the stored rows (the family seed when the table is empty,
+ *          empty outside a node process).
+ */
+export async function readgatewayversionrows(): Promise<GatewayVersion[]> {
+  if (!isnode()) return [];
+  const { versions } = await openMirror();
+  const rows = versions.selectAll.all() as VersionSqlRow[];
+  if (rows.length === 0) {
+    await seedGatewayVersionRows();
+    return GATEWAYVERSIONS;
+  }
+  return rows.map(versionRowOf);
+}
+
+/** the in-memory answer cache of the route table (one document lifetime). */
+let versionscache: GatewayVersion[] | null = null;
+
+/**
+ * lists the gateway version rows of the route table: the node runtime
+ * answers the sqlite mirror (seeded on first use), the browser asks the
+ * self-hosted DB over HTTPS and falls back to the in-memory family seed
+ * when the endpoint is absent (static build) — the same lane contract
+ * listkeys, listsessions and listmessages ride.
+ *
+ * @returns the gateway version rows.
+ */
+export async function listversionrows(): Promise<GatewayVersion[]> {
+  if (versionscache) return versionscache;
+  if (isnode()) {
+    const rows = await readgatewayversionrows();
+    versionscache = rows;
+    return rows;
+  }
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), fetchbudget);
+    const response = await fetch("/api/v1/gateway/versions", { signal: controller.signal });
+    clearTimeout(timer);
+    if (!response.ok) throw new Error(`gateway versions answered ${response.status}`);
+    const rows = (await response.json()) as GatewayVersion[];
+    versionscache = rows;
+    return rows;
+  } catch {
+    return GATEWAYVERSIONS;
+  }
+}

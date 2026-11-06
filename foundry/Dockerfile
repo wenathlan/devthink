@@ -1,4 +1,4 @@
-# foundry 2.0.134 — THE SITE CONTAINER FILE
+# foundry 2.0.163 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -10,7 +10,7 @@
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
 
-ARG FOUNDRY_VERSION=2.0.134
+ARG FOUNDRY_VERSION=2.0.163
 
 # The family context fix (the staged shape the site containers read): the
 # application rides the context nested under app/ with the sibling sources
@@ -32,7 +32,7 @@ RUN pnpm build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG FOUNDRY_VERSION=2.0.134
+ARG FOUNDRY_VERSION=2.0.163
 
 LABEL org.opencontainers.image.title="foundry" \
       org.opencontainers.image.description="foundry — the run and store site role of the network: the containers and the buckets under one console." \

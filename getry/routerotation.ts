@@ -156,3 +156,77 @@ export function remainingcooldown(entry: CooldownEntry | null, now = Date.now())
   if (!entry) return 0;
   return Math.max(0, entry.until - now);
 }
+
+/* ===== block: round robin ===== */
+
+/** the strategy a pool rotates by: "round-robin" walks the healthy pool in
+ * stable order under a persisted cursor (every healthy route an equal
+ * share — the lane the nvidia keys ride), "weighted" draws by the route
+ * weights (the pickroute walk). both strategies stay health-aware: cooling
+ * and zero-weight routes never compete. */
+export type rotationstrategy = "round-robin" | "weighted";
+
+/** one rotation answer: the winning route plus the cursor the next
+ * round-robin pick resumes from — persist it per session the way the
+ * session store persists the rotation index. */
+export type rotationpick = { route: ModelRoute; cursor: number };
+
+/**
+ * picks one healthy route by round-robin: the cursor indexes the healthy
+ * pool in pool order, wraps modulo the healthy count and answers the next
+ * cursor — the walk stays health-aware (cooling and zero-weight routes
+ * leave the pool, the cursor re-wraps over whatever remains) and never
+ * skips a healthy route when the pool holds steady.
+ *
+ * @param routes the full pool.
+ * @param ledger the cooldown ledger.
+ * @param cursor the persisted cursor of the previous pick (0 the first
+ *        time, the `cursor` of the previous answer afterwards).
+ * @param now the reference clock in epoch ms (defaults to the real clock).
+ * @returns the winning route and the next cursor, or null when nothing is
+ *          healthy.
+ */
+export function pickroundrobin(
+  routes: readonly ModelRoute[],
+  ledger: RotationLedger,
+  cursor = 0,
+  now = Date.now(),
+): rotationpick | null {
+  const healthy = healthyroutes(routes, ledger, now);
+  if (healthy.length === 0) return null;
+  const start = ((Math.trunc(cursor) % healthy.length) + healthy.length) % healthy.length;
+  return { route: healthy[start], cursor: (start + 1) % healthy.length };
+}
+
+/**
+ * rotates the pool under one strategy — the single rotation entry the
+ * gateway lanes call: "round-robin" answers the health-aware cursor walk,
+ * "weighted" answers the weighted draw (the cursor rides back untouched —
+ * the weighted strategy keeps no cursor). an empty healthy pool answers
+ * null under both strategies (the caller falls back).
+ *
+ * @param input the rotation ask: the pool, the ledger, the strategy
+ *        (defaults to round-robin), the cursor and the draw/now overrides
+ *        the tests pin.
+ * @returns the winning route and the next cursor, or null when nothing is
+ *          healthy.
+ */
+export function rotatepool(input: {
+  routes: readonly ModelRoute[];
+  ledger: RotationLedger;
+  strategy?: rotationstrategy;
+  cursor?: number;
+  rand?: () => number;
+  now?: number;
+}): rotationpick | null {
+  if (input.strategy === "weighted") {
+    const route = pickroute(input.routes, input.ledger, input.rand ?? Math.random, input.now ?? Date.now());
+    return route === null ? null : { route, cursor: input.cursor ?? 0 };
+  }
+  return pickroundrobin(
+    input.routes,
+    input.ledger,
+    input.cursor ?? 0,
+    input.now ?? Date.now(),
+  );
+}

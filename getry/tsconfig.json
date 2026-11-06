@@ -38,24 +38,50 @@
        * when tsx boots the owner console (cli.ts → server.ts → engine.ts →
        * the os storage seam mapped to the monorepo source above), and the
        * devthink sources that graph reaches import their bare packages
-       * (the prisma libsql adapter, the react of the gateway label tree,
-       * the prisma client types) — the node resolution that walks up from
-       * the devthink folder never sees this app's install (the getry lane
-       * installs this tree alone), so every specifier resolves onto this
-       * app's own node_modules copy the same way every bridge resolves:
-       * the first candidate answers the tsx runtime (the real entry the
-       * subprocess loads) and the tsc pass reads the adjacent declaration
-       * (the .mjs and .js candidates resolve their sibling .d.mts/.d.ts
-       * files, and react falls through to the @types seat — allowJs is
-       * off, so the js candidate never answers the declaration pass). */
-      "@prisma/adapter-libsql": [
-        "./node_modules/@prisma/adapter-libsql/dist/index-node.mjs"
+       * (the prisma libsql adapter, the prisma client types) — the node
+       * resolution that walks up from the devthink folder never sees this
+       * app's install (the getry lane installs this tree alone), so every
+       * specifier below resolves onto a tree the pinned lanes can read the
+       * same way every bridge resolves: the PACKAGE DIRECTORY answers both
+       * seats — the tsx subprocess loads the runtime entry the
+       * package.json main/exports field names, while the tsc pass reads
+       * the declaration the same package.json types field pins.
+       * retires when the published envelopes ship the declaration faces
+       * the walk finds without the bridge. */
+      "@prisma/adapter-libsql": ["./node_modules/@prisma/adapter-libsql"],
+      /* the prisma client seat rides the DEVTHINK install first: the os
+       * storage seam this program walks (devthink/storage.ts) speaks the
+       * generated client of the devthink schema — the devthink tree is the
+       * one that ran prisma generate (its .prisma/client carries the
+       * models the seam queries), so both seats (the tsc declaration pass
+       * and the tsx subprocess runtime) answer the generated client the
+       * owner tree carries; this app's own copy rides second for the lane
+       * that installs this tree alone.
+       *
+       * the react seat carries NO bridge on purpose: every react import
+       * the program walks (the os sources of the devthink tree and the
+       * sol theme of this tree) resolves through the standard node walk
+       * from its own file — the devthink files find the devthink install,
+       * the getry files find this app's install, and each walk answers
+       * BOTH seats at once (the runtime entry for the tsx subprocess, the
+       * @types declaration for the tsc pass). a bridge that pins one
+       * install for every importer answers only one seat (the runtime
+       * entry carries no declaration react 19 can read, the @types
+       * declaration carries no runtime the subprocess can load). */
+      "@prisma/client": [
+        "../devthink/node_modules/@prisma/client",
+        "./node_modules/@prisma/client"
       ],
-      "@prisma/client": ["./node_modules/@prisma/client/default.js"],
-      "react": [
-        "./node_modules/react/index.js",
-        "./node_modules/@types/react/index.d.ts"
-      ],
+      /* the babel seat bridge of the saddle engine sources this program
+       * walks (the modalityregistry and workloadlaw bridges pull
+       * saddle/modalities.ts, whose babel lane imports @babel/core through
+       * a guarded dynamic import — no install of the family declares the
+       * package): the specifier resolves onto the typed face the devthink
+       * tree owns (the same face its tsconfig maps), the face carries the
+       * typed slice and no runtime, and the guarded caller reports the
+       * absent seat honestly. zero duplication: getry consumes the face
+       * the sibling owner carries, never a second face of its own. */
+      "@babel/core": ["../devthink/babelcoreface.ts"],
       "@wenathlan/devthink/config": ["../devthink/config.ts"],
       "@wenathlan/devthink/constants": ["../devthink/constants.ts"],
       "@wenathlan/devthink/core": ["../devthink/core.ts"],
@@ -65,6 +91,13 @@
       "@wenathlan/devthink/policy": ["../devthink/policy.ts"],
       "@wenathlan/devthink/protocol": ["../devthink/protocol.ts"],
       "@wenathlan/devthink/security": ["../devthink/security.ts"],
+      /* the os bridge of the provider console family: the moved console
+       * barrel reads the paired label catalog through the published os
+       * specifier ("@wenathlan/devthink/os" — osStringRows of the paired
+       * database endpoint), and this program resolves it to the monorepo
+       * source the sibling app carries the same way the vitest and vite
+       * bridges do — the paired catalog is never duplicated inside getry. */
+      "@wenathlan/devthink/os": ["../devthink/os.ts"],
       /* the @wenathlan/devthink/server self bridge was DELETED with the
        * final double move of the gateway ownership wave (steps 4+5): the
        * last getry consumers of the os server seam were the property lane

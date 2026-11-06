@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/vault",
-  "version": "2.0.162",
+  "version": "2.0.163",
   "description": "vault is the supabase clone of the wenathlan family: it owns the self-hosted database, auth and storage surface, and ships the documentation set and the tests directory as one package",
   "repository": {
     "type": "git",
@@ -161,6 +161,7 @@
     "docs",
     "tests",
     "README.md",
+    "cli.ts",
     "index.ts",
     "accounts.ts",
     "api.ts",

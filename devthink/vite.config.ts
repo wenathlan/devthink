@@ -69,9 +69,13 @@ function familydevbridge(): Plugin {
           const slug = match?.[1];
           if (!slug || !(FAMILY_SLUGS as readonly string[]).includes(slug)) return next();
           const rest = match[2] ?? "";
-          // the folder slug itself serves the app's html entry
-          if (rest === "" || rest.endsWith(".html")) {
-            const entry = path.join(siblingroot(slug), rest === "" ? "index.html" : rest);
+          // the folder slug, every html entry and every extension-less path
+          // serve the app's html entry — the SPA fallback law: a deep link
+          // (/<slug>/<route>) boots the app shell exactly like the pages
+          // dispatcher does in production, and the client router walks the
+          // rest of the path; files and modules keep walking the /@fs lane
+          if (rest === "" || rest.endsWith(".html") || !/\.[a-z0-9]+$/i.test(rest)) {
+            const entry = path.join(siblingroot(slug), rest === "" || !/\.[a-z0-9]+$/i.test(rest) ? "index.html" : rest);
             try {
               const html = readFileSync(entry, "utf8");
               // the relative AND root-absolute asset references walk the
@@ -380,6 +384,15 @@ export default defineConfig({
        * source the sibling engine carries — the example job and every
        * future consumer answer the same seat. */
       "@wenathlan/saddle/security": path.resolve(import.meta.dirname, "../saddle/security.ts"),
+      /** the modes ladder bridge of the ownership law (the routesdual
+       * specifier wall): the forge and foundry runner seams import the
+       * five runtime targets through the published specifier
+       * ("@wenathlan/saddle/modes") — this entry rides BEFORE the bare
+       * saddle prefix below so the specific path never falls into the
+       * index prefix match (the alias resolver matches the first key that
+       * prefixes the import, and a bare parent would swallow the subpath
+       * into a path that never exists) */
+      "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
       "@wenathlan/saddle": path.resolve(import.meta.dirname, "../saddle/index.ts"),
       "@wenathlan/saddle/memory": path.resolve(import.meta.dirname, "../saddle/virtual.ts"),
       /** the debonair audio face bridge (the family dev seat): the cadria
@@ -557,6 +570,29 @@ export default defineConfig({
        * mechanism is never duplicated inside devthink. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the family dev bridge specifier wall (the routesdual law): the
+       * sibling pages this server serves import their cross-family seats
+       * through the published library specifiers, and every specifier the
+       * siblings speak must resolve HERE too — a missing bridge answers
+       * the /@fs lane with a 500 pre-transform error and the sibling app
+       * never mounts (the blank-window era). each entry below mirrors the
+       * bridge the owning sibling's own vite config carries, resolving to
+       * the one monorepo source; every entry retires when the published
+       * envelope's exports map gains its key. */
+      "@wenathlan/argan/mimetypes": path.resolve(import.meta.dirname, "../argan/mimetypes.ts"),
+      "@wenathlan/cadria/synth": path.resolve(import.meta.dirname, "../cadria/synth.ts"),
+      "@wenathlan/debonair/routetable": path.resolve(import.meta.dirname, "../debonair/routetable.ts"),
+      "@wenathlan/devthink/os": path.resolve(import.meta.dirname, "os.ts"),
+      "@wenathlan/devthink/protocol": path.resolve(import.meta.dirname, "protocol.ts"),
+      "@wenathlan/devthink/tools": path.resolve(import.meta.dirname, "tools.ts"),
+      "@wenathlan/vault/routes": path.resolve(import.meta.dirname, "../vault/routes.ts"),
+      "@wenathlan/vault/utils": path.resolve(import.meta.dirname, "../vault/utils.ts"),
+      /** the storage lane bridge of the ownership law: the lazy db chunk
+       * the browser never loads imports the vault factory through the
+       * published specifier ("@wenathlan/vault/storage") — the node seats
+       * (argan/db.ts, cadria/db.ts) resolve it against the workspace
+       * truth here, the native binding stays external below */
+      "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
     /** the family dev bridge dedupe wall: the sibling apps carry their own

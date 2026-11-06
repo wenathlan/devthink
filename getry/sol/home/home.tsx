@@ -13,21 +13,16 @@ import { ArrowEnterRegular, ArrowRightRegular } from "@fluentui/react-icons";
  * the Suno-grade gateway hero — one violet light, the prompt-giga endpoint
  * field (send a completion), the replica matrix ledger (the five provider
  * gateways as the copies the meta model spins), the 01–03 deploy steps and
- * the meta-quad footer. no tabular fabrication: every row reads the root
- * gateway registry (gateway.ts) and the thinking ladder (thinking.ts).
+ * the meta-quad footer. no tabular fabrication: every replica row reads the
+ * db route table lane (db.ts listversionrows over the gateway.ts family
+ * seed) and the thinking ladder (thinking.ts).
  */
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
+import { listversionrows } from "../../db";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
-import {
-  findversion,
-  GATEWAYROUTES,
-  type GatewayVersion,
-  listversions,
-  liveversions,
-  totalroutes,
-} from "../../gateway";
+import { GATEWAYROUTES, type GatewayVersion } from "../../gateway";
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { ROTATIONEVERY } from "../../sessions";
@@ -36,23 +31,28 @@ import { BrandMark } from "../wingets";
 import { toast } from "../toast/Toast.tsx";
 import { HomeEntrygate as EntryGate } from "../wingets";
 
-/** the parsed endpoint: the replica the prefix names and the route kind that follows. */
-function parseendpoint(value: string): { version: GatewayVersion | null; route: string | null; tail: string } {
+/** the parsed endpoint: the replica the prefix names and the route kind
+ * that follows — the replica resolves against the loaded route table rows
+ * (the db lane), never a second catalog. */
+function parseendpoint(
+  value: string,
+  rows: readonly GatewayVersion[],
+): { version: GatewayVersion | null; route: string | null; tail: string } {
   const cleaned = value.trim().toLowerCase().replace(/\/+$/, "");
   const match = /^\/(v\d)(?:\/(.*))?$/.exec(cleaned);
   if (!match) return { version: null, route: null, tail: cleaned };
   const tail = match[2] ?? "";
   return {
-    version: findversion(match[1]),
+    version: rows.find((row) => row.v === match[1]) ?? null,
     route: (GATEWAYROUTES as readonly string[]).includes(tail) ? tail : null,
     tail,
   };
 }
 
 /** the status line under the field: what the typed endpoint resolves to. */
-function statusline(value: string): string {
-  const { version, route, tail } = parseendpoint(value);
-  if (!version) return labelfill("home.status.unrouted", { count: String(listversions().length) });
+function statusline(value: string, rows: readonly GatewayVersion[]): string {
+  const { version, route, tail } = parseendpoint(value, rows);
+  if (!version) return labelfill("home.status.unrouted", { count: String(rows.length) });
   if (route)
     return labelfill("home.status.routed", {
       v: version.v,
@@ -98,13 +98,26 @@ export function HomeRegular() {
  */
 function HomeSurface() {
   const [endpoint, setEndpoint] = useState("/v1/chat/completions");
+  // the route table rides the db lane (listversionrows): the node runtime
+  // answers the sqlite mirror rows, the static build falls back to the
+  // family seed — the replica chips, the matrix ledger and the quad counts
+  // all read the same loaded rows.
+  const [versions, setVersions] = useState<GatewayVersion[]>([]);
 
   useEffect(() => {
     observeReveals();
+    let live = true;
+    void listversionrows().then((rows) => {
+      if (live) setVersions(rows);
+    });
+    return () => {
+      live = false;
+    };
   }, []);
 
-  const parsed = parseendpoint(endpoint);
-  const versions = listversions();
+  const parsed = parseendpoint(endpoint, versions);
+  const liverows = versions.filter((version) => version.badge === "live");
+  const routecount = versions.reduce((sum, version) => sum + version.routes.length, 0);
 
   /** the send key: the honest hand-off toast, never a fake fetch. */
   function sendcompletion(event: FormEvent) {
@@ -131,7 +144,7 @@ function HomeSurface() {
           <div className="r3-hero__main">
             <h1 className="r3-headline reveal">{label("home.title")}</h1>
             <p className="r3-phrase reveal">
-              {labelfill("home.lede", { count: String(totalroutes()) })}
+              {labelfill("home.lede", { count: String(routecount) })}
             </p>
 
             <form className="r3-prompt reveal" onSubmit={sendcompletion}>
@@ -153,7 +166,7 @@ function HomeSurface() {
                 </button>
               </div>
               <p className="r3-prompt__status" aria-live="polite">
-                {statusline(endpoint)}
+                {statusline(endpoint, versions)}
               </p>
               <div className="r3-prompt__chips">
                 <fieldset className="r3-chipset">
@@ -188,8 +201,8 @@ function HomeSurface() {
             </form>
 
             <div className="importstrip reveal">
-              <span className="badge">{labelfill("home.badge.live", { count: String(liveversions().length) })}</span>
-              <span className="badge info">{labelfill("home.badge.routes", { count: String(totalroutes()) })}</span>
+              <span className="badge">{labelfill("home.badge.live", { count: String(liverows.length) })}</span>
+              <span className="badge info">{labelfill("home.badge.routes", { count: String(routecount) })}</span>
               <span className="badge success">{label("home.badge.passthrough")}</span>
             </div>
           </div>
@@ -271,8 +284,8 @@ function HomeSurface() {
           <p className="r3-quad__meta">
             {labelfill("home.quad.gatewayMeta", {
               replicas: String(versions.length),
-              routes: String(totalroutes()),
-              live: String(liveversions().length),
+              routes: String(routecount),
+              live: String(liverows.length),
             })}
           </p>
         </div>
