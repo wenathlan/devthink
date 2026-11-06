@@ -366,7 +366,20 @@ export async function writeTargetPlan(target: string, format = target, output = 
   return filename;
 }
 
-if (process.argv[1]?.endsWith("targetcli.js") || process.argv[1]?.endsWith("targetcli.ts")) {
+/** The cli entry seat: argv[1] only exists under the node runtime — the
+ * family browser bridges import this module through the modes ladder for
+ * the publish contracts, and the raw process.argv[1] read throws at
+ * import time in the browser (the blank-window era of the forge and
+ * foundry seats). the guard answers undefined everywhere but node. */
+const cliseat =
+  typeof process === "object" &&
+  process !== null &&
+  Array.isArray(process.argv) &&
+  typeof process.argv[1] === "string"
+    ? process.argv[1]
+    : undefined;
+
+if (cliseat?.endsWith("targetcli.js") || cliseat?.endsWith("targetcli.ts")) {
   const [, , target = "library", format = target, output = "build/targets"] = process.argv;
   writeTargetPlan(target, format, output).then((filename) => console.log(`target plan: ${filename}`)).catch((error) => { console.error(error.message); process.exitCode = 1; });
 }
@@ -511,7 +524,7 @@ function normalizeupdatedat(value) { const normalized = Number(value ?? 0); if (
 
 function comparefreshness(left, right) { return right.updatedat - left.updatedat || right.bytes - left.bytes || left.name.localeCompare(right.name); }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) createassets(parsearguments(process.argv.slice(2))).then(({ output }) => { console.log(`release assets: ${output}`); }).catch((error) => { console.error(error.message); process.exitCode = 1; });
+if (cliseat !== undefined && cliseat === fileURLToPath(import.meta.url)) createassets(parsearguments(process.argv.slice(2))).then(({ output }) => { console.log(`release assets: ${output}`); }).catch((error) => { console.error(error.message); process.exitCode = 1; });
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 9: release/verify.ts — Release verification checks artifact digests, manifest consistency and */
@@ -613,7 +626,7 @@ function verifyparsearguments(argumentslist) {
   return options;
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) verifyassets(verifyparsearguments(process.argv.slice(2))).then((result) => { console.log(JSON.stringify(result)); }).catch((error) => { console.error(error.message); process.exitCode = 1; });
+if (cliseat !== undefined && cliseat === fileURLToPath(import.meta.url)) verifyassets(verifyparsearguments(process.argv.slice(2))).then((result) => { console.log(JSON.stringify(result)); }).catch((error) => { console.error(error.message); process.exitCode = 1; });
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 10: release/evidence.ts — Release evidence evaluates caller-supplied metadata without fetching, signing, */
