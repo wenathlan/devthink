@@ -495,13 +495,26 @@ jobs:
           set -euo pipefail
           cd "${{ matrix.app }}"
           if [ -f pnpm-lock.yaml ]; then
-            # the family pins one pnpm rung - every pnpm manifest of the
-            # matrix carries packageManager pnpm@12.3.4 and the lockless
-            # legs answer bun
+            # the family pins one pnpm rung - the 12.18.0 number every
+            # lock of the tree regenerates under (the manifestemplate
+            # wave retired the per-app packageManager stamps, so the one
+            # rung lives here) and the lockless legs answer bun
             pnpm install --frozen-lockfile --ignore-scripts
           else
             bun install --frozen-lockfile --ignore-scripts
           fi
+          # the ownership bridges alias the sibling sources (the os seams,
+          # the vault label store, the engines the app consumes) into every
+          # app build: the dependency union law makes the eleven manifests
+          # carry the identical seat map, so the app's own tree serves the
+          # aliased sources — the symlink seats every sibling the clean
+          # checkout would otherwise leave without a node_modules the
+          # aliased imports resolve against
+          for sibling in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
+            if [ "$sibling" != "${{ matrix.app }}" ] && [ -d "$sibling" ] && [ ! -e "$sibling/node_modules" ] && [ -d "${{ matrix.app }}/node_modules" ]; then
+              ln -s "../${{ matrix.app }}/node_modules" "$sibling/node_modules"
+            fi
+          done
 
       - name: Build the app surface
         if: steps.suite.outputs.present == 'true'
