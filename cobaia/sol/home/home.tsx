@@ -21,7 +21,7 @@ import { Link } from "wouter";
 import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label, labelfill } from "../../labels";
-import { roster } from "../../roster.ts";
+import { roster } from "../../monetization.ts";
 import { AdSlot, BrandMark, EntryGate } from "../wingets";
 
 /** the featured deploy units of the landing preview (the full directory

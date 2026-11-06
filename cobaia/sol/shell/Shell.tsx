@@ -26,7 +26,7 @@ import { Link, useLocation } from "wouter";
 import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
-import { roster } from "../../roster.ts";
+import { roster } from "../../monetization.ts";
 import { BrandMark } from "../wingets";
 
 /** the section links of the top bar, in reading order (home is the mark).

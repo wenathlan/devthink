@@ -15,7 +15,7 @@
  * automated traffic ever touches an ad surface.
  */
 import type { CSSProperties } from "react";
-import { ADS_EMPTY, ADS_LABEL, adsslotfor, adsslotlive } from "../../adsconfig.ts";
+import { ADS_EMPTY, ADS_LABEL, adsslotfor, adsslotlive } from "../../monetization.ts";
 import { labelfill } from "../../labels";
 
 type AdSlotProps = {

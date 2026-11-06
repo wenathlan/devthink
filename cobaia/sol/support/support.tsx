@@ -13,7 +13,7 @@
  * nothing that asks for support ever sits beside an advertisement.
  */
 import type { CSSProperties } from "react";
-import { isconfigured, supportlinks } from "../../checkoutlinks";
+import { isconfigured, supportlinks } from "../../monetization";
 import { useContent } from "../../content.ts";
 import { label } from "../../labels";
 

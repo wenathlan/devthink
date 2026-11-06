@@ -16,7 +16,7 @@
  * are plain hrefs the visitor chooses to follow.
  */
 import type { CSSProperties } from "react";
-import { checkoutlinks, type checkoutplan, isconfigured } from "../../checkoutlinks";
+import { checkoutlinks, type checkoutplan, isconfigured } from "../../monetization";
 import { useContent } from "../../content.ts";
 import { label, labelfill } from "../../labels";
 

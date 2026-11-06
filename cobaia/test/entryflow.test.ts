@@ -115,7 +115,7 @@ describe("the content law (the rows live in the db, the manifest is the seed)", 
   });
 
   it("keeps the faces reading through the typed doors — no hardcoded row in a page", () => {
-    expect(HOME).toMatch(/from "\.\.\/\.\.\/roster\.ts"/);
+    expect(HOME).toMatch(/from "\.\.\/\.\.\/monetization\.ts"/);
     expect(HOME).not.toMatch(/const ROSTER/);
     expect(read("../sol/apps/apps.tsx")).not.toMatch(/const ROSTER/);
     expect(read("../sol/pricing/pricing.tsx")).not.toMatch(/const PLANS/);

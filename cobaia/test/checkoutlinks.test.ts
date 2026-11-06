@@ -10,7 +10,7 @@
 // the billing table cites, so a card never renders a bare key.
 import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
-import { checkoutlinks, isconfigured, planbyid, supportlinks } from "../checkoutlinks.ts";
+import { checkoutlinks, isconfigured, planbyid, supportlinks } from "../monetization.ts";
 import { LABEL_MANIFEST } from "../labels.ts";
 
 describe("checkout links", () => {
