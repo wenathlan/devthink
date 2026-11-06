@@ -1,1 +1,19 @@
 /spa/*  /index.html  200
+
+# the faun block of the netlify lane: a database face inside the publish
+# tree (a stray store, a committed backup, a build artifact) answers 410
+# gone — forced past any file the tree carries (the ! law), so the raw
+# database never ships over https. The data flows through /api only; the
+# engine's own static lane (internalroot.ts) carries the same refusal.
+/*.db              /index.html  410!
+/*.db-wal          /index.html  410!
+/*.db-shm          /index.html  410!
+/*.db-journal      /index.html  410!
+/*.sqlite          /index.html  410!
+/*.sqlite-wal      /index.html  410!
+/*.sqlite-shm      /index.html  410!
+/*.sqlite-journal  /index.html  410!
+/*.sqlite3         /index.html  410!
+/*.sqlite3-wal     /index.html  410!
+/*.sqlite3-shm     /index.html  410!
+/*.sqlite3-journal /index.html  410!

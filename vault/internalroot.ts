@@ -37,8 +37,10 @@ export const DATABASE_FILE_EXTENSIONS: readonly string[] = [
   ".db-journal",
   ".sqlite-wal",
   ".sqlite-shm",
+  ".sqlite-journal",
   ".sqlite3-wal",
   ".sqlite3-shm",
+  ".sqlite3-journal",
 ];
 
 /** the refusal code a database-file request answers on the static root. */
@@ -125,11 +127,7 @@ export function internalRootDir(): string {
   }
   const here = import.meta.dirname ?? path.dirname(new URL(import.meta.url).pathname);
   const appRoot = path.dirname(path.resolve(here));
-  if (
-    typeof process !== "undefined" &&
-    typeof process.env.VITEST === "string" &&
-    typeof process.pid === "number"
-  ) {
+  if (typeof process !== "undefined" && typeof process.env.VITEST === "string" && typeof process.pid === "number") {
     return `${appRoot}.${process.pid}`;
   }
   return appRoot;

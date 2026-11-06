@@ -34,6 +34,32 @@
 //     the centroid are the analysis's fingerprints, not synthesis
 //     parameters — they stay in the report, never pretended into audio.
 //
+//   debonair.soundpayload/1 — the whole-song decomposition (the v1 law's
+//     own envelope: the container facts, the track summary, the energy
+//     chunks, the beats block and the embedded ingest document with its
+//     per-second vector frames and its two stems): the reconstruction
+//     rides the engine's own seeded vector synthesis (reconstructWav of
+//     ingest.ts — the one law, never a parallel format here): the chroma
+//     frames drive the additive partials, the percussive band fractions
+//     the three-band noise bed, the onset list the exponential bursts,
+//     the energy chunks the within-second envelope. the recorded hash
+//     (the document's pcmhash — the fidelity id the forward ingest
+//     stamps) is no longer comparison-only decoration: it seeds the
+//     synthesis, so it DRIVES the reconstruction, and the answer carries
+//     it beside the render's own digest — the hash comparison becomes a
+//     verification of the reconstruction (same payload → same recorded
+//     hash → same digest, forever), never a replacement for it.
+//
+// every ok answer closes with the verification block — the last-mile
+// proof the audit law pins: the fnv-1a identity of the reconstructed
+// pcm (the engine's own fidelity-id vocabulary), the sha256 of the
+// playable wav bytes (the bit identity), the recorded hash the payload
+// carried (when it carried one) and the round-trip flag — the wav
+// decodes back onto the pcm the graph rendered, inside the pcm16
+// quantization (sample-equivalent, the honest tolerance the writer's
+// own encode pins). a reconstruction that cannot prove its last mile
+// answers roundTrip false, never a shrug.
+//
 // the playable output is the render lane's own: mono pcm 16 wav bytes at
 // the mastering rate, and the optional blob store seat puts them under
 // audio/wav answering the pointer the playback lane streams (the same
@@ -44,7 +70,9 @@
 // and every failure answers the typed result with a machine code, never
 // a throw. pure and node-side — zero browser, zero gpu, zero network.
 
+import { sha256hex } from "./blobstore.ts";
 import { hashSeed } from "./harmonyengine.ts";
+import { parseWav, pcmhash, reconstructWav, SOUND_PAYLOAD_SCHEMA_VERSION, type SoundPayload } from "./ingest.ts";
 import { limitTruePeak } from "./limiter.ts";
 import {
   PATTERN_SCHEMA_VERSION,
@@ -94,6 +122,28 @@ export interface ReverseIngestOptions {
   store?: RenderBlobStore;
 }
 
+/** The digest verification of one reconstruction — the last-mile proof:
+ * the render's own identity (the fnv-1a pcm hash and the sha256 of the
+ * playable bytes) beside the recorded hash the payload carried, and the
+ * round-trip flag that proves the wav decodes back onto the pcm the
+ * graph rendered. The hash comparison verifies the reconstruction; it
+ * never replaces it. */
+export interface ReverseIngestVerification {
+  /** The fnv-1a identity of the reconstructed pcm (the engine's fidelity-id
+   * vocabulary — the same lane the forward ingest stamps). */
+  renderPcmHash: number;
+  /** The sha256 hex of the playable wav bytes (the bit identity — the same
+   * payload answers the same digest forever). */
+  wavSha256: string;
+  /** The recorded hash the payload carried, when it carried one (the source
+   * identity the reconstruction rode — null on the payloads that record
+   * none). */
+  sourcePcmHash: number | null;
+  /** True when the playable wav decodes back onto the pcm the answer
+   * carries, inside the pcm16 quantization — the last mile, verified. */
+  roundTrip: boolean;
+}
+
 /** The ok answer: the playable wav beside the pcm it encoded. */
 export interface ReverseIngestOk {
   ok: true;
@@ -103,16 +153,24 @@ export interface ReverseIngestOk {
   wav: Uint8Array;
   /** The limited pcm the wav encodes (the render lane's own close). */
   pcm: Float32Array;
-  /** The sample rate of the reconstruction (the mastering law's 48 khz). */
+  /** The sample rate of the reconstruction (the mastering law's 48 khz, or
+   * the whole-song payload's own analysis rate). */
   sampleRate: number;
   /** The duration in seconds (the release tail included). */
   durationSeconds: number;
   /** The blob pointer when a store rode the call (null otherwise). */
   wavPointer: { id: string; bytes: number; kind: string } | null;
+  /** The digest verification of the reconstruction (the last-mile proof). */
+  verification: ReverseIngestVerification;
 }
 
 /** The typed answer of one reconstruction — ok or the machine code. */
 export type ReverseIngestResult = ReverseIngestOk | { ok: false; code: ReverseIngestErrorCode; message: string };
+
+/** The pcm16 quantization half-step the round-trip check tolerates (the
+ * writer's own encode law — sample-equivalent, never bit-equal claims on
+ * the float lane). */
+const ROUND_TRIP_TOLERANCE = 1 / 32768 + 1e-6;
 
 /** The nominal gate floor of a timeline event (s). */
 const GATE_FLOOR_S = 0.05;
@@ -132,15 +190,40 @@ function errmsgof(error: unknown): string {
 
 /** Parses the payload source — a json string or the already-parsed
  * document — through the pattern contract (the one validator the file
- * lane and the llm lane ride; the machine codes pass through the
- * message, the code is ours). */
-function parsePayload(source: string | PatternDocument): { ok: true; doc: PatternDocument } | { ok: false; message: string } {
-  const result = typeof source === "string" ? parsePattern(source) : source === null || typeof source !== "object"
-    ? { ok: false as const, code: "bad-schema" as const, message: "the payload is not an object" }
-    : (source as { schema?: string }).schema === PATTERN_SCHEMA_VERSION
-      ? validatePatternProject(source)
-      : validatePatternTimeline(source);
-  if (!result.ok) return { ok: false, message: `the payload failed the pattern contract (${result.code}): ${result.message}` };
+ * lane and the llm lane ride) or the soundpayload envelope (the v1 law's
+ * whole-song decomposition — reconstructWav owns its own gate, so the
+ * seat here only recognizes the schema and hands the document on; the
+ * machine codes pass through the message, the code is ours). */
+function parsePayload(
+  source: string | PatternDocument | SoundPayload,
+): { ok: true; doc: PatternDocument | SoundPayload } | { ok: false; message: string } {
+  if (typeof source === "string") {
+    const result = parsePattern(source);
+    if (result.ok) return { ok: true, doc: result.doc };
+    // the string may carry the whole-song envelope — the pattern contract
+    // refuses it, the soundpayload lane owns it
+    try {
+      const parsed: unknown = JSON.parse(source);
+      if (
+        typeof parsed === "object" &&
+        parsed !== null &&
+        (parsed as { schema?: string }).schema === SOUND_PAYLOAD_SCHEMA_VERSION
+      ) {
+        return { ok: true, doc: parsed as SoundPayload };
+      }
+    } catch {
+      // the json lane refused the bytes — the pattern refusal answers
+    }
+    return { ok: false, message: `the payload failed the pattern contract (${result.code}): ${result.message}` };
+  }
+  if (source === null || typeof source !== "object") {
+    return { ok: false, message: "the payload is not an object" };
+  }
+  const schema = (source as { schema?: string }).schema;
+  if (schema === SOUND_PAYLOAD_SCHEMA_VERSION) return { ok: true, doc: source as SoundPayload };
+  const result = schema === PATTERN_SCHEMA_VERSION ? validatePatternProject(source) : validatePatternTimeline(source);
+  if (!result.ok)
+    return { ok: false, message: `the payload failed the pattern contract (${result.code}): ${result.message}` };
   return { ok: true, doc: result.doc };
 }
 
@@ -275,21 +358,50 @@ export function shapeTimelineLoudness(mix: Float32Array, timeline: PatternTimeli
   return out;
 }
 
-/** The ok branch builder. */
+/** Answers true when the document is the whole-song envelope (the v1
+ * soundpayload — the schema seat the branch below reads). */
+function isSoundPayload(doc: PatternDocument | SoundPayload): doc is SoundPayload {
+  return (doc as { schema?: string }).schema === SOUND_PAYLOAD_SCHEMA_VERSION;
+}
+
+/** The last-mile check: the playable wav decodes back onto the pcm the
+ * answer carries, frame for frame, inside the pcm16 quantization (the
+ * writer's own encode law — sample-equivalent). */
+function roundTripOf(pcm: Float32Array, wav: Uint8Array, sampleRate: number): boolean {
+  const decoded = parseWav(wav);
+  if (!decoded.ok) return false;
+  if (decoded.frames !== pcm.length || decoded.sampleRate !== sampleRate) return false;
+  const channel = decoded.pcm[0];
+  if (channel === undefined) return false;
+  for (let i = 0; i < pcm.length; i++) {
+    if (Math.abs((channel[i] ?? 0) - (pcm[i] ?? 0)) > ROUND_TRIP_TOLERANCE) return false;
+  }
+  return true;
+}
+
+/** The ok branch builder — the reconstruction beside its verification. */
 function okOf(
   schema: string,
   pcm: Float32Array,
+  sampleRate: number,
   wav: Uint8Array,
   pointer: { id: string; bytes: number; kind: string } | null,
+  sourcePcmHash: number | null,
 ): ReverseIngestResult {
   return {
     ok: true,
     schema,
     wav,
     pcm,
-    sampleRate: RENDER_SAMPLE_RATE,
-    durationSeconds: pcm.length / RENDER_SAMPLE_RATE,
+    sampleRate,
+    durationSeconds: pcm.length / sampleRate,
     wavPointer: pointer,
+    verification: {
+      renderPcmHash: pcmhash(pcm),
+      wavSha256: sha256hex(wav),
+      sourcePcmHash,
+      roundTrip: roundTripOf(pcm, wav, sampleRate),
+    },
   };
 }
 
@@ -301,28 +413,68 @@ function fail(code: ReverseIngestErrorCode, message: string): ReverseIngestResul
 /**
  * Reconstructs the playable audio from a structured payload — the
  * reverse ingest of the v1 law: the payload (a canonical json string or
- * the parsed document, either schema the pattern contract owns) walks
- * the render lane and answers the wav bytes the player streams. The
- * pattern score synthesises through the engine's own recipes (byte parity
- * with renderPlan under the same seed — the test pins it); the dissected
+ * the parsed document, any schema the doctrine owns) walks the render
+ * lane and answers the wav bytes the player streams. The pattern score
+ * synthesises through the engine's own recipes (byte parity with
+ * renderPlan under the same seed — the test pins it); the dissected
  * timeline reassembles its events through the same recipe lanes and
- * shapes the loudness onto the frames' own measurements. The optional
- * store seat lands the wav under audio/wav answering the pointer.
+ * shapes the loudness onto the frames' own measurements; the whole-song
+ * soundpayload rides the engine's seeded vector synthesis (reconstructWav
+ * — the one law), its recorded pcmhash seeding the rebuild and riding
+ * the verification block beside the render's own digest. The optional
+ * store seat lands the wav under audio/wav answering the pointer. Every
+ * ok answer closes with the digest verification (the last-mile proof).
  * Deterministic, typed, node-side — never a throw.
  *
- * @param source the payload (a json string or the parsed pattern or
- *   timeline document).
+ * @param source the payload (a json string or the parsed pattern,
+ *   timeline or soundpayload document).
  * @param options the take identity seed and the optional store seat.
- * @returns the playable wav beside the pcm it encoded, or the machine
- *   code of the refusing lane.
+ * @returns the playable wav beside the pcm it encoded and the
+ *   verification of the reconstruction, or the machine code of the
+ *   refusing lane.
  */
 export async function reverseIngestPayload(
-  source: string | PatternDocument,
+  source: string | PatternDocument | SoundPayload,
   options: ReverseIngestOptions = {},
 ): Promise<ReverseIngestResult> {
   const parsed = parsePayload(source);
   if (!parsed.ok) return fail("bad-payload", parsed.message);
   const doc = parsed.doc;
+
+  // the whole-song decomposition rides the engine's own synthesis and
+  // answers its playable bytes directly — the recorded hash seeds the
+  // rebuild there (the one law, never duplicated here, and the pattern
+  // seed lane below never runs for it)
+  if (isSoundPayload(doc)) {
+    const rebuilt = reconstructWav(doc, { bitDepth: RENDER_BIT_DEPTH });
+    if (!rebuilt.ok) {
+      if (rebuilt.code === "bad-schema") return fail("bad-payload", rebuilt.message);
+      if (rebuilt.code === "container-only" || rebuilt.code === "no-frames")
+        return fail("empty-payload", rebuilt.message);
+      return fail("render-failed", rebuilt.message);
+    }
+    const decoded = parseWav(rebuilt.reconstruction.bytes);
+    if (!decoded.ok || decoded.pcm[0] === undefined) {
+      return fail(
+        "render-failed",
+        `the reconstruction refused its own decode (${decoded.ok ? "no channel" : decoded.code})`,
+      );
+    }
+    const pcm = decoded.pcm[0];
+    const rate = rebuilt.reconstruction.sampleRate;
+    const recorded = doc.document?.pcmhash ?? null;
+    if (options.store === undefined) {
+      return okOf(SOUND_PAYLOAD_SCHEMA_VERSION, pcm, rate, rebuilt.reconstruction.bytes, null, recorded);
+    }
+    let put: RenderStorePut;
+    try {
+      put = await options.store.put(rebuilt.reconstruction.bytes, RENDER_WAV_KIND);
+    } catch (error) {
+      return fail("store-failed", `the store lane threw: ${errmsgof(error)}`);
+    }
+    if (!put.ok) return fail("store-failed", `the store refused the wav: ${put.code} (${put.message})`);
+    return okOf(SOUND_PAYLOAD_SCHEMA_VERSION, pcm, rate, rebuilt.reconstruction.bytes, put.pointer, recorded);
+  }
 
   // the take identity: the caller's seed, else the payload's own
   // canonical serialization (one payload, one identity)
@@ -335,8 +487,8 @@ export async function reverseIngestPayload(
     }
   }
 
-  // the reconstruction: both payloads fold onto the flat event list and
-  // synthesise through the render lane's own mix
+  // the reconstruction: the pattern family folds onto the flat event list
+  // and synthesises through the render lane's own mix
   let mix: Float32Array;
   try {
     if (doc.schema === PATTERN_SCHEMA_VERSION) {
@@ -346,9 +498,12 @@ export async function reverseIngestPayload(
       mix = renderPatternMix(schedule, `noise:${seed}:${doc.prompt}`);
     } else {
       const events = timelineEvents(doc);
-      if (events.length === 0)
-        return fail("empty-payload", "the timeline declares no events — nothing to reconstruct");
-      const schedule = { events, duration: Math.max(doc.seconds, events[events.length - 1]?.time ?? 0), stepSeconds: 60 / (doc.bpm * 4) };
+      if (events.length === 0) return fail("empty-payload", "the timeline declares no events — nothing to reconstruct");
+      const schedule = {
+        events,
+        duration: Math.max(doc.seconds, events[events.length - 1]?.time ?? 0),
+        stepSeconds: 60 / (doc.bpm * 4),
+      };
       mix = renderPatternMix(schedule, `noise:${seed}:timeline`);
       mix = shapeTimelineLoudness(mix, doc);
     }
@@ -375,7 +530,7 @@ export async function reverseIngestPayload(
       return fail("store-failed", `the store lane threw: ${errmsgof(error)}`);
     }
     if (!put.ok) return fail("store-failed", `the store refused the wav: ${put.code} (${put.message})`);
-    return okOf(doc.schema, pcm, wav, put.pointer);
+    return okOf(doc.schema, pcm, RENDER_SAMPLE_RATE, wav, put.pointer, null);
   }
-  return okOf(doc.schema, pcm, wav, null);
+  return okOf(doc.schema, pcm, RENDER_SAMPLE_RATE, wav, null, null);
 }

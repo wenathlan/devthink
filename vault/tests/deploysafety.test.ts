@@ -45,6 +45,8 @@ const NETLIFY = read("../netlify.toml");
 const VERCEL = read("../vercel.json");
 const WRANGLER = read("../wrangler.toml");
 const HEADERS = read("../_headers");
+const REDIRECTS = read("../_redirects");
+const NGINXFACE = read("../nginx-face.conf");
 const DOCKERFILE = read("../Dockerfile");
 const API = read("../api.ts");
 
@@ -107,8 +109,8 @@ describe("the build emits at the application root (the family law)", () => {
 
   it("carries the deploy faces beside the bundles (the container assembles the served site)", () => {
     const assembles: Record<string, string> = {
-      "_headers": "_headers",
-      "_redirects": "_redirects",
+      _headers: "_headers",
+      _redirects: "_redirects",
       "favicon.svg": "*.svg",
       "icon.svg": "*.svg",
       "robots.txt": "robots.txt",
@@ -160,11 +162,77 @@ describe("the _headers seal", () => {
     assert.match(HEADERS, /Cache-Control: no-store/, "the sealed faces never ride a cache");
     assert.match(HEADERS, /X-Robots-Tag: noindex/, "the sealed faces never ride an index");
   });
+
+  it("seals the backup spellings the engine refuses (the sqlite families)", () => {
+    for (const rule of [
+      /^\/\*\.sqlite$/m,
+      /^\/\*\.sqlite-wal$/m,
+      /^\/\*\.sqlite-shm$/m,
+      /^\/\*\.sqlite-journal$/m,
+      /^\/\*\.sqlite3$/m,
+      /^\/\*\.sqlite3-wal$/m,
+      /^\/\*\.sqlite3-shm$/m,
+      /^\/\*\.sqlite3-journal$/m,
+    ]) {
+      assert.match(HEADERS, rule, `the backup seal rule ${rule.source} must stand`);
+    }
+  });
+});
+
+describe("the faun block of the static hosts (the raw store never ships)", () => {
+  it("netlify forces the database faces to 410 — a file in the tree never answers bytes", () => {
+    /* the ! law: netlify serves a static file before any redirect rule
+     * unless the rule is forced, so a plain 410 would never reach a stray
+     * store that actually rides the publish tree — every database face
+     * answers the forced gone instead. */
+    for (const face of [
+      "db",
+      "db-wal",
+      "db-shm",
+      "db-journal",
+      "sqlite",
+      "sqlite-wal",
+      "sqlite-shm",
+      "sqlite-journal",
+      "sqlite3",
+      "sqlite3-wal",
+      "sqlite3-shm",
+      "sqlite3-journal",
+    ]) {
+      assert.match(
+        REDIRECTS,
+        new RegExp(`^\\/\\*\\.${face.replace(/\./g, "\\.")}\\s+\\/index\\.html\\s+410!$`, "m"),
+        `the /*.${face} block rule must stand`,
+      );
+    }
+  });
+
+  it("vercel redirects the database faces before the filesystem answers", () => {
+    assert.match(VERCEL, /"redirects"/, "the vercel lane carries the redirect block");
+    assert.match(
+      VERCEL,
+      /db\|sqlite\|sqlite3/,
+      "the redirect source covers every database spelling the engine refuses",
+    );
+    assert.match(VERCEL, /-wal\|-shm\|-journal/, "the redirect source covers the sidecar siblings");
+  });
+
+  it("nginx refuses the database faces on the face lane with the honest 403", () => {
+    assert.ok(
+      NGINXFACE.includes("location ~* \\.(db|sqlite|sqlite3)(-wal|-shm|-journal)?$"),
+      "the face lane carries the faun block",
+    );
+    assert.match(NGINXFACE, /return 403/, "the block answers the refusal, never the bytes");
+  });
 });
 
 describe("the container builds the engine, never a source tree mirror", () => {
   it("copies only the build output into the served tree", () => {
-    assert.match(DOCKERFILE, /COPY --from=solbuild \/site\/ \/app\/site\//, "the served tree carries the assembled site faces only");
+    assert.match(
+      DOCKERFILE,
+      /COPY --from=solbuild \/site\/ \/app\/site\//,
+      "the served tree carries the assembled site faces only",
+    );
     assert.doesNotMatch(DOCKERFILE, /COPY --from=\S+ \/src\/\s/, "no stage mirrors the source root into the image");
     assert.match(DOCKERFILE, /VAULT_STATIC_DIR=\/app\/site/, "the engine door pins the assembled site tree");
   });
@@ -222,7 +290,13 @@ describe("the engine static lane (the container doctrine)", () => {
         // though it sits inside the static root — the 403 raw-database law
         // (the raw database file never leaves the vault), one door for the
         // request face and the static lane alike
-        for (const sealed of ["vault-storage.db", "vault-storage%2Edb", "VAULT-STORAGE.DB", "faun.db", "/sqlite-backup.db"]) {
+        for (const sealed of [
+          "vault-storage.db",
+          "vault-storage%2Edb",
+          "VAULT-STORAGE.DB",
+          "faun.db",
+          "/sqlite-backup.db",
+        ]) {
           const refusal = await fetch(`${base}/${sealed}`);
           assert.equal(refusal.status, 403, `${sealed} must never answer bytes`);
           assert.equal(((await refusal.json()) as { error: { code: string } }).error.code, "VAULT_DBFILE");

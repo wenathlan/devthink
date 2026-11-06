@@ -4,5 +4,12 @@
   "framework": "vite",
   "buildCommand": "pnpm build",
   "outputDirectory": ".",
+  "redirects": [
+    {
+      "source": "/:file(.+\\.(?:db|sqlite|sqlite3)(?:-wal|-shm|-journal)?)",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

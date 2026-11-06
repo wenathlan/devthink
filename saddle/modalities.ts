@@ -1309,7 +1309,10 @@ export async function sigv4sign(options: {
   const regionkey = await hmac(datekey, options.region);
   const servicekey = await hmac(regionkey, options.service);
   const derived = await hmac(servicekey, "aws4_request");
-  const signature = tohex(derived);
+  // the real chain closes the way aws pins it: the derived signing key
+  // signs the string-to-sign — the signature is the hmac of the ladder's
+  // last key over the canonical request's digest, never the key itself.
+  const signature = tohex(await hmac(derived, stringtosign));
   return {
     amzdate,
     datestamp,
@@ -1952,15 +1955,34 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       slug: "virtualdrivers",
       num: 7,
       lane: "vm",
-      operate: async () => ({
-        stdout:
-          "driver manifest: virtualcpu (topology solver), virtualgpu (device bank, mig slicing), virtualmemory (page-aligned windows), nvml-shim (the identity the guests read)",
-        artifact: {
-          drivers: ["virtualcpu", "virtualgpu", "virtualmemory", "nvml-shim"],
+      operate: async (request) => {
+        const inputs = (request.inputs ?? {}) as { vcpus?: number; cpu?: string; gpu?: string; quota?: number };
+        const topology = solvectputopology(inputs.vcpus ?? 4);
+        const processor = presentprocessor(inputs.cpu ?? "epyc9965");
+        const bank = presentgpubank(inputs.gpu ?? "b200", 1);
+        const window = mmapwindowplan(0, 65536);
+        // the driver-quota gate: the nvml shim presents 1 to 16 devices.
+        const quota = Math.max(1, Math.min(16, Math.round(inputs.quota ?? 4)));
+        const manifest = {
+          drivers: {
+            virtualcpu: `${topology.sockets}x${topology.cores}x${topology.threads} (qemu ${topology.qemuflag})`,
+            virtualgpu: `${bank.name} (mig ${bank.mig ? bank.migprofiles.join(", ") : "off"})`,
+            virtualmemory: `${window.pages} pages, ${window.advice}`,
+            "nvml-shim": processor.model,
+          },
+          nvmlshim: Array.from({ length: quota }, (_, index) => ({
+            device: index,
+            model: processor.model,
+            vrammib: bank.vramgb * 1024,
+          })),
           guestpresented: true,
           visitorhardware: false,
-        },
-      }),
+        };
+        return {
+          stdout: `driver manifest: ${Object.keys(manifest.drivers).join(", ")} — the nvml shim presents ${quota} device(s) under the driver-quota gate`,
+          artifact: manifest,
+        };
+      },
     }),
   },
   {
@@ -2273,17 +2295,51 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 16,
       lane: "runner",
       operate: async (request) => {
+        // the real routing brain of the runner lane: the magic sniff answers
+        // the kind, the kind answers the concrete argv and the seat of the
+        // ninety that executes it — the shebang line is parsed for real.
         const kind = sniffpayloadmagic(request.code);
-        const routing: Record<string, string> = {
-          elf: "exec under the cgroup slice (chmod +x, binfmt_misc when the host carries it)",
-          exe: "wine or the binfmt msdos seat (the exe lane of the ninety)",
-          wasm: "the wasm seat instantiation (wasmtime/wasmedge or in-process)",
-          script: "the shebang interpreter the payload names (bash, sh, python...)",
-          text: "the text rides the bash -c seat",
-        };
+        const cgroups = cgroupslice(BASEENVELOPE, request.profile ?? DEFAULTPROFILE, "runneruniversal");
+        let seat: number;
+        let argv: readonly string[];
+        let interpreter: string;
+        switch (kind) {
+          case "elf": {
+            seat = 27;
+            argv = [workspacepath("runneruniversal", "payload")];
+            interpreter = "the kernel exec surface (seat 27 rides the elf gate)";
+            break;
+          }
+          case "exe": {
+            seat = 26;
+            argv = ["wine", workspacepath("runneruniversal", "payload.exe")];
+            interpreter = "wine (seat 26 rides the mz gate)";
+            break;
+          }
+          case "wasm": {
+            seat = 22;
+            argv = ["wasmtime", "--dir", "/sandbox::/sandbox", workspacepath("runneruniversal", "payload.wasm")];
+            interpreter = "the wasm instantiation seat (in-process or wasmtime)";
+            break;
+          }
+          case "script": {
+            const shebang = (request.code.split("\n", 1)[0] ?? "").replace(/^#!\s*/, "");
+            const [command = "/bin/sh", ...shebangargs] = shebang.split(/\s+/).filter((token) => token.length > 0);
+            seat = 28;
+            argv = [command, ...shebangargs, workspacepath("runneruniversal", "payload")];
+            interpreter = `the shebang interpreter ${command}`;
+            break;
+          }
+          default: {
+            seat = 28;
+            argv = ["bash", "-c", request.code];
+            interpreter = "bash -c (the text lane)";
+            break;
+          }
+        }
         return {
-          stdout: `universal runner: the payload sniffed ${kind} — ${routing[kind]}`,
-          artifact: { kind, routing: routing[kind], binfmt: "binfmt_misc registration plan stamped on the engine host" },
+          stdout: `universal runner: the payload sniffed ${kind} — routing to seat ${seat} (${interpreter}), argv ${argv.join(" ")}`,
+          artifact: { kind, seat, argv, interpreter, cgroups },
         };
       },
     }),
@@ -2337,7 +2393,9 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 18,
       lane: "runner",
       binary: "bun",
-      argv: ({ code }) => ["bun", "run", "-"],
+      // the payload rides the staged program file — a "-" stdin argv would
+      // wait on a pipe the spawner never writes, so the seat never builds one.
+      argv: ({ file }) => ["bun", "run", file],
       hardening: ["package-allowlist"],
     }),
   },
@@ -2363,7 +2421,9 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 19,
       lane: "runner",
       binary: "deno",
-      argv: ({ code }) => ["deno", "run", "--allow-read=/sandbox", "-"],
+      // the payload rides the staged program file — the read permission maps
+      // the sandbox alone, the stdin dash never rides (no pipe is written).
+      argv: ({ file }) => ["deno", "run", "--allow-read=/sandbox", file],
       hardening: ["permission-map"],
     }),
   },
@@ -2527,13 +2587,15 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       lane: "runner",
       operate: async (request) => {
         const kind = sniffpayloadmagic(request.code);
-        if (kind === "wasm") {
-          return { stdout: await instantiatewasm(request.code), artifact: { toolchain: "wasmedge (in-process instantiation)" } };
+        if (kind !== "wasm") {
+          throw Object.assign(
+            new Error(
+              `the wasme seat requires base64 wasm module bytes in the code field (sniffed ${kind}) — the wasmedge toolchain never fakes a run on foreign bytes`,
+            ),
+            { code: "WASM_BYTES_ABSENT" },
+          );
         }
-        return {
-          stdout: `wasme seat: the payload is ${kind}, not wasm bytes — the wasmedge cli plan is stamped (wasmedge --dir .:. module.wasm)`,
-          artifact: { toolchain: "wasmedge", plan: ["wasmedge", "--dir", ".:.", "module.wasm"] },
-        };
+        return { stdout: await instantiatewasm(request.code), artifact: { toolchain: "wasmedge (in-process instantiation)" } };
       },
     }),
   },
@@ -2554,27 +2616,25 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     archs: WINDOWSARCHS,
     osprofiles: ["windows"],
     resources: BASEENVELOPE,
-    execute: inprocseat({
+    execute: hostspawnseat({
       slug: "runnerexe",
       num: 26,
       lane: "runner",
-      operate: async (request) => {
-        const kind = sniffpayloadmagic(request.code);
+      binary: "wine",
+      // the mz gate rides before the plan: the signature law refuses every
+      // payload without the pe magic (the throw rides the guard seam the
+      // visitor law shares — an honest coded refusal, never a faked boot).
+      argv: ({ code, file }) => {
+        const kind = sniffpayloadmagic(code);
         if (kind !== "exe") {
           throw Object.assign(new Error(`the exe seat refuses the payload: the mz signature is absent (sniffed ${kind})`), {
             code: "MZ_SIGNATURE_ABSENT",
           });
         }
-        return {
-          stdout:
-            "exe seat: the mz signature verified — the wine exec plan is stamped (wine /sandbox/runnerexe/payload.exe under the cgroup slice)",
-          artifact: {
-            kind,
-            argv: ["wine", "/sandbox/runnerexe/payload.exe"],
-            cgroup: cgroupslice(BASEENVELOPE, request.profile ?? DEFAULTPROFILE, "runnerexe"),
-          },
-        };
+        return ["wine", file];
       },
+      hardening: ["mz-gate", "dropped-caps"],
+      probe: "the host must carry wine (the mz gate refuses every payload without the pe signature first)",
     }),
   },
   {
@@ -2594,27 +2654,25 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     archs: ALLARCHS,
     osprofiles: ALLOSPROFILES,
     resources: BASEENVELOPE,
-    execute: inprocseat({
+    execute: hostspawnseat({
       slug: "runnerbinary",
       num: 27,
       lane: "runner",
-      operate: async (request) => {
-        const kind = sniffpayloadmagic(request.code);
+      binary: "the exec surface",
+      // the elf gate rides before the plan: the magic law refuses every
+      // payload without the elf magic, then the kernel exec surface runs the
+      // staged payload under the cgroup slice (argv[0] is the payload).
+      argv: ({ code, file }) => {
+        const kind = sniffpayloadmagic(code);
         if (kind !== "elf") {
           throw Object.assign(new Error(`the binary seat refuses the payload: the elf magic is absent (sniffed ${kind})`), {
             code: "ELF_MAGIC_ABSENT",
           });
         }
-        return {
-          stdout:
-            "binary seat: the elf magic verified — the exec plan is stamped (chmod +x /sandbox/runnerbinary/payload && exec under the cgroup slice)",
-          artifact: {
-            kind,
-            argv: ["/sandbox/runnerbinary/payload"],
-            cgroup: cgroupslice(BASEENVELOPE, request.profile ?? DEFAULTPROFILE, "runnerbinary"),
-          },
-        };
+        return [file];
       },
+      hardening: ["elf-gate", "dropped-caps"],
+      probe: "the host must stage the payload executable under /sandbox (the exec surface rides the elf gate first)",
     }),
   },
   {
@@ -2855,7 +2913,9 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 34,
       lane: "runner",
       binary: "go",
-      argv: ({ code }) => ["go", "run", "/dev/stdin"],
+      // the payload rides the staged program file — /dev/stdin would wait on
+      // a pipe the spawner never writes, so the seat never names it.
+      argv: ({ file }) => ["go", "run", file],
       env: { GOPATH: "/sandbox/go", GOCACHE: "/sandbox/go/cache", GOFLAGS: "-mod=mod" },
       hardening: ["gopath-jail"],
     }),
@@ -3453,9 +3513,11 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
             { code: "TAG_NOT_IMMUTABLE" },
           );
         }
+        const slice = cgroupslice(BASEENVELOPE, request.profile ?? DEFAULTPROFILE, "containerghcr");
+        const argv = ["docker", "run", "--rm", ...dockerflags(slice), reference];
         return {
-          stdout: `ghcr seat: ${reference} passed the digest-pin gate — docker run --rm ${reference} under the cgroup slice`,
-          artifact: { reference, argv: ["docker", "run", "--rm", reference] },
+          stdout: `ghcr seat: ${reference} passed the digest-pin gate — ${argv.join(" ")}`,
+          artifact: { reference, argv, cgroup: slice },
         };
       },
     }),
@@ -3853,9 +3915,26 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       operate: async (request) => {
         const inputs = (request.inputs ?? {}) as { mounts?: string[]; quota?: number };
         const mounts = inputs.mounts ?? ["/sandbox", "/sandbox/tmp"];
+        const quotamb = Math.max(1, Math.round(inputs.quota ?? 64));
+        // the real chunk-catalog composition: every mount answers its
+        // page-aligned window over the payload bytes (the mmap math), and
+        // the quota gate refuses a composition the ceiling cannot hold.
+        const payload = new TextEncoder().encode(request.code);
+        const catalog = mounts.map((mount) => {
+          const window = mmapwindowplan(0, Math.max(1, payload.byteLength));
+          return { mount, pages: window.pages, bytes: window.pagelength, advice: window.advice };
+        });
+        const composed = catalog.reduce((total, entry) => total + entry.bytes, 0);
+        const pages = catalog.reduce((total, entry) => total + entry.pages, 0);
+        if (composed > quotamb * 1024 * 1024) {
+          throw Object.assign(
+            new Error(`the vfs quota is exceeded (${composed} bytes over ${mounts.length} mounts > ${quotamb} mb)`),
+            { code: "VFS_QUOTA_EXCEEDED" },
+          );
+        }
         return {
-          stdout: `vfs: ${mounts.length} mounts composed (${mounts.join(", ")}) under the ${inputs.quota ?? 64} mb chunk-catalog quota`,
-          artifact: { mounts, quota: inputs.quota ?? 64, chunked: true },
+          stdout: `vfs: ${mounts.length} mounts composed (${mounts.join(", ")}) — ${composed} bytes in ${pages} chunk pages under the ${quotamb} mb quota`,
+          artifact: { mounts: catalog, quota: quotamb, composed, pages, chunked: true },
         };
       },
     }),
@@ -3911,11 +3990,52 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       slug: "deliverycdn",
       num: 69,
       lane: "sandbox",
-      operate: async () => ({
-        stdout:
-          "cdn mirror: the cache-control plan answers (public, max-age=31536000, immutable — the hashed asset law), the fetch rides inside the sandbox",
-        artifact: { cachecontrol: "public, max-age=31536000, immutable", fetchscope: "inside-sandbox" },
-      }),
+      operate: async (request) => {
+        // the real mirror planner: the code field is the manifest document
+        // {"origin":"https://...","assets":["a.js",...]} — the origin-pin
+        // law refuses a manifest without an origin, every asset answers its
+        // sha256 content-addressed key and the etag the cdn pins (the hashed
+        // asset law), and the fetch itself rides inside the sandbox (never
+        // the visitor network).
+        let manifest: { origin?: unknown; assets?: unknown } = {};
+        try {
+          manifest = JSON.parse(request.code) as { origin?: unknown; assets?: unknown };
+        } catch {
+          throw Object.assign(
+            new Error("the cdn mirror seat requires a json manifest {origin, assets} in the code field"),
+            { code: "MANIFEST_INVALID" },
+          );
+        }
+        if (typeof manifest.origin !== "string" || manifest.origin.length === 0) {
+          throw Object.assign(new Error("the cdn mirror seat requires an origin (the origin-pin law)"), {
+            code: "ORIGIN_PIN_ABSENT",
+          });
+        }
+        if (!Array.isArray(manifest.assets)) {
+          throw Object.assign(new Error("the cdn mirror seat requires an assets array in the manifest"), {
+            code: "MANIFEST_INVALID",
+          });
+        }
+        const assets = manifest.assets.map((name) => (typeof name === "string" ? name : String(name)));
+        const entries = await Promise.all(
+          assets.map(async (name) => {
+            const digest = await globalThis.crypto.subtle.digest("SHA-256", new TextEncoder().encode(name));
+            const sha256 = Array.from(new Uint8Array(digest))
+              .map((value) => value.toString(16).padStart(2, "0"))
+              .join("");
+            return {
+              name,
+              key: `assets/${sha256.slice(0, 32)}`,
+              etag: `"${sha256}"`,
+              cachecontrol: "public, max-age=31536000, immutable",
+            };
+          }),
+        );
+        return {
+          stdout: `cdn mirror: ${entries.length} asset(s) keyed under ${manifest.origin} — the hashed asset law (etag + immutable), the fetch rides inside the sandbox`,
+          artifact: { origin: manifest.origin, assets: entries, fetchscope: "inside-sandbox" },
+        };
+      },
     }),
   },
   {
@@ -4045,11 +4165,68 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       slug: "storagelibsql",
       num: 73,
       lane: "sandbox",
-      operate: async () => ({
-        stdout:
-          "libsql vault: the connection plan answers (the turso-shaped endpoint, the auth token gate) — the wire rides when the configuration lands",
-        artifact: { engine: "libsql", gate: "LIBSQL_URL + LIBSQL_AUTH_TOKEN configuration keys" },
-      }),
+      operate: async (request) => {
+        // the real vault roundtrip: the @libsql/client runtime the engine
+        // graph carries plus the LIBSQL_URL configuration — without either
+        // the seat answers the honest coded absence, and with both it drives
+        // one full roundtrip (create, insert, select, drop) on a private
+        // table, the readback compared against the payload character for
+        // character (the seat never fakes a database).
+        const url = typeof process !== "undefined" ? process.env.LIBSQL_URL ?? "" : "";
+        if (url.length === 0) {
+          throw Object.assign(
+            new Error(
+              "the libsql vault requires the LIBSQL_URL configuration and the @libsql/client runtime on the engine host (the seat never fakes a database)",
+            ),
+            { code: "HOST_RUNTIME_ABSENT" },
+          );
+        }
+        let libsql: typeof import("@libsql/client");
+        try {
+          libsql = (await import("@libsql/client")) as typeof import("@libsql/client");
+        } catch (error) {
+          throw Object.assign(
+            new Error(`the @libsql/client runtime is absent from the engine module graph: ${error instanceof Error ? error.message : String(error)}`),
+            { code: "HOST_RUNTIME_ABSENT" },
+          );
+        }
+        const client = libsql.createClient({ url });
+        const table = `saddle_libsql_${Date.now().toString(36)}${Math.floor(Math.random() * 1679616).toString(36)}`;
+        const payload = request.code;
+        let readback = "";
+        try {
+          await client.execute({ sql: `create table if not exists ${table} (k text primary key, v text)` });
+          await client.execute({ sql: `insert or replace into ${table} (k, v) values (?, ?)`, args: ["saddle-payload", payload] });
+          const selected = await client.execute({ sql: `select v from ${table} where k = ?`, args: ["saddle-payload"] });
+          readback = String((selected.rows[0] as { v?: unknown } | undefined)?.v ?? "");
+        } catch (error) {
+          throw Object.assign(
+            new Error(`the libsql endpoint refused the roundtrip: ${error instanceof Error ? error.message : String(error)}`),
+            { code: "LIBSQL_ROUNDTRIP_FAILED" },
+          );
+        } finally {
+          try {
+            await client.execute({ sql: `drop table if exists ${table}` });
+          } catch {
+            /* the roundtrip already answered; the drop is best effort */
+          }
+          try {
+            await client.close();
+          } catch {
+            /* the close is best effort */
+          }
+        }
+        if (readback !== payload) {
+          throw Object.assign(
+            new Error(`the libsql roundtrip answered ${readback.length} characters for ${payload.length} written`),
+            { code: "LIBSQL_ROUNDTRIP_FAILED" },
+          );
+        }
+        return {
+          stdout: `libsql vault: ${payload.length} characters roundtripped through the ${url.split(":")[0]} endpoint`,
+          artifact: { engine: "libsql", url: url.split(":")[0], roundtrip: true },
+        };
+      },
     }),
   },
   {
@@ -4210,11 +4387,26 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 78,
       lane: "sandbox",
       operate: async (request) => {
-        const inputs = (request.inputs ?? {}) as { domain?: string };
-        const packet = builddnsquery(inputs.domain ?? "devthink.dev", "a");
+        // the real rfc 8484 composition: the dns wire packet (the same
+        // builder the dns seat answers) framed as one application/dns-message
+        // post against the resolver endpoint — the request document answers
+        // the bytes and the url, the https ride stays inside the sandbox.
+        const inputs = (request.inputs ?? {}) as { domain?: string; qtype?: string; resolver?: string };
+        const domain = inputs.domain ?? "devthink.dev";
+        const qtype = inputs.qtype ?? "a";
+        const resolver =
+          typeof inputs.resolver === "string" && /^https:\/\//.test(inputs.resolver) ? inputs.resolver : "https://dns.google/dns-query";
+        const packet = builddnsquery(domain, qtype);
+        const url = `${resolver}?name=${encodeURIComponent(domain)}&type=${encodeURIComponent(qtype)}`;
         return {
-          stdout: `doh: the application/dns-message post answers for ${inputs.domain ?? "devthink.dev"} (the rfc 8484 wire rides https)`,
-          artifact: { packet, mediatype: "application/dns-message", method: "POST" },
+          stdout: `doh: the ${qtype} query for ${domain} framed as a ${packet.length / 2}-byte wire packet — post ${url} (application/dns-message, the rfc 8484 ride stays inside the sandbox)`,
+          artifact: {
+            url,
+            method: "POST",
+            mediatype: "application/dns-message",
+            packet,
+            body: packet,
+          },
         };
       },
     }),
@@ -4530,11 +4722,32 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       slug: "mobiletermux",
       num: 89,
       lane: "sandbox",
-      operate: async () => ({
-        stdout:
-          "termux: the android sandbox plan answers (the termux property composition, the emulated device the lane mounts on the edge)",
-        artifact: { platform: "android", device: "emulated", execscope: "edge-host" },
-      }),
+      operate: async (request) => {
+        // the real termux composition: the prefix property plan (the default
+        // prefix the termux device hosts carry), the path and home the
+        // emulated device mounts, the pkg install plan and the exec argv
+        // through the prefix shell — all derived from the request.
+        const inputs = (request.inputs ?? {}) as { prefix?: string; packages?: string[] };
+        const prefix =
+          typeof inputs.prefix === "string" && inputs.prefix.length > 0 ? inputs.prefix : "/data/data/com.termux/files/usr";
+        const packages = Array.isArray(inputs.packages) ? inputs.packages.map((name) => String(name)) : [];
+        const plan = {
+          platform: "android",
+          device: "emulated",
+          execscope: "edge-host",
+          prefix,
+          home: "/data/data/com.termux/files/home",
+          path: `${prefix}/bin:/usr/bin:/bin`,
+          shell: `${prefix}/bin/sh`,
+          pkg: packages.length > 0 ? ["pkg", "install", "-y", ...packages] : ["pkg", "install", "-y", "bootstrap"],
+          exec: [`${prefix}/bin/sh`, workspacepath("mobiletermux", "payload")],
+          cgroup: cgroupslice(INPROCENVELOPE, request.profile ?? DEFAULTPROFILE, "mobiletermux"),
+        };
+        return {
+          stdout: `termux: the android sandbox plan answers (prefix ${prefix}, the ${packages.length > 0 ? `${packages.length}-package` : "bootstrap"} install plan, the exec rides ${plan.exec.join(" ")}) — the emulated device mounts on the edge host, never the visitor machine`,
+          artifact: plan,
+        };
+      },
     }),
   },
   {
