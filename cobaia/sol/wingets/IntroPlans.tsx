@@ -15,7 +15,7 @@
 
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
-import { checkoutlinks, type checkoutplan, isconfigured } from "../../checkoutlinks";
+import { checkoutlinks, type checkoutplan, isconfigured } from "../../monetization";
 import { useContent } from "../../content.ts";
 import { label, labelfill } from "../../labels";
 

@@ -16,7 +16,7 @@ import type { CSSProperties } from "react";
 import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { label, labelfill } from "../../labels";
-import { roster } from "../../roster.ts";
+import { roster } from "../../monetization.ts";
 import { AdSlot } from "../wingets";
 
 export function Apps() {

@@ -5,7 +5,7 @@
  * lives exactly once (here) instead of repeating across every page —
  * the components stay complete independent files beside this surface.
  */
-export * from "../../roster.ts";
+export { type familymember, roster } from "../../monetization.ts";
 export * from "./HomeEntrygate.tsx";
 export { default as EntryGate } from "./HomeEntrygate.tsx";
 export * from "./IntroFooter.tsx";

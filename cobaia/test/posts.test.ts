@@ -6,7 +6,7 @@
 // content, not containers) and the honest word counter agrees with itself.
 import assert from "node:assert/strict";
 import { describe, expect, it } from "vitest";
-import { postindex, posts, postwords } from "../posts.ts";
+import { postindex, posts, postwords } from "../monetization.ts";
 
 // the content lane answers the same rows the seed carries (wave of the
 // content law): the const retired, the accessor serves the identical data

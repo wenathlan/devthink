@@ -16,7 +16,7 @@
 import type { CSSProperties } from "react";
 import { useContent } from "../../content.ts";
 import { label, labelfill } from "../../labels";
-import { type blogpost, postindex, postwords } from "../../posts";
+import { type blogpost, postindex, postwords } from "../../monetization";
 import { AdSlot } from "../wingets";
 
 /** the meta line of one post: the date and the honest word count. */
