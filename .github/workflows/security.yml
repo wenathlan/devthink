@@ -90,13 +90,24 @@ jobs:
             delete manifest.packageManager;
             fs.writeFileSync("auditwork/package.json", JSON.stringify(manifest, null, 2) + "\n");
             const overrides = manifest.overrides ?? {};
-            const lines = Object.keys(overrides).map(function (name) {
-              /* the @-scoped seats ride quoted keys - the strict yaml
-               * parser pnpm carries refuses an unquoted @ character the
-               * manifestemplate union (the overrides mirror the dependency
-               * seats, scoped names included) otherwise writes */
-              return "  " + JSON.stringify(name) + ": " + JSON.stringify(overrides[name]);
-            });
+            const lines = [];
+            for (const [name, value] of Object.entries(overrides)) {
+              if (value !== null && typeof value === "object") {
+                /* the nested override seats (the xcode uuid pin) ride the
+                 * pnpm selector grammar — the parent>child keys the pnpm
+                 * workspace reader walks instead of the object form the
+                 * npm manifest carries */
+                for (const [child, childValue] of Object.entries(value)) {
+                  lines.push("  " + JSON.stringify(name + ">" + child) + ": " + JSON.stringify(childValue));
+                }
+              } else {
+                /* the @-scoped seats ride quoted keys - the strict yaml
+                 * parser pnpm carries refuses an unquoted @ character the
+                 * manifestemplate union (the overrides mirror the dependency
+                 * seats, scoped names included) otherwise writes */
+                lines.push("  " + JSON.stringify(name) + ": " + JSON.stringify(value));
+              }
+            }
             fs.writeFileSync("auditwork/pnpm-workspace.yaml", "overrides:\n" + lines.join("\n") + "\n");
           '
           pnpm --dir auditwork install --lockfile-only
