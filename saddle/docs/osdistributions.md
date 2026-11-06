@@ -1,4 +1,4 @@
-# os.distributions — the seven system seats the saddle container carries
+# os.distributions — the sixteen system seats the saddle container carries
 
 > the owner order (pr15, verbatim): "iniciar distribuição do container
 > saddle com por exemplo, grapheneos, omarchy e outros sistemas dentro do
@@ -10,7 +10,10 @@
 > distribution created by dhh / grapheneos is a privacy and security
 > hardened version of android / linux normal / max / lite / balanced /
 > android / arm64 / amd64 / vgpu / vcpu / por exemplo, 50gb por plano
-> via config."
+> via config." and the more-than-fifteen directive: "o saddle nao ta
+> com mais de 15 devido as disvbriçoe s com sistem aoperacional como
+> graphene os e etc" — the saddle container carries more than fifteen
+> system seats.
 
 ## the registry
 
@@ -30,6 +33,21 @@ import it takes — `engineplans.ts` — is itself pure data).
 | v | languageos | the v language platform (vlang, the 0.5.2 catalog seat) | vpm | linux-x64, linux-arm64, darwin-arm64, darwin-x64, windows-x64, wasm32 | amd64+arm64 | max/balanced/lite |
 | linux | distribution | the plain linux baseline the engine container rides | apt | linux-x64, linux-x64-musl, linux-arm64, linux-riscv64 | amd64+arm64+riscv64 | max/balanced/lite |
 | android | mobile | the android application platform | apk | linux-arm64, darwin-arm64-v8 | arm64 | max/balanced/lite |
+| postmarketos | mobile | alpine linux | apk | linux-arm64, darwin-arm64-v8 | arm64 | max/balanced/lite |
+| lineageos | mobile | android | apk | linux-arm64, darwin-arm64-v8 | arm64 | max/balanced/lite |
+| calyxos | mobile | android | apk | linux-arm64, darwin-arm64-v8 | arm64 | max/balanced/lite |
+| archlinux | desktop | arch linux | pacman | linux-x64, linux-arm64 | amd64+arm64 | max/balanced/lite |
+| alpine | distribution | musl libc busybox | apk | linux-x64, linux-arm64, linux-x64-musl, linux-riscv64 | amd64+arm64+riscv64 | max/balanced/lite |
+| debian | desktop | the debian project | apt | linux-x64, linux-arm64 | amd64+arm64 | max/balanced/lite |
+| fedora | desktop | red hat linux upstream | rpm | linux-x64, linux-arm64 | amd64+arm64 | max/balanced/lite |
+| nixos | distribution | the nix package manager | nix | linux-x64, linux-arm64 | amd64+arm64 | max/balanced/lite |
+| void | distribution | xbps | xbps | linux-x64, linux-arm64, linux-x64-musl | amd64+arm64 | max/balanced/lite |
+
+the seven named law seats ride first (the order the owner's sentence
+rides them), then the nine honest additions the more-than-fifteen
+directive rides: postmarketos, lineageos, calyxos, archlinux, alpine,
+debian, fedora, nixos and void — every one a real distribution with
+its true upstream fact.
 
 the true facts the owner's law pins, verbatim in the rows' notes:
 
@@ -51,6 +69,27 @@ the true facts the owner's law pins, verbatim in the rows' notes:
   container itself rides (the resolver's default), every linux seat the
   standard carries answers it.
 - **android** is the mobile platform the grapheneos hardening builds on.
+
+the true facts of the nine additions, verbatim in the rows' notes:
+
+- **postmarketos** is the alpine-based mobile distribution real devices
+  boot (the community mobile seat, the apk grammar, the arm64 legs).
+- **lineageos** is the community android continuation (the aftermarket
+  mobile seat on the arm64 legs).
+- **calyxos** is the privacy-focused android distribution (the hardened
+  mobile seat beside grapheneos).
+- **archlinux** is the rolling-release distribution omarchy builds on
+  (the pacman desktop seat on the amd64 and arm64 legs).
+- **alpine** is the musl-based lightweight distribution (the
+  small-footprint seat the musl legs answer).
+- **debian** is the universal operating system (the apt desktop seat the
+  widest hardware matrix answers).
+- **fedora** is the red-hat-upstream community distribution (the rpm
+  desktop seat beside the apt rows).
+- **nixos** is the declarative distribution the nix package manager
+  builds (the reproducible-system seat).
+- **void** is the independent source-rolling distribution (the xbps seat
+  the musl legs answer beside alpine).
 
 ## the pairings (real joins, never duplicated lists)
 
@@ -106,7 +145,7 @@ arch standard:
 - `getosdistribution`, `resolveosdistribution`, `osdistributionerror`
   — the resolver (undefined/null answers the linux row, a known id
   answers its row, anything else throws the coded
-  `OS_DISTRIBUTION_UNKNOWN` refusal naming the seven seats);
+  `OS_DISTRIBUTION_UNKNOWN` refusal naming the sixteen seats);
 - `osdistributionsforarch`, `osdistributionsforprofile` — the joins the
   modality system reads (which seats ride one arch seat; which seats
   ride one tier — an unknown tier throws
@@ -126,7 +165,7 @@ legs the eleven-architecture standard carries. the dockerfile documents
 the law (the `THE OS DISTRIBUTION SEATS` paragraph) and the publish
 lanes stay untouched: no per-os build matrix exists or is needed, the
 container itself keeps riding the normal linux baseline (the container
-lane law) and the seven seats are the catalog the modality system hosts
+lane law) and the sixteen seats are the catalog the modality system hosts
 inside the engine, never host distributions the container installs.
 
 ## the visitor law (the critical law)
@@ -139,8 +178,10 @@ owns every cycle it spends through saddle and vault edge processing.
 
 ## the pinning battery
 
-`saddle/tests/osdistrib.test.ts` (eight tests, green): the seven seats
-in law order, the true facts verbatim, the arch pairing honesty (every
+`saddle/tests/osdistrib.test.ts` (nine tests, green): the sixteen seats
+in law order (the seven named seats plus the nine honest additions,
+more than fifteen), the true facts verbatim per named seat and per
+addition seat, the arch pairing honesty (every
 pairing a real seat of the standard, the derived legs per seat), the
 tier binding reused from engineplans (the deep-equality against
 `ENGINEPLANS.map`), the plan-resource law (50 as plan config, the

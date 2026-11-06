@@ -62,15 +62,26 @@
 # distribution this container installs.
 #
 # THE OS DISTRIBUTION SEATS the saddle container carries (the osdistrib
-# law, saddle/containerarch.ts — the owner's sentence: "iniciar
+# law, saddle/containerarch.ts — the owner's sentences: "iniciar
 # distribuição do container saddle com por exemplo, grapheneos, omarchy
-# e outros sistemas dentro do saddle"): the container starts its
-# distribution catalog with the seven system seats the OSDISTRIBUTIONS
-# registry pins — grapheneos (a privacy and security hardened version of
-# android), omarchy (the arch linux-based distribution created by dhh),
-# vanilla os (based on ubuntu), maru os (firmware, not an application),
-# the v seat (the vlang platform the dependency catalog pins at 0.5.2,
-# never a guest distribution), the normal linux baseline and android —
+# e outros sistemas dentro do saddle" and "o saddle nao ta com mais de
+# 15 devido as disvbriçoe s com sistem aoperacional como graphene os e
+# etc" — the more-than-fifteen directive): the container carries the
+# sixteen system seats the OSDISTRIBUTIONS
+# registry pins — the seven named law seats (grapheneos a privacy and
+# security hardened version of android, omarchy the arch linux-based
+# distribution created by dhh, vanilla os based on ubuntu, maru os
+# firmware not an application, the v seat the vlang platform the
+# dependency catalog pins at 0.5.2 never a guest distribution, the
+# normal linux baseline and android) beside the nine honest additions —
+# postmarketos (the alpine-based mobile distribution), lineageos (the
+# community android continuation), calyxos (the privacy-focused android
+# distribution), archlinux (the rolling-release distribution omarchy
+# builds on), alpine (the musl-based lightweight distribution), debian
+# (the universal operating system), fedora (the red-hat-upstream
+# community distribution), nixos (the declarative distribution the nix
+# package manager builds) and void (the independent source-rolling
+# distribution) —
 # every seat paired with the architecture legs the eleven-architecture
 # standard already carries (the mobile and firmware seats ride the arm64
 # legs, the desktop and baseline seats ride amd64 and arm64) and bound
