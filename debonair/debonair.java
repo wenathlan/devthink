@@ -1,4 +1,4 @@
-package io.github.wenathlan.debonair;
+package com.wenathlan.debonair;
 
 /**
  * The debonair version envelope carrier.

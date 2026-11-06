@@ -1,4 +1,4 @@
-package io.github.wenathlan.cobaia;
+package com.wenathlan.cobaia;
 
 /**
  * The cobaia version envelope carrier.

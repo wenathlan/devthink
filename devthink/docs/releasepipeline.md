@@ -20,7 +20,7 @@
 | GitHub Packages npm | `@wenathlan/devthink` | Validated npm tarball. | `GITHUB_TOKEN` with `packages: write`. |
 | npmjs | `@wenathlan/devthink` | Validated tarball published with provenance after `npm whoami`, or an exact-version idempotent skip. | `NODE_AUTH_TOKEN` or fallback `NPM_TOKEN`; no manual variable gate. |
 | GitHub Container Registry | `ghcr.io/wenathlan/devthink` | Published image plus truthful reference, digest and JSON; the registry is not misrepresented as a tarball. | `GITHUB_TOKEN` with `packages: write`, `attestations: write` and `id-token: write`. |
-| GitHub Maven Packages | `io.github.wenathlan:devthink` | Maven distribution descriptor and extension ZIP attachment. | `GITHUB_TOKEN` with `packages: write`. |
+| GitHub Maven Packages | `com.wenathlan:devthink` | Maven distribution descriptor and extension ZIP attachment. | `GITHUB_TOKEN` with `packages: write`. |
 | GitHub Packages NuGet | `extension` | Content package that carries the extension ZIP and a minimal distribution assembly. | `GITHUB_TOKEN` with `packages: write`. |
 
 Maven remains a descriptor rather than a Java runtime API. NuGet remains a distribution package rather than a browser-control .NET API. These boundaries prevent registry coordinates from overstating the runtime capability of the extension.

@@ -650,7 +650,7 @@ export function vsixpackentriesof(output: vsixpackoutput): string[] {
 /* ── Merged from mavenpack.ts: the 1.1.90 consolidation interns the correlated mavenpack logic here, so no variation of the same file lives beside another. ── */
 /**
  * Mavenpack of the 1.1.88 consolidation.
- * Every maven packaging concern of the publishing pipeline lives in this one pure module for the single distribution: the jar resources the one io.github.wenathlan.devthink artifact embeds (the library core, the cli, the headless entry, the mcp server, the embedded server surface and the http module all ship inside the one jar), the classifier artifacts the pom attaches beside it (the chromium extension zip and the declarations zip), the project metadata the pom records and the pom text itself. The module stays pure: the descriptors are plain data the build, the tests and the docs read, the checked-in pom mirrors them and the mavenpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the maven channel publishes to the repository the pom declares.
+ * Every maven packaging concern of the publishing pipeline lives in this one pure module for the single distribution: the jar resources the one com.wenathlan.devthink artifact embeds (the library core, the cli, the headless entry, the mcp server, the embedded server surface and the http module all ship inside the one jar), the classifier artifacts the pom attaches beside it (the chromium extension zip and the declarations zip), the project metadata the pom records and the pom text itself. The module stays pure: the descriptors are plain data the build, the tests and the docs read, the checked-in pom mirrors them and the mavenpack tests assert the mirror never drifts, no vendor endpoint and no download url ever appears here — the maven channel publishes to the repository the pom declares.
  * Example: `const resources = mavenjarresources(); const attached = mavenattachedartifacts("1.1.88");`
  */
 
@@ -684,11 +684,11 @@ export function mavenattachedartifacts(version: string): mavenattachedartifact[]
 /** The project metadata the pom records: the coordinates, the name, the description, the url, the scm links and the license — the metadata a registry consumer reads before depending on the artifact. */
 export function mavenpackinfo(): mavenpommetadata {
   return {
-    groupid: "io.github.wenathlan",
+    groupid: "com.wenathlan",
     artifactid: "devthink",
     name: "DevThink single distribution",
     description:
-      "The single DevThink maven distribution: every consumption mode — the library core, the cli, the headless entry and the mcp server — embedded as jar resources in the one io.github.wenathlan.devthink artifact, with the extension zip and the declarations zip attached as classifier artifacts beside it.",
+      "The single DevThink maven distribution: every consumption mode — the library core, the cli, the headless entry and the mcp server — embedded as jar resources in the one com.wenathlan.devthink artifact, with the extension zip and the declarations zip attached as classifier artifacts beside it.",
     url: "https://github.com/wenathlan/devthink",
     scmurl: "https://github.com/wenathlan/devthink",
     scmconnection: "scm:git:https://github.com/wenathlan/devthink.git",

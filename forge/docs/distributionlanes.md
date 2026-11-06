@@ -6,7 +6,7 @@ The eleven distribution lanes of the PR14 law and the honest status each lane an
 | --- | --- | --- | --- |
 | npmjs | package.json — @wenathlan/forge | live | the family-npmjs lane publishes the envelope every release rung |
 | GitHub Packages npm | package.json — @wenathlan/forge | live | the family-githubnpm lane publishes the same envelope idempotently |
-| Maven | pom.xml — io.github.wenathlan:forge | live | the family-maven lane deploys the jar |
+| Maven | pom.xml — com.wenathlan:forge | live | the family-maven lane deploys the jar |
 | NuGet | forge.csproj | live | the family-nuget lane packs the envelope |
 | Gradle | build.gradle.kts — com.wenathlan:forge | live | the family-gradle lane publishes the module |
 | Ruby Gems | forge.gemspec | live | the family-rubygems lane pushes the gem |

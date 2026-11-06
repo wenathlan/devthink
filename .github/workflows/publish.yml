@@ -1161,7 +1161,7 @@ jobs:
           cd devthink
           VERSION="${{ steps.release.outputs.version }}"
           PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
-          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/io/github/wenathlan/devthink/${VERSION}/devthink-${VERSION}.jar"; then
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/devthink/${VERSION}/devthink-${VERSION}.jar"; then
             echo "The single maven distribution devthink-${VERSION} is already published; skipping the re-upload."
           else
             published=false
@@ -1209,7 +1209,7 @@ jobs:
   family-maven:
     needs: release-approval
     # the family maven lane: every application envelope deploys its own
-    # io.github.wenathlan.<app> jar (the nine documentation envelopes
+    # com.wenathlan.<app> jar (the nine documentation envelopes
     # carry the README, the documentation set, the zero-build site and
     # the tests directory as jar resources; the saddle engine envelope
     # compiles its Saddle.java adapter into the one real jar of the
@@ -1232,7 +1232,7 @@ jobs:
       matrix:
         # the canonical family pass order with the distfamily law: the
         # saddle engine jar joins the nine documentation jars (its pom
-        # answers the io.github.wenathlan coordinates and the devthink
+        # answers the com.wenathlan coordinates and the devthink
         # registry this lane deploys, so the one existence path and the
         # one bounded retry serve every leg alike).
         package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
@@ -1298,7 +1298,7 @@ jobs:
           VERSION="${{ steps.release.outputs.version }}"
           PKG="${{ matrix.package }}"
           PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
-          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/io/github/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}.jar"; then
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}.jar"; then
             echo "The family maven distribution ${PKG}-${VERSION} is already published; skipping the re-upload."
           else
             published=false
@@ -2126,7 +2126,7 @@ jobs:
     # Saddle.java adapter into the one real jar of the family) into the
     # same GitHub Packages maven registry the single gradle distribution
     # uses - under the com.wenathlan coordinates, so the gradle rung never
-    # collides with the io.github.wenathlan versions the family maven lane
+    # collides with the com.wenathlan versions the family maven lane
     # owns - with the module metadata (the .module file the gradle
     # consumer resolves) beside the pom and the jar, the existence
     # pre-check, the bounded retry, the checksum umbrella and the release

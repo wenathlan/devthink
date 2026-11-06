@@ -10,7 +10,7 @@ This document covers every publishing channel of the devthink release, every art
 | npmjs | `@wenathlan/devthink` | `wenathlan-devthink-<v>.tgz` — the library tarball with the fixtures, the declarations, the docs examples and every library bundle. |
 | GitHub Packages npm | `@wenathlan/devthink` | the same tarball, published idempotently when the version is absent. |
 | GitHub Packages NuGet | `extension` | `extension.<v>.nupkg` — the distribution package described below. |
-| GitHub Packages Maven | `io.github.wenathlan:devthink` | the aggregator pom, one module jar per consumption mode, and the extension and declarations classifier zips. |
+| GitHub Packages Maven | `com.wenathlan:devthink` | the aggregator pom, one module jar per consumption mode, and the extension and declarations classifier zips. |
 | GHCR | `ghcr.io/wenathlan/devthink` | the multi stage container image tagged `<v>` beside the `stable` alias (a `pre` suffix for prereleases), with `extension-container.txt`, `extension-container.digest` and `extension-container.json` pinning the exact image. |
 | vscode | the release asset `devthink-vscode-<v>.vsix` | the vs code package described below — the operator installs it from the release with their own credentials; the package declares no marketplace url. |
 | firefox | the release asset `devthink-firefox-<v>.xpi` | the firefox build ready for the operator's signing path. |
@@ -37,7 +37,7 @@ The pure `nugetpack` module of the library describes the same layout, the checke
 
 ## The Maven package contents
 
-The maven distribution carries one module per consumption mode under the `io.github.wenathlan:devthink` aggregator:
+The maven distribution carries one module per consumption mode under the `com.wenathlan:devthink` aggregator:
 
 - `extension-library` — the jar embedding `dist/index.js`, `dist/index.cjs`, `dist/devthink.umd.js` and `dist/checksums.txt` as resources.
 - `extension-cli` — the jar embedding `dist/cli.js`.

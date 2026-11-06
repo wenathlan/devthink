@@ -1,4 +1,4 @@
-package io.github.wenathlan.vault;
+package com.wenathlan.vault;
 
 /**
  * The vault version envelope carrier.

@@ -1,13 +1,13 @@
 // The devthink gradle distribution module (the gradleseat wave): the
 // single rich distribution the maven lane ships as the
-// io.github.wenathlan artifact rides the gradle rung under the
+// com.wenathlan artifact rides the gradle rung under the
 // com.wenathlan coordinates — the maven-publish plugin renders the module
 // metadata (devthink-<version>.module) beside the pom and the jar, the
 // jar embeds every consumption mode the node build stages (the library
 // core, the cli, the headless entry and the mcp server) and the
 // publication attaches the extension and declarations classifier zips
 // the build helper attaches for the maven consumer — the same GitHub
-// Packages registry, never colliding with the io.github.wenathlan
+// Packages registry, never colliding with the com.wenathlan
 // versions the maven lane owns. The releaseVersion property answers the
 // lane override the way the pom revision property does, and the default
 // reads the envelope package.json the metadata lockstep stamps — the

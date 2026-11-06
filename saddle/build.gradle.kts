@@ -1,5 +1,5 @@
 // The saddle gradle distribution module (the gradleseat wave): the
-// engine envelope the maven lane ships as the io.github.wenathlan
+// engine envelope the maven lane ships as the com.wenathlan
 // artifact rides the gradle rung under the com.wenathlan coordinates —
 // the maven-publish plugin renders the module metadata
 // (saddle-<version>.module) beside the pom and the jar, and the one real

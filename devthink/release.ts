@@ -71,7 +71,7 @@ function channelsectionsof(version: string) {
         `devthink${version}.zip`,
         `devthink-declarations-${version}.zip`,
       ],
-      `The single io.github.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.`,
+      `The single com.wenathlan.devthink distribution with every consumption mode embedded as jar resources; the extension zip and the declarations zip attach with their classifiers beside the one jar.`,
     ),
     "",
     channel(

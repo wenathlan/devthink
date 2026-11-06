@@ -1,4 +1,4 @@
-package io.github.wenathlan.cadria;
+package com.wenathlan.cadria;
 
 /**
  * The cadria version envelope carrier.

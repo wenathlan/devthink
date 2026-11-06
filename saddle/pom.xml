@@ -5,19 +5,19 @@
   <modelVersion>4.0.0</modelVersion>
   <!-- The merged Maven carrier of the saddle repository: the former
        io.wenathlan:saddle library envelope and the former
-       io.github.wenathlan:e2ugh Java process adapter join into ONE
+       com.wenathlan:e2ugh Java process adapter join into ONE
        artifact at 2.0.0 (the grand merge) — the Saddle.java adapter
        compiles into the saddle artifact and every metadata field of both
        lineages is readapted to the saddle product. The distfamily wave
        seats the carrier beside its siblings: the coordinates answer the
-       io.github.wenathlan family group and the devthink registry the
+       com.wenathlan family group and the devthink registry the
        family-maven lane deploys (the standalone wenathlan/saddle registry
        the standalone era declared answers no lane the merged repository
        token can publish — the GITHUB_TOKEN of the devthink publish wave
        holds packages:write on the devthink registry alone), while the
        url and scm fields keep the saddle product identity the csproj
        and gemspec carriers keep. -->
-  <groupId>io.github.wenathlan</groupId>
+  <groupId>com.wenathlan</groupId>
   <artifactId>saddle</artifactId>
   <version>${revision}</version>
   <packaging>jar</packaging>

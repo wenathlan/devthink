@@ -1,4 +1,4 @@
-package io.github.wenathlan.forge;
+package com.wenathlan.forge;
 
 /**
  * The forge version envelope carrier.

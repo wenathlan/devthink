@@ -26,7 +26,7 @@ on:
       packages:
         description: Comma separated maven package names the retire job walks (the absorbed package cleanup lane input).
         required: false
-        default: io.github.wenathlan.extension-mcp,io.github.wenathlan.extension-headless,io.github.wenathlan.extension-cli,io.github.wenathlan.extension-library
+        default: com.wenathlan.extension-mcp,com.wenathlan.extension-headless,com.wenathlan.extension-cli,com.wenathlan.extension-library
         type: string
   pull_request_target:
     # the absorbed labeler lane (the consolidation pass): the pull request
@@ -595,7 +595,7 @@ jobs:
             fi
             echo "coordinate ${target} retired or absent (the single distribution replaces it)"
           done
-          echo "the single distribution io.github.wenathlan.devthink is the only maven coordinate"
+          echo "the single distribution com.wenathlan.devthink is the only maven coordinate"
 
   label:
     # the absorbed labeler lane (the consolidation pass): the pull request

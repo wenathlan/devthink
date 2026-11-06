@@ -1,4 +1,4 @@
-package io.github.wenathlan.devthink;
+package com.wenathlan.devthink;
 
 import java.io.IOException;
 import java.util.ArrayList;
