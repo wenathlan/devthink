@@ -1,22 +1,26 @@
-// # infrawave.test — the root book gate (the single-file law the owner
-// once charged and the deletions violated four times): the law moved on
-// and the root now carries only the automation tree, the eleven app
-// folders, .gitignore and the root manifest — the INFRA.md book left the
-// root with the dc919529 deletion, so the battery no longer demands the
-// book at the root. the content checks stay for the seats that still
-// ship the book (the family law, the logic registry and the keyword
-// modules), skipped wherever the book is absent — the same context law
-// the curveguard battery walks.
+// # infrawave.test — the docs book gate (the single-file law the owner
+// charged and the deletions violated four times): the infra.md logic book
+// answers inside the devthink docs seat with the family law, the logic
+// registry and the keyword modules — the repository root carries only the
+// first-layer law (the twelve folders beside .gitignore and package.json),
+// so the book rides the docs tree the app ships. the container cut ships
+// the app surfaces without the automation tree, so the gate answers the
+// book where the app docs carry it — the same context law the curveguard
+// battery walks.
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const approot = join(import.meta.dirname, "..");
 const reporoot = join(approot, "..");
-const bookpath = join(reporoot, "INFRA.md");
+const bookpath = join(approot, "docs", "infra.md");
 const automationtree = existsSync(join(reporoot, ".github"));
 
-describe("the book answers the single-file law wherever it still lives", () => {
+describe("the docs book answers the single-file law", () => {
+  it.skipIf(!automationtree)("the infra.md book exists at the devthink docs seat", () => {
+    expect(existsSync(bookpath), "the deletions reddened the tree four times; the book returns").toBe(true);
+  });
+
   it.skipIf(!automationtree || !existsSync(bookpath))("the book carries the family law, the registry and the keyword modules", () => {
     const book = readFileSync(bookpath, "utf8");
     expect(book, "the family law section").toContain("## A LEI DA FAMÍLIA");

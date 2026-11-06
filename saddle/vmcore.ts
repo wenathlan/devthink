@@ -481,8 +481,8 @@ export function executerv64(
           else trapped = illegal(pc, word);
         } else if (funct7 === 0x00 || funct7 === 0x20) {
           if (funct3 === 0) write(sign32(negate ? BigInt(sign32(left)) - BigInt(sign32(right)) : BigInt(sign32(left)) + BigInt(sign32(right))));
-          else if (funct3 === 1) write(negate ? trapped = illegal(pc, word) : sign32(left << BigInt(right & 0x1fn)));
-          else if (funct3 === 5) write(negate ? sign32(sign32(left) >> BigInt(right & 0x1fn)) : sign32(left >>> BigInt(right & 0x1fn)));
+          else if (funct3 === 1 && !negate) write(sign32(left << BigInt(right & 0x1fn)));
+          else if (funct3 === 5) write(negate ? sign32(sign32(left) >> BigInt(right & 0x1fn)) : sign32(left >> BigInt(right & 0x1fn)));
           else trapped = illegal(pc, word);
         } else trapped = illegal(pc, word);
         if (trapped !== undefined) break;

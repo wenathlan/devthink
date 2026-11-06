@@ -728,23 +728,63 @@ describe("the workflow contract", () => {
   });
 
   /* ------------------------------------------------------------------ */
-  /* gate 8: the one container file contract (gateway 1.1.5 standard)    */
+  /* gate 8: the container pair contract (the nginxfamily law)           */
   /* ------------------------------------------------------------------ */
 
-  it("ci gate container: the one Dockerfile carries the merged compose and entrypoint contract", () => {
-    /* the compose stack and the entrypoint bootstrap are merged INTO the
-     * Dockerfile and deleted: every compose spelling (docker-compose.yml,
-     * compose.yml, compose.yaml, docker-compose.yaml) and entrypoint.sh
-     * must not exist, and the one container file must carry every setting
-     * the compose gate used to verify (memswap -1, shm 2g, the services,
-     * the state volumes, the non-root user and the healthcheck). */
-    for (const composefile of ["docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"]) {
+  it("ci gate container: the Dockerfile and compose pair carry the family container contract", () => {
+    /* the nginxfamily wave reconciles the container law the gateway 1.1.5
+     * standard once wrote: the compose is no longer merged into the
+     * Dockerfile — every one of the eleven roots seats docker-compose.yml
+     * beside the Dockerfile (the family law the devthink battery pins),
+     * the vault precedent's engine/face pair answers inside it with the
+     * face gated on the engine health lane, and the one container file
+     * keeps every setting the merge wave baked in (the services, the
+     * state volumes, the non-root user and the healthcheck now answer
+     * across the pair the way the family wires them). the alternate
+     * compose spellings and the wrapper entrypoint stay retired. */
+    assert.equal(
+      existsSync(join(reporoot, "docker-compose.yml")),
+      true,
+      "docker-compose.yml must sit at the application root (the family law the nginxfamily wave stamps)",
+    );
+    for (const alternate of ["docker-compose.yaml", "compose.yml", "compose.yaml"]) {
       assert.equal(
-        existsSync(join(reporoot, composefile)),
+        existsSync(join(reporoot, alternate)),
         false,
-        `${composefile} is merged into the Dockerfile and must not exist`,
+        `${alternate} is retired — the family compose spelling is docker-compose.yml`,
       );
     }
+    const compose = readFileSync(join(reporoot, "docker-compose.yml"), "utf8");
+    assert.ok(compose.includes("services:"), "the compose declares services");
+    assert.ok(
+      /^  saddle-engine:$/m.test(compose),
+      "the compose seats the saddle-engine service (the vault precedent's engine seat)",
+    );
+    assert.ok(
+      /^  saddle-face:$/m.test(compose),
+      "the compose seats the saddle-face service (the vault precedent's face seat)",
+    );
+    assert.ok(
+      compose.includes("condition: service_healthy"),
+      "the compose gates the face on the engine health lane",
+    );
+    assert.match(
+      compose,
+      /\/api\/v1\/health/,
+      "the compose documents the real health lane the engine image rides",
+    );
+    assert.ok(
+      compose.includes('"8089:8080"'),
+      "the compose publishes the face on the saddle host door 8089:8080 (the one distinct door the collision law maps)",
+    );
+    assert.ok(
+      compose.includes("restart: unless-stopped"),
+      "the compose keeps the pair answering across host reboots",
+    );
+    assert.ok(
+      /^  saddledata:$/m.test(compose),
+      "the compose carries the named state volume the engine's sqlite home rides",
+    );
     assert.equal(
       existsSync(join(reporoot, "Dockerfile.full")),
       false,
