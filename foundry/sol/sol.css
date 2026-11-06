@@ -176,6 +176,9 @@
   font-size: 16px;
 
   --focus-ring: 2px solid var(--color-focus);
+  /* the ice-vault accent of the family spec (PR9): the #a3d7e6 lane the
+     vault surfaces borrow — focus stays the windows #4cc2ff */
+  --accent-ice-vault: #a3d7e6;
 
   /* window-level material: the mica wall, the acrylic beds and the
      feTurbulence grain (.86, 2 octaves, 6%, soft-light, 140px — zero files) */

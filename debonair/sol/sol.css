@@ -193,6 +193,9 @@
   --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   --focus-ring: 2px solid var(--color-focus);
+  /* the ice-vault accent of the family spec (PR9): the #a3d7e6 lane the
+     vault surfaces borrow — focus stays the windows #4cc2ff */
+  --accent-ice-vault: #a3d7e6;
 
   /* the os chrome hairlines (the design reform PV5.002): the structural
      seams of the shell wear the dark hairline law of the os chrome — the

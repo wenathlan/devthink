@@ -144,6 +144,9 @@
         --win-accent: #4cc2ff;
         --win-accent-ink: #060607;
         --focus: var(--win-accent);
+        /* the ice-vault accent of the family spec (PR9): the #a3d7e6 lane the
+           vault surfaces borrow — focus stays the windows #4cc2ff */
+        --accent-ice-vault: #a3d7e6;
         --ok: #86efac;
         --err: #ff8f9a;
         --warn: #e2c26a;
