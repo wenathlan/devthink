@@ -514,7 +514,13 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join, relative, resolve } from "node:path";
 import { serve } from "@hono/node-server";
 import { type Context, type Hono } from "hono";
-import { createserver as getrycreateserver, loadconfig } from "@wenathlan/getry/server";
+import {
+  createserver as getrycreateserver,
+  getversion as getrygetversion,
+  listversions as getrylistversions,
+  loadconfig,
+  reloadconfig as getryreloadconfig,
+} from "@wenathlan/getry/server";
 import { copyseed } from "./uistore.ts";
 import {
   DEFAULTQUOTAMB,
@@ -1001,7 +1007,14 @@ export { runclifamily } from "@wenathlan/getry/cli";
    utils re-export beside the auth, transport and console exports this file already declares, so
    the server surface answers the whole library contract from one module. */
 // config loading — bridge to the user customization layer
-export { getversion, listversions, loadconfig, reloadconfig, validateconfig } from "./config.js";
+/* the flat package law (the consumer truth): the library surface answers
+ * the inlined getry owner seats the entry imports statically — the bundle
+ * inlines every loader through the family bridge — while the config face
+ * keeps the computed lazy lane its browser purity law demands (the web
+ * consumer never drags the hono transport at module scope). the node
+ * consumer resolves one inlined module and never a registry specifier. */
+export { getrygetversion as getversion, getrylistversions as listversions, loadconfig, getryreloadconfig as reloadconfig };
+export { validateconfig } from "@wenathlan/getry/validate";
 // database — prisma persistence (the storage family)
 export { db, getsession, getsessionmessages, savemsg } from "./storage.js";
 // engine — the universal request pipeline

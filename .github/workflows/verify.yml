@@ -502,18 +502,28 @@ jobs:
       - name: Build the root distribution
         run: cd devthink && node build.ts
       - name: Pack the distribution tarball into a temporary directory
+        # the gateway family tarball packs beside the os distribution (the
+        # consumer truth law): the smoke answers the branch state of every
+        # family package the consumer's dependency tree resolves — the
+        # registry's previously published getry envelope shipped a files
+        # allowlist that omitted every exported .ts face, so the consumer
+        # resolved a @wenathlan/getry dependency that carried no server.ts
+        # at all; the local pack keeps the smoke honest about the code the
+        # wave merges instead of the stale registry rung.
         run: |
           set -euo pipefail
           cd devthink
           rm -rf /tmp/devthink-consumer-smoke
           mkdir -p /tmp/devthink-consumer-smoke/pack /tmp/devthink-consumer-smoke/consumer
           npm pack ./distpackage --pack-destination /tmp/devthink-consumer-smoke/pack
+          cd ../getry
+          npm pack --pack-destination /tmp/devthink-consumer-smoke/pack
       - name: Create the consumer project and install the tarball
         run: |
           set -euo pipefail
           cd /tmp/devthink-consumer-smoke/consumer
           npm init -y >/dev/null
-          npm install ../pack/wenathlan-devthink-*.tgz
+          npm install ../pack/wenathlan-getry-*.tgz ../pack/wenathlan-devthink-*.tgz
       - name: Run the library smoke as the consumer
         run: |
           set -euo pipefail
