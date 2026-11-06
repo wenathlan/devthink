@@ -453,6 +453,14 @@ const familybridges = {
 const libraryexternals = [
   "hono",
   "@hono/node-server",
+  /* the babel engine seat the saddle modalities own: the compile lane
+   * reads the runtime through a guarded dynamic import (the
+   * HOST_RUNTIME_ABSENT degradation the engine law designs), so the
+   * bundle keeps the import dynamic — bundling @babel/core would walk
+   * its config resolver into @babel/preset-typescript, a seat the
+   * saddle tree never declares, and the walk dies at build time on a
+   * runtime the engine law already treats as optional. */
+  "@babel/core",
   "@libsql/client",
   "@prisma/client",
   "@prisma/adapter-libsql",
