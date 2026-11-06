@@ -2,9 +2,9 @@ name: DevThink Publish
 
 # THE POST-RELEASE LANES OF THE MERGED REPOSITORY, ONE FILE (the 2.0.16
 # grouping pass): every lane that fires when the DevThink Release ladder
-# completes - the seven registry publishes (npmjs, the github npm registry,
-# maven, nuget, rubygems, gradle and the five-architecture ghcr container
-# index),
+# completes - the eight registry publishes (npmjs, the github npm
+# registry, maven, nuget, rubygems, gradle, the go get module rung and
+# the five-architecture ghcr container index),
 # the platform artifact lanes (the compiled desktop binaries, the tauri
 # bundles, the android and ios mobile artifacts, the container archive, the
 # browser extension package and the target plans) and the SHA256SUMS
@@ -26,12 +26,15 @@ name: DevThink Publish
 # THE FAMILY DISTRIBUTION LANES (the 2.0.46 five-package wave): beside
 # every application registry lane rides its family mirror - the
 # family-npmjs, family-githubnpm, family-maven, family-nuget,
-# family-gradle, family-rubygems and family-ghcr jobs publish every
-# documentation envelope (the six-distribution completeness law of the
-# distpack ladder, closed by the distfamily wave: every application
-# envelope rides the nuget, maven, rubygems, npmjs and github npm lanes,
-# and the gradleseat wave seats the gradle rung beside them under the
-# com.wenathlan coordinates the gradle consumer resolves - the
+# family-gradle, family-goget, family-rubygems and family-ghcr jobs
+# publish every documentation envelope (the six-distribution completeness
+# law of the distpack ladder, closed by the distfamily wave: every
+# application envelope rides the nuget, maven, rubygems, npmjs and github
+# npm lanes, the gradleseat wave seats the gradle rung beside them under
+# the com.wenathlan coordinates the gradle consumer resolves, and the
+# goget wave seats the go module rung - the per-application go.mod
+# markers the go get consumer resolves through the proxy.golang.org
+# chain off the per-module tags the lanes sync on the release commit - the
 # ten siblings in the canonical pass order, saddle walking npmjs last
 # beside its engine lanes and answering the devthink maven registry
 # the family coordinates carry) through the same registries, the same
@@ -2299,6 +2302,407 @@ jobs:
             "${{ matrix.package }}.gradle.${VERSION}.module" \
             "${{ matrix.package }}.gradle.${VERSION}.jar" \
             "${{ matrix.package }}.sha256.gradle.${VERSION}" --clobber
+
+  detect-goget:
+    name: detect Go module source
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch (the two events
+    # the release workflow really runs on) proceeds; the publish job below
+    # cascades off this one.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-24.04
+    # the resolve/existence lane stays bounded (the family contract: every
+    # resolve-shaped job carries its own ceiling).
+    timeout-minutes: 15
+    outputs:
+      present: ${{ steps.goget.outputs.present }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - id: goget
+        shell: bash
+        run: |
+          if test -f devthink/go.mod; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
+  goget:
+    name: publish the single go module distribution
+    needs: [detect-goget, release-approval]
+    if: needs.detect-goget.outputs.present == 'true'
+    runs-on: ubuntu-latest
+    # the extension release-gate doctrine (the 2.0.18 port, the approval
+    # gate repair): every registry publish answers through the explicit
+    # release-approval gate job this lane needs - the one review the owner
+    # grants for the whole publish wave.
+    timeout-minutes: 20
+    # least-privilege: the job's own writes (the e2ugh job-permission
+    # doctrine): contents write pushes the per-module tag the go get rung
+    # resolves and attaches the module set to the release assets below -
+    # the go module registry IS the repository tag set the proxy chain
+    # serves, so no packages write rides beside it the way the maven and
+    # gradle rungs carry theirs.
+    permissions:
+      contents: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          # the release-version resolver, inlined from the retired composite
+          # action (the one-workflow-file standard: every workflow carries
+          # its own steps - the .github/actions folder no longer exists).
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./devthink/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup go
+        # the pinned interpreter line the family runtime doctrine, Regra
+        # 54/125 carries: the go legs ride the 1.27 line at its current
+        # patch release the way the java legs ride temurin 26 and the node
+        # legs ride 26.13.0 - never a floating `go` alias, and the
+        # dependency cache stays off because the module envelopes the wave
+        # ships declare no go.sum at all.
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: 1.27.3
+          cache: false
+      - name: verify the go module builds clean
+        # the module validity gate: the go.mod marker and the doc carrier
+        # the goget wave stamped must answer the real toolchain - the
+        # module identity, the gofmt discipline, the vet pass and the
+        # build itself - before the lane ever tags the registry entry.
+        run: |
+          set -euo pipefail
+          cd devthink
+          # the module identity the lane owns: the go.mod marker declares
+          # the github.com/wenathlan/devthink/devthink/v2 path the
+          # per-module tag below serves.
+          test "$(go list -m)" = "github.com/wenathlan/devthink/devthink/v2"
+          # the format law: the doc carrier the module ships answers
+          # gofmt exactly (an empty listing is the pass).
+          test -z "$(gofmt -l .)"
+          go vet ./...
+          go build ./...
+      - name: sync the go module tag the proxy chain resolves
+        # the go get registry entry: a go module resolves from the
+        # repository itself through the proxy.golang.org chain when the
+        # per-module tag (devthink/vX.Y.Z) points at the release commit -
+        # the lane pushes the tag the same release ladder pushes the
+        # version tag, an existing tag on the same commit answers the
+        # idempotent skip, and a tag on a foreign commit reddens honestly
+        # (the go checksum database pins the module bytes per version - a
+        # re-tag would serve different content for the same semver).
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          modtag="devthink/v${VERSION}"
+          target="$(git rev-parse "v${VERSION}^{commit}")"
+          if git ls-remote --tags origin "refs/tags/${modtag}" | grep -q "refs/tags/${modtag}"; then
+            git fetch --force --tags origin "refs/tags/${modtag}:refs/tags/${modtag}"
+            if [[ "$(git rev-parse "${modtag}^{commit}")" != "$target" ]]; then
+              echo "The go module tag ${modtag} already exists on a different commit; the go module registry is immutable and the lane refuses the re-tag." >&2
+              exit 1
+            fi
+            echo "The go module tag ${modtag} is already synced on the release commit; skipping the tag push."
+          else
+            git tag "${modtag}" "${target}"
+            git push origin "refs/tags/${modtag}"
+          fi
+      - name: verify the module resolves through the go proxy
+        # the tag-sync verification: proxy.golang.org fetches the module
+        # from the repository on the first request, so the bounded retry
+        # (the same policy the registry lanes carry) walks the cold fetch
+        # until the .info record answers the version the lane tagged.
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          MODPATH="github.com/wenathlan/devthink/devthink/v2"
+          resolved=false
+          for attempt in 1 2 3 4 5; do
+            info="$(curl -sSf --max-time 60 "https://proxy.golang.org/${MODPATH}/@v/v${VERSION}.info" 2>/dev/null || true)"
+            if printf '%s' "$info" | grep -q "\"Version\":\"v${VERSION}\""; then
+              resolved=true
+              echo "The go module ${MODPATH}@v${VERSION} resolves through the proxy chain."
+              break
+            fi
+            echo "The proxy resolve attempt ${attempt} of the single module failed; the bounded retry policy retries inside five attempts (the proxy fetches the repository on the first request)."
+            sleep "$((attempt * 10))"
+          done
+          test "$resolved" = true
+      - name: retain the module zip and the go.mod the proxy serves
+        # the public naming law (the family asset naming gate): the goget
+        # lane attaches under its own dotted grammar - devthink.goget.<version>
+        # - so the gradle lane's devthink.gradle.<version> assets never
+        # collide and the SHA256SUMS umbrella never flips between two
+        # lanes' bytes.
+        run: |
+          set -euo pipefail
+          cd devthink
+          VERSION="${{ steps.release.outputs.version }}"
+          MODPATH="github.com/wenathlan/devthink/devthink/v2"
+          stage="gogetrelease"
+          mkdir -p "$stage"
+          # the final-form honesty check: the .mod file the proxy serves
+          # is the go.mod marker the tagged tree carries (the module
+          # directive the checksum database signs) - the lane retains the
+          # same final-form files the registry serves, the maven lane mold
+          # over the ~/.m2 set.
+          curl -sSf -o "${stage}/devthink.goget.${VERSION}.mod" "https://proxy.golang.org/${MODPATH}/@v/v${VERSION}.mod"
+          if ! diff <(grep -E '^(module|go) ' go.mod) <(grep -E '^(module|go) ' "${stage}/devthink.goget.${VERSION}.mod"); then
+            echo "The go.mod the proxy serves does not match the module marker of the tagged tree." >&2
+            exit 1
+          fi
+          curl -sSf -o "${stage}/devthink.goget.${VERSION}.zip" "https://proxy.golang.org/${MODPATH}/@v/v${VERSION}.zip"
+          # the checksum umbrella over the goget set the lane attaches -
+          # the same checksum discipline every asset family carries, and
+          # never over itself (the SHA256SUMS umbrella law).
+          sha256sum "${stage}"/devthink.goget."${VERSION}".* | sed "s#${stage}/##" > "${stage}/sha256.goget.${VERSION}"
+          test -s "${stage}/sha256.goget.${VERSION}"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-goget-${{ steps.release.outputs.version }}
+          path: devthink/gogetrelease/*
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        # the audit gap fix mold (the registry channel coverage law): the
+        # go module lane attaches the artifacts the proxy serves to the
+        # GitHub release beside the module tag it pushed (the asset-lane
+        # attach mold of container/desktop); --clobber keeps the re-run
+        # idempotent (Regra 39).
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" devthink/gogetrelease/* --clobber
+
+  family-goget:
+    needs: release-approval
+    # the family go get lane: every application envelope rides the go
+    # module rung beside the maven, nuget, rubygems and gradle rungs -
+    # each leg verifies its module against the pinned go toolchain, syncs
+    # the per-module tag (<app>/vX.Y.Z on the release commit, the registry
+    # entry the proxy chain resolves), verifies the module resolves
+    # through proxy.golang.org and attaches the module zip and the go.mod
+    # the proxy serves beside the checksum umbrella (the family container
+    # archive lane mold: every leg answers its own dotted asset set with
+    # its checksum). The saddle engine envelope keeps its go.mod at the
+    # app root beside the gradle and pom markers - the module owns the
+    # whole saddle envelope - while its one go package (the doc carrier
+    # the doc.go file declares) rides the documentation support seat at
+    # saddle/docs, because the app root carries the C engine sources
+    # (virtualhardware.c beside the virtualization core and the gpu
+    # monitor companions) the go package law refuses inside a package
+    # directory and the flat layout law keeps the app root to the sol
+    # interface and the support seats - so every leg walks the same
+    # uniform path the ten siblings walk.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # the canonical family pass order the maven family lane carries
+        # (the distfamily law): the saddle engine module joins the nine
+        # documentation modules - its per-module tag answers the
+        # github.com/wenathlan/devthink coordinates this lane serves, so
+        # the one tag-sync path and the one bounded retry serve every leg
+        # alike.
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup go
+        # the pinned 1.27.3 line the single goget lane carries: every
+        # family leg answers the same interpreter the application lane
+        # resolves, so the go rung answers one line across the whole
+        # family.
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: 1.27.3
+          cache: false
+      - name: verify the family go module builds clean
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          cd "$PKG"
+          MODPATH="github.com/wenathlan/devthink/${PKG}/v2"
+          test "$(go list -m)" = "$MODPATH"
+          test -z "$(gofmt -l .)"
+          go vet ./...
+          go build ./...
+      - name: sync the family go module tag the proxy chain resolves
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PKG="${{ matrix.package }}"
+          modtag="${PKG}/v${VERSION}"
+          target="$(git rev-parse "v${VERSION}^{commit}")"
+          if git ls-remote --tags origin "refs/tags/${modtag}" | grep -q "refs/tags/${modtag}"; then
+            git fetch --force --tags origin "refs/tags/${modtag}:refs/tags/${modtag}"
+            if [[ "$(git rev-parse "${modtag}^{commit}")" != "$target" ]]; then
+              echo "The go module tag ${modtag} already exists on a different commit; the go module registry is immutable and the lane refuses the re-tag." >&2
+              exit 1
+            fi
+            echo "The go module tag ${modtag} is already synced on the release commit; skipping the tag push."
+          else
+            git tag "${modtag}" "${target}"
+            git push origin "refs/tags/${modtag}"
+          fi
+      - name: verify the family module resolves through the go proxy
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PKG="${{ matrix.package }}"
+          MODPATH="github.com/wenathlan/devthink/${PKG}/v2"
+          resolved=false
+          for attempt in 1 2 3 4 5; do
+            info="$(curl -sSf --max-time 60 "https://proxy.golang.org/${MODPATH}/@v/v${VERSION}.info" 2>/dev/null || true)"
+            if printf '%s' "$info" | grep -q "\"Version\":\"v${VERSION}\""; then
+              resolved=true
+              echo "The go module ${MODPATH}@v${VERSION} resolves through the proxy chain."
+              break
+            fi
+            echo "The proxy resolve attempt ${attempt} of the ${PKG} module failed; the bounded retry policy retries inside five attempts (the proxy fetches the repository on the first request)."
+            sleep "$((attempt * 10))"
+          done
+          test "$resolved" = true
+      - name: retain and checksum the family module the proxy serves
+        # the public naming law (the family asset naming gate): every leg
+        # attaches under its own dotted grammar - <app>.goget.<version> -
+        # beside the checksum umbrella over the set, the same discipline
+        # the family gradle lane carries for its module set.
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PKG="${{ matrix.package }}"
+          MODPATH="github.com/wenathlan/devthink/${PKG}/v2"
+          # the final-form honesty check: the .mod file the proxy serves
+          # is the go.mod marker the tagged tree carries (the module
+          # directive the checksum database signs).
+          curl -sSf -o "${PKG}.goget.${VERSION}.mod" "https://proxy.golang.org/${MODPATH}/@v/v${VERSION}.mod"
+          if ! diff <(grep -E '^(module|go) ' "${PKG}/go.mod") <(grep -E '^(module|go) ' "${PKG}.goget.${VERSION}.mod"); then
+            echo "The go.mod the proxy serves does not match the module marker of the tagged tree." >&2
+            exit 1
+          fi
+          curl -sSf -o "${PKG}.goget.${VERSION}.zip" "https://proxy.golang.org/${MODPATH}/@v/v${VERSION}.zip"
+          sha256sum "${PKG}.goget.${VERSION}."* > "${PKG}.sha256.goget.${VERSION}"
+          test -s "${PKG}.sha256.goget.${VERSION}"
+          # the family asset naming gate: no underscore ever rides a
+          # published asset (the three names the leg attaches answer the
+          # check, never the whole repository root).
+          ! printf '%s\n' \
+            "${PKG}.goget.${VERSION}.zip" \
+            "${PKG}.goget.${VERSION}.mod" \
+            "${PKG}.sha256.goget.${VERSION}" | grep -q "_"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-family-goget-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.goget.${{ steps.release.outputs.version }}.zip
+            ${{ matrix.package }}.goget.${{ steps.release.outputs.version }}.mod
+            ${{ matrix.package }}.sha256.goget.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag),
+        # and --clobber keeps the re-run idempotent over its own names,
+        # which carry the application prefix and never collide with
+        # another lane's grammar.
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.goget.${VERSION}.zip" \
+            "${{ matrix.package }}.goget.${VERSION}.mod" \
+            "${{ matrix.package }}.sha256.goget.${VERSION}" --clobber
 
   ghcr:
     needs: release-approval
@@ -7134,6 +7538,11 @@ jobs:
       # before the SHA256SUMS rebuild answers, so the umbrella covers
       # the gradle rung's assets the way it covers the maven ones.
       - gradle
+      # the goget wave rides the same umbrella law: the single go module
+      # lane attaches the module zip, the go.mod the proxy serves and the
+      # checksum before the SHA256SUMS rebuild answers, so the umbrella
+      # covers the go get rung's assets the way it covers the maven ones.
+      - goget
       - ghcr
       - digest
       - desktop
@@ -7146,6 +7555,10 @@ jobs:
       # the family gradle legs attach their dotted module sets beside the
       # family container archives before the umbrella answers.
       - family-gradle
+      # the family go get legs attach their dotted module sets (the zip,
+      # the go.mod the proxy serves and the checksum) beside the family
+      # gradle ones before the umbrella answers.
+      - family-goget
       # the five hundred asset ladder attaches its metadata sets and its
       # family reports before the umbrella answers, so the SHA256SUMS
       # signature covers the expanded asset set the ladder ships.
