@@ -160,7 +160,7 @@ describe("the gameface law", () => {
     /* the pictograph ranges an emoji icon would ride (the typographic arrow
      * → of the comment voice is prose, not a glyph — comments never render,
      * so the css sweep strips them before it judges) */
-    const emoji = /[\u{1F000}-\u{1FAFF}\u{FE0F}]/u;
+    const emoji = /[\u{1F000}-\u{1FAFF}]|\u{FE0F}/u;
     for (const { path, source } of solSources()) {
       const rendered = path.endsWith(".css") ? source.replace(/\/\*[\s\S]*?\*\//g, "") : source;
       expect(emoji.test(rendered), `${path} must not ship an emoji glyph`).toBe(false);
