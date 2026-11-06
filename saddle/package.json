@@ -3,6 +3,7 @@
   "version": "2.0.166",
   "private": false,
   "description": "binary computing engine that turns distributed storage into a publishable working set carrying the merged virtual-hardware engine (the saddle + e2ugh grand merge)",
+  "license": "GPL-3.0-only",
   "scripts": {
     "build:engine": "node scriptsbuildengine.ts",
     "check": "tsc -p tsconfig.json --noEmit",

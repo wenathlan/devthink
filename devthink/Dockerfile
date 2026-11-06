@@ -382,6 +382,17 @@ COPY devthink .
 COPY getry /getry
 COPY foundry /foundry
 COPY saddle /saddle
+# the familyface battery walks the eleven roots the container law stamps
+# (the nginx face, the compose pair, the docker.config and the Dockerfile
+# every app carries): the five siblings the suite never installed still
+# answer the file walk, so their source seats ride the builder beside the
+# six the dependency bridges materialize — the family face law reads them
+# at the application root exactly the way the checkout answers.
+COPY argan /argan
+COPY cobaia /cobaia
+COPY debonair /debonair
+COPY forge /forge
+COPY stealthhead /stealthhead
 # the root manifest the engines gate counts rides beside the application:
 # the engines suite opens ../package.json from the workdir, and the
 # container answers the checkout geometry the same way (the count law
