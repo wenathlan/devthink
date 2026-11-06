@@ -45,7 +45,18 @@
        * mirror era is over, the rows are the owner's own objects. the
        * entry retires when the published envelope carries the built
        * workload law. */
-      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"]
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
+      /* the gateway thinking bridge of the ownership law: devthink/os.ts and
+       * the family seats reach the reasoning ladder through the published
+       * specifier ("@wenathlan/getry/thinking"), and this bridge resolves it
+       * to the monorepo source the gateway engine owns — the thinking seat is
+       * never duplicated inside cadria. */
+      "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
+      /* the babel lane bridge: saddle/modalities.ts imports @babel/core
+       * through a guarded dynamic import, and devthink carries the typed
+       * face ("babelcoreface.ts") the whole family resolves against — the
+       * engine consumes the typed face, never a duplicated copy. */
+      "@babel/core": ["../devthink/babelcoreface.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],

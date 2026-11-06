@@ -1,35 +1,1032 @@
 ---
 name: features
 description: >-
-  FEATURES.md — registro de features por app da Operação DevThink.
-  Meta por app: >1.000 features (média 400, mín 600, máx 4.000), distribuídas
-  em versões formato x.0.0 com no máximo 99 features por versão.
-  Seed real + ondas de leitura neodocs (append contínuo). Nada inventado.
+  FEATURES.md — the single feature catalog of the family: every feature of
+  every app, macro and micro, feature and interaction, written as a direct
+  objective. Nothing invented; modern references ride only at the end.
 ---
 
-# FEATURES — Registro por App (Operação DevThink)
+# FEATURES — the single family catalog
 
-> **Formato de entrada**: `F-<APP>-<NNN>. <título> — <detalhe> (status:
-> shipped|planned) [v<versão>] «fonte»`
-> **Versionamento**: cada app distribui features em versões `1.0.0`,
-> `2.0.0`, `3.0.0`… com no máximo 99 features por versão; média 400,
-> mínimo 600, máximo 4.000 features por app.
-> **Fontes**: `neodocs-txt/features.txt` (AetherForge/saddle, 88 shipped),
-> `regras-APP.md` (raiz), conversas, ondas neodocs.
+The single file the owner charged: all the features of all our apps, micro
+and macro features, micro and macro interactions, as direct objectives.
+Less design specification — only the direct goal.
 
-## ÍNDICE DE APPS
+Provenance, stated honestly. This catalog derives from:
 
-| App | Papel | Meta | Seed | Versões |
-|-----|-------|------|------|---------|
-| devthink | OS e superplataforma (absorve 7+ apps) | 4.000 | 82 | v1.0.0+ |
-| saddle | VM/DevThink + sandbox engine (AetherForge) | 4.000 | 88 | v1.0.0+ |
-| debonair | app da família (tema próprio) | 1.000 | 12 | v1.0.0+ |
-| cadria | app da família (absorve iukka+create) | 1.000 | 6 | v1.0.0+ |
-| stealthhead | app da família (importa versawase) | 1.000 | 6 | v1.0.0+ |
-| argan | DNS/gateway da família | 1.000 | 6 | v1.0.0+ |
-| getry | plataforma @devthink/ai (gateway) | 1.000 | 35 | v1.0.0+ |
+- the owner corpus — the conversation record of the owner voice (the pasted
+  family feature ledger, the correction waves, the design doctrine) and the
+  repository reference catalog (every package and every link harvested from
+  every document of both family repositories, grouped by category);
+- the engines the family already shipped — the audio engine with its
+  analysis, separation, ingest and pattern seats; the visual engine with its
+  mesh, shader, timeline and transcode seats; the virtualization engine with
+  its full sandbox modality ladder and virtual hardware catalog; the storage
+  engine with its pillar catalog, chunking, quota and retention; the thinking
+  gateway with its registerable reasoning ladder, provider lanes and key
+  rotation; and the per-app surfaces every sibling already carries.
+
+Law of this file: the body names no path, no file and no specific number. A
+feature is a verb and a purpose. Anything the owner framed as an example
+rides only in the final reference section, as illustration and never as
+obligation. Nothing here is invented.
+
+How to read:
+
+- macro feature — a whole engine, surface or capability the app owns;
+- micro feature — a single behavior inside a capability;
+- macro interaction — a complete journey across the app;
+- micro interaction — a small feedback moment inside a journey.
+
+## devthink — the operating system
+
+The envelope and superplatform of the family: the desktop, the window
+system, the flagship chat with its sandbox, the native subapps, the browser
+extension, the terminal face, and every sibling hosted inside.
+
+### macro features
+
+- boot as a fixed doctrine: the web face jumps from the animated mark
+  straight to the desktop; the installed media walks the full reference
+  sequence — greeting, loading, landscape clock, lock, sign-in — before the
+  desktop;
+- gate the entries in order: the public presentation, the discovery page,
+  the auth page, then the panel; no shortcut drops a visitor into the panel,
+  and returning visitors are recognized and taken straight to the handoff;
+- present the discovery page as a public gallery with a category rail
+  spanning video, image, audio, three-dimensional work, code, documents,
+  sandbox runs and community shares, reading the real roster of family apps
+  with zero invented rows;
+- run a real desktop: the mark resting as the breathing hero, app icons
+  scattered in an organic arc, drag and drop with ghost preview and
+  persisted positions, double click opening an app inside a window, single
+  tap opening on touch;
+- carry the shell: an acrylic taskbar with icon-only pins whose names
+  surface on hover, a running indicator that grows with activity, a tray
+  with a stacked clock and flyouts, and a floating start menu with search
+  over the registry and pinned tiles;
+- let the navbar float or dock by pull gesture, with the position named in
+  plain words in settings;
+- replicate the reference window grammar: caption buttons with the close
+  burning red on hover, the inactive window desaturating, border resize
+  handles, snap zones ghosting while dragging, maximize flattening the
+  radius, minimize flying back to the pin, most-recently-used ordering,
+  cascade spawn offsets, the switcher, jump lists and context menus
+  identical to the reference system;
+- host every sibling as a window with its own identity and accent, its close
+  returning to the presentation, and its direct address opening fullscreen
+  without forcing it;
+- run the flagship chat as the creation workspace: born with its sandbox
+  provisioned, carrying space, sandbox, session and message identities from
+  birth;
+- multiply understanding: independent subagents read every message with a
+  summarizer above them, each able to spawn more of its own;
+- treat edits as checkpoints: editing a message never interrupts the running
+  work — it opens a parallel clone, the newest edit prevails, and every
+  checkpoint merges at the end;
+- stack the composer as a well of pills — thinking, search, deep research,
+  files, image — with a model picker that probes the gateway catalog once
+  per registration, a thinking picker that persists across sessions, an
+  honest token meter that always says estimate, and a send key that morphs
+  between send, stop, sending and disabled;
+- render the conversation as a centered band of asymmetric turns, reasoning
+  always on and visible in a collapsible drawer, tool calls as grouped
+  single rows, markdown settled by blocks, code carrying a language header
+  and a copy button whose state visibly changes;
+- preserve the partial answer under an honest stopped flag; export sessions
+  separating owner lines from delegated agent lines;
+- embed the sandbox pane in the chat: a real terminal, a process monitor, a
+  headless browser inspector with stream and network, and a code editor with
+  live diffs;
+- keep the gateway opt-in with a disconnected natural state and an honest
+  offline line — the assistant answers only after the person registers one;
+- run the swarm: one agent per tab with leader, workers, critics and
+  verifiers, work stealing, mailboxes, a blackboard, consensus quorum,
+  budget boxes and a kill switch always present;
+- greet with the day and capability cards; let a mascot react to idle and
+  thinking states in a duty-cycled, pausable way; write title and summary
+  with the cheap model on its own endpoint; deep-link every session;
+- host the native subapps: the video studio and the music studio importing
+  the sibling engines, the games runner queueing real binaries through the
+  sandbox, the image page on the pixel pipeline, the calculator with
+  tokenizer, evaluator and memory keys, the console as a real terminal with
+  a staged boot graph, and the file explorer with toolbar, breadcrumb,
+  rotating carets, list and grid toggle, selection highlights, drive cards
+  with real capacity bars and an honest estimate when the lane is offline;
+- carry the tools page of generation and conversion utilities; the notes
+  with floating windows, dashboards, shareable public and private notes,
+  the canonical task list, a trash with expiry and a compacted weekly log;
+- embed the browser with its own chrome, consent gates and policy module;
+  turn any functional interface into terminal and command line through the
+  terminal lineage;
+- sell through the store — pretrained models, plugins, themes and runners —
+  granting resources and never powers across plans; keep the lock visual
+  only for signup and payment while engines and sandboxes stay free and
+  unlimited; convert donations into an equivalent plan; never sell the
+  creator plan;
+- keep automation and the tool protocol registry ready in every app, opt-in
+  and disabled by default, with endpoints, custom providers and safe
+  address validation;
+- guard the developer tools in production with the timing trap and the
+  console probe, answering with a themed interstitial that keeps the router
+  and the chat alive;
+- lock the zoom at the baseline everywhere; register the assistant as a
+  super root user that resumes where it stopped, working as a team in live
+  ghost cursor, hidden instant and autonomous background modes;
+- carry the installable disc image exclusively, because only the operating
+  system is the operating system.
+
+### micro features
+
+- the breathing hero; the icon intro with overshoot; the growing running
+  indicator; the hover names on pins;
+- the morphing send key; the estimate-only token meter; the stopped flag;
+  the copy state change; the grouped tool rows; the collapsible reasoning
+  drawer;
+- the capacity bar honesty; the empty folder answer; the new drive gesture;
+  the rotating carets; the cross-fade between list and grid; the drag-over
+  highlight;
+- the duty-cycled cursor; the staged boot graph; the visual-only lock.
+
+### macro interactions
+
+- arrive, recognize, handoff: the returning visitor walks from the
+  presentation to the panel without friction;
+- open a sibling from the desktop arc, work inside its window under its own
+  accent, close back to the presentation;
+- converse with the sandbox attached: ask, watch the swarm divide the work,
+  edit mid-flight, merge the checkpoints, export the session;
+- explore the family: from the discovery rail into any sibling app and back;
+- manage files as drives: open, fill, mount a fresh bank, reopen an old one
+  by identity.
+
+### micro interactions
+
+- pin hover naming; indicator growth; snap ghosts; close burn; inactive
+  desaturation; minimize fly-back; send-key morphing; stopped honesty; copy
+  state; caret rotation; cross-fade; drag-over highlight; capacity honesty.
+
+## saddle — the virtualization engine
+
+The sandbox and virtual machine engine of the family: the execution
+backbone that runs anything, including itself, without ever touching the
+machine of the visitor, receipting every execution honestly.
+
+### macro features
+
+- declare a full ladder of sandbox modalities: the complete virtual machine
+  with virtual driver, processor and graphics; the universal binary runner;
+  the hardened containers; the registry images; the micro machines; the
+  browser and the virtual browser; the mobile targets; the confidential
+  tiers; the webassembly runtimes; the virtual file system; and the sandbox
+  served over the content delivery lane;
+- resolve, never ask: the person never chooses a modality — the workload
+  declares its needs for isolation, graphics, network and boot, and the
+  resolver answers the exact set, reporting honestly what the host carries;
+- keep the operating registry as the single source of truth, with a report
+  that never lies about what ran;
+- isolate by ladder, denying by default: untrusted code runs in isolates,
+  compiled work in webassembly, and the host frontier in micro machines or
+  the sandboxed container runtime — the deprecated machine libraries are
+  never accepted as a security boundary;
+- hold hardware profiles as data, never code: light, balanced and max bases
+  with virtual processors, graphics slices, memory and disk; a new profile
+  is a database record and every knob is editable through the interface;
+- span the operating system catalog across the mobile and desktop families
+  on both architectures, each with its own virtual graphics and processor,
+  configurable base image, counts, quotas, driver set and aliases;
+- carry the hypervisor lineage: the scheduler with processor overcommit, the
+  topology constructor, the memory balloon, hotplug, same-page merging,
+  compressed swap, the passthrough and paravirtual graphics lanes, the
+  snapshot, restore and live migration with measured downtime, rollback in
+  phases with a circuit breaker, and the warm pool restoring machines in
+  milliseconds;
+- catalog real boards, real graphics identities and real processor names
+  with spoofed libraries that never claim kernel truth;
+- bridge storage as memory: map, overlay and swap the same bytes between
+  storage and compute across a latency ladder, selling free compute plus
+  storage as a virtual memory cache and never labeling remote storage as
+  memory;
+- give every conversation sandbox its identities, jailed per session, with
+  real filesystem effects inside the jail and honest refusals for the lanes
+  it does not carry; the server lane answers run, files, write and
+  modalities, and the browser-pure simulator survives only as a declared
+  offline fallback;
+- ride the lifecycle on a heartbeat: restart from the last snapshot after
+  failures, retain for the window, migrate live under a blink; the runtime
+  daemon inside watches, locks upgrades and layers the environment;
+- share installation files read-only by logical shortcut so nothing installs
+  inside the visitor machine; freeze the image at build and let only the
+  per-sandbox database grow;
+- discover the chat sandbox through the preview endpoint, never hand
+  mounted, with a state stream walking quota check, initialization and
+  ready;
+- execute deny by default: no request runs without policy, capability
+  receipt, approval and a named adapter; every execution generates an
+  honesty receipt with explicit signing states, cleanup in the finally path
+  and retry only at the scheduler frontier;
+- walk the job lifecycle — queued, preparing, runner selected, running,
+  syncing, committed, done — with retryable codes and a warm pool of
+  prewarmed machines;
+- aggregate the free fleet: the public runners of the forges, the hub
+  spaces, the notebook providers, the always-free instances and the edge
+  workers, the repository acting as the computer — the repository as disk,
+  the actions as processor, the pages as bus and the dispatch as inter-
+  process channel; the copy-on-write disk exposes virtual space without
+  allocation, and one big file becomes chunks across many repositories,
+  rebuilt in memory and delivered over the network;
+- mirror the content delivery lane inside the virtual file system so the
+  visitor browser never loads a byte of sandbox payload;
+- scrape in cascade: structured data first, then open graph, feeds,
+  readable text and raw markup, converting to markdown, generating the
+  llms text and walking nested sitemaps under limits, honoring robots;
+- capture like a human: the virtual cursor moving along human trajectories
+  with jitter and overshoot, typing with human rhythm, replaying
+  deterministically from the seed;
+- answer the challenge surface opt-in and supervised: the resolution
+  cascades by challenge type, pauses for human review, keeps evidence in
+  hashes and never bypasses silently;
+- wear one coherent stealth fingerprint per session paired to a proxy, with
+  a pool that self-disables after consecutive failures, cooldowns, a
+  graveyard and a probe;
+- carry the quantum layer — the statevector simulator, the gate set, key
+  distribution and quantum memory — and the alternatives registry scoring
+  every external sandbox engine against the house contract.
+
+### micro features
+
+- the silent modality join; the heartbeat; the warm restore; the visible
+  receipt states; the typed honest refusals; the quota state stream.
+
+### macro interactions
+
+- declare a workload, receive the exact sandbox, never see the machinery;
+- open a chat, get a jailed sandbox born with the conversation, work inside
+  it, close it, return to the restored snapshot;
+- push one big artifact, watch it become chunks across the free fleet,
+  rebuilt and delivered on demand.
+
+### micro interactions
+
+- receipt states; refusals as typed answers; the ready stream; the
+  self-disabling pool; the human-paced cursor.
+
+## vault — the storage engine
+
+The storage engine and network database of the family: the self-hosted
+answer to the hosted database platforms and the object buckets, built
+first as the priority zero of the whole operation.
+
+### macro features
+
+- chunk every upload, hashing each chunk by content, compressing it,
+  cataloging it for automatic reuse and pointing at it with wide integer
+  pointers that hold the terabyte scale; blobs never ride the tables — the
+  manifest lives in the document column, the binary in the partitioned
+  chunk store;
+- make every hard disk a database: the person opens as many drives as
+  wanted, the banks multiply automatically as they fill, the registry maps
+  them, the drive panel mounts a fresh empty bank and reopens old ones by
+  identity;
+- follow the capacity to the plan with a generous floor and never a
+  hardcoded ceiling; refuse the write when the quota bursts, and show the
+  real usage when the lane stands with the honest estimate when it does not;
+- encrypt the bytes at rest under wrapped per-project keys with fresh
+  vectors; keep access keys only as hashes compared in constant time, with
+  the visible prefix covering the hashed secret; records carry labels and
+  digests, never values;
+- run the decoy database: anonymous probes meet plausible fake projects, the
+  download returns the encrypted decoy and the real base stays sealed;
+- console the storage: projects, buckets, an object browser with folders as
+  pages, retention, keys with revocation, audit queries and usage by plan
+  metered in chunks;
+- tier the memory by temperature — from the hot microsecond tier to the
+  archive hour tier — with oversized blobs going directly to cold;
+- replicate master plus shard per account: quorum writes of the majority,
+  reads from any healthy copy, daily idempotent reconciliation and last
+  write wins;
+- govern with policies over read, write, list, delete and admin, prefix
+  scoped, where deny overrides allow and every action lands in the audit
+  row;
+- answer the blob contract: a stream put returns the identifier, bytes,
+  hash and kind; expose quota, objects and usage over the server lane;
+- connect external stores opt-in, balancing dozens of free hosts and the
+  own cloud with resumable chunking, orphan detection and per-project
+  trash;
+- snapshot backups daily, export to the release store with retention
+  windows and recovery objectives, and test the restore monthly;
+- publish open source across the registries, serving the family and any
+  external consumer alike.
+
+### micro features
+
+- silent chunk dedup and reuse; the constant-time compare; the folder-as-
+  page navigation; the key prefix reveal; the capacity bar honesty.
+
+### macro interactions
+
+- sign up once, be recognized in every app; the family session rides the
+  shared data home and the login survives cookie deletion because the
+  account lives on the server;
+- open a drive, fill it, watch the bank multiply, mount a fresh one, reopen
+  an old one by identity;
+- put an object as a stream, receive identifier and digest, browse it as
+  folders, retain it by policy, audit every touch.
+
+### micro interactions
+
+- chunk reuse; prefix reveal; folder paging; the honest estimate fallback.
+
+## getry — the thinking gateway
+
+The universal inference gateway of the family: the deployable clone
+template that raises copies of itself, provider lane deep, carrying the
+meta model that masks every upstream name behind the house name.
+
+### macro features
+
+- serve the route surface across the provider versions — chat completions,
+  completions, embeddings, keys, messages, models and responses — each
+  route self-contained, the version chosen by header, path or query, and
+  the model catalog of each version the single configuration source the
+  sibling routes import;
+- run the lanes: the sandbox-native keyless lane that only lives inside the
+  provider sandbox and never pretends otherwise; the paused lane answering
+  an explicit service status with automatic fallback; the rotating pool
+  lane spinning dozens of keys least-used first with per-key statistics;
+  the free proxy lane over the aggregators with fused context; and the
+  unified replica lane carrying the distilled verdict;
+- greet the anonymous lane with a fresh session header, discovering free
+  models dynamically with a last-known-good list; refuse paid models on the
+  free tag lane with an explicit answer;
+- mask the upstream in every response: report the house name, declare the
+  aggregated context of the composed windows, rotate models every few
+  messages per session and on availability errors, and combine the free
+  models into a fused window counted in millions of tokens with the output
+  ceiling and reasoning budgets recorded;
+- write the title and summary with the cheap model on a dedicated endpoint;
+  auto-load the session history on the single message request with the
+  system always first;
+- keep thinking always on at every route across the tiered reasoning ladder
+  with character budgets, reasoning always preceding content, and the
+  two-call pattern running the reasoning first without stream and the
+  answer second with the reasoning injected as context;
+- obey the streaming law: cut frames on the double newline, buffer partial
+  frames, discard heartbeats, keep the connection alive with invisible
+  blank keepalives, emit exactly one terminator and render the final usage;
+- accept every parameter universally, autocorrecting by distance, clamping
+  and converting types — never a whitelist; discover the catalog live from
+  the provider endpoints with a cached fallback, never a fixed seeded list;
+- climb the anti-throttling ladder: exponential backoff with jitter, the
+  retry-after header honored, a concurrency mutex, a mid-flight model swap
+  and the circuit broken on error storms;
+- guard the context budget per turn; let the porter resolve most requests
+  at zero cost with rulers before any provider call; never pay twice for
+  the same state through the cache;
+- seat the jury of diverse members voting with weights inverse to
+  calibration error, dropping outliers, escalating the cascade on
+  divergence, never acting inside the gray band and answering the explicit
+  unknown below the confidence floor, with the anti-flattery rule banning
+  sycophancy and false confidence;
+- keep the key vault storing, resolving and revoking through seams at the
+  last moment, masked before every log; carry the auth roster from bearer
+  to anonymous;
+- count the console screens with playgrounds for the verdict, the jury, the
+  cascade and the calibration diagrams;
+- cut very long contexts into overlapping slices with a tree reduction;
+- answer the multimodal subroutes: image, video, document, music, audio,
+  embed and rerank;
+- raise an independent replica with its own database for every new chat,
+  carrying the same routes;
+- publish the universal library to every registry with model rotation, base
+  address rotation, cross-provider fallback and the two-call thinking, so
+  any third-party project configures only the base address, the models and
+  the keys.
+
+### micro features
+
+- rotation invisibility; the blank keepalive; the single terminator; the
+  final usage render; the masked key; the silent title write.
+
+### macro interactions
+
+- point any client at the base address, pick a model, think in tiers, and
+  never learn which upstream answered;
+- start a new chat, get an independent replica with the same routes;
+- watch a request resolve at zero cost through the rulers before any
+  provider call.
+
+### micro interactions
+
+- model rotation without a flicker; keepalive blanks; one terminator; usage
+  at the end; keys masked in every log.
+
+## argan — the network library
+
+The domain name system and network library of the family: the open source
+resolver and authority every site imports, the self-hosted competitor of
+the infrastructure clouds, signed from day one.
+
+### macro features
+
+- hand-write the wire protocol per the dns standard, covering the record
+  families from the address records to the certification authority
+  restriction, with normalization, validation and serial arithmetic;
+- cover the transports: the classic port with the tcp fallback, dns over
+  tls, over https in both forms and the third generation, over quic, the
+  encrypted relays, the oblivious variant and the encrypted discovery —
+  with the https port riding the edge proxy when the classic port is
+  blocked in the sandbox;
+- sign and validate with dnssec: the zone and key signing keys on the
+  elliptic curve, automated rollover, chain verification to the trust
+  anchor, denial-of-existence proofs, the dane records and wildcard
+  certificates through the automated challenge;
+- version the zone and publish it by pipeline, never edited by hand in
+  production; sync the cluster of copies through authenticated gossip with
+  keyed signature and origin filtering, one primary as the registry and
+  secondaries via authenticated transfer; the resolver never opens to the
+  world, answering only its zones;
+- hang the domains: one bought main domain per person with personalized
+  subdomains below it, resolving worldwide through standard dns without
+  installing anything;
+- run the registrar panel: validate the typed label, turn it into a live
+  subdomain of the apex with an immediate public address, and answer
+  availability, certificate challenges and delegation health;
+- fan the propagation checker out to the public resolvers, grouping the
+  answers into total, partial and inconsistent with latency charts;
+- generate the own naming system: the keys, the registrations and the
+  namespace propagated through many channels — the cdn zones, the onion
+  service, the gossip networks, the distributed hash table, the browser
+  extension and the resolver installer — riding the signed namespace under
+  a delegated domain;
+- layer the resolver across cache, authority, recursion, peer quorum and
+  upstream, with popularity-calibrated lifetimes;
+- carry the self-hosted mail lineage: the full server, the transactional
+  lane with logs and webhooks, the newsletter engine and the disposable
+  developer inbox;
+- ride the search stack as the self-hosted meta searcher with crawler and
+  vector store;
+- never delete records — only change them, and any removed address is
+  restored.
+
+### micro features
+
+- serial arithmetic; the tcp fallback; the immediate public address; the
+  latency chart grouping; the record restore.
+
+### macro interactions
+
+- buy once, hang personal subdomains forever, watch them resolve worldwide;
+- type a label, receive a live subdomain with its certificate, check the
+  delegation health, watch the propagation report group by consistency;
+- operate the zone by pipeline: publish, gossip, transfer, verify.
+
+### micro interactions
+
+- the instant address; the propagation grouping; the latency chart; the
+  restored record.
+
+## cadria — the visual engine
+
+The image, video and three-dimensional studio of the family, hosting the
+visual engine at its root and publishing it as the library the whole
+family imports.
+
+### macro features
+
+- rasterize by software on the server over the standard transport — the
+  graphics card of the visitor is never used, and the preview equals the
+  final artifact through parallel sliced rendering;
+- convert any image into a meshable three-dimensional surface: read the
+  luminance as a heightmap with optional blur, triangulate the grid with
+  decimation and threshold discard, compute per-vertex normals and colors,
+  and export the standard object and stereo formats with the material
+  summary, in pure code with zero dependencies;
+- carry the parametric primitives with the modifier stack of twist, belly,
+  extrude and subdivision, and the exporters covering the interchange
+  formats with embedded scenes;
+- speak the editing algebra of the reference editor — overwrite, insert,
+  lift, extract, split, trim, roll, slip, slide and rate stretch — with
+  every operation a typed refusal instead of a throw;
+- model the timeline with clips carrying start, duration and track,
+  splitting, trimming, moving, overlapping and snapping to the grid;
+- run the declarative transcode ladder with codecs, resolutions and
+  bitrates as parameters, never upscaling and keeping the dimensions even;
+- probe the media: parse the container and stream metadata; decode with
+  frame-accurate sessions and exact wide-integer ticks carrying the
+  broadcast timecode;
+- render as a real lane call queuing through the runner, refusing honestly
+  when no gateway is paired, and never embedding a playback element or
+  generating inside the app until the playback face lands;
+- tier the performance — the max, balanced and light profiles at their
+  frame rates up to the high resolutions — with the render sliced into
+  pieces across the farm;
+- play as the universal lineage: compute filters in the shading language,
+  broadcast loudness normalization, the gesture set of swipe seek, pinch
+  volume, tap and double tap fullscreen, the mini player with picture in
+  picture, stall detection with recovery strategies, chapters, theater
+  mode, the stats overlay, the screenshot, and the plugin system as the
+  only extension path — with the quality selector never faking options;
+- run the image pipeline — brightness, contrast, saturation, sepia,
+  grayscale, convolution, box blur and the bilinear resize — as the engine
+  the system imports;
+- open the studio workspaces of layout, modeling, visualize and baking,
+  wearing the family window grammar;
+- present the streaming face: the cinema rows with sculptural rank
+  numbers, the original series badge, the match line, the live event card
+  and the category filters of trending, series, worlds and live.
+
+### micro features
+
+- typed refusals; grid snapping; slice progress; the gesture set; picture
+  in picture; the stats overlay; the honest quality selector.
+
+### macro interactions
+
+- drop an image, receive a meshable surface, refine it in the studio, bake
+  it, export it;
+- cut a video with the reference algebra, render through the runner, play
+  it back with the universal gestures;
+- browse the cinema, filter by category, open a series or a live event.
+
+### micro interactions
+
+- snap to grid; the pinch volume; the double tap fullscreen; the stall
+  recovery; the visible slice progress.
+
+## debonair — the audio engine
+
+The audio and music studio of the family: the workstation and the
+generative music engine, seeded and deterministic, treating audio as a
+generating equation instead of a recorded file.
+
+### macro features
+
+- hold the theory core as pure functions — rhythm is when, harmony is
+  what, melody is which notes, instrument is how it sounds — with the
+  manual and the assistant modes sharing the same theory engine, the same
+  typed structures and the same audio engine, only the creative decision
+  maker differing;
+- render deterministically: the same prompt with the same seed always
+  renders the same take, the canonical random generator owned by the
+  harmony engine, the sample rate explicit, and the render happening
+  offline in blocks so the thread never blocks;
+- carry the genre matrix with the dna families — tempo range, dominant
+  band, spectral tilt, loudness range, sidechain rules and panning law;
+- hold the assembly bank of drum patterns, basslines, chord voicings and
+  melodies with the anti-repetition history, the usage ceiling per pattern
+  and the similarity rejection;
+- generate from text with an inspectable plan carrying reasoning and
+  confidence: the mood map, the conversational refinement, and the chain
+  of prompt parser, genre classifier, mood mapper, theory parameters,
+  structure planner and confidence scorer;
+- analyze in the open: load the dsp catalog from the delivery lane in
+  parallel batches, stream windows with progress, answer structure
+  sections, loudness in the canonical measures and confidence per value;
+- identify instruments with real machine learning over the audio model —
+  never a handwritten signature table — answering unknown below the
+  threshold;
+- separate the stems on the stereo mix with the mid and side masks, the
+  harmonic residual, the phase cancellation floor and the cross-correlation
+  validation, the heavy models staying in the sandbox, with the honest
+  limit registered for the inseparable elements;
+- speak the synthesis canon: plucked strings, modal drums, the operator
+  synthesis of the reference hardware, additive spectra with
+  inharmonicity, humanization of timing and velocity, the micro detune,
+  the velocity-dependent brightness, and the breath, fret and key noises;
+- master through the chain — gain, corrective equalizer, multiband, glue,
+  tonal equalizer, mid and side check, saturation and the true peak
+  limiter — targeting the streaming loudness, the platform variants and
+  the true peak ceiling, across the genre band from the brightest to the
+  ambient, outputting the high resolution stereo file, with the loudness
+  measured and never claimed;
+- ghostwrite the lyric: unify the artist personas, cap the word length,
+  ban the legacy rhymes and the banned word list, keep the lowercase
+  register, demand the onomatopoeia, read the references from the
+  transcription sources and merge the technical tables into one final
+  lyric per run;
+- interchange honestly: the float audio in the indexed browser store
+  outside the interface state, the compact numeric master document with
+  the bidirectional text and number pairs, the second as the main node,
+  the symmetric inheritance between header and layer, and the seed and
+  checksum export instead of the raw stream — the canonical strategies
+  replacing any inline payload;
+- lay the workstation surface: the mixer with channel strips, gains, sends,
+  mutes and solos and the cycle validation; the piano roll; the library;
+  the transport; the master — with the player bus as a singleton silencing
+  every other transport;
+- pack the offline package under its budget with the codebooks, the pattern
+  database, the quantized decoder and the multi-level fallback chain that
+  never lets the quality fall;
+- demand the play gesture: the generation sounds only on the play, the
+  gesture returns the document the system can ingest as reference, and the
+  proof of working is only the play;
+- ingest a full track into the structured payload — separating the streams,
+  classifying the genre — and reconstruct it through the reverse ingest
+  inside the sandbox, without ever touching the browser or the graphics
+  card of the person;
+- export the standard interchanges of midi and audio.
+
+### micro features
+
+- the play-gesture proof; the singleton transport; the confidence per
+  value; the humanized micro-timing; the measured loudness; the
+  deterministic seed.
+
+### macro interactions
+
+- prompt, refine the plan conversationally, generate, listen, take the
+  take, mix it, master it, export it;
+- drop a track, watch it decompose into the structured payload, classify
+  itself, and rebuild inside the sandbox;
+- edit mid-generation: the newest edit prevails and the checkpoints merge.
+
+### micro interactions
+
+- the take picker; the meter honesty; the singleton silencing; the
+  streaming analysis progress; the same-seed rerender.
+
+## forge — the execution clone
+
+The execution-only clone of the family: the site that exists to run,
+registering the runners and the run logs over the standard transport while
+keeping nothing of its own.
+
+### macro features
+
+- deploy anywhere the static tree serves, carrying the runner floor that
+  queues and executes any binary through the sandbox engine;
+- expose the run logs, the queue and the runs pages, with the login and
+  register reachable without the onboarding forcing an account, and the
+  canonical logs page preserved intact;
+- hold zero binaries in the release assets; record the builds in the own
+  database with the backups rising to the database sites;
+- import the federal library and execute the sandbox modality set, the
+  virtual file system and the network sandbox among the official
+  modalities;
+- emulate the flagship processor and the wide memory information of the
+  reference hardware through the virtual hardware engine, orchestrating
+  over the container and the server;
+- carry the character decomposition pipeline with its layer ontology, the
+  build graph, the completeness checklist and the local specification
+  search with evidence bundles;
+- serve the universal desktop artifact lane of the sibling applications.
+
+### micro features
+
+- queue visibility; the run stream; the honest refusals; the preserved log
+  page.
+
+### macro interactions
+
+- register a runner, queue a binary, watch the run stream, read the
+  outcome, keep nothing.
+
+### micro interactions
+
+- the queue tick; the stream scroll; the honest refusal line.
+
+## foundry — the pipeline clone
+
+The complete execution-plus-storage clone: the joined pair of the market
+roles that runs and keeps at once, the sandbox engine riding inside the
+virtualization app and the storage riding the vault engine.
+
+### macro features
+
+- carry the artifacts, the images, the sandboxes and the home pages,
+  running containers and buckets under one console;
+- convert the packaging in the release assets through the deployable clone
+  law, without native distribution;
+- hold the pipeline floor with the branch view of the flow;
+- generate other databases: the cron job of the storage engine fires the
+  creations even inside static hosts, sustaining the family sites;
+- record the builds in the database of each site with the backups rising to
+  the storage clones;
+- exist only as the deployed surface — no store or registry distribution —
+  completing the clone trio that lets the platform be its own
+  infrastructure.
+
+### micro features
+
+- the branch flow view; the readiness verdict; the honest gates.
+
+### macro interactions
+
+- open the console, watch the pipeline branches flow, run the sandbox,
+  keep the artifacts in the buckets, back everything up to the storage
+  clones.
+
+### micro interactions
+
+- the branch highlight; the gate verdict; the artifact tick.
+
+## stealthhead — the game platform
+
+The first-person shooter platform of the family: the game that imports the
+visual and audio engines as libraries and keeps no engine file of its own,
+the precompiled-doctrine game where the visitor machine never compiles a
+shader.
+
+### macro features
+
+- precompile everything: the shaders, the bounding hierarchies, the
+  navigation grids, the probes, the color tables and the manifests are
+  compiled into the database ahead of time and warmed on play — the
+  database acts as the virtual graphics and processor so the next player
+  never reprocesses;
+- stay database-first with the fixed cast of maps, weapons, characters,
+  modes and vehicles of land, air and sea;
+- ingest the assets: register the catalog with content dedup, run the
+  glb-only pipeline with compression quantization, the weld tolerance and
+  the packing of occlusion, roughness and metalness in one texture, always
+  deduplicating before the prune;
+- run the match as a rules machine of score, timer and rounds; climb the
+  ranking ladder with the elo and glicko math and the configurable factor;
+  publish the weapon statistics of damage, distance, falloff, cadence and
+  the pure time to kill;
+- carry the arena waves with the full movement grammar — stances, the
+  tactical sprint, the slide with cancel, the mantle, the lean, the aim
+  down sights and the spawn shield;
+- drive the enemies as state machines across the archetypes from the drone
+  to the boss, the boss arriving on a fixed cadence, with squad ai choosing
+  cover and rotating the peek tokens so the same soldier never stays
+  exposed;
+- draw the hud complete and never a recolor: the compass strip, the
+  minimap with the radar sweep, the vitals plates, the hitmarkers, the
+  killfeed, the medals, the hurt vignette, the touch controls and the
+  transient updates;
+- separate the weapon rendering in its own pass so the weapon never clips
+  walls; keep the weapons pure geometry, never photo sprites; read the
+  physical key codes; gate the pointer lock on gesture; ride the recoil
+  and spread on the hitscan ray;
+- land the juice on the same frame of the hit — the muzzle flash, the
+  hitmarker, the hit sound and the shake;
+- run the house physics: the fixed timestep with substeps and
+  interpolation, the axis-separated collision against the grid, the
+  spatial hash broadphase, the capsule probes, the coyote and buffer
+  forgiveness of the platformer feel, and the gravity constant exactly as
+  the house writes it;
+- multiply over the socket at its rate with the interpolation buffer and
+  the offline bot fallback; reserve the peer-to-peer for co-op, the
+  signaling relay carrying only the rendezvous;
+- hide the gizmo editor behind the key or the address flag: the scene
+  tree, the raycast selection, the x-ray wireframe and the bake to the
+  orchestrator;
+- gate the validation in order — the type check, the frame budget
+  benchmark, the monte carlo over the time to kill and the zero console
+  error smoke — with the deterministic judge first and the vision model
+  last, never consulted when the hard gates fail;
+- keep the splat layer visual only, over invisible colliders; stage the
+  character pipeline of sculpt, gates, unwrap, skinning and turntable;
+- treat the owner database as sacred: test under the ghost callsign, one
+  shard per player; until it is real, answer the under-construction screen
+  with the design frozen by mandate.
+
+### micro features
+
+- the hitmarker snap; the killfeed; the radar sweep blips; the hurt
+  vignette; the same-frame juice; the spawn shield; the rotated peek
+  tokens; the medal cards.
+
+### macro interactions
+
+- enter the arena, survive the waves, climb the ladder, unlock the arsenal,
+  study the stats;
+- run the validation protocol after every change: type check, benchmark,
+  monte carlo, smoke, then and only then the vision model;
+- host the match: one shard per player, the bots filling the offline
+  fallback.
+
+### micro interactions
+
+- the hitmarker; the headshot variant; the killfeed tick; the vignette;
+  the same-frame shake; the medal card; the radar blip.
+
+## cobaia — the monetization surface
+
+The public monetization site of the family: the parallel surface that
+keeps the main sites clean, carrying the plans, the ads, the blog, the
+support and the app directory away from the product faces.
+
+### macro features
+
+- carry the home, the pricing, the support, the apps catalog, the legal and
+  the blog pages, with the directory of the family apps deep-linked and
+  the honest role of each one described;
+- declare the ad slots and keep them empty until approval: a reserved
+  container with the fixed ratio, the hairline and the advertisement label,
+  the ad script loading only after the approval through the environment,
+  one slot per content page, zero external calls and zero tracking before
+  that;
+- answer the checkout honestly in the unconfigured state, never storing
+  card data, registering the payment identity, account and network together
+  to block duplication;
+- run the monetization rails: the payment links, the metered api billing of
+  the gateway, the sponsors, the donation jar and the tipping, with the
+  cashback converting into store credit and never real money;
+- hold the ethical limit as absolute: no invisible click mirroring, no
+  hidden ad frames, no bot traffic, invalid traffic never engineered — the
+  invisible click scheme once suggested is registered as refused and
+  codified as the law of the house;
+- keep the plans living only inside the operating system, the engines and
+  sandboxes free and unlimited; ride the absorbed testbed surfaces under
+  row-level security with the social platform and the site builder
+  lineages;
+- never write the browser storage, and let the seed obey the no-storage
+  law.
+
+### micro features
+
+- the reserved slot; the approval-gated script; the honest unconfigured
+  checkout; the empty state with the discovery call to action.
+
+### macro interactions
+
+- land, read the honest roles of every family app, deep-link into any of
+  them;
+- sponsor, donate, tip, or buy credit — with every rail honest about its
+  state.
+
+### micro interactions
+
+- the reserved slot with its label; the hairline; the honest empty rail;
+  the duplication block answer.
+
+## the cross-family laws
+
+The shared doctrine every app obeys — features in themselves, repeated by
+the owner across the whole corpus:
+
+- the no-touch law: the interface never touches the browser, graphics,
+  processor, disk, camera, location or wallet of the visitor; all compute
+  rides the sandbox engine and all persistence rides the storage engine,
+  the browser store only a disposable cache mirror;
+- the self-hosted law: nothing of the rented market services, authentication
+  on the own infrastructure, zero captcha, the decoy database answering
+  probes;
+- the single-language law: everything in english, with the runtime
+  translation only when the person switches the language, riding the batch
+  translation with the per-person cache;
+- the single-theme law: one theme serves web, os, tv, phone, desktop, binary
+  and extension — only ratio, density and responsiveness varying — with
+  light and dark as the only modes;
+- the engine exclusivity law: each engine lives in exactly one app and every
+  other app imports the published package, never a sibling path, never a
+  duplicated logic;
+- the tree law: page equals folder equals app, flat, lowercase one-word
+  names, the widgets holding the reusable pieces and the logics grouped by
+  family at the root of each app;
+- the widget law: every widget is self-sufficient with its own markup,
+  states and inputs, its content never hardcoded — the strings, the catalog
+  rows and the bindings live in the app database read through typed
+  accessors, and the widgets consume the database;
+- the modalities law: every feature and page carries the modality matrix,
+  and the feature registry counts the goals in the fixed identifier format
+  with title, detail, status, version and provenance, never invented;
+- the honesty law: no fake data, no mock, no theater timers, no invented
+  metrics, no false testimonials, no fake quality selectors — empty states
+  short and honest, numbers only measured after real execution;
+- the consent law: every sensitive action passes the approval modal with
+  the diff, the command and the risk levels; the kill switch always
+  reachable; the gates deny by default and never approve in batch or by
+  timeout — the model proposes, the consent disposes;
+- the release law: the work lands through branch, pull request, complete
+  checks and the squash merge born verified; the version rides in lockstep
+  for the whole family with one tag and one immutable release carrying the
+  full asset matrix;
+- the naming law: the owner identity on every commit, the brand spelling
+  fixed, the app names born from the technical root crossed with the rare
+  dictionary forms, deleted apps never returning, reserved names never
+  reused;
+- the family sharing laws: one signup and one account recognized in every
+  app, the guest identity born on the first visit and never deleted, the
+  login surviving cookie deletion because the account lives on the server;
+- the sandbox identity law: everything the person does carries an identity,
+  the sandbox born with the conversation, one sandbox per person;
+- the debt law: the readiness verdict blocks, the gates never turn off, a
+  red gate always blocks, and the work only closes with the workflows
+  green, the panels at zero and the worklog finished;
+- the shell law: the millimetric recipe of the reference system carries the
+  taskbar, the pins, the start menu, the caption buttons, the window motion
+  curve and the desktop cells, with the finish ruler carrying the surface
+  ladder, the hairlines, the base radius and the micro motion — and the ban
+  list as a blocking gate: no dots, no hyphens as decoration, no giant
+  pills, no transition on everything, no pure black or white fills, no neon
+  glow, no white borders on glass, no default purple or blue, no emoji as
+  icon, no dissolve fades, no banned identity fonts, the fluent icon set
+  replacing the banned set everywhere.
+
+## modern references — illustrations only, never obligations
+
+Concrete references the owner framed as examples of being modern. They
+illustrate the finish; they never bind the implementation:
+
+- the shell grammar follows the reference operating system and its browser
+  clones — the taskbar, the start menu, the caption buttons, the snap
+  flyout, the switcher — finished with the surface ladder, hairlines and
+  micro motion of the finish ruler site;
+- the chat craft follows the studied harnesses — the premium composer with
+  stacked pills, the terminal drawer under the conversation, the keybinding
+  registry with conditions, the stacked dialog physics, the semantic diff
+  colors, the mention nodes, the low-drama motion;
+- the micro-interaction vocabulary follows the awarded reference sites of
+  the interaction study — hover lift with settling easing, shimmer and
+  skeleton states, the toast with its full cycle, the command palette with
+  backdrop fade, the stagger of lists, the magnetic cursor, the infinite
+  marquee, the status pulse, the line drawing, the animated counter, the
+  gradient mask reveal, the scroll-driven animation;
+- the video studio competes with the mainstream editors and the compositor
+  reference; the music studio competes with the generation platforms and
+  the desktop workstations, with the dependency-free browser workstation as
+  the studio blueprint and the analysis library as the dsp reference;
+- the storage engine competes with the hosted database platforms and the
+  object bucket clouds; the network library competes with the infrastructure
+  clouds; the pipeline pair competes with the sandbox providers and the
+  container platforms; the execution clone competes with the runner forges;
+- the gateway speaks the OpenAI-compatible dialect the whole ecosystem
+  already configures;
+- the game hud follows the studied arena shooters;
+- the monetization rails follow the honest sponsor and tip platforms;
+- the family finish is the awarded minimalism: fluent icons, the typographic
+  triad, the three-by-three palette, the radius scale, the tracking
+  discipline, and the accent per app.
+
+## unshipped candidates
+
+Features found in the corpus with no engine seat in the family tree today,
+verified by direct search against the shipped seats. Direct objectives,
+one line each — the orchestrator routes them to future waves:
+
+- mobile lane (devthink) — embed an android emulator over the peer
+  connection with self-signed packages and over-the-air manifests;
+- storefront engine (devthink) — sell pretrained models, plugins, themes
+  and runners as a real marketplace with checkout (the registry and plan
+  surfaces ship; the marketplace engine does not);
+- reactive mascot (devthink) — react to idle and thinking states in a
+  duty-cycled, pausable way;
+- training data lineage (devthink) — capture every user action as
+  chronological, invisible, undeletable proprietary training data;
+- jury (getry) — a panel of diverse members voting with calibration-
+  inverse weights, dropping outliers, abstaining inside the gray band and
+  answering the explicit unknown below the confidence floor;
+- porter (getry) — resolve most requests at zero cost with rulers before
+  any provider call;
+- slicer (getry) — cut very long contexts into overlapping slices with a
+  tree reduction;
+- fused free window (getry) — compose multiple free models into one
+  aggregated context counted in millions of tokens;
+- console playgrounds (getry) — interactive diagrams for the verdict, the
+  jury, the cascade and the calibration;
+- mail lineage (argan) — the self-hosted mail server, the transactional
+  lane with logs and webhooks, the newsletter engine and the disposable
+  developer inbox;
+- meta searcher (argan) — the self-hosted search stack with crawler and
+  vector store riding the network library;
+- naming propagation (argan) — register and propagate the signed namespace
+  through the cdn zones, the onion service, the gossip networks, the
+  distributed hash table, the browser extension and the resolver installer;
+- streaming face (cadria) — the cinema rows with sculptural rank numbers,
+  the series badge, the match line, the live event card and the category
+  filters;
+- player plugin system (cadria) — the plugin path as the only extension
+  lane of the universal player;
+- lyric ghostwriter engine (debonair) — unify the artist personas, the
+  banned rhyme lists, the lowercase register and the onomatopoeia into one
+  final lyric per run, reading the transcription references (the lyric
+  stage ships; the engine does not);
+- hybrid store balancer (vault) — balance dozens of free hosts and the own
+  cloud with resumable chunking, orphan detection and per-project trash;
+- replication (vault) — master plus shard with quorum writes, reads from
+  any healthy copy, daily idempotent reconciliation and last write wins;
+- drive panel (vault) — mount many growing databases per person,
+  multiplying the banks automatically as they fill (the chunk ledger and
+  the census ship; the multi-drive mounting does not);
+- splat layer (stealthhead) — gaussian splats as a visual layer over
+  invisible colliders;
+- gizmo editor (stealthhead) — the scene tree, the raycast selection, the
+  x-ray wireframe and the bake to the orchestrator behind the key or the
+  address flag;
+- free fleet (saddle) — aggregate the public runners of the forges, the hub
+  spaces, the notebook providers and the edge workers with the
+  repository-as-computer economics (the runner fleet ships in the execution
+  clone; the aggregator lane does not);
+- scraping cascade with llms text (saddle) — walk nested sitemaps under
+  limits, convert to markdown and generate the llms text file, honoring
+  robots (the capture stack ships in the operating system; this harvest
+  lane does not).
+
+## appendix — the archived identifier registry
+
+Everything below is the archived per-identifier feature registry the
+earlier study waves compiled (the wave records with identifiers, versions,
+statuses and provenance citations). It is kept verbatim for provenance —
+it feeds the badges and the wave logs — but it is the archive, not the
+catalog: it predates the catalog law and carries the paths, numbers and
+file names the catalog body above refuses.
 
 ---
+
 
 ## saddle — AetherForge engine [v1.0.0]
 
