@@ -171,6 +171,13 @@ jobs:
         # its better-sqlite3 types resolve from the getry node_modules this
         # step materializes (the same seat every other lane materializes).
         run: cd getry && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the saddle engine dependencies
+        # the workload law the dev tsconfig maps walks the sibling saddle
+        # sources (workloadlaw pulls the modality registry chain whose
+        # @libsql/client and better-sqlite3 imports resolve from the saddle
+        # node_modules this step materializes — the same seat the getry
+        # step above materializes for the gateway face).
+        run: cd saddle && bun install --frozen-lockfile --ignore-scripts
       - name: Assert the LTS line
         run: |
           set -euo pipefail
@@ -200,7 +207,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.18.0
       - name: Set up Bun
         # the merged application pins bun (packageManager bun@1.4.2): the
         # frozen install and the build scripts run through the pinned bun
@@ -224,6 +231,13 @@ jobs:
         # this step materializes (the same seat the deterministic suite
         # boots).
         run: cd getry && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the saddle engine dependencies
+        # the workbench typecheck walks the sibling saddle sources the
+        # workload law maps — the modality registry chain's @libsql/client
+        # and better-sqlite3 imports resolve from the saddle node_modules
+        # this step materializes (the same seat the LTS typecheck lane
+        # carries beside the gateway face).
+        run: cd saddle && bun install --frozen-lockfile --ignore-scripts
       - name: Generate the prisma client the typecheck imports
         # the database module imports the PrismaClient the generated
         # .prisma/client tree declares — a fresh install carries the stub
@@ -472,7 +486,7 @@ jobs:
         if: steps.suite.outputs.present == 'true' && hashFiles(format('{0}/pnpm-lock.yaml', matrix.app)) != ''
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.3.4
+          version: 12.18.0
 
       - name: Install the locked tree
         if: steps.suite.outputs.present == 'true'
