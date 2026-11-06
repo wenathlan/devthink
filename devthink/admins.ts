@@ -16,6 +16,9 @@ export type AllowedSite = { host: string; secretDigest: string; addedAt: string 
 export type AuditEntry = { at: string; actor: string; action: string; detail: string };
 
 const database = new Database(process.env.DEVTHINK_ADMIN_DB ?? "admin.db");
+/* the busy seat rides FIRST (the SQLITE_BUSY heal): armed before the WAL
+ * switch so the worker storm never eats the lock inside the pragma. */
+database.pragma("busy_timeout = 30000");
 database.pragma("journal_mode = WAL");
 database.pragma("foreign_keys = ON");
 

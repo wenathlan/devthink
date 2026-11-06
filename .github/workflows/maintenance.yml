@@ -623,3 +623,68 @@ jobs:
         uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b # v6.0.1
         with:
           configuration-path: .github/workflows/labeler-config.cfg
+
+  npmtag:
+    # the dist-tag heal lane (the owner report of the stale latest): the
+    # emergency train of the poisoned 2.1.6 line published 2.1.7 and 2.1.8
+    # straight to the registry without the maene realignment the release
+    # ladder carries, so every family package answers `npm install` with a
+    # rung many versions behind. this lane pins latest back to the version
+    # the envelopes ship - the same doctrine the publish lanes stamp, as a
+    # dispatch the operator can fire any time the registry drifts.
+    name: Realign the npmjs latest dist-tags of the family
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: arm the npm token
+        # the same graceful gate the publish lanes carry: no token, no
+        # publish attempt - the lane reports and exits green.
+        env:
+          RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          token="${RAW_NPM_TOKEN//$'\r'/}"
+          if [ -z "${token}" ]; then
+            echo "::notice::Secret NPM_TOKEN is not configured; the dist-tag heal is skipped."
+            echo "NPMTAG_ARMED=false" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+          echo "NPMTAG_ARMED=true" >> "$GITHUB_ENV"
+      - name: realign the eleven latest dist-tags
+        # the heal answers the highest version each package really holds
+        # (the emergency train left different rungs on different packages),
+        # never a repo version the registry may not carry yet.
+        if: env.NPMTAG_ARMED == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for package in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
+            top="$(npm view "@wenathlan/${package}" versions --json 2>/dev/null | node -e "
+              let raw=''; process.stdin.on('data', (d) => raw += d); process.stdin.on('end', () => {
+                const versions = JSON.parse(raw || '[]');
+                const clean = versions.filter((v) => /^\d+\.\d+\.\d+$/.test(v));
+                clean.sort((a, b) => {
+                  const pa = a.split('.').map(Number); const pb = b.split('.').map(Number);
+                  for (let i = 0; i < 3; i += 1) { if (pa[i] !== pb[i]) return pa[i] - pb[i]; }
+                  return 0;
+                });
+                process.stdout.write(clean.length ? clean[clean.length - 1] : '');
+              });")"
+            if [ -z "${top}" ]; then
+              echo "::notice::@wenathlan/${package} answers no stable version on the registry; its dist-tag keeps its seat."
+              continue
+            fi
+            npm dist-tag add "@wenathlan/${package}@${top}" latest
+            echo "the latest dist-tag of ${package} now answers ${top}."
+          done
