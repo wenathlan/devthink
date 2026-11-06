@@ -65,7 +65,7 @@ export const seleniumside = `{
   "version": "2.0",
   "name": "example contact survey",
   "url": "https://example.org",
-  "test": [
+  "tests": [
     {
       "id": "survey",
       "name": "survey",
@@ -88,7 +88,7 @@ export const seleniumunknown = `{
   "version": "2.0",
   "name": "example unknown command",
   "url": "https://example.org",
-  "test": [
+  "tests": [
     {
       "id": "mystery",
       "name": "mystery",
