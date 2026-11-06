@@ -262,6 +262,10 @@ COPY vault /vault
 # apt-get install so a 404 on install re-fetches a fresh index that
 # references the new package versions, and the stale list cache is cleared
 # between the retries.
+# the engines seat rides the root manifest alone (the manifestemplate
+# law): the bun floor reads one hop up from /package.json the context
+# root carries — the same law the engineseat wave charges.
+COPY package.json /package.json
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
@@ -327,7 +331,10 @@ COPY package.json /package.json
 # resolve (the same law the vault sibling below carries).
 COPY cadria /cadria
 COPY vault /vault
-
+# the engines seat rides the root manifest alone (the manifestemplate
+# law): the bun floor reads one hop up from /package.json the context
+# root carries — the same law the engineseat wave charges.
+COPY package.json /package.json
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \

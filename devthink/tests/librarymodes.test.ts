@@ -436,12 +436,11 @@ describe("the library modes of 1.1.81", () => {
     const packagejson = JSON.parse(await readFile("package.json", "utf8")) as {
       version: string;
       sideEffects?: boolean;
-      /* the manifestemplate law: the publishConfig tag the template
-       * retired stays readable as the absent seat the assertion below
-       * pins — the type answers the key the check reads. */
-      publishConfig?: unknown;
       exports: Record<string, Record<string, string>>;
-        publishConfig?: unknown;
+      /* the manifestemplate law retired the publishConfig seat — the
+       * assertion below reads it as the loose record the manifest may or
+       * may not carry, so the typecheck never pins the retired tag */
+      publishConfig?: Record<string, unknown>;
     };
     /* the manifestemplate law: the engines ride the root manifest alone —
      * the application manifest answers the three dependency tags and the

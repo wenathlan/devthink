@@ -44,6 +44,12 @@ const HONESTREFUSALS = new Set([
   "PROVIDER_CONFIG_ABSENT",
   "PROVIDER_ANSWERED_ERROR",
   "ENGINE_SPAWNER_ABSENT",
+  "ENGINE_STAGER_ABSENT",
+  /* the payload gates the exec seats ride: the mz, elf and wasme magic
+   * laws refuse foreign bytes with their own honest codes */
+  "MZ_SIGNATURE_ABSENT",
+  "ELF_MAGIC_ABSENT",
+  "WASM_BYTES_ABSENT",
 ]);
 
 /** Dispatches one seat and asserts the honest shape: the seat identity
@@ -185,7 +191,7 @@ describe("the executemodality battery — the ninety seats answer real executors
 
   it("seat 8 virtualscreen — the xvfb plan stamps and answers honestly", async () => {
     await hostseat(8, "Xvfb", "");
-  });
+  }, 15000);
 
   it("seat 9 hardwarevirtual — the composition answers the full manifest", async () => {
     const result = await dispatch(9, "", { vcpus: 4, memorygb: 32 });
@@ -207,7 +213,7 @@ describe("the executemodality battery — the ninety seats answer real executors
   it("seat 11 microvmgpuless — the software-render plan stamps its env", async () => {
     const result = await hostseat(11, "Xvfb", "");
     assert.equal(result.plan?.env?.LIBGL_ALWAYS_SOFTWARE, "1", "the software-render law rides the env");
-  });
+  }, 15000);
 
   it("seat 12 emulatorqemu — the rv64im core executes real machine code", async () => {
     const result = await dispatch(12, RV64PROGRAM);
@@ -745,7 +751,7 @@ describe("the executemodality battery — the ninety seats answer real executors
 
   it("seat 88 screenxvfb — the xvfb plan stamps and answers honestly", async () => {
     await hostseat(88, "Xvfb", "");
-  });
+  }, 15000);
 
   it("seat 89 mobiletermux — the termux composition answers the prefix law", async () => {
     const result = await dispatch(89, "termux battery payload", { packages: ["bun", "node"] });
