@@ -21,7 +21,7 @@ pnpm dev
 
 - `family.ts` — the family keyword file (the fold law): the single table of
   the eight siblings beside argan with the spec §12 accent of each one — the
-  shell rail foot, the landing footer and `tests/family.test.ts` all consume
+  shell rail foot, the landing footer and `test/family.test.ts` all consume
   this one table — plus the retired `familyurl.ts` arm riding as the
   familyurl lane: the verbatim relative-url contract (`"../" + slug + "/"`)
   that keeps every cross-app link mount-proof.

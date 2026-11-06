@@ -24,12 +24,12 @@ import {
   forminventoryplan,
   formsurveyworkflow,
   releasenotesplan,
-} from "./tests/fixtureset.ts";
-import { bunshellexample, denoshellexample, mcpclientexample } from "./tests/codefixtures.ts";
-import { importersamples } from "./tests/importerfixtures.ts";
-import { fixturepages, umdexample } from "./tests/pagefixtures.ts";
-import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts";
-import { frozenschemas } from "./tests/schemafixtures.ts";
+} from "./test/fixtureset.ts";
+import { bunshellexample, denoshellexample, mcpclientexample } from "./test/codefixtures.ts";
+import { importersamples } from "./test/importerfixtures.ts";
+import { fixturepages, umdexample } from "./test/pagefixtures.ts";
+import { gallery as gallerytext, recipeplans } from "./test/recipesfixtures.ts";
+import { frozenschemas } from "./test/schemafixtures.ts";
 import { pxToCellX, pxToCellY } from "./density.ts";
 import { umdwrap } from "./umdwrap.ts";
 import type { IrNode } from "./runtime.ts";
@@ -607,7 +607,7 @@ console.log(
   `Companion built with plain node: build/companion.js of build ${packagejson.version} with the sourcemap and the stamped host manifest template beside it.`,
 );
 
-/** The frozen contract artifacts of the 1.1.98 consolidation: the capability manifests of the seven frozen surfaces, the ten protocol schemas, the example fixture set and the umd example page are build artifacts the recipe derives from the repository sources — the caps come from the frozen lists the compiled library exports, the schemas and the fixtures copy verbatim from the typescript fixture modules of the tests sources (the schemafixtures, fixtureset, importerfixtures, recipesfixtures and pagefixtures modules carry the exact texts of the former tests/code corpus), and the umd example rewrites its bundle reference to the build root — so the packages ship them from the staged tree while the repository root stays source only. The 2.0.0 example gallery extends the same fixture set: the 36 recipe plan texts of the recipesfixtures module copy into build/fixtures/recipes as pure plan documents, the four self contained fixture pages of the pagefixtures module copy into build/fixtures/pages, and the gallery index (the metadata the recipes runner and the cli recipes command read) ships as build/gallery.json beside the fixture set — outside the fixtures directory the headless fixture loader scans under schemastrict, so the recipes directory itself stays pure plans the planlint command walks while the index never answers a page state fixture probe. */
+/** The frozen contract artifacts of the 1.1.98 consolidation: the capability manifests of the seven frozen surfaces, the ten protocol schemas, the example fixture set and the umd example page are build artifacts the recipe derives from the repository sources — the caps come from the frozen lists the compiled library exports, the schemas and the fixtures copy verbatim from the typescript fixture modules of the tests sources (the schemafixtures, fixtureset, importerfixtures, recipesfixtures and pagefixtures modules carry the exact texts of the former test/code corpus), and the umd example rewrites its bundle reference to the build root — so the packages ship them from the staged tree while the repository root stays source only. The 2.0.0 example gallery extends the same fixture set: the 36 recipe plan texts of the recipesfixtures module copy into build/fixtures/recipes as pure plan documents, the four self contained fixture pages of the pagefixtures module copy into build/fixtures/pages, and the gallery index (the metadata the recipes runner and the cli recipes command read) ships as build/gallery.json beside the fixture set — outside the fixtures directory the headless fixture loader scans under schemastrict, so the recipes directory itself stays pure plans the planlint command walks while the index never answers a page state fixture probe. */
 const capsurfaces = ["background", "pagebridge", "sidepanel", "popup", "cli", "library", "mcp"];
 const librarymodule = await importbundle(join(root, "build", "index.js"));
 await mkdir(join(root, "build", "caps"), { recursive: true });
@@ -628,7 +628,7 @@ if (schemefiles.length !== 10)
 await mkdir(join(root, "build", "schemas"), { recursive: true });
 for (const name of schemefiles)
   await writeFile(record(`schemas/${name}.schema.json`), frozenschematexts[name], "utf8");
-/** The fixture text table of the typescript fixture modules keyed by the original tests/code source names: every fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example and the three typescript example scripts — the mcp client, the bun shell and the deno shell — of the code fixture module), so the fixtureset rows below keep their source names while every text comes from the modules; the flat typed folder law dissolved the tests/code directory, so a fixture the table misses answers an explicit error instead of a read from a retired path. */
+/** The fixture text table of the typescript fixture modules keyed by the original test/code source names: every fixture of the former corpus answers from its family module (the example fixture set, the importer samples, the recipe plans with the gallery index, the fixture pages with the umd example and the three typescript example scripts — the mcp client, the bun shell and the deno shell — of the code fixture module), so the fixtureset rows below keep their source names while every text comes from the modules; the flat typed folder law dissolved the test/code directory, so a fixture the table misses answers an explicit error instead of a read from a retired path. */
 const modulefixtures: Record<string, string> = {
   "example-org-pagestate.json": exampleorgpagestate,
   "mcp.client.ts": mcpclientexample,
@@ -711,7 +711,7 @@ for (const fixture of fixtureset) {
   const text = modulefixtures[fixture.source];
   if (text === undefined)
     throw new Error(
-      `The fixture ${fixture.source} answers no module of the flat typed folder; every fixture text lives in a typescript fixture module, so the missing row fails the build instead of reading a retired tests/code path.`,
+      `The fixture ${fixture.source} answers no module of the flat typed folder; every fixture text lives in a typescript fixture module, so the missing row fails the build instead of reading a retired test/code path.`,
     );
   await writeFile(record(fixture.target), text, "utf8");
 }
@@ -1613,7 +1613,7 @@ if (buildlane === "lib") {
  * build-lib — npm library bundle of the @wenathlan/devthink server family
  * one file one responsibility — only the lib build orchestration lives here
  *
- * produces inside build/ (beside the extension bundles tests/build.ts emits):
+ * produces inside build/ (beside the extension bundles test/build.ts emits):
  *   server.js          esm library entry of the server surface (the embedded
  *                      gateway console, transport, auth and library barrel
  *                      beside the maene provider family barrel — one entry)
@@ -1628,7 +1628,7 @@ if (buildlane === "lib") {
  * (the root build owns server.js itself, this script re-proves the lib pair
  * with the bun compiler and keeps the engine entry alive).
  *
- * run order: tests/build.ts FIRST (the root build), then this script.
+ * run order: test/build.ts FIRST (the root build), then this script.
  * the package is esm only — node engine floor, no cjs output.
  */
 
@@ -1675,7 +1675,7 @@ if (buildlane === "researchcatalog") {
  * matrix) land back inside the researchfixtures module the corpus ships.
  * The ownership wave (wave/ownership.getry) moved the corpus fixtures to the
  * gateway owner: the import rides the library specifier
- * @wenathlan/getry/tests/researchfixtures (bridged to the monorepo source) and
+ * @wenathlan/getry/test/researchfixtures (bridged to the monorepo source) and
  * the in-place rewrite targets the getry copy — the corpus is never duplicated
  * inside devthink.
  */
@@ -1683,8 +1683,8 @@ if (buildlane === "researchcatalog") {
    fixtures rides a dynamic import inside the lane so the root build entry
    (`node build.ts`) never loads the corpus module — the lane loads it at
    exactly the moment the standalone script loaded it. */
-const { reposources } = await import("@wenathlan/getry/tests/researchfixtures");
-const modulepath = join(process.cwd(), "..", "getry", "tests", "researchfixtures.ts");
+const { reposources } = await import("@wenathlan/getry/test/researchfixtures");
+const modulepath = join(process.cwd(), "..", "getry", "test", "researchfixtures.ts");
 const sourcefiles = Object.keys(reposources)
   .filter((name) => /^repos.*\.json$/i.test(name))
   .sort();
@@ -1802,7 +1802,7 @@ if (buildlane === "usercatalog") {
  * Extracts unique Chrome Web Store URLs from the user-provided requirement export.
  * The script creates a source index only and does not fetch, execute or unpack extensions.
  */
-const sourcedirectory = join(process.cwd(), "tests", "code");
+const sourcedirectory = join(process.cwd(), "test", "code");
 const input = await readFile(join(sourcedirectory, "inputrequirements.txt"), "utf8");
 const urls = [...input.matchAll(/https:\/\/chromewebstore\.google\.com\/detail\/[^\s*]+/g)].map((match) => match[0]);
 const unique = [...new Set(urls)];

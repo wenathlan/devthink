@@ -20,7 +20,7 @@
  *     reads ride. The entry-guards' `normalizeGateway` (§2) is a DELIBERATE
  *     twin kept verbatim, not a dedupe miss: it strips exactly ONE trailing
  *     slash and never judges the scheme, a behavior pinned line-for-line by
- *     tests/authflow.test.ts (`"http://127.0.0.1:8787//"` must answer
+ *     test/authflow.test.ts (`"http://127.0.0.1:8787//"` must answer
  *     `"http://127.0.0.1:8787/"` — normalizeGatewayBase would answer
  *     without the second slash), so delegating it to the survivor would
  *     change pinned behavior.
@@ -35,7 +35,7 @@
  * The one deliberate exclusion: gatewayconfig.ts stays a file of its own.
  * It is not an imported module but a runtime-discovered CONFIG FILE — the
  * loadconfig() candidate chain (config.ts / server.ts) probes the literal
- * file name `gatewayconfig.ts` on disk, and tests/server/server.e2e.test.ts
+ * file name `gatewayconfig.ts` on disk, and test/server/server.e2e.test.ts
  * writes its own fixture under that name — so merging or deleting it would
  * change runtime behavior, which the family law forbids.
  *
@@ -314,7 +314,7 @@ export type GatewayRegistration = ReturnType<typeof useGatewayRegistration>;
 
 /**
  * authgate — the pure guards of the entry flow (root logic, side-effect-
- * free, unit-tested in tests/authflow.test.ts). The authentication page-app
+ * free, unit-tested in test/authflow.test.ts). The authentication page-app
  * (sol/auth/auth.tsx) rides these guards on the owner entry chain intro →
  * explore → auth → panel: afterAuthTarget resolves the post-session
  * destination (default /panel, a safe same-origin ?next= honored), the
@@ -402,7 +402,7 @@ export function handoverPath(search: string): string {
  * The DELIBERATE twin of the D7 survivor `normalizeGatewayBase` (§1), kept
  * verbatim on purpose: this cleaner strips exactly ONE trailing slash and
  * never judges the scheme, a behavior pinned line-for-line by
- * tests/authflow.test.ts (`"http://127.0.0.1:8787//"` answers
+ * test/authflow.test.ts (`"http://127.0.0.1:8787//"` answers
  * `"http://127.0.0.1:8787/"`), while the survivor strips every trailing
  * slash and gates the http(s) scheme for the stored preference.
  *

@@ -281,7 +281,7 @@ schema version: the configuration surface of the release; every documented key b
 
 ## storage schema reference
 
-schema version: the frozen schema files of the 1.1.91 api freeze; every schema below lives under the dist/schemas build artifacts the tests/code sources emit.
+schema version: the frozen schema files of the 1.1.91 api freeze; every schema below lives under the dist/schemas build artifacts the test/code sources emit.
 
 | Schema | Scope |
 | --- | --- |

@@ -98,7 +98,7 @@ The cross browser feature flags gate surfaces a browser cannot host. The default
 
 ## Build and verification
 
-`tests/build.mjs` gains the firefox and the safari targets. The firefox target reads the source manifest, layers the firefox overlay through the `firefoxprep` adapter, assembles the xpi through the `xpipack` assembler with the adapted manifest and the hashed extension dist bundles, and writes the artifact beside the chromium extension zip. The safari target embeds the chromium extension payload into the safari app extension wrapper through the `safariskeleton` module, and the wrapper ships beside the chromium zip and the firefox xpi with the bundle id, the entitlements and the minimal app shell.
+`test/build.mjs` gains the firefox and the safari targets. The firefox target reads the source manifest, layers the firefox overlay through the `firefoxprep` adapter, assembles the xpi through the `xpipack` assembler with the adapted manifest and the hashed extension dist bundles, and writes the artifact beside the chromium extension zip. The safari target embeds the chromium extension payload into the safari app extension wrapper through the `safariskeleton` module, and the wrapper ships beside the chromium zip and the firefox xpi with the bundle id, the entitlements and the minimal app shell.
 
 The per browser size budgets the build asserts: apimap 60000b, browserpolyfills 120000b, firefoxprep 60000b, xpipack 90000b, safariskeleton 90000b. The no underscore bundle naming check fires on every cross browser bundle. The checksum step records the digests for the firefox and the safari artifacts beside the existing checksum lines.
 

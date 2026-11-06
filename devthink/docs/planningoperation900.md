@@ -81,7 +81,7 @@ the eradication inside every wave, the gates before every close.
 - [ ] 056. keep the dependencyupdates ladder riding the lockfile sync in the same commit.
 - [ ] 057. keep the workflowcheck and npmgate validators in the verify path.
 - [ ] 058. run the complete test suite once and record the green baseline of the operation.
-- [ ] 059. publish every gate artifact to tests/artifacts as the audit trail.
+- [ ] 059. publish every gate artifact to test/artifacts as the audit trail.
 - [ ] 060. document every gate of the ladder in the releasegates doc with its exit condition.
 
 ## phase 2 — the shell: taskbar, windows, alt-tab, menus and the desktop
@@ -996,7 +996,7 @@ the eradication inside every wave, the gates before every close.
 - [ ] 938. verify the git history: one commit per step, no build ghosts, clean tree.
 - [ ] 939. verify the tokens rotated at the end of the operation, the security law.
 - [ ] 940. close every wave summary with the greps, the gates and the artifacts cited.
-- [ ] 941. archive the session artifacts under tests/artifacts with the run date.
+- [ ] 941. archive the session artifacts under test/artifacts with the run date.
 - [ ] 942. reconcile the step counter with the commit footers of the house.
 - [ ] 943. open the next house of the ladder only with this house fully green.
 - [ ] 944. report the operation to the owner with the counts, the hashes and the gaps.

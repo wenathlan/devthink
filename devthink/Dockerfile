@@ -40,7 +40,7 @@
 #   application-scoped context, the exact failure that reddened the
 #   container-scan lane of the security workflow), and the gate scripts
 #   and the vitest suite the builder runs live inside the application
-#   tree (the tests-village migration folded the old root tests/ folder
+#   tree (the tests-village migration folded the old root test/ folder
 #   into the devthink application root),
 #   and the config bridges resolve the getry thinking ladder and the
 #   saddle sandbox onto their sibling owner sources. the image therefore
@@ -364,7 +364,7 @@ RUN bun install --frozen-lockfile --ignore-scripts
 # design and the extension surfaces, flat at the application root beside
 # the sol component folders — and the docs the deterministic checks read),
 # the gate scripts, the fixtures and the vitest suite the builder runs
-# (the tests-village migration folded the old root tests/ tree into the
+# (the tests-village migration folded the old root test/ tree into the
 # application root, so COPY devthink carries them), and the sibling
 # engines the config bridges resolve (the getry thinking ladder of the
 # getrybridge alias and the direct village imports, the saddle sandbox

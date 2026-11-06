@@ -26,7 +26,7 @@ tasks.jar {
     from(layout.projectDirectory) {
         include("README.md")
         include("docs/**")
-        include("tests/**")
+        include("test/**")
     }
 }
 

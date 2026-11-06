@@ -29,5 +29,5 @@
     }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx", "docs/example-*.ts"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "coverage", "web", "tests", "build"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "coverage", "web", "test", "build"]
 }

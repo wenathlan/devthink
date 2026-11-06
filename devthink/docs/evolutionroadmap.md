@@ -27,7 +27,7 @@ This roadmap is the planning chain for every devthink release between 1.1.31 and
 | 7 | 1.1.90 to 2.0.0-rc.2 | consolidation and release candidates |
 | 8 | 2.0.0 | the agentic browser platform |
 
-Progress: 1.1.31 through 2.0.0 released — the chain is complete with 2.0.0 as the closing platform release, and the 2.0.2 final polish release closed the sixteen audit gaps the closing verification dispatches found (the ui polish family with the keyboard focus order of the review dialog, the high contrast theme, the notification plurals, the dashboard panel resize, the unused-style pruning and the icon set at every required size; the version one sunset user experience with the negotiation banner, the once-per-user migration prompt and the release provenance stamps of the audit trail; the soak run gate of tests/soak.mjs, the wcag accessibility sweep of tests/wcag.mjs and the web store package with the icon family, the listing draft of docs/webstore.md and the packageextension gate coverage; the migration guide faq and rollback chapters; the library modes file, the gateway guide, the emulation section of the agent algorithms doc with its grants row of the extension permissions doc and the stale artifact reference refresh of packagenaming, nativebridge and releasepipeline), the roadmap 2.0.0-rc.2 candidate folded into it without a separate candidate (the 1.1.99 release shipped the first release candidate: the defect sweep gate of tests/sweep.mjs collecting the audit trail failures with the deduplication, the source scans and the runtime checks, the pool audit gate of tests/poolaudit.mjs cross referencing the 626 item feature pool against the 4,072 symbol shipped corpus with the 623 implemented and 3 planned disposition, the verification matrix gate of tests/matrixverify.mjs covering the 335 kind catalog over the fake tabs of every browser kind with the 18 cells at 100% coverage, the telemetry free verification of tests/telemetryfree.mjs proving zero outbound attempts behind the block all proxy, the notes assembly of the full chain into docs/releasenotes.md, the release candidate documentation of docs/releasecandidate.md and docs/perfbudgets.md, and the residual data cleanup of the tests/code source set; the 1.1.98 release restored the repository shape the operator consolidation directive set: after the operator moved the docs examples into the docs root, gathered the schema, cap, research and fixture data into tests/code and removed the caps, manifests, patches and .devthink directories, this release repaired every broken reference, converted the root companion.mjs into the compiled companion.ts module with the host manifest template embedded, interned the container runner source inside the single containerfile heredoc, turned the seven capability manifests and the ten frozen schemas into dist build artifacts emitted from the frozen lists and the tests/code sources, copied the example set into the dist/fixtures artifacts the packages and the gates read, stamped the umd example page as dist/umd-example.html, dropped the orphaned planlint baselines, the wouter patch and the two dead doc generators, repaired the corrupted minified umd sourcemap line, and moved the freeze artifact and the permission baseline to the tests root beside their gates; the 1.1.91 api freeze pinned the protocolv2 message contracts with the frozen schemas, the capability manifests of every surface and the deprecation policy that holds until 2.0.0; the 1.1.88 release consolidated the repository into the root logic and the one web design with the single maven distribution, the 1.1.89 release cleared every open code scanning finding, and the 1.1.90 release merged the ninety four correlated root modules into the twenty five category families — run, flow, plan, session, swarm, net, bridge, gates, security, serve, capture, views, environments, runtime, perf, crossbrowser, workflow, llm, tools, data, commands, export, evidence, pack and debug — per the operator consolidation directive, which redefines 1.1.90 as the correlation merge wave; and the 1.1.95 release — the roadmap 1.1.94 security hardening landed as 1.1.95 because the real 1.1.94 shipped the single root manifest consolidation — hardened the security surface with the twenty one entry pentest checklist of tests/pentest.mjs and docs/pentest.md, the content security audit of tests/cspaudit.mjs and docs/cspaudit.md, the permission diff gate of tests/permdiff.mjs with the justification table of docs/extensionpermissions.md, the strict content security policy with frame-ancestors on every extension page, the completed transparency page with the permission rows, the stored data kinds with their purge and export links, the consent sessions with their expiry and the audit integrity result, the hardening family of masklogtext, localscangate, hatchbannerof, newdomainpausecard, runtracekeys, syncrotationgate, stdioclientsignaturegate and transparencyexportmask, and the security review of docs/securityreview.md with the go decision security entry; and the 1.1.96 release — the roadmap 1.1.95 multi agent certification — certified the coordination layer end to end with the agentcert gate of tests/agentcert.mjs driving thirty coordination scenario entries against the real compiled modules in the fake clock mode over the fake tabs of every browser kind with every outcome recorded in tests/artifacts/agentcert.json, the costcert gate of tests/costcert.mjs proving the shared accounting reconciles with the reconciliation report in tests/artifacts/costcert.json, the validate:agents chain joining the validate chain and the verify workflow beside the security gates with the workflowcheck permitted set, the dashdone completion of the multi agent dashboard on the dashboardpage surface with the multiagentview of the dashdone family module and the agent registry snapshot exporting the certified topology inventory, and the certification docs of docs/agentcert.md, docs/agentscenarios.md, docs/dashdone.md and docs/costcert.md; the feature audit this section promised rides the remaining chain toward 2.0.0 with the documentation deliverables folded into the 1.1.96 documentation completion release and the quality gates into the release candidates).  (the unlimited agentic core, the perception, media and network phase, the workflow engine with triggers, scheduling and the visual editor, the agent protocol trilogy with the mcp tool server, the remote transport, session tokens, allowlists, tls, streaming and tool calls, the llm integration with user configured gateways, routing, command parsing, drafted plans, reflection, budgets and guardrails, and the multi agent foundation with the shared task queue, work stealing, mailboxes, the blackboard, per agent budgets and scopes, sub agents with depth limits and the killswitch, and the multi agent orchestration with the leader worker topology, critic reviews, verifier checks, tab handoffs, resource locks with conflict scans, result merging with provenance and the progressboard, the execution environments with the isolated world, the offscreen worker pool with its capability grant and inline fallback, the sandbox frame renders and the keepalive run state, the security part one foundations with the denydefault allowlist, originprofiles, consentwindows, revokerun, the immutable loghash chain and maskinputs, the security part two hardening with the secretvault behind its seam, redactshots across every capture kind, schemastrict, origincheck and connectallow, the ratelimit buckets with deferral, the confirmpay, confirmdelete and confirmcreds human gates, the phishguard lookalike watch, safedefaults and the transparencypage with its permdiff history, and the session interface with the sessiongrid, historysearch, emptystate guidance, errorsurface payloads with reviewed retry hints, sitenotes with sealed sensitive bodies, the append only scratchpad, runsummary distillation, semanticrecall with provenance, correctionmemory, consentmemory and cancelrun with its queued only rollback, the interface surfaces part one with the popup command surface, the sidepanel workspace with plan, run and review tabs, the dashboardpage full page view, the optionspage gathering every setting, the onboarding walkthrough with its single consent scoped event, the commandpalette with fuzzy ranking and recent first, the taskinput through the same proposal flow, the plancards, stepapprove, diffpreview, stepstimeline and logstream with its live chain verification, and the interface surfaces part two with the datagrid and exportmenu, quickactions, shortcutkeys and the omniboxtask parser, the statusbadge, notifications, recenttray and stetoasts, the pickeroverlay, targethalo, guidedtips, shotpanel, compareviewer and pagechips, the siteprofiles, darklight tokens, locale bundles, importexport and dropimport, the featuretour and the a11ylabels are complete, the ecosystem part one with the flowlibrary behind schemastrict manifests, the syncbridge hooks under an explicit opt in, the attentionfeed, the background run queue, the runreplay of sealed chains and the outputcompare of joined runs, the ecosystem part two with planlint, the headless flowrun, the exporttools with checksums, the headlesslib session and the node, bun and deno platform targets with their runtime adapters, the performance part one with the lazymods startup path, the debouncedom coalescing, the batchquery folding, the incrsnapshot deltas with the selcache generations, the virtlist windows, the streamparse chunking, the chunkextract cursors, the worker queue backpressure and the per step perf records, and the performance part two with the batch backpressure, the domain limits, the politedelay, the adaptivepoll, the requestcoalesce, the runbudget with its budgetalerts, the timeoutcancel, the tabsuspend, the runcache, the stepprefetch, the efficientresume, the navdedupe, the sessionreuse, the durationmeter, the selectorprofile, the steptrace, the startupmeter with the coldstart, the artifactcompress, the logprune, the batteryaware, the networkaware, the readparallel, the warmselectors, the cadence control and the slowmo replays are complete; the 1.1.70 resilience release shipped the run lifecycle state machine with the runrecords, the offlinequeue with its replay and expiry, the idempotencykeys with their replay deduplication, the checkpoints with their digest validated resume, the heartbeats with the zombiecheck and the reaping, the rollbackrun compensations behind the explicit user choice and the cancelrollback pairs). 1.1.71 through 1.1.99 shipped as documented and the 2.0.0 platform release closed the chain (the roadmap 2.0.0-rc.2 items landed inside 2.0.0: the readiness gate of tests/readiness.mjs with the go decision of docs/readiness.md, the migrateplan command with the automa, selenium, ui vision and tabular importers, the example gallery of tests/recipes.mjs with the thirty six recipes, and the closing stamps) (the 1.1.71 state depth release shipped the per run urlhistory with its visit deduplication, the runtimeline with its phase buckets, the tabisolate namespaces, the sessionlock with its holder naming and expiry, the memory items with provenance and user expiry, the confirmation gated expirememory with its retained summaries, the encryptrest at rest encryption with its webcrypto derived key and lazy migration, the quotawatch cleanup batches behind their per batch approval and the auditexport that streams without a size cap).
+Progress: 1.1.31 through 2.0.0 released — the chain is complete with 2.0.0 as the closing platform release, and the 2.0.2 final polish release closed the sixteen audit gaps the closing verification dispatches found (the ui polish family with the keyboard focus order of the review dialog, the high contrast theme, the notification plurals, the dashboard panel resize, the unused-style pruning and the icon set at every required size; the version one sunset user experience with the negotiation banner, the once-per-user migration prompt and the release provenance stamps of the audit trail; the soak run gate of test/soak.mjs, the wcag accessibility sweep of test/wcag.mjs and the web store package with the icon family, the listing draft of docs/webstore.md and the packageextension gate coverage; the migration guide faq and rollback chapters; the library modes file, the gateway guide, the emulation section of the agent algorithms doc with its grants row of the extension permissions doc and the stale artifact reference refresh of packagenaming, nativebridge and releasepipeline), the roadmap 2.0.0-rc.2 candidate folded into it without a separate candidate (the 1.1.99 release shipped the first release candidate: the defect sweep gate of test/sweep.mjs collecting the audit trail failures with the deduplication, the source scans and the runtime checks, the pool audit gate of test/poolaudit.mjs cross referencing the 626 item feature pool against the 4,072 symbol shipped corpus with the 623 implemented and 3 planned disposition, the verification matrix gate of test/matrixverify.mjs covering the 335 kind catalog over the fake tabs of every browser kind with the 18 cells at 100% coverage, the telemetry free verification of test/telemetryfree.mjs proving zero outbound attempts behind the block all proxy, the notes assembly of the full chain into docs/releasenotes.md, the release candidate documentation of docs/releasecandidate.md and docs/perfbudgets.md, and the residual data cleanup of the test/code source set; the 1.1.98 release restored the repository shape the operator consolidation directive set: after the operator moved the docs examples into the docs root, gathered the schema, cap, research and fixture data into test/code and removed the caps, manifests, patches and .devthink directories, this release repaired every broken reference, converted the root companion.mjs into the compiled companion.ts module with the host manifest template embedded, interned the container runner source inside the single containerfile heredoc, turned the seven capability manifests and the ten frozen schemas into dist build artifacts emitted from the frozen lists and the test/code sources, copied the example set into the dist/fixtures artifacts the packages and the gates read, stamped the umd example page as dist/umd-example.html, dropped the orphaned planlint baselines, the wouter patch and the two dead doc generators, repaired the corrupted minified umd sourcemap line, and moved the freeze artifact and the permission baseline to the tests root beside their gates; the 1.1.91 api freeze pinned the protocolv2 message contracts with the frozen schemas, the capability manifests of every surface and the deprecation policy that holds until 2.0.0; the 1.1.88 release consolidated the repository into the root logic and the one web design with the single maven distribution, the 1.1.89 release cleared every open code scanning finding, and the 1.1.90 release merged the ninety four correlated root modules into the twenty five category families — run, flow, plan, session, swarm, net, bridge, gates, security, serve, capture, views, environments, runtime, perf, crossbrowser, workflow, llm, tools, data, commands, export, evidence, pack and debug — per the operator consolidation directive, which redefines 1.1.90 as the correlation merge wave; and the 1.1.95 release — the roadmap 1.1.94 security hardening landed as 1.1.95 because the real 1.1.94 shipped the single root manifest consolidation — hardened the security surface with the twenty one entry pentest checklist of test/pentest.mjs and docs/pentest.md, the content security audit of test/cspaudit.mjs and docs/cspaudit.md, the permission diff gate of test/permdiff.mjs with the justification table of docs/extensionpermissions.md, the strict content security policy with frame-ancestors on every extension page, the completed transparency page with the permission rows, the stored data kinds with their purge and export links, the consent sessions with their expiry and the audit integrity result, the hardening family of masklogtext, localscangate, hatchbannerof, newdomainpausecard, runtracekeys, syncrotationgate, stdioclientsignaturegate and transparencyexportmask, and the security review of docs/securityreview.md with the go decision security entry; and the 1.1.96 release — the roadmap 1.1.95 multi agent certification — certified the coordination layer end to end with the agentcert gate of test/agentcert.mjs driving thirty coordination scenario entries against the real compiled modules in the fake clock mode over the fake tabs of every browser kind with every outcome recorded in test/artifacts/agentcert.json, the costcert gate of test/costcert.mjs proving the shared accounting reconciles with the reconciliation report in test/artifacts/costcert.json, the validate:agents chain joining the validate chain and the verify workflow beside the security gates with the workflowcheck permitted set, the dashdone completion of the multi agent dashboard on the dashboardpage surface with the multiagentview of the dashdone family module and the agent registry snapshot exporting the certified topology inventory, and the certification docs of docs/agentcert.md, docs/agentscenarios.md, docs/dashdone.md and docs/costcert.md; the feature audit this section promised rides the remaining chain toward 2.0.0 with the documentation deliverables folded into the 1.1.96 documentation completion release and the quality gates into the release candidates).  (the unlimited agentic core, the perception, media and network phase, the workflow engine with triggers, scheduling and the visual editor, the agent protocol trilogy with the mcp tool server, the remote transport, session tokens, allowlists, tls, streaming and tool calls, the llm integration with user configured gateways, routing, command parsing, drafted plans, reflection, budgets and guardrails, and the multi agent foundation with the shared task queue, work stealing, mailboxes, the blackboard, per agent budgets and scopes, sub agents with depth limits and the killswitch, and the multi agent orchestration with the leader worker topology, critic reviews, verifier checks, tab handoffs, resource locks with conflict scans, result merging with provenance and the progressboard, the execution environments with the isolated world, the offscreen worker pool with its capability grant and inline fallback, the sandbox frame renders and the keepalive run state, the security part one foundations with the denydefault allowlist, originprofiles, consentwindows, revokerun, the immutable loghash chain and maskinputs, the security part two hardening with the secretvault behind its seam, redactshots across every capture kind, schemastrict, origincheck and connectallow, the ratelimit buckets with deferral, the confirmpay, confirmdelete and confirmcreds human gates, the phishguard lookalike watch, safedefaults and the transparencypage with its permdiff history, and the session interface with the sessiongrid, historysearch, emptystate guidance, errorsurface payloads with reviewed retry hints, sitenotes with sealed sensitive bodies, the append only scratchpad, runsummary distillation, semanticrecall with provenance, correctionmemory, consentmemory and cancelrun with its queued only rollback, the interface surfaces part one with the popup command surface, the sidepanel workspace with plan, run and review tabs, the dashboardpage full page view, the optionspage gathering every setting, the onboarding walkthrough with its single consent scoped event, the commandpalette with fuzzy ranking and recent first, the taskinput through the same proposal flow, the plancards, stepapprove, diffpreview, stepstimeline and logstream with its live chain verification, and the interface surfaces part two with the datagrid and exportmenu, quickactions, shortcutkeys and the omniboxtask parser, the statusbadge, notifications, recenttray and stetoasts, the pickeroverlay, targethalo, guidedtips, shotpanel, compareviewer and pagechips, the siteprofiles, darklight tokens, locale bundles, importexport and dropimport, the featuretour and the a11ylabels are complete, the ecosystem part one with the flowlibrary behind schemastrict manifests, the syncbridge hooks under an explicit opt in, the attentionfeed, the background run queue, the runreplay of sealed chains and the outputcompare of joined runs, the ecosystem part two with planlint, the headless flowrun, the exporttools with checksums, the headlesslib session and the node, bun and deno platform targets with their runtime adapters, the performance part one with the lazymods startup path, the debouncedom coalescing, the batchquery folding, the incrsnapshot deltas with the selcache generations, the virtlist windows, the streamparse chunking, the chunkextract cursors, the worker queue backpressure and the per step perf records, and the performance part two with the batch backpressure, the domain limits, the politedelay, the adaptivepoll, the requestcoalesce, the runbudget with its budgetalerts, the timeoutcancel, the tabsuspend, the runcache, the stepprefetch, the efficientresume, the navdedupe, the sessionreuse, the durationmeter, the selectorprofile, the steptrace, the startupmeter with the coldstart, the artifactcompress, the logprune, the batteryaware, the networkaware, the readparallel, the warmselectors, the cadence control and the slowmo replays are complete; the 1.1.70 resilience release shipped the run lifecycle state machine with the runrecords, the offlinequeue with its replay and expiry, the idempotencykeys with their replay deduplication, the checkpoints with their digest validated resume, the heartbeats with the zombiecheck and the reaping, the rollbackrun compensations behind the explicit user choice and the cancelrollback pairs). 1.1.71 through 1.1.99 shipped as documented and the 2.0.0 platform release closed the chain (the roadmap 2.0.0-rc.2 items landed inside 2.0.0: the readiness gate of test/readiness.mjs with the go decision of docs/readiness.md, the migrateplan command with the automa, selenium, ui vision and tabular importers, the example gallery of test/recipes.mjs with the thirty six recipes, and the closing stamps) (the 1.1.71 state depth release shipped the per run urlhistory with its visit deduplication, the runtimeline with its phase buckets, the tabisolate namespaces, the sessionlock with its holder naming and expiry, the memory items with provenance and user expiry, the confirmation gated expirememory with its retained summaries, the encryptrest at rest encryption with its webcrypto derived key and lazy migration, the quotawatch cleanup batches behind their per batch approval and the auditexport that streams without a size cap).
 
 ## 1.1.32 unlimited agentic core
 
@@ -5218,7 +5218,7 @@ Changes:
 51. build emits the expanded cli bundle with all new commands to dist/cli.js
 52. build emits the headless library entry as its own dist target
 53. build keeps every bundle free of underscored identifiers through the naming check
-54. tests/build.mjs adds bundle size accounting for the cli and headless targets
+54. test/build.mjs adds bundle size accounting for the cli and headless targets
 55. package.json exports map gains the headless entry point
 56. package.json files list includes the example fixtures directory
 57. cli smoke step joins the validate script chain
@@ -5317,7 +5317,7 @@ Changes:
 43. protocol module keeps zero platform dependencies
 44. memory module takes the storage adapter instead of importing one
 45. progress module takes the clock adapter instead of creating one
-46. tests/build.mjs orchestrates the esm, cjs, umd, neutral and declaration targets
+46. test/build.mjs orchestrates the esm, cjs, umd, neutral and declaration targets
 47. build matrix in the verify workflow runs under node, bun and deno
 48. verify workflow installs bun and deno runners in the ci image
 49. verify workflow runs a require smoke against dist/index.cjs
@@ -5431,7 +5431,7 @@ Changes:
 50. session tokens never appear in urls or logs
 51. the site and the extension negotiate features through the servercontract handshake
 52. bridge consent gate asks the user before the first socket connection
-53. tests/build.mjs gains the staticdeploy build step for the site assets
+53. test/build.mjs gains the staticdeploy build step for the site assets
 54. build emits the site to dist/site with hashed file names
 55. verify workflow builds the site and asserts it contains only static file types
 56. static site scan test refuses any serverless function file in the repository
@@ -5657,7 +5657,7 @@ Changes:
 62. npmgate check allows the mcp bundle in the tarball
 63. containerfile smoke starts mcpmode and lists tools
 64. release notes template gains an mcp section
-65. tests/build.mjs adds size accounting for the mcp bundle
+65. test/build.mjs adds size accounting for the mcp bundle
 66. workflowcheck covers the mcp ci steps
 67. build keeps the mcp bundle free of underscored identifiers through the naming check
 68. new doc docs/mcpserver.md specifies the server, transports and catalog
@@ -5758,7 +5758,7 @@ Changes:
 56. verify workflow installs the host manifest for a chromium profile and runs a native smoke
 57. verify workflow removes the host manifest after the smoke
 58. npmgate check allows the new bundles in the tarball
-59. tests/build.mjs adds size accounting for the native bundles
+59. test/build.mjs adds size accounting for the native bundles
 60. containerfile smoke runs wsbridge against a fake host
 61. release workflow attaches the host manifest template as a release asset
 62. release notes template gains a native bridge section
@@ -5861,8 +5861,8 @@ Changes:
 52. cross browser feature flags gate surfaces a browser cannot host
 53. feature flags default to the intersection set across browsers
 54. firefoxprep keeps the permission deny list in force across overlays
-55. tests/build.mjs gains the firefox target emitting the adapted bundle
-56. tests/build.mjs gains the safari target embedding the chromium payload
+55. test/build.mjs gains the firefox target emitting the adapted bundle
+56. test/build.mjs gains the safari target embedding the chromium payload
 57. verify workflow runs the addons linter over the xpipack output
 58. verify workflow installs firefox and runs a load smoke on the xpipack build
 59. xpipack step joins the release workflow artifact chain
@@ -5946,8 +5946,8 @@ Changes:
 30. release workflow retries channel jobs with a bounded policy
 31. release workflow records every artifact in the release notes
 32. version sync stamps package.json, manifest.json, pom.xml, csproj, vsix manifest and xpi manifest
-33. tests/release.mjs syncs the new manifests
-34. tests/release.mjs check mode verifies zero drift across every manifest
+33. test/release.mjs syncs the new manifests
+34. test/release.mjs check mode verifies zero drift across every manifest
 35. release notes generator lists new artifacts per channel
 36. github release body links every channel artifact
 37. npm tarball grows the fixtures, declarations, docs and all library bundles
@@ -6081,7 +6081,7 @@ Changes:
 58. docs lint checks links across every document
 59. docs/guide directory holds the userguide, apiref, kindcatalog and tutorials
 60. readme becomes a short entry point linking the userguide and tutorials
-61. tests/scripts/docsbuild.mjs generates apiref and kindcatalog from the build outputs
+61. test/scripts/docsbuild.mjs generates apiref and kindcatalog from the build outputs
 62. verify workflow runs docsbuild and fails when generated docs drift
 63. verify workflow runs the docs link checker over every document
 64. recipes run through planlint in the verify workflow
@@ -6145,7 +6145,7 @@ Changes:
 15. e2esuite runs on every browser build from 1.1.86
 16. e2esuite records video traces for failure diagnosis
 17. e2esuite fixtures site exercises every action kind
-18. deepsmoke extends tests/chromiumsmoke.mjs with a long session run
+18. deepsmoke extends test/chromiumsmoke.mjs with a long session run
 19. deepsmoke runs a multi hour soak with periodic checkpoints
 20. deepsmoke survives service worker restarts with state reload
 21. deepsmoke measures cold start of the extension
@@ -6234,7 +6234,7 @@ This release closes the phase six integration work and opens the consolidation c
 
 Changes:
 
-1. tests/poolaudit.mjs parses the consolidated feature pool from docs/crxfeaturemining.md into 626 numbered records
+1. test/poolaudit.mjs parses the consolidated feature pool from docs/crxfeaturemining.md into 626 numbered records
 2. poolaudit resolves each pool item against the action kinds declared in policy.ts
 3. poolaudit resolves each pool item against the roadmap decisions recorded in docs/evolutionroadmap.md
 4. poolaudit assigns every item one status of implemented, planned or refused
@@ -6254,7 +6254,7 @@ Changes:
 18. poolaudit verifies pool item 503 through 544 ui surfaces coverage in the interface surfaces
 19. poolaudit verifies pool item 545 through 588 security and consent coverage in the consent gates
 20. poolaudit verifies pool item 589 through 626 performance coverage in the runtime budgets
-21. poolaudit writes the ledger to tests/artifacts/poolcoverage.json after every run
+21. poolaudit writes the ledger to test/artifacts/poolcoverage.json after every run
 22. poolaudit exits nonzero when any item lacks a status or a refusal reason
 23. poolaudit reports the implemented, planned and refused counts per context group
 24. poolaudit reports the overall coverage percentage across all 626 items
@@ -6319,9 +6319,9 @@ Changes:
 83. docs/configuration.md documents the thumbnail generation setting
 84. docs/configuration.md documents the console spam filter setting
 85. the snapshot schema version bump joins the protocol compatibility notes
-86. tests/poolaudit.test.ts verifies the ledger covers exactly 626 items
-87. tests/poolaudit.test.ts verifies every refusal carries a nonempty reason
-88. tests/poolaudit.test.ts verifies the ledger counts match the docs report
+86. test/poolaudit.test.ts verifies the ledger covers exactly 626 items
+87. test/poolaudit.test.ts verifies every refusal carries a nonempty reason
+88. test/poolaudit.test.ts verifies the ledger counts match the docs report
 89. policy tests cover the four new kinds and their consent classes
 90. protocol tests cover the option schemas of the new kinds
 91. memory tests cover session search across saved sessions
@@ -6341,7 +6341,7 @@ The audit of 1.1.90 proved the feature surface complete, so this release freezes
 
 Changes:
 
-1. tests/apifreeze.mjs enumerates every message type declared in protocol.ts
+1. test/apifreeze.mjs enumerates every message type declared in protocol.ts
 2. apifreeze verifies every message type carries the versioned envelope
 3. apifreeze verifies the protocol version constant matches version.ts
 4. apifreeze verifies the frozen tool catalog covers every action kind in policy.ts
@@ -6355,7 +6355,7 @@ Changes:
 12. apifreeze verifies the pagebridge message surface matches the injected bridge
 13. apifreeze verifies the library surface exposes no undeclared symbols
 14. apifreeze verifies every manifest permission maps to a consuming capability
-15. apifreeze hashes every frozen schema into tests/artifacts/apifreeze.json
+15. apifreeze hashes every frozen schema into test/artifacts/apifreeze.json
 16. apifreeze exits nonzero when a frozen schema hash changes without a version bump
 17. apifreeze reports the surface size per message family
 18. apifreeze joins the verify workflow as a required check
@@ -6434,8 +6434,8 @@ Changes:
 91. protocol tests cover strict mode rejection of unknown fields
 92. policy tests verify the option grammar matches the frozen plan schema
 93. manifest tests verify the permissions match the capmanifest declarations
-94. tests/apifreeze.test.ts verifies the schema hash artifact stays stable
-95. tests/apifreeze.test.ts verifies every capmanifest matches its surface
+94. test/apifreeze.test.ts verifies the schema hash artifact stays stable
+95. test/apifreeze.test.ts verifies every capmanifest matches its surface
 96. chromiumsmoke run exercises version negotiation end to end
 97. runtimepolicy check accepts the protocolv2 negotiation paths
 98. validateextension verifies the served capmanifest files
@@ -6450,26 +6450,26 @@ The frozen contracts of 1.1.91 need a bridge for existing automation assets, so 
 
 Changes:
 
-1. tests/migrateplan.mjs parses version one plans from the memory store and local files
+1. test/migrateplan.mjs parses version one plans from the memory store and local files
 2. migrateplan reports every version one field with its protocolv2 destination
 3. migrateplan reports fields without a destination as conversion warnings
 4. migrateplan verifies each converted plan against the frozen plan schema
 5. migrateplan refuses conversion when a source kind is absent from the tool catalog
 6. migrateplan preserves step identifiers across the conversion
 7. migrateplan preserves audit provenance links across the conversion
-8. tests/importautoma.mjs parses automa workflow json and lists every block type
+8. test/importautoma.mjs parses automa workflow json and lists every block type
 9. importautoma maps each automa block to a devthink kind or records a refusal
 10. importautoma reports automa variables and expressions with their conversion fate
-11. tests/importselenium.mjs parses selenium ide side files and lists every command
+11. test/importselenium.mjs parses selenium ide side files and lists every command
 12. importselenium maps each selenium command to a devthink kind or records a refusal
-13. tests/importuivision.mjs parses ui vision csv macros and lists every command
+13. test/importuivision.mjs parses ui vision csv macros and lists every command
 14. importuivision maps each ui vision command to a devthink kind or records a refusal
-15. tests/importcsv.mjs parses csv row sets into fill loop variables
+15. test/importcsv.mjs parses csv row sets into fill loop variables
 16. the importers run as pure conversions with no page access by construction
 17. the importers report unmapped source commands as gaps never as silent drops
 18. the importers never execute plans and always route through the review flow
 19. import coverage counters report the mapped ratio per source format
-20. import fixtures for every source format live under tests/artifacts/importfixtures
+20. import fixtures for every source format live under test/artifacts/importfixtures
 21. cli gains the migrate command wrapping migrateplan
 22. cli migrate reads a version one plan file and writes a protocolv2 plan file
 23. cli migrate lists field level conversion notes beside the output
@@ -6545,10 +6545,10 @@ Changes:
 93. docs/todo.md records the migration tooling completion
 94. changelog entry lists the importers and the migrate command
 95. readme gains a migration section pointing at the guide
-96. tests/migrateplan.test.ts covers the conversion of every fixture plan
-97. tests/importautoma.test.ts covers every mapped automa block type
-98. tests/importselenium.test.ts covers every mapped selenium command
-99. tests/importuivision.test.ts covers the csv macro conversion
+96. test/migrateplan.test.ts covers the conversion of every fixture plan
+97. test/importautoma.test.ts covers every mapped automa block type
+98. test/importselenium.test.ts covers every mapped selenium command
+99. test/importuivision.test.ts covers the csv macro conversion
 100. protocol tests verify converted plans validate against the frozen schemas
 
 ## 1.1.93 performance hardening
@@ -6557,11 +6557,11 @@ After the migration bridge of 1.1.92 the consolidation turns to measured perform
 
 Changes:
 
-1. tests/coldstart.mjs measures service worker startup across repeated loads
-2. coldstart records the startup breakdown per module into tests/artifacts/coldstart.json
+1. test/coldstart.mjs measures service worker startup across repeated loads
+2. coldstart records the startup breakdown per module into test/artifacts/coldstart.json
 3. coldstart compares every measurement against the documented budget
 4. coldstart fails the run when the startup budget is exceeded
-5. tests/membudget.mjs measures the peak memory of a full run against a fake tab
+5. test/membudget.mjs measures the peak memory of a full run against a fake tab
 6. membudget measures the observation memory of a large page fixture
 7. membudget measures the capture store growth across a long run
 8. membudget compares every measurement against the documented budget
@@ -6647,8 +6647,8 @@ Changes:
 88. changelog entry summarizes the measured improvements
 89. readme notes the performance budgets and the coldstart result
 90. docs/featureflowmatrix.md gains the parallel read wave rows
-91. tests/coldstart.test.ts verifies the startup budget against the artifact
-92. tests/membudget.test.ts verifies budget enforcement and pause behavior
+91. test/coldstart.test.ts verifies the startup budget against the artifact
+92. test/membudget.test.ts verifies budget enforcement and pause behavior
 93. policy tests cover the batteryaware deferral gates
 94. policy tests cover the netaware scheduling gates
 95. protocol tests cover the parallel read wave messages
@@ -6665,7 +6665,7 @@ The performance budgets of 1.1.93 hold, so this release hardens the security sur
 Changes:
 
 1. docs/pentest.md defines the penetration test checklist for the release candidates
-2. tests/pentest.mjs executes every automated checklist entry against a local profile
+2. test/pentest.mjs executes every automated checklist entry against a local profile
 3. pentest verifies the consent gate blocks a sensitive kind on a fresh profile
 4. pentest verifies the origin check rejects cross origin messages
 5. pentest verifies the external connect allowlist refuses unknown callers
@@ -6685,11 +6685,11 @@ Changes:
 19. pentest verifies the phishing lookalike check warns before login flows
 20. pentest verifies the payment confirmation gate cannot be auto approved
 21. pentest verifies the destructive delete gate requires the human choice
-22. pentest records every executed entry with its outcome in tests/artifacts/pentest.json
+22. pentest records every executed entry with its outcome in test/artifacts/pentest.json
 23. pentest exits nonzero on any failed checklist entry
 24. the manual checklist entries list their human verification steps
 25. the checklist covers every consent requirement of pool item 545 through 588
-26. tests/cspaudit.mjs extracts every content security policy from manifest.json
+26. test/cspaudit.mjs extracts every content security policy from manifest.json
 27. cspaudit verifies no injected code path uses eval or remote code
 28. cspaudit verifies the pagebridge script is the only injected file
 29. cspaudit verifies the sidepanel and popup load no remote resources
@@ -6706,12 +6706,12 @@ Changes:
 40. the transparency page shows the active consent sessions and their expiry
 41. the transparency page shows the audit trail integrity check result
 42. the transparency page runs entirely offline with no external requests
-43. tests/permdiff.mjs extracts the permission set from manifest.json
+43. test/permdiff.mjs extracts the permission set from manifest.json
 44. permdiff compares the permission set against the previous release artifact
 45. permdiff reports every added, removed and reordered permission
 46. permdiff requires a written justification for every permission addition
 47. permdiff blocks the release when an unjustified permission appears
-48. permdiff writes its report to tests/artifacts/permdiff.json
+48. permdiff writes its report to test/artifacts/permdiff.json
 49. the optional permission set gains no new entries in this release
 50. the host permissions stay limited to the active tab and granted origins
 51. the audit trail records the permission set hash of each release
@@ -6749,9 +6749,9 @@ Changes:
 83. docs/configuration.md documents the quarantine and scanning options
 84. docs/referencecatalog.md records the security artifact inventory
 85. the transparency page copy is reviewed for plain language
-86. tests/pentest.test.ts verifies the checklist artifact covers every entry
-87. tests/cspaudit.test.ts verifies the policy set matches the manifest
-88. tests/permdiff.test.ts verifies the diff logic against fixture manifests
+86. test/pentest.test.ts verifies the checklist artifact covers every entry
+87. test/cspaudit.test.ts verifies the policy set matches the manifest
+88. test/permdiff.test.ts verifies the diff logic against fixture manifests
 89. manifest tests cover the strict content security policy
 90. policy tests cover the review mode pause on new domains
 91. protocol tests cover the quarantine review flow messages
@@ -6771,7 +6771,7 @@ The security review of 1.1.94 cleared the single agent surface, so the certifica
 
 Changes:
 
-1. tests/agentcert.mjs drives the full coordination suite against fake tabs
+1. test/agentcert.mjs drives the full coordination suite against fake tabs
 2. agentcert verifies the leader worker topology across five fake agents
 3. agentcert verifies the planner executor separation of roles
 4. agentcert verifies the critic agent review loop closes
@@ -6802,8 +6802,8 @@ Changes:
 29. agentcert verifies the lessons learned store deduplicates entries
 30. agentcert verifies the suite covers every pool item 469 through 502
 31. agentcert exits nonzero when any coordination scenario fails
-32. agentcert records every scenario outcome in tests/artifacts/agentcert.json
-33. tests/costcert.mjs replays recorded runs and recomputes every cost line
+32. agentcert records every scenario outcome in test/artifacts/agentcert.json
+33. test/costcert.mjs replays recorded runs and recomputes every cost line
 34. costcert verifies the token accounting per agent matches the step logs
 35. costcert verifies the shared cost accounting sums the agent totals
 36. costcert verifies the budget alerts fire at the configured thresholds
@@ -6811,7 +6811,7 @@ Changes:
 38. costcert verifies the model routing costs land on the right agent
 39. costcert verifies the exported cost report reconciles to the total
 40. costcert verifies no cost event is missing from the audit trail
-41. costcert writes the reconciliation report to tests/artifacts/costcert.json
+41. costcert writes the reconciliation report to test/artifacts/costcert.json
 42. costcert exits nonzero on any accounting mismatch
 43. the certification entry gate runs agentcert and costcert together
 44. the certification artifacts join the release evidence bundle
@@ -6856,8 +6856,8 @@ Changes:
 83. the scenario docs reference the fake tab provider setup
 84. the scenario docs state the consent model of each topology
 85. the certification doc maps scenarios to pool items 469 through 502
-86. tests/agentcert.test.ts verifies the artifact covers every scenario
-87. tests/costcert.test.ts verifies the reconciliation invariants
+86. test/agentcert.test.ts verifies the artifact covers every scenario
+87. test/costcert.test.ts verifies the reconciliation invariants
 88. protocol tests cover coordination messages against the frozen schemas
 89. policy tests cover the per agent scope gates
 90. memory tests cover the blackboard merge and lessons stores
@@ -6878,7 +6878,7 @@ The certification of 1.1.95 proved the runtime, so this release completes the wr
 
 Changes:
 
-1. tests/doccheck.mjs extracts every action kind from policy.ts
+1. test/doccheck.mjs extracts every action kind from policy.ts
 2. doccheck verifies every action kind has a kinddocs entry
 3. doccheck verifies every kinddocs entry documents the option schema
 4. doccheck verifies every kinddocs entry carries a runnable example
@@ -6897,7 +6897,7 @@ Changes:
 17. doccheck verifies the readme claims match the capability manifests
 18. doccheck reports every doc gap as a failing check
 19. doccheck joins the verify workflow as a required check
-20. doccheck writes its report to tests/artifacts/doccheck.json
+20. doccheck writes its report to test/artifacts/doccheck.json
 21. docs/kinddocs.md documents every interaction kind with examples
 22. docs/kinddocs.md documents every observation kind with examples
 23. docs/kinddocs.md documents every navigation kind with examples
@@ -6963,7 +6963,7 @@ Changes:
 83. the onboarding walkthrough text joins the docs review
 84. every example plan in kinddocs validates against the frozen plan schema
 85. every flow diagram renders in the docs build
-86. tests/doccheck.test.ts verifies the report covers every check family
+86. test/doccheck.test.ts verifies the report covers every check family
 87. doccheck verifies kinddocs coverage of the whole tool catalog
 88. protocol tests cover the example plan fragments
 89. policy tests cross reference the kinddocs risk classes
@@ -6987,7 +6987,7 @@ With every kind, flow and reference documented in 1.1.96, this release turns the
 
 Changes:
 
-1. tests/recipes.mjs loads every recipe from docs/recipes and validates its schema
+1. test/recipes.mjs loads every recipe from docs/recipes and validates its schema
 2. recipes verifies every gallery entry validates against the frozen plan schema
 3. recipes verifies every gallery entry passes the policy checks
 4. recipes verifies every gallery entry declares its required capabilities
@@ -6998,7 +6998,7 @@ Changes:
 9. recipes executes every gallery entry against its fixture page in the smoke profile
 10. recipes records the outcome and duration of every executed entry
 11. recipes exits nonzero when any gallery entry fails validation or execution
-12. recipes writes the run report to tests/artifacts/recipes.json
+12. recipes writes the run report to test/artifacts/recipes.json
 13. recipes verifies no gallery entry hardcodes remote origins
 14. recipes verifies no gallery entry bypasses the consent gates
 15. recipes verifies every sensitive step in the gallery carries its approval flag
@@ -7050,7 +7050,7 @@ Changes:
 61. the gallery page links each agent recipe to its scenario doc
 62. the gallery page shows the last validated release per recipe
 63. the gallery page states the fixture pages and their local origins
-64. the fixture pages ship under tests/fixtures for every recipe family
+64. the fixture pages ship under test/fixtures for every recipe family
 65. the fixture product grid page covers pagination and lazy images
 66. the fixture checkout page covers validation errors and wizard steps
 67. the fixture dashboard page covers timers, toasts and console noise
@@ -7075,7 +7075,7 @@ Changes:
 86. the gallery doc includes troubleshooting for every recipe family
 87. the gallery doc includes the expected export outputs per recipe
 88. the gallery doc covers recipe customization with plan variables
-89. tests/recipes.test.ts verifies the artifact covers every gallery entry
+89. test/recipes.test.ts verifies the artifact covers every gallery entry
 90. policy tests cover the recipe policy checks end to end
 91. protocol tests verify recipe plans against the frozen schemas
 92. memory tests cover recipe import and reimport behavior
@@ -7094,7 +7094,7 @@ The gallery of 1.1.97 proved the library on real recipes, so the first release c
 
 Changes:
 
-1. tests/sweep.mjs collects every failed outcome recorded in the audit trails since 1.1.90
+1. test/sweep.mjs collects every failed outcome recorded in the audit trails since 1.1.90
 2. sweep deduplicates the failures by error code and step kind
 3. sweep verifies every recorded failure carries a fixed or blocked status
 4. sweep opens a defect entry in docs/todo.md for every unfixed failure
@@ -7114,9 +7114,9 @@ Changes:
 18. sweep verifies every settings toggle round trips through storage
 19. sweep verifies cancel paths stop runs within the timeout budget
 20. sweep verifies the escape hatch works from every surface
-21. sweep writes its findings to tests/artifacts/sweep.json
+21. sweep writes its findings to test/artifacts/sweep.json
 22. sweep exits nonzero while a blocker remains open
-23. tests/matrixverify.mjs enumerates the full verification matrix
+23. test/matrixverify.mjs enumerates the full verification matrix
 24. matrixverify covers every action kind against the fake tab provider
 25. matrixverify covers every action kind against the chromiumsmoke profile
 26. matrixverify covers every browser surface across popup, sidepanel and dashboard
@@ -7128,7 +7128,7 @@ Changes:
 32. matrixverify covers the migration paths from version one plans
 33. matrixverify runs the poolaudit, apifreeze, cspaudit and permdiff gates
 34. matrixverify runs the agentcert, costcert, doccheck and recipes gates
-35. matrixverify records every cell outcome in tests/artifacts/matrixverify.json
+35. matrixverify records every cell outcome in test/artifacts/matrixverify.json
 36. matrixverify exits nonzero when any matrix cell fails
 37. matrixverify reports the matrix coverage percentage of the candidate
 38. the telemetry free verification greps the bundle for every network call site
@@ -7139,7 +7139,7 @@ Changes:
 43. the verification lists every network capable path with its gate
 44. the verification asserts sync and update checks stay opt in only
 45. the verification asserts crash and error reporting stays local only
-46. tests/artifacts/telemetryfree.json records the verification evidence
+46. test/artifacts/telemetryfree.json records the verification evidence
 47. sweep fixes the dialog dismissal failures flagged in the audit trails
 48. sweep fixes the flaky network quiet waits with explicit conditions
 49. sweep fixes the selector drift failures with stable selector fallbacks
@@ -7179,8 +7179,8 @@ Changes:
 83. docs/poolcoverage.md refreshes its counts for the candidate
 84. docs/perfbudgets.md records the candidate measurements
 85. docs/migrationguide.md finalizes its candidate revision
-86. tests/sweep.test.ts verifies the sweep artifact holds no open blockers
-87. tests/matrixverify.test.ts verifies the matrix covers every declared cell
+86. test/sweep.test.ts verifies the sweep artifact holds no open blockers
+87. test/matrixverify.test.ts verifies the matrix covers every declared cell
 88. the telemetry free assertions join the verify workflow
 89. protocol tests cover the envelope fixes from the sweep
 90. policy tests cover the converted configuration bounds
@@ -7201,7 +7201,7 @@ The first candidate of 1.1.98 passed its matrix, so the second candidate polishe
 
 Changes:
 
-1. tests/readiness.mjs evaluates every release gate against the rc2 evidence
+1. test/readiness.mjs evaluates every release gate against the rc2 evidence
 2. readiness verifies poolaudit reports full disposition of all 626 items
 3. readiness verifies the apifreeze schemas stayed hash stable since 1.1.91
 4. readiness verifies the deprecation window closes with no pending removal
@@ -7281,7 +7281,7 @@ Changes:
 78. docs/poolcoverage.md freezes the final coverage counts for 2.0.0
 79. docs/referencecatalog.md freezes the artifact inventory for 2.0.0
 80. the 2.0.0 roadmap outline joins the docs as the only open planning item
-81. tests/readiness.test.ts verifies every gate holds a verdict in the artifact
+81. test/readiness.test.ts verifies every gate holds a verdict in the artifact
 82. the readiness run joins the release pipeline as the final gate
 83. protocol tests verify the version one sunset notice behavior
 84. policy tests cover the migration prompt consent flow
@@ -7410,8 +7410,8 @@ Changes:
 
 ## Chain closure record of 2.0.0
 
-The 2.0.0 platform release closed the chain this document records. The release candidate two section folded into the platform release without a separate candidate: the readiness gate (tests/readiness.mjs walking every release gate against the recorded evidence and answering the go decision of docs/readiness.md), the migration bridge (the migrateplan command with the version one, automa, selenium, ui vision and tabular importers and their fixtures), the example gallery (the thirty six recipes of tests/code/recipes with the runner of tests/recipes.mjs green in the verify lane, the cli recipes command and the sidepanel one click import) and the closing stamps (the platform changelog entry, the release notes, the roadmap progress line, the todo closure and the five package channels with the rubygems gem beside npm, maven, nuget and the container) all shipped inside 2.0.0. The deprecation window the 1.1.91 api freeze opened closed at this release exactly as docs/deprecation.md recorded: the protocol floor speaks major two only, the deprecated fields removed with both promised sunsets executed, and the version one assets ride the migration bridge. The closing audit walks every roadmap item from 1.1.32 to 1.1.99 with each item recorded as shipped or consciously superseded with a written reason in the audit trail of this document's progress line and the worklog the release lane maintains.
+The 2.0.0 platform release closed the chain this document records. The release candidate two section folded into the platform release without a separate candidate: the readiness gate (test/readiness.mjs walking every release gate against the recorded evidence and answering the go decision of docs/readiness.md), the migration bridge (the migrateplan command with the version one, automa, selenium, ui vision and tabular importers and their fixtures), the example gallery (the thirty six recipes of test/code/recipes with the runner of test/recipes.mjs green in the verify lane, the cli recipes command and the sidepanel one click import) and the closing stamps (the platform changelog entry, the release notes, the roadmap progress line, the todo closure and the five package channels with the rubygems gem beside npm, maven, nuget and the container) all shipped inside 2.0.0. The deprecation window the 1.1.91 api freeze opened closed at this release exactly as docs/deprecation.md recorded: the protocol floor speaks major two only, the deprecated fields removed with both promised sunsets executed, and the version one assets ride the migration bridge. The closing audit walks every roadmap item from 1.1.32 to 1.1.99 with each item recorded as shipped or consciously superseded with a written reason in the audit trail of this document's progress line and the worklog the release lane maintains.
 
 ## Final polish closure record of 2.0.2
 
-The 2.0.2 final polish release closed the gap set the closing verification dispatches recorded against this roadmap. The six audit dispatches of the closing verification (every release section from 1.1.32 to 2.0.0, the rc.2 fold, the 2.0.0 section and the drift records) found sixteen never-built items: the thirteen rc.2 final polish and migration items (the keyboard focus order, the high contrast theme, the notification plurals, the dashboard panel resize, the unused-style pruning, the icon set, the store screenshots, the version negotiation banner, the once-per-user migration prompt, the release provenance stamps, the migration guide faq, the migration guide rollback chapter and the progress replay provenance) and the three 2.0.0 items (the soak run, the wcag accessibility sweep and the web store package). Every one shipped at the source in 2.0.2: the focusorderof, highcontrasttokens, pluralize, panelwidths and virtlist families in the surface modules with the stylepruning enforcement test; the v1sunset and migrationprompt states with the once-per-session banner and the once-per-user prompt through the notification path; the provenancestampof family of progress.ts with the replay stamps; the soak gate of tests/soak.mjs and the wcag gate of tests/wcag.mjs with their artifacts and their releasegates rows; the icon family of icons.ts materialized into the archive the packageextension gate asserts; the web store listing draft of docs/webstore.md with the screenshot checklist and the operator-published submission posture the readiness review records; the migration guide chapters; and the documentation completion (docs/librarymodes.md, docs/gatewayguide.md, the emulation section of the agent algorithms doc, the emulation row of the extension permissions doc, the stale artifact table refresh). The store submission itself stays operator published as the residual risks of docs/readiness.md record: the release workflow publishes the registry channels and the github release, never the store. The closing audit trail of this document, the changelog and the worklog carries the per-item evidence.
+The 2.0.2 final polish release closed the gap set the closing verification dispatches recorded against this roadmap. The six audit dispatches of the closing verification (every release section from 1.1.32 to 2.0.0, the rc.2 fold, the 2.0.0 section and the drift records) found sixteen never-built items: the thirteen rc.2 final polish and migration items (the keyboard focus order, the high contrast theme, the notification plurals, the dashboard panel resize, the unused-style pruning, the icon set, the store screenshots, the version negotiation banner, the once-per-user migration prompt, the release provenance stamps, the migration guide faq, the migration guide rollback chapter and the progress replay provenance) and the three 2.0.0 items (the soak run, the wcag accessibility sweep and the web store package). Every one shipped at the source in 2.0.2: the focusorderof, highcontrasttokens, pluralize, panelwidths and virtlist families in the surface modules with the stylepruning enforcement test; the v1sunset and migrationprompt states with the once-per-session banner and the once-per-user prompt through the notification path; the provenancestampof family of progress.ts with the replay stamps; the soak gate of test/soak.mjs and the wcag gate of test/wcag.mjs with their artifacts and their releasegates rows; the icon family of icons.ts materialized into the archive the packageextension gate asserts; the web store listing draft of docs/webstore.md with the screenshot checklist and the operator-published submission posture the readiness review records; the migration guide chapters; and the documentation completion (docs/librarymodes.md, docs/gatewayguide.md, the emulation section of the agent algorithms doc, the emulation row of the extension permissions doc, the stale artifact table refresh). The store submission itself stays operator published as the residual risks of docs/readiness.md record: the release workflow publishes the registry channels and the github release, never the store. The closing audit trail of this document, the changelog and the worklog carries the per-item evidence.

@@ -691,7 +691,7 @@
   },
   "files": [
     "docs",
-    "tests",
+    "test",
     "README.md",
     "cli.ts",
     "index.ts",
@@ -722,7 +722,7 @@
     "storage.ts",
     "utils.ts",
     "vaultclient.ts",
-    "!tests/tmp"
+    "!test/tmp"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

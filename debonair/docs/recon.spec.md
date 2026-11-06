@@ -181,7 +181,7 @@ the 76 header seats, the 66 frame seats and the 4 correlations are frozen as
 const arrays (`RECON_HEADER_KEYS`, `RECON_FRAME_KEYS`,
 `RECON_CORRELATION_KEYS`) with one comment per seat — the what and the why.
 the counts are pinned by the test battery
-(`tests/reconpayload.test.ts`): 76, 66, 4, 82. the four correlations, by
+(`test/reconpayload.test.ts`): 76, 66, 4, 82. the four correlations, by
 their exact names:
 
 | correlation | the measurement |

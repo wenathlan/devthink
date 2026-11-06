@@ -713,7 +713,7 @@
   "files": [
     "README.md",
     "docs",
-    "tests",
+    "test",
     "cli.ts",
     "analyze.ts",
     "hpss.ts",

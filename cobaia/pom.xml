@@ -21,7 +21,7 @@
         <includes>
           <include>README.md</include>
           <include>docs/**</include>
-          <include>tests/**</include>
+          <include>test/**</include>
         </includes>
       </resource>
     </resources>

@@ -110,7 +110,7 @@ const handlers = createversion({
 | types | `gatewaydefinition`, `gatewayconfig`, `versionhandlers`, `authconfig`, `authmethod`, `bodybuildconfig`, `contextconfig`, `dbconfig`, `headersconfig`, `intelligencerank`, `keysource`, `metamodelconfig`, `modeldef`, `resolvedkey`, `retryconfig`, `rotationconfig`, `rotationmode`, `routesconfig`, `sessionstate`, `thinkingconfig`, `thinkinglevel`, `timeoutconfig`, `transportconfig`, `transporttype`, `upstreamdef`, `streamoptions`, `trackedstream` |
 | utils | `clamp`, `corsheaders`, `jsonheaders`, `handlecors`, `detectcontenttype`, `esttokens`, `genid`, `getip`, `levenshtein`, `makethinker`, `safejsonparse`, `safestringify`, `thinkingbudget`, `truncatemessages`, `defaultmaxtokens`, `auton`, `autotemp`, `autotopp`, `autoseed`, `automaxtokens`, `autopresencepenalty`, `autofrequencypenalty`, `autothinking` |
 
-The subpath resolves the built `dist/server.js` bundle with its `dist/server.d.ts` declarations — the grand merge consolidation interned the whole server surface (the engine, the auth, the transport, the console cli and the barrel) in the one `server.ts` module the build emits as a single tree-shakable entry beside every other library target. `node tests/build.ts` emits it together with the full dist family; the engine and the transport ride inside the same bundle.
+The subpath resolves the built `dist/server.js` bundle with its `dist/server.d.ts` declarations — the grand merge consolidation interned the whole server surface (the engine, the auth, the transport, the console cli and the barrel) in the one `server.ts` module the build emits as a single tree-shakable entry beside every other library target. `node test/build.ts` emits it together with the full dist family; the engine and the transport ride inside the same bundle.
 
 ### Ownership (the gateway ownership wave)
 
@@ -142,7 +142,7 @@ devthink/
   scripts/build-lib.mjs   # the library bundle generator (esm + declarations)
   Dockerfile              # THE one container file (see Container)
   pom.xml, devthink.csproj, devthink.gemspec  # the registry envelopes
-  tests/server/           # the family suite (engine, http, oauth, config, cli…)
+  test/server/           # the family suite (engine, http, oauth, config, cli…)
 ```
 
 The root modules are the universal library (dry, no hardcoding). The theme root files (App.tsx, index.html, the schema, the deploy manifests) live at the app root beside them, and the sol/ theme folders carry the component surfaces — the shipped catalog under `sol/gatewayview/config.ts`, the schema at `schema.prisma`.

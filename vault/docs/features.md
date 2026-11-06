@@ -56,7 +56,7 @@ the real feature list of the vault app, read from the code and grouped by catego
 
 ## the deploy safety law
 
-- the faun seal — the layered law `tests/deploysafety.test.ts` pins: the build emits into `dist` never the root, every publish lane mounts `dist` only (netlify, vercel, workers, the capacitor webDir, the container static root), `_headers` seals the database faces, and the engine itself refuses the raw database file on every face.
+- the faun seal — the layered law `test/deploysafety.test.ts` pins: the build emits into `dist` never the root, every publish lane mounts `dist` only (netlify, vercel, workers, the capacitor webDir, the container static root), `_headers` seals the database faces, and the engine itself refuses the raw database file on every face.
 - the container — the engine shape: one process, one port (`node api.ts` serves the token-gated storage truth and the assembled site face), `VAULT_TOKEN` demanded at boot (fail closed), the runtime state under `/app/data` never inside the served tree.
 
 ## Dependencies

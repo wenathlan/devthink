@@ -237,7 +237,7 @@ function channelsectionsof(version: string) {
     "| The mobile lane | 9 member applications × 8 android assets | 72 |",
     "| **The census** | | **1131** |",
     "",
-    "The census test of the repository (tests/publishlanes.test.ts) derives every row from the workflow matrices and pins the total above one thousand, so a lane or a matrix leg deleted reddens the gate before a release ever ships. The artifact manifest of this release lists every walk asset with its name, its byte size, its sha256 checksum and its channels.",
+    "The census test of the repository (test/publishlanes.test.ts) derives every row from the workflow matrices and pins the total above one thousand, so a lane or a matrix leg deleted reddens the gate before a release ever ships. The artifact manifest of this release lists every walk asset with its name, its byte size, its sha256 checksum and its channels.",
     "",
   ].join("\n");
 }

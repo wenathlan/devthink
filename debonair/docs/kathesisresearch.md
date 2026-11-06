@@ -210,7 +210,7 @@ typescript, zero dependencies, zero dom, zero audio context:
     pcm hash of the result, and the measured per-second fidelity —
     measured, never claimed. answers real wav bytes through the
     wavwriter at the source's own rate.
-- **tests/ingestpayload.test.ts** — the round-trip contract: the probe
+- **test/ingestpayload.test.ts** — the round-trip contract: the probe
   facts, the payload shape and determinism (the same bytes answer the
   same payload), the container-only honesty, the reconstruction parsing
   back through two independent wav readers, the energy correlation
@@ -275,7 +275,7 @@ synthesis, effects and sound-ai primitives. the seat answers:
 
 the published library face carries the seat as `@wenathlan/debonair/kathesis`
 (the exports map, the tarball files array and the libraryface surface pin
-all moved together). the test battery `tests/kathesis.test.ts` (36 rows)
+all moved together). the test battery `test/kathesis.test.ts` (36 rows)
 pins the dsp behavior (the biquad responses, the wavetable tier law, the
 adsr machine, the echo tap seats, the plate tail, the drive ceiling, the
 sampler ratio and loop laws) and walks the generated document through the

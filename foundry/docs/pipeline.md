@@ -5,7 +5,7 @@ foundry is the complete deployable clone of the devthink family pipeline: one un
 ## overview
 
 - package `@wenathlan/foundry` — the e2b and docker clone interface of the family: it drives sandboxes and images while the engine lives in saddle (`package.json`).
-- layout: pure logic as loose `.ts` files at the app root, the ui in `sol/` (one folder per page), the vitest suite in `tests/`, this documentation in `docs/` (the house tree law: no `src/`).
+- layout: pure logic as loose `.ts` files at the app root, the ui in `sol/` (one folder per page), the vitest suite in `test/`, this documentation in `docs/` (the house tree law: no `src/`).
 - ownership law: the state machine, the mode ladder, the route catalog, the storage lane, the label store and the shared helpers answer from the published library specifiers of saddle and vault — never duplicated inside the app. The local `api.ts`, `runner.ts` and `utils.ts` are ports that re-export.
 - every page rehearsal is seeded and honest: the seed is shown on the page, every refusal is a string, no number is invented.
 - builds as a static vite bundle that answers any deploy root (workers, netlify, vercel — publish `.`), with the router base riding the build declaration.

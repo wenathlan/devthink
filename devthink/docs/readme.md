@@ -69,7 +69,7 @@ Replay a plan against the fixtures with `node dist/cli.js headless dist/fixtures
 
 ## Consumption mode examples
 
-The 1.1.81 family ships one runnable example per consumption mode: `cjs.js` requires the library in a plain node script, `bun.ts` imports it through the bun runtime, `deno.ts` imports it through npm specifiers under deno (the sources live in `tests/code`), and the umd example page the build emits as `dist/umd-example.html` loads the umd bundle from a file url with the `window.devthink` global. Every mode exposes the same named exports through the same consent gates; only the adapter seam differs (the node default adapters bind to node apis, the browser build binds to browser apis and the deno adapter reads its configuration through the deno runtime).
+The 1.1.81 family ships one runnable example per consumption mode: `cjs.js` requires the library in a plain node script, `bun.ts` imports it through the bun runtime, `deno.ts` imports it through npm specifiers under deno (the sources live in `test/code`), and the umd example page the build emits as `dist/umd-example.html` loads the umd bundle from a file url with the `window.devthink` global. Every mode exposes the same named exports through the same consent gates; only the adapter seam differs (the node default adapters bind to node apis, the browser build binds to browser apis and the deno adapter reads its configuration through the deno runtime).
 
 ## Bridge pairing walkthrough
 
