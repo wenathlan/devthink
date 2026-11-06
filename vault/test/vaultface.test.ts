@@ -31,7 +31,7 @@ const TOASTER = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "
 const SKELETON = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeSkeleton.tsx"), "utf8");
 const HALO = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeHalo.tsx"), "utf8");
 const REVEAL = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeReveal.tsx"), "utf8");
-const API = readFileSync(join(import.meta.dirname, "..", "api.ts"), "utf8");
+const API = readFileSync(join(import.meta.dirname, "..", "account.ts"), "utf8");
 const ROUTES = readFileSync(join(import.meta.dirname, "..", "routes.ts"), "utf8");
 const CSS = readFileSync(join(import.meta.dirname, "..", "sol", "sol.css"), "utf8");
 

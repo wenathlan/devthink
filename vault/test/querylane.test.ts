@@ -26,11 +26,11 @@ import {
   revokeApiKey,
   setDatabaseQuota,
   signupAccount,
-} from "../accounts.ts";
+} from "../account.ts";
 import { closeQueryLanes, databaseFileOf, databasesDir, queryVerdict, runQuery } from "../querylane.ts";
 
 /** the real server of the vault (the query route rides its own handler). */
-const { createVaultServer, listenVault } = await import("../api.ts");
+const { createVaultServer, listenVault } = await import("../account.ts");
 
 const server = createVaultServer();
 const port = await listenVault(server, { port: 0 });

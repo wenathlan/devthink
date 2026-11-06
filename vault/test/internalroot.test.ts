@@ -22,7 +22,7 @@ import { databaseFileRefused, DATABASE_FILE_EXTENSIONS, resolveInternalPath } fr
 const root = join(tmpdir(), `vault-internalroot-${process.pid}.test`);
 
 /** the real server of the vault (the api import boots after the env below). */
-const { createVaultServer, listenVault } = await import("../api.ts");
+const { createVaultServer, listenVault } = await import("../account.ts");
 
 /** one fetch answer against the booted server. */
 let base = "";

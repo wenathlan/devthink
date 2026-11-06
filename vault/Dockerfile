@@ -230,7 +230,7 @@ COPY --from=solbuild /site/ /app/site/
 # (the source-is-the-library doctrine — api.ts and its import closure) and
 # the production dependency tree with the compiled better-sqlite3 seat.
 COPY --from=enginedeps /deps/node_modules/ /app/node_modules/
-COPY --from=solbuild /src/accounts.ts /src/api.ts /src/chunks.ts /src/db.ts /src/decoy.ts /src/drizzle.ts /src/internalroot.ts /src/labels.ts /src/labelstore.ts /src/mimetypes.ts /src/objects.ts /src/onboardingstate.ts /src/protocols.ts /src/querylane.ts /src/quota.ts /src/routes.ts /src/sha.ts /src/storage.ts /src/uistore.ts /app/
+COPY --from=solbuild /src/account.ts /src/chunks.ts /src/db.ts /src/decoy.ts /src/drizzle.ts /src/internalroot.ts /src/labels.ts /src/labelstore.ts /src/mimetypes.ts /src/objects.ts /src/onboardingstate.ts /src/protocols.ts /src/querylane.ts /src/quota.ts /src/routes.ts /src/sha.ts /src/storage.ts /src/uistore.ts /app/
 
 # the runtime state home: the sqlite stores mount here (a named volume —
 # never inside dist, never beside the served tree; the engine creates the
@@ -262,4 +262,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 # fail closed: without VAULT_TOKEN the container refuses to boot — the
 # engine would seal every storage route anyway (503 on each data call), so
 # the operator gets the loud refusal at boot instead of the quiet seal.
-CMD ["sh", "-c", "test -n \"$VAULT_TOKEN\" || { echo 'VAULT_TOKEN is not set — the vault engine refuses to boot (pin the bearer the storage routes demand)'; exit 1; }; exec node api.ts"]
+CMD ["sh", "-c", "test -n \"$VAULT_TOKEN\" || { echo 'VAULT_TOKEN is not set — the vault engine refuses to boot (pin the bearer the storage routes demand)'; exit 1; }; exec node account.ts"]

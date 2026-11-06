@@ -48,7 +48,7 @@ const HEADERS = read("../_headers");
 const REDIRECTS = read("../_redirects");
 const NGINXFACE = read("../nginx-face.conf");
 const DOCKERFILE = read("../Dockerfile");
-const API = read("../api.ts");
+const API = read("../account.ts");
 
 /** the app root — the folder the deploy configs resolve against. */
 const APPROOT = join(import.meta.dirname, "..");
@@ -238,7 +238,7 @@ describe("the container builds the engine, never a source tree mirror", () => {
   });
 
   it("runs the engine behind the token door with the open health probe", () => {
-    assert.match(DOCKERFILE, /node api\.ts/, "the container process is the engine");
+    assert.match(DOCKERFILE, /node account\.ts/, "the container process is the engine");
     assert.match(DOCKERFILE, /VAULT_TOKEN/, "the boot refuses to start without the vault token");
     assert.match(DOCKERFILE, /\/api\/health/, "the healthcheck rides the open health route");
     assert.match(DOCKERFILE, /USER node/, "the runtime stays unprivileged");
@@ -257,7 +257,7 @@ describe("the engine static lane (the container doctrine)", () => {
     writeFileSync(join(staging, "package.json"), "the manifest bytes");
     process.env.VAULT_STATIC_DIR = staging;
     try {
-      const { createVaultServer, listenVault } = await import("../api.ts");
+      const { createVaultServer, listenVault } = await import("../account.ts");
       const server = createVaultServer();
       const port = await listenVault(server, { port: 0 });
       const base = `http://127.0.0.1:${port}`;
