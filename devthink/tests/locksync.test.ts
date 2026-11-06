@@ -94,7 +94,10 @@ describe("the lockfile seat (the frozen-lockfile install law)", () => {
       const lockspecs = new Map<string, string>();
       for (const section of ["dependencies", "devDependencies"] as const)
         for (const [name, entry] of Object.entries(root?.[section] ?? {})) {
-          const specifier = (entry as { specifier?: string } | string | undefined)?.["specifier"];
+          /* the entry answers the registry string or the workspace record —
+           * the object seat alone carries the specifier the lock pins. */
+          const record = entry as string | { specifier?: string } | undefined;
+          const specifier = typeof record === "object" && record !== undefined ? record.specifier : undefined;
           if (typeof specifier === "string") lockspecs.set(name, specifier);
         }
       const drifted: string[] = [];
