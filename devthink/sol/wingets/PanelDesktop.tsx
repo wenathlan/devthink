@@ -758,7 +758,7 @@ export function DesktopSurface({ apps, onOpen, onNavigate }: DesktopSurfaceProps
               onKeyDown={(event) => onCellKeyDown(app, event)}
             >
               <AppTile app={app} size={26} />
-              <span className="dt-appicon__label line-clamp-2 max-w-full text-center font-sans text-xs leading-[1.3] font-semibold tracking-[.01em] text-[#fafafa] [text-shadow:var(--shadow-label)] light:text-[#1a1a1a]">
+              <span className="dt-appicon__label -mx-1 line-clamp-2 max-w-full text-center font-sans text-xs leading-[1.3] font-semibold tracking-[.01em] text-[#fafafa] [text-shadow:var(--shadow-label)] [overflow-wrap:anywhere] light:text-[#1a1a1a]">
                 {app.name}
               </span>
             </button>
