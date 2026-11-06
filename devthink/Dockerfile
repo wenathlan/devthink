@@ -377,6 +377,17 @@ COPY saddle /saddle
 # of the fifteen engines reads the field that grows without limit).
 COPY package.json /package.json
 
+# the sibling dependency law (the checkout geometry the suite answers): the
+# vitest bridges resolve @wenathlan/getry/server onto the sibling source at
+# /getry, and that source imports its own runtime graph (hono,
+# @hono/node-server) the devthink install never carries — the runner lanes
+# install the sibling beside the app the same way, so the builder does too
+# (frozen, scripts off: the pure hono graph never rides a native build).
+# the foundry and saddle sources the bridges pull are dependency-pure (the
+# scanner and the registry import nothing outside the family), so getry is
+# the only sibling the install owes.
+RUN cd /getry && bun install --frozen-lockfile --ignore-scripts
+
 # the library build: every build target the publishing pipeline ships — the
 # esm/cjs/neutral library bundles, the cli, the headless entry, the mcp
 # server, the relay, the extension surface with its manifest and icons, the

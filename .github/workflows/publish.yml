@@ -3768,7 +3768,14 @@ jobs:
             const splitrelease = [
               "    splits {",
               "        abi {",
-              "            enable true",
+              // the bundle collision law (issuetracker.google.com/402800800):
+              // a bundle task never rides the same invocation as the abi
+              // splits — the shrunk-resources stage answers one file per
+              // split and buildReleasePreBundle refuses the many — so the
+              // splits answer the assemble invocations alone and the bundle
+              // lane runs its own invocation with the splits asleep (the
+              // per-abi apks, the universal apk and the aab all ship)
+              "            enable gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27assemble\x27) } && !gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27bundle\x27) }",
               "            reset()",
               "            include \x27armeabi-v7a\x27, \x27arm64-v8a\x27, \x27x86\x27, \x27x86_64\x27",
               "            universalApk true",
@@ -3844,7 +3851,12 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
+          # the bundle collision law rides the invocation split: the abi
+          # splits answer the assemble lane alone (per-abi apks beside the
+          # universal), and the bundle lane runs its own invocation with
+          # the splits asleep — one shrunk-resources file, the aab ships
+          ./gradlew --no-daemon --stacktrace assembleRelease
+          ./gradlew --no-daemon --stacktrace bundleRelease
 
       - name: collect android artifacts
         shell: bash
@@ -5343,7 +5355,12 @@ jobs:
           const crypto = require("node:crypto");
           const version = process.env.VERSION;
           const stage = "release-family";
-          const source = "devthink/docs/mimetypes.txt";
+          // the tracked registry the storage engine owns (the rootclean2
+          // fold retired the old devthink/docs/mimetypes.txt seat; the
+          // family mimetype table rides vault/mime.types since the
+          // capacity-truth wave — the IANA, mime-db, apache, nginx, tika,
+          // rust, go and family catalogs the generated corpus unites)
+          const source = "vault/mime.types";
           const lines = fs.readFileSync(source, "utf8").split("\n");
           const counts = new Map();
           let entries = 0;
