@@ -335,7 +335,16 @@ function versioncatalogof(version: string, packagejson: { engines?: Record<strin
 /** The release metadata walk lane — the devfold fold wrapped the walk's former top-level flow (the check, notes and sync modes the check:metadata, notes:release and sync:metadata scripts run over `node release.ts <mode>`) into this private lane function so the module stays import-safe: the maintenance sync imports the pat publish walk folded below without ever executing this lane, and the lane fires only when node loads this file as the direct entry. */
 async function runreleasewalk(): Promise<void> {
   const mode = process.argv[2] ?? "check";
-  const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string; engines?: Record<string, string | undefined>; packageManager?: string };
+  /* the manifestemplate law (#501): the engines floor and the
+   * packageManager stamp live in the ROOT manifest alone — the walk
+   * reads the app version from the envelope and the baselines from the
+   * root, so the catalog never loses a baseline the template moved. */
+  const packagejson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
+  const rootmanifest = JSON.parse(await readFile("../package.json", "utf8")) as {
+    engines?: Record<string, string | undefined>;
+    packageManager?: string;
+  };
+  const catalogsource = { ...packagejson, ...rootmanifest };
   const version = packagejson.version;
   if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error("package.json version must be SemVer.");
   const changelog = await readFile("CHANGELOG.md", "utf8");
@@ -717,7 +726,7 @@ async function runreleasewalk(): Promise<void> {
     [
       "docs/runtimeversions.md",
       (content) => {
-        const catalog = versioncatalogof(version, packagejson);
+        const catalog = versioncatalogof(version, catalogsource);
         return /## Version catalog/.test(content)
           ? content.replace(/## Version catalog[\s\S]*$/, catalog)
           : `${content.replace(/\s*$/, "\n")}\n${catalog}`;

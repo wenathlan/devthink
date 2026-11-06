@@ -130,13 +130,13 @@
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.187.0",
     "@vitejs/plugin-react": "^6.2.1",
-    "@wenathlan/argan": "~2.0.165",
-    "@wenathlan/cadria": "~2.0.165",
-    "@wenathlan/debonair": "~2.0.165",
-    "@wenathlan/devthink": "~2.0.165",
-    "@wenathlan/getry": "~2.0.165",
-    "@wenathlan/saddle": "~2.0.165",
-    "@wenathlan/vault": "~2.0.165",
+    "@wenathlan/argan": "~2.0.166",
+    "@wenathlan/cadria": "~2.0.166",
+    "@wenathlan/debonair": "~2.0.166",
+    "@wenathlan/devthink": "~2.1.8",
+    "@wenathlan/getry": "~2.0.166",
+    "@wenathlan/saddle": "~2.1.8",
+    "@wenathlan/vault": "~2.0.166",
     "add": "^2.0.9",
     "ai": "^7.0.163",
     "autoprefixer": "^10.6.2",
@@ -173,7 +173,7 @@
     "js-yaml": "^5.5.0",
     "jsdom": "^31.0.0",
     "katex": "^0.19.1",
-    "lucide-react": "^1.69.0",
+    "lucide-react": "^1.70.0",
     "minimatch": "^11.0.5",
     "motion": "^14.9.1",
     "mysql2": "^3.24.6",
@@ -229,7 +229,7 @@
     "yaml": "^2.9.1",
     "z-ai-web-dev-sdk": "^0.0.18",
     "zod": "^4.6.7",
-    "zustand": "^5.0.15"
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
     "@ai-sdk/openai": "^4.0.109",
@@ -304,13 +304,13 @@
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.187.0",
     "@vitejs/plugin-react": "^6.2.1",
-    "@wenathlan/argan": "~2.0.165",
-    "@wenathlan/cadria": "~2.0.165",
-    "@wenathlan/debonair": "~2.0.165",
-    "@wenathlan/devthink": "~2.0.165",
-    "@wenathlan/getry": "~2.0.165",
-    "@wenathlan/saddle": "~2.0.165",
-    "@wenathlan/vault": "~2.0.165",
+    "@wenathlan/argan": "~2.0.166",
+    "@wenathlan/cadria": "~2.0.166",
+    "@wenathlan/debonair": "~2.0.166",
+    "@wenathlan/devthink": "~2.1.8",
+    "@wenathlan/getry": "~2.0.166",
+    "@wenathlan/saddle": "~2.1.8",
+    "@wenathlan/vault": "~2.0.166",
     "add": "^2.0.9",
     "ai": "^7.0.163",
     "autoprefixer": "^10.6.2",
@@ -347,7 +347,7 @@
     "js-yaml": "^5.5.0",
     "jsdom": "^31.0.0",
     "katex": "^0.19.1",
-    "lucide-react": "^1.69.0",
+    "lucide-react": "^1.70.0",
     "minimatch": "^11.0.5",
     "motion": "^14.9.1",
     "mysql2": "^3.24.6",
@@ -403,7 +403,7 @@
     "yaml": "^2.9.1",
     "z-ai-web-dev-sdk": "^0.0.18",
     "zod": "^4.6.7",
-    "zustand": "^5.0.15"
+    "zustand": "^5.0.16"
   },
   "overrides": {
     "@ai-sdk/openai": "^4.0.109",
@@ -699,5 +699,6 @@
     "quantum.ts"
   ],
   "main": "./index.ts",
-  "types": "./index.ts"
+  "types": "./index.ts",
+  "packageManager": "pnpm@12.18.0"
 }
