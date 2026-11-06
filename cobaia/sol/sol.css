@@ -1952,3 +1952,153 @@ code {
 html {
   touch-action: pan-x pan-y;
 }
+
+/* ---------- 21. THE ONBOARDING — the first-run frames of the entry flow
+   (intro → onboarding → entrada; the family law). the three frames ride
+   one centered card on the deep canvas — the site voice, no window chrome,
+   responsive from the phone to the tv (the card caps its width and the
+   feet stack under the narrow gate). ---------- */
+.cb-onboard {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgb(255 255 255 / 4%), transparent 60%),
+    var(--sol-canvas-deep);
+}
+.cb-onboard__card {
+  width: min(560px, 100%);
+  background: var(--sol-surface-2);
+  border: 1px solid var(--sol-hairline);
+  border-radius: 10px;
+  box-shadow: 0 24px 48px -24px rgb(0 0 0 / 60%);
+  overflow: hidden;
+}
+.cb-onboard__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--sol-hairline);
+  background: var(--sol-surface-1);
+}
+.cb-onboard__title {
+  font-size: 12px;
+  font-weight: 550;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: var(--sol-muted);
+}
+.cb-onboard__body {
+  padding: 26px 24px 8px;
+  min-height: 220px;
+}
+.cb-onboard__step {
+  animation: cbOnboardIn 250ms var(--sol-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
+}
+@keyframes cbOnboardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.cb-onboard__lead {
+  margin: 6px 0 10px;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--sol-ink);
+}
+.cb-onboard__lede {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--sol-muted);
+}
+.cb-onboard__facts {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.cb-onboard__fact {
+  padding: 10px 12px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: 8px;
+  background: var(--sol-surface-1);
+  color: var(--sol-muted);
+}
+.cb-onboard__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px 18px;
+  border-top: 1px solid var(--sol-hairline);
+  background: var(--sol-surface-1);
+}
+.cb-onboard__ladder {
+  display: flex;
+  gap: 6px;
+}
+.cb-onboard__segrun {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--sol-hairline-strong);
+}
+.cb-onboard__segrun[data-active="true"] {
+  background: var(--sol-ink);
+}
+.cb-onboard__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.cb-onboard__skip {
+  margin-right: auto;
+  font: inherit;
+  font-size: 12px;
+  color: var(--sol-faint);
+  background: none;
+  border: none;
+  padding: 8px 6px;
+  cursor: pointer;
+}
+.cb-onboard__skip:hover {
+  color: var(--sol-ink);
+}
+.cb-onboard__skip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.cb-onboard__actions .cb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 9px 16px;
+}
+.cb-onboard__glyph {
+  flex: none;
+}
+@media (max-width: 480px) {
+  .cb-onboard {
+    padding: 12px;
+    align-items: end;
+  }
+  .cb-onboard__body {
+    padding: 20px 16px 4px;
+  }
+  .cb-onboard__lead {
+    font-size: 19px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cb-onboard__step {
+    animation: none;
+  }
+}

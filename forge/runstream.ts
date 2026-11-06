@@ -14,6 +14,16 @@ import { modes, type RunnerMode } from "./runner.ts";
 /** the levels a log line can carry. */
 export type LogLevel = "info" | "warn" | "error";
 
+/** the default seed of the replayed run (the page's opening answer, moved
+ * verbatim from the logs face — the seed universe belongs to the engine,
+ * never to a widget's own table). */
+export const LOG_SEED = 421337;
+
+/** the seeds the replay lane offers as one-click presets (stable, memorable
+ * — moved verbatim from the logs face: the presets are engine data, the
+ * face only renders them). */
+export const PRESET_SEEDS: readonly number[] = [421337, 90012, 5124, 77031];
+
 /** one line of the run log: the offset (ms) into the run and its text. */
 export interface LogLine {
   /** ms offset from the run start (tabular clock rendering belongs to the view) */

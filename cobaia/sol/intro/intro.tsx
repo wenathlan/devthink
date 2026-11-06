@@ -15,9 +15,13 @@
  * zone renders the real offer from the one checkoutlinks table (the not
  * configured state stays honest), the doors panes open the app directory
  * and the legal page, and the footer carries the doors (the site row, the
- * family row, the legal line). The entrance rides the cb-in stagger under
- * the second, the layers ride the surface-ladder bands, the door panes ride
- * the silk law. Public-site rules: zero network calls from the page itself,
+ * family row, the legal line). The visit marks the intro stage seen
+ * through the shared onboardingstate accessor (the family entry-flow
+ * contract: intro → onboarding → entrada — the stage flag rides the
+ * platform db with the localStorage cache as the offline mirror). The
+ * entrance rides the cb-in stagger under the second, the layers ride the
+ * surface-ladder bands, the door panes ride the silk law. Public-site
+ * rules: zero network calls from the page itself beyond the stage flag,
  * React state only; zero decorative dots; zero invented numbers and zero
  * fake testimonials — the real offer, read from the data modules.
  */
@@ -26,6 +30,7 @@ import type { CSSProperties } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { label } from "../../labels";
+import { markOnboardingStage } from "../../onboardingstate.ts";
 import { BrandMark, IntroFooter, IntroPlans, IntroSplash } from "../wingets";
 
 /** the lifecycle of the opening act: resolving (the motion preference
@@ -59,9 +64,12 @@ function DoorGlyph() {
 export function Intro() {
   const [splash, setSplash] = useState<SplashPhase>("resolving");
 
-  // the splash decision rides the motion preference alone — nothing is read
-  // from the visitor machine and nothing is written back (the no storage law)
+  // the splash decision rides the motion preference, and the visit marks
+  // the intro stage seen through the shared accessor (the family flow
+  // contract: the db holds the flag, the cache mirrors it offline — the
+  // splash never replays for a visitor that finished the flow)
   useEffect(() => {
+    void markOnboardingStage("intro");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setSplash("done");
       return;

@@ -6,6 +6,8 @@
  * the components stay complete independent files beside this surface.
  */
 export * from "../../roster.ts";
+export * from "./HomeEntrygate.tsx";
+export { default as EntryGate } from "./HomeEntrygate.tsx";
 export * from "./IntroFooter.tsx";
 export { default as IntroFooter } from "./IntroFooter.tsx";
 export * from "./IntroPlans.tsx";

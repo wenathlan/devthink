@@ -23,6 +23,10 @@ export const seedZones: readonly ZoneSnapshot[] = [
   { origin: "allan.internal", kind: "master", serial: "2026011022", state: "unsigned" },
 ];
 
+/** the record types the resolve chips offer, in chip order (moved verbatim
+ * from the home face — the type universe is catalog data, not widget copy). */
+export const seedRecordTypes: readonly string[] = ["A", "AAAA", "MX", "NS", "TXT", "SOA", "CAA"];
+
 export const seedRecordSets: readonly RecordSetRow[] = [
   { kind: "directive", line: "; devthink.pro — zone snapshot (fake data, serial 2026011203)" },
   { kind: "directive", line: "$ORIGIN devthink.pro." },

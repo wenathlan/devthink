@@ -26,7 +26,7 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 4;
+export const LABEL_REVISION = 5;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -257,6 +257,28 @@ export const LABEL_MANIFEST = {
   "intro.footer.familyAria": "the family row",
   "intro.footer.family": "the family",
   "intro.footer.memberTip": "open {slug} — the door beside this site",
+  // the onboarding page anchor (the first-run frames of the entry flow —
+  // the standardized intro → onboarding → entrada law the family rides;
+  // cobaia's frames present the real offer: what the site is, what it
+  // carries, and the hand-over to the content pages)
+  "onboarding.aria": "cobaia — the first-run steps",
+  "onboarding.title": "cobaia",
+  "onboarding.skip": "skip — straight to the site",
+  "onboarding.back": "back",
+  "onboarding.next": "next",
+  "onboarding.enterCta": "enter the site",
+  "onboarding.steps.is.eyebrow": "01 — what this is",
+  "onboarding.steps.is.title": "The family's front door.",
+  "onboarding.steps.is.text": "cobaia is the monetization face of the devthink family — the front door kept apart so the ten applications stay clean. the directory, the plans, the support channels and the update blog live on this one static site.",
+  "onboarding.steps.does.eyebrow": "02 — what it carries",
+  "onboarding.steps.does.title": "The plans, the support rails, the honest ads.",
+  "onboarding.steps.does.text": "the real offer, nothing invented: the three plans with their placeholder prices said out loud, the support rails that activate when the owner wires them, and the reserved ad boxes that stay empty until a network approves the site.",
+  "onboarding.steps.enter.eyebrow": "03 — the entrada",
+  "onboarding.steps.enter.title": "One responsive site, every screen.",
+  "onboarding.steps.enter.text": "the same responsive pages answer on the phone, the tv, the extension and the desktop — the presentation adapts, the content never changes. the entrada is the front door itself.",
+  "onboarding.facts.plans": "the plans — us$0, 5 and 19 a month, placeholder prices until billing lands, honest until then",
+  "onboarding.facts.support": "the support rails — the sponsor channels, configured the day the owner wires them",
+  "onboarding.facts.ads": "the ad slots — reserved boxes, visibly labeled, empty until a network approves the site",
   // the ad slot widget (the reserved box of the content pages)
   "ads.slot.reserved": "reserved · {format}",
 } as const;

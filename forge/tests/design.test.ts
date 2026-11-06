@@ -196,4 +196,13 @@ describe("design contract", () => {
     assert.match(CSS, /--win-rail-w: 48px/);
     assert.match(SHELL, /data-tip=\{app\.label\}/);
   });
+
+  it("reads the replay seeds from the runstream engine — no canned seed table in the face", () => {
+    const LOGS = read("../sol/logs/logs.tsx");
+    const ENGINE = read("../runstream.ts");
+    assert.match(ENGINE, /export const LOG_SEED = 421337/);
+    assert.match(ENGINE, /export const PRESET_SEEDS/);
+    assert.match(LOGS, /PRESET_SEEDS,/, "the logs face imports the presets from the engine");
+    assert.doesNotMatch(LOGS, /const PRESET_SEEDS/, "the face never declares its own seed table");
+  });
 });
