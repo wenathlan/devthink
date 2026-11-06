@@ -30,7 +30,7 @@ import { importersamples } from "./test/importerfixtures.ts";
 import { fixturepages, umdexample } from "./test/pagefixtures.ts";
 import { gallery as gallerytext, recipeplans } from "./test/recipesfixtures.ts";
 import { frozenschemas } from "./test/schemafixtures.ts";
-import { pxToCellX, pxToCellY } from "./density.ts";
+import { pxToCellX, pxToCellY } from "./dashboard.ts";
 import { umdwrap } from "./umdwrap.ts";
 import type { IrNode } from "./runtime.ts";
 
@@ -92,7 +92,7 @@ const bundlebudgets: Record<string, number> = {
   memory: 500_000,
   progress: 60_000,
   hardening: 60_000,
-  dashdone: 120_000,
+  dashboard: 120_000,
   queue: 160_000,
   crossbrowser: 380_000,
   pack: 600_000,
@@ -178,8 +178,9 @@ await build({
   banner: { js: banner },
 });
 
-/** The per module bundles of the exports map: policy, protocol, memory and progress ship as their own tree shakable entries with the types the declaration emit provides, the 1.1.95 hardening family ships its own entry beside them so the security gates stay importable without touching the frozen index surface, and the 1.1.96 dashdone family ships its own entry the same way so the multi agent dashboard view stays importable outside the frozen surface. */
-for (const modulename of ["policy", "protocol", "memory", "progress", "hardening", "dashdone"]) {
+/** The per module bundles of the exports map: policy, protocol, memory and progress ship as their own tree shakable entries with the types the declaration emit provides, the 1.1.95 hardening family ships its own entry beside them so the security gates stay importable without touching the frozen index surface, and the 1.1.96 dashdone family ships its own entry the same way so the multi agent dashboard view stays importable outside the frozen surface — the seat answers the dashboard keyword file since the wave consolidation folded dashdone.ts, desktopstate.ts, alttab.ts and density.ts into dashboard.ts, and the lazy storage.ts preference lane the desktopstate section carries stays external exactly as lazy as it rode in its standalone era (the flat package answers the account store through its own ./storage seam; a lane that cannot resolve answers the honest floating default the pure layer always kept). */
+for (const modulename of ["policy", "protocol", "memory", "progress", "hardening", "dashboard"]) {
+  const modulexternals = modulename === "dashboard" ? ["./storage.ts"] : [];
   await build({
     entryPoints: [`${modulename}.ts`],
     outfile: record(`${modulename}.js`),
@@ -189,6 +190,7 @@ for (const modulename of ["policy", "protocol", "memory", "progress", "hardening
     target: "es2022",
     sourcemap: true,
     banner: { js: banner },
+    external: modulexternals,
   });
   await build({
     entryPoints: [`${modulename}.ts`],
@@ -200,6 +202,7 @@ for (const modulename of ["policy", "protocol", "memory", "progress", "hardening
     sourcemap: true,
     minify: true,
     banner: { js: banner },
+    external: modulexternals,
   });
 }
 
@@ -755,7 +758,7 @@ for (const [target, file] of [
   ["memory", "memory.js"],
   ["progress", "progress.js"],
   ["hardening", "hardening.js"],
-  ["dashdone", "dashdone.js"],
+  ["dashboard", "dashboard.js"],
   ["server", "server.js"],
   ["crossbrowser", "crossbrowser.js"],
   ["pack", "pack.js"],
@@ -876,7 +879,11 @@ for (const target of targets) {
 
 /* The surface entries of the grand-merge layout: background and offscreen stay
    root modules (the engine imports them), the pure interface surfaces ride the
-   application root beside them (the sol merge moved the theme root files up). */
+   application root beside them (the sol merge moved the theme root files up).
+   The lazy storage.ts preference lane of the dashboard keyword file (the wave
+   consolidation folded desktopstate.ts into it) stays external here too: the
+   extension surface never resolves the account store seam, and the lane it
+   would answer degrades to the honest floating default the pure layer keeps. */
 const surfaceentry = (name: string) => (name === "background" || name === "offscreen" ? `${name}.ts` : `${name}.ts`);
 await Promise.all(
   ["background", "popup", "sidepanel", "offscreen", "transparencypage", "dashboardpage", "optionspage"].map((name) =>
@@ -888,6 +895,7 @@ await Promise.all(
       platform: "browser",
       target: "chrome120",
       sourcemap: true,
+      external: ["./storage.ts"],
     }),
   ),
 );
@@ -1028,7 +1036,7 @@ for (const entry of [
   "memory",
   "progress",
   "hardening",
-  "dashdone",
+  "dashboard",
   "queue",
   "types",
   "runtime",
@@ -1363,7 +1371,7 @@ const stagerootfiles = [
   "memory.js",
   "progress.js",
   "hardening.js",
-  "dashdone.js",
+  "dashboard.js",
   /* the os seam entries of the ownership wave (wave/ownership.getry): the
      moved gateway graph imports them through the published specifiers, so
      the flat package answers every seam the getry owner leans on. */
@@ -1404,7 +1412,7 @@ const stagedeclarations = [
   "memory",
   "progress",
   "hardening",
-  "dashdone",
+  "dashboard",
   /* the os seam declarations of the ownership wave (wave/ownership.getry),
      staged beside their bundles for the same published specifiers. */
   "config",

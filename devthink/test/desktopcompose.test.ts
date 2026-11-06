@@ -41,7 +41,7 @@ import {
   saveIconSpots,
   snapSpot,
   sortAppsByKind,
-} from "../desktopstate.ts";
+} from "../dashboard.ts";
 import { osText } from "../os.ts";
 import { uistoreseedrows } from "../uistore.ts";
 

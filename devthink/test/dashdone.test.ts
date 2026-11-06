@@ -14,7 +14,7 @@ import {
   queuelaneviewof,
   timelinescrubof,
   topologyinventoryof,
-} from "../dashdone.js";
+} from "../dashboard.js";
 import { sessionmemory } from "../memory.js";
 import type {
   agentidentity,

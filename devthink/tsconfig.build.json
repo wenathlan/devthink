@@ -152,7 +152,7 @@
     "protocol.ts",
     "progress.ts",
     "hardening.ts",
-    "dashdone.ts",
+    "dashboard.ts",
     "queue.ts",
     "version.ts",
     "runtime.ts",

@@ -38,7 +38,7 @@ import {
   isDesktopLockState,
   loadDesktopLock,
   saveDesktopLock,
-} from "../desktopstate.ts";
+} from "../dashboard.ts";
 import { osText } from "../os.ts";
 import { currentThemeLadder } from "../personalstore.ts";
 
@@ -50,7 +50,7 @@ const workspace = readFileSync(join(import.meta.dirname, "..", "sol", "wingets",
 const tray = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "ShellTrayflyouts.tsx"), "utf8");
 const panel = readFileSync(join(import.meta.dirname, "..", "sol", "panel", "panel.tsx"), "utf8");
 const personalstore = readFileSync(join(import.meta.dirname, "..", "personalstore.ts"), "utf8");
-const desktopstate = readFileSync(join(import.meta.dirname, "..", "desktopstate.ts"), "utf8");
+const desktopstate = readFileSync(join(import.meta.dirname, "..", "dashboard.ts"), "utf8");
 const oslabels = readFileSync(join(import.meta.dirname, "..", "os.ts"), "utf8");
 
 /** extracts the appended desktopface block of the stylesheet — the pins

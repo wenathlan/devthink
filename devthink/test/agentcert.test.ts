@@ -82,7 +82,7 @@ describe("the agentcert coordination artifact", () => {
     const source = await readFile("agentcert.ts", "utf8");
     expect(source).toContain('import("./build/index.js")');
     expect(source).toContain('import("./build/policy.js")');
-    expect(source).toContain('import("./build/dashdone.js")');
+    expect(source).toContain('import("./build/dashboard.js")');
     /* every fixture time flows from the fixed epoch of the fake clock that stays the default mode — the real clock exists only behind the explicit opt in switch the operator drives — and the committed record carries no timestamps so reruns stay byte identical */
     expect(source).toContain("fakeclock");
     expect(source).toContain("1_800_000_000_000");

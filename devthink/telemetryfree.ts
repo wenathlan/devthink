@@ -48,7 +48,7 @@ export async function runtelemetryfreesuite() {
   /* 2. the network capable paths with their gates: every outbound primitive sits behind a policy gate; the gate inventory maps each path to the gate that guards it. */
   const library = await import("./build/index.js");
   const policy = await import("./build/policy.js");
-  const dashdone = await import("./build/dashdone.js");
+  const dashdone = await import("./build/dashboard.js");
   const hardening = await import("./build/hardening.js");
   const paths: Array<{ path: string; gate: Extract<keyof typeof policy, string> }> = [
     { path: "sendfetch of the http family", gate: "fetchconsentcovers" },
