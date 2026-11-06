@@ -1,4 +1,4 @@
-# saddle 2.0.163 — THE ENGINE CONTAINER FILE
+# saddle 2.0.164 — THE ENGINE CONTAINER FILE
 #
 # THE FAMILY CONTAINER DOCTRINE, THE SADDLE SHAPE: one versioned container
 # per engine, built like the site homes (argan, cadria) build theirs — a
@@ -16,9 +16,9 @@
 # THE THREE VARIANT PROFILES (the saddle-exclusive law: the only app of
 # the family that ships three) — select with the target flag:
 #
-#   docker build --target max       -t saddle:2.0.162 .
-#   docker build --target balanced  -t saddle:2.0.162-balanced .
-#   docker build --target lite      -t saddle:2.0.162-lite .
+#   docker build --target max       -t saddle:2.0.164 .
+#   docker build --target balanced  -t saddle:2.0.164-balanced .
+#   docker build --target lite      -t saddle:2.0.164-lite .
 #
 #   max       — the full profile catalog: the epyc 9965 class, 192 vcpu,
 #               384 threads, 1024 gib ram plan, the b200 gpu plan x8.
@@ -89,11 +89,13 @@
 # names — the CONTAINERARCHIDS of saddle/containerarch.ts (linux-x64,
 # darwin-arm64, windows-x64, linux-arm64, darwin-x64, windows-arm64,
 # linux-x64-musl, linux-riscv64, wasm32, darwin-arm64-v8,
-# windows-x64-gnu). The build legs follow the container-carried seats
-# the pinned node base honestly answers: the amd64 leg serves linux-x64
-# and linux-x64-musl, the arm64 leg serves linux-arm64, and the arm64/v8
-# leg serves the darwin-arm64-v8 abi seat (the arm64 legs ride qemu
-# emulation in the publish workflow). The linux-riscv64 seat the
+# windows-x64-gnu). The build legs follow the four base-carried legs
+# the pinned node base honestly answers (the go-style build index of
+# containerarch.ts): the amd64 leg serves linux-x64 and linux-x64-musl,
+# the arm64 leg serves linux-arm64 and the darwin-arm64-v8 abi seat
+# through its v8 variant, and the ppc64le and s390x legs ride the
+# go-style build index under qemu emulation in the publish workflow.
+# The linux-riscv64 seat the
 # containerarch standard carries on the bash:5 driver base answers the
 # honest coded absence on this node engine base (the pinned base ships
 # no riscv64 manifest), and the six target seats (the darwin and
@@ -141,7 +143,7 @@ ARG NODE_BASE_DIGEST
 # ===== stage: solbuild — the locked npm tree and the console spa =====
 FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
-ARG SADDLE_VERSION=2.0.163
+ARG SADDLE_VERSION=2.0.164
 
 WORKDIR /app
 
@@ -169,7 +171,7 @@ RUN npm run web:build:pages \
 # ===== stage: base — the hardened runtime floor every profile shares =====
 FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
-ARG SADDLE_VERSION=2.0.163
+ARG SADDLE_VERSION=2.0.164
 # the revision stamp the devthink container carries (DEVTHINK_REVISION
 # there): the publish legs pass the release sha at build time and the
 # revision label below declares the default-unknown local shape.
@@ -217,17 +219,19 @@ ENV NODE_ENV=production \
 
 # the arch-leg guard of the eleven-architecture standard: the pinned
 # node base resolves the platform of every leg buildx names, and this
-# echo layer stamps the honesty law into the build log — the two arches
-# the base carries answer their leg line (the amd64 leg serves the
-# linux-x64 and linux-x64-musl seats, the arm64 leg serves the
+# echo layer stamps the honesty law into the build log — the four
+# arches the base carries answer their leg line (the amd64 leg serves
+# the linux-x64 and linux-x64-musl seats, the arm64 leg serves the
 # linux-arm64 seat and the darwin-arm64-v8 abi seat through its v8
-# variant), the legacy builder (no platform axis) answers its documented
+# variant, the ppc64le and s390x legs ride the go-style build index of
+# the containerarch table under qemu emulation), the legacy builder
+# (no platform axis) answers its documented
 # note, and any other arch answers the coded refusal before the heavy
 # steps below could run (buildx itself fails such a leg at base
 # resolution first; the guard keeps the law loud on every builder).
 RUN case "${TARGETARCH:-}" in \
-      amd64|arm64) \
-        echo "arch leg ${TARGETARCH} of ${TARGETPLATFORM:-<unresolved>}: one of the two arches the pinned node base carries — the legs of the container-carried seats of the eleven-architecture standard (linux-x64 and linux-x64-musl on amd64, linux-arm64 and the darwin-arm64-v8 abi seat on arm64)" ;; \
+      amd64|arm64|ppc64le|s390x) \
+        echo "arch leg ${TARGETARCH} of ${TARGETPLATFORM:-<unresolved>}: one of the four arches the pinned node base carries — the build legs of the eleven-architecture standard (linux-x64 and linux-x64-musl on amd64, linux-arm64 and the darwin-arm64-v8 abi seat on arm64, the ppc64le and s390x go-style build-index legs under qemu emulation)" ;; \
       "") \
         echo "arch leg unresolved: the legacy builder carries no platform axis; buildkit answers TARGETARCH per leg" ;; \
       *) \
