@@ -796,7 +796,12 @@ jobs:
           published=0
           until [ "$attempt" -ge 3 ]; do
             attempt=$((attempt + 1))
-            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public; then
+            # the explicit latest tag (the npmtag law the npmjs lanes
+            # carry): the github npm registry still answers the 2.1.8
+            # rung the emergency era stamped, so an implicit latest tag
+            # reddens every publish below it - the dist-tag step below
+            # pins latest to the release version the same way.
+            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public --tag latest; then
               published=1
               break
             fi
@@ -922,7 +927,12 @@ jobs:
             published=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              if npm publish --registry=https://npm.pkg.github.com --access public; then
+              # the explicit latest tag (the npmtag law the npmjs
+              # lanes carry): the github npm registry still answers the
+              # 2.1.8 rung the emergency era stamped, so an implicit
+              # latest tag reddens every publish below it - the dist-tag
+              # step below pins latest to the release version.
+              if npm publish --registry=https://npm.pkg.github.com --access public --tag latest; then
                 published=1
                 break
               fi
@@ -6960,7 +6970,11 @@ jobs:
             sha256:*) ;;
             *) echo "the node base digest resolved to an unexpected shape: ${digest}" >&2; exit 1 ;;
           esac
-          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+          # the bare-hex digest law: the saddle Dockerfile composes
+          # name@sha256:${NODE_BASE_DIGEST} itself, so the build-arg
+          # carries the hex without the sha256: prefix (the doubled
+          # prefix parsed no stage and reddened the validation legs).
+          echo "digest=${digest#sha256:}" >> "$GITHUB_OUTPUT"
 
       - name: Build image (dry run, loaded locally)
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
@@ -7216,7 +7230,12 @@ jobs:
             echo "ubuntu=ubuntu:24.04@${ubuntu_digest}"
             echo "python=python:3.14.7-slim@${python_digest}"
             echo "node=node:26.13.0-slim@${node_digest}"
-            echo "nodedigest=${node_digest}"
+            # the bare-hex digest law: the saddle Dockerfile composes
+            # name@sha256:${NODE_BASE_DIGEST} itself, so the build-arg
+            # carries the hex without the prefix - the prefixed form the
+            # lane emitted before doubled the sha256: into an invalid
+            # stage reference and reddened every saddle vhe leg.
+            echo "nodedigest=${node_digest#sha256:}"
           } >> "$GITHUB_OUTPUT"
           echo "base digests resolved at build time: ubuntu ${ubuntu_digest} / python ${python_digest} / node ${node_digest}"
 
