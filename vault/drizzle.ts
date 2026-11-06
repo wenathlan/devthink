@@ -328,9 +328,12 @@ export function openStorage(url = process.env.VAULT_STORAGE_URL ?? "file:./vault
   const file = url.startsWith("file:") ? url.slice("file:".length) : url;
   mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
   const client = new Database(file);
+  /* the busy seat rides FIRST (the SQLITE_BUSY heal): the timeout must be
+   * armed before the WAL switch — under the worker storm the WAL pragma
+   * itself can eat the lock and the late timeout never gets a chance. */
+  client.pragma("busy_timeout = 30000");
   client.pragma("journal_mode = WAL");
   client.pragma("foreign_keys = ON");
-  client.pragma("busy_timeout = 5000");
   const database = drizzle(client);
   ensureStorageSchema(database);
   return database;
