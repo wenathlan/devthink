@@ -420,3 +420,8 @@ polar/
 # application lock lives inside its application folder, and the anchored
 # pattern leaves the per-application bun.lock files tracked)
 /bun.lock
+
+# allan reference clone runtime (untracked, never temp)
+allan/
+allanclone.sh
+allanclone.log

@@ -53,6 +53,8 @@ export * from "./internalroot.ts";
 export * from "./accounts.ts";
 /** the /v2/query lane: bearer plus database-id headers over the per-database sqlite files of the better-sqlite3 core. */
 export * from "./querylane.ts";
+/** the storage pillars catalog: the eight pillars of the storage stack (LibGit2, MySQL2, the prisma schema, drizzle, git lfs, blobs, bigint, pointers), one static-safe route per pillar. */
+export * from "./pillars.ts";
 
 /* ── the rehearsal shelf — the pure, deterministic page cores ── */
 

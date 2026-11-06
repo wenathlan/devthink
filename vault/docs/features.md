@@ -38,12 +38,14 @@ the real feature list of the vault app, read from the code and grouped by catego
 - the token gate — `tokenVerdict` / `requestAuth` (api.ts): the operator bearer stays total admin, a `vk_` project key authorizes its own project, a `vs_` session authorizes its account's projects; the sealed environment answers 503 fail-closed, the bearerless data call answers 401, and the browser-shaped probe reads the decoy ledger (`decoyledger`, decoy.ts).
 - the site face — the container doctrine: `serveStatic` serves the built site with the correct content types and the spa fallback, `serveInternal` (internalroot.ts) serves the deployable unit's internal root with the registry mimes, and the faun law holds on every face — the raw `.db` never rides (`rawDatabaseRequest` answers 403 `VAULT_DBFILE` before any lane).
 - the copy lane — `/api/v1/ui/copy` serves the interface copy from the uistore table (`uistore.ts`), open beside the health probe.
-- the client door — `vaultclient.ts`: every route as one typed call (`signup`, `signin`, `registerDatabase`, `listProjects`, `createKey` / `listKeys` / `revokeKey`, `usage`, `listObjects` with the bucket filter, `deposit` with the object headers, `query` with the database header, `getQuota` / `setQuota`, `sweep`), the away lane declaring the rehearsal honestly, and the mount hooks (`useVaultUsage`, `useVaultQuota`, `useVaultObjects`) the wingets render through.
+- the client door — `vaultclient.ts`: every route as one typed call (`signup`, `signin`, `registerDatabase`, `listProjects`, `createKey` / `listKeys` / `revokeKey`, `usage`, `listObjects` with the bucket filter, `deposit` with the object headers, `query` with the database header, `getQuota` / `setQuota`, `pillars`, `sweep`), the away lane declaring the rehearsal honestly, and the mount hooks (`useVaultUsage`, `useVaultQuota`, `useVaultObjects`, `useVaultPillars`) the wingets render through.
+- the my files surface — `HomeMyfiles.tsx`: the person's drive, live only — the quota readout (usage, the owner-set limit, what remains, the state, the census), the hd unlock form (megabytes at any scale or unlimited through `setQuota`) and the pinned project's own objects, every number from the live lanes, zero fixed data in the tsx.
 
 ## the pillars
 
 - protocols — `protocols.ts`: every wire of the catalog answers its own static-safe route (`/api/v1/protocols`, `protocolRouteOf`, `PROTOCOL_ROUTE_COUNT`).
 - mimetypes — `mimetypes.ts`: the family mimetype corpus the internal root answers every file type with (reads `mime.types` beside the module at import).
+- storage pillars — `pillars.ts`: the eight storage pillars of the stack (LibGit2, MySQL2, the prisma schema, drizzle, git lfs, blobs, bigint, pointers) with the owner module of each and the guarded mysql2 seam, one static-safe route per pillar (`/api/v1/pillars`, `pillarRouteOf`, `PILLAR_ROUTE_COUNT`).
 - labels and copy — `labels.ts` / `labelstore.ts` / `uistore.ts`: the interface copy manifest, the db-backed store and the browser accessor chain.
 
 ## the rehearsal shelf (the deterministic page cores)

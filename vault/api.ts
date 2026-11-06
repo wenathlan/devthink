@@ -76,6 +76,12 @@ import {
   verifySession,
 } from "./accounts.ts";
 import { internalRootDir, serveInternal } from "./internalroot.ts";
+import {
+  PILLARS,
+  PILLAR_COUNT,
+  pillarRouteOf,
+  type PillarRow,
+} from "./pillars.ts";
 import { PROTOCOL_ROUTE_COUNT, PROTOCOLS, protocolRouteOf, type ProtocolRow } from "./protocols.ts";
 import { queryVerdict, runQuery } from "./querylane.ts";
 import {
@@ -305,8 +311,10 @@ export { routes };
 
 /** the whole route count the domain serves: the base catalog plus one
  * static-safe route per protocol row (the protocols pillar — above one
- * thousand on the wave D catalog). */
-export const routeCount = Object.keys(routes).length + PROTOCOL_ROUTE_COUNT;
+ * thousand on the wave D catalog) plus one per storage pillar row (the
+ * pillars catalog — the eight storage pillars and the list lane). */
+export const routeCount =
+  Object.keys(routes).length + PROTOCOL_ROUTE_COUNT + PILLARS.length;
 
 /** @section server */
 
@@ -472,6 +480,24 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
         return;
       }
       sendJson(res, 200, jsonOfProtocol(row));
+      return;
+    }
+    /* the storage pillars catalog — every pillar of the storage stack
+     * (LibGit2, MySQL2, the prisma schema, drizzle, git lfs, blobs,
+     * bigint, pointers) answers its own static-safe route beside the list
+     * lane: read-only, no storage truth, no query execution — the catalog
+     * rows carry no secret, the same open law the protocols pillar rides. */
+    if (method === "GET" && pathname === routes.pillars) {
+      sendJson(res, 200, { pillars: PILLARS.map(jsonOfPillar), count: PILLAR_COUNT });
+      return;
+    }
+    if (method === "GET" && pathname.startsWith(`${routes.pillars}/`)) {
+      const row = pillarRouteOf(pathname);
+      if (row === undefined) {
+        sendError(res, 404, "VAULT_PILLAR", `no pillar route answers ${pathname}`);
+        return;
+      }
+      sendJson(res, 200, jsonOfPillar(row));
       return;
     }
     /* the person's door onto the network database — the register lane
@@ -1371,6 +1397,21 @@ function jsonOfProtocol(row: ProtocolRow): Record<string, unknown> {
     group: row.group,
     ...(row.security !== undefined ? { security: row.security } : {}),
     ...(row.state !== undefined ? { state: row.state } : {}),
+  };
+}
+
+/** the json projection of one storage pillar row (the static-safe route
+ * answer — plain strings only, no bigint, no engine singletons). */
+function jsonOfPillar(row: PillarRow): Record<string, unknown> {
+  return {
+    key: row.key,
+    name: row.name,
+    group: row.group,
+    law: row.law,
+    owner: row.owner,
+    spec: row.spec,
+    status: row.status,
+    route: `${routes.pillars}/${row.key}`,
   };
 }
 

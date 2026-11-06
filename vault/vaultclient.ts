@@ -202,6 +202,37 @@ export interface SweepAnswer {
   tombstones: number;
 }
 
+/** one storage pillar row the catalog lane answers (the json projection
+ * of the /api/v1/pillars routes — plain strings, no bigint, no engine
+ * singletons). */
+export interface PillarClientRow {
+  /** the catalog key ("gitlfs") — the route segment and the lookup key */
+  key: string;
+  /** the display name of the pillar */
+  name: string;
+  /** the family group of the pillar */
+  group: string;
+  /** the one-sentence law the pillar carries */
+  law: string;
+  /** the module file of the package that owns the pillar */
+  owner: string;
+  /** the governing spec or reference */
+  spec: string;
+  /** "live" today or the guarded "seam" */
+  status: string;
+  /** the static-safe route the pillar answers */
+  route: string;
+}
+
+/** the storage pillars catalog answer the my files surface renders — the
+ * winget pulls the catalog through the internal api, never a hardcoded
+ * list in the tsx. */
+export interface PillarsAnswer {
+  ok: true;
+  pillars: PillarClientRow[];
+  count: number;
+}
+
 /** the account answer the signup door carries — never the password digest. */
 export interface AccountAnswer {
   ok: true;
@@ -365,6 +396,7 @@ export function vaultclient(options: VaultClientOptions = {}): {
     project: string,
     limitBytes: bigint | null,
   ): Promise<{ ok: true; project: string; limitBytes: bigint | null; updatedAt: string } | LaneRefusal | LaneAway>;
+  pillars(): Promise<PillarsAnswer | LaneRefusal | LaneAway>;
   sweep(): Promise<SweepAnswer | LaneRefusal | LaneAway>;
 } {
   const origin = stripTrailingSlashes((options.origin ?? vaultorigin()).trim());
@@ -924,6 +956,45 @@ export function vaultclient(options: VaultClientOptions = {}): {
       }
       return refused(response);
     },
+
+    async pillars() {
+      /* the catalog lane is a public door — the pillar rows carry no
+       * secret, the same open law the copy and protocols lanes ride. */
+      const answer = await call("GET", "/api/v1/pillars", { anonymous: true });
+      if (!answer.ok) return answer;
+      const { response } = answer;
+      if (!response.ok) return refused(response);
+      try {
+        const parsed: unknown = await response.json();
+        if (typeof parsed === "object" && parsed !== null) {
+          const row = parsed as Record<string, unknown>;
+          if (Array.isArray(row.pillars)) {
+            const pillars: PillarClientRow[] = [];
+            for (const entry of row.pillars) {
+              if (typeof entry === "object" && entry !== null) {
+                const pillar = entry as Record<string, unknown>;
+                if (typeof pillar.key === "string" && typeof pillar.law === "string") {
+                  pillars.push({
+                    key: pillar.key,
+                    name: typeof pillar.name === "string" ? pillar.name : pillar.key,
+                    group: typeof pillar.group === "string" ? pillar.group : "",
+                    law: pillar.law,
+                    owner: typeof pillar.owner === "string" ? pillar.owner : "",
+                    spec: typeof pillar.spec === "string" ? pillar.spec : "",
+                    status: typeof pillar.status === "string" ? pillar.status : "",
+                    route: typeof pillar.route === "string" ? pillar.route : `/api/v1/pillars/${pillar.key}`,
+                  });
+                }
+              }
+            }
+            return { ok: true, pillars, count: pillars.length };
+          }
+        }
+      } catch {
+        /* the parse fall lands in the refusal lane */
+      }
+      return refused(response);
+    },
   };
 }
 
@@ -959,16 +1030,20 @@ export function useVaultUsage(): { live: UsageAnswer | null; lane: "live" | "awa
 }
 
 /**
- * useVaultQuota — the mount hook of the plans lane: it loads the quota
- * verdict of the pinned project once per mount when the engine lane
- * answers, so the plans table renders the user-defined limit the
- * database holds above the declared rehearsal (the away lane keeps the
- * seed — never a blank, never an invented figure).
+ * useVaultQuota — the mount hook of the plans lane (and the my files
+ * surface): it loads the quota verdict of the pinned project once per
+ * mount when the engine lane answers, so the plans table renders the
+ * user-defined limit the database holds above the declared rehearsal (the
+ * away lane keeps the seed — never a blank, never an invented figure).
+ * The hook takes a reload token the my files unlock bumps — a fresh limit
+ * on the row re-reads the verdict the same mount.
  *
+ * @param reloadKey a token the caller bumps to walk the quota lane again.
  * @returns the live quota verdict when the lane answered (null otherwise).
  */
-export function useVaultQuota(): { live: QuotaAnswer | null } {
+export function useVaultQuota(reloadKey = 0): { live: QuotaAnswer | null } {
   const [state, setState] = useState<{ live: QuotaAnswer | null }>({ live: null });
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the reload token is the hook parameter the caller bumps — the mount-plus-reload window is the unlock lane's own law (the sibling hooks ride the same window)
   useEffect(() => {
     let alive = true;
     const project = vaultproject();
@@ -981,7 +1056,7 @@ export function useVaultQuota(): { live: QuotaAnswer | null } {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [reloadKey]);
   return state;
 }
 
@@ -1018,5 +1093,36 @@ export function useVaultObjects(reloadKey = 0): { live: ObjectRow[] | null; lane
       alive = false;
     };
   }, [reloadKey]);
+  return state;
+}
+
+/**
+ * useVaultPillars — the mount hook of the catalog lane: it loads the
+ * storage pillars catalog (LibGit2, MySQL2, the prisma schema, drizzle,
+ * git lfs, blobs, bigint, pointers) once per mount through the public
+ * /api/v1/pillars door, so the wingets render the catalog the engine
+ * answered — never a hardcoded pillar list inside a tsx (the winget law:
+ * the data rides the internal api, the surface stays empty of fixed
+ * rows).
+ *
+ * @returns the live catalog when the lane answered (null otherwise) and
+ *   the lane key the render declares.
+ */
+export function useVaultPillars(): { live: PillarClientRow[] | null; lane: "live" | "away" } {
+  const [state, setState] = useState<{ live: PillarClientRow[] | null; lane: "live" | "away" }>({
+    live: null,
+    lane: "away",
+  });
+  useEffect(() => {
+    let alive = true;
+    const client = vaultclient();
+    void client.pillars().then((answer) => {
+      if (!alive) return;
+      if (answer.ok) setState({ live: answer.pillars, lane: "live" });
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
   return state;
 }

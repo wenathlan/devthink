@@ -30,6 +30,7 @@ import {
   Entry,
   HomeEntrygate as EntryGate,
   Halo,
+  Myfiles,
   Objectbrowse,
   Planstable,
   Reveal,
@@ -400,6 +401,9 @@ export function HomeSurface(props: HomeProps) {
             </div>
             <div className="vc-cell vc-cell--wide" data-reveal="true">
               <Objectbrowse />
+            </div>
+            <div className="vc-cell vc-cell--wide" data-reveal="true" id="myfiles">
+              <Myfiles />
             </div>
             <div className="vc-cell vc-cell--wide" data-reveal="true">
               <Signupgate />

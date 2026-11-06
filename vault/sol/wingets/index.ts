@@ -14,6 +14,8 @@ export * from "./HomeEntrygate.tsx";
 export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
 export * from "./HomeHalo.tsx";
 export { default as HomeHalo } from "./HomeHalo.tsx";
+export * from "./HomeMyfiles.tsx";
+export { default as HomeMyfiles } from "./HomeMyfiles.tsx";
 export * from "./HomeObjectbrowse.tsx";
 export { default as HomeObjectbrowse } from "./HomeObjectbrowse.tsx";
 export * from "./HomePlanstable.tsx";

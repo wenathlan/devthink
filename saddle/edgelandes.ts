@@ -2633,45 +2633,6 @@ async function screenxvfblane(code: string, inputs: unknown, deadline: number): 
   );
 }
 
-/** screen-wayland: the headless compositor lane. cage is the first seat
- * (the wlroots headless backend, the runtime dir as the xdg seat so the
- * socket lands inside the private temp dir); weston is the fallback —
- * one bash spawn drives the compositor and the script in sequence, the
- * deadline covers the whole session and the compositor dies with the
- * script. A host carrying neither answers the coded absence. */
-async function screenwaylandlane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  const cagepresent = probehostbinary("cage");
-  const westonpresent = probehostbinary("weston");
-  if (!cagepresent && !westonpresent) {
-    throw edgelaneerror(
-      "HOST_RUNTIME_ABSENT",
-      "the host runtime cage is absent: the lane screenwayland requires it on PATH (weston, the alternative seat, is absent too)",
-    );
-  }
-  return withtempdirhost(async (dir) => {
-    if (cagepresent) {
-      return await runscript("cage", ["--", "/bin/bash", "script.sh"], dir, code, inputs, deadline, {
-        XDG_RUNTIME_DIR: dir,
-        WLR_BACKENDS: "headless",
-      });
-    }
-    await writeFile(join(dir, "script.sh"), code, "utf8");
-    const inputenv = (await writeinputsfilehost(dir, inputs)) ?? {};
-    const session = [
-      `XDG_RUNTIME_DIR="${dir}" weston --backend=headless-backend.so --socket=wayland-0 >/dev/null 2>&1 &`,
-      "westonpid=$!",
-      "sleep 0.3",
-      `WAYLAND_DISPLAY=wayland-0 XDG_RUNTIME_DIR="${dir}" /bin/bash script.sh`,
-      "status=$?",
-      'kill "$westonpid" 2>/dev/null',
-      'wait "$westonpid" 2>/dev/null',
-      "exit $status",
-    ].join("\n");
-    const run = await runhostprocesshost("bash", ["-c", session], { cwd: dir, deadline, env: inputenv });
-    return { stdout: run.stdout, stderr: run.stderr };
-  });
-}
-
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 7: the mobile lane — the termux seat. */
 /* ════════════════════════════════════════════════════════════════════ */
@@ -2727,81 +2688,8 @@ async function buildbazellane(code: string, inputs: unknown, deadline: number): 
   });
 }
 
-/** build-buck: the buck2 lane. A minimal BUCK file wires the script as
- * one sh_binary and buck2 runs it with HOME at the temp dir so the
- * buck caches stay inside the private seat. */
-async function buildbucklane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  if (!probehostbinary("buck2")) {
-    absentruntime("buildbuck", "buck2");
-  }
-  return withtempdirhost(async (dir) => {
-    await writeFile(join(dir, ".buckconfig"), "[repositories]\nroot = .\n", "utf8");
-    await writeFile(join(dir, "BUCK"), 'sh_binary(\n  name = "lane",\n  srcs = ["script.sh"],\n)\n', "utf8");
-    return await runscript("buck2", ["run", "//:lane"], dir, code, inputs, deadline, { HOME: dir });
-  });
-}
-
-/** the turbo seat: the binary on PATH or the engine module graph's
- * turbo package (the bin shim it ships) — the honest probe answers
- * present only when one of the two seats resolves. */
-function turboseat(): { present: boolean; binpath: string; viabinary: boolean } {
-  if (probehostbinary("turbo")) {
-    return { present: true, binpath: "turbo", viabinary: true };
-  }
-  try {
-    const resolved = createRequire(import.meta.url).resolve("turbo");
-    let dir = dirname(resolved);
-    while (dir !== dirname(dir)) {
-      if (basename(dir) === "turbo" && basename(dirname(dir)) === "node_modules") {
-        const binpath = join(dir, "bin", "turbo");
-        if (existsSync(binpath)) {
-          return { present: true, binpath, viabinary: false };
-        }
-      }
-      dir = dirname(dir);
-    }
-  } catch {
-    // the module seat is absent: the binary seat already answered
-  }
-  return { present: false, binpath: "", viabinary: false };
-}
-
-/** build-turborepo: the turbo lane. A minimal package.json whose build
- * script is the code field plus a minimal turbo.json, then turbo run
- * build — through the binary seat when the host carries it, through the
- * engine module seat's bin shim (spawned under node) when the repo
- * carries turbo only as a dependency. */
-async function buildturborepolane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  const seat = turboseat();
-  if (!seat.present) {
-    throw edgelaneerror(
-      "HOST_RUNTIME_ABSENT",
-      "the host runtime turbo is absent: the lane buildturborepo requires it on PATH (neither the turbo binary nor the engine module seat resolved)",
-    );
-  }
-  return withtempdirhost(async (dir) => {
-    const manifest = {
-      name: "saddle-edge-turbo-lane",
-      private: true,
-      version: "0.0.0",
-      scripts: { build: code },
-    };
-    await writeFile(join(dir, "package.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
-    await writeFile(
-      join(dir, "turbo.json"),
-      `${JSON.stringify({ $schema: "https://turbo.build/schema.json", tasks: { build: { outputs: [] } } }, null, 2)}\n`,
-      "utf8",
-    );
-    const inputenv = (await writeinputsfilehost(dir, inputs)) ?? {};
-    const command = seat.viabinary ? "turbo" : "node";
-    const args = seat.viabinary ? ["run", "build"] : [seat.binpath, "run", "build"];
-    const run = await runhostprocesshost(command, args, { cwd: dir, deadline, env: { ...inputenv, HOME: dir } });
-    return { stdout: run.stdout, stderr: run.stderr };
-  });
-}
-
 /* ════════════════════════════════════════════════════════════════════ */
-/* Section 9: the ci runner lanes — the actions and gitlab seats. */
+/* Section 9: the ci runner lanes — the actions seat. */
 /* ════════════════════════════════════════════════════════════════════ */
 
 /** the actions runner root seat: the ACTIONS_RUNNER_ROOT env pointing
@@ -2839,43 +2727,6 @@ async function ciactionslane(code: string, inputs: unknown, deadline: number): P
       env: inputenv,
     });
     return { stdout: run.stdout, stderr: run.stderr };
-  });
-}
-
-/** ci-gitlab: the gitlab runner lane. The job script rides a minimal
- * .gitlab-ci.yml (one job, one block scalar script) and the runner
- * executes it through `exec docker`; a modern runner that removed the
- * exec command answers RUNTIME_CAPABILITY_ABSENT with the message
- * naming the removal — the runtime exists, the capability is gone. */
-async function cigitlablane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  if (!probehostbinary("gitlab-runner")) {
-    absentruntime("cigitlab", "gitlab-runner");
-  }
-  return withtempdirhost(async (dir) => {
-    const body = code
-      .split("\n")
-      .map((line) => `      ${line}`)
-      .join("\n");
-    await writeFile(join(dir, ".gitlab-ci.yml"), `lane:\n  script:\n    - |\n${body}\n`, "utf8");
-    const inputenv = await writeinputsfilehost(dir, inputs);
-    try {
-      const run = await runhostprocesshost("gitlab-runner", ["exec", "docker", "lane"], {
-        cwd: dir,
-        deadline,
-        env: inputenv,
-      });
-      return { stdout: run.stdout, stderr: run.stderr };
-    } catch (error) {
-      const stderr = (error as { stderr?: string }).stderr ?? "";
-      if (typeof (error as { code?: unknown }).code === "string" && /unknown command/i.test(stderr)) {
-        throw edgelaneerror(
-          "RUNTIME_CAPABILITY_ABSENT",
-          "the host runtime gitlab-runner refused the exec command: exec was removed from the modern runners (the lane ci-gitlab requires a runner that still carries exec)",
-          { stderr },
-        );
-      }
-      throw error;
-    }
   });
 }
 
@@ -3019,53 +2870,6 @@ async function networkwireguardlane(code: string, inputs: unknown, deadline: num
     await writeFile(join(dir, "script.sh"), code, "utf8");
     const run = await runhostprocesshost("bash", ["script.sh"], { cwd: dir, deadline, env: inputenv });
     return { stdout: run.stdout, stderr: run.stderr };
-  });
-}
-
-/* ════════════════════════════════════════════════════════════════════ */
-/* Section 11: the storage daemon lanes — the minio and garage clients. */
-/* ════════════════════════════════════════════════════════════════════ */
-
-/** storage-minio: the minio client lane. The code field is a shell
- * script riding the mc CLI; the inputs {alias, url, accesskey,
- * secretkey} (all optional) derive the MC_HOST_<alias> env so the
- * script addresses the vault — without them mc answers its own honest
- * error and the lane wraps it, never invents a vault. */
-async function storageminiolane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  if (!probehostbinary("mc")) {
-    absentruntime("storageminio", "mc");
-  }
-  return withtempdirhost(async (dir) => {
-    const record = (inputs ?? {}) as { alias?: unknown; url?: unknown; accesskey?: unknown; secretkey?: unknown };
-    const alias = typeof record.alias === "string" && record.alias.length > 0 ? record.alias : "lane";
-    const extraenv: Record<string, string> = {};
-    if (typeof record.url === "string" && record.url.length > 0) {
-      const accesskey = typeof record.accesskey === "string" ? record.accesskey : "";
-      const secretkey = typeof record.secretkey === "string" ? record.secretkey : "";
-      extraenv[`MC_HOST_${alias}`] = `https://${accesskey}:${secretkey}@${record.url}`;
-    }
-    return await runscript("bash", ["script.sh"], dir, code, inputs, deadline, extraenv);
-  });
-}
-
-/** storage-garage: the garage client lane. The same script law — the
- * code field rides bash with the garage CLI on PATH, and the inputs
- * {rpchost, rpcsecret} derive the GARAGE_RPC_HOST and
- * GARAGE_RPC_SECRET env when the caller sent them. */
-async function storagegaragelane(code: string, inputs: unknown, deadline: number): Promise<EdgeLaneOutput> {
-  if (!probehostbinary("garage")) {
-    absentruntime("storagegarage", "garage");
-  }
-  return withtempdirhost(async (dir) => {
-    const record = (inputs ?? {}) as { rpchost?: unknown; rpcsecret?: unknown };
-    const extraenv: Record<string, string> = {};
-    if (typeof record.rpchost === "string" && record.rpchost.length > 0) {
-      extraenv.GARAGE_RPC_HOST = record.rpchost;
-    }
-    if (typeof record.rpcsecret === "string" && record.rpcsecret.length > 0) {
-      extraenv.GARAGE_RPC_SECRET = record.rpcsecret;
-    }
-    return await runscript("bash", ["script.sh"], dir, code, inputs, deadline, extraenv);
   });
 }
 
@@ -3357,28 +3161,17 @@ export const hostlanespecs: readonly HostLaneSpec[] = Object.freeze([
   { modality: "runtimeclr", kind: "live", runtime: "dotnet", present: () => probehostbinary("dotnet") },
   { modality: "runtimeworkerd", kind: "live", runtime: "workerd", present: () => probehostbinary("workerd") },
   { modality: "screenxvfb", kind: "live", runtime: "xvfb-run", present: () => probehostbinary("xvfb-run") },
-  {
-    modality: "screenwayland",
-    kind: "live",
-    runtime: "cage",
-    present: () => probehostbinary("cage") || probehostbinary("weston"),
-  },
   { modality: "mobiletermux", kind: "live", runtime: "termux", present: () => probehostbinary("termux") },
   { modality: "buildbazel", kind: "live", runtime: "bazel", present: () => probehostbinary("bazel") },
-  { modality: "buildbuck", kind: "live", runtime: "buck2", present: () => probehostbinary("buck2") },
-  { modality: "buildturborepo", kind: "live", runtime: "turbo", present: () => turboseat().present },
   {
     modality: "ciactions",
     kind: "live",
     runtime: "actions-runner",
     present: () => probehostbinary("Runner.Listener") || actionsrunnerroot().length > 0,
   },
-  { modality: "cigitlab", kind: "live", runtime: "gitlab-runner", present: () => probehostbinary("gitlab-runner") },
   { modality: "networktor", kind: "live", runtime: "tor", present: () => probehostbinary("tor") },
   { modality: "networki2p", kind: "live", runtime: "i2p", present: () => probehostbinary("i2prouter") },
   { modality: "networkwireguard", kind: "live", runtime: "wg", present: () => probehostbinary("wg") },
-  { modality: "storageminio", kind: "live", runtime: "mc", present: () => probehostbinary("mc") },
-  { modality: "storagegarage", kind: "live", runtime: "garage", present: () => probehostbinary("garage") },
   // the wiring wave lanes: the language toolchains, the runner seats and
   // the build tail — kind host (the runtime probe rung), the executors
   // drive the runtimes when the hosts carry them
@@ -3419,18 +3212,12 @@ const edgelaneexecutorstable: Readonly<Record<string, EdgeLaneExecutor>> = Objec
   "runtimeclr": runtimeclrlanehost,
   "runtimeworkerd": runtimeworkerdlane,
   "screenxvfb": screenxvfblane,
-  "screenwayland": screenwaylandlane,
   "mobiletermux": mobiletermuxlane,
   "buildbazel": buildbazellane,
-  "buildbuck": buildbucklane,
-  "buildturborepo": buildturborepolane,
   "ciactions": ciactionslane,
-  "cigitlab": cigitlablane,
   "networktor": networktorlane,
   "networki2p": networki2plane,
   "networkwireguard": networkwireguardlane,
-  "storageminio": storageminiolane,
-  "storagegarage": storagegaragelane,
   "buildmake": buildmakelane,
   "buildninja": buildninjalane,
   "languagecargo": languagecargolane,
@@ -3853,100 +3640,6 @@ async function ramoverlayfslane(code: string, inputs: unknown, _deadline: number
   );
 }
 
-/** reads the sector writes [sectorindex, hex] of the loop ram disk: the
- * sector must sit inside the disk and the payload must fit one sector. */
-function manifestwrites(lane: string, value: unknown, sectorsize: number, sectors: number): [number, Uint8Array][] {
-  if (!Array.isArray(value)) {
-    throw edgelaneerror("INVALID_LANE_PAYLOAD", `the lane ${lane} requires a writes array in the manifest`);
-  }
-  const writes: [number, Uint8Array][] = [];
-  for (const entry of value) {
-    if (!Array.isArray(entry) || entry.length !== 2) {
-      throw edgelaneerror("INVALID_LANE_PAYLOAD", `the lane ${lane} requires [sector, hex] write pairs`);
-    }
-    const sector = manifestuint(lane, entry[0], "writes sector");
-    if (sector >= sectors) {
-      throw edgelaneerror(
-        "INVALID_LANE_PAYLOAD",
-        `the lane ${lane} write names the sector ${sector} outside the ${sectors} sector disk`,
-      );
-    }
-    const bytes = fromhex(lane, entry[1], "writes bytes");
-    if (bytes.byteLength > sectorsize) {
-      throw edgelaneerror(
-        "INVALID_LANE_PAYLOAD",
-        `the lane ${lane} write carries ${bytes.byteLength} bytes over the ${sectorsize} byte sector`,
-      );
-    }
-    writes.push([sector, bytes]);
-  }
-  return writes;
-}
-
-/** ram-loopram: the loop ram disk lane. The code field is the disk
- * manifest {"sectorsize":n,"sectors":m,"writes":[[sector,"<hex>"],...]}:
- * the lane materializes one sector-addressed zero-filled disk — the
- * declared capacity (sectorsize * sectors) is what the oom guard reads
- * from the manifest numbers before any allocation rides — applies the
- * sector writes and answers the sector map with the disk bytes as the
- * artifact. */
-async function ramloopramlane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ramloopram", code);
-  const sectorsize = manifestuint("ramloopram", manifest.sectorsize, "sectorsize");
-  const sectors = manifestuint("ramloopram", manifest.sectors, "sectors");
-  if (sectorsize < 1) {
-    throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-loopram lane requires a positive sectorsize");
-  }
-  const capacity = sectorsize * sectors;
-  if (!Number.isSafeInteger(capacity)) {
-    throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-loopram disk exceeds the representable byte range");
-  }
-  assertramquota("ramloopram", capacity, inputs);
-  const writes = manifestwrites("ramloopram", manifest.writes ?? [], sectorsize, sectors);
-  const disk = new Uint8Array(capacity);
-  for (const [sector, bytes] of writes) disk.set(bytes, sector * sectorsize);
-  const written = [...new Set(writes.map((write) => write[0]))].sort((left, right) => left - right);
-  return lanereport(
-    rammime,
-    { sectorsize, sectors, capacity, written },
-    { sectorsize, sectors, capacity, written, disk: tohex(disk) },
-  );
-}
-
-/** ram-gitram: the git object cache lane. The code field is the object
- * manifest {"objects":[{"oid":"...","data":"<hex>"},...],"read":"oid"}:
- * the lane loads the objects into one hash table keyed by oid (a
- * repeated oid answers the last write) and answers the read object —
- * the object bytes ride the artifact. */
-async function ramgitramlane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ramgitram", code);
-  if (!Array.isArray(manifest.objects)) {
-    throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-gitram lane requires an objects array in the manifest");
-  }
-  const objects = new Map<string, Uint8Array>();
-  for (const entry of manifest.objects) {
-    if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
-      throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-gitram lane requires {oid, data} object entries");
-    }
-    const record = entry as Record<string, unknown>;
-    const oid = manifesttext("ramgitram", record.oid, "objects oid");
-    objects.set(oid, fromhex("ramgitram", record.data, `objects ${oid} data`));
-  }
-  let totalbytes = 0;
-  for (const bytes of objects.values()) totalbytes += bytes.byteLength;
-  assertramquota("ramgitram", totalbytes, inputs);
-  const read = manifesttext("ramgitram", manifest.read, "read");
-  const object = objects.get(read);
-  if (object === undefined) {
-    throw edgelaneerror("INVALID_LANE_PAYLOAD", `the ram-gitram read names the unknown oid ${read}`);
-  }
-  return lanereport(
-    rammime,
-    { objects: objects.size, totalbytes, read, size: object.byteLength },
-    { oid: read, size: object.byteLength, bytes: tohex(object) },
-  );
-}
-
 /** ram-zram: the compressed page store lane. The code field is the page
  * manifest {"pagesize":n,"pages":["<hex>",...]}: the lane compresses
  * every page with the real stored-block zlib wrapper and answers the
@@ -3981,44 +3674,6 @@ async function ramzramlaneinproc(code: string, inputs: unknown, _deadline: numbe
     rammime,
     { pagesize, pages: pages.length, rawbytes, compressedbytes, ratios },
     { pagesize, pages: pages.length, streams: streams.map((stream) => tohex(stream)) },
-  );
-}
-
-/** ram-zswap: the swap front pool lane. The code field is the pool
- * manifest {"poolsize":n,"pages":["<hex>",...]}: the lane compresses
- * every page with the same stored-block zlib wrapper and admits them
- * into the LRU pool (arrival order, the oldest page evicted beyond
- * poolsize) — the pool snapshot rides the artifact. */
-async function ramzswaplane(code: string, inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const manifest = parsemanifestinproc("ramzswap", code);
-  const poolsize = manifestuint("ramzswap", manifest.poolsize, "poolsize");
-  if (!Array.isArray(manifest.pages)) {
-    throw edgelaneerror("INVALID_LANE_PAYLOAD", "the ram-zswap lane requires a pages array in the manifest");
-  }
-  const pages = manifest.pages.map((page, index) => fromhex("ramzswap", page, `pages ${index}`));
-  const rawbytes = pages.reduce((sum, page) => sum + page.byteLength, 0);
-  assertramquota("ramzswap", rawbytes, inputs);
-  const pool = new Map<number, Uint8Array>();
-  let evicted = 0;
-  pages.forEach((page, index) => {
-    pool.set(index, storedzlib(page));
-    while (pool.size > poolsize) {
-      const oldest = pool.keys().next();
-      if (oldest.done === true) break;
-      pool.delete(oldest.value);
-      evicted += 1;
-    }
-  });
-  let compressedbytes = 0;
-  const snapshot: { page: number; raw: number; compressed: string }[] = [];
-  for (const [index, stream] of pool) {
-    compressedbytes += stream.byteLength;
-    snapshot.push({ page: index, raw: pages[index].byteLength, compressed: tohex(stream) });
-  }
-  return lanereport(
-    rammime,
-    { poolsize, pages: pages.length, admitted: pool.size, evicted, compressedbytes },
-    { poolsize, pool: snapshot },
   );
 }
 
@@ -4126,21 +3781,6 @@ function wssframe(payload: Uint8Array): Uint8Array {
   return frame;
 }
 
-/** encodes one number as a quic variable length integer (rfc 9000
- * section 16): the two bit length prefix selects the 1, 2, 4 or 8 byte
- * form of the datagram framing. */
-function quicvarint(value: number): number[] {
-  if (value < 64) return [value];
-  if (value < 16384) return [0x40 | (value >> 8), value & 0xff];
-  if (value < 1073741824) {
-    return [0x80 | ((value >> 24) & 0xff), (value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff];
-  }
-  const big = BigInt(value);
-  const bytes = [0xc0];
-  for (let shift = 56n; shift >= 0n; shift -= 8n) bytes.push(Number((big >> shift) & 0xffn));
-  return bytes;
-}
-
 /** builds one grpc length-prefixed message: the one byte compressed flag
  * 0 and the four byte big-endian payload length — exactly the bytes an
  * http/2 DATA frame would carry. */
@@ -4150,20 +3790,6 @@ function grpcframe(payload: Uint8Array): Uint8Array {
   new DataView(frame.buffer).setUint32(1, payload.byteLength);
   frame.set(payload, 5);
   return frame;
-}
-
-/** builds the minimal one segment capnproto message around the payload:
- * the little-endian 32-bit header pair (the segment count 0, then the
- * segment word count) and the payload zero-padded to the 8 byte word
- * boundary — the message length always answers a whole word count. */
-function capnpmessage(payload: Uint8Array): Uint8Array {
-  const words = Math.ceil(payload.byteLength / 8);
-  const message = new Uint8Array(8 + words * 8);
-  const view = new DataView(message.buffer);
-  view.setUint32(0, 0, true);
-  view.setUint32(4, words, true);
-  message.set(payload, 8);
-  return message;
 }
 
 /** delivery-cdn: the mirror manifest lane. The code field is the mirror
@@ -4213,27 +3839,6 @@ async function deliverywsslane(code: string, _inputs: unknown, _deadline: number
   );
 }
 
-/** delivery-webtransport: the http3 datagram lane. The code field is the
- * payload: the lane frames it as one quic-style DATAGRAM frame — the
- * deterministic stream id 1 as a quic varint, the datagram frame type
- * 0x40 and the varint payload length — the framed bytes ride the
- * artifact manifest. */
-async function deliverywebtransportlane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const payload = utf8.encode(code);
-  const streamvarint = quicvarint(1);
-  const lengthvarint = quicvarint(payload.byteLength);
-  const frame = new Uint8Array(streamvarint.length + 1 + lengthvarint.length + payload.byteLength);
-  frame.set(streamvarint, 0);
-  frame[streamvarint.length] = 0x40;
-  frame.set(lengthvarint, streamvarint.length + 1);
-  frame.set(payload, streamvarint.length + 1 + lengthvarint.length);
-  return lanereport(
-    cdnmime,
-    { type: "datagram", streamid: 1, length: payload.byteLength, framebytes: frame.byteLength },
-    { streamid: 1, type: 64, length: payload.byteLength, framehex: tohex(frame) },
-  );
-}
-
 /** delivery-grpc: the grpc frame lane. The code field is the text
  * payload: the lane frames it as one grpc length-prefixed message — the
  * one byte compressed flag 0 and the four byte big-endian length. */
@@ -4247,21 +3852,6 @@ async function deliverygrpclane(code: string, _inputs: unknown, _deadline: numbe
     cdnmime,
     { compressed: false, length: payload.byteLength, framebytes: frame.byteLength },
     { compressedflag: 0, length: payload.byteLength, framehex: tohex(frame) },
-  );
-}
-
-/** delivery-capnproto: the capnproto segment lane. The code field is the
- * payload: the lane builds the minimal one segment capnproto message —
- * the little-endian 32-bit header pair (segment count 0, segment word
- * count) and the payload zero-padded to the word boundary. */
-async function deliverycapnprotolane(code: string, _inputs: unknown, _deadline: number): Promise<EdgeLaneOutput> {
-  const payload = utf8.encode(code);
-  const message = capnpmessage(payload);
-  const words = (message.byteLength - 8) / 8;
-  return lanereport(
-    cdnmime,
-    { segments: 1, words, bytes: message.byteLength },
-    { segments: 1, words, messagehex: tohex(message) },
   );
 }
 
@@ -4834,17 +4424,12 @@ export const inproclanespecs: readonly InprocLaneSpec[] = Object.freeze([
   { modality: "ramtmpfs", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "rammmap", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "ramoverlayfs", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ramloopram", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ramgitram", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "ramzram", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "ramzswap", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "ramswapfile", kind: "live", runtime: "pure-ts", present: () => true },
   // the delivery family: the wire frame builders
   { modality: "deliverycdn", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "deliverywss", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "deliverywebtransport", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "deliverygrpc", kind: "live", runtime: "pure-ts", present: () => true },
-  { modality: "deliverycapnproto", kind: "live", runtime: "pure-ts", present: () => true },
   // the storage wire family: the handshake speakers and the signer
   { modality: "storagelibsql", kind: "live", runtime: "pure-ts", present: () => true },
   { modality: "storagemysql", kind: "live", runtime: "pure-ts", present: () => true },
@@ -4882,16 +4467,11 @@ export const edgelaneexecutorsinproc: Readonly<Record<string, EdgeLaneExecutor>>
   "ramtmpfs": ramtmpfslaneinproc,
   "rammmap": rammmaplane,
   "ramoverlayfs": ramoverlayfslane,
-  "ramloopram": ramloopramlane,
-  "ramgitram": ramgitramlane,
   "ramzram": ramzramlaneinproc,
-  "ramzswap": ramzswaplane,
   "ramswapfile": ramswapfilelaneinproc,
   "deliverycdn": deliverycdnlane,
   "deliverywss": deliverywsslane,
-  "deliverywebtransport": deliverywebtransportlane,
   "deliverygrpc": deliverygrpclane,
-  "deliverycapnproto": deliverycapnprotolane,
   "storagelibsql": storagelibsqllaneinproc,
   "storagemysql": storagemysqllaneinproc,
   "storagepostgres": storagepostgreslane,
@@ -5739,34 +5319,10 @@ function probebrowserserver(): boolean {
   );
 }
 
-/** probes the capacitor seat: the @capacitor/core module through the node
- * resolver (the mobile packaging surface the engine may carry). */
-function probecapacitor(): boolean {
-  return probemoduleseat("@capacitor/core");
-}
-
-/** probes the qemu machine the postmarketos image boots through (the
- * emulator runtime the mobile lane rides — the image law lives with the
- * deploy, the probe only names the runtime). */
-function probepostmarketos(): boolean {
-  return probehostbinary("qemu-system-x86_64");
-}
-
-/** probes the kubernetes client the pod session lane names. */
-function probekubectl(): boolean {
-  return probehostbinary("kubectl");
-}
-
 /** probes the amd sev-snp confidential compute surface: the /dev/sev
  * device node the attested guest mounts through. */
 function probesevsnp(): boolean {
   return existsSync("/dev/sev");
-}
-
-/** probes the intel tdx confidential compute surface: the /dev/tdx device
- * node (the tdx module names it /dev/tdx on the hosts that carry it). */
-function probetdx(): boolean {
-  return existsSync("/dev/tdx") || existsSync("/dev/tdx-tdi");
 }
 
 /** resolves one engine module through the node resolver without loading
@@ -5804,26 +5360,20 @@ function heavyweightprobelane(modality: string, runtime: string, present: () => 
 /* Section 4: the heavyweight lane table — the six probes of the wave. */
 /* ════════════════════════════════════════════════════════════════════ */
 
-/** the six heavyweight lanes of the ninety modalities wave: the browser
- * server, the two mobile seats, the pod session and the two confidential
- * compute surfaces — every one kind host (the probe law). */
+/** the heavyweight lanes of the ninety modalities wave: the browser
+ * server and the sev-snp confidential compute surface — every one
+ * kind host (the probe law). the pr15 cull retired the capacitor,
+ * postmarketos, pod and tdx seats (the ninety stay at ninety through
+ * the master engine table of modalities.ts). */
 export const heavyweightlanespecs: readonly HeavyweightLaneSpec[] = Object.freeze([
   { modality: "browserserver", kind: "host", runtime: "chromium-headless", present: probebrowserserver },
-  { modality: "mobilecapacitor", kind: "host", runtime: "capacitor", present: probecapacitor },
-  { modality: "mobilepostmarketos", kind: "host", runtime: "qemu-system-x86_64", present: probepostmarketos },
-  { modality: "podsession", kind: "host", runtime: "kubectl", present: probekubectl },
   { modality: "confidentialsevsnp", kind: "host", runtime: "sev-snp", present: probesevsnp },
-  { modality: "confidentialtdx", kind: "host", runtime: "tdx", present: probetdx },
 ]);
 
 /** the executor table of the heavyweight lanes, keyed by modality id. */
 export const edgelaneexecutorsheavy: Readonly<Record<string, EdgeLaneExecutor>> = Object.freeze({
   "browserserver": heavyweightprobelane("browserserver", "chromium-headless", probebrowserserver),
-  "mobilecapacitor": heavyweightprobelane("mobilecapacitor", "capacitor", probecapacitor),
-  "mobilepostmarketos": heavyweightprobelane("mobilepostmarketos", "qemu-system-x86_64", probepostmarketos),
-  "podsession": heavyweightprobelane("podsession", "kubectl", probekubectl),
   "confidentialsevsnp": heavyweightprobelane("confidentialsevsnp", "sev-snp", probesevsnp),
-  "confidentialtdx": heavyweightprobelane("confidentialtdx", "tdx", probetdx),
 });
 
 /** the heavyweight lane ids in spec order. */

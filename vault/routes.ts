@@ -16,6 +16,7 @@ export const routes = {
   databases: "/api/v1/databases",
   query: "/api/v1/query",
   protocols: "/api/v1/protocols",
+  pillars: "/api/v1/pillars",
   projects: "/api/v1/storage/projects",
   objects: "/api/v1/storage/objects",
   quota: "/api/v1/storage/quota",

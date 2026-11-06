@@ -111,6 +111,11 @@
       "import": "./objects.ts",
       "default": "./objects.ts"
     },
+    "./pillars": {
+      "types": "./pillars.ts",
+      "import": "./pillars.ts",
+      "default": "./pillars.ts"
+    },
     "./onboardingstate": {
       "types": "./onboardingstate.ts",
       "import": "./onboardingstate.ts",
@@ -170,6 +175,7 @@
     "labelstore.ts",
     "mime.types",
     "mimetypes.ts",
+    "pillars.ts",
     "protocols.types",
     "protocols.ts",
     "querylane.ts",

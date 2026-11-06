@@ -25,6 +25,7 @@ const RETENTION = readFileSync(join(import.meta.dirname, "..", "sol", "retention
 const INDEX = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "index.ts"), "utf8");
 const PLANSTABLE = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomePlanstable.tsx"), "utf8");
 const BROWSE = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeObjectbrowse.tsx"), "utf8");
+const MYFILES = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeMyfiles.tsx"), "utf8");
 const CONSOLE = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeDbconsole.tsx"), "utf8");
 const TOASTER = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeToaster.tsx"), "utf8");
 const SKELETON = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeSkeleton.tsx"), "utf8");
@@ -53,9 +54,11 @@ describe("the face surfaces", () => {
     expect(HOME).toContain("<Halo />");
     expect(HOME).toContain("<Planstable />");
     expect(HOME).toContain("<Objectbrowse />");
+    expect(HOME).toContain("<Myfiles />");
     expect(HOME).toContain("<Dbconsole />");
     expect(HOME).toContain("<Reveal>");
     expect(HOME).toContain('id="console"');
+    expect(HOME).toContain('id="myfiles"');
     expect(HOME).toContain("useUicopy()");
     expect(HOME).toContain("sealToast(");
   });
@@ -84,6 +87,7 @@ describe("the face surfaces", () => {
     for (const winget of [
       "HomeDbconsole",
       "HomeHalo",
+      "HomeMyfiles",
       "HomeObjectbrowse",
       "HomePlanstable",
       "HomeReveal",
@@ -98,7 +102,7 @@ describe("the face surfaces", () => {
 describe("the store law (no literal, no dead key)", () => {
   it("every face key a surface cites lives in the seed; every other key lives in the manifest", () => {
     const seed = uistoreseedrows();
-    const surfaces = [HOME, PLANSTABLE, BROWSE, CONSOLE, TOASTER, SKELETON, OBJECTS, BUCKETS, RETENTION, SHELL];
+    const surfaces = [HOME, PLANSTABLE, BROWSE, MYFILES, CONSOLE, TOASTER, SKELETON, OBJECTS, BUCKETS, RETENTION, SHELL];
     const citations = new Map<string, string>();
     for (const surface of surfaces) {
       for (const key of citedkeys(surface)) {
@@ -129,7 +133,7 @@ describe("the store law (no literal, no dead key)", () => {
 
   function citationsOfFace(): [string, string][] {
     const found: [string, string][] = [];
-    for (const surface of [HOME, PLANSTABLE, BROWSE, CONSOLE, TOASTER, SKELETON]) {
+    for (const surface of [HOME, PLANSTABLE, BROWSE, MYFILES, CONSOLE, TOASTER, SKELETON]) {
       for (const key of citedkeys(surface)) {
         if (key.startsWith("face.")) found.push([key, "surface"]);
       }
