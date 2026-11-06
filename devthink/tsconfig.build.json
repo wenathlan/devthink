@@ -14,6 +14,19 @@
       ],
       "@/*": ["./sol/*", "./*"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
+      /* the family faces the dev config already bridges (the build parity
+       * the familybump wave owns): the bare saddle specifier, the memory
+       * seam and the workload law resolve through the ambient faces the
+       * dev tsconfig carries, so the declaration pass never falls through
+       * to the registry copy the node_modules tree answers — and the
+       * babel seat face rides beside them the same way (the yaml and
+       * babel lanes of modalities import @babel/core through a guarded
+       * dynamic import whose typing the face answers, never a registry
+       * lookup the consumer tree may not carry). */
+      "@wenathlan/saddle": ["./saddlefaces.ts"],
+      "@wenathlan/saddle/memory": ["./saddlefaces.ts"],
+      "@wenathlan/saddle/workloadlaw": ["./saddlefaces.ts"],
+      "@babel/core": ["./babelcoreface.ts"],
       /* the modality registry of the ladder retirement (wave/engineregroup1):
        * the sandbox lane reads the saddle catalog through the published
        * specifier and the declaration pass resolves it through the family

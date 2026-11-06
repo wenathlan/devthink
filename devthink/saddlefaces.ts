@@ -13,6 +13,37 @@
  * Retires the day the published saddle envelope carries the declaration
  * build beside the sources.
  */
+  /* ── the workload lane face (the familybump build parity) ── */
+
+  /** the demand one workload lane puts on the sandbox (the owner's
+   * workloadlaw seat: the gpu, network and isolation asks plus the boot
+   * budget tolerance). */
+  export type WorkloadDemand = {
+    gpu: boolean;
+    network: boolean;
+    isolation: string;
+    bootbudget?: number;
+  };
+
+  /** where the heavy pass of the lane runs today (the honest truth). */
+  export type LaneToday = "engine-lane" | "app-lane";
+
+  /** one workload lane of the family catalog. */
+  export type WorkloadLane = {
+    app: string;
+    lane: string;
+    role: string;
+    demand: WorkloadDemand;
+    today: LaneToday;
+  };
+
+  /** the lanes one app owns (the owner's table answers at runtime; the
+   * face declares the contract the typecheck reads). */
+  export declare function lanesof(app: string): readonly WorkloadLane[];
+
+  /** one lane by its app and id. */
+  export declare function getlane(app: string, lane: string): WorkloadLane | undefined;
+
   /** one engine event of the bus (queued, preparing, running, syncing, committed, failed). */
   export type saddleevent = {
     id: string;
