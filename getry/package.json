@@ -690,15 +690,10 @@
       "import": "./gateway.ts",
       "default": "./gateway.ts"
     },
-    "./gatewayprobe": {
-      "types": "./gatewayprobe.ts",
-      "import": "./gatewayprobe.ts",
-      "default": "./gatewayprobe.ts"
-    },
-    "./gatewaysmoke": {
-      "types": "./gatewaysmoke.ts",
-      "import": "./gatewaysmoke.ts",
-      "default": "./gatewaysmoke.ts"
+    "./gatewaycheck": {
+      "types": "./gatewaycheck.ts",
+      "import": "./gatewaycheck.ts",
+      "default": "./gatewaycheck.ts"
     },
     "./nodeshim": {
       "types": "./nodeshim.ts",
@@ -729,8 +724,7 @@
     "engine.ts",
     "fingerprint.ts",
     "gateway.ts",
-    "gatewayprobe.ts",
-    "gatewaysmoke.ts",
+    "gatewaycheck.ts",
     "intelligence.ts",
     "json.ts",
     "labels.ts",

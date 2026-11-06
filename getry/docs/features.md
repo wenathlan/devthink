@@ -16,8 +16,7 @@ every feature below is read from the code of the getry app root and the Sol them
 - cors handling — preflight and cors headers on every route.
 - response formats — chat completion, anthropic message and response shapes built from one pipeline.
 - gateway cli — `cli.ts` scaffolds and inspects gateway configs.
-- gateway probe — `gatewayprobe.ts` runs a manual chat round trip against a deployed host.
-- container smoke — `gatewaysmoke.ts` runs one full offline request cycle against the recorded openaicompat fixture.
+- gateway check — `gatewaycheck.ts` folds both check seats: the offline smoke (one full request cycle against the recorded openaicompat fixture) and the manual probe (a chat round trip against a deployed host).
 
 ## providers
 

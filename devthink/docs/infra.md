@@ -105,7 +105,7 @@
 
 ### getry — 53 lógicas na raiz
 
-- `gateway.ts` (config + view config folded) / `gatewayprobe.ts` / `gatewaysmoke.ts` / `server.ts` / `request.ts` / `routerotation.ts` = gateway universal, config, probe, smoke, view config, server, request, rotação de rotas.
+- `gateway.ts` (config + view config folded) / `gatewaycheck.ts` (probe + smoke folded) / `server.ts` / `request.ts` / `routerotation.ts` = gateway universal, config, probe, smoke, view config, server, request, rotação de rotas.
 - `providers.ts` / `providercli.ts` / `registernvidiakeys.ts` / `llm.ts` / `models.ts` / `intelligence.ts` / `thinking.ts` / `thinkingtypes.ts` / `antigravity.ts` / `search.ts` / `streaming.ts` / `streamfallback.ts` / `json.ts` / `jsonpolicy.ts` / `jsonschema.ts` = provedores, CLI de provedor, chaves NVIDIA, LLM, modelos, inteligência, raciocínio 7 níveis, streaming, fallback, JSON policy / schema.
 - `auth.ts` / `oauth.ts` / `accounts.ts` / `sessions.ts` / `quota.ts` / `recovery.ts` / `fingerprint.ts` = auth, OAuth, contas, sessões, quota, recuperação, fingerprint.
 - `engine.ts` / `cli.ts` / `debonairlane.ts` / `project.ts` = engine, CLI, pista Debonair, projeto.
