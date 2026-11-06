@@ -129,6 +129,17 @@ minimumReleaseAgeExclude:
   - openai@7.52.0
   - playwright-core@1.65.0
   - playwright@1.65.0
+  - '@wenathlan/argan@2.0.166'
+  - '@wenathlan/cadria@2.0.166'
+  - '@wenathlan/cobaia@2.0.166'
+  - '@wenathlan/debonair@2.0.166'
+  - '@wenathlan/devthink@2.0.166'
+  - '@wenathlan/forge@2.0.166'
+  - '@wenathlan/foundry@2.0.166'
+  - '@wenathlan/getry@2.0.166'
+  - '@wenathlan/saddle@2.0.166'
+  - '@wenathlan/stealthhead@2.0.166'
+  - '@wenathlan/vault@2.0.166'
 # the pnpm settings live here since pnpm 12 (the package.json pnpm field is
 # no longer read, and onlyBuiltDependencies died in pnpm 11 — the map below
 # is allowBuilds). ssh2 answers false on purpose: the native accelerator
