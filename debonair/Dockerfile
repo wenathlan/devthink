@@ -1,4 +1,4 @@
-# debonair 2.0.165 — THE SITE CONTAINER FILE
+# debonair 2.0.166 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -14,7 +14,7 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS solbuild
 
-ARG DEBONAIR_VERSION=2.0.165
+ARG DEBONAIR_VERSION=2.0.166
 
 # The 2.0.153 family context fix: the application rides the context
 # nested under app/ (the uniform shape the three site containers read).
