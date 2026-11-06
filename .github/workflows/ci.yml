@@ -503,18 +503,16 @@ jobs:
           else
             bun install --frozen-lockfile --ignore-scripts
           fi
-          # the ownership bridges alias the sibling sources (the os seams,
-          # the vault label store, the engines the app consumes) into every
-          # app build: the dependency union law makes the eleven manifests
-          # carry the identical seat map, so the app's own tree serves the
-          # aliased sources — the symlink seats every sibling the clean
-          # checkout would otherwise leave without a node_modules the
-          # aliased imports resolve against
-          for sibling in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
-            if [ "$sibling" != "${{ matrix.app }}" ] && [ -d "$sibling" ] && [ ! -e "$sibling/node_modules" ] && [ -d "${{ matrix.app }}/node_modules" ]; then
-              ln -s "../${{ matrix.app }}/node_modules" "$sibling/node_modules"
-            fi
-          done
+          # the ownership bridges walk the os sources (reveal.ts and os.ts)
+          # whose bare imports — react and wouter — resolve from the os
+          # tree's own node_modules the ancestor walk reads: the clean
+          # checkout leaves the sibling bare, so the os install seats the
+          # resolver every family build walks (the debonair and vault
+          # bridges import only local seats, the os tree alone carries
+          # the bare family imports the eleven builds read)
+          if [ "${{ matrix.app }}" != "devthink" ] && [ -f devthink/pnpm-lock.yaml ]; then
+            (cd devthink && pnpm install --frozen-lockfile --ignore-scripts)
+          fi
 
       - name: Build the app surface
         if: steps.suite.outputs.present == 'true'
