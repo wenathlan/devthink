@@ -3065,7 +3065,7 @@ export function importselenium(input: { source: unknown; now: number }): convers
     throw new Error("The selenium side file must be a json object.");
   const root = input.source as Record<string, unknown>;
   const unknownroot = Object.keys(root).filter(
-    (key) => !["id", "version", "name", "url", "test", "suites"].includes(key),
+    (key) => !["id", "version", "name", "url", "tests", "suites"].includes(key),
   );
   if (unknownroot.length > 0)
     throw new Error(
