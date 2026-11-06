@@ -15,7 +15,7 @@ import type {
   ZoneSnapshot,
 } from "./argan";
 import { MIMETYPES, type MimeTypeRow } from "./mimetypes";
-import { PROTOCOLS, type ProtocolSpec } from "./protocols";
+import { PROTOCOLS, type ProtocolSpec } from "./dns";
 import {
   seedConfigBlocks,
   seedRecordTypes,

@@ -12,7 +12,7 @@ import {
   serialForPublication,
   ZoneDiffError,
   type ZoneRecord,
-} from "../zonediff.ts";
+} from "../dns.ts";
 
 const ORIGIN = "example.com.";
 

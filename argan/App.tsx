@@ -13,7 +13,7 @@ import { ArrowCounterclockwiseRegular as RotateCcw, WarningRegular as AlertTrian
 import { Component, type ReactNode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { Router as WouterRouter } from "wouter";
-import { applyNow, syncCanonical } from "./cleanurl";
+import { applyNow, syncCanonical } from "./dns";
 import { label, seedLabels } from "./labels";
 import { initReveal } from "./reveal";
 import Sol from "./sol/Sol";

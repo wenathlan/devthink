@@ -15,7 +15,7 @@ import {
   validateSignatureLabels,
   validateSignatureTtl,
   validateSignatureWindow,
-} from "../dnssec.ts";
+} from "../dns.ts";
 
 /** A small DNSKEY whose key tag was computed by hand from the RFC 4034 Appendix B loop. */
 const ZONEKEY: DnsKey = { flags: 256, protocol: 3, algorithm: 8, publicKey: "qrs=" };
