@@ -125,6 +125,9 @@
   --color-win: #4cc2ff;
   --color-win-ink: #0a0a0a;
   --color-focus: var(--color-win);
+  /* the ice-vault accent of the family spec (PR9): the #a3d7e6 lane the
+     vault surfaces borrow — focus stays the windows #4cc2ff */
+  --accent-ice-vault: #a3d7e6;
 
   /* the canvas + the 8 surface rungs (elevation by color, never by border) */
   --sol-canvas: var(--color-canvas);

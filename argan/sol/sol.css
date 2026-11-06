@@ -169,6 +169,9 @@
   --color-err: #f08a7a;
   --color-info: #b9c2d0;
   --color-focus: var(--color-win);
+  /* the ice-vault accent of the family spec (PR9): the #a3d7e6 lane the
+     vault surfaces borrow — focus stays the windows #4cc2ff */
+  --accent-ice-vault: #a3d7e6;
 
   /* the doctrine radius law and motion curves as literals (the aliases
      below and the sections resolve them without the plugin) */
