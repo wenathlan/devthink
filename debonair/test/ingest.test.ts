@@ -1808,7 +1808,11 @@ describe("runIngestJob — determinism (the seeded law)", () => {
       };
     };
     assert.deepEqual(await runonce(), await runonce());
-  });
+    /* the xvfb seats answer the fifteen-second honesty the same way: the
+       ingest walk spawns real worker lanes the runner stamps under the
+       five-second default, and the determinism pair runs the whole job
+       twice, so the slow hosts answer inside the raised window. */
+  }, 30000);
 });
 
 describe("runIngestJob — the failure codes", () => {
