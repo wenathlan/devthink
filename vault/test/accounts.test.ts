@@ -41,10 +41,10 @@ for (const file of [throwaway, process.env.VAULT_UISTORE_DB]) {
 }
 
 const { issueSession, resetAuthRateLimiter, verifySession, hashPassword, passwordMatches } = await import(
-  "../accounts.ts"
+  "../account.ts"
 );
 const { openStorage } = await import("../drizzle.ts");
-const { createVaultServer, listenVault } = await import("../api.ts");
+const { createVaultServer, listenVault } = await import("../account.ts");
 
 const server = createVaultServer();
 const port = await listenVault(server, { port: 0 });

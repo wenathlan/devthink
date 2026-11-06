@@ -24,10 +24,8 @@
 
 /* ── the storage engine — the real pipeline the siblings borrow ── */
 
-/** the account lane of the clone: the scrypt accounts, the HMAC-signed sessions, the vk_ project keys and the per-peer rate counter. */
-export * from "./accounts.ts";
-/** the vault http surface: the token gate (the faun lesson) and the storage routes over pure node:http. */
-export * from "./api.ts";
+/** the account domain in one keyword file: the scrypt accounts, the HMAC-signed sessions, the vk_ project keys, the per-peer rate counter — and the vault http surface (the token gate, the faun lesson, the storage routes over pure node:http) the consolidation law merged into the account seat. */
+export * from "./account.ts";
 /** the 256KB chunk pipeline: split, encode (raw first, brotli only when it wins), the manifest law. */
 export * from "./chunks.ts";
 /** the executing schema and the self-hosted connection: drizzle over better-sqlite3 (boots at import). */
@@ -49,8 +47,8 @@ export * from "./mimetypes.ts";
 export * from "./protocols.ts";
 /** the internal root: the static site surface with the correct content type — and the faun law: the raw .db never rides it. */
 export * from "./internalroot.ts";
-/** the signup lane: the person's door — an account, a registered database, an api key shown exactly once (stored hashed; boots the site store at import). */
-export * from "./accounts.ts";
+/** the signup lane of the account seat: the person's door — an account, a registered database, an api key shown exactly once (stored hashed; boots the site store at import). */
+export * from "./account.ts";
 /** the /v2/query lane: bearer plus database-id headers over the per-database sqlite files of the better-sqlite3 core. */
 export * from "./querylane.ts";
 /** the storage pillars catalog: the eight pillars of the storage stack (LibGit2, MySQL2, the prisma schema, drizzle, git lfs, blobs, bigint, pointers), one static-safe route per pillar. */

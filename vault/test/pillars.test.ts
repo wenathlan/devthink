@@ -38,7 +38,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 /** the real server of the vault, imported after the door isolation seeds
  * the throwaway roots (the signup battery precedent — the engine chain
  * opens its stores on the isolated lanes, never the working tree). */
-const { createVaultServer, listenVault } = await import("../api.ts");
+const { createVaultServer, listenVault } = await import("../account.ts");
 
 describe("the catalog counts (the pillar's own numbers)", () => {
   it("carries exactly the eight storage pillars of the stack", () => {

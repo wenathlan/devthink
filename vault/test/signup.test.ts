@@ -14,12 +14,12 @@ import assert from "node:assert/strict";
 import { afterAll, describe, it } from "vitest";
 import "./doorisolation.ts";
 import { queryAll, queryOne } from "../db.ts";
-import { API_KEY_PREFIX, apiKeyLookup, databaseIdValid, issueApiKey, registerDatabase, revokeApiKey, setDatabaseQuota, signinAccount, signupAccount } from "../accounts.ts";
+import { API_KEY_PREFIX, apiKeyLookup, databaseIdValid, issueApiKey, registerDatabase, revokeApiKey, setDatabaseQuota, signinAccount, signupAccount } from "../account.ts";
 import { QUOTA_FLOOR_BYTES } from "../quota.ts";
 import { sha256Hex } from "../sha.ts";
 
 /** the real server of the vault (the person's door routes). */
-const { createVaultServer, listenVault } = await import("../api.ts");
+const { createVaultServer, listenVault } = await import("../account.ts");
 
 /** the booted base url of the server. */
 let base = "";

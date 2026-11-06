@@ -125,7 +125,7 @@ describe("uistore store (better-sqlite3 lane)", () => {
 
 describe("uistore route lane (the vault http surface)", () => {
   it("serves the rows over /api/v1/ui/copy, one key over /:key, and refuses the unknown key", async () => {
-    const { createVaultServer, listenVault } = await import("../api.ts");
+    const { createVaultServer, listenVault } = await import("../account.ts");
     const server = createVaultServer();
     const port = await listenVault(server, { port: 0 });
     try {
