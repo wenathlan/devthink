@@ -201,5 +201,5 @@
     },
     "@grpc/grpc-js": "1.14.5"
   },
-  "packageManager": "pnpm@12.3.4"
+  "packageManager": "pnpm@12.18.0"
 }

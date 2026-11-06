@@ -383,7 +383,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@12.3.4",
+  "packageManager": "pnpm@12.18.0",
   "private": false,
   "module": "./index.ts",
   "browser": "./index.ts",
