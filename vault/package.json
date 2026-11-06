@@ -481,7 +481,7 @@
     "js-yaml": "^5.5.0",
     "jsdom": "^31.0.0",
     "katex": "^0.19.1",
-    "lucide-react": "^1.69.0",
+    "lucide-react": "^1.70.0",
     "minimatch": "^11.0.5",
     "motion": "^14.9.1",
     "mysql2": "^3.24.6",

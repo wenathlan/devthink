@@ -17,13 +17,23 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 3;
+export const LABEL_REVISION = 4;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
   // the root entry (the error boundary of App.tsx)
   "app.boot.failed": "cadria could not render this page frame.",
   "app.boot.reload": "reload the page",
+  // the construction face (the in-construction pass of every platform
+  // route: the honest status the owner ordered, one voice for all pages)
+  "construction.aria": "cadria is in construction",
+  "construction.title": "cadria",
+  "construction.status": "in construction",
+  "construction.subtitle": "The video and image studio is in construction.",
+  "construction.action": "back to home",
+  "construction.replay": "watch the opening again",
+  // the home page anchor (the construction eyebrow the face wears)
+  "home.eyebrow": "cadria · home",
   // the shell chrome (the one application window)
   "shell.skip": "skip to content",
   "shell.name": "cadria",

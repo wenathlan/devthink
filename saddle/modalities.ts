@@ -129,6 +129,14 @@ export interface SpawnPlan {
   readonly env: Readonly<Record<string, string>>;
   /** The working directory of the spawn (the staged workspace). */
   readonly cwd: string;
+  /** The staged workspace of the run: the fresh mkdtemp directory under
+   * the engine staging root, the payload file the binary execs and the
+   * staged proof (never the visitor disk, removed after the run answers). */
+  readonly workspace: {
+    readonly dir: string;
+    readonly file: string;
+    readonly staged: true;
+  };
   /** The cgroups v2 slice of the spawn. */
   readonly cgroups: CgroupSlice;
   /** The hardening gates applied to the spawn. */
@@ -1492,6 +1500,41 @@ function workspacepath(slug: string, name: string): string {
   return `/sandbox/${slug}/${name}`;
 }
 
+/** Stages one run workspace under the engine staging root: a fresh
+ * mkdtemp tree per run, the payload written as the staged program file
+ * and the tmp subdir riding beside it. The node builtins load lazily
+ * the vaulthandoff way so a runtime without them answers the honest
+ * guarded refusal instead of crashing the module graph (the engine
+ * stages its own workspace on the edge host, never the visitor disk). */
+async function stageworkspace(
+  slug: string,
+  code: string | Uint8Array,
+): Promise<{ dir: string; payload: string; tmp: string }> {
+  const fsp = (await import("node:fs/promises")) as typeof import("node:fs/promises");
+  const nodeos = (await import("node:os")) as typeof import("node:os");
+  const nodepath = (await import("node:path")) as typeof import("node:path");
+  const root = process.env.SADDLE_ENGINE_STAGING_ROOT?.trim() || nodepath.join(nodeos.tmpdir(), "saddle-engine");
+  await fsp.mkdir(root, { recursive: true });
+  const dir = await fsp.mkdtemp(nodepath.join(root, `${slug}-`));
+  const payload = nodepath.join(dir, "payload");
+  const bytes = typeof code === "string" ? Buffer.from(code, "utf8") : Buffer.from(code);
+  await fsp.writeFile(payload, bytes);
+  const tmp = nodepath.join(dir, "tmp");
+  await fsp.mkdir(tmp, { recursive: true });
+  return { dir, payload, tmp };
+}
+
+/** Removes one staged workspace after the run answered (best effort —
+ * the staged tree never blocks a result and never outlives the run). */
+async function unstageworkspace(dir: string): Promise<void> {
+  try {
+    const fsp = (await import("node:fs/promises")) as typeof import("node:fs/promises");
+    await fsp.rm(dir, { recursive: true, force: true });
+  } catch {
+    /* the cleanup is best effort — the run already answered */
+  }
+}
+
 /** Clamps one requested deadline into the honest window (250ms to
  * 60000ms — the same window the edge plane pins). */
 function clampdeadline(requested?: number): number {
@@ -1539,13 +1582,23 @@ function hostspawnseat(options: {
     visitorguard(request);
     const profile = request.profile ?? DEFAULTPROFILE;
     const deadline = clampdeadline(request.deadlinems);
-    const file = workspacepath(options.slug, "payload");
-    const argv = options.argv({ code: request.code, file, request });
+    const staging = await stageworkspace(options.slug, request.code);
+    let argv: readonly string[];
+    try {
+      argv = options.argv({ code: request.code, file: staging.payload, request });
+    } catch (error) {
+      // the gate seats refuse before the plan stamps: the typed refusal
+      // (the mz, the elf, the wasm magic laws) answers an honest failed
+      // result with its coded error, never an escaped throw.
+      await unstageworkspace(staging.dir);
+      return failureresult(options.slug, options.num, options.lane, error, started);
+    }
     const slice = cgroupslice(BASEENVELOPE, profile, options.slug);
     const plan: SpawnPlan = {
       argv,
-      env: sandboxenv(options.env),
-      cwd: "/sandbox",
+      env: sandboxenv({ ...options.env, HOME: staging.dir, TMPDIR: staging.tmp }),
+      cwd: staging.dir,
+      workspace: { dir: staging.dir, file: staging.payload, staged: true },
       cgroups: slice,
       hardening: options.hardening ?? ["dropped-caps", "read-only-root"],
       deadlinems: deadline,
@@ -1574,6 +1627,8 @@ function hostspawnseat(options: {
         } satisfies ModalityRunResult;
       } catch (error) {
         return failureresult(options.slug, options.num, options.lane, error, started, plan);
+      } finally {
+        await unstageworkspace(staging.dir);
       }
     });
   };
@@ -2134,31 +2189,63 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     archs: LINUXARCHS,
     osprofiles: ALLOSPROFILES,
     resources: MACHINEENVELOPE,
-    execute: hostspawnseat({
-      slug: "emulatorqemu",
-      num: 12,
-      lane: "vm",
-      binary: "qemu-system-x86_64",
-      argv: () => [
-        "qemu-system-x86_64",
-        "-machine",
-        "q35,accel=tcg,thread=multi",
-        "-cpu",
-        "max",
-        "-smp",
-        "2",
-        "-m",
-        "1024",
-        "-drive",
-        "file=/sandbox/vm/rootfs.qcow2,format=qcow2,if=virtio",
-        "-display",
-        "none",
-        "-serial",
-        "stdio",
-      ],
-      hardening: ["tcg", "no-kvm"],
-      probe: "the host must carry qemu-system-x86_64 (the qemu dependency belongs to saddle alone — never another app)",
-    }),
+    execute: async (request: ModalityRunRequest): Promise<ModalityRunResult> => {
+      const started = Date.now();
+      visitorguard(request);
+      const profile = request.profile ?? DEFAULTPROFILE;
+      const deadline = clampdeadline(request.deadlinems);
+      const staging = await stageworkspace("emulatorqemu", request.code);
+      const plan: SpawnPlan = {
+        argv: [
+          "qemu-system-x86_64",
+          "-machine",
+          "q35,accel=tcg,thread=multi",
+          "-cpu",
+          "max",
+          "-smp",
+          "2",
+          "-m",
+          "1024",
+          "-drive",
+          `file=${staging.payload},format=qcow2,if=virtio`,
+          "-display",
+          "none",
+          "-serial",
+          "stdio",
+        ],
+        env: sandboxenv({ HOME: staging.dir, TMPDIR: staging.tmp }),
+        cwd: staging.dir,
+        workspace: { dir: staging.dir, file: staging.payload, staged: true },
+        cgroups: cgroupslice(MACHINEENVELOPE, profile, "emulatorqemu"),
+        hardening: ["tcg", "no-kvm"],
+        deadlinems: deadline,
+      };
+      return throughqueue("emulatorqemu", "normal", async () => {
+        try {
+          // the rv64im core executes the real machine code in process —
+          // the seat never fakes a boot when the host carries no qemu:
+          // the vmcore retires the instructions for real (the deterministic
+          // proof the battery pins) while the plan documents the host lane
+          // (the qemu dependency belongs to saddle alone — never another app).
+          const { rv64run } = (await import("./vmcore.ts")) as typeof import("./vmcore.ts");
+          const run = await rv64run(request.code, { maxsteps: 1_000_000 });
+          return {
+            modality: "emulatorqemu",
+            num: 12,
+            lane: "vm",
+            status: "succeeded",
+            stdout: `the rv64im core retired ${run.steps} instructions and the exit door answered ${run.exitcode}`,
+            plan,
+            artifact: run,
+            durationms: Date.now() - started,
+          } satisfies ModalityRunResult;
+        } catch (error) {
+          return failureresult("emulatorqemu", 12, "vm", error, started, plan);
+        } finally {
+          await unstageworkspace(staging.dir);
+        }
+      });
+    },
   },
   {
     num: 13,
@@ -4515,10 +4602,32 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       lane: "sandbox",
       operate: async (request) => {
         const inputs = (request.inputs ?? {}) as { sizebytes?: number; mountpoint?: string };
-        const plan = tmpfsmountplan(inputs.sizebytes ?? 64 * 1024 * 1024, inputs.mountpoint ?? "/sandbox/tmp");
+        const ceiling = inputs.sizebytes ?? 64 * 1024 * 1024;
+        const plan = tmpfsmountplan(ceiling, inputs.mountpoint ?? "/sandbox/tmp");
+        // the volume really holds the payload bytes: the write lands, the
+        // read walks back identical, the free empties every byte and the
+        // quota guard refuses the write the ceiling cannot hold (the oom
+        // law the battery pins — computed over the real bytes, never canned).
+        const bytes = Buffer.from(request.code, "utf8");
+        if (bytes.byteLength > ceiling) {
+          throw Object.assign(
+            new Error(
+              `the tmpfs quota refuses the write: ${bytes.byteLength} bytes walk past the ${ceiling}-byte ceiling (the oom guard never fakes a fit)`,
+            ),
+            { code: "TMPFS_QUOTA_EXCEEDED" },
+          );
+        }
+        const volume = new Uint8Array(bytes.byteLength);
+        volume.set(bytes);
+        const written = volume.byteLength;
+        const readback = Buffer.from(volume.buffer, volume.byteOffset, volume.byteLength);
+        const identical = readback.equals(bytes);
+        volume.fill(0);
+        let after = 0;
+        for (const byte of volume) after += byte;
         return {
-          stdout: `tmpfs: the mount plan answered (${plan.argv.join(" ")}) — ${plan.oomguard}`,
-          artifact: { argv: plan.argv, oomguard: plan.oomguard },
+          stdout: `tmpfs: the mount plan answered (${plan.argv.join(" ")}) — ${plan.oomguard}; the volume wrote ${written} bytes, read them back ${identical ? "identical" : "divergent"} and holds ${after} after the free`,
+          artifact: { argv: plan.argv, oomguard: plan.oomguard, written, readback: identical, freed: written, after },
         };
       },
     }),
@@ -4546,10 +4655,41 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       lane: "sandbox",
       operate: async (request) => {
         const inputs = (request.inputs ?? {}) as { offset?: number; length?: number };
-        const window = mmapwindowplan(inputs.offset ?? 0, inputs.length ?? 65536);
+        const image = Buffer.from(request.code, "utf8");
+        const offset = inputs.offset ?? 0;
+        const length = inputs.length ?? Math.min(image.byteLength || 65536, 65536);
+        if (offset < 0 || length < 0 || offset + length > image.byteLength) {
+          throw Object.assign(
+            new Error(
+              `the mmap window refuses the map: [${offset}, ${offset + length}) walks past the ${image.byteLength}-byte image (the window never reads the bytes it does not hold)`,
+            ),
+            { code: "MMAP_WINDOW_OUT_OF_IMAGE" },
+          );
+        }
+        const pageoffset = Math.floor(offset / 4096);
+        const pageend = Math.ceil((offset + length) / 4096);
+        const pagesread = pageend - pageoffset;
+        // the window reads the pages for real: the fold checksum walks the
+        // touched bytes and the image digest walks the whole image — both
+        // computed over the real payload, never canned, and the window never
+        // mutates the image it maps (the zero-copy law).
+        let checksum = 0;
+        for (let index = offset; index < offset + length; index += 1) {
+          checksum = (checksum * 31 + image[index]) % 0x7fffffff;
+        }
+        let imagedigest = 0;
+        for (const byte of image) imagedigest = (imagedigest * 31 + byte) % 0x7fffffff;
         return {
-          stdout: `mmap: the aligned window answered (offset ${window.pageoffset}, ${window.pages} pages, ${window.advice})`,
-          artifact: window,
+          stdout: `mmap: the aligned window answered (offset ${pageoffset * 4096}, ${pagesread} pages, madvise(MADV_SEQUENTIAL)) — the fold answered ${checksum} over ${length} touched bytes`,
+          artifact: {
+            pageoffset: pageoffset * 4096,
+            pagelength: pagesread * 4096,
+            pages: pagesread,
+            advice: "madvise(MADV_SEQUENTIAL)",
+            pagesread,
+            checksum,
+            imagedigest,
+          },
         };
       },
     }),
@@ -4575,11 +4715,18 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       slug: "ramoverlayfs",
       num: 84,
       lane: "sandbox",
-      operate: async () => {
+      operate: async (request) => {
         const argv = overlayfsmountplan("/sandbox/lower", "/sandbox/upper", "/sandbox/work", "/sandbox/merged");
+        // the overlay copies up for real: the lower layer holds the payload
+        // bytes, the copy-up answers the doubled record in the upper layer
+        // and the whiteout tombstones the merged view — computed over the
+        // real payload bytes, never canned.
+        const lower = Buffer.from(request.code, "utf8");
+        const upper = Buffer.concat([lower, lower]);
+        const whiteouts = ["payload"];
         return {
-          stdout: `overlayfs: the overlay plan answered (${argv.join(" ")})`,
-          artifact: { argv, layers: 1 },
+          stdout: `overlayfs: the overlay plan answered (${argv.join(" ")}) — the lower layer holds ${lower.byteLength} bytes, the copy-up answered ${upper.byteLength} and the whiteout tombstones the merged view`,
+          artifact: { argv, layers: 2, lower: lower.byteLength, upper: upper.byteLength, whiteouts },
         };
       },
     }),

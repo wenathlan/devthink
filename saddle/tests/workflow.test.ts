@@ -372,7 +372,11 @@ describe("the workflow contract", () => {
           entry.name === ".git" ||
           entry.name === "node_modules" ||
           entry.name === "coverage" ||
-          entry.name === "__pycache__",
+          entry.name === "__pycache__" ||
+          /* the staged workspace root of the engine (a runtime artifact
+           * any host that dispatches a host seat carries — gitignored,
+           * never tracked, released best effort after the spawn) */
+          entry.name === ".saddle-engine",
         `the directory ${entry.name} is neither the Sol theme, support (docs, tests) nor a config/tool root — logic lives flat at the root`,
       );
     }

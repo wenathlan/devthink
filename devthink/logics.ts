@@ -534,7 +534,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "devthink", file: "neutral.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "node.ts", domain: "os", symbols: ["nodeadapter"] },
   { app: "devthink", file: "offscreen.ts", domain: "os", symbols: [] },
-  { app: "devthink", file: "onboardingstate.ts", domain: "os", symbols: ["onboardingstateview", "onboardingstage", "ONBOARDING_CACHE_KEY", "VISITOR_KEY", "ONBOARDING_BASE_ENV", "ispublichttpsbase", "onboardingapibase", "visitorid"] },
+  { app: "devthink", file: "onboardingstate.ts", domain: "os", symbols: ["VisitorOnboarding", "onboardingstage", "ONBOARDING_CACHE_KEY", "VISITOR_KEY", "ONBOARDING_BASE_ENV", "ispublichttpsbase", "onboardingapibase", "visitorid"] },
   { app: "devthink", file: "optionspage.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "os.ts", domain: "os", symbols: ["AppId", "AppPage", "AppTarget", "AppMeta", "APPS", "appMeta", "appExternalUrl", "Persona"] },
   { app: "devthink", file: "pack.ts", domain: "os", symbols: ["artifactchannels", "artifactchannelof", "artifactmanifestof", "artifactmanifesttext", "artifactmanifestnameof", "artifactmanifestcheck", "rollbackpinnedset", "sbomspecversion"] },
