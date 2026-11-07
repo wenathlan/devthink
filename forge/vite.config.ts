@@ -48,6 +48,16 @@ export default defineConfig({
        * forge, so the dev server and the build answer the same module the
        * node-side tests answer. */
       "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
+
+      /** the sandbox bridge of the ownership law: the graphplan door
+       * (the dedup law the family walks) imports the foundry pipeline
+       * source, and the pipeline's sandbox seat rides the published
+       * library specifier ("@wenathlan/saddle/sandbox") — this bridge
+       * resolves the specifier to the monorepo source the sibling
+       * engine carries the same way the foundry lane and the modes
+       * bridge above answer, so the build resolves the door the
+       * runner seam reads without the registry envelope. */
+      "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
   },
