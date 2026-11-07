@@ -2405,7 +2405,6 @@ export const librarysurfaceexports: readonly string[] = [
   "omniboxtaskgate",
   "omniboxtasksubmission",
   "omniboxtasktotaskinput",
-  "ondevtoolstrip",
   "onboardingcomplete",
   "onboardingconsentgate",
   "onboardingstart",
