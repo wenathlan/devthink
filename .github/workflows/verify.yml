@@ -78,7 +78,7 @@ jobs:
         with:
           node-version-file: devthink/.nvmrc
           cache: pnpm
-          cache-dependency-path: devthink/pnpm-lock.yaml
+          cache-dependency-path: devthink/bun.lock
       - name: Install the npm version declared by package metadata
         # the probe accepts every semver constraint form (>=12.2.0 <13,
         # ^12.1.0, 12.x) so no envelope shape breaks the lane the way the

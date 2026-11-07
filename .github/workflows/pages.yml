@@ -91,7 +91,7 @@ jobs:
         with:
           node-version: 26.13.0
           cache: pnpm
-          cache-dependency-path: "**/pnpm-lock.yaml"
+          cache-dependency-path: "**/bun.lock"
       - name: Set up Node (npm leg)
         if: matrix.pm == 'npm'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0

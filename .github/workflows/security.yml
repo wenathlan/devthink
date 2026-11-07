@@ -60,7 +60,7 @@ jobs:
         with:
           node-version: 26.13.0
           cache: pnpm
-          cache-dependency-path: devthink/pnpm-lock.yaml
+          cache-dependency-path: devthink/bun.lock
       - name: Set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # install rides bun directly and the frozen bun.lock governs the graph.
