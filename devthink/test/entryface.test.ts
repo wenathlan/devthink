@@ -9,7 +9,7 @@
  * numerals and the sawtooth ribbon). The owner laws stay pinned: no
  * saddle cloud key on the rail, no solid blue key in the hero, no stock
  * imagery anywhere (every deck art is a css treatment), and the one
- * sanctioned indigo glow is the reference hover of the tactile keys. The
+ * sanctioned violet glow is the reference hover of the tactile keys. The
  * intro → explore → auth chain walks unchanged. This battery pins the
  * restored face.
  */
@@ -237,7 +237,9 @@ describe("the hero (the reference statement)", () => {
     expect(cards).toHaveLength(4);
     expect(sections).toContain("animate-float-card");
     expect(sections).toContain("animate-float-card-delayed");
-    expect(sections).toContain("indigo-tactile-surface");
+    expect(sections).toContain("violet-tactile-surface");
+    // the forbidden blues stay banned in the data layer the wingets read
+    expect(saascontent, "the indigo seats retired onto the violet family").not.toContain("indigo");
     expect(saascontent, "the neural core copy rides the data layer").toContain("Neural Shader Core");
   });
 });
@@ -376,7 +378,7 @@ describe("the surfaces (the era kit restored)", () => {
     expect(key).toContain("inset 0 -3px 6px rgba(0, 0, 0, 0.65)");
   });
 
-  it("the one sanctioned glow is the reference indigo hover of the tactile keys", () => {
+  it("the one sanctioned glow is the reference violet hover of the tactile keys", () => {
     const hover = landingrule(".btn-tactile-3d:hover");
     expect(hover).toContain("rgba(79, 70, 229, 0.45)");
     const frame = landingrule(".icon-frame-3d:hover");
@@ -388,8 +390,8 @@ describe("the surfaces (the era kit restored)", () => {
   it("the era surfaces ride the reference values", () => {
     expect(landingrule(".surface-card")).toContain("0 16px 36px -14px rgba(15, 23, 42, 0.1)");
     expect(landingrule(".stat-tile")).toContain("#f4f6fb");
-    expect(landingrule(".indigo-tactile-surface")).toContain(
-      "linear-gradient(145deg, #4f46e5 0%, #3730a3 58%, #312e81 100%)",
+    expect(landingrule(".violet-tactile-surface")).toContain(
+      "linear-gradient(145deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%)",
     );
     expect(landingrule(".obsidian-grid-bg")).toContain("background-size: 60px 60px");
     expect(landingrule(".netflix-rank-num")).toContain("-webkit-text-stroke: 2px rgba(255, 255, 255, 0.35)");
