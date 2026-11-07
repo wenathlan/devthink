@@ -9092,6 +9092,139 @@ jobs:
             "sha256.saddle.container.${version}" \
             "manifest.saddle.container.${version}.json" --clobber
 
+  helm:
+    name: Publish the devthink Helm chart to GHCR OCI (the helm channel)
+    needs: [release-resolve, release-approval]
+    # the helm channel lane (the L67930 distribution law: one lane per
+    # envelope beside maven - the crates, pypi and homebrew seats the
+    # ladder already carries, the helm chart the deployment envelope of
+    # the container image the ghcr lane publishes). The chart is
+    # generated on the fly from the release metadata - no chart folder
+    # rides the tree (the folder law: only the topic, docs and tests
+    # folders stay) - and pushes to the ghcr OCI registry the container
+    # lane already owns, so the chart and the image share one registry
+    # and one token.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: Resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./devthink/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Install the helm cli
+        # the stock-tool law the pypi lane rides: no setup action exists
+        # with a house pin, so the binary walks the official get.helm.sh
+        # host over https with the expected-versus-actual checksum
+        # cross-check the gradle download lane carries (the official
+        # checksum file is the expected side; a mismatched download dies
+        # before the chart ever packs).
+        run: |
+          set -euo pipefail
+          helm_version="v3.17.3"
+          curl -fsSL -o helm.tar.gz "https://get.helm.sh/helm-${helm_version}-linux-amd64.tar.gz"
+          curl -fsSL -o helm.tar.gz.sha256sum "https://get.helm.sh/helm-${helm_version}-linux-amd64.tar.gz.sha256sum"
+          echo "$(awk '{print $1}' helm.tar.gz.sha256sum)  helm.tar.gz" | sha256sum --check --status
+          tar -xzf helm.tar.gz
+          mkdir -p "$RUNNER_TEMP/helm-bin"
+          mv "linux-amd64/helm" "$RUNNER_TEMP/helm-bin/helm"
+          echo "$RUNNER_TEMP/helm-bin" >> "$GITHUB_PATH"
+      - name: Generate and pack the chart
+        # the chart is metadata on the fly: helm create lays the scaffold,
+        # the stamp writes the family identity (the chart version and
+        # appVersion ride the release lockstep, the image pins the tag the
+        # ghcr lane published) and helm package produces the one tgz the
+        # channel ships. Nothing chart-shaped stays in the tree.
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          version="${RELEASE_VERSION}"
+          # the chart scaffolds under the runner temp (the checkout tree
+          # never grows a chart folder - the folder law)
+          mkdir -p "$RUNNER_TEMP/chartwork"
+          cd "$RUNNER_TEMP/chartwork"
+          "$RUNNER_TEMP/helm-bin/helm" create devthink
+          python3 - "$version" <<'PYSTAMP'
+          import sys
+          version = sys.argv[1]
+          chart = open("devthink/Chart.yaml").read()
+          chart = chart.replace('version: 0.1.0', 'version: ' + version)
+          chart = chart.replace('appVersion: "1.16.0"', 'appVersion: "' + version + '"')
+          chart = chart.replace('description: A Helm chart for Kubernetes', 'description: the devthink workbench deployment chart of the wenathlan family')
+          open("devthink/Chart.yaml", "w").write(chart)
+          values = open("devthink/values.yaml").read()
+          values = values.replace('repository: nginx', 'repository: ghcr.io/wenathlan/devthink')
+          values = values.replace('tag: ""', 'tag: "' + version + '"')
+          open("devthink/values.yaml", "w").write(values)
+          PYSTAMP
+          "$RUNNER_TEMP/helm-bin/helm" lint devthink
+          "$RUNNER_TEMP/helm-bin/helm" package devthink
+          mv "devthink-${version}.tgz" "$GITHUB_WORKSPACE/"
+      - name: Attach the chart to the release
+        # the artifacts attach unconditionally - they are evidence even
+        # when the oci push skips (the pypi lane law)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v${{ steps.release.outputs.version }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          gh release upload "$RELEASE_TAG" "devthink-${RELEASE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --clobber
+      - name: Push the chart to ghcr oci
+        # the registry login rides the github token (the packages:write
+        # permission the job carries); the push is the dedupe guard - an
+        # already-published chart version answers a conflict the lane
+        # reports as the notice the rubygems dedupe law carries.
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          HELM_REGISTRY: ghcr.io
+        run: |
+          set -euo pipefail
+          echo "${{ github.token }}" | "$RUNNER_TEMP/helm-bin/helm" registry login "$HELM_REGISTRY" -u "$GITHUB_ACTOR" --password-stdin
+          if "$RUNNER_TEMP/helm-bin/helm" push "devthink-${RELEASE_VERSION}.tgz" "oci://$HELM_REGISTRY/${GITHUB_REPOSITORY_OWNER}/charts"; then
+            echo "the chart pushed to oci://$HELM_REGISTRY/${GITHUB_REPOSITORY_OWNER}/charts"
+          else
+            echo "::notice::the helm push answered a conflict - the chart version ${RELEASE_VERSION} is already published (the dedupe law keeps the release idempotent)."
+          fi
+
   sums:
     name: Rebuild the release SHA256SUMS umbrella
     # THE CLOSING UMBRELLA OF THE MERGED LANE FILE (the 2.0.16 fix of the
@@ -9155,6 +9288,10 @@ jobs:
       # os extension lane packages the one extension the family ships).
       - saddle-target-plans
       - saddle-container
+      # the helm channel attaches its chart tgz before the umbrella
+      # answers, so the SHA256SUMS signature covers the deployment
+      # envelope the oci registry publishes.
+      - helm
     if: >-
       !cancelled() &&
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
