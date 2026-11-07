@@ -147,21 +147,20 @@ export const DOMAIN_OF_APP: Record<string, string> = {
  *  4. onboarding state -> devthink   HOLDS: onboardingstate.ts duplicated in
  *     10 apps (devthink, debonair, saddle, getry, argan, cadria, forge,
  *     foundry, stealthhead, vault).
- *  5. theme -> devthink              DRIFTED: theme.ts duplicated in argan,
- *     cadria, debonair, forge, getry, stealthhead; devthink currently hosts
- *     theme logic only inside personalstore.ts/os.ts (AccentId, ACCENTS) —
- *     owner mandate still devthink, adoption pending.
- *  6. tooling config -> foundry      HOLDS: foundry/dependencyupdates.ts,
- *     npmgate.ts, bundlescan.ts, imagestore.ts; graphplan.ts is verbatim
- *     duplicated between forge and foundry, and hometypes.ts between forge,
- *     foundry and vault — foundry is the mandated owner.
+ *  5. theme -> devthink              HOLDS: theme.ts in the six apps are
+ *     doors re-exporting devthink/personalstore.ts (Theme, currentTheme,
+ *     applyTheme, initTheme, toggleTheme) — the owner seat the adoptions
+ *     landed.
+ *  6. tooling config -> foundry      HOLDS: graphplan.ts is the forge door
+ *     onto the plan engine inside foundry/pipeline.ts; hometypes.ts doors
+ *     in forge and vault onto foundry/hometypes.ts; foundry owns
+ *     dependencyupdates, npmgate, bundlescan, imagestore.
  *  7. cleanurl -> argan              HOLDS: cleanurl.ts (cleanUrl, applyNow,
  *     syncCanonical) duplicated in argan, cadria, debonair (devthink keeps a
  *     richer route-aware variant pending consolidation).
- *  8. reveal -> devthink             DRIFTED: reveal.ts duplicated in argan,
- *     cadria, debonair (initReveal, useReveal) and getry, stealthhead
- *     (observeReveals); devthink has NO reveal.ts in the current tree, so
- *     the family is verified but the owner adoption is still pending.
+ *  8. reveal -> devthink             HOLDS: devthink/reveal.ts is the owner
+ *     (initReveal, useReveal, observeReveals — client-safe, react + wouter
+ *     only); the five app reveal.ts files are doors.
  *  9. db/SqlParam -> vault           HOLDS: db.ts duplicated in all 10 non-
  *     vault apps; vault/storage.ts owns SqlParam + openStorageLane and
  *     argan, cadria, cobaia, debonair, foundry, stealthhead already import
@@ -169,8 +168,9 @@ export const DOMAIN_OF_APP: Record<string, string> = {
  * 10. mimetypes -> argan             HOLDS (new, discovered this resync):
  *     argan/mimetypes.ts vs vault/mimetypes.ts — and vault already imports
  *     @wenathlan/argan/mimetypes, so argan is the de facto owner.
- * 11. motionpref -> debonair         HOLDS (new, discovered this resync):
- *     motionpref.ts duplicated verbatim between debonair and argan.
+ * 11. motionpref -> debonair         HOLDS: debonair/motionpref.ts owns the
+ *     seam via the createMotionPref(key) factory; argan/motionpref.ts is a
+ *     door building the argan instance with its per-app session key.
  */
 export const DUPLICATE_FAMILIES: DuplicateFamily[] = [
   {
@@ -205,15 +205,15 @@ export const DUPLICATE_FAMILIES: DuplicateFamily[] = [
     family: "theme",
     owner: "devthink",
     members: ["argan", "cadria", "debonair", "forge", "getry", "stealthhead"],
-    status: "drifted",
-    note: "theme.ts (Theme, currentTheme, applyTheme, toggleTheme) duplicated in 6 apps; devthink hosts accent logic in personalstore.ts/os.ts only — adoption pending.",
+    status: "holds",
+    note: "theme.ts in the six apps are doors re-exporting from devthink/personalstore.ts (Theme, currentTheme, applyTheme, initTheme, toggleTheme) — the owner seat the adoptions landed.",
   },
   {
     family: "tooling config",
     owner: "foundry",
     members: ["forge", "foundry"],
     status: "holds",
-    note: "graphplan.ts verbatim duplicated forge/foundry; hometypes.ts duplicated forge/foundry/vault; canonical tooling owner is foundry (dependencyupdates, npmgate, bundlescan, imagestore).",
+    note: "graphplan.ts is the forge door onto the plan engine inside foundry/pipeline.ts (single implementation, the forge file keeps only the RUNPLAN fixture and the RunnerMode-typed planstep extension); hometypes.ts doors in forge and vault onto foundry/hometypes.ts; foundry owns dependencyupdates, npmgate, bundlescan, imagestore.",
   },
   {
     family: "cleanurl",
@@ -226,8 +226,8 @@ export const DUPLICATE_FAMILIES: DuplicateFamily[] = [
     family: "reveal",
     owner: "devthink",
     members: ["argan", "cadria", "debonair", "getry", "stealthhead"],
-    status: "drifted",
-    note: "Two shapes duplicated: initReveal/useReveal (argan, cadria, debonair) and observeReveals (getry, stealthhead); devthink has no reveal.ts in the current tree.",
+    status: "holds",
+    note: "devthink/reveal.ts is the owner (initReveal, useReveal, observeReveals — client-safe, react + wouter only); the five app reveal.ts files are doors.",
   },
   {
     family: "db / SqlParam",
@@ -248,7 +248,7 @@ export const DUPLICATE_FAMILIES: DuplicateFamily[] = [
     owner: "debonair",
     members: ["debonair", "argan"],
     status: "holds",
-    note: "Discovered this resync: motionpref.ts duplicated verbatim between debonair and argan.",
+    note: "debonair/motionpref.ts owns the seam via the createMotionPref(key) factory; argan/motionpref.ts is a door building the argan instance with its per-app session key.",
   },
 ];
 
@@ -267,8 +267,8 @@ export const DEDUP_RESOLUTIONS: ReadonlyArray<{
   { family: "theme", verdict: "consolidated", evidence: "devthink/personalstore.ts is the canonical theme seat; the six twins (argan cadria debonair forge getry stealthhead theme.ts) are now doors re-exporting Theme currentTheme applyTheme initTheme toggleTheme" },
   { family: "onboarding state", verdict: "deferred", evidence: "db-bound glue mirrors the label db twins — each app writes its own sqlite; the parameterized store wave owns it" },
   { family: "cleanurl", verdict: "consolidated", evidence: "argan/cleanurl.ts owns cleanUrl applyNow syncCanonical; cadria and debonair are shims; devthink/cleanurl.ts imports the three core symbols and keeps its five os-only exports" },
-  { family: "reveal", verdict: "consolidated", evidence: "devthink/reveal.ts is the new client-safe owner (react + wouter only, zero node builtins); argan cadria debonair reveal.ts are doors" },
-  { family: "tooling config", verdict: "structural", evidence: "capacitor.config config, vite/vitest defineConfig and cli main are per-app entry-point idioms — every app must keep its own; devthink/build.ts already imports foundry/bundlescan live" },
+  { family: "reveal", verdict: "consolidated", evidence: "devthink/reveal.ts is the new client-safe owner (react + wouter only, zero node builtins); argan cadria debonair reveal.ts are doors; the getry and stealthhead observeReveals twins joined the doors when devthink/reveal.ts gained the page-mount observe pass" },
+  { family: "tooling config", verdict: "structural", evidence: "capacitor.config config, vite/vitest defineConfig and cli main are per-app entry-point idioms — every app must keep its own; devthink/build.ts already imports foundry/bundlescan live; the graphplan and hometypes twins joined foundry — forge/graphplan.ts is the door onto the pipeline engine, the hometypes doors ride foundry/hometypes.ts" },
 ];
 
 /* ========================================================================== */
@@ -289,24 +289,21 @@ export const LOGICS: LogicEntry[] = [
   { app: "argan", file: "argan.ts", domain: "network", symbols: ["BadgeTone", "ZoneKind", "ZoneState", "ZoneSnapshot", "RecordSetRow", "PublicationStep", "FeatureCard", "SignalBadge"] },
   { app: "argan", file: "capacitor.config.ts", domain: "network", symbols: [] },
   { app: "argan", file: "catalog.ts", domain: "network", symbols: ["listZones", "listApexRecordSets", "listPublicationSteps", "listLibraryCards", "listDnssecKeyCards", "listDohFirstCards", "listHeroBadges", "listDnssecAlgorithms"] },
-  { app: "argan", file: "cleanurl.ts", domain: "network", symbols: ["cleanUrl", "applyNow", "syncCanonical"] },
   { app: "argan", file: "cli.ts", domain: "network", symbols: ["main"] },
   { app: "argan", file: "db.ts", domain: "network", symbols: ["db", "ensureSchema", "seedIfEmpty", "zoneRow", "recordSetRows", "OnboardingStateRow", "getonboardingstate", "setonboardingstage"] },
-  { app: "argan", file: "dnssec.ts", domain: "network", symbols: ["DNSSECALGORITHMS", "DNSSECDIGESTTYPES", "RrSig", "DnsKey", "DsRecord", "DnssecVerdict", "DnssecFailureCode", "DnssecValidationError"] },
+  { app: "argan", file: "dns.ts", domain: "network", symbols: ["DNSSECALGORITHMS", "DNSSECDIGESTTYPES", "RrSig", "DnsKey", "DsRecord", "DnssecVerdict", "ZoneRecord", "ZoneDiff", "parseZoneRecords", "diffZones", "PROTOCOLS", "findProtocol", "cleanUrl", "applyNow"] },
   { app: "argan", file: "drizzle.config.ts", domain: "network", symbols: [] },
   { app: "argan", file: "family.ts", domain: "network", symbols: ["FAMILY_SLUGS", "FamilyMember", "FAMILY_ACCENTS", "familyrow", "familyurl"] },
   { app: "argan", file: "labels.ts", domain: "network", symbols: ["LABEL_REVISION", "LABEL_MANIFEST", "LabelKey", "label", "labelfill", "seedLabels"] },
   { app: "argan", file: "mimetypes.ts", domain: "network", symbols: ["MimeFamily", "MimeTypeRow", "MIMETYPES", "MIMETYPE_COUNT", "findMimeType", "mimeTypeForExtension", "extensionsForType", "mimeFamilyOf"] },
   { app: "argan", file: "motionpref.ts", domain: "network", symbols: ["MOTION_PREF_KEY", "MotionStorage", "MotionRoot", "memoryMotionStorage", "sessionStorageOrMemoryMotion", "reduceMotionApplied", "reduceMotionStored", "setReduceMotion"] },
   { app: "argan", file: "onboardingstate.ts", domain: "network", symbols: ["OnboardingSnapshot", "readOnboardingState", "loadOnboardingState", "markIntroSeen", "markOnboardingSeen"] },
-  { app: "argan", file: "protocols.ts", domain: "network", symbols: ["ProtocolGroup", "ProtocolSecurity", "ProtocolSpec", "PROTOCOLS", "PROTOCOL_COUNT", "findProtocol", "protocolsByGroup", "protocolSchemes"] },
   { app: "argan", file: "reveal.ts", domain: "network", symbols: ["initReveal", "useReveal"] },
   { app: "argan", file: "sandboxmodality.ts", domain: "network", symbols: ["AppWorkloadLane", "APPSLUG", "WORKLOADLANES", "SANDBOXLANEENV", "LaneSeatResult", "lanesandbox", "lanesandboxfromenv", "laneof"] },
   { app: "argan", file: "seed.ts", domain: "network", symbols: ["seedZones", "seedRecordSets", "seedPublicationSteps", "seedLibraryCards", "seedDnssecKeyCards", "seedDohFirstCards", "seedHeroBadges", "seedDnssecAlgorithms"] },
   { app: "argan", file: "theme.ts", domain: "network", symbols: ["Theme", "currentTheme", "applyTheme", "initTheme", "toggleTheme"] },
   { app: "argan", file: "vite.config.ts", domain: "network", symbols: [] },
   { app: "argan", file: "vitest.config.ts", domain: "network", symbols: [] },
-  { app: "argan", file: "zonediff.ts", domain: "network", symbols: ["ZoneRecord", "RecordChange", "ZoneDiff", "ZoneDiffError", "parseZoneRecords", "diffZones", "diffZoneFiles", "recordsFromRows"] },
 
   /* ===== APP: cadria — domain: video3d (image/video 3D engine, VersaWaze) ===== */
 
@@ -331,22 +328,27 @@ export const LOGICS: LogicEntry[] = [
   { app: "cadria", file: "labels.ts", domain: "video3d", symbols: ["LABEL_REVISION", "labelManifest", "LabelKey", "label", "seedLabels"] },
   { app: "cadria", file: "masks.ts", domain: "video3d", symbols: ["OpacityGrid", "BooleanGrid", "MaskOp", "MaskBounds", "MaskLayer", "makeopacity", "makeboolean", "combinemasks"] },
   { app: "cadria", file: "mediaprobe.ts", domain: "video3d", symbols: ["MediaTrackKind", "MediaTrackMeta", "MediaProbe", "ProbeError", "asciiAt", "finishTracks", "probeMedia", "probeMp4"] },
+  { app: "cadria", file: "mesh.ts", domain: "video3d", symbols: ["GeneratedMesh", "BoxOptions", "generateBox", "generatePlane", "generateCylinder", "generateCone", "generateCapsule", "generateIcosphere", "parametricsurface", "mergemeshes", "transformmesh", "meshbounds"] },
   { app: "cadria", file: "onboardingstate.ts", domain: "video3d", symbols: ["VisitorOnboarding", "OnboardingStage", "hostallowed", "mergeStage", "entrytarget", "readOnboardingState", "markOnboardingStage", "resetOnboardingMemory"] },
   { app: "cadria", file: "pixel.ts", domain: "video3d", symbols: ["PixelError", "PixelImage", "PixelAdjustments", "PixelTint", "PixelKernel", "PixelOptions", "pixelkernels", "adjustimage"] },
   { app: "cadria", file: "pngencoder.ts", domain: "video3d", symbols: ["PngError", "PNG_SIGNATURE", "PNG_BYTES_PER_PIXEL", "PngFilter", "pngCrc32", "pngChunk", "pngFilterRow", "pngUnfilterRow"] },
+  { app: "cadria", file: "renderjob.ts", domain: "video3d", symbols: ["RenderJobFormat", "RenderJobRequest", "RenderJobIssue", "RenderJobOutcome", "RENDER_SLICE_SECONDS", "renderJobSlices", "executeRenderJob", "RenderJobVerify", "verifyRenderArtifact"] },
   { app: "cadria", file: "reveal.ts", domain: "video3d", symbols: ["initReveal", "useReveal"] },
   { app: "cadria", file: "sandboxmodality.ts", domain: "video3d", symbols: ["AppWorkloadLane", "APPSLUG", "WORKLOADLANES", "SANDBOXLANEENV", "LaneSeatResult", "lanesandbox", "lanesandboxfromenv", "laneof"] },
   { app: "cadria", file: "seed.ts", domain: "video3d", symbols: ["seedPlayerFormats", "seedAnchors", "seedProjects", "seedSeatCards", "seedHeroBadges", "seedFilterChoices", "seedAutoplayChoices"] },
   { app: "cadria", file: "shadercomp.ts", domain: "video3d", symbols: ["ShaderEffectId", "ShaderEffect", "EffectProgram", "DissolveStep", "DissolvePlan", "SHADER_EFFECTS", "compileEffectProgram", "shaderManifest"] },
+  { app: "cadria", file: "shaders.ts", domain: "video3d", symbols: ["DirectionalLight", "PointLight", "ShaderLight", "ShadingMaterial", "DEFAULT_MATERIAL", "shadeLambert", "shadeBlinn", "shadePhong", "shadeToon", "fresnelSchlick", "shademesh", "SHADING_MODEL_GLSL"] },
   { app: "cadria", file: "studio.ts", domain: "video3d", symbols: ["StudioControls", "StudioGeneration", "SessionSave", "generateStudioProject", "downloadBlob", "pngSupported", "pngFromSvg", "probeGateway"] },
   { app: "cadria", file: "synth.ts", domain: "video3d", symbols: ["TextureSpec", "TEXTURE_RANGES", "GRAIN_COUPLING", "TEXTURE_PRESET_BLEND", "JITTER_FIELD_CAP", "TexturePresetName", "TexturePreset", "texturePresets"] },
   { app: "cadria", file: "theme.ts", domain: "video3d", symbols: ["Theme", "currentTheme", "applyTheme", "initTheme", "toggleTheme"] },
   { app: "cadria", file: "timeline.ts", domain: "video3d", symbols: ["EditItem", "EditTrack", "EditRange", "EditIssue", "EditOutcome", "EditLimits", "itemend", "sorttrack"] },
   { app: "cadria", file: "timeticks.ts", domain: "video3d", symbols: ["TICKS_PER_SECOND", "MAX_TICKS", "FrameRate", "DEFAULT_FRAME_RATE", "COMMON_FRAME_RATES", "framerate", "frameratefromf64", "framelabel"] },
   { app: "cadria", file: "transcode.ts", domain: "video3d", symbols: ["mediaversions", "mediapipelineerror", "nvencpreset", "nvencpresetladder", "nvencpresets", "getnvencpreset", "transcodemode", "transcodemodeentry"] },
+  { app: "cadria", file: "versa.ts", domain: "video3d", symbols: ["Vec3", "Mat4", "VersaError", "vec3add", "vec3cross", "vec3normalize", "mat4identity", "mat4multiply", "mat4invert", "mat4perspective", "mat4lookat", "composepipeline", "projectpoint", "rigpose"] },
   { app: "cadria", file: "versawase.ts", domain: "video3d", symbols: ["BadgeTone", "PlayerFormat", "CreativeAnchor", "GalleryDiscipline", "GalleryProject", "FeatureCard", "SignalBadge", "OptionChoice"] },
   { app: "cadria", file: "version.ts", domain: "video3d", symbols: ["packageversion"] },
   { app: "cadria", file: "video.ts", domain: "video3d", symbols: ["DecodeIssueCode", "DecodeIssue", "DecodeOutcome", "DecodeState", "DecodeSnapshot", "DecodeSession", "DecodeOptions", "opendecode"] },
+  { app: "cadria", file: "visualai.ts", domain: "video3d", symbols: ["VariationBudget", "VariationParameters", "MeshVariation", "VariationRequest", "applyvariation", "proposevariations", "MotionSample", "KeyframeSuggestionOptions", "KeyframeSuggestion", "suggestkeyframes", "motionconfidence"] },
   { app: "cadria", file: "visualize.ts", domain: "video3d", symbols: ["Vec3", "ImageInput", "MeshGeometry", "MeshOptions", "VisualizeError", "gridDimensions", "luminance", "blurHeights"] },
   { app: "cadria", file: "vite.config.ts", domain: "video3d", symbols: [] },
   { app: "cadria", file: "vitest.config.ts", domain: "video3d", symbols: [] },
@@ -355,17 +357,15 @@ export const LOGICS: LogicEntry[] = [
 
   /* ===== APP: cobaia — domain: monetization (ads, checkout, content) ===== */
 
-  { app: "cobaia", file: "adsconfig.ts", domain: "monetization", symbols: ["adsslot", "ADS_LABEL", "ADS_EMPTY", "ADSSLOTS", "adsslotfor", "adsslotlive"] },
   { app: "cobaia", file: "capacitor.config.ts", domain: "monetization", symbols: [] },
-  { app: "cobaia", file: "checkoutlinks.ts", domain: "monetization", symbols: ["checkoutlinks", "supportlinks", "isconfigured", "planbyid"] },
   { app: "cobaia", file: "cli.ts", domain: "monetization", symbols: ["main"] },
   { app: "cobaia", file: "content.ts", domain: "monetization", symbols: ["blogpost", "familymember", "checkoutplan", "supportlinks", "adsslot", "seedPosts", "seedRoster", "seedPlans"] },
   { app: "cobaia", file: "db.ts", domain: "monetization", symbols: ["tables", "db", "ensureSchema", "OnboardingStateRow", "OnboardingFlags", "getOnboardingState", "setOnboardingStage", "LabelRow"] },
   { app: "cobaia", file: "drizzle.config.ts", domain: "monetization", symbols: [] },
   { app: "cobaia", file: "familyurl.ts", domain: "monetization", symbols: ["familyurl"] },
   { app: "cobaia", file: "labels.ts", domain: "monetization", symbols: ["LABEL_REVISION", "LABEL_MANIFEST", "LabelKey", "label", "labelfill", "seedLabels"] },
-  { app: "cobaia", file: "posts.ts", domain: "monetization", symbols: ["posts", "postindex", "postwords"] },
-  { app: "cobaia", file: "roster.ts", domain: "monetization", symbols: ["roster"] },
+  { app: "cobaia", file: "monetization.ts", domain: "monetization", symbols: ["adsslot", "ADS_LABEL", "ADS_EMPTY", "ADSSLOTS", "adsslotfor", "adsslotlive", "checkoutlinks", "supportlinks", "isconfigured", "planbyid", "posts", "roster"] },
+  { app: "cobaia", file: "onboardingstate.ts", domain: "monetization", symbols: ["VisitorOnboarding", "OnboardingStage", "hostallowed", "mergeStage", "readOnboardingState", "markOnboardingStage", "resetOnboardingMemory"] },
   { app: "cobaia", file: "sandboxmodality.ts", domain: "monetization", symbols: ["AppWorkloadLane", "APPSLUG", "WORKLOADLANES", "SANDBOXLANEENV", "LaneSeatResult", "lanesandbox", "lanesandboxfromenv", "laneof"] },
   { app: "cobaia", file: "vite.config.ts", domain: "monetization", symbols: [] },
   { app: "cobaia", file: "vitest.config.ts", domain: "monetization", symbols: [] },
@@ -403,6 +403,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "debonair", file: "ialane.ts", domain: "audio", symbols: ["servicelaneid", "ReferencePostInput", "ReferenceRecord", "postReference"] },
   { app: "debonair", file: "ingest.ts", domain: "audio", symbols: ["INGEST_SCHEMA_VERSION", "NOTE_NAMES", "IngestSegment", "IngestStem", "IngestDocument", "onsetSecondsOf", "pcmhash", "segmentsof"] },
   { app: "debonair", file: "katexis.ts", domain: "audio", symbols: ["BadgeTone", "GenreConfig", "TimelineClip", "TimelineTrack", "MixerStripRow", "ReadoutRow", "RenderStage", "RENDER_STAGES"] },
+  { app: "debonair", file: "kathesis.ts", domain: "audio", symbols: ["ENGINE_NAME", "ENGINE_HOUSES", "KathesisSeat", "KATHESIS_SEATS", "seatOf", "payloadGenerationOf", "WavetableShape", "buildWavetable", "WavetableOscillator", "biquadOf", "runBiquad"] },
   { app: "debonair", file: "labels.ts", domain: "audio", symbols: ["LABEL_REVISION", "LABEL_MANIFEST", "LabelKey", "label", "labelfill", "seedLabels"] },
   { app: "debonair", file: "limiter.ts", domain: "audio", symbols: ["TRUEPEAK_OVERSAMPLING", "LIMITER_LOOKAHEAD_S", "LIMITER_RELEASE_S", "LIMITER_MARGIN_DB", "LimiterOptions", "truePeakLinear", "limitTruePeak"] },
   { app: "debonair", file: "llmlane.ts", domain: "audio", symbols: ["LlmLaneCode", "LlmLaneError", "LLM_CALL_TIMEOUT_MS", "LLM_DEFAULT_MODEL", "llmlaneorigin", "ComposeWithLlmOptions", "LlmPlan", "LlmPlanResult"] },
@@ -453,6 +454,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "devthink", file: "auditreferenceworkflows.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "auth.ts", domain: "os", symbols: ["tokenhashprefix", "defaulttokenlifetimems", "defaultpairinglifetimems", "defaultchallengelifetimems", "authrefusedmessage", "tokenhashof", "issuepairingcode", "redeempairingcode"] },
   { app: "devthink", file: "automation.ts", domain: "os", symbols: ["triggernames", "workflowtriggers", "triggermatch", "validateworkflowinputs", "triggerregistry", "commandguard", "parsecommand", "platformadapter"] },
+  { app: "devthink", file: "babelcoreface.ts", domain: "os", symbols: ["BabelTransformOptions", "BabelTransformResult", "BabelTransformSync", "transformSync"] },
   { app: "devthink", file: "background.ts", domain: "os", symbols: ["executefilesstep", "processmcpframe"] },
   { app: "devthink", file: "bridge.ts", domain: "os", symbols: ["serveroperations", "servereventtypes", "pagecontentkeys", "contractcapabilities", "stableopid", "negotiatecapabilities", "composeenvelope", "parseenvelope"] },
   { app: "devthink", file: "browserextension.ts", domain: "os", symbols: ["extensionpermissions", "permissionpolicy", "requestpermission", "protocolversion", "extensioncommands", "createid", "createcommand", "createmessage"] },
@@ -463,7 +465,6 @@ export const LOGICS: LogicEntry[] = [
   { app: "devthink", file: "capture.ts", domain: "os", symbols: ["captureformats", "capturetargets", "capturekinds", "captureoptionsof", "capturevisible", "capturestitched", "captureelement", "captureregion"] },
   { app: "devthink", file: "catalog.ts", domain: "os", symbols: ["FamilySite", "Recipe", "Rung", "CoreModule", "NativeApp", "RunnerBinary", "StudioAsset", "StudioTrack"] },
   { app: "devthink", file: "chatstate.ts", domain: "os", symbols: ["TurnRole", "ChatTurn", "ChatCheckpoint", "ChatBirth", "ChatSession", "isChatTurn", "isChatCheckpoint", "isChatBirth"] },
-  { app: "devthink", file: "checksecrets.ts", domain: "os", symbols: ["scanSecrets"] },
   { app: "devthink", file: "chipterminal.ts", domain: "os", symbols: ["ChipTerminalProps", "ChipTerminal"] },
   { app: "devthink", file: "chromiumsmoke.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "cjs.ts", domain: "os", symbols: [] },
@@ -478,16 +479,12 @@ export const LOGICS: LogicEntry[] = [
   { app: "devthink", file: "consumersmoke.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "core.ts", domain: "os", symbols: ["fnv1a32", "fnv1a32Hex", "fnv1a64", "fnv1a64Bytes", "jitter", "getJitter", "getJitterMs", "pickRandom"] },
   { app: "devthink", file: "costcert.ts", domain: "os", symbols: ["runcostcertsuite", "costcertreport", "costcertrecord"] },
-  { app: "devthink", file: "crossbrowser.ts", domain: "os", symbols: ["browserpolyfillflags", "browserpolyfillintersection", "browserpolyfillnamespace", "browserpolyfillpromisify", "browserpolyfillof", "browserpolyfillstructerrorof", "firefoxdenylist", "firefoxpermissionmap"] },
-  { app: "devthink", file: "crxharvest.ts", domain: "os", symbols: [] },
-  { app: "devthink", file: "cspaudit.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "dashboard.ts", domain: "os", symbols: ["agentstatuscard", "queuelanerow", "messageflowrow", "conflictlogrow", "costperagentrow", "escalationrow", "timelinescrubmark", "topologyinventoryentry", "alttabkeydown", "altgestureend", "nextaltindex", "mruorder", "IconSpot", "IconBounds", "IconSpotMap", "ICONS_STORAGE_KEY", "SNAP_STEP_X", "SNAP_STEP_Y", "CELL_MEDIUM", "CELL_LARGE", "DensityPlatform", "DENSITY_PLATFORMS", "WebDpr", "AndroidBucket", "ANDROID_DPI", "CELL_W_PX", "CELL_H_PX", "TERMINAL_COLUMNS"] },
   { app: "devthink", file: "dashboardpage.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "data.ts", domain: "os", symbols: ["builddataset", "checksum", "exportcontent", "exportartifact", "artifactrecordof", "chunkplan", "backpressure", "advancestream"] },
   { app: "devthink", file: "debug.ts", domain: "os", symbols: ["cdpkinds", "cdpdomains", "methoddomain", "cdpallowlistof", "allowlistcovers", "attachcdpsession", "detachcdpsession", "sendcdpcommand"] },
   { app: "devthink", file: "deno.ts", domain: "os", symbols: ["denoadapter", "denoconfigread"] },
   { app: "devthink", file: "devthink.ts", domain: "os", symbols: ["ParsedArgs", "main"] },
-  { app: "devthink", file: "devtoolsguard.ts", domain: "os", symbols: ["guardarmed", "devtoolswallstatus", "devtoolsguardstatus", "devtoolstripped", "ondevtoolstrip", "devtoolswallid", "showdevtoolsinterstitial", "installdevtoolsguard"] },
   { app: "devthink", file: "distseamtypes.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "doccheck.ts", domain: "os", symbols: ["rundocchecksuite", "doccheckreport", "doccheckrecord"] },
   { app: "devthink", file: "dockmagnify.ts", domain: "os", symbols: ["DOCK_MAGNIFY_MAX", "DOCK_MAGNIFY_SPREAD", "magnifyscale"] },
@@ -518,10 +515,12 @@ export const LOGICS: LogicEntry[] = [
   { app: "devthink", file: "jsongate.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "kbdterminal.ts", domain: "os", symbols: ["KbdTerminalProps", "KbdTerminal"] },
   { app: "devthink", file: "labels.ts", domain: "os", symbols: ["LABEL_REVISION", "labelManifest", "LabelKey", "label", "ChatSuggestion", "seedChatSuggestions", "chatSuggestions", "ChatGreeting"] },
+  { app: "devthink", file: "logics.ts", domain: "os", symbols: ["DEDUP_LAW", "LogicEntry", "DuplicateFamily", "DOMAIN_OF_APP", "DUPLICATE_FAMILIES", "DEDUP_RESOLUTIONS", "LOGICS", "byApp", "byDomain", "findOwner", "importSpec", "expand", "LOGIC_STATS"] },
   { app: "devthink", file: "maintain.ts", domain: "os", symbols: [] },
 
   { app: "devthink", file: "matrixverify.ts", domain: "os", symbols: ["runmatrixverifysuite", "matrixverifyreport", "matrixverifyrecord"] },
   { app: "devthink", file: "mcp.ts", domain: "os", symbols: ["servemethods", "servemetadata", "clientmetadataof", "recordclientmetadata", "serveinitialize", "transportendpoints", "startserve", "shutdowndrain"] },
+  { app: "devthink", file: "mcpregistry.ts", domain: "os", symbols: ["McpEndpoint", "CustomProvider", "McpRegistryState", "McpStorageAdapter", "memorystorage", "localstorageadapter", "safeurl", "McpRegistry", "createmcpregistry"] },
   { app: "devthink", file: "media.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "memory.ts", domain: "os", symbols: ["memoryadapter", "sessionmemory", "randomid", "sensitivememoryclasses", "provenanceof", "memoryitemof", "attachprovenance", "stepsummaryfor"] },
   { app: "devthink", file: "modalitytypes.ts", domain: "os", symbols: [] },
@@ -540,11 +539,13 @@ export const LOGICS: LogicEntry[] = [
   { app: "devthink", file: "pagebridge.ts", domain: "os", symbols: [] },
   { app: "devthink", file: "panelsync.ts", domain: "os", symbols: ["PanelSyncReport", "panelSync"] },
   { app: "devthink", file: "paneltypes.ts", domain: "os", symbols: ["DevThinkProvider", "DevThinkMessage", "DevThinkTab"] },
+  { app: "devthink", file: "parseoptions.ts", domain: "os", symbols: ["parseoptions"] },
   { app: "devthink", file: "pentest.ts", domain: "os", symbols: ["runpentestchecklist", "pentestreport", "pentestrecord"] },
   { app: "devthink", file: "perf.ts", domain: "os", symbols: ["perfrecordof", "workerbackpressure", "queuedepthsampleof", "queuedepthview", "snapshotrequestkey", "dedupesnapshotrequests", "captureplanschedule", "abandonedparsetasks"] },
   { app: "devthink", file: "permdiff.ts", domain: "os", symbols: ["permdiffbaseline", "permissionset", "permissionsetof", "previousof", "diffpermissionsets"] },
   { app: "devthink", file: "personalstore.ts", domain: "os", symbols: ["WallpaperId", "WALLPAPERS", "WALLPAPER_KEY", "loadWallpaper", "applyWallpaper", "saveWallpaper", "AccentId", "ACCENTS"] },
   { app: "devthink", file: "plan.ts", domain: "os", symbols: ["planfilestepfields", "loopkinds", "retrykinds", "parseplanfile", "planoriginprofile", "plansteprisk", "lintplanfile", "formatdiagnostics"] },
+  { app: "devthink", file: "planstore.ts", domain: "os", symbols: ["Tier", "TierBadge", "TIER_BADGES", "TIER_ROWS", "CAPABILITY_BADGES", "PlanCustom", "PlanView", "peekplan", "loadplan", "saveplan", "planbadge"] },
   { app: "devthink", file: "policy.ts", domain: "os", symbols: ["normalizeendpoint", "hostpattern", "issessionkind", "isworkflowkind", "istriggeraction", "iswatchkind", "isdebugkind", "iscdpkind"] },
   { app: "devthink", file: "poolaudit.ts", domain: "os", symbols: ["runpoolauditsuite", "groupcounts", "poolcoveragereport", "poolcoveragerecord"] },
   { app: "devthink", file: "popup.ts", domain: "os", symbols: ["v1sunsetbannercard", "migrationpromptcard", "renderv1sunsetbanner", "rendermigrationpromptbanner"] },
@@ -557,6 +558,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "devthink", file: "recipes.ts", domain: "os", symbols: ["recipecheck", "recipeentry", "recipereport", "runrecipessuite", "gallerydriftof", "reciperecord"] },
   { app: "devthink", file: "records.ts", domain: "os", symbols: ["recordsummary", "renderrecord", "syncrecord", "summaryproblemsof", "syncmode"] },
   { app: "devthink", file: "release.ts", domain: "os", symbols: ["releasepublishpat"] },
+  { app: "devthink", file: "reveal.ts", domain: "os", symbols: ["initReveal", "useReveal", "observeReveals"] },
   { app: "devthink", file: "run.ts", domain: "os", symbols: ["openrun", "beatrun", "closerun", "reattachrun", "recordurl", "recordenvironment", "recordturnaround", "markpending"] },
   { app: "devthink", file: "runner.ts", domain: "os", symbols: ["catalogbase", "hostIsAllowed", "queuebinarylaunch", "queuestudiorender"] },
   { app: "devthink", file: "runtime.ts", domain: "os", symbols: ["adaptermodeof", "clockadapterof", "loggeradapterof", "fetchadapterof", "defaultclock", "defaultlogger", "defaultfetch", "platformadapterof"] },
@@ -618,7 +620,6 @@ export const LOGICS: LogicEntry[] = [
   /* ===== APP: foundry — domain: pipeline (build pipeline, artifacts, readiness) ===== */
 
   { app: "foundry", file: "api.ts", domain: "pipeline", symbols: [] },
-  { app: "foundry", file: "artifact.ts", domain: "pipeline", symbols: ["utf8Bytes", "fnv1a", "fnv1aHex", "Artifact", "artifactIdentity", "sealArtifact", "artifactLine", "manifest"] },
   { app: "foundry", file: "bundlescan.ts", domain: "pipeline", symbols: ["stripstrings", "platformnames", "wireformatnames", "gatewaywirefields", "maeneconfigfields", "underscorednames"] },
   { app: "foundry", file: "capacitor.config.ts", domain: "pipeline", symbols: [] },
   { app: "foundry", file: "cli.ts", domain: "pipeline", symbols: ["main"] },
@@ -627,16 +628,12 @@ export const LOGICS: LogicEntry[] = [
   { app: "foundry", file: "drizzle.config.ts", domain: "pipeline", symbols: [] },
   { app: "foundry", file: "family.ts", domain: "pipeline", symbols: ["FAMILY_SLUGS", "FamilyMember", "FAMILY_ACCENTS", "familyAccentOf", "familyrow"] },
   { app: "foundry", file: "familyurl.ts", domain: "pipeline", symbols: ["familyurl"] },
-  { app: "foundry", file: "graphplan.ts", domain: "pipeline", symbols: ["planstate", "PLAN_STATES", "planstepkind", "planstep", "planwire", "runplan", "plannode", "planedge"] },
   { app: "foundry", file: "hometypes.ts", domain: "pipeline", symbols: ["HomeProps"] },
-  { app: "foundry", file: "imagestore.ts", domain: "pipeline", symbols: ["ImageFormat", "FormatSpec", "FORMATS", "formatOf", "formatFromExt", "ConvertPlan", "convertPlan", "estimateSize"] },
   { app: "foundry", file: "labels.ts", domain: "pipeline", symbols: ["LABEL_REVISION", "LABEL_MANIFEST", "LabelKey", "label", "labelfill", "seedLabels"] },
   { app: "foundry", file: "npmgate.ts", domain: "pipeline", symbols: [] },
   { app: "foundry", file: "onboardingstate.ts", domain: "pipeline", symbols: ["OnboardingSnapshot", "readOnboardingState", "loadOnboardingState", "markIntroSeen", "markOnboardingSeen"] },
+  { app: "foundry", file: "pipeline.ts", domain: "pipeline", symbols: ["utf8Bytes", "fnv1a", "Artifact", "sealArtifact", "manifest", "mulberry32", "planstate", "planstep", "runplan", "ImageFormat", "FORMATS", "convertPlan", "Sandbox", "drive", "seedHerd", "APPSLUG", "WORKLOADLANES", "lanesandbox"] },
   { app: "foundry", file: "readiness.ts", domain: "pipeline", symbols: ["readinessreport", "runreadinesssuite", "readinessrecord"] },
-  { app: "foundry", file: "runner.ts", domain: "pipeline", symbols: [] },
-  { app: "foundry", file: "sandbox.ts", domain: "pipeline", symbols: ["SandboxState", "SANDBOX_STATES", "Sandbox", "SandboxAction", "drive", "step", "mulberry32", "seedHerd"] },
-  { app: "foundry", file: "sandboxmodality.ts", domain: "pipeline", symbols: ["AppWorkloadLane", "APPSLUG", "WORKLOADLANES", "SANDBOXLANEENV", "LaneSeatResult", "lanesandbox", "lanesandboxfromenv", "laneof"] },
   { app: "foundry", file: "utils.ts", domain: "pipeline", symbols: [] },
   { app: "foundry", file: "vite.config.ts", domain: "pipeline", symbols: [] },
   { app: "foundry", file: "vitest.config.ts", domain: "pipeline", symbols: [] },
@@ -687,6 +684,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "getry", file: "typeface.ts", domain: "aigateway", symbols: [] },
   { app: "getry", file: "types.ts", domain: "aigateway", symbols: ["apikeyref", "protocolstyle", "modelmessage", "providerconfig", "modelroute", "localmodelconfig", "toolbrief", "intentkind"] },
   { app: "getry", file: "utils.ts", domain: "aigateway", symbols: ["corsheaders", "ctjson", "ctsse", "ctplain", "ctndjson", "ctoctet", "maxdurationconst", "defaultmaxtokens"] },
+  { app: "getry", file: "validate.ts", domain: "aigateway", symbols: ["validateconfig"] },
   { app: "getry", file: "versionregistry.ts", domain: "aigateway", symbols: ["REMOTE_MANIFEST_URLS", "CHANGELOG_URLS", "FALLBACK_VERSION", "FALLBACK_FULL_VERSION", "FALLBACK_ALTERNATIVE_VERSION", "FALLBACK_ALTERNATIVE_FULL", "VERSION_CACHE_TTL_MS"] },
   { app: "getry", file: "vite.config.ts", domain: "aigateway", symbols: [] },
   { app: "getry", file: "vitest.config.ts", domain: "aigateway", symbols: [] },
@@ -709,6 +707,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "saddle", file: "drizzle.config.ts", domain: "virtualization", symbols: ["drizzleconfig"] },
   { app: "saddle", file: "edgelandes.ts", domain: "virtualization", symbols: ["EdgeLaneArtifact", "EdgeLaneOutput", "EdgeLaneExecutor", "EdgeLaneError", "edgelaneerror", "probehostbinary", "probedocker", "probewasm"] },
   { app: "saddle", file: "edgeplane.ts", domain: "virtualization", symbols: ["EdgeRequest", "EdgeLaneReport", "EdgeRunResult", "EdgeStorageAdapter", "edgelanes", "edgelandesreport", "assertvisitorfree", "runonedge"] },
+  { app: "saddle", file: "engineplans.ts", domain: "virtualization", symbols: ["EngineProfileId", "EnginePlanProfile", "ENGINEPLANS", "DEFAULTENGINEPROFILE", "EngineLimitsLaw", "ENGINELIMITS", "PlanEnvelope", "planenvelope", "planfits", "getengineplan", "selectengineplan", "engineplansreport"] },
   { app: "saddle", file: "execution.ts", domain: "virtualization", symbols: ["inprocess", "runnerhealth", "runnerhealthall", "heartbeat", "providerchain", "selectprovider", "artifacthandoff", "cancellationplan"] },
   { app: "saddle", file: "family.ts", domain: "virtualization", symbols: ["FAMILY_SLUGS", "FamilyMember", "FAMILY_ACCENTS", "familyrow"] },
   { app: "saddle", file: "familyurl.ts", domain: "virtualization", symbols: ["familyurl"] },
@@ -720,10 +719,12 @@ export const LOGICS: LogicEntry[] = [
   { app: "saddle", file: "labels.ts", domain: "virtualization", symbols: ["LABEL_REVISION", "labelmanifest", "LabelKey", "label", "labelfill", "seedlabels"] },
   { app: "saddle", file: "localauth.ts", domain: "virtualization", symbols: ["LocalAccountRole", "LocalAccountRecord", "LocalSession", "AccountsBackupPayload", "adminusers", "localaccountnames", "exportaccounts", "importaccounts"] },
   { app: "saddle", file: "mesh.ts", domain: "virtualization", symbols: ["NodeRole", "MeshVerdict", "MeshEnvelope", "MeshMessage", "MainResponse", "HeartbeatSelf", "role", "meshsecret"] },
+  { app: "saddle", file: "modalities.ts", domain: "virtualization", symbols: ["ModalityLane", "ModalityBootClass", "ResourceEnvelope", "CgroupSlice", "SpawnPlan", "ModalitySpec", "BOOTLADDER", "MODALITYPLANCOUNT", "visitorguard", "cgroupslice", "interpretyaml", "runinisolatedcontext"] },
   { app: "saddle", file: "modalityregistry.ts", domain: "virtualization", symbols: ["BootClass", "ModalityFamily", "ModalityState", "ModalityRecord", "BOOTLADDER", "MODALITYPLANCOUNT", "MODALITIES", "MODALITY_COUNT"] },
   { app: "saddle", file: "modes.ts", domain: "virtualization", symbols: ["modeprofile", "librarymode", "climode", "binarymode", "browsermode", "headlessmode", "computemode", "modeaxes"] },
   { app: "saddle", file: "onboardingstate.ts", domain: "virtualization", symbols: ["VisitorOnboarding", "OnboardingStage", "hostallowed", "mergeStage", "readOnboardingState", "loadOnboardingState", "markIntroSeen", "markOnboardingSeen"] },
   { app: "saddle", file: "orchestrator.ts", domain: "virtualization", symbols: ["orchestratordemo", "fluxkustomization", "fluxgitopsplan", "planfluxgitops"] },
+  { app: "saddle", file: "osprofiles.ts", domain: "virtualization", symbols: ["OSProfileKind", "OSProfilePackage", "OSProfileRecord", "OSPROFILES", "OSPROFILECOUNT", "getosprofile", "osprofilesforarch", "osprofileswithgpu", "resolveosprofile"] },
   { app: "saddle", file: "paths.ts", domain: "virtualization", symbols: ["assetpath"] },
   { app: "saddle", file: "performance.ts", domain: "virtualization", symbols: ["LayerTarget", "LayerPatch", "PerformanceLayerId", "PerformanceLayer", "randomPort", "ompPresets", "pickOmpThreads", "llvmpipeThreads"] },
   { app: "saddle", file: "quantum.ts", domain: "virtualization", symbols: ["quantumversions", "quantumerror", "gate2x2", "hmatrix", "xmatrix", "ymatrix", "zmatrix", "smatrix"] },
@@ -742,6 +743,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "saddle", file: "virtual.ts", domain: "virtualization", symbols: ["memoryobject", "computeresult", "tobytes", "transformtocompute", "transformtostorage", "internalmemory", "externalmemory", "physicalmemory"] },
   { app: "saddle", file: "vite.config.ts", domain: "virtualization", symbols: [] },
   { app: "saddle", file: "vitest.config.ts", domain: "virtualization", symbols: [] },
+  { app: "saddle", file: "vmcore.ts", domain: "virtualization", symbols: ["Rv64RunResult", "executerv64", "rv64run"] },
   { app: "saddle", file: "webserver.ts", domain: "virtualization", symbols: ["SandboxCreateBody", "SandboxSpecView", "SandboxRecord", "SandboxPublicView", "SandboxShelfRow"] },
   { app: "saddle", file: "workloadlaw.ts", domain: "virtualization", symbols: ["WorkloadDemand", "LaneToday", "WorkloadLane", "LaneVerdict", "LaneJoin", "FAMILYLANES", "CATALOGAPPS", "lanesof"] },
 
@@ -771,8 +773,7 @@ export const LOGICS: LogicEntry[] = [
 
   /* ===== APP: vault — domain: storage (objects, chunks, quotas, retention) ===== */
 
-  { app: "vault", file: "accounts.ts", domain: "storage", symbols: ["PASSWORD_MIN_CHARS", "emailValid", "emailOf", "passwordValid", "hashPassword", "passwordMatches", "AccountLaneError", "AccountRow"] },
-  { app: "vault", file: "api.ts", domain: "storage", symbols: ["vaultTokenConfigured", "tokenVerdict", "routeCount", "createVaultServer", "listenVault"] },
+  { app: "vault", file: "account.ts", domain: "storage", symbols: ["PASSWORD_MIN_CHARS", "emailValid", "passwordValid", "hashPassword", "passwordMatches", "AccountLaneError", "AccountRow", "createAccount", "verifyCredentials", "issueSession", "verifySession", "vaultTokenConfigured", "createVaultServer", "listenVault"] },
   { app: "vault", file: "buckets.ts", domain: "storage", symbols: ["BucketRule", "BucketShelf", "seedRules", "ruleFor", "objectsOf", "bucketShelf", "shelfOf", "bucketsInUse"] },
   { app: "vault", file: "capacitor.config.ts", domain: "storage", symbols: [] },
   { app: "vault", file: "chunks.ts", domain: "storage", symbols: ["CHUNK_BYTES", "ChunkSlice", "split", "reassemble", "ChunkEncoding", "StoredChunk", "encodeChunk", "decodeChunk"] },
@@ -783,6 +784,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "vault", file: "drizzle.ts", domain: "storage", symbols: ["accounts", "projects", "storageObjects", "chunks", "chunkRefs", "quotas", "projectKeys", "storageTables"] },
   { app: "vault", file: "family.ts", domain: "storage", symbols: ["FAMILY_SLUGS", "FamilyMember", "FAMILY_ACCENTS", "familyAccentOf", "familyrow", "familyurl"] },
   { app: "vault", file: "hometypes.ts", domain: "storage", symbols: ["HomeProps"] },
+  { app: "vault", file: "imagestore.ts", domain: "storage", symbols: ["SniffedMime", "ImageDensity", "ImageDimensions", "ImageRefusal", "ImageFacts", "IMAGE_MAX_BYTES", "sniffImageMime", "pngDimensions", "jpegDimensions", "validateImage", "standardizeImage", "putImage"] },
   { app: "vault", file: "index.ts", domain: "storage", symbols: [] },
   { app: "vault", file: "internalroot.ts", domain: "storage", symbols: ["DATABASE_FILE_EXTENSIONS", "DBFILE_REFUSAL_CODE", "databaseFileRefused", "InternalPathAnswer", "resolveInternalPath", "internalRootDir", "serveInternal"] },
   { app: "vault", file: "labels.ts", domain: "storage", symbols: ["LABEL_REVISION", "LABEL_MANIFEST", "LabelKey", "label", "labelfill", "seedLabels"] },
@@ -791,6 +793,7 @@ export const LOGICS: LogicEntry[] = [
   { app: "vault", file: "objectface.ts", domain: "storage", symbols: ["VaultChannel", "VaultObject", "VAULT_BUCKETS", "fnv1a", "fnv1aHex", "digestFor", "objectIdentity", "sealObject"] },
   { app: "vault", file: "objects.ts", domain: "storage", symbols: ["projectIdValid", "objectPathValid", "mimeValid", "ProjectRow", "createProject", "ProjectListRow", "ProjectPage", "listProjects"] },
   { app: "vault", file: "onboardingstate.ts", domain: "storage", symbols: ["VisitorOnboarding", "OnboardingStage", "onboardingbase", "hostallowed", "mergeStage", "readOnboardingState", "markOnboardingStage", "resetOnboardingMemory"] },
+  { app: "vault", file: "pillars.ts", domain: "storage", symbols: ["PillarStatus", "PillarRow", "PILLARS", "PILLAR_COUNT", "PILLAR_KEYS", "PILLAR_GROUPS", "livePillars", "pillarOf", "pillarsByGroup", "PILLAR_ROUTE_PREFIX", "pillarRoute", "pillarRouteOf"] },
   { app: "vault", file: "protocols.ts", domain: "storage", symbols: ["ProtocolCorpusError", "ProtocolSecurity", "ProtocolRow", "parseProtocolCorpus", "PROTOCOLS", "PROTOCOL_COUNT", "PROTOCOL_ROUTE_PREFIX", "protocolRoute"] },
   { app: "vault", file: "querylane.ts", domain: "storage", symbols: ["databasesDir", "databaseFileOf", "laneOf", "closeQueryLanes", "databaseUsageOf", "QueryLaneVerdict", "queryVerdict", "QUERY_SQL_LIMIT"] },
   { app: "vault", file: "quota.ts", domain: "storage", symbols: ["quotaFloorFromMb", "QUOTA_FLOOR_BYTES", "QuotaVerdict", "quotaVerdict", "QuotaLimitParse", "quotaLimitFrom", "QuotaRow", "readQuota"] },

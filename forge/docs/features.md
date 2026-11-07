@@ -5,10 +5,10 @@ the real feature list of the forge app, read from the code and grouped by catego
 ## execution
 
 - runner mode ladder — five runtime targets (`full-virtual`, `runner`, `node-packages`, `docker`, `ghcr`) owned by the saddle engine and imported through the `runner.ts` seam, never duplicated.
-- run plan graph — the canonical six-step plan (`muster → resolve → provision → execute → collect → seal`) as a directed graph of steps and wires (`graphplan.ts`).
+- run plan graph — the canonical six-step plan (`muster → resolve → provision → execute → collect → seal`) as a directed graph of steps and wires (`graphplan.ts` — the forge door to the engine the `foundry/pipeline.ts` owner seat holds, with the plan shape and the `RUNPLAN` fixture kept as the forge seats).
 - plan validation — duplicate ids, self wires, unknown steps and cycles are detected and answered as problem codes (`planvalid`).
 - topological staging — the plan layers into stable stage waves; the depth, the feeders and the successors of every step answer in pure functions (`planstages`, `plandepth`, `planfeeders`, `plannext`).
-- deterministic rehearsal — the same seed and tick always answer the same step states; a seeded red run (one roll in six) strands the remaining steps skipped (`planrehearsal`, `planfailindex`).
+- deterministic rehearsal — the same seed and tick always answer the same step states; a seeded red run (one roll in five, the owner engine's roll) strands the remaining steps skipped (`planrehearsal`, `planfailindex`).
 - progress tally — per-state counts and the done share (0–100) of a rehearsal map (`plantally`, `planprogress`).
 - svg plan panel — the plan drawn as a stage graph: one card per step, one bezier per wire, running wears the windows accent, failed rides the close red, every state a dot plus text (`sol/wingets/RunsGraphpanel.tsx`).
 - workload lanes — the two lanes forge owns (`binary-run`, `queue-priority`) mirrored from the saddle workload law as a string contract, pinned by the battery (`sandboxmodality.ts`).

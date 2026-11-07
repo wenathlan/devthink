@@ -400,7 +400,7 @@ export function planbounds(
   const miny = Math.min(...entries.map((position) => position.y)) - padding;
   const maxx = Math.max(...entries.map((position) => position.x + cardwidth)) + padding;
   const maxy = Math.max(...entries.map((position) => position.y + cardheight)) + padding;
-  return { minx, miny, width: maxx - minx, height: maxy - minx };
+  return { minx, miny, width: maxx - minx, height: maxy - miny };
 }
 
 /** Answers whether one state settled (the rehearsal already decided the step). */

@@ -29,7 +29,7 @@
 - `dns.ts` (dnssec + zonediff + cleanurl + protocols folded) = engine de rede consolidada, validação DNSSEC, diff de zona DNS, clean URL, mesh de protocolos.
 - `mimetypes.ts` = tabela de Mimetypes da camada de rede.
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
-- `family.ts` / `catalog.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox.
+- `family.ts` / `catalog.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` (porta para debonair/motionpref.ts) / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, catálogo, labels, tema, reveal, motionpref porta para o debonair, onboarding, modalidade de sandbox.
 - `db.ts` / `seed.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, seed, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
@@ -98,7 +98,7 @@
 ### forge — 19 lógicas na raiz
 
 - `runner.ts` / `runstream.ts` / `queue.ts` / `fleet.ts` = runner de binários, stream de execução, fila, frota.
-- `api.ts` / `graphplan.ts` / `hometypes.ts` = API, plano de grafo, tipos da home.
+- `api.ts` / `graphplan.ts` (porta para a engine de plano dentro de foundry/pipeline.ts) / `hometypes.ts` (porta para foundry/hometypes.ts) = API, plano de grafo via a engine do foundry, tipos da home porta para o foundry.
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `db.ts` / `utils.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, utilidades, Drizzle.
 - `family.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` / `theme.ts` = ponte da família, labels, onboarding, modalidade de sandbox, tema.
@@ -123,7 +123,7 @@
 - `nodeshim.ts` / `prismashim.ts` / `honoshim.ts` = shims Node / Prisma / Hono.
 - `db.ts` / `prismaconfig.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, Prisma, Drizzle.
 - `types.ts` / `typeface.ts` / `constants.ts` / `utils.ts` / `versionregistry.ts` = tipos, typeface, constantes, utilidades, registro de versões.
-- `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal, tema, onboarding, modalidade de sandbox.
+- `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` (porta para devthink/reveal.ts) / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal porta para o devthink, tema, onboarding, modalidade de sandbox.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
 ### saddle — 55 lógicas na raiz
@@ -147,7 +147,7 @@
 
 - `match.ts` (regras folded) / `netcode.ts` / `physics.ts` / `ranking.ts` / `spawner.ts` / `weapons.ts` / `world.ts` / `hud.ts` = partida e regras, netcode, física, ranking, spawner, armas, mundo, HUD.
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
-- `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal, tema, onboarding, modalidade de sandbox.
+- `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` (porta para devthink/reveal.ts) / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal porta para o devthink, tema, onboarding, modalidade de sandbox.
 - `db.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
@@ -160,7 +160,7 @@
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `vaultclient.ts` / `uistore.ts` / `labelstore.ts` = cliente do Vault, stores de UI / labels.
 - `drizzle.ts` / `db.ts` / `drizzle.config.ts` = Drizzle, banco Better SQLite / better-sqlite3.
-- `family.ts` / `hometypes.ts` / `labels.ts` / `index.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, tipos da home, entrada do app.
+- `family.ts` / `hometypes.ts` (porta para foundry/hometypes.ts) / `labels.ts` / `index.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, tipos da home porta para o foundry, entrada do app.
 - `utils.ts` = utilidades.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 

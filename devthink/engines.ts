@@ -391,10 +391,10 @@ export const ENGINEOWNERS: readonly engineownerrow[] = [
   {
     owner: "foundry",
     engine: "foundry",
-    module: "graphplan.ts",
+    module: "pipeline.ts",
     consumers: [],
     role:
-      "the deployable pipeline clone: the full pipeline surface — sandbox plus the network database — a leaf deploy unit the family never imports; the engine logic lives in saddle, the storage in vault, and only the plan graph is its own.",
+      "the deployable pipeline clone: the full pipeline surface — sandbox plus the network database — a leaf deploy unit the family never imports; the engine logic lives in saddle, the storage in vault, and only the pipeline engine of pipeline.ts is its own.",
   },
   {
     owner: "getry",

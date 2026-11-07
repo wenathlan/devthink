@@ -1,7 +1,3 @@
-// hometypes.ts — the types of the home page (moved from sol/home/types.ts:
-// pure logic and contracts ride the app root; the page folder keeps only
-// the anchor and its tsx components)
-export interface HomeProps {
-  /** the note piped through the entry strip (the boot readout) */
-  input?: string;
-}
+// the forge unit of the family.
+// # hometypes — the forge door to the owner logic in foundry/hometypes.ts per the dedup law.
+export type { HomeProps } from "../foundry/hometypes.ts";
