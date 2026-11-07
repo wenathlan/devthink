@@ -4,6 +4,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { analyze, BAND_LABELS } from "../analyze.ts";
+import { MASTERING } from "../katexis.ts";
+import { RECON_SAMPLE_RATE } from "../recon.ts";
+import { RENDER_SAMPLE_RATE } from "../renderengine.ts";
 
 /** Builds a percussive click track at the given bpm (deterministic). */
 function clicks(bpm: number, seconds: number, sampleRate = 44100): number[] {
@@ -50,5 +53,36 @@ describe("analyze — the pipeline", () => {
   it("counts fingerprint hashes when the switch is on", () => {
     const report = analyze(clicks(120, 2), 44100, { fingerprint: true });
     assert.ok(report.fingerprintHashes > 0);
+  });
+});
+
+describe("analyze — the rate law (recon 44100 / master 48000, never swapped in silence)", () => {
+  /** Builds a pure 220 hz tone at the given rate (the canon probe). */
+  function tone(seconds: number, sampleRate: number): number[] {
+    return Array.from({ length: Math.round(seconds * sampleRate) }, (_, i) =>
+      0.6 * Math.sin((2 * Math.PI * 220 * i) / sampleRate),
+    );
+  }
+
+  it("pins the lane constants: the recon canon 44100, the master canon 48000, the two never swapped", () => {
+    assert.equal(RECON_SAMPLE_RATE, 44100, "the recon lane analyses at the 44100 cd canon");
+    assert.equal(MASTERING.sampleRateHz, 48000, "the mastering spec masters at 48000");
+    assert.equal(RENDER_SAMPLE_RATE, MASTERING.sampleRateHz, "every render bounce rides the mastering spec");
+    assert.notEqual(RECON_SAMPLE_RATE, RENDER_SAMPLE_RATE, "the two lanes carry distinct rates by law");
+  });
+
+  it("bins a 44100 tone at the cd canon (the centroid answers the tone's own hz)", () => {
+    const report = analyze(tone(2, 44100), 44100);
+    assert.equal(report.sampleRate, 44100);
+    assert.ok(Math.abs(report.spectrum.centroidHz - 220) <= 5, `centroidHz ${report.spectrum.centroidHz} left the 220 hz tone`);
+  });
+
+  it("never swaps in silence: a 48000 tone bins at 48000, not at a silently assumed 44100", () => {
+    const report = analyze(tone(2, 48000), 48000);
+    assert.equal(report.sampleRate, 48000);
+    // the silent-swap regression: the frames once binned at the 44100 default
+    // (the centroid read 220 * 44100/48000 ≈ 202) — the rate law rides the
+    // pcm's own rate now.
+    assert.ok(Math.abs(report.spectrum.centroidHz - 220) <= 5, `centroidHz ${report.spectrum.centroidHz} silently swapped off the 48000 pcm`);
   });
 });
