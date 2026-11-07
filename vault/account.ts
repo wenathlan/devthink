@@ -1589,6 +1589,61 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
       sendJson(res, 200, jsonOfPillar(row));
       return;
     }
+    /* the visitor state lane — the generic keyed state the os persistence
+     * hook rides: the read answers one visitor and key pair's stored
+     * payload (the same open law the copy lane rides) and the write lands
+     * the last-write-wins payload behind the same rate ladder the account
+     * doors answer (anonymous visitor keys, never credentials). */
+    if (method === "GET" && pathname === routes.state) {
+      const visitor = safeDecode(String(url.searchParams.get("visitor") ?? ""));
+      const stateKey = safeDecode(String(url.searchParams.get("key") ?? ""));
+      if (!visitor || !stateKey) {
+        sendError(res, 400, "VAULT_STATE", "the state read answers the visitor and key parameters");
+        return;
+      }
+      const stored = getVisitorState(visitor, stateKey);
+      if (stored === undefined) {
+        sendError(res, 404, "VAULT_STATE", "no state row answers this visitor and key pair");
+        return;
+      }
+      try {
+        sendJson(res, 200, { value: JSON.parse(stored) as unknown });
+      } catch {
+        sendError(res, 500, "VAULT_STATE", "the stored payload does not decode");
+      }
+      return;
+    }
+    if (pathname === routes.state) {
+      if (method !== "POST") {
+        sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+        return;
+      }
+      const rate = authRateVerdict(peerOf(req));
+      if (!rate.allowed) {
+        sendError(res, 429, "VAULT_RATE", "too many writes from this address — the state door rests until the window rolls", {
+          "retry-after": String(rate.retryAfterSeconds),
+        });
+        return;
+      }
+      try {
+        const body = await readJson(req);
+        const visitor = typeof body.visitor === "string" ? body.visitor : "";
+        const stateKey = typeof body.key === "string" ? body.key : "";
+        if (!visitor || !stateKey || !("value" in body)) {
+          sendError(res, 400, "VAULT_STATE", "the state write answers visitor, key and value");
+          return;
+        }
+        putVisitorState(visitor, stateKey, JSON.stringify(body.value) ?? "null");
+        sendJson(res, 200, { saved: true });
+      } catch (error) {
+        if (error instanceof BadBodyError) {
+          sendError(res, 400, "VAULT_STATE", "the state write answers a json body");
+          return;
+        }
+        throw error;
+      }
+      return;
+    }
     /* the person's door onto the network database — the register lane
      * (verified credentials, the database id and the api key shown exactly
      * once), the database reads, the key lanes and the quota lanes, each
