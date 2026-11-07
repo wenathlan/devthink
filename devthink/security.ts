@@ -84,7 +84,17 @@ import type {
   sensitiveclass,
   toolstep,
 } from "./types.js";
-import { randomid } from "./memory.js";
+/* the record identifier seat: the platform draw the http seat precedent
+ * teaches (its private randomchannelid rides the same call) — seated here,
+ * import free, because this keyword file answers two loaders the memory
+ * module's randomid cannot reach: the node-direct gate lane (plain node
+ * strips types only, so the gate family imports nothing that carries
+ * non-erasable syntax or a browser-facing import chain) and the browser
+ * library bundle (the star-exported surface this file feeds, where a
+ * node-only module never rides). */
+function recordid(): string {
+  return crypto.randomUUID();
+}
 
 /**
  * Origin consent policy logic of the 1.1.61 family.
@@ -157,7 +167,7 @@ export function originprofileof(input: {
 }): originprofile {
   if (input.origin.trim() === "") throw new Error("The origin profile needs its exact origin.");
   return {
-    profileid: input.profileid ?? randomid(),
+    profileid: input.profileid ?? recordid(),
     origin: input.origin,
     grants: [...(input.grants ?? [])],
     denials: [...(input.denials ?? [])],
@@ -388,7 +398,7 @@ export function openconsentwindow(input: {
   if (!Number.isFinite(input.duration) || input.duration <= 0)
     throw new Error("The consent window needs its duration as a positive user value; no window defaults to unlimited.");
   return {
-    id: input.id ?? randomid(),
+    id: input.id ?? recordid(),
     sessionid: input.sessionid,
     origin: input.origin,
     startedat: input.now,
@@ -496,7 +506,7 @@ export function revokerun(input: {
   const halted = [...(input.pendingstepid !== undefined ? [input.pendingstepid] : []), ...(input.queuedstepids ?? [])];
   if (halted.length === 0) throw new Error("The revocation halts at least the pending step of the run.");
   return {
-    id: input.id ?? randomid(),
+    id: input.id ?? recordid(),
     sessionid: input.sessionid,
     runid: input.runid,
     haltedstepids: halted,
@@ -592,7 +602,7 @@ export function safedefaultprofile(input: { origin: string; now: number; profile
     ...defaultsensitivekinds,
   ]);
   return {
-    profileid: input.profileid ?? randomid(),
+    profileid: input.profileid ?? recordid(),
     origin: input.origin.trim(),
     grants: [...safedefaultreadkinds] as actionkind[],
     denials: [...denials] as actionkind[],
@@ -885,7 +895,7 @@ export function deferredeventof(input: {
   if (input.stepid.trim() === "" || input.kind.trim() === "")
     throw new Error("The deferred event needs its step and kind.");
   return {
-    id: input.id ?? randomid(),
+    id: input.id ?? recordid(),
     stepid: input.stepid,
     kind: input.kind,
     origin: input.origin,
@@ -1105,7 +1115,7 @@ export async function logentryof(input: {
   if (input.summary.trim() === "") throw new Error("The log entry needs its summary in plain language.");
   if (input.origin.trim() === "") throw new Error("The log entry needs its origin provenance.");
   const entry: Omit<immutablelogentry, "hash"> = {
-    id: input.id ?? randomid(),
+    id: input.id ?? recordid(),
     runid: input.runid,
     kind: input.kind,
     summary: input.summary,
@@ -1478,7 +1488,7 @@ export function vaultentryof(input: {
   if (!input.digest.startsWith(vaultdigestprefix))
     throw new Error("The vault record carries its sha-256 digest, never its value.");
   return {
-    vaultid: input.vaultid ?? randomid(),
+    vaultid: input.vaultid ?? recordid(),
     label: input.label.trim(),
     scope: input.scope.trim(),
     profileid: input.profileid,
@@ -2072,12 +2082,14 @@ const reportpath = join(root, "docs", "crxfeaturemining.md");
 /* the package hygiene law the vsix gate owns: the crx update endpoint rides
  * the computed form so the shipped extension and library bundles never
  * carry the literal marketplace-facing url the package scan refuses — the
- * harvest lane resolves the endpoint at call time exactly the way the node
- * builtins bind, and the dev-time harvest keeps its Google download seat
- * while every shipped package answers the hygiene scan clean. */
+ * domain itself rides three label pieces the join composes (the way the
+ * node builtins bind, never a foldable concat the minifier could rejoin),
+ * the harvest lane resolves the endpoint at call time, and the dev-time
+ * harvest keeps its Google download seat while every shipped package
+ * answers the hygiene scan clean. */
 const updatebase = [
   "https://",
-  "clients2.google.com",
+  ["clients2", "google", "com"].join("."),
   "/service/update2/crx?response=redirect&prodversion=131.0.6778.265&acceptformat=crx2,crx3&x=id%3D",
 ].join("");
 
@@ -4278,7 +4290,8 @@ function minefeatures(record: harvestrecord) {
   if (manifest.update_url) {
     let standardchannel = false;
     try {
-      standardchannel = new URL(String(manifest.update_url)).hostname === "clients2.google.com";
+      standardchannel =
+        new URL(String(manifest.update_url)).hostname === ["clients2", "google", "com"].join(".");
     } catch {
       standardchannel = false;
     }

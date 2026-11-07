@@ -604,10 +604,20 @@ async function validateruntimebaselines(): Promise<void> {
   const transparencymodule = await readFile("transparencypage.ts", "utf8");
   if (!transparencymodule.includes("request<{ transparencyview }") && !transparencymodule.includes("transparencyview"))
     throw new Error("The transparencypage module must render through the transparency view the background serves.");
-  for (const gate of ["runtime", "pentest", "cspaudit", "permdiff"]) {
+  for (const gate of ["runtime", "pentest", "permdiff"]) {
     if (!(await readFile(`${gate}.ts`, "utf8").catch(() => undefined)))
       throw new Error(`The ${gate} gate script must exist at the app root beside the runtime policy.`);
   }
+  /* the securitytooling consolidation folded the cspaudit gate into the
+   * security keyword file (node security.ts cspaudit answers the lane the
+   * dispatcher seats), so the existence law walks the lane seat the way
+   * the verify workflow step beside this gate already does — the standalone
+   * cspaudit.ts the pre-consolidation ladder carried no longer exists. */
+  const securityseat = await readFile("security.ts", "utf8");
+  if (!securityseat.includes('securitylane === "cspaudit"') || !securityseat.includes("cspauditlane"))
+    throw new Error(
+      "The security keyword file must carry the cspaudit lane the securitytooling consolidation seated (node security.ts cspaudit).",
+    );
 
   /* the 1.1.96 multi agent certification acceptance: the coordination and accounting gate scripts exist beside the runtime policy, the verify workflow runs them after the security gates, the dashdone family module ships with its own declaration entry outside the frozen index surface, and the dashboardpage surface of the one web design file carries every multi agent panel with no remote resource */
   for (const gate of ["agentcert", "costcert"]) {
