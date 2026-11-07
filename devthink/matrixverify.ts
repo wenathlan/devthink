@@ -48,7 +48,7 @@ function check(condition: unknown, message: string) {
   if (!condition) throw new Error(message);
 }
 
-/** Runs one gate script as a subprocess cell and answers its one line summary: the cspaudit cell rides the security seat lane word the security-tooling consolidation set (node security.ts cspaudit), so the cell takes the script and its lane arguments the same way the manifest lanes walk them. */
+/** Runs one gate script as a subprocess cell and answers its one line summary: the cspaudit cell rides the built security seat lane word (node build/security.js cspaudit — the self-contained per-module bundle the build stamps, because the source seat's static .js relative imports resolve only under the bundlers, never under the plain node lane runner), so the cell takes the script and its lane arguments the same way the manifest lanes walk them. */
 async function runcells(...script: string[]) {
   const outcome = await execute(process.execPath, script, { cwd: process.cwd() });
   return outcome.stdout.trim().split("\n").at(-1) ?? "";
@@ -265,7 +265,7 @@ export async function runmatrixverifysuite() {
     runcells("apifreeze.ts"),
   );
   await cell({ family: "gates", name: "the csp audit gate runs green over the content security policy" }, async () =>
-    runcells("security.ts", "cspaudit"),
+    runcells("build/security.js", "cspaudit"),
   );
   await cell({ family: "gates", name: "the permission diff gate runs green over the versioned baseline" }, async () =>
     runcells("permdiff.ts"),
@@ -319,7 +319,7 @@ export interface matrixverifyreport {
  * fixed order with its outcome, no timestamps, so the record replays byte
  * identical. */
 export const matrixverifyrecord: matrixverifyreport = {
-  "release": "2.0.166",
+  "release": "2.0.167",
   "matrix": {
     "browsers": [
       "chromium",
@@ -358,7 +358,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.165"
+      "detail": "manifest and help answered for 2.0.167"
     },
     {
       "family": "mcp",
@@ -394,7 +394,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "gates",
       "name": "the pool audit gate runs green over the 626 item pool",
       "outcome": "pass",
-      "detail": "Pool audit of 626 items against 4378 shipped symbols: 623 implemented, 3 planned, 0 unknown, the record in test/devthink.poolaudit.ts."
+      "detail": "Pool audit of 626 items against 4424 shipped symbols: 623 implemented, 3 planned, 0 unknown, the record in test/devthink.poolaudit.ts."
     },
     {
       "family": "gates",
@@ -406,7 +406,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "gates",
       "name": "the csp audit gate runs green over the content security policy",
       "outcome": "pass",
-      "detail": "}"
+      "detail": ""
     },
     {
       "family": "gates",

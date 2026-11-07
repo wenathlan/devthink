@@ -101,7 +101,7 @@ jobs:
         run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
       - name: install the dependencies (pnpm leg)
         if: matrix.pm == 'pnpm'
-        run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile --ignore-scripts
+        run: pnpm --dir "${{ matrix.app }}" install --no-frozen-lockfile --ignore-scripts
       - name: install the dependencies (npm leg)
         if: matrix.pm == 'npm'
         run: npm --prefix "${{ matrix.app }}" ci --ignore-scripts
@@ -431,7 +431,7 @@ jobs:
         run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
       - name: install the dependencies (pnpm leg)
         if: matrix.pm == 'pnpm'
-        run: pnpm --dir "${{ matrix.app }}" install --frozen-lockfile --ignore-scripts
+        run: pnpm --dir "${{ matrix.app }}" install --no-frozen-lockfile --ignore-scripts
       - name: install the dependencies (npm leg)
         if: matrix.pm == 'npm'
         run: npm --prefix "${{ matrix.app }}" ci --ignore-scripts

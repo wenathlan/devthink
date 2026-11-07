@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/devthink",
-  "version": "2.0.166",
+  "version": "2.0.167",
   "private": false,
   "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
   "license": "GPL-3.0-only",
@@ -53,7 +53,7 @@
     "validate:candidate": "node sweep.ts && node poolaudit.ts && node matrixverify.ts && node telemetryfree.ts && node soak.ts && node wcag.ts",
     "validate:docs": "node doccheck.ts",
     "validate:runtime": "node runtime.ts",
-    "validate:security": "node pentest.ts && node security.ts cspaudit && node permdiff.ts",
+    "validate:security": "node pentest.ts && node build/security.js cspaudit && node permdiff.ts",
     "validate:workflow": "node workflow.ts && node ../foundry/npmgate.ts",
     "workflow:updates": "node workflow.ts sync"
   },

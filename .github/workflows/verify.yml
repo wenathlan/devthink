@@ -129,7 +129,7 @@ jobs:
       - name: Run the penetration test checklist of the security hardening release
         run: cd devthink && node pentest.ts
       - name: Audit every content security policy of the extension surfaces
-        run: cd devthink && node security.ts cspaudit
+        run: cd devthink && node build/security.js cspaudit
       - name: Verify the permission set never grew against the previous release
         run: cd devthink && node permdiff.ts
       - name: Run the coordination certification checklist of the multi agent release

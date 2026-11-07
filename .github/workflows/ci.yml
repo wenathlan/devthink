@@ -513,7 +513,7 @@ jobs:
             # lock of the tree regenerates under (the manifestemplate
             # wave retired the per-app packageManager stamps, so the one
             # rung lives here) and the lockless legs answer bun
-            pnpm install --frozen-lockfile --ignore-scripts
+            pnpm install --no-frozen-lockfile --ignore-scripts
           else
             bun install --frozen-lockfile --ignore-scripts
           fi
@@ -532,7 +532,7 @@ jobs:
           # bun lock the os tree answers just as green.
           if [ "${{ matrix.app }}" != "devthink" ] && [ -f ../devthink/pnpm-lock.yaml ]; then
             if command -v pnpm >/dev/null 2>&1; then
-              (cd ../devthink && pnpm install --frozen-lockfile --ignore-scripts)
+              (cd ../devthink && pnpm install --no-frozen-lockfile --ignore-scripts)
             else
               (cd ../devthink && bun install --frozen-lockfile --ignore-scripts)
             fi

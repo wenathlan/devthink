@@ -4563,9 +4563,12 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "node apifreeze.ts",
       "node pentest.ts",
       /* the securitytooling consolidation moved the csp audit into the
-       * security keyword file's lane dispatcher — the control the verify
-       * ladder reads walks the consolidated seat the same law stamped. */
-      "node security.ts cspaudit",
+       * security keyword file's lane dispatcher, and the plain-node lane
+       * runner walks the self-contained per-module bundle the build stamps
+       * (the source seat's static .js relative imports resolve only under
+       * the bundlers) — the control the verify ladder reads walks the
+       * built security seat the same law stamped. */
+      "node build/security.js cspaudit",
       "node permdiff.ts",
       "node agentcert.ts",
       "node costcert.ts",

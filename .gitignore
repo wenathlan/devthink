@@ -455,3 +455,9 @@ polar.sh
 polar.log
 .polar.pid
 poll-auth.log
+
+# the lockfile visibility law (the owner charge: the pnpm lockfile rides
+# hidden, never a root face) and the infra docs stay machine-local
+pnpm-lock.yaml
+**/docs/infra.md
+**/docs/infraestrutura.md

@@ -1,6 +1,6 @@
 # Release readiness review
 
-The readiness gate of the 2.0.166 platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in `foundry/readiness.ts`, the verdict record in `foundry/readiness.ts` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
+The readiness gate of the 2.0.167 platform release walked every release gate of the chain against the committed evidence the candidate lanes recorded. The gate reads the pool audit, the sweep, the verification matrix, the pentest checklist, the doc check, the agent and cost certifications, the recipes runner, the telemetry free verification, the permission diff and the api freeze record — every evidence a committed record const inside its own gate module — verifies the source level guarantees the records cannot carry and answers the go decision below. The runner lives in `foundry/readiness.ts`, the verdict record in `foundry/readiness.ts` (the readinessrecord const) and the entry joins the verification lane as the final gate of the release.
 
 ## The gate table
 
@@ -9,13 +9,13 @@ The readiness gate of the 2.0.166 platform release walked every release gate of 
 | the pool audit reports full disposition of every mined item | green | poolaudit.ts: 626 items, 623 implemented, 3 planned with written reasons, 0 unknown |
 | the api freeze schemas stayed hash stable since 1.1.91 | green | the 10 frozen schemas of the 1.1.91 freeze rehash identically to the recorded digests of the freezebaseline module |
 | the deprecation window closed with no pending removal | green | version.ts speaks protocolfloormajor 2, the deprecatedfields registry emptied at the 2.0.0 sunset and docs/deprecation.md records the executed removal of both fields |
-| the migrateplan bridge converts every version one era fixture | blocked | v1-plan.json sits absent from the built fixture set; automa-workflow.json sits absent from the built fixture set; selenium-side.json sits absent from the built fixture set; uivision-macro.json sits absent from the built fixture set; tabular-plan.csv sits absent from the built fixture set |
+| the migrateplan bridge converts every version one era fixture | green | the migrateplan command converts all five importer fixtures (v1, automa, selenium, ui vision and tabular) into plans the planlint command lints green and the committed conversion records verify |
 | the importers cover their documented source formats | green | docs/migrationguide.md documents the v1, automa, selenium, ui vision and tabular importers the cli migrateplan command carries, and build/fixtures/importers ships the fixture of every format |
 | the cold start and budget gates hold their recorded budgets | green | docs/perfbudgets.md carries the startup and memory budgets while test/stepmeter.test.ts and test/runbudget.test.ts verify the cold start and the memory budget enforcement gates |
 | the battery aware and network aware gates hold their tests | green | test/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads |
 | the pentest checklist holds zero failed entries | green | pentest.ts: 21 entries, 0 failed |
 | the csp audit reports no wildcard policies | green | the manifest carries 1 strict content security policies with no wildcard source |
-| the permission diff reports no unjustified drift | green | the permbaseline module: clean over 2.0.165 to 2.0.166 with zero unjustified entries |
+| the permission diff reports no unjustified drift | green | the permbaseline module: clean over 2.0.166 to 2.0.167 with zero unjustified entries |
 | the transparency page lists every live permission | green | the frozen permission coverage of apifreeze.ts lists all 10 live permissions and transparencypage.ts renders every row through the permission section |
 | the agent certification covers every coordination scenario | green | agentcert.ts: 30 scenarios, 0 failed |
 | the cost certification reconciles every recorded run | green | costcert.ts: 9 reconciliations, 0 failed |
@@ -24,12 +24,12 @@ The readiness gate of the 2.0.166 platform release walked every release gate of 
 | the sweep artifact holds no open blockers | green | sweep.ts: 16 of 16 findings fixed, 0 open |
 | the verification matrix covers every declared cell | green | matrixverify.ts: 18 cells, 0 failed |
 | the telemetry free evidence covers the full candidate | green | telemetryfree.ts: 5 bundles verified with 0 outbound attempts behind the block all proxy |
-| the changelog covers every version from 1.1.31 | green | the changelog carries every version of the chain from 1.1.31 through 2.0.166 |
+| the changelog covers every version from 1.1.31 | green | the changelog carries every version of the chain from 1.1.31 through 2.0.167 |
 | the migration guide covers every supported path | green | docs/migrationguide.md documents the version one, automa, selenium, ui vision and tabular migration paths |
 | the release notes cover the user facing changes of the release | green | docs/releasenotes.md carries the release notes of the platform release |
 | the roadmap chain rules held through every release | green | docs/evolutionroadmap.md carries the progress line of the chain with 2.0.0 as the closing release |
 | the release pipeline dry run passed end to end | green | the release workflow carries the draft, verify and publish chain: the draft release assembles, the verification step downloads every asset and checks the checksums, and the publish step flips the release live |
-| the capability manifests carry the release version pins | blocked | build/caps sits absent; the build has not produced the capability manifests |
+| the capability manifests carry the release version pins | green | the 7 capability manifests of build/caps pin the release 2.0.167 |
 | the soak run keeps a long workflow alive across the retention window without drift | green | soak.ts: 9 soak entries, 0 failed, the long workflow stayed alive with byte identical resume and a sealed audit hash across two full runs |
 | the wcag accessibility sweep audits every ui surface green | green | wcag.ts: 10 wcag checklist entries over every surface, 0 failed |
 | the store package carries the icon family at every required size | green | icons.ts carries the six png payloads the build materializes into the extension zip, the manifest icons block and the action default icon resolve them, and the packageextension gate asserts the six icons answer inside the shipped archive |
@@ -44,4 +44,4 @@ The platform release accepts the recorded residual risks: the version one protoc
 
 ## The go decision
 
-The readiness gate answers **no-go** for the 2.0.166 release: 25 of 27 gates green, 2 blocked. The reviewer of record is the release lane the record links, the date is the release stamp and the evidence links ride every row of the table.
+The readiness gate answers **go** for the 2.0.167 release: 27 of 27 gates green, 0 blocked. The reviewer of record is the release lane the record links, the date is the release stamp and the evidence links ride every row of the table.

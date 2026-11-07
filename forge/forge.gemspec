@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "forge"
-  spec.version = ENV.fetch("FORGE_VERSION", "2.0.166")
+  spec.version = ENV.fetch("FORGE_VERSION", "2.0.167")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The forge documentation and tests envelope (the sandbox runner surface — the runners on the saddle engine boundary)."
