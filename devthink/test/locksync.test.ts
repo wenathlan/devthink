@@ -109,6 +109,19 @@ describe("the lockfile seat (the frozen-lockfile install law)", () => {
       expect(drifted, `the drifted seats: ${drifted.join("; ")}`).toEqual([]);
     });
   }
+  /* the owner's visibility charge (the w9 lockfile law): the ten pnpm locks
+   * left the tracked tree for the gitignore seat, so a checkout that carries
+   * none answers the hidden-law battery instead of an empty suite — the
+   * frozen install lanes ride the tracked bun locks and the saddle npm lock,
+   * and the pnpm walk stays a local-dev seat that materializes on demand. */
+  if (APPS.every((app) => !existsSync(join(reporoot, app, "pnpm-lock.yaml")))) {
+    it("the hidden lockfile law: no pnpm lock rides the tracked tree, the frozen lanes answer the bun seats", () => {
+      expect(APPS.every((app) => !existsSync(join(reporoot, app, "pnpm-lock.yaml")))).toBe(true);
+      /* the tracked seats the frozen lanes read: the ten bun locks beside the saddle npm lock */
+      expect(existsSync(join(reporoot, "devthink", "bun.lock"))).toBe(true);
+      expect(existsSync(join(reporoot, "saddle", "package-lock.json"))).toBe(true);
+    });
+  }
 });
 
 describe("the engines seat (the one-hop-up root manifest law)", () => {
