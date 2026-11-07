@@ -263,7 +263,7 @@ jobs:
         # per-app index: every platform the amd64 runner cannot execute
         # installs its binfmt handler here (the family pin - only the
         # emulated legs the base-carried axis names).
-        uses: docker/setup-qemu-action@99012661954931238ded8c8c007157a8430204e1 # v4.4.0
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
           platforms: linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
       - name: setup buildx
@@ -697,7 +697,7 @@ jobs:
           echo "the saddle ${version} lanes ride the node base digest ${node_digest} resolved at build time."
 
       - name: Set up QEMU (the emulated legs of the build index)
-        uses: docker/setup-qemu-action@99012661954931238ded8c8c007157a8430204e1 # v4.4.0
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
           # the build index minus the native amd64 leg: every platform
           # the amd64 runner cannot execute installs its binfmt handler
@@ -890,6 +890,15 @@ jobs:
           # registry through the setup (the npmjs leg overrides with the
           # explicit --registry flag the public lane demands)
           registry-url: https://npm.pkg.github.com
+      - name: setup bun
+        # the family install grammar (the ci battery and the publish
+        # lanes): the saddle tree answers bun as its package manager,
+        # so the locked install of the engine build below rides the
+        # pinned bun 1.4.4 the frozen lanes walk - never the floating
+        # npm install the frozen lockfile never certified.
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
       - name: resolve release version
         id: release
         env:
@@ -922,23 +931,78 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: build the engine bundle and pack it through webpack
         # the cross-bundler rung the ci battery verifies, carried to the
-        # saddle engine: the tsc engine build (scripts.ts buildengine, the
-        # build:engine manifest entry) produces distpackage/index.js and
-        # the exact-pinned webpack fetch (webpack 5.112.2 with its
-        # webpack-cli 6.0.1 peer - the same pin law every lane of the
-        # battery answers, never a floating npm install) packs the one
-        # entry into the one webpack bundle the six channel legs
+        # saddle engine: the frozen bun install (the family grammar -
+        # never a floating npm install) answers the certified lockfile,
+        # the build:engine manifest entry walks the tsc typecheck gate
+        # through the bun script runner, the lane's own pinned manager
+        # compiles the public entry's reviewed source graph into the one
+        # distpackage/index.js engine bundle (the dist law: tsc emits
+        # nothing under the source-is-library doctrine, so the bundle the
+        # seat distributes compiles here - node builtins riding the
+        # target, the four lazy runtime seats the host owns staying
+        # external), and the exact-pinned webpack fetch (webpack 5.112.2
+        # with its webpack-cli 6.0.1 peer - the same pin law every lane
+        # of the battery answers, never a floating npm install) packs the
+        # one entry into the one webpack bundle the six channel legs
         # distribute - a real, non-empty, single-file engine
         # distribution.
+        #
+        # THE RUNNER LAW (the containerlanes heal): the engine build must
+        # walk the manifest entry through a script runner (bun run), never
+        # a bare `node scripts.ts buildengine`. the bare node leg carried
+        # no node_modules/.bin on PATH, and the typescript 7 exports map
+        # hides ./bin/tsc from the require-path walk inside scripts.ts,
+        # so the compiler fallback answered a bare `tsc` the spawn
+        # ENOENTed - every webpack channel leg reddened at this step on
+        # the 2.0.167 wave. the script runner prepends the bin seat the
+        # spawn resolves, the same law the publish workflow's
+        # `npm --prefix saddle run build:engine` lane always answered.
+        #
+        # THE CONFIG-FILE WALK (the ci battery grammar): the webpack rung
+        # reads the generated config the -c lane carries, never the CLI
+        # flag walk - the variadic --target parse the tree's own cli seat
+        # reds stays retired, the LimitChunkCountPlugin keeps the bundle
+        # single-file (the async seats inline beside the entry, no chunk
+        # files the envelope would strand) and the externals the compile
+        # lane marked stay external in the packed output.
         env:
           SADDLE_VERSION: ${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
           cd saddle
-          npm install --ignore-scripts --no-audit --no-fund
-          node scripts.ts buildengine
-          test -f distpackage/index.js
-          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./distpackage/index.js --output-path ./distpackage/webpack --output-filename saddle.webpack.js --mode production --target node
+          bun install --frozen-lockfile --ignore-scripts
+          bun run build:engine
+          bun build ./index.ts --target=node --format=esm --outfile=distpackage/index.js \
+            --external @babel/core \
+            --external @libsql/client \
+            --external playwright \
+            --external webpack
+          test -s distpackage/index.js
+          cat > ./distpackage/webpack.config.mjs <<'EOF'
+          // the cross-bundler lane config: the engine bundle the CLI flag
+          // walk can no longer carry rides the config the pinned rung reads
+          import webpack from "webpack";
+          const LimitChunkCountPlugin = webpack.optimize?.LimitChunkCountPlugin;
+          export default {
+            mode: "production",
+            target: "node",
+            experiments: { outputModule: true },
+            entry: "./distpackage/index.js",
+            output: {
+              path: new URL("./webpack/", import.meta.url).pathname,
+              filename: "saddle.webpack.js",
+              library: { type: "module" },
+            },
+            plugins: [new LimitChunkCountPlugin({ maxChunks: 1 })],
+            externals: {
+              "@babel/core": "@babel/core",
+              "@libsql/client": "@libsql/client",
+              "playwright": "playwright",
+              "webpack": "webpack",
+            },
+          };
+          EOF
+          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack -c ./distpackage/webpack.config.mjs
           test -s distpackage/webpack/saddle.webpack.js
           du -h distpackage/webpack/saddle.webpack.js
       - name: stage the webpack envelope manifest (the npm and gem seats)
@@ -955,7 +1019,7 @@ jobs:
           version="${{ steps.release.outputs.version }}"
           mkdir -p saddlewebpack/dist
           cp saddle/distpackage/webpack/saddle.webpack.js saddlewebpack/dist/
-          node -e "const fs=require('fs');fs.writeFileSync('saddlewebpack/package.json',JSON.stringify({name:'@wenathlan/saddle-webpack',version:process.argv[1],description:'the webpack-bundled saddle engine distribution (the containerlanes wave webpack seat - one entry, one output, the exact-pinned webpack rung the ci battery verifies)',main:'./dist/saddle.webpack.js',files:['dist'],license:'GPL-3.0-only',repository:{type:'git',url:'git+https://github.com/wenathlan/devthink.git'}},null,2)+'\n')" "${version}"
+          node -e "const fs=require('fs');fs.writeFileSync('saddlewebpack/package.json',JSON.stringify({name:'@wenathlan/saddle-webpack',version:process.argv[1],description:'the webpack-bundled saddle engine distribution (the containerlanes wave webpack seat - one entry, one output, the exact-pinned webpack rung the ci battery verifies)',type:'module',main:'./dist/saddle.webpack.js',files:['dist'],license:'GPL-3.0-only',repository:{type:'git',url:'git+https://github.com/wenathlan/devthink.git'}},null,2)+'\n')" "${version}"
           cat > saddlewebpack/saddle-webpack.gemspec <<'GEMSPEC'
           # frozen_string_literal: true
           # the webpack distribution gem of the saddle engine (the
