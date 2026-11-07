@@ -128,13 +128,17 @@
 # building from inside saddle/ breaks the vault COPY - the sibling rides
 # the context beside this directory, never inside it.
 #
-# THE DIGEST LAW: the FROM lines ride name@sha256:${NODE_BASE_DIGEST}
-# (the scorecard-file form the supply-chain gate reads as pinned) while
-# the digest itself never lands in a source file — the publish lanes
-# resolve the manifest-list digest on the runner at build time and pass
-# it as the NODE_BASE_DIGEST build-arg, and a local build resolves the
-# same lane before docker build (the signature is generated during the
-# build, never hardcoded).
+# THE DIGEST LAW (the local-build heal): the FROM lines ride
+# name@sha256:${NODE_BASE_DIGEST} (the scorecard-file form the
+# supply-chain gate reads as pinned) and the ARG carries the resolved
+# manifest-list digest of the pinned tag as its default — the same floor
+# the debonair/forge seats stamp as their hardcoded digest, so a plain
+# local `docker build -f saddle/Dockerfile .` never dies on an empty
+# `@sha256:` reference the way the digest-never-hardcoded era did (the
+# owner's law: the container must build functional like the other ten).
+# The publish lanes still resolve the manifest digest on the runner at
+# build time and override the default with the fresh value — the pin
+# form the gate reads stays identical either way.
 #
 # THE VERSION LAW: the ARG default below mirrors saddle/package.json
 # (the metadata lockstep the registry lanes stamp); the publish lanes pass
@@ -142,14 +146,14 @@
 # the stamp.
 
 ARG NODE_BASE_TAG="node:26.13.0-slim"
-# the digest-never-hardcoded law, the scorecard-file form: the FROM lines
-# ride name@sha256:${ARG} (the exact pattern the supply-chain gate reads
-# as pinned) while the digest itself still resolves at build time on the
-# runner (the bases step of the publish lanes) — no 64-hex ever enters the
-# repository, the manifest-list digest serves the whole build matrix
-# (the four base-carried legs of the eleven-architecture standard), and a
-# local build resolves the same lane before docker build.
-ARG NODE_BASE_DIGEST
+# the resolved manifest-list digest of node:26.13.0-slim (the local-build
+# floor the ARG default stamps — the publish lanes override it with the
+# freshly resolved digest at build time, and the FROM lines keep the
+# name@sha256:${ARG} pin form the supply-chain gate reads either way):
+# the default ends the empty-@sha256: era where a local build without the
+# build-arg answered an invalid base reference and the container the
+# owner charged functional never built at all.
+ARG NODE_BASE_DIGEST=5adad64f9a1fca2d51972caa65983634c8a774eb300d72b20f7f2a0f60368072
 
 # ===== stage: solbuild — the locked npm tree and the console spa =====
 FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
@@ -626,3 +630,18 @@ LABEL org.opencontainers.image.title="saddle (the void os-distribution catalog l
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/void.json /saddle/osprofile.json
+
+# ===== stage: default — the trailing balanced seat the header documents =====
+# THE DEFAULT TARGET LAW (the local-build heal): the header declares the
+# plain `docker build -f saddle/Dockerfile .` with no --target answers the
+# balanced profile, but the os-distribution scratch lanes below the
+# balanced stage used to end the file — the no-target build answered
+# osvoid, a scratch seat that COPYs the osprofiles/ folder only the
+# publish lanes render, so the local container the owner charged
+# functional died on the missing folder instead of building the engine.
+# This trailing alias re-seats the balanced profile as the last stage:
+# the no-target build answers the runnable engine (the same graph the
+# compose lane rides), every os lane keeps its own explicit --target,
+# and the profile axis (max / balanced / lite) stays addressable behind
+# its names exactly as before.
+FROM balanced

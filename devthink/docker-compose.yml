@@ -27,8 +27,8 @@ services:
       context: ..
       dockerfile: devthink/Dockerfile
       args:
-        DEVTHINK_VERSION: "{DEVTHINK_VERSION:-2.0.166}"
-    image: "ghcr.io/wenathlan/devthink-engine:{DEVTHINK_VERSION:-2.0.166}"
+        DEVTHINK_VERSION: "${DEVTHINK_VERSION:-2.0.166}"
+    image: "ghcr.io/wenathlan/devthink-engine:${DEVTHINK_VERSION:-2.0.166}"
     environment:
       DEVTHINK_HTTP_BIND: "0.0.0.0"
       DEVTHINK_HTTP_PORT: "8080"

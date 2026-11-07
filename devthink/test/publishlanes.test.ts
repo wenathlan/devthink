@@ -337,7 +337,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     }
   });
 
-  it("the dockerfile defaults bake the max profile and never hardcode a digest", async () => {
+  it("the dockerfile defaults bake the max profile and pin the base the local build rides", async () => {
     const dockerfile = await readFile(join(repoRoot, "saddle", "Dockerfile"), "utf8");
     /* the saddlemod heal law: the argan family doctrine — three explicit
      * profile targets (max / balanced / lite) with the SADDLE_PROFILE stamp
@@ -351,9 +351,28 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(dockerfile).toContain("--target max");
     expect(dockerfile).toContain("--target balanced");
     expect(dockerfile).toContain("--target lite");
-    /* the digest law: no hardcoded sha-256 anywhere in the container
-     * sources — the base image resolves at build time on the runner. */
-    expect(dockerfile).not.toMatch(/[a-f0-9]{64}/);
+    /* the digest law, the local-build heal form (the owner's
+     * functional-container charge): the ARG default pins the resolved
+     * manifest-list digest of the pinned tag — the same floor the
+     * debonair/forge site containers stamp — so a plain local
+     * `docker build -f saddle/Dockerfile .` never dies on the empty
+     * `@sha256:` reference the digest-never-hardcoded era answered,
+     * while the publish lanes still override the default with the
+     * freshly resolved digest at build time (the dynamic-resolution
+     * law the workflow assertions pin). The pin form the supply-chain
+     * gate reads — name@sha256:${ARG} on every FROM — stays identical
+     * either way, and the one 64-hex the file carries lives inside the
+     * ARG default alone (the resolved digest of the pinned tag, never a
+     * workflow or a lock). */
+    expect(dockerfile).toMatch(/^ARG NODE_BASE_DIGEST=[a-f0-9]{64}$/m);
+    const fromLines = dockerfile.match(/^FROM.*$/gm) ?? [];
+    for (const line of fromLines) {
+      if (line.includes("${NODE_BASE_TAG}")) {
+        expect(line).toContain("@sha256:${NODE_BASE_DIGEST}");
+      }
+    }
+    const hexMatches = dockerfile.match(/[a-f0-9]{64}/g) ?? [];
+    expect(hexMatches.length).toBe(1);
   });
 
   it("the profile tag family never collides with the node engine and never rolls", async () => {

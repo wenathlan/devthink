@@ -30,7 +30,7 @@
 
 services:
   cadria-engine:
-    image: "ghcr.io/wenathlan/cadria:{CADRIA_VERSION:-2.0.166}"
+    image: "ghcr.io/wenathlan/cadria:${CADRIA_VERSION:-2.0.166}"
     # the engine never publishes a port by default: the face proxies it on
     # the private compose network (the vault precedent). uncomment to serve
     # the engine lane directly behind your own door:
@@ -42,7 +42,7 @@ services:
     restart: unless-stopped
 
   cadria-face:
-    image: "ghcr.io/wenathlan/cadria:{CADRIA_VERSION:-2.0.166}"
+    image: "ghcr.io/wenathlan/cadria:${CADRIA_VERSION:-2.0.166}"
     volumes:
       # the family conf over the default site conf: the resolver law, the
       # security headers, the gzip and cache law, the /api proxy lane.

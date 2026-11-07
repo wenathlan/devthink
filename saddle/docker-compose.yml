@@ -27,10 +27,14 @@ services:
     build:
       context: ..
       dockerfile: saddle/Dockerfile
-      target: base
+      # the default profile the compose lane rides (the local-build heal):
+      # the engine seat answers the balanced plan — the documented default
+      # target of the Dockerfile — the same way the registry lane tags its
+      # balanced leg, never the bare base floor the profile axis stamps on.
+      target: balanced
       args:
-        SADDLE_VERSION: "{SADDLE_VERSION:-2.0.166}"
-    image: "ghcr.io/wenathlan/saddle-engine:{SADDLE_VERSION:-2.0.166}"
+        SADDLE_VERSION: "${SADDLE_VERSION:-2.0.166}"
+    image: "ghcr.io/wenathlan/saddle-engine:${SADDLE_VERSION:-2.0.166}"
     environment:
       SADDLE_PORT: "8080"
       SADDLE_HOST: "0.0.0.0"
