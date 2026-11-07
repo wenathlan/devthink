@@ -30,6 +30,11 @@ RUN apk add --no-cache python3 make g++ \
 COPY app/ .
 # the copy-law vault sibling: the label store, routes and utils bridges resolve the ../vault aliases, so the sibling sources land at /src/vault where those bridges answer inside the container.
 COPY vault/ /src/vault/
+# The devthink sibling of the family law: routerbase.ts re-exports the
+# family routerBase from ../devthink/routerbase.ts, so the devthink
+# sources land at /src/devthink where that re-export answers inside the
+# container (the same sibling-copy law the vault line above carries).
+COPY devthink/ /src/devthink/
 # the saddle sibling of the engine ownership: the pipeline sources import the sandbox and the modes through the @wenathlan/saddle bridges and the vite aliases resolve the specifiers to ../saddle/sandbox.ts and ../saddle/modes.ts, so the sibling sources land at /src/saddle where those bridges answer inside the container (sources only - the build never installs the sibling, the aliases read the .ts files).
 COPY saddle/ /src/saddle/
 RUN pnpm build

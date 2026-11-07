@@ -172,6 +172,12 @@ COPY saddle/ .
 # so the vault sources ride the context beside the saddle and land at
 # /vault where the import resolves (the family context fix).
 COPY vault/ /vault
+# the routerbase sibling of the family law: saddle/routerbase.ts
+# re-exports the family routerBase from ../devthink/routerbase.ts, so
+# the devthink sources land at /devthink where the sol build resolves
+# the re-export (sources only - the same never-installed law the vault
+# sibling above rides, the family context fix the lanes carry).
+COPY devthink/ /devthink
 RUN npm run web:build:pages \
     # the theme build emits the hashed SPA bundles straight at the app
     # root (the family static-first vite contract): stage them into a
