@@ -378,7 +378,7 @@ jobs:
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/companion.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/nativehost.template.json"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/server.js"
-          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/crossbrowser.js"
+          tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/security.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/pack.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/http.js"
           tar -tzf "release/wenathlan-devthink-${VERSION}.tgz" | grep -F "package/manifest.json"

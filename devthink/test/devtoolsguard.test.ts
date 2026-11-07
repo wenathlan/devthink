@@ -18,12 +18,19 @@ import {
   ondevtoolstrip,
   showdevtoolsinterstitial,
   suspenddevtoolsguard,
-} from "../devtoolsguard.ts";
+} from "../security.ts";
 
-/** the module source, read once: the structural contracts (no wipe
- * vector, no size heuristic) are asserted against the bytes the build
- * ships — the honest form of testing a timing trap without devtools. */
-const source = readFileSync(new URL("../devtoolsguard.ts", import.meta.url), "utf8");
+/** the wall section of the security seat, read once: the structural contracts
+ * (no wipe vector, no size heuristic) are asserted against the bytes the
+ * merged module ships — the honest form of testing a timing trap without
+ * devtools. the wall rides the security.ts seat since the security-tooling
+ * consolidation folded devtoolsguard.ts into it, so the reader slices the
+ * devtoolsguard section out of the merged module the same way the seat
+ * carries it: from the merged banner to the next section (or the file end). */
+const seat = readFileSync(new URL("../security.ts", import.meta.url), "utf8");
+const wallstart = seat.indexOf("/* ── Merged from devtoolsguard.ts ── */");
+const wallnext = seat.indexOf("/* ── Merged from", wallstart + 1);
+const source = wallstart === -1 ? "" : seat.slice(wallstart, wallnext === -1 ? undefined : wallnext);
 
 describe("the devtools guard", () => {
   it("stays unarmed on the dev build (the dev machine keeps its tools)", () => {

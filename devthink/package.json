@@ -14,7 +14,7 @@
     "check": "bun run check:secrets && bun run test",
     "check:maintenance": "node maintain.ts check",
     "check:metadata": "node release.ts check",
-    "check:secrets": "bun run checksecrets.ts",
+    "check:secrets": "bun security.ts checksecrets",
     "check:web": "tsc --noEmit",
     "db:generate": "prisma generate --schema schema.prisma",
     "db:push": "prisma db push --schema schema.prisma --url \"${DEVTHINK_DATABASE_URL:-${DATABASE_URL:-file:./devthink.db}}\"",
@@ -53,7 +53,7 @@
     "validate:candidate": "node sweep.ts && node poolaudit.ts && node matrixverify.ts && node telemetryfree.ts && node soak.ts && node wcag.ts",
     "validate:docs": "node doccheck.ts",
     "validate:runtime": "node runtime.ts",
-    "validate:security": "node pentest.ts && node cspaudit.ts && node permdiff.ts",
+    "validate:security": "node pentest.ts && node security.ts cspaudit && node permdiff.ts",
     "validate:workflow": "node workflow.ts && node ../foundry/npmgate.ts",
     "workflow:updates": "node workflow.ts sync"
   },
@@ -656,9 +656,9 @@
       "default": "./build/pack.js"
     },
     "./crossbrowser": {
-      "types": "./build/crossbrowser.d.ts",
-      "import": "./build/crossbrowser.js",
-      "default": "./build/crossbrowser.js"
+      "types": "./build/security.d.ts",
+      "import": "./build/security.js",
+      "default": "./build/security.js"
     },
     "./http": {
       "types": "./build/http.d.ts",

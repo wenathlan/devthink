@@ -14,7 +14,7 @@ import {
   xpinameof,
   xpipackassemble,
   xpipacklintercheck,
-} from "../crossbrowser.js";
+} from "../security.js";
 import type { browsermanifestsource } from "../types.js";
 
 describe("browser coverage release suite", () => {

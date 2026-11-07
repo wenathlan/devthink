@@ -7,7 +7,7 @@ import {
   firefoxprepdenylistcheck,
   firefoxprepoverlay,
   firefoxprepsplitbundle,
-} from "../crossbrowser.js";
+} from "../security.js";
 import type { browsermanifestoverlay, browsermanifestsource } from "../types.js";
 
 const sourcesmanifest: browsermanifestsource = {

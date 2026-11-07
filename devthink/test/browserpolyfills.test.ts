@@ -5,7 +5,7 @@ import {
   browserpolyfillof,
   browserpolyfillpromisify,
   browserpolyfillstructerrorof,
-} from "../crossbrowser.js";
+} from "../security.js";
 
 describe("browserpolyfills", () => {
   it("prefers the browser namespace when present and falls back to the chrome namespace", () => {

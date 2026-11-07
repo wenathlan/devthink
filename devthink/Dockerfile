@@ -438,10 +438,10 @@ RUN node nativesmoke.ts
 # the firefox prep check (the overlay of manifest.json layers
 # onto the source manifest through the crossbrowser adapter: the host
 # permissions stay empty and the generated extension id survives).
-RUN node -e "import('./build/crossbrowser.js').then(module => { const manifest = JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); const overlay = manifest.browsers.firefox; const adapted = module.firefoxprepadapt({ manifest, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
+RUN node -e "import('./build/security.js').then(module => { const manifest = JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); const overlay = manifest.browsers.firefox; const adapted = module.firefoxprepadapt({ manifest, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
 
 # the secret scan (the merged suite carries detection regexes, not secrets).
-RUN bun run checksecrets.ts
+RUN bun security.ts checksecrets
 
 # the accessibility sweep regenerates the recorded wcag artifact against
 # THIS build: the readiness test the vitest suite carries walks the

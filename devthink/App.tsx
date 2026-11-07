@@ -20,7 +20,7 @@ import {
   ondevtoolstrip,
   reportguardstrike,
   showdevtoolsinterstitial,
-} from "./devtoolsguard.ts";
+} from "./security.ts";
 import { seedLabels } from "./uistore.ts";
 import Sol from "./sol/Sol.tsx";
 import { loadDevtoolsWall } from "./personalstore.ts";

@@ -16,7 +16,6 @@ export * from "./memory.js";
 export * from "./mcp.js";
 export * from "./serve.js";
 export * from "./bridge.js";
-export * from "./crossbrowser.js";
 export * from "./pack.js";
 export * from "./commands.js";
 export * from "./data.js";

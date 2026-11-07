@@ -9,7 +9,7 @@ import {
   xpipackassemble,
   xpipackentriesof,
   xpipacklintercheck,
-} from "../crossbrowser.js";
+} from "../security.js";
 import type { browsermanifestsource, xpipackinput } from "../types.js";
 
 const manifest: browsermanifestsource = {

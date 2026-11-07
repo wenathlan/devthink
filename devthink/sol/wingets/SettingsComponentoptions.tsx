@@ -4,7 +4,8 @@
  * animation, the taskbar tooltips and the devtools wall are the three
  * personalstore toggles (the stylesheet flags data-alttab-motion and
  * data-taskbar-tips on the document root; the devtools wall rides the
- * suspend seam of devtoolsguard.ts, the single wall module); the desktop
+ * suspend seam of security.ts, the merged security seat whose devtoolsguard
+ * section owns the wall); the desktop
  * rail mode and the interface zoom keep riding the preference machine the
  * workbench flags always rode. Every control is a 44px row with the switch
  * in the accent color. Loose component of the settings page, riding the

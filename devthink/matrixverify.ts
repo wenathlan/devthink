@@ -48,9 +48,9 @@ function check(condition: unknown, message: string) {
   if (!condition) throw new Error(message);
 }
 
-/** Runs one gate script as a subprocess cell and answers its one line summary. */
-async function runcells(script: string) {
-  const outcome = await execute(process.execPath, [script], { cwd: process.cwd() });
+/** Runs one gate script as a subprocess cell and answers its one line summary: the cspaudit cell rides the security seat lane word the security-tooling consolidation set (node security.ts cspaudit), so the cell takes the script and its lane arguments the same way the manifest lanes walk them. */
+async function runcells(...script: string[]) {
+  const outcome = await execute(process.execPath, script, { cwd: process.cwd() });
   return outcome.stdout.trim().split("\n").at(-1) ?? "";
 }
 
@@ -265,7 +265,7 @@ export async function runmatrixverifysuite() {
     runcells("apifreeze.ts"),
   );
   await cell({ family: "gates", name: "the csp audit gate runs green over the content security policy" }, async () =>
-    runcells("cspaudit.ts"),
+    runcells("security.ts", "cspaudit"),
   );
   await cell({ family: "gates", name: "the permission diff gate runs green over the versioned baseline" }, async () =>
     runcells("permdiff.ts"),

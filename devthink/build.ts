@@ -94,7 +94,7 @@ const bundlebudgets: Record<string, number> = {
   hardening: 60_000,
   dashboard: 120_000,
   queue: 160_000,
-  crossbrowser: 380_000,
+  security: 700_000,
   pack: 600_000,
 };
 
@@ -178,8 +178,8 @@ await build({
   banner: { js: banner },
 });
 
-/** The per module bundles of the exports map: policy, protocol, memory and progress ship as their own tree shakable entries with the types the declaration emit provides, the 1.1.95 hardening family ships its own entry beside them so the security gates stay importable without touching the frozen index surface, and the 1.1.96 dashdone family ships its own entry the same way so the multi agent dashboard view stays importable outside the frozen surface — the seat answers the dashboard keyword file since the wave consolidation folded dashdone.ts, desktopstate.ts, alttab.ts and density.ts into dashboard.ts, and the lazy storage.ts preference lane the desktopstate section carries stays external exactly as lazy as it rode in its standalone era (the flat package answers the account store through its own ./storage seam; a lane that cannot resolve answers the honest floating default the pure layer always kept). */
-for (const modulename of ["policy", "protocol", "memory", "progress", "hardening", "dashboard"]) {
+/** The per module bundles of the exports map: policy, protocol, memory and progress ship as their own tree shakable entries with the types the declaration emit provides, the 1.1.95 hardening family ships its own entry beside them so the security gates stay importable without touching the frozen index surface, and the 1.1.96 dashdone family ships its own entry the same way so the multi agent dashboard view stays importable outside the frozen surface — the seat answers the dashboard keyword file since the wave consolidation folded dashdone.ts, desktopstate.ts, alttab.ts and density.ts into dashboard.ts, and the security seat answers the security keyword file since the security-tooling consolidation folded checksecrets.ts, cspaudit.ts, crxharvest.ts, crossbrowser.ts and devtoolsguard.ts into security.ts, and the lazy storage.ts preference lane the desktopstate section carries stays external exactly as lazy as it rode in its standalone era (the flat package answers the account store through its own ./storage seam; a lane that cannot resolve answers the honest floating default the pure layer always kept). */
+for (const modulename of ["policy", "protocol", "memory", "progress", "hardening", "dashboard", "security"]) {
   const modulexternals = modulename === "dashboard" ? ["./storage.ts"] : [];
   await build({
     entryPoints: [`${modulename}.ts`],
@@ -328,28 +328,7 @@ await build({
   banner: { js: banner },
 });
 
-/** The cross browser bundles of the 1.1.86 browser coverage family: the webextension api map the gateway entry carried ships through the crossbrowser family entry, and the 1.1.90 correlation wave folds the polyfill layer, the firefoxprep adapter, the xpipack assembler and the safariskeleton wrapper into the one crossbrowser family entry with the minified variants beside them, so a local process imports the catalog, the namespace resolver, the firefox overlay adapter, the xpi assembler and the safari wrapper from one artifact beside the native bridge bundles. */
-await build({
-  entryPoints: ["crossbrowser.ts"],
-  outfile: record("crossbrowser.js"),
-  bundle: true,
-  format: "esm",
-  platform: "neutral",
-  target: "es2022",
-  sourcemap: true,
-  banner: { js: banner },
-});
-await build({
-  entryPoints: ["crossbrowser.ts"],
-  outfile: record("crossbrowser.min.js"),
-  bundle: true,
-  format: "esm",
-  platform: "neutral",
-  target: "es2022",
-  sourcemap: true,
-  minify: true,
-  banner: { js: banner },
-});
+/* The crossbrowser bundle pair retired with the security-tooling consolidation: the family (the webextension api map, the polyfill layer, the firefoxprep adapter, the xpipack assembler and the safariskeleton wrapper) rides the security keyword file now, so the per-module loop below emits the one security.js artifact the ./crossbrowser and ./security export faces both answer — the crx mining and csp audit CLI seats ride the same source behind the lane dispatcher without touching the neutral bundle's consumers. */
 /** The server library entry of the grand merge consolidation: the gateway lineage library surface (the embedded gateway http transport, the request auth, the console cli and the library barrel) and the maene lineage barrel (the provider account console, the provider family namespaces and the opencode server plugin entry) interned in server.ts — one tree shakable entry answers the whole server surface contract, so the ./server subpath resolves from the flat package exactly like every other entry. The runtime dependencies the gateway persistence and the hono server pull (the prisma stack, libsql, hono, the node adapter, ink and react) ride the package.json dependencies of the published artifact — the entry marks them external so the bundled code stays the reviewed repository sources alone and the dependency tree the consumer installs answers the rest. The thinking ladder rides the ownership law instead (pr16): the 7-level ladder is owned by the getry engine and the os consumes it as a library, so the server builds resolve the @wenathlan/getry/thinking specifier to the sibling owner source through the getrybridge alias — the same bridge the vite, vitest and tsconfig resolutions carry — and the bundle inlines the owner's rungs at build time (the generated build tree is a build artifact, never a second source of truth; the lockfile stays untouched because no registry dependency is declared). */
 const familybridges = {
   /** the saddle owner bridge of the modality ladder (wave/engineregroup1):
@@ -767,7 +746,7 @@ for (const [target, file] of [
   ["hardening", "hardening.js"],
   ["dashboard", "dashboard.js"],
   ["server", "server.js"],
-  ["crossbrowser", "crossbrowser.js"],
+  ["security", "security.js"],
   ["pack", "pack.js"],
   ["http", "http.js"],
   ["queue", "queue.js"],
@@ -1132,8 +1111,8 @@ if (firefoxoverlay === undefined)
   throw new Error(
     "The root manifest carries the firefox overlay under the browsers key; a missing overlay never builds the firefox target.",
   );
-const firefoxprep = await importbundle(join(root, "build", "crossbrowser.js"));
-const xpipack = await importbundle(join(root, "build", "crossbrowser.js"));
+const firefoxprep = await importbundle(join(root, "build", "security.js"));
+const xpipack = await importbundle(join(root, "build", "security.js"));
 const firefoxadapted = firefoxprep.firefoxprepadapt({
   manifest: sourcemanifest,
   overlay: firefoxoverlay,
@@ -1193,7 +1172,7 @@ const lintercheck = xpipack.xpipacklintercheck({ markers: xpibuilt.lintermarkers
 if (!lintercheck.ok) throw new Error(lintercheck.reason ?? "The firefox xpi failed the addons linter budget.");
 
 /** The safari target of the 1.1.86 browser coverage family: the build embeds the chromium extension payload (the manifest, the background bundle, the page bundles and the assets) into the safari app extension wrapper through the safariskeleton module, and the wrapper ships beside the chromium zip and the firefox xpi with the bundle id, the entitlements and the minimal app shell the wrapper declares. */
-const safariskeleton = await importbundle(join(root, "build", "crossbrowser.js"));
+const safariskeleton = await importbundle(join(root, "build", "security.js"));
 const safaripayload = [];
 safaripayload.push({
   name: "manifest.json",
@@ -1341,7 +1320,7 @@ checksums.push(`${createHash("sha256").update(identitykey).digest("hex")}  manif
 await writeFile(join(root, "build", "checksums.txt"), `${checksums.join("\n")}\n`, "utf8");
 
 /** The apimap build check of the 1.1.86 browser coverage family: the build asserts every recorded api has a chromium and firefox mapping (a missing row fails the build before the cross browser artifacts ship), so a new api without a row never reaches the firefox or the safari build. */
-const apimapmodule = await importbundle(join(root, "build", "crossbrowser.js"));
+const apimapmodule = await importbundle(join(root, "build", "security.js"));
 const apireport = apimapmodule.apimapunmapped(apimapmodule.apimapentries());
 if (apireport.failed) throw new Error(apireport.reason);
 console.log(
@@ -1408,7 +1387,6 @@ const stagerootfiles = [
   "pack.js",
   "http.js",
   "server.js",
-  "crossbrowser.js",
   "gallery.json",
   "umd-example.html",
 ];

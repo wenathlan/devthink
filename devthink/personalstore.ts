@@ -12,11 +12,12 @@
  * source of truth (the panel and the paired gateway read it); the
  * localStorage mirror only lets the boot paint the ladder before the async
  * identity store answers. The devtools wall flag rides the same channel:
- * the choice persists here, the suspension seam lives in devtoolsguard.ts
- * (the single wall module the akash study lands).
+ * the choice persists here, the suspension seam lives in security.ts
+ * (the devtoolsguard section of the merged security seat — the single wall
+ * module the akash study lands).
  */
 
-import { suspenddevtoolsguard } from "./devtoolsguard.ts";
+import { suspenddevtoolsguard } from "./security.ts";
 
 /** one wallpaper of the picker: an id plus the layered css recipe the
  * --wall-fallback variable serves. */
@@ -363,7 +364,7 @@ export function saveTaskbarTips(on: boolean): void {
 export const DEVTOOLS_WALL_KEY = "dt.devtools.wall.v1";
 
 /** arms or suspends the devtools wall: off parks every prong of the wall
- * (devtoolsguard.ts owns the machinery — suspended, it never loops); on
+ * (security.ts owns the machinery through its devtoolsguard section — suspended, it never loops); on
  * lets the duty cycle run again. The seam answers on every build so the
  * toggle behaves the same in dev. */
 export function applyDevtoolsWall(on: boolean): void {

@@ -129,7 +129,7 @@ jobs:
       - name: Run the penetration test checklist of the security hardening release
         run: cd devthink && node pentest.ts
       - name: Audit every content security policy of the extension surfaces
-        run: cd devthink && node cspaudit.ts
+        run: cd devthink && node security.ts cspaudit
       - name: Verify the permission set never grew against the previous release
         run: cd devthink && node permdiff.ts
       - name: Run the coordination certification checklist of the multi agent release
@@ -217,7 +217,7 @@ jobs:
         run: |
           set -euo pipefail
           cd devthink
-          node -e "import('./build/crossbrowser.js').then(module => { const overlay = require('./manifest.json').browsers.firefox; const source = require('./manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
+          node -e "import('./build/security.js').then(module => { const overlay = require('./manifest.json').browsers.firefox; const source = require('./manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
       - name: Run the addons linter over the xpipack output when installed
         run: |
           set -euo pipefail
