@@ -170,6 +170,12 @@ export function platformnames(name: string): boolean {
      * not to the review, the same law the _exports and _default seats
      * already carry */
     /^init_[a-z][A-Za-z0-9]*$/.test(name) ||
+    /* the esbuild cjs interop shim for import.meta references: the lane
+     * dispatcher the security keyword file carries reads import.meta.main
+     * for its bun entry check, and the cjs format synthesizes the
+     * import_meta accessor for it — the name belongs to the bundler's
+     * interop seam exactly the way the init_ and _exports seats ride */
+    name === "import_meta" ||
     wireformatnames(name)
   );
 }
