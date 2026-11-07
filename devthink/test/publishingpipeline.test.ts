@@ -183,7 +183,7 @@ describe("the publishing pipeline", () => {
     }
     /* the publishing pipeline bundles and the manifest itself join the covered set */
     const names = lines.map((line) => line.split(/\s+/)[1] ?? "");
-    for (const bundle of ["bridge.js", "crossbrowser.js", "pack.js", "http.js", "artifactmanifest.json"])
+    for (const bundle of ["bridge.js", "security.js", "pack.js", "http.js", "artifactmanifest.json"])
       expect(names).toContain(bundle);
   });
 
@@ -264,7 +264,7 @@ describe("the publishing pipeline", () => {
       "pack.js",
       "http.js",
       "server.js",
-      "crossbrowser.js",
+      "security.js",
       "index.d.ts",
       "umd.d.ts",
       "cli.d.ts",
