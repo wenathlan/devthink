@@ -19,7 +19,7 @@
  * wore (the lucide import itself is purged from the shell). The materials
  * ride
  * the landing block of sol.css — the tactile keys with the one
- * sanctioned indigo hover of the reference, never a blue glow elsewhere
+ * sanctioned violet hover of the reference, never a blue glow elsewhere
  * and never a solid blue key in the hero. The launch paths funnel to the
  * login face: the panel is the last page of the chain.
  */
@@ -71,15 +71,15 @@ function ensureSaasCss(): void {
 ensureSaasCss();
 
 /** The fluent glyph and the ink color each header tab wears — the semantic
- * parity of the reference pair (the OS spark in indigo, the explorer compass
+ * parity of the reference pair (the OS spark in violet, the explorer compass
  * in sky, the creators team in purple, the cadria film in pink, the debonair
  * note in blue). */
 const TABICON: Record<string, { icon: LucideIcon; color: string }> = {
-  "hero-os": { icon: Sparkles, color: "text-indigo-600" },
-  "workspace-subapps": { icon: Compass, color: "text-sky-600" },
+  "hero-os": { icon: Sparkles, color: "text-violet-600" },
+  "workspace-subapps": { icon: Compass, color: "text-teal-600" },
   "creators-doo": { icon: Users, color: "text-purple-600" },
   "spatial-bento": { icon: Film, color: "text-pink-600" },
-  "sonic-deck": { icon: Music, color: "text-blue-600" },
+  "sonic-deck": { icon: Music, color: "text-amber-600" },
 };
 
 /** The fluent glyph each left rail stop wears — the semantic parity set. */
@@ -131,7 +131,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
     <div className="saas-root min-h-screen w-full overflow-x-hidden bg-[#DCE2EE] p-[2.5px] text-slate-900 select-none sm:select-auto">
       {/* the left rail: the vertical saddle slab at the screen edge — the
           hairline divider and the six mandate stops with the reference
-          indigo-to-sky active pill (the saddle cloud key retired by the
+          violet-to-teal active pill (the saddle cloud key retired by the
           owner order: the six stops are the only keys of the rail) */}
       <aside className="fixed top-1/2 left-0 z-50 hidden -translate-y-1/2 flex-col items-center p-0 lg:flex">
         <VerticalSaddleBridge fillColor="#0A0B0E" className="py-2">
@@ -262,7 +262,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                 className="btn-tactile-3d group flex items-center rounded-full p-2.5 text-white"
                 aria-label={saaschrome.launch}
               >
-                <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
+                <ArrowUpRight className="h-4 w-4 text-teal-400" aria-hidden="true" />
                 <span className="max-w-0 overflow-hidden text-xs font-bold-tier whitespace-nowrap opacity-0 transition-[max-width,margin-left,margin-right,opacity] group-hover:mr-1 group-hover:ml-2 group-hover:max-w-[80px] group-hover:opacity-100">
                   {saaschrome.launch}
                 </span>

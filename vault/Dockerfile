@@ -209,6 +209,26 @@ LABEL org.opencontainers.image.title="vault (the void os-distribution catalog la
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/void.json /vault/osprofile.json
 
+FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6 AS face
+
+ARG VAULT_VERSION=2.0.166
+
+LABEL org.opencontainers.image.title="vault (the face)" \
+      org.opencontainers.image.description="vault face — the nginx surface of the storage container pair: the staged SPA the solbuild leg assembled served beside the /api proxy lane the mounted nginx.conf declares." \
+      org.opencontainers.image.version="${VAULT_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink" \
+      org.opencontainers.image.documentation="https://github.com/wenathlan/devthink/tree/main/vault"
+
+# the staged SPA the solbuild leg assembled rides the unprivileged nginx
+# html seat (the argan deploy precedent — the same nginx-unprivileged
+# base the family faces carry): the compose face service builds this
+# target, mounts the family nginx.conf over the default site conf and
+# serves the static surface beside the /api/* proxy lane. until this
+# stage the compose face service pointed at a target that never existed
+# — the pair the file documents never booted.
+COPY --from=solbuild /site/ /usr/share/nginx/html/
+
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797
 
 ARG VAULT_VERSION=2.0.167

@@ -22676,7 +22676,7 @@ button.dtc-recents__row {
   letter-spacing: -0.015em;
 }
 .saas-root ::selection {
-  background: #4f46e5;
+  background: #7c3aed;
   color: #ffffff;
 }
 .saas-root button:focus,
@@ -22684,7 +22684,7 @@ button.dtc-recents__row {
   outline: none;
 }
 .saas-root button:focus-visible {
-  outline: 2px solid rgba(99, 102, 241, 0.65);
+  outline: 2px solid rgba(124, 58, 237, 0.65);
   outline-offset: 2px;
 }
 .saas-root img {
@@ -22758,14 +22758,14 @@ button.dtc-recents__row {
 }
 .icon-frame-3d:hover {
   transform: translateY(-1.5px);
-  border-color: rgba(99, 102, 241, 0.5);
+  border-color: rgba(124, 58, 237, 0.5);
   box-shadow:
     0 12px 22px -6px rgba(79, 70, 229, 0.18),
     inset 0 1px 2px rgba(255, 255, 255, 1);
 }
 .icon-frame-3d-active {
   background: #ffffff;
-  border: 1px solid rgba(99, 102, 241, 0.6);
+  border: 1px solid rgba(124, 58, 237, 0.6);
   box-shadow:
     0 10px 22px -6px rgba(79, 70, 229, 0.24),
     inset 0 1px 2px rgba(255, 255, 255, 1);
@@ -22781,10 +22781,10 @@ button.dtc-recents__row {
   background: #f4f6fb;
   border: 1px solid rgba(226, 232, 240, 0.9);
 }
-.indigo-tactile-surface {
-  background: linear-gradient(145deg, #4f46e5 0%, #3730a3 58%, #312e81 100%);
+.violet-tactile-surface {
+  background: linear-gradient(145deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%);
   box-shadow:
-    0 22px 44px -12px rgba(55, 48, 163, 0.5),
+    0 22px 44px -12px rgba(91, 33, 182, 0.5),
     inset 0 2px 5px rgba(255, 255, 255, 0.32),
     inset 0 -5px 10px rgba(15, 23, 42, 0.4);
 }

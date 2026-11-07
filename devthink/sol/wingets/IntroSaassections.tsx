@@ -108,11 +108,11 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
             className="btn-tactile-3d flex items-center gap-2.5 rounded-full px-10 py-4 text-sm font-bold-tier text-white"
           >
             <span>{hero.keyprimary}</span>
-            <ArrowUpRight className="h-4 w-4 text-sky-400" aria-hidden="true" />
+            <ArrowUpRight className="h-4 w-4 text-teal-400" aria-hidden="true" />
           </button>
           {/* the secondary key keeps the reference's surface grammar while
               its hover border answers the §12B accent pair (#0067c0, the
-              light rung of --color-win) — the default light-indigo border
+              light rung of --color-win) — the default light-violet border
               the first cut wore is purged by the no-default-blue law */}
           <button
             type="button"
@@ -126,12 +126,12 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
           </button>
         </div>
 
-        {/* the three scooped proof cards of the reference: the indigo rating
+        {/* the three scooped proof cards of the reference: the violet rating
             slab, the surface time card and the dark neural core card */}
         <div className="mt-20 grid w-full grid-cols-1 items-stretch gap-6 text-left lg:grid-cols-12">
           <ScoopedCard
             className="animate-float-card lg:col-span-4"
-            surfaceClassName="indigo-tactile-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
+            surfaceClassName="violet-tactile-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
             topRightContent={
               <button
                 type="button"
@@ -150,12 +150,12 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
             <div className="mt-8 flex items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/10 p-4">
               <h3 className="text-sm leading-snug font-bold-tier text-white">{saasherocards.ratingline}</h3>
               {/* the two reader chips of the reference photos — gradient
-                  initials over the indigo ring, no external image */}
+                  initials over the violet ring, no external image */}
               <div className="flex shrink-0 -space-x-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-sky-300 to-indigo-500 text-[10px] font-bold-tier text-white ring-2 ring-indigo-500">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-violet-300 to-fuchsia-500 text-[10px] font-bold-tier text-white ring-2 ring-violet-500">
                   A
                 </span>
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-rose-500 text-[10px] font-bold-tier text-white ring-2 ring-indigo-500">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-rose-500 text-[10px] font-bold-tier text-white ring-2 ring-violet-500">
                   N
                 </span>
               </div>
@@ -171,7 +171,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
                 className="btn-tactile-3d flex h-10 w-10 items-center justify-center rounded-full text-white"
                 aria-label={saasherocards.timetitle}
               >
-                <Activity className="h-4 w-4 text-sky-400" aria-hidden="true" />
+                <Activity className="h-4 w-4 text-teal-400" aria-hidden="true" />
               </button>
             }
           >
@@ -190,7 +190,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
                   <span
                     key={bar}
                     style={{ height: `${bar}%` }}
-                    className={`w-1.5 rounded-full ${bar === 100 || bar === 92 ? "bg-indigo-600" : "bg-slate-300"}`}
+                    className={`w-1.5 rounded-full ${bar === 100 || bar === 92 ? "bg-violet-600" : "bg-slate-300"}`}
                   />
                 ))}
               </div>
@@ -206,7 +206,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
                 className="icon-frame-3d flex h-10 w-10 items-center justify-center rounded-full text-slate-950"
                 aria-label={saasherocards.coretitle}
               >
-                <Waves className="h-4 w-4 text-indigo-600" aria-hidden="true" />
+                <Waves className="h-4 w-4 text-violet-600" aria-hidden="true" />
               </button>
             }
           >
@@ -230,7 +230,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
 }
 
 /** Section 2 — the creators deck: the doo statement with the gradient
- * word, the three swing cards (the indigo AI Teams slab between the two
+ * word, the three swing cards (the violet AI Teams slab between the two
  * surface cards, each on its own swing idle) and the two creator profiles
  * with the follow pill, the conic rainbow ring and the three stat tiles. */
 export function SaasCreators({ scrollto, ontoast }: { scrollto: (id: string) => void; ontoast: (m: string) => void }) {
@@ -300,9 +300,9 @@ export function SaasCreators({ scrollto, ontoast }: { scrollto: (id: string) => 
                     >
                       {followed[profile.key] ? "Following" : "Follow"}
                       {followed[profile.key] ? (
-                        <Check className="h-3 w-3 text-indigo-600" aria-hidden="true" />
+                        <Check className="h-3 w-3 text-violet-600" aria-hidden="true" />
                       ) : (
-                        <Plus className="h-3 w-3 text-indigo-600" aria-hidden="true" />
+                        <Plus className="h-3 w-3 text-violet-600" aria-hidden="true" />
                       )}
                     </button>
                   </div>
@@ -477,7 +477,7 @@ export function SaasWorkspace({ scrollto }: { scrollto: (id: string) => void }) 
             <span>
               {saasworkspace.openkey} {open.name} {saasworkspace.studiokey}
             </span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-indigo-600">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-violet-600">
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </span>
           </button>
