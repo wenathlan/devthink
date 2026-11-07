@@ -287,14 +287,28 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
   it("the webpack bundle is the real exact-pinned cross-bundler product the ci battery verifies", async () => {
     const containers = await readworkflow("containers.yml");
     /* the cross-bundler rung the ci battery verifies, carried to the
-     * saddle engine: the tsc engine build (scripts.ts buildengine, the
-     * lane-word dispatcher the scripts consolidation seated) produces
-     * distpackage/index.js and the exact-pinned webpack fetch (webpack
-     * 5.112.2 with its webpack-cli 6.0.1 peer) packs the one entry into
-     * the one webpack bundle the six channel legs distribute. */
-    expect(containers).toContain("node scripts.ts buildengine");
+     * saddle engine (the containerlanes heal grammar): the frozen bun
+     * install (the family law, never a floating npm install) answers
+     * the certified lockfile, the build:engine manifest entry walks the
+     * tsc typecheck gate through the bun script runner (the runner law
+     * - node_modules/.bin never joins PATH under a bare node leg and
+     * the typescript 7 exports map hides ./bin/tsc from the require
+     * walk inside scripts.ts, so the bare node spawn ENOENTed), the
+     * lane's own manager compiles the public entry into the one
+     * distpackage/index.js engine bundle and the exact-pinned webpack
+     * fetch (webpack 5.112.2 with its webpack-cli 6.0.1 peer) reads
+     * the generated config file the -c walk carries (the ci battery
+     * grammar - the CLI flag walk stays retired) with the
+     * LimitChunkCountPlugin holding the single-file law, packing the
+     * one entry into the one webpack bundle the six channel legs
+     * distribute. */
+    expect(containers).toContain("bun install --frozen-lockfile --ignore-scripts");
+    expect(containers).toContain("bun run build:engine");
+    expect(containers).toContain("bun build ./index.ts --target=node --format=esm --outfile=distpackage/index.js");
+    expect(containers).toContain("test -s distpackage/index.js");
+    expect(containers).toContain("LimitChunkCountPlugin");
     expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
-    expect(containers).toContain("--output-filename saddle.webpack.js");
+    expect(containers).toContain("webpack -c ./distpackage/webpack.config.mjs");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
      * collide with the engine envelope the publish lanes own: the
