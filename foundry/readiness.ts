@@ -474,7 +474,7 @@ The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** fo
  * replays byte identical (the duration stays the live measurement the
  * recorded run took). */
 export const readinessrecord: readinessreport = {
-  "release": "2.0.165",
+  "release": "2.0.167",
   "mode": "sync",
   "generatedat": 1800000000000,
   "verdicts": [
@@ -526,7 +526,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "the permbaseline module: clean over 2.0.165 to 2.0.165 with zero unjustified entries"
+      "evidence": "the permbaseline module: clean over 2.0.166 to 2.0.167 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -571,7 +571,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.165"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.167"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -596,7 +596,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the capability manifests carry the release version pins",
       "ok": true,
-      "evidence": "the 7 capability manifests of build/caps pin the release 2.0.165"
+      "evidence": "the 7 capability manifests of build/caps pin the release 2.0.167"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",

@@ -9,9 +9,9 @@ export interface apifreezebaseline {
   hashes: Record<string, string>;
 }
 
-/** The recorded freeze of the 2.0.166 release — the 1.1.91 freeze date, the seven surfaces and the digest table over the ten schemas and the fourteen contract lists. */
+/** The recorded freeze of the 2.0.167 release — the 1.1.91 freeze date, the seven surfaces and the digest table over the ten schemas and the fourteen contract lists. */
 export const apifreezebaseline: apifreezebaseline = {
-  "release": "2.0.166",
+  "release": "2.0.167",
   "frozezat": "2026-08-31",
   "scope": [
     "background",
@@ -27,7 +27,7 @@ export const apifreezebaseline: apifreezebaseline = {
     "popup": 26,
     "background": 234,
     "pagebridge": 31,
-    "library": 3163,
+    "library": 3175,
     "cli": 14,
     "mcp": 35
   },
@@ -49,7 +49,7 @@ export const apifreezebaseline: apifreezebaseline = {
     "contract/pagebridgesurfacemessages": "fe279a70afa5915addca96e4839140c4ee40d6017042608cc49e74989d31d5e0",
     "contract/clisurfacecommands": "1afa593c41d846955cfa762900467cdaa79d8748d5a5429459fe8d5e5b0b0687",
     "contract/mcpsurfacetools": "1186093be13e894f5352cddb386f20d3cc1eb85b87d566f73213f31c83ca9ce3",
-    "contract/librarysurfaceexports": "73877dd00f6d6a80e00124535d4a905f891d82bdb48d9f00e877433956bc150d",
+    "contract/librarysurfaceexports": "c8dde93ee2e8ef0b98d8b9917500c7ea5d9e1dcd29602e7ab349ab3029aca817",
     "contract/auditkinds": "df16b46f0cd37b7ae401d36685c9e88d56154cb7ba1cea0b21a15a605b1736a5",
     "contract/frozenmessagecatalog": "b5dd8e8454a5cc2c7f3bb0f7cc1f7a6183eec1f788b92abec792d46fdf1bdbf2",
     "contract/errorcodetable": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",

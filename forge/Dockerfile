@@ -1,4 +1,4 @@
-# forge 2.0.166 — THE SITE CONTAINER FILE
+# forge 2.0.167 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -14,7 +14,7 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
 
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 
 # The family context fix (the staged shape the site containers read): the
 # application rides the context nested under app/ with the sibling sources
@@ -46,7 +46,7 @@ RUN pnpm build
 # the catalog lanes ride before the runtime stage so the default build keeps answering the runtime target (the family builds never pass --target — the saddle lanes always do, the os seats close the saddle file the same law).
 # ════════════════════════════════════════════════════════════════════
 FROM scratch AS osgrapheneos
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="grapheneos"
 ENV FORGE_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="forge (the grapheneos os-distribution catalog lane)" \
@@ -57,7 +57,7 @@ LABEL org.opencontainers.image.title="forge (the grapheneos os-distribution cata
 COPY osprofiles/grapheneos.json /forge/osprofile.json
 
 FROM scratch AS osmaruos
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="maruos"
 ENV FORGE_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="forge (the maruos os-distribution catalog lane)" \
@@ -68,7 +68,7 @@ LABEL org.opencontainers.image.title="forge (the maruos os-distribution catalog 
 COPY osprofiles/maruos.json /forge/osprofile.json
 
 FROM scratch AS osv
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="v"
 ENV FORGE_OS_PROFILE=v
 LABEL org.opencontainers.image.title="forge (the v os-distribution catalog lane)" \
@@ -79,7 +79,7 @@ LABEL org.opencontainers.image.title="forge (the v os-distribution catalog lane)
 COPY osprofiles/v.json /forge/osprofile.json
 
 FROM scratch AS oswindows
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="windows"
 ENV FORGE_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="forge (the windows os-distribution catalog lane)" \
@@ -90,7 +90,7 @@ LABEL org.opencontainers.image.title="forge (the windows os-distribution catalog
 COPY osprofiles/windows.json /forge/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="postmarketos"
 ENV FORGE_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="forge (the postmarketos os-distribution catalog lane)" \
@@ -101,7 +101,7 @@ LABEL org.opencontainers.image.title="forge (the postmarketos os-distribution ca
 COPY osprofiles/postmarketos.json /forge/osprofile.json
 
 FROM scratch AS oslineageos
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="lineageos"
 ENV FORGE_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="forge (the lineageos os-distribution catalog lane)" \
@@ -112,7 +112,7 @@ LABEL org.opencontainers.image.title="forge (the lineageos os-distribution catal
 COPY osprofiles/lineageos.json /forge/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="calyxos"
 ENV FORGE_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="forge (the calyxos os-distribution catalog lane)" \
@@ -123,7 +123,7 @@ LABEL org.opencontainers.image.title="forge (the calyxos os-distribution catalog
 COPY osprofiles/calyxos.json /forge/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="archlinux"
 ENV FORGE_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="forge (the archlinux os-distribution catalog lane)" \
@@ -134,7 +134,7 @@ LABEL org.opencontainers.image.title="forge (the archlinux os-distribution catal
 COPY osprofiles/archlinux.json /forge/osprofile.json
 
 FROM scratch AS osalpine
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="alpine"
 ENV FORGE_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="forge (the alpine os-distribution catalog lane)" \
@@ -145,7 +145,7 @@ LABEL org.opencontainers.image.title="forge (the alpine os-distribution catalog 
 COPY osprofiles/alpine.json /forge/osprofile.json
 
 FROM scratch AS osdebian
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="debian"
 ENV FORGE_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="forge (the debian os-distribution catalog lane)" \
@@ -156,7 +156,7 @@ LABEL org.opencontainers.image.title="forge (the debian os-distribution catalog 
 COPY osprofiles/debian.json /forge/osprofile.json
 
 FROM scratch AS osfedora
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="fedora"
 ENV FORGE_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="forge (the fedora os-distribution catalog lane)" \
@@ -167,7 +167,7 @@ LABEL org.opencontainers.image.title="forge (the fedora os-distribution catalog 
 COPY osprofiles/fedora.json /forge/osprofile.json
 
 FROM scratch AS osnixos
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="nixos"
 ENV FORGE_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="forge (the nixos os-distribution catalog lane)" \
@@ -178,7 +178,7 @@ LABEL org.opencontainers.image.title="forge (the nixos os-distribution catalog l
 COPY osprofiles/nixos.json /forge/osprofile.json
 
 FROM scratch AS osvoid
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 ARG FORGE_OS_PROFILE="void"
 ENV FORGE_OS_PROFILE=void
 LABEL org.opencontainers.image.title="forge (the void os-distribution catalog lane)" \
@@ -190,7 +190,7 @@ COPY osprofiles/void.json /forge/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG FORGE_VERSION=2.0.166
+ARG FORGE_VERSION=2.0.167
 
 LABEL org.opencontainers.image.title="forge" \
       org.opencontainers.image.description="forge — the run only site role of the network: the execution face at the saddle frontier." \

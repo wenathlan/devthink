@@ -1,4 +1,4 @@
-# cadria 2.0.166 — THE SITE CONTAINER FILE
+# cadria 2.0.167 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -14,7 +14,7 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:c6ad9e9c1d80f6eb607c26b4b0a132ff7a2344fad1c78ea3baa2a7d4c8de6d94 AS solbuild
 
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 
 # The 2.0.153 family context fix: the application rides the context
 # nested under app/ (the uniform shape the three site containers read),
@@ -54,7 +54,7 @@ RUN pnpm build
 # ════════════════════════════════════════════════════════════════════
 
 FROM scratch AS osgrapheneos
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="grapheneos"
 ENV CADRIA_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="cadria (the grapheneos os-distribution catalog lane)" \
@@ -65,7 +65,7 @@ LABEL org.opencontainers.image.title="cadria (the grapheneos os-distribution cat
 COPY osprofiles/grapheneos.json /cadria/osprofile.json
 
 FROM scratch AS osmaruos
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="maruos"
 ENV CADRIA_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="cadria (the maru os os-distribution catalog lane)" \
@@ -76,7 +76,7 @@ LABEL org.opencontainers.image.title="cadria (the maru os os-distribution catalo
 COPY osprofiles/maruos.json /cadria/osprofile.json
 
 FROM scratch AS osv
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="v"
 ENV CADRIA_OS_PROFILE=v
 LABEL org.opencontainers.image.title="cadria (the v os-distribution catalog lane)" \
@@ -87,7 +87,7 @@ LABEL org.opencontainers.image.title="cadria (the v os-distribution catalog lane
 COPY osprofiles/v.json /cadria/osprofile.json
 
 FROM scratch AS oswindows
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="windows"
 ENV CADRIA_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="cadria (the windows os-distribution catalog lane)" \
@@ -98,7 +98,7 @@ LABEL org.opencontainers.image.title="cadria (the windows os-distribution catalo
 COPY osprofiles/windows.json /cadria/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="postmarketos"
 ENV CADRIA_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="cadria (the postmarketos os-distribution catalog lane)" \
@@ -109,7 +109,7 @@ LABEL org.opencontainers.image.title="cadria (the postmarketos os-distribution c
 COPY osprofiles/postmarketos.json /cadria/osprofile.json
 
 FROM scratch AS oslineageos
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="lineageos"
 ENV CADRIA_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="cadria (the lineageos os-distribution catalog lane)" \
@@ -120,7 +120,7 @@ LABEL org.opencontainers.image.title="cadria (the lineageos os-distribution cata
 COPY osprofiles/lineageos.json /cadria/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="calyxos"
 ENV CADRIA_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="cadria (the calyxos os-distribution catalog lane)" \
@@ -131,7 +131,7 @@ LABEL org.opencontainers.image.title="cadria (the calyxos os-distribution catalo
 COPY osprofiles/calyxos.json /cadria/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="archlinux"
 ENV CADRIA_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="cadria (the archlinux os-distribution catalog lane)" \
@@ -142,7 +142,7 @@ LABEL org.opencontainers.image.title="cadria (the archlinux os-distribution cata
 COPY osprofiles/archlinux.json /cadria/osprofile.json
 
 FROM scratch AS osalpine
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="alpine"
 ENV CADRIA_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="cadria (the alpine os-distribution catalog lane)" \
@@ -153,7 +153,7 @@ LABEL org.opencontainers.image.title="cadria (the alpine os-distribution catalog
 COPY osprofiles/alpine.json /cadria/osprofile.json
 
 FROM scratch AS osdebian
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="debian"
 ENV CADRIA_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="cadria (the debian os-distribution catalog lane)" \
@@ -164,7 +164,7 @@ LABEL org.opencontainers.image.title="cadria (the debian os-distribution catalog
 COPY osprofiles/debian.json /cadria/osprofile.json
 
 FROM scratch AS osfedora
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="fedora"
 ENV CADRIA_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="cadria (the fedora os-distribution catalog lane)" \
@@ -175,7 +175,7 @@ LABEL org.opencontainers.image.title="cadria (the fedora os-distribution catalog
 COPY osprofiles/fedora.json /cadria/osprofile.json
 
 FROM scratch AS osnixos
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="nixos"
 ENV CADRIA_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="cadria (the nixos os-distribution catalog lane)" \
@@ -186,7 +186,7 @@ LABEL org.opencontainers.image.title="cadria (the nixos os-distribution catalog 
 COPY osprofiles/nixos.json /cadria/osprofile.json
 
 FROM scratch AS osvoid
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 ARG CADRIA_OS_PROFILE="void"
 ENV CADRIA_OS_PROFILE=void
 LABEL org.opencontainers.image.title="cadria (the void os-distribution catalog lane)" \
@@ -198,7 +198,7 @@ COPY osprofiles/void.json /cadria/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG CADRIA_VERSION=2.0.166
+ARG CADRIA_VERSION=2.0.167
 
 LABEL org.opencontainers.image.title="cadria" \
       org.opencontainers.image.description="cadria — the video and image player, editor and studio; the versawase engine home." \
