@@ -23,104 +23,116 @@
 
 > Cada app lista suas lógicas TS reais da raiz, agrupadas por palavra-chave, barra / = mesmo contexto.
 
-### argan — 21 lógicas na raiz
+### argan — 18 lógicas na raiz
 
 - `argan.ts` = núcleo do app de rede.
-- `dnssec.ts` / `protocols.ts` / `zonediff.ts` = engine de rede, assinatura DNSSEC, protocolos, diff de zona DNS.
+- `dns.ts` (dnssec + zonediff + cleanurl + protocols folded) = engine de rede consolidada, validação DNSSEC, diff de zona DNS, clean URL, mesh de protocolos.
 - `mimetypes.ts` = tabela de Mimetypes da camada de rede.
-- `family.ts` / `familyurl.ts` / `catalog.ts` / `labels.ts` / `cleanurl.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, URLs, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox.
+- `cli.ts` = console binário CLI mesmo design no terminal (clibin).
+- `family.ts` / `catalog.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox.
 - `db.ts` / `seed.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, seed, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
-### cadria — 56 lógicas na raiz
+### cadria — 47 lógicas na raiz
 
-- `versawase.ts` / `versawase3d.ts` / `versawaseanimate.ts` / `versawasecomposition.ts` / `versawasegen.ts` / `versawaserender.ts` / `versawasescheduler.ts` / `versawaseshaders.ts` / `versawaseslices.ts` = engine VersaWaze, núcleo, cena 3D, animação, composição, geração, render, scheduler, shaders, slices.
-- `blendmodes.ts` / `colorconvert.ts` / `compositorraster.ts` / `masks.ts` / `pixel.ts` / `imageexport.ts` / `imageproject.ts` / `imagerender.ts` / `imagestyles.ts` = imagem, blend, conversão de cor, raster, máscaras, pixel, export, projeto, render, estilos.
-- `gifencoder.ts` / `pngencoder.ts` / `webmencoder.ts` / `videoencoder.ts` / `videodecode.ts` / `transcodeengine.ts` / `transcodeplan.ts` / `mediaprobe.ts` = codecs e transcode, GIF, PNG, WebM, encode / decode de vídeo, engine, plano, probe de mídia.
-- `timelineedit.ts` / `timelineview.ts` / `timeticks.ts` / `studiogenerate.ts` / `studiosource.ts` / `synth.ts` = estúdio, timeline de edição / visual / ticks, geração, fonte, síntese.
+- `versawase.ts` / `versa.ts` / `shaders.ts` / `mesh.ts` = engine VersaWaze, núcleo, núcleo matemático mat4 / vec3, shaders GLSL, gerador de mesh.
 - `shadercomp.ts` / `easecurves.ts` / `designmotion.ts` = compilação de shaders, curvas de easing, motion design.
-- `generation.ts` / `visualize.ts` = geração de IA visual / visualização.
+- `generation.ts` / `visualize.ts` / `visualai.ts` = geração, visualização, geração procedural honesta de IA visual.
+- `image.ts` (imageexport + imageproject + imagerender + imagestyles folded) = imagem consolidada, export, projeto, render, estilos.
+- `blendmodes.ts` / `colorconvert.ts` / `compositorraster.ts` / `masks.ts` / `pixel.ts` = blend, conversão de cor, raster, máscaras, pixel.
+- `gifencoder.ts` / `pngencoder.ts` / `webmencoder.ts` / `video.ts` (videodecode + videoencoder folded) / `transcode.ts` (transcodeengine + transcodeplan folded) / `mediaprobe.ts` / `renderjob.ts` = codecs e transcode, GIF, PNG, WebM, encode / decode de vídeo, engine e plano de transcode, probe de mídia, executor de jobs de render.
+- `timeline.ts` (timelineedit + timelineview folded) / `timeticks.ts` / `studio.ts` (studiosource folded) / `synth.ts` = estúdio, timeline de edição / visual, ticks, fonte, síntese.
 - `gateway.ts` = gateway de chamadas da engine.
 - `winsnap.ts` = encaixe de janela.
 - `introfixtures.ts` = fixtures de introdução.
 - `version.ts` = versão da engine.
+- `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `family.ts` / `familyurl.ts` / `catalog.ts` / `labels.ts` / `cleanurl.ts` / `reveal.ts` / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, URLs, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox.
 - `db.ts` / `seed.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, seed, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
 ### cobaia — 12 lógicas na raiz
 
-- `adsconfig.ts` / `checkoutlinks.ts` / `posts.ts` / `content.ts` / `roster.ts` = monetização, ads, checkout, posts, conteúdo, roster.
-- `familyurl.ts` / `labels.ts` / `sandboxmodality.ts` = ponte da família, labels, modalidade de sandbox.
-- `db.ts` = banco Better SQLite / better-sqlite3.
+- `monetization.ts` (adsconfig + checkoutlinks + posts + roster folded) = monetização consolidada, ads, checkout, posts, roster.
+- `content.ts` = conteúdo.
+- `familyurl.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, onboarding, modalidade de sandbox.
+- `cli.ts` = console binário CLI mesmo design no terminal (clibin).
+- `db.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
 ### debonair — 69 lógicas na raiz
 
-- `katexis.ts` = núcleo da engine Kathesis.
+- `katexis.ts` / `kathesis.ts` = núcleo da engine Kathesis, vocabulário do site e assento dsp da engine de áudio e música.
 - `audio.ts` / `analyze.ts` / `spectrum.ts` / `loudness.ts` / `limiter.ts` / `ducking.ts` / `hpss.ts` / `formant.ts` / `stems.ts` / `demix.ts` / `timestretch.ts` / `speechalign.ts` / `tuning.ts` = DSP de áudio, análise, espectro, loudness, limiter, ducking, HPSS, formantes, stems, demix, timestretch, alinhamento de fala, afinação.
-- `composer.ts` / `arrangement.ts` / `arranger.ts` / `harmonyengine.ts` / `musictheory.ts` / `rhythmgrammar.ts` / `patternenums.ts` / `patternminer.ts` / `genrematrix.ts` / `genrecorpus.ts` / `remixplan.ts` / `mcplane.ts` = composição, arranjo, harmonia, teoria musical, gramática rítmica, padrões, matriz / corpus de gêneros, plano de remix, plano MC.
+- `composer.ts` / `arrangement.ts` (arranger folded) / `harmonyengine.ts` / `musictheory.ts` / `rhythmgrammar.ts` / `pattern.ts` (patternenums + patternminer folded) / `patternenums.ts` (alias face) / `genre.ts` (genrecorpus folded) / `genrematrix.ts` / `remixplan.ts` / `mcplane.ts` = composição, arranjo, harmonia, teoria musical, gramática rítmica, padrões, matriz / corpus de gêneros, plano de remix, plano MC.
 - `pianoroll.ts` / `dawview.ts` / `mixergraph.ts` / `playerbus.ts` / `beatgrid.ts` / `take.ts` / `stages.ts` / `timelinemodel.ts` = DAW, piano roll, mixer, player, grade de batidas, takes, stages, modelo de timeline.
-- `renderjobs.ts` / `renderworker.ts` / `midiwriter.ts` / `wavwriter.ts` / `vocalsynth.ts` / `blobstore.ts` / `bigintids.ts` = render / worker, escrita MIDI / WAV, síntese vocal, blob store, IDs BigInt.
-- `ingest.ts` / `reverseingest.ts` / `reconpayload.ts` / `reconworker.ts` / `fingerprint.ts` / `ialane.ts` / `llmlane.ts` / `generateclient.ts` / `gatewayapi.ts` / `cloudsync.ts` / `routetable.ts` = ingestão / ingestão reversa, reconstrução, fingerprint, pistas de IA / LLM, cliente de geração, gateway, sync em nuvem, tabela de rotas.
+- `render.ts` / `renderengine.ts` (renderjobs + renderworker folded) / `midiwriter.ts` / `wavwriter.ts` / `vocalsynth.ts` / `blobstore.ts` / `bigintids.ts` = render, ledger de jobs e engine pura, escrita MIDI / WAV, síntese vocal, blob store, IDs BigInt.
+- `ingest.ts` / `reverseingest.ts` / `recon.ts` (reconpayload + reconworker folded) / `fingerprint.ts` / `ialane.ts` / `llmlane.ts` / `generateclient.ts` / `gatewayapi.ts` / `cloudsync.ts` / `routetable.ts` = ingestão / ingestão reversa, reconstrução, fingerprint, pistas de IA / LLM, cliente de geração, gateway, sync em nuvem, tabela de rotas.
 - `coverpalette.ts` = paleta de capa.
+- `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `family.ts` / `familyurl.ts` / `catalog.ts` / `labels.ts` / `cleanurl.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, URLs, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox.
 - `db.ts` / `seed.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, seed, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
-### devthink — 175 lógicas na raiz
+### devthink — 149 lógicas na raiz
 
 - `devthink.ts` / `core.ts` / `index.ts` / `config.ts` / `constants.ts` / `types.ts` / `data.ts` / `modes.ts` / `views.ts` / `page.ts` / `window.ts` / `workspace.ts` / `flow.ts` / `run.ts` / `runner.ts` / `runtime.ts` / `node.ts` / `neutral.ts` = núcleo do sistema operacional, config, tipos, dados, modos, views, página, janela, workspace, execução, runtime.
-- `osapps.ts` / `osevents.ts` / `oslabels.ts` / `osreveal.ts` / `ostypes.ts` / `appregistry.ts` / `recentapps.ts` / `dashboardpage.ts` / `dashdone.ts` / `panelsync.ts` / `paneltypes.ts` / `pagebridge.ts` / `sidepanel.ts` / `popup.ts` / `offscreen.ts` / `optionspage.ts` / `transparencypage.ts` / `desktopstate.ts` / `alttab.ts` / `dockmagnify.ts` / `fileexplorer.ts` = apps do OS, eventos, labels, registry de apps, painéis, popup, offscreen, desktop, alttab, dock, explorador.
-- `auth.ts` / `authschemaaudit.ts` / `account.ts` / `admins.ts` / `session.ts` / `agentcert.ts` / `costcert.ts` = auth, auditoria de schema, conta, admins, sessão, certificados de agente / custo.
-- `agent.ts` / `automation.ts` / `background.ts` / `companion.ts` / `mcp.ts` / `mcpregistry.ts` / `memory.ts` / `plan.ts` / `planstate.ts` / `recipes.ts` / `swarm.ts` / `thinkingtypes.ts` / `tools.ts` = agente, automação, background, companion, MCP, memória, planos, recipes, swarm, ferramentas.
-- `graphnodes.ts` / `graphrunner.ts` / `graphviewstate.ts` = grafos, nós, runner, estado de visualização.
-- `cli.ts` / `chipterminal.ts` / `kbdterminal.ts` / `shellterminal.ts` / `commands.ts` / `commandcatalog.ts` / `consoleboot.ts` / `capture.ts` = CLI, terminais, comandos, catálogo de comandos, boot de console, captura.
-- `chatlabels.ts` / `chatstate.ts` = labels e estado do chat.
-- `browserextension.ts` / `packageextension.ts` / `crxharvest.ts` / `crossbrowser.ts` / `chromiumsmoke.ts` / `consumersmoke.ts` / `nativesmoke.ts` / `headless.ts` / `fakehost.ts` / `devtoolsguard.ts` = extensão de browser, empacotamento, CRX, crossbrowser, smoke tests, headless, guarda de devtools.
-- `gateway.ts` / `osgateway.ts` / `net.ts` / `http.ts` / `protocol.ts` / `bridge.ts` = gateways do OS, rede, HTTP, protocolo, bridge.
-- `honoface.ts` / `honocorsface.ts` / `hononodeserverface.ts` / `honoservestaticface.ts` / `akash.ts` / `serve.ts` / `server.ts` = faces Hono, CORS, node server, estático, Akash, serve / server.
-- `build.ts` / `pack.ts` / `export.ts` / `umd.ts` / `umdwrap.ts` / `cjs.ts` / `cjswrap.ts` / `deno.ts` / `bun.ts` / `distseamtypes.ts` / `inspectstoreartifacts.ts` / `release.ts` / `maintain.ts` / `scripts.ts` / `pythonscripts.ts` / `dependencyupdates.ts` / `workflow.ts` / `environments.ts` / `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build, pack, export, formatos UMD / CJS / Deno / Bun, dist, release, manutenção, scripts, dependências, workflows, ambientes.
-- `security.ts` / `checksecrets.ts` / `cspaudit.ts` / `pentest.ts` / `guard.ts` / `gates.ts` / `hardening.ts` / `jsongate.ts` / `npmgate.ts` / `yamlaudit.ts` / `docsaudit.ts` / `poolaudit.ts` / `auditreferenceworkflows.ts` / `evidence.ts` / `permdiff.ts` / `policy.ts` / `apifreeze.ts` = segurança, secrets, CSP, pentest, guardas, gates, hardening, auditorias, evidência, diff de permissões, política, freeze de API.
-- `matrixverify.ts` / `readiness.ts` / `soak.ts` / `perf.ts` / `sweep.ts` / `telemetryfree.ts` / `wcag.ts` / `doccheck.ts` / `bundlescan.ts` = verificação de matriz, readiness, soak, perf, sweep, telemetria zero, WCAG, checagem de docs, scan de bundle.
-- `sandboxlane.ts` / `sandboxmodality.ts` / `modalitytypes.ts` / `engines.ts` / `engineowners.ts` / `saddlefaces.ts` / `familyaccent.ts` / `familylanes.ts` / `catalog.ts` / `cleanurl.ts` / `labels.ts` / `copy.ts` / `icons.ts` / `density.ts` / `progress.ts` / `introtarget.ts` / `onboardingstate.ts` = sandbox, modalidades, engines, donos de engine, faces do Saddle, pontes da família, catálogo, labels, copy, ícones, densidade, progresso, onboarding.
-- `storage.ts` / `personalstore.ts` / `uistore.ts` / `usestoredstate.ts` / `useismobile.ts` / `records.ts` / `seedcatalog.ts` / `prismaconfig.ts` / `media.ts` / `imagedigests.ts` / `saascontent.ts` / `version.ts` = armazenamento, stores, hooks, records, seed, Prisma, mídia, digests, conteúdo SaaS, versão.
+- `os.ts` (osapps + osevents + oslabels + osreveal + ostypes + osgateway folded) / `appregistry.ts` / `recentapps.ts` / `dashboard.ts` (dashdone + desktopstate + alttab + density folded) / `dashboardpage.ts` / `panelsync.ts` / `paneltypes.ts` / `pagebridge.ts` / `sidepanel.ts` / `popup.ts` / `offscreen.ts` / `optionspage.ts` / `transparencypage.ts` / `dockmagnify.ts` / `fileexplorer.ts` = OS consolidado, apps, eventos, labels, registry de apps, dashboard do desktop, painéis, popup, offscreen, dock, explorador.
+- `auth.ts` / `schemaaudit.ts` (authschemaaudit + yamlaudit folded) / `account.ts` / `admins.ts` / `session.ts` / `agentcert.ts` / `costcert.ts` = auth, auditoria de schema auth / yaml, conta, admins, sessão, certificados de agente / custo.
+- `agent.ts` / `automation.ts` / `background.ts` / `companion.ts` / `mcp.ts` / `mcpregistry.ts` / `memory.ts` / `plan.ts` / `planstore.ts` (planstate folded) / `recipes.ts` / `swarm.ts` / `tools.ts` = agente, automação, background, companion, MCP, memória, planos, store de planos, recipes, swarm, ferramentas.
+- `graph.ts` (graphnodes + graphrunner + graphviewstate folded) = grafos consolidados, nós, runner, estado de visualização.
+- `cli.ts` / `chipterminal.ts` / `kbdterminal.ts` / `shellterminal.ts` / `commands.ts` (commandcatalog folded) / `consoleboot.ts` / `capture.ts` / `parseoptions.ts` = CLI, terminais, comandos, catálogo de comandos, boot de console, captura, parser puro de opções de toolstep.
+- `chatstate.ts` (chatlabels folded) = labels e estado do chat.
+- `browserextension.ts` / `packageextension.ts` / `chromiumsmoke.ts` / `consumersmoke.ts` / `nativesmoke.ts` / `headless.ts` / `fakehost.ts` = extensão de browser, empacotamento, smoke tests, headless.
+- `gateway.ts` / `net.ts` / `http.ts` / `protocol.ts` / `bridge.ts` = gateways do OS, rede, HTTP, protocolo, bridge.
+- `hono.ts` (honoface + honocorsface + hononodeserverface + honoservestaticface folded) / `babelcoreface.ts` / `akash.ts` / `serve.ts` / `server.ts` = faces Hono consolidadas, CORS, node server, estático, face Babel, Akash, serve / server.
+- `build.ts` / `pack.ts` / `export.ts` / `umd.ts` / `umdwrap.ts` / `cjs.ts` / `cjswrap.ts` / `deno.ts` / `bun.ts` / `distseamtypes.ts` / `inspectstoreartifacts.ts` / `release.ts` / `maintain.ts` / `scripts.ts` / `pythonscripts.ts` / `workflow.ts` / `environments.ts` = build, pack, export, formatos UMD / CJS / Deno / Bun, dist, release, manutenção, scripts, workflows, ambientes.
+- `security.ts` (checksecrets + cspaudit + crxharvest + crossbrowser + devtoolsguard folded) / `pentest.ts` / `gates.ts` / `hardening.ts` / `jsongate.ts` / `docsaudit.ts` / `poolaudit.ts` / `auditreferenceworkflows.ts` / `evidence.ts` / `permdiff.ts` / `policy.ts` / `apifreeze.ts` = segurança consolidada, trust boundary, secrets, CSP, CRX, crossbrowser, devtools, pentest, gates, hardening, auditorias, evidência, diff de permissões, política, freeze de API.
+- `matrixverify.ts` / `soak.ts` / `perf.ts` / `sweep.ts` / `telemetryfree.ts` / `wcag.ts` / `doccheck.ts` = verificação de matriz, soak, perf, sweep, telemetria zero, WCAG, checagem de docs.
+- `sandboxlane.ts` / `modalitytypes.ts` / `engines.ts` (engineowners folded) / `saddlefaces.ts` / `familyaccent.ts` / `familylanes.ts` / `catalog.ts` (seedcatalog folded) / `cleanurl.ts` / `labels.ts` / `icons.ts` / `progress.ts` / `introtarget.ts` / `onboardingstate.ts` / `reveal.ts` = sandbox, modalidades, engines, faces do Saddle, pontes da família, catálogo, labels, ícones, progresso, onboarding, reveal dono da família.
+- `storage.ts` / `personalstore.ts` / `uistore.ts` / `usestoredstate.ts` / `useismobile.ts` / `records.ts` / `prismaconfig.ts` / `media.ts` / `imagedigests.ts` / `saascontent.ts` / `version.ts` = armazenamento, stores, hooks, records, Prisma, mídia, digests, conteúdo SaaS, versão.
+- `logics.ts` = catálogo raiz único das lógicas da família Wenathlan.
 - `calculator.ts` / `debug.ts` / `examplelocaljob.ts` / `queue.ts` = calculadora, debug, exemplo de job, fila.
+- `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` / `drizzle.config.ts` = build Capacitor / Vite / Vitest, Drizzle.
 
 ### forge — 19 lógicas na raiz
 
 - `runner.ts` / `runstream.ts` / `queue.ts` / `fleet.ts` = runner de binários, stream de execução, fila, frota.
 - `api.ts` / `graphplan.ts` / `hometypes.ts` = API, plano de grafo, tipos da home.
+- `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `db.ts` / `utils.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, utilidades, Drizzle.
-- `family.ts` / `familyurl.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` / `theme.ts` = ponte da família, labels, onboarding, modalidade de sandbox, tema.
+- `family.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` / `theme.ts` = ponte da família, labels, onboarding, modalidade de sandbox, tema.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
 ### foundry — 18 lógicas na raiz
 
-- `runner.ts` / `artifact.ts` / `sandbox.ts` = pipeline, runner, artefatos, sandbox.
-- `api.ts` / `graphplan.ts` / `hometypes.ts` / `imagestore.ts` = API, plano de grafo, tipos da home, store de imagens.
+- `pipeline.ts` (artifact + graphplan + imagestore + runner + sandbox + sandboxmodality folded) = pipeline consolidado, checksum de artefatos, plano de grafo, formatos de imagem, runner, máquina de estados de sandbox, lane de workload.
+- `api.ts` / `hometypes.ts` = API, tipos da home.
+- `bundlescan.ts` / `npmgate.ts` / `dependencyupdates.ts` / `readiness.ts` = scan de bundle, gate npm de publicação, atualizações de dependências, revisão de readiness de release, assentos do gate movidos do devthink.
+- `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `db.ts` / `utils.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, utilidades, Drizzle.
-- `family.ts` / `familyurl.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, onboarding, modalidade de sandbox.
+- `family.ts` / `familyurl.ts` / `labels.ts` / `onboardingstate.ts` = ponte da família, labels, onboarding.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
-### getry — 53 lógicas na raiz
+### getry — 48 lógicas na raiz
 
-- `gateway.ts` (config + view config folded) / `gatewaycheck.ts` (probe + smoke folded) / `server.ts` / `request.ts` / `routerotation.ts` = gateway universal, config, probe, smoke, view config, server, request, rotação de rotas.
-- `providers.ts` / `providercli.ts` / `registernvidiakeys.ts` / `llm.ts` / `models.ts` / `intelligence.ts` / `thinking.ts` / `thinkingtypes.ts` / `antigravity.ts` / `search.ts` / `streaming.ts` / `streamfallback.ts` / `json.ts` / `jsonpolicy.ts` / `jsonschema.ts` = provedores, CLI de provedor, chaves NVIDIA, LLM, modelos, inteligência, raciocínio 7 níveis, streaming, fallback, JSON policy / schema.
+- `gateway.ts` (config + view config folded) / `gatewaycheck.ts` (probe + smoke folded) / `server.ts` / `request.ts` / `routerotation.ts` / `validate.ts` = gateway universal, config, probe, smoke, view config, server, request, rotação de rotas, validador puro de definições.
+- `providers.ts` (providercli folded) / `registernvidiakeys.ts` / `llm.ts` / `models.ts` / `intelligence.ts` / `thinking.ts` (tipos folded) / `antigravity.ts` / `search.ts` / `streaming.ts` (fallback folded) / `json.ts` (policy + schema folded) = provedores, CLI de provedor, chaves NVIDIA, LLM, modelos, inteligência, raciocínio 7 níveis, streaming, fallback, JSON policy / schema.
 - `auth.ts` / `oauth.ts` / `accounts.ts` / `sessions.ts` / `quota.ts` / `recovery.ts` / `fingerprint.ts` = auth, OAuth, contas, sessões, quota, recuperação, fingerprint.
 - `engine.ts` / `cli.ts` / `debonairlane.ts` / `project.ts` = engine, CLI, pista Debonair, projeto.
-- `nodeshim.ts` / `prismashim.ts` = shims Node / Prisma.
-- `db.ts` / `prismaconfig.ts` = banco Better SQLite / better-sqlite3, Prisma.
+- `nodeshim.ts` / `prismashim.ts` / `honoshim.ts` = shims Node / Prisma / Hono.
+- `db.ts` / `prismaconfig.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, Prisma, Drizzle.
 - `types.ts` / `typeface.ts` / `constants.ts` / `utils.ts` / `versionregistry.ts` = tipos, typeface, constantes, utilidades, registro de versões.
 - `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal, tema, onboarding, modalidade de sandbox.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
-### saddle — 59 lógicas na raiz
+### saddle — 55 lógicas na raiz
 
-- `sandbox.ts` / `sandboxenvprofile.ts` / `sandboxprofile.ts` / `sandboxqueue.ts` / `sandboxquota.ts` / `modalityregistry.ts` / `modes.ts` / `virtual.ts` / `isolation.ts` / `execution.ts` / `compute.ts` = sandbox, perfis, fila, quota, registro de modalidades, modos, virtualização, isolamento, execução, compute.
+- `sandbox.ts` (envprofile + profile + queue + quota folded) / `modalities.ts` (a lei das 90 modalidades) / `modalityregistry.ts` / `modes.ts` / `virtual.ts` / `isolation.ts` / `execution.ts` / `compute.ts` / `vmcore.ts` = sandbox, perfis, fila, quota, registro e lei das 90 modalidades, modos, virtualização, isolamento, execução, compute, núcleo VM rv64im real.
 - `orchestrator.ts` / `scheduler.ts` / `foundation.ts` / `alternatives.ts` / `quantum.ts` / `mesh.ts` / `edgelandes.ts` / `edgeplane.ts` = orquestrador, scheduler, fundação, alternativas, quantum, mesh, edge.
-- `scriptsbuildengine.ts` / `scriptlanes.ts` / `scriptssecuritygate.ts` / `scriptsvalidateflatnative.ts` / `speccatalog.ts` / `seedcatalog.ts` = engine de build de scripts, pistas, gate de segurança, validação nativa, catálogos spec / seed.
-- `api.ts` / `server.ts` / `webserver.ts` / `distribution.ts` / `integration.ts` / `runall.ts` = API, servers, distribuição, integração, execução total.
+- `scripts.ts` (scriptlanes + buildengine + securitygate + validateflatnative folded) / `seedcatalog.ts` = engine de scripts consolidada, pistas, tsc build, gate cargo, validação nativa flat, catálogo seed.
+- `engineplans.ts` / `osprofiles.ts` = perfis de engine max / balanced / lite, perfis de OS convidado.
+- `api.ts` / `server.ts` / `webserver.ts` (speccatalogs folded) / `distribution.ts` / `integration.ts` / `runall.ts` = API, servers, distribuição, integração, execução total.
 - `auth.ts` / `localauth.ts` / `security.ts` = auth local e segurança.
 - `performance.ts` / `runtimeprobe.ts` / `containerarch.ts` / `workloadlaw.ts` / `tiers.ts` = performance, probe de runtime, arquitetura de container, lei de workload, tiers.
 - `format.ts` / `paths.ts` / `render.ts` / `browser.ts` / `communication.ts` / `dashboardlib.ts` = formato, caminhos, render, browser, comunicação, lib de dashboard.
@@ -133,59 +145,69 @@
 
 ### stealthhead — 21 lógicas na raiz
 
-- `match.ts` / `matchrules.ts` / `netcode.ts` / `physics.ts` / `ranking.ts` / `spawner.ts` / `weapons.ts` / `world.ts` / `hud.ts` = partida, regras, netcode, física, ranking, spawner, armas, mundo, HUD.
+- `match.ts` (regras folded) / `netcode.ts` / `physics.ts` / `ranking.ts` / `spawner.ts` / `weapons.ts` / `world.ts` / `hud.ts` = partida e regras, netcode, física, ranking, spawner, armas, mundo, HUD.
+- `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal, tema, onboarding, modalidade de sandbox.
 - `db.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
 ### vault — 35 lógicas na raiz
 
-- `buckets.ts` / `objects.ts` / `objectsledger.ts` / `chunks.ts` / `storage.ts` / `storagelane.ts` / `sha.ts` / `retention.ts` / `decoy.ts` = buckets, objetos, ledger, chunks, storage, pista de storage, SHA, retenção, decoy.
-- `api.ts` / `routes.ts` / `internalroot.ts` / `protocols.ts` / `mimetypes.ts` / `querylane.ts` / `quota.ts` = API, rotas, raiz interna, protocolos HTTPS, Mimetypes, pista de query, quota.
-- `accounts.ts` / `signup.ts` = contas e cadastro.
+- `buckets.ts` / `objects.ts` (ledger folded) / `objectface.ts` / `chunks.ts` / `storage.ts` (pista de storage folded) / `storageface.ts` / `sha.ts` / `retention.ts` / `decoy.ts` = buckets, objetos e ledger, face browser-pura de objetos, chunks, storage, face browser-pura de storage, SHA, retenção, decoy.
+- `account.ts` (accounts + signup + api folded) / `routes.ts` / `internalroot.ts` / `protocols.ts` / `mimetypes.ts` / `querylane.ts` / `quota.ts` = conta consolidada, contas, cadastro, API HTTPS, rotas, raiz interna, protocolos HTTPS, Mimetypes, pista de query, quota.
+- `imagestore.ts` = pipeline de imagens do vault, validação DPI e MIME, standardizer webp neo.img, thumbnails via ledger real de objetos.
+- `pillars.ts` = catálogo dos pilares de storage, LibGit2 / MySQL2 / Prisma / Drizzle / Git LFS / blobs.
+- `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `vaultclient.ts` / `uistore.ts` / `labelstore.ts` = cliente do Vault, stores de UI / labels.
 - `drizzle.ts` / `db.ts` / `drizzle.config.ts` = Drizzle, banco Better SQLite / better-sqlite3.
-- `family.ts` / `familyurl.ts` / `hometypes.ts` / `labels.ts` / `index.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, tipos da home, entrada do app.
+- `family.ts` / `hometypes.ts` / `labels.ts` / `index.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, tipos da home, entrada do app.
 - `utils.ts` = utilidades.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
 ## OS MÓDULOS DE PALAVRA-CHAVE
 
-> O reagrupamento transversal que o dono cobrou: cada módulo = uma palavra-chave que guarda as lógicas correlatas da árvore inteira dentro deste livro único, com dono único e importadores via dependência, nunca duplicata. Os números são reais contados da árvore (símbolos exportados + lógicas internas) e crescem com as engines, a meta é cada módulo guardando de mil a sete mil lógicas correlatas. Total da família hoje = 4.682 lógicas correlatas sob os módulos abaixo.
+> O reagrupamento transversal que o dono cobrou: cada módulo = uma palavra-chave que guarda as lógicas correlatas da árvore inteira dentro deste livro único, com dono único e importadores via dependência, nunca duplicata. Os números são reais contados da árvore (símbolos exportados) e crescem com as engines, a meta é cada módulo guardando de mil a sete mil lógicas correlatas, o envelope DevThink espalha sua superfície OS proporcionalmente pelos módulos. Total da família hoje = 11.087 lógicas correlatas (exports reais contados da árvore) sob os módulos abaixo.
 
-### módulo sandbox / virtualização — 1.389 lógicas correlatas (dono = Saddle, a família inteira importa via @wenathlan/saddle)
+### módulo sandbox / virtualização — 2.462 lógicas correlatas (dono = Saddle, a família inteira importa via @wenathlan/saddle)
 
-- sandbox / perfis de ambiente / fila / quota / registro das 90 modalidades / modos / virtualização / isolamento / execução / compute (WASM / WebGPU / node 26 / workloads de IA) / orquestrador / scheduler / fundação / alternativas / quantum / mesh / edge / arquitetura de container / lei de workload / tiers.
+- sandbox / perfis de ambiente / fila / quota / registro das 90 modalidades / modos / virtualização / isolamento / execução / compute (WASM / WebGPU / node 26 / workloads de IA) / orquestrador / scheduler / fundação / alternativas / quantum / mesh / edge / arquitetura de container / lei de workload / tiers / engine de scripts / núcleo VM RISC-V / perfis de engine e OS.
 - Nenhum app declara lógica de virtualização própria, todos rodam sobre o Saddle, nunca no navegador / GPU / CPU da pessoa.
 
-### módulo áudio / dsp / música — 1.043 lógicas correlatas (dono = Debonair, a família importa via @wenathlan/debonair)
+### módulo áudio / dsp / música — 2.535 lógicas correlatas (dono = Debonair, a família importa via @wenathlan/debonair)
 
 - engine Kathesis / análise / espectro / loudness / limiter / ducking / HPSS / formantes / stems / demix / timestretch / alinhamento de fala / afinação / composição / arranjo / harmonia / teoria musical / gramática rítmica / padrões / matriz e corpus de gêneros / plano de remix / piano roll / DAW / mixer / player / grade de batidas / render MIDI / WAV / síntese vocal / blob store.
 
-### módulo ia / llm — 869 lógicas correlatas (dono = Getry, a família importa via @wenathlan/getry)
+### módulo ia / llm — 2.609 lógicas correlatas (dono = Getry, a família importa via @wenathlan/getry)
 
 - gateway universal 5 provedores / 35 rotas / raciocínio 7 níveis / provedores / CLI de provedor / chaves / LLM / modelos / inteligência / streaming / fallback / JSON policy / schema / busca / antigravidade / pistas de IA de áudio e visual / cliente de geração / rotação de chaves.
 
-### módulo rede / runner / pipeline / jogo / monetização — 519 lógicas correlatas (donos = Argan / Forge / Foundry / Stealthhead / Cobaia)
+### módulo rede / runner / pipeline / jogo / monetização — 1.249 lógicas correlatas (donos = Argan / Forge / Foundry / Stealthhead / Cobaia)
 
-- rede e DNSSEC, protocolos, diff de zona, Mimetypes (Argan) / runner de binários em sandbox, stream de execução, fila, frota, plano de grafo (Forge) / pipeline, runner, artefatos, sandbox, store de imagens (Foundry) / partida, regras, netcode, física, ranking, spawner, armas, mundo, HUD (Stealthhead) / ads, checkout, posts, conteúdo, roster (Cobaia).
+- rede e DNS consolidada, DNSSEC, diff de zona, Mimetypes (Argan) / runner de binários em sandbox, stream de execução, fila, frota, plano de grafo (Forge) / pipeline consolidado, artefatos, gates de release, scan de bundle, npm gate, dependências, readiness (Foundry) / partida, regras, netcode, física, ranking, spawner, armas, mundo, HUD (Stealthhead) / monetização consolidada, ads, checkout, posts, conteúdo, roster (Cobaia).
 
-### módulo imagem / vídeo / codecs — 259 lógicas correlatas (dono = Cadria, a família importa via @wenathlan/cadria)
+### módulo imagem / vídeo / codecs — 916 lógicas correlatas (dono = Cadria, a família importa via @wenathlan/cadria)
 
-- blend / conversão de cor / raster / máscaras / pixel / export / projeto / estilos de imagem / GIF / PNG / WebM / encode e decode de vídeo / engine e plano de transcode / probe de mídia / timeline de edição e visual / ticks / estúdio de geração e fonte / síntese.
+- blend / conversão de cor / raster / máscaras / pixel / export / projeto / estilos de imagem / GIF / PNG / WebM / encode e decode de vídeo / engine e plano de transcode / probe de mídia / timeline de edição e visual / ticks / estúdio de geração e fonte / síntese / executor de jobs de render.
 
-### módulo 3d / engine visual — 237 lógicas correlatas (dono = Cadria, concorrente do Blender, a família importa via @wenathlan/cadria)
+### módulo 3d / engine visual — 646 lógicas correlatas (dono = Cadria, concorrente do Blender, a família importa via @wenathlan/cadria)
 
-- engine VersaWaze / núcleo / cena 3D / animação / composição / geração / render / scheduler / shaders / slices / compilação de shaders / curvas de easing / motion design / encaixe de janela. O módulo documenta as engines da família e cresce com o estudo dos engines da internet em neo.temp.
+- engine VersaWaze / núcleo / núcleo matemático mat4 / vec3 / cena 3D / animação / composição / geração / render / scheduler / shaders / slices / compilação de shaders / curvas de easing / motion design / encaixe de janela / mesh / geração procedural honesta. O módulo documenta as engines da família e cresce com o estudo dos engines da internet em neo.temp.
 
-### módulo storage / banco — 366 lógicas correlatas (dono = Vault, a família importa via @wenathlan/vault)
+### módulo storage / banco — 670 lógicas correlatas (dono = Vault, a família importa via @wenathlan/vault)
 
-- buckets / objetos / ledger / chunks / storage / pista de storage / SHA / retenção / decoy / API HTTPS / rotas / raiz interna / protocolos / Mimetypes / pista de query / quota / contas / cadastro / cliente do Vault / labelstore / Drizzle / Better SQLite / better-sqlite3, concorrente de Supabase / S3.
+- buckets / objetos / ledger / chunks / storage / pista de storage / SHA / retenção / decoy / API HTTPS / rotas / raiz interna / protocolos / Mimetypes / pista de query / quota / contas / cadastro / cliente do Vault / labelstore / Drizzle / Better SQLite / better-sqlite3, concorrente de Supabase / S3 / imagestore / validação DPI e MIME / standardizer webp neo.img / thumbnails.
 
 ### a lei dos módulos
 
 - Cada módulo tem um dono único, os demais importam via dependência @wenathlan/<dono>, duplicar lógica entre módulos é estritamente proibido.
-- O registro por app acima lista os arquivos, os módulos listam o reagrupamento transversal por palavra-chave, os dois respondem à mesma árvore e o número total cresce rumo às sete mil lógicas correlatas que o dono cobrou.
+- O registro por app acima lista os arquivos, os módulos listam o reagrupamento transversal por palavra-chave, os dois respondem à mesma árvore e o número total já passou das sete mil lógicas correlatas que o dono cobrou.
+
+### a auditoria de deduplicação (o censo real da árvore)
+
+- A lei na prática hoje: 147 imports @wenathlan/* entre os apps (getry 47, devthink 47, vault 25, saddle 15, debonair 8, cadria 4, argan 1) — as engines via dependência.
+- Censo de nomes: 5.745 funções exportadas na família, 102 colisões de nome entre apps — a maioria são as faces browser-pure que cada app inlinha de propósito (a doutrina engine-copy da árvore: labels, onboarding, lanesandbox, mulberry32, fnv1a, clamp01 — micro-ajudantes que o bundle do browser de cada app carrega sem puxar o pacote inteiro do irmão).
+- O achado real da auditoria: forge/graphplan.ts e foundry/pipeline.ts carregam duas engines de plano gráfico com os mesmos 12 nomes (planvalid, plannext, planstages, plancopy, planfeeders...) e implementações separadas — a onda antiga selou "each app owns its own", a lei atual do dono manda o foundry (dono do domínio pipeline) ser o único dono e o forge importar via @wenathlan/foundry; a fusão é a próxima onda de deduplicação, com a bateria do forge andando junto.
+- As 11 funções de uistore devthink+vault e as faces label/onboarding em 9 apps seguem a doutrina browser-pure (o vault é o dono do dado, cada app carrega a face de leitura) — deduplicar as faces exigiria um pacote browser compartilhado, registrado aqui como a segunda onda de deduplicação.
 
 ## AS REGRAS PR0 A PR22
 
@@ -491,8 +513,8 @@
 
 ## A ESCADA DE VERSÕES
 
-- 12 package.json sincronizados = raiz + 11 apps, todos hoje em 2.0.156.
-- Próxima versão = 2.0.157, nunca 2.1.x.
+- 12 package.json sincronizados = raiz + 11 apps, todos hoje em 2.0.166.
+- Próxima versão = 2.0.167, nunca 2.1.x.
 - A cada ~600 ações / 100 grandes mudanças o bump da raiz propaga para todos os 11 apps de uma vez.
 - Cada bump soma nota no CHANGELOG e abre release com mais de 500 assets, pois cada app tem mesmo template padronizado de build.
 
