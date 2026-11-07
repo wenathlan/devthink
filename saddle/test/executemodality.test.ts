@@ -608,13 +608,19 @@ describe("the executemodality battery — the ninety seats answer real executors
     assert.ok(artifact.frame.startsWith("00"), "the uncompressed flag answers on the wire");
   });
 
-  it("seat 72 storagesqlite — the in-memory store answers or refuses honestly", async () => {
-    const result = await dispatch(72, "sqlite battery payload");
+  it("seat 72 storagesqlite — the node:sqlite roundtrip answers or refuses honestly", async () => {
+    const payload = "sqlite battery payload — the vault roundtrips the caller text whole";
+    const result = await dispatch(72, payload);
     if (result.status === "succeeded") {
-      assert.ok(String(result.stdout).includes("1 row(s)"), "the store answers its row count");
-      const artifact = result.artifact as { rows: number; engine: string };
+      const artifact = result.artifact as { rows: number; engine: string; roundtrip: boolean; store: string };
       assert.equal(artifact.rows, 1, "one real row answered the insert");
       assert.equal(artifact.engine, "node:sqlite");
+      assert.equal(artifact.roundtrip, true, "the roundtrip answers its flag");
+      assert.equal(artifact.store, ":memory:", "the store rides the engine memory alone (the visitor law)");
+      assert.ok(String(result.stdout).includes("roundtripped"), "the vault answers the roundtrip");
+      // the honest roundtrip contract: the readback the seat compared
+      // against the payload character for character rides the payload length
+      assert.ok(String(result.stdout).includes(String(payload.length)), "the stdout names the payload length the readback matched");
     } else {
       assert.ok(HONESTREFUSALS.has(result.error?.code ?? ""), "the absence answers the honest code");
     }

@@ -4191,7 +4191,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "storagesqlite",
     lane: "sandbox",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["sqlite"],
     hardening: ["file-quota"],
     boot: "hot",
@@ -4207,27 +4207,60 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 72,
       lane: "sandbox",
       operate: async (request) => {
+        // the real vault roundtrip: the node:sqlite runtime the engine host
+        // carries — without it the seat answers the honest coded absence, and
+        // with it one full roundtrip (create, insert, select, drop) on a
+        // private in-memory table, the readback compared against the payload
+        // character for character (the seat never fakes a database and never
+        // opens a file — the store rides :memory: alone, the caller values
+        // ride parameterized statements, only the seat's own generated table
+        // name rides the statement text).
+        let sqlite: typeof import("node:sqlite");
         try {
-          const sqlite = (await import("node:sqlite")) as typeof import("node:sqlite");
-          const database = new sqlite.DatabaseSync(":memory:");
-          try {
-            database.exec("CREATE TABLE sandbox_artifacts (id INTEGER PRIMARY KEY, payload TEXT)");
-            const statement = database.prepare("INSERT INTO sandbox_artifacts (payload) VALUES (?)");
-            statement.run(request.code.slice(0, 1024));
-            const rows = database.prepare("SELECT id, payload FROM sandbox_artifacts").all();
-            return {
-              stdout: `sqlite vault: ${rows.length} row(s) answered by the in-memory store (node:sqlite, :memory:)`,
-              artifact: { rows: rows.length, engine: "node:sqlite" },
-            };
-          } finally {
-            database.close();
-          }
+          sqlite = (await import("node:sqlite")) as typeof import("node:sqlite");
         } catch (error) {
           throw Object.assign(
             new Error(`the sqlite runtime is absent from this host: ${error instanceof Error ? error.message : String(error)}`),
             { code: "HOST_RUNTIME_ABSENT" },
           );
         }
+        const table = `saddle_sqlite_${Date.now().toString(36)}${Math.floor(Math.random() * 1679616).toString(36)}`;
+        const payload = request.code;
+        let readback = "";
+        const database = new sqlite.DatabaseSync(":memory:");
+        try {
+          database.exec(`CREATE TABLE ${table} (k TEXT PRIMARY KEY, v TEXT)`);
+          database.prepare(`INSERT INTO ${table} (k, v) VALUES (?, ?)`).run("saddle-payload", payload);
+          readback = String(
+            (database.prepare(`SELECT v FROM ${table} WHERE k = ?`).get("saddle-payload") as { v?: unknown } | undefined)?.v ?? "",
+          );
+        } catch (error) {
+          throw Object.assign(
+            new Error(`the sqlite vault refused the roundtrip: ${error instanceof Error ? error.message : String(error)}`),
+            { code: "SQLITE_ROUNDTRIP_FAILED" },
+          );
+        } finally {
+          try {
+            database.exec(`DROP TABLE IF EXISTS ${table}`);
+          } catch {
+            /* the roundtrip already answered; the drop is best effort */
+          }
+          try {
+            database.close();
+          } catch {
+            /* the close is best effort */
+          }
+        }
+        if (readback !== payload) {
+          throw Object.assign(
+            new Error(`the sqlite roundtrip answered ${readback.length} characters for ${payload.length} written`),
+            { code: "SQLITE_ROUNDTRIP_FAILED" },
+          );
+        }
+        return {
+          stdout: `sqlite vault: ${payload.length} characters roundtripped through the node:sqlite in-memory store`,
+          artifact: { rows: 1, engine: "node:sqlite", roundtrip: true, store: ":memory:" },
+        };
       },
     }),
   },

@@ -24,10 +24,12 @@ import {
  * server-side; the pr15 completion wave seated the wasme, exe, binary,
  * sh and yaml runner seats, the port dock, the container dock
  * principal, the virtual file store and the virtual hardware
- * presentation seats). the seventeen registry-only ids the owner's
- * audit named (the host runtimes and the inproc seats the engine never
- * carried real executors for) left the live set for the honest planned
- * shelf — the record never pretends a wiring the engine does not drive.
+ * presentation seats). the sixteen remaining registry-only ids the
+ * owner's audit named (the host runtimes and the inproc seats the engine
+ * never carried real executors for) left the live set for the honest
+ * planned shelf — the sqlite vault seat walked back live once the
+ * node:sqlite roundtrip executor landed (the record never pretends a
+ * wiring the engine does not drive).
  * the visitor-law hardening retired the local-optin consent gate (the
  * critical law is absolute: no seat may touch the visitor machine under
  * any consent token) and seated the pod session host probe of seat
@@ -88,6 +90,7 @@ const LIVESET = [
   "storagemysql",
   "storagepostgres",
   "storages3",
+  "storagesqlite",
   "virtualdrivers",
   "virtualfile",
   "virtualfull",
