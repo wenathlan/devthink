@@ -28,7 +28,7 @@ import {
   stepprojectile,
   sweepbox,
   vec3,
-} from "../physics.ts";
+} from "../sol/physics/physics.ts";
 
 const UNIT = aabb(vec3(0, 0, 0), vec3(1, 1, 1));
 
