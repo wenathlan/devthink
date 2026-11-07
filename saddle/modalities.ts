@@ -2492,7 +2492,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "runnerdeno",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["deno"],
     hardening: ["permission-map"],
     boot: "hot",
@@ -2508,10 +2508,18 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 19,
       lane: "runner",
       binary: "deno",
-      // the payload rides the staged program file — the read permission maps
-      // the sandbox alone, the stdin dash never rides (no pipe is written).
+      // the real deno runner: the payload rides the staged program file —
+      // the read permission maps the sandbox alone, the module cache rides
+      // the sandbox tree (DENO_DIR never touches the host home — the same
+      // seat the edge lane carries), the stdin dash never rides (no pipe
+      // is written). the runtime detection rides the spawner's own absence
+      // grammar — the same probehostbinary seat the edge lane table
+      // carries — and a host without the deno binary answers the honest
+      // coded absence, never a faked run (the seat never fakes a runtime).
       argv: ({ file }) => ["deno", "run", "--allow-read=/sandbox", file],
+      env: { DENO_DIR: "/sandbox/denodir" },
       hardening: ["permission-map"],
+      probe: "the host must carry the deno runtime (the runner-deno seat the owner's law 268 charges)",
     }),
   },
   {
