@@ -77,10 +77,10 @@ export function createStateStore(lane: StateLane): StateStore {
   /** the payload read: parameterized by the visitor and key pair,
    * undefined before the first write. */
   function getState(visitor: string, stateKey: string): string | undefined {
-    const row = lane.queryOne(
-      "SELECT payload FROM state_states WHERE visitor = ? AND stateKey = ?",
-      [visitor, stateKey],
-    ) as Pick<StateRow, "payload"> | undefined;
+    const row = lane.queryOne("SELECT payload FROM state_states WHERE visitor = ? AND stateKey = ?", [
+      visitor,
+      stateKey,
+    ]) as Pick<StateRow, "payload"> | undefined;
     return row?.payload;
   }
 

@@ -15,7 +15,16 @@ import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 import { openStorageLane } from "./storage.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
-export const tables = ["keys", "payloads", "onboarding_states", "state_states", "labels", "accounts", "databases", "apikeys"] as const;
+export const tables = [
+  "keys",
+  "payloads",
+  "onboarding_states",
+  "state_states",
+  "labels",
+  "accounts",
+  "databases",
+  "apikeys",
+] as const;
 
 /** the one storage lane of the site store (WAL, foreign keys, patient locks — the vault's own file). */
 const lane = openStorageLane({ defaultFile: "./vault.db" });

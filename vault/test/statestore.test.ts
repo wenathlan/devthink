@@ -10,7 +10,7 @@
 // ladder, the malformed calls answer the standardized refusals).
 
 import assert from "node:assert/strict";
-import { rmSync } from "node:fs";
+import { mkdirSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, it } from "vitest";
@@ -21,6 +21,7 @@ const tempdirs: string[] = [];
 
 function tempdir(): string {
   const dir = path.join(os.tmpdir(), `statestore-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  mkdirSync(dir, { recursive: true });
   tempdirs.push(dir);
   return dir;
 }

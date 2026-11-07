@@ -36,11 +36,7 @@ function load<T>(key: string, validate: Validator<T>): T | null {
  * written — 404 —, the answer fails the guard, or the door is
  * unreachable). Best effort: every failure answers undefined and the
  * mirror keeps the view alive. */
-async function loadRemote<T>(
-  base: URL,
-  key: string,
-  validate: Validator<T>,
-): Promise<T | undefined> {
+async function loadRemote<T>(base: URL, key: string, validate: Validator<T>): Promise<T | undefined> {
   if (typeof fetch === "undefined") return undefined;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), READ_TIMEOUT_MS);
