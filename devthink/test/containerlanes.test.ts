@@ -287,14 +287,23 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
   it("the webpack bundle is the real exact-pinned cross-bundler product the ci battery verifies", async () => {
     const containers = await readworkflow("containers.yml");
     /* the cross-bundler rung the ci battery verifies, carried to the
-     * saddle engine: the tsc engine build (scripts.ts buildengine, the
-     * lane-word dispatcher the scripts consolidation seated) produces
-     * distpackage/index.js and the exact-pinned webpack fetch (webpack
-     * 5.112.2 with its webpack-cli 6.0.1 peer) packs the one entry into
-     * the one webpack bundle the six channel legs distribute. */
-    expect(containers).toContain("node scripts.ts buildengine");
+     * saddle engine: the engine build walks the manifest entry through
+     * the script runner (bun run build:engine, the runner law the
+     * container heal seated - node_modules/.bin joins PATH only inside
+     * a script runner, so the bare node walk the older lane carried
+     * ENOENTed its compiler) and produces distpackage/index.js, while
+     * the exact-pinned webpack fetch (webpack 5.112.2 with its
+     * webpack-cli 6.0.1 peer) packs the one entry into the one webpack
+     * bundle the six channel legs distribute through the generated
+     * config the -c lane carries - the output filename answer moved
+     * from the retired CLI flag walk to the config file (filename:
+     * "saddle.webpack.js"), the LimitChunkCountPlugin holding the
+     * single-file law beside it. */
+    expect(containers).toContain("bun run build:engine");
     expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
-    expect(containers).toContain("--output-filename saddle.webpack.js");
+    expect(containers).toContain("webpack -c ./distpackage/webpack.config.mjs");
+    expect(containers).toContain('filename: "saddle.webpack.js"');
+    expect(containers).toContain("LimitChunkCountPlugin({ maxChunks: 1 })");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
      * collide with the engine envelope the publish lanes own: the
