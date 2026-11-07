@@ -276,8 +276,19 @@ describe("the executemodality battery — the ninety seats answer real executors
     assert.equal(result.plan?.workspace?.staged, true, "the staged program file really rode the spawn");
   });
 
-  it("seat 19 runnerdeno — the deno plan stamps and answers honestly", async () => {
-    await hostseat(19, "deno", 'console.log("deno real")');
+  it("seat 19 runnerdeno — deno really executes the staged program file or refuses honestly", async () => {
+    const result = await hostseat(19, "deno", 'console.log("runnerdeno real:", 6 * 7)');
+    if (result.status === "succeeded") {
+      // the honest smoke contract the runner lanes carry: the payload
+      // really executed under the deno runtime the host carries
+      assert.equal(result.stdout, "runnerdeno real: 42\n", `deno answers the smoke stdout: ${JSON.stringify(result.error)}`);
+      assert.equal(result.plan?.workspace?.staged, true, "the staged program file really rode the spawn");
+      assert.equal(result.plan?.env?.DENO_DIR, "/sandbox/denodir", "the module cache rides the sandbox tree (never the host home)");
+    } else {
+      // the honest coded absence: a host without the deno binary never
+      // fakes a run (the same grammar the edge lane probe answers)
+      assert.equal(result.error?.code, "HOST_RUNTIME_ABSENT", "the absent deno runtime answers the honest code");
+    }
   });
 
   it("seat 20 runnerwebpack — the webpack bridge stamps the node argv", async () => {
