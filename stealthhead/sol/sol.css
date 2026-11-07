@@ -868,6 +868,23 @@ code {
    honest line. the coral answers --sh-accent (never a second hue), the
    radius and shadow steps answer the sol ladders, and the reveal stagger
    rides the shared observer of the design engine. */
+/* the seat law (the family contract the one-component face keeps — the
+   PR19 under-construction answer): the two doors the face rides — the
+   embedded seat inside the os power clip and the standalone seat at the
+   typed url — both measure their door with the viewport token, never a
+   fixed pixel literal, while the face grid the .shconstr rule owns
+   keeps its own design above them (the seat answers the mount, the
+   design answers the theme). */
+.shell--embedded {
+  width: 100%;
+  height: 100vh;
+}
+
+.shell--standalone {
+  width: 100%;
+  height: 100vh;
+}
+
 .shconstr {
   position: relative;
   display: grid;
