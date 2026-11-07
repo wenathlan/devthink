@@ -475,8 +475,10 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     /* the race the workflow_run firing carries: the moving head may
      * already answer the next rung, so the resolver detaches the release
      * tag and reads the saddle manifest of the tagged source (the ghcr
-     * lane mold), never the moving head. */
-    expect(publish).toContain('tag="$(gh release view --json tagName --jq .tagName)"');
+     * lane mold), never the moving head — the -R repo flag the
+     * checkout-less resolver seats carry answers the repository gh
+     * could never infer from the missing git dir. */
+    expect(publish).toContain('tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"');
     expect(publish).toContain('git checkout --detach "$tag"');
     /* the security gate the publish rides behind: the trivy scan over the
      * same runtime target the publish legs build. */
