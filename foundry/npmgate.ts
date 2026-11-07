@@ -32,7 +32,10 @@ const nativebundles = [
   "package/companion.js",
   "package/nativehost.template.json",
   "package/server.js",
-  "package/crossbrowser.js",
+  /* the securitytooling consolidation folded the crossbrowser lane into the
+   * security keyword file — the tarball gate allows the one security.js
+   * artifact the per-module loop now packs. */
+  "package/security.js",
   "package/pack.js",
   "package/http.js",
   "package/manifest.json",

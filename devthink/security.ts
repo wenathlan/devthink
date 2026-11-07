@@ -2,11 +2,67 @@
  * The security keyword file since the security-tooling consolidation: beside the trust boundary cluster above, the file now owns the security tooling family the PR3 law charged into one seat — the secret scan gate (checksecrets), the content security policy audit (cspaudit), the crx mining evidence harvester (crxharvest), the firefox/safari/polyfill browser coverage (crossbrowser) and the devtools wall (devtoolsguard) — every export preserved verbatim, the CLI seats riding the lane dispatcher at the bottom of the file.
  */
 
-import { execFile } from "node:child_process";
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
-import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
-import { extname, join } from "node:path";
-import { promisify } from "node:util";
+/* the node seats load through process.getBuiltinModule (the browser-pure
+ * law of the public graph: the esbuild bundle lanes of the library resolve
+ * no node: import, so the node-only seats below — the secret scan, the csp
+ * audit, the crx harvest, the browser coverage and the devtools wall —
+ * resolve their builtins lazily at call time and the browser lanes never
+ * reach them), while the path helpers ride pure local seats (the join and
+ * extname sites keep their names verbatim — the posix semantics the
+ * engine lanes use). */
+type NodeFsModule = typeof import("node:fs");
+type NodeFsPromisesModule = typeof import("node:fs/promises");
+type NodeChildProcessModule = typeof import("node:child_process");
+type NodeUtilModule = typeof import("node:util");
+
+let fsseat: NodeFsModule | undefined;
+let fspromisesseat: NodeFsPromisesModule | undefined;
+let childprocessseat: NodeChildProcessModule | undefined;
+let utilseat: NodeUtilModule | undefined;
+
+/** the lazy node:fs seat — the sync scan lanes resolve it at first call, the browser never calls. */
+function nodefs(): NodeFsModule {
+  if (fsseat === undefined) fsseat = process.getBuiltinModule("node:fs") as NodeFsModule;
+  return fsseat;
+}
+
+/** the lazy node:fs/promises seat — the async audit and harvest lanes resolve it at first call. */
+function nodefspromises(): NodeFsPromisesModule {
+  if (fspromisesseat === undefined)
+    fspromisesseat = process.getBuiltinModule("node:fs/promises") as NodeFsPromisesModule;
+  return fspromisesseat;
+}
+
+/** the lazy node:child_process seat — the crx harvest lane resolves it at first call. */
+function nodechildprocess(): NodeChildProcessModule {
+  if (childprocessseat === undefined)
+    childprocessseat = process.getBuiltinModule("node:child_process") as NodeChildProcessModule;
+  return childprocessseat;
+}
+
+/** the lazy node:util seat — the promisify of the harvest lane resolves it at first call. */
+function nodeutil(): NodeUtilModule {
+  if (utilseat === undefined) utilseat = process.getBuiltinModule("node:util") as NodeUtilModule;
+  return utilseat;
+}
+
+/** the pure posix join (the node:path seat never enters the public graph — empty parts skip, duplicate slashes fold, the trailing separator drops). */
+function join(...parts: string[]): string {
+  const cleaned: string[] = [];
+  for (const part of parts) {
+    if (part === "" || part === undefined || part === null) continue;
+    cleaned.push(String(part));
+  }
+  const joined = cleaned.join("/").replace(/\/+/g, "/");
+  return joined.length > 1 && joined.endsWith("/") ? joined.slice(0, -1) : joined;
+}
+
+/** the pure posix extname (the dot must sit past the last separator and past the head — dotfiles carry no extension). */
+function extname(path: string): string {
+  const dot = path.lastIndexOf(".");
+  const slash = Math.max(path.lastIndexOf("/"), 0);
+  return dot > slash ? path.slice(dot) : "";
+}
 
 /**
  * The security module of the 1.1.90 consolidation: every correlated variation of the trust boundary logic interned in this one file, so the module family carries one surface without duplicate variations.
@@ -1697,10 +1753,10 @@ const patterns = [
 function productFiles(root: string): string[] {
   const files: string[] = [];
   const visit = (path: string) => {
-    if (!existsSync(path)) return;
-    const stat = statSync(path);
+    if (!nodefs().existsSync(path)) return;
+    const stat = nodefs().statSync(path);
     if (stat.isFile()) return files.push(path);
-    for (const entry of readdirSync(path)) {
+    for (const entry of nodefs().readdirSync(path)) {
       if (entry === "node_modules" || entry === ".git" || entry === "docs" || entry === "build" || entry === "release")
         continue;
       visit(join(path, entry));
@@ -1731,13 +1787,13 @@ function productFiles(root: string): string[] {
   ])
     visit(join(root, name));
   visit(join(root, ".github"));
-  return files.filter((path) => existsSync(path));
+  return files.filter((path) => nodefs().existsSync(path));
 }
 
 export function scanSecrets(root = process.cwd()): string[] {
   const findings: string[] = [];
   for (const file of productFiles(root)) {
-    const text = readFileSync(file, "utf8");
+    const text = nodefs().readFileSync(file, "utf8");
     for (const pattern of patterns) {
       if (pattern.test(text)) findings.push(`${file}: ${pattern}`);
       pattern.lastIndex = 0;
@@ -1766,9 +1822,9 @@ if (directEntry || bunEntry) {
 /** Audits every content security policy of the extension: the gate reads the root manifest and both browser overlays, parses the extension pages policy of each, refuses any eval, remote code, unsafe inline or wildcard source in the frozen policies, verifies the pagebridge script stays the only injected file of the scripting api, verifies the extension pages load no remote resources, and verifies the dashboard renders untrusted extracts inside the fully sandboxed frame the manifest declares. The gate runs against the built extension bundles so it answers for the shipped artifacts, prints one deterministic json report, and exits nonzero on any failure. */
 async function cspauditlane(): Promise<void> {
 
-const packagejson = JSON.parse(await readFile("package.json", "utf8"));
+const packagejson = JSON.parse(await nodefspromises().readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const manifest = JSON.parse(await readFile("manifest.json", "utf8"));
+const manifest = JSON.parse(await nodefspromises().readFile("manifest.json", "utf8"));
 const failures: string[] = [];
 const policies: Array<{ surface: string; text: string; directives?: string[] }> = [];
 
@@ -1855,7 +1911,7 @@ if (typeof rootpolicy === "string") {
   }
   /* the shipped chromium manifest copy carries the same policy the root declares, so the packaged extension answers the audit too */
   try {
-    const shipped = JSON.parse(await readFile(join(extensiondirectory, "manifest.json"), "utf8"));
+    const shipped = JSON.parse(await nodefspromises().readFile(join(extensiondirectory, "manifest.json"), "utf8"));
     if (shipped.content_security_policy?.extension_pages !== rootpolicy)
       refuse(
         "The shipped chromium manifest copy carries a different extension pages policy; the packaged extension must answer the same frozen policy.",
@@ -1871,11 +1927,11 @@ if (typeof rootpolicy === "string") {
 const dynamicfunctionbundles = ["background.js", "pagebridge.js"];
 const dynamicfunctionsources: Record<string, string> = { "background.js": "background.ts", "pagebridge.js": "page.ts" };
 const sitecounts: Record<string, number> = {};
-const bundlefiles = (await readdir(extensiondirectory)).filter((file) => file.endsWith(".js")).sort();
+const bundlefiles = (await nodefspromises().readdir(extensiondirectory)).filter((file) => file.endsWith(".js")).sort();
 if (bundlefiles.length === 0)
   refuse("The built extension directory carries no bundles; run pnpm build before the content security audit.");
 for (const file of bundlefiles) {
-  const content = await readFile(join(extensiondirectory, file), "utf8");
+  const content = await nodefspromises().readFile(join(extensiondirectory, file), "utf8");
   const codewithoutstrings = content.replace(/"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`/g, "");
   if (/\beval\s*\(/.test(codewithoutstrings))
     refuse(`The built bundle ${file} calls eval; no injected code path ever evaluates strings.`);
@@ -1888,7 +1944,7 @@ for (const file of bundlefiles) {
       `The built bundle ${file} constructs functions from strings; only the reviewed evaluate executors of the background and the pagebridge evaluate reviewed expressions.`,
     );
   if (sites > 0 && dynamicfunctionsources[basename] !== undefined) {
-    const source = await readFile(dynamicfunctionsources[basename], "utf8");
+    const source = await nodefspromises().readFile(dynamicfunctionsources[basename], "utf8");
     const sourcesites = [...source.matchAll(/new\s+Function\s*\(/g)].length;
     if (sites !== sourcesites)
       refuse(
@@ -1902,7 +1958,7 @@ for (const file of bundlefiles) {
 }
 
 /* 5. the pagebridge script stays the only injected file: every files array the scripting api injects names pagebridge.js alone. */
-const backgroundsource = await readFile("background.ts", "utf8");
+const backgroundsource = await nodefspromises().readFile("background.ts", "utf8");
 const injections = [...backgroundsource.matchAll(/executeScript\(\{[\s\S]{0,160}?files:\s*\[([^\]]*)\]/g)].map(
   (match) => [...match[1].matchAll(/"([^"]+)"/g)].map((entry) => entry[1]),
 );
@@ -1920,11 +1976,11 @@ if (!bundlefiles.includes("pagebridge.js"))
   refuse("The built extension carries no pagebridge.js bundle; the only injected file must ship.");
 
 /* 6. the sidepanel and popup load no remote resources: every resource reference of every extension page stays a local file of the package. */
-const pagefiles = (await readdir(extensiondirectory)).filter((file) => file.endsWith(".html")).sort();
+const pagefiles = (await nodefspromises().readdir(extensiondirectory)).filter((file) => file.endsWith(".html")).sort();
 if (pagefiles.length === 0)
   refuse("The built extension directory carries no pages; run pnpm build before the content security audit.");
 for (const file of pagefiles) {
-  const content = await readFile(join(extensiondirectory, file), "utf8");
+  const content = await nodefspromises().readFile(join(extensiondirectory, file), "utf8");
   for (const reference of [...content.matchAll(/(?:src|href)\s*=\s*["']([^"']+)["']/g)].map((match) => match[1])) {
     if (/^(https?|wss?|data|blob):/i.test(reference) && !reference.startsWith("blob:"))
       refuse(`The extension page ${file} loads the remote resource ${reference}; every page resource stays local.`);
@@ -1948,7 +2004,7 @@ if (!sandboxpages.includes("sandbox.html"))
 if (!pagefiles.includes("sandbox.html"))
   refuse("The built extension carries no sandbox.html page; the sandbox frame must ship.");
 else {
-  const sandboxpage = await readFile(join(extensiondirectory, "sandbox.html"), "utf8");
+  const sandboxpage = await nodefspromises().readFile(join(extensiondirectory, "sandbox.html"), "utf8");
   if (!sandboxpage.includes("devthinksandbox"))
     refuse(
       "The sandbox page speaks no devthinksandbox channel; the render handshake the frame family defines is missing.",
@@ -1956,7 +2012,7 @@ else {
   if (!sandboxpage.includes('setAttribute("sandbox", "")') && !sandboxpage.includes("setAttribute('sandbox', '')"))
     refuse("The sandbox page carries no fully sandboxed iframe; untrusted markup renders with no privileges at all.");
 }
-const webindex = await readFile("design.html", "utf8");
+const webindex = await nodefspromises().readFile("design.html", "utf8");
 if (!webindex.includes('data-surface="sandbox"'))
   refuse(
     "The one web design file carries no sandbox surface template; the sandbox frame renders from the shared design.",
@@ -2007,7 +2063,7 @@ if (failures.length > 0) {
  */
 async function crxharvestlane(): Promise<void> {
 
-const execute = promisify(execFile);
+const execute = nodeutil().promisify(nodechildprocess().execFile);
 const root = process.cwd();
 const artifactsdir = join(root, "test", "artifacts");
 const harvestdir = join(artifactsdir, "harvest");
@@ -3884,12 +3940,12 @@ async function downloadcrx(source: string) {
 
 /** Walks the extracted package and returns every file with size in bytes. */
 async function walkfiles(directory: string) {
-  const dirents = await readdir(directory, { recursive: true, withFileTypes: true });
+  const dirents = await nodefspromises().readdir(directory, { recursive: true, withFileTypes: true });
   const files: Array<{ path: string; size: number; full: string }> = [];
   for (const dirent of dirents) {
     if (!dirent.isFile()) continue;
     const full = join(dirent.parentPath, dirent.name);
-    const info = await stat(full);
+    const info = await nodefspromises().stat(full);
     files.push({
       path: full
         .slice(directory.length + 1)
@@ -3904,7 +3960,7 @@ async function walkfiles(directory: string) {
 
 /** Reads and parses a json file, throwing a readable error when invalid. */
 async function readjson(path: string): Promise<unknown> {
-  const raw = await readFile(path, "utf8");
+  const raw = await nodefspromises().readFile(path, "utf8");
   return JSON.parse(raw);
 }
 
@@ -3980,8 +4036,8 @@ async function analyzepackage(id: string, label: string) {
   const workdir = join(harvestdir, id);
   const zippath = join(workdir, "package.zip");
   const extractdir = join(workdir, "package");
-  await mkdir(extractdir, { recursive: true });
-  await writeFile(zippath, zip);
+  await nodefspromises().mkdir(extractdir, { recursive: true });
+  await nodefspromises().writeFile(zippath, zip);
   try {
     const listing = (await execute("unzip", ["-Z1", zippath], { maxBuffer: 16 * 1024 * 1024 })).stdout
       .split("\n")
@@ -4035,7 +4091,7 @@ async function analyzepackage(id: string, label: string) {
       if (/\.html?$/i.test(file.path)) htmlfiles.push(file.path);
       if (/\.(?:js|mjs|cjs)$/i.test(file.path) && file.size <= 16 * 1024 * 1024) {
         scriptcount += 1;
-        const content = await readFile(file.full, "utf8");
+        const content = await nodefspromises().readFile(file.full, "utf8");
         for (const match of content.matchAll(apipattern)) apis.add(`${match[1]}.${match[2]}`);
         const lowered = content.toLowerCase();
         for (const match of lowered.matchAll(termpattern)) {
@@ -4119,7 +4175,7 @@ async function analyzepackage(id: string, label: string) {
       htmlfiles: htmlfiles.slice(0, 20),
     };
   } finally {
-    await rm(workdir, { recursive: true, force: true });
+    await nodefspromises().rm(workdir, { recursive: true, force: true });
   }
 }
 
@@ -4548,9 +4604,9 @@ ${poolsections.join("\n\n")}`);
 
 /** Loads the harvest cache, returning an empty record set when absent. */
 async function loadcache(): Promise<Record<string, harvestrecord>> {
-  if (!existsSync(cachepath)) return {};
+  if (!nodefs().existsSync(cachepath)) return {};
   try {
-    return JSON.parse(await readFile(cachepath, "utf8"));
+    return JSON.parse(await nodefspromises().readFile(cachepath, "utf8"));
   } catch {
     return {};
   }
@@ -4641,14 +4697,14 @@ async function main() {
   ];
   const labels = new Map<string, string>();
   try {
-    const catalog = await readFile(join(root, "docs", "userstorecatalog.md"), "utf8");
+    const catalog = await nodefspromises().readFile(join(root, "docs", "userstorecatalog.md"), "utf8");
     for (const match of catalog.matchAll(/\| \d+ \| (.+?) \| ([a-z]{32}) \|/g)) labels.set(match[2], match[1].trim());
   } catch {
     // Labels are a convenience only.
   }
 
   const cache = await loadcache();
-  await mkdir(artifactsdir, { recursive: true });
+  await nodefspromises().mkdir(artifactsdir, { recursive: true });
   const pending = identifiers.filter((id) => refresh || !cache[id]);
   const queue = pending.slice(skipcount, skipcount + limitcount);
   console.log(
@@ -4675,11 +4731,11 @@ async function main() {
       };
       console.log(`[${index}/${queue.length}] ${id} failed: ${message}`);
     }
-    await writeFile(cachepath, JSON.stringify(cache, null, 2), "utf8");
+    await nodefspromises().writeFile(cachepath, JSON.stringify(cache, null, 2), "utf8");
   }
 
   const { markdown, verified, failed, featuretotal, poolsize, apicounts } = buildreport(cache, identifiers);
-  await writeFile(reportpath, markdown, "utf8");
+  await nodefspromises().writeFile(reportpath, markdown, "utf8");
   const analyzed = identifiers.filter((id) => cache[id]).length;
   console.log(
     JSON.stringify(

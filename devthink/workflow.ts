@@ -4562,7 +4562,10 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "bun run check",
       "node apifreeze.ts",
       "node pentest.ts",
-      "node cspaudit.ts",
+      /* the securitytooling consolidation moved the csp audit into the
+       * security keyword file's lane dispatcher — the control the verify
+       * ladder reads walks the consolidated seat the same law stamped. */
+      "node security.ts cspaudit",
       "node permdiff.ts",
       "node agentcert.ts",
       "node costcert.ts",
@@ -4628,7 +4631,10 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "package/companion.js",
       "package/nativehost.template.json",
       "package/server.js",
-      "package/crossbrowser.js",
+      /* the securitytooling consolidation folded the crossbrowser lane into
+       * the security keyword file — the tgz control reads the one
+       * security.js artifact the lane now packs. */
+      "package/security.js",
       "package/pack.js",
       "package/http.js",
       "package/manifest.json",
