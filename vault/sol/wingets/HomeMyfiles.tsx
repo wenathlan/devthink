@@ -156,6 +156,7 @@ export function Myfiles() {
       <>
         {limited ? (
           <div className="vc-meter">
+            {/* biome-ignore lint/a11y/useSemanticElements: the meter rides the family track/fill grammar — the native meter element cannot style its track and fill across the engines */}
             <div
               className="vc-meter__track"
               role="meter"

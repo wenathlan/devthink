@@ -143,7 +143,19 @@ describe("the face surfaces", () => {
 describe("the store law (no literal, no dead key)", () => {
   it("every face key a surface cites lives in the seed; every other key lives in the manifest", () => {
     const seed = uistoreseedrows();
-    const surfaces = [HOME, PLANSTABLE, BROWSE, MYFILES, CONSOLE, TOASTER, SKELETON, OBJECTS, BUCKETS, RETENTION, SHELL];
+    const surfaces = [
+      HOME,
+      PLANSTABLE,
+      BROWSE,
+      MYFILES,
+      CONSOLE,
+      TOASTER,
+      SKELETON,
+      OBJECTS,
+      BUCKETS,
+      RETENTION,
+      SHELL,
+    ];
     const citations = new Map<string, string>();
     for (const surface of surfaces) {
       for (const key of citedkeys(surface)) {

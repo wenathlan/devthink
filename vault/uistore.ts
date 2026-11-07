@@ -181,8 +181,7 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   "face.myfiles.unlock.busy": "unlocking…",
   "face.myfiles.unlock.invalid": "the limit must be whole megabytes — one or more.",
   "face.myfiles.unlock.setTitle": "the limit answered",
-  "face.myfiles.unlock.set":
-    "the limit answers {limit} now — the row on the database, set at the owner's word.",
+  "face.myfiles.unlock.set": "the limit answers {limit} now — the row on the database, set at the owner's word.",
   "face.myfiles.unlock.setUnlimited": "the drive is unlimited — no cap rides the row anymore.",
   "face.myfiles.unlock.refusedTitle": "the unlock refused",
   "face.myfiles.unlock.refused": "the unlock refused: {message}",
