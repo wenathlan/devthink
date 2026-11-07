@@ -38,7 +38,6 @@ minimumReleaseAgeExclude:
   - undici@7.30.1
   - react-hook-form@7.91.0
   - '@fluentui/react-icons@2.0.345'
-  - lucide-react@1.65.0 || 1.67.0 || 1.68.0 || 1.70.0
   - playwright@1.65.0
   - playwright-core@1.65.0
   - '@anthropic-ai/sdk@1.6.0'
