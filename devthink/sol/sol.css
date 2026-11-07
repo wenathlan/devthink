@@ -577,6 +577,12 @@
      30px standard): a data-density="compact" root swaps the band, every
      consumer reads the same --win-titlebar-h slot */
   --win-titlebar-h-compact: 28px;
+  /* the control rung beside the band (the react-windows-ui canon): the
+     buttons, the inputs and the filter cells ride the 32px control
+     height standard, 28px the compact rung a data-density swap steps
+     to — the heights answer one slot, never a freehand literal */
+  --win-control-h: 32px;
+  --win-control-h-compact: 28px;
   /* the bar font of the windows family (PR9): the Segoe UI Variable
      Display stack owns the titlebar voice on every window chrome */
   --win-titlebar-font: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
