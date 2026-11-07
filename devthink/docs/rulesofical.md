@@ -135,7 +135,7 @@ the mandatory rules of the devthink family operation, mapped by category from th
 
 ## sandbox modalities
 
-. saddle concentrates more than ten modalities toward thirty, and none touches the person hardware, all run on runner sites over mime types and https, the person chooses none, the platform resolves the join of all as the nuclear modality.
+. saddle answers the modalityregistry row count (the ninety-record ladder, frozen 30-90, the code registry is the truth), and none touches the person hardware, all run on runner sites over mime types and https, the person chooses none, the platform resolves the join of all as the nuclear modality.
 . site is already sandbox, account is sandbox, about 50gb per plan.
 . the modalities: complete virtual with driver, cpu, gpu and memory in three profiles, universal runner of any sandbox and binary, node packages, docker container hardened, ghcr container immutable with uuid instance, microvm per workflow with clean rootfs and the mesa graphics stack, browser and virtual browser opt in, mobile with capacitor and termux, confidential with attestation, qemu and firecracker, pod, local opt in with consent and v8 isolates serverless, wasm and wasi, vfs born from prisma, git and db, and cdn of about 45 cdns fetched inside the sandbox via vfs, never in the person browser.
 

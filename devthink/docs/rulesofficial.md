@@ -162,7 +162,7 @@ the official rules of the devthink family operation. the owner statements are th
 
 ## sandbox
 
-. saddle concentrates more than 10 modalities toward 30 and none touches the person hardware, all run on runner sites over mime types and https, the person chooses none, the platform resolves the join of all as the nuclear modality.
+. saddle answers the modalityregistry row count (the ninety-record ladder, frozen 30-90, the code registry is the truth) and none touches the person hardware, all run on runner sites over mime types and https, the person chooses none, the platform resolves the join of all as the nuclear modality.
 . site is already sandbox, account is sandbox, about 50gb per plan, and the sandbox is free and unlimited with no limit logic inside it, the plan blocking is only a visual block inside devthink, never inside saddle.
 . the modalities include the complete virtual with driver, cpu, gpu and memory, the universal runner of any binary, node packages, docker hardened, ghcr container, microvm with clean rootfs, browser and virtual browser opt in, mobile with capacitor, confidential with attestation, qemu and firecracker, pod, local opt in with consent, wasm and wasi, vfs born from prisma, git and db, and about 45 cdns fetched inside the sandbox via vfs, never in the person browser.
 . the interface never writes in the browser, no indexeddb, localforage or localstorage, never uses visitor gpu, cpu, camera or geolocation, never compiles on anyone machine: the person machine only loads the interface, engini virtual is the doctrine.
