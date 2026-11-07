@@ -15,15 +15,15 @@
  * application window. The home anchor consults the entry gate (beside it in
  * the home folder) on the bare root route: the first-run state decides, the
  * landing renders only behind a finished flow — the landing first, then the
- * three platform pages of the machine room (sandboxes, images, artifacts),
+ * three platform pages of the machine room (sandboxes, images, manifest),
  * the 404 and the catch-all, all as the content zone of the window.
  */
 import type { ReactNode } from "react";
 import { Route, Switch } from "wouter";
-import ArtifactsAnchor from "./artifacts/artifacts";
 import HomeAnchor from "./home/home";
 import ImagesAnchor from "./images/images";
 import IntroAnchor from "./intro/intro";
+import ManifestAnchor from "./manifest/manifest";
 import NotFoundAnchor from "./notfound/notfound";
 import OnboardingAnchor from "./onboarding/onboarding";
 import SandboxesAnchor from "./sandboxes/sandboxes";
@@ -72,9 +72,9 @@ export default function Sol() {
           <ImagesAnchor />
         </Platform>
       </Route>
-      <Route path="/artifacts">
+      <Route path="/manifest">
         <Platform>
-          <ArtifactsAnchor />
+          <ManifestAnchor />
         </Platform>
       </Route>
       <Route path="/404" component={Unrouted} />

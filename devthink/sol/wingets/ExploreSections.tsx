@@ -188,8 +188,8 @@ export function exploreCategories(data: ExploreData | null): ExploreCategoryRow[
       id: "image",
       name: label("explore.cat.image"),
       sub: label("explore.cat.image.sub"),
-      route: "/image",
-      routes: ["/image"],
+      route: "/photos",
+      routes: ["/photos"],
       count: answered ? assets.filter((asset) => asset.studio === "image").length : null },
     {
       id: "audio",
@@ -259,7 +259,7 @@ export function exploreEntries(id: ExploreCategoryId, data: ExploreData): Explor
     case "video":
       return data.assets.filter((asset) => asset.studio === "video").map((asset) => assetEntry(asset, "/video"));
     case "image":
-      return data.assets.filter((asset) => asset.studio === "image").map((asset) => assetEntry(asset, "/image"));
+      return data.assets.filter((asset) => asset.studio === "image").map((asset) => assetEntry(asset, "/photos"));
     case "audio": {
       const trackEntries: ExploreEntry[] = data.tracks.map((track) => ({
         id: `track:${track.id}`,
@@ -338,7 +338,7 @@ export function exploreRecents(data: ExploreData): ExploreEntry[] {
     .map((asset) =>
       assetEntry(
         asset,
-        asset.studio === "model3d" ? "/cadria" : asset.studio === "video" ? "/video" : "/image",
+        asset.studio === "model3d" ? "/cadria" : asset.studio === "video" ? "/video" : "/photos",
       ),
     );
   const trackEntries: ExploreEntry[] = data.tracks.map((track) => ({

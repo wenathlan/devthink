@@ -25,11 +25,11 @@ import FilesAnchor from "./files/files.tsx";
 import GamesAnchor from "./games/games.tsx";
 import GatewayAnchor from "./gateway/gateway.tsx";
 import HistoryAnchor from "./history/history.tsx";
-import ImageAnchor from "./image/image.tsx";
 import IntroAnchor from "./intro/intro.tsx";
 import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import PanelAnchor from "./panel/panel.tsx";
+import PhotosAnchor from "./photos/photos.tsx";
 import { FamilyStage } from "./wingets/ShellFamilyframe.tsx";
 import PlansAnchor from "./plans/plans.tsx";
 import PolicyAnchor from "./policy/policy.tsx";
@@ -106,7 +106,7 @@ export default function Sol() {
           <Route path="/files" component={() => <FilesAnchor />} />
           <Route path="/video" component={() => <VideoAnchor />} />
           <Route path="/audio" component={() => <AudioAnchor />} />
-          <Route path="/image" component={() => <ImageAnchor />} />
+          <Route path="/photos" component={() => <PhotosAnchor />} />
           <Route path="/calculator" component={() => <CalculatorAnchor />} />
           <Route path="/games" component={() => <GamesAnchor />} />
           <Route path="/console" component={() => <ConsoleAnchor />} />

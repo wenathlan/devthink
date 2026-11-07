@@ -106,7 +106,7 @@ export const LABEL_MANIFEST = {
   "home.quad.storeHead": "the store",
   "home.quad.storeText": "clone archives kept as .tzst · .tar.gz · .tar.xz.",
   "home.quad.floorHead": "the floor",
-  "home.quad.floorText": "the platform answers on /sandboxes · /images · /artifacts.",
+  "home.quad.floorText": "the platform answers on /sandboxes · /images · /manifest.",
   "home.quad.familyHead": "the family",
   "home.quad.familyText": "nine apps share the sandbox — foundry keeps their working set.",
   // the sandboxes page anchor (the machine room)
@@ -179,7 +179,7 @@ export const LABEL_MANIFEST = {
   "images.head.sizes": "sizes",
   // the footnote of the images page
   "images.footnote": "pour order: {list} — the lead herd clones fast, the release herd rides small.",
-  // the artifacts page anchor (the packaging line)
+  // the manifest page anchor (the packaging line)
   "artifacts.eyebrow": "artifacts · the packaging line",
   "artifacts.title": "Artifacts",
   "artifacts.lede":

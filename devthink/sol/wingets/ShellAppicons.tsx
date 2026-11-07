@@ -647,7 +647,7 @@ export const CalculatorIcon: ComponentType<AppIconProps> = (props: AppIconProps)
 /** Image — the native image studio: a violet plate carrying the photo —
  *  the filled frame, its interior cut back to the plate tone and its
  *  landscape redrawn in white inside the cut. */
-const ImageIcon_PLATE: AppIconPlate = {
+const PhotosIcon_PLATE: AppIconPlate = {
   top: "#c795f7",
   bottom: "#9a5fe0",
   glyph: (tone) => (
@@ -660,10 +660,10 @@ const ImageIcon_PLATE: AppIconPlate = {
   ),
 };
 
-/** The bound icon component of "image": a module-level arrow over the shared
+/** The bound icon component of "photos": a module-level arrow over the shared
  *  fluent face, the plate frozen in the closure at load. */
-export const ImageIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
-  <FluentIconFace {...props} uid="dti-image" plate={ImageIcon_PLATE} />
+export const PhotosIcon: ComponentType<AppIconProps> = (props: AppIconProps) => (
+  <FluentIconFace {...props} uid="dti-photos" plate={PhotosIcon_PLATE} />
 );
 
 /** Video — the native video editor: a rose plate carrying the clapperboard
@@ -992,7 +992,7 @@ export const APP_ICONS: Record<string, ComponentType<AppIconProps>> = {
   os: OsIcon,
   settings: SettingsIcon,
   calculator: CalculatorIcon,
-  image: ImageIcon,
+  photos: PhotosIcon,
   video: VideoIcon,
   audio: AudioIcon,
   games: GamesIcon,

@@ -1,6 +1,6 @@
 /**
  * graphpanel — the pipeline plan drawn as a stage graph (loose component
- * beside the artifacts anchor, riding the flat components folder as
+ * beside the manifest anchor, riding the flat components folder as
  * artifacts.graphpanel.tsx).
  *
  * The foundry draws its packaging line the way the owner asked everything

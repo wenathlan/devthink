@@ -1,13 +1,14 @@
 /**
- * image page anchor — layer 3 of the anchor architecture. The file carrying
+ * photos page anchor — layer 3 of the anchor architecture. The file carrying
  * the folder's own name is the path manager of the page: it imports the
  * loose components beside it, mounts the page and re-exports the public
  * component surface. Only the theme anchor (sol/Sol.tsx) and the window
  * registry (sol/wingets/PanelWorkspace.tsx) consume this file.
  *
- * Image — the image studio in the Windows 11 grammar: a nav pane beside the
- * content deck, the stills as hairline rows and the render queue over the
- * gateway. The engine itself is never bundled: it rides the catalog over
+ * Photos — the image studio in the Windows 11 grammar (the image app of
+ * Windows 11 is Photos, so the keyword follows the app): a nav pane beside
+ * the content deck, the stills as hairline rows and the render queue over
+ * the gateway. The engine itself is never bundled: it rides the catalog over
  * https from the cadria app. The old editorial pass (the shader stage, the
  * film grain, the atmosphere light) is retired — this body rides the dtw
  * kit with the engine as one quiet card. The honest shelf law rides the
@@ -27,7 +28,7 @@ import { ImageStills } from "../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
-const IMAGE_LABEL = osAppLabels().image;
+const PHOTOS_LABEL = osAppLabels().photos;
 
 /** Queues one still and surfaces the answer with the sonner toast the
  * workbench already uses: the reason text is the honest answer of the queue
@@ -39,10 +40,10 @@ function queueRender(asset: StudioAsset) {
   });
 }
 
-/** The image studio: the Windows body when embedded (the desktop window
+/** The photos app: the Windows body when embedded (the desktop window
  * hosts it without the shell), the full surface with the taskbar on the
  * route. */
-export default function ImageStudio({ embedded }: { embedded?: boolean }) {
+export default function Photos({ embedded }: { embedded?: boolean }) {
   const [apps, setApps] = useState<NativeApp[]>([]);
   const [assets, setAssets] = useState<StudioAsset[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -72,12 +73,12 @@ export default function ImageStudio({ embedded }: { embedded?: boolean }) {
           </span>
         </nav>
         <div className="dtw-content">
-          <h1 className="dtw-title">{IMAGE_LABEL?.name ?? "Image"}</h1>
+          <h1 className="dtw-title">{PHOTOS_LABEL?.name ?? "Photos"}</h1>
           <ImageEngine app={engine} />
           {empty ? (
             <Constructionface
               accent="#e858c7"
-              title={IMAGE_LABEL?.name ?? "Image"}
+              title={PHOTOS_LABEL?.name ?? "Photos"}
             />
           ) : (
             <ImageStills rows={assets} loaded={loaded} onRender={queueRender} />

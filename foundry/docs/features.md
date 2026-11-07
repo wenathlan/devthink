@@ -13,7 +13,7 @@ real features from the code, grouped by category. Every entry names the module t
 - deterministic rehearsal — `planrehearsal(plan, seed, tick)`: done prefix, running cursor, pending rest; the same seed and tick always answer the same map (`graphplan.ts`).
 - seeded red rung — `planfailindex`: one roll in five rides red; the red step keeps its failure record, the rest strand skipped; a reseed rolls again (`graphplan.ts`).
 - progress and tally — `planprogress` (the done share, 0–100) and `plantally` (the state histogram) (`graphplan.ts`).
-- open steps — `planopensteps` lists the unsettled prefix the artifacts page narrates (`graphplan.ts`).
+- open steps — `planopensteps` lists the unsettled prefix the manifest page narrates (`graphplan.ts`).
 - stage graph widget — `GraphPanel` draws the plan as an svg map: one card per step riding its topological stage, hairline bezier wires, the windows accent #4cc2ff on running, the windows close red rgb(232 17 35) on failed — every state is a dot plus text (`sol/wingets/ArtifactsGraphpanel.tsx`).
 
 ## sandbox
@@ -37,9 +37,9 @@ real features from the code, grouped by category. Every entry names the module t
 - verification — `verifyArtifact` re-seals and compares; the page marks rows intact or mismatch (`artifact.ts`).
 - line and manifest — `artifactLine` and `manifest` render the shelf verbatim, one line per artifact in stable order; the footnote renders the same line (`artifact.ts`).
 - seeded line — `seedArtifacts`: one artifact per herd format (base / toolchain / runtime), bytes (30 + roll×700) MB (`artifact.ts`).
-- seal-a-draft form — name and payload digest inputs (each ≤ 40 chars, an honest default name when empty) seal a draft as tzst with bytes `4096 + payload.length`; a live preview shows the line and the fnv-1a digest (`sol/artifacts/artifacts.tsx`).
-- line summary — count, all-sealed verdict, digest (fnv-1a · 8 hex), identity format (name · ext · bytes · payload) (`sol/artifacts/artifacts.tsx`).
-- walk and rerun — one advance walks the shelf and the stage graph together (one run, two views of the same rehearsal); a rerun reseeds the line (`sol/artifacts/artifacts.tsx`).
+- seal-a-draft form — name and payload digest inputs (each ≤ 40 chars, an honest default name when empty) seal a draft as tzst with bytes `4096 + payload.length`; a live preview shows the line and the fnv-1a digest (`sol/manifest/manifest.tsx`).
+- line summary — count, all-sealed verdict, digest (fnv-1a · 8 hex), identity format (name · ext · bytes · payload) (`sol/manifest/manifest.tsx`).
+- walk and rerun — one advance walks the shelf and the stage graph together (one run, two views of the same rehearsal); a rerun reseeds the line (`sol/manifest/manifest.tsx`).
 
 ## images
 
@@ -55,10 +55,10 @@ real features from the code, grouped by category. Every entry names the module t
 ## ui
 
 - anchor architecture — App → Sol theme anchor → page anchors → wingets; nothing is imported outside the chain (`App.tsx`, `sol/Sol.tsx`).
-- wouter routes — /intro, /onboarding, /, /sandboxes, /images, /artifacts, /404 and the catch-all; the base rides the build declaration, never the runtime path (`App.tsx`, `sol/Sol.tsx`).
+- wouter routes — /intro, /onboarding, /, /sandboxes, /images, /manifest, /404 and the catch-all; the base rides the build declaration, never the runtime path (`App.tsx`, `sol/Sol.tsx`).
 - error boundary — the theme boundary renders the boundary copy, the stack and a reload button (`App.tsx`).
 - standalone window — full-bleed at the app url; the window chrome exists only inside the devthink os power clip, the same surface tree in both seats (`sol/shell/Shell.tsx`).
-- page rail — the pins home / sandboxes / images / artifacts with the accent ladder on the active entry (`sol/shell/Shell.tsx`).
+- page rail — the pins home / sandboxes / images / manifest with the accent ladder on the active entry (`sol/shell/Shell.tsx`).
 - family foot — the nine siblings link out via `familyurl` (`../slug/`), one spec §12 accent dot per unit; the row links out, never back (`sol/shell/Shell.tsx`, `family.ts`, `familyurl.ts`).
 - theme flip — light default, `data-theme` dark / light, in memory per document lifetime (`sol/shell/Shell.tsx`).
 - entry gate — `EntryGate` resolves the first-run state: intro unseen → /intro, onboarding unseen → /onboarding, else home; renders null while resolving (`sol/wingets/HomeEntrygate.tsx`).

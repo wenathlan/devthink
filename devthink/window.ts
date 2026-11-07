@@ -24,7 +24,7 @@ export const WINDOW_ANCHORS: readonly string[] = [
   "files",
   "calculator",
   "docs",
-  "image",
+  "photos",
   "games",
   "console",
   "usage",

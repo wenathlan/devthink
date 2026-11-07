@@ -1,13 +1,14 @@
 /**
- * artifacts page anchor — layer 3 of the anchor architecture.
+ * manifest page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it mounts the page and is consumed only by the theme anchor (sol/Sol.tsx).
  *
- * Artifacts — the packaging line of the foundry: every artifact is sealed
- * with its fnv-1a checksum over a canonical identity string (name · ext ·
- * bytes · payload), re-verified on the page and rendered as the manifest.
- * The line is a seeded rehearsal (the seed is shown); the seal is the real
- * engine (pipeline.ts) — the same bytes in node and in the browser.
+ * The manifest — the sealed manifest of the foundry packaging line: every
+ * artifact is sealed with its fnv-1a checksum over a canonical identity
+ * string (name · ext · bytes · payload), re-verified on the page and
+ * rendered as the manifest. The line is a seeded rehearsal (the seed is
+ * shown); the seal is the real engine (pipeline.ts) — the same bytes in
+ * node and in the browser.
  */
 
 import { ArrowSyncRegular, CheckmarkCircleRegular, PlayFilled, ShieldCheckmarkRegular } from "@fluentui/react-icons";
@@ -56,8 +57,8 @@ function ArtifactRow({ artifact }: { artifact: Artifact }) {
   );
 }
 
-/** The artifacts page: the packaging line. */
-export default function Artifacts() {
+/** The manifest page: the sealed manifest of the packaging line. */
+export default function Manifest() {
   const [seed, setSeed] = useState(LINE_SEED);
   const [tick, setTick] = useState(0);
   const [name, setName] = useState("");

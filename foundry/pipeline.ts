@@ -46,7 +46,7 @@ import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "../saddl
 // size and the herd format. The family already rides fnv-1a identities on
 // the cadria gateway — the same engine here, so a checksum computed in node
 // equals the one computed in the browser, and the tests pin it byte for
-// byte. This module is the testable core of the /artifacts page.
+// byte. This module is the testable core of the /manifest page.
 
 /** encodes a string as the utf-8 byte sequence (pure, no TextEncoder —
  * the same bytes in node and in the browser). */

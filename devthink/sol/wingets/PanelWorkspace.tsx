@@ -56,7 +56,7 @@ import DocsAnchor from "../docs/docs.tsx";
 import FilesAnchor from "../files/files.tsx";
 import GamesAnchor from "../games/games.tsx";
 import GatewayView from "../gateway/gateway.tsx";
-import ImageAnchor from "../image/image.tsx";
+import PhotosAnchor from "../photos/photos.tsx";
 import ProjectsAnchor from "../projects/projects.tsx";
 import ProvidersAnchor from "../providers/providers.tsx";
 import SettingsAnchor from "../settings/settings.tsx";
@@ -90,7 +90,7 @@ const ANCHORS: Record<string, ComponentType<{ embedded?: boolean }>> = {
   files: FilesAnchor,
   calculator: CalculatorAnchor,
   docs: DocsAnchor,
-  image: ImageAnchor,
+  photos: PhotosAnchor,
   games: GamesAnchor,
   console: ConsoleAnchor,
   usage: UsageAnchor,

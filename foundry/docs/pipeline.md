@@ -39,10 +39,10 @@ foundry is the complete deployable clone of the devthink family pipeline: one un
 
 ## sol subapps
 
-- `sol/shell/Shell.tsx` — the one application window: full-bleed at the app url (the standalone law — the window chrome exists only inside the devthink os power clip), the page rail (home, sandboxes, images, artifacts), the family foot with one spec §12 accent dot per sibling, the theme flip (light default, in memory per document).
+- `sol/shell/Shell.tsx` — the one application window: full-bleed at the app url (the standalone law — the window chrome exists only inside the devthink os power clip), the page rail (home, sandboxes, images, manifest), the family foot with one spec §12 accent dot per sibling, the theme flip (light default, in memory per document).
 - `sol/sandboxes/sandboxes.tsx` — the machine room: the herd of 7 from `HERD_SEED` 620221; the census band (total, the state ladder, warm share); per-row machine buttons warm / heat / cool / freeze / step; the honest refusal readout (`role="alert"`); reseed.
 - `sol/images/images.tsx` — the herd shelf: 6 images from `SHELF_SEED` 314159; per row the tar stream beside the sealed estimate; the conversion plan with from / to chip selectors (default tzst → tarxz) and the 1 GB estimate line; the pour order footnote; reseed.
-- `sol/artifacts/artifacts.tsx` — the packaging line: the shelf from `LINE_SEED` 804613 plus sealed drafts; the stage graph (`GraphPanel`) rehearsing `PIPELINE` on the same seed and tick (one run, two views); the seal-a-draft form (name + payload digest, bytes `4096 + payload.length`, sealed as tzst); the manifest readout; walk / rerun.
+- `sol/manifest/manifest.tsx` — the packaging line: the shelf from `LINE_SEED` 804613 plus sealed drafts; the stage graph (`GraphPanel`) rehearsing `PIPELINE` on the same seed and tick (one run, two views); the seal-a-draft form (name + payload digest, bytes `4096 + payload.length`, sealed as tzst); the manifest readout; walk / rerun.
 - `sol/home/home.tsx` — the landing behind the entry gate: the forge console (draft only — the staging surface stores nothing), the format shelf, the run / store / clone capability steps, the family row footer and the meta-quad.
 - `sol/intro`, `sol/onboarding`, `sol/notfound` — the entry flow: the splash (brand mark, ~1.6 s hold, 0.8 s slide-up) hands directly to the three-beat onboarding walk; the 404 answer and the catch-all.
 - `sol/wingets/` — the shared widgets behind the single `index.ts` surface: `GraphPanel`, `Entry`, `EntryGate`, `Tabs`, `BrandMark`, `EmptyState`.

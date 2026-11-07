@@ -127,9 +127,9 @@ describe("design contract", () => {
     assert.match(CSS, /\.shell--standalone \{[^}]*height: 100vh/, "the standalone block must fill the viewport");
   });
 
-  it("declares the honest page set (home, sandboxes, images, artifacts, notfound)", () => {
-    assert.match(TOML, /pages = \["home", "sandboxes", "images", "artifacts", "notfound"\]/);
-    for (const route of ['"/sandboxes"', '"/images"', '"/artifacts"', '"/404"']) {
+  it("declares the honest page set (home, sandboxes, images, manifest, notfound)", () => {
+    assert.match(TOML, /pages = \["home", "sandboxes", "images", "manifest", "notfound"\]/);
+    for (const route of ['"/sandboxes"', '"/images"', '"/manifest"', '"/404"']) {
       assert.ok(SOL.includes(`path=${route}`), `route ${route} must mount`);
     }
   });

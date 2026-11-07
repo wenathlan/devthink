@@ -482,7 +482,7 @@ export default function Files({ embedded }: { embedded?: boolean }) {
             detail: `image · ${asset.engine}`,
             kind: "asset" as ExplorerItemKind,
             meta: asset.size,
-            open: () => navigate("/image"),
+            open: () => navigate("/photos"),
           }));
       }
       if (folder === "music") {

@@ -1,4 +1,4 @@
-// # artifact.test — the checksum engine of the /artifacts page, runnable
+// # artifact.test — the checksum engine of the /manifest page, runnable
 // with the house vitest suite:
 //   bunx vitest run test/artifact.test.ts
 // The seal is the proof: fnv-1a (32-bit) over the canonical identity string,

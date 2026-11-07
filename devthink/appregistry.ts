@@ -123,11 +123,11 @@ const APP_BINDINGS: AppBinding[] = [
     target: { kind: "route", href: "/calculator" },
   },
   {
-    id: "image",
+    id: "photos",
     tint: "#c084fc",
     icon: Image,
-    iconset: "image",
-    target: { kind: "route", href: "/image" },
+    iconset: "photos",
+    target: { kind: "route", href: "/photos" },
   },
   {
     id: "video",

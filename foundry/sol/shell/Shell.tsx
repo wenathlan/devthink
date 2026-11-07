@@ -91,7 +91,7 @@ export const START_APPS: readonly RailApp[] = [
   },
   { href: "/images", label: label("nav.images"), detail: label("nav.imagesDetail"), icon: LayerRegular },
   {
-    href: "/artifacts",
+    href: "/manifest",
     label: label("nav.artifacts"),
     detail: label("nav.artifactsDetail"),
     icon: CheckmarkCircleRegular,

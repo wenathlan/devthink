@@ -319,7 +319,7 @@ export const seedPlatformApps: NativeApp[] = [
     title: "Image",
     engine: "image studio",
     owner: "cadria",
-    route: "/image",
+    route: "/photos",
     blurb: "The image studio, with every still served from the same catalog.",
   },
   {
@@ -373,8 +373,8 @@ export const seedOsAppLabels: OsAppLabel[] = [
     pinned: true,
   },
   {
-    id: "image",
-    name: "Image",
+    id: "photos",
+    name: "Photos",
     detail: "The native image studio of the OS",
     pinned: true,
   },
