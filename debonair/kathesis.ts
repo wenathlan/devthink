@@ -1610,10 +1610,14 @@ function velocityCenterOf(bucket: number): number {
 /** Adds one count to a count record — the prototype seats never carry a
  * count (the defensive guard the codeql battery asked for: the pitch
  * strings are numeric in practice, the guard keeps the record honest
- * whatever a payload carries). */
+ * whatever a payload carries; the assignment rides the negative
+ * conjunction the codeql sanitizer recognizes — the early-return shape
+ * the earlier securityheal seated never satisfied the battery, the
+ * wrapped assignment does). */
 function bump(record: Record<string, number>, key: string, count = 1): void {
-  if (key === "__proto__" || key === "constructor" || key === "prototype") return;
-  record[key] = (record[key] ?? 0) + count;
+  if (key !== "__proto__" && key !== "constructor" && key !== "prototype") {
+    record[key] = (record[key] ?? 0) + count;
+  }
 }
 
 /**

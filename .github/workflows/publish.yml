@@ -566,6 +566,12 @@ jobs:
         if: matrix.package == 'saddle' && steps.token.outputs.available == 'true'
         run: |
           set -euo pipefail
+          # the family pin law (the same seat the gate ladder answers — the
+          # codeql pinned-dependencies battery charged the saddle engine
+          # build's floating npm): the engines floor of the root manifest
+          # answers the one npm rung the engine install below carries.
+          npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
+          npm install --global "npm@${npm_version}"
           # the manifest law (#498) answers one dependency rung through the
           # bun lock alone — the npm package-lock the ci lane froze on
           # retired with the union, so the engine build resolves the
@@ -2054,7 +2060,7 @@ jobs:
       # lanes ride
       run: cd devthink && python3 -c "import re,sys; p=open('pyproject.toml').read(); p=re.sub(r'version = \"[^\"]+\"', 'version = \"'+sys.argv[1]+'\"', p, count=1); open('pyproject.toml','w').write(p)" "${{ steps.release.outputs.version }}"
     - name: Build the wheel and the sdist
-      run: cd devthink && python3 -m pip install --user --quiet build && python3 -m build
+      run: cd devthink && python3 -m pip install --user --quiet "build==1.2.2.post1" && python3 -m build
     - name: Check PyPI token availability
       id: token
       shell: bash
@@ -2092,7 +2098,7 @@ jobs:
         TWINE_PASSWORD: ${{ env.PYPI_TOKEN }}
       run: |
         set -euo pipefail
-        python3 -m pip install --user --quiet twine
+        python3 -m pip install --user --quiet "twine==6.1.0"
         cd devthink
         python3 -m twine upload --repository pypi --non-interactive --verbose dist/*
     - name: Attach the python artifacts to the release
@@ -2184,7 +2190,7 @@ jobs:
       # lanes ride
       run: cd ${{ matrix.package }} && python3 -c "import re,sys; p=open('pyproject.toml').read(); p=re.sub(r'version = \"[^\"]+\"', 'version = \"'+sys.argv[1]+'\"', p, count=1); open('pyproject.toml','w').write(p)" "${{ steps.release.outputs.version }}"
     - name: Build the wheel and the sdist
-      run: cd ${{ matrix.package }} && python3 -m pip install --user --quiet build && python3 -m build
+      run: cd ${{ matrix.package }} && python3 -m pip install --user --quiet "build==1.2.2.post1" && python3 -m build
     - name: Check PyPI token availability
       id: token
       shell: bash
@@ -2222,7 +2228,7 @@ jobs:
         TWINE_PASSWORD: ${{ env.PYPI_TOKEN }}
       run: |
         set -euo pipefail
-        python3 -m pip install --user --quiet twine
+        python3 -m pip install --user --quiet "twine==6.1.0"
         cd "${{ matrix.package }}"
         python3 -m twine upload --repository pypi --non-interactive --verbose dist/*
     - name: Attach the python artifacts to the release
