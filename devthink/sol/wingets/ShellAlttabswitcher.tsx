@@ -47,7 +47,7 @@ type AltTabSwitcherProps = {
 
 /** the switcher panel: the Fluent acrylic surface + the alt entrance */
 const SWITCHER_CLASS =
-  "alt-switch acrylic-panel fixed left-1/2 top-1/2 z-[70] w-[min(680px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 rounded-md p-2";
+  "alt-switch acrylic-panel fixed left-1/2 top-1/2 z-(--z-overlay) w-[min(680px,calc(100vw-48px))] -translate-x-1/2 -translate-y-1/2 rounded-md p-2";
 
 /** one card row: 44px+ hit, the wash on hover and the lit selection */
 const CARD_CLASS =
@@ -115,7 +115,7 @@ export function AltTabSwitcher({ cards, onCommit, onClose }: AltTabSwitcherProps
 
   return createPortal(
     <div
-      className="alt-scrim fixed inset-0 z-[70] grid place-items-center"
+      className="alt-scrim fixed inset-0 z-(--z-overlay) grid place-items-center"
       role="presentation"
       onPointerDown={(event) => {
         if (event.target === event.currentTarget) onClose();

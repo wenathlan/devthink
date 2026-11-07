@@ -893,7 +893,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
               apps page sliding on the 300ms page curve, the 64px footer with
               the account profile and the power corner. */}
           <section
-            className="dt-start acrylic-panel fixed bottom-[calc(var(--shell-bottom)+12px)] left-1/2 z-[60] -ml-[320px] flex h-[min(calc(100dvh-var(--shell-bottom)-24px),720px)] w-[640px] flex-col overflow-hidden overscroll-contain rounded-md text-ink transition-[transform,opacity] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 light:bg-[rgb(242_242_242_/_90%)]"
+            className="dt-start acrylic-panel fixed bottom-[calc(var(--shell-bottom)+12px)] left-1/2 z-(--z-menu) -ml-[320px] flex h-[min(calc(100dvh-var(--shell-bottom)-24px),720px)] w-[640px] flex-col overflow-hidden overscroll-contain rounded-md text-ink transition-[transform,opacity] duration-200 ease-fluent max-[700px]:left-2 max-[700px]:ml-0 max-[700px]:w-[calc(100vw-16px)] data-[hide=true]:pointer-events-none data-[hide=true]:translate-y-[100px] data-[hide=true]:opacity-0 light:bg-[rgb(242_242_242_/_90%)]"
             id="dt-start-menu"
             role="dialog"
             aria-modal="true"
@@ -1201,7 +1201,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 55,
+            zIndex: "var(--z-overlay)",
             background: "rgb(255 176 46 / 6%)",
             pointerEvents: "none",
           }}
@@ -1214,7 +1214,7 @@ export function ShellChrome({ paired, userId, onOpenApp, openApps = [] }: ShellC
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 55,
+            zIndex: "var(--z-overlay)",
             background: "rgb(0 0 0)",
             opacity: dim,
             pointerEvents: "none",
