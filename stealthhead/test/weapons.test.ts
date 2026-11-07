@@ -15,7 +15,7 @@ import {
   ttkbydistance,
   validatebalance,
   ballisticserror,
-} from "../weapons.ts";
+} from "../sol/weapons/weapons.ts";
 
 /** the catalog falloff: full damage to 20 m, 60% at 60 m, linear. */
 const LINEAR: FalloffSpec = { startmeters: 20, endmeters: 60, retainfraction: 0.6, curve: 1 };
