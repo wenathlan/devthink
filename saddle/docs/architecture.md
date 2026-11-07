@@ -121,9 +121,9 @@ The remaining categories of the old file were already domain-owned: kernel featu
 
 ## 3b. Test patterns
 
-Tests live in the `test/` directory (one of the five allowed directories) and run with the Node built-in runner: `node --test 'test/*.test.ts'` (153 tests across eleven files - engine, features, media, render, simulation, specs, virtualcpu, virtualgpu, virtualmemory, web, workflow - all passing on Node 24 and 26), the same runner the ci.yml smoke gate executes on Node 26.7.0. Patterns:
+Tests live in the `test/` directory (one of the five allowed directories) and run on vitest: `vitest run` reads `test/*.test.ts` (153 tests across eleven files - engine, features, media, render, simulation, specs, virtualcpu, virtualgpu, virtualmemory, web, workflow), the same runner the ci.yml family suite executes through the app's `npm test`. Patterns:
 
-- `node:test` (`describe`/`it` or top-level `test`) plus `node:assert/strict`; no Jest, no third-party harness, no install step (the engine has zero runtime dependencies).
+- vitest (`describe`/`it`) plus `node:assert/strict`; no Jest, no node:test (vitest is the only CI runner), no install step beyond the dev tooling (the engine has zero runtime dependencies).
 - One test file per area under test (planner and lint rules, cpuinfo/meminfo generators, MIG density validator, QEMU argv builder); assertions target public exports, never module internals.
 - Doc-tests remain `@example` blocks in JSDoc (the planner asserts in `index.ts`), and every test stays deterministic: ports use the 30000-59999 random band or explicit ephemeral allocation, no network, no timing-dependent assertions.
 
@@ -266,7 +266,7 @@ Supporting subsystems: warm pool (prewarm/acquire/release/refill/drain, MAP_PRIV
 | TypeScript | 7.0.2 (Go-native port); `strict`, `verbatimModuleSyntax`, `isolatedModules`, `erasableSyntaxOnly`, `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`; ES2025 target with `lib ES2025+ESNext.Disposable` |
 | Erasable modern syntax | `using`/`await using` (modellease, MetricsStore, sandboxhandle), `satisfies` (`engineversions as const satisfies Record<string,string>`), const type parameters (`validateSpec<const T>`), `#private` fields and accessors, `import.meta.filename` for CLI detection |
 | ESM | `"type": "module"`; relative imports carry the `.ts` extension; no CommonJS `require` |
-| Tests | `node:test` + `node:assert/strict` executed with `node --test 'test/*.test.ts'`; the dedicated `test/` directory holds eleven test files (148 cases: 86 planner/generator originals, 24 workflow/simulation gates, 18 feature-audit builders, 4 media pipeline, 1 snapshot regression, 9 web edition), ci.yml runs them on Node 26.7.0; no Jest; doc-tests as `@example` blocks (the planner asserts live in `index.ts` planner docs) |
+| Tests | vitest + `node:assert/strict` executed with `vitest run` over `test/*.test.ts`; the dedicated `test/` directory holds eleven test files (148 cases: 86 planner/generator originals, 24 workflow/simulation gates, 18 feature-audit builders, 4 media pipeline, 1 snapshot regression, 9 web edition), ci.yml runs them through the app's `npm test`; no Jest; no node:test; doc-tests as `@example` blocks (the planner asserts live in `index.ts` planner docs) |
 | C++26 | `import std;` permitted, `std::expected` as the error channel, `std::mdspan` with the p2662r3 fallback guard, `std::print`/`std::format`, `enum class`, `[[nodiscard]]` on validate/argv/topology, RAII for every fd/socket (no exceptions in happy paths) |
 | C | C11 with `_GNU_SOURCE`, `dlsym(RTLD_NEXT)` resolution, xorshift32 deterministic drift, constructor priority 101 |
 | Python | 3.14 floor; stdlib only (socket, json, logging); try/except logging on every operation |
@@ -318,7 +318,7 @@ The old pins survive only inside `legacyCatalog` provenance blocks in `virtualha
 
 ## 15. CI graph (summary)
 
-Five workflows gate the tree: ci.yml (lint, typecheck matrix Node 24/26, the node:test suite in `test/`, build, flat-structure md5 guard, JSON schema validation of the ten data files), publishghcr.yml (the combined container pipeline: per-arch validation legs on push - clinfo/vulkaninfo/glxinfo probes inside the image - and the four-arch GHCR publication with provenance+SBOM on release), release.yml (GHCR + npm provenance + level-9 zip with SHA-256), pages.yml (the merged web pipeline: module syntax gate, boot smoke on port 37810, html lint, the webapi auth/mesh suite with a throwaway `E2UGH_DB`, the zip -9 static bundle and the GitHub Pages deployment of the web tree) and security.yml (CodeQL C/C++/TS, dependency review, Dockle/Trivy SARIF, gitleaks, Scorecard, Biome security group, license allowlist). Full descriptions and pins are in `readme.md`; the workflows themselves are the executable contract.
+Five workflows gate the tree: ci.yml (lint, typecheck matrix Node 24/26, the vitest suite in `test/`, build, flat-structure md5 guard, JSON schema validation of the ten data files), publishghcr.yml (the combined container pipeline: per-arch validation legs on push - clinfo/vulkaninfo/glxinfo probes inside the image - and the four-arch GHCR publication with provenance+SBOM on release), release.yml (GHCR + npm provenance + level-9 zip with SHA-256), pages.yml (the merged web pipeline: module syntax gate, boot smoke on port 37810, html lint, the webapi auth/mesh suite with a throwaway `E2UGH_DB`, the zip -9 static bundle and the GitHub Pages deployment of the web tree) and security.yml (CodeQL C/C++/TS, dependency review, Dockle/Trivy SARIF, gitleaks, Scorecard, Biome security group, license allowlist). Full descriptions and pins are in `readme.md`; the workflows themselves are the executable contract.
 
 ## 16. Compliance checklist
 

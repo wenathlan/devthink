@@ -3,7 +3,7 @@
 // (the spec §12 table, mirrored from the devthink familyidentity wave and
 // from the cadria contract) and the slugs in rail order. Pure data, no
 // imports: the chrome (the shell rail foot), the landing footer and the
-// node:test suite all consume this one table, so the family row can never
+// vitest suite all consume this one table, so the family row can never
 // drift between surfaces.
 
 /** the sibling deploy units beside saddle, rail order (saddle itself is not
