@@ -225,7 +225,7 @@ export default function Explore() {
       <button
         type="button"
         onClick={() => setLanding("open")}
-        className="dtv-x__chip fixed bottom-5 left-1/2 z-[80] flex min-h-11 -translate-x-1/2 items-center gap-2 rounded-lg bg-s1 px-4 text-sm font-medium text-ink ring-1 ring-hairline-strong transition-[background-color,transform] duration-150 ease-micro hover:bg-s2 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
+        className="dtv-x__chip fixed bottom-5 left-1/2 z-(--z-menu) flex min-h-11 -translate-x-1/2 items-center gap-2 rounded-lg bg-s1 px-4 text-sm font-medium text-ink ring-1 ring-hairline-strong transition-[background-color,transform] duration-150 ease-micro hover:bg-s2 active:scale-[.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-focus) motion-reduce:transition-none"
         style={{ boxShadow: STRIP_SHADOW }}
       >
         <SolLogoMark size={16} />

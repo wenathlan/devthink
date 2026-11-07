@@ -285,7 +285,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
 
       {/* the toast pill: bottom center, 2.2s */}
       {toast ? (
-        <div className="fixed bottom-8 left-1/2 z-[60] -translate-x-1/2 rounded-full border border-white/10 bg-slate-950 px-5 py-3 text-[13px] font-medium-tier text-white shadow-2xl">
+        <div className="fixed bottom-8 left-1/2 z-(--z-menu) -translate-x-1/2 rounded-full border border-white/10 bg-slate-950 px-5 py-3 text-[13px] font-medium-tier text-white shadow-2xl">
           {toast}
         </div>
       ) : null}

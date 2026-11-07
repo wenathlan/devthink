@@ -11672,17 +11672,18 @@ html[data-density="compact"] {
   --dtv3-hairline: rgb(15 23 42 / 12%);
   --dtv3-sig: #0067c0;
   --color-win: #0067c0;
+  --dtv3-card: #fefefe;
   background: #eceff7;
   color: var(--dtv3-ink-1);
 }
 .dtw-app .dtw-card {
-  background: #ffffff;
+  background: var(--dtv3-card);
   box-shadow: 0 1px 2px rgb(15 23 42 / 6%);
 }
 .dtw-app .dtw-action--primary,
 .dtw-app .dtw-btn--primary {
   background: #0067c0;
-  color: #ffffff;
+  color: var(--color-veil);
 }
 .dtw-app .dtw-action--primary:hover,
 .dtw-app .dtw-btn--primary:hover:not(:disabled) {
@@ -11857,10 +11858,10 @@ html[data-density="compact"] {
 .dtw-action--primary {
   border-color: transparent;
   background: var(--color-win);
-  color: #fff;
+  color: var(--color-veil);
 }
 .dtw-action--primary:hover {
-  background: color-mix(in srgb, var(--color-win) 88%, #fff);
+  background: color-mix(in srgb, var(--color-win) 88%, var(--color-veil));
 }
 .dtw-btn {
   display: inline-flex;
@@ -11886,18 +11887,18 @@ html[data-density="compact"] {
 .dtw-btn--primary {
   border-color: transparent;
   background: var(--color-win);
-  color: #fff;
+  color: var(--color-veil);
 }
 .dtw-btn--primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-win) 88%, #fff);
+  background: color-mix(in srgb, var(--color-win) 88%, var(--color-veil));
 }
 .dtw-btn--danger {
   border-color: transparent;
   background: #c2352b;
-  color: #fff;
+  color: var(--color-veil);
 }
 .dtw-btn--danger:hover:not(:disabled) {
-  background: color-mix(in srgb, #c2352b 88%, #fff);
+  background: color-mix(in srgb, #c2352b 88%, var(--color-veil));
 }
 .dtw-input,
 .dtw-select {
@@ -12312,7 +12313,7 @@ html[data-density="compact"] {
 }
 .dtw-login__welcome {
   margin: 0;
-  color: #fff;
+  color: var(--color-veil);
   font: 600 26px / 1.2 var(--font-sans, var(--dt-sans));
   text-align: center;
   text-shadow: 0 1px 8px rgb(0 0 0 / 45%);
@@ -12350,7 +12351,7 @@ html[data-density="compact"] {
   padding: 0 14px;
   border: 0;
   background: transparent;
-  color: #fff;
+  color: var(--color-veil);
   font: 400 14px var(--font-sans, var(--dt-sans));
   text-align: left;
   outline: none;
@@ -12590,7 +12591,7 @@ html[data-density="compact"] {
   border: 0;
   border-radius: 4px;
   background: transparent;
-  color: #fff;
+  color: var(--color-veil);
   font: 400 13px var(--font-sans, var(--dt-sans));
   text-align: left;
   cursor: pointer;
@@ -12744,11 +12745,11 @@ html[data-density="compact"] {
   grid-column: 1 / -1;
   border-color: transparent;
   background: var(--color-win);
-  color: #fff;
+  color: var(--color-veil);
   font-weight: 600;
 }
 .dtw-calc__key--equals:hover {
-  background: color-mix(in srgb, var(--color-win) 88%, #fff);
+  background: color-mix(in srgb, var(--color-win) 88%, var(--color-veil));
 }
 /* the keyboard focus ring: the global ring answers the dark canvas with
  * #dfe5ee, invisible over this light body — the keys carry their own
@@ -12811,7 +12812,7 @@ html[data-density="compact"] {
   color: #0f172a;
 }
 .dtw-games .dtw-action--primary:hover {
-  background: color-mix(in srgb, #e8563f 88%, #fff);
+  background: color-mix(in srgb, #e8563f 88%, var(--color-veil));
 }
 .dtw-games .dtw-navrow:focus-visible,
 .dtw-games .dtw-action:focus-visible {
@@ -12925,7 +12926,7 @@ html[data-density="compact"] {
   color: #0f172a;
 }
 .dtw-image .dtw-action--primary:hover {
-  background: color-mix(in srgb, #c084fc 88%, #fff);
+  background: color-mix(in srgb, #c084fc 88%, var(--color-veil));
 }
 .dtw-image .dtw-action:focus-visible {
   outline: 2px solid var(--dtv3-ink-1);
@@ -12999,7 +13000,7 @@ html[data-density="compact"] {
   color: #0f172a;
 }
 .dtw-audio .dtw-action--primary:hover {
-  background: color-mix(in srgb, #d9962e 88%, #fff);
+  background: color-mix(in srgb, #d9962e 88%, var(--color-veil));
 }
 .dtw-audio .dtw-action:focus-visible {
   outline: 2px solid var(--dtv3-ink-1);
@@ -13073,7 +13074,7 @@ html[data-density="compact"] {
   color: #0f172a;
 }
 .dtw-video .dtw-action--primary:hover {
-  background: color-mix(in srgb, #f472b6 88%, #fff);
+  background: color-mix(in srgb, #f472b6 88%, var(--color-veil));
 }
 .dtw-video .dtw-action:focus-visible {
   outline: 2px solid var(--dtv3-ink-1);
@@ -13337,7 +13338,7 @@ html[data-density="compact"] {
   color: #0f172a;
 }
 .dtw-providers .dtw-action--primary:hover {
-  background: color-mix(in srgb, #a3e635 88%, #fff);
+  background: color-mix(in srgb, #a3e635 88%, var(--color-veil));
 }
 .dtw-providers .dtw-btn--primary {
   border-color: transparent;
@@ -13345,7 +13346,7 @@ html[data-density="compact"] {
   color: #0f172a;
 }
 .dtw-providers .dtw-btn--primary:hover:not(:disabled) {
-  background: color-mix(in srgb, #a3e635 88%, #fff);
+  background: color-mix(in srgb, #a3e635 88%, var(--color-veil));
 }
 .dtw-providers .dtw-providers__dot[data-on="true"] {
   box-shadow: inset 0 0 0 1px rgb(15 23 42 / 45%);
@@ -13896,11 +13897,11 @@ html[data-density="compact"] {
 .dtw-settings .dtw-action--primary {
   border-color: transparent;
   background: var(--color-win);
-  color: var(--color-win-ink, #fff);
+  color: var(--color-win-ink);
 }
 .dtw-settings .dtw-btn--primary:hover:not(:disabled),
 .dtw-settings .dtw-action--primary:hover {
-  background: color-mix(in srgb, var(--color-win) 86%, #fff);
+  background: color-mix(in srgb, var(--color-win) 86%, var(--color-veil));
 }
 /* the 44px control rows of the cards */
 .dtw-settings__field {
@@ -13988,7 +13989,7 @@ html[data-density="compact"] {
 }
 .dtw-settings__switch:checked + .dtw-settings__switchtrack .dtw-settings__switchthumb {
   transform: translateX(20px);
-  background: #fff;
+  background: var(--dtw-face);
 }
 .dtw-settings__switch:focus-visible + .dtw-settings__switchtrack {
   outline: 2px solid var(--color-win);
@@ -15496,8 +15497,8 @@ html[data-density="compact"] {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--sol-faint);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, var(--mask-ink) 18px, var(--mask-ink) calc(100% - 18px), transparent);
+  mask-image: linear-gradient(90deg, transparent, var(--mask-ink) 18px, var(--mask-ink) calc(100% - 18px), transparent);
 }
 
 /* the expanded trace — the max-h-96 scroller law of the decided spec */
@@ -15538,8 +15539,8 @@ html[data-density="compact"] {
 .dtc-bubble--user.is-clamped {
   max-height: 176px;
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent);
-  mask-image: linear-gradient(180deg, #000 72%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, var(--mask-ink) 72%, transparent);
+  mask-image: linear-gradient(180deg, var(--mask-ink) 72%, transparent);
 }
 
 .dtc-expand {
@@ -21411,6 +21412,7 @@ button.dtc-recents__row {
  * answer the tokens, and the reduced-motion guard stills every pass. */
 .dt-construction {
   --dt-construction-accent: var(--color-win);
+  --dt-construction-face: #fefefe;
   position: relative;
   display: grid;
   gap: 12px;
@@ -21419,7 +21421,7 @@ button.dtc-recents__row {
   padding: 34px 34px 30px;
   border: 1px solid var(--dtv3-hairline);
   border-radius: var(--radius-xl);
-  background: #ffffff;
+  background: var(--dt-construction-face);
   box-shadow:
     0 1px 2px rgb(15 23 42 / 6%),
     0 16px 36px -22px rgb(15 23 42 / 22%);
@@ -21524,7 +21526,7 @@ button.dtc-recents__row {
     transform 100ms var(--ease-micro, cubic-bezier(0.22, 1, 0.36, 1));
 }
 .dt-construction__action:hover {
-  background: color-mix(in srgb, var(--dt-construction-accent) 88%, #fff);
+  background: color-mix(in srgb, var(--dt-construction-accent) 88%, var(--color-veil));
 }
 .dt-construction__action:active {
   transform: scale(0.97);
@@ -22386,6 +22388,7 @@ button.dtc-recents__row {
      --win-boot above it, the two never drift apart */
   --win-boot: #010001;
   --boot-ink: #010001;
+  --boot-face: #fefefe;
 }
 
 .boot-screen {
@@ -22447,11 +22450,11 @@ button.dtc-recents__row {
    track keeps its white 8% bed. The ring seat above stays for the day a
    face needs it — zero deletion. */
 .boot-screen__bar i {
-  background: linear-gradient(90deg, rgb(255 255 255 / 72%) 0%, #ffffff 100%);
+  background: linear-gradient(90deg, rgb(255 255 255 / 72%) 0%, var(--boot-face) 100%);
 }
 
 .boot-screen__bar::after {
-  background: #ffffff;
+  background: var(--boot-face);
   box-shadow:
     0 0 6px 1px rgb(255 255 255 / 60%),
     0 0 2px rgb(255 255 255 / 85%);
@@ -22680,10 +22683,13 @@ button.dtc-recents__row {
 .saas-root {
   font-family: var(--font-body);
   letter-spacing: -0.015em;
+  /* the near-white face seat of the landing materials (the pure-literal purge):
+     the reference surfaces read the seat, never a raw #ffffff */
+  --saas-face: #fefefe;
 }
 .saas-root ::selection {
   background: #7c3aed;
-  color: #ffffff;
+  color: var(--saas-face);
 }
 .saas-root button:focus,
 .saas-root input:focus {
@@ -22770,7 +22776,7 @@ button.dtc-recents__row {
     inset 0 1px 2px rgba(255, 255, 255, 1);
 }
 .icon-frame-3d-active {
-  background: #ffffff;
+  background: var(--saas-face);
   border: 1px solid rgba(124, 58, 237, 0.6);
   box-shadow:
     0 10px 22px -6px rgba(79, 70, 229, 0.24),
@@ -22779,7 +22785,7 @@ button.dtc-recents__row {
 
 /* the era surfaces: the card, the stat tile and the indigo slab */
 .surface-card {
-  background: #ffffff;
+  background: var(--saas-face);
   border: 1px solid rgba(226, 232, 240, 0.95);
   box-shadow: 0 16px 36px -14px rgba(15, 23, 42, 0.1);
 }
@@ -22806,7 +22812,7 @@ button.dtc-recents__row {
     inset 0 2px 4px rgba(255, 255, 255, 0.55);
 }
 .hero-switch-thumb {
-  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f1f5f9 70%, #cbd5e1 100%);
+  background: radial-gradient(circle at 30% 30%, var(--saas-face) 0%, #f1f5f9 70%, #cbd5e1 100%);
   box-shadow:
     -3px 4px 10px rgba(15, 23, 42, 0.35),
     inset 0 2px 3px rgba(255, 255, 255, 1);
@@ -22962,14 +22968,14 @@ button.dtc-recents__row {
   width: min(320px, 80vw);
   height: 100%;
   background: #f9f6f0;
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, var(--mask-ink) 28px, var(--mask-ink) calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, var(--mask-ink) 28px, var(--mask-ink) calc(100% - 28px), transparent 100%);
 }
 @media (min-width: 640px) {
   .ribbon-whitewash-center {
     width: min(392px, 84vw);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 42px, #000 calc(100% - 42px), transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0, #000 42px, #000 calc(100% - 42px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, var(--mask-ink) 42px, var(--mask-ink) calc(100% - 42px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, var(--mask-ink) 42px, var(--mask-ink) calc(100% - 42px), transparent 100%);
   }
 }
 
@@ -23009,8 +23015,8 @@ button.dtc-recents__row {
 
 /* the rails: the edge fade and the hidden bar */
 .mask-fade-x {
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent);
-  mask-image: linear-gradient(to right, transparent, #000 52px, #000 calc(100% - 52px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, var(--mask-ink) 52px, var(--mask-ink) calc(100% - 52px), transparent);
+  mask-image: linear-gradient(to right, transparent, var(--mask-ink) 52px, var(--mask-ink) calc(100% - 52px), transparent);
 }
 .rail-scroll::-webkit-scrollbar {
   display: none;
