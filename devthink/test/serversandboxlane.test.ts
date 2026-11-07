@@ -153,11 +153,13 @@ describe("sandboxlane", () => {
     // report answers the registry's honest state, never a wiring the lanes
     // do not drive. The seats the executor waves brought alive walk the
     // live lane lines the report renders (the storagesqlite executor the
-    // storage wave carried: one real roundtrip on the private table).
+    // storage wave carried: one real roundtrip on the private table; the
+    // networkdns executor the dns wave carried: one honest resolution
+    // roundtrip through the host resolver).
     expect(text).toContain("runnerserverless: planned — the catalog promise, no lane wires it yet");
     expect(text).toContain("storagesqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
     expect(text).toContain("fsgitobjects: planned — the catalog promise, no lane wires it yet");
-    expect(text).toContain("networkdns: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("networkdns: live lane — the node resolver the dns tool drives");
     expect(text).toContain("networkdoh: planned — the catalog promise, no lane wires it yet");
     // the polyglot live lanes probe their host runtime (python names the binary)
     expect(text).toContain("languagepython: live lane — python3 ");
