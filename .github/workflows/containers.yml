@@ -1004,7 +1004,16 @@ jobs:
         run: |
           set -euo pipefail
           cd saddle
-          bun install --frozen-lockfile --ignore-scripts
+          # the registry law (the webpack 403 heal): the job setup routes
+          # the default registry to the github packages mirror for the
+          # sibling publish leg, but the locked family install answers
+          # the public npmjs registry — the @wenathlan envelopes ship
+          # there publicly while the mirror 403s the runner token the
+          # private seat never certified, so the install line carries
+          # its own registry answer (the env never leaves this one
+          # command; the publish legs keep their explicit --registry
+          # flags below, the family law they always answered).
+          NPM_CONFIG_REGISTRY=https://registry.npmjs.org/ bun install --frozen-lockfile --ignore-scripts
           bun run build:engine
           bun build ./index.ts --target=node --format=esm --outfile=distpackage/index.js \
             --external @babel/core \
