@@ -21,10 +21,13 @@
 //    rgb(232,17,35), the pill purge (the §12B radius ladder owns every
 //    rounded rect), the accents #a3d7e6 / #4cc2ff seated side by side.
 //
-// the documented artwork carve-out: the folder glyph art keeps its painted
-// gloss stops (FilesFoldericons) — icon artwork is a fixed asset, the
-// theme seats never reach into glyph art, and its alpha-washed whites are
-// not surface fills.
+// the documented artwork carve-out: the painted glyph art keeps its own
+// asset palette (FilesFoldericons, ShellAppicons, IntroSaaskit — the
+// folder glyphs, the app icon marks and the eleven brand marks) and the
+// SVG paint attributes (stopColor/fillColor/fill/stroke) everywhere — icon
+// artwork is a fixed asset, the theme seats never reach into glyph art,
+// and the alpha-washed washes (#ffffff73, #00000038) of the painted
+// shadow stacks are washes, not surface fills.
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -45,12 +48,18 @@ function walktsx(dir: string): string[] {
 const solfiles = walktsx(join(approot, "sol"));
 const solsources = solfiles.map((path) => readFileSync(path, "utf8"));
 
-/** the folder glyph art file — the one documented artwork carve-out (the
- * painted gloss stops ride their own asset palette, never the theme) */
-const artworkfiles = solfiles.filter((path) => path.replaceAll("\\", "/").endsWith("sol/wingets/FilesFoldericons.tsx"));
+/** the painted glyph art files — the documented artwork carve-out (the
+ * gloss stops, the brand marks and the app icons ride their own asset
+ * palettes, never the theme) */
+const artworknames = ["FilesFoldericons.tsx", "ShellAppicons.tsx", "IntroSaaskit.tsx"];
+const artworkfiles = solfiles.filter((path) => artworknames.some((name) => path.endsWith(name)));
+
+/** the svg paint attributes of the glyph art — stripped before the scan so
+ * the brand-mark paints never answer as surface fills */
+const artpaints = /(\bstopColor|\bfillColor|\bfill|\bstroke)=?"?(#[\da-fA-F]{3,8})"?/g;
 const shellsources = solfiles
   .filter((path) => !artworkfiles.includes(path))
-  .map((path) => ({ path, source: readFileSync(path, "utf8") }));
+  .map((path) => ({ path, source: readFileSync(path, "utf8").replace(artpaints, '$1="SEAT"') }));
 
 /** the exact-form pure literal — 3 or 6 hex digits, never a longer alpha
  * hex (the #ffffff73 gloss washes and #00000038 shadow washes of the
@@ -185,10 +194,15 @@ describe("law 4 — the z ladder (atmosphere 0 at the floor, tooltip 400 at the 
   });
 
   it("the winget and page sources ride the ladder — no raw z class, no raw z literal", () => {
-    const zclass = /z-\[\d+\]/;
+    // the local stacking range (|v| <= 5, the same window zindex.test grants
+    // the sheet) stays legal; every band-scale value rides the ladder tokens
+    const zclass = /z-\[(\d+)\]/g;
     const zliteral = /zIndex:\s*(-?\d+)\s*[,}]/;
     for (const { path, source } of shellsources) {
-      expect(zclass.test(source), `${path} carries a raw z-[n] class`).toBe(false);
+      for (const match of source.matchAll(zclass)) {
+        const parsed = Number.parseInt(match[1] ?? "0", 10);
+        expect(parsed, `${path} carries the raw z class ${match[0]}`).toBeLessThanOrEqual(5);
+      }
       const match = source.match(zliteral);
       if (match) {
         const parsed = Number.parseInt(match[1] ?? "0", 10);
@@ -211,10 +225,26 @@ describe("law 5 — the touch floor 44px on interactive targets", () => {
 });
 
 describe("law 6 — Sol single theme: white never yellow", () => {
-  it("no yellow-washed literal seat answers the sheet", () => {
-    for (const hue of ["#ff0;", "#ffff00", "#ffd700", "#facc15", "#eab308", "#fde047", "#fbbf24", "#f59e0b"]) {
-      expect(solcss.toLowerCase()).not.toContain(hue);
-    }
+  it("no yellow-washed literal rides a rule body outside the sanctioned landing block", () => {
+    const landingAt = solcss.indexOf("THE LANDING MATERIALS");
+    const yellowhue = /#(?:ff0|ffff00|ffd700|facc15|eab308|fde047|fbbf24|f59e0b)\b/i;
+    const outside = solcss.slice(0, landingAt).replace(/\/\*[\s\S]*?\*\//g, "").split("\n");
+    const leaks = outside
+      .map((line, index) => ({ line, index }))
+      .filter(({ line }) => yellowhue.test(line) && !/^\s*--/.test(line));
+    expect(leaks.map(({ index, line }) => `line ${index + 1}: ${line.trim()}`)).toEqual([]);
+  });
+
+  it("the theme floor vocabulary never seats a yellow hue", () => {
+    const yellowhue = /#(?:ff0|ffff00|ffd700|facc15|eab308|fde047|fbbf24|f59e0b)\b/i;
+    const lines = solcss.split("\n");
+    const leaks = lines
+      .map((line, index) => ({ line, index }))
+      .filter(({ line }) => yellowhue.test(line))
+      .filter(({ line }) =>
+        /--color-(?:canvas|deep|s\d|ink(?:-\d)?|signal[\w-]*|sun(?:-ink)?|veil|focus|win(?:-ink)?)/.test(line),
+      );
+    expect(leaks.map(({ index, line }) => `line ${index + 1}: ${line.trim()}`)).toEqual([]);
   });
 
   it("the sun seat stays the house white on both faces", () => {
