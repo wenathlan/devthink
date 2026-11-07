@@ -30,7 +30,7 @@
  *   plus the opt-in clip flag at 100% x 100% of the window body — one
  *   document, two doors, the parity the owner demanded.
  */
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { FAMILY_SLUGS } from "../window.ts";
@@ -76,6 +76,25 @@ function shellSource(slug: string): string | null {
   return existsSync(shellpath) ? readFileSync(shellpath, "utf8") : null;
 }
 
+/** reads the surface law sources of one slug (the app entry beside the
+ * theme anchor — the construction face mounts in the anchor) */
+function surfacesource(slug: string): string {
+  const parts = [join(reporoot, slug, "App.tsx"), join(reporoot, slug, "sol", "Sol.tsx")];
+  return parts
+    .filter((path) => existsSync(path))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+}
+
+/** the under-construction seat the owner's PR19 law names: a slug whose
+ * shell retired whole and whose surface answers the one-component
+ * construction face walks the construction law instead of the frame
+ * truth — the window chrome has no seat to mount (stealthhead's own
+ * design battery pins the construction law on its side). */
+function isconstructionslug(slug: string): boolean {
+  return shellSource(slug) === null && /constructionface|under-construction/i.test(surfacesource(slug));
+}
+
 /** pulls one rule block out of a sheet (the seat geometry read) */
 function ruleBlock(css: string, selector: string): string {
   const marker = `${selector} {`;
@@ -89,6 +108,14 @@ describe("the seat law (the frame truth mounts the same tree)", () => {
   it("every family shell detects the power clip through the frame truth", () => {
     if (!siblingspresent) return;
     for (const slug of FAMILY_SLUGS) {
+      if (isconstructionslug(slug)) {
+        // the construction law answers the slug: the one-component face
+        // mounts where the shell retired (the PR19 under-construction seat)
+        expect(surfacesource(slug), `${slug} answers the under-construction surface law`).toMatch(
+          /constructionface|under-construction/i,
+        );
+        continue;
+      }
       const source = shellSource(slug);
       expect(source, `${slug} carries the shell seat mount`).not.toBeNull();
       expect(source!, `${slug} answers the frame truth`).toContain("window.self !== window.top");
@@ -98,6 +125,8 @@ describe("the seat law (the frame truth mounts the same tree)", () => {
   it("both seats answer the same seat expression — one design, two doors", () => {
     if (!siblingspresent) return;
     for (const slug of FAMILY_SLUGS) {
+      if (isconstructionslug(slug)) continue; // no shell, no seat ternary —
+      // the construction face carries the slug (the seat law above pins it)
       const source = shellSource(slug);
       expect(source, `${slug} carries the shell seat mount`).not.toBeNull();
       // the seat ternary answers the mount (the quoting follows the file's
@@ -113,6 +142,8 @@ describe("the height law (both doors measure the door they ride)", () => {
   it("every seat rule answers the viewport token — never a fixed pixel literal", () => {
     if (!siblingspresent) return;
     for (const slug of FAMILY_SLUGS) {
+      if (isconstructionslug(slug)) continue; // no shell, no seat blocks —
+      // the construction face carries the slug (the seat law above pins it)
       const css = themeCss(slug);
       const embedded = ruleBlock(css, ".shell--embedded");
       const standalone = ruleBlock(css, ".shell--standalone");
@@ -171,7 +202,7 @@ describe("the source law (both doors ask the same document)", () => {
     expect(familyframe).toContain("export function FamilyStage");
     expect(familyframe).toContain("src={familyurl(slug)}");
     expect(familyframe).toContain('position: "fixed"');
-    expect(familyframe).toContain('inset: 0');
+    expect(familyframe).toContain("inset: 0");
     expect(familyframe).toContain('width: "100%"');
     expect(familyframe).toContain('height: "100%"');
   });
@@ -245,8 +276,6 @@ describe("the single-instance law (the two-react crash of the family renders)", 
     // the thin door law: the family apps re-export the owner module instead
     // of carrying a duplicate (the dedup law the wall protects)
     const cadriadoor = readFileSync(join(reporoot, "cadria", "reveal.ts"), "utf8");
-    expect(cadriadoor, "the cadria thin door re-exports the owner module").toContain(
-      'from "../devthink/reveal.ts"',
-    );
+    expect(cadriadoor, "the cadria thin door re-exports the owner module").toContain('from "../devthink/reveal.ts"');
   });
 });
