@@ -31,6 +31,11 @@ RUN apk add --no-cache python3 make g++ \
 COPY app/ .
 # the copy-law vault sibling: the sol sources import the label store through the @wenathlan/vault/labelstore bridge and the vite alias resolves the specifier to ../vault/labelstore.ts, so the sibling sources land at /src/vault where that bridge answers inside the container (the app-only context left the import unloadable and the vite step died on labels.ts).
 COPY vault/ /src/vault/
+# The devthink sibling of the family law: routerbase.ts re-exports the
+# family routerBase from ../devthink/routerbase.ts, so the devthink
+# sources land at /src/devthink where that re-export answers inside the
+# container (the same sibling-copy law the vault line above carries).
+COPY devthink/ /src/devthink/
 RUN pnpm build
 
 # ════════════════════════════════════════════════════════════════════
