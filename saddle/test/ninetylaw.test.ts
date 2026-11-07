@@ -2,16 +2,18 @@
 // (wave w2 b1, rebased onto the ninety wave): the ten promotions this
 // law wired live still ride the registry live and carry their executors
 // — and the waves that merged after widened the same truth to the full
-// plan (the census answers 64 live, 9 host and 17 planned of the ninety
+// plan (the census answers 65 live, 9 host and 16 planned of the ninety
 // the owner charged — the pr15 completion wave seated the wasme, exe,
 // binary, sh and yaml runners, the port dock, the container dock
 // principal, the virtual file store and the virtual hardware
 // presentation seats, and the provider seats answer the host probes —
-// the seventeen registry-only ids the honesty audit named declare
+// the sixteen remaining registry-only ids the honesty audit named declare
 // planned, the record never pretends a wiring the engine does not
-// drive; the visitor-law hardening retired the local-optin consent
+// drive, and the sqlite vault seat walked live once the node:sqlite
+// roundtrip executor landed (the honesty wave's seat 271); the
+// visitor-law hardening retired the local-optin consent
 // gate and seated the pod session host probe of seat ninety, so the
-// live set walks to 64 and the host probes to 9 — and the lane table
+// live set walks to 65 and the host probes to 9 — and the lane table
 // answers 65 live and 25 host lanes), so
 // the battery pins the post-merge truth. each promoted lane
 // refuses honestly when its runtime or its configuration is absent —
@@ -103,9 +105,9 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     const report = planreport();
     assert.equal(report.plancount, 90);
     assert.equal(report.catalogcount, 90);
-    assert.equal(report.live, 64, "the audit rung answered the honest live set (the pr15 completion seats)");
+    assert.equal(report.live, 65, "the audit rung answered the honest live set (the pr15 completion seats plus the sqlite vault roundtrip)");
     assert.equal(report.host, 9, "the provider seats and the pod session probe answer the host probes");
-    assert.equal(report.planned, 17, "the seventeen registry-only ids declare planned");
+    assert.equal(report.planned, 16, "the sixteen remaining registry-only ids declare planned");
     assert.equal(report.live + report.host + report.planned, MODALITIES.length);
     assert.equal(report.plananswered, true);
   });
