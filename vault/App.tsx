@@ -20,6 +20,7 @@ import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/inter";
 import "./sol/sol.css";
 
+import { routerBase } from "./routerbase.ts";
 // the copy law rides the boot: the seed refreshes the label store rows
 // (translated rows protected) before the first paint answers
 if (typeof window !== "undefined") void seedLabels().catch(() => {});
@@ -52,41 +53,11 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
   }
 }
 
-/** the route segments the theme answers to — the mount prefix of a deploy
- * unit is whatever precedes the first one of these in the boot path. */
-const KNOWN_ROUTES: readonly string[] = [
-  "/intro",
-  "/onboarding",
-  "/objects",
-  "/buckets",
-  "/retention",
-  "/404",
-];
-
-function routerBase(): string {
-  const declaredBase = import.meta.env.BASE_URL;
-  // the build-time base wins (the pages workflow mounts every app at /<slug>/)
-  if (declaredBase !== "/" && declaredBase !== "./") return declaredBase.replace(/\/$/, "");
-  const path = window.location.pathname.replace(/index\.html$/, "");
-  // a known route at the root means the app is mounted at "/" — no base
-  if (KNOWN_ROUTES.some((route) => path === route || path.startsWith(`${route}/`))) return "";
-  // a lone first segment that is no known route is a mount prefix (the
-  // power clip and the family stage serve this app under its slug)
-  const segments = path.replace(/^\/+|\/+$/g, "").split("/").filter(Boolean);
-  if (segments.length === 1) return `/${segments[0]}`;
-  // otherwise the mount prefix is whatever precedes the first known segment
-  // (the static hosting case: the deep link still lands on its page)
-  for (const route of KNOWN_ROUTES) {
-    const at = path.indexOf(route);
-    if (at > 0) return path.slice(0, at).replace(/\/$/, "");
-  }
-  return "";
-}
 
 function App() {
   return (
     <ThemeErrorBoundary>
-      <WouterRouter base={routerBase()}>
+      <WouterRouter base={routerBase("vault")}>
         <Sol />
       </WouterRouter>
     </ThemeErrorBoundary>
