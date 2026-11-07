@@ -133,7 +133,13 @@
       "@wenathlan/devthink/oslabels": ["./os.ts"],
       "@wenathlan/devthink/storage": ["./storage.ts"],
       "@wenathlan/devthink/types": ["./types.ts"],
-      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"]
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      /** the onboarding store bridge of the ownership law: the gateway db
+       * the os typecheck walks imports the vault factory through the
+       * published library specifier ("@wenathlan/vault/onboardingstore"),
+       * and this program resolves it to the sibling source the same way
+       * the label store seat above rides. */
+      "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"]
     }
   },
   /* the foundry gate wave: the four ci gates ride the foundry seat, the os typecheck still walks their declarations. */
