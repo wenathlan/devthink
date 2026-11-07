@@ -33,7 +33,19 @@ import { drawgatewayhost, drawgatewayport, gatewayportband, resolvegatewaybind }
 const monoreporoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 /** the family app roots (the deploy units the law names). */
-const FAMILYROOTS = ["argan", "cadria", "cobaia", "debonair", "devthink", "forge", "foundry", "getry", "saddle", "stealthhead", "vault"];
+const FAMILYROOTS = [
+  "argan",
+  "cadria",
+  "cobaia",
+  "debonair",
+  "devthink",
+  "forge",
+  "foundry",
+  "getry",
+  "saddle",
+  "stealthhead",
+  "vault",
+];
 
 /** the walks the source scan skips (the tests-are-exempt law rides the
  * test fixtures, the build ghosts never ride the tree). */
@@ -82,7 +94,8 @@ describe("the gateway ports law (host/porta sorteados, never localhost literal)"
       const host = drawgatewayhost();
       const match = host.match(/^127\.(\d+)\.(\d+)\.(\d+)$/);
       expect(match, `the drawn host ${host} rides 127.a.b.c`).not.toBeNull();
-      for (const octet of [match![1], match![2], match![3]]) {
+      if (!match) continue;
+      for (const octet of match.slice(1)) {
         const value = Number(octet);
         expect(value).toBeGreaterThanOrEqual(1);
         expect(value).toBeLessThanOrEqual(254);
@@ -167,10 +180,7 @@ describe("the one signup law (one signup family-wide, the guest identity never d
       }
     }
     const strangers = carriers.filter((file) => !file.replaceAll("\\", "/").includes("/vault/"));
-    expect(
-      strangers,
-      `only vault carries the signup lane — strangers answered: ${strangers.join(", ")}`,
-    ).toEqual([]);
+    expect(strangers, `only vault carries the signup lane — strangers answered: ${strangers.join(", ")}`).toEqual([]);
   });
 
   it("upserts the visitor identity seen-wins — born on the first write, never replayed", () => {
@@ -195,10 +205,7 @@ describe("the one signup law (one signup family-wide, the guest identity never d
         if (identitydelete.test(text)) carriers.push(file);
       }
     }
-    expect(
-      carriers,
-      `the guest identity never deletes — carriers answered: ${carriers.join(", ")}`,
-    ).toEqual([]);
+    expect(carriers, `the guest identity never deletes — carriers answered: ${carriers.join(", ")}`).toEqual([]);
   });
 
   it("keeps the sweep lanes honest — the retention clock plans, it never deletes an identity", () => {
