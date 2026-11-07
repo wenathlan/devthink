@@ -87,11 +87,11 @@ const bundlebudgets: Record<string, number> = {
   http: 600_000,
   bridge: 160_000,
   companion: 60_000,
-  policy: 600_000,
-  protocol: 380_000,
+  policy: 800_000, /* the securitytooling consolidation inlines the scanner family: the policy graph answers the grown seat */
+  protocol: 560_000, /* the same consolidation the policy seat carries */
   memory: 500_000,
   progress: 60_000,
-  hardening: 60_000,
+  hardening: 160_000, /* the hardening seat inlines the whole security keyword file */
   dashboard: 120_000,
   queue: 160_000,
   security: 700_000,
