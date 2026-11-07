@@ -20,6 +20,7 @@
 
 /// <reference types="better-sqlite3" />
 
+import { createOnboardingStore, type OnboardingLane, type OnboardingStore } from "@wenathlan/vault/onboardingstore";
 import { GATEWAYROUTES, GATEWAYVERSIONS, type GatewayRoute, type GatewayVersion } from "./gateway";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels";
 
@@ -399,12 +400,6 @@ CREATE TABLE IF NOT EXISTS gateway_versions (
 );
 `;
 
-/** the prepared statements of the mirror, created once per process. */
-type OnboardingStatements = {
-  select: import("better-sqlite3").Statement;
-  upsert: import("better-sqlite3").Statement;
-};
-
 /** the prepared label statements of the mirror, created once per process. */
 type LabelStatements = {
   select: import("better-sqlite3").Statement;
@@ -421,7 +416,7 @@ type VersionStatements = {
 /** the cached driver bundle (null until the first node call). */
 let mirror: {
   db: import("better-sqlite3").Database;
-  statements: OnboardingStatements;
+  onboarding: OnboardingStore;
   labels: LabelStatements;
   versions: VersionStatements;
 } | null = null;
@@ -437,7 +432,7 @@ let mirror: {
  */
 async function openMirror(): Promise<{
   db: import("better-sqlite3").Database;
-  statements: OnboardingStatements;
+  onboarding: OnboardingStore;
   labels: LabelStatements;
   versions: VersionStatements;
 }> {
@@ -454,21 +449,31 @@ async function openMirror(): Promise<{
   db.exec(ONBOARDING_SCHEMA);
   db.exec(LABELS_SCHEMA);
   db.exec(GATEWAYVERSIONS_SCHEMA);
+  /* the onboarding store rides the vault factory over the mirror's own
+   * connection (the structural lane — execute, queryOne, exec — answered
+   * through one memoized prepare cache, so every statement stays prepared
+   * once per process): the seen-wins upsert —
+   * ON CONFLICT(visitor) DO UPDATE SET introseen = MAX(introseen, excluded.introseen),
+   * onboardingseen = MAX(onboardingseen, excluded.onboardingseen) — rides
+   * the shared mechanism, never a local copy of the sql, and the browser
+   * graph never gains a storage import — the factory module owns zero
+   * imports (the labelstore precedent). */
+  const prepared = new Map<string, import("better-sqlite3").Statement>();
+  const prepareCached = (sql: string): import("better-sqlite3").Statement => {
+    const cached = prepared.get(sql);
+    if (cached) return cached;
+    const statement = db.prepare(sql);
+    prepared.set(sql, statement);
+    return statement;
+  };
+  const onboardinglane: OnboardingLane = {
+    execute: (sql, params = []) => prepareCached(sql).run(...params),
+    queryOne: (sql, params = []) => prepareCached(sql).get(...params),
+    exec: (ddl) => db.exec(ddl),
+  };
   mirror = {
     db,
-    statements: {
-      select: db.prepare(
-        "SELECT id, visitor, introseen, onboardingseen, updatedAt FROM onboarding_states WHERE visitor = ?",
-      ),
-      upsert: db.prepare(
-        `INSERT INTO onboarding_states (visitor, introseen, onboardingseen, updatedAt)
-         VALUES (?, ?, ?, datetime('now'))
-         ON CONFLICT(visitor) DO UPDATE SET
-           introseen = MAX(introseen, excluded.introseen),
-           onboardingseen = MAX(onboardingseen, excluded.onboardingseen),
-           updatedAt = datetime('now')`,
-      ),
-    },
+    onboarding: createOnboardingStore(onboardinglane),
     labels: {
       select: db.prepare("SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?"),
       selectAll: db.prepare("SELECT id, text, revision, updatedAt, translated FROM labels ORDER BY id ASC"),
@@ -514,15 +519,14 @@ export type OnboardingFlags = { introseen: boolean; onboardingseen: boolean };
  */
 export async function getonboardingstate(visitor: string): Promise<OnboardingFlags | undefined> {
   if (!isnode()) return undefined;
-  const { statements } = await openMirror();
-  const row = statements.select.get(visitor) as { introseen: number; onboardingseen: number } | undefined;
-  if (!row) return undefined;
-  return { introseen: row.introseen === 1, onboardingseen: row.onboardingseen === 1 };
+  const { onboarding } = await openMirror();
+  return onboarding.getOnboardingState(visitor);
 }
 
 /**
- * Marks one onboarding stage seen for a visitor — idempotent seen-wins
- * upsert (a stage seen anywhere stays seen), prepared and bound, never
+ * Marks one onboarding stage seen for a visitor — the idempotent seen-wins
+ * upsert of the vault store (a stage seen anywhere stays seen; the later
+ * stage implies the earlier — the flow order), prepared and bound, never
  * concatenated SQL.
  *
  * @param visitor the visitor key of the row.
@@ -531,8 +535,8 @@ export async function getonboardingstate(visitor: string): Promise<OnboardingFla
  */
 export async function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): Promise<OnboardingFlags> {
   if (!isnode()) return { introseen: false, onboardingseen: false };
-  const { statements } = await openMirror();
-  statements.upsert.run(visitor, stage === "intro" ? 1 : 0, stage === "onboarding" ? 1 : 0);
+  const { onboarding } = await openMirror();
+  onboarding.setOnboardingStage(visitor, stage);
   return (await getonboardingstate(visitor)) ?? { introseen: false, onboardingseen: false };
 }
 

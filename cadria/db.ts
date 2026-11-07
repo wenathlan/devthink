@@ -4,6 +4,7 @@
 // prisma/schema.prisma and the seed module provides the first-run rows; the site api
 // serves the same tables to the Sol pages over HTTPS (see catalog.ts).
 
+import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
 import { openStorageLane } from "@wenathlan/vault/storage";
 import { labelManifest, LABEL_REVISION } from "./labels.ts";
 import {
@@ -244,6 +245,12 @@ export type OnboardingStateRow = {
 /** the stage flags the entry flow consults, as booleans. */
 export type OnboardingFlags = { introseen: boolean; onboardingseen: boolean };
 
+/** the onboarding store of the site: the vault factory over the site's own
+ * storage lane (the seen-flags table rides the app schema, the read and the
+ * seen-wins upsert ride the shared mechanism — never duplicated inside the
+ * app; the storage lane law of the family, the labelstore precedent). */
+const onboardingstore = createOnboardingStore(lane);
+
 /**
  * Reads the onboarding stage flags of one visitor (parameterized; undefined
  * before the first write). The browser accessor serves the same flags over
@@ -253,17 +260,13 @@ export type OnboardingFlags = { introseen: boolean; onboardingseen: boolean };
  * @returns the flags, or undefined when the visitor never wrote.
  */
 export function getOnboardingState(visitor: string): OnboardingFlags | undefined {
-  const row = queryOne<Pick<OnboardingStateRow, "introseen" | "onboardingseen">>(
-    "SELECT introseen, onboardingseen FROM onboarding_states WHERE visitor = ?",
-    [visitor],
-  );
-  if (!row) return undefined;
-  return { introseen: row.introseen === 1, onboardingseen: row.onboardingseen === 1 };
+  return onboardingstore.getOnboardingState(visitor);
 }
 
 /**
- * Marks one onboarding stage seen for a visitor — idempotent seen-wins
- * upsert (a stage seen anywhere stays seen), prepared and parameterized,
+ * Marks one onboarding stage seen for a visitor — the idempotent seen-wins
+ * upsert of the vault store (a stage seen anywhere stays seen; the later
+ * stage implies the earlier — the flow order), prepared and parameterized,
  * never concatenated SQL.
  *
  * @param visitor the visitor key of the row.
@@ -271,14 +274,6 @@ export function getOnboardingState(visitor: string): OnboardingFlags | undefined
  * @returns the flags after the write.
  */
 export function setOnboardingStage(visitor: string, stage: "intro" | "onboarding"): OnboardingFlags {
-  execute(
-    `INSERT INTO onboarding_states (visitor, introseen, onboardingseen, updatedAt)
-     VALUES (?, ?, ?, datetime('now'))
-     ON CONFLICT(visitor) DO UPDATE SET
-       introseen = MAX(introseen, excluded.introseen),
-       onboardingseen = MAX(onboardingseen, excluded.onboardingseen),
-       updatedAt = datetime('now')`,
-    [visitor, stage === "intro" ? 1 : 0, stage === "onboarding" ? 1 : 0],
-  );
+  onboardingstore.setOnboardingStage(visitor, stage);
   return getOnboardingState(visitor) ?? { introseen: false, onboardingseen: false };
 }

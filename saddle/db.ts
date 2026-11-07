@@ -22,6 +22,7 @@ import { DatabaseSync } from 'node:sqlite';
 import type { StatementSync } from 'node:sqlite';
 import { resolve } from 'node:path';
 import process from 'node:process';
+import { createOnboardingStore, type OnboardingLane } from '@wenathlan/vault/onboardingstore';
 import { LABEL_REVISION, labelmanifest } from './labels.ts';
 
 /* ------------------------------------------------------------------ */
@@ -1160,6 +1161,22 @@ export function listaudit(limit: number = 200): AuditRow[] {
 /* context: onboarding — the entry-flow state                          */
 /* ------------------------------------------------------------------ */
 
+/** the structural lane seat the vault onboarding store rides: the memoized
+ * statement cache and the connection this module already own answer the
+ * execute, queryOne and exec doors (the vault factory owns the seen-flags
+ * mechanism — the onboarding_states table stays the saddle schema's own
+ * seat and the seen-wins upsert stays the shared sql, never a local copy;
+ * the storage lane law of the family, the labelstore precedent). */
+const onboardinglane: OnboardingLane = {
+  execute: (sql, params = []) => stmt(sql).run(...params),
+  queryOne: (sql, params = []) => stmt(sql).get(...params),
+  exec: (ddl) => database.exec(ddl),
+};
+
+/** the onboarding store of the node: the vault factory over the structural
+ * lane above (the mechanism is never duplicated inside the node). */
+const onboardingstore = createOnboardingStore(onboardinglane);
+
 /**
  * reads the onboarding stage flags of one visitor (parameterized; null
  * when the visitor never touched the flow). the platform gateway serves
@@ -1171,23 +1188,17 @@ export function listaudit(limit: number = 200): AuditRow[] {
  */
 export function getonboardingstate(visitor: string): OnboardingFlags | null {
   try {
-    const row = stmt(
-      'select introseen, onboardingseen from onboarding_states where visitor = ?',
-    ).get(visitor) as Pick<OnboardingStateRow, 'introseen' | 'onboardingseen'> | undefined;
-    if (row === undefined) return null;
-    return {
-      introseen: Number(row.introseen) === 1,
-      onboardingseen: Number(row.onboardingseen) === 1,
-    };
+    return onboardingstore.getOnboardingState(visitor) ?? null;
   } catch (error) {
     throw dberror('db-onboarding-failed', error instanceof Error ? error.message : String(error));
   }
 }
 
 /**
- * marks one onboarding stage seen for a visitor — idempotent seen-wins
- * upsert: the flags only ever move forward, so a replayed stage (or an
- * out-of-order gateway write) never unsees an earlier one.
+ * marks one onboarding stage seen for a visitor — the idempotent seen-wins
+ * upsert of the vault store: the flags only ever move forward, so a
+ * replayed stage (or an out-of-order gateway write) never unsees an
+ * earlier one, and the later stage implies the earlier (the flow order).
  *
  * @param visitor the stable visitor id.
  * @param stage the stage being marked seen ("intro" or "onboarding"; the
@@ -1199,19 +1210,7 @@ export function setonboardingstage(
   stage: 'intro' | 'onboarding',
 ): OnboardingFlags {
   try {
-    stmt(
-      `insert into onboarding_states (visitor, introseen, onboardingseen, updatedAt)
-       values (?, ?, ?, ?)
-       on conflict(visitor) do update set
-         introseen = max(introseen, excluded.introseen),
-         onboardingseen = max(onboardingseen, excluded.onboardingseen),
-         updatedAt = excluded.updatedAt`,
-    ).run(
-      visitor,
-      stage === 'intro' ? 1 : 0,
-      stage === 'onboarding' ? 1 : 0,
-      new Date().toISOString(),
-    );
+    onboardingstore.setOnboardingStage(visitor, stage);
     return getonboardingstate(visitor) ?? { introseen: false, onboardingseen: false };
   } catch (error) {
     throw dberror('db-onboarding-failed', error instanceof Error ? error.message : String(error));

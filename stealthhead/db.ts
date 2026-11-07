@@ -19,6 +19,7 @@
  */
 
 import process from "node:process";
+import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
 import { openStorageLane } from "@wenathlan/vault/storage";
 import { LABELMANIFEST, LABELREVISION } from "./labels.ts";
 import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./match.ts";
@@ -123,15 +124,13 @@ const insertweapon = sqlite.prepare(
 const insertworldasset = sqlite.prepare(
   "insert or replace into worldassets (name, kind, path, sha256, size, precompiled) values (?, ?, ?, ?, ?, ?)",
 );
-/** the first-run write: seen-monotonic upsert (a stage never unsees). */
-const upsertonboardingstage = sqlite.prepare(
-  `insert into onboardingstate (visitor, introseen, onboardingseen, updatedat)
-   values (?, ?, ?, ?)
-   on conflict(visitor) do update set
-     introseen = max(introseen, excluded.introseen),
-     onboardingseen = max(onboardingseen, excluded.onboardingseen),
-     updatedat = excluded.updatedat`,
-);
+
+/** the onboarding store of the game: the vault factory over the game's own
+ * storage lane, pinned to the lowercase table the game schema declares
+ * (the table stays app data; the read and the seen-wins upsert ride the
+ * shared mechanism — never duplicated inside the app; the storage lane law
+ * of the family, the labelstore precedent). */
+const onboardingstore = createOnboardingStore(lane, { tableName: "onboardingstate" });
 
 /** the label writes and reads (the interface copy store). */
 const upsertlabel = sqlite.prepare(
@@ -165,9 +164,6 @@ const selectallweapons = sqlite.prepare(
 );
 const selectworldassets = sqlite.prepare(
   "select name, kind, path, sha256, size, precompiled from worldassets order by kind, name",
-);
-const selectonboardingstate = sqlite.prepare(
-  "select id, visitor, introseen, onboardingseen, updatedat from onboardingstate where visitor = ?",
 );
 
 /** true once the seed pass has run for this boot. */
@@ -309,17 +305,7 @@ export type OnboardingStateRow = {
  * @returns the state row or undefined when the visitor never started the flow.
  */
 export function getonboardingstate(visitor: string): OnboardingStateRow | undefined {
-  const row = selectonboardingstate.get(visitor) as
-    | { id: number; visitor: string; introseen: number; onboardingseen: number; updatedat: string }
-    | undefined;
-  if (!row) return undefined;
-  return {
-    id: row.id,
-    visitor: row.visitor,
-    introseen: row.introseen === 1,
-    onboardingseen: row.onboardingseen === 1,
-    updatedAt: row.updatedat,
-  };
+  return onboardingstore.getOnboardingRow(visitor);
 }
 
 /**
@@ -331,7 +317,7 @@ export function getonboardingstate(visitor: string): OnboardingStateRow | undefi
  * @param stage the flow stage that was just seen (finish or skip alike).
  */
 export function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): void {
-  upsertonboardingstage.run(visitor, 1, stage === "onboarding" ? 1 : 0, new Date().toISOString());
+  onboardingstore.setOnboardingStage(visitor, stage);
 }
 
 /* --------------------------------------------------------------------- */

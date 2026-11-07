@@ -1,6 +1,7 @@
 /** forge root database logic: the self-hosted store of the sandbox runners.
  * better-sqlite3 with prepared statements only — every external input rides a
  * bound parameter, never a concatenated string (the parameterized query rule). */
+import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
 import { openStorageLane } from "@wenathlan/vault/storage";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 
@@ -50,18 +51,6 @@ const runsOf = database.prepare(
 );
 const insertRunner = database.prepare("INSERT INTO runners (id, name, kind, boundary, status) VALUES (?, ?, ?, ?, ?)");
 const insertRun = database.prepare("INSERT INTO runlogs (id, runnerId, outcome, detail) VALUES (?, ?, ?, ?)");
-const selectOnboarding = database.prepare(
-  'SELECT visitor, introseen, onboardingseen, "updatedAt" AS updatedAt FROM onboarding_state WHERE visitor = ?',
-);
-// the seen-wins upsert: a stage marked anywhere stays marked (MAX), the flow never replays
-const upsertOnboarding = database.prepare(
-  `INSERT INTO onboarding_state (visitor, introseen, onboardingseen, "updatedAt")
-   VALUES (?, ?, ?, ?)
-   ON CONFLICT(visitor) DO UPDATE SET
-     introseen = MAX(introseen, excluded.introseen),
-     onboardingseen = MAX(onboardingseen, excluded.onboardingseen),
-     "updatedAt" = excluded."updatedAt"`,
-);
 const upsertLabel = database.prepare(
   `INSERT INTO labels (id, text, revision, updatedAt, translated) VALUES (?, ?, ?, datetime('now'), ?)
    ON CONFLICT(id) DO UPDATE SET
@@ -113,6 +102,15 @@ export function logRun(id: string, runnerId: string, outcome: string, detail = "
   insertRun.run(id, runnerId, outcome, detail);
 }
 
+/** the onboarding store of the site: the vault factory over the site's own
+ * storage lane, pinned to the singular table the forge schema declares
+ * (the table stays app data). the seen-wins upsert — ON CONFLICT(visitor) DO
+ * UPDATE SET introseen = MAX(introseen, excluded.introseen), onboardingseen
+ * = MAX(onboardingseen, excluded.onboardingseen) — rides the shared vault
+ * mechanism, never a local copy of the sql (the storage lane law of the
+ * family, the labelstore precedent). */
+const onboardingstore = createOnboardingStore(lane, { tableName: "onboarding_state" });
+
 /**
  * Reads the first-run state of one visitor from the onboarding_state table.
  *
@@ -120,16 +118,7 @@ export function logRun(id: string, runnerId: string, outcome: string, detail = "
  * @returns the mirrored row, or undefined when the visitor never started the flow.
  */
 export function getonboardingstate(visitor: string): OnboardingStateRow | undefined {
-  const row = selectOnboarding.get(visitor) as
-    | { visitor: string; introseen: number; onboardingseen: number; updatedAt: string }
-    | undefined;
-  if (!row) return undefined;
-  return {
-    visitor: row.visitor,
-    introseen: row.introseen === 1,
-    onboardingseen: row.onboardingseen === 1,
-    updatedAt: row.updatedAt,
-  };
+  return onboardingstore.getOnboardingRow(visitor);
 }
 
 /**
@@ -141,7 +130,7 @@ export function getonboardingstate(visitor: string): OnboardingStateRow | undefi
  * @param stage the stage that was seen.
  */
 export function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): void {
-  upsertOnboarding.run(visitor, 1, stage === "onboarding" ? 1 : 0, new Date().toISOString());
+  onboardingstore.setOnboardingStage(visitor, stage);
 }
 
 /* --------------------------------------------------------------------- */

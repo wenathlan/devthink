@@ -4,6 +4,7 @@
 // prisma/schema.prisma and the seed module provides the first-run rows; the site api
 // serves the same tables to the Sol pages over HTTPS (see catalog.ts).
 
+import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
 import { openStorageLane } from "@wenathlan/vault/storage";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 import {
@@ -161,33 +162,22 @@ export type OnboardingStateRow = {
   updatedAt: string;
 };
 
+/** the onboarding store of the site: the vault factory over the site's own
+ * storage lane, pinned to the singular table the argan schema always
+ * declared (the table stays app data; the read and the seen-wins upsert
+ * ride the shared mechanism — never duplicated inside the app; the storage
+ * lane law of the family, the labelstore precedent). */
+const onboardingstore = createOnboardingStore(lane, { tableName: "onboarding_state" });
+
 /** Typed accessor of one visitor's first-run state (parameterized by visitor). */
 export function getonboardingstate(visitor: string): OnboardingStateRow | undefined {
-  const row = queryOne<{ visitor: string; introseen: number; onboardingseen: number; updatedAt: string }>(
-    'SELECT visitor, introseen, onboardingseen, "updatedAt" AS updatedAt FROM onboarding_state WHERE visitor = ?',
-    [visitor],
-  );
-  if (!row) return undefined;
-  return {
-    visitor: row.visitor,
-    introseen: row.introseen === 1,
-    onboardingseen: row.onboardingseen === 1,
-    updatedAt: row.updatedAt,
-  };
+  return onboardingstore.getOnboardingRow(visitor);
 }
 
 /** Writes one stage of the first run for a visitor (upsert, seen-monotonic —
  * "intro" marks the splash, "onboarding" marks the splash and the finish). */
 export function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): void {
-  execute(
-    `INSERT INTO onboarding_state (visitor, introseen, onboardingseen, "updatedAt")
-     VALUES (?, ?, ?, ?)
-     ON CONFLICT(visitor) DO UPDATE SET
-       introseen = MAX(introseen, excluded.introseen),
-       onboardingseen = MAX(onboardingseen, excluded.onboardingseen),
-       "updatedAt" = excluded."updatedAt"`,
-    [visitor, 1, stage === "onboarding" ? 1 : 0, new Date().toISOString()],
-  );
+  onboardingstore.setOnboardingStage(visitor, stage);
 }
 
 /* --------------------------------------------------------------------- */

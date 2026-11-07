@@ -654,6 +654,11 @@
       "import": "./onboardingstate.ts",
       "default": "./onboardingstate.ts"
     },
+    "./onboardingstore": {
+      "types": "./onboardingstore.ts",
+      "import": "./onboardingstore.ts",
+      "default": "./onboardingstore.ts"
+    },
     "./quota": {
       "types": "./quota.ts",
       "import": "./quota.ts",
@@ -715,6 +720,7 @@
     "storage.ts",
     "objects.ts",
     "onboardingstate.ts",
+    "onboardingstore.ts",
     "quota.ts",
     "retention.ts",
     "routes.ts",
