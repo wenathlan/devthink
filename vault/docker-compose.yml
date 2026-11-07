@@ -12,7 +12,7 @@
 #           /data — NEVER inside the image — so a redeploy never
 #           orphans the truth.
 #   face    the nginx surface (target face): the built SPA beside the
-#           /api/* proxy lane to the engine upstream (nginx-face.conf),
+#           /api/* proxy lane to the engine upstream (nginx.conf),
 #           the spa rewrite as try_files, port 80 published on 8080.
 #
 # boot the whole product from this directory:

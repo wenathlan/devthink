@@ -46,7 +46,7 @@ const VERCEL = read("../vercel.json");
 const WRANGLER = read("../wrangler.toml");
 const HEADERS = read("../_headers");
 const REDIRECTS = read("../_redirects");
-const NGINXFACE = read("../nginx-face.conf");
+const NGINXFACE = read("../nginx.conf");
 const DOCKERFILE = read("../Dockerfile");
 const API = read("../account.ts");
 

@@ -4,7 +4,7 @@
 // The nginxfamily wave answers the owner order: the framework, library,
 // resource and tool configuration files standardize at the root of every
 // app the way the vault reference owns them. This battery pins the surface
-// end to end: every one of the eleven seats carries nginx-face.conf,
+// end to end: every one of the eleven seats carries nginx.conf,
 // docker-compose.yml, docker.config and Dockerfile at the application
 // root; every nginx conf carries the resolver law (the docker embedded
 // dns at request time), the /api/* proxy lane (the ^~ precedence the
@@ -81,9 +81,9 @@ const HEALTHLANE: Record<string, RegExp> = {
 };
 
 describe("the eleven roots carry the container configuration law", () => {
-  it("stamps nginx-face.conf, docker-compose.yml, docker.config and Dockerfile at every app root", () => {
+  it("stamps nginx.conf, docker-compose.yml, docker.config and Dockerfile at every app root", () => {
     for (const app of FAMILY) {
-      for (const file of ["Dockerfile", "docker-compose.yml", "nginx-face.conf", "docker.config"] as const) {
+      for (const file of ["Dockerfile", "docker-compose.yml", "nginx.conf", "docker.config"] as const) {
         assert.ok(
           existsSync(new URL(`../../${app}/${file}`, import.meta.url)),
           `${app}/${file} must sit at the application root`,
@@ -108,38 +108,38 @@ describe("the eleven roots carry the container configuration law", () => {
 describe("the nginx face law (the vault pattern every conf carries)", () => {
   it("rides the resolver law, the /api proxy lane and the security headers on every face", () => {
     for (const app of FAMILY) {
-      const conf = read(app, "nginx-face.conf");
+      const conf = read(app, "nginx.conf");
       assert.match(
         conf,
         /^resolver 127\.0\.0\.11 valid=10s ipv6=off;$/m,
-        `${app}/nginx-face.conf must carry the docker embedded dns resolver`,
+        `${app}/nginx.conf must carry the docker embedded dns resolver`,
       );
       assert.match(
         conf,
         /location\s+(?:\^~\s+)?\/api\/\s*\{/,
-        `${app}/nginx-face.conf must carry the /api/ proxy lane`,
+        `${app}/nginx.conf must carry the /api/ proxy lane`,
       );
-      assert.match(conf, /proxy_pass\s+\$/, `${app}/nginx-face.conf must proxy through the request-time variable`);
+      assert.match(conf, /proxy_pass\s+\$/, `${app}/nginx.conf must proxy through the request-time variable`);
       assert.match(
         conf,
         /add_header X-Content-Type-Options nosniff always;/,
-        `${app}/nginx-face.conf must carry the nosniff law`,
+        `${app}/nginx.conf must carry the nosniff law`,
       );
       assert.match(
         conf,
         /add_header X-Frame-Options DENY always;/,
-        `${app}/nginx-face.conf must carry the frame denial law`,
+        `${app}/nginx.conf must carry the frame denial law`,
       );
       assert.match(
         conf,
         /add_header Referrer-Policy strict-origin-when-cross-origin always;/,
-        `${app}/nginx-face.conf must carry the referrer law`,
+        `${app}/nginx.conf must carry the referrer law`,
       );
-      assert.match(conf, /return 403/, `${app}/nginx-face.conf must refuse the sealed faces`);
+      assert.match(conf, /return 403/, `${app}/nginx.conf must refuse the sealed faces`);
       assert.match(
         conf,
         /try_files \$uri \$uri\/ \/index\.html;/,
-        `${app}/nginx-face.conf must carry the spa rewrite`,
+        `${app}/nginx.conf must carry the spa rewrite`,
       );
     }
   });

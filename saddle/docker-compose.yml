@@ -9,7 +9,7 @@
 #           webserver answers: health, the spec catalogs, the sandbox lanes),
 #           the sqlite state home on the named volume, one process on
 #           SADDLE_PORT
-#   saddle-face  the nginx surface: the family conf (nginx-face.conf) mounted over
+#   saddle-face  the nginx surface: the family conf (nginx.conf) mounted over
 #           the default conf — the resolver law, the security header law,
 #           the gzip and cache law, the /api/* proxy lane to the engine,
 #           the spa rewrite as try_files, host 8089 published on 8080.
@@ -53,7 +53,7 @@ services:
     volumes:
       # the family conf over the default site conf: the resolver law, the
       # security headers, the gzip and cache law, the /api proxy lane.
-      - ./nginx-face.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       # the staged static build: the web build the operator runs stages the
       # hashed bundles at the application root (the family root-emit law —
       # run the saddle web build before compose up); the conf seals the

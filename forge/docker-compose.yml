@@ -10,7 +10,7 @@
 #           vault siblings the ownership and copy laws carry): the built
 #           theme behind the unprivileged nginx, EXPOSE 8080, the wget listen
 #           probe the image carries
-#   forge-face  the nginx surface: the family conf (nginx-face.conf) mounted over
+#   forge-face  the nginx surface: the family conf (nginx.conf) mounted over
 #           the default conf — the resolver law, the security header law,
 #           the gzip and cache law, the /api/* proxy lane to the engine,
 #           the spa rewrite as try_files, host 8086 published on 8080.
@@ -46,7 +46,7 @@ services:
     volumes:
       # the family conf over the default site conf: the resolver law, the
       # security headers, the gzip and cache law, the /api proxy lane.
-      - ./nginx-face.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       # the face starts only when the engine health lane answered — the
       # proxy upstream is live before the first /api/* call arrives.

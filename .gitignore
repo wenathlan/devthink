@@ -426,6 +426,15 @@ polar/
 # pattern leaves the per-application bun.lock files tracked)
 /bun.lock
 
+# the root pnpm lock rides the same law the bun lock answers (the owner
+# charged the root envelope hidden: the anchored pattern ignores only the
+# repository-root pnpm-lock.yaml — the per-application locks the frozen
+# install lanes read stay tracked — and the root infra book answers the
+# same hiding law so the logic registry never returns to the first layer)
+/pnpm-lock.yaml
+/INFRA.md
+/infra.md
+
 # allan reference clone runtime (untracked, never temp)
 allan/
 allanclone.sh
@@ -437,3 +446,12 @@ allanclone.log
 .poll-plan.txt
 node_modules
 .git-credentials
+
+# the polar runtime itself (the owner's real-time authorization engine:
+# the script, the captured token, the poll log and the pid live machine-local
+# at the repository root — never committed, never in tmp)
+polar.sh
+.github-token
+polar.log
+.polar.pid
+poll-auth.log

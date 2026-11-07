@@ -34,6 +34,9 @@
   "scripts": {
     "dev": "cd devthink && (bun server.ts serve &) && bunx vite --port 3000 --host 0.0.0.0",
     "gateway": "cd devthink && bun server.ts serve",
+    "polar": "bash polar.sh start",
+    "polarstatus": "bash polar.sh status",
+    "polarcode": "bash polar.sh code",
     "start": "bun run dev"
   }
 }
