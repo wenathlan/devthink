@@ -9,7 +9,7 @@ import {
   apimapresolve,
   apimapstructerrorof,
   apimapunmapped,
-} from "../crossbrowser.js";
+} from "../security.js";
 
 describe("apimap catalog", () => {
   it("records every webextension api the codebase touches with a chromium and firefox mapping", () => {

@@ -14,7 +14,7 @@
  * browser (a Chrome MV3 extension) is not a VM modality and belongs to
  * devthink, the owner of the family extension product (the devthink
  * extension of record: manifest.json, popup.ts, background.ts,
- * sidepanel.ts, crossbrowser.ts and the packageextension.ts packaging
+ * sidepanel.ts, the crossbrowser family of security.ts and the packageextension.ts packaging
  * gate). The saddle keeps only the transport-neutral virtual-browser
  * contracts in saddle/browser.ts (sections 1-9); every export that left
  * the saddle reappears here with the same name and signature — zero

@@ -6,7 +6,7 @@ import {
   safariskeletonpopoverof,
   safariskeletonprojectfiles,
   safarizipfile,
-} from "../crossbrowser.js";
+} from "../security.js";
 import type { safariskeletoninput } from "../types.js";
 
 const input: safariskeletoninput = {

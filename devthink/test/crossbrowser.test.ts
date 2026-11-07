@@ -6,7 +6,7 @@ import {
   firefoxprepadapt,
   firefoxprepoverlay,
   xpipackassemble,
-} from "../crossbrowser.js";
+} from "../security.js";
 
 const sourcesmanifest = {
   manifest_version: 3,
