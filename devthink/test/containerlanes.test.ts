@@ -287,14 +287,20 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
   it("the webpack bundle is the real exact-pinned cross-bundler product the ci battery verifies", async () => {
     const containers = await readworkflow("containers.yml");
     /* the cross-bundler rung the ci battery verifies, carried to the
-     * saddle engine: the tsc engine build (scripts.ts buildengine, the
-     * lane-word dispatcher the scripts consolidation seated) produces
-     * distpackage/index.js and the exact-pinned webpack fetch (webpack
-     * 5.112.2 with its webpack-cli 6.0.1 peer) packs the one entry into
-     * the one webpack bundle the six channel legs distribute. */
-    expect(containers).toContain("node scripts.ts buildengine");
+     * saddle engine: the engine entry the manifest's build:engine lane
+     * walks through bun run produces distpackage/index.js (the bun
+     * build stamps the target, format and the four externals the host
+     * owns) and the exact-pinned webpack fetch (webpack 5.112.2 with
+     * its webpack-cli 6.0.1 peer) packs the one entry through the
+     * generated config into the one webpack bundle the six channel
+     * legs distribute (the LimitChunkCountPlugin holds the one-file
+     * law and the module envelope declares its type). */
+    expect(containers).toContain("bun run build:engine");
+    expect(containers).toContain("--outfile=distpackage/index.js");
     expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
-    expect(containers).toContain("--output-filename saddle.webpack.js");
+    expect(containers).toContain("webpack -c ./distpackage/webpack.config.mjs");
+    expect(containers).toContain("filename: \"saddle.webpack.js\"");
+    expect(containers).toContain("new LimitChunkCountPlugin({ maxChunks: 1 })");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
      * collide with the engine envelope the publish lanes own: the
