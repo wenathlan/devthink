@@ -791,9 +791,18 @@ async function cmdmodels(versionarg: string | undefined): Promise<void> {
 // ---------------------------------------------------------------------------
 
 async function cmdserve(portarg: string | undefined): Promise<void> {
-  const port = Number(portarg) || Number(process.env.PORT) || 3001;
-  process.env.PORT = String(port);
-  console.log(`${colors.cyan}starting gateway on port ${port}${colors.reset}`);
+  /* the gateway ports law (host/porta sorteados, never localhost literal):
+   * the caller pin rides when it carries a positive port (the arg lands in
+   * the env the transport main reads), the env pin rides when the env
+   * carries one, and when both stay silent the transport main draws the
+   * host and the port (binddraw.ts) — never a literal fallback */
+  const argport = Number(portarg);
+  if (portarg !== undefined && Number.isFinite(argport) && argport > 0) process.env.PORT = String(argport);
+  const pinned = Number(process.env.PORT);
+  const pinnedport = Number.isFinite(pinned) && pinned > 0 ? pinned : undefined;
+  console.log(
+    `${colors.cyan}starting gateway${pinnedport !== undefined ? ` on port ${pinnedport}` : " — the bind draws (host and port) since no env pin rides"}${colors.reset}`,
+  );
   /* the transport main loads lazily (the published-envelope law): the
    * console family — init through export, chat, help — runs on node
    * builtins alone inside the published envelope, and the serve seat

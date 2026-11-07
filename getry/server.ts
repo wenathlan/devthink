@@ -61,6 +61,7 @@ import { createversion } from "@wenathlan/getry/engine";
 import type { gatewayconfig, gatewaydefinition } from "@wenathlan/getry/types";
 import { corsheaders, ctndjson, ctsse, safejsonparse, safestringify } from "@wenathlan/getry/utils";
 import { GATEWAYROUTES } from "./gateway.js";
+import { resolvegatewaybind } from "./binddraw.js";
 
 // ---------------------------------------------------------------------------
 // sse transport — the stream pipeline of the gateway http transport
@@ -620,8 +621,12 @@ function consoleroots(): string[] {
   return roots;
 }
 
-/** main — bootstrap the server on the configured port
- * host and port honor env — never hardcoded per open infrastructure rules */
+/** main — bootstrap the server on the drawn bind
+ * the gateway ports law (host/porta sorteados, never localhost literal):
+ * the env pin rides when the env carries one, otherwise the host and the
+ * port draw — the port inside the documented cryptographic band
+ * 30000..59999, the host inside the loopback band with drawn octets —
+ * never a literal fallback (the drawn bind grammar rides binddraw.ts) */
 async function main(): Promise<void> {
   const app = await createserver();
   const definition = await loadconfig();
@@ -635,9 +640,8 @@ async function main(): Promise<void> {
     console.error("[server] unhandled rejection:", reason);
   });
 
-  const port = Number(process.env.PORT) || 3001;
-  const hostname = process.env.HOST || "0.0.0.0";
-  serve({ fetch: app.fetch, port, hostname }, (info: { address: string; port: number }) => {
+  const bind = resolvegatewaybind(process.env.PORT, process.env.HOST);
+  serve({ fetch: app.fetch, port: bind.port, hostname: bind.hostname }, (info: { address: string; port: number }) => {
     console.log(`[server] gateway listening on http://${info.address}:${info.port}`);
     console.log(`[server] config loaded — ${versioncount} versions`);
   });
