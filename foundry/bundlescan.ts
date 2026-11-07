@@ -155,7 +155,11 @@ export function platformnames(name: string): boolean {
      * browser_action, page_action, options_ui, options_page and
      * devtools_page keys belong to the firefox platform exactly the way
      * the ecmascript constants above belong to theirs */
-    ["browser_action", "page_action", "options_ui", "options_page", "devtools_page"].includes(name) ||
+    [
+      "browser_action", "page_action", "options_ui", "options_page", "devtools_page",
+      "content_scripts", "run_at", "all_frames", "default_locale", "externally_connectable",
+      "offline_enabled", "update_url", "minimum_chrome_version",
+    ].includes(name) ||
     /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/.test(name) ||
     name.endsWith("_exports") ||
     name.endsWith("_default") ||
