@@ -166,7 +166,7 @@
 
 ## OS MÓDULOS DE PALAVRA-CHAVE
 
-> O reagrupamento transversal que o dono cobrou: cada módulo = uma palavra-chave que guarda as lógicas correlatas da árvore inteira dentro deste livro único, com dono único e importadores via dependência, nunca duplicata. Os números são reais contados da árvore (símbolos exportados) e crescem com as engines, a meta é cada módulo guardando de mil a sete mil lógicas correlatas, o envelope DevThink espalha sua superfície OS proporcionalmente pelos módulos. Total da família hoje = 11.087 lógicas correlatas (exports reais contados da árvore) sob os módulos abaixo.
+> O reagrupamento transversal que o dono cobrou: cada módulo = uma palavra-chave que guarda as lógicas correlatas da árvore inteira dentro deste livro único, com dono único e importadores via dependência, nunca duplicata. Os números são reais contados da árvore (símbolos exportados) e crescem com as engines, a meta é cada módulo guardando de mil a sete mil lógicas correlatas, o envelope DevThink espalha sua superfície OS proporcionalmente pelos módulos. Total da família hoje = 11.397 lógicas correlatas (exports reais contados da árvore) sob os módulos abaixo.
 
 ### módulo sandbox / virtualização — 2.462 lógicas correlatas (dono = Saddle, a família inteira importa via @wenathlan/saddle)
 
