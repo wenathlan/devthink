@@ -50,8 +50,8 @@ export const SHELL_FOLDER_ORDER: readonly ShellFolderId[] = [
 ];
 
 /** the display names of the shell folders: the Windows titles of the
- * reference machine (the gtx translation layer carries the visitor
- * language at runtime — the seeds answer in the house English) */
+ * reference machine (the label store carries the visitor language at
+ * runtime — the seeds answer in the house English) */
 export const FOLDER_NAMES: Record<ShellFolderId, string> = {
   desktop: "Desktop",
   documents: "Documents",

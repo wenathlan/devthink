@@ -1,4 +1,4 @@
-# Releases × Assets × GTX Spec
+# Releases × Assets × Channels Spec
 
 > The release law of the house: one tag, one release for the family, assets per app
 > inside it. The gate closes only at 1000+ assets (the thousand asset ladder — the
@@ -92,19 +92,20 @@ quality 11 overlay of the tar — fifteen archive forms per application.
   distribute the clone itself: no binary in their assets — the deployable clone is
   the zips of section 1 only.
 
-## 5. GTX translation (the gl module)
+## 5. Runtime translation (the label store)
 
 ```text
-endpoint  https://translate.googleapis.com/...translate_a/single
-          client=gtx, sl=auto, tl=<chosen>
-transport batches with a marker; answers return in order; cache per person with a
-          versioned key; originals preserved in a WeakMap (DOM untouched)
-boot      initautotranslate() lives in the theme anchor (Sol.tsx); the observer arms
-          ONLY when a saved choice exists; currentlang() defaults to "en"
-copy      technical-direct tone, sentence case headings, no marketing verbs, same
-          paragraph count, JSX markup preserved, final grep proves zero pt-BR left
-never     translate Storage/Working Set/Runner, VHD/FUSE/VRAM, class names, the
-          language <option> labels; docs/ and test/ stay untranslated
+retired   the gtx transport (the gl module, the dom walk) retired whole with
+          the machine-profile language card — no external translation
+          endpoint survives in any app (the google translate host rides
+          only the reviewed-origins data row the provider catalog keeps)
+live      the label store carries the visitor language: the typed accessor
+          the wingets consume answers the manifest seed offline and the
+          translated overrides the store ingests at boot; the settings
+          language card names the machine profile, never an infrastructure
+          vendor
+copy      technical-direct tone, sentence case headings, no marketing verbs;
+          docs/ and test/ stay untranslated
 ```
 
 ## 6. Mimetypes registry (recovered)
