@@ -45,6 +45,13 @@ describe("family table", () => {
     }
   });
 
+  it("answers the os slug at the family root even though the rail never lists it", () => {
+    // the owner seat pins the devthink lane the sibling batteries pin: the
+    // os answers at the family root itself, never one segment deep
+    assert.equal(familyurl("devthink"), "../");
+    assert.equal(familyurl("/devthink/"), "../");
+  });
+
   it("strips decorative slashes and normalizes the slug", () => {
     assert.equal(familyurl("/cadria/"), "../cadria/");
     assert.equal(familyurl("  getry  "), "../  getry  /");
