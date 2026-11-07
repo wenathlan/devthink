@@ -148,6 +148,14 @@ export function stripstrings(content: string): string {
 export function platformnames(name: string): boolean {
   return (
     ["MAX_SAFE_INTEGER", "MIN_SAFE_INTEGER", "POSITIVE_INFINITY", "NEGATIVE_INFINITY"].includes(name) ||
+    /* the firefox manifest spec keys the crossbrowser family reads: the
+     * securitytooling consolidation folded the firefox prep adapter into
+     * the security keyword file the library graph reaches, and the overlay
+     * conversion speaks the firefox manifest spec's own snake case — the
+     * browser_action, page_action, options_ui, options_page and
+     * devtools_page keys belong to the firefox platform exactly the way
+     * the ecmascript constants above belong to theirs */
+    ["browser_action", "page_action", "options_ui", "options_page", "devtools_page"].includes(name) ||
     /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/.test(name) ||
     name.endsWith("_exports") ||
     name.endsWith("_default") ||
