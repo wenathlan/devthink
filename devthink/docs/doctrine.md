@@ -84,9 +84,10 @@
 - Stack is single: workflows are YML; storage is git objects + libgit2 + Prisma
   schema + Drizzle + MySQL2 + better-sqlite3 (+ libsql/Turso selectable); migrations
   run idempotent at runtime.
-- English everywhere (code, copy, commits); runtime translation via Google GTX
-  (`client=gtx`, `sl=auto`, batches with markers, WeakMap original preservation,
-  observer armed only when a saved choice exists, default `en`).
+- English everywhere (code, copy, commits); runtime translation rides the label
+  store (the typed accessor the wingets consume, the translated overrides the
+  store carries over the manifest seed — the gtx transport the doctrine once
+  named retired whole with the machine-profile language card).
 
 ## 6. Chat law (the gateway contract)
 
