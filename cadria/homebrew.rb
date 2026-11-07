@@ -4,8 +4,8 @@
 class WenathlanCadria < Formula
   desc "The video and image player, editor and studio; it houses the versawase engine at the folder root"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.166/wenathlan-cadria-2.0.166.tgz"
-  version "2.0.166"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.167/wenathlan-cadria-2.0.167.tgz"
+  version "2.0.167"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanCadria < Formula
   end
 
   test do
-    assert_match "2.0.166", shell_output("#{bin}/wenathlan-cadria --version")
+    assert_match "2.0.167", shell_output("#{bin}/wenathlan-cadria --version")
   end
 end
