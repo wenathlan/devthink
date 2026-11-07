@@ -73,7 +73,13 @@ function themeCss(slug: string): string {
 /** reads the shell source of one slug (the seat mount) */
 function shellSource(slug: string): string | null {
   const shellpath = join(reporoot, slug, "sol", "shell", "Shell.tsx");
-  return existsSync(shellpath) ? readFileSync(shellpath, "utf8") : null;
+  if (existsSync(shellpath)) return readFileSync(shellpath, "utf8");
+  /* the one-component surface law (the stealthhead PR19 seat): when the
+   * theme retires its shell for the single under-construction face, the
+   * face the anchor mounts IS the shell seat — the battery reads it
+   * there and the family contract stays absolute, no exemption rides. */
+  const facepath = join(reporoot, slug, "sol", "wingets", "Constructionface.tsx");
+  return existsSync(facepath) ? readFileSync(facepath, "utf8") : null;
 }
 
 /** reads the surface law sources of one slug (the app entry beside the

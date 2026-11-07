@@ -36,8 +36,22 @@ export function Constructionface() {
     observeReveals();
   }, []);
 
+  // the embedded contract (the family law every sibling answers): inside
+  // the os power clip the face rides the host window chrome — the seat
+  // class answers the mount, the surface tree never changes between the
+  // two doors (the window-era law: one design, two doors, even under
+  // construction — the PR19 one-component face keeps the family seat)
+  const framed = (() => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  })();
+  const seat = framed ? "shell--embedded" : "shell--standalone";
+
   return (
-    <section className="shconstr grain" aria-label={label("construction.aria")}>
+    <section className={`shconstr grain ${seat}`} aria-label={label("construction.aria")}>
       <span className="shconstr__light" aria-hidden="true" />
       <span className="shconstr__reticle" aria-hidden="true">
         <Scope />
