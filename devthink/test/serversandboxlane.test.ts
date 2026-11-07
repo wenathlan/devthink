@@ -153,9 +153,12 @@ describe("sandboxlane", () => {
     // the saddle honesty rung (#441) moved the registry-only seats the
     // engine never carried real executors for onto the planned shelf — the
     // report answers the registry's honest state, never a wiring the lanes
-    // do not drive
+    // do not drive. the sqlite vault seat (law 271, #583) graduated
+    // storagesqlite from the planned shelf to a live lane — the node:sqlite
+    // roundtrip executor the engine battery wires — so the honest report
+    // names the live surface the sql tool drives.
     expect(text).toContain("runnerserverless: planned — the catalog promise, no lane wires it yet");
-    expect(text).toContain("storagesqlite: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("storagesqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
     expect(text).toContain("fsgitobjects: planned — the catalog promise, no lane wires it yet");
     expect(text).toContain("networkdns: planned — the catalog promise, no lane wires it yet");
     expect(text).toContain("networkdoh: planned — the catalog promise, no lane wires it yet");
@@ -373,9 +376,9 @@ describe("the registry the lane reads (the single-source law)", () => {
     expect(report).toEqual({
       plancount: 90,
       catalogcount: 90,
-      live: 90 - 9 - 17,
+      live: 90 - 9 - 16,
       host: 9,
-      planned: 17,
+      planned: 16,
       plananswered: true,
     });
   });
