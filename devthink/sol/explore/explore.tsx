@@ -51,7 +51,7 @@ import {
   type StudioAsset,
   type StudioTrack } from "../../catalog";
 import { DESKTOP_APPS, isFamilyApp } from "../../appregistry.ts";
-import { label } from "../../labels.ts";
+import { label } from "../../uistore.ts";
 import { peekonboardingstate } from "../../onboardingstate";
 import { osText } from "../../os.ts";
 import { SolLogoMark } from "../wingets";

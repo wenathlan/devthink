@@ -60,7 +60,7 @@ import {
   type GatewayModel,
   type ToolId,
 } from "../../chatstate.ts";
-import { label } from "../../labels.ts";
+import { label } from "../../uistore.ts";
 import { estimateTokens, formatCompactTokenCount } from "../../queue.ts";
 import { useStoredFlag } from "../../usestoredstate.ts";
 

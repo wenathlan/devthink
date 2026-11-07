@@ -1,10 +1,11 @@
 /**
  * labels.ts — the copy law of the os app: every interface string lives in
- * the label store, the wingets read through this typed accessor, and a
- * hardcoded string inside a widget is a defect. the manifest below is the
- * english source of truth the seed ingests into the labels store of the
- * database; the runtime translation replaces the overrides at boot and the
- * seed never overwrites a translated row.
+ * the label store, the wingets read through the store accessor (the label
+ * seat of uistore.ts — the seat comment below), and a hardcoded string
+ * inside a widget is a defect. the manifest below is the english source
+ * of truth the seed ingests into the labels store of the database; the
+ * runtime translation replaces the overrides at boot and the seed never
+ * overwrites a translated row.
  */
 
 /* the store seat rides uistore.ts (the acyclic law): the manifest stays a
@@ -226,13 +227,15 @@ export const labelManifest = {
 export type LabelKey = keyof typeof labelManifest & string;
 
 /**
- * label — the manifest accessor the wingets read: the dot id quotes the
- * manifest row, the translation store overrides it at boot and the
- * manifest text is the offline answer. an unknown id renders empty,
- * never a crash on the interface.
+ * label — the pure manifest answer: the dot id quotes the seed row the
+ * store mirrors. the wingets read the store accessor instead (the label
+ * seat of uistore.ts — the acyclic law keeps the manifest pure data here
+ * while the store owns the overrides the seed loads), and the manifest
+ * text stays the offline answer through both doors. an unknown id renders
+ * empty, never a crash on the interface.
  *
  * @param id the manifest key of the string.
- * @returns the interface text the id quotes.
+ * @returns the seed text the id quotes.
  */
 export function label(id: LabelKey): string {
   return labelManifest[id] ?? "";

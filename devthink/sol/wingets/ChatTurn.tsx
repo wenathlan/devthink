@@ -42,7 +42,7 @@ import {
 } from "@fluentui/react-icons";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { chatText } from "../../labels.ts";
-import { label } from "../../labels.ts";
+import { label } from "../../uistore.ts";
 import { type ChatTurn, cx, fmtTime } from "../../chatstate.ts";
 import { copyText, Markdown } from "./ChatMarkdown.tsx";
 
