@@ -367,16 +367,16 @@
 - Tem mais outras distribuições, é só olhar catálogo de Workflows e Actions do GitHub. Tem Webpack etc que justamente faz distribuição via Workflow inclusive dentro dos packages do próprio GitHub que GitHub tem distribuição NPMJS lá dentro dele.
 - Distribua em Git vs Maven vs Container com 11 tipos de arquitetura ou mais. Núcleo do sistema é fazer todas engines de todos apps com distribuição máxima via actions e workflows pois já publica no NPMJS com workflows.
 
-### PR15 SADDLE 90 MODALIDADES - ENGINE MESTRE VIRTUALIZAÇÃO RUNNER VM 30 / 40 / 90 MODALIDADES E HARDWARE VIRTUAL
+### PR15 SADDLE 90 MODALIDADES - ENGINE MESTRE VIRTUALIZAÇÃO RUNNER VM E HARDWARE VIRTUAL
 
-- Resolva primeiro Saddle depois Vault. Saddle é engine mestre virtualização runner VM 30 / 40 / 90 modalidades e hardware virtual. Abra PR urgente para implementar 60 / 90 modalidades, por exemplo, WASM / Webpack / Babel / Virtual File / Docker.
+- Resolva primeiro Saddle depois Vault. Saddle é engine mestre virtualização runner VM 90 modalidades e hardware virtual. Abra PR urgente para implementar as 90 modalidades, por exemplo, WASM / Webpack / Babel / Virtual File / Docker.
 - Saddle auxilia Vault caso precise processamento de borda / sandbox. Saddle possui desde primeira até nonagésima modalidade com modalidades de sandbox / VM / runner que Vault usará. Dependências do Vault e outros aplicativos terão engine Saddle.
 - Modalidades completas extraídas: WASM vs Webpack vs Babel vs Virtual File vs Docker, AWS / Node / Virtual File System / container dock principal / 2B / Daytona / Daitona / Wasme / WASM / Babel / Node / Exe / Binário / SHs / YML / YAML / Babel / Virtual File / Docker / Virtual File System / VGPU / vCPU / GPU / CPU / portas / sandbox / micro VM / runner / hardware virtual.
 - Implemente execução de SHs vs interpretação de YML vs YAML com compilação via Babel para permitir execução em segundo plano / Docker. Propósito principal nunca tocar GPU / CPU da pessoa. Tudo contido com Saddle com 90 modalidades via internet.
 - Tem que padronizar container docker, se colocou 11, 11 dispositivos, 11 arquitetura OS é 11 arquitetura OS para todos containers, para todos aplicativos. Saddle também vira com outras distribuições de sistema operacional além de Linux como Marsh / Grapenios / V / Omashi / Grafene OS / Linux normal.
 - Saddle não está com 90 modalidades de sandbox / VM / micro VM. Falta AWS / Node / Virtual File System / principal container dock que tem que ser padronizado 11 arquiteturas. Iniciar distribuição do container Saddle com Grafene OS com Omashi e outros sistemas dentro do Saddle que é container.
 - Uma das modalidades é nossa engine rodar Docker, rodar Exe, rodar Binário. Isso não está pronto. Tem que ir no Saddle e tirar todas features que não tem a ver com MicroVM tipo Web Scrape etc e transferir para dentro de DevThink. Tudo que não for Sandbox / processamento de portas / VGPU / vCPU / GPU / CPU transfere para DevThink.
-- As quarenta modalidades do Saddle estão agindo de fato em prol do sistema. Quarenta modalidades sandbox e VM, sistema de armazenamento / processamento de borda usando engine Saddle e engine Vault. Sistema inteiro funciona via internet 24h sem usar navegador da pessoa, sem usar GPU / CPU / local storage / local forage / nada. Nossa própria infraestrutura.
+- As noventa modalidades do Saddle estão agindo de fato em prol do sistema. Noventa modalidades sandbox e VM, sistema de armazenamento / processamento de borda usando engine Saddle e engine Vault. Sistema inteiro funciona via internet 24h sem usar navegador da pessoa, sem usar GPU / CPU / local storage / local forage / nada. Nossa própria infraestrutura.
 - O servidor praticamente é nossa infraestrutura, totalmente na web, não usa navegador da pessoa. Pessoa vai querer 24h por dia, harness, fazer vídeo, deixar até tarde da noite e nossas engines vão servir isso e é possível porque já provou que é possível.
 - Não existe limite de modalidade / engine, use quantas necessárias.
 
@@ -403,7 +403,7 @@
 - Mantenha infraestrutura self-hosted independente sem dependência de framework pago ou free-tier, não toque computador da pessoa GPU vs CPU vs navegador pois tudo contido com Saddle com 90 modalidades via internet.
 - Use raiz interna / APIs internas / Mimetypes / protocolos HTTPS. Raiz interna é base para servir tudo estático no final dos contos, exemplo foi repositório faun em https://github.com/wenathlan/faun/ servido via Cloudflare de forma estática funcionando com tudo hardcoded dentro do DB mas DB estava dando para baixar por bobeira.
 - Com criação da engine Vault concorrente com aplicativo e plataforma Vault resolva infraestrutura de armazenamento e sirva não só para nossos apps mas para qualquer um, biblioteca distribuída open source no npmjs e em outras distribuições dentro do GitHub e também será distribuída no GitLab e em outros forks do GitHub. Objetivo é open source.
-- Sistema de armazenamento ainda travado em 2GB de HD deve ser desbloqueado via Vault, abra PR urgente para implementar 60 modalidades do Saddle por exemplo, WASM vs Webpack vs Babel vs Virtual File, objetivo é usar Mimetypes vs protocolos HTTPS e rodar em domínio de forma estática segura e fácil.
+- Sistema de armazenamento ainda travado em 2GB de HD deve ser desbloqueado via Vault, abra PR urgente para implementar as 90 modalidades do Saddle por exemplo, WASM vs Webpack vs Babel vs Virtual File, objetivo é usar Mimetypes vs protocolos HTTPS e rodar em domínio de forma estática segura e fácil.
 - Implemente execução de SHs vs interpretação de YML vs YAML com compilação via Babel etc para permitir execução em segundo plano e rodar Docker via esses métodos, principal propósito é nunca tocar GPU ou CPU da pessoa.
 - Vault não vem com Supabase SDK, anteriormente outros sites usavam Supabase SDK com tabelas como servidor estático básico baseado em tabela exemplo de outro site não se aplica a Vault, Vault é concorrente self-hosted de Supabase vs bucket S3 vs Drizzle, Faun não é bucket e tinha falha onde qualquer pessoa baixava base.
 - Use APIs internas por exemplo, Next Request vs Next Response como exemplo de tecnologia possível não instrução, use mais de 100 protocolos HTTPS limite 200 vs 1000 se existir, use 3000 vs 4000 vs 6000 Mimetypes. Isso estava faltando nos docs anteriores e agora está explicitamente citado.
@@ -444,7 +444,7 @@
 - Forge igual clone deployável de execução pura runner de binários em sandbox com Saddle.
 - Foundry igual clone deployável de pipeline completo sandbox mais banco de rede.
 - Getry igual gateway universal de IA com 5 provedores 35 rotas, por exemplo, raciocínio de 7 níveis concorrente de ChatGPT / Google etc.
-- Saddle igual engine mestre virtualização runner de VM 30 / 40 modalidades e hardware virtual.
+- Saddle igual engine mestre virtualização runner de VM 90 modalidades e hardware virtual.
 - Stealthhead igual plataforma de jogo FPS com logicas de partida / ranking / armas / mundo precompilado. Deixe jogo em construção, limpe tudo, deixe só componente dizendo jogo em construção.
 - Vault igual clone deployável de armazenamento puro banco de rede edge storage concorrente de Supabase e deve usar Better SQLite.
 
