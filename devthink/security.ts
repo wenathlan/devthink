@@ -6170,7 +6170,20 @@ export function apimapstructerrorof(input: {
  * @consumed-by App.tsx (the arm site), personalstore.ts (the owner toggle)
  */
 
-import { osText } from "./os.ts";
+/* the guard wall text seat: the four strings the devtools wall renders ride
+ * this local table verbatim from the os catalog entries they answered (the
+ * securitytooling consolidation folded devtoolsguard.ts in, and its osText
+ * import would drag the os seat's icon family — the whole @fluentui catalog —
+ * into every library bundle lane that reaches this module; the guard strings
+ * stay the module's own exactly the way every other security message rides
+ * inline, and the library graph never pays the icon tax the os seat carries). */
+const guardwallstrings: Record<string, string> = {
+  "guard.wall.aria": "Developer tools notice",
+  "guard.wall.title": "Developer tools are open",
+  "guard.wall.body": "This workspace pauses its surface while developer tools inspect it. Close the tools and reload the page to continue where you left off.",
+  "guard.wall.note": "Nothing was closed and nothing was erased — the session stays intact and a notice goes to the site.",
+};
+const osText = (id: string): string => guardwallstrings[id] ?? id;
 
 /* ------------------------------- buildgate ------------------------------- */
 
