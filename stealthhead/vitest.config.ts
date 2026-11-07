@@ -11,6 +11,14 @@ export default defineConfig({
        * the mechanism is never duplicated inside stealthhead. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the onboarding store bridge of the ownership law: the app's
+       * seen-flags mechanism rides the vault factory through the published
+       * library specifier ("@wenathlan/vault/onboardingstore"), and this
+       * bridge resolves the specifier to the monorepo source the sibling
+       * engine carries — the mechanism is never duplicated inside stealthhead.
+       * the entry retires when the published envelope carries the built
+       * onboarding store. */
+      "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
 
       /** the storage lane bridge of the ownership law: the app's sqlite
        * mechanism rides the vault factory through the published library

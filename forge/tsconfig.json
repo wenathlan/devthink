@@ -14,6 +14,7 @@
     "types": ["vite/client", "node"],
     "paths": {
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       "@wenathlan/vault/routes": ["../vault/routes.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
       "@wenathlan/vault/utils": ["../vault/utils.ts"]

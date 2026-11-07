@@ -19,6 +19,7 @@
       "@wenathlan/debonair/audiofeatures": ["../debonair/audio.ts"],
       "@wenathlan/debonair/audiopipeline": ["../debonair/audio.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
       /* the storage lane bridge of the ownership law (the tsconfig arm — the
        * vitest arm already carries the same bridge): the app's sqlite seat

@@ -23,6 +23,7 @@ export default defineConfig({
        * the mechanism is never duplicated inside getry. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
       /** the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from vitest.config.ts: the moved
        * engine graph leans on the os server seam whose sandbox lane reads

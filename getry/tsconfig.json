@@ -16,6 +16,7 @@
     "paths": {
       "@/*": ["./sol/*", "./*"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       /* the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from the devthink side: the moved
        * engine graph leans on the os server seam whose sandbox lane reads

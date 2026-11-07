@@ -16,6 +16,7 @@
     "paths": {
       "@/*": ["./sol/*", "./*"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"]
     }
   },

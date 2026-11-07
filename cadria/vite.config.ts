@@ -42,6 +42,7 @@ export default defineConfig({
        * the mechanism is never duplicated inside cadria. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
       /** the storage lane bridge of the ownership law: the lazy db chunk the
        * browser never loads imports the vault factory through the published
        * library specifier ("@wenathlan/vault/storage"), and this bridge
