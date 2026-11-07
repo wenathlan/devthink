@@ -168,7 +168,7 @@ jobs:
             attempt=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              tag="$(gh release view --json tagName --jq .tagName)" && break
+              tag="$(gh release view -R "${{ github.repository }}" --json tagName --jq .tagName)" && break
               echo "the release resolve attempt ${attempt}/3 failed; retrying with backoff."
               sleep "$((attempt * 20))"
             done
