@@ -251,7 +251,7 @@ describe("the publishing pipeline", () => {
       "memory.js",
       "progress.js",
       "hardening.js",
-      "dashdone.js",
+      "dashboard.js",
       "node.cjs",
       "bun.js",
       "deno.js",

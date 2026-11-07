@@ -27,7 +27,7 @@
 import { ClockRegular as Clock } from "@fluentui/react-icons";
 import type { ComponentType } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { alttabkeydown } from "../../alttab.ts";
+import { alttabkeydown } from "../../dashboard.ts";
 import { DESKTOP_APPS, type DesktopApp } from "../../appregistry.ts";
 import {
   commitDesktopLock,
@@ -35,7 +35,7 @@ import {
   type DesktopLockState,
   isDesktopLockState,
   loadDesktopLock,
-} from "../../desktopstate.ts";
+} from "../../dashboard.ts";
 import { pushrecentapp } from "../../recentapps.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";
 import { WindowBodySurface } from "../../useismobile.ts";

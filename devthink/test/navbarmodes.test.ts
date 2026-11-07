@@ -44,7 +44,7 @@ import {
   navbarDragVerdict,
   saveNavbarEdge,
   saveNavbarMode,
-} from "../desktopstate.ts";
+} from "../dashboard.ts";
 import { DOCK_MAGNIFY_MAX, DOCK_MAGNIFY_SPREAD, magnifyscale } from "../dockmagnify.ts";
 import { uicopy } from "../uistore.ts";
 

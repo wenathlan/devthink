@@ -27,7 +27,7 @@ import {
   type NavbarMode,
   saveNavbarEdge,
   saveNavbarMode,
-} from "../../desktopstate";
+} from "../../dashboard.ts";
 import { uicopy, useUicopy } from "../../uistore.ts";
 
 /** the two modes the mode control offers. */

@@ -86,7 +86,7 @@ import {
   navbarDragVerdict,
   saveNavbarEdge,
   saveNavbarMode,
-} from "../../desktopstate";
+} from "../../dashboard.ts";
 import { osText } from "../../os.ts";
 import { loadrecententries, pushrecentapp, type RecentEntry } from "../../recentapps.ts";
 import { readBrowserPreferences } from "../../storage.ts";

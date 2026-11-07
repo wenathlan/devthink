@@ -60,7 +60,7 @@ import { assemblelapse, beforeafter, consoletimeline, diffbase, diffshot, export
 import { cleanupafterrun, enforcequarantine, encryptsync, exportall, fixedtelemetrypolicy, jarscope, localfirst, minimizationkinds, newjar, optinsync, purgeonrequest, sealjar, streambundle, syncpass, type keyderive, type payloadencrypt, type scannerhook, type syncsend } from "./export.js";
 import { cleanupgate, encryptsyncgate, exportallgate, jargate, localgate, minimizationchoices, minimizationstripgrade, notelemetryinvariant, purgegate, quarantineopengate, scannerhookgate, syncgate } from "./policy.js";
 import { hatchbannerof, localscangate, masklogtext, newdomainpausecard, runtracekeys, stdioclientsignaturegate, syncrotationgate, transparencyexportmask } from "./hardening.js";
-import { multiagentviewof } from "./dashdone.js";
+import { multiagentviewof } from "./dashboard.js";
 import { exportallreport, outboundpayloadcheck, quarantineverdictreport, syncconsentreport, syncpayloadreport } from "./protocol.js";
 import { capmanifestof, permissioncoverage, protocolmajorof, sharedprotocolversion } from "./apifreeze.js";
 import { protocolfloormajor } from "./version.js";

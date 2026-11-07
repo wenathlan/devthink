@@ -616,12 +616,12 @@ async function validateruntimebaselines(): Promise<void> {
     if (!verifyworkflow.includes(`node ${gate}.ts`))
       throw new Error(`The verify workflow must run the ${gate} gate of the multi agent certification.`);
   }
-  if (!(await readFile("dashdone.ts", "utf8").catch(() => undefined)))
-    throw new Error("The dashdone family module must exist at the root beside the hardening family.");
+  if (!(await readFile("dashboard.ts", "utf8").catch(() => undefined)))
+    throw new Error("The dashboard family module must exist at the root beside the hardening family.");
   const dashdonedeclaration = await readFile("tsconfig.build.json", "utf8");
-  if (!dashdonedeclaration.includes("dashdone.ts"))
+  if (!dashdonedeclaration.includes("dashboard.ts"))
     throw new Error(
-      "The declaration emit must include the dashdone module so build/dashdone.d.ts ships beside the bundle.",
+      "The declaration emit must include the dashboard module so build/dashboard.d.ts ships beside the bundle.",
     );
   const dashboardmatch = /<template data-surface="dashboardpage">([\s\S]*?)<\/template>/.exec(webindex);
   if (dashboardmatch === null)

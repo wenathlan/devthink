@@ -716,7 +716,7 @@ if (directEntry || bunEntry)
   });
 
 /* ── Merged from the terminal entry of the one design ── */
-import { DENSITY_PLATFORMS, ANDROID_DPI, densityTokens } from "./density.ts";
+import { DENSITY_PLATFORMS, ANDROID_DPI, densityTokens } from "./dashboard.ts";
 import { colorDepthFromEnv, render, type ColorDepth } from "./runtime.ts";
 import { ControlShellTerminal } from "./shellterminal.ts";
 import { ChipTerminal } from "./chipterminal.ts";

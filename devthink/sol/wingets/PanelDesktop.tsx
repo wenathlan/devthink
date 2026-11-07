@@ -74,7 +74,7 @@ import {
   saveIconSpots,
   sortAppsByKind,
   sortAppsByName,
-} from "../../desktopstate.ts";
+} from "../../dashboard.ts";
 import { familyurl } from "../../gateway.ts";
 import { osText } from "../../os.ts";
 import { currentThemeLadder, saveThemeMirror } from "../../personalstore.ts";

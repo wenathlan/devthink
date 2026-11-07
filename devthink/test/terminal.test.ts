@@ -36,7 +36,7 @@ import {
   dpToPx,
   pxToCellX,
   pxToCellY,
-} from "../density.ts";
+} from "../dashboard.ts";
 import {
   TONE_COLORS,
   ansiFg,

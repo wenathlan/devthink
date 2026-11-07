@@ -38,7 +38,7 @@ import {
   Wifi1Regular as Wifi,
 } from "@fluentui/react-icons";
 import { useEffect, useState } from "react";
-import { isNavbarMode, NAVBAR_MODE_EVENT, type NavbarMode, saveNavbarMode } from "../../desktopstate.ts";
+import { isNavbarMode, NAVBAR_MODE_EVENT, type NavbarMode, saveNavbarMode } from "../../dashboard.ts";
 import { osCalendarWeekdays, osText } from "../../os.ts";
 import { currentThemeLadder, flipThemeLadder } from "../../personalstore.ts";
 

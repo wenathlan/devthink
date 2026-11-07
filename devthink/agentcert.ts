@@ -681,8 +681,8 @@ export async function runagentcertsuite() {
     return `every pool item 469 through 502 maps onto one real exported function of the compiled agent.js or swarm.js modules (thirty four items, none missing), the shared cost split and the swarm overview answering beside them.`;
   });
 
-  await entry({ id: 30, title: "the certified topology inventory exports from the agent registry snapshot", family: "pool coverage", module: "dashdone.js" }, async () => {
-    const dashdone = await import("./build/dashdone.js");
+  await entry({ id: 30, title: "the certified topology inventory exports from the agent registry snapshot", family: "pool coverage", module: "dashboard.js" }, async () => {
+    const dashdone = await import("./build/dashboard.js");
     const agents = fiveagents(agent);
     const topology = swarm.electleader({ agents, id: "top-inv", now: now() });
     const inventory = dashdone.topologyinventoryof({ agents, topology, spawns: [] });
@@ -1011,7 +1011,7 @@ export const agentcertrecord: agentcertreport = {
       "id": 30,
       "title": "the certified topology inventory exports from the agent registry snapshot",
       "family": "pool coverage",
-      "module": "dashdone.js",
+      "module": "dashboard.js",
       "outcome": "pass",
       "detail": "topologyinventoryof exported the five agent registry entries with their lanes and scenario families over the six certified scenarios of docs/agentscenarios.md, certifying the live leader worker topology of the five fake agents."
     }
