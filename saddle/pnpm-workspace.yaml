@@ -46,22 +46,22 @@ minimumReleaseAgeExclude:
   - '@tanstack/query-core@5.106.1'
   - '@tanstack/react-query@5.106.1'
   - openai@7.52.0
-  - '@wenathlan/argan@2.0.165'
-  - '@wenathlan/cadria@2.0.165'
-  - '@wenathlan/debonair@2.0.165'
-  - '@wenathlan/devthink@2.0.165'
-  - '@wenathlan/getry@2.0.165'
-  - '@wenathlan/saddle@2.0.165'
-  - '@wenathlan/vault@2.0.165'
+  - '@wenathlan/argan@2.0.165 || 2.0.167'
+  - '@wenathlan/cadria@2.0.165 || 2.0.167'
+  - '@wenathlan/debonair@2.0.165 || 2.0.167'
+  - '@wenathlan/devthink@2.0.165 || 2.0.167'
+  - '@wenathlan/getry@2.0.165 || 2.0.167'
+  - '@wenathlan/saddle@2.0.165 || 2.0.167'
+  - '@wenathlan/vault@2.0.165 || 2.0.167'
   - jsdom@31.0.0
   - pnpm@12.18.0
   - "@pnpm/exe.linux-x64@12.18.0"
   - react-resizable-panels@4.15.3 || 4.16.0 || 4.16.1 || 4.17.0 || 4.18.0
-  - '@wenathlan/vault@2.0.153 || 2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
-  - '@wenathlan/getry@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
+  - '@wenathlan/vault@2.0.153 || 2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.167'
+  - '@wenathlan/getry@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.167'
   - hono@4.13.16
-  - '@wenathlan/cadria@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
-  - '@wenathlan/debonair@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
+  - '@wenathlan/cadria@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.167'
+  - '@wenathlan/debonair@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.167'
   - '@hono/node-server@2.1.6'
   - '@tailwindcss/node@4.3.4'
   - '@tailwindcss/oxide-android-arm64@4.3.4'
@@ -84,7 +84,7 @@ minimumReleaseAgeExclude:
   - '@vitest/spy@5.1.0'
   - tailwindcss@4.3.4
   - vitest@5.1.0
-  - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165'
+  - '@wenathlan/saddle@2.0.154 || 2.0.155 || 2.0.156 || 2.0.165 || 2.0.167'
   - gsap@3.15.1
   - '@biomejs/biome@2.6.5'
   - '@biomejs/cli-android-arm64@2.6.5'
@@ -97,24 +97,24 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-linux-x64@2.6.5'
   - '@biomejs/cli-win32-arm64@2.6.5'
   - '@biomejs/cli-win32-x64@2.6.5'
-  - '@wenathlan/argan@2.0.155 || 2.0.165'
+  - '@wenathlan/argan@2.0.155 || 2.0.165 || 2.0.167'
   - '@anthropic-ai/sdk@1.6.0'
   - '@hookform/resolvers@7.0.3'
   - '@tanstack/query-core@5.106.1'
   - '@tanstack/react-query@5.106.1'
-  - '@wenathlan/devthink@2.0.165'
+  - '@wenathlan/devthink@2.0.165 || 2.0.167'
   - jsdom@31.0.0
   - openai@7.52.0
   - playwright-core@1.65.0
   - playwright@1.65.0
-  - '@wenathlan/argan@2.0.166'
-  - '@wenathlan/cadria@2.0.166'
-  - '@wenathlan/cobaia@2.0.166'
-  - '@wenathlan/debonair@2.0.166'
-  - '@wenathlan/devthink@2.0.166'
-  - '@wenathlan/forge@2.0.166'
-  - '@wenathlan/foundry@2.0.166'
-  - '@wenathlan/getry@2.0.166'
-  - '@wenathlan/saddle@2.0.166'
-  - '@wenathlan/stealthhead@2.0.166'
-  - '@wenathlan/vault@2.0.166'
+  - '@wenathlan/argan@2.0.166 || 2.0.167'
+  - '@wenathlan/cadria@2.0.166 || 2.0.167'
+  - '@wenathlan/cobaia@2.0.166 || 2.0.167'
+  - '@wenathlan/debonair@2.0.166 || 2.0.167'
+  - '@wenathlan/devthink@2.0.166 || 2.0.167'
+  - '@wenathlan/forge@2.0.166 || 2.0.167'
+  - '@wenathlan/foundry@2.0.166 || 2.0.167'
+  - '@wenathlan/getry@2.0.166 || 2.0.167'
+  - '@wenathlan/saddle@2.0.166 || 2.0.167'
+  - '@wenathlan/stealthhead@2.0.166 || 2.0.167'
+  - '@wenathlan/vault@2.0.166 || 2.0.167'

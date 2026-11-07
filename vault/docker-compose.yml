@@ -48,8 +48,8 @@ services:
       dockerfile: Dockerfile
       target: engine
       args:
-        VAULT_VERSION: "${VAULT_VERSION:-2.0.166}"
-    image: "ghcr.io/wenathlan/vault-engine:${VAULT_VERSION:-2.0.166}"
+        VAULT_VERSION: "${VAULT_VERSION:-2.0.167}"
+    image: "ghcr.io/wenathlan/vault-engine:${VAULT_VERSION:-2.0.167}"
     # the engine never publishes a port by default: the face proxies it
     # on the private compose network. uncomment to serve the engine lane
     # directly (behind your own tls terminator — the house https law
@@ -87,14 +87,14 @@ services:
       dockerfile: Dockerfile
       target: face
       args:
-        VAULT_VERSION: "${VAULT_VERSION:-2.0.166}"
+        VAULT_VERSION: "${VAULT_VERSION:-2.0.167}"
         # the engine door baked at build time (see the header): the
         # public https origin the browser lanes call — the proxy lane
         # answers same-origin when this points at the face itself.
         VITE_VAULT_URL: "${VITE_VAULT_URL:-}"
         VITE_VAULT_TOKEN: "${VITE_VAULT_TOKEN:-}"
         VITE_VAULT_PROJECT: "${VITE_VAULT_PROJECT:-}"
-    image: "ghcr.io/wenathlan/vault-face:${VAULT_VERSION:-2.0.166}"
+    image: "ghcr.io/wenathlan/vault-face:${VAULT_VERSION:-2.0.167}"
     depends_on:
       # the face starts only when the engine health lane answered — the
       # proxy upstream is live before the first /api/* call arrives.
