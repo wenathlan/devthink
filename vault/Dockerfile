@@ -211,7 +211,7 @@ COPY osprofiles/void.json /vault/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6 AS face
 
-ARG VAULT_VERSION=2.0.166
+ARG VAULT_VERSION=2.0.167
 
 LABEL org.opencontainers.image.title="vault (the face)" \
       org.opencontainers.image.description="vault face — the nginx surface of the storage container pair: the staged SPA the solbuild leg assembled served beside the /api proxy lane the mounted nginx.conf declares." \
