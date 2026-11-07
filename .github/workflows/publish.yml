@@ -168,7 +168,7 @@ jobs:
             attempt=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
-              tag="$(gh release view --json tagName --jq .tagName)" && break
+              tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)" && break
               echo "the release resolve attempt ${attempt}/3 failed; retrying with backoff."
               sleep "$((attempt * 20))"
             done
@@ -263,7 +263,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -501,7 +501,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -722,7 +722,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -905,7 +905,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -1027,7 +1027,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -1191,7 +1191,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -1340,7 +1340,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -1469,7 +1469,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -1592,7 +1592,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -1885,7 +1885,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -2056,7 +2056,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -2256,7 +2256,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -2457,7 +2457,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -2659,7 +2659,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -2842,7 +2842,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -3281,7 +3281,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -3637,7 +3637,7 @@ jobs:
           # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -3865,7 +3865,7 @@ jobs:
           # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -4261,7 +4261,7 @@ jobs:
           # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -4685,7 +4685,7 @@ jobs:
           # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -4847,7 +4847,7 @@ jobs:
           # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -5074,7 +5074,7 @@ jobs:
           # own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -5198,7 +5198,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -5461,7 +5461,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -5635,7 +5635,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -6168,7 +6168,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -6513,7 +6513,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -6697,7 +6697,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
@@ -6869,7 +6869,7 @@ jobs:
           # its own steps - the .github/actions folder no longer exists).
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
@@ -6999,7 +6999,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
@@ -7327,7 +7327,7 @@ jobs:
           # release the ladder just cut, not the moving head).
           tag="${REQUESTED_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A semantic release tag such as v1.2.14 is required." >&2
@@ -8402,7 +8402,7 @@ jobs:
           set -euo pipefail
           tag="${RELEASE_TAG:-}"
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view --json tagName --jq .tagName)"
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
           fi
           if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
             echo "A release tag such as v1.8.0 is required; received: ${tag:-<empty>}" >&2
