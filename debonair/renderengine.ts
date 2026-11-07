@@ -27,6 +27,7 @@ import {
   triangleOf,
 } from "./kathesis.ts";
 import { limitTruePeak } from "./limiter.ts";
+import { analyzeLoudness, applyGain, gainToTarget } from "./loudness.ts";
 import { dbToLinear } from "./mixergraph.ts";
 import { DRUM_LANE_KEYS, LANE_STEPS, PATTERN_SCHEMA_VERSION, PatternProject, PatternVoice, parsePattern, validatePatternProject } from "./pattern.ts";
 import { WorkerModality } from "./sandboxmodality.ts";
@@ -47,6 +48,11 @@ export const RENDER_BIT_DEPTH = 16 as const;
 
 /** The blob kind of the rendered wav (the mime the playback lane streams). */
 export const RENDER_WAV_KIND = "audio/wav";
+
+/** The loudest boost the loudness walk may apply (ebu r128's +23 lu law —
+ * the same clamp gainToTarget carries as its own default, pinned here so
+ * the mastering walk reads the number beside the target it serves). */
+const LOUDNESS_MAX_BOOST_DB = 23;
 
 /** The drum gate the schedule bridge hands the percussive lanes (the
  * takeevents law — the recipes carry their own envelopes, the gate is the
@@ -589,7 +595,10 @@ function planerr(code: RenderErrorCode, message: string): RenderPlanResult {
  * event list; a plan with no drum hits and no notes answers empty-plan),
  * the offline render through the engine's recipes at the mastering rate
  * (with the optional formant voice bus riding its own strip under the
- * master law), closed by the true-peak limiter (the −1 dBTP mastering
+ * master law), then the mastering close: the loudness of the rendered mix
+ * is measured over the real pcm (the bs.1770-4 meter — loudness measured,
+ * never claimed) and the measured gain rides the MASTERING spec's spotify
+ * −14 lufs target, closed by the true-peak limiter (the −1 dBTP mastering
  * law), the wav encode (mono pcm 16), the blob store put under audio/wav.
  * every failure answers the typed result with a machine code — never a
  * throw. deterministic: the same plan and seed answer the same bytes on
@@ -631,9 +640,16 @@ export async function renderPlan(
 
   // phase: render — the engine's recipes, sample-accurate at the house
   // rate, the optional formant voice bus riding its own strip under the
-  // master law, then the mastering close: the linear master mix rides the
-  // deterministic true-peak limiter (the −1 dBTP law the stage card
-  // promises) before the wav writer ever sees a sample
+  // master law, then the mastering close in the MASTERING spec's own walk:
+  // the loudness of the rendered mix is measured over the real pcm (the
+  // bs.1770-4 meter of loudness.ts — law 340: loudness measured, never
+  // claimed), the measured gain rides the spotify −14 lufs target (law
+  // 339, the ebu boost clamp on top; the peak clamp stays off — the
+  // limiter below owns the ceiling), and the deterministic true-peak
+  // limiter closes the −1 dbtp law the stage card promises before the wav
+  // writer ever sees a sample. a measurement refusal (empty, malformed)
+  // rides a zero gain — the limiter still closes the chain, the mix lands
+  // untouched.
   let pcm: Float32Array;
   try {
     const mix = renderPatternMix(schedule, `noise:${seed}:${checked.doc.prompt}`);
@@ -641,7 +657,17 @@ export async function renderPlan(
       const voice = renderVoiceMix(checked.doc, seed);
       for (let i = 0; i < mix.length && i < voice.length; i++) mix[i] += voice[i] ?? 0;
     }
-    pcm = limitTruePeak(mix, RENDER_SAMPLE_RATE);
+    const measured = analyzeLoudness([mix], RENDER_SAMPLE_RATE);
+    const gainDb = measured.ok
+      ? gainToTarget(
+          measured.value.integrated,
+          MASTERING.platformTargetsLufs.spotify,
+          LOUDNESS_MAX_BOOST_DB,
+          Number.NEGATIVE_INFINITY,
+        )
+      : 0;
+    const gained = Float32Array.from(applyGain(mix, gainDb));
+    pcm = limitTruePeak(gained, RENDER_SAMPLE_RATE);
   } catch (error) {
     return planerr("render-failed", `the render lane faulted: ${errmsgof(error)}`);
   }
