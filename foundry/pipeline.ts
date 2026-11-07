@@ -25,6 +25,12 @@ import {
   type SandboxLifecycleState,
 } from "@wenathlan/saddle/sandbox";
 
+/* the lane seat engine of the workload lane declaration below rides the
+   owner's factory (wave W5, the dedup law) through the relative owner
+   source — the engine lives in saddle once, this seat keeps only the
+   foundry data (the slug, the env var name, the lane table). */
+import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "../saddle/workloadlaw.ts";
+
 /* ══════════════════════════════════════════════════════════════════════ */
 /* SECTION: artifact.ts — the artifact checksum engine (the first section). */
 /* (consolidation note: mulberry32 rides HERE as the one seat of the       */
@@ -250,11 +256,36 @@ export interface planposition {
 export const PIPELINE: runplan = {
   id: "foundry-pipeline",
   steps: [
-    { id: "provision", kind: "stage", label: "provision the sandbox", note: "the sandbox shape comes up on the machine room floor" },
-    { id: "pull", kind: "gate", label: "pull the image", note: "the image pulls through the registry gate before anything runs" },
-    { id: "run", kind: "tool", label: "run the herd", note: "the herd executes inside the sandbox and the turnaround is recorded" },
-    { id: "collect", kind: "tool", label: "collect the artifacts", note: "the artifacts come back sealed with their fnv-1a identity" },
-    { id: "store", kind: "sink", label: "store on the shelf", note: "the vault shelf keeps every artifact the line seals" },
+    {
+      id: "provision",
+      kind: "stage",
+      label: "provision the sandbox",
+      note: "the sandbox shape comes up on the machine room floor",
+    },
+    {
+      id: "pull",
+      kind: "gate",
+      label: "pull the image",
+      note: "the image pulls through the registry gate before anything runs",
+    },
+    {
+      id: "run",
+      kind: "tool",
+      label: "run the herd",
+      note: "the herd executes inside the sandbox and the turnaround is recorded",
+    },
+    {
+      id: "collect",
+      kind: "tool",
+      label: "collect the artifacts",
+      note: "the artifacts come back sealed with their fnv-1a identity",
+    },
+    {
+      id: "store",
+      kind: "sink",
+      label: "store on the shelf",
+      note: "the vault shelf keeps every artifact the line seals",
+    },
   ],
   wires: [
     { from: "provision", to: "pull" },
@@ -266,7 +297,11 @@ export const PIPELINE: runplan = {
 
 /** Answers a fresh copy of one plan (immutable edits start from a copy). */
 export function plancopy(plan: runplan): runplan {
-  return { id: plan.id, steps: plan.steps.map((step) => ({ ...step })), wires: plan.wires.map((wire) => ({ ...wire })) };
+  return {
+    id: plan.id,
+    steps: plan.steps.map((step) => ({ ...step })),
+    wires: plan.wires.map((wire) => ({ ...wire })),
+  };
 }
 
 /** Reads one step of the plan by id. */
@@ -395,7 +430,8 @@ export function planbounds(
   const cardheight = options.cardheight ?? 56;
   const padding = options.padding ?? 20;
   const entries = Object.values(positions);
-  if (entries.length === 0) return { minx: 0, miny: 0, width: cardwidth + padding * 2, height: cardheight + padding * 2 };
+  if (entries.length === 0)
+    return { minx: 0, miny: 0, width: cardwidth + padding * 2, height: cardheight + padding * 2 };
   const minx = Math.min(...entries.map((position) => position.x)) - padding;
   const miny = Math.min(...entries.map((position) => position.y)) - padding;
   const maxx = Math.max(...entries.map((position) => position.x + cardwidth)) + padding;
@@ -748,7 +784,9 @@ export function herdCensus(herd: readonly Sandbox[]): HerdCensus {
 /* ══════════════════════════════════════════════════════════════════════ */
 /* SECTION: sandboxmodality.ts — the workload lane declaration.            */
 /* (consolidation note: zero imports rode this wave — the body lands       */
-/* verbatim.)                                                              */
+/* verbatim. wave W5 later moved the seat engine — the resolver, the env   */
+/* reader and the lane lookup ride the saddle factory through the one      */
+/* owner import at the top of this seat; the foundry data stays.)          */
 /* ══════════════════════════════════════════════════════════════════════ */
 
 // # sandboxmodality — the workload lane declaration of the foundry
@@ -773,28 +811,23 @@ export function herdCensus(herd: readonly Sandbox[]): HerdCensus {
 // this module never judges engine vocabulary, so the mirror cannot drift
 // when the registry grows). The module never spawns anything and resolves
 // no join: it names the lanes' truth; the platform resolves the sandbox.
-// Zero consumer data, zero imports.
+// Zero consumer data; the lane seat engine rides the owner's factory
+// (the one owner import at the top of this seat) and nothing else
+// enters.
+//
+// The engine seat (wave W5, the dedup law): the seat resolver, the env
+// reader and the lane lookup no longer live in this section — they ride
+// the saddle factory (laneseating of ../saddle/workloadlaw.ts, the
+// owner's workload law) bound once to this app's own data, re-exported
+// under the same names the surface always spoke. The rows stay mirrored
+// (the drift pin the battery wants), only the engine moved: zero
+// behavior change, zero public-surface change.
 
 /** one mirrored workload lane row — the same five keys the engine law pins
- * (app, lane, role, demand, today). */
-export type AppWorkloadLane = {
-  /** the official app slug every row carries. */
-  readonly app: string;
-  /** the lane id inside the app (kebab-case, the engine catalog id). */
-  readonly lane: string;
-  /** what the lane does, in one sentence (the engine row's sentence). */
-  readonly role: string;
-  /** the demand the lane puts on the sandbox (gpu, network, isolation,
-   * boot budget — never a modality name: the nuclear law). */
-  readonly demand: {
-    readonly gpu: boolean;
-    readonly network: boolean;
-    readonly isolation: "process" | "namespace" | "vm" | "hardware";
-    readonly bootbudget?: number;
-  };
-  /** where the heavy pass runs today — the honest truth the census reads. */
-  readonly today: "engine-lane" | "app-lane";
-};
+ * (app, lane, role, demand, today); the shape itself rides the owner's
+ * law now (wave W5 — saddle/workloadlaw.ts answers the type once),
+ * re-exported under the historical surface name. */
+export type { AppWorkloadLane };
 
 /** the app slug every mirrored row carries. */
 export const APPSLUG = "foundry";
@@ -829,10 +862,13 @@ export const SANDBOXLANEENV = "FOUNDRY_SANDBOX_LANE";
  * modality id the deploy named (validated by the platform's join at
  * dispatch, never judged here). every answer is honest: an absent or
  * blank choice answers the declared default, never a silent switch. */
-export type LaneSeatResult =
-  | { ok: true; seat: "local"; sandboxed: false }
-  | { ok: true; seat: "join"; sandboxed: true; pinned: false }
-  | { ok: true; seat: string; sandboxed: true; pinned: true };
+export type { LaneSeatResult };
+
+/** the lane seat engine of this app — the saddle factory bound once to
+ * this app's own data (the dedup law: the engine lives in the owner, the
+ * app keeps its data), the seats re-exported below under the names the
+ * surface always spoke. */
+const seating = laneseating({ slug: APPSLUG, envvar: SANDBOXLANEENV, lanes: WORKLOADLANES });
 
 /**
  * Resolves the sandbox lane seat of this application — the deploy's
@@ -847,16 +883,7 @@ export type LaneSeatResult =
  * @param choice the deploy's choice (the env value or the config row).
  * @returns the seat declaration.
  */
-export function lanesandbox(choice: string | undefined): LaneSeatResult {
-  const name = choice?.trim() ?? "";
-  if (name.length === 0 || name === "local") {
-    return { ok: true, seat: "local", sandboxed: false };
-  }
-  if (name === "join") {
-    return { ok: true, seat: "join", sandboxed: true, pinned: false };
-  }
-  return { ok: true, seat: name, sandboxed: true, pinned: true };
-}
+export const lanesandbox = seating.lanesandbox;
 
 /**
  * Reads the lane seat off one environment lookup — the deploy pins
@@ -867,9 +894,7 @@ export function lanesandbox(choice: string | undefined): LaneSeatResult {
  * @param lookup the environment lookup function (the env carrier).
  * @returns the seat declaration.
  */
-export function lanesandboxfromenv(lookup: (key: string) => string | undefined): LaneSeatResult {
-  return lanesandbox(lookup(SANDBOXLANEENV));
-}
+export const lanesandboxfromenv = seating.lanesandboxfromenv;
 
 /**
  * Answers one mirrored lane row by lane id — the lookup the app surfaces
@@ -879,6 +904,4 @@ export function lanesandboxfromenv(lookup: (key: string) => string | undefined):
  * @returns the mirrored row, or undefined when the app carries no such
  * lane.
  */
-export function laneof(lane: string): AppWorkloadLane | undefined {
-  return WORKLOADLANES.find((row) => row.lane === lane);
-}
+export const laneof = seating.laneof;

@@ -42,6 +42,38 @@
   /** one lane by its app and id. */
   export declare function getlane(app: string, lane: string): WorkloadLane | undefined;
 
+  /** the app-seat historical name of the engine row shape (the lane tables
+   * the app seats declare ride the same contract the catalog answers). */
+  export type AppWorkloadLane = WorkloadLane;
+
+  /** the seat declaration the deploy's lane choice answers: local (the
+   * deploy's own process), join (the platform's join resolver) or a named
+   * modality id the deploy pins. */
+  export type LaneSeatResult =
+    | { ok: true; seat: "local"; sandboxed: false }
+    | { ok: true; seat: "join"; sandboxed: true; pinned: false }
+    | { ok: true; seat: string; sandboxed: true; pinned: true };
+
+  /** the lane-seating instance the app seats build on (the parameterized
+   * owner the dedup law seated in the workload law). */
+  export type LaneSeating = {
+    APPSLUG: string;
+    SANDBOXLANEENV: string;
+    WORKLOADLANES: readonly AppWorkloadLane[];
+    lanesandbox: (choice: string | undefined) => LaneSeatResult;
+    lanesandboxfromenv: (lookup: (key: string) => string | undefined) => LaneSeatResult;
+    laneof: (lane: string) => AppWorkloadLane | undefined;
+  };
+
+  /** the lane-seating factory: binds the slug, the env var name and the
+   * lane table of one app seat onto the engine functions. */
+  export declare function laneseating(options: {
+    slug: string;
+    envvar: string;
+    lanes: readonly AppWorkloadLane[];
+  }): LaneSeating;
+
+
   /** one engine event of the bus (queued, preparing, running, syncing, committed, failed). */
   export type saddleevent = {
     id: string;

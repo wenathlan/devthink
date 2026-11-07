@@ -29,7 +29,7 @@
 - `dns.ts` (dnssec + zonediff + cleanurl + protocols folded) = engine de rede consolidada, validação DNSSEC, diff de zona DNS, clean URL, mesh de protocolos.
 - `mimetypes.ts` = tabela de Mimetypes da camada de rede.
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
-- `family.ts` / `catalog.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` (porta para debonair/motionpref.ts) / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, catálogo, labels, tema, reveal, motionpref porta para o debonair, onboarding, modalidade de sandbox.
+- `family.ts` / `catalog.ts` / `labels.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` (porta para debonair/motionpref.ts) / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, catálogo, labels, tema, reveal, motionpref porta para o debonair, onboarding, modalidade de sandbox (assento da fábrica laneseating do saddle/workloadlaw.ts).
 - `db.ts` / `seed.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, seed, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
@@ -47,7 +47,7 @@
 - `introfixtures.ts` = fixtures de introdução.
 - `version.ts` = versão da engine.
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
-- `family.ts` / `familyurl.ts` / `catalog.ts` / `labels.ts` / `cleanurl.ts` / `reveal.ts` / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, URLs, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox.
+- `family.ts` / `familyurl.ts` / `catalog.ts` / `labels.ts` / `cleanurl.ts` / `reveal.ts` / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, URLs, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox (assento da fábrica laneseating do saddle/workloadlaw.ts).
 - `db.ts` / `seed.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, seed, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
@@ -55,7 +55,7 @@
 
 - `monetization.ts` (adsconfig + checkoutlinks + posts + roster folded) = monetização consolidada, ads, checkout, posts, roster.
 - `content.ts` = conteúdo.
-- `familyurl.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, onboarding, modalidade de sandbox.
+- `familyurl.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, onboarding, modalidade de sandbox (assento da fábrica laneseating do saddle/workloadlaw.ts).
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `db.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
@@ -70,7 +70,7 @@
 - `ingest.ts` / `reverseingest.ts` / `recon.ts` (reconpayload + reconworker folded) / `fingerprint.ts` / `ialane.ts` / `llmlane.ts` / `generateclient.ts` / `gatewayapi.ts` / `cloudsync.ts` / `routetable.ts` = ingestão / ingestão reversa, reconstrução, fingerprint, pistas de IA / LLM, cliente de geração, gateway, sync em nuvem, tabela de rotas.
 - `coverpalette.ts` = paleta de capa.
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
-- `family.ts` / `familyurl.ts` / `catalog.ts` / `labels.ts` / `cleanurl.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, URLs, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox.
+- `family.ts` / `familyurl.ts` / `catalog.ts` / `labels.ts` / `cleanurl.ts` / `reveal.ts` / `theme.ts` / `motionpref.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, URLs, catálogo, labels, tema, reveal, onboarding, modalidade de sandbox (assento da fábrica laneseating do saddle/workloadlaw.ts).
 - `db.ts` / `seed.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, seed, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
@@ -89,7 +89,7 @@
 - `build.ts` / `pack.ts` / `export.ts` / `umd.ts` / `umdwrap.ts` / `cjs.ts` / `cjswrap.ts` / `deno.ts` / `bun.ts` / `distseamtypes.ts` / `inspectstoreartifacts.ts` / `release.ts` / `maintain.ts` / `scripts.ts` / `pythonscripts.ts` / `workflow.ts` / `environments.ts` = build, pack, export, formatos UMD / CJS / Deno / Bun, dist, release, manutenção, scripts, workflows, ambientes.
 - `security.ts` (checksecrets + cspaudit + crxharvest + crossbrowser + devtoolsguard folded) / `pentest.ts` / `gates.ts` / `hardening.ts` / `jsongate.ts` / `docsaudit.ts` / `poolaudit.ts` / `auditreferenceworkflows.ts` / `evidence.ts` / `permdiff.ts` / `policy.ts` / `apifreeze.ts` = segurança consolidada, trust boundary, secrets, CSP, CRX, crossbrowser, devtools, pentest, gates, hardening, auditorias, evidência, diff de permissões, política, freeze de API.
 - `matrixverify.ts` / `soak.ts` / `perf.ts` / `sweep.ts` / `telemetryfree.ts` / `wcag.ts` / `doccheck.ts` = verificação de matriz, soak, perf, sweep, telemetria zero, WCAG, checagem de docs.
-- `sandboxlane.ts` / `modalitytypes.ts` / `engines.ts` (engineowners folded) / `saddlefaces.ts` / `familyaccent.ts` / `familylanes.ts` / `catalog.ts` (seedcatalog folded) / `cleanurl.ts` / `labels.ts` / `icons.ts` / `progress.ts` / `introtarget.ts` / `onboardingstate.ts` / `reveal.ts` = sandbox, modalidades, engines, faces do Saddle, pontes da família, catálogo, labels, ícones, progresso, onboarding, reveal dono da família.
+- `sandboxlane.ts` (assento da fábrica laneseating do workloadlaw) / `modalitytypes.ts` / `engines.ts` (engineowners folded) / `saddlefaces.ts` / `familyaccent.ts` / `familylanes.ts` / `catalog.ts` (seedcatalog folded) / `cleanurl.ts` / `labels.ts` / `icons.ts` / `progress.ts` / `introtarget.ts` / `onboardingstate.ts` / `reveal.ts` = sandbox, modalidades, engines, faces do Saddle, pontes da família, catálogo, labels, ícones, progresso, onboarding, reveal dono da família.
 - `storage.ts` / `personalstore.ts` / `uistore.ts` / `usestoredstate.ts` / `useismobile.ts` / `records.ts` / `prismaconfig.ts` / `media.ts` / `imagedigests.ts` / `saascontent.ts` / `version.ts` = armazenamento, stores, hooks, records, Prisma, mídia, digests, conteúdo SaaS, versão.
 - `logics.ts` = catálogo raiz único das lógicas da família Wenathlan.
 - `calculator.ts` / `debug.ts` / `examplelocaljob.ts` / `queue.ts` = calculadora, debug, exemplo de job, fila.
@@ -101,7 +101,7 @@
 - `api.ts` / `graphplan.ts` (porta para a engine de plano dentro de foundry/pipeline.ts) / `hometypes.ts` (porta para foundry/hometypes.ts) = API, plano de grafo via a engine do foundry, tipos da home porta para o foundry.
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `db.ts` / `utils.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, utilidades, Drizzle.
-- `family.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` / `theme.ts` = ponte da família, labels, onboarding, modalidade de sandbox, tema.
+- `family.ts` / `labels.ts` / `onboardingstate.ts` / `sandboxmodality.ts` / `theme.ts` = ponte da família, labels, onboarding, modalidade de sandbox (assento da fábrica laneseating do saddle/workloadlaw.ts), tema.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
 ### foundry — 18 lógicas na raiz
@@ -123,7 +123,7 @@
 - `nodeshim.ts` / `prismashim.ts` / `honoshim.ts` = shims Node / Prisma / Hono.
 - `db.ts` / `prismaconfig.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, Prisma, Drizzle.
 - `types.ts` / `typeface.ts` / `constants.ts` / `utils.ts` / `versionregistry.ts` = tipos, typeface, constantes, utilidades, registro de versões.
-- `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` (porta para devthink/reveal.ts) / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal porta para o devthink, tema, onboarding, modalidade de sandbox.
+- `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` (porta para devthink/reveal.ts) / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal porta para o devthink, tema, onboarding, modalidade de sandbox (assento da fábrica laneseating do saddle/workloadlaw.ts).
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
 ### saddle — 55 lógicas na raiz
@@ -134,7 +134,7 @@
 - `engineplans.ts` / `osprofiles.ts` = perfis de engine max / balanced / lite, perfis de OS convidado.
 - `api.ts` / `server.ts` / `webserver.ts` (speccatalogs folded) / `distribution.ts` / `integration.ts` / `runall.ts` = API, servers, distribuição, integração, execução total.
 - `auth.ts` / `localauth.ts` / `security.ts` = auth local e segurança.
-- `performance.ts` / `runtimeprobe.ts` / `containerarch.ts` / `workloadlaw.ts` / `tiers.ts` = performance, probe de runtime, arquitetura de container, lei de workload, tiers.
+- `performance.ts` / `runtimeprobe.ts` / `containerarch.ts` / `workloadlaw.ts` (dona da fábrica laneseating da família) / `tiers.ts` = performance, probe de runtime, arquitetura de container, lei de workload + fábrica de assento de lane dos dez apps, tiers.
 - `format.ts` / `paths.ts` / `render.ts` / `browser.ts` / `communication.ts` / `dashboardlib.ts` = formato, caminhos, render, browser, comunicação, lib de dashboard.
 - `cli.ts` = CLI do Saddle.
 - `vaulthandoff.ts` = handoff para o Vault.
@@ -147,7 +147,7 @@
 
 - `match.ts` (regras folded) / `netcode.ts` / `physics.ts` / `ranking.ts` / `spawner.ts` / `weapons.ts` / `world.ts` / `hud.ts` = partida e regras, netcode, física, ranking, spawner, armas, mundo, HUD.
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
-- `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` (porta para devthink/reveal.ts) / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal porta para o devthink, tema, onboarding, modalidade de sandbox.
+- `family.ts` / `familyurl.ts` / `labels.ts` / `reveal.ts` (porta para devthink/reveal.ts) / `theme.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, labels, reveal porta para o devthink, tema, onboarding, modalidade de sandbox (assento da fábrica laneseating do saddle/workloadlaw.ts).
 - `db.ts` / `drizzle.config.ts` = banco Better SQLite / better-sqlite3, Drizzle.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 
@@ -160,7 +160,7 @@
 - `cli.ts` = console binário CLI mesmo design no terminal (clibin).
 - `vaultclient.ts` / `uistore.ts` / `labelstore.ts` = cliente do Vault, stores de UI / labels.
 - `drizzle.ts` / `db.ts` / `drizzle.config.ts` = Drizzle, banco Better SQLite / better-sqlite3.
-- `family.ts` / `hometypes.ts` (porta para foundry/hometypes.ts) / `labels.ts` / `index.ts` / `onboardingstate.ts` / `sandboxmodality.ts` = ponte da família, tipos da home porta para o foundry, entrada do app.
+- `family.ts` / `hometypes.ts` (porta para foundry/hometypes.ts) / `labels.ts` / `index.ts` / `onboardingstate.ts` / `sandboxmodality.ts` (assento da fábrica laneseating do saddle/workloadlaw.ts) = ponte da família, tipos da home porta para o foundry, entrada do app, modalidade de sandbox.
 - `utils.ts` = utilidades.
 - `capacitor.config.ts` / `vite.config.ts` / `vitest.config.ts` = build Capacitor / Vite / Vitest.
 

@@ -136,11 +136,12 @@ export const DOMAIN_OF_APP: Record<string, string> = {
  *     saddle, getry, argan, cadria, forge, foundry, stealthhead AND vault,
  *     while vault/labelstore.ts is the canonical store — and stealthhead,
  *     getry, foundry already import @wenathlan/vault/labelstore.
- *  2. sandbox lanes -> saddle        HOLDS: sandboxmodality.ts duplicated in
- *     debonair, saddle, getry, argan, cadria, forge, foundry, stealthhead,
- *     vault (plus devthink/sandboxlane.ts); canonical home is saddle
- *     (saddle/sandbox.ts, saddle/modes.ts, saddle/scripts.ts) and forge
- *     + foundry already import @wenathlan/saddle/modes.
+ *  2. sandbox lanes -> saddle        HOLDS: the lane-seating engine
+ *     (lanesandbox, lanesandboxfromenv, laneof + the AppWorkloadLane /
+ *     LaneSeatResult types) lives once in saddle/workloadlaw.ts via the
+ *     laneseating factory; the nine sandboxmodality.ts seats and the
+ *     devthink/sandboxlane.ts seat build their instances on it, keeping
+ *     only their app-specific lane tables and slug/env names.
  *  3. family roster -> devthink      HOLDS: family.ts (FAMILY_SLUGS,
  *     FamilyMember, FAMILY_ACCENTS, familyrow) duplicated in 9 apps;
  *     devthink owns familylanes.ts + familyaccent.ts + appregistry.ts.
@@ -185,7 +186,7 @@ export const DUPLICATE_FAMILIES: DuplicateFamily[] = [
     owner: "saddle",
     members: ["debonair", "saddle", "getry", "argan", "cadria", "forge", "foundry", "stealthhead", "vault", "devthink"],
     status: "holds",
-    note: "sandboxmodality.ts duplicated in 9 apps + devthink/sandboxlane.ts; canonical home is saddle/modes.ts + saddle/sandbox.ts; forge and foundry already import @wenathlan/saddle/modes.",
+    note: "the lane-seating engine lives once in saddle/workloadlaw.ts (the laneseating factory); the nine app sandboxmodality.ts seats plus devthink/sandboxlane.ts build their instances on it, keeping only their app-specific lane tables, slug and env name.",
   },
   {
     family: "family roster",
@@ -262,7 +263,7 @@ export const DEDUP_RESOLUTIONS: ReadonlyArray<{
   evidence: string;
 }> = [
   { family: "label store", verdict: "verified", evidence: "the createLabelStore engine lives once in vault/labelstore.ts; nine roots import it (argan via @wenathlan/vault/labelstore, the rest via ../vault/labelstore.ts); devthink sits outside the family — no engine, no import; the per-app db.ts saveLabel glue stays per-app (own sqlite binding, deferred with onboarding)" },
-  { family: "sandbox lane seating", verdict: "blocked", evidence: "real drift: 57 diff lines between argan and cobaia twins — APPSLUG, SANDBOXLANEENV and the WORKLOADLANES tables are app-specific data (argan dns lanes, cobaia monetization lanes); consolidating needs a parameterized owner in saddle (lane-choice factory) — next wave, not a mechanical shim" },
+  { family: "sandbox lane seating", verdict: "consolidated", evidence: "the parameterized owner landed in saddle/workloadlaw.ts — the laneseating factory holds the resolver body once (the repo carries exactly one copy) and the ten seats (the nine app sandboxmodality.ts files plus devthink/sandboxlane.ts and the foundry pipeline section) build their instances on it, keeping only their app-specific lane tables, slug and env name; every sandboxmodality battery stayed green unchanged through the conversion" },
   { family: "family roster", verdict: "blocked", evidence: "real drift: forge rail order [devthink, cadria, stealthhead, debonair, argan, saddle, foundry, vault, getry] vs argan rail [cadria..vault]; accent tables 8 vs 10 members; familyurl regex /{1,64} vs /+ between vault and argan — a merged owner would reorder every app rail render" },
   { family: "theme", verdict: "consolidated", evidence: "devthink/personalstore.ts is the canonical theme seat; the six twins (argan cadria debonair forge getry stealthhead theme.ts) are now doors re-exporting Theme currentTheme applyTheme initTheme toggleTheme" },
   { family: "onboarding state", verdict: "deferred", evidence: "db-bound glue mirrors the label db twins — each app writes its own sqlite; the parameterized store wave owns it" },

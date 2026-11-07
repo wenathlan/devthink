@@ -6,7 +6,7 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { lanesof, type WorkloadLane } from "@wenathlan/saddle/workloadlaw";
+import { type AppWorkloadLane, type LaneSeatResult, laneseating, lanesof } from "@wenathlan/saddle/workloadlaw";
 
 /* ===== block: sandboxlane ===== */
 /**
@@ -22,9 +22,9 @@ import { lanesof, type WorkloadLane } from "@wenathlan/saddle/workloadlaw";
  */
 
 import { spawn } from "node:child_process";
-import { runInNewContext } from "node:vm";
 import { appendFile, copyFile, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { runInNewContext } from "node:vm";
 // the modality registry of the saddle engine — the single source of the
 // catalog (this lane keeps no modality list of its own). The registry of
 // record lives in the engine (saddle/modalityregistry.ts) and the lane
@@ -100,9 +100,7 @@ function contain(jail: string, relative: string): string {
  * surgery on user content */
 function cliptext(text: string, cap: number): string {
   if (text.length <= cap) return text;
-  return Array.from(text)
-    .slice(0, cap)
-    .join("");
+  return Array.from(text).slice(0, cap).join("");
 }
 
 /** tokenize — split a command line into tokens; double and single quoted
@@ -319,14 +317,21 @@ async function toolruncontainer(jail: string, args: string[]): Promise<string[]>
   const scriptabsolute = contain(jail, args[0]);
   const scriptrelative = path.relative(jail, scriptabsolute).split(path.sep).join("/");
   const childargs = [
-    "run", "--rm",
-    "-v", [jail, ":/work"].join(""),
-    "-w", "/work",
-    "--network", "none",
-    "--memory", "512m",
-    "--cpus", "1",
+    "run",
+    "--rm",
+    "-v",
+    [jail, ":/work"].join(""),
+    "-w",
+    "/work",
+    "--network",
+    "none",
+    "--memory",
+    "512m",
+    "--cpus",
+    "1",
     RUNIMAGE,
-    "node", scriptrelative,
+    "node",
+    scriptrelative,
     ...args.filter((token, index) => index > 0),
   ];
   const child = spawn("docker", childargs, { cwd: jail, shell: false, timeout: CAPS.timeoutms * 6 });
@@ -379,7 +384,12 @@ interface ExecLane {
  * catalog, this table owns the invocation grammar) */
 const EXECLANES: Readonly<Record<string, ExecLane>> = Object.freeze({
   bun: { modality: "runnerbun", bin: "bun", argv: (t, a) => [t, ...a], word: "the bun runtime" },
-  deno: { modality: "runnerdeno", bin: "deno", argv: (t, a) => ["run", "--allow-read=.", "--allow-write=.", "--allow-env", t, ...a], word: "the deno runtime" },
+  deno: {
+    modality: "runnerdeno",
+    bin: "deno",
+    argv: (t, a) => ["run", "--allow-read=.", "--allow-write=.", "--allow-env", t, ...a],
+    word: "the deno runtime",
+  },
   python: { modality: "languagepython", bin: "python3", argv: (t, a) => ["-I", t, ...a], word: "the cpython runtime" },
   python3: { modality: "languagepython", bin: "python3", argv: (t, a) => ["-I", t, ...a], word: "the cpython runtime" },
   ruby: { modality: "languageruby", bin: "ruby", argv: (t, a) => [t, ...a], word: "the ruby interpreter" },
@@ -391,15 +401,30 @@ const EXECLANES: Readonly<Record<string, ExecLane>> = Object.freeze({
   nim: { modality: "languagenim", bin: "nim", argv: (t, a) => ["r", t, ...a], word: "the nim compiler" },
   java: { modality: "languagejava", bin: "java", argv: (t, a) => [t, ...a], word: "the jdk runtime" },
   jvm: { modality: "runtimejvm", bin: "java", argv: (t, a) => ["-jar", t, ...a], word: "the jvm hotspot" },
-  dotnet: { modality: "languagedotnet", bin: "dotnet", argv: (t, a) => ["run", "--project", t, ...a], word: "the dotnet runtime" },
+  dotnet: {
+    modality: "languagedotnet",
+    bin: "dotnet",
+    argv: (t, a) => ["run", "--project", t, ...a],
+    word: "the dotnet runtime",
+  },
   make: { modality: "buildmake", bin: "make", argv: (t, a) => ["-f", t, ...a], word: "the make builds" },
   ninja: { modality: "buildninja", bin: "ninja", argv: (t, a) => ["-f", t, ...a], word: "the ninja builds" },
-  cargo: { modality: "languagecargo", bin: "cargo", argv: (t, a) => ["run", "--manifest-path", t, ...a], word: "the cargo builds" },
+  cargo: {
+    modality: "languagecargo",
+    bin: "cargo",
+    argv: (t, a) => ["run", "--manifest-path", t, ...a],
+    word: "the cargo builds",
+  },
 });
 
 /** the exec word of the rust lane — the two phase grammar the tool drives
  * (rustc compiles the source to the jail, the binary executes after) */
-const RUSTLANE: ExecLane = { modality: "languagerust", bin: "rustc", argv: (t, a) => [t, ...a], word: "the rustc toolchain" };
+const RUSTLANE: ExecLane = {
+  modality: "languagerust",
+  bin: "rustc",
+  argv: (t, a) => [t, ...a],
+  word: "the rustc toolchain",
+};
 
 /** exechelprows — the language words the help lists (sorted, one row) */
 function exechelprows(): string[] {
@@ -531,7 +556,8 @@ async function toolexecwasm(jail: string, args: string[]): Promise<string[]> {
   }
   const exports = instance.exports as Record<string, unknown>;
   const entry = "main" in exports ? "main" : Object.keys(exports).find((key) => typeof exports[key] === "function");
-  if (entry === undefined || typeof exports[entry] !== "function") return ["[stderr] the module exports no function", "exit 1"];
+  if (entry === undefined || typeof exports[entry] !== "function")
+    return ["[stderr] the module exports no function", "exit 1"];
   const callargs = args.slice(1).map((token) => Number(token));
   try {
     const result = (exports[entry] as (...values: number[]) => number)(...callargs);
@@ -563,12 +589,19 @@ async function toolexecwasi(jail: string, args: string[]): Promise<string[]> {
   const outfile = path.join(jail, ".wasiout");
   const out = await open(outfile, "w");
   try {
-    const wasi = new WASI({ version: "preview1", args: [target, ...args.slice(1)], env: {}, preopens: { ".": jail }, stdout: out.fd, stderr: out.fd });
+    const wasi = new WASI({
+      version: "preview1",
+      args: [target, ...args.slice(1)],
+      env: {},
+      preopens: { ".": jail },
+      stdout: out.fd,
+      stderr: out.fd,
+    });
     // the import key joins at runtime so the bundle carries no underscored
     // literal (the reviewed vocabulary law the build gate pins)
     const wasikey = ["wasi", "snapshot", "preview1"].join("_");
     const instance = await WebAssembly.instantiate(module, { [wasikey]: wasi.wasiImport });
-    let code = 0;
+    const code = 0;
     try {
       wasi.start(instance);
     } catch (error) {
@@ -620,13 +653,19 @@ async function toolsql(jail: string, args: string[]): Promise<string[]> {
   const runtime = createRequire(import.meta.url);
   const loaded = runtime("better-sqlite3") as unknown;
   const Database = (typeof loaded === "function" ? loaded : (loaded as { default?: unknown }).default) as
-    | (new (file: string) => DatabaseLike)
+    | (new (
+        file: string,
+      ) => DatabaseLike)
     | undefined;
   if (typeof Database !== "function") throw new SandboxError("the sqlite runtime did not load on this host");
   const db = new Database(contained);
   try {
     const trimmed = statement.trimStart().toLowerCase();
-    const reads = trimmed.startsWith("select") || trimmed.startsWith("pragma") || trimmed.startsWith("with") || trimmed.startsWith("explain");
+    const reads =
+      trimmed.startsWith("select") ||
+      trimmed.startsWith("pragma") ||
+      trimmed.startsWith("with") ||
+      trimmed.startsWith("explain");
     if (reads) {
       const rows = db.prepare(statement).all() as Record<string, unknown>[];
       if (rows.length === 0) return ["(no rows)"];
@@ -668,7 +707,9 @@ async function toolgitobj(jail: string, args: string[]): Promise<string[]> {
     const content = await readFile(contain(jail, file));
     const header = Buffer.from(["blob ", String(content.length), "\0"].join(""), "utf8");
     const storedblob = deflateSync(Buffer.concat([header, content]));
-    const hash = createHash("sha1").update(Buffer.concat([header, content])).digest("hex");
+    const hash = createHash("sha1")
+      .update(Buffer.concat([header, content]))
+      .digest("hex");
     await mkdir(store, { recursive: true });
     await writeFile(path.join(store, hash), storedblob);
     return [["blob ", hash].join("")];
@@ -687,7 +728,10 @@ async function toolgitobj(jail: string, args: string[]): Promise<string[]> {
     const zeropos = full.indexOf(0);
     const header = full.subarray(0, zeropos).toString("utf8");
     const content = full.subarray(zeropos + 1);
-    return [["type ", header.split(" ")[0] ?? "blob", " bytes ", String(content.length)].join(""), content.toString("utf8")];
+    return [
+      ["type ", header.split(" ")[0] ?? "blob", " bytes ", String(content.length)].join(""),
+      content.toString("utf8"),
+    ];
   }
   return ["gitobj: give write <file> or read <hash>"];
 }
@@ -739,7 +783,12 @@ async function tooldoh(args: string[]): Promise<string[]> {
   if (name === undefined) throw new SandboxError("doh needs a name");
   const kind = (args[1] ?? "a").toLowerCase();
   try {
-    const url = ["https://cloudflare-dns.com/dns-query?name=", encodeURIComponent(name), "&type=", kind.toUpperCase()].join("");
+    const url = [
+      "https://cloudflare-dns.com/dns-query?name=",
+      encodeURIComponent(name),
+      "&type=",
+      kind.toUpperCase(),
+    ].join("");
     const res = await fetch(url, { headers: { accept: "application/dns-json" }, signal: AbortSignal.timeout(8000) });
     if (!res.ok) return [["the https resolver answered ", String(res.status), " — nothing was invented"].join("")];
     const data = (await res.json()) as { Answer?: { name: string; type: number; data: string }[] };
@@ -1009,43 +1058,43 @@ export async function writesandboxfile(sessionid: string, target: string, conten
  * probes on the host PATH (the registry owns the catalog; this table only
  * names the binary each probed record answers through) */
 const HOSTPROBES: Readonly<Record<string, string>> = Object.freeze({
-  "containerdocker": "docker",
-  "emulatorqemu": "qemu-system-x86_64",
-  "microvmfirecracker": "firecracker",
-  "containerrunsc": "runsc",
-  "runnerbun": "bun",
-  "runnerdeno": "deno",
-  "languagepython": "python3",
-  "languageruby": "ruby",
-  "languagelua": "lua",
-  "languagephp": "php",
-  "languagego": "go",
-  "languagerust": "rustc",
-  "languagecargo": "cargo",
-  "languagejava": "java",
-  "runtimejvm": "java",
-  "languagezig": "zig",
-  "languagev": "v",
-  "languagenim": "nim",
-  "languagedotnet": "dotnet",
-  "buildmake": "make",
-  "buildninja": "ninja",
+  containerdocker: "docker",
+  emulatorqemu: "qemu-system-x86_64",
+  microvmfirecracker: "firecracker",
+  containerrunsc: "runsc",
+  runnerbun: "bun",
+  runnerdeno: "deno",
+  languagepython: "python3",
+  languageruby: "ruby",
+  languagelua: "lua",
+  languagephp: "php",
+  languagego: "go",
+  languagerust: "rustc",
+  languagecargo: "cargo",
+  languagejava: "java",
+  runtimejvm: "java",
+  languagezig: "zig",
+  languagev: "v",
+  languagenim: "nim",
+  languagedotnet: "dotnet",
+  buildmake: "make",
+  buildninja: "ninja",
 });
 
 /** the live lane words — the honest sentence each live record of the
  * registry answers with (the registry declares the state, the lane names
  * the surface it drives) */
 const LIVELANES: Readonly<Record<string, string>> = Object.freeze({
-  "runnernode": "the node runtime the run lane executes inside the container",
-  "fsvfs": "the session jail the storage lane drives",
-  "runnerserverless": "the v8 isolate the exec lane drives in process",
-  "storagesqlite": "the sqlite database the sql tool drives through better-sqlite3",
-  "fsgitobjects": "the content-addressed objects store the gitobj tool drives",
-  "networkdns": "the node resolver the dns tool drives",
-  "networkdoh": "the https resolver the doh tool drives",
-  "runnerbabel": "the babel transform round trip the edge plane drives server-side",
-  "runnerwebpack": "the webpack compile the edge plane drives server-side",
-  "runneruniversal": "the bash sh execution the script lanes drive server-side",
+  runnernode: "the node runtime the run lane executes inside the container",
+  fsvfs: "the session jail the storage lane drives",
+  runnerserverless: "the v8 isolate the exec lane drives in process",
+  storagesqlite: "the sqlite database the sql tool drives through better-sqlite3",
+  fsgitobjects: "the content-addressed objects store the gitobj tool drives",
+  networkdns: "the node resolver the dns tool drives",
+  networkdoh: "the https resolver the doh tool drives",
+  runnerbabel: "the babel transform round trip the edge plane drives server-side",
+  runnerwebpack: "the webpack compile the edge plane drives server-side",
+  runneruniversal: "the bash sh execution the script lanes drive server-side",
 });
 
 /** binaryonpath — a pure PATH scan with stat (windows also probes the exe
@@ -1099,7 +1148,9 @@ export async function hostmodalityreport(): Promise<string[]> {
     if (modality.state === "host") {
       const binary = probe ?? modality.id;
       const available = await binaryonpath(binary);
-      rows.push([modality.id, ": host runtime ", binary, available ? " available on this host" : " not installed"].join(""));
+      rows.push(
+        [modality.id, ": host runtime ", binary, available ? " available on this host" : " not installed"].join(""),
+      );
       continue;
     }
     rows.push([modality.id, ": planned — the catalog promise, no lane wires it yet"].join(""));
@@ -1147,23 +1198,31 @@ export async function hostmodalityreport(): Promise<string[]> {
 // resolves no join: it names the lanes' truth; the platform resolves the
 // sandbox. Zero consumer data; the one import below is the declaration's
 // single source (the engine's workload law) and nothing else enters.
+//
+// The engine seat (wave W5, the dedup law): the seat resolver, the env
+// reader and the lane lookup no longer live in this block — they ride
+// the saddle factory (laneseating of the same owner specifier) bound
+// once to this app's own data, re-exported under the same names the
+// surface always spoke. Zero behavior change, zero public-surface
+// change.
 
 // the engine's workload law — the single source of the family lane
-// catalog (the ownership law: the engine owns the catalog, this app owns
-// the seat law below). lanesof answers this app's rows out of the
-// engine's FAMILYLANES table; WorkloadLane is the row shape the engine
-// law pins. The specifier resolves through the vitest, vite and tsconfig
-// bridges to the sibling owner source, exactly the way the app battery
-// already resolves it — the same bridge grammar
-// ("@wenathlan/saddle/modalityregistry") the sandbox lane rides.
-
+// catalog and, since wave W5, the lane seat engine (the ownership law:
+// the engine owns the catalog and the seat factory, this app owns its
+// own data below). lanesof answers this app's rows out of the engine's
+// FAMILYLANES table; AppWorkloadLane and LaneSeatResult are the shapes
+// the engine law pins, re-exported below. The specifier resolves through
+// the vitest, vite and tsconfig bridges to the sibling owner source,
+// exactly the way the app battery already resolves it — the same bridge
+// grammar ("@wenathlan/saddle/modalityregistry") the sandbox lane rides.
 
 /** one workload lane row — the same five keys the engine law pins (app,
  * lane, role, demand, today). The shape itself belongs to the engine law
- * (workloadlaw.ts answers WorkloadLane); the alias below keeps this
- * module's historical surface name, so no importer moves while the rows
- * derive from the engine. */
-export type AppWorkloadLane = WorkloadLane;
+ * (workloadlaw.ts answers AppWorkloadLane — the dedup wave moved the
+ * seat shapes to the owner); the re-export below keeps this module's
+ * historical surface name, so no importer moves while the rows derive
+ * from the engine. */
+export type { AppWorkloadLane };
 
 /** the app slug every engine row of this app carries — the filter key
  * lanesof reads. */
@@ -1188,10 +1247,13 @@ export const SANDBOXLANEENV = "DEVTHINK_SANDBOX_LANE";
  * modality id the deploy named (validated by the platform's join at
  * dispatch, never judged here). every answer is honest: an absent or
  * blank choice answers the declared default, never a silent switch. */
-export type LaneSeatResult =
-  | { ok: true; seat: "local"; sandboxed: false }
-  | { ok: true; seat: "join"; sandboxed: true; pinned: false }
-  | { ok: true; seat: string; sandboxed: true; pinned: true };
+export type { LaneSeatResult };
+
+/** the lane seat engine of this app — the saddle factory bound once to
+ * this app's own data (the dedup law: the engine lives in the owner, the
+ * app keeps its data), the seats re-exported below under the names the
+ * surface always spoke. */
+const seating = laneseating({ slug: APPSLUG, envvar: SANDBOXLANEENV, lanes: WORKLOADLANES });
 
 /**
  * Resolves the sandbox lane seat of this application — the deploy's
@@ -1206,16 +1268,7 @@ export type LaneSeatResult =
  * @param choice the deploy's choice (the env value or the config row).
  * @returns the seat declaration.
  */
-export function lanesandbox(choice: string | undefined): LaneSeatResult {
-  const name = choice?.trim() ?? "";
-  if (name.length === 0 || name === "local") {
-    return { ok: true, seat: "local", sandboxed: false };
-  }
-  if (name === "join") {
-    return { ok: true, seat: "join", sandboxed: true, pinned: false };
-  }
-  return { ok: true, seat: name, sandboxed: true, pinned: true };
-}
+export const lanesandbox = seating.lanesandbox;
 
 /**
  * Reads the lane seat off one environment lookup — the deploy pins
@@ -1226,9 +1279,7 @@ export function lanesandbox(choice: string | undefined): LaneSeatResult {
  * @param lookup the environment lookup function (the env carrier).
  * @returns the seat declaration.
  */
-export function lanesandboxfromenv(lookup: (key: string) => string | undefined): LaneSeatResult {
-  return lanesandbox(lookup(SANDBOXLANEENV));
-}
+export const lanesandboxfromenv = seating.lanesandboxfromenv;
 
 /**
  * Answers one engine lane row by lane id — the lookup the app surfaces
@@ -1238,7 +1289,4 @@ export function lanesandboxfromenv(lookup: (key: string) => string | undefined):
  * @returns the engine's row for this app, or undefined when the app
  * carries no such lane.
  */
-export function laneof(lane: string): AppWorkloadLane | undefined {
-  return WORKLOADLANES.find((row) => row.lane === lane);
-}
-
+export const laneof = seating.laneof;

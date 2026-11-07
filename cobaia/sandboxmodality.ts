@@ -20,28 +20,24 @@
 // this module never judges engine vocabulary, so the mirror cannot drift
 // when the registry grows). The module never spawns anything and resolves
 // no join: it names the lanes' truth; the platform resolves the sandbox.
-// Zero consumer data, zero imports.
+// Zero consumer data; the one import below is the owner's lane seat
+// factory and nothing else enters.
+//
+// The engine seat (wave W5, the dedup law): the seat resolver, the env
+// reader and the lane lookup no longer live in this file — they ride the
+// saddle factory (laneseating of ../saddle/workloadlaw.ts, the owner's
+// workload law) bound once to this app's own data, re-exported under the
+// same names the surface always spoke. The rows stay mirrored (the drift
+// pin the battery wants), only the engine moved: zero behavior change,
+// zero public-surface change.
+
+import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "../saddle/workloadlaw.ts";
 
 /** one mirrored workload lane row — the same five keys the engine law pins
- * (app, lane, role, demand, today). */
-export type AppWorkloadLane = {
-  /** the official app slug every row carries. */
-  readonly app: string;
-  /** the lane id inside the app (kebab-case, the engine catalog id). */
-  readonly lane: string;
-  /** what the lane does, in one sentence (the engine row's sentence). */
-  readonly role: string;
-  /** the demand the lane puts on the sandbox (gpu, network, isolation,
-   * boot budget — never a modality name: the nuclear law). */
-  readonly demand: {
-    readonly gpu: boolean;
-    readonly network: boolean;
-    readonly isolation: "process" | "namespace" | "vm" | "hardware";
-    readonly bootbudget?: number;
-  };
-  /** where the heavy pass runs today — the honest truth the census reads. */
-  readonly today: "engine-lane" | "app-lane";
-};
+ * (app, lane, role, demand, today); the shape itself rides the owner's
+ * law now (wave W5 — saddle/workloadlaw.ts answers the type once),
+ * re-exported under the historical surface name. */
+export type { AppWorkloadLane };
 
 /** the app slug every mirrored row carries. */
 export const APPSLUG = "cobaia";
@@ -83,10 +79,13 @@ export const SANDBOXLANEENV = "COBAIA_SANDBOX_LANE";
  * modality id the deploy named (validated by the platform's join at
  * dispatch, never judged here). every answer is honest: an absent or
  * blank choice answers the declared default, never a silent switch. */
-export type LaneSeatResult =
-  | { ok: true; seat: "local"; sandboxed: false }
-  | { ok: true; seat: "join"; sandboxed: true; pinned: false }
-  | { ok: true; seat: string; sandboxed: true; pinned: true };
+export type { LaneSeatResult };
+
+/** the lane seat engine of this app — the saddle factory bound once to
+ * this app's own data (the dedup law: the engine lives in the owner, the
+ * app keeps its data), the seats re-exported below under the names the
+ * surface always spoke. */
+const seating = laneseating({ slug: APPSLUG, envvar: SANDBOXLANEENV, lanes: WORKLOADLANES });
 
 /**
  * Resolves the sandbox lane seat of this application — the deploy's
@@ -101,16 +100,7 @@ export type LaneSeatResult =
  * @param choice the deploy's choice (the env value or the config row).
  * @returns the seat declaration.
  */
-export function lanesandbox(choice: string | undefined): LaneSeatResult {
-  const name = choice?.trim() ?? "";
-  if (name.length === 0 || name === "local") {
-    return { ok: true, seat: "local", sandboxed: false };
-  }
-  if (name === "join") {
-    return { ok: true, seat: "join", sandboxed: true, pinned: false };
-  }
-  return { ok: true, seat: name, sandboxed: true, pinned: true };
-}
+export const lanesandbox = seating.lanesandbox;
 
 /**
  * Reads the lane seat off one environment lookup — the deploy pins
@@ -121,9 +111,7 @@ export function lanesandbox(choice: string | undefined): LaneSeatResult {
  * @param lookup the environment lookup function (the env carrier).
  * @returns the seat declaration.
  */
-export function lanesandboxfromenv(lookup: (key: string) => string | undefined): LaneSeatResult {
-  return lanesandbox(lookup(SANDBOXLANEENV));
-}
+export const lanesandboxfromenv = seating.lanesandboxfromenv;
 
 /**
  * Answers one mirrored lane row by lane id — the lookup the app surfaces
@@ -133,6 +121,4 @@ export function lanesandboxfromenv(lookup: (key: string) => string | undefined):
  * @returns the mirrored row, or undefined when the app carries no such
  * lane.
  */
-export function laneof(lane: string): AppWorkloadLane | undefined {
-  return WORKLOADLANES.find((row) => row.lane === lane);
-}
+export const laneof = seating.laneof;

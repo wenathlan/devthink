@@ -1,5 +1,6 @@
-// # workloadlaw — the family workload lane catalog and the join law of the
-// engine (root layer, wave WL1). One row per heavy workload lane of every
+// # workloadlaw — the family workload lane catalog, the join law of the
+// engine and the lane seat factory of the app seats (root layer, waves
+// WL1 + W5). One row per heavy workload lane of every
 // official app of the family: the app that owns the lane, the lane's name,
 // the demand the lane puts on the sandbox (gpu, network, isolation depth,
 // boot budget) and where the lane runs today. The law this module answers
@@ -89,52 +90,268 @@ export type LaneJoin = {
  * the join computes the answer from the registry of record. */
 export const FAMILYLANES: readonly WorkloadLane[] = Object.freeze([
   // the argan lanes: the dns engine's heavy passes
-  { app: "argan", lane: "dnssec-validate", role: "the dnssec chain validation walk: rrsig parsing, key tag checksums, validity windows and ds match rules over untrusted input", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "app-lane" },
-  { app: "argan", lane: "zonefile-parse-diff", role: "the master file parse and the external-dns diff: tokenizer, normalization, creates/deletes/updates by group", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "app-lane" },
-  { app: "argan", lane: "catalog-registry-serve", role: "the registry tables the catalog serves: mime types, protocols and seed rows over https and db, never the browser fallback", demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 }, today: "app-lane" },
-  { app: "argan", lane: "label-store-seed", role: "the label manifest seed into the store: the upsert walk that protects translated rows, mirrored server-side", demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 }, today: "app-lane" },
+  {
+    app: "argan",
+    lane: "dnssec-validate",
+    role: "the dnssec chain validation walk: rrsig parsing, key tag checksums, validity windows and ds match rules over untrusted input",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
+  {
+    app: "argan",
+    lane: "zonefile-parse-diff",
+    role: "the master file parse and the external-dns diff: tokenizer, normalization, creates/deletes/updates by group",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
+  {
+    app: "argan",
+    lane: "catalog-registry-serve",
+    role: "the registry tables the catalog serves: mime types, protocols and seed rows over https and db, never the browser fallback",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 },
+    today: "app-lane",
+  },
+  {
+    app: "argan",
+    lane: "label-store-seed",
+    role: "the label manifest seed into the store: the upsert walk that protects translated rows, mirrored server-side",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
   // the cadria lanes: the versawaze engine's generation passes
-  { app: "cadria", lane: "analyze-wav", role: "the audio analysis pipeline: decode, downmix, resample, stft and the spectrum, rhythm, tonality, timbre and structure fusion", demand: { gpu: false, network: false, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
-  { app: "cadria", lane: "generate-image", role: "the image generation walk: palette, composition blocks, rhythm scatter, texture and motion into the deterministic project", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
-  { app: "cadria", lane: "render-svg", role: "the svg render of the image project: draw command compilation and the byte-deterministic serialization", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
-  { app: "cadria", lane: "decode-video", role: "the frame-accurate video decode lane: the container-namespace pass the codec walk rides, never the visitor decoder", demand: { gpu: false, network: false, isolation: "namespace", bootbudget: 800 }, today: "app-lane" },
-  { app: "cadria", lane: "compile-shader", role: "the shader program assembly: the fragment library, the deterministic manifest and the sha digest, no visitor gpu ever compiles", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
+  {
+    app: "cadria",
+    lane: "analyze-wav",
+    role: "the audio analysis pipeline: decode, downmix, resample, stft and the spectrum, rhythm, tonality, timbre and structure fusion",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
+  {
+    app: "cadria",
+    lane: "generate-image",
+    role: "the image generation walk: palette, composition blocks, rhythm scatter, texture and motion into the deterministic project",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
+  {
+    app: "cadria",
+    lane: "render-svg",
+    role: "the svg render of the image project: draw command compilation and the byte-deterministic serialization",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
+  {
+    app: "cadria",
+    lane: "decode-video",
+    role: "the frame-accurate video decode lane: the container-namespace pass the codec walk rides, never the visitor decoder",
+    demand: { gpu: false, network: false, isolation: "namespace", bootbudget: 800 },
+    today: "app-lane",
+  },
+  {
+    app: "cadria",
+    lane: "compile-shader",
+    role: "the shader program assembly: the fragment library, the deterministic manifest and the sha digest, no visitor gpu ever compiles",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
   // the cobaia lanes: the monetization surface's light walks
-  { app: "cobaia", lane: "plan-checkout", role: "the plan checkout surface: mrr plan rows, link validation and the billing webhook walk when it lands, secrets server-side", demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 }, today: "app-lane" },
-  { app: "cobaia", lane: "ads-slot", role: "the honest ad slot lane: the reserved slots and the rotation decision the deploy answers before the render", demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 }, today: "app-lane" },
-  { app: "cobaia", lane: "label-seed", role: "the label manifest seed of the monetization face: the store walk the sqlite vault carries", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "app-lane" },
+  {
+    app: "cobaia",
+    lane: "plan-checkout",
+    role: "the plan checkout surface: mrr plan rows, link validation and the billing webhook walk when it lands, secrets server-side",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
+  {
+    app: "cobaia",
+    lane: "ads-slot",
+    role: "the honest ad slot lane: the reserved slots and the rotation decision the deploy answers before the render",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
+  {
+    app: "cobaia",
+    lane: "label-seed",
+    role: "the label manifest seed of the monetization face: the store walk the sqlite vault carries",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
   // the debonair lanes: the kathesis engine's audio walks
-  { app: "debonair", lane: "ingest-audio", role: "the ingest worker: the stream separation, the pcm downmix and the payload json the reconstruction reads", demand: { gpu: false, network: false, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
-  { app: "debonair", lane: "render-track", role: "the render worker: the composed plan render, the mastering chain and the wav encode into the take store", demand: { gpu: false, network: false, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
+  {
+    app: "debonair",
+    lane: "ingest-audio",
+    role: "the ingest worker: the stream separation, the pcm downmix and the payload json the reconstruction reads",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
+  {
+    app: "debonair",
+    lane: "render-track",
+    role: "the render worker: the composed plan render, the mastering chain and the wav encode into the take store",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
   // the forge lanes: the execution clone's run walks
-  { app: "forge", lane: "binary-run", role: "the binary run lane: the runner the saddle engine answers for the fleet, the mode gate resolving through the join", demand: { gpu: false, network: true, isolation: "namespace", bootbudget: 800 }, today: "app-lane" },
-  { app: "forge", lane: "queue-priority", role: " the run queue walk: express, normal and batch ordering over the queue the lane serves", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "app-lane" },
+  {
+    app: "forge",
+    lane: "binary-run",
+    role: "the binary run lane: the runner the saddle engine answers for the fleet, the mode gate resolving through the join",
+    demand: { gpu: false, network: true, isolation: "namespace", bootbudget: 800 },
+    today: "app-lane",
+  },
+  {
+    app: "forge",
+    lane: "queue-priority",
+    role: " the run queue walk: express, normal and batch ordering over the queue the lane serves",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
   // the foundry lanes: the pipeline clone's graph walks
-  { app: "foundry", lane: "pipeline-graph", role: "the pipeline graph lane: provision, pull, run, collect and store — the plan walk the herd drives", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "app-lane" },
-  { app: "foundry", lane: "image-artifact", role: "the image artifact lane: the format plans, the checksum seals and the shelf records the vault stores", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "app-lane" },
+  {
+    app: "foundry",
+    lane: "pipeline-graph",
+    role: "the pipeline graph lane: provision, pull, run, collect and store — the plan walk the herd drives",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
+  {
+    app: "foundry",
+    lane: "image-artifact",
+    role: "the image artifact lane: the format plans, the checksum seals and the shelf records the vault stores",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
   // the getry lanes: the ai gateway's inference walks
-  { app: "getry", lane: "inference-route", role: "the inference route lane: the provider pool, the sse parse and the model masking over the upstream calls", demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
-  { app: "getry", lane: "stream-fallback", role: "the resilience runner: the verdict ladder, the backoff walk and the trail the retry lane keeps", demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
-  { app: "getry", lane: "thinking-ladder", role: "the seven-level reasoning ladder: the budget resolution the request injects before the upstream call", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
-  { app: "getry", lane: "router-rotation", role: "the rotation lane: the weighted draw, the cooldown ledger and the session rows the store keeps", demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
+  {
+    app: "getry",
+    lane: "inference-route",
+    role: "the inference route lane: the provider pool, the sse parse and the model masking over the upstream calls",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
+  {
+    app: "getry",
+    lane: "stream-fallback",
+    role: "the resilience runner: the verdict ladder, the backoff walk and the trail the retry lane keeps",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
+  {
+    app: "getry",
+    lane: "thinking-ladder",
+    role: "the seven-level reasoning ladder: the budget resolution the request injects before the upstream call",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
+  {
+    app: "getry",
+    lane: "router-rotation",
+    role: "the rotation lane: the weighted draw, the cooldown ledger and the session rows the store keeps",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
   // the saddle lanes: the engine's own dispatch surface
-  { app: "saddle", lane: "edge-dispatch", role: "the edge plane dispatch itself: the visitor guard, the lane resolution and the artifact commit through the vault seam", demand: { gpu: false, network: true, isolation: "process", bootbudget: 1500 }, today: "engine-lane" },
+  {
+    app: "saddle",
+    lane: "edge-dispatch",
+    role: "the edge plane dispatch itself: the visitor guard, the lane resolution and the artifact commit through the vault seam",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 1500 },
+    today: "engine-lane",
+  },
   // the stealthhead lanes: the fps platform's simulation walks
-  { app: "stealthhead", lane: "match-simulate", role: "the authoritative match simulation: the fixed-step physics, the reconcile and rewind twin and the seeded spawns", demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 }, today: "app-lane" },
-  { app: "stealthhead", lane: "rank-compute", role: "the ranking walk: the elo ladder, the season batch and the position assignment over the standing rows", demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 }, today: "app-lane" },
-  { app: "stealthhead", lane: "world-bake", role: "the world pre-compilation: the map bake through the render engine — the gpu pass the planned modalities answer", demand: { gpu: true, network: true, isolation: "vm", bootbudget: 1500 }, today: "app-lane" },
-  { app: "stealthhead", lane: "ballistics-balance", role: "the armory balance sweep: falloff, shots-to-kill and ttk validation, offline and deterministic", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "app-lane" },
+  {
+    app: "stealthhead",
+    lane: "match-simulate",
+    role: "the authoritative match simulation: the fixed-step physics, the reconcile and rewind twin and the seeded spawns",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
+  {
+    app: "stealthhead",
+    lane: "rank-compute",
+    role: "the ranking walk: the elo ladder, the season batch and the position assignment over the standing rows",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 },
+    today: "app-lane",
+  },
+  {
+    app: "stealthhead",
+    lane: "world-bake",
+    role: "the world pre-compilation: the map bake through the render engine — the gpu pass the planned modalities answer",
+    demand: { gpu: true, network: true, isolation: "vm", bootbudget: 1500 },
+    today: "app-lane",
+  },
+  {
+    app: "stealthhead",
+    lane: "ballistics-balance",
+    role: "the armory balance sweep: falloff, shots-to-kill and ttk validation, offline and deterministic",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "app-lane",
+  },
   // the vault lanes: the storage engine's object walks
-  { app: "vault", lane: "blob-ingest", role: "the object deposit lane: path and mime validation, the quota gate inside the write transaction and the detach walk", demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
-  { app: "vault", lane: "chunk-window", role: "the chunk window lane: the fixed slicing, the per-window digest and the brotli decision over the byte stream", demand: { gpu: false, network: false, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
-  { app: "vault", lane: "digest-sha256", role: "the digest engine: the sha-256 master and chunk walks and the full re-verification the read path answers", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
-  { app: "vault", lane: "ref-gc", role: "the reference gc lane: the soft-delete tombstones, the ref detach and the orphan sweep the store drives", demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
+  {
+    app: "vault",
+    lane: "blob-ingest",
+    role: "the object deposit lane: path and mime validation, the quota gate inside the write transaction and the detach walk",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
+  {
+    app: "vault",
+    lane: "chunk-window",
+    role: "the chunk window lane: the fixed slicing, the per-window digest and the brotli decision over the byte stream",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
+  {
+    app: "vault",
+    lane: "digest-sha256",
+    role: "the digest engine: the sha-256 master and chunk walks and the full re-verification the read path answers",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
+  {
+    app: "vault",
+    lane: "ref-gc",
+    role: "the reference gc lane: the soft-delete tombstones, the ref detach and the orphan sweep the store drives",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
   // the devthink lanes: the os envelope's command walks
-  { app: "devthink", lane: "chat-sandbox", role: "the chat sandbox lane: the session jail, the tool surface and the exec walks the engine dispatches server-side", demand: { gpu: false, network: true, isolation: "namespace", bootbudget: 1500 }, today: "engine-lane" },
-  { app: "devthink", lane: "llm-gateway", role: "the universal gateway pipeline: model resolution, auth, body building, retry and the streaming byte passthrough", demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
-  { app: "devthink", lane: "stream-parse", role: "the streaming parser: the tolerant sse walk, the payload normalization and the delta tracking over the live stream", demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
-  { app: "devthink", lane: "graph-run", role: "the graph runner: the deterministic stage walk, the retry ladder and the progress views the console draws", demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 }, today: "engine-lane" },
-  { app: "devthink", lane: "mcp-serve", role: "the mcp registry lane: the tool catalog, the approval gates and the transports the server answers", demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 }, today: "engine-lane" },
+  {
+    app: "devthink",
+    lane: "chat-sandbox",
+    role: "the chat sandbox lane: the session jail, the tool surface and the exec walks the engine dispatches server-side",
+    demand: { gpu: false, network: true, isolation: "namespace", bootbudget: 1500 },
+    today: "engine-lane",
+  },
+  {
+    app: "devthink",
+    lane: "llm-gateway",
+    role: "the universal gateway pipeline: model resolution, auth, body building, retry and the streaming byte passthrough",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
+  {
+    app: "devthink",
+    lane: "stream-parse",
+    role: "the streaming parser: the tolerant sse walk, the payload normalization and the delta tracking over the live stream",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
+  {
+    app: "devthink",
+    lane: "graph-run",
+    role: "the graph runner: the deterministic stage walk, the retry ladder and the progress views the console draws",
+    demand: { gpu: false, network: false, isolation: "process", bootbudget: 25 },
+    today: "engine-lane",
+  },
+  {
+    app: "devthink",
+    lane: "mcp-serve",
+    role: "the mcp registry lane: the tool catalog, the approval gates and the transports the server answers",
+    demand: { gpu: false, network: true, isolation: "process", bootbudget: 800 },
+    today: "engine-lane",
+  },
 ]);
 
 /** The official app slugs the catalog covers — the lockstep vocabulary the
@@ -290,4 +507,86 @@ export function workloadreport(): FamilyWorkloadReport {
     applanemigration,
     perapp,
   };
+}
+
+// The lane seat engine (wave W5, the dedup law): every app file of the
+// family once carried its own copy of the seat resolver (the deploy's
+// opt-in walk — local, join or a pinned modality id), the env reader and
+// the lane lookup beside its own lane table. The engine lives here once
+// now: the factory below binds the law — ported verbatim from the app
+// seats the wave folded, zero behavior change — to the app's own slug,
+// env var name and lane table, and the app seats re-export the bound
+// functions under the historical names their batteries pin, so the
+// engine is never duplicated between apps (the family law: the owner
+// exports, the apps import). The seat stays as pure as the catalog: no
+// new imports, no storage, the browser-pure bundle keeps carrying it.
+
+/** One workload lane row as the app seats speak it — the historical
+ * surface name of the engine's own row shape (WorkloadLane above): the
+ * alias keeps every app importer stable while the engine owns the shape
+ * (the dedup law — one row shape, one owner). */
+export type AppWorkloadLane = WorkloadLane;
+
+/** The typed answer of the lane seat: the declaration the deploy reads —
+ * local (the lanes run in the deploy's own process), join (the platform
+ * resolves every lane through the engine's join resolver), or the pinned
+ * modality id the deploy named (validated by the platform's join at
+ * dispatch, never judged here). every answer is honest: an absent or
+ * blank choice answers the declared default, never a silent switch. */
+export type LaneSeatResult =
+  | { ok: true; seat: "local"; sandboxed: false }
+  | { ok: true; seat: "join"; sandboxed: true; pinned: false }
+  | { ok: true; seat: string; sandboxed: true; pinned: true };
+
+/** One app's lane seating — the bound engine the app seats re-export:
+ * the app's own slug, env var name and lane table beside the seat
+ * functions the app surface speaks (the names the batteries pin). */
+export type LaneSeating = {
+  /** The official app slug the seating carries. */
+  APPSLUG: string;
+  /** The environment name the deploy pins the seat through. */
+  SANDBOXLANEENV: string;
+  /** The lane table the seating answers lookups from. */
+  WORKLOADLANES: readonly AppWorkloadLane[];
+  /** Resolves the sandbox lane seat — the deploy's opt-in choice walk. */
+  lanesandbox: (choice: string | undefined) => LaneSeatResult;
+  /** Reads the seat off one environment lookup — the injected env carrier. */
+  lanesandboxfromenv: (lookup: (key: string) => string | undefined) => LaneSeatResult;
+  /** Answers one lane row by lane id — the lookup the app surfaces read. */
+  laneof: (lane: string) => AppWorkloadLane | undefined;
+};
+
+/** Builds one app's lane seating — the lane seat engine of the family
+ * bound to the app's own data: the resolver, the env reader and the lane
+ * lookup ported verbatim from the app files the wave folded, closed over
+ * the env var name and the lane table the app hands in. the app seat
+ * keeps only its data — the slug, the env var name, the lane table — and
+ * re-exports the bound functions under the names its surface always
+ * spoke, so the engine is never duplicated between apps (the family law:
+ * the owner exports, the apps import).
+ *
+ * @param options the app's own seating data: the slug, the env var name
+ * the deploy pins the seat through and the lane table the lookups read.
+ * @returns the bound seating.
+ */
+export function laneseating(options: { slug: string; envvar: string; lanes: readonly AppWorkloadLane[] }): LaneSeating {
+  const SANDBOXLANEENV = options.envvar;
+  const WORKLOADLANES = options.lanes;
+  function lanesandbox(choice: string | undefined): LaneSeatResult {
+    const name = choice?.trim() ?? "";
+    if (name.length === 0 || name === "local") {
+      return { ok: true, seat: "local", sandboxed: false };
+    }
+    if (name === "join") {
+      return { ok: true, seat: "join", sandboxed: true, pinned: false };
+    }
+    return { ok: true, seat: name, sandboxed: true, pinned: true };
+  }
+  function lanesandboxfromenv(lookup: (key: string) => string | undefined): LaneSeatResult {
+    return lanesandbox(lookup(SANDBOXLANEENV));
+  }
+  function laneof(lane: string): AppWorkloadLane | undefined {
+    return WORKLOADLANES.find((row) => row.lane === lane);
+  }
+  return { APPSLUG: options.slug, SANDBOXLANEENV, WORKLOADLANES, lanesandbox, lanesandboxfromenv, laneof };
 }
