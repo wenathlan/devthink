@@ -198,3 +198,55 @@ describe("the source law (both doors ask the same document)", () => {
     expect(windowframe).toContain("FAMILY_BAND_HEIGHT = 800");
   });
 });
+
+/** the vite config source of one app root (the dedupe wall read) */
+function viteConfig(slug: string): string {
+  return readFileSync(join(reporoot, slug, "vite.config.ts"), "utf8");
+}
+
+describe("the single-instance law (the two-react crash of the family renders)", () => {
+  it("every family vite config dedupes react, react-dom and wouter onto one instance", () => {
+    if (!siblingspresent) return;
+    for (const slug of FAMILY_SLUGS) {
+      const config = viteConfig(slug);
+      // the dedupe wall: the cross-app sources (devthink/reveal.ts through
+      // the thin doors, the sibling engine bridges) import react and wouter
+      // from outside the app root, and a resolution answered against a
+      // sibling tree mounts a second physical instance beside the app's
+      // own — the dispatcher of the copy that never renders answers null,
+      // the wouter context hook dies with "cannot read properties of null
+      // (reading 'useContext')" and the app falls to the workbench-failure
+      // face on BOTH doors (the typed url and the panel window alike — the
+      // deployed crash the owner saw as "cortado, nem parece mesmo design")
+      const wall = config.match(/dedupe:\s*\[([^\]]*)\]/);
+      expect(wall, `${slug} carries the dedupe wall`).not.toBeNull();
+      const entries = wall![1];
+      for (const specifier of ["react", "react-dom", "wouter"]) {
+        expect(entries, `${slug} dedupes ${specifier} onto one instance`).toContain(`"${specifier}"`);
+      }
+    }
+  });
+
+  it("the os config carries the same wall — one react, one router, one design", () => {
+    const config = viteConfig("devthink");
+    const wall = config.match(/dedupe:\s*\[([^\]]*)\]/);
+    expect(wall, "the os config carries the family dev bridge dedupe wall").not.toBeNull();
+    const entries = wall![1];
+    for (const specifier of ["react", "react-dom", "wouter"]) {
+      expect(entries, `the os wall dedupes ${specifier}`).toContain(`"${specifier}"`);
+    }
+  });
+
+  it("the reveal door the family re-exports imports react and wouter — the cross-app source the wall answers", () => {
+    if (!siblingspresent) return;
+    const reveal = readFileSync(join(reporoot, "devthink", "reveal.ts"), "utf8");
+    expect(reveal, "the reveal door rides react").toContain('from "react"');
+    expect(reveal, "the reveal door rides the wouter router").toContain('from "wouter"');
+    // the thin door law: the family apps re-export the owner module instead
+    // of carrying a duplicate (the dedup law the wall protects)
+    const cadriadoor = readFileSync(join(reporoot, "cadria", "reveal.ts"), "utf8");
+    expect(cadriadoor, "the cadria thin door re-exports the owner module").toContain(
+      'from "../devthink/reveal.ts"',
+    );
+  });
+});

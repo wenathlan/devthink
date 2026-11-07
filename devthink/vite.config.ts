@@ -607,8 +607,13 @@ export default defineConfig({
      * exactly the way two react copies always die. The dedupe forces every
      * react/react-dom import of every /@fs-served sibling to the one
      * instance this server root holds, so the power clip windows ride the
-     * same fiber tree the desktop rides */
-    dedupe: ["react", "react-dom", "react-dom/client"],
+     * same fiber tree the desktop rides. The wouter seat joins the wall
+     * under the same law (the PR12 renderparity heal): the reveal door the
+     * family thin doors re-export lives in this tree, and a wouter
+     * resolved beside a sibling folder would mount a second router context
+     * the hooks never find — one react, one router, one design on both
+     * doors of every family render. */
+    dedupe: ["react", "react-dom", "react-dom/client", "wouter"],
   },
   root: import.meta.dirname,
   build: {
