@@ -604,9 +604,26 @@ async function validateruntimebaselines(): Promise<void> {
   const transparencymodule = await readFile("transparencypage.ts", "utf8");
   if (!transparencymodule.includes("request<{ transparencyview }") && !transparencymodule.includes("transparencyview"))
     throw new Error("The transparencypage module must render through the transparency view the background serves.");
-  for (const gate of ["runtime", "pentest", "cspaudit", "permdiff"]) {
+  /* the securitytooling consolidation seated the csp audit inside the
+   * security keyword file's lane dispatcher — the standalone cspaudit.ts
+   * script the gate-existence walk of the 1.1.9x era demanded retired with
+   * the fold, so the policy walks the consolidated seat instead: the lane
+   * word the dispatcher answers and the built security bundle the plain
+   * node lane runner resolves both carry the audit the ladder reads. */
+  for (const gate of ["runtime", "pentest", "permdiff"]) {
     if (!(await readFile(`${gate}.ts`, "utf8").catch(() => undefined)))
       throw new Error(`The ${gate} gate script must exist at the app root beside the runtime policy.`);
+  }
+  {
+    const securityseat = await readFile("security.ts", "utf8").catch(() => undefined);
+    if (
+      securityseat === undefined ||
+      !securityseat.includes('"cspaudit"') ||
+      !securityseat.includes("cspaudit")
+    )
+      throw new Error(
+        "The csp audit gate must answer from the security keyword file's lane dispatcher the consolidation seated.",
+      );
   }
 
   /* the 1.1.96 multi agent certification acceptance: the coordination and accounting gate scripts exist beside the runtime policy, the verify workflow runs them after the security gates, the dashdone family module ships with its own declaration entry outside the frozen index surface, and the dashboardpage surface of the one web design file carries every multi agent panel with no remote resource */
