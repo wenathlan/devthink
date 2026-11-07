@@ -32,6 +32,8 @@ export * from "./chunks.ts";
 export * from "./drizzle.ts";
 /** the real object ledger: deposits, verified reads, soft deletes, the orphan sweep and the census. */
 export * from "./objects.ts";
+/** the image pipeline seat (the pr9 law): the magic-byte mime validation, the DPI readers, the neo.img webp standardizer and the real-ledger image deposits. */
+export * from "./imagestore.ts";
 /** the quota engine: the user-defined limit rows and the pure enforcement verdicts. */
 export * from "./quota.ts";
 /** the real digest engine: sha-256 and sha-1 over real bytes, the hex shape gates. */
