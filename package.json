@@ -37,6 +37,7 @@
     "polar": "bash polar.sh start",
     "polarstatus": "bash polar.sh status",
     "polarcode": "bash polar.sh code",
-    "start": "bun run dev"
+    "start": "bun run dev",
+    "wavelaunch": "bun devthink/wavelaunch.ts"
   }
 }
