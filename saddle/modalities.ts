@@ -2492,7 +2492,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "runnerdeno",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["deno"],
     hardening: ["permission-map"],
     boot: "hot",
@@ -2508,10 +2508,18 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 19,
       lane: "runner",
       binary: "deno",
-      // the payload rides the staged program file — the read permission maps
-      // the sandbox alone, the stdin dash never rides (no pipe is written).
+      // the real deno runner: the payload rides the staged program file —
+      // the read permission maps the sandbox alone, the module cache rides
+      // the sandbox tree (DENO_DIR never touches the host home — the same
+      // seat the edge lane carries), the stdin dash never rides (no pipe
+      // is written). the runtime detection rides the spawner's own absence
+      // grammar — the same probehostbinary seat the edge lane table
+      // carries — and a host without the deno binary answers the honest
+      // coded absence, never a faked run (the seat never fakes a runtime).
       argv: ({ file }) => ["deno", "run", "--allow-read=/sandbox", file],
+      env: { DENO_DIR: "/sandbox/denodir" },
       hardening: ["permission-map"],
+      probe: "the host must carry the deno runtime (the runner-deno seat the owner's law 268 charges)",
     }),
   },
   {
@@ -4191,7 +4199,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "storagesqlite",
     lane: "sandbox",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["sqlite"],
     hardening: ["file-quota"],
     boot: "hot",
@@ -4207,27 +4215,60 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 72,
       lane: "sandbox",
       operate: async (request) => {
+        // the real vault roundtrip: the node:sqlite runtime the engine host
+        // carries — without it the seat answers the honest coded absence, and
+        // with it one full roundtrip (create, insert, select, drop) on a
+        // private in-memory table, the readback compared against the payload
+        // character for character (the seat never fakes a database and never
+        // opens a file — the store rides :memory: alone, the caller values
+        // ride parameterized statements, only the seat's own generated table
+        // name rides the statement text).
+        let sqlite: typeof import("node:sqlite");
         try {
-          const sqlite = (await import("node:sqlite")) as typeof import("node:sqlite");
-          const database = new sqlite.DatabaseSync(":memory:");
-          try {
-            database.exec("CREATE TABLE sandbox_artifacts (id INTEGER PRIMARY KEY, payload TEXT)");
-            const statement = database.prepare("INSERT INTO sandbox_artifacts (payload) VALUES (?)");
-            statement.run(request.code.slice(0, 1024));
-            const rows = database.prepare("SELECT id, payload FROM sandbox_artifacts").all();
-            return {
-              stdout: `sqlite vault: ${rows.length} row(s) answered by the in-memory store (node:sqlite, :memory:)`,
-              artifact: { rows: rows.length, engine: "node:sqlite" },
-            };
-          } finally {
-            database.close();
-          }
+          sqlite = (await import("node:sqlite")) as typeof import("node:sqlite");
         } catch (error) {
           throw Object.assign(
             new Error(`the sqlite runtime is absent from this host: ${error instanceof Error ? error.message : String(error)}`),
             { code: "HOST_RUNTIME_ABSENT" },
           );
         }
+        const table = `saddle_sqlite_${Date.now().toString(36)}${Math.floor(Math.random() * 1679616).toString(36)}`;
+        const payload = request.code;
+        let readback = "";
+        const database = new sqlite.DatabaseSync(":memory:");
+        try {
+          database.exec(`CREATE TABLE ${table} (k TEXT PRIMARY KEY, v TEXT)`);
+          database.prepare(`INSERT INTO ${table} (k, v) VALUES (?, ?)`).run("saddle-payload", payload);
+          readback = String(
+            (database.prepare(`SELECT v FROM ${table} WHERE k = ?`).get("saddle-payload") as { v?: unknown } | undefined)?.v ?? "",
+          );
+        } catch (error) {
+          throw Object.assign(
+            new Error(`the sqlite vault refused the roundtrip: ${error instanceof Error ? error.message : String(error)}`),
+            { code: "SQLITE_ROUNDTRIP_FAILED" },
+          );
+        } finally {
+          try {
+            database.exec(`DROP TABLE IF EXISTS ${table}`);
+          } catch {
+            /* the roundtrip already answered; the drop is best effort */
+          }
+          try {
+            database.close();
+          } catch {
+            /* the close is best effort */
+          }
+        }
+        if (readback !== payload) {
+          throw Object.assign(
+            new Error(`the sqlite roundtrip answered ${readback.length} characters for ${payload.length} written`),
+            { code: "SQLITE_ROUNDTRIP_FAILED" },
+          );
+        }
+        return {
+          stdout: `sqlite vault: ${payload.length} characters roundtripped through the node:sqlite in-memory store`,
+          artifact: { rows: 1, engine: "node:sqlite", roundtrip: true, store: ":memory:" },
+        };
       },
     }),
   },
@@ -4427,7 +4468,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "networkdns",
     lane: "sandbox",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["dns"],
     hardening: ["resolver-allowlist"],
     boot: "hot",
@@ -4443,11 +4484,47 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       num: 77,
       lane: "sandbox",
       operate: async (request) => {
+        // the real resolution roundtrip: the node:dns resolver the engine
+        // host carries — one lookup of the pinned well-known name
+        // ("localhost", the name every host resolver answers; the caller
+        // may name another, the roundtrip rides the same resolver call)
+        // with the answered records verified as the honest result (the
+        // non-empty answer, the address, the address family). the seat
+        // never fakes a response and never opens a socket beyond the
+        // resolver call — a host without a working resolver path answers
+        // the honest coded refusal, never a canned answer (the wire
+        // question the builddnsquery builder frames rides the artifact
+        // beside the records the resolver actually answered — the same
+        // grammar the sqlite vault roundtrip carries).
+        const dns = await import("node:dns");
         const inputs = (request.inputs ?? {}) as { domain?: string; qtype?: string };
-        const packet = builddnsquery(inputs.domain ?? "devthink.dev", inputs.qtype ?? "a");
+        const domain = inputs.domain ?? "localhost";
+        const qtype = (inputs.qtype ?? "a").toLowerCase();
+        const packet = builddnsquery(domain, qtype);
+        const family = qtype === "a" ? 4 : qtype === "aaaa" ? 6 : 0;
+        let records: import("node:dns").LookupAddress[];
+        try {
+          records = await dns.promises.lookup(domain, { all: true, family });
+        } catch (error) {
+          throw Object.assign(
+            new Error(
+              `the host resolver refused the ${qtype} roundtrip for ${domain}: ${error instanceof Error ? error.message : String(error)}`,
+            ),
+            { code: "DNS_RESOLUTION_REFUSED" },
+          );
+        }
+        if (
+          records.length === 0 ||
+          records.some((record) => record.address.length === 0 || (record.family !== 4 && record.family !== 6))
+        ) {
+          throw Object.assign(
+            new Error(`the dns roundtrip answered ${records.length} records for ${domain} — the honest result never rides a malformed answer`),
+            { code: "DNS_ROUNDTRIP_FAILED" },
+          );
+        }
         return {
-          stdout: `dns: the ${inputs.qtype ?? "a"} query for ${inputs.domain ?? "devthink.dev"} answered as a ${packet.length / 2}-byte wire packet`,
-          artifact: { packet, domain: inputs.domain ?? "devthink.dev", qtype: inputs.qtype ?? "a" },
+          stdout: `dns resolver: ${domain} resolved ${records.length} records through the node:dns host resolver (the ${qtype} question, the honest roundtrip)`,
+          artifact: { packet, domain, qtype, records, resolved: true, resolver: "node:dns" },
         };
       },
     }),

@@ -75,7 +75,7 @@ export function WindowEdgeChrome({ maximized, onMinimize, onMaximize, onClose }:
 
   return (
     <div
-      className={`fixed z-[80] flex min-w-0 items-center gap-3 overflow-hidden border-b border-hairline bg-canvas/80 pl-3.5 pr-0 backdrop-blur-xl backdrop-saturate-150 transition-[transform,opacity] duration-200 ease-fluent motion-reduce:transition-none ${
+      className={`fixed z-(--z-bar) flex min-w-0 items-center gap-3 overflow-hidden border-b border-hairline bg-canvas/80 pl-3.5 pr-0 backdrop-blur-xl backdrop-saturate-150 transition-[transform,opacity] duration-200 ease-fluent motion-reduce:transition-none ${
         maximized ? "inset-x-0 top-0" : "top-3 left-[max(12px,calc(50%_-_700px))] right-[max(12px,calc(50%_-_700px))]"
       } ${visible ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-full opacity-0"}`}
       style={{ height: "var(--win-titlebar-h)" }}

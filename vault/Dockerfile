@@ -35,6 +35,11 @@ RUN apk add --no-cache python3 make g++ \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
  && pnpm install --frozen-lockfile --ignore-scripts
 COPY . .
+# The devthink sibling of the family law: vault/routerbase.ts re-exports
+# the family routerBase from ../devthink/routerbase.ts, so the devthink
+# sources land at /devthink where that re-export answers (the staged
+# vaultbuildctx closure the container lane resolves carries them).
+COPY devthink/ /devthink
 RUN pnpm build \
  && sh -c 'mkdir /site && for f in index.html *.js *.css *.webmanifest *.svg *.ico *.png *.woff2 _headers _redirects robots.txt sitemap.xml; do cp "$f" /site/ 2>/dev/null || true; done' 
 

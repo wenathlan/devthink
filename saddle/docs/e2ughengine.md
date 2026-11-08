@@ -220,7 +220,7 @@ The CI pipeline enforces the flat contract: one concern per file with 20-25 rela
 | 42 | `docs/viability.md` | the proof, research methodology, 145-entry bibliography and roadmap appendices A-C |
 | 43 | `docs/alternatives.md` | ten alternative sandbox families compared against the engine |
 | 43b | `docs/optimization.md` | the build-pipeline optimization roadmap (cross-compilation, prebuilt QEMU/Mesa layers, runner strategy) for the slow multi-arch grid |
-| 44 | `test/` | node:test suite executed by ci.yml with `node --test` (153 cases, including CI-gate replay and end-to-end simulation suites) |
+| 44 | `test/` | vitest suite executed by ci.yml (`npm test`, `vitest run` over `test/*.test.ts`; 153 cases, including CI-gate replay and end-to-end simulation suites) |
 | 45 | `web/` | the web node (v7): `index.html` terminal sandbox, `login.html`/`register.html`/`dashboard.html` auth pages, `sandbox.js` browser-pure engine port (20 commands), `localauth.js` static-edge browser accounts (login/register/dashboard keep working on github pages with no api; accounts are mirrored to IndexedDB so partial clears never lose them, the dashboard carries backup/restore keyfile buttons, and the CODEOWNERS admins iakadion + akadion are seeded automatically with the shared bootstrap password - surviving any storage reset), `server.js` self-hosted node:http API (`/api/v1` sandboxes and exec), `db.js` sqlite persistence layer, `auth.js` scrypt password hashing with cookie sessions, `mesh.js` HMAC-signed node-to-node calls, `package.json`/`Dockerfile` (image `ghcr.io/wenathlan/e2ugh`; node pinned by the root `.nvmrc`), `schema.prisma`/`init.sql` database definition kept flat per the two-level contract, `mime.types`, `vercel.json`/`netlify.toml` static deploy without functions, `caddyfile` self-host proxy for devthink.pro, `readme.md` web docs |
 | 46 | `LICENSE` | full MIT text (Copyright (c) 2026 wenathlan) |
 
@@ -327,7 +327,7 @@ docker run --rm -p 37810:37810 -e E2UGH_DB=/data/e2ugh.db -v e2ughdata:/data \
 
 Five workflows gate the repository, all pinned to action releases verified on 2026-08-22:
 
-- **ci.yml** (every push and pull request) - six gates: Biome 2.5.11 lint and format; `tsc --noEmit` with TypeScript 7.0.2 on a Node 24/26 matrix; the Node built-in test runner over the dedicated `test/` suite (153 node:test cases); a build gate; the flat-structure contract (flat tree, no deep nesting, no duplicated content via md5); strict JSON schema validation of every tracked data file.
+- **ci.yml** (every push and pull request) - six gates: Biome 2.5.11 lint and format; `tsc --noEmit` with TypeScript 7.0.2 on a Node 24/26 matrix; the vitest runner over the dedicated `test/` suite (153 test cases); a build gate; the flat-structure contract (flat tree, no deep nesting, no duplicated content via md5); strict JSON schema validation of every tracked data file.
 - **hardware variants** (publishghcr.yml matrix) - one dockerfile, three curated profiles baked at build time so operators pull exactly the flavor they need: `ghcr.io/wenathlan/e2ugh:latest` (max: EPYC 9965 192c/384t, 1 TiB plan, 8x B200), `:balanced` (Threadripper PRO 9995WX 96c/192t, 512 GiB, 2x B200) and `:lite` (Ryzen 9 9950X3D 16c/32t, 128 GiB, 1x RTX 5090); every profile tag also carries semver and sha suffixes, and the runtime overlay (`VHE_TOTALRAM_GB`, `VHE_CPUS`, `VHE_GPU_PROFILE` environment variables) still lets any variant report any catalog identity up to 18 TiB at run time - the baked profile is the default identity, never a ceiling.
 - **publishghcr.yml** (the combined container pipeline; main, tags and releases) - per-architecture validation legs (`linux/amd64` native; `linux/arm64`, `linux/ppc64le` and `linux/s390x` under QEMU user emulation) that validate the live stack inside the built image: `clinfo` must report Rusticl OpenCL 3.1 on llvmpipe, `vulkaninfo --summary` must find lavapipe Vulkan 1.4, and Xvfb + `glxinfo` must report llvmpipe OpenGL 4.6, executed with `--memory-swap=-1 --shm-size=2g`. On releases, production builds push per-arch images by digest (the max profile ships the four-arch registry surface: amd64, arm64, ppc64le, s390x) with provenance `mode=max` and SBOM attestations before `docker buildx imagetools` assembles the per-profile manifest indexes.
 - **release.yml** (version tags and releases) - three publications: the multi-arch GHCR image, the npm package with `--provenance --access public` (zero runtime dependencies), and a maximum-compression (level 9) source zip with SHA-256 checksums.
@@ -384,7 +384,7 @@ The test contract is the Node built-in runner: no Jest, no third-party harness, 
 # from a checkout (Node 24+)
 npm run typecheck                 # tsc --noEmit, the TypeScript 7.0.2 gate
 npm run lint                      # Biome 2.5.11
-node --test 'test/*.test.ts'      # the node:test suite (153 tests) - the glob form ci.yml uses
+npm test                          # the vitest suite (153 tests) - vitest run over test/*.test.ts, the form ci.yml uses
 
 # from the published image (GHCR, linux/amd64 and linux/arm64)
 docker run --rm --memory-swap=-1 --shm-size=2g \
@@ -424,7 +424,7 @@ The `test/` suite (Node 26.7.0 in CI, Node 24+ locally, `node:assert/strict`, 15
 | SADDLE v5 / v6 (Meta TS) | 2026-08-22 wave | `src_core_orchestrator.ts` (2080 lines) and `coreorchestrator.ts` (1283 lines): RBAC, NUMA scheduler, balloon, SR-IOV, passage protocols, quotas, preemption, leader election, OTel exporter; plus `pipelinememorypassage.ts` host-aware memory planning | Unique subsystems absorbed into `orchestrator.ts` (5238 lines) and `virtualmemory.ts`; duplicated buses/state machines/metrics collapsed into one of each |
 | Virtual Hardware Engine v5 (e2ugh) | 2026-08-22, English | The 44-file public repo generation: 9 TS modules, 11 JSONs, 4 workflows, 10 English docs with ~120 cited sources | Baseline of the v2 code tree; modules renamed and extended (hardware -> virtualcpu, memory -> virtualmemory) |
 | e2ugh v2 | 2026-08-22+ | The merge: 57 CPUs, 19 GPUs + APUs, one event bus (51 typed topics), one 15-state lifecycle, one metrics store | Baseline of the v3 redistribution |
-| e2ugh v3-v9 (this repo) | 2026-08-23+ | The rebrand and redistribution: github.com/wenathlan/e2ugh, package 1.2.1, `future.ts` decomposed into `scheduler.ts` and `compute.ts` (checkpoint plans into `virtualization.ts`, post-quantum into `security.ts`), a `test/` node:test suite, and the corrected version ledger (kernel 7.1.9/6.18.45, edk2-stable202605, wgpu 30.x, Spin 3.6.0, containerd 2.3.4, WireGuard via kernel mainline) | Current |
+| e2ugh v3-v9 (this repo) | 2026-08-23+ | The rebrand and redistribution: github.com/wenathlan/e2ugh, package 1.2.1, `future.ts` decomposed into `scheduler.ts` and `compute.ts` (checkpoint plans into `virtualization.ts`, post-quantum into `security.ts`), a `test/` vitest suite, and the corrected version ledger (kernel 7.1.9/6.18.45, edk2-stable202605, wgpu 30.x, Spin 3.6.0, containerd 2.3.4, WireGuard via kernel mainline) | Current |
 
 Full per-generation detail, including the verification reports for each wave, is preserved in `docs/viability.md`.
 

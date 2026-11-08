@@ -88,7 +88,7 @@ export function CommandPalette({ open, onClose, onAction }: CommandPaletteProps)
         onMouseDown={onClose}
       />
       <section
-        className="command-palette acrylic-panel fixed top-[12vh] left-1/2 z-[21] w-[min(620px,calc(100vw-32px))] translate-x-[-50%] animate-palette-in overflow-hidden rounded-lg text-ink"
+        className="command-palette acrylic-panel fixed top-[12vh] left-1/2 z-(--z-float) w-[min(620px,calc(100vw-32px))] translate-x-[-50%] animate-palette-in overflow-hidden rounded-lg text-ink"
         role="dialog"
         aria-modal="true"
         aria-label={osText("palette.dialog.aria")}

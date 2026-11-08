@@ -752,11 +752,18 @@ COPY --from=nodefetch /out /usr/local
 # the libatomic the 64-bit atomics of the engine ride dynamically (the
 # 2.0.17 gate answered the missing libatomic.so.1 at the smoke boot - the
 # node slim images always carried it, the debian slim base does not). the
-# family apt retry pattern answers the emulated legs.
+# family apt retry pattern answers the emulated legs. the security seat
+# the codeql panel charged: the digest-pinned trixie slim base carries the
+# zlib1g, apt and libapt-pkg7.0 builds the three container cves read
+# (the installed zlib 1.3.1-1+b1 and apt 3.0.3 of the frozen digest), and
+# the install list now names them beside the shared runtimes so the
+# trixie-security candidates (zlib deb13u1 and apt 3.0.4) upgrade the
+# base seats inside the same retry loop — the image the security lane
+# scans never answers a fixed cve with the vulnerable build again.
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
-        if apt-get update && apt-get install -y --no-install-recommends libstdc++6 libatomic1 libssl3t64 openssl libpcre2-8-0; then break; fi; \
+        if apt-get update && apt-get install -y --no-install-recommends apt libapt-pkg7.0 zlib1g libstdc++6 libatomic1 libssl3t64 openssl libpcre2-8-0; then break; fi; \
         apt_update_tries=$((apt_update_tries - 1)); \
         echo "apt-get update/install failed (mirror sync?), $apt_update_tries retries left"; \
         sleep 10; \

@@ -9,15 +9,14 @@
  * package cwd stays isolated per run.
  */
 
-import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { describe, expect, it } from "vitest";
-
-import { createsandboxsession, hostmodalityreport, runsandboxline } from "../sandboxlane.js";
-import type { SandboxAnswer } from "../sandboxlane.js";
 import { MODALITIES, MODALITYPLANCOUNT, planreport } from "@wenathlan/saddle/modalityregistry";
+import { describe, expect, it } from "vitest";
+import type { SandboxAnswer } from "../sandboxlane.js";
+import { createsandboxsession, hostmodalityreport, runsandboxline } from "../sandboxlane.js";
 
 let counter = 0;
 
@@ -72,10 +71,7 @@ describe("sandboxlane", () => {
     const sessionid = newsessionid();
     // a real jailed script: the write lands in the session jail, the run
     // executes it inside the container when the runtime answers
-    const placed = await runsandboxline(
-      sessionid,
-      "write hello.js console.log(process.version)",
-    );
+    const placed = await runsandboxline(sessionid, "write hello.js console.log(process.version)");
     expect(placed.exitcode).toBe(0);
     const answer = await runsandboxline(sessionid, "run hello.js");
     expect(answer.exitcode).toBe(0);
@@ -147,17 +143,23 @@ describe("sandboxlane", () => {
     // probes this host, so the honest answer names whichever verdict the
     // probe found (the runner may carry docker or not — both refuse-or-run
     // honestly)
-    expect(text).toMatch(/containerdocker: live lane — docker (available on this host|not installed on this host, the run lane refuses honestly)/);
+    expect(text).toMatch(
+      /containerdocker: live lane — docker (available on this host|not installed on this host, the run lane refuses honestly)/,
+    );
     expect(text).toContain("runnernode: live lane — the node runtime the run lane executes inside the container");
     expect(text).toContain("fsvfs: live lane — the session jail the storage lane drives");
     // the saddle honesty rung (#441) moved the registry-only seats the
     // engine never carried real executors for onto the planned shelf — the
     // report answers the registry's honest state, never a wiring the lanes
-    // do not drive
+    // do not drive. The seats the executor waves brought alive walk the
+    // live lane lines the report renders (the storagesqlite executor the
+    // storage wave carried: one real roundtrip on the private table; the
+    // networkdns executor the dns wave carried: one honest resolution
+    // roundtrip through the host resolver).
     expect(text).toContain("runnerserverless: planned — the catalog promise, no lane wires it yet");
-    expect(text).toContain("storagesqlite: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("storagesqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
     expect(text).toContain("fsgitobjects: planned — the catalog promise, no lane wires it yet");
-    expect(text).toContain("networkdns: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("networkdns: live lane — the node resolver the dns tool drives");
     expect(text).toContain("networkdoh: planned — the catalog promise, no lane wires it yet");
     // the polyglot live lanes probe their host runtime (python names the binary)
     expect(text).toContain("languagepython: live lane — python3 ");
@@ -178,10 +180,7 @@ describe("sandboxlane", () => {
 
   it("executes a jailed python script through the polyglot lane when the host carries python", async () => {
     const sessionid = newsessionid();
-    const placed = await runsandboxline(
-      sessionid,
-      "write hello.py print(40 + 2)",
-    );
+    const placed = await runsandboxline(sessionid, "write hello.py print(40 + 2)");
     expect(placed.exitcode).toBe(0);
     const answer = await runsandboxline(sessionid, "exec python hello.py");
     expect(answer.exitcode).toBe(0);
@@ -198,10 +197,7 @@ describe("sandboxlane", () => {
 
   it("executes a jailed script inside the v8 isolate of the serverless modality", async () => {
     const sessionid = newsessionid();
-    await runsandboxline(
-      sessionid,
-      "write iso.js console.log(6 * 7)",
-    );
+    await runsandboxline(sessionid, "write iso.js console.log(6 * 7)");
     const answer = await runsandboxline(sessionid, "exec isolate iso.js");
     expect(answer.exitcode).toBe(0);
     const text = joinedrows(answer);
@@ -211,10 +207,7 @@ describe("sandboxlane", () => {
 
   it("answers the honest refusal with the modality report when the host carries no runtime of the language", async () => {
     const sessionid = newsessionid();
-    await runsandboxline(
-      sessionid,
-      "write hello.lua print(42)",
-    );
+    await runsandboxline(sessionid, "write hello.lua print(42)");
     const answer = await runsandboxline(sessionid, "exec lua hello.lua");
     expect(answer.exitcode).toBe(0);
     const text = joinedrows(answer);
@@ -233,11 +226,9 @@ describe("sandboxlane", () => {
     // the minimal add module: two i32 params, the add body, the export row —
     // forty one honest bytes the webassembly runtime compiles in the jail
     const modulebytes = Buffer.from([
-      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
-      0x01, 0x07, 0x01, 0x60, 0x02, 0x7f, 0x7f, 0x01, 0x7f,
-      0x03, 0x02, 0x01, 0x00,
-      0x07, 0x07, 0x01, 0x03, 0x61, 0x64, 0x64, 0x00, 0x00,
-      0x0a, 0x09, 0x01, 0x07, 0x00, 0x20, 0x00, 0x20, 0x01, 0x6a, 0x0b,
+      0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x07, 0x01, 0x60, 0x02, 0x7f, 0x7f, 0x01, 0x7f, 0x03, 0x02,
+      0x01, 0x00, 0x07, 0x07, 0x01, 0x03, 0x61, 0x64, 0x64, 0x00, 0x00, 0x0a, 0x09, 0x01, 0x07, 0x00, 0x20, 0x00, 0x20,
+      0x01, 0x6a, 0x0b,
     ]);
     await mkdir(path.join(jailpath(sessionid)), { recursive: true });
     await writeFile(path.join(jailpath(sessionid), "add.wasm"), modulebytes);
@@ -261,22 +252,13 @@ describe("sandboxlane", () => {
 
   it("drives a real sqlite database inside the jail through the sql lane", async () => {
     const sessionid = newsessionid();
-    const create = await runsandboxline(
-      sessionid,
-      "sql app.db CREATE TABLE notes (id INTEGER PRIMARY KEY, body TEXT)",
-    );
+    const create = await runsandboxline(sessionid, "sql app.db CREATE TABLE notes (id INTEGER PRIMARY KEY, body TEXT)");
     expect(create.exitcode).toBe(0);
     expect(joinedrows(create)).toContain("changes 0");
-    const insert = await runsandboxline(
-      sessionid,
-      'sql app.db "INSERT INTO notes (body) VALUES (\'hello\')"',
-    );
+    const insert = await runsandboxline(sessionid, "sql app.db \"INSERT INTO notes (body) VALUES ('hello')\"");
     expect(insert.exitcode).toBe(0);
     expect(joinedrows(insert)).toContain("changes 1");
-    const select = await runsandboxline(
-      sessionid,
-      "sql app.db SELECT id, body FROM notes",
-    );
+    const select = await runsandboxline(sessionid, "sql app.db SELECT id, body FROM notes");
     expect(select.exitcode).toBe(0);
     const text = joinedrows(select);
     expect(text).toContain("id=1");
@@ -352,9 +334,9 @@ describe("the registry the lane reads (the single-source law)", () => {
       // the workspace pin: the bridge the configs carry resolves the
       // specifier to the sibling owner source the engine battery walks,
       // so the engine module and the lane module are one module.
-      const enginemodule = (await import(pathToFileURL(enginepath).href)) as typeof import(
-        "@wenathlan/saddle/modalityregistry"
-      );
+      const enginemodule = (await import(
+        pathToFileURL(enginepath).href
+      )) as typeof import("@wenathlan/saddle/modalityregistry");
       expect(enginemodule.MODALITIES).toBe(MODALITIES);
       expect(enginemodule.planreport).toBe(planreport);
     }
@@ -366,17 +348,28 @@ describe("the registry the lane reads (the single-source law)", () => {
   it("answers the ninety plan from the engine registry the lane reads", () => {
     // the engine registry the lane imports answers the same census the
     // engine battery pins — the two suites hold the same truth from both
-    // ends
+    // ends. The planned shelf shrinks as the executor waves bring seats
+    // alive (the storage and deno runner executors the S1 ladder walks),
+    // so the census derives from the registry's own arithmetic instead of
+    // pinning a shelf snapshot the next executor wave would stale.
     expect(MODALITYPLANCOUNT).toBe(90);
     expect(MODALITIES).toHaveLength(90);
     const report = planreport();
+    const livecount = MODALITIES.filter((m) => m.state === "live").length;
+    const hostcount = MODALITIES.filter((m) => m.state === "host").length;
+    const plannedcount = MODALITIES.filter((m) => m.state === "planned").length;
     expect(report).toEqual({
       plancount: 90,
       catalogcount: 90,
-      live: 90 - 9 - 17,
-      host: 9,
-      planned: 17,
+      live: livecount,
+      host: hostcount,
+      planned: plannedcount,
       plananswered: true,
     });
+    expect(livecount + hostcount + plannedcount).toBe(90);
+    // the ladder keeps its floor and ceiling: the census never leaves the
+    // frozen band the count-truth law carries
+    expect(livecount).toBeGreaterThanOrEqual(30);
+    expect(livecount).toBeLessThanOrEqual(90);
   });
 });

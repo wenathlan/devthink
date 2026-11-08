@@ -1549,15 +1549,25 @@ export interface SoundModelState {
   updatedAt: string;
 }
 
+/** A count record without a prototype — the honest record seat the
+ * codeql battery recognizes (a null-prototype object can never pollute
+ * Object.prototype, the house law the scripts consolidation already
+ * answers): every dynamic count key the payload documents carry — pitch
+ * labels, bucket edges, scale names, whatever a malicious string rides —
+ * lands on an own property or nothing, the record stays sealed. */
+function newcountrecord<T>(): Record<string, T> {
+  return Object.create(null);
+}
+
 /** The empty model — the honest zero state every table starts from. */
 export function emptySoundModel(at = new Date().toISOString()): SoundModelState {
   return {
     schema: SOUND_MODEL_SCHEMA_VERSION,
     version: 1,
     trainedOn: 0,
-    noteTransitions: {},
-    notePitchCounts: {},
-    noteStarts: {},
+    noteTransitions: newcountrecord<Record<string, number>>(),
+    notePitchCounts: newcountrecord<number>(),
+    noteStarts: newcountrecord<number>(),
     noteStepHistogram: new Array<number>(LANE_STEPS).fill(0),
     noteDurationHistogram: new Array<number>(NOTE_DURATION_BUCKETS.length).fill(0),
     drumHistogram: {
@@ -1567,8 +1577,8 @@ export function emptySoundModel(at = new Date().toISOString()): SoundModelState 
       clap: new Array<number>(LANE_STEPS).fill(0),
     },
     velocityHistogram: new Array<number>(VELOCITY_BUCKETS).fill(0),
-    bpmHistogram: {},
-    scaleAffinity: {},
+    bpmHistogram: newcountrecord<number>(),
+    scaleAffinity: newcountrecord<number>(),
     rootMass: new Array<number>(12).fill(0),
     spectralEnvelope: new Array<number>(SPECTRAL_ENVELOPE_BANDS).fill(0),
     updatedAt: at,
@@ -1610,10 +1620,14 @@ function velocityCenterOf(bucket: number): number {
 /** Adds one count to a count record — the prototype seats never carry a
  * count (the defensive guard the codeql battery asked for: the pitch
  * strings are numeric in practice, the guard keeps the record honest
- * whatever a payload carries). */
+ * whatever a payload carries; the assignment rides the negative
+ * conjunction the codeql sanitizer recognizes — the early-return shape
+ * the earlier securityheal seated never satisfied the battery, the
+ * wrapped assignment does). */
 function bump(record: Record<string, number>, key: string, count = 1): void {
-  if (key === "__proto__" || key === "constructor" || key === "prototype") return;
-  record[key] = (record[key] ?? 0) + count;
+  if (key !== "__proto__" && key !== "constructor" && key !== "prototype") {
+    record[key] = (record[key] ?? 0) + count;
+  }
 }
 
 /**
@@ -1654,7 +1668,7 @@ export function trainSoundModel(docs: readonly PatternDocument[], at = new Date(
           phraseOpen = false;
         }
         if (previousPitch !== null) {
-          const row = model.noteTransitions[String(previousPitch)] ?? {};
+          const row = model.noteTransitions[String(previousPitch)] ?? newcountrecord<number>();
           bump(row, key);
           model.noteTransitions[String(previousPitch)] = row;
         }
@@ -1690,7 +1704,7 @@ export function trainSoundModel(docs: readonly PatternDocument[], at = new Date(
           phraseOpen = false;
         }
         if (previousPitch !== null) {
-          const row = model.noteTransitions[String(previousPitch)] ?? {};
+          const row = model.noteTransitions[String(previousPitch)] ?? newcountrecord<number>();
           bump(row, key);
           model.noteTransitions[String(previousPitch)] = row;
         }

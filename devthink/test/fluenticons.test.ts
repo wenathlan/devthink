@@ -193,13 +193,15 @@ describe("the debonair cut law (the aligned crop after the sonic deck)", () => {
   });
 
   it("the whitewash center fades symmetrically — the same inset on both ends at every tier", () => {
+    /* the mask ink rides the seat now (the soltoklaws pure-literal purge):
+     * the symmetric fade law is the same, the deep ink answers var(--mask-ink) */
     const wash = landingrule(".ribbon-whitewash-center");
     expect(wash).toContain(
-      "linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%)",
+      "linear-gradient(to right, transparent 0, var(--mask-ink) 28px, var(--mask-ink) calc(100% - 28px), transparent 100%)",
     );
     const wide = solcss.slice(solcss.indexOf("@media (min-width: 640px)"));
     expect(wide).toContain(
-      "linear-gradient(to right, transparent 0, #000 42px, #000 calc(100% - 42px), transparent 100%)",
+      "linear-gradient(to right, transparent 0, var(--mask-ink) 42px, var(--mask-ink) calc(100% - 42px), transparent 100%)",
     );
   });
 

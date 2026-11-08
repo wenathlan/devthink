@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { getIdentity, pairingStatus } from "../../account.js";
 import type { DevThinkConfig, DevThinkPaths } from "../../config.js";
 import { osText } from "../../os.ts";
-import { consoleCategories, label } from "../../labels.ts";
+import { consoleCategories } from "../../labels.ts";
+import { label } from "../../uistore.ts";
 import { listProviders } from "@wenathlan/getry/providers";
 import { listSessions, readPreferences, type Session, savePreference } from "../../storage.js";
 import type { ChatEvent } from "@wenathlan/getry/streaming";
@@ -15,8 +16,9 @@ import {
   workspaceDestinations,
 } from "../../workspace.js";
 
-/* the category rail and every boot line ride the label store (labels.ts):
- * the seven console.categories tokens and the console.* manifest rows are
+/* the category rail and every boot line ride the label store (the
+ * uistore accessor — the store the manifest ingests into): the seven
+ * console.categories tokens and the console.* manifest rows are
  * the copy of the face — no literal stays here, and the block art of
  * the first cut is gone with the minimal-text law (the boot face answers
  * the name, the one-line tagline and the hint — nothing else) */

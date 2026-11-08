@@ -31,7 +31,7 @@ import {
   MicroscopeRegular as Telescope,
 } from "@fluentui/react-icons";
 import { chatGreetingForHour, chatSuggestions, chatText } from "../../labels.ts";
-import { label } from "../../labels.ts";
+import { label } from "../../uistore.ts";
 import { cx, GATEWAY_MODEL } from "../../chatstate.ts";
 
 type Suggestion = {

@@ -13,7 +13,7 @@
 // beside the working directory) — importing the barrel boots the engine. A
 // consumer that wants the pure surfaces without the connections rides the
 // deep specifiers instead: ./storage, ./sha, ./chunks, ./objects,
-// ./buckets, ./retention, ./labels, ./onboardingstate, ./family,
+// ./buckets, ./retention, ./labels, ./onboardingstate, ./statestore, ./family,
 // ./hometypes, ./utils.
 //
 // the published form is the source itself (the debonair/getry library

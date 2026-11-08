@@ -507,6 +507,16 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: devthink/.nvmrc
+      - name: Pin the npm rung the consumer smoke rides
+        # the family pin law (the same seat the gate ladder answers — the
+        # codeql pinned-dependencies battery charged the consumer smoke's
+        # floating npm): the runner's default npm never walks the pack /
+        # init / install lanes below, the engines floor of the root
+        # manifest answers the one npm rung the consumer steps carry.
+        run: |
+          set -euo pipefail
+          npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
+          npm install --global "npm@${npm_version}"
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Install the gateway family dependencies

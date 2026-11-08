@@ -52,7 +52,7 @@ import { loadBrowserSession } from "../../storage.ts";
 import { GATEWAY_REQUIRED_COPY, GATEWAY_SEND_NOTICE, useGatewayRegistration } from "../../gateway.ts";
 import { useIsMobile } from "../../useismobile.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
-import { label } from "../../labels.ts";
+import { label } from "../../uistore.ts";
 import { CANVAS_OPEN_EVENT, CanvasPane, type CanvasDoc, type CanvasOpenDetail } from "./ChatCanvaspane.tsx";
 import { Composer } from "./ChatComposer.tsx";
 import { type SandboxFileChange, SandboxPane, type SandboxRunner } from "./ChatSandboxpane.tsx";

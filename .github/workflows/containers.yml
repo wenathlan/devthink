@@ -299,10 +299,30 @@ jobs:
         # sibling registers). the workbench builds from the repository
         # root (the family-context law its Dockerfile header records)
         # and the self-contained vault engine keeps its own folder.
-        if: steps.published.outputs.skip != 'true' && matrix.app != 'devthink' && matrix.app != 'vault'
+        if: steps.published.outputs.skip != 'true' && matrix.app != 'devthink'
         shell: bash
         run: |
           set -euo pipefail
+          if [ "${{ matrix.app }}" = "vault" ]; then
+            # the vault closure heal: the vault engine owned its own
+            # folder until the routerbase consolidation seated the
+            # family routerBase re-export inside devthink/routerbase.ts,
+            # so the closure now rides beside the devthink sources the
+            # same sibling law every family home answers (vault at the
+            # context root - the shape the vault Dockerfile COPYs read -
+            # and the devthink sources nested under devthink/, never
+            # installed, the .ts re-export read directly).
+            rm -rf vaultbuildctx
+            mkdir -p vaultbuildctx/devthink
+            cp -a vault/. vaultbuildctx/
+            cp -a devthink/. vaultbuildctx/devthink/
+            rm -rf vaultbuildctx/devthink/.git \
+                   vaultbuildctx/devthink/node_modules \
+                   vaultbuildctx/devthink/dist \
+                   vaultbuildctx/devthink/build
+            printf '%s\n' 'devthink/.git' 'devthink/node_modules' '**/node_modules' > vaultbuildctx/.dockerignore
+            exit 0
+          fi
           rm -rf familybuildctx
           mkdir -p familybuildctx/app
           cp -a "${{ matrix.app }}/." familybuildctx/app/
@@ -312,6 +332,16 @@ jobs:
           rm -rf familybuildctx/vault/node_modules \
                  familybuildctx/vault/dist \
                  familybuildctx/vault/build
+          # the routerbase sibling every family home answers: each app's
+          # routerbase.ts re-exports the family routerBase from
+          # ../devthink/routerbase.ts, so the devthink sources ride the
+          # base context beside the app and the vault (sources only -
+          # the same never-installed law the vault sibling carries).
+          mkdir -p familybuildctx/devthink
+          cp -a devthink/. familybuildctx/devthink/
+          rm -rf familybuildctx/devthink/node_modules \
+                 familybuildctx/devthink/dist \
+                 familybuildctx/devthink/build
           case "${{ matrix.app }}" in
             argan|cobaia|stealthhead)
               # the copy-law pair the base staging already answers (app +
@@ -352,21 +382,23 @@ jobs:
               ;;
             getry)
               # the gateway sibling map: the vault copy law, the saddle
-              # modality registry, the devthink config bridges and the
-              # debonair route table all ride the context whole
-              mkdir -p familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
+              # modality registry and the debonair route table ride the
+              # context whole (the devthink config bridges the gateway
+              # aliases resolve answer the base staging every family
+              # home now carries - the duplicated devthink seat the
+              # routerbase heal retired)
+              mkdir -p familybuildctx/saddle familybuildctx/debonair
               cp -a saddle/. familybuildctx/saddle/
-              cp -a devthink/. familybuildctx/devthink/
               cp -a debonair/. familybuildctx/debonair/
               rm -rf familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
-                     familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
                      familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
               ;;
           esac
       - name: resolve the context shape
         # the workbench owns the repository-root context the family law
-        # records and the vault engine owns its own closure, while every
-        # site home answers the staged familybuildctx shape
+        # records, the vault engine rides the staged vaultbuildctx
+        # closure (the devthink sibling the routerbase law charges),
+        # while every site home answers the staged familybuildctx shape
         id: resolve-context
         if: steps.published.outputs.skip != 'true'
         shell: bash
@@ -374,7 +406,7 @@ jobs:
           set -euo pipefail
           case "${{ matrix.app }}" in
             devthink) echo "context=." >> "$GITHUB_OUTPUT" ;;
-            vault) echo "context=./vault" >> "$GITHUB_OUTPUT" ;;
+            vault) echo "context=vaultbuildctx" >> "$GITHUB_OUTPUT" ;;
             *) echo "context=familybuildctx" >> "$GITHUB_OUTPUT" ;;
           esac
       - name: resolve the build args (the version and revision stamps)
@@ -757,14 +789,16 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf saddlebuildctx
-          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault saddlebuildctx/devthink
           cp -a saddle/. saddlebuildctx/saddle/
           cp -a vault/. saddlebuildctx/vault/
-          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
-                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
-                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+          cp -a devthink/. saddlebuildctx/devthink/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git saddlebuildctx/devthink/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules saddlebuildctx/devthink/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist saddlebuildctx/devthink/dist \
+                 saddlebuildctx/devthink/build \
                  saddlebuildctx/vault/test
-          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+          printf '%s\n' 'saddle/.git' 'vault/.git' 'devthink/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build and push the multi-arch lane image
         # the per-leg guard: a leg whose tag already ships on the
@@ -970,7 +1004,16 @@ jobs:
         run: |
           set -euo pipefail
           cd saddle
-          bun install --frozen-lockfile --ignore-scripts
+          # the registry law (the webpack 403 heal): the job setup routes
+          # the default registry to the github packages mirror for the
+          # sibling publish leg, but the locked family install answers
+          # the public npmjs registry — the @wenathlan envelopes ship
+          # there publicly while the mirror 403s the runner token the
+          # private seat never certified, so the install line carries
+          # its own registry answer (the env never leaves this one
+          # command; the publish legs keep their explicit --registry
+          # flags below, the family law they always answered).
+          NPM_CONFIG_REGISTRY=https://registry.npmjs.org/ bun install --frozen-lockfile --ignore-scripts
           bun run build:engine
           bun build ./index.ts --target=node --format=esm --outfile=distpackage/index.js \
             --external @babel/core \

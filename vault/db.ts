@@ -15,7 +15,16 @@ import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 import { openStorageLane } from "./storage.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
-export const tables = ["keys", "payloads", "onboarding_states", "labels", "accounts", "databases", "apikeys"] as const;
+export const tables = [
+  "keys",
+  "payloads",
+  "onboarding_states",
+  "state_states",
+  "labels",
+  "accounts",
+  "databases",
+  "apikeys",
+] as const;
 
 /** the one storage lane of the site store (WAL, foreign keys, patient locks — the vault's own file). */
 const lane = openStorageLane({ defaultFile: "./vault.db" });
@@ -49,6 +58,14 @@ CREATE TABLE IF NOT EXISTS onboarding_states (
   introseen      INTEGER NOT NULL DEFAULT 0,
   onboardingseen INTEGER NOT NULL DEFAULT 0,
   updatedAt      TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS state_states (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  visitor    TEXT NOT NULL,
+  stateKey   TEXT NOT NULL,
+  payload    TEXT NOT NULL,
+  updatedAt  TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(visitor, stateKey)
 );
 CREATE TABLE IF NOT EXISTS labels (
   id         TEXT PRIMARY KEY,
@@ -138,6 +155,58 @@ export function setOnboardingStage(visitor: string, stage: "intro" | "onboarding
     [visitor, stage === "intro" ? 1 : 0, stage === "onboarding" ? 1 : 0],
   );
   return getOnboardingState(visitor) ?? { introseen: false, onboardingseen: false };
+}
+
+/* --------------------------------------------------------------------- */
+/* visitor state — the generic keyed state lane of the os persistence hook */
+/* --------------------------------------------------------------------- */
+
+/** one row of the state_states table: the JSON payload text of one visitor
+ * and key pair (the offline-mirror source of truth the os hook reads). */
+export type VisitorStateRow = {
+  id: number;
+  visitor: string;
+  stateKey: string;
+  payload: string;
+  updatedAt: string;
+};
+
+/**
+ * Reads the JSON payload text of one visitor and key pair (parameterized;
+ * undefined before the first write). The browser accessor serves the same
+ * payload over GET /api/v1/state.
+ *
+ * @param visitor the visitor key of the row.
+ * @param stateKey the state key the consumer named.
+ * @returns the payload text, or undefined when the pair never wrote.
+ */
+export function getVisitorState(visitor: string, stateKey: string): string | undefined {
+  const row = queryOne<Pick<VisitorStateRow, "payload">>(
+    "SELECT payload FROM state_states WHERE visitor = ? AND stateKey = ?",
+    [visitor, stateKey],
+  );
+  return row?.payload;
+}
+
+/**
+ * Writes the JSON payload text of one visitor and key pair — the
+ * last-write-wins upsert (the newest write is the one the read answers),
+ * prepared and parameterized, never concatenated SQL. The browser accessor
+ * serves the same write over POST /api/v1/state.
+ *
+ * @param visitor the visitor key of the row.
+ * @param stateKey the state key the consumer named.
+ * @param payload the JSON payload text to store.
+ */
+export function putVisitorState(visitor: string, stateKey: string, payload: string): void {
+  execute(
+    `INSERT INTO state_states (visitor, stateKey, payload, updatedAt)
+     VALUES (?, ?, ?, datetime('now'))
+     ON CONFLICT(visitor, stateKey) DO UPDATE SET
+       payload = excluded.payload,
+       updatedAt = datetime('now')`,
+    [visitor, stateKey, payload],
+  );
 }
 
 /* --------------------------------------------------------------------- */

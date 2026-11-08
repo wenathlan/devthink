@@ -2,15 +2,14 @@
 //   with the vitest runner:
 //   npm test
 // The file reads the shipped sources (stylesheet, entry face, brand mark,
-// app identity, route anchor, icons) and pins the family laws of the reform
-// wave: no banned hue, no pill, no all-properties transition, no zero-scale
-// entry (the windows dtPopIntro bounce excepted), the trylle font stacks,
-// the source-face entry, the reduced-motion stop, tabular numerals, the
-// sticky-footer law, the honest page set of the application identity, the
-// first-run flow contract (the entry gate, the shared onboarding state, the
-// db mirror), the trylle-canvas/windows-hands foundation and the FAMILY
-// STANDALONE LAW (the shell answers the direct url full-bleed, the window
-// chrome lives only inside the os embed).
+// app identity, theme anchor, icons) and pins the family laws of the reform
+// wave beside the under-construction law the owner ordered: no banned hue,
+// no pill, no all-properties transition, no zero-scale entry, the trylle
+// font stacks, the source-face entry, the reduced-motion stop, tabular
+// numerals, the trylle-canvas/windows-hands foundation and the ONE
+// COMPONENT SURFACE LAW (the whole app mounts the under-construction face —
+// no routes, no shell chrome, no game pages — and the face owns the direct
+// url full-bleed).
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -20,10 +19,10 @@ function read(path: string): string {
 
 const CSS = read("../sol/sol.css");
 const ENTRY = read("../index.html");
-const SHELL = read("../sol/shell/Shell.tsx");
+const APP = read("../App.tsx");
+const SOL = read("../sol/Sol.tsx");
 const MARK = read("../sol/wingets/ShellBrandmark.tsx");
 const TOML = read("../devthink.toml");
-const SOL = read("../sol/Sol.tsx");
 const FAVICON = read("../favicon.svg");
 const ICON = read("../icon.svg");
 const MANIFEST = read("../manifest.webmanifest");
@@ -39,11 +38,11 @@ describe("design contract", () => {
     }
   });
 
-  it("carries the white sun as the identity accent with the coral story in the mark (#f4694f) and the windows accent on the chrome", () => {
+  it("carries the white sun as the identity accent with the coral story in the mark (#f4694f) and the windows accent on focus", () => {
     expect(CSS).toMatch(/--color-signal: #ffffff/);
     expect(CSS).toMatch(/--sh-accent: var\(--color-signal\)/);
     expect(MARK).toMatch(/#f4694f/);
-    // the windows hands: focus and the chrome speak the windows accent
+    // the windows hands: focus speaks the windows accent
     expect(CSS).toMatch(/--win-accent: #4cc2ff/);
     expect(CSS).toMatch(/outline: 2px solid var\(--win-accent\)/);
   });
@@ -57,12 +56,8 @@ describe("design contract", () => {
     expect(/transition:\s*all/.test(CSS), "transition: all is a rejection").toBe(false);
   });
 
-  it("never enters an element from zero scale (the windows dtPopIntro bounce excepted)", () => {
-    const sansPopIntro = CSS.replace(/@keyframes dtPopIntro \{[\s\S]*?\n\}/g, "");
-    expect(
-      /scale\(0\)/.test(sansPopIntro),
-      "scale(0) entries are a rejection (the dtPopIntro bounce of the windows recipe excepted)",
-    ).toBe(false);
+  it("never enters an element from zero scale", () => {
+    expect(/scale\(0\)/.test(CSS), "scale(0) entries are a rejection").toBe(false);
   });
 
   it("declares the trylle font stacks (Inter reading, Geist Mono detail) and the 13px body", () => {
@@ -83,7 +78,7 @@ describe("design contract", () => {
 
   it("guards the reduced-motion stop on every layer (the hard stop last)", () => {
     const blocks = CSS.match(/@media \(prefers-reduced-motion: reduce\)/g) ?? [];
-    expect(blocks.length >= 4, `expected the hard stop on every layer, found ${blocks.length}`).toBe(true);
+    expect(blocks.length >= 3, `expected the guard ladder on every layer, found ${blocks.length}`).toBe(true);
     const hardStopAt = CSS.lastIndexOf("@media (prefers-reduced-motion: reduce)");
     expect(CSS.slice(hardStopAt)).toMatch(/0\.01ms !important/);
     expect(CSS.slice(hardStopAt + 1)).not.toMatch(/@media/);
@@ -93,65 +88,29 @@ describe("design contract", () => {
     expect(CSS).toMatch(/font-variant-numeric:\s*tabular-nums/);
   });
 
-  it("answers the direct url full-bleed — the window chrome lives only inside the os", () => {
-    /* the family standalone law: an app accessed by its own url is the
-    normal application, one hundred percent — the shell renders
-    shell--standalone with no window chrome of its own (no title bar, no
-    captions, no resize handles, no inactive law, no entry scale), while
-    the framed contract keeps the bare stage for the os power clip */
-    expect(SHELL).toContain("shell--standalone");
-    expect(SHELL).toContain("shell--embedded");
-    expect(SHELL).not.toMatch(
-      /className="appframe"|winapp__title|winapp__cap|winapp__rz|winchip|setPointerCapture|data-inactive/,
-    );
-    expect(CSS).toMatch(/\.shell--standalone \{[^}]*height: 100vh/);
+  it("mounts the ONE under-construction component — no routes, no shell, no game pages", () => {
+    // the root anchor imports only the theme anchor and mounts it inside the
+    // error boundary; no router, no toaster, no routerbase door
+    expect(APP).toMatch(/import Sol from "\.\/sol\/Sol"/);
+    expect(APP).toMatch(/<Sol \/>/);
+    expect(APP.includes("wouter"), "the app rides no router any more").toBe(false);
+    expect(APP.includes("Toaster"), "the toast surface retired with the pages").toBe(false);
+    expect(APP.includes("routerBase"), "the routerbase door retired with the routes").toBe(false);
+    // the theme anchor mounts the face from the winget barrel — nothing else
+    expect(SOL).toMatch(/import \{ Constructionface \} from "\.\/wingets"/);
+    expect(SOL).toMatch(/<Constructionface \/>/);
+    expect(SOL.includes("wouter"), "no route table rides the theme").toBe(false);
+    expect(SOL.includes("Switch"), "no route switch rides the theme").toBe(false);
+    expect(SOL.includes("Shell"), "no window chrome rides the theme").toBe(false);
+    // the honest identity of the application: one page, the construction seat
+    expect(TOML).toMatch(/pages = \["construction"\]/);
   });
 
-  it("pins the footer to the window floor (the sticky-footer law)", () => {
-    expect(CSS).toMatch(/\.winapp__stage > main\.shell \{[^}]*flex-direction: column/);
-    expect(CSS).toMatch(/\.shquad \{[^}]*margin-top: auto/s);
-  });
-
-  it("declares the honest page set (home, match, ranking, weapons, world, notfound)", () => {
-    expect(TOML).toMatch(/pages = \["home", "match", "ranking", "weapons", "world", "notfound"\]/);
-    for (const route of ['"/match"', '"/ranking"', '"/weapons"', '"/world"', '"/404"']) {
-      expect(SOL.includes(`path=${route}`), `route ${route} must mount`).toBe(true);
-    }
-  });
-
-  it("keeps the entry flow mounted (intro, onboarding) before the fundamentals", () => {
-    expect(SOL).toMatch(/path="\/intro"/);
-    expect(SOL).toMatch(/path="\/onboarding"/);
-    expect(SOL.indexOf('"/intro"')).toBeLessThan(SOL.indexOf('"/"'));
-  });
-
-  it("carries the flow contract sources (the entry gate behind the home anchor, the shared state module)", () => {
-    const GATE = read("../sol/wingets/HomeEntrygate.tsx");
-    const STATE = read("../onboardingstate.ts");
-    const HOME = read("../sol/home/home.tsx");
-    const ONBOARDING = read("../sol/onboarding/onboarding.tsx");
-    expect(GATE).toMatch(/navigate\("\/intro"/);
-    expect(GATE).toMatch(/navigate\("\/onboarding"/);
-    expect(HOME).toMatch(/EntryGate/);
-    expect(ONBOARDING).toMatch(/markOnboardingStage/);
-    expect(STATE).toMatch(/stealthhead\.onboarding\.seen/);
-    expect(STATE).toMatch(/\/api\/v1\/onboarding/);
-  });
-
-  it("catalogues the first-run state in the db layer (prisma model + sqlite mirror)", () => {
-    const PRISMA = read("../schema.prisma");
-    const DB = read("../db.ts");
-    expect(PRISMA).toMatch(/model OnboardingState \{/);
-    expect(PRISMA).toMatch(/introseen\s+Boolean\s+@default\(false\)/);
-    expect(PRISMA).toMatch(/onboardingseen\s+Boolean\s+@default\(false\)/);
-    expect(DB).toMatch(/create table if not exists onboardingstate/);
-    expect(DB).toMatch(/getonboardingstate/);
-    expect(DB).toMatch(/setonboardingstage/);
-  });
-
-  it("wears the windows hands on the rail (the pin bounce, the press law)", () => {
-    expect(CSS).toMatch(/@keyframes dtPopIntro/);
-    expect(CSS).toMatch(/\.winapp__raillink:active > svg \{[^}]*transform: scale\(0\.7\)/);
+  it("answers the direct url full-bleed — the face owns the whole viewport", () => {
+    /* the family standalone law rides the face itself now: an app accessed
+    by its own url is the one component full-bleed, one hundred percent —
+    no shell wrapper, no window chrome, no stage column */
+    expect(CSS).toMatch(/\.shconstr \{[^}]*min-height: 100vh/s);
   });
 
   it("rides the trylle foundation (canvas, surfaces, hairlines, linear shadow ladder)", () => {

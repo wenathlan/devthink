@@ -30,8 +30,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { DESKTOP_APPS, FAMILY_APP_IDS, isFamilyApp } from "../appregistry.ts";
 import { osAppLabels } from "../catalog.ts";
 import { familyurl } from "../gateway.ts";
-import { FAMILY_SLUGS, windowapp, windowcatalog } from "../window.ts";
 import { APP_ICONS } from "../sol/wingets/ShellAppicons.tsx";
+import { FAMILY_SLUGS, windowapp, windowcatalog } from "../window.ts";
 
 const router = readFileSync(join(import.meta.dirname, "..", "sol", "Sol.tsx"), "utf8");
 const workspace = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "PanelWorkspace.tsx"), "utf8");
@@ -117,7 +117,9 @@ describe("the routing table (every app answers both doors)", () => {
   });
 
   it("the registry family set and the window catalog agree — no half door", () => {
-    const registryFamily = DESKTOP_APPS.filter(isFamilyApp).map((app) => app.id).sort();
+    const registryFamily = DESKTOP_APPS.filter(isFamilyApp)
+      .map((app) => app.id)
+      .sort();
     const windowFamily = [...FAMILY_SLUGS].sort();
     expect(registryFamily).toEqual(windowFamily);
   });
@@ -195,7 +197,7 @@ describe("the double click owns the system window (door B — zero redirect)", (
   });
 
   it("the family window body binds the power clip frame of the repository subpath", () => {
-    expect(workspace).toContain('component: () => <FamilyFrame slug={slug} />,');
+    expect(workspace).toContain("component: () => <FamilyFrame slug={slug} />,");
     expect(familyframe).toContain("export function FamilyFrame({ slug, title }: { slug: string; title?: string })");
   });
 
@@ -244,7 +246,10 @@ describe("the native anchors answer both doors with one design (the shared surfa
         // the embedded height lives in the component stylesheet
         expect(source.includes("<ShellChrome />"), `${page} owns the shell on the page branch`).toBe(true);
         expect(source.includes("gv-embedded"), `${page} carries the embedded surface class`).toBe(true);
-        expect(source.includes(".control-page.gv-embedded { min-height: 0; height: 100%;"), `${page} answers the window body height`).toBe(true);
+        expect(
+          source.includes(".control-page.gv-embedded { min-height: 0; height: 100%;"),
+          `${page} answers the window body height`,
+        ).toBe(true);
         continue;
       }
       expect(source.includes("{!embedded && <ShellChrome />}"), `${page} retires the shell inside the window`).toBe(
@@ -331,13 +336,28 @@ describe("the sync (both faces stay one design)", () => {
     }
     // the frame detection: inside the os power clip the app rides the host
     // window chrome (the routed page renders bare); at the typed url the
-    // app owns the whole viewport with its own voice
+    // app owns the whole viewport with its own voice. The under-
+    // construction seat the owner's PR19 law named walks its own truth: a
+    // slug whose shell retired whole mounts the one-component construction
+    // face — no frame detection lives there to answer (the renderparity
+    // battery pins the same carve-out).
     for (const slug of FAMILY_SLUGS) {
       const solroot = join(reporoot, slug, "sol");
       expect(existsSync(solroot), `${slug} carries the Sol theme`).toBe(true);
       const files = collectTsx(solroot);
       expect(files.length, `${slug} theme carries tsx sources`).toBeGreaterThan(0);
       const framed = files.some((file) => readFileSync(file, "utf8").includes("window.self !== window.top"));
+      if (!framed && !existsSync(join(reporoot, slug, "sol", "shell", "Shell.tsx"))) {
+        const anchor = join(reporoot, slug, "sol", "Sol.tsx");
+        const surface = [join(reporoot, slug, "App.tsx"), anchor]
+          .filter((path) => existsSync(path))
+          .map((path) => readFileSync(path, "utf8"))
+          .join("\n");
+        expect(surface, `${slug} answers the under-construction surface law`).toMatch(
+          /constructionface|under-construction/i,
+        );
+        continue;
+      }
       expect(framed, `${slug} answers the embedded contract of the power clip`).toBe(true);
     }
   });
@@ -362,9 +382,7 @@ describe("the sync (both faces stay one design)", () => {
     // own doors and pin the same zoom zero viewport
     for (const entry of ["design.html", "extensionpopup.html"]) {
       const html = readFileSync(join(reporoot, "devthink", entry), "utf8");
-      expect(html, `devthink/${entry} pins the zoom zero viewport`).toContain(
-        "minimum-scale=1.0, maximum-scale=1.0",
-      );
+      expect(html, `devthink/${entry} pins the zoom zero viewport`).toContain("minimum-scale=1.0, maximum-scale=1.0");
       expect(html).toContain("user-scalable=no");
     }
   });

@@ -1,0 +1,7 @@
+# getry — the pypi file manifest of the family (the pypi channel).
+# Mirrors the file list the getry gemspec declares in spec.files: the
+# readme, the docs set and the tests directory.
+include README.md
+recursive-include docs *
+recursive-include test *
+graft test

@@ -34,7 +34,7 @@ import {
   VITALTHRESHOLDS,
   type Vitals,
   vitaltier,
-} from "../hud.ts";
+} from "../sol/hud/hud.ts";
 
 /** full vitals: 100 health behind 50 shield. */
 const FULL: Vitals = { health: 100, maxhealth: 100, shields: 50, maxshields: 50 };

@@ -19,8 +19,10 @@
  * gradle and rubygems) beside the base npmjs envelope the family-npmjs
  * mirror ships: mais de sete contando com webpack. the channel census —
  * every application rides the eleven-plus distribution lanes the registries
- * answer (the seven registry family matrices of the publish workflow beside
- * the container lanes of the containers workflow), so the regression that
+ * answer (the ten registry family matrices of the publish workflow beside
+ * the container lanes of the containers workflow — the tri-channel wave of
+ * the PR12 eleven-channel law seated the pypi, cargo and homebrew family
+ * lanes beside the seven the distfamily wave closed), so the regression that
  * once left the ghcr package page answering only the saddle container can
  * never land silently again.
  */
@@ -82,7 +84,9 @@ const ALLAPPS = [...SIBLINGS.slice(0, 5), "saddle", ...SIBLINGS.slice(5)];
 
 /** the registry family matrices of the publish workflow every application
  * envelope rides (the distribution-completeness law the distfamily wave
- * closed - the seven registry seats beside the container lanes). */
+ * closed - the ten registry seats beside the container lanes: the seven the
+ * distfamily wave seated beside the pypi, cargo and homebrew family lanes
+ * the tri-channel wave of the PR12 eleven-channel law added). */
 const REGISTRYLANES = [
   "family-npmjs",
   "family-githubnpm",
@@ -91,6 +95,9 @@ const REGISTRYLANES = [
   "family-gradle",
   "family-rubygems",
   "family-goget",
+  "family-pypi",
+  "family-cargo",
+  "family-homebrew",
 ] as const;
 
 /** the four architecture seats the pinned node base honestly carries for
@@ -287,19 +294,23 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
   it("the webpack bundle is the real exact-pinned cross-bundler product the ci battery verifies", async () => {
     const containers = await readworkflow("containers.yml");
     /* the cross-bundler rung the ci battery verifies, carried to the
-     * saddle engine: the engine entry the manifest's build:engine lane
-     * walks through bun run produces distpackage/index.js (the bun
-     * build stamps the target, format and the four externals the host
-     * owns) and the exact-pinned webpack fetch (webpack 5.112.2 with
-     * its webpack-cli 6.0.1 peer) packs the one entry through the
-     * generated config into the one webpack bundle the six channel
-     * legs distribute (the LimitChunkCountPlugin holds the one-file
-     * law and the module envelope declares its type). */
+     * saddle engine: the runner law (the containerlanes heal) walks the
+     * engine build through the manifest entry a script runner answers
+     * (bun run build:engine - never a bare node spawn whose PATH the
+     * runner law never seats), the lane's own manager compiles the
+     * public entry into distpackage/index.js (the bun build stamps the
+     * target, format and the four externals the host owns) and the
+     * exact-pinned webpack fetch (webpack 5.112.2 with its webpack-cli
+     * 6.0.1 peer) packs the one entry through the generated config file
+     * the -c walk carries (the config-file grammar: the output filename
+     * rides the config, the LimitChunkCountPlugin keeps the bundle
+     * single-file and the module envelope declares its type) into the
+     * one webpack bundle the six channel legs distribute. */
     expect(containers).toContain("bun run build:engine");
     expect(containers).toContain("--outfile=distpackage/index.js");
     expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
     expect(containers).toContain("webpack -c ./distpackage/webpack.config.mjs");
-    expect(containers).toContain("filename: \"saddle.webpack.js\"");
+    expect(containers).toContain('filename: "saddle.webpack.js"');
     expect(containers).toContain("new LimitChunkCountPlugin({ maxChunks: 1 })");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
@@ -321,7 +332,7 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
 });
 
 describe.skipIf(!inrepo)("the channel census (the eleven-plus distribution lanes per app)", () => {
-  it("every application rides the seven registry family matrices of the publish workflow", async () => {
+  it("every application rides the ten registry family matrices of the publish workflow", async () => {
     const publish = await parseworkflow("publish.yml");
     for (const lane of REGISTRYLANES) {
       const matrix = (publish.jobs?.[lane]?.strategy as { matrix?: { package?: string[] } })?.matrix;
@@ -338,7 +349,7 @@ describe.skipIf(!inrepo)("the channel census (the eleven-plus distribution lanes
     const containerapps = new Set(flatmatrix(containers, "app-containers"));
     containerapps.add("saddle");
     for (const app of ALLAPPS) {
-      /* the registry seats: the seven family matrices of the publish
+      /* the registry seats: the ten family matrices of the publish
        * workflow (devthink rides its own single lanes there, the ten
        * siblings ride the family mirrors). */
       let registrylanes = 0;
@@ -349,11 +360,23 @@ describe.skipIf(!inrepo)("the channel census (the eleven-plus distribution lanes
       if (app === "devthink") {
         /* the workbench engine rides its own single registry lanes (the
          * npmjs, maven, nuget, gradle, rubygems and goget application
-         * lanes of the publish workflow). */
-        for (const lane of ["npmjs", "githubnpm", "maven", "nuget", "rubygems", "gradle", "goget"]) {
+         * lanes of the publish workflow beside the pypi, cargo and
+         * homebrew single lanes the tri-channel wave seated). */
+        for (const lane of [
+          "npmjs",
+          "githubnpm",
+          "maven",
+          "nuget",
+          "rubygems",
+          "gradle",
+          "goget",
+          "pypi",
+          "cargo",
+          "homebrew",
+        ]) {
           expect(publish.jobs?.[lane], `the devthink application lane ${lane} must exist`).toBeDefined();
         }
-        registrylanes = 7;
+        registrylanes = 10;
       }
       /* the container seats: every app answers its own ghcr lane set
        * (the app-containers matrix legs carry the twelve-plus lane

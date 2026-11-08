@@ -30,7 +30,7 @@
  *   plus the opt-in clip flag at 100% x 100% of the window body — one
  *   document, two doors, the parity the owner demanded.
  */
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { FAMILY_SLUGS } from "../window.ts";
@@ -73,7 +73,32 @@ function themeCss(slug: string): string {
 /** reads the shell source of one slug (the seat mount) */
 function shellSource(slug: string): string | null {
   const shellpath = join(reporoot, slug, "sol", "shell", "Shell.tsx");
-  return existsSync(shellpath) ? readFileSync(shellpath, "utf8") : null;
+  if (existsSync(shellpath)) return readFileSync(shellpath, "utf8");
+  /* the one-component surface law (the stealthhead PR19 seat): when the
+   * theme retires its shell for the single under-construction face, the
+   * face the anchor mounts IS the shell seat — the battery reads it
+   * there and the family contract stays absolute, no exemption rides. */
+  const facepath = join(reporoot, slug, "sol", "wingets", "Constructionface.tsx");
+  return existsSync(facepath) ? readFileSync(facepath, "utf8") : null;
+}
+
+/** reads the surface law sources of one slug (the app entry beside the
+ * theme anchor — the construction face mounts in the anchor) */
+function surfacesource(slug: string): string {
+  const parts = [join(reporoot, slug, "App.tsx"), join(reporoot, slug, "sol", "Sol.tsx")];
+  return parts
+    .filter((path) => existsSync(path))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
+}
+
+/** the under-construction seat the owner's PR19 law names: a slug whose
+ * shell retired whole and whose surface answers the one-component
+ * construction face walks the construction law instead of the frame
+ * truth — the window chrome has no seat to mount (stealthhead's own
+ * design battery pins the construction law on its side). */
+function isconstructionslug(slug: string): boolean {
+  return shellSource(slug) === null && /constructionface|under-construction/i.test(surfacesource(slug));
 }
 
 /** pulls one rule block out of a sheet (the seat geometry read) */
@@ -89,6 +114,14 @@ describe("the seat law (the frame truth mounts the same tree)", () => {
   it("every family shell detects the power clip through the frame truth", () => {
     if (!siblingspresent) return;
     for (const slug of FAMILY_SLUGS) {
+      if (isconstructionslug(slug)) {
+        // the construction law answers the slug: the one-component face
+        // mounts where the shell retired (the PR19 under-construction seat)
+        expect(surfacesource(slug), `${slug} answers the under-construction surface law`).toMatch(
+          /constructionface|under-construction/i,
+        );
+        continue;
+      }
       const source = shellSource(slug);
       expect(source, `${slug} carries the shell seat mount`).not.toBeNull();
       expect(source!, `${slug} answers the frame truth`).toContain("window.self !== window.top");
@@ -98,6 +131,8 @@ describe("the seat law (the frame truth mounts the same tree)", () => {
   it("both seats answer the same seat expression — one design, two doors", () => {
     if (!siblingspresent) return;
     for (const slug of FAMILY_SLUGS) {
+      if (isconstructionslug(slug)) continue; // no shell, no seat ternary —
+      // the construction face carries the slug (the seat law above pins it)
       const source = shellSource(slug);
       expect(source, `${slug} carries the shell seat mount`).not.toBeNull();
       // the seat ternary answers the mount (the quoting follows the file's
@@ -113,6 +148,8 @@ describe("the height law (both doors measure the door they ride)", () => {
   it("every seat rule answers the viewport token — never a fixed pixel literal", () => {
     if (!siblingspresent) return;
     for (const slug of FAMILY_SLUGS) {
+      if (isconstructionslug(slug)) continue; // no shell, no seat blocks —
+      // the construction face carries the slug (the seat law above pins it)
       const css = themeCss(slug);
       const embedded = ruleBlock(css, ".shell--embedded");
       const standalone = ruleBlock(css, ".shell--standalone");
@@ -171,7 +208,7 @@ describe("the source law (both doors ask the same document)", () => {
     expect(familyframe).toContain("export function FamilyStage");
     expect(familyframe).toContain("src={familyurl(slug)}");
     expect(familyframe).toContain('position: "fixed"');
-    expect(familyframe).toContain('inset: 0');
+    expect(familyframe).toContain("inset: 0");
     expect(familyframe).toContain('width: "100%"');
     expect(familyframe).toContain('height: "100%"');
   });
@@ -196,5 +233,55 @@ describe("the source law (both doors ask the same document)", () => {
     // answers the desktop kit — the floor lives beside the minima
     expect(windowframe).toContain("FAMILY_BAND_WIDTH = 1280");
     expect(windowframe).toContain("FAMILY_BAND_HEIGHT = 800");
+  });
+});
+
+/** the vite config source of one app root (the dedupe wall read) */
+function viteConfig(slug: string): string {
+  return readFileSync(join(reporoot, slug, "vite.config.ts"), "utf8");
+}
+
+describe("the single-instance law (the two-react crash of the family renders)", () => {
+  it("every family vite config dedupes react, react-dom and wouter onto one instance", () => {
+    if (!siblingspresent) return;
+    for (const slug of FAMILY_SLUGS) {
+      const config = viteConfig(slug);
+      // the dedupe wall: the cross-app sources (devthink/reveal.ts through
+      // the thin doors, the sibling engine bridges) import react and wouter
+      // from outside the app root, and a resolution answered against a
+      // sibling tree mounts a second physical instance beside the app's
+      // own — the dispatcher of the copy that never renders answers null,
+      // the wouter context hook dies with "cannot read properties of null
+      // (reading 'useContext')" and the app falls to the workbench-failure
+      // face on BOTH doors (the typed url and the panel window alike — the
+      // deployed crash the owner saw as "cortado, nem parece mesmo design")
+      const wall = config.match(/dedupe:\s*\[([^\]]*)\]/);
+      expect(wall, `${slug} carries the dedupe wall`).not.toBeNull();
+      const entries = wall![1];
+      for (const specifier of ["react", "react-dom", "wouter"]) {
+        expect(entries, `${slug} dedupes ${specifier} onto one instance`).toContain(`"${specifier}"`);
+      }
+    }
+  });
+
+  it("the os config carries the same wall — one react, one router, one design", () => {
+    const config = viteConfig("devthink");
+    const wall = config.match(/dedupe:\s*\[([^\]]*)\]/);
+    expect(wall, "the os config carries the family dev bridge dedupe wall").not.toBeNull();
+    const entries = wall![1];
+    for (const specifier of ["react", "react-dom", "wouter"]) {
+      expect(entries, `the os wall dedupes ${specifier}`).toContain(`"${specifier}"`);
+    }
+  });
+
+  it("the reveal door the family re-exports imports react and wouter — the cross-app source the wall answers", () => {
+    if (!siblingspresent) return;
+    const reveal = readFileSync(join(reporoot, "devthink", "reveal.ts"), "utf8");
+    expect(reveal, "the reveal door rides react").toContain('from "react"');
+    expect(reveal, "the reveal door rides the wouter router").toContain('from "wouter"');
+    // the thin door law: the family apps re-export the owner module instead
+    // of carrying a duplicate (the dedup law the wall protects)
+    const cadriadoor = readFileSync(join(reporoot, "cadria", "reveal.ts"), "utf8");
+    expect(cadriadoor, "the cadria thin door re-exports the owner module").toContain('from "../devthink/reveal.ts"');
   });
 });

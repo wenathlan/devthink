@@ -33,8 +33,8 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { and, desc, eq, sql } from "drizzle-orm";
+import { db, execute, getVisitorState, putVisitorState, queryAll, queryOne } from "./db.ts";
 import { decoyledger, isprobe } from "./decoy.ts";
-import { db, execute, queryAll, queryOne } from "./db.ts";
 import { accounts, projectKeys, projects, storage, storageDriverKind } from "./drizzle.ts";
 import { internalRootDir, serveInternal } from "./internalroot.ts";
 import {
@@ -51,10 +51,10 @@ import {
   sweepOrphans,
   usageOf,
 } from "./objects.ts";
-import { PILLARS, PILLAR_COUNT, pillarRouteOf, type PillarRow } from "./pillars.ts";
-import { PROTOCOL_ROUTE_COUNT, PROTOCOLS, protocolRouteOf, type ProtocolRow } from "./protocols.ts";
+import { PILLAR_COUNT, PILLARS, type PillarRow, pillarRouteOf } from "./pillars.ts";
+import { PROTOCOL_ROUTE_COUNT, PROTOCOLS, type ProtocolRow, protocolRouteOf } from "./protocols.ts";
 import { queryVerdict, runQuery } from "./querylane.ts";
-import { type QuotaVerdict, QUOTA_FLOOR_BYTES, quotaLimitFrom, quotaVerdict, readQuota, setQuota } from "./quota.ts";
+import { QUOTA_FLOOR_BYTES, type QuotaVerdict, quotaLimitFrom, quotaVerdict, readQuota, setQuota } from "./quota.ts";
 import { routes } from "./routes.ts";
 import { sha256Hex } from "./sha.ts";
 import { ensureuicopyingested, uistoreget, uistorelist } from "./uistore.ts";
@@ -813,10 +813,11 @@ export function signupAccount(email: string, password: string): SignupAnswer {
     return { refusal: { kind: "taken", why: `the email ${trimmed} already answers an account — sign in` } };
   }
   const id = `acc-${randomBytes(8).toString("hex")}`;
-  execute(
-    "INSERT INTO accounts (id, email, passwordDigest, createdAt) VALUES (?, ?, ?, datetime('now'))",
-    [id, trimmed, hashPassword(password)],
-  );
+  execute("INSERT INTO accounts (id, email, passwordDigest, createdAt) VALUES (?, ?, ?, datetime('now'))", [
+    id,
+    trimmed,
+    hashPassword(password),
+  ]);
   const row = queryOne<{ id: string; email: string; createdAt: string }>(
     "SELECT id, email, createdAt FROM accounts WHERE id = ?",
     [id],
@@ -982,10 +983,12 @@ export function registerDatabase(
     return { refusal: { kind: "invalid", why: "the database name needs 1-64 characters" } };
   }
   const id = `db-${randomBytes(6).toString("hex")}`;
-  execute(
-    `INSERT INTO databases (id, accountId, name, quotaBytes, createdAt) VALUES (?, ?, ?, ?, datetime('now'))`,
-    [id, account.id, name, quotaBytes],
-  );
+  execute(`INSERT INTO databases (id, accountId, name, quotaBytes, createdAt) VALUES (?, ?, ?, ?, datetime('now'))`, [
+    id,
+    account.id,
+    name,
+    quotaBytes,
+  ]);
   const row = queryOne<DatabaseRowSql>(
     "SELECT id, accountId, name, quotaBytes, createdAt FROM databases WHERE id = ?",
     [id],
@@ -1002,9 +1005,10 @@ export function registerDatabase(
 
 /** the database row of one id. */
 export function databaseOf(id: string): DatabaseRow | undefined {
-  const row = queryOne<DatabaseRowSql>("SELECT id, accountId, name, quotaBytes, createdAt FROM databases WHERE id = ?", [
-    id,
-  ]);
+  const row = queryOne<DatabaseRowSql>(
+    "SELECT id, accountId, name, quotaBytes, createdAt FROM databases WHERE id = ?",
+    [id],
+  );
   return row === undefined ? undefined : databaseRowOf(row);
 }
 
@@ -1054,10 +1058,12 @@ function mintApiKey(): string {
 function insertApiKey(databaseId: string, label: string): IssuedKey | undefined {
   const key = mintApiKey();
   const id = randomUUID();
-  execute(
-    `INSERT INTO apikeys (id, databaseId, label, keyDigest, createdAt) VALUES (?, ?, ?, ?, datetime('now'))`,
-    [id, databaseId, label, sha256Hex(key)],
-  );
+  execute(`INSERT INTO apikeys (id, databaseId, label, keyDigest, createdAt) VALUES (?, ?, ?, ?, datetime('now'))`, [
+    id,
+    databaseId,
+    label,
+    sha256Hex(key),
+  ]);
   const row = queryOne<ApiKeyRowSql>(
     "SELECT id, databaseId, label, keyDigest, createdAt, lastUsedAt, revokedAt FROM apikeys WHERE id = ?",
     [id],
@@ -1147,7 +1153,6 @@ export function apiKeysOf(databaseId: string): ApiKeyRow[] {
 
 /** the site store seat the signup lane rides (the tests and the routes share the lane). */
 export const siteStore = db;
-
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* SECTION: api.ts — the vault http surface (the second seat).          */
@@ -1402,8 +1407,7 @@ export { routes };
  * static-safe route per protocol row (the protocols pillar — above one
  * thousand on the wave D catalog) plus one per storage pillar row (the
  * pillars catalog — the eight storage pillars and the list lane). */
-export const routeCount =
-  Object.keys(routes).length + PROTOCOL_ROUTE_COUNT + PILLARS.length;
+export const routeCount = Object.keys(routes).length + PROTOCOL_ROUTE_COUNT + PILLARS.length;
 
 /** @section server */
 
@@ -1466,7 +1470,12 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
      * spelling — refuses before the health probe, the api surface and
      * the static faces are ever consulted. The bytes never leave. */
     if (rawDatabaseRequest(pathname) || rawDatabaseRequest(safeDecode(pathname))) {
-      sendError(res, 403, "VAULT_DBFILE", "the raw database file never leaves the vault — the faun law holds on every face");
+      sendError(
+        res,
+        403,
+        "VAULT_DBFILE",
+        "the raw database file never leaves the vault — the faun law holds on every face",
+      );
       return;
     }
     if (method === "GET" && pathname === routes.health) {
@@ -1587,6 +1596,67 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
         return;
       }
       sendJson(res, 200, jsonOfPillar(row));
+      return;
+    }
+    /* the visitor state lane — the generic keyed state the os persistence
+     * hook rides: the read answers one visitor and key pair's stored
+     * payload (the same open law the copy lane rides) and the write lands
+     * the last-write-wins payload behind the same rate ladder the account
+     * doors answer (anonymous visitor keys, never credentials). */
+    if (method === "GET" && pathname === routes.state) {
+      const visitor = safeDecode(String(url.searchParams.get("visitor") ?? ""));
+      const stateKey = safeDecode(String(url.searchParams.get("key") ?? ""));
+      if (!visitor || !stateKey) {
+        sendError(res, 400, "VAULT_STATE", "the state read answers the visitor and key parameters");
+        return;
+      }
+      const stored = getVisitorState(visitor, stateKey);
+      if (stored === undefined) {
+        sendError(res, 404, "VAULT_STATE", "no state row answers this visitor and key pair");
+        return;
+      }
+      try {
+        sendJson(res, 200, { value: JSON.parse(stored) as unknown });
+      } catch {
+        sendError(res, 500, "VAULT_STATE", "the stored payload does not decode");
+      }
+      return;
+    }
+    if (pathname === routes.state) {
+      if (method !== "POST") {
+        sendError(res, 405, "VAULT_METHOD", `${method} does not ride ${pathname}`);
+        return;
+      }
+      const rate = authRateVerdict(peerOf(req));
+      if (!rate.allowed) {
+        sendError(
+          res,
+          429,
+          "VAULT_RATE",
+          "too many writes from this address — the state door rests until the window rolls",
+          {
+            "retry-after": String(rate.retryAfterSeconds),
+          },
+        );
+        return;
+      }
+      try {
+        const body = await readJson(req);
+        const visitor = typeof body.visitor === "string" ? body.visitor : "";
+        const stateKey = typeof body.key === "string" ? body.key : "";
+        if (!visitor || !stateKey || !("value" in body)) {
+          sendError(res, 400, "VAULT_STATE", "the state write answers visitor, key and value");
+          return;
+        }
+        putVisitorState(visitor, stateKey, JSON.stringify(body.value) ?? "null");
+        sendJson(res, 200, { saved: true });
+      } catch (error) {
+        if (error instanceof BadBodyError) {
+          sendError(res, 400, "VAULT_STATE", "the state write answers a json body");
+          return;
+        }
+        throw error;
+      }
       return;
     }
     /* the person's door onto the network database — the register lane
@@ -2278,9 +2348,7 @@ async function postDatabases(req: IncomingMessage, res: ServerResponse): Promise
     const password = typeof body.password === "string" ? body.password : "";
     const name = typeof body.name === "string" ? body.name : "";
     const quotaBytes =
-      body.quotaBytes === null || body.quotaBytes === undefined
-        ? undefined
-        : BigInt(String(body.quotaBytes));
+      body.quotaBytes === null || body.quotaBytes === undefined ? undefined : BigInt(String(body.quotaBytes));
     let answer = registerDatabase(email, password, name, quotaBytes);
     if (answer.refusal?.kind === "credentials") {
       /* the two doors answer one person: a caller the accounts door
@@ -2353,8 +2421,7 @@ async function databaseSubroute(
     const email = typeof body.email === "string" ? body.email : "";
     const password = typeof body.password === "string" ? body.password : "";
     const account = email !== "" && password !== "" ? accountVerified(email, password) : undefined;
-    const ownerVerified =
-      account !== undefined && account.id === databaseOf(databaseId)?.accountId ? true : undefined;
+    const ownerVerified = account !== undefined && account.id === databaseOf(databaseId)?.accountId ? true : undefined;
     const door = ownerVerified ? ({ open: true, operator: false } as const) : databaseDoor(req, databaseId);
     if ("refusal" in door) {
       sendError(res, door.refusal.status, door.refusal.code, door.refusal.why);
@@ -2556,7 +2623,18 @@ const STATIC_MIME: Readonly<Record<string, string>> = Object.freeze({
  * stray store inside the static root answers the 403 refusal, never bytes:
  * the wal and the shm sidecars refuse with their file, and the sqlite
  * spellings ride the same seal as the store file). */
-const SEALED_FACES = [".db", ".db-journal", ".db-shm", ".db-wal", ".sqlite", ".sqlite-wal", ".sqlite-shm", ".sqlite3", ".sqlite3-wal", ".sqlite3-shm"] as const;
+const SEALED_FACES = [
+  ".db",
+  ".db-journal",
+  ".db-shm",
+  ".db-wal",
+  ".sqlite",
+  ".sqlite-wal",
+  ".sqlite-shm",
+  ".sqlite3",
+  ".sqlite3-wal",
+  ".sqlite3-shm",
+] as const;
 
 /**
  * Answers whether one pathname names the raw database file — the faun law
@@ -2653,7 +2731,12 @@ function serveStatic(res: ServerResponse, pathname: string, head: boolean): bool
     return true;
   }
   if (!servableFace(pathname)) {
-    sendError(res, 404, "VAULT_STATIC", "a non-face path never answers from the static lane — the root-emit seal holds");
+    sendError(
+      res,
+      404,
+      "VAULT_STATIC",
+      "a non-face path never answers from the static lane — the root-emit seal holds",
+    );
     return true;
   }
   const candidate = staticCandidate(root, pathname);
@@ -2895,4 +2978,3 @@ if (invokedDirectly) {
     server.close();
   });
 }
-

@@ -62,7 +62,9 @@ export interface Syllable {
 
 /** The options one render accepts. */
 export interface VoiceRenderOptions {
-  /** The sample rate (the take spec pins 44100). */
+  /** The sample rate (the caller pins it explicitly — the render lane
+   * masters at the 48000 RENDER_SAMPLE_RATE, the recon lane answers the
+   * 44100 cd canon; the seat never assumes a rate). */
   sampleRate: number;
   /** The seeded rng in 0..1 (deterministic per take). */
   random: () => number;

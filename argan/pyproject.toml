@@ -1,0 +1,24 @@
+# argan — the python documentation envelope of the family (the pypi channel).
+# Ships the same envelope the gem face packs: README, docs and tests — the
+# site folder the gemspec also declares has no folder in the app root.
+# Built by the publish lane with `python -m build` (PEP 517); the version
+# rides the ARGAN_VERSION environment the metadata lockstep stamps — the
+# pyproject table cannot fetch an environment the gemspec reads, so the
+# static version below is the fallback the lane sed-stamps before building.
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wenathlan-argan"
+version = "2.0.167"
+authors = [{name = "wenathlan"}]
+description = "The DNS and gateway library — zones, records, dnssec and handshake"
+readme = "README.md"
+license = {text = "GPL-3.0-only"}
+requires-python = ">=3.11"
+
+# The envelope carries no python code — the empty package list keeps the
+# build honest while the MANIFEST.in packs the envelope files.
+[tool.setuptools]
+packages = []

@@ -566,6 +566,12 @@ jobs:
         if: matrix.package == 'saddle' && steps.token.outputs.available == 'true'
         run: |
           set -euo pipefail
+          # the family pin law (the same seat the gate ladder answers — the
+          # codeql pinned-dependencies battery charged the saddle engine
+          # build's floating npm): the engines floor of the root manifest
+          # answers the one npm rung the engine install below carries.
+          npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
+          npm install --global "npm@${npm_version}"
           # the manifest law (#498) answers one dependency rung through the
           # bun lock alone — the npm package-lock the ci lane froze on
           # retired with the union, so the engine build resolves the
@@ -1987,6 +1993,787 @@ jobs:
           if [ "$published" -ne 1 ]; then
             echo "::error::gem push failed after ${attempt} attempts."
             exit 1
+          fi
+
+  pypi:
+    name: Publish devthink to PyPI (the python documentation envelope)
+    needs: [release-resolve, release-approval]
+    # the pypi channel lane (the PR12 tri-channel law: eleven distribution
+    # channels, the pypi seat rides beside npmjs, maven, nuget, rubygems,
+    # gradle, goget and the container lanes) - the python documentation
+    # envelope ships the same file set the gem face packs, stamped with the
+    # release version and built with the stock runner python (no unpinned
+    # setup action: the house pinning law demands full-sha pins and no
+    # house pin exists for setup-python, so the lane rides the preinstalled
+    # interpreter the ubuntu runner carries).
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - name: Check out the verified tag
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        ref: ${{ env.RELEASE_TAG }}
+    - name: Set up node
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 26.13.0
+    - name: Resolve release version
+      id: release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        CHECKOUT_TAG: "true"
+        RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+      run: |
+        set -euo pipefail
+        tag="${RELEASE_TAG:-}"
+        if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+          tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+        fi
+        if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+          echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+          exit 1
+        fi
+        version="${tag#v}"
+        git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+        if [[ "$CHECKOUT_TAG" == "true" ]]; then
+          git checkout --detach "$tag"
+        fi
+        package_version=$(node -p "require('./devthink/package.json').version")
+        if [[ "$package_version" != "$version" ]]; then
+          echo "Release tag ${tag} does not match package version ${package_version}" >&2
+          exit 1
+        fi
+        {
+          echo "tag=$tag"
+          echo "version=$version"
+        } >> "$GITHUB_OUTPUT"
+    - name: Stamp the release version into the python envelope
+      # the pyproject ships the lockstep static version, the lane stamps
+      # the release version before every build - the same sed law the gem
+      # lanes ride
+      run: cd devthink && python3 -c "import re,sys; p=open('pyproject.toml').read(); p=re.sub(r'version = \"[^\"]+\"', 'version = \"'+sys.argv[1]+'\"', p, count=1); open('pyproject.toml','w').write(p)" "${{ steps.release.outputs.version }}"
+    - name: Build the wheel and the sdist
+      run: cd devthink && python3 -m pip install --user --quiet "build==1.2.2.post1" && python3 -m build
+    - name: Check PyPI token availability
+      id: token
+      shell: bash
+      # the graceful-skip gate (the family contract, Regra 54:
+      # PYPI_API_TOKEN is OPTIONAL - a repository without the secret skips
+      # the publication with a notice instead of hard-failing the release
+      # pipeline). The token is only ever touched through env, never an
+      # `if:` condition (Regra 56).
+      env:
+        RAW_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        set -euo pipefail
+        token="${RAW_PYPI_TOKEN//$'\r'/}"
+        token="${token//$'\n'/}"
+        if [[ -z "$token" ]]; then
+          echo "available=false" >> "$GITHUB_OUTPUT"
+        else
+          printf 'PYPI_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+          echo "available=true" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Skip notice when PYPI_API_TOKEN is not configured
+      if: steps.token.outputs.available != 'true'
+      run: echo "::notice::Secret PYPI_API_TOKEN is not configured; the pypi.org publication of wenathlan-devthink is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the python envelope to PyPI."
+    - name: Publish the python envelope when the token answers
+      if: steps.token.outputs.available == 'true'
+      shell: bash
+      # the username/password pair rides the __token__ law pypi.org
+      # answers, the password only through env (Regra 56). PyPI carries no
+      # clean pre-deploy existence check (the simple index the API exposes
+      # has no per-version HEAD the lane could probe without auth), so the
+      # owner-token gate is the honest dedupe the lane carries.
+      env:
+        RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ env.PYPI_TOKEN }}
+      run: |
+        set -euo pipefail
+        python3 -m pip install --user --quiet "twine==6.1.0"
+        cd devthink
+        python3 -m twine upload --repository pypi --non-interactive --verbose dist/*
+    - name: Attach the python artifacts to the release
+      # the artifacts attach unconditionally - they are evidence even when
+      # the publication skipped for the missing token
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RELEASE_TAG: v${{ steps.release.outputs.version }}
+      run: |
+        set -euo pipefail
+        cd devthink
+        assets=""
+        for f in dist/wenathlan_devthink-*.whl dist/wenathlan_devthink-*.tar.gz; do
+          test -f "$f" && assets="$assets $f"
+        done
+        test -n "$assets" || { echo "no python artifacts found to attach" >&2; exit 1; }
+        # shellcheck disable=SC2086
+        gh release upload "$RELEASE_TAG" $assets --repo "$GITHUB_REPOSITORY" --clobber
+  family-pypi:
+    name: Publish the family python envelopes to PyPI
+    needs: [release-resolve, release-approval]
+    # the family pypi channel lane (the PR12 tri-channel law: eleven
+    # distribution channels, the pypi seat rides beside npmjs, maven, nuget,
+    # rubygems, gradle, goget and the container lanes) - every sibling
+    # python documentation envelope ships the same file set the gem face
+    # packs, stamped with the release version and built with the stock
+    # runner python (no unpinned setup action: the house pinning law
+    # demands full-sha pins and no house pin exists for setup-python, so
+    # the lane rides the preinstalled interpreter the ubuntu runner
+    # carries).
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # the family matrix the rubygems lane precedent set - every sibling
+    # envelope answers its own publish, fail-fast stays off so one
+    # sibling's registry answer never reddens the others.
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+    - name: Check out the verified tag
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        ref: ${{ env.RELEASE_TAG }}
+    - name: Set up node
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: 26.13.0
+    - name: Resolve release version
+      id: release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        CHECKOUT_TAG: "true"
+        RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+      run: |
+        set -euo pipefail
+        tag="${RELEASE_TAG:-}"
+        if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+          tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+        fi
+        if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+          echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+          exit 1
+        fi
+        version="${tag#v}"
+        git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+        if [[ "$CHECKOUT_TAG" == "true" ]]; then
+          git checkout --detach "$tag"
+        fi
+        package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+        if [[ "$package_version" != "$version" ]]; then
+          echo "Release tag ${tag} does not match package version ${package_version}" >&2
+          exit 1
+        fi
+        {
+          echo "tag=$tag"
+          echo "version=$version"
+        } >> "$GITHUB_OUTPUT"
+    - name: Stamp the release version into the python envelope
+      # the pyproject ships the lockstep static version, the lane stamps
+      # the release version before every build - the same sed law the gem
+      # lanes ride
+      run: cd ${{ matrix.package }} && python3 -c "import re,sys; p=open('pyproject.toml').read(); p=re.sub(r'version = \"[^\"]+\"', 'version = \"'+sys.argv[1]+'\"', p, count=1); open('pyproject.toml','w').write(p)" "${{ steps.release.outputs.version }}"
+    - name: Build the wheel and the sdist
+      run: cd ${{ matrix.package }} && python3 -m pip install --user --quiet "build==1.2.2.post1" && python3 -m build
+    - name: Check PyPI token availability
+      id: token
+      shell: bash
+      # the graceful-skip gate (the family contract, Regra 54:
+      # PYPI_API_TOKEN is OPTIONAL - a repository without the secret skips
+      # the publication with a notice instead of hard-failing the release
+      # pipeline). The token is only ever touched through env, never an
+      # `if:` condition (Regra 56).
+      env:
+        RAW_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        set -euo pipefail
+        token="${RAW_PYPI_TOKEN//$'\r'/}"
+        token="${token//$'\n'/}"
+        if [[ -z "$token" ]]; then
+          echo "available=false" >> "$GITHUB_OUTPUT"
+        else
+          printf 'PYPI_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+          echo "available=true" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Skip notice when PYPI_API_TOKEN is not configured
+      if: steps.token.outputs.available != 'true'
+      run: echo "::notice::Secret PYPI_API_TOKEN is not configured; the pypi.org publication of wenathlan-${{ matrix.package }} is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the python envelope to PyPI."
+    - name: Publish the python envelope when the token answers
+      if: steps.token.outputs.available == 'true'
+      shell: bash
+      # the username/password pair rides the __token__ law pypi.org
+      # answers, the password only through env (Regra 56). PyPI carries no
+      # clean pre-deploy existence check (the simple index the API exposes
+      # has no per-version HEAD the lane could probe without auth), so the
+      # owner-token gate is the honest dedupe the lane carries.
+      env:
+        RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ env.PYPI_TOKEN }}
+      run: |
+        set -euo pipefail
+        python3 -m pip install --user --quiet "twine==6.1.0"
+        cd "${{ matrix.package }}"
+        python3 -m twine upload --repository pypi --non-interactive --verbose dist/*
+    - name: Attach the python artifacts to the release
+      # the artifacts attach unconditionally - they are evidence even when
+      # the publication skipped for the missing token
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RELEASE_TAG: v${{ steps.release.outputs.version }}
+      run: |
+        set -euo pipefail
+        cd ${{ matrix.package }}
+        assets=""
+        for f in dist/wenathlan_${{ matrix.package }}-*.whl dist/wenathlan_${{ matrix.package }}-*.tar.gz; do
+          test -f "$f" && assets="$assets $f"
+        done
+        test -n "$assets" || { echo "no python artifacts found to attach" >&2; exit 1; }
+        # shellcheck disable=SC2086
+        gh release upload "$RELEASE_TAG" $assets --repo "$GITHUB_REPOSITORY" --clobber
+
+  detect-cargo:
+    name: detect the cargo crate sources
+    # the conclusion guard (the saddle family pattern, Regra 56b): the
+    # workflow_run dual-trigger fires on EVERY completion of the DevThink
+    # Release workflow - a FAILED release run must never reach the publish
+    # lane. Only a successful completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch proceeds.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      present: ${{ steps.cargo.outputs.present }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - id: cargo
+        shell: bash
+        run: |
+          if test -f devthink/Cargo.toml; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "present=false" >> "$GITHUB_OUTPUT"; fi
+
+  cargo:
+    name: Publish devthink to crates.io (the rust version envelope)
+    needs: [release-resolve, detect-cargo, release-approval]
+    if: needs.detect-cargo.outputs.present == 'true'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: Set up node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: Resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./devthink/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Set up the rust toolchain
+        # the house pin the desktop-tauri lane rides - the version envelope
+        # crate compiles under the same stable toolchain the desktop build stamps
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+      - name: Stamp the release version into the crate manifest
+        # the manifest ships the lockstep static version, the lane stamps the
+        # release version - the same sed law the python and gem lanes ride
+        run: cd devthink && sed -i.bak "s/^version = \"[^\"]*\"/version = \"${{ steps.release.outputs.version }}\"/" Cargo.toml && rm -f Cargo.toml.bak
+      - name: Package the version envelope crate
+        # --no-verify because the envelope carrier declares no test target -
+        # the crate is the version constant the registry lanes reference, the
+        # argan.java precedent in rust; --allow-dirty because the version
+        # stamp above leaves the checkout one sed away from clean
+        run: cd devthink && cargo package --no-verify --allow-dirty
+      - name: Check the crates.io token availability
+        # the graceful-skip gate (the family contract, Regra 54:
+        # CARGO_REGISTRY_TOKEN is OPTIONAL - a repository without the secret
+        # skips the publication with a notice instead of hard-failing the
+        # release pipeline). The token is only ever touched through env,
+        # never an `if:` condition (Regra 56).
+        id: token
+        shell: bash
+        env:
+          RAW_CARGO_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_CARGO_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'CARGO_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Skip notice when CARGO_REGISTRY_TOKEN is not configured
+        if: steps.token.outputs.available != 'true'
+        run: echo "::notice::Secret CARGO_REGISTRY_TOKEN is not configured; the crates.io publication of wenathlan-devthink is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the rust envelope."
+      - name: Publish the crate when the token answers
+        # crates.io answers the token through the --token flag once, the
+        # publish is idempotent per version (a re-run of an already-published
+        # version fails the lane honestly - the registry rejects the
+        # duplicate, the same honest answer the npm lanes give their 409s).
+        # the token rides the GITHUB_ENV export from the gate step (the
+        # gitlab lane law), so the shell reads CARGO_TOKEN directly
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd devthink
+          cargo publish --token "${CARGO_TOKEN}" --no-verify --allow-dirty
+      - name: Attach the crate artifact to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd devthink
+          test -f target/package/wenathlan-devthink-*.crate
+          # shellcheck disable=SC2086
+          gh release upload "$RELEASE_TAG" target/package/wenathlan-devthink-*.crate --repo "$GITHUB_REPOSITORY" --clobber
+
+  family-cargo:
+    name: Publish the family rust envelopes to crates.io
+    needs: [release-resolve, release-approval]
+    # the same if-guard the family-rubygems lane rides (the saddle family
+    # pattern, Regra 56b): the family lane does not chain through the detect
+    # gate, so it carries the dual-trigger conclusion guard itself - only a
+    # successful DevThink Release completion whose triggering event was the
+    # version-bump push or the maintenance ladder dispatch proceeds.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # the family matrix the rubygems lane precedent set - fail-fast off so
+    # one sibling never reddens the others
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: Set up node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: Resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Set up the rust toolchain
+        # the house pin the desktop-tauri lane rides - the version envelope
+        # crate compiles under the same stable toolchain the desktop build stamps
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+      - name: Stamp the release version into the crate manifest
+        # the manifest ships the lockstep static version, the lane stamps the
+        # release version - the same sed law the python and gem lanes ride
+        run: cd ${{ matrix.package }} && sed -i.bak "s/^version = \"[^\"]*\"/version = \"${{ steps.release.outputs.version }}\"/" Cargo.toml && rm -f Cargo.toml.bak
+      - name: Package the version envelope crate
+        # --no-verify because the envelope carrier declares no test target -
+        # the crate is the version constant the registry lanes reference, the
+        # argan.java precedent in rust; --allow-dirty because the version
+        # stamp above leaves the checkout one sed away from clean
+        run: cd ${{ matrix.package }} && cargo package --no-verify --allow-dirty
+      - name: Check the crates.io token availability
+        # the graceful-skip gate (the family contract, Regra 54:
+        # CARGO_REGISTRY_TOKEN is OPTIONAL - a repository without the secret
+        # skips the publication with a notice instead of hard-failing the
+        # release pipeline). The token is only ever touched through env,
+        # never an `if:` condition (Regra 56).
+        id: token
+        shell: bash
+        env:
+          RAW_CARGO_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_CARGO_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'CARGO_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Skip notice when CARGO_REGISTRY_TOKEN is not configured
+        if: steps.token.outputs.available != 'true'
+        run: echo "::notice::Secret CARGO_REGISTRY_TOKEN is not configured; the crates.io publication of wenathlan-${{ matrix.package }} is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the rust envelope."
+      - name: Publish the crate when the token answers
+        # crates.io answers the token through the --token flag once, the
+        # publish is idempotent per version (a re-run of an already-published
+        # version fails the lane honestly - the registry rejects the
+        # duplicate, the same honest answer the npm lanes give their 409s).
+        # the token rides the GITHUB_ENV export from the gate step (the
+        # gitlab lane law), so the shell reads CARGO_TOKEN directly
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd ${{ matrix.package }}
+          cargo publish --token "${CARGO_TOKEN}" --no-verify --allow-dirty
+      - name: Attach the crate artifact to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          cd ${{ matrix.package }}
+          test -f target/package/wenathlan-${{ matrix.package }}-*.crate
+          # shellcheck disable=SC2086
+          gh release upload "$RELEASE_TAG" target/package/wenathlan-${{ matrix.package }}-*.crate --repo "$GITHUB_REPOSITORY" --clobber
+
+  homebrew:
+    name: Tap the devthink formula to homebrew (the brew channel)
+    needs: [release-resolve, release-approval]
+    # the homebrew channel lane (the PR12 tri-channel law: eleven
+    # distribution channels, the brew seat rides the tap repo the lane
+    # pushes) - the formula template every app root carries gets its
+    # version, url and sha256 stamped from the real release asset on the
+    # runner (the #540 law: every checksum is born on the runner from the
+    # real downloaded release assets, never from a constant), then the
+    # lane pushes it to the wenathlan/homebrew-devthink tap.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: Set up node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: Resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./devthink/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Download the release asset and derive the sha256
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "wenathlan-devthink-${RELEASE_TAG#v}.tgz" --dir /tmp/asset
+          # the checksum derives from the real downloaded asset on the runner (the
+          # #540 law: never from a constant, never hardcoded in the workflow)
+          ASSET_SHA256="$(sha256sum "/tmp/asset/wenathlan-devthink-${RELEASE_TAG#v}.tgz" | awk '{print $1}')"
+          test "${#ASSET_SHA256}" -eq 64
+          echo "ASSET_SHA256=${ASSET_SHA256}" >> "$GITHUB_ENV"
+          echo "the devthink formula checksum answers ${ASSET_SHA256}"
+      - name: Stamp the formula from the template
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          ASSET_SHA256: ${{ env.ASSET_SHA256 }}
+        run: |
+          set -euo pipefail
+          cd devthink
+          version="${RELEASE_VERSION}"
+          sha256="${ASSET_SHA256}"
+          url="https://github.com/wenathlan/devthink/releases/download/v${version}/wenathlan-devthink-${version}.tgz"
+          sed -i.bak -e "s|url \"https://github.com/wenathlan/devthink/releases/download/[^\"]*\"|url \"${url}\"|" -e "s/^  version \"[^\"]*\"/  version \"${version}\"/" -e "s/^  sha256 \"[0-9a-f]\\{64\\}\"/  sha256 \"${sha256}\"/" homebrew.rb
+          rm -f homebrew.rb.bak
+          grep -q "sha256 \"${sha256}\"" homebrew.rb
+          grep -q "version \"${version}\"" homebrew.rb
+      # the graceful-skip gate (the family contract, Regra 54:
+      # HOMEBREW_GITHUB_TOKEN is OPTIONAL - a repository without the
+      # secret skips the tap push with a notice instead of hard-failing
+      # the release pipeline). The token is only ever touched through
+      # env, never an `if:` condition (Regra 56).
+      - name: Check the homebrew token availability
+        id: token
+        shell: bash
+        env:
+          RAW_BREW_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_BREW_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'BREW_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Skip notice when HOMEBREW_GITHUB_TOKEN is not configured
+        if: steps.token.outputs.available != 'true'
+        run: echo "::notice::Secret HOMEBREW_GITHUB_TOKEN is not configured; the homebrew tap push of wenathlan-devthink is skipped with this warning. Add the secret (a fine-grained token with Contents read/write on wenathlan/homebrew-devthink) in Settings > Secrets and variables > Actions and re-run this workflow to tap the formula."
+      # the tap repo wenathlan/homebrew-devthink owns the Formula/ folder
+      # homebrew searches (the tap naming law: brew tap wenathlan/devthink
+      # answers https://github.com/wenathlan/homebrew-devthink); the commit
+      # rides the iakadion identity the family law stamps; the quiet-diff
+      # guard keeps re-runs idempotent (an unchanged formula never pushes
+      # twice).
+      - name: Push the stamped formula to the tap when the token answers
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          BREW_TOKEN: ${{ env.BREW_TOKEN }}
+        run: |
+          set -euo pipefail
+          workdir="$(mktemp -d)"
+          git clone --depth=1 "https://x-access-token:${BREW_TOKEN}@github.com/wenathlan/homebrew-devthink.git" "$workdir/tap"
+          mkdir -p "$workdir/tap/Formula"
+          cp devthink/homebrew.rb "$workdir/tap/Formula/wenathlan-devthink.rb"
+          cd "$workdir/tap"
+          git config user.name "iakadion"
+          git config user.email "iakadion@users.noreply.github.com"
+          git add Formula/wenathlan-devthink.rb
+          if git diff --cached --quiet; then
+            echo "the tap formula already answers v${RELEASE_VERSION} - nothing to push"
+          else
+            git commit -m "wenathlan-devthink ${RELEASE_VERSION}"
+            git push origin main
+          fi
+
+  family-homebrew:
+    name: Tap the family formulas to homebrew
+    needs: [release-resolve, release-approval]
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # the family matrix the rubygems lane precedent set - fail-fast off
+    # so one sibling never reddens the others
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: Set up node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+      - name: Resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Download the release asset and derive the sha256
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "wenathlan-${{ matrix.package }}-${RELEASE_TAG#v}.tgz" --dir /tmp/asset
+          # the checksum derives from the real downloaded asset on the runner (the
+          # #540 law: never from a constant, never hardcoded in the workflow)
+          ASSET_SHA256="$(sha256sum "/tmp/asset/wenathlan-${{ matrix.package }}-${RELEASE_TAG#v}.tgz" | awk '{print $1}')"
+          test "${#ASSET_SHA256}" -eq 64
+          echo "ASSET_SHA256=${ASSET_SHA256}" >> "$GITHUB_ENV"
+          echo "the ${{ matrix.package }} formula checksum answers ${ASSET_SHA256}"
+      - name: Stamp the formula from the template
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          ASSET_SHA256: ${{ env.ASSET_SHA256 }}
+        run: |
+          set -euo pipefail
+          version="${RELEASE_VERSION}"
+          sha256="${ASSET_SHA256}"
+          url="https://github.com/wenathlan/devthink/releases/download/v${version}/wenathlan-${{ matrix.package }}-${version}.tgz"
+          sed -i.bak -e "s|url \"https://github.com/wenathlan/devthink/releases/download/[^\"]*\"|url \"${url}\"|" -e "s/^  version \"[^\"]*\"/  version \"${version}\"/" -e "s/^  sha256 \"[0-9a-f]\\{64\\}\"/  sha256 \"${sha256}\"/" ${{ matrix.package }}/homebrew.rb
+          rm -f ${{ matrix.package }}/homebrew.rb.bak
+          grep -q "sha256 \"${sha256}\"" ${{ matrix.package }}/homebrew.rb
+          grep -q "version \"${version}\"" ${{ matrix.package }}/homebrew.rb
+      # the graceful-skip gate (the family contract, Regra 54:
+      # HOMEBREW_GITHUB_TOKEN is OPTIONAL - a repository without the
+      # secret skips the tap push with a notice instead of hard-failing
+      # the release pipeline). The token is only ever touched through
+      # env, never an `if:` condition (Regra 56).
+      - name: Check the homebrew token availability
+        id: token
+        shell: bash
+        env:
+          RAW_BREW_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          token="${RAW_BREW_TOKEN//$'\r'/}"
+          token="${token//$'\n'/}"
+          if [[ -z "$token" ]]; then
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          else
+            printf 'BREW_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Skip notice when HOMEBREW_GITHUB_TOKEN is not configured
+        if: steps.token.outputs.available != 'true'
+        run: echo "::notice::Secret HOMEBREW_GITHUB_TOKEN is not configured; the homebrew tap push of wenathlan-${{ matrix.package }} is skipped with this warning. Add the secret (a fine-grained token with Contents read/write on wenathlan/homebrew-devthink) in Settings > Secrets and variables > Actions and re-run this workflow to tap the formula."
+      # the tap repo wenathlan/homebrew-devthink owns the Formula/ folder
+      # homebrew searches (the tap naming law: brew tap wenathlan/devthink
+      # answers https://github.com/wenathlan/homebrew-devthink); the commit
+      # rides the iakadion identity the family law stamps; the quiet-diff
+      # guard keeps re-runs idempotent (an unchanged formula never pushes
+      # twice).
+      - name: Push the stamped formula to the tap when the token answers
+        if: steps.token.outputs.available == 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          BREW_TOKEN: ${{ env.BREW_TOKEN }}
+        run: |
+          set -euo pipefail
+          workdir="$(mktemp -d)"
+          git clone --depth=1 "https://x-access-token:${BREW_TOKEN}@github.com/wenathlan/homebrew-devthink.git" "$workdir/tap"
+          mkdir -p "$workdir/tap/Formula"
+          cp ${{ matrix.package }}/homebrew.rb "$workdir/tap/Formula/wenathlan-${{ matrix.package }}.rb"
+          cd "$workdir/tap"
+          git config user.name "iakadion"
+          git config user.email "iakadion@users.noreply.github.com"
+          git add Formula/wenathlan-${{ matrix.package }}.rb
+          if git diff --cached --quiet; then
+            echo "the tap formula already answers v${RELEASE_VERSION} - nothing to push"
+          else
+            git commit -m "wenathlan-${{ matrix.package }} ${RELEASE_VERSION}"
+            git push origin main
           fi
 
   detect-gradle:
@@ -8311,6 +9098,139 @@ jobs:
             "sha256.saddle.container.${version}" \
             "manifest.saddle.container.${version}.json" --clobber
 
+  helm:
+    name: Publish the devthink Helm chart to GHCR OCI (the helm channel)
+    needs: [release-resolve, release-approval]
+    # the helm channel lane (the L67930 distribution law: one lane per
+    # envelope beside maven - the crates, pypi and homebrew seats the
+    # ladder already carries, the helm chart the deployment envelope of
+    # the container image the ghcr lane publishes). The chart is
+    # generated on the fly from the release metadata - no chart folder
+    # rides the tree (the folder law: only the topic, docs and tests
+    # folders stay) - and pushes to the ghcr OCI registry the container
+    # lane already owns, so the chart and the image share one registry
+    # and one token.
+    if: >-
+      (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
+      (github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.conclusion == 'success' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the verified tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: Resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./devthink/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match package version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: Install the helm cli
+        # the stock-tool law the pypi lane rides: no setup action exists
+        # with a house pin, so the binary walks the official get.helm.sh
+        # host over https with the expected-versus-actual checksum
+        # cross-check the gradle download lane carries (the official
+        # checksum file is the expected side; a mismatched download dies
+        # before the chart ever packs).
+        run: |
+          set -euo pipefail
+          helm_version="v3.17.3"
+          curl -fsSL -o helm.tar.gz "https://get.helm.sh/helm-${helm_version}-linux-amd64.tar.gz"
+          curl -fsSL -o helm.tar.gz.sha256sum "https://get.helm.sh/helm-${helm_version}-linux-amd64.tar.gz.sha256sum"
+          echo "$(awk '{print $1}' helm.tar.gz.sha256sum)  helm.tar.gz" | sha256sum --check --status
+          tar -xzf helm.tar.gz
+          mkdir -p "$RUNNER_TEMP/helm-bin"
+          mv "linux-amd64/helm" "$RUNNER_TEMP/helm-bin/helm"
+          echo "$RUNNER_TEMP/helm-bin" >> "$GITHUB_PATH"
+      - name: Generate and pack the chart
+        # the chart is metadata on the fly: helm create lays the scaffold,
+        # the stamp writes the family identity (the chart version and
+        # appVersion ride the release lockstep, the image pins the tag the
+        # ghcr lane published) and helm package produces the one tgz the
+        # channel ships. Nothing chart-shaped stays in the tree.
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          version="${RELEASE_VERSION}"
+          # the chart scaffolds under the runner temp (the checkout tree
+          # never grows a chart folder - the folder law)
+          mkdir -p "$RUNNER_TEMP/chartwork"
+          cd "$RUNNER_TEMP/chartwork"
+          "$RUNNER_TEMP/helm-bin/helm" create devthink
+          python3 - "$version" <<'PYSTAMP'
+          import sys
+          version = sys.argv[1]
+          chart = open("devthink/Chart.yaml").read()
+          chart = chart.replace('version: 0.1.0', 'version: ' + version)
+          chart = chart.replace('appVersion: "1.16.0"', 'appVersion: "' + version + '"')
+          chart = chart.replace('description: A Helm chart for Kubernetes', 'description: the devthink workbench deployment chart of the wenathlan family')
+          open("devthink/Chart.yaml", "w").write(chart)
+          values = open("devthink/values.yaml").read()
+          values = values.replace('repository: nginx', 'repository: ghcr.io/wenathlan/devthink')
+          values = values.replace('tag: ""', 'tag: "' + version + '"')
+          open("devthink/values.yaml", "w").write(values)
+          PYSTAMP
+          "$RUNNER_TEMP/helm-bin/helm" lint devthink
+          "$RUNNER_TEMP/helm-bin/helm" package devthink
+          mv "devthink-${version}.tgz" "$GITHUB_WORKSPACE/"
+      - name: Attach the chart to the release
+        # the artifacts attach unconditionally - they are evidence even
+        # when the oci push skips (the pypi lane law)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: v${{ steps.release.outputs.version }}
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          gh release upload "$RELEASE_TAG" "devthink-${RELEASE_VERSION}.tgz" --repo "$GITHUB_REPOSITORY" --clobber
+      - name: Push the chart to ghcr oci
+        # the registry login rides the github token (the packages:write
+        # permission the job carries); the push is the dedupe guard - an
+        # already-published chart version answers a conflict the lane
+        # reports as the notice the rubygems dedupe law carries.
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+          HELM_REGISTRY: ghcr.io
+        run: |
+          set -euo pipefail
+          echo "${{ github.token }}" | "$RUNNER_TEMP/helm-bin/helm" registry login "$HELM_REGISTRY" -u "$GITHUB_ACTOR" --password-stdin
+          if "$RUNNER_TEMP/helm-bin/helm" push "devthink-${RELEASE_VERSION}.tgz" "oci://$HELM_REGISTRY/${GITHUB_REPOSITORY_OWNER}/charts"; then
+            echo "the chart pushed to oci://$HELM_REGISTRY/${GITHUB_REPOSITORY_OWNER}/charts"
+          else
+            echo "::notice::the helm push answered a conflict - the chart version ${RELEASE_VERSION} is already published (the dedupe law keeps the release idempotent)."
+          fi
+
   sums:
     name: Rebuild the release SHA256SUMS umbrella
     # THE CLOSING UMBRELLA OF THE MERGED LANE FILE (the 2.0.16 fix of the
@@ -8374,6 +9294,10 @@ jobs:
       # os extension lane packages the one extension the family ships).
       - saddle-target-plans
       - saddle-container
+      # the helm channel attaches its chart tgz before the umbrella
+      # answers, so the SHA256SUMS signature covers the deployment
+      # envelope the oci registry publishes.
+      - helm
     if: >-
       !cancelled() &&
       (github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')) &&
