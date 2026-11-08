@@ -349,6 +349,18 @@ export default defineConfig({
       // the transcode engine bridge of the ownership law (retires when the
       // published cadria envelope carries the transcodeengine export entry)
       "@wenathlan/cadria/transcode": path.resolve(import.meta.dirname, "../cadria/transcode.ts"),
+      /** the self-surface bridges of the family doors (the tsroot law wave):
+       * the stealthhead doors (reveal.ts, theme.ts) re-export the devthink
+       * owner logics through the published library specifiers
+       * ("@wenathlan/devthink/reveal", "@wenathlan/devthink/personalstore"),
+       * and the sibling dev pages the bridge middleware serves would die on
+       * the resolver's missing-export answer before the face mounts — the
+       * entries resolve the specifiers to this app's own sources (the
+       * reveal observer and the personal theme store), and retire when the
+       * published devthink envelope carries the built surfaces the exports
+       * map now declares. */
+      "@wenathlan/devthink/personalstore": path.resolve(import.meta.dirname, "personalstore.ts"),
+      "@wenathlan/devthink/reveal": path.resolve(import.meta.dirname, "reveal.ts"),
       /** the exact-subpath bridge to the sibling saddle engine: the chat
        * sandbox lane imports the browser-pure engine through the published
        * library specifier ("@wenathlan/saddle/sandbox"), but the installed
