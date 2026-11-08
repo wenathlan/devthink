@@ -738,14 +738,14 @@
       "default": "./build/engines.js"
     },
     "./personalstore": {
-      "types": "./personalstore.ts",
-      "import": "./personalstore.ts",
-      "default": "./personalstore.ts"
+      "types": "./build/personalstore.d.ts",
+      "import": "./build/personalstore.js",
+      "default": "./build/personalstore.js"
     },
     "./reveal": {
-      "types": "./reveal.ts",
-      "import": "./reveal.ts",
-      "default": "./reveal.ts"
+      "types": "./build/reveal.d.ts",
+      "import": "./build/reveal.js",
+      "default": "./build/reveal.js"
     }
   },
   "files": [
