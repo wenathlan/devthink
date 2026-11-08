@@ -212,7 +212,15 @@ jobs:
             const splitrelease = [
               "    splits {",
               "        abi {",
-              "            enable true",
+              // the bundle collision law (issuetracker.google.com/402800800,
+              // the same seat the publish android lane carries): a bundle
+              // task never rides the same invocation as the abi splits -
+              // the shrunk-resources stage answers one file per split and
+              // buildReleasePreBundle refuses the many - so the splits
+              // answer the assemble invocations alone and the bundle lane
+              // runs its own invocation with the splits asleep (the
+              // per-abi apks, the universal apk and the aab all ship)
+              "            enable gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27assemble\x27) } && !gradle.startParameter.taskNames.any { it.toLowerCase().contains(\x27bundle\x27) }",
               "            reset()",
               "            include \x27armeabi-v7a\x27, \x27arm64-v8a\x27, \x27x86\x27, \x27x86_64\x27",
               "            universalApk true",
@@ -282,10 +290,18 @@ jobs:
           fi
       - name: build optimized android release
         working-directory: ${{ matrix.app }}/android
+        # the bundle collision law (issuetracker.google.com/402800800):
+        # the splits answer the assemble invocation alone and the bundle
+        # lane walks its own invocation with the splits asleep - the same
+        # two-invocation seat the publish android lane carries, so the
+        # shrunk-resources stage never answers the plural directory the
+        # combined invocation died on (the per-abi apks, the universal
+        # apk and the aab all ship).
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew --no-daemon --stacktrace assembleRelease bundleRelease
+          ./gradlew --no-daemon --stacktrace assembleRelease
+          ./gradlew --no-daemon --stacktrace bundleRelease
       - name: collect android artifacts
         shell: bash
         env:
