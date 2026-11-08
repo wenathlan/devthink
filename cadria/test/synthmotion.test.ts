@@ -10,7 +10,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { type AudioDescriptor, type DescriptorStats, fuseDescriptor } from "@wenathlan/debonair/audio";
-import { bezierprogress } from "../easecurves.ts";
+import { bezierprogress } from "../motion.ts";
 import {
   evaluateEase,
   KEYFRAME_CAP,

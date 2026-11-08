@@ -22,8 +22,8 @@ import {
   NARRATIVE_CONTOUR,
   type NarrativeShape,
 } from "@wenathlan/debonair/audio";
-import { hexfromrgb, oklchfromrgb, relativeluma709, rgbfromhex, rgbfromoklch } from "./colorconvert.ts";
-import { bezierprogress } from "./easecurves.ts";
+import { hexfromrgb, oklchfromrgb, relativeluma709, rgbfromhex, rgbfromoklch } from "./color.ts";
+import { bezierprogress } from "./motion.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: synthtexture.ts — the texture layer of the cadria audio→image wave (module */

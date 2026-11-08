@@ -11,7 +11,7 @@
 import assert from "node:assert/strict";
 import { inflateSync } from "node:zlib";
 import { describe, it } from "vitest";
-import type { PixelImage } from "../pixel.ts";
+import type { PixelImage } from "../color.ts";
 import {
   decodePng,
   encodePng,
@@ -22,7 +22,7 @@ import {
   pngFilterRow,
   pngFilteredStream,
   pngUnfilterRow,
-} from "../pngencoder.ts";
+} from "../encoders.ts";
 
 /** a solid RGBA image builder (deterministic, no randomness). */
 function solid(width: number, height: number, rgba: [number, number, number, number]): PixelImage {

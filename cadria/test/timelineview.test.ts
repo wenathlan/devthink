@@ -27,7 +27,7 @@ import {
   visiblewindow,
   ZOOM_LEVELS,
 } from "../timeline.ts";
-import { frameduration, MAX_TICKS, TICKS_PER_SECOND, tickofframe } from "../timeticks.ts";
+import { frameduration, MAX_TICKS, TICKS_PER_SECOND, tickofframe } from "../motion.ts";
 
 const R24 = { num: 24, den: 1 };
 

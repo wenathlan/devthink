@@ -7,7 +7,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { estimateWallClock, planSlices, sliceAt, sliceProgress } from "../versawase.ts";
-import { TICKS_PER_SECOND, tickofframe } from "../timeticks.ts";
+import { TICKS_PER_SECOND, tickofframe } from "../motion.ts";
 
 describe("versawaseslices", () => {
   it("cuts 35s at 24fps into four 10s frame-aligned slices", () => {

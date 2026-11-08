@@ -17,7 +17,7 @@ import {
   blendrgb01,
   isseparable,
   lumaof,
-} from "../blendmodes.ts";
+} from "../color.ts";
 
 describe("blendmodes", () => {
   it("answers the exact separable formulas in the 0-1 domain", () => {

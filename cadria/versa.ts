@@ -20,7 +20,7 @@
 // error, not a data refusal. Exports: 6 types + 4 interfaces, 30
 // functions, 1 error class — the honest count for this theme.
 
-import { type EaseCurve, bezierprogress, curveprogress } from "./easecurves.ts";
+import { type EaseCurve, bezierprogress, curveprogress } from "./motion.ts";
 
 /** one xyz triple, tuple form (the visualize.ts contract reused by name). */
 export type Vec3 = [number, number, number];

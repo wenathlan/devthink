@@ -21,7 +21,7 @@ import {
   samplecurve,
   sanitizecurve,
   timeatprogress,
-} from "../easecurves.ts";
+} from "../motion.ts";
 
 describe("easecurves", () => {
   it("renders the linear preset as the identity handles", () => {

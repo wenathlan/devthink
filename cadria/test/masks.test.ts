@@ -22,7 +22,7 @@ import {
   maskstack,
   rectmask,
   thresholdmask,
-} from "../masks.ts";
+} from "../color.ts";
 
 describe("masks", () => {
   it("builds opacity and boolean grids with clamped fills", () => {

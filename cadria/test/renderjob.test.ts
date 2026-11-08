@@ -19,7 +19,7 @@ import {
   renderJobSlices,
   verifyRenderArtifact,
 } from "../renderjob.ts";
-import { decodeWebmFrames } from "../webmencoder.ts";
+import { decodeWebmFrames } from "../encoders.ts";
 
 /** one deterministic compiled frame: a background plus two z-ordered rects. */
 function frameIR(index: number): RenderFrame {

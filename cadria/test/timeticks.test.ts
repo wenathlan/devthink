@@ -33,7 +33,7 @@ import {
   tickstoseconds,
   tickstounitsfloor,
   timecodeparams,
-} from "../timeticks.ts";
+} from "../motion.ts";
 
 const R24 = { num: 24, den: 1 };
 const R2997 = { num: 30000, den: 1001 };

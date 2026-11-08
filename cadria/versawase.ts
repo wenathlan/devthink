@@ -7,7 +7,7 @@
  */
 
 import { EffectProgram, SHADER_EFFECTS, ShaderEffectId, compileEffectProgram } from "./shadercomp.ts";
-import { FrameRate, frameat, frameratefromf64, tickofframe, ticksfromseconds } from "./timeticks.ts";
+import { FrameRate, frameat, frameratefromf64, tickofframe, ticksfromseconds } from "./motion.ts";
 import { ImageInput, MeshGeometry } from "./visualize.ts";
 import { createHash } from "node:crypto";
 

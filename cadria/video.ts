@@ -6,11 +6,9 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { GifEncodeOptions, GifError, encodeGif } from "./gifencoder.ts";
-import { PixelImage } from "./pixel.ts";
-import { PngError, encodePng } from "./pngencoder.ts";
-import { DEFAULT_FRAME_RATE, FrameRate, addticks, clampticks, formattimecode, frameat, frameduration, framelabel, framerate, snaptick, ticksfromseconds, tickstoseconds } from "./timeticks.ts";
-import { WebmError, encodeWebmFrames } from "./webmencoder.ts";
+import { encodeGif, GifEncodeOptions, GifError, encodePng, PngError, encodeWebmFrames, WebmError } from "./encoders.ts";
+import { PixelImage } from "./color.ts";
+import { DEFAULT_FRAME_RATE, FrameRate, addticks, clampticks, formattimecode, frameat, frameduration, framelabel, framerate, snaptick, ticksfromseconds, tickstoseconds } from "./motion.ts";
 import { createHash } from "node:crypto";
 
 /* ===== block: videodecode ===== */

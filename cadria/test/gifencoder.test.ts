@@ -12,7 +12,7 @@
 // cast answers its own two colors).
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import type { PixelImage } from "../pixel.ts";
+import type { PixelImage } from "../color.ts";
 import {
   encodeGif,
   encodeGifLzw,
@@ -22,7 +22,7 @@ import {
   gifTableSize,
   quantizePalette,
   type GifColor,
-} from "../gifencoder.ts";
+} from "../encoders.ts";
 
 /** a solid image of one color. */
 function solid(width: number, height: number, rgba: [number, number, number, number]): PixelImage {

@@ -26,12 +26,11 @@
 // Exports: 3 types, 3 functions, 1 constant.
 
 import { rasterizeCommands } from "./compositorraster.ts";
+import { CADRIA_CODEC_ID, decodePng, decodeWebmFrames } from "./encoders.ts";
 import type { RenderFrame } from "./image.ts";
-import type { PixelImage } from "./pixel.ts";
-import { decodePng } from "./pngencoder.ts";
+import type { PixelImage } from "./color.ts";
 import { planSlices, type RenderSlice } from "./versawase.ts";
 import { encodeVideoFrames, type VideoArtifact, type VideoEncodeFormat, type VideoEncodeOptions } from "./video.ts";
-import { CADRIA_CODEC_ID, decodeWebmFrames } from "./webmencoder.ts";
 
 /** the real byte formats the executor routes through (the video.ts lanes). */
 export type RenderJobFormat = VideoEncodeFormat;

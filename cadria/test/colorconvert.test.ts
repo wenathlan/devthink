@@ -28,7 +28,7 @@ import {
   YCBCR_601,
   YCBCR_709,
   ycbcrfromrgb,
-} from "../colorconvert.ts";
+} from "../color.ts";
 
 describe("colorconvert", () => {
   it("clamps to the legal ranges without throwing", () => {

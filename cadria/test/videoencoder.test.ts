@@ -10,8 +10,8 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { describe, it } from "vitest";
-import type { PixelImage } from "../pixel.ts";
-import { decodeWebmFrames } from "../webmencoder.ts";
+import type { PixelImage } from "../color.ts";
+import { decodeWebmFrames } from "../encoders.ts";
 import {
   encodeVideoFrames,
   VIDEO_EXTENSION,

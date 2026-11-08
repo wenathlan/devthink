@@ -632,9 +632,14 @@
       "default": "./timeline.ts"
     },
     "./timeticks": {
-      "types": "./timeticks.ts",
-      "import": "./timeticks.ts",
-      "default": "./timeticks.ts"
+      "types": "./motion.ts",
+      "import": "./motion.ts",
+      "default": "./motion.ts"
+    },
+    "./motion": {
+      "types": "./motion.ts",
+      "import": "./motion.ts",
+      "default": "./motion.ts"
     },
     "./videodecode": {
       "types": "./video.ts",
@@ -651,30 +656,40 @@
       "import": "./transcode.ts",
       "default": "./transcode.ts"
     },
+    "./encoders": {
+      "types": "./encoders.ts",
+      "import": "./encoders.ts",
+      "default": "./encoders.ts"
+    },
     "./pixel": {
-      "types": "./pixel.ts",
-      "import": "./pixel.ts",
-      "default": "./pixel.ts"
+      "types": "./color.ts",
+      "import": "./color.ts",
+      "default": "./color.ts"
     },
     "./masks": {
-      "types": "./masks.ts",
-      "import": "./masks.ts",
-      "default": "./masks.ts"
+      "types": "./color.ts",
+      "import": "./color.ts",
+      "default": "./color.ts"
     },
     "./blendmodes": {
-      "types": "./blendmodes.ts",
-      "import": "./blendmodes.ts",
-      "default": "./blendmodes.ts"
+      "types": "./color.ts",
+      "import": "./color.ts",
+      "default": "./color.ts"
     },
     "./colorconvert": {
-      "types": "./colorconvert.ts",
-      "import": "./colorconvert.ts",
-      "default": "./colorconvert.ts"
+      "types": "./color.ts",
+      "import": "./color.ts",
+      "default": "./color.ts"
+    },
+    "./color": {
+      "types": "./color.ts",
+      "import": "./color.ts",
+      "default": "./color.ts"
     },
     "./easecurves": {
-      "types": "./easecurves.ts",
-      "import": "./easecurves.ts",
-      "default": "./easecurves.ts"
+      "types": "./motion.ts",
+      "import": "./motion.ts",
+      "default": "./motion.ts"
     },
     "./synth": {
       "types": "./synth.ts",
@@ -745,15 +760,12 @@
     "shadercomp.ts",
     "visualize.ts",
     "timeline.ts",
-    "timeticks.ts",
+    "motion.ts",
     "video.ts",
     "mediaprobe.ts",
     "transcode.ts",
-    "pixel.ts",
-    "masks.ts",
-    "blendmodes.ts",
-    "colorconvert.ts",
-    "easecurves.ts",
+    "encoders.ts",
+    "color.ts",
     "synth.ts",
     "image.ts",
     "labels.ts"

@@ -6,7 +6,7 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { FrameRate, MAX_TICKS, TICKS_PER_SECOND, addticks, clampticks, formattimecode, snaptick, ticksfromseconds } from "./timeticks.ts";
+import { FrameRate, MAX_TICKS, TICKS_PER_SECOND, addticks, clampticks, formattimecode, snaptick, ticksfromseconds } from "./motion.ts";
 
 /* ===== block: timelineedit ===== */
 // # timelineedit — the edit algebra of the cadria timeline, housed at the

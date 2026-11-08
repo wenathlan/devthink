@@ -15,8 +15,7 @@
 // Exports: 1 function family, 5 helpers, 2 types.
 
 import { type DrawCommand, type RenderFrame, Z_BACKGROUND } from "./image.ts";
-import { makeopacity, type OpacityGrid } from "./masks.ts";
-import { boxblurimage, type PixelImage } from "./pixel.ts";
+import { boxblurimage, makeopacity, type OpacityGrid, type PixelImage } from "./color.ts";
 import { fitCameraDistance } from "./versawase.ts";
 import type { MeshGeometry } from "./visualize.ts";
 

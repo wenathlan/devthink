@@ -17,7 +17,7 @@ import {
   resizeimage,
   runpixel,
   tintimage,
-} from "../pixel.ts";
+} from "../color.ts";
 
 /** builds a w×h rgba buffer where every pixel carries the same color. */
 function solidImage(width: number, height: number, color: [number, number, number, number]): PixelImage {

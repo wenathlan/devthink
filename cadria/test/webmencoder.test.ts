@@ -11,7 +11,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { probeWebm } from "../mediaprobe.ts";
-import type { PixelImage } from "../pixel.ts";
+import type { PixelImage } from "../color.ts";
 import {
   CADRIA_CODEC_ID,
   decodeWebmFrames,
@@ -25,7 +25,7 @@ import {
   SEGMENT_ID,
   WebmError,
   type WebmFrameSource,
-} from "../webmencoder.ts";
+} from "../encoders.ts";
 
 /** a deterministic gradient frame. */
 function frame(w: number, h: number, seed: number): PixelImage {

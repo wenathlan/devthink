@@ -57,7 +57,7 @@ const ENGINE_MODULES = [
   "studio",
   "synth",
   "timeline",
-  "timeticks",
+  "motion",
   "video",
 ];
 
