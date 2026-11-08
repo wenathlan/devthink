@@ -653,7 +653,6 @@ jobs:
             echo "syft checksums attempt ${i} failed; sleeping before the next ride"
             sleep 15
           done
-          test -s /tmp/syft_checksums.txt
           for i in 1 2 3 4 5 6; do
             curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
               "https://github.com/anchore/syft/releases/download/v${ver}/syft_${ver}_linux_amd64.tar.gz" \
@@ -662,7 +661,14 @@ jobs:
             sleep 15
           done
           test -s /tmp/syft.tar.gz
-          grep " syft_${ver}_linux_amd64.tar.gz\$" /tmp/syft_checksums.txt | awk '{print $1}' | sha256sum -c -
+          # the first ride piped bare hashes into sha256sum -c (the awk walk
+          # printed $1 alone, so the check read no properly formatted line) -
+          # the expected hash lands in its own seat and the printf rebuilds
+          # the <hash>  <path> line the verify walk reads against the local
+          # tarball, with the \r strip guarding the crlf lanes ahead.
+          expected="$(tr -d '\r' < /tmp/syft_checksums.txt | grep "syft_${ver}_linux_amd64.tar.gz$" | awk '{print $1}')"
+          test -n "$expected"
+          printf '%s  %s\n' "$expected" "/tmp/syft.tar.gz" | sha256sum -c -
           tar -xzf /tmp/syft.tar.gz -C /tmp syft
           sudo install -m 0755 /tmp/syft /usr/local/bin/syft
           syft version
