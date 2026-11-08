@@ -308,6 +308,18 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
     expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
     expect(containers).toContain('filename: "saddle.webpack.js"');
     expect(containers).toContain("webpack -c ./distpackage/webpack.config.mjs");
+    /* ...the union comment rides beside the runner-law prose: the engine
+     * entry the manifest's build:engine lane walks through bun run produces
+     * distpackage/index.js (the bun build stamps the target, format and the
+     * four externals the host owns) and the exact-pinned webpack fetch
+     * (webpack 5.112.2 with its webpack-cli 6.0.1 peer) packs the one entry
+     * through the generated config the -c walk carries (the config-file
+     * grammar: the output filename rides the config) into the one webpack
+     * bundle the six channel legs distribute (the LimitChunkCountPlugin
+     * holds the one-file law and the module envelope declares its type). */
+    expect(containers).toContain("--outfile=distpackage/index.js");
+    expect(containers).toContain('filename: "saddle.webpack.js"');
+    expect(containers).toContain("new LimitChunkCountPlugin({ maxChunks: 1 })");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
      * collide with the engine envelope the publish lanes own: the
