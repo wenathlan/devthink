@@ -407,48 +407,108 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(publish).toContain("no rolling alias");
     const workflow = await parseworkflow("publish.yml");
     const verify = matrixof(workflow, "saddle-vhe-verify");
-    /* the twenty verify legs: the three profile lanes, the four
-     * os-distribution flavor lanes (runnable) and the thirteen catalog
-     * lanes (the no-base seats: grapheneos, maruos, v, windows and the
-     * nine honest osdistrib additions the owner's more-than-fifteen
-     * directive rides). */
-    expect(verify.map((leg) => [leg.profile, leg.suffix ?? "", leg.mode])).toEqual([
-      ["max", "", "runnable"],
-      ["balanced", "-balanced", "runnable"],
-      ["lite", "-lite", "runnable"],
-      ["max", "-linux", "runnable"],
-      ["max", "-omarchy", "runnable"],
-      ["max", "-vanillaos", "runnable"],
-      ["max", "-android", "runnable"],
-      ["catalog", "-grapheneos", "catalog"],
-      ["catalog", "-maruos", "catalog"],
-      ["catalog", "-v", "catalog"],
-      ["catalog", "-windows", "catalog"],
-      ["catalog", "-postmarketos", "catalog"],
-      ["catalog", "-lineageos", "catalog"],
-      ["catalog", "-calyxos", "catalog"],
-      ["catalog", "-archlinux", "catalog"],
-      ["catalog", "-alpine", "catalog"],
-      ["catalog", "-debian", "catalog"],
-      ["catalog", "-fedora", "catalog"],
-      ["catalog", "-nixos", "catalog"],
-      ["catalog", "-void", "catalog"],
+    /* the forty-six verify legs: the three profile lanes, the four
+     * os-distribution flavor lanes (runnable) and the thirty-nine catalog
+     * tier-grid lanes (the no-base seats — grapheneos, maruos, v, windows
+     * and the nine honest osdistrib additions the owner's more-than-
+     * fifteen directive rides — every distribution now carries every
+     * tier: the max seat beside its balanced and lite twins, the owner's
+     * standardization directive the catalog tier grid answers). */
+    expect(verify.map((leg) => [leg.profile, leg.suffix ?? "", leg.mode, leg.expecttier ?? ""])).toEqual([
+      ["max", "", "runnable", ""],
+      ["balanced", "-balanced", "runnable", ""],
+      ["lite", "-lite", "runnable", ""],
+      ["max", "-linux", "runnable", ""],
+      ["max", "-omarchy", "runnable", ""],
+      ["max", "-vanillaos", "runnable", ""],
+      ["max", "-android", "runnable", ""],
+      ["catalog", "-grapheneos", "catalog", "max"],
+      ["catalog", "-balanced-grapheneos", "catalog", "balanced"],
+      ["catalog", "-lite-grapheneos", "catalog", "lite"],
+      ["catalog", "-maruos", "catalog", "max"],
+      ["catalog", "-balanced-maruos", "catalog", "balanced"],
+      ["catalog", "-lite-maruos", "catalog", "lite"],
+      ["catalog", "-v", "catalog", "max"],
+      ["catalog", "-balanced-v", "catalog", "balanced"],
+      ["catalog", "-lite-v", "catalog", "lite"],
+      ["catalog", "-windows", "catalog", "max"],
+      ["catalog", "-balanced-windows", "catalog", "balanced"],
+      ["catalog", "-lite-windows", "catalog", "lite"],
+      ["catalog", "-postmarketos", "catalog", "max"],
+      ["catalog", "-balanced-postmarketos", "catalog", "balanced"],
+      ["catalog", "-lite-postmarketos", "catalog", "lite"],
+      ["catalog", "-lineageos", "catalog", "max"],
+      ["catalog", "-balanced-lineageos", "catalog", "balanced"],
+      ["catalog", "-lite-lineageos", "catalog", "lite"],
+      ["catalog", "-calyxos", "catalog", "max"],
+      ["catalog", "-balanced-calyxos", "catalog", "balanced"],
+      ["catalog", "-lite-calyxos", "catalog", "lite"],
+      ["catalog", "-archlinux", "catalog", "max"],
+      ["catalog", "-balanced-archlinux", "catalog", "balanced"],
+      ["catalog", "-lite-archlinux", "catalog", "lite"],
+      ["catalog", "-alpine", "catalog", "max"],
+      ["catalog", "-balanced-alpine", "catalog", "balanced"],
+      ["catalog", "-lite-alpine", "catalog", "lite"],
+      ["catalog", "-debian", "catalog", "max"],
+      ["catalog", "-balanced-debian", "catalog", "balanced"],
+      ["catalog", "-lite-debian", "catalog", "lite"],
+      ["catalog", "-fedora", "catalog", "max"],
+      ["catalog", "-balanced-fedora", "catalog", "balanced"],
+      ["catalog", "-lite-fedora", "catalog", "lite"],
+      ["catalog", "-nixos", "catalog", "max"],
+      ["catalog", "-balanced-nixos", "catalog", "balanced"],
+      ["catalog", "-lite-nixos", "catalog", "lite"],
+      ["catalog", "-void", "catalog", "max"],
+      ["catalog", "-balanced-void", "catalog", "balanced"],
+      ["catalog", "-lite-void", "catalog", "lite"],
     ]);
     const catalog = matrixof(workflow, "saddle-vhe-catalog");
-    expect(catalog.map((leg) => leg.osprofile)).toEqual([
-      "grapheneos",
-      "maruos",
-      "v",
-      "windows",
-      "postmarketos",
-      "lineageos",
-      "calyxos",
-      "archlinux",
-      "alpine",
-      "debian",
-      "fedora",
-      "nixos",
-      "void",
+    /* the catalog tier grid: every os-distribution seat of the catalog
+     * answers every tier — the owner's standardization directive ("nesses
+     * outros também deveria ter o max, o light, e o balanceado, nessas
+     * outras distribuições"), thirteen seats times three tiers,
+     * thirty-nine catalog legs beside the twelve runnable flavor lanes
+     * and the three profile umbrellas. */
+    expect(catalog.map((leg) => [leg.osprofile, leg.tier])).toEqual([
+      ["grapheneos", "max"],
+      ["grapheneos", "balanced"],
+      ["grapheneos", "lite"],
+      ["maruos", "max"],
+      ["maruos", "balanced"],
+      ["maruos", "lite"],
+      ["v", "max"],
+      ["v", "balanced"],
+      ["v", "lite"],
+      ["windows", "max"],
+      ["windows", "balanced"],
+      ["windows", "lite"],
+      ["postmarketos", "max"],
+      ["postmarketos", "balanced"],
+      ["postmarketos", "lite"],
+      ["lineageos", "max"],
+      ["lineageos", "balanced"],
+      ["lineageos", "lite"],
+      ["calyxos", "max"],
+      ["calyxos", "balanced"],
+      ["calyxos", "lite"],
+      ["archlinux", "max"],
+      ["archlinux", "balanced"],
+      ["archlinux", "lite"],
+      ["alpine", "max"],
+      ["alpine", "balanced"],
+      ["alpine", "lite"],
+      ["debian", "max"],
+      ["debian", "balanced"],
+      ["debian", "lite"],
+      ["fedora", "max"],
+      ["fedora", "balanced"],
+      ["fedora", "lite"],
+      ["nixos", "max"],
+      ["nixos", "balanced"],
+      ["nixos", "lite"],
+      ["void", "max"],
+      ["void", "balanced"],
+      ["void", "lite"],
     ]);
   });
 

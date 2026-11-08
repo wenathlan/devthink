@@ -8800,31 +8800,356 @@ jobs:
       matrix:
         include:
           - osprofile: grapheneos
+            tier: max
             suffix: "-grapheneos"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: grapheneos
+            tier: balanced
+            suffix: "-balanced-grapheneos"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: grapheneos
+            tier: lite
+            suffix: "-lite-grapheneos"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: maruos
+            tier: max
             suffix: "-maruos"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: maruos
+            tier: balanced
+            suffix: "-balanced-maruos"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: maruos
+            tier: lite
+            suffix: "-lite-maruos"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: v
+            tier: max
             suffix: "-v"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: v
+            tier: balanced
+            suffix: "-balanced-v"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: v
+            tier: lite
+            suffix: "-lite-v"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: windows
+            tier: max
             suffix: "-windows"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: windows
+            tier: balanced
+            suffix: "-balanced-windows"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: windows
+            tier: lite
+            suffix: "-lite-windows"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: postmarketos
+            tier: max
             suffix: "-postmarketos"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: postmarketos
+            tier: balanced
+            suffix: "-balanced-postmarketos"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: postmarketos
+            tier: lite
+            suffix: "-lite-postmarketos"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: lineageos
+            tier: max
             suffix: "-lineageos"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: lineageos
+            tier: balanced
+            suffix: "-balanced-lineageos"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: lineageos
+            tier: lite
+            suffix: "-lite-lineageos"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: calyxos
+            tier: max
             suffix: "-calyxos"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: calyxos
+            tier: balanced
+            suffix: "-balanced-calyxos"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: calyxos
+            tier: lite
+            suffix: "-lite-calyxos"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: archlinux
+            tier: max
             suffix: "-archlinux"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: archlinux
+            tier: balanced
+            suffix: "-balanced-archlinux"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: archlinux
+            tier: lite
+            suffix: "-lite-archlinux"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: alpine
+            tier: max
             suffix: "-alpine"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: alpine
+            tier: balanced
+            suffix: "-balanced-alpine"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: alpine
+            tier: lite
+            suffix: "-lite-alpine"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: debian
+            tier: max
             suffix: "-debian"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: debian
+            tier: balanced
+            suffix: "-balanced-debian"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: debian
+            tier: lite
+            suffix: "-lite-debian"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: fedora
+            tier: max
             suffix: "-fedora"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: fedora
+            tier: balanced
+            suffix: "-balanced-fedora"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: fedora
+            tier: lite
+            suffix: "-lite-fedora"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: nixos
+            tier: max
             suffix: "-nixos"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: nixos
+            tier: balanced
+            suffix: "-balanced-nixos"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: nixos
+            tier: lite
+            suffix: "-lite-nixos"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - osprofile: void
+            tier: max
             suffix: "-void"
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - osprofile: void
+            tier: balanced
+            suffix: "-balanced-void"
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - osprofile: void
+            tier: lite
+            suffix: "-lite-void"
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
     steps:
       - name: Check out the verified tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -8920,9 +9245,16 @@ jobs:
           build-args: |
             SADDLE_VERSION=${{ needs.saddle-vhe-resolve.outputs.version }}
             SADDLE_OS_PROFILE=${{ matrix.osprofile }}
+            SADDLE_TIER=${{ matrix.tier }}
+            VHE_PROFILE_CPU=${{ matrix.profilecpu }}
+            VHE_PROFILE_VCPUS=${{ matrix.profilevcpus }}
+            VHE_PROFILE_THREADS=${{ matrix.profilethreads }}
+            VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
+            VHE_PROFILE_GPU=${{ matrix.profilegpu }}
+            VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
           labels: |
-            org.opencontainers.image.title=saddle (the ${{ matrix.osprofile }} os-distribution catalog lane)
-            org.opencontainers.image.description=the ${{ matrix.osprofile }} os-distribution seat the osprofiles catalog carries — no runnable container base exists for this seat, the lane publishes the profile config the engine reads.
+            org.opencontainers.image.title=saddle (the ${{ matrix.osprofile }} os-distribution catalog lane, the ${{ matrix.tier }} tier)
+            org.opencontainers.image.description=the ${{ matrix.osprofile }} os-distribution seat the osprofiles catalog carries on the ${{ matrix.tier }} virtual hardware plan — no runnable container base exists for this seat, the lane publishes the profile config the engine reads.
             org.opencontainers.image.version=${{ needs.saddle-vhe-resolve.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
@@ -8988,54 +9320,197 @@ jobs:
             suffix: "-grapheneos"
             mode: catalog
             expectosprofile: grapheneos
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-grapheneos"
+            mode: catalog
+            expectosprofile: grapheneos
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-grapheneos"
+            mode: catalog
+            expectosprofile: grapheneos
+            expecttier: lite
           - profile: catalog
             suffix: "-maruos"
             mode: catalog
             expectosprofile: maruos
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-maruos"
+            mode: catalog
+            expectosprofile: maruos
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-maruos"
+            mode: catalog
+            expectosprofile: maruos
+            expecttier: lite
           - profile: catalog
             suffix: "-v"
             mode: catalog
             expectosprofile: v
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-v"
+            mode: catalog
+            expectosprofile: v
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-v"
+            mode: catalog
+            expectosprofile: v
+            expecttier: lite
           - profile: catalog
             suffix: "-windows"
             mode: catalog
             expectosprofile: windows
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-windows"
+            mode: catalog
+            expectosprofile: windows
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-windows"
+            mode: catalog
+            expectosprofile: windows
+            expecttier: lite
           - profile: catalog
             suffix: "-postmarketos"
             mode: catalog
             expectosprofile: postmarketos
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-postmarketos"
+            mode: catalog
+            expectosprofile: postmarketos
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-postmarketos"
+            mode: catalog
+            expectosprofile: postmarketos
+            expecttier: lite
           - profile: catalog
             suffix: "-lineageos"
             mode: catalog
             expectosprofile: lineageos
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-lineageos"
+            mode: catalog
+            expectosprofile: lineageos
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-lineageos"
+            mode: catalog
+            expectosprofile: lineageos
+            expecttier: lite
           - profile: catalog
             suffix: "-calyxos"
             mode: catalog
             expectosprofile: calyxos
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-calyxos"
+            mode: catalog
+            expectosprofile: calyxos
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-calyxos"
+            mode: catalog
+            expectosprofile: calyxos
+            expecttier: lite
           - profile: catalog
             suffix: "-archlinux"
             mode: catalog
             expectosprofile: archlinux
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-archlinux"
+            mode: catalog
+            expectosprofile: archlinux
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-archlinux"
+            mode: catalog
+            expectosprofile: archlinux
+            expecttier: lite
           - profile: catalog
             suffix: "-alpine"
             mode: catalog
             expectosprofile: alpine
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-alpine"
+            mode: catalog
+            expectosprofile: alpine
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-alpine"
+            mode: catalog
+            expectosprofile: alpine
+            expecttier: lite
           - profile: catalog
             suffix: "-debian"
             mode: catalog
             expectosprofile: debian
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-debian"
+            mode: catalog
+            expectosprofile: debian
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-debian"
+            mode: catalog
+            expectosprofile: debian
+            expecttier: lite
           - profile: catalog
             suffix: "-fedora"
             mode: catalog
             expectosprofile: fedora
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-fedora"
+            mode: catalog
+            expectosprofile: fedora
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-fedora"
+            mode: catalog
+            expectosprofile: fedora
+            expecttier: lite
           - profile: catalog
             suffix: "-nixos"
             mode: catalog
             expectosprofile: nixos
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-nixos"
+            mode: catalog
+            expectosprofile: nixos
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-nixos"
+            mode: catalog
+            expectosprofile: nixos
+            expecttier: lite
           - profile: catalog
             suffix: "-void"
             mode: catalog
             expectosprofile: void
+            expecttier: max
+          - profile: catalog
+            suffix: "-balanced-void"
+            mode: catalog
+            expectosprofile: void
+            expecttier: balanced
+          - profile: catalog
+            suffix: "-lite-void"
+            mode: catalog
+            expectosprofile: void
+            expecttier: lite
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
@@ -9121,10 +9596,11 @@ jobs:
           VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
           SUFFIX: ${{ matrix.suffix }}
           EXPECTOSPROFILE: ${{ matrix.expectosprofile }}
+          EXPECTTIER: ${{ matrix.expecttier }}
         run: |
           set -euo pipefail
           image_ref="${IMAGE,,}:${VERSION}${SUFFIX}"
-          echo "inspecting the catalog lane ${image_ref}"
+          echo "inspecting the catalog lane ${image_ref} (the ${EXPECTTIER} tier)"
           docker pull --quiet "${image_ref}"
           actual_version="$(docker image inspect "${image_ref}" --format '{{ index .Config.Labels "org.opencontainers.image.version" }}')"
           test "${actual_version}" = "${VERSION}"
@@ -9136,7 +9612,8 @@ jobs:
           jq -e --arg seat "${EXPECTOSPROFILE}" '.id == $seat and (.kind | length > 0) and (.base | length > 0) and (.archs | length > 0)' ./osprofile.json
           stamp="$(docker image inspect "${image_ref}" --format '{{ index .Config.Env }}')"
           grep -q "SADDLE_OS_PROFILE=${EXPECTOSPROFILE}" <<< "${stamp}"
-          echo "published ${image_ref} verified: the ${EXPECTOSPROFILE} catalog lane carries the profile row (kind, base, archs), the version label ${VERSION} and the seat stamp — no runnable base pretended."
+          grep -q "SADDLE_PROFILE=${EXPECTTIER}" <<< "${stamp}"
+          echo "published ${image_ref} verified: the ${EXPECTOSPROFILE} catalog lane carries the profile row (kind, base, archs), the version label ${VERSION}, the seat stamp and the ${EXPECTTIER} tier stamp — no runnable base pretended."
 
   saddle-vhe-cleanup:
     name: Clean the saddle vhe run caches
