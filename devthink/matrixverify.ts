@@ -319,7 +319,7 @@ export interface matrixverifyreport {
  * fixed order with its outcome, no timestamps, so the record replays byte
  * identical. */
 export const matrixverifyrecord: matrixverifyreport = {
-  "release": "2.0.169",
+  "release": "2.0.170",
   "matrix": {
     "browsers": [
       "chromium",
@@ -358,7 +358,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.169"
+      "detail": "manifest and help answered for 2.0.170"
     },
     {
       "family": "mcp",

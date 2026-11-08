@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/debonair",
-  "version": "2.0.169",
+  "version": "2.0.170",
   "private": false,
   "description": "debonair is the audio and DAW app of the wenathlan family: the exclusive owner of the kathesis engine — the complete audio and music DAW infrastructure and sound AI (music studio, mixer, effects rack, transport, sampler, synthesis, voice, mixing, mastering, the v1 payload ingest and its reverse ingest) — housed at the app root beside the katexis site vocabulary, importing gateway, AI and workflow from devthink, versawase from cadria, storage from vault and the sandbox lanes from saddle. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
   "license": "GPL-3.0-only",

@@ -624,7 +624,7 @@ export interface wcagreport {
  * first layer: every check in its fixed order with its outcome, no
  * timestamps, so the record replays byte identical. */
 export const wcagrecord: wcagreport = {
-  "release": "2.0.169",
+  "release": "2.0.170",
   "checklist": "docs/wcag.md",
   "surfaces": [
     "site",
