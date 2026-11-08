@@ -4882,14 +4882,28 @@ jobs:
 
       - name: build desktop bundles
         shell: bash
+        # the bounded retry the bundler-downloads taught: the tauri
+        # bundler fetches its own tool seats (linuxdeploy appimages, the
+        # nsis toolchain) from github release assets, and the transient
+        # 503 the cdn served two lanes in a row reddened full rust
+        # compiles that never needed to repeat - the retry walks the
+        # same build command (the bundler's own cache reuses every
+        # asset the prior attempt landed) before the lane gives up.
         run: |
           set -euo pipefail
           cd devthink/build/native/desktop
-          if [ "${DEVTHINK_SIGNING}" = "caller-owned" ]; then
-            npx --yes @tauri-apps/cli@2.11.4 build --ci --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
-          else
-            npx --yes @tauri-apps/cli@2.11.4 build --ci --no-sign --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}"
-          fi
+          attempt=0
+          until [ "$attempt" -ge 3 ]; do
+            attempt=$((attempt + 1))
+            if [ "${DEVTHINK_SIGNING}" = "caller-owned" ]; then
+              npx --yes @tauri-apps/cli@2.11.4 build --ci --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}" && break
+            else
+              npx --yes @tauri-apps/cli@2.11.4 build --ci --no-sign --target "${{ matrix.target }}" --bundles "${{ matrix.bundles }}" && break
+            fi
+            echo "the tauri bundle attempt ${attempt}/3 failed; the bundler cache reuses every landed asset on the retry."
+            [ "$attempt" -ge 3 ] && exit 1
+            sleep "$((attempt * 30))"
+          done
 
       - name: sign windows installers
         # the saddle signtool recipe: the caller's certificate signs every
