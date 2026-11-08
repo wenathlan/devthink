@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-getry"
-version = "2.0.170"
+version = "2.0.171"
 authors = [{name = "wenathlan"}]
 description = "The AI gateway — five provider gateways serving 35 OpenAI-compatible routes"
 readme = "README.md"
