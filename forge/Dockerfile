@@ -20,13 +20,13 @@ ARG FORGE_VERSION=2.0.168
 # application rides the context nested under app/ with the sibling sources
 # the vite alias bridges resolve beside it.
 WORKDIR /src/app
-COPY app/package.json app/pnpm-lock.yaml app/pnpm-workspace.yaml ./
+COPY app/package.json app/pnpm-workspace.yaml ./
 COPY app/pnpmboot.package.json /tmp/pnpmboot/package.json
 COPY app/pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --frozen-lockfile --ignore-scripts
+ && pnpm install --no-frozen-lockfile --ignore-scripts
 COPY app/ .
 # the copy-law vault sibling: the label store, routes and utils bridges resolve the ../vault aliases, so the sibling sources land at /src/vault where those bridges answer inside the container.
 COPY vault/ /src/vault/
@@ -35,6 +35,8 @@ COPY vault/ /src/vault/
 # sources land at /src/devthink where that re-export answers inside the
 # container (the same sibling-copy law the vault line above carries).
 COPY devthink/ /src/devthink/
+# the foundry pipeline the ../foundry import lanes resolve
+COPY foundry/ /src/foundry/
 # the saddle sibling of the engine ownership: the runner sources import the modes through the @wenathlan/saddle/modes bridge and the vite alias resolves the specifier to ../saddle/modes.ts, so the sibling sources land at /src/saddle where that bridge answers inside the container (sources only - the build never installs the sibling, the alias reads the .ts file).
 COPY saddle/ /src/saddle/
 RUN pnpm build

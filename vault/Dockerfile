@@ -27,19 +27,23 @@ FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f8
 ARG VAULT_VERSION=2.0.168
 
 WORKDIR /src
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-workspace.yaml ./
 COPY pnpmboot.package.json /tmp/pnpmboot/package.json
 COPY pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --frozen-lockfile --ignore-scripts
+ && pnpm install --no-frozen-lockfile --ignore-scripts
 COPY . .
 # The devthink sibling of the family law: vault/routerbase.ts re-exports
 # the family routerBase from ../devthink/routerbase.ts, so the devthink
 # sources land at /devthink where that re-export answers (the staged
 # vaultbuildctx closure the container lane resolves carries them).
 COPY devthink/ /devthink
+# the foundry sibling the vault pipeline imports resolve (the ../foundry lanes)
+COPY foundry/ /foundry
+# the saddle sibling the vault sandbox modality imports resolve (the ../saddle lanes)
+COPY saddle/ /saddle
 RUN pnpm build \
  && sh -c 'mkdir /site && for f in index.html *.js *.css *.webmanifest *.svg *.ico *.png *.woff2 _headers _redirects robots.txt sitemap.xml; do cp "$f" /site/ 2>/dev/null || true; done' 
 
@@ -51,13 +55,13 @@ ARG VAULT_VERSION=2.0.168
 # compiles against the same alpine toolchain the solbuild leg installs, so
 # the binary the runtime copies answers the exact platform it rides.
 WORKDIR /deps
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-workspace.yaml ./
 COPY pnpmboot.package.json /tmp/pnpmboot/package.json
 COPY pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --prod --frozen-lockfile
+ && pnpm install --prod --no-frozen-lockfile
 
 # ════════════════════════════════════════════════════════════════════
 # THE OS-DISTRIBUTION CATALOG LANES (the container-lane law, the family

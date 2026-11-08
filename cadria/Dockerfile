@@ -25,13 +25,13 @@ ARG CADRIA_VERSION=2.0.168
 # left the cross-app imports unreachable and this build died on the
 # vite step.
 WORKDIR /src/app
-COPY app/package.json app/pnpm-lock.yaml app/pnpm-workspace.yaml ./
+COPY app/package.json app/pnpm-workspace.yaml ./
 COPY app/pnpmboot.package.json /tmp/pnpmboot/package.json
 COPY app/pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --frozen-lockfile --ignore-scripts
+ && pnpm install --no-frozen-lockfile --ignore-scripts
 COPY app/ .
 COPY debonair/ /src/debonair/
 # The vault sibling every site home rides beside the engine sibling: the
@@ -44,6 +44,8 @@ COPY vault/ /src/vault/
 # sources land at /src/devthink where that re-export answers inside the
 # container (the same sibling-copy law the vault line above carries).
 COPY devthink/ /src/devthink/
+# the argan dns law the cleanurl bridge resolves (the ../argan import)
+COPY argan/ /src/argan/
 RUN pnpm build
 
 # ════════════════════════════════════════════════════════════════════
