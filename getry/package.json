@@ -696,9 +696,9 @@
       "default": "./gatewaycheck.ts"
     },
     "./nodeshim": {
-      "types": "./nodeshim.ts",
-      "import": "./nodeshim.ts",
-      "default": "./nodeshim.ts"
+      "types": "./shims.ts",
+      "import": "./shims.ts",
+      "default": "./shims.ts"
     },
     "./types": {
       "types": "./types.ts",
@@ -730,7 +730,6 @@
     "labels.ts",
     "llm.ts",
     "models.ts",
-    "nodeshim.ts",
     "oauth.ts",
     "project.ts",
     "providers.ts",
@@ -739,6 +738,7 @@
     "request.ts",
     "search.ts",
     "server.ts",
+    "shims.ts",
     "streaming.ts",
     "test/gatewayserver.ts",
     "thinking.ts",

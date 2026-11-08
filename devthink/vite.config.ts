@@ -251,12 +251,16 @@ function nodebuiltinshim(): Plugin {
     ].join("\n"),
   };
   /* the ownership wave (wave/ownership.getry) moved the shim sources to the
-   * getry engine root: the browser stubs (nodeshim.ts) and the neutral
-   * prisma shim (prismashim.ts) are gateway-owned modules now, so the
-   * browser bundle resolves the same monorepo sources the sibling app
-   * carries — the shims are never duplicated inside devthink. */
-  const shimpath = path.resolve(import.meta.dirname, "../getry/nodeshim.ts");
-  const prismashimpath = path.resolve(import.meta.dirname, "../getry/prismashim.ts");
+   * getry engine root, and the shim fold (research.domainconsolidation.md
+   * §e item 10) merged them into one keyed seat: the browser stubs and the
+   * neutral prisma shim both answer from getry/shims.ts now (the node
+   * face's combined default and the prisma face's named PrismaClient class
+   * ride one module — prismaconfig.ts deliberately stays the standalone
+   * prisma cli config seat beside schema.prisma), so the browser bundle
+   * resolves the same monorepo sources the sibling app carries — the
+   * shims are never duplicated inside devthink. */
+  const shimpath = path.resolve(import.meta.dirname, "../getry/shims.ts");
+  const prismashimpath = path.resolve(import.meta.dirname, "../getry/shims.ts");
   /** the hono adapter browser face (the dev boot heal): the gateway graph
    * the browser walks reaches the node adapter ("@hono/node-server" and
    * the serve-static subpath) whose real entry probes process.versions.node
@@ -460,7 +464,7 @@ export default defineConfig({
       "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "../getry/gateway.ts"),
       "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "../getry/gateway.ts"),
       "@wenathlan/getry/gatewaycheck": path.resolve(import.meta.dirname, "../getry/gatewaycheck.ts"),
-      "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "../getry/nodeshim.ts"),
+      "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "../getry/shims.ts"),
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "../getry/types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "../getry/constants.ts"),
       /** the hono seat bridges of the ownership wave (the mirror of the
@@ -511,7 +515,7 @@ export default defineConfig({
        * resolution that walks up from the getry folder never sees this
        * app's install — the specifier resolves onto this install's
        * runtime entry the same way every bridge does (the lane answers
-       * the neutral refusal the nodeshim family carries when no sdk seat
+       * the neutral refusal the shims seat carries when no sdk seat
        * exists, so the browser bundle never speaks the network). */
       "z-ai-web-dev-sdk": path.resolve(
         import.meta.dirname,

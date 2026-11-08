@@ -373,7 +373,7 @@ const familybridges = {
   "@wenathlan/getry/gatewayconfig": join(root, "..", "getry", "gateway.ts"),
   "@wenathlan/getry/gatewayviewconfig": join(root, "..", "getry", "gateway.ts"),
   "@wenathlan/getry/gatewaycheck": join(root, "..", "getry", "gatewaycheck.ts"),
-  "@wenathlan/getry/nodeshim": join(root, "..", "getry", "nodeshim.ts"),
+  "@wenathlan/getry/nodeshim": join(root, "..", "getry", "shims.ts"),
   "@wenathlan/getry/types": join(root, "..", "getry", "types.ts"),
   "@wenathlan/getry/constants": join(root, "..", "getry", "constants.ts"),
   /** the getry owner faces of the gateway ownership wave

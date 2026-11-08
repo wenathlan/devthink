@@ -113,7 +113,7 @@ export default defineConfig({
       "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "../getry/gateway.ts"),
       "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "../getry/gateway.ts"),
       "@wenathlan/getry/gatewaycheck": path.resolve(import.meta.dirname, "../getry/gatewaycheck.ts"),
-      "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "../getry/nodeshim.ts"),
+      "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "../getry/shims.ts"),
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "../getry/types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "../getry/constants.ts"),
       /** the getry owner faces of the gateway ownership wave

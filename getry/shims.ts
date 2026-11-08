@@ -1,3 +1,64 @@
+// # shims.ts — the one keyed file of the gateway shim domain: the
+// consolidation law of the root (one keyword file per domain — the variant
+// and correlated logics that lived scattered across the app's files
+// unified into one module, every file one responsibility) merged the
+// browser-face shims of the gateway lane into this seat — the node
+// builtin surface (the former nodeshim.ts body below, the first section)
+// and the prisma client edge (prismashim.ts, the second section) — every
+// export preserved verbatim, zero logic changes (the third browser face
+// of the lane, honoshim.ts, keeps its own seat: the audit fold never
+// named it, and its @hono/node-server refusal answers a different
+// specifier family). The side-effect order analysis the fold owed: neither
+// section carries a module-scope side effect — the caution's feared
+// runtime-global patching never lived in these seats (the node face is a
+// pure declaration table the devthink vite plugin's resolveId alias
+// redirects the node: specifiers onto, no global is ever assigned at
+// import time, and the prisma face is an inert class whose constructor
+// only throws on the instantiation the browser lane can never reach), and
+// in the old world no importer ever loaded both files together — the
+// browser graph reaches the node face through the static node: imports of
+// the shared core graph and the prisma face only through the lazy dynamic
+// import the os storage lane guards — so no inter-file evaluation order
+// existed to preserve: the nodeshim section rides first only because its
+// combined default export is the keep-first default. The collision
+// census: the two waves collided on exactly one export name — the default
+// (the combined builtin surface of the node face against the cjs interop
+// object of the prisma face) — settled keep-first + suffix: the combined
+// surface stays the module default, the interop object rides as the
+// suffixed named export prismashimdefault (zero behavior change: the lazy
+// db proxy of the os storage lane reads the named spelling first —
+// mod.PrismaClient ?? mod.default?.PrismaClient — and the browser never
+// touches the client at all); no other same-name decl lived in both
+// sources (the node face's identifier table and the prisma face's single
+// PrismaClient class never overlap), so no other suffix rides this file.
+// The one deviation the fold carries, recorded here because the fold's
+// letter would have broken the family: prismaconfig.ts — the third file
+// of the audit item (devthink/docs/research.domainconsolidation.md §e
+// item 10) — deliberately stays a standalone seat beside schema.prisma.
+// That file evaluates defineConfig at module scope (resolveschemapath()
+// probes the filesystem candidates and reads the env to answer the schema
+// path and the datasource url the prisma cli consumes through --config),
+// and this seat is the module the devthink browser bundle evaluates at
+// boot — the vite plugin aliases every node: builtin of the shared core
+// graph onto this file — so folding the config body here would run its
+// candidates ladder in the browser graph, where the bare process of
+// process.cwd() is undefined (the devthink define replaces only the
+// literal process.env) and the whole os would white-screen before the
+// first component mounts (the white-screen law), while the prisma cli's
+// own contract — a default export of defineConfig's answer read through
+// --config <file> — would land behind this seat's keep-first default and
+// break the operator push lane. The config stays the gateway's prisma
+// seat, consumed the way the schema is consumed: by path, from the tool
+// that owns the contract.
+
+/* ══════════════════════════════════════════════════════════════════════ */
+/* SECTION: nodeshim.ts — the browser surface of the multi-mode engines   */
+/* (the first section).                                                   */
+/* (consolidation note: the section rides verbatim; its combined default  */
+/* export stays the module default — the keep-first seat of the one       */
+/* default collision the fold found.)                                     */
+/* ══════════════════════════════════════════════════════════════════════ */
+
 /**
  * @file nodeshim.ts
  * @module engine/nodeshim
@@ -263,3 +324,53 @@ export default {
   deflate,
   inflate,
 };
+
+/* ══════════════════════════════════════════════════════════════════════ */
+/* SECTION: prismashim.ts — the browser face of the prisma client edge.   */
+/* (consolidation note: the cjs interop default this wave carried rides   */
+/* as the suffixed named export prismashimdefault — the keep-first rule   */
+/* of the one default collision; the named PrismaClient class rides       */
+/* untouched and the lazy proxy of the os storage lane reads the named    */
+/* spelling first, so the suffix changes zero behavior.)                  */
+/* ══════════════════════════════════════════════════════════════════════ */
+
+/**
+ * @file prismashim.ts
+ * @module engine/prismashim
+ * @description
+ *  The browser face of the prisma client edge. The lazy db surface of
+ *  storage.ts speaks a dynamic import("@prisma/client") on the first
+ *  database touch, and the browser condition of that package lands on
+ *  index-browser.js — a bare require of the generated .prisma/client that
+ *  only exists after prisma generate, so a fresh checkout (the runner)
+ *  refused the whole web bundle at build time while the local machines kept
+ *  passing by resolving a generated client their environments happened to
+ *  carry. The browser never touches the real client (the os HD is the
+ *  IndexedDB store of storage.ts §db): the vite shim plugin resolves
+ *  every @prisma/client and .prisma/client specifier onto this one honest
+ *  module, whose PrismaClient throws the same way a host without the client
+ *  would — nothing server-only is faked, and the node and cli lanes keep
+ *  the real client untouched (this module only ever serves the vite browser
+ *  build).
+ *
+ *  @section prismaclient — the throwing PrismaClient face
+ *  @depends-on the vite resolveId hook in vite.config.ts
+ *  @consumed-by storage.ts (the lazy db proxy, through the shim plugin)
+ */
+
+// ---------------------------------------------------------------------------
+// @section prismaclient — the throwing PrismaClient face
+// ---------------------------------------------------------------------------
+
+export class PrismaClient {
+  constructor() {
+    throw new Error(
+      "[devthink browser bundle] @prisma/client PrismaClient is absent on this host — the browser answers the IndexedDB store of storage.ts §db",
+    );
+  }
+}
+
+/** the cjs interop face: a commonjs @prisma/client resolution exposes the
+ * class on the default export, so the lazy db proxy of storage.ts
+ * accepts both spellings the same way it does against the real client */
+export const prismashimdefault = { PrismaClient };

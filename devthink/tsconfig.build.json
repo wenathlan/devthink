@@ -80,7 +80,7 @@
       "@wenathlan/getry/gatewayconfig": ["../getry/dist/types/getry/gateway.d.ts"],
       "@wenathlan/getry/gatewayviewconfig": ["../getry/dist/types/getry/gateway.d.ts"],
       "@wenathlan/getry/gatewaycheck": ["../getry/dist/types/getry/gatewaycheck.d.ts"],
-      "@wenathlan/getry/nodeshim": ["../getry/dist/types/getry/nodeshim.d.ts"],
+      "@wenathlan/getry/nodeshim": ["../getry/dist/types/getry/shims.d.ts"],
       "@wenathlan/getry/types": ["../getry/dist/types/getry/types.d.ts"],
       "@wenathlan/getry/constants": ["../getry/dist/types/getry/constants.d.ts"],
       /* the getry owner faces of the gateway ownership wave

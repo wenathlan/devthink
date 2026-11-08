@@ -156,7 +156,7 @@ export default defineConfig({
       "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "gateway.ts"),
       "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "gateway.ts"),
       "@wenathlan/getry/gatewaycheck": path.resolve(import.meta.dirname, "gatewaycheck.ts"),
-      "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "nodeshim.ts"),
+      "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "shims.ts"),
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "constants.ts"),
       "@wenathlan/getry/test/researchfixtures": path.resolve(import.meta.dirname, "test/researchfixtures.ts"),

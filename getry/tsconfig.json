@@ -181,7 +181,7 @@
       "@wenathlan/getry/gatewayconfig": ["./gateway.ts"],
       "@wenathlan/getry/gatewayviewconfig": ["./gateway.ts"],
       "@wenathlan/getry/gatewaycheck": ["./gatewaycheck.ts"],
-      "@wenathlan/getry/nodeshim": ["./nodeshim.ts"],
+      "@wenathlan/getry/nodeshim": ["./shims.ts"],
       "@wenathlan/getry/types": ["./types.ts"],
       "@wenathlan/getry/constants": ["./constants.ts"],
       "@wenathlan/getry/test/researchfixtures": ["./test/researchfixtures.ts"],
