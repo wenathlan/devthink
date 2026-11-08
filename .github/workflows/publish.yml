@@ -521,6 +521,22 @@ jobs:
             echo "tag=$tag"
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
+      - name: Build the vault node faces (the node face law)
+        # the vault envelope's runtime faces ship build js beside their
+        # sources: plain node refuses to type-strip .ts under node_modules,
+        # so the published exports answer the node condition with the
+        # self-contained bundle (the same build.ts the repo carries; the
+        # esbuild seat installs isolated under the vault tree, the family
+        # dev pin, zero lock drift — the envelope packs the emitted faces
+        # the files list carries).
+        if: matrix.package == 'vault'
+        run: |
+          set -euo pipefail
+          cd vault
+          npm install --no-save --ignore-scripts --no-audit --no-fund esbuild@^0.28.2
+          node --experimental-strip-types build.ts
+          test -s build/onboardingstore.js
+          test -s build/labelstore.js
       - name: package dry-run
         run: cd "${{ matrix.package }}" && npm pack --dry-run >/dev/null
       - name: check npm token availability

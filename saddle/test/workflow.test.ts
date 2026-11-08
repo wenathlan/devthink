@@ -790,10 +790,16 @@ describe("the workflow contract", () => {
     /* the healed container law (the sandboxfold heal wave): the image
      * execs the webserver seat directly — no wrapper script, no heredoc
      * entrypoint — and the console graph rides the source-is-library
-     * law (node strips the .ts types natively, zero npm deps). */
+     * law (node strips the .ts types natively), with the routerbase
+     * law answering the vault faces (the doorsync heal: db.ts and
+     * labels.ts read the staged ../vault sources raw). */
     assert.ok(
       containerfile.includes('ENTRYPOINT ["node", "webserver.ts"]'),
       "the image entrypoint execs the webserver seat directly (the healed bootstrap)",
+    );
+    assert.ok(
+      containerfile.includes("COPY --from=solbuild /vault/onboardingstore.ts /vault/onboardingstore.ts"),
+      "the runtime stages the onboarding store face the routerbase law reads",
     );
 
     /* the doctrine the family proved rides the one container file: the

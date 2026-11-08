@@ -281,6 +281,25 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
     expect(dockerfile).toContain("AS osvanillaos");
     expect(dockerfile).toContain("AS osandroid");
   });
+
+  it("the runtime answers the node face law — the routerbase reads and the published node face", async () => {
+    const dockerfile = await readFile(join(repoRoot, "saddle", "Dockerfile"), "utf8");
+    /* the node face law (the ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING
+     * heal) walks two seats: the routerbase law (the doorsync heal —
+     * db.ts and labels.ts read the staged ../vault sources raw, the
+     * runtime stages both faces at /vault) answers the family's own node
+     * lanes, and the published envelope's node condition (the vault
+     * exports answer node with the build bundles) answers every
+     * external node consumer the registry serves. */
+    expect(dockerfile).toContain("COPY --from=solbuild /vault/labelstore.ts /vault/labelstore.ts");
+    expect(dockerfile).toContain("COPY --from=solbuild /vault/onboardingstore.ts /vault/onboardingstore.ts");
+    expect(dockerfile).toContain('ENTRYPOINT ["node", "webserver.ts"]');
+    const manifest = JSON.parse(await readFile(join(repoRoot, "vault", "package.json"), "utf8")) as {
+      exports: Record<string, Record<string, string>>;
+    };
+    expect(manifest.exports["./onboardingstore"]?.node).toBe("./build/onboardingstore.js");
+    expect(manifest.exports["./labelstore"]?.node).toBe("./build/labelstore.js");
+  });
 });
 
 describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {

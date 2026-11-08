@@ -627,6 +627,7 @@
     },
     "./labelstore": {
       "types": "./labelstore.ts",
+      "node": "./build/labelstore.js",
       "import": "./labelstore.ts",
       "default": "./labelstore.ts"
     },
@@ -657,6 +658,7 @@
     },
     "./onboardingstore": {
       "types": "./onboardingstore.ts",
+      "node": "./build/onboardingstore.js",
       "import": "./onboardingstore.ts",
       "default": "./onboardingstore.ts"
     },
@@ -734,7 +736,11 @@
     "uistore.ts",
     "utils.ts",
     "vaultclient.ts",
-    "!test/tmp"
+    "!test/tmp",
+    "build/onboardingstore.js",
+    "build/onboardingstore.js.map",
+    "build/labelstore.js",
+    "build/labelstore.js.map"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

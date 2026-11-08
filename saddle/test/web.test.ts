@@ -171,6 +171,10 @@ describe('the web contract', () => {
     const child = fork('webserver.ts', ['--port', String(port)], {
       cwd: reporoot,
       env: { ...process.env, SADDLE_HOST: '127.0.0.1', SADDLE_DB: dbpath, ...extraenv },
+      /* the routerbase law (the doorsync heal): db.ts and labels.ts read
+       * the vault sibling sources raw (../vault/<face>.ts), so the fork
+       * needs no bridge — the relative resolution lands outside
+       * node_modules where the type-stripping law reads it. */
       stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
     });
     return { child, base: `http://127.0.0.1:${port}`, dbpath };

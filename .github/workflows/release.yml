@@ -1572,6 +1572,17 @@ jobs:
           # pack). The devthink application tarball answers from the
           # assemble lane above (the built flat distribution), never
           # from a raw source pack.
+          # the vault node faces build before the pack (the node face
+          # law): the runtime faces the saddle webserver reads answer the
+          # node condition with the self-contained build js, so the family
+          # tarball and every registry lane carry the faces plain node
+          # executes (the same build.ts the publish lane builds).
+          cd vault
+          npm install --no-save --ignore-scripts --no-audit --no-fund esbuild@^0.28.2
+          node --experimental-strip-types build.ts
+          test -s build/onboardingstore.js
+          test -s build/labelstore.js
+          cd ..
           for app in argan cadria cobaia debonair forge foundry getry stealthhead vault saddle; do
             npm pack "./${app}" --pack-destination familypack
           done
