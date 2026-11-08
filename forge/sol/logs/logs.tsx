@@ -30,7 +30,7 @@ import {
   runLogLines,
 } from "../../runstream.ts";
 import { labelfill, label } from "../../labels";
-import { EmptyState } from "../wingets";
+import { EmptyState } from "../../wingets";
 
 /** the replay cadence: the wall clock multiplier over the run clock */
 const PLAY_MS = 120;

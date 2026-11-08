@@ -1,9 +1,12 @@
 /**
- * index.ts — the universal winget surface of debonair: every winget of the
+ * wingets.ts — the universal winget surface of debonair: every winget of the
  * sol/wingets folder answers from this one module, so the pages import
  * their components from a single place and the dotted winget file name
  * lives exactly once (here) instead of repeating across every page —
- * the components stay complete independent files beside this surface.
+ * the components stay complete independent files inside the theme folder.
+ * the surface is now seated at the app root beside the sol theme folder
+ * per the family law: every .ts logic file of the app rides the root,
+ * and only the .tsx components keep riding inside sol/.
  *
  * the in-construction pass (the owner order of the waves): the platform
  * surface is ONE face, so the barrel answers the construction face beside
@@ -14,9 +17,9 @@
  * while the winget files themselves keep riding their own files untouched
  * for the day the detailed engine wave lands them again.
  */
-export { default as Constructionface } from "./Constructionface.tsx";
-export * from "./Constructionface.tsx";
-export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
-export * from "./HomeEntrygate.tsx";
-export { default as ShellPlayerbar } from "./ShellPlayerbar.tsx";
-export * from "./ShellPlayerbar.tsx";
+export { default as Constructionface } from "./sol/wingets/Constructionface.tsx";
+export * from "./sol/wingets/Constructionface.tsx";
+export { default as HomeEntrygate } from "./sol/wingets/HomeEntrygate.tsx";
+export * from "./sol/wingets/HomeEntrygate.tsx";
+export { default as ShellPlayerbar } from "./sol/wingets/ShellPlayerbar.tsx";
+export * from "./sol/wingets/ShellPlayerbar.tsx";

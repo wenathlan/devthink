@@ -104,7 +104,7 @@ import {
 } from "../../gateway.ts";
 import { ShellChrome } from "@/wingets/Shellchrome";
 import { AppTile } from "@/wingets";
-import { DriveIcon, PlanFolderIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../wingets";
+import { DriveIcon, PlanFolderIcon, PlatformMark, ShellFolderIcon, ThisPcMark } from "../../wingets";
 
 /** the window title answers the catalog label row (bare-id fallback). */
 const FILES_LABEL = osAppLabels().files ?? { name: "My Files", detail: "", pinned: true };

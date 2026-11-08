@@ -45,7 +45,7 @@ foundry is the complete deployable clone of the devthink family pipeline: one un
 - `sol/manifest/manifest.tsx` — the packaging line: the shelf from `LINE_SEED` 804613 plus sealed drafts; the stage graph (`GraphPanel`) rehearsing `PIPELINE` on the same seed and tick (one run, two views); the seal-a-draft form (name + payload digest, bytes `4096 + payload.length`, sealed as tzst); the manifest readout; walk / rerun.
 - `sol/home/home.tsx` — the landing behind the entry gate: the forge console (draft only — the staging surface stores nothing), the format shelf, the run / store / clone capability steps, the family row footer and the meta-quad.
 - `sol/intro`, `sol/onboarding`, `sol/notfound` — the entry flow: the splash (brand mark, ~1.6 s hold, 0.8 s slide-up) hands directly to the three-beat onboarding walk; the 404 answer and the catch-all.
-- `sol/wingets/` — the shared widgets behind the single `index.ts` surface: `GraphPanel`, `Entry`, `EntryGate`, `Tabs`, `BrandMark`, `EmptyState`.
+- `sol/wingets/` — the shared widget components (only `.tsx` inside the theme, per the family law) behind the single root `wingets.ts` surface: `GraphPanel`, `Entry`, `EntryGate`, `Tabs`, `BrandMark`, `EmptyState`.
 
 ## saddle and vault integration
 

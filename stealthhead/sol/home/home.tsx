@@ -15,7 +15,7 @@
  */
 
 import { label } from "../../labels";
-import { Constructionface, EntryGate } from "../wingets";
+import { Constructionface, EntryGate } from "../../wingets";
 
 /**
  * the home anchor: the entry gate decides first (intro unseen hands to

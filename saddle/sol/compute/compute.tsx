@@ -16,7 +16,7 @@
 import { BoxRegular as Box } from "@fluentui/react-icons";
 import { PageShell } from "../shell/Shell.tsx";
 import { label } from "../../labels.ts";
-import { ComputeBootladder, ComputeModalitycatalog } from "../wingets";
+import { ComputeBootladder, ComputeModalitycatalog } from "../../wingets";
 
 export default function Compute() {
   return (

@@ -461,3 +461,4 @@ poll-auth.log
 pnpm-lock.yaml
 **/docs/infra.md
 **/docs/infraestrutura.md
+.polar/

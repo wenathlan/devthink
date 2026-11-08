@@ -3,6 +3,9 @@
  * shape the paired gateway answers /settings with, plus the category ids
  * the Windows 11 navigation rail routes by. Pure types + tiny guards, no
  * react, so the anchor and every category component import the one truth.
+ * Seated at the app root (moved from sol/wingets/Settingstypes.ts — the
+ * family law: every .ts logic file lives at the root, only .tsx
+ * components live inside sol).
  */
 
 /** the /settings snapshot of a paired gateway (the anchor's contract). */

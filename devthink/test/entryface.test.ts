@@ -31,7 +31,7 @@ import { uistoreseedrows } from "../uistore.ts";
 
 const sections = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroSaassections.tsx"), "utf8");
 const shaderhero = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroShaderhero.tsx"), "utf8");
-const barrel = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "index.ts"), "utf8");
+const barrel = readFileSync(join(import.meta.dirname, "..", "wingets.ts"), "utf8");
 const saas = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroSaas.tsx"), "utf8");
 const rails = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroSaasrails.tsx"), "utf8");
 const kit = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "IntroSaaskit.tsx"), "utf8");
@@ -510,7 +510,7 @@ describe("the intro to explore to auth chain", () => {
 
 describe("the living shader hero (the dormant WebGL winget of the face)", () => {
   it("the winget stays on the barrel, dormant — the CSS gaussian of the reference owns the hero", () => {
-    expect(barrel).toContain('export * from "./IntroShaderhero.tsx";');
+    expect(barrel).toContain('export * from "./sol/wingets/IntroShaderhero.tsx";');
     expect(sections).toContain("hero-gaussian-shader");
     expect(sections).not.toContain("<Shaderhero />");
   });

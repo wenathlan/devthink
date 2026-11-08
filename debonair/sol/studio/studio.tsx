@@ -19,7 +19,7 @@
 
 import { label } from "../../labels.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { Constructionface } from "../wingets";
+import { Constructionface } from "../../wingets";
 
 /**
  * the studio page: the in-construction face under the studio eyebrow.

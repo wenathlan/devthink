@@ -26,9 +26,9 @@ import { gatewayReady } from "../../gateway.js";
 import { createrunner, type runstageview } from "../../graph.js";
 import { makeviewstate } from "../../graph.js";
 import { osText } from "../../os.ts";
-import { ConsoleReference, GraphView, Terminal, type TerminalRow, type TerminalState } from "../wingets";
+import { ConsoleReference, GraphView, Terminal, type TerminalRow, type TerminalState } from "../../wingets";
 
-export * from "../wingets";
+export * from "../../wingets";
 
 /** the three real sections of the console deck. */
 type ConsoleSection = "terminal" | "boot" | "reference";

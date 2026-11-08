@@ -21,7 +21,7 @@ import { ComponentOptions } from "./SettingsComponentoptions";
 import { LanguageCard } from "./SettingsLanguagecard";
 import { NavbarEdgeControl, NavbarModeControl } from "./SettingsNavbarposition";
 import { saveThemeMirror } from "../../personalstore.ts";
-import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
+import type { PreferenceKey, SettingsSnapshot } from "../../Settingstypes";
 
 type PersonalizationProps = {
   /** the preference machine rows the mode, the rail and the zoom ride */

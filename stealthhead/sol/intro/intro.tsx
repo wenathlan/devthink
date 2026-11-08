@@ -17,7 +17,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { label } from "../../labels";
 import { markOnboardingStage } from "../../onboardingstate.ts";
-import { BrandMark } from "../wingets";
+import { BrandMark } from "../../wingets";
 
 /** how long the brand holds before the exit (ms) — the doctrine asks ~1.6s */
 const HOLD_MS = 1600;

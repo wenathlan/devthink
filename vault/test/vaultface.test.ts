@@ -22,7 +22,7 @@ const SHELL = readFileSync(join(import.meta.dirname, "..", "sol", "shell", "Shel
 const OBJECTS = readFileSync(join(import.meta.dirname, "..", "sol", "objects", "objects.tsx"), "utf8");
 const BUCKETS = readFileSync(join(import.meta.dirname, "..", "sol", "buckets", "buckets.tsx"), "utf8");
 const RETENTION = readFileSync(join(import.meta.dirname, "..", "sol", "retention", "retention.tsx"), "utf8");
-const INDEX = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "index.ts"), "utf8");
+const INDEX = readFileSync(join(import.meta.dirname, "..", "wingets.ts"), "utf8");
 const PLANSTABLE = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomePlanstable.tsx"), "utf8");
 const BROWSE = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeObjectbrowse.tsx"), "utf8");
 const MYFILES = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "HomeMyfiles.tsx"), "utf8");
@@ -81,7 +81,7 @@ describe("the face surfaces", () => {
   });
 
   it("the winget surface stays alphabetical and answers the face", () => {
-    const names = [...INDEX.matchAll(/from "\.\/([A-Za-z]+)\.tsx"/g)].map((match) => match[1]);
+    const names = [...INDEX.matchAll(/from "\.\/sol\/wingets\/([A-Za-z]+)\.tsx"/g)].map((match) => match[1]);
     const sorted = [...names].sort((a, b) => a.localeCompare(b));
     expect(names).toEqual(sorted);
     for (const winget of [

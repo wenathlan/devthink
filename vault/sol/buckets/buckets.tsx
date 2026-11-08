@@ -21,7 +21,7 @@ import { type BucketRule, type BucketShelf, retentionLabel, seedRules, shelfOf }
 import { label, labelfill } from "../../labels";
 import { formatBytes, seedVault, type VaultObject } from "../../objectface.ts";
 import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
-import { EmptyState, toast } from "../wingets";
+import { EmptyState, toast } from "../../wingets";
 
 /** the seed of the rehearsal shelf (shown on the page, pinned by the tests) */
 export const SHELF_SEED = 912731;

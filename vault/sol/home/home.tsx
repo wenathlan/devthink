@@ -37,9 +37,9 @@ import {
   Signupgate,
   Tabs,
   toast,
-} from "../wingets";
+} from "../../wingets";
 
-export * from "../wingets";
+export * from "../../wingets";
 
 /** the deposit verdict one artifact line earns under the real contract —
  * the shape both the readout and the toast answer. */
