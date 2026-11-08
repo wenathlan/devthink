@@ -579,8 +579,7 @@ jobs:
           test -f saddle/execution.ts
           test -f saddle/foundation.ts
           test -f saddle/isolation.ts
-          test -f saddle/modalityregistry.ts
-          test -f saddle/modes.ts
+          test -f saddle/modalities.ts
           test -f saddle/sandbox.ts
           test -f saddle/server.ts
           test -f saddle/virtual.ts

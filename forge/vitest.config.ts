@@ -59,7 +59,7 @@ export default defineConfig({
        * specifier to the monorepo source the sibling engine carries — the
        * ladder is never duplicated inside forge. the entry retires when
        * the published envelope carries the built mode surface. */
-      "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
+      "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modalities.ts"),
     },
   },
   test: {

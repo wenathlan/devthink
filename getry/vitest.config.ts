@@ -52,7 +52,7 @@ export default defineConfig({
        * carries, so the node-side tests answer the same module the devthink
        * runner serves. retires when saddle 2.1.7 publishes the export
        * entry. */
-      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
+      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalities.ts"),
 
       /** the devthink module bridges of the ownership wave
        * (wave/ownership.getry), mirrored from vite.config.ts: the moved

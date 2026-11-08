@@ -18,7 +18,7 @@ export default defineConfig({
        * the vendored modalities.ts mirror retires with the lane import, so
        * the node-side tests answer the same module the dev server serves
        * and the catalog keeps one owner. */
-      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
+      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalities.ts"),
       /** the label store bridge of the ownership law: the app's copy
        * mechanism rides the vault factory through the published library
        * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves
@@ -26,6 +26,14 @@ export default defineConfig({
        * the mechanism is never duplicated inside devthink. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the ui store engine bridge of the ownership law (the wave 14
+       * uistore consolidation): the os seat rides the vault factory
+       * through the published library specifier
+       * ("@wenathlan/vault/uistore"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * uicopy mechanism is never duplicated inside devthink. the entry
+       * retires when the published envelope carries the built ui store. */
+      "@wenathlan/vault/uistore": path.resolve(import.meta.dirname, "../vault/uistore.ts"),
 
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published

@@ -371,7 +371,7 @@ export default defineConfig({
        * modalities.ts copy) retires, the catalog is never duplicated
        * inside devthink. the entry retires when the registry pin resolves
        * the published envelope that carries the built registry. */
-      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
+      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalities.ts"),
       /** the workload law bridge of the family (wave WL1): the os surface
        * reads the family lane catalog through the published library
        * specifier ("@wenathlan/saddle/workloadlaw"), and this bridge
@@ -579,6 +579,14 @@ export default defineConfig({
        * mechanism is never duplicated inside devthink. the entry retires
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the ui store engine bridge of the ownership law (the wave 14
+       * uistore consolidation): the os seat rides the vault factory through
+       * the published library specifier ("@wenathlan/vault/uistore"), and
+       * this bridge resolves the specifier to the monorepo source the
+       * sibling engine carries — the uicopy mechanism is never duplicated
+       * inside devthink. the entry retires when the published envelope
+       * carries the built ui store. */
+      "@wenathlan/vault/uistore": path.resolve(import.meta.dirname, "../vault/uistore.ts"),
       /** the family dev bridge specifier wall (the routesdual law): the
        * sibling pages this server serves import their cross-family seats
        * through the published library specifiers, and every specifier the

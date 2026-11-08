@@ -32,7 +32,7 @@ export default defineConfig({
        * envelope carries no ./modalityregistry export surface — this bridge
        * resolves the specifier to the monorepo source the saddle engine
        * carries. retires when saddle 2.1.7 publishes the export entry. */
-      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalityregistry.ts"),
+      "@wenathlan/saddle/modalityregistry": path.resolve(import.meta.dirname, "../saddle/modalities.ts"),
       /** the devthink module bridges of the ownership wave
        * (wave/ownership.getry): the gateway pipeline sources this app owns
        * still lean on the os-owned seams they grew beside (config,

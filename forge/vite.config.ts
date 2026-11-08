@@ -47,7 +47,7 @@ export default defineConfig({
        * sibling engine carries — the ladder is never duplicated inside
        * forge, so the dev server and the build answer the same module the
        * node-side tests answer. */
-      "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
+      "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modalities.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
   },

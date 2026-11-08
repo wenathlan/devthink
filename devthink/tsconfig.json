@@ -53,7 +53,7 @@
        * candidate carries no runtime exports the way the first bridge
        * attempt learned). */
       "@wenathlan/saddle/security": ["../saddle/security.ts"],
-      "@wenathlan/saddle/modalityregistry": ["../saddle/modalityregistry.ts"],
+      "@wenathlan/saddle/modalityregistry": ["../saddle/modalities.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
@@ -134,6 +134,12 @@
       "@wenathlan/devthink/storage": ["./storage.ts"],
       "@wenathlan/devthink/types": ["./types.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      /* the ui store engine bridge of the ownership law (the wave 14
+       * uistore consolidation): the os seat rides the vault factory
+       * through the published library specifier
+       * ("@wenathlan/vault/uistore"), and this program resolves it to the
+       * sibling source the same way the label store seat above rides. */
+      "@wenathlan/vault/uistore": ["../vault/uistore.ts"],
       /** the onboarding store bridge of the ownership law: the gateway db
        * the os typecheck walks imports the vault factory through the
        * published library specifier ("@wenathlan/vault/onboardingstore"),
