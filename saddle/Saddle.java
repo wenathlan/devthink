@@ -1,42 +1,19 @@
-package io.wenathlan.saddle;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+package com.wenathlan.saddle;
 
 /**
- * Builds and starts explicit local saddle virtual-hardware-engine CLI process
- * invocations. The adapter never invokes a shell, never stores credentials
- * and never touches host hardware: it only assembles argument vectors for a
- * user-owned local {@code saddle} binary (installed through
- * {@code npm i -g @wenathlan/saddle} or extracted from the
- * {@code ghcr.io/wenathlan/saddle} container).
+ * The saddle version envelope carrier.
  *
- * <p>Grand-merge lineage: the class adapts the e2ugh virtual-hardware engine
- * CLI surface that joined saddle at 2.0.0; the binary resolves every engine
- * command (the plan renderer, the mode catalog, the mcp surface and the
- * engine example) through the single saddle bin.</p>
+ * <p>The carrier answers the lowercase file name doctrine (the technical name {@code saddle}
+ * while the class keeps the presentation name {@code Saddle}); the class drops the public
+ * modifier so the java file name rule holds — the envelope carries the version constant the
+ * metadata lockstep stamps, the registry lanes never compile it. The engine envelope keeps the
+ * one real compiled class of the family in the sibling seat {@code Saddle.java} — the
+ * {@code io.wenathlan.saddle} process adapter the maven and gradle lanes include by name —
+ * so this envelope rides beside it the same way the ten siblings answer their own roots.
  */
-public final class Saddle {
+final class Saddle {
+  /** The version of the saddle envelope (the carrier seats wave). */
+  public static final String VERSION = "2.0.167";
   private Saddle() {
-  }
-
-  /** Returns the executable command and supplied arguments without invoking a shell. */
-  public static List<String> command(String... arguments) {
-    var command = new ArrayList<String>();
-    command.add(System.getenv().getOrDefault("SADDLE_BIN", "saddle"));
-    command.addAll(Arrays.asList(arguments));
-    return List.copyOf(command);
-  }
-
-  /** Creates a process builder for a user-owned local saddle binary. */
-  public static ProcessBuilder process(String... arguments) {
-    return new ProcessBuilder(command(arguments));
-  }
-
-  /** Starts a user-owned local saddle binary with the supplied arguments. */
-  public static Process start(String... arguments) throws IOException {
-    return process(arguments).start();
   }
 }
