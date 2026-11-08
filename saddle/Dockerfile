@@ -411,10 +411,14 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
 # only).
 # run the console with: docker run saddle:<version>
 COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scripts.ts /app/execution.ts /app/virtual.ts /app/tiers.ts /app/mime.types /app/init.sql /app/schema.prisma ./
-# the label store of the console stack: labels.ts (pulled by db.ts)
-# resolves ../vault/labelstore.ts at /vault - the same family context
-# fix the solbuild stage applies.
+# the label store and the onboarding store of the console stack: labels.ts
+# (pulled by db.ts) resolves ../vault/labelstore.ts at /vault and db.ts
+# resolves ../vault/onboardingstore.ts beside it - the same family
+# context fix the solbuild stage applies (the routerbase law: the
+# node-side forks read the sibling sources raw, the specifier doors
+# stay for the vite and vitest bridges).
 COPY --from=solbuild /vault/labelstore.ts /vault/labelstore.ts
+COPY --from=solbuild /vault/onboardingstore.ts /vault/onboardingstore.ts
 COPY --from=solbuild /out/spa ./
 
 # the writable state home of the engine console (the vault engine

@@ -227,20 +227,27 @@ jobs:
         # resolve ../vault/labelstore.ts (the node-side fork reads the
         # source file raw), so the vault rides the context beside the
         # saddle the way the cadria container stages the debonair engine
-        # (the family context fix). sources only - the build never
-        # installs the sibling, the vite step reads the .ts file directly.
+        # (the family context fix) - and the routerbase law lands the
+        # devthink sibling beside them: saddle/routerbase.ts re-exports
+        # the family routerBase from ../devthink/routerbase.ts, so the
+        # devthink sources ride the context the same containers.yml
+        # staging law carries (the buildx seat that died on the missing
+        # /devthink). sources only - the build never installs the
+        # siblings, the vite step reads the .ts files directly.
         shell: bash
         run: |
           set -euo pipefail
           rm -rf saddlebuildctx
-          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault saddlebuildctx/devthink
           cp -a saddle/. saddlebuildctx/saddle/
           cp -a vault/. saddlebuildctx/vault/
-          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
-                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
-                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+          cp -a devthink/. saddlebuildctx/devthink/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git saddlebuildctx/devthink/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules saddlebuildctx/devthink/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist saddlebuildctx/devthink/dist \
+                 saddlebuildctx/devthink/build \
                  saddlebuildctx/vault/test
-          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+          printf '%s\n' 'saddle/.git' 'vault/.git' 'devthink/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Resolve the node base digest (the local-build lane)
         # the digest-never-hardcoded law, the probe shape: this dispatch-only
@@ -574,20 +581,27 @@ jobs:
         # resolve ../vault/labelstore.ts (the node-side fork reads the
         # source file raw), so the vault rides the context beside the
         # saddle the way the cadria container stages the debonair engine
-        # (the family context fix). sources only - the build never
-        # installs the sibling, the vite step reads the .ts file directly.
+        # (the family context fix) - and the routerbase law lands the
+        # devthink sibling beside them: saddle/routerbase.ts re-exports
+        # the family routerBase from ../devthink/routerbase.ts, so the
+        # devthink sources ride the context the same containers.yml
+        # staging law carries (the buildx seat that died on the missing
+        # /devthink). sources only - the build never installs the
+        # siblings, the vite step reads the .ts files directly.
         shell: bash
         run: |
           set -euo pipefail
           rm -rf saddlebuildctx
-          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault saddlebuildctx/devthink
           cp -a saddle/. saddlebuildctx/saddle/
           cp -a vault/. saddlebuildctx/vault/
-          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
-                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
-                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+          cp -a devthink/. saddlebuildctx/devthink/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git saddlebuildctx/devthink/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules saddlebuildctx/devthink/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist saddlebuildctx/devthink/dist \
+                 saddlebuildctx/devthink/build \
                  saddlebuildctx/vault/test
-          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+          printf '%s\n' 'saddle/.git' 'vault/.git' 'devthink/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build image for the security scan
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
@@ -948,20 +962,27 @@ jobs:
         # resolve ../vault/labelstore.ts (the node-side fork reads the
         # source file raw), so the vault rides the context beside the
         # saddle the way the cadria container stages the debonair engine
-        # (the family context fix). sources only - the build never
-        # installs the sibling, the vite step reads the .ts file directly.
+        # (the family context fix) - and the routerbase law lands the
+        # devthink sibling beside them: saddle/routerbase.ts re-exports
+        # the family routerBase from ../devthink/routerbase.ts, so the
+        # devthink sources ride the context the same containers.yml
+        # staging law carries (the buildx seat that died on the missing
+        # /devthink). sources only - the build never installs the
+        # siblings, the vite step reads the .ts files directly.
         shell: bash
         run: |
           set -euo pipefail
           rm -rf saddlebuildctx
-          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault saddlebuildctx/devthink
           cp -a saddle/. saddlebuildctx/saddle/
           cp -a vault/. saddlebuildctx/vault/
-          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
-                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
-                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+          cp -a devthink/. saddlebuildctx/devthink/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git saddlebuildctx/devthink/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules saddlebuildctx/devthink/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist saddlebuildctx/devthink/dist \
+                 saddlebuildctx/devthink/build \
                  saddlebuildctx/vault/test
-          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+          printf '%s\n' 'saddle/.git' 'vault/.git' 'devthink/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build and push the multi-arch image
         # the per-leg guard: a leg whose tag already ships on the registry
@@ -1428,23 +1449,25 @@ jobs:
 
       - name: Stage the saddle build context and render the profile config
         # the same staged tree the runnable lanes build (the saddle nested
-        # under saddle/ with the vault sources beside it) plus the rendered
-        # osprofiles json the catalog stages COPY: the profile rows the
-        # osprofiles catalog answers, one json per seat, generated from the
-        # tagged source the lane checks out (never a placeholder).
+        # under saddle/ with the vault and devthink sources beside it) plus
+        # the rendered osprofiles json the catalog stages COPY: the profile
+        # rows the osprofiles catalog answers, one json per seat, generated
+        # from the tagged source the lane checks out (never a placeholder).
         if: steps.meta.outputs.skip != 'true'
         shell: bash
         run: |
           set -euo pipefail
           rm -rf saddlebuildctx
-          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault saddlebuildctx/devthink
           cp -a saddle/. saddlebuildctx/saddle/
           cp -a vault/. saddlebuildctx/vault/
-          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
-                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
-                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+          cp -a devthink/. saddlebuildctx/devthink/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git saddlebuildctx/devthink/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules saddlebuildctx/devthink/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist saddlebuildctx/devthink/dist \
+                 saddlebuildctx/devthink/build \
                  saddlebuildctx/vault/test
-          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+          printf '%s\n' 'saddle/.git' 'vault/.git' 'devthink/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
           cat > osprofile-dump.ts <<'DUMP'
           import { mkdirSync, writeFileSync } from "node:fs";
           import { OSPROFILES } from "./saddlebuildctx/saddle/osprofiles.ts";
@@ -1909,20 +1932,24 @@ jobs:
           ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
       - name: Stage the saddle build context (the engine-ownership sibling)
         # the same staged tree the vhe lanes build: the saddle nested under
-        # saddle/ with the vault sources beside it (the node-side label
-        # import resolves ../vault/labelstore.ts inside the build).
+        # saddle/ with the vault and devthink sources beside it (the
+        # node-side label import resolves ../vault/labelstore.ts and the
+        # routerbase re-export resolves ../devthink/routerbase.ts inside
+        # the build).
         shell: bash
         run: |
           set -euo pipefail
           rm -rf saddlebuildctx
-          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault saddlebuildctx/devthink
           cp -a saddle/. saddlebuildctx/saddle/
           cp -a vault/. saddlebuildctx/vault/
-          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
-                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
-                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
+          cp -a devthink/. saddlebuildctx/devthink/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git saddlebuildctx/devthink/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules saddlebuildctx/devthink/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist saddlebuildctx/devthink/dist \
+                 saddlebuildctx/devthink/build \
                  saddlebuildctx/vault/test
-          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+          printf '%s\n' 'saddle/.git' 'vault/.git' 'devthink/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: build the saddle vhe container
         env:
@@ -1930,7 +1957,8 @@ jobs:
         # the max profile the registry lane publishes (the Dockerfile
         # defaults bake the same constants; the args stay explicit the
         # saddle family way) and the same context the vhe lanes build
-        # (the saddle application folder with the vault sibling).
+        # (the saddle application folder with the vault and devthink
+        # siblings).
         run: |
           set -euo pipefail
           archive="saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.tar.gz"
