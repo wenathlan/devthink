@@ -684,6 +684,11 @@
       "import": "./storage.ts",
       "default": "./storage.ts"
     },
+    "./uistore": {
+      "types": "./uistore.ts",
+      "import": "./uistore.ts",
+      "default": "./uistore.ts"
+    },
     "./utils": {
       "types": "./utils.ts",
       "import": "./utils.ts",
@@ -726,6 +731,7 @@
     "routes.ts",
     "sha.ts",
     "storage.ts",
+    "uistore.ts",
     "utils.ts",
     "vaultclient.ts",
     "!test/tmp"
