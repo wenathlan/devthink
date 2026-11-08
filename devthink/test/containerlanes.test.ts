@@ -310,7 +310,9 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
      * one entry into the one webpack bundle the six channel legs
      * distribute — the union seat: the battery pins the outfile lane,
      * the filename anchor and the one-file plugin beside the
-     * config-file walk, every coordinate the three waves stamped,
+     * config-file walk, every coordinate the four waves stamped
+     * (the greenheal rung keeps the retired CLI flag walk retired: the
+     * filename answer rides the config heredoc, never a flag),
      * nothing removed. */
     expect(containers).toContain("bun install --frozen-lockfile --ignore-scripts");
     expect(containers).toContain("bun run build:engine");
