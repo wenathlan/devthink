@@ -29,7 +29,7 @@ import {
 } from "../generateclient.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
 import { serializePattern, validatePatternProject } from "../pattern.ts";
-import { singPattern } from "../vocalsynth.ts";
+import { singPattern } from "../kathesis.ts";
 
 // ---------------------------------------------------------------------------
 // the fixtures (the honest corpus shape — the same values the composer

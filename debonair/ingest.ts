@@ -36,7 +36,7 @@ import {
 import { mintid } from "./bigintids.ts";
 import { type BlobPointer, type BlobStore, blobidvalid, sha256hex } from "./blobstore.ts";
 import type { IngestJobValue } from "./gatewayapi.ts";
-import { type StemPair, separate } from "./hpss.ts";
+import { type StemPair, separate } from "./kathesis.ts";
 import { hostallowed } from "./onboardingstate.ts";
 import { PATTERN_SCALE_NAMES, PATTERN_SCALES } from "./pattern.ts";
 import type { GenreProfile } from "./pattern.ts";
@@ -53,7 +53,7 @@ import {
   type ReconLayerFrame,
 } from "./recon.ts";
 import type { WorkerModality } from "./sandboxmodality.ts";
-import { chromaOf, FFT_SIZE, fftInPlace, frameSpectrum, HANN_TABLE, keyOf } from "./spectrum.ts";
+import { chromaOf, FFT_SIZE, fftInPlace, frameSpectrum, HANN_TABLE, keyOf } from "./kathesis.ts";
 import { hashSeed, midiToHz, mulberry32 } from "./theory.ts";
 import type { WavBitDepth, WavFormatRow } from "./wavwriter.ts";
 import {

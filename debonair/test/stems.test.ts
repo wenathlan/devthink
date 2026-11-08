@@ -15,7 +15,7 @@ import {
   stemFile,
   stemsManifest,
   validateStems,
-} from "../stems.ts";
+} from "../kathesis.ts";
 import { type NoteEvent, scheduleTake, type TakeSchedule } from "../take.ts";
 
 describe("stems — planStems", () => {

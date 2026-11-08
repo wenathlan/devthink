@@ -72,7 +72,7 @@
 
 import { sha256hex } from "./blobstore.ts";
 import { parseWav, pcmhash, reconstructWav, SOUND_PAYLOAD_SCHEMA_VERSION, type SoundPayload } from "./ingest.ts";
-import { limitTruePeak } from "./limiter.ts";
+import { limitTruePeak } from "./kathesis.ts";
 import {
   PATTERN_SCHEMA_VERSION,
   type PatternDocument,

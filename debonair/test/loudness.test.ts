@@ -25,7 +25,7 @@ import {
   samplePeakDb,
   truePeakDb,
   weightedMeanSquare,
-} from "../loudness.ts";
+} from "../kathesis.ts";
 
 const SR = 48000;
 

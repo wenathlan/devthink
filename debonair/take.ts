@@ -21,7 +21,7 @@ import { buildTracksFromSchedule, validateMidi, writeMidi } from "./midiwriter.t
 import type { ReconDocument } from "./recon.ts";
 import { serializeRecon } from "./recon.ts";
 import { reconSeedOf } from "./recon.ts";
-import { planStems, stemsManifest } from "./stems.ts";
+import { planStems, stemsManifest } from "./kathesis.ts";
 import {
   chordNotes,
   hashSeed,

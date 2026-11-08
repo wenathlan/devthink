@@ -15,7 +15,7 @@ import { ingestPayload, onsetSecondsOf, pcmhash, type SoundPayload } from "../in
 import { LANE_STEPS, type PatternProject, type PatternTimeline, serializePattern } from "../pattern.ts";
 import { type RenderBlobStore, renderPlan } from "../render.ts";
 import { reverseIngestPayload, timelineEvents } from "../reverseingest.ts";
-import { FFT_SIZE, frameSpectrum } from "../spectrum.ts";
+import { FFT_SIZE, frameSpectrum } from "../kathesis.ts";
 import { midiToHz } from "../theory.ts";
 import { encodeWav, wavInfo } from "../wavwriter.ts";
 

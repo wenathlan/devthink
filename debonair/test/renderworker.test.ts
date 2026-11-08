@@ -26,7 +26,7 @@ import { RENDER_TAIL_S } from "../audio.ts";
 import { mintid } from "../bigintids.ts";
 import { composeFromProfile } from "../composer.ts";
 import { MASTERING, trackNameFromPrompt } from "../katexis.ts";
-import { truePeakLinear } from "../limiter.ts";
+import { truePeakLinear } from "../kathesis.ts";
 import { LANE_STEPS, serializePattern, validatePatternProject } from "../pattern.ts";
 import { type GenreProfile, segmentVector } from "../pattern.ts";
 import {

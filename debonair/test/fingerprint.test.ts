@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { FingerprintDB, fingerprintOf, landmarksOf, peaksOfFrame } from "../fingerprint.ts";
-import { frameSpectrum } from "../spectrum.ts";
+import { frameSpectrum } from "../kathesis.ts";
 
 /** Builds a deterministic tone mixture the tests analyze. */
 function tone(seedHz: number, seconds: number, sampleRate = 44100): number[] {

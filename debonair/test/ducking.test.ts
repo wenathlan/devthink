@@ -20,7 +20,7 @@ import {
   staticGainDb,
   totalDuckTime,
   validateDucking,
-} from "../ducking.ts";
+} from "../kathesis.ts";
 
 const SR = 1000;
 

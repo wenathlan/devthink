@@ -10,7 +10,7 @@
 
 import { composeFromProfile } from "./composer.ts";
 import { IngestDocument, ingestMixPcm } from "./ingest.ts";
-import { limitTruePeak } from "./limiter.ts";
+import { limitTruePeak } from "./kathesis.ts";
 import { CHROMA_BINS, GenreProfile, IngestDocumentWithId, PROFILE_GENRE_KEYS, PROFILE_LIMITS, SEGMENT_DIM, TrainedCorpusSeat, TrainedStyleVector, mineGenre } from "./pattern.ts";
 import { RENDER_SAMPLE_RATE, renderPatternMix, schedulePattern } from "./render.ts";
 import { GENRES } from "./theory.ts";

@@ -8,7 +8,7 @@
 
 import { seededNoiseChannel } from "./audio.ts";
 import { pcmhash, RECON_ENVELOPE_WINDOWS } from "./ingest.ts";
-import { limitTruePeak } from "./limiter.ts";
+import { limitTruePeak } from "./kathesis.ts";
 import { PATTERN_SCALES, type PatternScaleName } from "./pattern.ts";
 import type { RenderBlobPointer, RenderBlobStore, RenderJobRow, RenderJobSeat } from "./render.ts";
 import { hashSeed, midiToHz, mulberry32 } from "./theory.ts";

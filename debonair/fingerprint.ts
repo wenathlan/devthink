@@ -5,7 +5,7 @@
 // constellation hashes (f1:f2:Δt) → add/search by score. Pure math — the
 // decoder stays in the host, the db stays injectable.
 
-import { FFT_SIZE, frameSpectrum, HOP_SIZE } from "./spectrum.ts";
+import { FFT_SIZE, frameSpectrum, HOP_SIZE } from "./kathesis.ts";
 
 /** The peaks kept per stft frame when building the constellation. */
 export const PEAKS_PER_FRAME = 5;

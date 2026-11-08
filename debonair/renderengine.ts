@@ -13,7 +13,7 @@
 import { ArrangerRole } from "./arrangement.ts";
 import { DEFAULT_MIX_LAW, NOISE_SECONDS, RENDER_TAIL_S, ROLE_TRIM, VOICE_RECIPES, seededNoiseChannel } from "./audio.ts";
 import { mintid } from "./bigintids.ts";
-import { FormantEvent, Vowel, renderFormantPhrase } from "./formant.ts";
+import { FormantEvent, Vowel, renderFormantPhrase } from "./kathesis.ts";
 import { MASTERING, trackNameFromPrompt } from "./katexis.ts";
 import {
   biquadOf,
@@ -25,13 +25,13 @@ import {
   targetOf,
   triangleOf,
 } from "./kathesis.ts";
-import { limitTruePeak } from "./limiter.ts";
+import { limitTruePeak } from "./kathesis.ts";
 import { dbToLinear } from "./mixergraph.ts";
 import { DRUM_LANE_KEYS, LANE_STEPS, PATTERN_SCHEMA_VERSION, PatternProject, PatternVoice, parsePattern, validatePatternProject } from "./pattern.ts";
 import { WorkerModality } from "./sandboxmodality.ts";
 import { NoteEvent } from "./take.ts";
 import { hashSeed, midiToHz, mulberry32 } from "./theory.ts";
-import { sungLineOf } from "./vocalsynth.ts";
+import { sungLineOf } from "./kathesis.ts";
 import { encodeWav } from "./wavwriter.ts";
 
 // ---------------------------------------------------------------------------

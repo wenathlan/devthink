@@ -47,7 +47,7 @@ import type { GenreProfile, IngestDocumentWithId } from "./pattern.ts";
 import { classifyFromSignal, mineGenre, PROFILE_GENRE_KEYS, ProfileError, validateGenreProfile } from "./pattern.ts";
 import type { RenderTrackRow } from "./render.ts";
 import { matchGenre } from "./theory.ts";
-import { singPattern } from "./vocalsynth.ts";
+import { singPattern } from "./kathesis.ts";
 
 /** @section codes — the typed failure branch */
 

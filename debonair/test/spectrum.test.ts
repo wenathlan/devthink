@@ -3,7 +3,7 @@
 // and the key correlation answers the scale it hears.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { chromaOf, fftInPlace, frameSpectrum, keyOf } from "../spectrum.ts";
+import { chromaOf, fftInPlace, frameSpectrum, keyOf } from "../kathesis.ts";
 
 /** The KK minor profile rotated so the tonic (6.33) sits on pc 9 (A). */
 const KK_MINOR_ROTATED: readonly number[] = Array.from(

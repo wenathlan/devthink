@@ -9,7 +9,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { validatePatternProject } from "../pattern.ts";
-import { renderVoice, singPattern, syllablesOfLine, VOWEL_FORMANTS } from "../vocalsynth.ts";
+import { renderVoice, singPattern, syllablesOfLine, VOWEL_FORMANTS } from "../kathesis.ts";
 
 /** The deterministic rng the tests ride (mulberry32, the engine's law). */
 function seeded(seed: number): () => number {

@@ -22,11 +22,11 @@ import {
   vowelBank,
   VOWEL_FORMANTS,
   type Vowel,
-} from "../formant.ts";
+} from "../kathesis.ts";
 import type { GenreProfile } from "../pattern.ts";
 import { RENDER_SAMPLE_RATE, formantEventsOf, renderPlan, renderVoiceMix } from "../render.ts";
-import { FFT_SIZE, frameSpectrum } from "../spectrum.ts";
-import { VOWEL_FORMANTS as REEXPORTED } from "../vocalsynth.ts";
+import { FFT_SIZE, frameSpectrum } from "../kathesis.ts";
+import { VOWEL_FORMANTS as REEXPORTED } from "../kathesis.ts";
 
 /** The render rate the lane rides (the mastering law). */
 const SR = RENDER_SAMPLE_RATE;

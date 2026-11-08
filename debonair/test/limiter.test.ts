@@ -21,7 +21,7 @@ import {
   limitTruePeak,
   TRUEPEAK_OVERSAMPLING,
   truePeakLinear,
-} from "../limiter.ts";
+} from "../kathesis.ts";
 
 /** The house rate the render lane bounces at. */
 const SR = 48000;

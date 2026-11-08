@@ -9,8 +9,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { onsetSecondsOf } from "../ingest.ts";
-import { FFT_SIZE, frameSpectrum } from "../spectrum.ts";
-import { STRETCH_RATIO_MAX, STRETCH_RATIO_MIN, StretchError, stretchPcm } from "../timestretch.ts";
+import { FFT_SIZE, frameSpectrum } from "../kathesis.ts";
+import { STRETCH_RATIO_MAX, STRETCH_RATIO_MIN, StretchError, stretchPcm } from "../kathesis.ts";
 
 /** The house rate the tests render at (the mastering law). */
 const SR = 48000;

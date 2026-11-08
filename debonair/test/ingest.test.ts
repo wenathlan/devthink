@@ -24,9 +24,9 @@ import { memoryblobstore } from "../blobstore.ts";
 import type { BlobStore } from "../blobstore.ts";
 import type { IngestJobValue } from "../gatewayapi.ts";
 import { postReference, servicelaneid } from "../ialane.ts";
-import { separate } from "../hpss.ts";
+import { separate } from "../kathesis.ts";
 import { RECON_LAYERS, RECON_SAMPLE_RATE, RECON_SCALE_NAMES, serializeRecon, validateRecon } from "../recon.ts";
-import { FFT_SIZE, frameSpectrum, keyOf } from "../spectrum.ts";
+import { FFT_SIZE, frameSpectrum, keyOf } from "../kathesis.ts";
 import { encodeWav, wavInfo } from "../wavwriter.ts";
 import {
   ENERGY_CHUNK_MS,

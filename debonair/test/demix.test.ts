@@ -6,7 +6,7 @@
 // the determinism of the whole walk and the honest machine codes.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { DEMIX_STEM_NAMES, DemixError, demix, demixToWavs, type DemixResult } from "../demix.ts";
+import { DEMIX_STEM_NAMES, DemixError, demix, demixToWavs, type DemixResult } from "../kathesis.ts";
 import { wavInfo } from "../wavwriter.ts";
 
 /** The house rate the fixtures ride. */

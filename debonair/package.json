@@ -551,9 +551,9 @@
       "default": "./analyze.ts"
     },
     "./hpss": {
-      "types": "./hpss.ts",
-      "import": "./hpss.ts",
-      "default": "./hpss.ts"
+      "types": "./kathesis.ts",
+      "import": "./kathesis.ts",
+      "default": "./kathesis.ts"
     },
     "./ingest": {
       "types": "./ingest.ts",
@@ -571,14 +571,14 @@
       "default": "./pattern.ts"
     },
     "./demix": {
-      "types": "./demix.ts",
-      "import": "./demix.ts",
-      "default": "./demix.ts"
+      "types": "./kathesis.ts",
+      "import": "./kathesis.ts",
+      "default": "./kathesis.ts"
     },
     "./formant": {
-      "types": "./formant.ts",
-      "import": "./formant.ts",
-      "default": "./formant.ts"
+      "types": "./kathesis.ts",
+      "import": "./kathesis.ts",
+      "default": "./kathesis.ts"
     },
     "./genrecorpus": {
       "types": "./genre.ts",
@@ -591,9 +591,9 @@
       "default": "./reverseingest.ts"
     },
     "./timestretch": {
-      "types": "./timestretch.ts",
-      "import": "./timestretch.ts",
-      "default": "./timestretch.ts"
+      "types": "./kathesis.ts",
+      "import": "./kathesis.ts",
+      "default": "./kathesis.ts"
     },
     "./patternenums": {
       "types": "./pattern.ts",
@@ -666,9 +666,9 @@
       "default": "./speechalign.ts"
     },
     "./stems": {
-      "types": "./stems.ts",
-      "import": "./stems.ts",
-      "default": "./stems.ts"
+      "types": "./kathesis.ts",
+      "import": "./kathesis.ts",
+      "default": "./kathesis.ts"
     },
     "./renderworker": {
       "types": "./render.ts",
@@ -723,19 +723,14 @@
     "coverpalette.ts",
     "dawview.ts",
     "db.ts",
-    "demix.ts",
     "docs",
     "fingerprint.ts",
-    "formant.ts",
     "gatewayapi.ts",
     "genre.ts",
-    "hpss.ts",
     "ingest.ts",
     "katexis.ts",
     "kathesis.ts",
     "labels.ts",
-    "limiter.ts",
-    "loudness.ts",
     "midiwriter.ts",
     "mixergraph.ts",
     "onboardingstate.ts",
@@ -747,15 +742,11 @@
     "routetable.ts",
     "sandboxmodality.ts",
     "seed.ts",
-    "spectrum.ts",
     "speechalign.ts",
-    "stems.ts",
     "take.ts",
     "test",
     "theory.ts",
     "timelinemodel.ts",
-    "timestretch.ts",
-    "vocalsynth.ts",
     "wavwriter.ts"
   ],
   "trustedDependencies": [

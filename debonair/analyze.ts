@@ -6,8 +6,8 @@
 // math, deterministic, zero rng.
 
 import { fingerprintOf } from "./fingerprint.ts";
-import { gatingBlocks, integratedLoudness, kWeightChannel } from "./loudness.ts";
-import { chromaOf, FFT_SIZE, frameSpectrum, HOP_SIZE, keyOf } from "./spectrum.ts";
+import { gatingBlocks, integratedLoudness, kWeightChannel } from "./kathesis.ts";
+import { chromaOf, FFT_SIZE, frameSpectrum, HOP_SIZE, keyOf } from "./kathesis.ts";
 
 /** The bpm search floor of the autocorrelation tempo scan. */
 export const BPM_FLOOR = 60;
