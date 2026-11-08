@@ -15,7 +15,7 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome;
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
 import { osText } from "../../os.ts";
 import { queuebinarylaunch } from "../../runner";

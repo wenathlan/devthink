@@ -16,7 +16,7 @@
  * instrument returns mounted on them the day the library wave builds the
  * real app. The route and the window binding never move.
  */
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome;
 import { osAppLabels } from "../../catalog";
 import { Constructionface } from "../../wingets";
 
