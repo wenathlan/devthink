@@ -283,21 +283,42 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   it("the three vhe profiles answer the owner doctrine — max, light and palatial ride max, balanced and lite", async () => {
     const publish = await parseworkflow("publish.yml");
     const profiles = matrixof(publish, "saddle-vhe-publish");
-    /* the seven runnable publish legs: the three profile lanes (max,
-     * balanced, lite — nothing removed) beside the four os-distribution
-     * flavor lanes the container-lane law adds (linux, omarchy,
-     * vanillaos, android — every flavor binds the max plan, the tier
-     * axis stays the profile lanes' own). */
-    expect(profiles.map((leg) => leg.profile)).toEqual(["max", "balanced", "lite", "max", "max", "max", "max"]);
-    expect(profiles.map((leg) => leg.osprofile ?? "")).toEqual(["", "", "", "linux", "omarchy", "vanillaos", "android"]);
+    /* the fifteen runnable publish legs: the three profile lanes (max,
+     * balanced, lite — nothing removed) beside the twelve flavor lanes
+     * of the tier grid the standardization directive charged (linux,
+     * omarchy, vanillaos, android — every distribution carrying its
+     * max, balanced and lite twins, the prior four max flavors keep
+     * their tags and the balanced and lite twins join them). */
+    expect(profiles.map((leg) => leg.profile)).toEqual([
+      "max", "balanced", "lite",
+      "max", "balanced", "lite",
+      "max", "balanced", "lite",
+      "max", "balanced", "lite",
+      "max", "balanced", "lite",
+    ]);
+    expect(profiles.map((leg) => leg.osprofile ?? "")).toEqual([
+      "", "", "",
+      "linux", "linux", "linux",
+      "omarchy", "omarchy", "omarchy",
+      "vanillaos", "vanillaos", "vanillaos",
+      "android", "android", "android",
+    ]);
     expect(profiles.map((leg) => [leg.target, leg.suffix ?? ""])).toEqual([
       ["max", ""],
       ["balanced", "-balanced"],
       ["lite", "-lite"],
       ["oslinux", "-linux"],
+      ["oslinux", "-balanced-linux"],
+      ["oslinux", "-lite-linux"],
       ["osomarchy", "-omarchy"],
+      ["osomarchy", "-balanced-omarchy"],
+      ["osomarchy", "-lite-omarchy"],
       ["osvanillaos", "-vanillaos"],
+      ["osvanillaos", "-balanced-vanillaos"],
+      ["osvanillaos", "-lite-vanillaos"],
       ["osandroid", "-android"],
+      ["osandroid", "-balanced-android"],
+      ["osandroid", "-lite-android"],
     ]);
     /* the virtual hardware identity of each profile: the cpu model, the
      * core/thread counts, the memory plan in gibibytes, the gpu profile and
@@ -462,13 +483,13 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     /* the bare startswith(${version}) once saw the node-engine tag and
      * no-opped the vhe publication; the match carries the lane suffixes.
      * the partial-publish freeze fix tightens the same lesson: the
-     * no-op now demands the complete twenty-lane family (the three
-     * profile lanes, the four os-distribution flavor lanes and the
-     * thirteen catalog lanes all live) instead of any single tag, and
+     * no-op now demands the complete twenty-eight-lane family (the
+     * three profile lanes, the twelve flavor lanes of the tier grid
+     * and the thirteen catalog lanes all live) instead of any single tag, and
      * the per-leg guard inside the publish matrix skips only the legs
      * that already ship so a re-run completes the missing siblings. */
-    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\" or . == \\"${version}-linux\\" or . == \\"${version}-omarchy\\" or . == \\"${version}-vanillaos\\" or . == \\"${version}-android\\" or . == \\"${version}-grapheneos\\" or . == \\"${version}-maruos\\" or . == \\"${version}-v\\" or . == \\"${version}-windows\\" or . == \\"${version}-postmarketos\\" or . == \\"${version}-lineageos\\" or . == \\"${version}-calyxos\\" or . == \\"${version}-archlinux\\" or . == \\"${version}-alpine\\" or . == \\"${version}-debian\\" or . == \\"${version}-fedora\\" or . == \\"${version}-nixos\\" or . == \\"${version}-void\\"');
-    expect(publish).toContain('if [ "${api_out}" = "20" ]');
+    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\" or . == \\"${version}-linux\\" or . == \\"${version}-omarchy\\" or . == \\"${version}-vanillaos\\" or . == \\"${version}-android\\" or . == \\"${version}-balanced-linux\\" or . == \\"${version}-lite-linux\\" or . == \\"${version}-balanced-omarchy\\" or . == \\"${version}-lite-omarchy\\" or . == \\"${version}-balanced-vanillaos\\" or . == \\"${version}-lite-vanillaos\\" or . == \\"${version}-balanced-android\\" or . == \\"${version}-lite-android\\" or . == \\"${version}-grapheneos\\" or . == \\"${version}-maruos\\" or . == \\"${version}-v\\" or . == \\"${version}-windows\\" or . == \\"${version}-postmarketos\\" or . == \\"${version}-lineageos\\" or . == \\"${version}-calyxos\\" or . == \\"${version}-archlinux\\" or . == \\"${version}-alpine\\" or . == \\"${version}-debian\\" or . == \\"${version}-fedora\\" or . == \\"${version}-nixos\\" or . == \\"${version}-void\\"');
+    expect(publish).toContain('if [ "${api_out}" = "28" ]');
     expect(publish).toContain('echo "skip=true" >> "$GITHUB_OUTPUT"');
     expect(publish).toContain("if: steps.meta.outputs.skip != 'true'");
   });
