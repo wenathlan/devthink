@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-devthink"
-version = "2.0.168"
+version = "2.0.169"
 edition = "2021"
 description = "Builds explicit local DevThink CLI invocations without storing provider credentials"
 license = "GPL-3.0-only"

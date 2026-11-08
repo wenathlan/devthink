@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-saddle"
-version = "2.0.168"
+version = "2.0.169"
 edition = "2021"
 description = "Binary computing engine that turns distributed storage into a publishable working set, carrying the merged virtual-hardware engine CLI process adapter (explicit local invocations, no shell, no credentials, no host hardware)"
 license = "GPL-3.0-only"

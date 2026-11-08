@@ -5,4 +5,4 @@
 //! lane packages it, the registry lanes never compile it locally.
 
 /// The version of the vault envelope (the family tri-channel wave).
-pub const VERSION: &str = "2.0.168";
+pub const VERSION: &str = "2.0.169";

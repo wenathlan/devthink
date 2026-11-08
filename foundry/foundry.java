@@ -10,7 +10,7 @@ package com.wenathlan.foundry;
  */
 final class Foundry {
   /** The version of the foundry envelope (the six-distribution completeness wave). */
-  public static final String VERSION = "2.0.168";
+  public static final String VERSION = "2.0.169";
   private Foundry() {
   }
 }
