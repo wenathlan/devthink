@@ -13,7 +13,7 @@
  * the dtw kit.
  */
 import { useEffect, useState } from "react";
-import { ShellChrome } from "../wingets/Shellchrome;
+import { ShellChrome } from "../wingets/Shellchrome";
 import { osAppLabels, type Rung, releaseLadder } from "../../catalog";
 import { osText } from "../../os.ts";
 import { HistoryLadder } from "../../wingets";
