@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-getry"
-version = "2.0.167"
+version = "2.0.168"
 edition = "2021"
 description = "The AI gateway — five provider gateways serving 35 OpenAI-compatible routes"
 license = "GPL-3.0-only"
