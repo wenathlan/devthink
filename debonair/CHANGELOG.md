@@ -1,5 +1,9 @@
 # Debonair release notes
 
+## 2.0.172
+
+The 2.0.172 rung answers the door law the frozen lanes charged — the eleven manifests and the root stamp the rung the release ladder auto-tags, the eleven locks regenerate whole under the pinned 1.4.4 grammar with the saddle npm lock walking the all-registry closure, and the depfresh and engine waves the antiquity law merged ride this rung whole (the LOGICS root catalog, the containers lane's public registry default and the debonair studio console surfacing the real engine state).
+
 ## 2.0.163 — the kathesis engine core rung (W4-A: the dsp seats and the sound ai land at the root)
 
 ### Added

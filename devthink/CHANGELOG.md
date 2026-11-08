@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.172
+
+The 2.0.172 rung answers the door law the frozen lanes charged — the eleven manifests and the root stamp the rung the release ladder auto-tags, the eleven locks regenerate whole under the pinned 1.4.4 grammar with the saddle npm lock walking the all-registry closure, and the depfresh and engine waves the antiquity law merged ride this rung whole (the LOGICS root catalog, the containers lane's public registry default and the debonair studio console surfacing the real engine state).
+
 ## 2.0.171
 
 The 2.0.171 rung answers the cascade the bump pass never carried — the two branches the interrupted session left pending ride this rung: the depfresh cascade lands whole (release.ts sync now stamps the eleven pyproject, Cargo and docker.config seats with their rust carriers beside the gate record release fields — agentcert through wcag, poolaudit and the foundry readiness walk — so no future rung reddens the eight gate batteries the way 2.0.168 did, and the foundry dependency ladder carries the overrides seat, string-only, the xcode uuid nest keeping its override-only seat, so the parity union holds), the depfresh locks and changelog that answered the 2.0.169 era retire beneath the 2.0.170 regenerations the tree already carries (only the cascade automation and the ladder seat land — the superseded lock tree never rides), and the ctxheal branch the antiquity law ordered first rides the 2.0.170 rung its patch already answered — the release ladder's auto-tag publishes the container tree this rung tags over the one-number law the whole family stamps.

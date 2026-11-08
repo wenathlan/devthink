@@ -938,7 +938,7 @@ jobs:
         env:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.OWNER_PAT || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           cd "${{ matrix.package }}"
@@ -976,7 +976,7 @@ jobs:
         env:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           RELEASE_VERSION: ${{ steps.release.outputs.version }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.OWNER_PAT || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           cd "${{ matrix.package }}"
