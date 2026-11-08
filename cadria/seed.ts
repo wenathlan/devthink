@@ -76,7 +76,7 @@ export const seedAnchors: readonly CreativeAnchor[] = [
     id: "3dstudio",
     title: "3D Studio",
     detail:
-      "Versawase viewport with orbit controls, scene graph and material previews. Import GLB, OBJ and FBX, light the scene, render stills and turntables.",
+      "Versawase viewport with orbit controls, scene graph and material previews. Build procedural meshes, light the scene, render stills and turntables, export OBJ and STL.",
   },
   {
     id: "audio",
@@ -184,7 +184,7 @@ export const seedSeatCards: readonly FeatureCard[] = [
     group: "home-seats",
     title: "Export",
     detail:
-      "Render stills or whole timelines to MP4, WEBM, PNG sequences and GLB — batchable, scriptable, unwatermarked.",
+      "Render stills or whole timelines to WEBM, PNG sequences and GIF — batchable, scriptable, unwatermarked.",
   },
 ];
 

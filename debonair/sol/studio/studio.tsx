@@ -6,25 +6,29 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * studio — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the debonair later, with the time its
- * engines, protocols and processes deserve, so the DAW console of the old
- * face (the stage stepper, the playlist, the channel rack, the mixer strips)
- * is retired and the route answers the honest construction face under the
- * studio eyebrow, inside the same app shell (the rail and the transport
- * stay). The engine logics the console rode (arrangement, audio, dawview,
- * mixergraph, pianoroll, playerbus, timelinemodel) keep riding their own
- * files untouched — only this page's face changed, nothing was deleted.
+ * studio — the detailed engine wave remount (the owner's order): the DAW
+ * console returns, mounted on the REAL engine seats through the composite
+ * StudioConsole winget — the stage stepper, the arrangement timeline, the
+ * piano roll, the channel rack, the mixer strips and the master scope, all
+ * fed by the take the playerbus shelf carries (the demo take of the seed)
+ * and driven by the real TakeEngine transport. The anchor itself stays the
+ * thin face the construction law pins: it owns no state and imports no
+ * engine module — the console winget owns the mount, and while the bus arms
+ * (the first paint before the shelf lands its snapshot) the route answers
+ * the construction face it wore. The engine logics (arrangement, audio,
+ * dawview, mixergraph, pianoroll, playerbus, timelinemodel) keep riding
+ * their own files untouched — this page only mounts and wires them.
  */
 
 import { label } from "../../labels.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
+import { StudioConsole } from "../wingets/StudioConsole.tsx";
 import { Constructionface } from "../../wingets";
 
 /**
- * the studio page: the in-construction face under the studio eyebrow.
+ * the studio page: the remounted DAW console under the studio eyebrow.
  *
- * @returns the app shell with the construction face.
+ * @returns the app shell with the console mount.
  */
 export default function Studio() {
   // the footer links read the label store at render time (the manifest
@@ -37,7 +41,17 @@ export default function Studio() {
 
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} domain="devthink.pro">
-      <Constructionface eyebrow={label("studio.eyebrow")} />
+      <p className="eyebrow reveal">{label("studio.eyebrow")}</p>
+      <h1 className="reveal page-title">{label("studio.title")}</h1>
+      <p className="reveal lede" style={{ maxWidth: 640 }}>
+        {label("studio.ledeLead")}
+        <code>studio</code>
+        {label("studio.ledeTail")}
+      </p>
+      {/* the console mount rides the real engine; the construction face it
+          wore answers the arming beat — the first paint before the bus lands
+          the shelf snapshot (never a fake console, never a dead desk) */}
+      <StudioConsole face={<Constructionface eyebrow={label("studio.eyebrow")} />} />
     </Shell>
   );
 }
