@@ -5,7 +5,6 @@
 
 import { planTake } from "./arrangement.ts";
 import { formatClock } from "./dawview.ts";
-import { GENRES } from "./genrematrix.ts";
 import type {
   FeatureCard,
   GenreConfig,
@@ -18,6 +17,7 @@ import type {
   TimelineTrack,
   VitrineTrackRow,
 } from "./katexis.ts";
+import { GENRES } from "./theory.ts";
 
 export const seedGenres: readonly GenreConfig[] = [
   { id: "trap", label: "Trap" },

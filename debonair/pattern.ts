@@ -6,9 +6,8 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { GENRES } from "./genrematrix.ts";
 import { IngestDocument, IngestSegment } from "./ingest.ts";
-import { NOTE_NAMES as THEORY_NOTE_NAMES, SCALE_STEPS, noteName } from "./musictheory.ts";
+import { GENRES, NOTE_NAMES as THEORY_NOTE_NAMES, SCALE_STEPS, noteName } from "./theory.ts";
 
 /* ===== block: patternenums ===== */
 // # patternenums — the pattern vocabulary and the payload contract of the

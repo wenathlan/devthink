@@ -112,8 +112,11 @@ type Subpath = (typeof SUBPATHS)[number];
  * alias shape the fold pins — one target per domain, so the published
  * specifiers of the retired leaves resolve to the file that owns them
  * now); the retired worker/corpus/miner keys answer their own fold seats
- * the same way; every subpath outside this table answers its own root
- * source. */
+ * the same way; the theory family seat answers the keyed file the dedup
+ * wave seated (the beat grid, the genre corpus and its corpus alias ride
+ * theory.ts beside the theory kernel, the grammar seats and the style
+ * dictionary — the music-theory leaves the consolidation law folded);
+ * every subpath outside this table answers its own root source. */
 const KEYWORD: Partial<Record<Subpath, string>> = {
   audio: "audio.ts",
   take: "take.ts",
@@ -128,6 +131,8 @@ const KEYWORD: Partial<Record<Subpath, string>> = {
   patternenums: "pattern.ts",
   genrecorpus: "genre.ts",
   renderworker: "render.ts",
+  beatgrid: "theory.ts",
+  genre: "genre.ts",
 };
 
 /** The repository file a subpath resolves to — the keyword seat or alias
@@ -309,6 +314,120 @@ const audiosurface: Record<string, Seat> = {
   zcr: "function",
   zcrrate: "function",
   zcurve: "function",
+};
+
+/** The genre corpus surface (the layer-law split the wave-fourteen fold
+ * records): the trained corpus rides its own genre.ts seat at the pattern
+ * layer (the corpus lane reads the pattern miner while the pattern family
+ * reads the theory kernel — seating the corpus inside theory would close
+ * the cycle the family law forbids), so the genre and genrecorpus
+ * subpaths answer this table while the kernel, grammar, dictionary and
+ * beat-grid names answer the theory surface. */
+const genrecallurface: Record<string, Seat> = {
+  CORPUS_DEFAULT_BARS: "number",
+  CORPUS_DEFAULT_REFERENCES: "number",
+  CORPUS_ERROR_CODES: "object",
+  CORPUS_INSTANT: "string",
+  CORPUS_SCHEMA_VERSION: "string",
+  CorpusError: "function",
+  GENRES: "object",
+  corpusSeatOf: "function",
+  defaultGenreCorpus: "function",
+  genreById: "function",
+  matchGenre: "function",
+  parseCorpus: "function",
+  pickBpm: "function",
+  seedProfileOf: "function",
+  serializeCorpus: "function",
+  trainGenreCorpus: "function",
+  validateGenreCorpus: "function",
+  validateMatrix: "function",
+};
+
+/** The theory family surface (the dedup wave): the seven theory leaves —
+ * the kernel, the tuning conversion, the progression grammar, the drum
+ * grammar, the style dictionary, the trained corpus and the beat grid —
+ * ride as sections of the one keyed file the consolidation law seats,
+ * every runtime seat the fold carried, pinned once: the beatgrid, genre
+ * and genrecorpus subpaths answer the same table. */
+const theorysurface: Record<string, Seat> = {
+  A4_MIDI: "number",
+  CHORD_SHAPES: "object",
+  CHORD_SUFFIX: "object",
+  CONCERT_PITCH: "number",
+  FAMILY_NAMES: "object",
+  FAMILIES: "object",
+  FLAT_NAMES: "object",
+  GENRES: "object",
+  INTERVAL_NAMES: "object",
+  LANES: "object",
+  NOTE_NAMES: "object",
+  PROGRESSION_IDS: "object",
+  PROGRESSION_SETS: "object",
+  SCALE_NAMES: "object",
+  SCALE_STEPS: "object",
+  STEPS: "number",
+  accentMap: "function",
+  applyAccents: "function",
+  applySwing: "function",
+  beatCount: "function",
+  beatsElapsed: "function",
+  beatTime: "function",
+  chordIntervals: "function",
+  chordNotes: "function",
+  chordPcs: "function",
+  chordSymbol: "function",
+  cloneGrid: "function",
+  commonTones: "function",
+  degreeToPc: "function",
+  detectCadence: "function",
+  detectTempo: "function",
+  diatonicTriad: "function",
+  emptyGrid: "function",
+  foldPattern: "function",
+  generateProgression: "function",
+  genreById: "function",
+  gridFromBeats: "function",
+  gridFromSpec: "function",
+  gridToTempoMap: "function",
+  hashSeed: "function",
+  identityGrid: "function",
+  intervalBetween: "function",
+  intervalName: "function",
+  isDownbeat: "function",
+  laneDensity: "function",
+  makeChord: "function",
+  matchGenre: "function",
+  maybeFill: "function",
+  midiToHz: "function",
+  mulberry32: "function",
+  nearestBeat: "function",
+  nearestInversion: "function",
+  noteName: "function",
+  noteToPc: "function",
+  onsetEnvelope: "function",
+  parseChord: "function",
+  parseRoman: "function",
+  pickBpm: "function",
+  pickProgression: "function",
+  quantizeToGrid: "function",
+  qualityFromIntervals: "function",
+  reharmonizeDiatonic: "function",
+  reharmonizeRelative: "function",
+  romanOf: "function",
+  scalePcs: "function",
+  subdivideBeat: "function",
+  swingOffset: "function",
+  swingOffsets: "function",
+  tempoAtTime: "function",
+  tempoMapFromAnchors: "function",
+  tensionOf: "function",
+  timeAtBeat: "function",
+  trackBeats: "function",
+  transposePc: "function",
+  validateGrid: "function",
+  validateMatrix: "function",
+  voiceLeadDistance: "function",
 };
 
 /** The honest surface pin — every named runtime export of every subpath
@@ -629,26 +748,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     FORMANT_TARGET_PEAK: "number",
     FORMANT_ENVELOPE: "object",
   },
-  genrecorpus: {
-    CORPUS_DEFAULT_BARS: "number",
-    CORPUS_DEFAULT_REFERENCES: "number",
-    CORPUS_ERROR_CODES: "object",
-    CORPUS_INSTANT: "string",
-    CORPUS_SCHEMA_VERSION: "string",
-    CorpusError: "function",
-    GENRES: "object",
-    corpusSeatOf: "function",
-    defaultGenreCorpus: "function",
-    genreById: "function",
-    matchGenre: "function",
-    parseCorpus: "function",
-    pickBpm: "function",
-    seedProfileOf: "function",
-    serializeCorpus: "function",
-    trainGenreCorpus: "function",
-    validateGenreCorpus: "function",
-    validateMatrix: "function",
-  },
+  genrecorpus: genrecallurface,
   reverseingest: {
     reverseIngestPayload: "function",
     timelineEvents: "function",
@@ -747,25 +847,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     VAULT_PROJECT_ENV: "string",
     VAULT_TOKEN_ENV: "string",
   },
-  beatgrid: {
-    onsetEnvelope: "function",
-    detectTempo: "function",
-    trackBeats: "function",
-    gridFromBeats: "function",
-    identityGrid: "function",
-    beatCount: "function",
-    isDownbeat: "function",
-    beatTime: "function",
-    nearestBeat: "function",
-    quantizeToGrid: "function",
-    swingOffset: "function",
-    subdivideBeat: "function",
-    tempoMapFromAnchors: "function",
-    gridToTempoMap: "function",
-    tempoAtTime: "function",
-    beatsElapsed: "function",
-    timeAtBeat: "function",
-  },
+  beatgrid: theorysurface,
   speechalign: {
     frameRms: "function",
     rmsToDb: "function",
@@ -953,26 +1035,7 @@ const SURFACE: Record<Subpath, Record<string, Seat>> = {
     validatePatternProject: "function",
     validatePatternTimeline: "function",
   },
-  genre: {
-    CORPUS_DEFAULT_BARS: "number",
-    CORPUS_DEFAULT_REFERENCES: "number",
-    CORPUS_ERROR_CODES: "object",
-    CORPUS_INSTANT: "string",
-    CORPUS_SCHEMA_VERSION: "string",
-    CorpusError: "function",
-    GENRES: "object",
-    corpusSeatOf: "function",
-    defaultGenreCorpus: "function",
-    genreById: "function",
-    matchGenre: "function",
-    parseCorpus: "function",
-    pickBpm: "function",
-    seedProfileOf: "function",
-    serializeCorpus: "function",
-    trainGenreCorpus: "function",
-    validateGenreCorpus: "function",
-    validateMatrix: "function",
-  },
+  genre: genrecallurface,
   render: {
     RENDER_BIT_DEPTH: "number",
     RENDER_PHASES: "object",

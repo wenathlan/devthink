@@ -16,15 +16,20 @@
 
 import { type ArrangerRole, beatSecondsOf, stepSecondsOf, type TakePlan } from "./arrangement.ts";
 import { renderTakeOffline } from "./audio.ts";
-import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { reconOf } from "./ingest.ts";
 import { buildTracksFromSchedule, validateMidi, writeMidi } from "./midiwriter.ts";
-import { chordNotes, scalePcs } from "./musictheory.ts";
 import type { ReconDocument } from "./recon.ts";
 import { serializeRecon } from "./recon.ts";
 import { reconSeedOf } from "./recon.ts";
-import { LANES, type LaneName } from "./rhythmgrammar.ts";
 import { planStems, stemsManifest } from "./stems.ts";
+import {
+  chordNotes,
+  hashSeed,
+  LANES,
+  type LaneName,
+  mulberry32,
+  scalePcs,
+} from "./theory.ts";
 import { writeWav16, writeWav24 } from "./wavwriter.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */

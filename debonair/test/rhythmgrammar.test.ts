@@ -6,7 +6,6 @@
 // The only randomness is the engine's own mulberry32 driven by fixed seeds;
 // every glyph string is a constant fixture readable by eye.
 import { describe, expect, it } from "vitest";
-import { hashSeed, mulberry32 } from "../harmonyengine.ts";
 import {
   accentMap,
   applyAccents,
@@ -17,14 +16,16 @@ import {
   FAMILY_NAMES,
   foldPattern,
   gridFromSpec,
+  hashSeed,
   LANES,
   type LaneName,
   laneDensity,
   maybeFill,
+  mulberry32,
   STEPS,
   swingOffsets,
   validateGrid,
-} from "../rhythmgrammar.ts";
+} from "../theory.ts";
 
 /** A spec where every lane not listed stays silent (the documented default). */
 const spec = (overrides: Partial<Record<LaneName, string>>): Record<LaneName, string> =>

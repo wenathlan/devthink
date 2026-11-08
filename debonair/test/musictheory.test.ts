@@ -28,7 +28,7 @@ import {
   scalePcs,
   transposePc,
   voiceLeadDistance,
-} from "../musictheory.ts";
+} from "../theory.ts";
 
 const C = { tonic: 0, mode: "major" } as const;
 const Am = { tonic: 9, mode: "aeolian" } as const;

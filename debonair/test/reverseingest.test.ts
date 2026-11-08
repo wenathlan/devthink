@@ -16,7 +16,7 @@ import { LANE_STEPS, type PatternProject, type PatternTimeline, serializePattern
 import { type RenderBlobStore, renderPlan } from "../render.ts";
 import { reverseIngestPayload, timelineEvents } from "../reverseingest.ts";
 import { FFT_SIZE, frameSpectrum } from "../spectrum.ts";
-import { midiToHz } from "../tuning.ts";
+import { midiToHz } from "../theory.ts";
 import { encodeWav, wavInfo } from "../wavwriter.ts";
 
 /** The mastering rate the reconstruction rides. */

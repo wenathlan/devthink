@@ -79,7 +79,6 @@
 // documents onto it, never re-validates by its own law).
 
 import { melbands } from "./audio.ts";
-import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { MASTERING } from "./katexis.ts";
 import { dbToLinear } from "./mixergraph.ts";
 import {
@@ -97,6 +96,7 @@ import {
   validatePatternProject,
   validatePatternTimeline,
 } from "./pattern.ts";
+import { hashSeed, mulberry32 } from "./theory.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: the engine registry — the seat table. */

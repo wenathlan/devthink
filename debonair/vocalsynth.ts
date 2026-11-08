@@ -23,9 +23,9 @@
 // first rung stays the plan grammar, the formant render is the bounce's
 // own honest voice.
 
-import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { applyBandpass, type Vowel, VOWEL_FORMANTS } from "./formant.ts";
 import { type PatternNoteEvent, type PatternProject, validatePatternProject } from "./pattern.ts";
+import { hashSeed, mulberry32 } from "./theory.ts";
 
 // the formant table and the vowel id live in their one home, formant.ts
 // (the source-filter lane owns the resonator law and the poles); the

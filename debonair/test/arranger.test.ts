@@ -16,7 +16,7 @@ import {
   takeId,
   validatePlan,
 } from "../arrangement.ts";
-import { GENRES } from "../genre.ts";
+import { GENRES } from "../theory.ts";
 import { clipsOverlap, totalDuration } from "../timelinemodel.ts";
 
 describe("arranger — planTake", () => {

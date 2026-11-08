@@ -3,8 +3,9 @@
  * @module genre
  * @family wave/logicfold2
  * One keyed file per family: the genrecorpus arms retire into this seat while
- * the genrematrix table rides its own leaf (genrematrix.ts) so the family
- * never closes a cycle — this seat re-exports every name it always owned.
+ * the style dictionary rides the theory seat (theory.ts, the wave-fourteen
+ * fold) so the family never closes a cycle — this seat re-exports every name
+ * it always owned, the dictionary names arriving from the theory kernel now.
  */
 
 import { composeFromProfile } from "./composer.ts";
@@ -12,10 +13,10 @@ import { IngestDocument, ingestMixPcm } from "./ingest.ts";
 import { limitTruePeak } from "./limiter.ts";
 import { CHROMA_BINS, GenreProfile, IngestDocumentWithId, PROFILE_GENRE_KEYS, PROFILE_LIMITS, SEGMENT_DIM, TrainedCorpusSeat, TrainedStyleVector, mineGenre } from "./pattern.ts";
 import { RENDER_SAMPLE_RATE, renderPatternMix, schedulePattern } from "./render.ts";
-import { GENRES } from "./genrematrix.ts";
+import { GENRES } from "./theory.ts";
 
-export { GENRES, genreById, matchGenre, pickBpm, validateMatrix } from "./genrematrix.ts";
-export type { GenreStyle } from "./genrematrix.ts";
+export { GENRES, genreById, matchGenre, pickBpm, validateMatrix } from "./theory.ts";
+export type { GenreStyle } from "./theory.ts";
 
 /* ===== block: genrecorpus ===== */
 // # genrecorpus — the trained genre corpus of the classifier (root layer,

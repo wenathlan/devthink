@@ -44,7 +44,7 @@ import type {
   MinerRunValue,
 } from "../gatewayapi.ts";
 import { dispatch, matchroute, startMinerJob } from "../gatewayapi.ts";
-import { GENRES } from "../genre.ts";
+import { GENRES } from "../theory.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
 import { INGEST_SCHEMA_VERSION } from "../ingest.ts";
 // the seat answers before the module load: this suite rides its own

@@ -23,7 +23,7 @@ import {
   tempoMapFromAnchors,
   timeAtBeat,
   trackBeats,
-} from "../beatgrid.ts";
+} from "../theory.ts";
 
 const SR = 44100;
 

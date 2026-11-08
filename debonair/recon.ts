@@ -7,12 +7,11 @@
  */
 
 import { seededNoiseChannel } from "./audio.ts";
-import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { pcmhash, RECON_ENVELOPE_WINDOWS } from "./ingest.ts";
 import { limitTruePeak } from "./limiter.ts";
 import { PATTERN_SCALES, type PatternScaleName } from "./pattern.ts";
 import type { RenderBlobPointer, RenderBlobStore, RenderJobRow, RenderJobSeat } from "./render.ts";
-import { midiToHz } from "./tuning.ts";
+import { hashSeed, midiToHz, mulberry32 } from "./theory.ts";
 import { encodeWav } from "./wavwriter.ts";
 
 /* ===== block: reconpayload ===== */

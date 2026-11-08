@@ -6,20 +6,29 @@
  * retired into this seat with every export preserved under the same name.
  */
 
-import { GENRES, type GenreStyle, matchGenre, pickBpm } from "./genrematrix.ts";
-import { type ChordEvent, generateProgression, hashSeed, mulberry32, PROGRESSION_SETS } from "./harmonyengine.ts";
 import type { MixerStripRow } from "./katexis.ts";
 import { MASTERING, trackNameFromPrompt } from "./katexis.ts";
-import { type Key, noteName } from "./musictheory.ts";
 import {
   applyAccents,
   applySwing,
+  type ChordEvent,
   FAMILIES,
   type FamilyName,
+  generateProgression,
+  GENRES,
+  type GenreStyle,
+  hashSeed,
+  type Key,
+  LANES,
   type LaneName,
+  matchGenre,
+  mulberry32,
+  noteName,
   type PatternGrid,
+  pickBpm,
+  PROGRESSION_SETS,
   validateGrid,
-} from "./rhythmgrammar.ts";
+} from "./theory.ts";
 /* (the type TimelineClip binding rode this statement too — the arrangement
  * block above already binds it from the same module; the dedup kept one) */
 import { validatePlacement } from "./timelinemodel.ts";

@@ -26,9 +26,7 @@ import {
   parseComposerPrompt,
   SIMILARITY_FLOOR,
 } from "../composer.ts";
-import { GENRES } from "../genre.ts";
 import type { IngestDocument, IngestSegment } from "../ingest.ts";
-import { SCALE_STEPS } from "../musictheory.ts";
 import {
   EMBEDDING_DIM,
   LANE_STEPS,
@@ -39,6 +37,7 @@ import {
   validatePatternProject,
 } from "../pattern.ts";
 import { type GenreProfile, type IngestDocumentWithId, segmentVector } from "../pattern.ts";
+import { GENRES, SCALE_STEPS } from "../theory.ts";
 
 // ---------------------------------------------------------------------------
 // the fixtures (the honest corpora: the values the analyzed references answer)

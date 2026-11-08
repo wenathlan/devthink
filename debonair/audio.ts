@@ -44,10 +44,9 @@
 //   AudioDecodeError, wavinfo) folds into the audioformat section itself.
 
 import type { ArrangerRole, TakePlan } from "./arrangement.ts";
-import { hashSeed, mulberry32 } from "./harmonyengine.ts";
 import { dbToLinear } from "./mixergraph.ts";
 import { type NoteEvent, scheduleTake, type TakeSchedule } from "./take.ts";
-import { midiToHz } from "./tuning.ts";
+import { hashSeed, midiToHz, mulberry32 } from "./theory.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: audioattributes.ts — the shared descriptor contract. */

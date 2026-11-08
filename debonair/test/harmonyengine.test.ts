@@ -6,19 +6,22 @@
 import { describe, expect, it } from "vitest";
 import {
   type Chord,
+  chordSymbol,
   detectCadence,
   generateProgression,
   hashSeed,
   type Key,
   mulberry32,
+  parseChord,
+  parseRoman,
   PROGRESSION_IDS,
   PROGRESSION_SETS,
   pickProgression,
   reharmonizeDiatonic,
   reharmonizeRelative,
+  scalePcs,
   tensionOf,
-} from "../harmonyengine.ts";
-import { chordSymbol, parseChord, parseRoman, scalePcs } from "../musictheory.ts";
+} from "../theory.ts";
 
 const C = { tonic: 0, mode: "major" } as const;
 const Am = { tonic: 9, mode: "aeolian" } as const;

@@ -71,7 +71,6 @@
 // a throw. pure and node-side — zero browser, zero gpu, zero network.
 
 import { sha256hex } from "./blobstore.ts";
-import { hashSeed } from "./harmonyengine.ts";
 import { parseWav, pcmhash, reconstructWav, SOUND_PAYLOAD_SCHEMA_VERSION, type SoundPayload } from "./ingest.ts";
 import { limitTruePeak } from "./limiter.ts";
 import {
@@ -94,6 +93,7 @@ import {
   schedulePattern,
 } from "./render.ts";
 import type { NoteEvent } from "./take.ts";
+import { hashSeed } from "./theory.ts";
 import { encodeWav } from "./wavwriter.ts";
 
 /** The machine readable failure codes of the reverse ingest. */

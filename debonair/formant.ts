@@ -27,8 +27,7 @@
 // deterministic: the same events, options and rng answer the same bytes
 // on every machine.
 
-import { hashSeed, mulberry32 } from "./harmonyengine.ts";
-import { midiToHz } from "./tuning.ts";
+import { hashSeed, midiToHz, mulberry32 } from "./theory.ts";
 
 /** The vowel id the formant table carries (a e i o u, the five the
  * syllable lane rides). */
