@@ -324,6 +324,7 @@ const seedChatStrings: ChatStringRow[] = [
   { id: "welcome.temporarySub", text: "temporary chat: nothing saves on this device" },
   { id: "welcome.modelLine", text: "sol {model}" },
   { id: "chat.temporaryPill", text: "temporary chat" },
+  { id: "chat.session.historyNote", text: "History stays in this browser" },
   { id: "chat.temporaryTitle", text: "this conversation never saves to this device" },
   { id: "topbar.gatewayOn", text: "CLI on" },
   { id: "topbar.gatewayOff", text: "CLI off" },

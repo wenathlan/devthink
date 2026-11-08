@@ -159,7 +159,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                                         <div className="flex flex-col items-center w-full max-w-2xl p-8">
                                                 <AlertTriangle fontSize={48} className="text-destructive mb-6 flex-shrink-0" />
 
-                                                <h2 className="text-xl mb-4">An unexpected error occurred.</h2>
+                                                <h2 className="text-xl mb-4">{label('shell.boundary.title')}</h2>
 
                                                 <div className="p-4 w-full rounded bg-muted overflow-auto mb-6">
                                                         <pre className="text-sm text-muted-foreground whitespace-break-spaces">
@@ -177,7 +177,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                                                         )}
                                                 >
                                                         <RotateCcw fontSize={16} />
-                                                        Reload Page
+                                                        {label('shell.boundary.reload')}
                                                 </button>
                                         </div>
                                 </div>

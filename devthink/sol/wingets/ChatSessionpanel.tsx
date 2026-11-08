@@ -506,7 +506,7 @@ export function SessionPanel({
         ) : null}
       </section>
 
-      <p className="dtc-session__foot">History stays in this browser</p>
+      <p className="dtc-session__foot">{chatText("chat.session.historyNote")}</p>
     </aside>
   );
 }

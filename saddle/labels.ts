@@ -19,8 +19,9 @@ import { createLabelStore } from "../vault/labelstore.ts";
  * refreshes the store rows of the changed strings. (6: the shell rail copy
  * wave — the sectioned navigation labels, the app details, the family foot
  * and the rail chrome prose the Shell carried inline moved into the store,
- * zero invented copy.) */
-export const LABEL_REVISION = 6;
+ * zero invented copy. 7: the boundary wave — the error-boundary title and
+ * reload affordance the Shell anchor carried inline moved into the store.) */
+export const LABEL_REVISION = 7;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -779,6 +780,9 @@ export const labelmanifest = {
   'shell.rail.section.workspace': 'workspace',
   'shell.rail.section.platform': 'platform',
   'shell.rail.section.library': 'library',
+  // the error boundary the Shell anchor carries (the last-resort chrome)
+  'shell.boundary.title': 'An unexpected error occurred.',
+  'shell.boundary.reload': 'Reload Page',
   'shell.rail.section.account': 'account',
   'shell.rail.home': 'home',
   'shell.rail.homeDetail': 'the thesis and the machine',

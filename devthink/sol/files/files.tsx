@@ -1501,17 +1501,17 @@ type DetailsProps = {
 function DetailsList({ rows, selected, onSelect, onOpen }: DetailsProps) {
   return (
     <table className="dtfx-details">
-      <caption className="sr-only">The items of this folder</caption>
+      <caption className="sr-only">{osText("explorer.items.caption")}</caption>
       <thead>
         <tr>
           <th scope="col" className="dtfx-details__head">
-            Name
+            {osText("explorer.col.name")}
           </th>
           <th scope="col" className="dtfx-details__head dtfx-details__head--type">
-            Type
+            {osText("explorer.col.type")}
           </th>
           <th scope="col" className="dtfx-details__head dtfx-details__head--meta">
-            Details
+            {osText("explorer.col.details")}
           </th>
         </tr>
       </thead>
