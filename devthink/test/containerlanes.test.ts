@@ -303,11 +303,16 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
      * packs the one entry through the generated config file the -c walk
      * carries (the config-file grammar: the output filename rides the
      * config, the LimitChunkCountPlugin keeps the bundle single-file)
-     * into the one webpack bundle the six channel legs distribute. */
+     * into the one webpack bundle the six channel legs distribute —
+     * the union seat: the battery pins the outfile lane and the
+     * one-file plugin anchor beside the config-file walk, every
+     * coordinate both waves stamped, nothing removed. */
     expect(containers).toContain("bun run build:engine");
+    expect(containers).toContain("--outfile=distpackage/index.js");
     expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
     expect(containers).toContain('filename: "saddle.webpack.js"');
     expect(containers).toContain("webpack -c ./distpackage/webpack.config.mjs");
+    expect(containers).toContain("new LimitChunkCountPlugin({ maxChunks: 1 })");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
      * collide with the engine envelope the publish lanes own: the
