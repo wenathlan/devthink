@@ -5173,13 +5173,25 @@ jobs:
       - name: generate and synchronize the android wrapper
         # the capacitor cli pinned to the 8.5.0 the mobile shell declares;
         # cap add materializes the android template inside the application and
-        # sync copies the built workbench output into its assets.
+        # sync copies the built workbench output into its assets. the wrapper
+        # patch rides beside the generation: the stock template wrapper carries
+        # the 10s default network timeout that reddened the lane on a slow
+        # services.gradle.org answer (the 8.14.3-all timeout flake), so the
+        # patch seats networkTimeout=180000 and the -bin distribution (the
+        # smaller artifact the same checksum lane verifies) before any gradlew
+        # walk ever runs.
         working-directory: devthink
         shell: bash
         run: |
           set -euo pipefail
           npx cap add android
           npx cap sync android
+          wrapper="android/gradle/wrapper/gradle-wrapper.properties"
+          test -f "$wrapper"
+          sed -i 's#gradle-8\\.14\\.3-all\\.zip#gradle-8.14.3-bin.zip#' "$wrapper"
+          grep -q 'networkTimeout=' "$wrapper" || printf 'networkTimeout=180000\n' >> "$wrapper"
+          grep -q 'distributionUrl=.*bin\\.zip' "$wrapper"
+          grep -q 'networkTimeout=180000' "$wrapper"
 
       - name: derive android version values
         # the saddle release lane recipe: the version and the derived
@@ -5563,6 +5575,25 @@ jobs:
           set -euo pipefail
           npx cap add ios
           npx cap sync ios
+
+      - name: resolve iOS package dependencies (the 503 bypass lane)
+        # the spm binary seats (capacitor-swift-pm rides the github release
+        # assets the 503 flake reddened - exit 74 with both xcframeworks
+        # unfetched); the resolve walk retries the package fetch before the
+        # build ever runs, so a transient asset seat never kills the lane.
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            if xcodebuild -project devthink/ios/App/App.xcodeproj -scheme App -sdk iphonesimulator -resolvePackageDependencies; then
+              echo "spm resolve ride ${i} answered clean"
+              exit 0
+            fi
+            echo "spm resolve attempt ${i} failed; sleeping before the next ride"
+            sleep 20
+          done
+          echo "the spm resolve lane exhausted every retry" >&2
+          exit 1
 
       - name: build iOS simulator application
         shell: bash

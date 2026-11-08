@@ -4692,7 +4692,13 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "dependency-review-action",
       "codeql-action",
       "trufflehog",
-      "sbom-action",
+      /* the sbom lane the checksum 503 bypass re seated: the action wrapper
+         (its embedded installer carries no retry seat) retired for the
+         direct syft walk with the retry-hardened fetch the trivy lane
+         founded - the control anchor follows the lane that generates the
+         bill of materials. */
+      "Install syft (the checksum 503 bypass lane)",
+      "syft scan dir:. -o cyclonedx-json=build/security/devthink.sbom.cdx.json",
       "license-checker@25.0.1",
       "--onlyAllow=",
       /* the absorbed governance lanes of the 2.0.16 grouping pass */

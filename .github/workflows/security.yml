@@ -635,14 +635,44 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Prepare SBOM directory
         run: mkdir -p build/security
+      - name: Install syft (the checksum 503 bypass lane)
+        # the sbom action installer died on a github release asset 503
+        # (the checksums.txt fetch - the same hosted-runner flake the trivy
+        # redirector lane answered); the release tarball rides the retry
+        # loop the trivy lane founded - curl flags, explicit version pin,
+        # checksum verify - so the bill of materials never reddens on a
+        # transient asset seat again.
+        run: |
+          set -euo pipefail
+          if command -v syft >/dev/null 2>&1; then syft version; exit 0; fi
+          ver="1.54.0"
+          for i in 1 2 3 4 5 6; do
+            curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
+              "https://github.com/anchore/syft/releases/download/v${ver}/syft_${ver}_checksums.txt" \
+              -o /tmp/syft_checksums.txt && break
+            echo "syft checksums attempt ${i} failed; sleeping before the next ride"
+            sleep 15
+          done
+          test -s /tmp/syft_checksums.txt
+          for i in 1 2 3 4 5 6; do
+            curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
+              "https://github.com/anchore/syft/releases/download/v${ver}/syft_${ver}_linux_amd64.tar.gz" \
+              -o /tmp/syft.tar.gz && break
+            echo "syft tarball attempt ${i} failed; sleeping before the next ride"
+            sleep 15
+          done
+          test -s /tmp/syft.tar.gz
+          grep " syft_${ver}_linux_amd64.tar.gz\$" /tmp/syft_checksums.txt | awk '{print $1}' | sha256sum -c -
+          tar -xzf /tmp/syft.tar.gz -C /tmp syft
+          sudo install -m 0755 /tmp/syft /usr/local/bin/syft
+          syft version
       - name: Generate CycloneDX SBOM
-        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
-        with:
-          path: .
-          format: cyclonedx-json
-          output-file: build/security/devthink.sbom.cdx.json
-          upload-artifact: false
-          upload-release-assets: false
+        # the direct syft walk replaces the action wrapper (its embedded
+        # installer carries no retry seat); the scan answers the same
+        # cyclonedx-json contract the audit lane always read.
+        run: |
+          syft scan dir:. -o cyclonedx-json=build/security/devthink.sbom.cdx.json
+          test -s build/security/devthink.sbom.cdx.json
       - name: Upload SBOM
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
