@@ -1,4 +1,4 @@
-# saddle 2.0.171 — THE ENGINE CONTAINER FILE
+# saddle 2.0.172 — THE ENGINE CONTAINER FILE
 #
 # THE FAMILY CONTAINER DOCTRINE, THE SADDLE SHAPE: one versioned container
 # per engine, built like the site homes (argan, cadria) build theirs — a
@@ -158,7 +158,7 @@ ARG NODE_BASE_DIGEST=5adad64f9a1fca2d51972caa65983634c8a774eb300d72b20f7f2a0f603
 # ===== stage: solbuild — the locked npm tree and the console spa =====
 FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 
 WORKDIR /app
 
@@ -192,7 +192,7 @@ RUN npm run web:build:pages \
 # ===== stage: base — the hardened runtime floor every profile shares =====
 FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 # the revision stamp the devthink container carries (DEVTHINK_REVISION
 # there): the publish legs pass the release sha at build time and the
 # revision label below declares the default-unknown local shape.
@@ -583,7 +583,7 @@ LABEL org.opencontainers.image.title="saddle (the android os-distribution lane)"
 #   docker build --target osv          -t saddle:2.0.165-v .
 #   docker build --target oswindows    -t saddle:2.0.165-windows .
 FROM scratch AS osgrapheneos
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="grapheneos"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -608,7 +608,7 @@ LABEL org.opencontainers.image.title="saddle (the grapheneos os-distribution cat
 COPY osprofiles/grapheneos.json /saddle/osprofile.json
 
 FROM scratch AS osmaruos
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="maruos"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -633,7 +633,7 @@ LABEL org.opencontainers.image.title="saddle (the maru os os-distribution catalo
 COPY osprofiles/maruos.json /saddle/osprofile.json
 
 FROM scratch AS osv
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="v"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -658,7 +658,7 @@ LABEL org.opencontainers.image.title="saddle (the v os-distribution catalog lane
 COPY osprofiles/v.json /saddle/osprofile.json
 
 FROM scratch AS oswindows
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="windows"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -683,7 +683,7 @@ LABEL org.opencontainers.image.title="saddle (the windows os-distribution catalo
 COPY osprofiles/windows.json /saddle/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="postmarketos"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -708,7 +708,7 @@ LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution c
 COPY osprofiles/postmarketos.json /saddle/osprofile.json
 
 FROM scratch AS oslineageos
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="lineageos"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -733,7 +733,7 @@ LABEL org.opencontainers.image.title="saddle (the lineageos os-distribution cata
 COPY osprofiles/lineageos.json /saddle/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="calyxos"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -758,7 +758,7 @@ LABEL org.opencontainers.image.title="saddle (the calyxos os-distribution catalo
 COPY osprofiles/calyxos.json /saddle/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="archlinux"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -783,7 +783,7 @@ LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution cata
 COPY osprofiles/archlinux.json /saddle/osprofile.json
 
 FROM scratch AS osalpine
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="alpine"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -808,7 +808,7 @@ LABEL org.opencontainers.image.title="saddle (the alpine os-distribution catalog
 COPY osprofiles/alpine.json /saddle/osprofile.json
 
 FROM scratch AS osdebian
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="debian"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -833,7 +833,7 @@ LABEL org.opencontainers.image.title="saddle (the debian os-distribution catalog
 COPY osprofiles/debian.json /saddle/osprofile.json
 
 FROM scratch AS osfedora
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="fedora"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -858,7 +858,7 @@ LABEL org.opencontainers.image.title="saddle (the fedora os-distribution catalog
 COPY osprofiles/fedora.json /saddle/osprofile.json
 
 FROM scratch AS osnixos
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="nixos"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"
@@ -883,7 +883,7 @@ LABEL org.opencontainers.image.title="saddle (the nixos os-distribution catalog 
 COPY osprofiles/nixos.json /saddle/osprofile.json
 
 FROM scratch AS osvoid
-ARG SADDLE_VERSION=2.0.171
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="void"
 ARG SADDLE_TIER="max"
 ARG VHE_PROFILE_CPU="epyc9965"

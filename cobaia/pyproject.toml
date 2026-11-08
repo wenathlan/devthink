@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-cobaia"
-version = "2.0.171"
+version = "2.0.172"
 authors = [{name = "wenathlan"}]
 description = "The monetization surface — the plans, the support rails and the honest advertisement slots"
 readme = "README.md"

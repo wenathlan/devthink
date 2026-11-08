@@ -4,7 +4,7 @@
     <AssemblyName>forge</AssemblyName>
     <RootNamespace>forge</RootNamespace>
     <PackageId>forge</PackageId>
-    <Version>2.0.171</Version>
+    <Version>2.0.172</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the forge documentation set and the tests directory. forge is the sandbox runner surface — the runners on the saddle engine boundary.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
