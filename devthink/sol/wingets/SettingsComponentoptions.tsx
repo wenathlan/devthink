@@ -21,7 +21,7 @@ import {
   saveDevtoolsWall,
   saveTaskbarTips,
 } from "../../personalstore.ts";
-import type { PreferenceKey, SettingsSnapshot } from "./Settingstypes";
+import type { PreferenceKey, SettingsSnapshot } from "../../settingstypes";
 
 type ComponentOptionsProps = {
   /** the preference machine rows the rail mode and the zoom ride */

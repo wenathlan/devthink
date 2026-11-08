@@ -26,8 +26,8 @@ import {
   verifyArtifact,
 } from "../../pipeline.ts";
 import { labelfill, label } from "../../labels.ts";
-import { EmptyState } from "../wingets";
-import { GraphPanel as GraphPanel } from "../wingets";
+import { EmptyState } from "../../wingets";
+import { GraphPanel as GraphPanel } from "../../wingets";
 
 /** the seed of the packaging rehearsal (shown on the page, pinned by the tests) */
 export const LINE_SEED = 804613;

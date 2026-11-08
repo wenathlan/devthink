@@ -25,7 +25,7 @@ function read(path: string): string {
 }
 
 const FACE = read("../sol/wingets/Constructionface.tsx");
-const BARREL = read("../sol/wingets/index.ts");
+const BARREL = read("../wingets.ts");
 const LABELS = read("../labels.ts");
 const CSS = read("../sol/sol.css");
 const SOL = read("../sol/Sol.tsx");
@@ -95,7 +95,7 @@ describe("the construction law of debonair", () => {
         `the ${anchor.route} face must wear the ${anchor.eyebrow} eyebrow from the label store`,
       ).toBe(true);
       expect(
-        page.includes('from "../wingets"'),
+        page.includes('from "../../wingets"'),
         `the ${anchor.route} anchor must import the face from the winget barrel`,
       ).toBe(true);
     }
@@ -110,7 +110,7 @@ describe("the construction law of debonair", () => {
   });
 
   it("serves the face from the winget barrel — the dotted name lives once", () => {
-    expect(BARREL).toMatch(/export \{ default as Constructionface \} from "\.\/Constructionface\.tsx"/);
+    expect(BARREL).toMatch(/export \{ default as Constructionface \} from "\.\/sol\/wingets\/Constructionface\.tsx"/);
     for (const anchor of ANCHORS) {
       const page = read(anchor.file);
       expect(

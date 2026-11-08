@@ -18,7 +18,7 @@
  */
 import { ShellChrome } from "@/wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
-import { Constructionface } from "../wingets";
+import { Constructionface } from "../../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

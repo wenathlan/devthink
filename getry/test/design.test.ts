@@ -196,10 +196,11 @@ describe("flow contract — intro → onboarding → the platform", () => {
   });
 
   it("gates the home anchor on the seen state before anything shows", () => {
-    /* the widget surface law: the dotted widget name is written exactly
-    once (inside sol/wingets/index.ts) and the page answers the surface
-    import with its canonical alias — never the dotted path again */
-    expect(HOME).toMatch(/import \{ HomeEntrygate as EntryGate \} from "\.\.\/wingets"/);
+    /* the widget surface law (the rootlogic rung): the dotted widget name
+    is written exactly once (inside the root wingets.ts barrel the owner
+    charged — no .ts logic rides inside sol) and the page answers the
+    surface import with its canonical alias — never the dotted path again */
+    expect(HOME).toMatch(/import \{ HomeEntrygate as EntryGate } from "\.\.\/\.\.\/wingets"/);
     expect(GATE).toContain('navigate("/intro", { replace: true })');
     expect(GATE).toContain('navigate("/onboarding", { replace: true })');
     expect(GATE).toContain("flowthrough");

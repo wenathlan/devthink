@@ -54,22 +54,22 @@ import { DESKTOP_APPS, isFamilyApp } from "../../appregistry.ts";
 import { label } from "../../uistore.ts";
 import { peekonboardingstate } from "../../onboardingstate";
 import { osText } from "../../os.ts";
-import { SolLogoMark } from "../wingets";
-import { ShellChrome } from "../wingets";
-import { DownloadRail } from "../wingets";
-import { ExploreSidebar } from "../wingets";
+import { SolLogoMark } from "../../wingets";
+import { ShellChrome } from "../../wingets";
+import { DownloadRail } from "../../wingets";
+import { ExploreSidebar } from "../../wingets";
 import {
   CategoryDeck,
   CategorySectionDeck,
   exploreCategories,
   exploreRecents,
   type ExploreCategoryId,
-  type ExploreData } from "../wingets";
-import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../wingets";
-import { HeroWaves } from "../wingets";
-import { WindowEdgeChrome } from "../wingets";
+  type ExploreData } from "../../wingets";
+import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../../wingets";
+import { HeroWaves } from "../../wingets";
+import { WindowEdgeChrome } from "../../wingets";
 
-export * from "../wingets";
+export * from "../../wingets";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";

@@ -97,7 +97,7 @@ describe("design contract", () => {
     expect(APP.includes("Toaster"), "the toast surface retired with the pages").toBe(false);
     expect(APP.includes("routerBase"), "the routerbase door retired with the routes").toBe(false);
     // the theme anchor mounts the face from the winget barrel — nothing else
-    expect(SOL).toMatch(/import \{ Constructionface \} from "\.\/wingets"/);
+    expect(SOL).toMatch(/import \{ Constructionface \} from "\.\.\/wingets"/);
     expect(SOL).toMatch(/<Constructionface \/>/);
     expect(SOL.includes("wouter"), "no route table rides the theme").toBe(false);
     expect(SOL.includes("Switch"), "no route switch rides the theme").toBe(false);

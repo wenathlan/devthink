@@ -13,7 +13,7 @@
  * surface imports none of them; the folders keep the logics real for the
  * day the game wakes up.
  */
-import { Constructionface } from "./wingets";
+import { Constructionface } from "../wingets";
 
 /** The one surface of the theme: the under-construction face, full-bleed on
  * every path — there is no route table any more, only the face. */

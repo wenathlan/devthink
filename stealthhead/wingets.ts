@@ -6,9 +6,9 @@
  * the components stay complete independent files beside this surface.
  */
 
-export * from "./Constructionface.tsx";
-export { default as Constructionface } from "./Constructionface.tsx";
-export * from "./HomeScope.tsx";
-export { default as HomeScope } from "./HomeScope.tsx";
-export * from "./ShellBrandmark.tsx";
-export { default as ShellBrandmark } from "./ShellBrandmark.tsx";
+export * from "./sol/wingets/Constructionface.tsx";
+export { default as Constructionface } from "./sol/wingets/Constructionface.tsx";
+export * from "./sol/wingets/HomeScope.tsx";
+export { default as HomeScope } from "./sol/wingets/HomeScope.tsx";
+export * from "./sol/wingets/ShellBrandmark.tsx";
+export { default as ShellBrandmark } from "./sol/wingets/ShellBrandmark.tsx";

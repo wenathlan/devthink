@@ -14,9 +14,9 @@
  * while the winget files themselves keep riding their own files untouched
  * for the day the detailed engine wave lands them again.
  */
-export { default as Constructionface } from "./Constructionface.tsx";
-export * from "./Constructionface.tsx";
-export { default as HomeEntrygate } from "./HomeEntrygate.tsx";
-export * from "./HomeEntrygate.tsx";
-export { default as ShellPlayerbar } from "./ShellPlayerbar.tsx";
-export * from "./ShellPlayerbar.tsx";
+export { default as Constructionface } from "./sol/wingets/Constructionface.tsx";
+export * from "./sol/wingets/Constructionface.tsx";
+export { default as HomeEntrygate } from "./sol/wingets/HomeEntrygate.tsx";
+export * from "./sol/wingets/HomeEntrygate.tsx";
+export { default as ShellPlayerbar } from "./sol/wingets/ShellPlayerbar.tsx";
+export * from "./sol/wingets/ShellPlayerbar.tsx";

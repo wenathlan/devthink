@@ -17,7 +17,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface } from "../wingets";
+import { Constructionface } from "../../wingets";
 
 /**
  * the player page: the in-construction face under the player eyebrow.

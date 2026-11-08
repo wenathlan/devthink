@@ -14,7 +14,7 @@ import {
   projectedrating,
   rankduel,
   ratingdelta,
-} from "../sol/ranking/ranking.ts";
+} from "../ranking.ts";
 
 /** the season config the tests play with: 32/24/16 bands like the classic tables. */
 const SEASON: LadderOptions = {

@@ -22,7 +22,7 @@
 
 import { label } from "../../labels.ts";
 import { packageversion } from "../../version.ts";
-import { Constructionface } from "../wingets";
+import { Constructionface } from "../../wingets";
 
 /**
  * the settings page: the in-construction face under the settings eyebrow,
