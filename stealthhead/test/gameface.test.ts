@@ -5,9 +5,10 @@
 //   drawn scene: brand mark, scope hologram, coral light, status chip) and
 //   the game logics no longer surface: the page faces, the shell chrome and
 //   the entry flow are retired from the tree, no surface file imports an
-//   engine module, and the FPS engine logics stay preserved at their theme
-//   topic paths (sol/match, sol/ranking, sol/weapons, sol/world,
-//   sol/physics, sol/netcode, sol/spawner, sol/hud) — real and untouched —
+//   engine module, and the FPS engine logics stay preserved at the app root
+//   (match.ts, ranking.ts, weapons.ts, world.ts, physics.ts, netcode.ts,
+//   spawner.ts, hud.ts — outside the theme folder, the owner's root-layer
+//   law: .ts logics never ride inside sol) — real and untouched —
 //   for the day the game wakes up. runnable with the vitest runner:
 //   npm test
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
@@ -17,7 +18,7 @@ function read(path: string): string {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
-/** every source file of the sol tree (the topic modules, the wingets, the
+/** every source file of the sol tree (the page anchors, the wingets, the
  * stylesheet) — the walk the emoji ban sweeps over. */
 function solSources(): { path: string; source: string }[] {
   const found: { path: string; source: string }[] = [];
@@ -37,27 +38,16 @@ function solSources(): { path: string; source: string }[] {
 }
 
 const FACE = read("../sol/wingets/Constructionface.tsx");
-const BARREL = read("../sol/wingets/index.ts");
+const BARREL = read("../wingets.ts");
 const LABELS = read("../labels.ts");
 const SCOPE = read("../sol/wingets/HomeScope.tsx");
 const CSS = read("../sol/sol.css");
 
-/** the exact sol tree of the under-construction theme: the preserved engine
- * topic folders (alphabetical — the folder law), the wingets barrel, the
- * theme anchor and the stylesheet. no page folder survives. */
-const SOL_TREE = [
-  "Sol.tsx",
-  "hud",
-  "match",
-  "netcode",
-  "physics",
-  "ranking",
-  "sol.css",
-  "spawner",
-  "weapons",
-  "wingets",
-  "world",
-];
+/** the exact sol tree of the under-construction theme: the preserved page
+ * anchor folders (alphabetical — the folder law), the wingets, the theme
+ * anchor and the stylesheet. no engine topic folder or .ts logic rides
+ * inside the theme any more — the logics live at the app root. */
+const SOL_TREE = ["Sol.tsx", "match", "ranking", "sol.css", "weapons", "wingets", "world"];
 
 /** the engine logics (and their retired doors) — no surface file imports
  * any of them any more; the game is in construction. */
@@ -84,10 +74,17 @@ describe("the under-construction law", () => {
     // the retired page faces no longer exist — the folders are gone
     const sol = readdirSync(new URL("../sol", import.meta.url));
     expect([...sol].sort()).toEqual(SOL_TREE);
+    // the owner's root-layer law: no .ts logic file rides inside the theme
+    // — the engine logics live at the app root, outside sol
+    for (const { path } of solSources()) {
+      expect(path.endsWith(".ts"), `${path} must not ride inside sol — the .ts logics live at the app root`).toBe(
+        false,
+      );
+    }
   });
 
   it("serves the face from the winget barrel — the dotted name lives once", () => {
-    expect(BARREL).toMatch(/export \{ default as Constructionface \} from "\.\/Constructionface\.tsx"/);
+    expect(BARREL).toMatch(/export \{ default as Constructionface \} from "\.\/sol\/wingets\/Constructionface\.tsx"/);
     for (const name of ["Constructionface", "HomeScope", "ShellBrandmark"]) {
       expect(BARREL.includes(name), `the barrel answers ${name}`).toBe(true);
     }
@@ -104,7 +101,7 @@ describe("the under-construction law", () => {
       { path: "../sol/wingets/Constructionface.tsx", source: FACE },
       { path: "../sol/wingets/ShellBrandmark.tsx", source: read("../sol/wingets/ShellBrandmark.tsx") },
       { path: "../sol/wingets/HomeScope.tsx", source: SCOPE },
-      { path: "../sol/wingets/index.ts", source: BARREL },
+      { path: "../wingets.ts", source: BARREL },
     ];
     for (const { path, source } of surface) {
       for (const engine of ENGINE_MODULES) {
@@ -114,42 +111,30 @@ describe("the under-construction law", () => {
         ).toBe(false);
       }
     }
-    // the retired seats left the root for good
-    for (const retired of [
-      "../onboardingstate.ts",
-      "../routerbase.ts",
-      "../match.ts",
-      "../ranking.ts",
-      "../weapons.ts",
-      "../world.ts",
-      "../physics.ts",
-      "../spawner.ts",
-      "../netcode.ts",
-      "../hud.ts",
-    ]) {
+    // the retired seats left the root for good (the engine logics are not
+    // retired seats any more — the owner's root-layer law seats them at the
+    // app root by name)
+    for (const retired of ["../onboardingstate.ts", "../routerbase.ts"]) {
       expect(existsSync(new URL(retired, import.meta.url)), `${retired} left the root`).toBe(false);
     }
   });
 
-  it("keeps the engine logics real beneath the face — preserved at the topic paths", () => {
-    const match = read("../sol/match/match.ts");
+  it("keeps the engine logics real beneath the face — preserved at the app root", () => {
+    const match = read("../match.ts");
     expect(match).toMatch(/export async function listmatches\(\)/);
     expect(match).toMatch(/export function seatleaderboard\(/);
-    const ranking = read("../sol/ranking/ranking.ts");
+    const ranking = read("../ranking.ts");
     expect(ranking).toMatch(/export async function listranking\(\)/);
     expect(ranking).toMatch(/export function assignpositions\(/);
-    const weapons = read("../sol/weapons/weapons.ts");
+    const weapons = read("../weapons.ts");
     expect(weapons).toMatch(/export const WEAPONCATALOG/);
     expect(weapons).toMatch(/export function dps\(/);
-    // the pre-compiled world of the owner order stays declared at its topic path
-    const world = read("../sol/world/world.ts");
+    // the pre-compiled world of the owner order stays declared at the root
+    const world = read("../world.ts");
     expect(world).toMatch(/stage: "pre-compiled"/);
     expect(world).toMatch(/export const WORLDCATALOG/);
     for (const engine of ["physics", "netcode", "spawner", "hud"]) {
-      expect(
-        read(`../sol/${engine}/${engine}.ts`).length,
-        `the ${engine} logic keeps riding its topic folder`,
-      ).toBeGreaterThan(0);
+      expect(read(`../${engine}.ts`).length, `the ${engine} logic keeps riding the app root`).toBeGreaterThan(0);
     }
   });
 

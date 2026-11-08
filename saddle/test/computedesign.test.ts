@@ -41,7 +41,7 @@ describe("the compute face design law", () => {
     assert.ok(page.includes("PageShell"), "the page keeps the PageShell frame");
     assert.ok(page.includes("ComputeModalitycatalog"), "the catalog winget is mounted");
     assert.ok(page.includes("ComputeBootladder"), "the boot ladder winget is mounted");
-    assert.ok(/from ["']\.\.\/wingets["']/.test(page), "the wingets arrive through the shared winget barrel");
+    assert.ok(/from ["']\.\.\/\.\.\/wingets["']/.test(page), "the wingets arrive through the shared winget barrel");
   });
 
   it("the catalog winget rides the api and carries no fixed records", () => {
@@ -95,7 +95,7 @@ describe("the compute face design law", () => {
   });
 
   it("the winget barrel exports all three new surfaces", () => {
-    const barrel = source("sol", "wingets", "index.ts");
+    const barrel = source("wingets.ts");
     assert.ok(/export \{ default as ComputeModalitycatalog \}/.test(barrel));
     assert.ok(/export \{ default as ComputeBootladder \}/.test(barrel));
     assert.ok(/export \{ default as ConsoleEdgelaw \}/.test(barrel));

@@ -15,12 +15,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
 import { osText } from "../../os.ts";
 import { queuebinarylaunch } from "../../runner";
-import { Constructionface, GamesList } from "../wingets";
-import { type GamesFilter, GamesNav } from "../wingets";
+import { Constructionface, GamesList } from "../../wingets";
+import { type GamesFilter, GamesNav } from "../../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

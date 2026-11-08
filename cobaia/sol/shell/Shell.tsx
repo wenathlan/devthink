@@ -27,7 +27,7 @@ import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label } from "../../labels";
 import { roster } from "../../monetization.ts";
-import { BrandMark } from "../wingets";
+import { BrandMark } from "../../wingets";
 
 /** the section links of the top bar, in reading order (home is the mark).
  * the href rides the route table, the text rides the label accessor. */

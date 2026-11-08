@@ -17,8 +17,8 @@
  * staggered after the hero. */
 import { useEffect, useState } from "react";
 import { type LegalSection, policySections } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter } from "../wingets";
-import { LegalDocument } from "../wingets";
+import { InstitutionalChrome, InstitutionalFooter } from "../../wingets";
+import { LegalDocument } from "../../wingets";
 
 export default function Policy() {
   const [sections, setSections] = useState<LegalSection[]>([]);

@@ -27,7 +27,7 @@ import {
   spawnpointsformap,
   spawnpointsforteam,
   withdeath,
-} from "../sol/spawner/spawner.ts";
+} from "../spawner.ts";
 
 /** a plain spawn query over steelhead dam for team ember. */
 function damquery(extra: Partial<SpawnQuery> = {}): SpawnQuery {

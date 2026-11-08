@@ -32,7 +32,7 @@ import {
   verifyObject,
 } from "../../objectface.ts";
 import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
-import { EmptyState, toast } from "../wingets";
+import { EmptyState, toast } from "../../wingets";
 
 /** the seed of the rehearsal vault (shown on the page, pinned by the tests) */
 export const VAULT_SEED = 20260314;

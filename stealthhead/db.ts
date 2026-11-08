@@ -11,10 +11,9 @@
  * virtual-repo doctrine: the row is the source of truth, the binary
  * downloads separately and is verified against the row sha-256). on
  * first run the idempotent schema is created and the small typed
- * in-memory seeds of the theme topic modules (sol/match/match.ts,
- * sol/ranking/ranking.ts, sol/weapons/weapons.ts, sol/world/world.ts)
- * are persisted, so the site DB and the static seed answer with the same
- * rows. every statement here is a prepared
+ * in-memory seeds of the root logic modules (match.ts, ranking.ts,
+ * weapons.ts, world.ts) are persisted, so the site DB and the static
+ * seed answer with the same rows. every statement here is a prepared
  * statement with bound parameters — sql is never assembled by string
  * concatenation. the database location comes from the DATABASE_URL
  * environment (default file:./stealthhead.db, never hardcoded). the
@@ -26,10 +25,10 @@
 import process from "node:process";
 import { openStorageLane } from "@wenathlan/vault/storage";
 import { LABELMANIFEST, LABELREVISION } from "./labels.ts";
-import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./sol/match/match.ts";
-import { RANKINGSEED, type RankingEntry } from "./sol/ranking/ranking.ts";
-import { WEAPONCATALOG, type Weapon } from "./sol/weapons/weapons.ts";
-import { WORLDCATALOG, type WorldAsset, type WorldAssetKind } from "./sol/world/world.ts";
+import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./match.ts";
+import { RANKINGSEED, type RankingEntry } from "./ranking.ts";
+import { WEAPONCATALOG, type Weapon } from "./weapons.ts";
+import { WORLDCATALOG, type WorldAsset, type WorldAssetKind } from "./world.ts";
 
 /**
  * resolves the database location from the environment.

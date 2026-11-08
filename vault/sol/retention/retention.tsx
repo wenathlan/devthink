@@ -33,7 +33,7 @@ import {
   tickLabel,
 } from "../../retention.ts";
 import { uicopy, uicopyfill, useUicopy } from "../../uistore.ts";
-import { EmptyState, toast } from "../wingets";
+import { EmptyState, toast } from "../../wingets";
 
 /** the seed of the rehearsal clock (shown on the page, pinned by the tests) */
 export const RETENTION_SEED = 440215;

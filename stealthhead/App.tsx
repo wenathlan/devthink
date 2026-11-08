@@ -9,9 +9,9 @@
  * construction" — so the mounted surface is the under-construction face
  * alone: no routes, no game pages, no shell chrome, no entry flow. The
  * engine logics of the platform (match, ranking, weapons, world, physics,
- * netcode, spawner, hud) stay preserved in the theme topic folders
- * (sol/match, sol/ranking, …) for the day the game wakes up — the surface
- * never imports them.
+ * netcode, spawner, hud) stay preserved at the app root (match.ts,
+ * ranking.ts, … — outside the theme, the owner's root-layer law) for the
+ * day the game wakes up — the surface never imports them.
  */
 
 import { WarningRegular as AlertTriangle, ArrowCounterclockwiseRegular as RotateCcw } from "@fluentui/react-icons";

@@ -22,7 +22,7 @@ import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { type LabelKey, label, labelfill } from "../../labels";
 import { roster } from "../../monetization.ts";
-import { AdSlot, BrandMark, EntryGate } from "../wingets";
+import { AdSlot, BrandMark, EntryGate } from "../../wingets";
 
 /** the featured deploy units of the landing preview (the full directory
  * lives on /apps): the OS, the engine, the store and one studio — read

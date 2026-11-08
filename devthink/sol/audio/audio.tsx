@@ -19,12 +19,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
 import { osText } from "../../os.ts";
 import { queuestudiorender } from "../../runner";
-import { Constructionface, MusicEngine } from "../wingets";
-import { MusicTracks } from "../wingets";
+import { Constructionface, MusicEngine } from "../../wingets";
+import { MusicTracks } from "../../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

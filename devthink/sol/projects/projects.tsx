@@ -14,12 +14,12 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import { browserWorkspaces } from "../../storage.ts";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osText } from "../../os.ts";
-import { ProjectRows } from "../wingets";
+import { ProjectRows } from "../../wingets";
 
 type Workspace = { id: string; title: string; updatedAt: string; sessionCount: number };
 

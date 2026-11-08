@@ -31,7 +31,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "wouter";
 import { label } from "../../labels";
 import { markOnboardingStage } from "../../onboardingstate.ts";
-import { BrandMark, IntroFooter, IntroPlans, IntroSplash } from "../wingets";
+import { BrandMark, IntroFooter, IntroPlans, IntroSplash } from "../../wingets";
 
 /** the lifecycle of the opening act: resolving (the motion preference
  * decides) → playing (the akash floor over the landing) → done (the

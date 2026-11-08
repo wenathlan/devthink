@@ -17,7 +17,7 @@
 
 import { RocketRegular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import { completions, responseof } from "../../commands.ts";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "../../consoleboot.ts";
@@ -26,9 +26,9 @@ import { gatewayReady } from "../../gateway.js";
 import { createrunner, type runstageview } from "../../graph.js";
 import { makeviewstate } from "../../graph.js";
 import { osText } from "../../os.ts";
-import { ConsoleReference, GraphView, Terminal, type TerminalRow, type TerminalState } from "../wingets";
+import { ConsoleReference, GraphView, Terminal, type TerminalRow, type TerminalState } from "../../wingets";
 
-export * from "../wingets";
+export * from "../../wingets";
 
 /** the three real sections of the console deck. */
 type ConsoleSection = "terminal" | "boot" | "reference";

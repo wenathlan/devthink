@@ -17,7 +17,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import {
   browserCredentialProviders,
@@ -27,8 +27,8 @@ import {
   saveBrowserPreference } from "../../storage.ts";
 import { gatewayJson, gatewayReady } from "../../gateway.js";
 import { osProviders, osText } from "../../os.ts";
-import { ProviderCard } from "../wingets";
-import { ProvidersList } from "../wingets";
+import { ProviderCard } from "../../wingets";
+import { ProvidersList } from "../../wingets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

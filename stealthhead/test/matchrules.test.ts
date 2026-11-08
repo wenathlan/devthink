@@ -4,7 +4,7 @@
 // The fixtures reuse the match seed rows of the root match logic.
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby } from "../sol/match/match.ts";
+import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby } from "../match.ts";
 import {
   addscore,
   advancelobby,
@@ -17,7 +17,7 @@ import {
   scoreround,
   seatplayers,
   transitionlobby,
-} from "../sol/match/match.ts";
+} from "../match.ts";
 
 /** finds one seeded lobby by id (the tests key on the seed rows). */
 function lobby(id: string): MatchLobby {

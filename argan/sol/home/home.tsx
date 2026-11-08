@@ -38,7 +38,7 @@ import { familyrow, familyurl } from "../../family";
 import { label, labelfill } from "../../labels";
 import { seedRecordTypes } from "../../seed";
 import { ArganMark, type NavLink, Shell } from "../shell/Shell";
-import { EntryGate } from "../wingets";
+import { EntryGate } from "../../wingets";
 
 const FOOTER_LINKS: readonly NavLink[] = [
   { label: label("nav.zones"), href: "/zones" },

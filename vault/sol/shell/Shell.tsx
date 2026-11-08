@@ -31,7 +31,7 @@ import { Link, useLocation } from "wouter";
 import { FAMILY_SLUGS, familyAccentOf, familyurl } from "../../family.ts";
 import { label, labelfill } from "../../labels";
 import { useUicopy } from "../../uistore.ts";
-import { Toaster } from "../wingets";
+import { Toaster } from "../../wingets";
 
 /** the theme in memory: flips the data-theme attribute, stores nothing */
 type ThemeName = "dark" | "light";

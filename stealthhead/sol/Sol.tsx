@@ -8,12 +8,12 @@
  * in construction" — so the theme mounts the under-construction face alone:
  * the route table, the application shell, the entry flow (intro,
  * onboarding) and the game page anchors of the old pass are retired. The
- * engine logics of the platform stay preserved in the theme topic folders
- * (hud, match, netcode, physics, ranking, spawner, weapons, world) — the
- * surface imports none of them; the folders keep the logics real for the
- * day the game wakes up.
+ * engine logics of the platform stay preserved at the app root
+ * (hud.ts, match.ts, netcode.ts, physics.ts, ranking.ts, spawner.ts,
+ * weapons.ts, world.ts) — the surface imports none of them; the root keeps
+ * the logics real for the day the game wakes up.
  */
-import { Constructionface } from "./wingets";
+import { Constructionface } from "../wingets";
 
 /** The one surface of the theme: the under-construction face, full-bleed on
  * every path — there is no route table any more, only the face. */
