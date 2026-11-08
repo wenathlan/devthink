@@ -82,6 +82,18 @@ export default defineConfig({
   test: {
     include: ["test/*.test.ts"],
     environment: "node",
+    /* the serial suite seat (the runner's memory law the remote forensics
+     * walked): the battery died three runs straight at the runner's own
+     * shutdown — every completed file green in every log, the deaths always
+     * mid-suite, never a failed assertion — because the suite's file
+     * parallelism answered the audio dsp with overlapping worker peaks and
+     * the hosted runner's memory ceiling killed the runner service
+     * mid-suite. the file lane rides single-file through the config the
+     * runner reads (fileParallelism: false), the same vitest runner the
+     * family law names, the script keeps answering vitest run exactly as
+     * the vitest-only law pins, every test keeps its seat — the wall clock
+     * pays what the memory saves. */
+    fileParallelism: false,
     /* the timeout stays five seconds on every native runner and scales through the env the emulated arm64 container leg sets (a qemu-interpreted second answers the same green suite many times slower), so an emulated runner never fails a test a native runner passed */
     testTimeout: Number(process.env.DEBONAIR_TEST_TIMEOUT_MS ?? 5000),
     hookTimeout: Number(process.env.DEBONAIR_TEST_TIMEOUT_MS ?? 10000),

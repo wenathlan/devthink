@@ -82,6 +82,20 @@ describe("the family runner-and-folder law", () => {
     }
   });
 
+  it.skipIf(!familyroot)("the debonair battery walks serial — the runner's memory law", () => {
+    /* the serial suite seat: the hosted runner's memory ceiling killed the
+     * runner service mid-suite three runs straight (every completed file
+     * green, the deaths always mid-suite, never a failed assertion — the
+     * file parallelism answered the audio dsp with overlapping worker
+     * peaks). the file lane rides single-file through the CONFIG the
+     * runner reads, never the script: the vitest-only law keeps its exact
+     * vitest run seat and the memory law still answers. */
+    const config = readFileSync(join(reporoot, "debonair", "vitest.config.ts"), "utf8");
+    expect(config, "the debonair file lane rides single-file (fileParallelism: false)").toContain(
+      "fileParallelism: false",
+    );
+  });
+
   it.skipIf(!familyroot)("the family rides the one test folder spelling the gates read", () => {
     for (const app of apps) {
       expect(existsSync(join(reporoot, app, "test")), `${app} carries the test/ seat the vitest configs include`).toBe(
