@@ -19,13 +19,13 @@ ARG DEBONAIR_VERSION=2.0.168
 # The 2.0.153 family context fix: the application rides the context
 # nested under app/ (the uniform shape the three site containers read).
 WORKDIR /src/app
-COPY app/package.json app/pnpm-lock.yaml app/pnpm-workspace.yaml ./
+COPY app/package.json app/pnpm-workspace.yaml ./
 COPY app/pnpmboot.package.json /tmp/pnpmboot/package.json
 COPY app/pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --frozen-lockfile --ignore-scripts
+ && pnpm install --no-frozen-lockfile --ignore-scripts
 COPY app/ .
 # The vault sibling of the copy law: labels.ts imports the label store
 # through the @wenathlan/vault/labelstore bridge and the vite alias
@@ -39,6 +39,8 @@ COPY vault/ /src/vault/
 # sources land at /src/devthink where that re-export answers inside the
 # container (the same sibling-copy law the vault line above carries).
 COPY devthink/ /src/devthink/
+# the argan dns law the ../argan import lanes resolve
+COPY argan/ /src/argan/
 # The cadria sibling of the engine-ownership law: coverpalette.ts
 # imports the synth palette through the @wenathlan/cadria/synthpalette
 # bridge and the vite alias resolves the specifier to
