@@ -27,6 +27,12 @@
       "@hono/node-server/serve-static": ["../devthink/node_modules/@hono/node-server/dist/serve-static.d.mts"],
       "@/*": ["./sol/*", "./*"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      /* the onboardingstore bridge of the onboardingstore lane: the seen-flags
+       * factory the vault owns answers through the published specifier the
+       * same way the labelstore seat does, and the installed envelope the
+       * declaration pass resolves carries no ./onboardingstore export yet —
+       * the typecheck resolves the monorepo source beside its labelstore
+       * precedent until the next rung publishes the export. */
       "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       /* the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from the devthink side: the moved
