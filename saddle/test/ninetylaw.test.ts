@@ -2,21 +2,23 @@
 // (wave w2 b1, rebased onto the ninety wave): the ten promotions this
 // law wired live still ride the registry live and carry their executors
 // — and the waves that merged after widened the same truth to the full
-// plan (the census answers 66 live, 9 host and 15 planned of the ninety
+// plan (the census answers 67 live, 9 host and 14 planned of the ninety
 // the owner charged — the pr15 completion wave seated the wasme, exe,
 // binary, sh and yaml runners, the port dock, the container dock
 // principal, the virtual file store and the virtual hardware
 // presentation seats, and the provider seats answer the host probes —
-// the fifteen remaining registry-only ids the honesty audit named declare
+// the fourteen remaining registry-only ids the honesty audit named declare
 // planned, the record never pretends a wiring the engine does not
 // drive, and the sqlite vault seat walked live once the node:sqlite
 // roundtrip executor landed (the honesty wave's seat 271) while the
 // deno runner seat walked live once the deno spawn executor landed
-// (the honesty wave's seat 268); the
+// (the honesty wave's seat 268) and the dns resolver seat walked live
+// once the node:dns resolution roundtrip executor landed (the honesty
+// wave's seat 266); the
 // visitor-law hardening retired the local-optin consent
 // gate and seated the pod session host probe of seat ninety, so the
-// live set walks to 66 and the host probes to 9 — and the lane table
-// answers 66 live and 25 host lanes), so
+// live set walks to 67 and the host probes to 9 — and the lane table
+// answers 67 live and 25 host lanes), so
 // the battery pins the post-merge truth. each promoted lane
 // refuses honestly when its runtime or its configuration is absent —
 // the error names the requirement (the clr lane names the assembly
@@ -107,9 +109,9 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     const report = planreport();
     assert.equal(report.plancount, 90);
     assert.equal(report.catalogcount, 90);
-    assert.equal(report.live, 66, "the audit rung answered the honest live set (the pr15 completion seats plus the sqlite vault roundtrip plus the deno runner)");
+    assert.equal(report.live, 67, "the audit rung answered the honest live set (the pr15 completion seats plus the sqlite vault roundtrip plus the deno runner plus the dns resolver roundtrip)");
     assert.equal(report.host, 9, "the provider seats and the pod session probe answer the host probes");
-    assert.equal(report.planned, 15, "the fifteen remaining registry-only ids declare planned");
+    assert.equal(report.planned, 14, "the fourteen remaining registry-only ids declare planned");
     assert.equal(report.live + report.host + report.planned, MODALITIES.length);
     assert.equal(report.plananswered, true);
   });
