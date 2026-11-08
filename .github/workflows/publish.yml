@@ -8165,18 +8165,19 @@ jobs:
           # the resolve only no-ops when ALL ELEVEN lane tags of the
           # version are live (the three profile tags — ${version},
           # ${version}-balanced, ${version}-lite — beside the four
-          # os-distribution flavor lanes — ${version}-linux,
-          # ${version}-omarchy, ${version}-vanillaos, ${version}-android —
-          # and the four catalog lanes — ${version}-grapheneos,
+          # os-distribution flavor lanes of the tier grid — ${version}-linux,
+          # ${version}-omarchy, ${version}-vanillaos, ${version}-android
+          # beside their balanced and lite twins — and the four catalog
+          # lanes — ${version}-grapheneos,
           # ${version}-maruos, ${version}-v, ${version}-windows) — a
           # partial family always re-proceeds, and the per-leg guard
           # inside the publish matrix skips only the legs that already
           # ship, so a re-run completes exactly the missing lanes.
-          api_out="$(gh api "/users/${OWNER}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${version}\" or . == \"${version}-balanced\" or . == \"${version}-lite\" or . == \"${version}-linux\" or . == \"${version}-omarchy\" or . == \"${version}-vanillaos\" or . == \"${version}-android\" or . == \"${version}-grapheneos\" or . == \"${version}-maruos\" or . == \"${version}-v\" or . == \"${version}-windows\" or . == \"${version}-postmarketos\" or . == \"${version}-lineageos\" or . == \"${version}-calyxos\" or . == \"${version}-archlinux\" or . == \"${version}-alpine\" or . == \"${version}-debian\" or . == \"${version}-fedora\" or . == \"${version}-nixos\" or . == \"${version}-void\")] | length" 2>/dev/null || true)"
+          api_out="$(gh api "/users/${OWNER}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${version}\" or . == \"${version}-balanced\" or . == \"${version}-lite\" or . == \"${version}-linux\" or . == \"${version}-omarchy\" or . == \"${version}-vanillaos\" or . == \"${version}-android\" or . == \"${version}-balanced-linux\" or . == \"${version}-lite-linux\" or . == \"${version}-balanced-omarchy\" or . == \"${version}-lite-omarchy\" or . == \"${version}-balanced-vanillaos\" or . == \"${version}-lite-vanillaos\" or . == \"${version}-balanced-android\" or . == \"${version}-lite-android\" or . == \"${version}-grapheneos\" or . == \"${version}-maruos\" or . == \"${version}-v\" or . == \"${version}-windows\" or . == \"${version}-postmarketos\" or . == \"${version}-lineageos\" or . == \"${version}-calyxos\" or . == \"${version}-archlinux\" or . == \"${version}-alpine\" or . == \"${version}-debian\" or . == \"${version}-fedora\" or . == \"${version}-nixos\" or . == \"${version}-void\")] | length" 2>/dev/null || true)"
           case "${api_out}" in
             ''|*[!0-9]*) api_out=0 ;;
           esac
-          if [ "${api_out}" = "20" ]; then
+          if [ "${api_out}" = "28" ]; then
             echo "GHCR container ${OWNER}/saddle carries the complete ${version} family (the three profile lanes, the four os-distribution flavor lanes and the thirteen catalog lanes); the duplicate dispatch will no-op."
             exit 0
           fi
@@ -8377,16 +8378,19 @@ jobs:
         # linux-x64 and linux-x64-musl beside the arm64, ppc64le and
         # s390x legs under QEMU emulation — 3 lanes x 4 arch legs = 12
         # arch-lanes, every one kept). beside them the os-distribution
-        # axis rides: four flavor lanes (linux, omarchy, vanillaos,
-        # android) stamp their OSDISTRIBUTIONS catalog profile into the
-        # image config (SADDLE_OS_PROFILE + the OCI labels) and build on
-        # the same honest node base legs (4 lanes x 4 arch legs = 16
-        # arch-lanes), and the four catalog lanes the saddle-vhe-catalog
-        # job owns (grapheneos, maruos, v, windows — profiles with no
-        # runnable container base: Android firmware and guest seats)
-        # complete the family. twelve + sixteen + four = thirty-two
-        # lanes, each carrying a single version tag on the saddle
-        # container package. One tag per version, no rolling aliases.
+        # axis rides the tier grid the owner's standardization
+        # directive charged: twelve flavor lanes (linux, omarchy,
+        # vanillaos, android — every distribution carrying its max,
+        # balanced and lite twins) stamp their OSDISTRIBUTIONS catalog
+        # profile into the image config (SADDLE_OS_PROFILE + the OCI
+        # labels) and build on the same honest node base legs (12
+        # lanes x 4 arch legs = 48 arch-lanes), and the four catalog
+        # lanes the saddle-vhe-catalog job owns (grapheneos, maruos,
+        # v, windows — profiles with no runnable container base:
+        # Android firmware and guest seats) complete the family.
+        # twelve + forty-eight + four = sixty-four lanes, each
+        # carrying a single version tag on the saddle container
+        # package. One tag per version, no rolling aliases.
         include:
           - profile: max
             target: max
@@ -8426,8 +8430,9 @@ jobs:
           # linux seat is the baseline flavor, omarchy the arch-based
           # desktop seat, vanillaos the ubuntu-based atomic seat and
           # android the mobile seat the grapheneos hardening builds on
-          # (every flavor binds the max plan: the tier axis stays the
-          # profile lanes' own).
+          # - every flavor answers EVERY tier now (the standardization
+          # grid: the balanced and lite twins ride beside each max
+          # flavor, nothing removed, every prior lane keeps its tag).
           - profile: max
             target: oslinux
             osprofile: linux
@@ -8440,6 +8445,30 @@ jobs:
             profilegpu: b200
             profilegpus: 8
             expectcpu: EPYC 9965
+          - profile: balanced
+            target: oslinux
+            osprofile: linux
+            suffix: "-balanced-linux"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+            expectcpu: 9995WX
+          - profile: lite
+            target: oslinux
+            osprofile: linux
+            suffix: "-lite-linux"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+            expectcpu: 9950X3D
           - profile: max
             target: osomarchy
             osprofile: omarchy
@@ -8452,6 +8481,30 @@ jobs:
             profilegpu: b200
             profilegpus: 8
             expectcpu: EPYC 9965
+          - profile: balanced
+            target: osomarchy
+            osprofile: omarchy
+            suffix: "-balanced-omarchy"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+            expectcpu: 9995WX
+          - profile: lite
+            target: osomarchy
+            osprofile: omarchy
+            suffix: "-lite-omarchy"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+            expectcpu: 9950X3D
           - profile: max
             target: osvanillaos
             osprofile: vanillaos
@@ -8464,6 +8517,30 @@ jobs:
             profilegpu: b200
             profilegpus: 8
             expectcpu: EPYC 9965
+          - profile: balanced
+            target: osvanillaos
+            osprofile: vanillaos
+            suffix: "-balanced-vanillaos"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+            expectcpu: 9995WX
+          - profile: lite
+            target: osvanillaos
+            osprofile: vanillaos
+            suffix: "-lite-vanillaos"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+            expectcpu: 9950X3D
           - profile: max
             target: osandroid
             osprofile: android
@@ -8476,6 +8553,30 @@ jobs:
             profilegpu: b200
             profilegpus: 8
             expectcpu: EPYC 9965
+          - profile: balanced
+            target: osandroid
+            osprofile: android
+            suffix: "-balanced-android"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+            expectcpu: 9995WX
+          - profile: lite
+            target: osandroid
+            osprofile: android
+            suffix: "-lite-android"
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+            expectcpu: 9950X3D
     steps:
       - name: Check out the verified tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

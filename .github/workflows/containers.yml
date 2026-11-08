@@ -13,8 +13,9 @@ name: DevThink Containers
 # the same idempotent publish the family-ghcr mirror of the publish
 # workflow proved, while the saddle engine walks its own saddle-containers
 # lane set (the fifteen-plus docker distribution law: the three profile
-# umbrellas beside their twelve architecture seats and the four
-# os-distribution flavor lanes - nineteen distinct published tags, every
+# umbrellas beside their twelve architecture seats and the twelve
+# os-distribution flavor lanes of the tier grid - twenty-seven distinct
+# published tags, every
 # one a real buildx product). the standalone file answers the gap the
 # registry census recorded (the ghcr package page answered only the
 # saddle package beside its buildcache: the sibling containers never
@@ -579,7 +580,8 @@ jobs:
         # seats beside them: twelve arch-seat lanes), so the saddle tag
         # census answers NINETEEN distinct published tags - the three
         # profile umbrellas (<version> for max, -balanced, -lite), the
-        # twelve architecture seats and the four os-distribution flavor
+        # twelve architecture seats and the twelve os-distribution flavor
+        # lanes of the tier grid (the four distributions x the three tiers
         # lanes (-linux, -omarchy, -vanillaos, -android) - more than
         # fifteen, every one a real buildx product the registry answers.
         # the os-distribution flavor lanes stamp their OSDISTRIBUTIONS
@@ -624,8 +626,11 @@ jobs:
           # the linux seat is the baseline flavor, omarchy the arch-based
           # desktop seat, vanillaos the ubuntu-based atomic seat and
           # android the mobile seat the grapheneos hardening builds on
-          # (every flavor binds the max plan: the tier axis stays the
-          # profile lanes' own).
+          # - and every flavor now answers EVERY tier (the owner's
+          # standardization directive: the distributions carry the max,
+          # balanced and lite plans the same way the plain lanes do,
+          # twelve flavor lanes in the grid beside the three profile
+          # umbrellas, nothing removed, every prior lane keeps its tag).
           - profile: max
             target: oslinux
             osprofile: linux
@@ -638,6 +643,30 @@ jobs:
             profileram: 1024
             profilegpu: b200
             profilegpus: 8
+          - profile: balanced
+            target: oslinux
+            osprofile: linux
+            suffix: "-balanced-linux"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: oslinux
+            osprofile: linux
+            suffix: "-lite-linux"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - profile: max
             target: osomarchy
             osprofile: omarchy
@@ -650,6 +679,30 @@ jobs:
             profileram: 1024
             profilegpu: b200
             profilegpus: 8
+          - profile: balanced
+            target: osomarchy
+            osprofile: omarchy
+            suffix: "-balanced-omarchy"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osomarchy
+            osprofile: omarchy
+            suffix: "-lite-omarchy"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - profile: max
             target: osvanillaos
             osprofile: vanillaos
@@ -662,6 +715,30 @@ jobs:
             profileram: 1024
             profilegpu: b200
             profilegpus: 8
+          - profile: balanced
+            target: osvanillaos
+            osprofile: vanillaos
+            suffix: "-balanced-vanillaos"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osvanillaos
+            osprofile: vanillaos
+            suffix: "-lite-vanillaos"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - profile: max
             target: osandroid
             osprofile: android
@@ -674,6 +751,30 @@ jobs:
             profileram: 1024
             profilegpu: b200
             profilegpus: 8
+          - profile: balanced
+            target: osandroid
+            osprofile: android
+            suffix: "-balanced-android"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osandroid
+            osprofile: android
+            suffix: "-lite-android"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
     steps:
       - name: Check out the verified tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -875,12 +976,12 @@ jobs:
             echo "the ${SEATPREFIX} ${platform} seat ships as ${img}:${ver}-${SEATPREFIX}-${slug}"
           done
 
-      - name: The lane census line (the nineteen-tag family)
+      - name: The lane census line (the twenty-seven-tag family)
         shell: bash
         run: |
           set -euo pipefail
           ver="${{ steps.resolve.outputs.version }}"
-          echo "the saddle ${ver} container family answers nineteen lanes: the three profile umbrellas (${ver}, ${ver}-balanced, ${ver}-lite), the twelve architecture seats (-max-linux-*, -balanced-linux-*, -lite-linux-*), the four os-distribution flavor lanes (-linux, -omarchy, -vanillaos, -android) - more than fifteen docker distributions, the owner's law answered."
+          echo "the saddle ${ver} container family answers twenty-seven lanes: the three profile umbrellas (${ver}, ${ver}-balanced, ${ver}-lite), the twelve architecture seats (-max-linux-*, -balanced-linux-*, -lite-linux-*), the twelve os-distribution flavor lanes (the tier grid the owner charged: -linux, -omarchy, -vanillaos, -android beside their -balanced-* and -lite-* twins — every distribution carries every tier) - more than fifteen docker distributions, the owner's law answered."
 
   saddle-webpack:
     name: Publish the saddle webpack distribution to ${{ matrix.channel }} (the seven-lane webpack seat)
