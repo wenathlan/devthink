@@ -464,6 +464,78 @@ async function runreleasewalk(): Promise<void> {
         content.replace(/ENV\.fetch\("SADDLE_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("SADDLE_VERSION", "${version}")`),
     ],
     ["../saddle/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
+    /* The 2.0.169 triple-seat wave: the eleven pyproject, Cargo and
+       docker.config seats join the lockstep surface — the 2.0.168 rung heal
+       (568c753a) walked these stamps by hand because the sync cascade never
+       carried them, so every rung after it reddened the same eight gate
+       batteries until a heal landed. The cascade now owns the walk: the
+       pyproject version row, the Cargo package version and the docker
+       config manifest (the version field beside the image tag) answer the
+       one version the release chain stamps, on every family seat the
+       matrixverify gate reads. */
+    ["../argan/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../argan/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../argan/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/argan:[0-9A-Za-z.-]+"/, `/argan:${version}"`)],
+    ["../cadria/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../cadria/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../cadria/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/cadria:[0-9A-Za-z.-]+"/, `/cadria:${version}"`)],
+    ["../cobaia/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../cobaia/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../cobaia/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/cobaia:[0-9A-Za-z.-]+"/, `/cobaia:${version}"`)],
+    ["../debonair/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../debonair/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../debonair/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/debonair:[0-9A-Za-z.-]+"/, `/debonair:${version}"`)],
+    ["pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/devthink:[0-9A-Za-z.-]+"/, `/devthink:${version}"`)],
+    ["../forge/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../forge/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../forge/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/forge:[0-9A-Za-z.-]+"/, `/forge:${version}"`)],
+    ["../foundry/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../foundry/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../foundry/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/foundry:[0-9A-Za-z.-]+"/, `/foundry:${version}"`)],
+    ["../getry/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../getry/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../getry/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/getry:[0-9A-Za-z.-]+"/, `/getry:${version}"`)],
+    ["../saddle/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../saddle/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../saddle/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/saddle:[0-9A-Za-z.-]+"/, `/saddle:${version}"`)],
+    ["../stealthhead/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../stealthhead/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../stealthhead/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/stealthhead:[0-9A-Za-z.-]+"/, `/stealthhead:${version}"`)],
+    ["../vault/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../vault/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
+    ["../vault/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/vault:[0-9A-Za-z.-]+"/, `/vault:${version}"`)],
+    /* The gate record seats: the release field the verify batteries
+       read (agentcert, costcert, doccheck, matrixverify, pentest,
+       recipes, sweep, telemetryfree, wcag, soak, readiness) answers the
+       rung the chain stamps — the 2.0.168 heal walked them by hand, the
+       cascade owns the walk from this rung on. */
+    ["agentcert.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["costcert.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["doccheck.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["matrixverify.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["pentest.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["recipes.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["sweep.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["telemetryfree.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["wcag.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["soak.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["../foundry/readiness.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    ["poolaudit.ts", (content) => content.replace(/"release": "[0-9A-Za-z.-]+"/, `"release": "${version}"`)],
+    /* The rust carrier seats (the trichannel battery law): the eleven
+       .rs carriers answer the lockstep version the cargo lane packages. */
+    ["../argan/argan.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../cadria/cadria.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../cobaia/cobaia.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../debonair/debonair.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["devthink.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../forge/forge.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../foundry/foundry.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../getry/getry.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../saddle/saddle.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../stealthhead/stealthhead.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    ["../vault/vault.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
     /* The logic ownership regroup (the mv3 extension left the saddle for the
        os envelope seat): the extension manifest the lockstep stamped at the
        saddle root rides the devthink root today as extensionmanifest.json —
