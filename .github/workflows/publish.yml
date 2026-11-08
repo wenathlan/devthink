@@ -7837,31 +7837,50 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # the explicit -catalog target names the scratch stage the
+          # saddle Dockerfile carries (the 11×3 standardization seated
+          # the bare os<id> names on the runnable flavor lanes, so the
+          # no-base catalog stages answer their own suffixed targets —
+          # the lane, the tag and the scratch content stay exactly what
+          # they were, only the address follows the split).
           - osprofile: grapheneos
+            target: osgrapheneos-catalog
             suffix: "-grapheneos"
           - osprofile: maruos
+            target: osmaruos-catalog
             suffix: "-maruos"
           - osprofile: v
+            target: osv-catalog
             suffix: "-v"
           - osprofile: windows
+            target: oswindows-catalog
             suffix: "-windows"
           - osprofile: postmarketos
+            target: ospostmarketos-catalog
             suffix: "-postmarketos"
           - osprofile: lineageos
+            target: oslineageos-catalog
             suffix: "-lineageos"
           - osprofile: calyxos
+            target: oscalyxos-catalog
             suffix: "-calyxos"
           - osprofile: archlinux
+            target: osarchlinux-catalog
             suffix: "-archlinux"
           - osprofile: alpine
+            target: osalpine-catalog
             suffix: "-alpine"
           - osprofile: debian
+            target: osdebian-catalog
             suffix: "-debian"
           - osprofile: fedora
+            target: osfedora-catalog
             suffix: "-fedora"
           - osprofile: nixos
+            target: osnixos-catalog
             suffix: "-nixos"
           - osprofile: void
+            target: osvoid-catalog
             suffix: "-void"
     steps:
       - name: Check out the verified tag
@@ -7945,13 +7964,16 @@ jobs:
       - name: Build and push the catalog lane
         # the scratch target of the profile: no runnable base (the digest
         # law rides trivially — a scratch stage pins no base at all), the
-        # profile config and the stamps the config carries.
+        # profile config and the stamps the config carries. the matrix
+        # names the -catalog target explicitly (the bare os<id> names
+        # seat the runnable flavor lanes of the 11×3 standardization the
+        # containers workflow carries — one address per lane family).
         if: steps.meta.outputs.skip != 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./saddlebuildctx
           file: ./saddlebuildctx/saddle/Dockerfile
-          target: os${{ matrix.osprofile }}
+          target: ${{ matrix.target }}
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tag }}

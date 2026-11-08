@@ -11,9 +11,10 @@
  * tag, the latest alias, the per-architecture seat tags of every
  * base-carried arch and the documented best-effort lanes - more than eleven
  * lanes every app, honestly counted. the fifteen-plus docker distributions
- * — the saddle tag census answers nineteen distinct published tags (the
+ * — the saddle tag census answers forty-eight distinct published tags (the
  * three profile umbrellas, the twelve architecture seats stamped off the
- * published index and the four os-distribution flavor lanes). the seven
+ * published index and the eleven os-distribution flavor lanes riding
+ * the three-tier axis the master stamped). the thirty-six
  * webpack lanes — the webpack-bundled saddle engine distribution walks its
  * six registry channels (npmjs, the github npm registry, maven, nuget,
  * gradle and rubygems) beside the base npmjs envelope the family-npmjs
@@ -179,23 +180,28 @@ describe.skipIf(!inrepo)("the eleven container lanes of the registry standard", 
 });
 
 describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
-  it("the saddle lane family answers three profile umbrellas, four os-distribution flavors and the twelve architecture seats — nineteen distinct tags", async () => {
+  it("the saddle lane family answers three profile umbrellas, eleven os-distribution flavors riding the three-tier axis and the twelve architecture seats — forty-eight distinct tags", async () => {
     const workflow = await parseworkflow("containers.yml");
     const legs = matrixof(workflow, "saddle-containers");
-    /* the seven runnable lane legs: the three profile lanes (max,
+    /* the thirty-six runnable lane legs: the three profile lanes (max,
      * balanced, lite - the same virtual hardware plans the vhe lane
-     * family of the publish workflow bakes) beside the four
-     * os-distribution flavor lanes (linux, omarchy, vanillaos, android -
-     * every flavor binds the max plan, the tier axis stays the profile
-     * lanes' own). */
+     * family of the publish workflow bakes) beside the thirty-three
+     * os-distribution flavor lanes (linux, omarchy, vanillaos, android,
+     * archlinux, alpine, debian, fedora, nixos, void, postmarketos -
+     * every flavor binds the full tier axis the master stamped: the
+     * max, balanced and lite plans each their own lane). */
+    const flavorlegs = (["linux", "omarchy", "vanillaos", "android", "archlinux", "alpine", "debian", "fedora", "nixos", "void", "postmarketos"] as const).flatMap((os) =>
+      ([
+        ["max", `os${os}`, `-${os}`],
+        ["balanced", `os${os}-balanced`, `-${os}-balanced`],
+        ["lite", `os${os}-lite`, `-${os}-lite`],
+      ] as const),
+    );
     expect(legs.map((leg) => [leg.profile, leg.target, leg.suffix])).toEqual([
       ["max", "max", ""],
       ["balanced", "balanced", "-balanced"],
       ["lite", "lite", "-lite"],
-      ["max", "oslinux", "-linux"],
-      ["max", "osomarchy", "-omarchy"],
-      ["max", "osvanillaos", "-vanillaos"],
-      ["max", "osandroid", "-android"],
+      ...flavorlegs,
     ]);
     /* every leg ships the build legs the pinned node base honestly
      * carries: the native amd64 leg beside the arm64, ppc64le and s390x
@@ -207,7 +213,7 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
      * stamp (the flavor lanes ship their umbrella tag alone), and the
      * census arithmetic answers the owner's more-than-fifteen directive:
      * 3 umbrellas + 3 profiles x 4 arch seats + 4 flavors = 19 tags. */
-    expect(legs.map((leg) => leg.seatprefix ?? "")).toEqual(["max", "balanced", "lite", "", "", "", ""]);
+    expect(legs.map((leg) => leg.seatprefix ?? "")).toEqual(["max", "balanced", "lite", ...Array.from({ length: 33 }, () => "")]);
     const umbrellas = legs.length;
     const seats = legs
       .map((leg) => leg.seatprefix ?? "")
@@ -215,7 +221,9 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
       .length * SEATARCHES.length;
     const flavors = legs.filter((leg) => (leg.seatprefix ?? "") === "").length;
     const census = umbrellas + seats;
-    expect(census).toBe(3 + 12 + 4);
+    expect(flavors).toBe(33);
+    expect(census).toBe(3 + 33 + 12);
+    expect(census).toBe(48);
     expect(census).toBeGreaterThan(15);
   });
 
@@ -247,15 +255,17 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
     const dockerfile = await readFile(join(repoRoot, "saddle", "Dockerfile"), "utf8");
     /* the three profile variant stages the lane targets name, the
      * eleven-arch standard the header declares and the os-distribution
-     * flavor stages the four flavor lanes build - the same stages the
-     * vhe lane family of the publish workflow rides. */
+     * flavor stages the thirty-three flavor lanes build (eleven
+     * distributions x the three-tier axis the master stamped) - the
+     * same stages the vhe lane family of the publish workflow rides. */
     expect(dockerfile).toContain("AS max");
     expect(dockerfile).toContain("AS balanced");
     expect(dockerfile).toContain("AS lite");
-    expect(dockerfile).toContain("AS oslinux");
-    expect(dockerfile).toContain("AS osomarchy");
-    expect(dockerfile).toContain("AS osvanillaos");
-    expect(dockerfile).toContain("AS osandroid");
+    for (const os of ["oslinux", "osomarchy", "osvanillaos", "osandroid", "osarchlinux", "osalpine", "osdebian", "osfedora", "osnixos", "osvoid", "ospostmarketos"]) {
+      expect(dockerfile).toContain(`AS ${os}`);
+      expect(dockerfile).toContain(`AS ${os}-balanced`);
+      expect(dockerfile).toContain(`AS ${os}-lite`);
+    }
   });
 });
 

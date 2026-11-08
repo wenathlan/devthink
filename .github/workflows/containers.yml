@@ -13,9 +13,11 @@ name: DevThink Containers
 # the same idempotent publish the family-ghcr mirror of the publish
 # workflow proved, while the saddle engine walks its own saddle-containers
 # lane set (the fifteen-plus docker distribution law: the three profile
-# umbrellas beside their twelve architecture seats and the four
-# os-distribution flavor lanes - nineteen distinct published tags, every
-# one a real buildx product). the standalone file answers the gap the
+# umbrellas beside their twelve architecture seats and the
+# thirty-three os-distribution flavor lanes - eleven distributions on
+# the max, balanced and lite tiers, the 11×3 standardization -
+# forty-eight distinct published tags, every one a real buildx
+# product). the standalone file answers the gap the
 # registry census recorded (the ghcr package page answered only the
 # saddle package beside its buildcache: the sibling containers never
 # published, because the publish mirror rides the workflow_run dual
@@ -536,23 +538,29 @@ jobs:
       fail-fast: false
       matrix:
         # THE FIFTEEN-PLUS DOCKER DISTRIBUTION LAW (the owner's sentence
-        # "saddle não tem +15 distribuições no docker"): the three
-        # profile lanes ship the build legs of the container-carried
-        # seats the pinned node base honestly answers (the native amd64
-        # leg beside the arm64, ppc64le and s390x legs under QEMU
-        # emulation) - and every profile leg stamps its four
-        # per-architecture seat tags off the published index
+        # "saddle não tem +15 distribuições no docker") — THE 11×3
+        # STANDARDIZATION: the three profile lanes ship the build legs of
+        # the container-carried seats the pinned node base honestly
+        # answers (the native amd64 leg beside the arm64, ppc64le and
+        # s390x legs under QEMU emulation) - and every profile leg stamps
+        # its four per-architecture seat tags off the published index
         # (<version>-max-linux-amd64, -max-linux-arm64,
         # -max-linux-ppc64le, -max-linux-s390x, the balanced and lite
-        # seats beside them: twelve arch-seat lanes), so the saddle tag
-        # census answers NINETEEN distinct published tags - the three
-        # profile umbrellas (<version> for max, -balanced, -lite), the
-        # twelve architecture seats and the four os-distribution flavor
-        # lanes (-linux, -omarchy, -vanillaos, -android) - more than
-        # fifteen, every one a real buildx product the registry answers.
-        # the os-distribution flavor lanes stamp their OSDISTRIBUTIONS
-        # catalog profile into the image config the same way the vhe
-        # lane family of the publish workflow stamps it.
+        # seats beside them: twelve arch-seat lanes). beside them the
+        # os-distribution flavor axis rides ELEVEN distributions - linux,
+        # omarchy, vanillaos, android, archlinux, alpine, debian, fedora,
+        # nixos, void and postmarketos - and EVERY flavor walks the full
+        # three-tier axis (max, balanced, lite: the 11×3 geometry the
+        # master's standardization charges, thirty-three flavor lanes),
+        # so the saddle tag census answers FORTY-EIGHT distinct published
+        # tags - the three profile umbrellas (<version> for max,
+        # -balanced, -lite), the twelve architecture seats and the
+        # thirty-three os-distribution flavor lanes (eleven -<seat> tags
+        # beside their -<seat>-balanced and -<seat>-lite siblings) - more
+        # than fifteen, every one a real buildx product the registry
+        # answers. the os-distribution flavor lanes stamp their
+        # OSDISTRIBUTIONS catalog profile into the image config the same
+        # way the vhe lane family of the publish workflow stamps it.
         include:
           - profile: max
             target: max
@@ -589,11 +597,19 @@ jobs:
             profilegpus: 1
           # the os-distribution flavor lanes: the same engine graph on
           # the same honest base legs with the catalog profile stamped -
-          # the linux seat is the baseline flavor, omarchy the arch-based
-          # desktop seat, vanillaos the ubuntu-based atomic seat and
-          # android the mobile seat the grapheneos hardening builds on
-          # (every flavor binds the max plan: the tier axis stays the
-          # profile lanes' own).
+          # ELEVEN distributions (linux the baseline seat, omarchy the
+          # arch-based desktop seat, vanillaos the ubuntu-based atomic
+          # seat, android the mobile seat the grapheneos hardening
+          # builds on, archlinux the rolling-release seat omarchy builds
+          # on, alpine the musl-based lightweight seat, debian the
+          # universal operating system, fedora the red-hat-upstream
+          # community seat, nixos the declarative reproducible seat,
+          # void the independent source-rolling seat and postmarketos
+          # the alpine-based mobile seat) - and EVERY flavor walks the
+          # full three-tier axis: its max leg binds the epyc 9965 plan,
+          # its balanced leg the threadripper pro 9995wx plan and its
+          # lite leg the ryzen 9950x3d plan (the 11×3 geometry,
+          # thirty-three flavor lanes beside the three profile lanes).
           - profile: max
             target: oslinux
             osprofile: linux
@@ -606,6 +622,30 @@ jobs:
             profileram: 1024
             profilegpu: b200
             profilegpus: 8
+          - profile: balanced
+            target: oslinux-balanced
+            osprofile: linux
+            suffix: "-linux-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: oslinux-lite
+            osprofile: linux
+            suffix: "-linux-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - profile: max
             target: osomarchy
             osprofile: omarchy
@@ -618,6 +658,30 @@ jobs:
             profileram: 1024
             profilegpu: b200
             profilegpus: 8
+          - profile: balanced
+            target: osomarchy-balanced
+            osprofile: omarchy
+            suffix: "-omarchy-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osomarchy-lite
+            osprofile: omarchy
+            suffix: "-omarchy-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - profile: max
             target: osvanillaos
             osprofile: vanillaos
@@ -630,6 +694,30 @@ jobs:
             profileram: 1024
             profilegpu: b200
             profilegpus: 8
+          - profile: balanced
+            target: osvanillaos-balanced
+            osprofile: vanillaos
+            suffix: "-vanillaos-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osvanillaos-lite
+            osprofile: vanillaos
+            suffix: "-vanillaos-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
           - profile: max
             target: osandroid
             osprofile: android
@@ -642,6 +730,282 @@ jobs:
             profileram: 1024
             profilegpu: b200
             profilegpus: 8
+          - profile: balanced
+            target: osandroid-balanced
+            osprofile: android
+            suffix: "-android-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osandroid-lite
+            osprofile: android
+            suffix: "-android-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+          - profile: max
+            target: osarchlinux
+            osprofile: archlinux
+            suffix: "-archlinux"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: balanced
+            target: osarchlinux-balanced
+            osprofile: archlinux
+            suffix: "-archlinux-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osarchlinux-lite
+            osprofile: archlinux
+            suffix: "-archlinux-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+          - profile: max
+            target: osalpine
+            osprofile: alpine
+            suffix: "-alpine"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: balanced
+            target: osalpine-balanced
+            osprofile: alpine
+            suffix: "-alpine-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osalpine-lite
+            osprofile: alpine
+            suffix: "-alpine-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+          - profile: max
+            target: osdebian
+            osprofile: debian
+            suffix: "-debian"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: balanced
+            target: osdebian-balanced
+            osprofile: debian
+            suffix: "-debian-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osdebian-lite
+            osprofile: debian
+            suffix: "-debian-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+          - profile: max
+            target: osfedora
+            osprofile: fedora
+            suffix: "-fedora"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: balanced
+            target: osfedora-balanced
+            osprofile: fedora
+            suffix: "-fedora-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osfedora-lite
+            osprofile: fedora
+            suffix: "-fedora-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+          - profile: max
+            target: osnixos
+            osprofile: nixos
+            suffix: "-nixos"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: balanced
+            target: osnixos-balanced
+            osprofile: nixos
+            suffix: "-nixos-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osnixos-lite
+            osprofile: nixos
+            suffix: "-nixos-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+          - profile: max
+            target: osvoid
+            osprofile: void
+            suffix: "-void"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: balanced
+            target: osvoid-balanced
+            osprofile: void
+            suffix: "-void-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: osvoid-lite
+            osprofile: void
+            suffix: "-void-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
+          - profile: max
+            target: ospostmarketos
+            osprofile: postmarketos
+            suffix: "-postmarketos"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: epyc9965
+            profilevcpus: 192
+            profilethreads: 384
+            profileram: 1024
+            profilegpu: b200
+            profilegpus: 8
+          - profile: balanced
+            target: ospostmarketos-balanced
+            osprofile: postmarketos
+            suffix: "-postmarketos-balanced"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: threadripperpro9995wx
+            profilevcpus: 96
+            profilethreads: 192
+            profileram: 512
+            profilegpu: b200
+            profilegpus: 2
+          - profile: lite
+            target: ospostmarketos-lite
+            osprofile: postmarketos
+            suffix: "-postmarketos-lite"
+            seatprefix: ""
+            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            profilecpu: ryzen9950x3d
+            profilevcpus: 16
+            profilethreads: 32
+            profileram: 128
+            profilegpu: rtx5090
+            profilegpus: 1
     steps:
       - name: Check out the verified tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -776,9 +1140,11 @@ jobs:
           context: ./saddlebuildctx
           file: ./saddlebuildctx/saddle/Dockerfile
           # the lane target the matrix names (max, balanced, lite - the
-          # profile variant stages - or oslinux, osomarchy, osvanillaos,
-          # osandroid - the os-distribution flavor stages): the same
-          # variant stages the Dockerfile documents.
+          # profile variant stages - or the thirty-three os-distribution
+          # flavor stages the 11×3 standardization carries: oslinux,
+          # oslinux-balanced, oslinux-lite beside their ten sibling
+          # distributions, every tier its own stage): the same variant
+          # stages the Dockerfile documents.
           target: ${{ matrix.target }}
           platforms: ${{ matrix.platforms }}
           push: true
@@ -795,7 +1161,7 @@ jobs:
             NODE_BASE_DIGEST=${{ steps.resolve.outputs.nodedigest }}
           labels: |
             org.opencontainers.image.title=saddle (the master virtualization engine, the ${{ matrix.profile }} lane of the containerlanes wave)
-            org.opencontainers.image.description=the ninety modalities the self-hosted edge answers (the ${{ matrix.osprofile || matrix.profile }} lane, the fifteen-plus docker distribution law)
+            org.opencontainers.image.description=the ninety modalities the self-hosted edge answers (the ${{ matrix.osprofile && format('{0} {1}', matrix.osprofile, matrix.profile) || matrix.profile }} lane, the fifteen-plus docker distribution law)
             org.opencontainers.image.version=${{ steps.resolve.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
@@ -813,9 +1179,9 @@ jobs:
         # --platform linux/arm64 saddle:<version>-max-linux-arm64`
         # answers the arm64 image of the max profile (never a rebuild,
         # never a placeholder). twelve seat lanes beside the three
-        # profile umbrellas and the four os-distribution flavor lanes:
-        # nineteen distinct published tags, the more-than-fifteen
-        # directive answered.
+        # profile umbrellas and the thirty-three os-distribution flavor
+        # lanes of the 11×3 standardization: forty-eight distinct
+        # published tags, the more-than-fifteen directive answered.
         if: matrix.seatprefix != ''
         shell: bash
         env:
@@ -841,12 +1207,12 @@ jobs:
             echo "the ${SEATPREFIX} ${platform} seat ships as ${img}:${ver}-${SEATPREFIX}-${slug}"
           done
 
-      - name: The lane census line (the nineteen-tag family)
+      - name: The lane census line (the forty-eight-tag family)
         shell: bash
         run: |
           set -euo pipefail
           ver="${{ steps.resolve.outputs.version }}"
-          echo "the saddle ${ver} container family answers nineteen lanes: the three profile umbrellas (${ver}, ${ver}-balanced, ${ver}-lite), the twelve architecture seats (-max-linux-*, -balanced-linux-*, -lite-linux-*), the four os-distribution flavor lanes (-linux, -omarchy, -vanillaos, -android) - more than fifteen docker distributions, the owner's law answered."
+          echo "the saddle ${ver} container family answers forty-eight lanes: the three profile umbrellas (${ver}, ${ver}-balanced, ${ver}-lite), the twelve architecture seats (-max-linux-*, -balanced-linux-*, -lite-linux-*), the thirty-three os-distribution flavor lanes (eleven distributions - linux, omarchy, vanillaos, android, archlinux, alpine, debian, fedora, nixos, void, postmarketos - each on its max, balanced and lite tier) - more than fifteen docker distributions, the owner's law answered."
 
   saddle-webpack:
     name: Publish the saddle webpack distribution to ${{ matrix.channel }} (the seven-lane webpack seat)

@@ -20,7 +20,7 @@ Execute every workload of the family on the house infrastructure — never the v
 - The eleven-architecture standard: linux-x64, darwin-arm64, windows-x64, linux-arm64, darwin-x64, windows-arm64, linux-x64-musl, linux-riscv64, wasm32, darwin-arm64-v8, windows-x64-gnu.
 - The OS host profiles catalog: linux, grapheneos, omarchy, maruos, vanillaos, v, windows, android.
 - The container trio: max, balanced, lite — the exotic seat only saddle carries.
-- The OS distribution flavor lanes: linux, omarchy, vanillaos, android flavors with the grapheneos, maruos, v and windows catalog lanes.
+- The OS distribution flavor lanes: eleven distributions (linux, omarchy, vanillaos, android, archlinux, alpine, debian, fedora, nixos, void, postmarketos) each on the full max, balanced and lite tier axis (the 11×3 standardization, thirty-three flavor lanes), with the no-base catalog lanes (grapheneos, maruos, v, windows, lineageos, calyxos and the -catalog seats of the seven shared distributions) publishing the profile config beside them.
 - The queue orchestration: express, normal, batch.
 - The engine plans seam: plan limits (for example the storage quota) arrive from outside and scope one run only — the engines themselves are unlimited.
 

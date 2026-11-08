@@ -88,9 +88,11 @@
 # to the max/balanced/lite engine plan trio the engineplans table owns.
 # The distribution matrix needs NO new build legs: the seats ride the
 # existing arch axis of this file (the amd64 and arm64 legs the pinned
-# base already resolves), so the publish lanes and the build matrix stay
-# untouched — the registry is the catalog the container lanes stamp and
-# the modality system reads (saddle/docs/osdistributions.md). The
+# base already resolves), and the container-lane standardization seats
+# ELEVEN flavor distributions on the full max/balanced/lite trio (the
+# 11×3 geometry the flavor section below carries) — the registry stays
+# the catalog the container lanes stamp and the modality system reads
+# (saddle/docs/osdistributions.md). The
 # 50gb-per-plan example the owner's law names stays PLAN CONFIG the
 # devthink plan logic stamps, never a container cap: the engines are
 # unlimited.
@@ -429,29 +431,67 @@ ENV SADDLE_PROFILE=balanced \
     SADDLE_PROFILE_GPUS=${VHE_PROFILE_GPUS}
 
 # ===== the os-distribution flavor lanes (the container-lane law) =====
-# THE OS-DISTRIBUTION AXIS BESIDE THE PROFILE AXIS (the owner's
-# container-lane law: the saddle container carries MORE THAN 15 lanes):
-# the four seats of the OSDISTRIBUTIONS catalog that ride the same honest
-# node base legs — linux (the baseline seat), omarchy (the arch
-# linux-based desktop distribution created by dhh), vanilla os (the
-# ubuntu-based atomic distribution) and android (the mobile platform the
-# grapheneos hardening builds on) — answer four flavor targets that stamp
-# the catalog seat into the image config (SADDLE_OS_PROFILE + the OCI
-# labels), binding the max plan the baseline seat rides. the flavor is
+# THE OS-DISTRIBUTION AXIS BESIDE THE PROFILE AXIS, THE 11×3
+# STANDARDIZATION (the owner's container-lane law: the saddle container
+# carries MORE THAN 15 lanes — and the standardization charge: the
+# flavor lanes carry ELEVEN os distributions, every flavor on the full
+# three-tier axis): ELEVEN seats of the OSDISTRIBUTIONS catalog ride the
+# same honest node base legs — linux (the baseline seat), omarchy (the
+# arch linux-based desktop distribution created by dhh), vanilla os
+# (the ubuntu-based atomic distribution), android (the mobile platform
+# the grapheneos hardening builds on), archlinux (the rolling-release
+# distribution omarchy builds on), alpine (the musl-based lightweight
+# distribution), debian (the universal operating system), fedora (the
+# red-hat-upstream community distribution), nixos (the declarative
+# distribution the nix package manager builds), void (the independent
+# source-rolling distribution) and postmarketos (the alpine-based
+# mobile distribution real devices boot) — and EVERY flavor binds the
+# max, balanced and lite plans the engineplans trio owns: the max tier
+# rides FROM max (the bare -<seat> tag), the balanced tier FROM
+# balanced (-<seat>-balanced) and the lite tier FROM lite
+# (-<seat>-lite), thirty-three flavor targets that stamp the catalog
+# seat into the image config (SADDLE_OS_PROFILE + the OCI labels)
+# beside the plan the parent profile stage already baked. the flavor is
 # the GUEST SEAT the engine hosts (the catalog law of
 # saddle/containerarch.ts: the engine presents the profile, it never
 # installs a host distribution) — the same engine graph, the same ninety
 # modalities, the same health surface, one honest seat stamp per lane:
 #
-#   docker build --target oslinux      -t saddle:2.0.165-linux .
-#   docker build --target osomarchy    -t saddle:2.0.165-omarchy .
-#   docker build --target osvanillaos  -t saddle:2.0.165-vanillaos .
-#   docker build --target osandroid    -t saddle:2.0.165-android .
+#   docker build --target oslinux           -t saddle:2.0.167-linux .
+#   docker build --target oslinux-balanced  -t saddle:2.0.167-linux-balanced .
+#   docker build --target oslinux-lite      -t saddle:2.0.167-linux-lite .
+#   docker build --target osomarchy         -t saddle:2.0.167-omarchy .
+#   docker build --target osvanillaos       -t saddle:2.0.167-vanillaos .
+#   docker build --target osandroid         -t saddle:2.0.167-android .
+#   docker build --target osarchlinux       -t saddle:2.0.167-archlinux .
+#   docker build --target osalpine          -t saddle:2.0.167-alpine .
+#   docker build --target osdebian          -t saddle:2.0.167-debian .
+#   docker build --target osfedora          -t saddle:2.0.167-fedora .
+#   docker build --target osnixos           -t saddle:2.0.167-nixos .
+#   docker build --target osvoid            -t saddle:2.0.167-void .
+#   docker build --target ospostmarketos    -t saddle:2.0.167-postmarketos .
+#   ... every flavor beside its -balanced and -lite siblings: the
+#   saddle-containers matrix of the containers workflow names all
+#   thirty-three flavor targets, three legs per distribution, and the
+#   seven seats that also own a no-base catalog stage below keep that
+#   seat under its -catalog name (never a shadowed stage name).
 FROM max AS oslinux
 ARG SADDLE_OS_PROFILE="linux"
 ENV SADDLE_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="saddle (the linux os-distribution lane)" \
       org.opencontainers.image.description="saddle — the master virtualization engine bound to the linux os-distribution seat of the catalog: the baseline distribution the container itself rides."
+
+FROM balanced AS oslinux-balanced
+ARG SADDLE_OS_PROFILE="linux"
+ENV SADDLE_OS_PROFILE=linux
+LABEL org.opencontainers.image.title="saddle (the linux os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the linux os-distribution seat of the catalog on the balanced plan: the baseline distribution the container itself rides."
+
+FROM lite AS oslinux-lite
+ARG SADDLE_OS_PROFILE="linux"
+ENV SADDLE_OS_PROFILE=linux
+LABEL org.opencontainers.image.title="saddle (the linux os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the linux os-distribution seat of the catalog on the lite plan: the baseline distribution the container itself rides."
 
 FROM max AS osomarchy
 ARG SADDLE_OS_PROFILE="omarchy"
@@ -459,17 +499,179 @@ ENV SADDLE_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="saddle (the omarchy os-distribution lane)" \
       org.opencontainers.image.description="saddle — the master virtualization engine bound to the omarchy os-distribution seat of the catalog: the arch linux-based distribution created by dhh, hosted as the desktop guest profile."
 
+FROM balanced AS osomarchy-balanced
+ARG SADDLE_OS_PROFILE="omarchy"
+ENV SADDLE_OS_PROFILE=omarchy
+LABEL org.opencontainers.image.title="saddle (the omarchy os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the omarchy os-distribution seat of the catalog on the balanced plan: the arch linux-based distribution created by dhh, hosted as the desktop guest profile."
+
+FROM lite AS osomarchy-lite
+ARG SADDLE_OS_PROFILE="omarchy"
+ENV SADDLE_OS_PROFILE=omarchy
+LABEL org.opencontainers.image.title="saddle (the omarchy os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the omarchy os-distribution seat of the catalog on the lite plan: the arch linux-based distribution created by dhh, hosted as the desktop guest profile."
+
 FROM max AS osvanillaos
 ARG SADDLE_OS_PROFILE="vanillaos"
 ENV SADDLE_OS_PROFILE=vanillaos
 LABEL org.opencontainers.image.title="saddle (the vanilla os os-distribution lane)" \
       org.opencontainers.image.description="saddle — the master virtualization engine bound to the vanilla os os-distribution seat of the catalog: the ubuntu-based atomic distribution, hosted as the desktop guest profile."
 
+FROM balanced AS osvanillaos-balanced
+ARG SADDLE_OS_PROFILE="vanillaos"
+ENV SADDLE_OS_PROFILE=vanillaos
+LABEL org.opencontainers.image.title="saddle (the vanilla os os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the vanilla os os-distribution seat of the catalog on the balanced plan: the ubuntu-based atomic distribution, hosted as the desktop guest profile."
+
+FROM lite AS osvanillaos-lite
+ARG SADDLE_OS_PROFILE="vanillaos"
+ENV SADDLE_OS_PROFILE=vanillaos
+LABEL org.opencontainers.image.title="saddle (the vanilla os os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the vanilla os os-distribution seat of the catalog on the lite plan: the ubuntu-based atomic distribution, hosted as the desktop guest profile."
+
 FROM max AS osandroid
 ARG SADDLE_OS_PROFILE="android"
 ENV SADDLE_OS_PROFILE=android
 LABEL org.opencontainers.image.title="saddle (the android os-distribution lane)" \
       org.opencontainers.image.description="saddle — the master virtualization engine bound to the android os-distribution seat of the catalog: the mobile platform the grapheneos hardening builds on, hosted as the mobile guest profile."
+
+FROM balanced AS osandroid-balanced
+ARG SADDLE_OS_PROFILE="android"
+ENV SADDLE_OS_PROFILE=android
+LABEL org.opencontainers.image.title="saddle (the android os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the android os-distribution seat of the catalog on the balanced plan: the mobile platform the grapheneos hardening builds on, hosted as the mobile guest profile."
+
+FROM lite AS osandroid-lite
+ARG SADDLE_OS_PROFILE="android"
+ENV SADDLE_OS_PROFILE=android
+LABEL org.opencontainers.image.title="saddle (the android os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the android os-distribution seat of the catalog on the lite plan: the mobile platform the grapheneos hardening builds on, hosted as the mobile guest profile."
+
+FROM max AS osarchlinux
+ARG SADDLE_OS_PROFILE="archlinux"
+ENV SADDLE_OS_PROFILE=archlinux
+LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the archlinux os-distribution seat of the catalog: the rolling-release distribution omarchy builds on, hosted as the pacman desktop guest profile."
+
+FROM balanced AS osarchlinux-balanced
+ARG SADDLE_OS_PROFILE="archlinux"
+ENV SADDLE_OS_PROFILE=archlinux
+LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the archlinux os-distribution seat of the catalog on the balanced plan: the rolling-release distribution omarchy builds on, hosted as the pacman desktop guest profile."
+
+FROM lite AS osarchlinux-lite
+ARG SADDLE_OS_PROFILE="archlinux"
+ENV SADDLE_OS_PROFILE=archlinux
+LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the archlinux os-distribution seat of the catalog on the lite plan: the rolling-release distribution omarchy builds on, hosted as the pacman desktop guest profile."
+
+FROM max AS osalpine
+ARG SADDLE_OS_PROFILE="alpine"
+ENV SADDLE_OS_PROFILE=alpine
+LABEL org.opencontainers.image.title="saddle (the alpine os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the alpine os-distribution seat of the catalog: the musl-based lightweight distribution, hosted as the small-footprint guest profile."
+
+FROM balanced AS osalpine-balanced
+ARG SADDLE_OS_PROFILE="alpine"
+ENV SADDLE_OS_PROFILE=alpine
+LABEL org.opencontainers.image.title="saddle (the alpine os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the alpine os-distribution seat of the catalog on the balanced plan: the musl-based lightweight distribution, hosted as the small-footprint guest profile."
+
+FROM lite AS osalpine-lite
+ARG SADDLE_OS_PROFILE="alpine"
+ENV SADDLE_OS_PROFILE=alpine
+LABEL org.opencontainers.image.title="saddle (the alpine os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the alpine os-distribution seat of the catalog on the lite plan: the musl-based lightweight distribution, hosted as the small-footprint guest profile."
+
+FROM max AS osdebian
+ARG SADDLE_OS_PROFILE="debian"
+ENV SADDLE_OS_PROFILE=debian
+LABEL org.opencontainers.image.title="saddle (the debian os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the debian os-distribution seat of the catalog: the universal operating system, hosted as the apt desktop guest profile."
+
+FROM balanced AS osdebian-balanced
+ARG SADDLE_OS_PROFILE="debian"
+ENV SADDLE_OS_PROFILE=debian
+LABEL org.opencontainers.image.title="saddle (the debian os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the debian os-distribution seat of the catalog on the balanced plan: the universal operating system, hosted as the apt desktop guest profile."
+
+FROM lite AS osdebian-lite
+ARG SADDLE_OS_PROFILE="debian"
+ENV SADDLE_OS_PROFILE=debian
+LABEL org.opencontainers.image.title="saddle (the debian os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the debian os-distribution seat of the catalog on the lite plan: the universal operating system, hosted as the apt desktop guest profile."
+
+FROM max AS osfedora
+ARG SADDLE_OS_PROFILE="fedora"
+ENV SADDLE_OS_PROFILE=fedora
+LABEL org.opencontainers.image.title="saddle (the fedora os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the fedora os-distribution seat of the catalog: the red-hat-upstream community distribution, hosted as the rpm desktop guest profile."
+
+FROM balanced AS osfedora-balanced
+ARG SADDLE_OS_PROFILE="fedora"
+ENV SADDLE_OS_PROFILE=fedora
+LABEL org.opencontainers.image.title="saddle (the fedora os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the fedora os-distribution seat of the catalog on the balanced plan: the red-hat-upstream community distribution, hosted as the rpm desktop guest profile."
+
+FROM lite AS osfedora-lite
+ARG SADDLE_OS_PROFILE="fedora"
+ENV SADDLE_OS_PROFILE=fedora
+LABEL org.opencontainers.image.title="saddle (the fedora os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the fedora os-distribution seat of the catalog on the lite plan: the red-hat-upstream community distribution, hosted as the rpm desktop guest profile."
+
+FROM max AS osnixos
+ARG SADDLE_OS_PROFILE="nixos"
+ENV SADDLE_OS_PROFILE=nixos
+LABEL org.opencontainers.image.title="saddle (the nixos os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the nixos os-distribution seat of the catalog: the declarative distribution the nix package manager builds, hosted as the reproducible-system guest profile."
+
+FROM balanced AS osnixos-balanced
+ARG SADDLE_OS_PROFILE="nixos"
+ENV SADDLE_OS_PROFILE=nixos
+LABEL org.opencontainers.image.title="saddle (the nixos os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the nixos os-distribution seat of the catalog on the balanced plan: the declarative distribution the nix package manager builds, hosted as the reproducible-system guest profile."
+
+FROM lite AS osnixos-lite
+ARG SADDLE_OS_PROFILE="nixos"
+ENV SADDLE_OS_PROFILE=nixos
+LABEL org.opencontainers.image.title="saddle (the nixos os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the nixos os-distribution seat of the catalog on the lite plan: the declarative distribution the nix package manager builds, hosted as the reproducible-system guest profile."
+
+FROM max AS osvoid
+ARG SADDLE_OS_PROFILE="void"
+ENV SADDLE_OS_PROFILE=void
+LABEL org.opencontainers.image.title="saddle (the void os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the void os-distribution seat of the catalog: the independent source-rolling distribution, hosted as the xbps guest profile."
+
+FROM balanced AS osvoid-balanced
+ARG SADDLE_OS_PROFILE="void"
+ENV SADDLE_OS_PROFILE=void
+LABEL org.opencontainers.image.title="saddle (the void os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the void os-distribution seat of the catalog on the balanced plan: the independent source-rolling distribution, hosted as the xbps guest profile."
+
+FROM lite AS osvoid-lite
+ARG SADDLE_OS_PROFILE="void"
+ENV SADDLE_OS_PROFILE=void
+LABEL org.opencontainers.image.title="saddle (the void os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the void os-distribution seat of the catalog on the lite plan: the independent source-rolling distribution, hosted as the xbps guest profile."
+
+FROM max AS ospostmarketos
+ARG SADDLE_OS_PROFILE="postmarketos"
+ENV SADDLE_OS_PROFILE=postmarketos
+LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution lane)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the postmarketos os-distribution seat of the catalog: the alpine-based mobile distribution real devices boot, hosted as the mobile guest profile."
+
+FROM balanced AS ospostmarketos-balanced
+ARG SADDLE_OS_PROFILE="postmarketos"
+ENV SADDLE_OS_PROFILE=postmarketos
+LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution lane, balanced tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the postmarketos os-distribution seat of the catalog on the balanced plan: the alpine-based mobile distribution real devices boot, hosted as the mobile guest profile."
+
+FROM lite AS ospostmarketos-lite
+ARG SADDLE_OS_PROFILE="postmarketos"
+ENV SADDLE_OS_PROFILE=postmarketos
+LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution lane, lite tier)" \
+      org.opencontainers.image.description="saddle — the master virtualization engine bound to the postmarketos os-distribution seat of the catalog on the lite plan: the alpine-based mobile distribution real devices boot, hosted as the mobile guest profile."
 
 # ===== the os-distribution catalog lanes (the no-base seats) =====
 # THE EXOTIC HALF OF THE AXIS: the os distribution seats with NO runnable
@@ -482,13 +684,19 @@ LABEL org.opencontainers.image.title="saddle (the android os-distribution lane)"
 # the digest law rides trivially) whose config carries the seat stamp and
 # whose single file is the profile row the osprofiles catalog answers,
 # rendered to json beside the build context (osprofiles/<id>.json, the
-# publish lane generates it from the tagged source):
+# publish lane generates it from the tagged source). the catalog stages
+# carry the -catalog target suffix: the bare os<id> names above seat the
+# RUNNABLE flavor lanes of the 11×3 standardization, and the seven
+# distributions that own both families (archlinux, alpine, debian,
+# fedora, nixos, void and postmarketos) keep their no-base catalog seat
+# under the suffixed name the publish catalog lane builds — one address
+# per lane family, never a shadowed stage name:
 #
-#   docker build --target osgrapheneos -t saddle:2.0.165-grapheneos .
-#   docker build --target osmaruos     -t saddle:2.0.165-maruos .
-#   docker build --target osv          -t saddle:2.0.165-v .
-#   docker build --target oswindows    -t saddle:2.0.165-windows .
-FROM scratch AS osgrapheneos
+#   docker build --target osgrapheneos-catalog -t saddle:2.0.167-grapheneos .
+#   docker build --target osmaruos-catalog     -t saddle:2.0.167-maruos .
+#   docker build --target osv-catalog          -t saddle:2.0.167-v .
+#   docker build --target oswindows-catalog    -t saddle:2.0.167-windows .
+FROM scratch AS osgrapheneos-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="grapheneos"
 ENV SADDLE_OS_PROFILE=grapheneos
@@ -499,7 +707,7 @@ LABEL org.opencontainers.image.title="saddle (the grapheneos os-distribution cat
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/grapheneos.json /saddle/osprofile.json
 
-FROM scratch AS osmaruos
+FROM scratch AS osmaruos-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="maruos"
 ENV SADDLE_OS_PROFILE=maruos
@@ -510,7 +718,7 @@ LABEL org.opencontainers.image.title="saddle (the maru os os-distribution catalo
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/maruos.json /saddle/osprofile.json
 
-FROM scratch AS osv
+FROM scratch AS osv-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="v"
 ENV SADDLE_OS_PROFILE=v
@@ -521,7 +729,7 @@ LABEL org.opencontainers.image.title="saddle (the v os-distribution catalog lane
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/v.json /saddle/osprofile.json
 
-FROM scratch AS oswindows
+FROM scratch AS oswindows-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="windows"
 ENV SADDLE_OS_PROFILE=windows
@@ -532,7 +740,7 @@ LABEL org.opencontainers.image.title="saddle (the windows os-distribution catalo
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/windows.json /saddle/osprofile.json
 
-FROM scratch AS ospostmarketos
+FROM scratch AS ospostmarketos-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="postmarketos"
 ENV SADDLE_OS_PROFILE=postmarketos
@@ -543,7 +751,7 @@ LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution c
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/postmarketos.json /saddle/osprofile.json
 
-FROM scratch AS oslineageos
+FROM scratch AS oslineageos-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="lineageos"
 ENV SADDLE_OS_PROFILE=lineageos
@@ -554,7 +762,7 @@ LABEL org.opencontainers.image.title="saddle (the lineageos os-distribution cata
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/lineageos.json /saddle/osprofile.json
 
-FROM scratch AS oscalyxos
+FROM scratch AS oscalyxos-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="calyxos"
 ENV SADDLE_OS_PROFILE=calyxos
@@ -565,7 +773,7 @@ LABEL org.opencontainers.image.title="saddle (the calyxos os-distribution catalo
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/calyxos.json /saddle/osprofile.json
 
-FROM scratch AS osarchlinux
+FROM scratch AS osarchlinux-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="archlinux"
 ENV SADDLE_OS_PROFILE=archlinux
@@ -576,7 +784,7 @@ LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution cata
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/archlinux.json /saddle/osprofile.json
 
-FROM scratch AS osalpine
+FROM scratch AS osalpine-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="alpine"
 ENV SADDLE_OS_PROFILE=alpine
@@ -587,7 +795,7 @@ LABEL org.opencontainers.image.title="saddle (the alpine os-distribution catalog
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/alpine.json /saddle/osprofile.json
 
-FROM scratch AS osdebian
+FROM scratch AS osdebian-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="debian"
 ENV SADDLE_OS_PROFILE=debian
@@ -598,7 +806,7 @@ LABEL org.opencontainers.image.title="saddle (the debian os-distribution catalog
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/debian.json /saddle/osprofile.json
 
-FROM scratch AS osfedora
+FROM scratch AS osfedora-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="fedora"
 ENV SADDLE_OS_PROFILE=fedora
@@ -609,7 +817,7 @@ LABEL org.opencontainers.image.title="saddle (the fedora os-distribution catalog
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/fedora.json /saddle/osprofile.json
 
-FROM scratch AS osnixos
+FROM scratch AS osnixos-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="nixos"
 ENV SADDLE_OS_PROFILE=nixos
@@ -620,7 +828,7 @@ LABEL org.opencontainers.image.title="saddle (the nixos os-distribution catalog 
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/nixos.json /saddle/osprofile.json
 
-FROM scratch AS osvoid
+FROM scratch AS osvoid-catalog
 ARG SADDLE_VERSION=2.0.167
 ARG SADDLE_OS_PROFILE="void"
 ENV SADDLE_OS_PROFILE=void
@@ -634,11 +842,12 @@ COPY osprofiles/void.json /saddle/osprofile.json
 # ===== stage: default — the trailing balanced seat the header documents =====
 # THE DEFAULT TARGET LAW (the local-build heal): the header declares the
 # plain `docker build -f saddle/Dockerfile .` with no --target answers the
-# balanced profile, but the os-distribution scratch lanes below the
-# balanced stage used to end the file — the no-target build answered
-# osvoid, a scratch seat that COPYs the osprofiles/ folder only the
-# publish lanes render, so the local container the owner charged
-# functional died on the missing folder instead of building the engine.
+# balanced profile, but the os-distribution flavor and catalog lanes below
+# the balanced stage used to end the file — the no-target build answered
+# the last scratch seat (osvoid, today osvoid-catalog), a scratch seat
+# that COPYs the osprofiles/ folder only the publish lanes render, so the
+# local container the owner charged functional died on the missing folder
+# instead of building the engine.
 # This trailing alias re-seats the balanced profile as the last stage:
 # the no-target build answers the runnable engine (the same graph the
 # compose lane rides), every os lane keeps its own explicit --target,
