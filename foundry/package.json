@@ -551,7 +551,11 @@
     "docs",
     "test",
     "README.md",
-    "cli.ts"
+    "cli.ts",
+    "bundlescan.ts",
+    "hometypes.ts",
+    "pipeline.ts",
+    "readiness.ts"
   ],
   "trustedDependencies": [
     "@parcel/watcher",
