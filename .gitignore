@@ -462,3 +462,26 @@ pnpm-lock.yaml
 **/docs/infra.md
 **/docs/infraestrutura.md
 .polar/
+
+# the polar auth lane of the wave — machine-local device-flow artifacts
+# (the bun mini-service state, the retired bash poller pair, the token
+# capture and the logs the campaign scratch carries)
+.polar-auth.json
+.polar-auth.log
+.polar-poller.sh
+.polar-watchdog.sh
+.github-token
+.git-credentials.bak
+.neo-clone.log
+.devthink-install.log
+.getry-install.log
+.gateway.log
+.os-*.png
+.svc.log
+
+# the reference clone lanes of the harvest doctrine — every clone lands
+# outside the tree as machine-local study material, studied and deleted
+# after the wave (neo.temp and neo.img carry the design references the
+# token research walked)
+Neo.Temp/
+Neo.img/
