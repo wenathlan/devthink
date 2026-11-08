@@ -27,7 +27,7 @@
  * this app module keeps only its stateful glue (the cache mirror, the
  * platform read and write, the memoized accessors) and re-exports the
  * engine so every importer of this door keeps resolving the same names. */
-import { hostallowed } from "./onboardingstore.ts";
+import { hostallowed, mergeStage } from "./onboardingstore.ts";
 
 export { hostallowed, mergeStage } from "./onboardingstore.ts";
 
