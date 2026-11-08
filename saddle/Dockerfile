@@ -261,6 +261,20 @@ RUN case "${TARGETARCH:-}" in \
     esac
 
 COPY --from=solbuild /app/package.json /app/package-lock.json ./
+# the both-blocks grammar heal (the saddle container law): the family
+# manifest carries the same seats inside dependencies and
+# devDependencies, and every npm tested (11.19.1 and 12.0.2) answers
+# that duplicate seat by planting dev:true over the whole lock tree -
+# so a plain `npm ci --omit=dev` installs nothing and the runtime stage
+# dies at the cleanup walk with no node_modules to sweep. The derived
+# prod-only manifest (the dependencies block alone, byte-identical
+# specs) restores the honest production install: the lock the
+# foundry/lockprod.ts heal stamped walks beside it and the --omit=dev
+# lane lands the full production closure (the 1372-package install the
+# local verification measured). Nothing is removed - the dev seats stay
+# in the lock for the full-install lanes, only the runtime's own view
+# of the manifest narrows.
+RUN node -e "const fs=require('node:fs');const m=JSON.parse(fs.readFileSync('package.json','utf8'));delete m.devDependencies;fs.writeFileSync('package.json',JSON.stringify(m,null,2)+'\n')"
 RUN apt-get update \
     && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
