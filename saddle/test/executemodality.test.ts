@@ -24,7 +24,7 @@ import {
   MODALITYENGINE,
   type ModalityRunResult,
 } from "../modalities.ts";
-import { MODALITIES } from "../modalityregistry.ts";
+import { MODALITIES } from "../modalities.ts";
 
 /** One run request against the engine scope. */
 const request = (code: string, inputs?: unknown, deadlinems = 8000) => ({

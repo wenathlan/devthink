@@ -23,7 +23,7 @@
 
 import { edgelaneexecutorsall, edgelanespecsall } from "./edgelandes.ts";
 import { idfactory } from "./foundation.ts";
-import { getmodality } from "./modalityregistry.ts";
+import { getmodality } from "./modalities.ts";
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 1: the contract types — the api surface of the edge plane. */

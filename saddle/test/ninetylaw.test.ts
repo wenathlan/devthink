@@ -29,7 +29,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { edgelaneexecutors } from "../edgelandes.ts";
 import { edgelanes, runonedge } from "../edgeplane.ts";
-import { getmodality, MODALITIES, MODALITYPLANCOUNT, planreport } from "../modalityregistry.ts";
+import { getmodality, MODALITIES, MODALITYPLANCOUNT, planreport } from "../modalities.ts";
 
 /** the ten promotions of the forty live law (wave w2 b1): the ids the
  * registry flipped live and the edge plane wired lanes for. */

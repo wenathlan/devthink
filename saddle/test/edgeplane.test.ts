@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { describe, it } from "vitest";
 import { probemodule } from "../edgelandes.ts";
 import { assertvisitorfree, edgelandesreport, edgelanes, runonedge } from "../edgeplane.ts";
-import { getmodality } from "../modalityregistry.ts";
+import { getmodality } from "../modalities.ts";
 import { localstorage } from "../virtual.ts";
 
 /** the sixty-five live lane ids the pinned contract charges (parallel

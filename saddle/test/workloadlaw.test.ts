@@ -7,7 +7,7 @@
 // pnpm vitest run test/workloadlaw.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
-import { MODALITIES } from "../modalityregistry.ts";
+import { MODALITIES } from "../modalities.ts";
 import {
   CATALOGAPPS,
   FAMILYLANES,

@@ -402,7 +402,6 @@ describe("the workflow contract", () => {
       "index.html",
       "sol/sol.css",
       "api.ts",
-      "localauth.ts",
       "sandbox.ts",
       "server.ts",
       "db.ts",

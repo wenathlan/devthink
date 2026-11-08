@@ -37,14 +37,14 @@ import {
         register,
         roleof,
         session,
-} from '../localauth.ts';
+} from '../auth.ts';
 
 /** repository root resolved from this test file location. */
 const reporoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** the account surfaces the law binds (the cadastro path end to end). */
 const ACCOUNT_SURFACES = [
-        'localauth.ts',
+        'auth.ts',
         'sol/register/register.tsx',
         'sol/wingets/LoginForm.tsx',
         'sol/dashboard/dashboard.tsx',

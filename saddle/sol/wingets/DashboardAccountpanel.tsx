@@ -8,7 +8,7 @@ import { useRef, useState } from 'react';
 import type { SessionUser } from '../../dashboardlib.ts';
 import { fmtdate } from '../../dashboardlib.ts';
 import { label, labelfill } from '../../labels.ts';
-import { adminusers, exportaccounts, importaccounts } from '../../localauth.ts';
+import { adminusers, exportaccounts, importaccounts } from '../../auth.ts';
 
 /** the local browser session normalized at boot (defensive read). */
 export type LocalSessionView = {

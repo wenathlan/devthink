@@ -96,7 +96,7 @@ import {
 import type { SessionUser } from './auth.ts';
 import { forwardauth, mainurl, meshsecret, role, startheartbeat, verifymesh } from './mesh.ts';
 import type { MainResponse } from './mesh.ts';
-import { MODALITIES, MODALITYPLANCOUNT, planreport } from './modalityregistry.ts';
+import { MODALITIES, MODALITYPLANCOUNT, planreport } from './modalities.ts';
 import { edgelandesreport, runonedge } from './edgeplane.ts';
 import type { EdgeStorageAdapter } from './edgeplane.ts';
 import { CATALOGAPPS, familyjoin, workloadreport } from './workloadlaw.ts';

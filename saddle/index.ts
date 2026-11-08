@@ -1469,8 +1469,7 @@ export * from './integration.ts';
 export * from './isolation.ts';
 /** Re-exports the sandbox modality registry — the catalog the join
  * resolver reads (the spine of the sandbox modalities the engine opens). */
-export * from './modalityregistry.ts';
-export * from './modes.ts';
+export * from './modalities.ts';
 /** Re-exports the script lanes — the sh execution through the universal
  * runner, the yml/yaml interpretation through the house yaml subset with
  * the babel compile roundtrip, the detached background runs on the house

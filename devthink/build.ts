@@ -338,7 +338,7 @@ const familybridges = {
    * alias answers the saddle root exactly like the getry siblings (never a
    * copy inside devthink: the owner source answers at build time; the
    * typecheck programs keep answering the saddlefaces typed face). */
-  "@wenathlan/saddle/modalityregistry": join(root, "..", "saddle", "modalityregistry.ts"),
+  "@wenathlan/saddle/modalityregistry": join(root, "..", "saddle", "modalities.ts"),
   "@wenathlan/getry/thinking": join(root, "..", "getry", "thinking.ts"),
   /** the getry engine module bridges of the ownership wave
    * (wave/ownership.getry): the gateway pipeline sources (engine, llm,
@@ -430,6 +430,15 @@ const familybridges = {
    * declared). retires when the published envelope carries the built label
    * store. */
   "@wenathlan/vault/labelstore": join(root, "..", "vault", "labelstore.ts"),
+  /** the ui store engine bridge of the ownership law (the wave 14 uistore
+   * consolidation): the os seat rides the vault factory through the
+   * published library specifier ("@wenathlan/vault/uistore"), and the
+   * server bundle inlines the owner's mechanism the same way the label
+   * store rides above — the uicopy mechanism is never duplicated inside
+   * devthink and the lockfile stays untouched (no registry dependency is
+   * declared). retires when the published envelope carries the built ui
+   * store. */
+  "@wenathlan/vault/uistore": join(root, "..", "vault", "uistore.ts"),
 };
 const libraryexternals = [
   "hono",

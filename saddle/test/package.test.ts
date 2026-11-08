@@ -16,7 +16,7 @@ import { releaseartifactmatrix } from "../distribution.ts";
    actions 108-112 moved the intelligence and automation domains to devthink,
    so their seats retire here). The node-only capabilities keep their deep
    exports (./memory-*, ./sessions-file, ./release-*, ...). */
-const transportneutral = ["foundation.ts", "modalityregistry.ts"];
+const transportneutral = ["foundation.ts", "modalities.ts"];
 
 describe("the package surface", () => {
 it("imports every declared package export target in Node", async () => {
@@ -82,7 +82,7 @@ it("keeps transport-neutral export graphs free of Node-only imports", async () =
     }
   }
   assert.equal(seen.has(resolve(root, "..", "foundation.ts")), true);
-  assert.equal(seen.has(resolve(root, "..", "modalityregistry.ts")), true);
+  assert.equal(seen.has(resolve(root, "..", "modalities.ts")), true);
 });
 
 it("creates the expanded release matrix without vendor coupling", () => {

@@ -15,7 +15,7 @@ import {
   MODALITY_COUNT,
   planreport,
   resolvejoin,
-} from "../modalityregistry.ts";
+} from "../modalities.ts";
 
 /** the records the platform lanes drive today — the honest live set the
  * report and the lanes agree on (the run lane executes node inside the

@@ -22,7 +22,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { edgelaneexecutorsinproc, inproclaneids, inproclanespecs } from "../edgelandes.ts";
-import { getmodality } from "../modalityregistry.ts";
+import { getmodality } from "../modalities.ts";
 
 /** the hard deadline every lane test rides under. */
 const DEADLINEMS = 5000;

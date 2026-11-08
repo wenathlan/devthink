@@ -31,7 +31,7 @@
 // Pure data and pure functions: zero storage, zero node-only imports, the
 // browser-pure bundle keeps carrying it, exactly the registry law.
 
-import { type ModalityRecord, resolvejoin } from "./modalityregistry.ts";
+import { type ModalityRecord, resolvejoin } from "./modalities.ts";
 
 /** The demand one workload lane puts on the sandbox — the join vocabulary
  * the resolver reads (never a modality name: the nuclear law). */

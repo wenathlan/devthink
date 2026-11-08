@@ -5023,3 +5023,531 @@ export function modalitycensus(): {
     plananswered: MODALITYENGINE.length >= MODALITYPLANCOUNT,
   };
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════ */
+/* SECTION: modalityregistry.ts — the read-only catalog of the ninety   */
+/* (the registry law pr15: every record derives from the master engine   */
+/* table above, so the catalog can never drift; the alias layer the      */
+/* catalog once re-exported — BOOTLADDER, MODALITYPLANCOUNT,            */
+/* MODALITYCOUNT — dissolved into the engine body's own exports, same   */
+/* file, same values).                                                   */
+/* ══════════════════════════════════════════════════════════════════════ */
+
+/**
+ * modalityregistry — the catalog of the ninety sandbox modalities the
+ * saddle virtualization engine opens (the exclusive master engine of
+ * the family: the vm, the sandbox, the microvm, the runner and the
+ * hardware virtual seats — every workload rides the self-hosted edge,
+ * nothing touches the visitor machine). One record per modality: the
+ * numeric id (1 to 90), the name, the slug, the lane (sandbox, vm,
+ * runner or hardware), the category family, the driver requirements it
+ * mounts, the boot cost class, the hardening gates it carries, the
+ * mime contract it answers and the honest state of its wiring.
+ *
+ * THE REGISTRY LAW (pr15): this catalog derives every record from the
+ * master engine table (modalities.ts — the real executable logic of
+ * the ninety: the spawn plans, the cgroups-style resource flags, the
+ * queue orchestration and the in-process engines every seat owns), so
+ * the catalog can never drift from the engine and every record answers
+ * with its working implementation attached. the registry is the
+ * read-only view; the engine table is the truth.
+ *
+ * THE CRITICAL LAW (the visitor law): the ninety modalities act for
+ * the system on our own twenty-four hour internet infrastructure via
+ * saddle and vault edge processing — the engine never touches the
+ * visitor gpu, cpu, browser, local storage or localforage (the guard
+ * of modalities.ts enforces it at every dispatch).
+ *
+ * THE ENGINE LIMITS LAW: the engines are unlimited — the plan limits
+ * (for example the 50 gb per plan storage quota) are devthink system
+ * plan logic, never engine limits (engineplans.ts owns the law).
+ *
+ * the fold law of the virtual wave: the join resolver reads the
+ * request (isolation, gpu, network, boot budget) and answers the
+ * modality set that satisfies it, so the person chooses none and the
+ * platform resolves the join of all (the nuclear modality law). Every
+ * record declares its binding — live, host or planned — so the report
+ * never lies: a lane that does not wire a modality says so instead of
+ * pretending.
+ *
+ * Pure data and pure functions: zero storage, zero node-only imports,
+ * the browser-pure bundle keeps carrying it.
+ *
+ * @module saddle/modalityregistry
+ * @family wave/saddlepr15
+ * @token modality
+ * @token ninety
+ * @flag join-resolver
+ * @flag visitor-law
+ * @binding MODALITY_COUNT is derived from the records' real length —
+ *   never a hardcoded count — and MODALITYPLANCOUNT pins the plan line
+ *   the owner charged; the tests assert both stay equal at ninety.
+ */
+
+
+/** The boot cost classes the ladder measures. */
+export type BootClass = "hot" | "warm" | "cold";
+
+/** The isolation families the modalities group under (the catalog's
+ * finer vocabulary beside the four lanes — the join resolver reads it
+ * when a workload prefers a family). */
+export type ModalityFamily =
+  | "virtual"
+  | "runner"
+  | "packages"
+  | "container"
+  | "microvm"
+  | "browser"
+  | "mobile"
+  | "confidential"
+  | "emulator"
+  | "local"
+  | "screen"
+  | "wasm"
+  | "fs"
+  | "ram"
+  | "delivery"
+  | "language"
+  | "sandbox"
+  | "storage"
+  | "network"
+  | "build"
+  | "ci"
+  | "gpu"
+  | "hardware"
+  | "ports";
+
+/**
+ * The honest wiring state of one modality — the truth ladder every record
+ * declares and every report reads:
+ * - live — the platform lanes drive it today: the engine table owns a
+ *   real executor and the run lane executes through it;
+ * - host — the lane probes the host runtime and reports availability;
+ * - planned — the declared catalog promise, no lane wires it yet and the
+ *   record never pretends otherwise.
+ */
+export type ModalityState = ModalityWiringState;
+
+/** One sandbox modality of the registry — the read-only catalog view of
+ * one seat of the master engine table. */
+export interface ModalityRecord {
+  /** The stable slug the api and the config rows reference. */
+  id: string;
+  /** The numeric id of the seat: 1 (the first) to 90 (the ninetieth). */
+  num: number;
+  /** The display name of the seat (the full form). */
+  name: string;
+  /** The short display label (lowercase). */
+  label: string;
+  /** The lane of the seat: sandbox, vm, runner or hardware. */
+  lane: ModalityLane;
+  /** The isolation family the modality belongs to. */
+  family: ModalityFamily;
+  /** The isolation depth the family reaches (the capability contract). */
+  isolation: "process" | "namespace" | "vm" | "hardware";
+  /** The honest wiring state of the modality (the report never lies). */
+  state: ModalityState;
+  /** The driver modules the modality mounts when it boots. */
+  drivers: readonly string[];
+  /** The hardening gates the modality enforces by default. */
+  hardening: readonly string[];
+  /** The boot cost class (the measured budget lives in the boot ladder). */
+  boot: BootClass;
+  /** The measured boot budget in milliseconds (the ladder answers). */
+  bootms: number;
+  /** Whether the modality presents a gpu through the virtual drivers. */
+  gpu: boolean;
+  /** Whether the modality opens a network path (the hardened default is off). */
+  network: boolean;
+  /** The mime type the modality's api surface answers. */
+  mime: string;
+}
+
+/** The boot budgets of the ladder, per class: the ceilings the records
+ * walk under (firecracker 125 ms and gvisor about 200 ms ride warm,
+ * the full machine images ride cold). */
+/* the boot ladder alias the registry once carried rides the engine
+ * body's own BOOTLADDER export now (same file, same values — the alias
+ * layer dissolved with the fold). */
+
+/** The ninety modality plan: the count the owner charged (the ninety
+ * modalities of saddle acting for the system) and the engine table
+ * answers — the catalog walked from twenty through forty to the ninety
+ * law, and this constant is the line the plan pins. */
+/* the plan count alias rides the engine body's own MODALITYPLANCOUNT
+ * export now (same file, same value — the alias dissolved). */
+
+/** The family prefix table — the catalog's finer vocabulary derived
+ * from the seat slugs (the engine table owns the lane; the family is
+ * the join resolver's preference filter). */
+const FAMILYPREFIXES: ReadonlyArray<readonly [string, ModalityFamily]> = [
+  ["containerdockprincipal", "container"],
+  ["container", "container"],
+  ["runner", "runner"],
+  ["language", "language"],
+  ["runtime", "runner"],
+  ["build", "build"],
+  ["ci", "ci"],
+  ["storage", "storage"],
+  ["network", "network"],
+  ["ram", "ram"],
+  ["delivery", "delivery"],
+  ["virtualvgpu", "gpu"],
+  ["virtualgpu", "gpu"],
+  ["virtualvcpu", "hardware"],
+  ["virtualprocessor", "hardware"],
+  ["hardwarevirtual", "hardware"],
+  ["virtual", "virtual"],
+  ["microvm", "microvm"],
+  ["emulator", "emulator"],
+  ["confidential", "confidential"],
+  ["browser", "browser"],
+  ["screen", "screen"],
+  ["mobile", "mobile"],
+  ["sandbox", "sandbox"],
+  ["portsdock", "ports"],
+  ["virtualfile", "fs"],
+  ["fs", "fs"],
+  ["gpu", "gpu"],
+  ["local", "local"],
+];
+
+/** Derives the catalog family of one seat from its slug (the prefix
+ * table walks longest-first so the compound slugs answer their own
+ * family before the generic prefix catches them). */
+function familyof(slug: string): ModalityFamily {
+  for (const [prefix, family] of FAMILYPREFIXES) {
+    if (slug.startsWith(prefix)) return family;
+  }
+  return "sandbox";
+}
+
+/** Derives one catalog record from one seat of the master engine table
+ * (the registry is the read-only view — every field answers the engine
+ * table, nothing is re-declared). */
+function torecord(spec: ModalitySpec): ModalityRecord {
+  return {
+    id: spec.slug,
+    num: spec.num,
+    name: spec.name,
+    label: spec.name,
+    lane: spec.lane,
+    family: familyof(spec.slug),
+    isolation: spec.isolation,
+    state: spec.state,
+    drivers: spec.drivers,
+    hardening: spec.hardening,
+    boot: spec.boot,
+    bootms: spec.bootms,
+    gpu: spec.gpu,
+    network: spec.network,
+    mime: spec.mime,
+  };
+}
+
+/** The modality records: the catalog the join resolver reads — all
+ * ninety seats of the master engine table, each with its numeric id,
+ * name, lane and honest wiring state. */
+export const MODALITIES: readonly ModalityRecord[] = Object.freeze(MODALITYENGINE.map(torecord));
+
+/** The count the catalog answers — derived from the records' real
+ * length (never a hardcoded line, so the count cannot drift from the
+ * array) and the line the tests pin against the plan the owner
+ * charged. */
+export const MODALITY_COUNT = MODALITIES.length;
+
+/** The honest plan report: what the catalog holds against the ninety
+ * plan — the counts per state and whether the plan is answered. The
+ * report is the truth surface the lanes and the tests read; it never
+ * counts a record as more than its state declares. */
+export interface ModalityPlanReport {
+  /** The plan line the owner charged (the ninety modalities). */
+  plancount: number;
+  /** The records the catalog holds. */
+  catalogcount: number;
+  /** The records the platform lanes drive today. */
+  live: number;
+  /** The records whose host runtime the lane probes. */
+  host: number;
+  /** The declared promises no lane wires yet. */
+  planned: number;
+  /** Whether the catalog answers the plan count. */
+  plananswered: boolean;
+}
+
+/** planreport — the honest census of the registry against the ninety
+ * plan: the counts per state and the plan verdict, computed from the
+ * records (never hardcoded, so the report cannot drift from the
+ * catalog). */
+export function planreport(): ModalityPlanReport {
+  const counts: Record<ModalityState, number> = { live: 0, host: 0, planned: 0 };
+  for (const modality of MODALITIES) counts[modality.state] += 1;
+  return {
+    plancount: MODALITYPLANCOUNT,
+    catalogcount: MODALITIES.length,
+    live: counts.live,
+    host: counts.host,
+    planned: counts.planned,
+    plananswered: MODALITIES.length >= MODALITYPLANCOUNT,
+  };
+}
+
+/** The base profiles the owner names (the config wave makes them
+ * editable — engineplans.ts owns the tier law). */
+export type BaseProfile = "max" | "balanced" | "lite";
+
+/** The join request: what the workload asks, never a modality name. */
+export interface JoinRequest {
+  /** The base profile the sandbox boots under. */
+  base: BaseProfile;
+  /** Whether the workload needs a gpu path through the virtual drivers. */
+  gpu: boolean;
+  /** Whether the workload needs a network path. */
+  network: boolean;
+  /** The isolation depth the workload demands at minimum. */
+  isolation?: ModalityRecord["isolation"];
+  /** The boot budget the workload tolerates, in milliseconds. */
+  bootbudget?: number;
+  /** The family the workload prefers (the first filter when given). */
+  family?: ModalityFamily;
+  /** The lane the workload prefers (the pr15 lane filter: sandbox, vm,
+   * runner or hardware). */
+  lane?: ModalityLane;
+}
+
+/**
+ * Resolves the modality join for a request: the records that satisfy
+ * every demand, ordered by boot cost then isolation depth — the
+ * platform answers the join, the person never names a modality (the
+ * nuclear law).
+ *
+ * @param request the workload demands.
+ * @returns the modality records that satisfy the join, best candidate first.
+ */
+export function resolvejoin(request: JoinRequest): readonly ModalityRecord[] {
+  const budget = request.bootbudget ?? BOOTLADDER.cold;
+  const order: Record<ModalityRecord["isolation"], number> = { process: 0, namespace: 1, vm: 2, hardware: 3 };
+  return MODALITIES.filter((modality) => {
+    if (request.family && modality.family !== request.family) return false;
+    if (request.lane && modality.lane !== request.lane) return false;
+    if (request.gpu && !modality.gpu) return false;
+    if (request.network && !modality.network) return false;
+    if (request.isolation && order[modality.isolation] < order[request.isolation]) return false;
+    if (modality.bootms > budget) return false;
+    // the lite base keeps the heavy machine images out of the answer
+    if (request.base === "lite" && modality.isolation === "hardware") return false;
+    return true;
+  }).sort((a, b) => a.bootms - b.bootms || order[a.isolation] - order[b.isolation]);
+}
+
+/**
+ * Answers one modality by slug (the config rows and the api carry
+ * slugs).
+ *
+ * @param id the modality slug.
+ * @returns the record, or undefined when the slug is unknown.
+ */
+export function getmodality(id: string): ModalityRecord | undefined {
+  return MODALITIES.find((modality) => modality.id === id);
+}
+
+/**
+ * Answers one modality by its numeric id (1 to 90) — the pr15 seat
+ * number the engine table owns.
+ *
+ * @param num the numeric id of the seat.
+ * @returns the record, or undefined when the id is outside the ninety.
+ */
+export function getmodalitybynum(num: number): ModalityRecord | undefined {
+  return MODALITIES.find((modality) => modality.num === num);
+}
+
+// the engine-count re-export the catalog once carried dissolved with the
+// fold — the master table's derived count answers from its own export
+// above (the registry view and the engine table are one seat now, the
+// count cannot drift from itself).
+
+
+/* ══════════════════════════════════════════════════════════════════════ */
+/* SECTION: modes.ts — the target mode resolution and host-neutral      */
+/* deployment contracts (the mode profiles and the paired operation     */
+/* surfaces; the distribution re-export stays the cross-family wire).   */
+/* ══════════════════════════════════════════════════════════════════════ */
+
+/**
+ * modes.ts — target mode resolution and host-neutral deployment contracts.
+ *
+ * This file is the v2.0.0 grand-merge consolidation of the former nested
+ * folders of the repository (modes) into the single
+ * root-level domain file of the saddle family standard: one optimized
+ * TypeScript file per correlated domain, ordinal sections, JSDoc on every
+ * block, intra-domain imports dissolved, cross-domain imports rewritten to
+ * ./<domain>.js. Every capability of every source file is preserved here;
+ * the pure re-export barrels (none in this domain) folded their surface into this file directly.
+ */
+
+
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 1: modes/modes.ts — mode profiles describe paired operation surfaces without changing engine contracts. */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * mode profiles describe paired operation surfaces without changing engine contracts.
+ */
+const names = ["computer", "library", "application", "browser", "desktop", "mobile", "extension", "cli", "binary", "internet", "physicalfile", "vectorfile", "visible", "headless"];
+
+export function modeprofile(options = {}) {
+  const enabled = new Set(options.enabled ?? ["library", "cli", "binary"]);
+  return Object.fromEntries(names.map((name) => [name, { name, enabled: enabled.has(name), paired: Boolean(options.paired?.includes(name)) }]));
+}
+
+export function librarymode(factory) { return { name: "library", start: factory, stop: async () => undefined }; }
+export function climode(run) { return { name: "cli", run }; }
+export function binarymode(run) { return { name: "binary", run }; }
+export function browsermode(adapter) { return { name: "browser", adapter }; }
+export function headlessmode(adapter) { return { name: "headless", adapter }; }
+export function computemode(adapter) { return { name: "computer", adapter }; }
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 2: modes/matrix.ts — mode matrix keeps supported execution choices in one grouped contract. */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * mode matrix keeps supported execution choices in one grouped contract.
+ */
+export const modeaxes = Object.freeze({
+  execution: ["library", "application", "browser", "desktopapp", "mobileapp", "extension", "cli", "binary", "computer", "internet"],
+  runtime: ["node", "browser", "deno", "bun", "worker", "unknown"],
+  memory: ["internal", "external", "physical", "vectorized", "library"],
+  file: ["internal", "external", "physical", "vector"],
+  dependency: ["internal", "external", "dev"],
+  visibility: ["visible", "headless"],
+  pair: ["without", "with"]
+});
+
+export const operationmodes = Object.freeze(modeaxes.execution.flatMap((execution) => modeaxes.pair.map((pair) => `${execution}${pair}`)));
+
+/** Returns true when the matrix contains the requested axis value. */
+export function validatemode(axis, value) { return Boolean(modeaxes[axis]?.includes(value)); }
+
+/** Returns a serializable snapshot for documentation and diagnostics. */
+export function modecatalog() { return { axes: Object.fromEntries(Object.entries(modeaxes).map(([key, values]) => [key, [...values]])), operationmodes: [...operationmodes] }; }
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 3: modes/resolve.ts — mode resolver selects open defaults while preserving every caller choice. */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * mode resolver selects open defaults while preserving every caller choice.
+ */
+
+/** Resolves an execution profile without starting a process or opening a socket. */
+export function resolvemode(options = {}) {
+  const profile = {
+    execution: options.execution ?? "library",
+    runtime: options.runtime ?? "unknown",
+    memory: options.memory ?? "internal",
+    file: options.file ?? "internal",
+    dependency: options.dependency ?? "internal",
+    visibility: options.visibility ?? "headless",
+    pair: options.pair ?? "without"
+  };
+  for (const [axis, value] of Object.entries(profile)) if (!validatemode(axis, value)) throw new TypeError(`unsupported mode ${axis}:${value}`);
+  return { ...profile, capabilities: modecapabilities(profile) };
+}
+
+/** Returns stable capabilities for adapters and diagnostics. */
+export function modecapabilities(profile) {
+  return {
+    library: profile.execution === "library" || profile.execution === "application",
+    browser: profile.execution === "browser" || profile.execution === "extension" || profile.runtime === "browser" || profile.runtime === "worker",
+    cli: profile.execution === "cli" || profile.execution === "binary",
+    physicalmemory: profile.memory === "physical",
+    vectorizedmemory: profile.memory === "vectorized",
+    externalmemory: profile.memory === "external",
+    externalfile: profile.file === "external",
+    externaldependency: profile.dependency === "external",
+    visible: profile.visibility === "visible"
+  };
+}
+
+/** Returns a stable cross-runtime capability report without starting infrastructure. */
+export function capabilityreport(options = {}) {
+  const overrides = { runtime: options.runtime ?? "unknown", memory: options.memory ?? "internal", file: options.file ?? "internal", dependency: options.dependency ?? "internal", visibility: options.visibility ?? "headless", pair: options.pair ?? "without" };
+  const profiles = modeaxes.execution.map((execution) => {
+    const profile = resolvemode({ ...overrides, execution });
+    return { mode: execution, capabilities: profile.capabilities, profile };
+  });
+  return { version: 1, axes: Object.fromEntries(Object.entries(modeaxes).map(([key, values]) => [key, [...values]])), overrides, profiles, infrastructure: { host: "caller-owned", port: "caller-owned", credentials: "caller-owned", provider: "caller-owned" } };
+}
+
+/** Applies one profile to a caller supplied operation. */
+export async function withmode(options, operation) { if (typeof operation !== "function") throw new TypeError("mode operation is required"); return operation(resolvemode(options)); }
+
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 4: modes/deploy.ts — deploy surface exposes artifact planning without performing provider mutations. */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * deploy surface exposes artifact planning without performing provider mutations.
+ */
+/* the distribution re-export the modes leaf once carried (publishplan,
+ * registrymanifest) dissolved with the fold: no importer ever read the
+ * two names through this seat (the engine tests walk distribution
+ * directly, the routing barrel answers the tiers namesake), and the wire
+ * would drag the node-only distribution module into the transport-neutral
+ * closure this engine seat pins — the published names answer from their
+ * own distribution subpaths. */
+/* the packaging surface pair (surfacemanifest, surfacebundle) moved to
+ * devthink with the automation domain (the saddle ownership law, wave a,
+ * actions 108-112 — the deploy surface keeps the artifact planning pair
+ * the engine owns). */
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 5: modes/targets.ts — target profiles keep platform packaging open and describe capability boundaries. */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * target profiles keep platform packaging open and describe capability boundaries.
+ */
+export const targetprofiles = Object.freeze({
+  application: { runtime: "caller", entry: "distpackage/index.js", capabilities: ["memory", "storage", "network"], formats: ["zip", "tarball"] },
+  computer: { runtime: "node", entry: "distpackage/index.js", capabilities: ["memory", "storage", "runner"], formats: ["node", "bun", "deno", "singlefile"] },
+  desktopapp: { runtime: "tauri", entry: "desktop/src-tauri", capabilities: ["memory", "file", "visible"], formats: ["appimage", "deb", "rpm", "snap", "flatpak", "dmg", "pkg", "exe", "msi", "msix"] },
+  mobileapp: { runtime: "capacitor", entry: "index.html", capabilities: ["memory", "network", "visible"], formats: ["apk", "aab", "ipa"] },
+  android: { runtime: "capacitor", entry: "android", capabilities: ["memory", "network", "visible"], formats: ["apk", "aab"] },
+  ios: { runtime: "capacitor", entry: "ios", capabilities: ["memory", "network", "visible"], formats: ["ipa"] },
+  cli: { runtime: "node", entry: "distpackage/cli/main.js", capabilities: ["memory", "storage", "network"], formats: ["node", "bun", "deno", "singlefile", "exe", "deb", "rpm"] },
+  binary: { runtime: "caller", entry: "distpackage/cli/main.js", capabilities: ["memory", "storage", "runner"], formats: ["sea", "singlefile", "wasm"] },
+  browser: { runtime: "tauri", entry: "desktop/src-tauri", capabilities: ["memory", "network", "visible"], formats: ["html", "pwa", "wasm", "appimage", "deb", "rpm", "dmg", "exe", "msi"] },
+  extension: { runtime: "browser", entry: "distpackage/extension/index.js", capabilities: ["browser", "network", "visible"], formats: ["crx", "xpi", "safariextz"] },
+  internet: { runtime: "caller", entry: "distpackage/index.js", capabilities: ["network", "webhook", "api"], formats: ["http", "websocket", "grpc", "rest"] },
+  web: { runtime: "browser", entry: "index.html", capabilities: ["network", "visible"], formats: ["html", "pwa", "ssg", "ssr", "wasm"] },
+  libreoffice: { runtime: "caller", entry: "distpackage/index.js", capabilities: ["file", "network"], formats: ["oxt", "zip"] },
+  mcp: { runtime: "caller", entry: "distpackage/adapters/mcpserver.js", capabilities: ["network", "api"], formats: ["stdio", "jsonrpc"] },
+  vsix: { runtime: "caller", entry: "distpackage/index.js", capabilities: ["network", "visible"], formats: ["vsix"] },
+  container: { runtime: "node", entry: "distpackage/index.js", capabilities: ["memory", "storage", "network"], formats: ["oci", "docker"] }
+});
+
+/** Creates a surface target with caller supplied entry and capabilities. */
+export function targetmanifest(target, options = {}) { const profile = targetprofiles[target]; if (!profile) throw new TypeError(`unsupported target: ${target}`); return { target, runtime: options.runtime ?? profile.runtime, entry: options.entry ?? profile.entry, formats: options.formats ?? [...profile.formats], capabilities: options.capabilities ?? [...profile.capabilities], permissions: options.permissions ?? [], metadata: options.metadata ?? {} }; }
+
+/** Returns all supported target profiles for documentation and tooling. */
+export function targetcatalog() { return Object.fromEntries(Object.entries(targetprofiles).map(([key, value]) => [key, { ...value, capabilities: [...value.capabilities] }])); }
+
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 6: the runner-mode ladder — the runtime targets a run asks   */
+/* the engine for (wave 3, the engine ownership law: forge and foundry  */
+/* consumed the five targets as duplicated twin lists; the ladder       */
+/* answers from the saddle owner from this day on, and the apps import  */
+/* it through the published library specifier). Zero logic change to    */
+/* the lanes above — the section is additive and imports nothing.       */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * the runner modes of the engine: the runtime targets a run asks for on
+ * the saddle boundary — the full virtual machine, the runner host, the
+ * node packages lane, the docker lane and the ghcr immutable lane.
+ */
+export const runnermodes = ["full-virtual", "runner", "node-packages", "docker", "ghcr"] as const;
+
+/** one runner mode of the engine (the runtime target a run asks for). */
+export type RunnerMode = (typeof runnermodes)[number];

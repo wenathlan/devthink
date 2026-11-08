@@ -10,7 +10,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { edgelaneexecutorsvirtual, virtuallaneids, virtuallanespecs } from "../edgelandes.ts";
-import { getmodality } from "../modalityregistry.ts";
+import { getmodality } from "../modalities.ts";
 import { kvmcapnames } from "../virtual.ts";
 
 /** the manifest fixture the full-machine runs ride: a reviewed model, the
