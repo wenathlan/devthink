@@ -15,8 +15,28 @@
  * reconcile with a seen-wins merge — a stage seen anywhere stays seen, the
  * flow is never forced twice. The page anchors never touch the flags
  * directly: the intro marks introseen, the onboarding marks onboardingseen,
- * the home entry gate only reads.
+ * the home entry gate only reads. The host gate (hostallowed) and the stage
+ * merge (mergeStage) answer from the owner engine seat of the vault storage
+ * lane module (@wenathlan/vault/onboardingstore — the wave 14 consolidation
+ * the six family seats ride) under the strict law this app's battery pins
+ * (the mapped ipv6 normalization, the flow order that lets the later stage
+ * imply the earlier), re-exported here under the plain names its pages,
+ * lanes and tests already cite; the cache key, the visitor seat, the
+ * platform read and write and the accessors stay this app's own stateful
+ * glue.
  */
+
+/* the engine the entry flow rides answers from the owner seat — the vault
+ * storage lane module owns the host gate and the stage merge once for the
+ * family (the wave 14 onboarding consolidation, the audit ranking four);
+ * this app module keeps only its stateful glue (the getry cache mirror,
+ * the per-browser visitor, the platform read and write, the accessors) and
+ * re-exports the strict engine under the plain names its importers already
+ * cite — the names answer byte-identical, the law they enforce never
+ * moved. */
+import { hostallowedstrict as hostallowed, mergeStageordered as mergeStage } from "@wenathlan/vault/onboardingstore";
+
+export { hostallowed, mergeStage };
 
 /** the visitor state the entry flow consults (the two gates of the app). */
 export type VisitorOnboarding = {
@@ -49,87 +69,6 @@ const READ_TIMEOUT_MS = 2500;
 
 /** module memory: the flags of the session, consulted before any i/o. */
 let memory: VisitorOnboarding | null = null;
-
-/**
- * Validates a platform base url: HTTPS only, and the host must be public —
- * localhost, loopback, private, link-local, CGNAT, benchmarking,
- * unique-local and the reserved documentation ranges are refused; a mapped
- * IPv6 literal is normalized to its embedded IPv4 first; any other IPv6
- * literal is refused (the gateway rides a name).
- *
- * @param base the configured base url candidate.
- * @returns true when the base may be consulted.
- */
-export function hostallowed(base: string): boolean {
-  try {
-    const url = new URL(base);
-    if (url.protocol !== "https:") return false;
-    const host = url.hostname
-      .toLowerCase()
-      .replace(/\.+$/, "")
-      .replace(/^\[|\]$/g, "");
-    if (host.length === 0) return false;
-    if (host === "localhost" || host === "0.0.0.0" || host === "::1" || host === "::") return false;
-    if (host.endsWith(".localhost") || host.endsWith(".local") || host.endsWith(".internal")) return false;
-    if (host.endsWith(".home.arpa")) return false;
-    if (host.includes(":")) return mappedipv6(host);
-    const v4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-    if (v4) return publicipv4(Number(v4[1]), Number(v4[2]));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Answers whether an IPv6 literal is the IPv4-mapped form of a PUBLIC
- * address (the url parser normalizes `::ffff:127.0.0.1` to hex hextets, so
- * both spellings are normalized here and the embedded IPv4 decides).
- *
- * @param host the bracket-free ipv6 literal.
- * @returns true when the literal maps to a public ipv4 address.
- */
-function mappedipv6(host: string): boolean {
-  if (!host.startsWith("::ffff:")) return false;
-  const tail = host.slice("::ffff:".length);
-  const decimals = tail.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-  if (decimals) return publicipv4(Number(decimals[1]), Number(decimals[2]));
-  // the hex spelling the url parser produces: the first hextet of the pair
-  // carries the first two ipv4 octets, and they alone decide the ranges
-  const hextets = tail.match(/^([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
-  if (hextets) {
-    const high = Number.parseInt(hextets[1], 16);
-    return publicipv4((high >> 8) & 0xff, high & 0xff);
-  }
-  return false;
-}
-
-/** the public side of an ipv4 address (the first two octets decide). */
-function publicipv4(a: number, b: number): boolean {
-  if (a === 0 || a === 10 || a === 127) return false;
-  if (a === 172 && b >= 16 && b <= 31) return false;
-  if (a === 192 && b === 168) return false;
-  if (a === 169 && b === 254) return false;
-  if (a === 100 && b >= 64 && b <= 127) return false;
-  if (a === 192 && b === 0) return false;
-  if (a === 198 && (b === 18 || b === 19)) return false;
-  if (a === 198 && (b === 51 || b === 52)) return false;
-  if (a === 203 && b === 0) return false;
-  if (a >= 224) return false;
-  return true;
-}
-
-/**
- * Answers the flags after one stage was marked seen (pure: the writer and
- * the tests share this merge — seen-wins, a stage never unsees).
- *
- * @param state the flags before the write.
- * @param stage the stage being marked seen.
- * @returns the flags after the write.
- */
-export function mergeStage(state: VisitorOnboarding, stage: OnboardingStage): VisitorOnboarding {
-  return stage === "intro" ? { ...state, introseen: true } : { ...state, introseen: true, onboardingseen: true };
-}
 
 /** Reads the localStorage cache; any corruption answers null (the cache is best effort). */
 function readCache(): VisitorOnboarding | null {

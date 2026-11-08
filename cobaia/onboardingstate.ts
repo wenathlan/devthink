@@ -15,8 +15,24 @@
  * forced twice. The page anchors never touch the flags directly: the intro
  * marks introseen, the onboarding marks onboardingseen, the home entry gate
  * only reads (the family flow contract the sibling apps already ride —
- * cobaia joins the standardized intro → onboarding → entrada law).
+ * cobaia joins the standardized intro → onboarding → entrada law). The
+ * host gate (hostallowed) and the stage merge (mergeStage) answer from the
+ * owner engine seat of the vault storage lane module
+ * (@wenathlan/vault/onboardingstore — the wave 14 consolidation the six
+ * family seats ride) and are re-exported here so every importer of this
+ * door keeps resolving the same names; the cache key, the platform read
+ * and write and the memoized accessors stay this app's own stateful glue.
  */
+
+/* the engine the entry flow rides answers from the owner seat — the vault
+ * storage lane module owns the host gate and the stage merge once for the
+ * family (the wave 14 onboarding consolidation, the audit ranking four);
+ * this app module keeps only its stateful glue (the cobaia cache mirror,
+ * the platform read and write, the memoized accessors) and re-exports the
+ * engine under the names its pages and tests already cite. */
+import { hostallowed, mergeStage } from "@wenathlan/vault/onboardingstore";
+
+export { hostallowed, mergeStage };
 
 /** the visitor state the entry flow consults (the two gates of the site). */
 export type VisitorOnboarding = {
@@ -49,67 +65,6 @@ const READ_TIMEOUT_MS = 2500;
 
 /** module memory: the flags of the session, consulted before any i/o. */
 let memory: VisitorOnboarding | null = null;
-
-/**
- * Validates a platform base url: HTTPS only, and the host must be public —
- * localhost, loopback, private, link-local, CGNAT, unique-local and
- * reserved documentation ranges are refused; IPv4-mapped IPv6 literals are
- * normalized to their IPv4 side and any other IPv6 literal is refused (the
- * gateway rides a name).
- *
- * @param base the configured base url candidate.
- * @returns true when the base may be consulted.
- */
-export function hostallowed(base: string): boolean {
-  try {
-    const url = new URL(base);
-    if (url.protocol !== "https:") return false;
-    const host = url.hostname
-      .toLowerCase()
-      .replace(/\.+$/, "")
-      .replace(/^\[|\]$/g, "");
-    if (host.length === 0) return false;
-    if (host === "localhost" || host === "0.0.0.0" || host === "::1") return false;
-    if (host.endsWith(".localhost") || host.endsWith(".local") || host.endsWith(".internal")) return false;
-    // the ipv4-mapped ipv6 form (the url parser normalizes the decimals away)
-    if (host.startsWith("::ffff:")) {
-      const mapped = host.slice("::ffff:".length).match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-      return mapped !== null && publicipv4(Number(mapped[1]), Number(mapped[2]));
-    }
-    const v4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-    if (v4) return publicipv4(Number(v4[1]), Number(v4[2]));
-    // every other ipv6 literal: the gateway rides a name, not an address
-    if (host.includes(":")) return false;
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-/** the public side of an ipv4 address (the first two octets decide). */
-function publicipv4(a: number, b: number): boolean {
-  if (a === 0 || a === 10 || a === 127) return false;
-  if (a === 172 && b >= 16 && b <= 31) return false;
-  if (a === 192 && b === 168) return false;
-  if (a === 169 && b === 254) return false;
-  if (a === 100 && b >= 64 && b <= 127) return false;
-  if (a === 192 && b === 0) return false;
-  if (a === 198 && (b === 51 || b === 52)) return false;
-  if (a === 203 && b === 0) return false;
-  return true;
-}
-
-/**
- * Answers the flags after one stage was marked seen (pure: the writer and
- * the tests share this merge — seen-wins, a stage never unsees).
- *
- * @param state the flags before the write.
- * @param stage the stage being marked seen.
- * @returns the flags after the write.
- */
-export function mergeStage(state: VisitorOnboarding, stage: OnboardingStage): VisitorOnboarding {
-  return stage === "intro" ? { ...state, introseen: true } : { ...state, onboardingseen: true };
-}
 
 /** Reads the localStorage cache; any corruption answers null (the cache is best effort). */
 function readCache(): VisitorOnboarding | null {
