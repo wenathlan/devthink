@@ -22,7 +22,7 @@ import { DatabaseSync } from 'node:sqlite';
 import type { StatementSync } from 'node:sqlite';
 import { resolve } from 'node:path';
 import process from 'node:process';
-import { createOnboardingStore, type OnboardingLane } from '../vault/onboardingstore.ts';
+import { createOnboardingStore, type OnboardingLane } from '@wenathlan/vault/onboardingstore';
 import { LABEL_REVISION, labelmanifest } from './labels.ts';
 
 /* ------------------------------------------------------------------ */

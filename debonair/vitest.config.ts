@@ -4,6 +4,9 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      /** the dns bridge (the family door law): the entry retires when the published envelope carries the surface. */
+      "@wenathlan/argan/dns": path.resolve(import.meta.dirname, "../argan/dns.ts"),
+
       /** the label store bridge of the ownership law: the app's copy
        * mechanism rides the vault factory through the published library
        * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves

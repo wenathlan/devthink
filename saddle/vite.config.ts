@@ -16,6 +16,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the label store bridge: the copy law reads the owner's label factory through the published specifier ("@wenathlan/vault/labelstore") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the onboarding store bridge: the seen-flags law reads the owner's onboarding factory through the published specifier ("@wenathlan/vault/onboardingstore") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+
       // the theme sources live in the sol folder of this app root.
       "@": path.resolve(import.meta.dirname, "sol"),
       /** The label store bridge of the ownership law: the app's copy mechanism

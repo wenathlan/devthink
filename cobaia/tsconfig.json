@@ -13,6 +13,9 @@
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
     "paths": {
+      "@wenathlan/vault/storage": ["../vault/storage.ts"],
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
+
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"]

@@ -16,6 +16,13 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the pipeline bridge: the runner reads the owner's stage plan seats through the published specifier ("@wenathlan/foundry/pipeline") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/pipeline": path.resolve(import.meta.dirname, "../foundry/pipeline.ts"),
+      /** the home types bridge: the home face reads the owner's home props through the published specifier ("@wenathlan/foundry/hometypes") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/hometypes": path.resolve(import.meta.dirname, "../foundry/hometypes.ts"),
+      /** the workload law bridge: the sandbox seat reads the owner's lane seating through the published specifier ("@wenathlan/saddle/workloadlaw") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
+
       /** the label store bridge of the ownership law: the app's copy
        * mechanism rides the vault factory through the published library
        * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves

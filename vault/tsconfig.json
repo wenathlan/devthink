@@ -11,7 +11,11 @@
     "skipLibCheck": true,
     "allowImportingTsExtensions": true,
     "moduleResolution": "bundler",
-    "types": ["vite/client", "node"]
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
+      "@wenathlan/foundry/hometypes": ["../foundry/hometypes.ts"]
+    }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]

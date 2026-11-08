@@ -15,7 +15,7 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
 import type { platformtarget } from "./types.ts";
-import { stripstrings, underscorednames } from "../foundry/bundlescan.ts";
+import { stripstrings, underscorednames } from "@wenathlan/foundry/bundlescan";
 import { cjswrap } from "./cjswrap.ts";
 import {
   changelogdigestworkflow,
@@ -1451,6 +1451,14 @@ const stagedeclarations = [
   "companion",
 ];
 for (const file of stagerootfiles) await writeFile(join(stage, file), await readFile(join(root, "build", file)));
+/** the source-is-library seat of the reveal door (the tsroot law's family
+    door): the client-safe reveal observer ships as its reviewed .ts source
+    — the module documents itself as the canonical static-bundle import for
+    every family app (react and wouter stay the only imports), so the flat
+    package answers the ./reveal specifier with the source the vite and
+    vitest bridges already resolve, and the staged exports walk stays
+    honest (the target ./reveal.ts resolves to a staged file). */
+await writeFile(join(stage, "reveal.ts"), await readFile(join(root, "reveal.ts")));
 for (const name of stagedeclarations) {
   await writeFile(join(stage, `${name}.d.ts`), await readFile(join(root, "build", `${name}.d.ts`)));
   await writeFile(join(stage, `${name}.d.ts.map`), await readFile(join(root, "build", `${name}.d.ts.map`)));

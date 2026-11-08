@@ -346,6 +346,13 @@ export default defineConfig({
   plugins: [nodebuiltinshim(), react(), tailwindcss(), familydevbridge()],
   resolve: {
     alias: {
+      /** the clean url bridge: the os door reads the owner's canonical url seat through the published specifier ("@wenathlan/argan/dns") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/argan/dns": path.resolve(import.meta.dirname, "../argan/dns.ts"),
+      /** the bundle scan bridge: the builder reads the owner's string strip seats through the published specifier ("@wenathlan/foundry/bundlescan") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/bundlescan": path.resolve(import.meta.dirname, "../foundry/bundlescan.ts"),
+      /** the readiness bridge: the records lane reads the owner's readiness suite through the published specifier ("@wenathlan/foundry/readiness") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/readiness": path.resolve(import.meta.dirname, "../foundry/readiness.ts"),
+
       // the transcode engine bridge of the ownership law (retires when the
       // published cadria envelope carries the transcodeengine export entry)
       "@wenathlan/cadria/transcode": path.resolve(import.meta.dirname, "../cadria/transcode.ts"),

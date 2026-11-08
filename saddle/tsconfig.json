@@ -24,6 +24,9 @@
     "moduleResolution": "NodeNext",
     "types": ["node", "vite/client"],
     "paths": {
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
+
       "@/*": ["./sol/*", "./*"],
       "@saddle/isolation": ["./isolation.ts"]
     }

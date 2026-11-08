@@ -9,7 +9,7 @@
 // canonical RUNPLAN fixture the runs page rehearses, built on the shared
 // types and still assignable to the owner engine, ride for ride.
 
-import type { planstep as ownerplanstep, runplan as ownerrunplan } from "../foundry/pipeline.ts";
+import type { planstep as ownerplanstep, runplan as ownerrunplan } from "@wenathlan/foundry/pipeline";
 import type { RunnerMode } from "./runner.ts";
 
 export type {
@@ -20,7 +20,7 @@ export type {
   planstate,
   planstepkind,
   planwire,
-} from "../foundry/pipeline.ts";
+} from "@wenathlan/foundry/pipeline";
 export {
   PLAN_STATES,
   planbounds,
@@ -38,7 +38,7 @@ export {
   planstepof,
   plantally,
   planvalid,
-} from "../foundry/pipeline.ts";
+} from "@wenathlan/foundry/pipeline";
 
 /** One step of the run plan: the owner's step plus the saddle mode seat —
  * what the runner does, on which saddle mode (the forge contract the

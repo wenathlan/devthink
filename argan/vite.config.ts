@@ -20,6 +20,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the motion preference bridge: the settings face reads the owner's reduce-motion seat through the published specifier ("@wenathlan/debonair/motionpref") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/debonair/motionpref": path.resolve(import.meta.dirname, "../debonair/motionpref.ts"),
+      /** the workload law bridge: the sandbox seat reads the owner's lane seating through the published specifier ("@wenathlan/saddle/workloadlaw") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
+
       /** the label store bridge of the ownership law: the app's copy
        * mechanism rides the vault factory through the published library
        * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves

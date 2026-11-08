@@ -12,7 +12,7 @@
  * into the local cache the way onboardingstate.ts mirrors the seen flags.
  */
 
-import { createLabelStore } from "../vault/labelstore.ts";
+import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 
 /** the label revision of the manifest: bump on every copy wave so the seed

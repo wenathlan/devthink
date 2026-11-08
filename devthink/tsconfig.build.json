@@ -9,6 +9,10 @@
     "outDir": "build",
     "rootDir": ".",
     "paths": {
+      "@wenathlan/argan/dns": ["../argan/dns.ts"],
+      "@wenathlan/foundry/bundlescan": ["../foundry/bundlescan.ts"],
+      "@wenathlan/foundry/readiness": ["../foundry/readiness.ts"],
+
       "z-ai-web-dev-sdk": [
         "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
       ],
@@ -183,6 +187,11 @@
     "crossbrowser.ts",
     "pack.ts",
     "companion.ts",
+    /* the personalstore seam entry (the tsroot law's family door): the
+       exports map answers the published ./personalstore specifier the
+       stealthhead theme door reads, so the declaration emit covers the
+       entry the flat package stages. */
+    "personalstore.ts",
     "server.ts"
   ]
 }

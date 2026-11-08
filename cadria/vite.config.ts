@@ -20,6 +20,9 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the clean url bridge: the studio door reads the owner's canonical url seat through the published specifier ("@wenathlan/argan/dns") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/argan/dns": path.resolve(import.meta.dirname, "../argan/dns.ts"),
+
       /** the engine ownership bridges of the audio family: the analysis
        * seats the studio pages ride (the descriptor contract and the
        * orchestrated analysis report) live in the katexis engine of the

@@ -263,11 +263,15 @@
     "@vitejs/plugin-react": "^6.2.1",
     "@wenathlan/argan": "~2.0.168",
     "@wenathlan/cadria": "~2.0.168",
+    "@wenathlan/cobaia": "link:../cobaia",
     "@wenathlan/debonair": "~2.0.168",
     "@wenathlan/devthink": "~2.0.168",
+    "@wenathlan/forge": "link:../forge",
+    "@wenathlan/foundry": "link:../foundry",
     "@wenathlan/getry": "~2.0.168",
     "@wenathlan/saddle": "~2.0.168",
-    "@wenathlan/vault": "~2.0.168",
+    "@wenathlan/stealthhead": "link:../stealthhead",
+    "@wenathlan/vault": "link:../vault",
     "add": "^2.0.9",
     "ai": "^7.0.165",
     "autoprefixer": "^10.6.2",
@@ -440,7 +444,7 @@
     "@wenathlan/devthink": "~2.0.168",
     "@wenathlan/getry": "~2.0.168",
     "@wenathlan/saddle": "~2.0.168",
-    "@wenathlan/vault": "~2.0.168",
+    "@wenathlan/vault": "link:../vault",
     "add": "^2.0.9",
     "ai": "^7.0.165",
     "autoprefixer": "^10.6.2",
@@ -529,13 +533,13 @@
     "webpack": "^5.112.2",
     "webpack-cli": "^7.3.1",
     "wouter": "^3.13.0",
+    "xcode": {
+      "uuid": "11.1.1"
+    },
     "yaml": "^2.9.1",
     "z-ai-web-dev-sdk": "^0.0.18",
     "zod": "^4.6.7",
-    "zustand": "^5.1.0",
-    "xcode": {
-      "uuid": "11.1.1"
-    }
+    "zustand": "^5.1.0"
   },
   "type": "module",
   "sideEffects": false,
@@ -749,6 +753,5 @@
     "@swc/core",
     "pnpm",
     "protobufjs"
-  ],
-  "optionalDependencies": {}
+  ]
 }

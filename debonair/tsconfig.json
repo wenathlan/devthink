@@ -13,6 +13,8 @@
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
     "paths": {
+      "@wenathlan/argan/dns": ["../argan/dns.ts"],
+
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       /* the storage lane bridge of the family: the site store (db.ts) opens

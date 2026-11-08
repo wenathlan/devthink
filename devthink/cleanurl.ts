@@ -10,9 +10,9 @@
  * os extras (the detailed walk, the view navigation, the hash janitor).
  */
 
-import { cleanUrl } from "../argan/dns.ts";
+import { cleanUrl } from "@wenathlan/argan/dns";
 
-export { applyNow, cleanUrl, syncCanonical } from "../argan/dns.ts";
+export { applyNow, cleanUrl, syncCanonical } from "@wenathlan/argan/dns";
 
 /** legacy static hash route: #/settings, #settings */
 const HASH_ROUTE = /^#\/?/;

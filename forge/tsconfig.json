@@ -13,6 +13,12 @@
     "moduleResolution": "bundler",
     "types": ["vite/client", "node"],
     "paths": {
+      "@wenathlan/vault/storage": ["../vault/storage.ts"],
+      "@wenathlan/saddle/modes": ["./saddlefaces.ts"],
+      "@wenathlan/foundry/pipeline": ["../foundry/pipeline.ts"],
+      "@wenathlan/foundry/hometypes": ["../foundry/hometypes.ts"],
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
+
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       "@wenathlan/vault/routes": ["../vault/routes.ts"],
