@@ -452,6 +452,7 @@ node_modules
 # at the repository root — never committed, never in tmp)
 polar.sh
 polar-sync.sh
+.sync-status
 .github-token
 polar.log
 .polar.pid

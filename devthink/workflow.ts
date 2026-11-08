@@ -4817,13 +4817,26 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
          lane control reads the emitted seat the build never calls dist */
       "distpackage/packager/targetcli.js",
       "require('./saddle/package.json').version",
+      /* the size-law move: the saddle vhe family (the validation lane,
+         the vhe profile stamping and the dispatch-only deep validation)
+         rides the containers.yml wave now — the publish file answered
+         the 500 KB ceiling the GitHub limit carries, so the controls
+         answer from the containers checks below */
+    ],
+    "saddlelanes.yml": [
+      /* the half-megabyte law (the saddlelanes split): the saddle vhe
+         family the publish workflow carried rides its own file now —
+         the publish envelope answered the 500 KB ceiling the GitHub
+         limit carries — so the vhe controls answer from the split wave
+         (the saddle manifest read, the validation lane, the vhe profile
+         stamping, the dispatch-only deep validation, the security gate
+         and the catalog law) */
+      "JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version",
       "Validate saddle vhe image",
       "VHE_PROFILE_CPU=",
-      /* the mesa mirror healing the grand-merge era carried retired with
-         the from-source mesa stages (the family doctrine ships the pinned
-         base image legs now), so the MESA_SHA256= control the old lane
-         pinned rides out of the required list with the stage it froze */
       "if: github.event_name == 'workflow_dispatch'",
+      "Saddle vhe security gate",
+      "osprofiles catalog carries",
     ],
     "maintenance.yml": [
       "workflow_run:",

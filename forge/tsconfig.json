@@ -14,7 +14,7 @@
     "types": ["vite/client", "node"],
     "paths": {
       "@wenathlan/vault/storage": ["../vault/storage.ts"],
-      "@wenathlan/saddle/modes": ["./saddlefaces.ts"],
+      "@wenathlan/saddle/modes": ["../foundry/saddlefaces.ts"],
       "@wenathlan/foundry/pipeline": ["../foundry/pipeline.ts"],
       "@wenathlan/foundry/hometypes": ["../foundry/hometypes.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
