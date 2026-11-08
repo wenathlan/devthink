@@ -22,8 +22,12 @@ export default defineConfig({
        * the specifier to the monorepo source the sibling engine carries —
        * the mechanism is never duplicated inside stealthhead. the entry retires
        * when the published envelope carries the built label store. */
+      "@wenathlan/devthink/personalstore": path.resolve(import.meta.dirname, "../devthink/personalstore.ts"),
+      "@wenathlan/devthink/reveal": path.resolve(import.meta.dirname, "../devthink/reveal.ts"),
+      "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+      "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
     /** the single-instance law (the PR12 renderparity heal): the family

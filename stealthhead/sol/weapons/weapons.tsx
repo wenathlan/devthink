@@ -9,19 +9,18 @@
  * weapons — the in-construction pass: the game is in development, so the
  * armory ledger of the old face (the specimen rows, the stat meters, the
  * featured top-damage tile) is retired and the route answers the honest
- * construction face under the weapons eyebrow. The root armory logic the
- * ledger read keeps riding its own files untouched — only this page's face
- * changed.
+ * construction face (the route eyebrows retired with the routes). The
+ * root armory logic the ledger read keeps riding its own files untouched
+ * — only this page's face changed.
  */
 
-import { label } from "../../labels";
 import { Constructionface } from "../../wingets";
 
 /**
- * the weapons page: the in-construction face under the weapons eyebrow.
+ * the weapons page: the in-construction face.
  *
  * @returns the construction face element.
  */
 export default function Weapons() {
-  return <Constructionface eyebrow={label("weapons.eyebrow")} />;
+  return <Constructionface />;
 }

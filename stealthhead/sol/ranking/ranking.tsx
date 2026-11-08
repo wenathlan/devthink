@@ -9,18 +9,18 @@
  * ranking — the in-construction pass: the game is in development, so the
  * ladder ledger of the old face (the podium, the season scoreboard, the
  * season rail) is retired and the route answers the honest construction
- * face under the ranking eyebrow. The root ranking logic the ledger read
- * keeps riding its own files untouched — only this page's face changed.
+ * face (the route eyebrows retired with the routes). The root ranking
+ * logic the ledger read keeps riding its own files untouched — only this
+ * page's face changed.
  */
 
-import { label } from "../../labels";
 import { Constructionface } from "../../wingets";
 
 /**
- * the ranking page: the in-construction face under the ranking eyebrow.
+ * the ranking page: the in-construction face.
  *
  * @returns the construction face element.
  */
 export default function Ranking() {
-  return <Constructionface eyebrow={label("ranking.eyebrow")} />;
+  return <Constructionface />;
 }

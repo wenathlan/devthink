@@ -15,8 +15,11 @@
     "types": ["vite/client", "node"],
     "paths": {
       "@/*": ["./sol/*", "./*"],
+      "@wenathlan/devthink/personalstore": ["../devthink/personalstore.ts"],
+      "@wenathlan/devthink/reveal": ["../devthink/reveal.ts"],
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
-      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"]
+      "@wenathlan/vault/storage": ["../vault/storage.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],

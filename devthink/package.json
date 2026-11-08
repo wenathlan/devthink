@@ -736,6 +736,16 @@
       "types": "./build/engines.d.ts",
       "import": "./build/engines.js",
       "default": "./build/engines.js"
+    },
+    "./personalstore": {
+      "types": "./personalstore.ts",
+      "import": "./personalstore.ts",
+      "default": "./personalstore.ts"
+    },
+    "./reveal": {
+      "types": "./reveal.ts",
+      "import": "./reveal.ts",
+      "default": "./reveal.ts"
     }
   },
   "files": [

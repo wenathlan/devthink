@@ -9,18 +9,18 @@
  * match — the in-construction pass: the game is in development, so the
  * scoreboard ledger of the old face (the lobby board, the round feeds, the
  * seat tables) is retired and the route answers the honest construction
- * face under the match eyebrow. The root match logic the ledger read keeps
- * riding its own files untouched — only this page's face changed.
+ * face (the route eyebrows retired with the routes). The root match logic
+ * the ledger read keeps riding its own files untouched — only this page's
+ * face changed.
  */
 
-import { label } from "../../labels";
 import { Constructionface } from "../../wingets";
 
 /**
- * the match page: the in-construction face under the match eyebrow.
+ * the match page: the in-construction face.
  *
  * @returns the construction face element.
  */
 export default function Match() {
-  return <Constructionface eyebrow={label("match.eyebrow")} />;
+  return <Constructionface />;
 }

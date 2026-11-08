@@ -3,13 +3,13 @@
 // family workload catalog, mirrored from the engine of record
 // (saddle/workloadlaw.ts — the FAMILYLANES table) as the string contract
 // the deploy and the platform speak. The mirror law (the same discipline
-// the devthink modalities vendor rides): the rows are mirrored, not
-// imported, because the published saddle envelope the container build
-// installs does not carry the workload law yet and the family law bars a
-// relative path across apps — the day the envelope publishes, the ids
-// answer the same strings (the lockstep is the string contract, not the
-// import). The app battery pins the mirror against the engine source
-// through the library bridge so the vendor can never drift in silence.
+// the devthink modalities vendor rides): the rows are mirrored as the
+// string contract the lockstep pins, while the engine seat rides the
+// published library specifier (the family law bars a relative path across
+// apps — the ids answer the same strings, the lockstep is the string
+// contract, not the copy). The app battery pins the mirror against the
+// engine source through the library bridge so the vendor can never drift
+// in silence.
 //
 // The seat law (the deploy's opt-in, the family's shared shape): the
 // deploy pins STEALTHHEAD_SANDBOX_LANE — "local" (the default, the deploy's own process),
@@ -25,13 +25,13 @@
 //
 // The engine seat (wave W5, the dedup law): the seat resolver, the env
 // reader and the lane lookup no longer live in this file — they ride the
-// saddle factory (laneseating of ../saddle/workloadlaw.ts, the owner's
+// saddle factory (laneseating of @wenathlan/saddle/workloadlaw, the owner's
 // workload law) bound once to this app's own data, re-exported under the
 // same names the surface always spoke. The rows stay mirrored (the drift
 // pin the battery wants), only the engine moved: zero behavior change,
 // zero public-surface change.
 
-import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "../saddle/workloadlaw.ts";
+import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "@wenathlan/saddle/workloadlaw";
 
 /** one mirrored workload lane row — the same five keys the engine law pins
  * (app, lane, role, demand, today); the shape itself rides the owner's

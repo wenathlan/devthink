@@ -9,18 +9,18 @@
  * world — the in-construction pass: the game is in development, so the map
  * plate field of the old face (the seamed GLB catalog, the hash-verified
  * zone meta) is retired and the route answers the honest construction face
- * under the world eyebrow. The root world logic the plates read keeps riding
- * its own files untouched — only this page's face changed.
+ * (the route eyebrows retired with the routes). The root world logic the
+ * plates read keeps riding its own files untouched — only this page's face
+ * changed.
  */
 
-import { label } from "../../labels";
 import { Constructionface } from "../../wingets";
 
 /**
- * the world page: the in-construction face under the world eyebrow.
+ * the world page: the in-construction face.
  *
  * @returns the construction face element.
  */
 export default function World() {
-  return <Constructionface eyebrow={label("world.eyebrow")} />;
+  return <Constructionface />;
 }
