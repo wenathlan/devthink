@@ -27,6 +27,7 @@ import {
   triangleOf,
 } from "./kathesis.ts";
 import { limitTruePeak } from "./limiter.ts";
+import { gatingBlocks, gainToTarget, integratedLoudness } from "./loudness.ts";
 import { dbToLinear } from "./mixergraph.ts";
 import { DRUM_LANE_KEYS, LANE_STEPS, PATTERN_SCHEMA_VERSION, PatternProject, PatternVoice, parsePattern, validatePatternProject } from "./pattern.ts";
 import { WorkerModality } from "./sandboxmodality.ts";
@@ -557,6 +558,15 @@ export function renderVoiceMix(plan: PatternProject, seed: string): Float32Array
 
 /** The options the render orchestrator accepts. */
 export interface RenderPlanOptions {
+  /** Normalizes the bounce's integrated loudness to a platform target
+   * (BS.1770-4 measured through the loudness seat's K-weighted gating
+   * blocks, the gain applied linearly before the true-peak close so the
+   * −1 dBTP limiter law still owns the ceiling; EBU R128 boost clamping
+   * rides inside the loudness seat). Deterministic per target: the same
+   * plan, seed and target answer the same bytes. Default off: no target,
+   * no normalization — the byte-stable bounce the tests pin. */
+  lufsTarget?: number;
+
   /** Sings the plan's own melody line through the formant bank under the
    * voice bus (the second rung the syllable lane always named): the sung
    * line renders node-side through formant.ts's source-filter lane and
@@ -640,6 +650,17 @@ export async function renderPlan(
     if (options.voice) {
       const voice = renderVoiceMix(checked.doc, seed);
       for (let i = 0; i < mix.length && i < voice.length; i++) mix[i] += voice[i] ?? 0;
+    }
+    if (typeof options.lufsTarget === "number" && Number.isFinite(options.lufsTarget)) {
+      /* the loudness seat reads number channels while the render mix rides
+       * a Float32Array — the Array.from walk is the honest conversion the
+       * K-weighted gate consumes (mono: one channel of the mastering mix). */
+      const measured = integratedLoudness(gatingBlocks([Array.from(mix)], RENDER_SAMPLE_RATE));
+      const targetgain = gainToTarget(measured, options.lufsTarget);
+      if (targetgain !== 0 && Number.isFinite(targetgain)) {
+        const factor = dbToLinear(targetgain);
+        for (let i = 0; i < mix.length; i++) mix[i] *= factor;
+      }
     }
     pcm = limitTruePeak(mix, RENDER_SAMPLE_RATE);
   } catch (error) {
