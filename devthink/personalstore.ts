@@ -14,10 +14,9 @@
  * identity store answers. The devtools wall flag rides the same channel:
  * the choice persists here, the suspension seam lives in security.ts
  * (the devtoolsguard section of the merged security seat — the single wall
- * module the akash study lands).
+ * module the akash study lands) behind the lazy seam the lean door law
+ * seats below.
  */
-
-import { suspenddevtoolsguard } from "./security.ts";
 
 /** one wallpaper of the picker: an id plus the layered css recipe the
  * --wall-fallback variable serves. */
@@ -366,9 +365,23 @@ export const DEVTOOLS_WALL_KEY = "dt.devtools.wall.v1";
 /** arms or suspends the devtools wall: off parks every prong of the wall
  * (security.ts owns the machinery through its devtoolsguard section — suspended, it never loops); on
  * lets the duty cycle run again. The seam answers on every build so the
- * toggle behaves the same in dev. */
+ * toggle behaves the same in dev.
+ *
+ * THE LEAN DOOR LAW (the six-family container heal): the wall machinery
+ * lives in the merged security seat whose static graph walks the whole
+ * engine (security -> memory -> the agent, run, session and serve seats
+ * that import the getry and saddle envelopes) — and the six family doors
+ * (argan, cadria, debonair, forge, getry, stealthhead) re-export this
+ * module straight into their browser bundles, so the static import dragged
+ * the engine graph into every sibling page and the container builds died
+ * resolving @wenathlan/getry from the never-installed devthink sources.
+ * The lazy seam keeps the personalization door lean — the toggle is a
+ * human action, the dynamic import answers it in the same tick the wall
+ * always answered, and the bundle never pays for the graph again. */
 export function applyDevtoolsWall(on: boolean): void {
-  suspenddevtoolsguard(!on);
+  void import("./security.ts").then((security) => {
+    security.suspenddevtoolsguard(!on);
+  });
 }
 
 /** the stored devtools wall flag (off by default — the wall is opt-in:
