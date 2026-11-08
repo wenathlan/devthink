@@ -213,7 +213,7 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
      * (the retirement of the extension lane kept the same resolver law —
      * the block comment carries the deleted-tag doctrine). */
     expect(publish).toContain("deleted tag pattern never answers a resolver again");
-    expect(publish).toContain(
+    expect(await readworkflow("saddlelanes.yml")).toContain(
       "version=$(node -p \"JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version\")",
     );
   });
@@ -281,7 +281,11 @@ describe.skipIf(!inrepo)("the registry family seats (the distfamily law)", () =>
 
 describe.skipIf(!inrepo)("the container distributions lane", () => {
   it("the three vhe profiles answer the owner doctrine — max, light and palatial ride max, balanced and lite", async () => {
-    const publish = await parseworkflow("publish.yml");
+    /* the half-megabyte split carried the vhe lane family to the
+     * saddlelanes workflow — the battery reads the lanes where they
+     * ride (the same grids, the same gates, the home file answering
+     * the size law the publish workflow could not). */
+    const publish = await parseworkflow("saddlelanes.yml");
     const profiles = matrixof(publish, "saddle-vhe-publish");
     /* the fifteen runnable publish legs: the three profile lanes (max,
      * balanced, lite — nothing removed) beside the twelve flavor lanes
@@ -397,7 +401,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 
   it("the profile tag family never collides with the node engine and never rolls", async () => {
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     /* the saddlemod heal law: max rides the bare :<version> tag of the
      * family pattern, balanced / lite carry the profile suffix, the
      * os-distribution lanes carry the seat suffix (the matrix suffix
@@ -405,7 +409,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
      * ever publishes a rolling alias. */
     expect(publish).toContain('suffix="${{ matrix.suffix }}"');
     expect(publish).toContain("no rolling alias");
-    const workflow = await parseworkflow("publish.yml");
+    const workflow = await parseworkflow("saddlelanes.yml");
     const verify = matrixof(workflow, "saddle-vhe-verify");
     /* the forty-six verify legs: the three profile lanes, the four
      * os-distribution flavor lanes (runnable) and the thirty-nine catalog
@@ -513,7 +517,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 
   it("the published vhe index answers the base-carried build legs and the honest console smokes", async () => {
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     /* the saddle container heal law (the eleven-arch standard of the
      * containerarch table): the build legs answer the four platforms
      * the pinned base honestly carries — the native x64 leg beside the
@@ -539,7 +543,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 
   it("the pre-deploy existence check matches the lane family — the saddle lesson", async () => {
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     /* the bare startswith(${version}) once saw the node-engine tag and
      * no-opped the vhe publication; the match carries the lane suffixes.
      * the partial-publish freeze fix tightens the same lesson: the
@@ -555,14 +559,14 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 
   it("the vhe lanes answer the release law — the saddle container publishes with the family", async () => {
-    const workflow = await parseworkflow("publish.yml");
+    const workflow = await parseworkflow("saddlelanes.yml");
     /* the saddle container law: the resolve lane carries the same release
      * guard every application lane carries, so the release published
      * firing, the successful workflow_run completion of the release
      * ladder and the maintenance dispatch all reach the chain (the
      * standalone era kept the lane dispatch-only and the container never
      * published with the family — the gap the owner's law closes). */
-    const guard = String(workflow.jobs?.["saddle-vhe-resolve"]?.if ?? "");
+    const guard = String((await parseworkflow("saddlelanes.yml")).jobs?.["saddle-vhe-resolve"]?.if ?? "");
     expect(guard).toContain("github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')");
     expect(guard).toContain("github.event.workflow_run.conclusion == 'success'");
     expect(guard).toContain("github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch'");
@@ -570,7 +574,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
      * twelve-leg firecracker matrix answers the maintenance dispatch
      * alone, where its cost belongs. */
     expect(workflow.jobs?.["saddle-vhe-validate"]?.if).toBe("github.event_name == 'workflow_dispatch'");
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     expect(publish).toContain("the saddle container law");
     /* the race the workflow_run firing carries: the moving head may
      * already answer the next rung, so the resolver detaches the release
@@ -587,7 +591,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 
   it("the saddle container archive lane answers the asset parity law", async () => {
-    const workflow = await parseworkflow("publish.yml");
+    const workflow = await parseworkflow("saddlelanes.yml");
     /* the saddle vhe image ships the same portable release asset the
      * devthink container archive ships: the lane rides behind the
      * resolver and the security gate (a FAILED trivy scan never ships an
@@ -599,17 +603,22 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(archive?.needs).toEqual(["saddle-vhe-resolve", "saddle-vhe-scan"]);
     expect(archive?.if).toBe("needs.saddle-vhe-resolve.outputs.proceed == 'true'");
     expect(archive?.permissions?.contents).toBe("write");
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     expect(publish).toContain('archive="saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.tar.gz"');
     expect(publish).toContain('-f saddlebuildctx/saddle/Dockerfile saddlebuildctx');
-    /* the sums umbrella walks the archive lane: the SHA256SUMS rebuild
-     * answers only after every lane attached its assets. */
-    const sums = workflow.jobs?.sums as { needs?: string[] } | undefined;
-    expect(sums?.needs).toContain("saddle-container");
+    /* the sums umbrella walks the archive lane the split answers: the
+     * SHA256SUMS rebuild of the publish workflow no longer waits for
+     * the archive (the half-megabyte law moved the lane home) — the
+     * archive job patches the umbrella seat itself after it attaches,
+     * the coverage the split never loses. */
+    const lanes = await readworkflow("saddlelanes.yml");
+    expect(lanes).toContain("Patch the SHA256SUMS umbrella with the archive seat");
+    const publishsums = (await parseworkflow("publish.yml")).jobs?.sums as { needs?: string[] } | undefined;
+    expect(publishsums?.needs).not.toContain("saddle-container");
   });
 
   it("the base image resolver answers the digest law — nothing hardcoded rides the container lane", async () => {
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     /* the saddlemod heal law: the mesa resolver and its mirror healing
      * retired with the from-source stages — the family doctrine resolves
      * the base image digest at build time on the runner (the bases step
