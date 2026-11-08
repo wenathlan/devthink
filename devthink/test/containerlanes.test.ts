@@ -294,20 +294,35 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
   it("the webpack bundle is the real exact-pinned cross-bundler product the ci battery verifies", async () => {
     const containers = await readworkflow("containers.yml");
     /* the cross-bundler rung the ci battery verifies, carried to the
-     * saddle engine: the runner law (the containerlanes heal) walks the
-     * engine build through the manifest entry a script runner answers
-     * (bun run build:engine - never a bare node spawn whose PATH the
-     * runner law never seats), the lane's own manager compiles the
-     * public entry into distpackage/index.js and the exact-pinned
-     * webpack fetch (webpack 5.112.2 with its webpack-cli 6.0.1 peer)
-     * packs the one entry through the generated config file the -c walk
-     * carries (the config-file grammar: the output filename rides the
-     * config, the LimitChunkCountPlugin keeps the bundle single-file)
-     * into the one webpack bundle the six channel legs distribute. */
+     * saddle engine (the containerlanes heal grammar): the frozen bun
+     * install (the family law, never a floating npm install) answers
+     * the certified lockfile, the build:engine manifest entry walks the
+     * tsc typecheck gate through the bun script runner (the runner law
+     * - node_modules/.bin never joins PATH under a bare node leg and
+     * the typescript 7 exports map hides ./bin/tsc from the require
+     * walk inside scripts.ts, so the bare node spawn ENOENTed), the
+     * lane's own manager compiles the public entry into the one
+     * distpackage/index.js engine bundle and the exact-pinned webpack
+     * fetch (webpack 5.112.2 with its webpack-cli 6.0.1 peer) reads
+     * the generated config file the -c walk carries (the ci battery
+     * grammar - the CLI flag walk stays retired) with the
+     * LimitChunkCountPlugin holding the single-file law, packing the
+     * one entry into the one webpack bundle the six channel legs
+     * distribute — the union seat: the battery pins the outfile lane,
+     * the filename anchor and the one-file plugin beside the
+     * config-file walk, every coordinate the four waves stamped
+     * (the greenheal rung keeps the retired CLI flag walk retired: the
+     * filename answer rides the config heredoc, never a flag),
+     * nothing removed. */
+    expect(containers).toContain("bun install --frozen-lockfile --ignore-scripts");
     expect(containers).toContain("bun run build:engine");
+    expect(containers).toContain("bun build ./index.ts --target=node --format=esm --outfile=distpackage/index.js");
+    expect(containers).toContain("--outfile=distpackage/index.js");
+    expect(containers).toContain("test -s distpackage/index.js");
     expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
     expect(containers).toContain('filename: "saddle.webpack.js"');
     expect(containers).toContain("webpack -c ./distpackage/webpack.config.mjs");
+    expect(containers).toContain("new LimitChunkCountPlugin({ maxChunks: 1 })");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
      * collide with the engine envelope the publish lanes own: the

@@ -12,7 +12,7 @@
     "check": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "restore:entry": "node -e \"const{readFileSync}=require('node:fs');const{execSync}=require('node:child_process');const face=/script[^>]*App\\\\.tsx/;const cdn=/fonts\\\\.googleapis\\\\.com/;if(face.test(readFileSync('index.html','utf8'))){console.log('index.html already rides the source face');process.exit(0)}const head=execSync('git show HEAD:./index.html',{encoding:'utf8'});if(!face.test(head)){console.error('refusing: HEAD index.html is not the source face yet - land the source-face fix first; nothing was touched');process.exit(1)}if(cdn.test(head)){console.error('refusing: HEAD index.html still rides the font CDN - land the self-host fix first; nothing was touched');process.exit(1)}execSync('git checkout -- index.html',{stdio:'inherit'});console.log('index.html restored from HEAD (the source face)')\"",
-    "test": "vitest run"
+    "test": "vitest run --no-file-parallelism"
   },
   "dependencies": {
     "@ai-sdk/openai": "^4.0.111",

@@ -9,7 +9,9 @@
 // and the determinism holds (the same plan and seed answer the same
 // bytes, a fresh seed answers a fresh take) and the bounce lands under
 // the −1 dBTP mastering ceiling (the true-peak limiter's law, measured
-// with the limiter's own 4× yard). the render_jobs ledger walks
+// with the limiter's own 4× yard) on the spotify −14 LUFS target the
+// mastering walk measures over the decoded samples (loudness measured,
+// never claimed). the render_jobs ledger walks
 // the ingest_jobs law (the row round trip, the patch merge, the owner
 // filter, the in-place migration of the site's own queue shape, the
 // minted pointers exact beyond the js number floor), the tracks table
@@ -27,6 +29,7 @@ import { mintid } from "../bigintids.ts";
 import { composeFromProfile } from "../composer.ts";
 import { MASTERING, trackNameFromPrompt } from "../katexis.ts";
 import { truePeakLinear } from "../limiter.ts";
+import { analyzeLoudness } from "../loudness.ts";
 import { LANE_STEPS, serializePattern, validatePatternProject } from "../pattern.ts";
 import { type GenreProfile, segmentVector } from "../pattern.ts";
 import {
@@ -49,7 +52,9 @@ import {
   type RenderJobRow,
   type RenderJobSeat,
   type RenderStorePut,
+  renderPatternMix,
   renderPlan,
+  schedulePattern,
   startRenderJob,
 } from "../render.ts";
 import { HEADER_LAYOUT, wavInfo } from "../wavwriter.ts";
@@ -358,6 +363,59 @@ describe("the composed plan renders through the engine recipes", () => {
     assert.ok(
       tp <= 10 ** (MASTERING.truePeakDbtp / 20) + 1e-4,
       `the bounce's true peak ${(20 * Math.log10(tp)).toFixed(4)} dBTP must sit at or under the −1 promise`,
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// the mastering loudness law (the measured seat — law 340)
+// ---------------------------------------------------------------------------
+
+describe("the mastering close lands the measured loudness law", () => {
+  it("lands the bounce on the spotify −14 LUFS target (the measured law)", async () => {
+    // law 339 + 340: the bounce's own decoded pcm measures at the MASTERING
+    // spec's spotify target — only a real measure → gain → limit walk over
+    // the rendered samples can put two numbers there; a claimed constant
+    // never touches the samples
+    const result = await renderPlan(PLAN, "seed-one", new MemoryStore());
+    assert.ok(result.ok);
+    const pcm = pcmOf(result.bytes);
+    const report = analyzeLoudness([pcm], RENDER_SAMPLE_RATE);
+    assert.ok(report.ok, "the decoded bounce answers its own measurement");
+    const integrated = report.value.integrated;
+    assert.ok(
+      integrated >= -16 && integrated <= -12.5,
+      `the bounce measures ${integrated.toFixed(2)} LUFS — the spotify −14 target band is [−16, −12.5]`,
+    );
+    const tp = truePeakLinear(pcm);
+    assert.ok(tp <= 10 ** (MASTERING.truePeakDbtp / 20) + 1e-4, "the target gain never reopens the ceiling");
+  });
+
+  it("rides the measurement, never a stamped claim (the two-mix discriminator)", async () => {
+    // two different mixes must both land on the target band — and the
+    // surgical kick mix must move from its own pre-master loudness (the
+    // gain the walk applied came from ITS measurement, not a stamp the
+    // plan could never hear)
+    const kick = kickOnlyPlan();
+    assert.ok(validatePatternProject(kick).ok);
+    const schedule = schedulePattern(kick);
+    const mix = renderPatternMix(schedule, "noise:surgical:");
+    const preMaster = analyzeLoudness([mix], RENDER_SAMPLE_RATE);
+    assert.ok(preMaster.ok && Number.isFinite(preMaster.value.integrated), "the pre-master mix answers its measurement");
+    const preMasterLufs = preMaster.value.integrated;
+
+    const result = await renderPlan(kick, "surgical", new MemoryStore());
+    assert.ok(result.ok);
+    const bounce = analyzeLoudness([pcmOf(result.bytes)], RENDER_SAMPLE_RATE);
+    assert.ok(bounce.ok);
+    const bounceLufs = bounce.value.integrated;
+    assert.ok(
+      bounceLufs >= -16 && bounceLufs <= -12.5,
+      `the kick bounce measures ${bounceLufs.toFixed(2)} LUFS — the spotify −14 band`,
+    );
+    assert.ok(
+      Math.abs(bounceLufs - preMasterLufs) > 1,
+      `the bounce moved from the mix's own ${preMasterLufs.toFixed(2)} LUFS to ${bounceLufs.toFixed(2)} — the walk measured and gained, it never claimed`,
     );
   });
 });
