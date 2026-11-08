@@ -10,7 +10,7 @@ package com.wenathlan.forge;
  */
 final class Forge {
   /** The version of the forge envelope (the six-distribution completeness wave). */
-  public static final String VERSION = "2.0.170";
+  public static final String VERSION = "2.0.171";
   private Forge() {
   }
 }

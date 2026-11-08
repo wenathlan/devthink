@@ -29,8 +29,14 @@ const declaredahead = (current: string, latest: string) => {
 };
 const skippedmajors = [];
 const next = structuredClone(packagejson);
-for (const section of ["dependencies", "devDependencies", "optionalDependencies"]) {
+for (const section of ["dependencies", "devDependencies", "optionalDependencies", "overrides"]) {
   for (const [name, declared] of Object.entries(packagejson[section] ?? {})) {
+    /* the overrides seat answers the identical-map law the parity gate
+       reads: the @wenathlan family specs ride the same rung the
+       dependency groups carry. nested override objects (the xcode uuid
+       nest keeps its override-only seat) never answer the registry
+       ladder — only string specs walk. */
+    if (typeof declared !== "string") continue;
     /* the local sibling packages the ownership law links (file:, link: and
      * workspace: specs the family monorepo carries — @wenathlan/vault,
      * @wenathlan/getry) never answer the registry ladder: their version is
