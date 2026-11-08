@@ -476,6 +476,10 @@ pnpm-lock.yaml
 .devthink-install.log
 .getry-install.log
 .gateway.log
+
+# the wave resurrection lane — the launcher that revives the three lanes
+# after a container reset, machine-local by the same law as polar.sh
+.wave-launch.sh
 .os-*.png
 .svc.log
 
