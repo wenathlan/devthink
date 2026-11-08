@@ -1,4 +1,4 @@
-# vault 2.0.167 — THE ENGINE CONTAINER FILE
+# vault 2.0.168 — THE ENGINE CONTAINER FILE
 #
 # The family container doctrine in the engine shape: the container IS the
 # vault engine, not a static mirror of the source tree. Stage one (solbuild)
@@ -24,7 +24,7 @@
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
 
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -45,7 +45,7 @@ RUN pnpm build \
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS enginedeps
 
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 
 # the production-only dependency tree of the engine: better-sqlite3
 # compiles against the same alpine toolchain the solbuild leg installs, so
@@ -72,7 +72,7 @@ RUN apk add --no-cache python3 make g++ \
 # ════════════════════════════════════════════════════════════════════
 
 FROM scratch AS osgrapheneos
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="grapheneos"
 ENV VAULT_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="vault (the grapheneos os-distribution catalog lane)" \
@@ -83,7 +83,7 @@ LABEL org.opencontainers.image.title="vault (the grapheneos os-distribution cata
 COPY osprofiles/grapheneos.json /vault/osprofile.json
 
 FROM scratch AS osmaruos
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="maruos"
 ENV VAULT_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="vault (the maru os os-distribution catalog lane)" \
@@ -94,7 +94,7 @@ LABEL org.opencontainers.image.title="vault (the maru os os-distribution catalog
 COPY osprofiles/maruos.json /vault/osprofile.json
 
 FROM scratch AS osv
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="v"
 ENV VAULT_OS_PROFILE=v
 LABEL org.opencontainers.image.title="vault (the v os-distribution catalog lane)" \
@@ -105,7 +105,7 @@ LABEL org.opencontainers.image.title="vault (the v os-distribution catalog lane)
 COPY osprofiles/v.json /vault/osprofile.json
 
 FROM scratch AS oswindows
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="windows"
 ENV VAULT_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="vault (the windows os-distribution catalog lane)" \
@@ -116,7 +116,7 @@ LABEL org.opencontainers.image.title="vault (the windows os-distribution catalog
 COPY osprofiles/windows.json /vault/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="postmarketos"
 ENV VAULT_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="vault (the postmarketos os-distribution catalog lane)" \
@@ -127,7 +127,7 @@ LABEL org.opencontainers.image.title="vault (the postmarketos os-distribution ca
 COPY osprofiles/postmarketos.json /vault/osprofile.json
 
 FROM scratch AS oslineageos
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="lineageos"
 ENV VAULT_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="vault (the lineageos os-distribution catalog lane)" \
@@ -138,7 +138,7 @@ LABEL org.opencontainers.image.title="vault (the lineageos os-distribution catal
 COPY osprofiles/lineageos.json /vault/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="calyxos"
 ENV VAULT_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="vault (the calyxos os-distribution catalog lane)" \
@@ -149,7 +149,7 @@ LABEL org.opencontainers.image.title="vault (the calyxos os-distribution catalog
 COPY osprofiles/calyxos.json /vault/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="archlinux"
 ENV VAULT_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="vault (the archlinux os-distribution catalog lane)" \
@@ -160,7 +160,7 @@ LABEL org.opencontainers.image.title="vault (the archlinux os-distribution catal
 COPY osprofiles/archlinux.json /vault/osprofile.json
 
 FROM scratch AS osalpine
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="alpine"
 ENV VAULT_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="vault (the alpine os-distribution catalog lane)" \
@@ -171,7 +171,7 @@ LABEL org.opencontainers.image.title="vault (the alpine os-distribution catalog 
 COPY osprofiles/alpine.json /vault/osprofile.json
 
 FROM scratch AS osdebian
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="debian"
 ENV VAULT_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="vault (the debian os-distribution catalog lane)" \
@@ -182,7 +182,7 @@ LABEL org.opencontainers.image.title="vault (the debian os-distribution catalog 
 COPY osprofiles/debian.json /vault/osprofile.json
 
 FROM scratch AS osfedora
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="fedora"
 ENV VAULT_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="vault (the fedora os-distribution catalog lane)" \
@@ -193,7 +193,7 @@ LABEL org.opencontainers.image.title="vault (the fedora os-distribution catalog 
 COPY osprofiles/fedora.json /vault/osprofile.json
 
 FROM scratch AS osnixos
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="nixos"
 ENV VAULT_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="vault (the nixos os-distribution catalog lane)" \
@@ -204,7 +204,7 @@ LABEL org.opencontainers.image.title="vault (the nixos os-distribution catalog l
 COPY osprofiles/nixos.json /vault/osprofile.json
 
 FROM scratch AS osvoid
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 ARG VAULT_OS_PROFILE="void"
 ENV VAULT_OS_PROFILE=void
 LABEL org.opencontainers.image.title="vault (the void os-distribution catalog lane)" \
@@ -216,7 +216,7 @@ COPY osprofiles/void.json /vault/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6 AS face
 
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 
 LABEL org.opencontainers.image.title="vault (the face)" \
       org.opencontainers.image.description="vault face — the nginx surface of the storage container pair: the staged SPA the solbuild leg assembled served beside the /api proxy lane the mounted nginx.conf declares." \
@@ -236,7 +236,7 @@ COPY --from=solbuild /site/ /usr/share/nginx/html/
 
 FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797
 
-ARG VAULT_VERSION=2.0.167
+ARG VAULT_VERSION=2.0.168
 
 LABEL org.opencontainers.image.title="vault" \
       org.opencontainers.image.description="vault — the storage engine of the platform: every app imports the storage from it, and only from it." \
