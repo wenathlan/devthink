@@ -739,7 +739,7 @@ export const mcpsurfacekinds: readonly string[] = [
   "windowresize",
 ];
 
-/** The frozen export surface of the library: every symbol index.ts exports across its family star exports and explicit re-exports — the library message types of the freeze — pinned here so the gate can verify the library exposes no undeclared symbol. The ownership wave (wave/ownership.getry) moved the llm family to the getry owner, and index.ts re-exports it through the published package specifier ("@wenathlan/getry/llm") instead of the relative star export the gate walk follows, so the gateway vocabulary (apikeyref and its 135 siblings) left the os library surface with the move — the gateway surface answers from the getry envelope now. */
+/** The frozen export surface of the library: every symbol index.ts exports across its family star exports and explicit re-exports — the library message types of the freeze — pinned here so the gate can verify the library exposes no undeclared symbol. The ownership wave (wave/ownership.getry) moved the llm family to the getry owner, and index.ts re-exports it through the published package specifier ("@wenathlan/getry/llm") instead of the relative star export the gate walk follows, so the gateway vocabulary (apikeyref and its 135 siblings) left the os library surface with the move — the gateway surface answers from the getry envelope now. The securitytooling wave folded devtoolsguard.ts into the security keyword file beside the trust boundary cluster, and the twelve guard exports the merged seat carries (devtoolsguardstatus, devtoolstripped, devtoolswallid, devtoolswallstatus, guard, guardarmed, installdevtoolsguard, ondevtoolstrip, reportguardstrike, scan, showdevtoolsinterstitial, suspenddevtoolsguard) joined the star-exported surface — this mirror records them so the freeze and the code never drift apart. */
 export const librarysurfaceexports: readonly string[] = [
   "a11ycapture",
   "a11ylabel",
@@ -2412,6 +2412,7 @@ export const librarysurfaceexports: readonly string[] = [
   "onboardingstate",
   "onboardingstep",
   "onboardingsteps",
+  "ondevtoolstrip",
   "openapilayout",
   "openchannel",
   "openchunkextractcursor",
