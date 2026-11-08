@@ -21,17 +21,17 @@ import { apibase, apifetch, fetchhealth } from '../../api';
 import { label, labelfill } from '../../labels.ts';
 import type { SandboxState } from '../../sandbox.ts';
 import { bootSequence, cpudata, createSandboxState, dispatch, gpudata } from '../../sandbox.ts';
-import { ApiBadge as ApiBadge } from '../wingets';
-import { ConsoleEdgelaw as ConsoleEdgelaw } from '../wingets';
-import type { SandboxEvent, SandboxEventKind } from '../wingets';
-import { EventsTimeline as EventsTimeline } from '../wingets';
-import { SnapshotControls as SnapshotControls } from '../wingets';
-import type { SandboxSpecSelection } from '../wingets';
-import { SpecPanel as SpecPanel } from '../wingets';
-import type { TerminalRow, TerminalState } from '../wingets';
-import { Terminal as Terminal } from '../wingets';
+import { ApiBadge as ApiBadge } from '../../wingets';
+import { ConsoleEdgelaw as ConsoleEdgelaw } from '../../wingets';
+import type { SandboxEvent, SandboxEventKind } from '../../wingets';
+import { EventsTimeline as EventsTimeline } from '../../wingets';
+import { SnapshotControls as SnapshotControls } from '../../wingets';
+import type { SandboxSpecSelection } from '../../wingets';
+import { SpecPanel as SpecPanel } from '../../wingets';
+import type { TerminalRow, TerminalState } from '../../wingets';
+import { Terminal as Terminal } from '../../wingets';
 
-export * from '../wingets';
+export * from '../../wingets';
 
 /** display cap for very large payloads such as cpuinfo at 192 vcpus. */
 const displaycap = 120000;

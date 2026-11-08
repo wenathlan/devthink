@@ -32,7 +32,7 @@ import {
   simulatecmd,
   wrapangle,
   yawlerp,
-} from "../sol/netcode/netcode.ts";
+} from "../netcode.ts";
 
 /** one entity standing at a spot. */
 function entityat(id: string, px: number, tick: number, yaw = 0): EntityState {

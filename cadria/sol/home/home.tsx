@@ -19,7 +19,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface, HomeEntrygate as EntryGate } from "../wingets";
+import { Constructionface, HomeEntrygate as EntryGate } from "../../wingets";
 
 /**
  * the home anchor: the entry gate decides first (intro unseen hands to

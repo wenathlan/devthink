@@ -18,7 +18,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface } from "../wingets";
+import { Constructionface } from "../../wingets";
 
 /**
  * the edit page: the in-construction face under the edit eyebrow.

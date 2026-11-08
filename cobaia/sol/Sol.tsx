@@ -29,7 +29,7 @@ import OnboardingAnchor from "./onboarding/onboarding";
 import LegalAnchor from "./legal/legal";
 import NotFoundAnchor from "./notfound/notfound";
 import PricingAnchor from "./pricing/pricing";
-import { EntryGate } from "./wingets";
+import { EntryGate } from "../wingets";
 import { Shell } from "./shell/Shell";
 import SupportAnchor from "./support/support";
 

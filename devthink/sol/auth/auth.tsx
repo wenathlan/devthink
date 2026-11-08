@@ -48,11 +48,11 @@ import {
 import { copy, loadcopy } from "../../uistore.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gateway.ts";
 import { readBrowserPreferences } from "../../storage.ts";
-import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } from "../wingets";
+import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } from "../../wingets";
 
 export * from "../../account.ts";
 export * from "../../gateway.ts";
-export * from "../wingets";
+export * from "../../wingets";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 

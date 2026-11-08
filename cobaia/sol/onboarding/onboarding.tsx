@@ -19,7 +19,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { type LabelKey, label } from "../../labels";
 import { markOnboardingStage } from "../../onboardingstate.ts";
-import { BrandMark } from "../wingets";
+import { BrandMark } from "../../wingets";
 
 /** the three frames of the first run, in order — the copy rides the store
  * (the id keeps the ladder segments keyed, the key answers the eyebrow). */

@@ -42,7 +42,7 @@ import {
   loadThemeMirror,
   syncThemeFromPreference,
 } from "../../personalstore.ts";
-import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../wingets";
+import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../../wingets";
 import {
   AboutSettings,
   AccountsCategory,
@@ -51,9 +51,9 @@ import {
   HardDrives,
   Personalization,
   SettingsNav,
-} from "../wingets";
+} from "../../wingets";
 
-export * from "../wingets";
+export * from "../../wingets";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law the display preference rides at the settings card). */

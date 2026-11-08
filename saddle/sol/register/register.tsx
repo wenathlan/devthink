@@ -18,11 +18,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { apibase, apierrormessage, apifetch, apistatustext } from '../../api';
 import { label } from '../../labels.ts';
-import { PasswordConfirm as PasswordConfirm } from '../wingets';
-import { PasswordMeter as PasswordMeter } from '../wingets';
-import { UsernameRules as UsernameRules, usernamere } from '../wingets';
+import { PasswordConfirm as PasswordConfirm } from '../../wingets';
+import { PasswordMeter as PasswordMeter } from '../../wingets';
+import { UsernameRules as UsernameRules, usernamere } from '../../wingets';
 
-export * from '../wingets';
+export * from '../../wingets';
 
 /** meta description carried by the absorbed static page. */
 export const registerpagedescription =

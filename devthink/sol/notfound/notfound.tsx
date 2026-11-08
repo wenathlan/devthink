@@ -19,9 +19,9 @@ import {HomeRegular as Home} from "@fluentui/react-icons";
 import type { CSSProperties } from "react";
 import { Link } from "wouter";
 import { osText } from "../../os.ts";
-import { pagecontainerStyle, stagedEntrance } from "../wingets";
-import { ShellChrome } from "../wingets";
-import { useReducedMotion } from "../wingets";
+import { pagecontainerStyle, stagedEntrance } from "../../wingets";
+import { ShellChrome } from "../../wingets";
+import { useReducedMotion } from "../../wingets";
 
 /* the stage: the workbench canvas under the sticky shell navbar, lit by the
  * ONE signal source of the campaign (no second light, no cool wash); the
