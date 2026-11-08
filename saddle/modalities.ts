@@ -1576,6 +1576,15 @@ function hostspawnseat(options: {
   env?: Record<string, string>;
   priority?: ModalityPriority;
   probe?: string;
+  /** the staged payload filename — the extension-sensitive runtimes (the
+   * dotnet file-based app that demands .cs, the nim compiler that demands
+   * .nim, the zig and v sources, the wasm module, the cargo manifest)
+   * answer their own staged name instead of the bare payload default. */
+  payloadname?: string;
+  /** the extra staged files one seat's payload model demands beside the
+   * payload itself (the cargo manifest's src tree, the makefile's
+   * includes) — read from the request inputs, never the host. */
+  extrafiles?: (request: ModalityRunRequest) => Record<string, string>;
 }): ModalityExecutor {
   return async (request: ModalityRunRequest): Promise<ModalityRunResult> => {
     const started = Date.now();
@@ -1583,9 +1592,30 @@ function hostspawnseat(options: {
     const profile = request.profile ?? DEFAULTPROFILE;
     const deadline = clampdeadline(request.deadlinems);
     const staging = await stageworkspace(options.slug, request.code);
+    let file = staging.payload;
+    try {
+      const fsp = (await import("node:fs/promises")) as typeof import("node:fs/promises");
+      const nodepath = (await import("node:path")) as typeof import("node:path");
+      if (options.payloadname !== undefined && options.payloadname !== "payload") {
+        file = nodepath.join(staging.dir, options.payloadname);
+        await fsp.mkdir(nodepath.dirname(file), { recursive: true });
+        await fsp.copyFile(staging.payload, file);
+      }
+      if (options.extrafiles !== undefined) {
+        const extras = options.extrafiles(request);
+        for (const [name, content] of Object.entries(extras)) {
+          const target = nodepath.join(staging.dir, name);
+          await fsp.mkdir(nodepath.dirname(target), { recursive: true });
+          await fsp.writeFile(target, content, "utf8");
+        }
+      }
+    } catch (error) {
+      await unstageworkspace(staging.dir);
+      return failureresult(options.slug, options.num, options.lane, error, started);
+    }
     let argv: readonly string[];
     try {
-      argv = options.argv({ code: request.code, file: staging.payload, request });
+      argv = options.argv({ code: request.code, file, request });
     } catch (error) {
       // the gate seats refuse before the plan stamps: the typed refusal
       // (the mz, the elf, the wasm magic laws) answers an honest failed
@@ -2611,7 +2641,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "runnerwasi",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["wasmtime"],
     hardening: ["capability-imports"],
     boot: "hot",
@@ -2630,6 +2660,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       argv: ({ file }) => ["wasmtime", "--dir", "/sandbox::/sandbox", file],
       hardening: ["capability-imports", "wasi-snapshot"],
       probe: "the host must carry wasmtime (the wasi preview runtime)",
+      payloadname: "payload.wasm",
     }),
   },
   {
@@ -2638,7 +2669,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "runnerserverless",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["v8"],
     hardening: ["no-fs", "cpu-quota"],
     boot: "hot",
@@ -3021,7 +3052,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "languagerust",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["rustc"],
     hardening: ["crate-allowlist"],
     boot: "hot",
@@ -3039,6 +3070,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       binary: "rustc",
       argv: ({ file }) => ["rustc", "-O", "--edition", "2024", "-o", "/sandbox/languagerust/payload", file],
       hardening: ["crate-allowlist"],
+      payloadname: "payload.rs",
     }),
   },
   {
@@ -3047,7 +3079,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "languagecargo",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["cargo"],
     hardening: ["crate-allowlist"],
     boot: "hot",
@@ -3066,6 +3098,18 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       argv: () => ["cargo", "run", "--offline"],
       env: { CARGO_HOME: "/sandbox/cargo", CARGO_NET_OFFLINE: "true" },
       hardening: ["crate-allowlist", "offline-only"],
+      payloadname: "src/main.rs",
+      extrafiles: () => ({
+        "Cargo.toml": [
+          "[package]",
+          "name = \"payload\"",
+          "version = \"0.1.0\"",
+          "edition = \"2021\"",
+          "",
+          "[dependencies]",
+          "",
+        ].join("\n"),
+      }),
     }),
   },
   {
@@ -3074,7 +3118,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "languagev",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["v"],
     hardening: ["package-allowlist"],
     boot: "hot",
@@ -3092,6 +3136,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       binary: "v",
       argv: ({ file }) => ["v", "run", file],
       env: { VFLAGS: "-prod" },
+      payloadname: "payload.v",
       hardening: ["package-allowlist"],
       probe: "the host must carry the v compiler (the 0.5.2 seat the catalog pins)",
     }),
@@ -3129,7 +3174,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "languagedotnet",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["dotnet"],
     hardening: ["assembly-allowlist"],
     boot: "warm",
@@ -3147,6 +3192,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       binary: "dotnet",
       argv: ({ file }) => ["dotnet", "run", file],
       hardening: ["assembly-allowlist", "mz-gate"],
+      payloadname: "payload.cs",
     }),
   },
   {
@@ -3181,7 +3227,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "languagelua",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["lua"],
     hardening: ["sandbox-env"],
     boot: "hot",
@@ -3207,7 +3253,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "languagezig",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["zig"],
     hardening: ["package-allowlist"],
     boot: "hot",
@@ -3225,6 +3271,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       binary: "zig",
       argv: ({ file }) => ["zig", "run", file],
       hardening: ["package-allowlist"],
+      payloadname: "payload.zig",
     }),
   },
   {
@@ -3233,7 +3280,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "languagenim",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["nim"],
     hardening: ["package-allowlist"],
     boot: "hot",
@@ -3251,6 +3298,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
       binary: "nim",
       argv: ({ file }) => ["nim", "r", file],
       hardening: ["package-allowlist"],
+      payloadname: "payload.nim",
     }),
   },
   {
@@ -3259,7 +3307,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "languagephp",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["php"],
     hardening: ["ini-lockdown"],
     boot: "hot",
@@ -3366,7 +3414,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "buildmake",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["make"],
     hardening: ["recipe-allowlist"],
     boot: "hot",
@@ -3419,7 +3467,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "buildninja",
     lane: "runner",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["ninja"],
     hardening: ["recipe-allowlist"],
     boot: "hot",
@@ -4040,7 +4088,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "fsgitobjects",
     lane: "sandbox",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["git", "vfs"],
     hardening: ["content-hash", "chunk-catalog"],
     boot: "hot",
@@ -4535,7 +4583,7 @@ export const MODALITYENGINE: readonly ModalitySpec[] = [
     slug: "networkdoh",
     lane: "sandbox",
     isolation: "process",
-    state: "planned",
+    state: "live",
     drivers: ["doh"],
     hardening: ["resolver-allowlist"],
     boot: "hot",

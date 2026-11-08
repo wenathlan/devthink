@@ -307,6 +307,76 @@ RUN apt-get update \
     # degrades to a no-op at runtime - the sources are dead weight.
     && rm -rf node_modules/cpu-features/deps \
     && find node_modules -type f -name Dockerfile -delete
+# THE TOOLCHAIN LAYER — the fourteen planned seats walk live (the pr13
+# completion law): the engine host carries the runtimes the language,
+# build and wasi seats spawn, every carrier pinned to the exact version
+# the engines catalog answers and the assert after every install proving
+# the binary answers its version. the apt lanes (make, ninja, lua, php,
+# the gcc toolchain the v and nim codegen rides) install on every arch
+# leg debian ships them for; the prefab carriers (rustup 1.99.1, zig
+# 0.17.1, wasmtime 50.0.1, v 0.5.2, nim 2.4.0, dotnet sdk 10.0.403)
+# ride the two native legs (amd64, arm64) their publishers ship — the
+# exotic legs (ppc64le, s390x) answer the honest coded absence the
+# seats' probes name at dispatch (HOST_RUNTIME_ABSENT — the seat never
+# fakes a run), the same law the arch case above carries.
+RUN set -eux; \
+    arch="${TARGETARCH:-$(dpkg --print-architecture)}"; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      build-essential ca-certificates curl git lua5.4 ninja-build php-cli unzip xz-utils; \
+    ln -sf /usr/bin/lua5.4 /usr/local/bin/lua; \
+    make --version | head -1; \
+    ninja --version; \
+    lua -v; \
+    php --version | head -1; \
+    case "$arch" in \
+      amd64|arm64) \
+        rustuparch="x86_64-unknown-linux-gnu"; \
+        [ "$arch" = "arm64" ] && rustuparch="aarch64-unknown-linux-gnu"; \
+        curl -fsS https://sh.rustup.rs -o /tmp/rustup-init.sh; \
+        sh /tmp/rustup-init.sh -y --profile minimal --default-toolchain 1.99.1 \
+          --no-modify-path --default-host "$rustuparch"; \
+        rustctool="/root/.rustup/toolchains/1.99.1-${rustuparch}/bin"; \
+        ln -sf "$rustctool/rustc" /usr/local/bin/rustc; \
+        ln -sf "$rustctool/cargo" /usr/local/bin/cargo; \
+        rustc --version; \
+        cargo --version; \
+        zigarch="x86_64"; [ "$arch" = "arm64" ] && zigarch="aarch64"; \
+        curl -fsSL "https://ziglang.org/download/0.17.1/zig-linux-${zigarch}-0.17.1.tar.xz" \
+          -o /tmp/zig.tar.xz; \
+        mkdir -p /opt/zig; \
+        tar -xJf /tmp/zig.tar.xz --strip-components=1 -C /opt/zig; \
+        ln -sf /opt/zig/zig /usr/local/bin/zig; \
+        zig version; \
+        wasmtimearch="x86_64"; [ "$arch" = "arm64" ] && wasmtimearch="aarch64"; \
+        curl -fsSL "https://github.com/bytecodealliance/wasmtime/releases/download/v50.0.1/wasmtime-v50.0.1-${wasmtimearch}-linux.tar.xz" \
+          -o /tmp/wasmtime.tar.xz; \
+        mkdir -p /opt/wasmtime; \
+        tar -xJf /tmp/wasmtime.tar.xz --strip-components=1 -C /opt/wasmtime; \
+        ln -sf /opt/wasmtime/wasmtime /usr/local/bin/wasmtime; \
+        wasmtime --version; \
+        git clone --depth 1 --branch 0.5.2 https://github.com/vlang/v.git /opt/v; \
+        make -C /opt/v; \
+        ln -sf /opt/v/v /usr/local/bin/v; \
+        v version; \
+        git clone --depth 1 --branch v2.4.0 https://github.com/nim-lang/Nim.git /opt/nim; \
+        sh -c 'cd /opt/nim && sh build_all.sh'; \
+        ln -sf /opt/nim/bin/nim /usr/local/bin/nim; \
+        nim --version | head -1; \
+        curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh; \
+        bash /tmp/dotnet-install.sh --channel 10.0 --version 10.0.403 --install-dir /usr/share/dotnet; \
+        ln -sf /usr/share/dotnet/dotnet /usr/local/bin/dotnet; \
+        dotnet --version; \
+        ;; \
+      *) \
+        echo "the toolchain layer answers the honest coded absence on ${arch}: the prefab carriers ship amd64 and arm64 alone (the seats' probes name the requirement at dispatch)" ;; \
+    esac; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /opt/nim/.git /opt/v/.git; \
+    mkdir -p /sandbox && chown node:node /sandbox
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    DOTNET_NOLOGO=1 \
+    DOTNET_CLI_HOME=/sandbox/dotnet-home \
+    DOTNET_CLI_LANGUAGE=en
 # the web service surface (self-hosted console): the staged spa plus the
 # pure-node server stack - zero npm dependencies, the node 26 runtime
 # carries everything (node:sqlite, node:crypto, native type stripping

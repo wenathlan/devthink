@@ -14,7 +14,7 @@ import { existsSync, rmSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { describe, it } from "vitest";
+import { describe, it, afterAll } from "vitest";
 
 /* the isolation of the suite (the quotaisolation precedent): the engine
  * chain opens its sqlite singletons at import, so both connections route
@@ -50,6 +50,13 @@ async function readPackage(): Promise<PackageJson> {
 }
 
 describe("the package surface", () => {
+  /* the throwaway store the suite routes its sqlite singletons into
+   * never outlives the run: the vitonly law audits the test folder for
+   * typescript alone, so the suite sweeps its own tmp seat on the way
+   * out — the same rmSync law the setup block carries, answered after. */
+  afterAll(() => {
+    rmSync("test/tmp", { recursive: true, force: true });
+  });
   it("imports every declared package export target in Node", async () => {
     const packagejson = await readPackage();
     const entries = Object.entries(packagejson.exports);

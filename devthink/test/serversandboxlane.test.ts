@@ -148,22 +148,22 @@ describe("sandboxlane", () => {
     );
     expect(text).toContain("runnernode: live lane — the node runtime the run lane executes inside the container");
     expect(text).toContain("fsvfs: live lane — the session jail the storage lane drives");
-    // the saddle honesty rung (#441) moved the registry-only seats the
-    // engine never carried real executors for onto the planned shelf — the
-    // report answers the registry's honest state, never a wiring the lanes
-    // do not drive. The seats the executor waves brought alive walk the
-    // live lane lines the report renders (the storagesqlite executor the
-    // storage wave carried: one real roundtrip on the private table; the
-    // networkdns executor the dns wave carried: one honest resolution
-    // roundtrip through the host resolver).
-    expect(text).toContain("runnerserverless: planned — the catalog promise, no lane wires it yet");
+    // the toolchain rung walked the last fourteen planned seats live: the
+    // engine container's toolchain layer carries the runtimes the language,
+    // build and wasi seats spawn, and the three in-process seats whose
+    // executors always drove (the serverless isolate, the git objects vfs,
+    // the doh resolver) walk the live lane lines. the report answers the
+    // registry's honest state — the probed runtimes that are absent on this
+    // host name their refusal honestly (the run lane refuses, the seat
+    // never fakes a run), the same law the host probes carry.
+    expect(text).toContain("runnerserverless: live lane — the v8 isolate the exec lane drives in process");
     expect(text).toContain("storagesqlite: live lane — the sqlite database the sql tool drives through better-sqlite3");
-    expect(text).toContain("fsgitobjects: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("fsgitobjects: live lane — the content-addressed objects store the gitobj tool drives");
     expect(text).toContain("networkdns: live lane — the node resolver the dns tool drives");
-    expect(text).toContain("networkdoh: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("networkdoh: live lane — the https resolver the doh tool drives");
     // the polyglot live lanes probe their host runtime (python names the binary)
     expect(text).toContain("languagepython: live lane — python3 ");
-    expect(text).toContain("buildmake: planned — the catalog promise, no lane wires it yet");
+    expect(text).toContain("buildmake: live lane — make ");
     // the host runtimes name their binary and the probe verdict of this host
     expect(text).toContain("emulatorqemu: host runtime qemu-system-x86_64 not installed");
     expect(text).toContain("microvmfirecracker: host runtime firecracker not installed");

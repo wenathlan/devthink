@@ -201,3 +201,35 @@ additions (postmarketos, lineageos, calyxos, archlinux, alpine, debian,
 fedora, nixos and void) — with the arch pairings, the engine plan trio
 binding and the plan-resource law. see
 [osdistributions.md](osdistributions.md) for the record.
+
+## the toolchain rung (the pr13 completion law)
+
+the honesty audit's fourteen planned seats walked live: the engine
+container's toolchain layer now carries the runtimes the host-spawn
+seats demand, every carrier pinned to the exact version the engines
+catalog answers and asserted after install —
+
+- the apt lanes every arch leg carries: make, ninja, lua 5.4, php-cli
+  and the gcc toolchain the v and nim codegen rides;
+- the prefab carriers the two native legs (amd64, arm64) carry: rustup
+  1.99.1 (rustc and cargo, edition 2024 answering the rust floor the
+  catalog pins), zig 0.17.1, wasmtime 50.0.1 (the wasi preview runtime),
+  the v 0.5.2 compiler (the exact tag the catalog's v seat answers),
+  nim 2.4.0 and the dotnet sdk 10.0.403 (the lts channel, the
+  file-based app law the seat's `dotnet run payload.cs` rides);
+- the exotic legs (ppc64le, s390x) answer the honest coded absence the
+  seats' probes name at dispatch — HOST_RUNTIME_ABSENT, the seat never
+  fakes a run, the same law the arch case carries.
+
+the host-spawn staging grew the payload-name law: the
+extension-sensitive runtimes answer their own staged filename (the
+payload.wasm, payload.rs, payload.v, payload.cs, payload.zig and
+payload.nim seats beside the cargo manifest harness — the minimal
+Cargo.toml the seat stages beside src/main.rs so `cargo run --offline`
+answers a real build), and the three in-process seats whose executors
+always drove (the serverless v8 isolate, the git objects vfs, the doh
+resolver) walk the live lines they always deserved.
+
+the census answers the ninety-wave promise whole: **81 live, 9 host, 0
+planned, 90 records** — the plan the owner charged, the record never
+pretending a wiring the engine does not drive.
