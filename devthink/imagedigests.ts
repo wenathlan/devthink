@@ -53,7 +53,12 @@ const stamps = [
 const accepts =
   "application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json";
 const escapeimage = (image: string) => image.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const linepattern = (image: string) => new RegExp(`^FROM ${escapeimage(image)}(?:@sha256:[0-9a-f]{64})? AS `, "m");
+/* the containerlanes law seats the build-only legs behind the
+ * --platform=$BUILDPLATFORM flag, so the stamp honors the optional flag
+ * prefix and keeps it seated through the restamp. */
+const platformseat = "(--platform=\\S+ )?";
+const linepattern = (image: string) =>
+  new RegExp(`^FROM ${platformseat}${escapeimage(image)}(?:@sha256:[0-9a-f]{64})? AS `, "m");
 
 /** resolves the digest a registry answers for a tag today — the anonymous pull token every public registry honors, then the manifest header the distribution API pins. */
 async function digestof(stamp: { file: string; image: string; host: string; repository: string; tag: string }) {
@@ -88,7 +93,7 @@ for (const stamp of stamps) {
   if (!linepattern(stamp.image).test(source))
     throw new Error(`${stamp.file} carries no literal FROM ${stamp.image} line to stamp.`);
   if (digest === null) {
-    if (!new RegExp(`^FROM ${escapeimage(stamp.image)}@sha256:[0-9a-f]{64} AS `, "m").test(source)) {
+    if (!new RegExp(`^FROM ${platformseat}${escapeimage(stamp.image)}@sha256:[0-9a-f]{64} AS `, "m").test(source)) {
       throw new Error(
         `Non-breaking image digest updates are available. Run bun run digests:sync in a review branch (${stamp.file} carries an unpinned ${stamp.image}).`,
       );
@@ -96,7 +101,10 @@ for (const stamp of stamps) {
     stamped.push({ file: stamp.file, image: stamp.image, pinned: true });
     continue;
   }
-  const next = source.replace(linepattern(stamp.image), `FROM ${stamp.image}@${digest} AS `);
+  const next = source.replace(
+    linepattern(stamp.image),
+    (_match: string, platform: string | undefined) => `FROM ${platform ?? ""}${stamp.image}@${digest} AS `,
+  );
   if (next !== source) {
     drift = true;
     if (mode === "sync") await writeFile(stamp.file, next);
