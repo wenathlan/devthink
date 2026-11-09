@@ -33,9 +33,24 @@
 //             labels door and the exported surface every vault importer
 //             keeps resolving
 
-import { useEffect, useState } from "react";
 import { LABEL_MANIFEST, type LabelKey, label } from "./labels.ts";
 import { onboardingbase } from "./onboardingstate.ts";
+
+/* the react seam: the hook lane rides react while the node lanes (the
+ * server cli children, the e2e spawns) never call it — the static import
+ * the consolidation carried reddened every tsx child on the unresolved
+ * package (the vault tree carries no node_modules and the node resolution
+ * from the sibling source never finds the consumer's react), so the seam
+ * loads react lazily and degrades the hook seats honestly the same law
+ * the sqlite lane carries: a host without react answers the hooks with a
+ * loud refusal, never a crashed module graph. */
+const reacthooks: {
+  useState: typeof import("react").useState;
+  useEffect: typeof import("react").useEffect;
+} | null = await import("react").then(
+  (module) => ({ useState: module.useState, useEffect: module.useEffect }),
+  () => null,
+);
 
 /* ------------------------------------------------------------------ */
 /* @section 1 — engine: the createuistore factory                       */
@@ -595,8 +610,13 @@ const vaultseat = createuistore({
  * across renders — the biome gate catches exactly this): the core takes
  * the seat's load lane, every seat binds its own — the seed answers the
  * first paint with the same words the db serves, so the swap never
- * flashes. */
+ * flashes. the react-less host (the node lanes) answers the hook with the
+ * loud refusal — the seam law, never a silent crash. */
 export function useUicopyCore(load: () => Promise<void>): void {
+  if (reacthooks === null) {
+    throw new Error("the uistore hook lane requires react — the node lanes never call it");
+  }
+  const { useState, useEffect } = reacthooks;
   const [, bump] = useState(0);
   useEffect(() => {
     let alive = true;

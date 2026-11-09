@@ -2412,7 +2412,6 @@ export const librarysurfaceexports: readonly string[] = [
   "onboardingstate",
   "onboardingstep",
   "onboardingsteps",
-  "ondevtoolstrip",
   "openapilayout",
   "openchannel",
   "openchunkextractcursor",
