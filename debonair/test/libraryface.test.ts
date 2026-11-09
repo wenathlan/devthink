@@ -627,6 +627,16 @@ const kathesissurface: Record<string, Seat> = {
 };
 
 const SURFACE: Record<Subpath, Record<string, Seat>> = {
+  motionpref: {
+    MOTION_PREF_KEY: "string",
+    memoryMotionStorage: "function",
+    sessionStorageOrMemoryMotion: "function",
+    createMotionPref: "function",
+    reduceMotionApplied: "function",
+    reduceMotionStored: "function",
+    setReduceMotion: "function",
+    toggleReduceMotion: "function",
+  },
   analyze: {
     analyze: "function",
     BAND_LABELS: "object",
