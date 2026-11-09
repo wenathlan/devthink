@@ -344,7 +344,7 @@ RUN set -eux; \
         rustc --version; \
         cargo --version; \
         zigarch="x86_64"; [ "$arch" = "arm64" ] && zigarch="aarch64"; \
-        curl -fsSL "https://ziglang.org/download/0.17.1/zig-linux-${zigarch}-0.17.1.tar.xz" \
+        curl -fsSL "https://ziglang.org/download/0.17.1/zig-${zigarch}-linux-0.17.1.tar.xz" \
           -o /tmp/zig.tar.xz; \
         mkdir -p /opt/zig; \
         tar -xJf /tmp/zig.tar.xz --strip-components=1 -C /opt/zig; \
