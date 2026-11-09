@@ -20,6 +20,17 @@
       "@wenathlan/vault/onboardingstore": ["../getry/dist/types/vault/onboardingstore.d.ts"],
       "@wenathlan/foundry/bundlescan": ["../foundry/bundlescan.ts"],
       "@wenathlan/foundry/readiness": ["../foundry/readiness.ts"],
+      /* the uistore factory seat of the consolidation wave: the os port
+       * imports the vault factory through the published subpath
+       * ("@wenathlan/vault/uistore") and the declaration pass resolves it
+       * to the ambient face inside the app root the same way the saddle
+       * faces below answer their family specifiers — the sibling source
+       * can never enter this program (the rootDir law keeps every emit
+       * input inside the application root), while the registry envelope
+       * carries the real door a rung late the distpackage lane always
+       * answers and the bundle pass inlines the owner source through its
+       * own alias table, so the face answers the typecheck alone. */
+      "@wenathlan/vault/uistore": ["./uistoreface.ts"],
 
       "z-ai-web-dev-sdk": [
         "./node_modules/z-ai-web-dev-sdk/dist/index.d.ts"
