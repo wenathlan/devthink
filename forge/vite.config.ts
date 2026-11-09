@@ -102,9 +102,16 @@ export default defineConfig({
      * modalities.ts lazy-imports @libsql/client for the engine host's
      * database driver (the visitor law — the browser never owns the db
      * runtime), so the android lanes that stage no saddle dependency tree
-     * externalize it the same honest way. */
+     * externalize it the same honest way. The node seats the staged family
+     * graph reaches but the browser never loads ride the same law (the
+     * devthink serve stack the personalstore security seam drags resolves
+     * its @wenathlan/getry bare imports nowhere inside the staged tree —
+     * the sibling copy law stages sources only, never installs — beside
+     * the better-sqlite3 and hono node server seats the cadria block pins:
+     * the browser chunks never call them, the node lanes resolve them from
+     * their own install). */
     rolldownOptions: {
-      external: ["@babel/core", "webpack", "@libsql/client"],
+      external: [/better-sqlite3/, /@hono\/node-server/, /@wenathlan\/getry\//, "@babel/core", "webpack", "@libsql/client"],
     },
   },
   /** the theme (sol/) and the root logics (runner, api, utils) share one app root, so the dev server allows the app root — and the ownership bridge (wave 3) resolves the saddle mode surface the runner seam imports, so the saddle root rides the allow list beside the vault root. */

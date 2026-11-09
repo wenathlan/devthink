@@ -49,6 +49,17 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "."),
     emptyOutDir: false,
     assetsDir: "",
+    /* the node seats the staged family graph reaches but the browser never
+     * loads: the devthink serve stack the personalstore security seam drags
+     * into every family site container resolves its @wenathlan/getry bare
+     * imports nowhere inside the staged tree (the sibling copy law stages
+     * sources only, never installs), and the saddle modality seat carries
+     * the babel and libsql lanes the same way — the bare imports stay external the same
+     * law the cadria external block pins, the browser chunks never call
+     * them, the node lanes resolve them from their own install. */
+    rolldownOptions: {
+      external: [/better-sqlite3/, /@hono\/node-server/, /@wenathlan\/getry\//, /@babel\/core/, /@libsql\/client/],
+    },
   },
   /** the theme sources live in the Sol folder of this app root: the pages import
    * the root game logics (match, ranking, weapons, world, db) across the theme
