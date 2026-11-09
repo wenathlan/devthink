@@ -5522,17 +5522,17 @@ export function getmodalitybynum(num: number): ModalityRecord | undefined {
  */
 const names = ["computer", "library", "application", "browser", "desktop", "mobile", "extension", "cli", "binary", "internet", "physicalfile", "vectorfile", "visible", "headless"];
 
-export function modeprofile(options = {}) {
+export function modeprofile(options: { enabled?: readonly string[]; paired?: readonly string[] } = {}) {
   const enabled = new Set(options.enabled ?? ["library", "cli", "binary"]);
   return Object.fromEntries(names.map((name) => [name, { name, enabled: enabled.has(name), paired: Boolean(options.paired?.includes(name)) }]));
 }
 
-export function librarymode(factory) { return { name: "library", start: factory, stop: async () => undefined }; }
-export function climode(run) { return { name: "cli", run }; }
-export function binarymode(run) { return { name: "binary", run }; }
-export function browsermode(adapter) { return { name: "browser", adapter }; }
-export function headlessmode(adapter) { return { name: "headless", adapter }; }
-export function computemode(adapter) { return { name: "computer", adapter }; }
+export function librarymode(factory: () => unknown) { return { name: "library", start: factory, stop: async () => undefined }; }
+export function climode(run: (args: readonly string[]) => unknown) { return { name: "cli", run }; }
+export function binarymode(run: (args: readonly string[]) => unknown) { return { name: "binary", run }; }
+export function browsermode(adapter: unknown) { return { name: "browser", adapter }; }
+export function headlessmode(adapter: unknown) { return { name: "headless", adapter }; }
+export function computemode(adapter: unknown) { return { name: "computer", adapter }; }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 2: modes/matrix.ts — mode matrix keeps supported execution choices in one grouped contract. */
@@ -5553,7 +5553,7 @@ export const modeaxes = Object.freeze({
 export const operationmodes = Object.freeze(modeaxes.execution.flatMap((execution) => modeaxes.pair.map((pair) => `${execution}${pair}`)));
 
 /** Returns true when the matrix contains the requested axis value. */
-export function validatemode(axis, value) { return Boolean(modeaxes[axis]?.includes(value)); }
+export function validatemode(axis: string, value: string) { return Boolean((modeaxes as Record<string, readonly string[]>)[axis]?.includes(value)); }
 
 /** Returns a serializable snapshot for documentation and diagnostics. */
 export function modecatalog() { return { axes: Object.fromEntries(Object.entries(modeaxes).map(([key, values]) => [key, [...values]])), operationmodes: [...operationmodes] }; }
@@ -5566,7 +5566,7 @@ export function modecatalog() { return { axes: Object.fromEntries(Object.entries
  */
 
 /** Resolves an execution profile without starting a process or opening a socket. */
-export function resolvemode(options = {}) {
+export function resolvemode(options: { execution?: string; runtime?: string; memory?: string; file?: string; dependency?: string; visibility?: string; pair?: string } = {}) {
   const profile = {
     execution: options.execution ?? "library",
     runtime: options.runtime ?? "unknown",
@@ -5581,7 +5581,7 @@ export function resolvemode(options = {}) {
 }
 
 /** Returns stable capabilities for adapters and diagnostics. */
-export function modecapabilities(profile) {
+export function modecapabilities(profile: { execution: string; runtime: string; memory: string; file: string; dependency: string; visibility: string; pair: string }) {
   return {
     library: profile.execution === "library" || profile.execution === "application",
     browser: profile.execution === "browser" || profile.execution === "extension" || profile.runtime === "browser" || profile.runtime === "worker",
@@ -5596,7 +5596,7 @@ export function modecapabilities(profile) {
 }
 
 /** Returns a stable cross-runtime capability report without starting infrastructure. */
-export function capabilityreport(options = {}) {
+export function capabilityreport(options: { runtime?: string; memory?: string; file?: string; dependency?: string; visibility?: string; pair?: string } = {}) {
   const overrides = { runtime: options.runtime ?? "unknown", memory: options.memory ?? "internal", file: options.file ?? "internal", dependency: options.dependency ?? "internal", visibility: options.visibility ?? "headless", pair: options.pair ?? "without" };
   const profiles = modeaxes.execution.map((execution) => {
     const profile = resolvemode({ ...overrides, execution });
@@ -5606,7 +5606,7 @@ export function capabilityreport(options = {}) {
 }
 
 /** Applies one profile to a caller supplied operation. */
-export async function withmode(options, operation) { if (typeof operation !== "function") throw new TypeError("mode operation is required"); return operation(resolvemode(options)); }
+export async function withmode(options: { execution?: string; runtime?: string; memory?: string; file?: string; dependency?: string; visibility?: string; pair?: string }, operation: (profile: ReturnType<typeof resolvemode>) => unknown) { if (typeof operation !== "function") throw new TypeError("mode operation is required"); return operation(resolvemode(options)); }
 
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -5653,7 +5653,7 @@ export const targetprofiles = Object.freeze({
 });
 
 /** Creates a surface target with caller supplied entry and capabilities. */
-export function targetmanifest(target, options = {}) { const profile = targetprofiles[target]; if (!profile) throw new TypeError(`unsupported target: ${target}`); return { target, runtime: options.runtime ?? profile.runtime, entry: options.entry ?? profile.entry, formats: options.formats ?? [...profile.formats], capabilities: options.capabilities ?? [...profile.capabilities], permissions: options.permissions ?? [], metadata: options.metadata ?? {} }; }
+export function targetmanifest(target: string, options: { runtime?: string; entry?: string; formats?: readonly string[]; capabilities?: readonly string[]; permissions?: readonly string[]; metadata?: Record<string, unknown> } = {}) { const profile = (targetprofiles as Record<string, { runtime: string; entry: string; capabilities: string[]; formats: string[] }>)[target]; if (!profile) throw new TypeError(`unsupported target: ${target}`); return { target, runtime: options.runtime ?? profile.runtime, entry: options.entry ?? profile.entry, formats: options.formats ?? [...profile.formats], capabilities: options.capabilities ?? [...profile.capabilities], permissions: options.permissions ?? [], metadata: options.metadata ?? {} }; }
 
 /** Returns all supported target profiles for documentation and tooling. */
 export function targetcatalog() { return Object.fromEntries(Object.entries(targetprofiles).map(([key, value]) => [key, { ...value, capabilities: [...value.capabilities] }])); }

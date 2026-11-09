@@ -17,6 +17,12 @@ import { execSync } from "node:child_process";
 import { setInterval } from "node:timers";
 import path from "node:path";
 
+/* the bun runtime's serve primitive — the typecheck program carries no bun
+ * types (the node types own the envelope's tsconfig), so the seat declares
+ * the slice it uses: the runtime resolves the real global under bun, and
+ * every engine that runs this file spawns it with bun alone. */
+declare const Bun: { serve: (options: { port: number; fetch: () => Response }) => unknown };
+
 const ROOT = path.resolve(import.meta.dirname, "..");
 const STATE = path.join(ROOT, ".polar-auth.json");
 const TOKEN_FILE = path.join(ROOT, ".github-token");

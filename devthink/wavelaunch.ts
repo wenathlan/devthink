@@ -42,7 +42,6 @@ const detachedspawn = (command: string, args: string[], cwd: string, logfile: st
     stdio: ["ignore", "ignore", "ignore"],
     env: process.env,
   });
-  child.stdout?.on?.("data", () => {});
   child.unref();
   void logfile;
 };
