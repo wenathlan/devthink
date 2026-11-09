@@ -22,7 +22,7 @@
 # to boot without VAULT_TOKEN (fail closed, the same law the engine rides:
 # no token, no storage truth).
 
-FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
+FROM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS solbuild
 
 ARG VAULT_VERSION=2.0.172
 
@@ -47,7 +47,7 @@ COPY saddle/ /saddle
 RUN pnpm build \
  && sh -c 'mkdir /site && for f in index.html *.js *.css *.webmanifest *.svg *.ico *.png *.woff2 _headers _redirects robots.txt sitemap.xml; do cp "$f" /site/ 2>/dev/null || true; done' 
 
-FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS enginedeps
+FROM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS enginedeps
 
 ARG VAULT_VERSION=2.0.172
 
@@ -238,7 +238,7 @@ LABEL org.opencontainers.image.title="vault (the face)" \
 # — the pair the file documents never booted.
 COPY --from=solbuild /site/ /usr/share/nginx/html/
 
-FROM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797
+FROM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216
 
 ARG VAULT_VERSION=2.0.172
 

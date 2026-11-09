@@ -407,7 +407,9 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
 # webserver.ts pulls the one sandbox seat (sandbox.ts - the sandboxfold
 # merged the profile, env-profile and quota seats into it, so the three
 # dead COPY arms the pre-fold file carried retire here), db.ts, auth.ts,
-# mesh.ts, modalityregistry.ts, edgeplane.ts and workloadlaw.ts;
+# mesh.ts, modalities.ts (the modalityregistry fold answered the ninety
+# records into the modalities keyword file the catalog law owns),
+# edgeplane.ts and workloadlaw.ts;
 # edgeplane.ts
 # pulls foundation.ts and the one edgelandes keyword file (the edgelandes
 # fold retired the host/inproc/virtual/ninety arms into it); the lazy
@@ -433,7 +435,7 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
 # (virtual.ts pulls foundation.ts only; tiers.ts pulls node builtins
 # only).
 # run the console with: docker run saddle:<version>
-COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scripts.ts /app/execution.ts /app/virtual.ts /app/tiers.ts /app/mime.types /app/init.sql /app/schema.prisma ./
+COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalities.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scripts.ts /app/execution.ts /app/virtual.ts /app/tiers.ts /app/mime.types /app/init.sql /app/schema.prisma ./
 # the label store and the onboarding store of the console stack: labels.ts
 # (pulled by db.ts) resolves ../vault/labelstore.ts at /vault and db.ts
 # resolves ../vault/onboardingstore.ts beside it - the same family
