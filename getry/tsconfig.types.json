@@ -34,6 +34,14 @@
        * the typecheck resolves the monorepo source beside its labelstore
        * precedent until the next rung publishes the export. */
       "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
+      /* the uistore bridge of the os copy seat (the wave 14 uistore
+       * consolidation): the createuistore factory the vault owns answers
+       * through the published specifier the same way the labelstore and
+       * onboardingstore seats do, and the installed envelope the
+       * declaration pass resolves carries no ./uistore export yet — the
+       * typecheck resolves the monorepo source beside its labelstore
+       * precedent until the next rung publishes the export. */
+      "@wenathlan/vault/uistore": ["../vault/uistore.ts"],
       /* the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from the devthink side: the moved
        * engine graph leans on the os server seam whose sandbox lane reads
@@ -143,6 +151,11 @@
   },
   "include": [
     "typeface.ts",
+    /* the vault uistore face entry (the os copy seat bridge): the
+     * declaration pass emits the vault factory face the devthink build
+     * resolves through its generated .d.ts bridge — the same face law
+     * the labelstore and onboardingstore seats ride from the db chain. */
+    "../vault/uistore.ts",
     "thinking.ts",
     "engine.ts",
     "llm.ts",
