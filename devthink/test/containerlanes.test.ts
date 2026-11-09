@@ -20,7 +20,10 @@
  * gradle and rubygems) beside the base npmjs envelope the family-npmjs
  * mirror ships: mais de sete contando com webpack. the channel census —
  * every application rides the eleven-plus distribution lanes the registries
- * answer (the seven registry family matrices of the publish workflow beside
+ * answer (the ten registry family matrices of the publish workflow beside
+ * the tri-channel wave of the PR12 eleven-channel law seated (the pypi,
+ * cargo and homebrew family lanes beside the seven the distfamily wave
+ * closed)
  * the container lanes of the containers workflow), so the regression that
  * once left the ghcr package page answering only the saddle container can
  * never land silently again.
@@ -83,8 +86,13 @@ const ALLAPPS = [...SIBLINGS.slice(0, 5), "saddle", ...SIBLINGS.slice(5)];
 
 /** the registry family matrices of the publish workflow every application
  * envelope rides (the distribution-completeness law the distfamily wave
- * closed - the seven registry seats beside the container lanes). */
+ * closed - the ten registry seats beside the container lanes: the seven the
+ * distfamily wave seated beside the pypi, cargo and homebrew family lanes
+ * the tri-channel wave of the PR12 eleven-channel law added). */
 const REGISTRYLANES = [
+  "family-pypi",
+  "family-cargo",
+  "family-homebrew",
   "family-npmjs",
   "family-githubnpm",
   "family-maven",

@@ -213,7 +213,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
             <div
               className="pointer-events-none absolute top-10 right-6 h-16 w-16 rounded-full opacity-90"
               style={{
-                background: "radial-gradient(circle at 30% 30%, #FFFFFF, #C084FC 55%, #4F46E5)",
+                background: "radial-gradient(circle at 30% 30%, var(--saas-face), #C084FC 55%, #4F46E5)",
                 boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)",
               }}
               aria-hidden="true"

@@ -83,7 +83,8 @@ const STRUCTURE_LABELS: readonly string[] = ["chorus", "verse", "bridge", "intro
  * flux, centroid and chroma per stft frame.
  *
  * @param mono the mono samples.
- * @param samplerate the sample rate.
+ * @param samplerate the sample rate (the frames bin at it — the rate law
+ * rides the pcm's own rate, never a silently assumed canon).
  * @returns the per-frame features.
  */
 function frameFeatures(mono: readonly number[], samplerate: number) {
@@ -103,7 +104,7 @@ function frameFeatures(mono: readonly number[], samplerate: number) {
       energy += v * v;
     }
     rms.push(Math.sqrt(energy / FFT_SIZE));
-    const frame = frameSpectrum(window);
+    const frame = frameSpectrum(window, samplerate);
     let magSum = 0;
     let weighted = 0;
     let fluxSum = 0;
@@ -120,7 +121,6 @@ function frameFeatures(mono: readonly number[], samplerate: number) {
     for (let pc = 0; pc < 12; pc++) chroma[pc] += chromaFrame[pc];
     previous = frame.magnitudes.slice();
   }
-  void samplerate;
   return { rms, flux, centroid, chroma };
 }
 
@@ -257,7 +257,7 @@ function bandEnergiesOf(mono: readonly number[], samplerate: number): number[] {
   for (let f = 0; f < frameCount; f += stride) {
     const start = f * HOP_SIZE;
     for (let i = 0; i < FFT_SIZE; i++) window[i] = mono[start + i] ?? 0;
-    const frame = frameSpectrum(window);
+    const frame = frameSpectrum(window, samplerate);
     for (let b = 1; b < frame.magnitudes.length; b++) {
       const hz = b * binHz;
       if (hz < BAND_LADDER[0] || hz > BAND_LADDER[BAND_LADDER.length - 1]) continue;

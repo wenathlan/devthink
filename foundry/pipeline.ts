@@ -29,7 +29,7 @@ import {
    owner's factory (wave W5, the dedup law) through the relative owner
    source — the engine lives in saddle once, this seat keeps only the
    foundry data (the slug, the env var name, the lane table). */
-import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "../saddle/workloadlaw.ts";
+import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "@wenathlan/saddle/workloadlaw";
 
 /* ══════════════════════════════════════════════════════════════════════ */
 /* SECTION: artifact.ts — the artifact checksum engine (the first section). */

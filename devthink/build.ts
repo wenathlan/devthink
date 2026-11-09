@@ -96,6 +96,8 @@ const bundlebudgets: Record<string, number> = {
   queue: 160_000,
   security: 700_000,
   pack: 600_000,
+  personalstore: 720_000, /* the theme seat inlines the security guard the suspend lane leans on */
+  reveal: 40_000, /* the reveal door rides react and wouter as externals */
 };
 
 /** Every build bundle the build emits: the accounting, the naming check, the checksums file and the minified parity expectations read this one list. */
@@ -179,8 +181,15 @@ await build({
 });
 
 /** The per module bundles of the exports map: policy, protocol, memory and progress ship as their own tree shakable entries with the types the declaration emit provides, the 1.1.95 hardening family ships its own entry beside them so the security gates stay importable without touching the frozen index surface, and the 1.1.96 dashdone family ships its own entry the same way so the multi agent dashboard view stays importable outside the frozen surface — the seat answers the dashboard keyword file since the wave consolidation folded dashdone.ts, desktopstate.ts, alttab.ts and density.ts into dashboard.ts (the security keyword file the security-tooling consolidation folded five scanner seats into rides the node-platform module family loop below, where the node builtins its CLI seats import answer as externals — the neutral tree-shakable lanes stay browser-pure), and the lazy storage.ts preference lane the desktopstate section carries stays external exactly as lazy as it rode in its standalone era (the flat package answers the account store through its own ./storage seam; a lane that cannot resolve answers the honest floating default the pure layer always kept). */
-for (const modulename of ["policy", "protocol", "memory", "progress", "hardening", "dashboard"]) {
-  const modulexternals = modulename === "dashboard" ? ["./storage.ts"] : [];
+for (const modulename of ["policy", "protocol", "memory", "progress", "hardening", "dashboard", "personalstore", "reveal"]) {
+  /* the doors the family law charges: personalstore carries the theme
+   * seat the six sibling doors re-export (the security guard it leans on
+   * inlines into the bundle the way the policy seat inlines the scanner
+   * family), reveal carries the reveal door react and wouter answer as
+   * externals — both ship the same tree-shakable module-bundle grammar
+   * the family's per-module entries always rode. */
+  const modulexternals =
+    modulename === "dashboard" ? ["./storage.ts"] : modulename === "reveal" ? ["react", "wouter"] : [];
   await build({
     entryPoints: [`${modulename}.ts`],
     outfile: record(`${modulename}.js`),
@@ -759,6 +768,8 @@ for (const [target, file] of [
   ["pack", "pack.js"],
   ["http", "http.js"],
   ["queue", "queue.js"],
+  ["personalstore", "personalstore.js"],
+  ["reveal", "reveal.js"],
 ]) {
   const bytes = (await stat(join(root, "build", file))).size;
   bundleaccounting.push({ target, bytes, budget: bundlebudgets[target] });
@@ -1033,6 +1044,8 @@ for (const entry of [
   "hardening",
   "dashboard",
   "queue",
+  "personalstore",
+  "reveal",
   "types",
   "runtime",
   "umd",
@@ -1398,9 +1411,16 @@ const stagerootfiles = [
   "server.js",
   "gallery.json",
   "umd-example.html",
+  /* the doors the family law charges: the theme seat and the reveal door
+   * ship beside their bundles the same flat-root grammar every module
+   * entry rides. */
+  "personalstore.js",
+  "reveal.js",
 ];
 const stagedeclarations = [
   "index",
+  "personalstore",
+  "reveal",
   "policy",
   "protocol",
   "memory",
@@ -1440,6 +1460,14 @@ const stagedeclarations = [
   "companion",
 ];
 for (const file of stagerootfiles) await writeFile(join(stage, file), await readFile(join(root, "build", file)));
+/** the source-is-library seat of the reveal door (the tsroot law's family
+    door): the client-safe reveal observer ships as its reviewed .ts source
+    — the module documents itself as the canonical static-bundle import for
+    every family app (react and wouter stay the only imports), so the flat
+    package answers the ./reveal specifier with the source the vite and
+    vitest bridges already resolve, and the staged exports walk stays
+    honest (the target ./reveal.ts resolves to a staged file). */
+await writeFile(join(stage, "reveal.ts"), await readFile(join(root, "reveal.ts")));
 for (const name of stagedeclarations) {
   await writeFile(join(stage, `${name}.d.ts`), await readFile(join(root, "build", `${name}.d.ts`)));
   await writeFile(join(stage, `${name}.d.ts.map`), await readFile(join(root, "build", `${name}.d.ts.map`)));

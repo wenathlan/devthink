@@ -1,0 +1,17 @@
+# devthink — the rust version envelope crate of the family (the cargo channel).
+# The crate carries the version constant the metadata lockstep stamps (the
+# devthink.java precedent: the registry lanes reference it, never compile it
+# locally), the lane builds with `cargo package --no-verify --allow-dirty`
+# and stamps the version before building.
+[package]
+name = "wenathlan-devthink"
+version = "2.0.172"
+edition = "2021"
+description = "Builds explicit local DevThink CLI invocations without storing provider credentials"
+license = "GPL-3.0-only"
+repository = "https://github.com/wenathlan/devthink"
+authors = ["wenathlan"]
+
+[lib]
+name = "devthink"
+path = "devthink.rs"

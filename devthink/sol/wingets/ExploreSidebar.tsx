@@ -19,8 +19,7 @@
 import { MoreHorizontalRegular as More, type FluentIcon } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { label } from "../../labels.ts";
-import { uicopy, useUicopy } from "../../uistore.ts";
+import { label, uicopy, useUicopy } from "../../uistore.ts";
 import type { DesktopApp } from "../../appregistry.ts";
 import type { FamilySite } from "../../catalog";
 import { FamilyMark } from "./ExploreLaunchdeck.tsx";

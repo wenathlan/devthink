@@ -19,7 +19,7 @@ import {
   OFFICIALAPPS,
   ownersbyengine,
 } from "../engines.ts";
-import { THINKINGLEVELS } from "../../getry/thinking.ts";
+import { THINKINGLEVELS } from "@wenathlan/getry/thinking";
 
 describe("the ownership manifest", () => {
   it("declares exactly one owner row per official app — all eleven, no stranger", () => {

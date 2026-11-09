@@ -213,7 +213,7 @@ describe.skipIf(!inrepo)("the npmjs registry freshness lane", () => {
      * (the retirement of the extension lane kept the same resolver law —
      * the block comment carries the deleted-tag doctrine). */
     expect(publish).toContain("deleted tag pattern never answers a resolver again");
-    expect(publish).toContain(
+    expect(await readworkflow("saddlelanes.yml")).toContain(
       "version=$(node -p \"JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version\")",
     );
   });
@@ -281,23 +281,48 @@ describe.skipIf(!inrepo)("the registry family seats (the distfamily law)", () =>
 
 describe.skipIf(!inrepo)("the container distributions lane", () => {
   it("the three vhe profiles answer the owner doctrine — max, light and palatial ride max, balanced and lite", async () => {
-    const publish = await parseworkflow("publish.yml");
+    /* the half-megabyte split carried the vhe lane family to the
+     * saddlelanes workflow — the battery reads the lanes where they
+     * ride (the same grids, the same gates, the home file answering
+     * the size law the publish workflow could not). */
+    const publish = await parseworkflow("saddlelanes.yml");
     const profiles = matrixof(publish, "saddle-vhe-publish");
-    /* the seven runnable publish legs: the three profile lanes (max,
-     * balanced, lite — nothing removed) beside the four os-distribution
-     * flavor lanes the container-lane law adds (linux, omarchy,
-     * vanillaos, android — every flavor binds the max plan, the tier
-     * axis stays the profile lanes' own). */
-    expect(profiles.map((leg) => leg.profile)).toEqual(["max", "balanced", "lite", "max", "max", "max", "max"]);
-    expect(profiles.map((leg) => leg.osprofile ?? "")).toEqual(["", "", "", "linux", "omarchy", "vanillaos", "android"]);
+    /* the fifteen runnable publish legs: the three profile lanes (max,
+     * balanced, lite — nothing removed) beside the twelve flavor lanes
+     * of the tier grid the standardization directive charged (linux,
+     * omarchy, vanillaos, android — every distribution carrying its
+     * max, balanced and lite twins, the prior four max flavors keep
+     * their tags and the balanced and lite twins join them). */
+    expect(profiles.map((leg) => leg.profile)).toEqual([
+      "max", "balanced", "lite",
+      "max", "balanced", "lite",
+      "max", "balanced", "lite",
+      "max", "balanced", "lite",
+      "max", "balanced", "lite",
+    ]);
+    expect(profiles.map((leg) => leg.osprofile ?? "")).toEqual([
+      "", "", "",
+      "linux", "linux", "linux",
+      "omarchy", "omarchy", "omarchy",
+      "vanillaos", "vanillaos", "vanillaos",
+      "android", "android", "android",
+    ]);
     expect(profiles.map((leg) => [leg.target, leg.suffix ?? ""])).toEqual([
       ["max", ""],
       ["balanced", "-balanced"],
       ["lite", "-lite"],
       ["oslinux", "-linux"],
+      ["oslinux", "-balanced-linux"],
+      ["oslinux", "-lite-linux"],
       ["osomarchy", "-omarchy"],
+      ["osomarchy", "-balanced-omarchy"],
+      ["osomarchy", "-lite-omarchy"],
       ["osvanillaos", "-vanillaos"],
+      ["osvanillaos", "-balanced-vanillaos"],
+      ["osvanillaos", "-lite-vanillaos"],
       ["osandroid", "-android"],
+      ["osandroid", "-balanced-android"],
+      ["osandroid", "-lite-android"],
     ]);
     /* the virtual hardware identity of each profile: the cpu model, the
      * core/thread counts, the memory plan in gibibytes, the gpu profile and
@@ -376,7 +401,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 
   it("the profile tag family never collides with the node engine and never rolls", async () => {
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     /* the saddlemod heal law: max rides the bare :<version> tag of the
      * family pattern, balanced / lite carry the profile suffix, the
      * os-distribution lanes carry the seat suffix (the matrix suffix
@@ -384,55 +409,115 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
      * ever publishes a rolling alias. */
     expect(publish).toContain('suffix="${{ matrix.suffix }}"');
     expect(publish).toContain("no rolling alias");
-    const workflow = await parseworkflow("publish.yml");
+    const workflow = await parseworkflow("saddlelanes.yml");
     const verify = matrixof(workflow, "saddle-vhe-verify");
-    /* the twenty verify legs: the three profile lanes, the four
-     * os-distribution flavor lanes (runnable) and the thirteen catalog
-     * lanes (the no-base seats: grapheneos, maruos, v, windows and the
-     * nine honest osdistrib additions the owner's more-than-fifteen
-     * directive rides). */
-    expect(verify.map((leg) => [leg.profile, leg.suffix ?? "", leg.mode])).toEqual([
-      ["max", "", "runnable"],
-      ["balanced", "-balanced", "runnable"],
-      ["lite", "-lite", "runnable"],
-      ["max", "-linux", "runnable"],
-      ["max", "-omarchy", "runnable"],
-      ["max", "-vanillaos", "runnable"],
-      ["max", "-android", "runnable"],
-      ["catalog", "-grapheneos", "catalog"],
-      ["catalog", "-maruos", "catalog"],
-      ["catalog", "-v", "catalog"],
-      ["catalog", "-windows", "catalog"],
-      ["catalog", "-postmarketos", "catalog"],
-      ["catalog", "-lineageos", "catalog"],
-      ["catalog", "-calyxos", "catalog"],
-      ["catalog", "-archlinux", "catalog"],
-      ["catalog", "-alpine", "catalog"],
-      ["catalog", "-debian", "catalog"],
-      ["catalog", "-fedora", "catalog"],
-      ["catalog", "-nixos", "catalog"],
-      ["catalog", "-void", "catalog"],
+    /* the forty-six verify legs: the three profile lanes, the four
+     * os-distribution flavor lanes (runnable) and the thirty-nine catalog
+     * tier-grid lanes (the no-base seats — grapheneos, maruos, v, windows
+     * and the nine honest osdistrib additions the owner's more-than-
+     * fifteen directive rides — every distribution now carries every
+     * tier: the max seat beside its balanced and lite twins, the owner's
+     * standardization directive the catalog tier grid answers). */
+    expect(verify.map((leg) => [leg.profile, leg.suffix ?? "", leg.mode, leg.expecttier ?? ""])).toEqual([
+      ["max", "", "runnable", ""],
+      ["balanced", "-balanced", "runnable", ""],
+      ["lite", "-lite", "runnable", ""],
+      ["max", "-linux", "runnable", ""],
+      ["max", "-omarchy", "runnable", ""],
+      ["max", "-vanillaos", "runnable", ""],
+      ["max", "-android", "runnable", ""],
+      ["catalog", "-grapheneos", "catalog", "max"],
+      ["catalog", "-balanced-grapheneos", "catalog", "balanced"],
+      ["catalog", "-lite-grapheneos", "catalog", "lite"],
+      ["catalog", "-maruos", "catalog", "max"],
+      ["catalog", "-balanced-maruos", "catalog", "balanced"],
+      ["catalog", "-lite-maruos", "catalog", "lite"],
+      ["catalog", "-v", "catalog", "max"],
+      ["catalog", "-balanced-v", "catalog", "balanced"],
+      ["catalog", "-lite-v", "catalog", "lite"],
+      ["catalog", "-windows", "catalog", "max"],
+      ["catalog", "-balanced-windows", "catalog", "balanced"],
+      ["catalog", "-lite-windows", "catalog", "lite"],
+      ["catalog", "-postmarketos", "catalog", "max"],
+      ["catalog", "-balanced-postmarketos", "catalog", "balanced"],
+      ["catalog", "-lite-postmarketos", "catalog", "lite"],
+      ["catalog", "-lineageos", "catalog", "max"],
+      ["catalog", "-balanced-lineageos", "catalog", "balanced"],
+      ["catalog", "-lite-lineageos", "catalog", "lite"],
+      ["catalog", "-calyxos", "catalog", "max"],
+      ["catalog", "-balanced-calyxos", "catalog", "balanced"],
+      ["catalog", "-lite-calyxos", "catalog", "lite"],
+      ["catalog", "-archlinux", "catalog", "max"],
+      ["catalog", "-balanced-archlinux", "catalog", "balanced"],
+      ["catalog", "-lite-archlinux", "catalog", "lite"],
+      ["catalog", "-alpine", "catalog", "max"],
+      ["catalog", "-balanced-alpine", "catalog", "balanced"],
+      ["catalog", "-lite-alpine", "catalog", "lite"],
+      ["catalog", "-debian", "catalog", "max"],
+      ["catalog", "-balanced-debian", "catalog", "balanced"],
+      ["catalog", "-lite-debian", "catalog", "lite"],
+      ["catalog", "-fedora", "catalog", "max"],
+      ["catalog", "-balanced-fedora", "catalog", "balanced"],
+      ["catalog", "-lite-fedora", "catalog", "lite"],
+      ["catalog", "-nixos", "catalog", "max"],
+      ["catalog", "-balanced-nixos", "catalog", "balanced"],
+      ["catalog", "-lite-nixos", "catalog", "lite"],
+      ["catalog", "-void", "catalog", "max"],
+      ["catalog", "-balanced-void", "catalog", "balanced"],
+      ["catalog", "-lite-void", "catalog", "lite"],
     ]);
     const catalog = matrixof(workflow, "saddle-vhe-catalog");
-    expect(catalog.map((leg) => leg.osprofile)).toEqual([
-      "grapheneos",
-      "maruos",
-      "v",
-      "windows",
-      "postmarketos",
-      "lineageos",
-      "calyxos",
-      "archlinux",
-      "alpine",
-      "debian",
-      "fedora",
-      "nixos",
-      "void",
+    /* the catalog tier grid: every os-distribution seat of the catalog
+     * answers every tier — the owner's standardization directive ("nesses
+     * outros também deveria ter o max, o light, e o balanceado, nessas
+     * outras distribuições"), thirteen seats times three tiers,
+     * thirty-nine catalog legs beside the twelve runnable flavor lanes
+     * and the three profile umbrellas. */
+    expect(catalog.map((leg) => [leg.osprofile, leg.tier])).toEqual([
+      ["grapheneos", "max"],
+      ["grapheneos", "balanced"],
+      ["grapheneos", "lite"],
+      ["maruos", "max"],
+      ["maruos", "balanced"],
+      ["maruos", "lite"],
+      ["v", "max"],
+      ["v", "balanced"],
+      ["v", "lite"],
+      ["windows", "max"],
+      ["windows", "balanced"],
+      ["windows", "lite"],
+      ["postmarketos", "max"],
+      ["postmarketos", "balanced"],
+      ["postmarketos", "lite"],
+      ["lineageos", "max"],
+      ["lineageos", "balanced"],
+      ["lineageos", "lite"],
+      ["calyxos", "max"],
+      ["calyxos", "balanced"],
+      ["calyxos", "lite"],
+      ["archlinux", "max"],
+      ["archlinux", "balanced"],
+      ["archlinux", "lite"],
+      ["alpine", "max"],
+      ["alpine", "balanced"],
+      ["alpine", "lite"],
+      ["debian", "max"],
+      ["debian", "balanced"],
+      ["debian", "lite"],
+      ["fedora", "max"],
+      ["fedora", "balanced"],
+      ["fedora", "lite"],
+      ["nixos", "max"],
+      ["nixos", "balanced"],
+      ["nixos", "lite"],
+      ["void", "max"],
+      ["void", "balanced"],
+      ["void", "lite"],
     ]);
   });
 
   it("the published vhe index answers the base-carried build legs and the honest console smokes", async () => {
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     /* the saddle container heal law (the eleven-arch standard of the
      * containerarch table): the build legs answer the four platforms
      * the pinned base honestly carries — the native x64 leg beside the
@@ -458,30 +543,30 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 
   it("the pre-deploy existence check matches the lane family — the saddle lesson", async () => {
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     /* the bare startswith(${version}) once saw the node-engine tag and
      * no-opped the vhe publication; the match carries the lane suffixes.
      * the partial-publish freeze fix tightens the same lesson: the
-     * no-op now demands the complete twenty-lane family (the three
-     * profile lanes, the four os-distribution flavor lanes and the
-     * thirteen catalog lanes all live) instead of any single tag, and
+     * no-op now demands the complete twenty-eight-lane family (the
+     * three profile lanes, the twelve flavor lanes of the tier grid
+     * and the thirteen catalog lanes all live) instead of any single tag, and
      * the per-leg guard inside the publish matrix skips only the legs
      * that already ship so a re-run completes the missing siblings. */
-    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\" or . == \\"${version}-linux\\" or . == \\"${version}-omarchy\\" or . == \\"${version}-vanillaos\\" or . == \\"${version}-android\\" or . == \\"${version}-grapheneos\\" or . == \\"${version}-maruos\\" or . == \\"${version}-v\\" or . == \\"${version}-windows\\" or . == \\"${version}-postmarketos\\" or . == \\"${version}-lineageos\\" or . == \\"${version}-calyxos\\" or . == \\"${version}-archlinux\\" or . == \\"${version}-alpine\\" or . == \\"${version}-debian\\" or . == \\"${version}-fedora\\" or . == \\"${version}-nixos\\" or . == \\"${version}-void\\"');
-    expect(publish).toContain('if [ "${api_out}" = "20" ]');
+    expect(publish).toContain('. == \\"${version}\\" or . == \\"${version}-balanced\\" or . == \\"${version}-lite\\" or . == \\"${version}-linux\\" or . == \\"${version}-omarchy\\" or . == \\"${version}-vanillaos\\" or . == \\"${version}-android\\" or . == \\"${version}-balanced-linux\\" or . == \\"${version}-lite-linux\\" or . == \\"${version}-balanced-omarchy\\" or . == \\"${version}-lite-omarchy\\" or . == \\"${version}-balanced-vanillaos\\" or . == \\"${version}-lite-vanillaos\\" or . == \\"${version}-balanced-android\\" or . == \\"${version}-lite-android\\" or . == \\"${version}-grapheneos\\" or . == \\"${version}-maruos\\" or . == \\"${version}-v\\" or . == \\"${version}-windows\\" or . == \\"${version}-postmarketos\\" or . == \\"${version}-lineageos\\" or . == \\"${version}-calyxos\\" or . == \\"${version}-archlinux\\" or . == \\"${version}-alpine\\" or . == \\"${version}-debian\\" or . == \\"${version}-fedora\\" or . == \\"${version}-nixos\\" or . == \\"${version}-void\\"');
+    expect(publish).toContain('if [ "${api_out}" = "28" ]');
     expect(publish).toContain('echo "skip=true" >> "$GITHUB_OUTPUT"');
     expect(publish).toContain("if: steps.meta.outputs.skip != 'true'");
   });
 
   it("the vhe lanes answer the release law — the saddle container publishes with the family", async () => {
-    const workflow = await parseworkflow("publish.yml");
+    const workflow = await parseworkflow("saddlelanes.yml");
     /* the saddle container law: the resolve lane carries the same release
      * guard every application lane carries, so the release published
      * firing, the successful workflow_run completion of the release
      * ladder and the maintenance dispatch all reach the chain (the
      * standalone era kept the lane dispatch-only and the container never
      * published with the family — the gap the owner's law closes). */
-    const guard = String(workflow.jobs?.["saddle-vhe-resolve"]?.if ?? "");
+    const guard = String((await parseworkflow("saddlelanes.yml")).jobs?.["saddle-vhe-resolve"]?.if ?? "");
     expect(guard).toContain("github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')");
     expect(guard).toContain("github.event.workflow_run.conclusion == 'success'");
     expect(guard).toContain("github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch'");
@@ -489,7 +574,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
      * twelve-leg firecracker matrix answers the maintenance dispatch
      * alone, where its cost belongs. */
     expect(workflow.jobs?.["saddle-vhe-validate"]?.if).toBe("github.event_name == 'workflow_dispatch'");
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     expect(publish).toContain("the saddle container law");
     /* the race the workflow_run firing carries: the moving head may
      * already answer the next rung, so the resolver detaches the release
@@ -506,7 +591,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
   });
 
   it("the saddle container archive lane answers the asset parity law", async () => {
-    const workflow = await parseworkflow("publish.yml");
+    const workflow = await parseworkflow("saddlelanes.yml");
     /* the saddle vhe image ships the same portable release asset the
      * devthink container archive ships: the lane rides behind the
      * resolver and the security gate (a FAILED trivy scan never ships an
@@ -518,17 +603,22 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     expect(archive?.needs).toEqual(["saddle-vhe-resolve", "saddle-vhe-scan"]);
     expect(archive?.if).toBe("needs.saddle-vhe-resolve.outputs.proceed == 'true'");
     expect(archive?.permissions?.contents).toBe("write");
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     expect(publish).toContain('archive="saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.tar.gz"');
     expect(publish).toContain('-f saddlebuildctx/saddle/Dockerfile saddlebuildctx');
-    /* the sums umbrella walks the archive lane: the SHA256SUMS rebuild
-     * answers only after every lane attached its assets. */
-    const sums = workflow.jobs?.sums as { needs?: string[] } | undefined;
-    expect(sums?.needs).toContain("saddle-container");
+    /* the sums umbrella walks the archive lane the split answers: the
+     * SHA256SUMS rebuild of the publish workflow no longer waits for
+     * the archive (the half-megabyte law moved the lane home) — the
+     * archive job patches the umbrella seat itself after it attaches,
+     * the coverage the split never loses. */
+    const lanes = await readworkflow("saddlelanes.yml");
+    expect(lanes).toContain("Patch the SHA256SUMS umbrella with the archive seat");
+    const publishsums = (await parseworkflow("publish.yml")).jobs?.sums as { needs?: string[] } | undefined;
+    expect(publishsums?.needs).not.toContain("saddle-container");
   });
 
   it("the base image resolver answers the digest law — nothing hardcoded rides the container lane", async () => {
-    const publish = await readworkflow("publish.yml");
+    const publish = await readworkflow("saddlelanes.yml");
     /* the saddlemod heal law: the mesa resolver and its mirror healing
      * retired with the from-source stages — the family doctrine resolves
      * the base image digest at build time on the runner (the bases step

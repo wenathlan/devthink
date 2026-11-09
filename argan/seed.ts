@@ -21,6 +21,14 @@ export const seedZones: readonly ZoneSnapshot[] = [
   { origin: "debonair.audio", kind: "slave", serial: "2026011117", state: "signed" },
   { origin: "cadria.studio", kind: "slave", serial: "2026011201", state: "unsigned" },
   { origin: "allan.internal", kind: "master", serial: "2026011022", state: "unsigned" },
+  /** the two family domains the complaint register ordered restored (complaint
+   * #72 — "de sete domínios dois foram arrancados": the gateway and the os
+   * domains were ripped from the devthink.pro family and the name, type and
+   * content properties never belonged in a removal). They ride the same zone
+   * grammar as the standing domains — argan primary for the family, signed
+   * from day one per the family law. */
+  { origin: "gateway.devthink.pro", kind: "master", serial: "2026011204", state: "signed" },
+  { origin: "os.devthink.pro", kind: "master", serial: "2026011205", state: "signed" },
 ];
 
 /** the record types the resolve chips offer, in chip order (moved verbatim

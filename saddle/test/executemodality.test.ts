@@ -50,6 +50,10 @@ const HONESTREFUSALS = new Set([
   "MZ_SIGNATURE_ABSENT",
   "ELF_MAGIC_ABSENT",
   "WASM_BYTES_ABSENT",
+  /* the resolution roundtrip the dns seat rides: a host without a
+   * working resolver path and a malformed answer both refuse honestly */
+  "DNS_RESOLUTION_REFUSED",
+  "DNS_ROUNDTRIP_FAILED",
 ]);
 
 /** Dispatches one seat and asserts the honest shape: the seat identity
@@ -276,8 +280,19 @@ describe("the executemodality battery — the ninety seats answer real executors
     assert.equal(result.plan?.workspace?.staged, true, "the staged program file really rode the spawn");
   });
 
-  it("seat 19 runnerdeno — the deno plan stamps and answers honestly", async () => {
-    await hostseat(19, "deno", 'console.log("deno real")');
+  it("seat 19 runnerdeno — deno really executes the staged program file or refuses honestly", async () => {
+    const result = await hostseat(19, "deno", 'console.log("runnerdeno real:", 6 * 7)');
+    if (result.status === "succeeded") {
+      // the honest smoke contract the runner lanes carry: the payload
+      // really executed under the deno runtime the host carries
+      assert.equal(result.stdout, "runnerdeno real: 42\n", `deno answers the smoke stdout: ${JSON.stringify(result.error)}`);
+      assert.equal(result.plan?.workspace?.staged, true, "the staged program file really rode the spawn");
+      assert.equal(result.plan?.env?.DENO_DIR, "/sandbox/denodir", "the module cache rides the sandbox tree (never the host home)");
+    } else {
+      // the honest coded absence: a host without the deno binary never
+      // fakes a run (the same grammar the edge lane probe answers)
+      assert.equal(result.error?.code, "HOST_RUNTIME_ABSENT", "the absent deno runtime answers the honest code");
+    }
   });
 
   it("seat 20 runnerwebpack — the webpack bridge stamps the node argv", async () => {
@@ -608,13 +623,19 @@ describe("the executemodality battery — the ninety seats answer real executors
     assert.ok(artifact.frame.startsWith("00"), "the uncompressed flag answers on the wire");
   });
 
-  it("seat 72 storagesqlite — the in-memory store answers or refuses honestly", async () => {
-    const result = await dispatch(72, "sqlite battery payload");
+  it("seat 72 storagesqlite — the node:sqlite roundtrip answers or refuses honestly", async () => {
+    const payload = "sqlite battery payload — the vault roundtrips the caller text whole";
+    const result = await dispatch(72, payload);
     if (result.status === "succeeded") {
-      assert.ok(String(result.stdout).includes("1 row(s)"), "the store answers its row count");
-      const artifact = result.artifact as { rows: number; engine: string };
+      const artifact = result.artifact as { rows: number; engine: string; roundtrip: boolean; store: string };
       assert.equal(artifact.rows, 1, "one real row answered the insert");
       assert.equal(artifact.engine, "node:sqlite");
+      assert.equal(artifact.roundtrip, true, "the roundtrip answers its flag");
+      assert.equal(artifact.store, ":memory:", "the store rides the engine memory alone (the visitor law)");
+      assert.ok(String(result.stdout).includes("roundtripped"), "the vault answers the roundtrip");
+      // the honest roundtrip contract: the readback the seat compared
+      // against the payload character for character rides the payload length
+      assert.ok(String(result.stdout).includes(String(payload.length)), "the stdout names the payload length the readback matched");
     } else {
       assert.ok(HONESTREFUSALS.has(result.error?.code ?? ""), "the absence answers the honest code");
     }
@@ -660,15 +681,43 @@ describe("the executemodality battery — the ninety seats answer real executors
     assert.match(artifact.amzdate, /^\d{8}T\d{6}Z$/, "the signing window stamps the amz date");
   });
 
-  it("seat 77 networkdns — the a query answers a real wire packet", async () => {
-    const result = await dispatch(77, "", { domain: "devthink.dev", qtype: "a" });
-    assert.equal(result.status, "succeeded");
-    const artifact = result.artifact as { packet: string; domain: string };
-    assert.equal(artifact.packet.length, 60, "the a query answers thirty bytes on the wire");
-    assert.ok(
-      artifact.packet.endsWith("086465767468696e6b036465760000010001"),
-      "the packet ends with devthink.dev and the a qtype",
-    );
+  it("seat 77 networkdns — the host resolver answers the honest roundtrip or refuses honestly", async () => {
+    const result = await dispatch(77, "", { domain: "localhost", qtype: "a" });
+    if (result.status === "succeeded") {
+      const artifact = result.artifact as {
+        packet: string;
+        domain: string;
+        qtype: string;
+        records: { address: string; family: number }[];
+        resolved: boolean;
+        resolver: string;
+      };
+      // the honest roundtrip contract: the node:dns resolver the host
+      // carries really answered the pinned well-known name — the wire
+      // question frames the same name and qtype the records answer
+      assert.equal(artifact.domain, "localhost", "the pinned well-known name rode the resolver");
+      assert.equal(artifact.qtype, "a");
+      assert.equal(artifact.resolved, true, "the roundtrip answers its flag");
+      assert.equal(artifact.resolver, "node:dns");
+      assert.ok(artifact.records.length > 0, "the resolver answered at least one record");
+      for (const record of artifact.records) {
+        assert.ok(record.address.length > 0, "the record answers a real address");
+        assert.ok(record.family === 4 || record.family === 6, "the record names its address family");
+      }
+      assert.ok(
+        artifact.packet.endsWith("096c6f63616c686f73740000010001"),
+        "the packet ends with the localhost question and the a qtype",
+      );
+      assert.ok(String(result.stdout).includes("resolved"), "the seat names the resolution");
+      assert.ok(
+        String(result.stdout).includes(String(artifact.records.length)),
+        "the stdout names the record count the resolver answered",
+      );
+    } else {
+      // the honest coded refusal: a host without a working resolver path
+      // never fakes an answer (the same grammar the vault roundtrip rides)
+      assert.ok(HONESTREFUSALS.has(result.error?.code ?? ""), "the resolver absence answers the honest code");
+    }
   });
 
   it("seat 78 networkdoh — the rfc 8484 request frames the real dns packet", async () => {

@@ -4,6 +4,11 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      /** the pipeline bridge (the family door law): the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/pipeline": path.resolve(import.meta.dirname, "../foundry/pipeline.ts"),
+      /** the hometypes bridge (the family door law): the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/hometypes": path.resolve(import.meta.dirname, "../foundry/hometypes.ts"),
+
       /** the label store bridge of the ownership law: the app's copy
        * mechanism rides the vault factory through the published library
        * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves

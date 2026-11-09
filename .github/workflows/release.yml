@@ -725,59 +725,84 @@ jobs:
       - name: Set up the buildx builder
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Stage the family build context
-        # the same staged tree the family ghcr lane builds (the case map the
+        # the same staged tree the family-ghcr lane builds (the case map the
         # registry lane proved over every release): every site home rides
         # the app/-nested context with the siblings its vite alias bridges
-        # resolve — the copy-law vault sibling, the saddle engine ownership
-        # (debonair, forge, foundry, getry), the cadria and debonair engine
-        # pairs, and the devthink config bridges getry owns.
+        # AND its direct cross-app imports resolve - the copy-law vault
+        # sibling, the routerbase devthink base every family home answers,
+        # and the engine-ownership map each home declares (the full matrix
+        # the import scan reads: cadria/debonair carry the argan dns
+        # bridge, argan carries the debonair audio engine, forge carries
+        # the foundry pipeline, cobaia/stealthhead carry the saddle
+        # modality registry).
         run: |
           set -euo pipefail
           APP="${{ matrix.app }}"
           rm -rf familybuildctx
+          mkdir -p familybuildctx/app
+          cp -a "${APP}/." familybuildctx/app/
+          printf '\nminimumReleaseAge: 0\n' >> familybuildctx/app/pnpm-workspace.yaml
+          mkdir -p familybuildctx/vault
+          cp -a vault/. familybuildctx/vault/
+          rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build
+          # the routerbase base every family home answers (sources only,
+          # the same never-installed law the vault sibling carries)
+          mkdir -p familybuildctx/devthink
+          cp -a devthink/. familybuildctx/devthink/
+          rm -rf familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build
           case "${APP}" in
-            argan|cobaia|stealthhead)
-              mkdir -p familybuildctx/app familybuildctx/vault
-              cp -a "${APP}/." familybuildctx/app/
-              cp -a vault/. familybuildctx/vault/
-              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build
+            argan)
+              # the debonair audio engine and the saddle workload law
+              mkdir -p familybuildctx/debonair familybuildctx/saddle
+              cp -a debonair/. familybuildctx/debonair/
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build \
+                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
+              ;;
+            cobaia|stealthhead)
+              # the saddle modality registry the ../saddle aliases resolve
+              mkdir -p familybuildctx/saddle
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
               ;;
             cadria)
-              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/debonair
-              cp -a cadria/. familybuildctx/app/
-              cp -a vault/. familybuildctx/vault/
+              # the debonair audio engine pair and the argan dns bridge
+              mkdir -p familybuildctx/debonair familybuildctx/argan
               cp -a debonair/. familybuildctx/debonair/
-              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
-                     familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
+              cp -a argan/. familybuildctx/argan/
+              rm -rf familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build \
+                     familybuildctx/argan/node_modules familybuildctx/argan/dist familybuildctx/argan/build
               ;;
             debonair)
-              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/cadria familybuildctx/saddle
-              cp -a "${APP}/." familybuildctx/app/
-              cp -a vault/. familybuildctx/vault/
+              # the symmetric engine-ownership map with the argan dns law
+              mkdir -p familybuildctx/cadria familybuildctx/saddle familybuildctx/argan
               cp -a cadria/. familybuildctx/cadria/
               cp -a saddle/. familybuildctx/saddle/
-              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
-                     familybuildctx/cadria/node_modules familybuildctx/cadria/dist familybuildctx/cadria/build \
-                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
+              cp -a argan/. familybuildctx/argan/
+              rm -rf familybuildctx/cadria/node_modules familybuildctx/cadria/dist familybuildctx/cadria/build \
+                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
+                     familybuildctx/argan/node_modules familybuildctx/argan/dist familybuildctx/argan/build
               ;;
-            forge|foundry)
-              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle
-              cp -a "${APP}/." familybuildctx/app/
-              cp -a vault/. familybuildctx/vault/
+            forge)
+              # the saddle engine ownership plus the foundry pipeline
+              mkdir -p familybuildctx/saddle familybuildctx/foundry
               cp -a saddle/. familybuildctx/saddle/
-              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
-                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
+              cp -a foundry/. familybuildctx/foundry/
+              rm -rf familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
+                     familybuildctx/foundry/node_modules familybuildctx/foundry/dist familybuildctx/foundry/build
+              ;;
+            foundry)
+              # the saddle engine ownership
+              mkdir -p familybuildctx/saddle
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
               ;;
             getry)
-              mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
-              cp -a "${APP}/." familybuildctx/app/
-              cp -a vault/. familybuildctx/vault/
+              # the gateway sibling map beside the devthink base above
+              mkdir -p familybuildctx/saddle familybuildctx/debonair
               cp -a saddle/. familybuildctx/saddle/
-              cp -a devthink/. familybuildctx/devthink/
               cp -a debonair/. familybuildctx/debonair/
-              rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
-                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
-                     familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
+              rm -rf familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
                      familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
               ;;
           esac
@@ -1546,6 +1571,17 @@ jobs:
           # pack). The devthink application tarball answers from the
           # assemble lane above (the built flat distribution), never
           # from a raw source pack.
+          # the vault node faces build before the pack (the node face
+          # law): the runtime faces the saddle webserver reads answer the
+          # node condition with the self-contained build js, so the family
+          # tarball and every registry lane carry the faces plain node
+          # executes (the same build.ts the publish lane builds).
+          cd vault
+          npm install --no-save --ignore-scripts --no-audit --no-fund esbuild@^0.28.2
+          node --experimental-strip-types build.ts
+          test -s build/onboardingstore.js
+          test -s build/labelstore.js
+          cd ..
           for app in argan cadria cobaia debonair forge foundry getry stealthhead vault saddle; do
             npm pack "./${app}" --pack-destination familypack
           done

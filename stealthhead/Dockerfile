@@ -1,4 +1,4 @@
-# stealthhead 2.0.167 — THE SITE CONTAINER FILE
+# stealthhead 2.0.172 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -15,22 +15,29 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:40cd011b55415bc894e45b02fdd5a5dfde056921b7d23a64c74f80497af48797 AS solbuild
 
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 
 # The family context fix (the staged shape the site containers read): the
 # application rides the context nested under app/ with the sibling sources
 # the vite alias bridges resolve beside it.
 WORKDIR /src/app
-COPY app/package.json app/pnpm-lock.yaml app/pnpm-workspace.yaml ./
+COPY app/package.json app/pnpm-workspace.yaml ./
 COPY app/pnpmboot.package.json /tmp/pnpmboot/package.json
 COPY app/pnpmboot.package-lock.json /tmp/pnpmboot/package-lock.json
 RUN apk add --no-cache python3 make g++ \
  && npm ci --prefix /tmp/pnpmboot --no-fund --no-audit \
  && ln -sf /tmp/pnpmboot/node_modules/.bin/pnpm /usr/local/bin/pnpm \
- && pnpm install --frozen-lockfile --ignore-scripts
+ && pnpm install --no-frozen-lockfile --ignore-scripts
 COPY app/ .
 # the copy-law vault sibling: the sol sources import the label store through the @wenathlan/vault/labelstore bridge and the vite alias resolves the specifier to ../vault/labelstore.ts, so the sibling sources land at /src/vault where that bridge answers inside the container (the app-only context left the import unloadable and the vite step died on labels.ts).
 COPY vault/ /src/vault/
+# The devthink sibling of the family law: routerbase.ts re-exports the
+# family routerBase from ../devthink/routerbase.ts, so the devthink
+# sources land at /src/devthink where that re-export answers inside the
+# container (the same sibling-copy law the vault line above carries).
+COPY devthink/ /src/devthink/
+# the saddle modality registry the ../saddle aliases resolve
+COPY saddle/ /src/saddle/
 RUN pnpm build
 
 # ════════════════════════════════════════════════════════════════════
@@ -46,7 +53,7 @@ RUN pnpm build
 # ════════════════════════════════════════════════════════════════════
 
 FROM scratch AS osgrapheneos
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="grapheneos"
 ENV STEALTHHEAD_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="stealthhead (the grapheneos os-distribution catalog lane)" \
@@ -57,7 +64,7 @@ LABEL org.opencontainers.image.title="stealthhead (the grapheneos os-distributio
 COPY osprofiles/grapheneos.json /stealthhead/osprofile.json
 
 FROM scratch AS osmaruos
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="maruos"
 ENV STEALTHHEAD_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="stealthhead (the maru os os-distribution catalog lane)" \
@@ -68,7 +75,7 @@ LABEL org.opencontainers.image.title="stealthhead (the maru os os-distribution c
 COPY osprofiles/maruos.json /stealthhead/osprofile.json
 
 FROM scratch AS osv
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="v"
 ENV STEALTHHEAD_OS_PROFILE=v
 LABEL org.opencontainers.image.title="stealthhead (the v os-distribution catalog lane)" \
@@ -79,7 +86,7 @@ LABEL org.opencontainers.image.title="stealthhead (the v os-distribution catalog
 COPY osprofiles/v.json /stealthhead/osprofile.json
 
 FROM scratch AS oswindows
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="windows"
 ENV STEALTHHEAD_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="stealthhead (the windows os-distribution catalog lane)" \
@@ -90,7 +97,7 @@ LABEL org.opencontainers.image.title="stealthhead (the windows os-distribution c
 COPY osprofiles/windows.json /stealthhead/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="postmarketos"
 ENV STEALTHHEAD_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="stealthhead (the postmarketos os-distribution catalog lane)" \
@@ -101,7 +108,7 @@ LABEL org.opencontainers.image.title="stealthhead (the postmarketos os-distribut
 COPY osprofiles/postmarketos.json /stealthhead/osprofile.json
 
 FROM scratch AS oslineageos
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="lineageos"
 ENV STEALTHHEAD_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="stealthhead (the lineageos os-distribution catalog lane)" \
@@ -112,7 +119,7 @@ LABEL org.opencontainers.image.title="stealthhead (the lineageos os-distribution
 COPY osprofiles/lineageos.json /stealthhead/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="calyxos"
 ENV STEALTHHEAD_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="stealthhead (the calyxos os-distribution catalog lane)" \
@@ -123,7 +130,7 @@ LABEL org.opencontainers.image.title="stealthhead (the calyxos os-distribution c
 COPY osprofiles/calyxos.json /stealthhead/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="archlinux"
 ENV STEALTHHEAD_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="stealthhead (the archlinux os-distribution catalog lane)" \
@@ -134,7 +141,7 @@ LABEL org.opencontainers.image.title="stealthhead (the archlinux os-distribution
 COPY osprofiles/archlinux.json /stealthhead/osprofile.json
 
 FROM scratch AS osalpine
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="alpine"
 ENV STEALTHHEAD_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="stealthhead (the alpine os-distribution catalog lane)" \
@@ -145,7 +152,7 @@ LABEL org.opencontainers.image.title="stealthhead (the alpine os-distribution ca
 COPY osprofiles/alpine.json /stealthhead/osprofile.json
 
 FROM scratch AS osdebian
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="debian"
 ENV STEALTHHEAD_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="stealthhead (the debian os-distribution catalog lane)" \
@@ -156,7 +163,7 @@ LABEL org.opencontainers.image.title="stealthhead (the debian os-distribution ca
 COPY osprofiles/debian.json /stealthhead/osprofile.json
 
 FROM scratch AS osfedora
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="fedora"
 ENV STEALTHHEAD_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="stealthhead (the fedora os-distribution catalog lane)" \
@@ -167,7 +174,7 @@ LABEL org.opencontainers.image.title="stealthhead (the fedora os-distribution ca
 COPY osprofiles/fedora.json /stealthhead/osprofile.json
 
 FROM scratch AS osnixos
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="nixos"
 ENV STEALTHHEAD_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="stealthhead (the nixos os-distribution catalog lane)" \
@@ -178,7 +185,7 @@ LABEL org.opencontainers.image.title="stealthhead (the nixos os-distribution cat
 COPY osprofiles/nixos.json /stealthhead/osprofile.json
 
 FROM scratch AS osvoid
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 ARG STEALTHHEAD_OS_PROFILE="void"
 ENV STEALTHHEAD_OS_PROFILE=void
 LABEL org.opencontainers.image.title="stealthhead (the void os-distribution catalog lane)" \
@@ -190,7 +197,7 @@ COPY osprofiles/void.json /stealthhead/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG STEALTHHEAD_VERSION=2.0.167
+ARG STEALTHHEAD_VERSION=2.0.172
 
 LABEL org.opencontainers.image.title="stealthhead" \
       org.opencontainers.image.description="stealthhead — the first person shooter of the family: pre compiled, the visitor hardware never compiles." \

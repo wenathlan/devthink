@@ -17,7 +17,7 @@
 import { useEffect, useState } from "react";
 import { coreModuleTable, osAppLabels, type CoreModule } from "../../catalog";
 import { osDocsEndpoints, osDocsQuickstartCommands, osText } from "../../os.ts";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { DocsNav, type DocsSection } from "../../wingets";
 import { DocsCard, DocsCode } from "../../wingets";
 import { DocsModules } from "../../wingets";

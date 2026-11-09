@@ -13,6 +13,10 @@
     "moduleResolution": "bundler",
     "types": ["chrome", "node", "vite/client"],
     "paths": {
+      "@wenathlan/argan/dns": ["../argan/dns.ts"],
+      "@wenathlan/foundry/bundlescan": ["../foundry/bundlescan.ts"],
+      "@wenathlan/foundry/readiness": ["../foundry/readiness.ts"],
+
       "@wenathlan/cadria/transcodeengine": ["../cadria/transcodeengine.ts"],
       "@wenathlan/cadria/transcode": ["../cadria/transcode.ts"],
       "@wenathlan/devthink/os": ["./os.ts"],

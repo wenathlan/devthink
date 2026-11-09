@@ -1,17 +1,15 @@
 /**
- * wingets.ts — the universal winget surface of stealthhead, seated at the
- * root beside the sol theme folder (the family law: every .ts logic file
- * lives at the root, only .tsx components live inside sol): every winget of
- * the sol/wingets folder answers from this one module, so the pages import
- * their components from a single place and the dotted winget file name
- * lives exactly once (here) instead of repeating across every page —
- * the components stay complete independent files inside the theme.
+ * wingets.ts — the universal winget surface of stealthhead (root layer):
+ * every winget of the sol/wingets folder answers from this one module at
+ * the app root, so the theme imports its components from a single place
+ * and the dotted winget file name lives exactly once (here) instead of
+ * repeating across every page — the components stay complete independent
+ * files inside the sol/wingets folder this root surface answers.
  */
-export { default as Constructionface } from "./sol/wingets/Constructionface.tsx";
+
 export * from "./sol/wingets/Constructionface.tsx";
-export { default as HomeEntrygate } from "./sol/wingets/HomeEntrygate.tsx";
-export * from "./sol/wingets/HomeEntrygate.tsx";
-export { default as HomeScope } from "./sol/wingets/HomeScope.tsx";
+export { default as Constructionface } from "./sol/wingets/Constructionface.tsx";
 export * from "./sol/wingets/HomeScope.tsx";
-export { default as ShellBrandmark } from "./sol/wingets/ShellBrandmark.tsx";
+export { default as HomeScope } from "./sol/wingets/HomeScope.tsx";
 export * from "./sol/wingets/ShellBrandmark.tsx";
+export { default as ShellBrandmark } from "./sol/wingets/ShellBrandmark.tsx";

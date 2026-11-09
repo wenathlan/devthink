@@ -31,7 +31,7 @@
 // pin the battery wants), only the engine moved: zero behavior change,
 // zero public-surface change.
 
-import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "../saddle/workloadlaw.ts";
+import { type AppWorkloadLane, type LaneSeatResult, laneseating } from "@wenathlan/saddle/workloadlaw";
 
 /** one mirrored workload lane row — the same five keys the engine law pins
  * (app, lane, role, demand, today); the shape itself rides the owner's

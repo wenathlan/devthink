@@ -61,6 +61,9 @@ const genreselfmodule = await import("@wenathlan/debonair/genre");
 const rendeselfmodule = await import("@wenathlan/debonair/render");
 const wavwritermodule = await import("@wenathlan/debonair/wavwriter");
 const kathesismodule = await import("@wenathlan/debonair/kathesis");
+// the motion preference seat (the family door law): the argan settings face
+// reads the reduce-motion discipline through this published subpath.
+const motionprefmodule = await import("@wenathlan/debonair/motionpref");
 
 /** The engine subpaths the library publishes, in the map's own order: the
  * nine pure pipeline seats first, the two keyword seats the audio fold wave
@@ -103,6 +106,7 @@ const SUBPATHS = [
   "genre",
   "render",
   "kathesis",
+  "motionpref",
 ] as const;
 
 type Subpath = (typeof SUBPATHS)[number];
@@ -189,6 +193,7 @@ const MODULES: Record<Subpath, Record<string, unknown>> = {
   genre: genreselfmodule,
   render: rendeselfmodule,
   kathesis: kathesismodule,
+  motionpref: motionprefmodule,
 };
 
 /** The runtime seat a named export answers — the honest ladder: functions

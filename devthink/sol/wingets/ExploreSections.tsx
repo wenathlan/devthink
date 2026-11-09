@@ -20,8 +20,9 @@
  * bands (s0 → s1 → s2) for the layers, the press physics and the visible
  * focus ring on every interactive row, the entrance stagger under the
  * second (60ms beats, capped), the reduced motion respected. Every string
- * rides the label stores — the new keys through labels.ts, the inherited
- * explore rows through os.ts.
+ * rides the label store — the label rows through the uistore accessor
+ * (the store the manifest ingests into), the inherited explore rows
+ * through os.ts.
  */
 import {
   ArrowLeftRegular as ArrowLeft,
@@ -38,7 +39,8 @@ import {
   type FluentIcon } from "@fluentui/react-icons";
 import { type Ref, useEffect, useRef } from "react";
 import { Link } from "wouter";
-import { label, type LabelKey } from "../../labels.ts";
+import type { LabelKey } from "../../labels.ts";
+import { label } from "../../uistore.ts";
 import { osText } from "../../os.ts";
 import type {
   AboutBlock,

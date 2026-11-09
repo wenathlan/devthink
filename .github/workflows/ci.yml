@@ -535,16 +535,19 @@ jobs:
           # the bare family imports the eleven builds read) — the step
           # already cd'd into the matrix app, so the os sibling answers
           # one honest hop up from the app root the same way the vite
-          # aliases resolve it, and the manager follows the lane the leg
-          # set up: the pnpm legs ride pnpm, the lockless bun legs (the
-          # saddle seat the package manager step never pins) ride the
-          # bun lock the os tree answers just as green.
-          if [ "${{ matrix.app }}" != "devthink" ] && [ -f ../devthink/pnpm-lock.yaml ]; then
-            if command -v pnpm >/dev/null 2>&1; then
-              (cd ../devthink && pnpm install --no-frozen-lockfile --ignore-scripts)
-            else
-              (cd ../devthink && bun install --frozen-lockfile --ignore-scripts)
-            fi
+          # aliases resolve it. the lockfile rung retired every pnpm
+          # lock of the tree, so the os sibling seat no longer gates on
+          # a file the rung deleted: the bun install answers every leg
+          # (the os bun lock the rung certified walks the same frozen
+          # grammar the app legs read), and the saddle engine seat the
+          # foundry and forge lanes read (the modalities chain the vite
+          # aliases pull resolves @babel/core and the workload law from
+          # the saddle tree's own node_modules) materializes beside it.
+          if [ "${{ matrix.app }}" != "devthink" ]; then
+            (cd ../devthink && bun install --frozen-lockfile --ignore-scripts)
+          fi
+          if [ "${{ matrix.app }}" = "foundry" ] || [ "${{ matrix.app }}" = "forge" ]; then
+            (cd ../saddle && bun install --frozen-lockfile --ignore-scripts)
           fi
 
       - name: Build the app surface
@@ -561,7 +564,7 @@ jobs:
       - name: Run the app suite
         if: steps.suite.outputs.present == 'true'
         working-directory: ${{ matrix.app }}
-        # the app answers its own runner: the vitest dialect apps ride their
-        # vitest script and the node test dialect apps ride theirs, so the
-        # matrix never forces one runner on the family.
+        # the family rides the one runner: every app's test script is vitest
+        # run (the vitest-only law), so the matrix walks the same dialect
+        # the family template names and no app may answer a second runner.
         run: npm test

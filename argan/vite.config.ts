@@ -20,6 +20,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the motion preference bridge: the settings face reads the owner's reduce-motion seat through the published specifier ("@wenathlan/debonair/motionpref") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/debonair/motionpref": path.resolve(import.meta.dirname, "../debonair/motionpref.ts"),
+      /** the workload law bridge: the sandbox seat reads the owner's lane seating through the published specifier ("@wenathlan/saddle/workloadlaw") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
+
       /** the label store bridge of the ownership law: the app's copy
        * mechanism rides the vault factory through the published library
        * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves
@@ -30,6 +35,19 @@ export default defineConfig({
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
+    /** the single-instance law (the PR12 renderparity heal): the family
+     * sources the thin doors re-export (devthink/reveal.ts and the sibling
+     * bridges) live outside this app root, and the resolver answers their
+     * bare react and wouter imports against the folder the file sits in —
+     * a second physical copy rides the bundle when the sibling tree carries
+     * its own node_modules (the two-react crash: the wouter context hook
+     * then answers the dispatcher of the copy that never renders, and the
+     * app dies at the workbench-failure face on both doors, the typed url
+     * and the panel window alike). the dedupe forces every react,
+     * react-dom and wouter specifier of the graph onto one resolved
+     * instance — the cross-app source rides, the duplication dies, one
+     * design answers both doors. */
+    dedupe: ["react", "react-dom", "react-dom/client", "wouter"],
   },
   root: import.meta.dirname,
   build: {

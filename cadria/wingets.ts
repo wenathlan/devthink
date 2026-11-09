@@ -1,12 +1,10 @@
 /**
  * wingets.ts — the universal winget surface of cadria: every winget of the
- * sol/wingets folder answers from this one module, so the pages import
- * their components from a single place and the dotted winget file name
- * lives exactly once (here) instead of repeating across every page —
- * the components stay complete independent files inside the theme folder.
- * the surface is now seated at the app root beside the sol theme folder
- * per the family law: every .ts logic file of the app rides the root,
- * and only the .tsx components keep riding inside sol/.
+ * sol/wingets folder answers from this one module at the app root, so the
+ * pages import their components from a single place and the dotted winget
+ * file name lives exactly once (here) instead of repeating across every
+ * page — the components stay complete independent files inside the
+ * sol/wingets folder.
  *
  * the in-construction pass (the owner order of the waves): the platform
  * surface is ONE face, so the barrel answers the construction face beside

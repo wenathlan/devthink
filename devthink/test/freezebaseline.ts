@@ -9,9 +9,9 @@ export interface apifreezebaseline {
   hashes: Record<string, string>;
 }
 
-/** The recorded freeze of the 2.0.167 release — the 1.1.91 freeze date, the seven surfaces and the digest table over the ten schemas and the fourteen contract lists. */
+/** The recorded freeze of the 2.0.172 release — the 1.1.91 freeze date, the seven surfaces and the digest table over the ten schemas and the fourteen contract lists. */
 export const apifreezebaseline: apifreezebaseline = {
-  "release": "2.0.167",
+  "release": "2.0.172",
   "frozezat": "2026-08-31",
   "scope": [
     "background",

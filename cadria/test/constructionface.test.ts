@@ -114,7 +114,7 @@ describe("the construction law of cadria", () => {
     for (const anchor of ANCHORS) {
       const page = read(anchor.file);
       expect(
-        /from "\.\.\/wingets\/Constructionface/.test(page),
+        /from "\.\.\/\.\.\/sol\/wingets\/Constructionface/.test(page),
         `the ${anchor.route} anchor must not import the dotted winget file directly`,
       ).toBe(false);
       expect(

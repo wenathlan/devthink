@@ -580,7 +580,7 @@ export const START_APPS: readonly StartApp[] = NAV_SECTIONS.flatMap((section) =>
 
 /** one accent-dotted family link of the rail foot (spec §12): the sibling
  * deploy units beside saddle, each linked by the familyurl contract with the
- * accent dot riding the shared family.ts table — the same row the node:test
+ * accent dot riding the shared family.ts table — the same row the vitest
  * suite pins, so the rail foot can never drift from the landing footer. */
 function FamilyRail() {
         return (

@@ -2244,8 +2244,24 @@ export function specenvlimits(env: Record<string, string | undefined>): sandboxs
 /** the three runtime bases of the saddle fleet. */
 export type sandboxbaseid = 'max' | 'balanced' | 'lite';
 
-/** the guest operating systems a sandbox can boot. */
-export type sandboxosid = 'android' | 'grapheneos' | 'linux' | 'omarchy' | 'windows';
+/** the guest operating systems a sandbox can boot — the eleven-seat OS
+ *  tab the owner's standardization ordered: the five historical seats
+ *  (android, grapheneos, linux, omarchy, windows) beside the six catalog
+ *  distributions that carry honest amd64 and arm64 legs in the published
+ *  grid (vanillaos, archlinux, alpine, debian, fedora, nixos), so the OS
+ *  chip row answers the same breadth the container catalog ships. */
+export type sandboxosid =
+  | 'android'
+  | 'grapheneos'
+  | 'linux'
+  | 'omarchy'
+  | 'windows'
+  | 'vanillaos'
+  | 'archlinux'
+  | 'alpine'
+  | 'debian'
+  | 'fedora'
+  | 'nixos';
 
 /** the guest cpu architectures (amd64 == the x86_64 of the engine bank). */
 export type sandboxarchid = 'arm64' | 'amd64';
@@ -2267,6 +2283,12 @@ export const SANDBOXOSES: readonly sandboxosid[] = [
   'linux',
   'omarchy',
   'windows',
+  'vanillaos',
+  'archlinux',
+  'alpine',
+  'debian',
+  'fedora',
+  'nixos',
 ];
 export const SANDBOXARCHES: readonly sandboxarchid[] = ['arm64', 'amd64'];
 export const SANDBOXFORMS: readonly sandboxformid[] = ['runtime-node', 'full-docker', 'published'];

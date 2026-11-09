@@ -2,17 +2,30 @@
 // (wave w2 b1, rebased onto the ninety wave): the ten promotions this
 // law wired live still ride the registry live and carry their executors
 // — and the waves that merged after widened the same truth to the full
-// plan (the census answers 64 live, 9 host and 17 planned of the ninety
+// plan (the census answers 81 live, 9 host and 0 planned of the ninety
 // the owner charged — the pr15 completion wave seated the wasme, exe,
 // binary, sh and yaml runners, the port dock, the container dock
 // principal, the virtual file store and the virtual hardware
 // presentation seats, and the provider seats answer the host probes —
-// the seventeen registry-only ids the honesty audit named declare
-// planned, the record never pretends a wiring the engine does not
-// drive; the visitor-law hardening retired the local-optin consent
+// while the toolchain rung walked the last fourteen live: the eleven
+// host-spawn seats the container toolchain layer now drives (rustc
+// 1.99.1, cargo, the v 0.5.2 compiler, the dotnet 10 sdk, lua, zig
+// 0.17.1, nim 2.4.0, php, make, ninja, wasmtime 50.0.1 — every carrier
+// pinned to the version the engines catalog answers, the payload names
+// answering each runtime's extension law and the cargo manifest harness
+// staging beside the payload) and the three in-process seats whose
+// executors always drove (the serverless isolate, the git objects vfs,
+// the doh resolver) — the record never pretends a wiring the engine
+// does not drive, and the sqlite vault seat walked live once the node:sqlite
+// roundtrip executor landed (the honesty wave's seat 271) while the
+// deno runner seat walked live once the deno spawn executor landed
+// (the honesty wave's seat 268) and the dns resolver seat walked live
+// once the node:dns resolution roundtrip executor landed (the honesty
+// wave's seat 266); the
+// visitor-law hardening retired the local-optin consent
 // gate and seated the pod session host probe of seat ninety, so the
-// live set walks to 64 and the host probes to 9 — and the lane table
-// answers 65 live and 25 host lanes), so
+// live set walks to 81 and the host probes to 9 — and the lane table
+// answers 81 live and 25 host lanes), so
 // the battery pins the post-merge truth. each promoted lane
 // refuses honestly when its runtime or its configuration is absent —
 // the error names the requirement (the clr lane names the assembly
@@ -103,9 +116,9 @@ describe("the forty live law of the ninety plan (wave w2 b1)", () => {
     const report = planreport();
     assert.equal(report.plancount, 90);
     assert.equal(report.catalogcount, 90);
-    assert.equal(report.live, 64, "the audit rung answered the honest live set (the pr15 completion seats)");
+    assert.equal(report.live, 81, "the toolchain rung answered the full live set (the pr13 completion seats ride the container toolchain layer: the language, build and wasi seats the engine host now carries beside the serverless isolate, the git objects vfs and the doh resolver the in-process executors always drove)");
     assert.equal(report.host, 9, "the provider seats and the pod session probe answer the host probes");
-    assert.equal(report.planned, 17, "the seventeen registry-only ids declare planned");
+    assert.equal(report.planned, 0, "the toolchain rung retired the last fourteen planned seats — every seat of the ninety carries a driving executor the engine host answers");
     assert.equal(report.live + report.host + report.planned, MODALITIES.length);
     assert.equal(report.plananswered, true);
   });

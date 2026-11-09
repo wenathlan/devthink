@@ -350,9 +350,28 @@ export default defineConfig({
   plugins: [nodebuiltinshim(), react(), tailwindcss(), familydevbridge()],
   resolve: {
     alias: {
+      /** the clean url bridge: the os door reads the owner's canonical url seat through the published specifier ("@wenathlan/argan/dns") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/argan/dns": path.resolve(import.meta.dirname, "../argan/dns.ts"),
+      /** the bundle scan bridge: the builder reads the owner's string strip seats through the published specifier ("@wenathlan/foundry/bundlescan") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/bundlescan": path.resolve(import.meta.dirname, "../foundry/bundlescan.ts"),
+      /** the readiness bridge: the records lane reads the owner's readiness suite through the published specifier ("@wenathlan/foundry/readiness") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/readiness": path.resolve(import.meta.dirname, "../foundry/readiness.ts"),
+
       // the transcode engine bridge of the ownership law (retires when the
       // published cadria envelope carries the transcodeengine export entry)
       "@wenathlan/cadria/transcode": path.resolve(import.meta.dirname, "../cadria/transcode.ts"),
+      /** the self-surface bridges of the family doors (the tsroot law wave):
+       * the stealthhead doors (reveal.ts, theme.ts) re-export the devthink
+       * owner logics through the published library specifiers
+       * ("@wenathlan/devthink/reveal", "@wenathlan/devthink/personalstore"),
+       * and the sibling dev pages the bridge middleware serves would die on
+       * the resolver's missing-export answer before the face mounts — the
+       * entries resolve the specifiers to this app's own sources (the
+       * reveal observer and the personal theme store), and retire when the
+       * published devthink envelope carries the built surfaces the exports
+       * map now declares. */
+      "@wenathlan/devthink/personalstore": path.resolve(import.meta.dirname, "personalstore.ts"),
+      "@wenathlan/devthink/reveal": path.resolve(import.meta.dirname, "reveal.ts"),
       /** the exact-subpath bridge to the sibling saddle engine: the chat
        * sandbox lane imports the browser-pure engine through the published
        * library specifier ("@wenathlan/saddle/sandbox"), but the installed
@@ -619,8 +638,13 @@ export default defineConfig({
      * exactly the way two react copies always die. The dedupe forces every
      * react/react-dom import of every /@fs-served sibling to the one
      * instance this server root holds, so the power clip windows ride the
-     * same fiber tree the desktop rides */
-    dedupe: ["react", "react-dom", "react-dom/client"],
+     * same fiber tree the desktop rides. The wouter seat joins the wall
+     * under the same law (the PR12 renderparity heal): the reveal door the
+     * family thin doors re-export lives in this tree, and a wouter
+     * resolved beside a sibling folder would mount a second router context
+     * the hooks never find — one react, one router, one design on both
+     * doors of every family render. */
+    dedupe: ["react", "react-dom", "react-dom/client", "wouter"],
   },
   root: import.meta.dirname,
   build: {

@@ -1,5 +1,5 @@
 # application identity on the platform
 app = "stealthhead"
-role = "the FPS game platform of the wenathlan family: imports versawase from cadria and audio from debonair via the published library, no engine file of its own, only the game logics (match, ranking, weapons, world); ships pre-compiled so the visitor machine compiles nothing"
+role = "the FPS game platform of the wenathlan family — the game is in construction: the surface shows the one under-construction component and the engine logics (match, ranking, weapons, world, physics, netcode, spawner, hud) stay preserved in the theme topic folders for the day the game wakes up"
 theme = "Sol"
-pages = ["home", "match", "ranking", "weapons", "world", "notfound"]
+pages = ["construction"]

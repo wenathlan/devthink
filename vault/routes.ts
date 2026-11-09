@@ -22,4 +22,5 @@ export const routes = {
   quota: "/api/v1/storage/quota",
   usage: "/api/v1/storage/usage",
   sweep: "/api/v1/storage/sweep",
+  state: "/api/v1/state",
 } as const;

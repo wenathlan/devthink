@@ -20,6 +20,9 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the clean url bridge: the studio door reads the owner's canonical url seat through the published specifier ("@wenathlan/argan/dns") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/argan/dns": path.resolve(import.meta.dirname, "../argan/dns.ts"),
+
       /** the engine ownership bridges of the audio family: the analysis
        * seats the studio pages ride (the descriptor contract and the
        * orchestrated analysis report) live in the katexis engine of the
@@ -53,6 +56,19 @@ export default defineConfig({
       "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
+    /** the single-instance law (the PR12 renderparity heal): the family
+     * sources the thin doors re-export (devthink/reveal.ts) live outside
+     * this app root, and the resolver answers their bare react and wouter
+     * imports against the folder the file sits in — a second physical
+     * copy rides the bundle when the sibling tree carries its own
+     * node_modules (the two-react crash: the wouter context hook then
+     * answers the dispatcher of the copy that never renders, and the app
+     * dies at the workbench-failure face on both doors, the typed url and
+     * the panel window alike). the dedupe forces every react, react-dom
+     * and wouter specifier of the graph onto one resolved instance — the
+     * cross-app source rides, the duplication dies, one design answers
+     * both doors. */
+    dedupe: ["react", "react-dom", "react-dom/client", "wouter"],
   },
   root: import.meta.dirname,
   build: {

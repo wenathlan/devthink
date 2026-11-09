@@ -9,7 +9,7 @@ import { InfoRegular, SettingsRegular } from "@fluentui/react-icons";
 import type { BrowserStoreSummary } from "../../storage.ts";
 import { copy } from "../../uistore";
 import { SettingsRow } from "./SettingsRow";
-import type { SettingsSnapshot } from "../../Settingstypes";
+import type { SettingsSnapshot } from "../../settingstypes";
 
 /** fills the {slot} holes of one copy row — the template grammar the
  * settings face rides (an unknown slot stays loud, never silent). */

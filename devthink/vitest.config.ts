@@ -4,6 +4,13 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      /** the dns bridge (the family door law): the entry retires when the published envelope carries the surface. */
+      "@wenathlan/argan/dns": path.resolve(import.meta.dirname, "../argan/dns.ts"),
+      /** the bundlescan bridge (the family door law): the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/bundlescan": path.resolve(import.meta.dirname, "../foundry/bundlescan.ts"),
+      /** the readiness bridge (the family door law): the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/readiness": path.resolve(import.meta.dirname, "../foundry/readiness.ts"),
+
       /** the transcode engine bridge of the ownership law: the os envelope
        * re-exports the video engine the cadria seat owns; this bridge
        * resolves the specifier to the monorepo source the sibling engine

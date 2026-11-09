@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 /* the readiness gate rides the foundry seat (the gate wave): the suite imports it across the app boundary, the walks stay on the devthink tree. */
-import { readinessrecord, runreadinesssuite } from "../../foundry/readiness.ts";
+import { readinessrecord, runreadinesssuite } from "@wenathlan/foundry/readiness";
 
 /**
  * The readiness suite reads the built library face (`build/index.js`) the

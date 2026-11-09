@@ -1,11 +1,9 @@
 /**
- * wingets.ts — the universal winget surface of devthink, seated at the root
- * beside the sol theme folder (the family law: every .ts logic file lives
- * at the app root, only .tsx components live inside sol): every winget of
- * the sol/wingets folder answers from this one module, so the pages import
- * their components from a single place and every component file carries a
- * dot-free PascalCase name that says exactly what it renders —
- * the components stay complete independent files inside the theme.
+ * wingets.ts — the universal winget surface of devthink, living at the app
+ * root (the owner's law: .ts files stay outside sol/) answering the
+ * sol/wingets folder: every winget re-exports from this one module, so the
+ * pages import their components from a single place — the components stay
+ * complete independent files beside this surface.
  */
 export * from "./sol/wingets/AboutFamily.tsx";
 export * from "./sol/wingets/AboutHero.tsx";
@@ -91,7 +89,7 @@ export * from "./sol/wingets/SettingsNavbarposition.tsx";
 export * from "./sol/wingets/SettingsPairing.tsx";
 export * from "./sol/wingets/SettingsPersonalization.tsx";
 export * from "./sol/wingets/SettingsRow.tsx";
-export * from "./Settingstypes.ts";
+export * from "./settingstypes.ts";
 export * from "./sol/wingets/ShellAlttabswitcher.tsx";
 export * from "./sol/wingets/ShellAppicons.tsx";
 export * from "./sol/wingets/ShellApptile.tsx";

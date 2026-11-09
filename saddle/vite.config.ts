@@ -16,6 +16,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the label store bridge: the copy law reads the owner's label factory through the published specifier ("@wenathlan/vault/labelstore") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the onboarding store bridge: the seen-flags law reads the owner's onboarding factory through the published specifier ("@wenathlan/vault/onboardingstore") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+
       // the theme sources live in the sol folder of this app root.
       "@": path.resolve(import.meta.dirname, "sol"),
       /** The label store bridge of the ownership law: the app's copy mechanism
@@ -27,6 +32,19 @@ export default defineConfig({
        * depends on a prebuilt dist directory. */
       "@saddle/isolation": path.resolve(import.meta.dirname, "isolation.ts"),
     },
+    /** the single-instance law (the PR12 renderparity heal): the family
+     * sources the thin doors re-export (devthink/reveal.ts and the sibling
+     * bridges) live outside this app root, and the resolver answers their
+     * bare react and wouter imports against the folder the file sits in —
+     * a second physical copy rides the bundle when the sibling tree carries
+     * its own node_modules (the two-react crash: the wouter context hook
+     * then answers the dispatcher of the copy that never renders, and the
+     * app dies at the workbench-failure face on both doors, the typed url
+     * and the panel window alike). the dedupe forces every react,
+     * react-dom and wouter specifier of the graph onto one resolved
+     * instance — the cross-app source rides, the duplication dies, one
+     * design answers both doors. */
+    dedupe: ["react", "react-dom", "react-dom/client", "wouter"],
   },
   root: import.meta.dirname,
   envDir: import.meta.dirname,

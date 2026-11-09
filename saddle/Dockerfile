@@ -1,4 +1,4 @@
-# saddle 2.0.167 — THE ENGINE CONTAINER FILE
+# saddle 2.0.172 — THE ENGINE CONTAINER FILE
 #
 # THE FAMILY CONTAINER DOCTRINE, THE SADDLE SHAPE: one versioned container
 # per engine, built like the site homes (argan, cadria) build theirs — a
@@ -91,8 +91,8 @@
 # base already resolves), and the container-lane standardization seats
 # ELEVEN flavor distributions on the full max/balanced/lite trio (the
 # 11×3 geometry the flavor section below carries) — the registry stays
-# the catalog the container lanes stamp and the modality system reads
-# (saddle/docs/osdistributions.md). The
+# the catalog the container lanes stamp and
+# the modality system reads (saddle/docs/osdistributions.md). The
 # 50gb-per-plan example the owner's law names stays PLAN CONFIG the
 # devthink plan logic stamps, never a container cap: the engines are
 # unlimited.
@@ -160,7 +160,7 @@ ARG NODE_BASE_DIGEST=5adad64f9a1fca2d51972caa65983634c8a774eb300d72b20f7f2a0f603
 # ===== stage: solbuild — the locked npm tree and the console spa =====
 FROM --platform=$BUILDPLATFORM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS solbuild
 
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 
 WORKDIR /app
 
@@ -174,6 +174,12 @@ COPY saddle/ .
 # so the vault sources ride the context beside the saddle and land at
 # /vault where the import resolves (the family context fix).
 COPY vault/ /vault
+# the routerbase sibling of the family law: saddle/routerbase.ts
+# re-exports the family routerBase from ../devthink/routerbase.ts, so
+# the devthink sources land at /devthink where the sol build resolves
+# the re-export (sources only - the same never-installed law the vault
+# sibling above rides, the family context fix the lanes carry).
+COPY devthink/ /devthink
 RUN npm run web:build:pages \
     # the theme build emits the hashed SPA bundles straight at the app
     # root (the family static-first vite contract): stage them into a
@@ -188,7 +194,7 @@ RUN npm run web:build:pages \
 # ===== stage: base — the hardened runtime floor every profile shares =====
 FROM ${NODE_BASE_TAG}@sha256:${NODE_BASE_DIGEST} AS base
 
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 # the revision stamp the devthink container carries (DEVTHINK_REVISION
 # there): the publish legs pass the release sha at build time and the
 # revision label below declares the default-unknown local shape.
@@ -257,6 +263,20 @@ RUN case "${TARGETARCH:-}" in \
     esac
 
 COPY --from=solbuild /app/package.json /app/package-lock.json ./
+# the both-blocks grammar heal (the saddle container law): the family
+# manifest carries the same seats inside dependencies and
+# devDependencies, and every npm tested (11.19.1 and 12.0.2) answers
+# that duplicate seat by planting dev:true over the whole lock tree -
+# so a plain `npm ci --omit=dev` installs nothing and the runtime stage
+# dies at the cleanup walk with no node_modules to sweep. The derived
+# prod-only manifest (the dependencies block alone, byte-identical
+# specs) restores the honest production install: the lock the
+# foundry/lockprod.ts heal stamped walks beside it and the --omit=dev
+# lane lands the full production closure (the 1372-package install the
+# local verification measured). Nothing is removed - the dev seats stay
+# in the lock for the full-install lanes, only the runtime's own view
+# of the manifest narrows.
+RUN node -e "const fs=require('node:fs');const m=JSON.parse(fs.readFileSync('package.json','utf8'));delete m.devDependencies;fs.writeFileSync('package.json',JSON.stringify(m,null,2)+'\n')"
 RUN apt-get update \
     && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
@@ -289,6 +309,76 @@ RUN apt-get update \
     # degrades to a no-op at runtime - the sources are dead weight.
     && rm -rf node_modules/cpu-features/deps \
     && find node_modules -type f -name Dockerfile -delete
+# THE TOOLCHAIN LAYER — the fourteen planned seats walk live (the pr13
+# completion law): the engine host carries the runtimes the language,
+# build and wasi seats spawn, every carrier pinned to the exact version
+# the engines catalog answers and the assert after every install proving
+# the binary answers its version. the apt lanes (make, ninja, lua, php,
+# the gcc toolchain the v and nim codegen rides) install on every arch
+# leg debian ships them for; the prefab carriers (rustup 1.99.1, zig
+# 0.17.1, wasmtime 50.0.1, v 0.5.2, nim 2.4.0, dotnet sdk 10.0.403)
+# ride the two native legs (amd64, arm64) their publishers ship — the
+# exotic legs (ppc64le, s390x) answer the honest coded absence the
+# seats' probes name at dispatch (HOST_RUNTIME_ABSENT — the seat never
+# fakes a run), the same law the arch case above carries.
+RUN set -eux; \
+    arch="${TARGETARCH:-$(dpkg --print-architecture)}"; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      build-essential ca-certificates curl git lua5.4 ninja-build php-cli unzip xz-utils; \
+    ln -sf /usr/bin/lua5.4 /usr/local/bin/lua; \
+    make --version | head -1; \
+    ninja --version; \
+    lua -v; \
+    php --version | head -1; \
+    case "$arch" in \
+      amd64|arm64) \
+        rustuparch="x86_64-unknown-linux-gnu"; \
+        [ "$arch" = "arm64" ] && rustuparch="aarch64-unknown-linux-gnu"; \
+        curl -fsS https://sh.rustup.rs -o /tmp/rustup-init.sh; \
+        sh /tmp/rustup-init.sh -y --profile minimal --default-toolchain 1.99.1 \
+          --no-modify-path --default-host "$rustuparch"; \
+        rustctool="/root/.rustup/toolchains/1.99.1-${rustuparch}/bin"; \
+        ln -sf "$rustctool/rustc" /usr/local/bin/rustc; \
+        ln -sf "$rustctool/cargo" /usr/local/bin/cargo; \
+        rustc --version; \
+        cargo --version; \
+        zigarch="x86_64"; [ "$arch" = "arm64" ] && zigarch="aarch64"; \
+        curl -fsSL "https://ziglang.org/download/0.17.1/zig-linux-${zigarch}-0.17.1.tar.xz" \
+          -o /tmp/zig.tar.xz; \
+        mkdir -p /opt/zig; \
+        tar -xJf /tmp/zig.tar.xz --strip-components=1 -C /opt/zig; \
+        ln -sf /opt/zig/zig /usr/local/bin/zig; \
+        zig version; \
+        wasmtimearch="x86_64"; [ "$arch" = "arm64" ] && wasmtimearch="aarch64"; \
+        curl -fsSL "https://github.com/bytecodealliance/wasmtime/releases/download/v50.0.1/wasmtime-v50.0.1-${wasmtimearch}-linux.tar.xz" \
+          -o /tmp/wasmtime.tar.xz; \
+        mkdir -p /opt/wasmtime; \
+        tar -xJf /tmp/wasmtime.tar.xz --strip-components=1 -C /opt/wasmtime; \
+        ln -sf /opt/wasmtime/wasmtime /usr/local/bin/wasmtime; \
+        wasmtime --version; \
+        git clone --depth 1 --branch 0.5.2 https://github.com/vlang/v.git /opt/v; \
+        make -C /opt/v; \
+        ln -sf /opt/v/v /usr/local/bin/v; \
+        v version; \
+        git clone --depth 1 --branch v2.4.0 https://github.com/nim-lang/Nim.git /opt/nim; \
+        sh -c 'cd /opt/nim && sh build_all.sh'; \
+        ln -sf /opt/nim/bin/nim /usr/local/bin/nim; \
+        nim --version | head -1; \
+        curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh; \
+        bash /tmp/dotnet-install.sh --channel 10.0 --version 10.0.403 --install-dir /usr/share/dotnet; \
+        ln -sf /usr/share/dotnet/dotnet /usr/local/bin/dotnet; \
+        dotnet --version; \
+        ;; \
+      *) \
+        echo "the toolchain layer answers the honest coded absence on ${arch}: the prefab carriers ship amd64 and arm64 alone (the seats' probes name the requirement at dispatch)" ;; \
+    esac; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /opt/nim/.git /opt/v/.git; \
+    mkdir -p /sandbox && chown node:node /sandbox
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+    DOTNET_NOLOGO=1 \
+    DOTNET_CLI_HOME=/sandbox/dotnet-home \
+    DOTNET_CLI_LANGUAGE=en
 # the web service surface (self-hosted console): the staged spa plus the
 # pure-node server stack - zero npm dependencies, the node 26 runtime
 # carries everything (node:sqlite, node:crypto, native type stripping
@@ -323,10 +413,14 @@ RUN apt-get update \
 # only).
 # run the console with: docker run saddle:<version>
 COPY --from=solbuild /app/webserver.ts /app/db.ts /app/labels.ts /app/auth.ts /app/mesh.ts /app/sandbox.ts /app/modalityregistry.ts /app/edgeplane.ts /app/workloadlaw.ts /app/foundation.ts /app/edgelandes.ts /app/scripts.ts /app/execution.ts /app/virtual.ts /app/tiers.ts /app/mime.types /app/init.sql /app/schema.prisma ./
-# the label store of the console stack: labels.ts (pulled by db.ts)
-# resolves ../vault/labelstore.ts at /vault - the same family context
-# fix the solbuild stage applies.
+# the label store and the onboarding store of the console stack: labels.ts
+# (pulled by db.ts) resolves ../vault/labelstore.ts at /vault and db.ts
+# resolves ../vault/onboardingstore.ts beside it - the same family
+# context fix the solbuild stage applies (the routerbase law: the
+# node-side forks read the sibling sources raw, the specifier doors
+# stay for the vite and vitest bridges).
 COPY --from=solbuild /vault/labelstore.ts /vault/labelstore.ts
+COPY --from=solbuild /vault/onboardingstore.ts /vault/onboardingstore.ts
 COPY --from=solbuild /out/spa ./
 
 # the writable state home of the engine console (the vault engine
@@ -457,19 +551,19 @@ ENV SADDLE_PROFILE=balanced \
 # installs a host distribution) — the same engine graph, the same ninety
 # modalities, the same health surface, one honest seat stamp per lane:
 #
-#   docker build --target oslinux           -t saddle:2.0.167-linux .
-#   docker build --target oslinux-balanced  -t saddle:2.0.167-linux-balanced .
-#   docker build --target oslinux-lite      -t saddle:2.0.167-linux-lite .
-#   docker build --target osomarchy         -t saddle:2.0.167-omarchy .
-#   docker build --target osvanillaos       -t saddle:2.0.167-vanillaos .
-#   docker build --target osandroid         -t saddle:2.0.167-android .
-#   docker build --target osarchlinux       -t saddle:2.0.167-archlinux .
-#   docker build --target osalpine          -t saddle:2.0.167-alpine .
-#   docker build --target osdebian          -t saddle:2.0.167-debian .
-#   docker build --target osfedora          -t saddle:2.0.167-fedora .
-#   docker build --target osnixos           -t saddle:2.0.167-nixos .
-#   docker build --target osvoid            -t saddle:2.0.167-void .
-#   docker build --target ospostmarketos    -t saddle:2.0.167-postmarketos .
+#   docker build --target oslinux           -t saddle:2.0.172-linux .
+#   docker build --target oslinux-balanced  -t saddle:2.0.172-linux-balanced .
+#   docker build --target oslinux-lite      -t saddle:2.0.172-linux-lite .
+#   docker build --target osomarchy         -t saddle:2.0.172-omarchy .
+#   docker build --target osvanillaos       -t saddle:2.0.172-vanillaos .
+#   docker build --target osandroid         -t saddle:2.0.172-android .
+#   docker build --target osarchlinux       -t saddle:2.0.172-archlinux .
+#   docker build --target osalpine          -t saddle:2.0.172-alpine .
+#   docker build --target osdebian          -t saddle:2.0.172-debian .
+#   docker build --target osfedora          -t saddle:2.0.172-fedora .
+#   docker build --target osnixos           -t saddle:2.0.172-nixos .
+#   docker build --target osvoid            -t saddle:2.0.172-void .
+#   docker build --target ospostmarketos    -t saddle:2.0.172-postmarketos .
 #   ... every flavor beside its -balanced and -lite siblings: the
 #   saddle-containers matrix of the containers workflow names all
 #   thirty-three flavor targets, three legs per distribution, and the
@@ -692,12 +786,12 @@ LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution l
 # under the suffixed name the publish catalog lane builds — one address
 # per lane family, never a shadowed stage name:
 #
-#   docker build --target osgrapheneos-catalog -t saddle:2.0.167-grapheneos .
-#   docker build --target osmaruos-catalog     -t saddle:2.0.167-maruos .
-#   docker build --target osv-catalog          -t saddle:2.0.167-v .
-#   docker build --target oswindows-catalog    -t saddle:2.0.167-windows .
+#   docker build --target osgrapheneos-catalog -t saddle:2.0.172-grapheneos .
+#   docker build --target osmaruos-catalog     -t saddle:2.0.172-maruos .
+#   docker build --target osv-catalog          -t saddle:2.0.172-v .
+#   docker build --target oswindows-catalog    -t saddle:2.0.172-windows .
 FROM scratch AS osgrapheneos-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="grapheneos"
 ENV SADDLE_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="saddle (the grapheneos os-distribution catalog lane)" \
@@ -708,7 +802,7 @@ LABEL org.opencontainers.image.title="saddle (the grapheneos os-distribution cat
 COPY osprofiles/grapheneos.json /saddle/osprofile.json
 
 FROM scratch AS osmaruos-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="maruos"
 ENV SADDLE_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="saddle (the maru os os-distribution catalog lane)" \
@@ -719,7 +813,7 @@ LABEL org.opencontainers.image.title="saddle (the maru os os-distribution catalo
 COPY osprofiles/maruos.json /saddle/osprofile.json
 
 FROM scratch AS osv-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="v"
 ENV SADDLE_OS_PROFILE=v
 LABEL org.opencontainers.image.title="saddle (the v os-distribution catalog lane)" \
@@ -730,7 +824,7 @@ LABEL org.opencontainers.image.title="saddle (the v os-distribution catalog lane
 COPY osprofiles/v.json /saddle/osprofile.json
 
 FROM scratch AS oswindows-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="windows"
 ENV SADDLE_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="saddle (the windows os-distribution catalog lane)" \
@@ -741,7 +835,7 @@ LABEL org.opencontainers.image.title="saddle (the windows os-distribution catalo
 COPY osprofiles/windows.json /saddle/osprofile.json
 
 FROM scratch AS ospostmarketos-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="postmarketos"
 ENV SADDLE_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution catalog lane)" \
@@ -752,7 +846,7 @@ LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution c
 COPY osprofiles/postmarketos.json /saddle/osprofile.json
 
 FROM scratch AS oslineageos-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="lineageos"
 ENV SADDLE_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="saddle (the lineageos os-distribution catalog lane)" \
@@ -763,7 +857,7 @@ LABEL org.opencontainers.image.title="saddle (the lineageos os-distribution cata
 COPY osprofiles/lineageos.json /saddle/osprofile.json
 
 FROM scratch AS oscalyxos-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="calyxos"
 ENV SADDLE_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="saddle (the calyxos os-distribution catalog lane)" \
@@ -774,7 +868,7 @@ LABEL org.opencontainers.image.title="saddle (the calyxos os-distribution catalo
 COPY osprofiles/calyxos.json /saddle/osprofile.json
 
 FROM scratch AS osarchlinux-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="archlinux"
 ENV SADDLE_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution catalog lane)" \
@@ -785,7 +879,7 @@ LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution cata
 COPY osprofiles/archlinux.json /saddle/osprofile.json
 
 FROM scratch AS osalpine-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="alpine"
 ENV SADDLE_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="saddle (the alpine os-distribution catalog lane)" \
@@ -796,7 +890,7 @@ LABEL org.opencontainers.image.title="saddle (the alpine os-distribution catalog
 COPY osprofiles/alpine.json /saddle/osprofile.json
 
 FROM scratch AS osdebian-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="debian"
 ENV SADDLE_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="saddle (the debian os-distribution catalog lane)" \
@@ -807,7 +901,7 @@ LABEL org.opencontainers.image.title="saddle (the debian os-distribution catalog
 COPY osprofiles/debian.json /saddle/osprofile.json
 
 FROM scratch AS osfedora-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="fedora"
 ENV SADDLE_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="saddle (the fedora os-distribution catalog lane)" \
@@ -818,7 +912,7 @@ LABEL org.opencontainers.image.title="saddle (the fedora os-distribution catalog
 COPY osprofiles/fedora.json /saddle/osprofile.json
 
 FROM scratch AS osnixos-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="nixos"
 ENV SADDLE_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="saddle (the nixos os-distribution catalog lane)" \
@@ -829,7 +923,7 @@ LABEL org.opencontainers.image.title="saddle (the nixos os-distribution catalog 
 COPY osprofiles/nixos.json /saddle/osprofile.json
 
 FROM scratch AS osvoid-catalog
-ARG SADDLE_VERSION=2.0.167
+ARG SADDLE_VERSION=2.0.172
 ARG SADDLE_OS_PROFILE="void"
 ENV SADDLE_OS_PROFILE=void
 LABEL org.opencontainers.image.title="saddle (the void os-distribution catalog lane)" \

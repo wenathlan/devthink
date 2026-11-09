@@ -205,14 +205,14 @@ jobs:
       - name: Set up Rust
         # the pinned toolchain (the family runtime doctrine, Regra 54/125:
         # never the moving `@stable` channel): the commit sha of the
-        # action's 1.120 version branch is the immutable per-release ref
+        # action's 1.99.1 version branch is the immutable per-release ref
         # (the branch name rides as the comment and the toolchain input,
         # because the sha ref no longer carries the version the action
         # reads) - the lane is the optional desktop audit, so the pin
         # rides the current stable Rust release.
-        uses: dtolnay/rust-toolchain@9bd08f027b2fe39fa33325f9c2d201979b1cc076 # 1.120
+        uses: dtolnay/rust-toolchain@d124f86f28ff42855784ff3319f48ac182c248f8 # 1.99.1
         with:
-          toolchain: "1.120"
+          toolchain: "1.99.1"
       - name: Install cargo audit
         run: cargo install cargo-audit --locked
       - name: Resolve and audit the tracked rust graph
@@ -635,14 +635,50 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Prepare SBOM directory
         run: mkdir -p build/security
+      - name: Install syft (the checksum 503 bypass lane)
+        # the sbom action installer died on a github release asset 503
+        # (the checksums.txt fetch - the same hosted-runner flake the trivy
+        # redirector lane answered); the release tarball rides the retry
+        # loop the trivy lane founded - curl flags, explicit version pin,
+        # checksum verify - so the bill of materials never reddens on a
+        # transient asset seat again.
+        run: |
+          set -euo pipefail
+          if command -v syft >/dev/null 2>&1; then syft version; exit 0; fi
+          ver="1.54.0"
+          for i in 1 2 3 4 5 6; do
+            curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
+              "https://github.com/anchore/syft/releases/download/v${ver}/syft_${ver}_checksums.txt" \
+              -o /tmp/syft_checksums.txt && break
+            echo "syft checksums attempt ${i} failed; sleeping before the next ride"
+            sleep 15
+          done
+          for i in 1 2 3 4 5 6; do
+            curl -sfL --retry 5 --retry-delay 10 --retry-all-errors \
+              "https://github.com/anchore/syft/releases/download/v${ver}/syft_${ver}_linux_amd64.tar.gz" \
+              -o /tmp/syft.tar.gz && break
+            echo "syft tarball attempt ${i} failed; sleeping before the next ride"
+            sleep 15
+          done
+          test -s /tmp/syft.tar.gz
+          # the first ride piped bare hashes into sha256sum -c (the awk walk
+          # printed $1 alone, so the check read no properly formatted line) -
+          # the expected hash lands in its own seat and the printf rebuilds
+          # the <hash>  <path> line the verify walk reads against the local
+          # tarball, with the \r strip guarding the crlf lanes ahead.
+          expected="$(tr -d '\r' < /tmp/syft_checksums.txt | grep "syft_${ver}_linux_amd64.tar.gz$" | awk '{print $1}')"
+          test -n "$expected"
+          printf '%s  %s\n' "$expected" "/tmp/syft.tar.gz" | sha256sum -c -
+          tar -xzf /tmp/syft.tar.gz -C /tmp syft
+          sudo install -m 0755 /tmp/syft /usr/local/bin/syft
+          syft version
       - name: Generate CycloneDX SBOM
-        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
-        with:
-          path: .
-          format: cyclonedx-json
-          output-file: build/security/devthink.sbom.cdx.json
-          upload-artifact: false
-          upload-release-assets: false
+        # the direct syft walk replaces the action wrapper (its embedded
+        # installer carries no retry seat); the scan answers the same
+        # cyclonedx-json contract the audit lane always read.
+        run: |
+          syft scan dir:. -o cyclonedx-json=build/security/devthink.sbom.cdx.json
+          test -s build/security/devthink.sbom.cdx.json
       - name: Upload SBOM
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

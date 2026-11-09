@@ -10,9 +10,9 @@
 // factory, so the tab memory stays isolated per app while the document
 // contract stays the family's. The surface keeps its former shape (no
 // toggle: the settings page drives set directly).
-import { createMotionPref } from "../debonair/motionpref.ts";
+import { createMotionPref } from "@wenathlan/debonair/motionpref";
 
-export type { MotionRoot, MotionStorage } from "../debonair/motionpref.ts";
+export type { MotionRoot, MotionStorage } from "@wenathlan/debonair/motionpref";
 
 /** The session key the preference rides (tab memory, nothing persists). */
 export const MOTION_PREF_KEY = "argan.motion.reduced";

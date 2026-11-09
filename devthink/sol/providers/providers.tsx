@@ -17,7 +17,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import {
   browserCredentialProviders,

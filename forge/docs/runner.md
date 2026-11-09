@@ -43,7 +43,7 @@ forge is the deployable clone of pure execution of the wenathlan family: it runs
 - `sol/intro/intro.tsx` — the first-run splash: the mark holds ~1.6 s, slides up 0.8 s and hands to the onboarding; click, key or reduced motion skips.
 - `sol/onboarding/onboarding.tsx` — the three-frame first-run dialog (is / does / enter); finish or skip marks the stage seen and navigates to the gated home.
 - `sol/shell/Shell.tsx` — the app surface: full-bleed at its own url, the window chrome only when embedded in the devthink os power clip; the rail pins `/`, `/runs`, `/queue`, `/logs`; the family foot with one identity dot per sibling; the theme flip.
-- `sol/wingets/` — the shared components: `GraphPanel` (the run plan drawn as an svg stage graph — card 176×56, one bezier per wire, states as dot plus text, running wears the windows accent `#4cc2ff`, failed rides `rgb(232 17 35)`), `EmptyState`, `BrandMark`, `Entry` (the boot readout), the entry gate and the home tabs — all served through `wingets.ts` (the barrel seated at the app root beside the sol theme folder, per the family law: every .ts logic file at the root, only .tsx inside sol).
+- `sol/wingets/` — the shared components: `GraphPanel` (the run plan drawn as an svg stage graph — card 176×56, one bezier per wire, states as dot plus text, running wears the windows accent `#4cc2ff`, failed rides `rgb(232 17 35)`), `EmptyState`, `BrandMark`, `Entry` (the boot readout), the entry gate and the home tabs — all served through the root `wingets.ts` barrel (the rootlogic law: no .ts logic rides inside sol).
 - `sol/notfound/notfound.tsx` — the 404 page.
 
 ## saddle integration

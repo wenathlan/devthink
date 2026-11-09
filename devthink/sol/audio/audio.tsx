@@ -19,7 +19,7 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioTrack, studioTracks } from "../../catalog";
 import { osText } from "../../os.ts";
 import { queuestudiorender } from "../../runner";

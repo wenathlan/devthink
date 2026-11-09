@@ -4,6 +4,11 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      /** the labelstore bridge (the family door law): the entry retires when the published envelope carries the surface. */
+      "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
+      /** the onboardingstore bridge (the family door law): the entry retires when the published envelope carries the surface. */
+      "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+
       // the theme sources live in the sol folder of this app root.
       "@": path.resolve(import.meta.dirname, "sol"),
       /** the isolation face bridge of the engine: the raw-node lanes (the

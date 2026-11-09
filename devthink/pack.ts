@@ -41,7 +41,7 @@ export function artifactchannels(): string[] {
   ];
 }
 
-/** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. The mappings answer under the devthink release asset names the merged release lane assembles (the names the release notes and their tests record) beside the extension lineage names the channel history still accepts (the historical artifact names of the 1.1.x line the artifact manifest tests exercise as accepted aliases) and the family seat grammar of the thousand asset ladder (the sibling envelopes, the site and next archives with their brotli overlays and zip twins, the per-app source, maven and provenance seats, the per-architecture container saves and the per-channel checksum umbrellas — every name the expanded release walk attaches resolves onto its true channel set instead of falling to the bare github default). */
+/** Resolves the publishing channels one artifact name belongs to: the version stamped artifact names map onto the channels the release workflow operates, and an unrecognized name still rides the github asset channel because every release artifact attaches to the release. The mappings answer under the devthink release asset names the merged release lane assembles (the names the release notes and their tests record) beside the extension lineage names the channel history still accepts (the historical artifact names of the 1.1.x line the artifact manifest tests exercise as accepted aliases) and the family seat grammar of the thousand asset ladder (the sibling envelopes, the site and next archives with their brotli overlays and zip twins, the per-app source, maven and provenance seats, the per-architecture container saves and the per-channel checksum umbrellas — every name the expanded release walk attaches resolves onto its true channel set instead of falling to the bare github default) beside the tri-channel seats of the PR12 eleven-channel law (the python wheel and sdist of the wenathlan_ underscore grammar seat the pypi channel, the rust crate of the wenathlan- hyphen grammar with the .crate tail seats the cargo channel, and the homebrew formula never rides a release asset so no .rb name enters the vocabulary). */
 export function artifactchannelof(name: string, version: string): string[] {
   const channels: string[] = ["github"];
   if (name.startsWith("build/")) return ["npmjs", "githubpackages"];
@@ -71,6 +71,29 @@ export function artifactchannelof(name: string, version: string): string[] {
   /* the thousand asset ladder — the family seat grammar: the sibling envelopes ride the npm channels beside the os tarball, the source seats ride the chromium channel beside the os source archives, the site and next archives (the tar.xz twin, the brotli overlay and the zip twin of every shape) ride the site channel, the maven classifier seats ride the maven channel, the per-app sboms and attestations records ride the provenance channel, the per-architecture container saves with their checksum and manifest records ride the container channel, and the per-app and per-channel checksum umbrellas ride the github channel the release-level SHA256SUMS umbrella already owns. the version anchored suffix checks keep the grammar honest: a name answers its seat only under the release version it stamps. */
   if (name.startsWith("wenathlan-") && name.endsWith(`-${version}.tgz`))
     return ["github", "npmjs", "githubpackages"];
+  /* the tri-channel wave (the PR12 eleven-channel law): the pypi, cargo and
+   * homebrew seats complete the eleven distribution channels the publish
+   * workflow operates (npmjs, the github npm registry, maven, nuget, rubygems,
+   * gradle, goget and the container lanes beside the three new seats). the
+   * python documentation envelopes answer the underscore grammar of the
+   * wheel and sdist file names (wenathlan_<app>-<version>-py3-none-any.whl
+   * and wenathlan_<app>-<version>.tar.gz), so the wenathlan_ prefix keeps
+   * them apart from the hyphen grammar of the npm tgz envelopes and the rust
+   * crates (wenathlan-<app>-<version>); the sdist rule carries the version
+   * anchor against the container tar.gz rule below (the
+   * .container.<version>. saves never carry the wenathlan_ prefix), so the
+   * two .tar.gz families never shadow one another, and the version anchored
+   * crate tail rides the same grammar the tgz rule stamps. the homebrew
+   * formula seats NO row here: the homebrew and family-homebrew lanes stamp
+   * the formula from the real release asset on the runner and push it to the
+   * wenathlan/homebrew-devthink tap, never attaching a .rb file to the
+   * release, so no .rb name ever reaches the manifest this vocabulary
+   * resolves — the wheel, the sdist and the crate are the tri-channel
+   * artifacts the lanes attach to releases, and they alone carry the new
+   * seats. */
+  if (name.startsWith("wenathlan_") && name.endsWith(`-${version}-py3-none-any.whl`)) return ["github", "pypi"];
+  if (name.startsWith("wenathlan_") && name.endsWith(`-${version}.tar.gz`)) return ["github", "pypi"];
+  if (name.startsWith("wenathlan-") && name.endsWith(`-${version}.crate`)) return ["github", "cargo"];
   if (name.endsWith(`.${version}.source.tar.xz`) || name.endsWith(`-${version}-source.tar.xz`))
     return ["github", "chromium"];
   if (name.endsWith(`-${version}-sources.jar`) || name.endsWith(`-${version}-javadoc.jar`))

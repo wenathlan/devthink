@@ -17,7 +17,7 @@
 
 import { RocketRegular } from "@fluentui/react-icons";
 import { useEffect, useRef, useState } from "react";
-import { ShellChrome } from "@/wingets/Shellchrome";
+import { ShellChrome } from "../wingets/Shellchrome";
 import { osAppLabels } from "../../catalog";
 import { completions, responseof } from "../../commands.ts";
 import { bootdelay, bootlines, consoleprompt, consoleversion } from "../../consoleboot.ts";

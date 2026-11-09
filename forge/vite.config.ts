@@ -16,6 +16,13 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      /** the pipeline bridge: the runner reads the owner's stage plan seats through the published specifier ("@wenathlan/foundry/pipeline") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/pipeline": path.resolve(import.meta.dirname, "../foundry/pipeline.ts"),
+      /** the home types bridge: the home face reads the owner's home props through the published specifier ("@wenathlan/foundry/hometypes") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/foundry/hometypes": path.resolve(import.meta.dirname, "../foundry/hometypes.ts"),
+      /** the workload law bridge: the sandbox seat reads the owner's lane seating through the published specifier ("@wenathlan/saddle/workloadlaw") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
+
       /** the label store bridge of the ownership law: the app's copy
        * mechanism rides the vault factory through the published library
        * specifier ("@wenathlan/vault/labelstore"), and this bridge resolves
@@ -48,8 +55,31 @@ export default defineConfig({
        * forge, so the dev server and the build answer the same module the
        * node-side tests answer. */
       "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modalities.ts"),
+
+      /** the sandbox bridge of the ownership law: the graphplan door
+       * (the dedup law the family walks) imports the foundry pipeline
+       * source, and the pipeline's sandbox seat rides the published
+       * library specifier ("@wenathlan/saddle/sandbox") — this bridge
+       * resolves the specifier to the monorepo source the sibling
+       * engine carries the same way the foundry lane and the modes
+       * bridge above answer, so the build resolves the door the
+       * runner seam reads without the registry envelope. */
+      "@wenathlan/saddle/sandbox": path.resolve(import.meta.dirname, "../saddle/sandbox.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
+    /** the single-instance law (the PR12 renderparity heal): the family
+     * sources the thin doors re-export (devthink/reveal.ts and the sibling
+     * bridges) live outside this app root, and the resolver answers their
+     * bare react and wouter imports against the folder the file sits in —
+     * a second physical copy rides the bundle when the sibling tree carries
+     * its own node_modules (the two-react crash: the wouter context hook
+     * then answers the dispatcher of the copy that never renders, and the
+     * app dies at the workbench-failure face on both doors, the typed url
+     * and the panel window alike). the dedupe forces every react,
+     * react-dom and wouter specifier of the graph onto one resolved
+     * instance — the cross-app source rides, the duplication dies, one
+     * design answers both doors. */
+    dedupe: ["react", "react-dom", "react-dom/client", "wouter"],
   },
   root: import.meta.dirname,
   build: {

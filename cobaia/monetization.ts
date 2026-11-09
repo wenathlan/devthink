@@ -28,7 +28,10 @@ import {
   type supportlinks as supportlinkstable,
 } from "./content.ts";
 
-export type { blogpost, checkoutplan, familymember, supportlinkstable as supportlinks };
+/* the supportlinks type stays owned by content.ts (its original seat) — the
+   accessor function below owns the monetization surface name alone, so the
+   type alias re-export that collided with the function export retires. */
+export type { blogpost, checkoutplan, familymember, supportlinkstable };
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* SECTION: adsconfig.ts — the honest ad slot registry (the ad seat).   */

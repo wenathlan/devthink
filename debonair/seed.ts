@@ -157,7 +157,7 @@ export const seedStageCards: readonly FeatureCard[] = [
     title: "Mastering",
     badge: "F-DBN-070..074",
     detail:
-      "Genre-aware mixing recipes, 4-band multiband mastering, M/S imaging and a true-peak limiter at −1 dBTP. Loudness is normalized to BS.1770-4 with per-platform targets: Spotify −14 LUFS, Apple −16, Beatport −9.",
+      "Genre-aware mixing recipes and a true-peak limiter at −1 dBTP. Loudness is measured to BS.1770-4 with per-platform targets: Spotify −14 LUFS, Apple −16, Beatport −9.",
   },
   {
     group: "home-stages",

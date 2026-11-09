@@ -38,7 +38,7 @@ import {
 } from "../runtime.js";
 import type { stepoutcome } from "../types.js";
 import { clicommands, surfacepalette } from "../views.js";
-import { stripstrings, underscorednames } from "../../foundry/bundlescan.ts";
+import { stripstrings, underscorednames } from "@wenathlan/foundry/bundlescan";
 import { umdwrap } from "../umdwrap.ts";
 
 const execute = promisify(execFile);

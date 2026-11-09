@@ -451,6 +451,8 @@ node_modules
 # the script, the captured token, the poll log and the pid live machine-local
 # at the repository root — never committed, never in tmp)
 polar.sh
+polar-sync.sh
+.sync-status
 .github-token
 polar.log
 .polar.pid

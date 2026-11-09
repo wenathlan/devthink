@@ -22,10 +22,27 @@ export default defineConfig({
        * the specifier to the monorepo source the sibling engine carries —
        * the mechanism is never duplicated inside stealthhead. the entry retires
        * when the published envelope carries the built label store. */
+      "@wenathlan/devthink/personalstore": path.resolve(import.meta.dirname, "../devthink/personalstore.ts"),
+      "@wenathlan/devthink/reveal": path.resolve(import.meta.dirname, "../devthink/reveal.ts"),
+      "@wenathlan/saddle/workloadlaw": path.resolve(import.meta.dirname, "../saddle/workloadlaw.ts"),
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+      "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
+    /** the single-instance law (the PR12 renderparity heal): the family
+     * sources the thin doors re-export (devthink/reveal.ts and the sibling
+     * bridges) live outside this app root, and the resolver answers their
+     * bare react and wouter imports against the folder the file sits in —
+     * a second physical copy rides the bundle when the sibling tree carries
+     * its own node_modules (the two-react crash: the wouter context hook
+     * then answers the dispatcher of the copy that never renders, and the
+     * app dies at the workbench-failure face on both doors, the typed url
+     * and the panel window alike). the dedupe forces every react,
+     * react-dom and wouter specifier of the graph onto one resolved
+     * instance — the cross-app source rides, the duplication dies, one
+     * design answers both doors. */
+    dedupe: ["react", "react-dom", "react-dom/client", "wouter"],
   },
   root: import.meta.dirname,
   build: {

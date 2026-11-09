@@ -1,25 +1,28 @@
 /**
- * db.ts — the self-hosted database bootstrap of stealthhead (root layer).
+ * db.ts — the self-hosted database bootstrap of stealthhead (root layer):
+ * the data seat of the PRESERVED engine logics while the game is in
+ * construction — the surface itself is the one under-construction
+ * component and never imports this module.
  *
  * one sqlite database (better-sqlite3 driver) carries the tables of the
- * game domains: Match, MatchPlayer, RankingEntry, Weapon and WorldAsset.
+ * preserved game domains: Match, MatchPlayer, RankingEntry, Weapon and
+ * WorldAsset.
  * the world table catalogs the GLB binaries that live in git lfs (the
  * virtual-repo doctrine: the row is the source of truth, the binary
  * downloads separately and is verified against the row sha-256). on
  * first run the idempotent schema is created and the small typed
- * in-memory seeds of the domain modules (match.ts, ranking.ts,
+ * in-memory seeds of the root logic modules (match.ts, ranking.ts,
  * weapons.ts, world.ts) are persisted, so the site DB and the static
  * seed answer with the same rows. every statement here is a prepared
  * statement with bound parameters — sql is never assembled by string
  * concatenation. the database location comes from the DATABASE_URL
  * environment (default file:./stealthhead.db, never hardcoded). the
- * static interface never imports this module: the pages receive the
- * rows over HTTPS from the self-hosted answer and fall back to the
- * in-memory seeds, and the visitor machine stores nothing.
+ * static interface never imports this module and never imports the
+ * engine logics: the game is in construction, the surface is the one
+ * under-construction component, and the visitor machine stores nothing.
  */
 
 import process from "node:process";
-import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
 import { openStorageLane } from "@wenathlan/vault/storage";
 import { LABELMANIFEST, LABELREVISION } from "./labels.ts";
 import { MATCHPLAYERSEED, MATCHSEED, type MatchLobby, type MatchPlayer, type MatchRound } from "./match.ts";
@@ -92,13 +95,6 @@ sqlite.exec(`
     size bigint not null,
     precompiled integer not null default 1
   );
-  create table if not exists onboardingstate (
-    id integer primary key autoincrement,
-    visitor text not null unique,
-    introseen integer not null default 0,
-    onboardingseen integer not null default 0,
-    updatedat text not null default ''
-  );
   create table if not exists labels (
     id text primary key,
     text text not null,
@@ -124,13 +120,6 @@ const insertweapon = sqlite.prepare(
 const insertworldasset = sqlite.prepare(
   "insert or replace into worldassets (name, kind, path, sha256, size, precompiled) values (?, ?, ?, ?, ?, ?)",
 );
-
-/** the onboarding store of the game: the vault factory over the game's own
- * storage lane, pinned to the lowercase table the game schema declares
- * (the table stays app data; the read and the seen-wins upsert ride the
- * shared mechanism — never duplicated inside the app; the storage lane law
- * of the family, the labelstore precedent). */
-const onboardingstore = createOnboardingStore(lane, { tableName: "onboardingstate" });
 
 /** the label writes and reads (the interface copy store). */
 const upsertlabel = sqlite.prepare(
@@ -287,37 +276,6 @@ export function getworldassets(): WorldAsset[] {
     size: row.size,
     precompiled: true,
   }));
-}
-
-/** the typed row of the onboardingstate table (the first-run state of one visitor). */
-export type OnboardingStateRow = {
-  id: number;
-  visitor: string;
-  introseen: boolean;
-  onboardingseen: boolean;
-  updatedAt: string;
-};
-
-/**
- * reads the first-run state of one visitor (bound parameters only).
- *
- * @param visitor the stable visitor key the gateway addresses.
- * @returns the state row or undefined when the visitor never started the flow.
- */
-export function getonboardingstate(visitor: string): OnboardingStateRow | undefined {
-  return onboardingstore.getOnboardingRow(visitor);
-}
-
-/**
- * writes one stage of the first run for a visitor (prepared upsert,
- * seen-monotonic: a stage never unsees). "intro" marks the splash,
- * "onboarding" marks the splash and the finish in one row.
- *
- * @param visitor the stable visitor key the gateway addresses.
- * @param stage the flow stage that was just seen (finish or skip alike).
- */
-export function setonboardingstage(visitor: string, stage: "intro" | "onboarding"): void {
-  onboardingstore.setOnboardingStage(visitor, stage);
 }
 
 /* --------------------------------------------------------------------- */

@@ -3,8 +3,11 @@
  * better-sqlite3 store round trips (create, seed ingest, upsert, read),
  * the typed accessor chain answers the seed and the copy seed while the
  * platform is away, and the same-origin route lane serves the rows and
- * refuses an unknown key honestly. Every test drives a unique temp
- * database so the runs stay isolated.
+ * refuses an unknown key honestly. the label seat of the copy law rides
+ * the same file (the store the manifest ingests into): the winget
+ * accessor answers the manifest offline, the seed refuses honestly where
+ * the row store is absent, and the manifest keeps answering. Every test
+ * drives a unique temp database so the runs stay isolated.
  */
 
 import { mkdtempSync } from "node:fs";
@@ -12,9 +15,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
+import { labelManifest, type LabelKey } from "../labels.ts";
 import { copyseed } from "../uistore.ts";
 import {
+  label,
   loaduicopy,
+  seedLabels,
   uicopy,
   uistoreget,
   uistoreingest,
@@ -119,5 +125,23 @@ describe("uistore route lane", () => {
     expect(((await one.json()) as { value: string }).value).toBe("An OS");
     const refused = await app.request("/api/v1/ui/copy/uistore.nobody");
     expect(refused.status).toBe(404);
+  });
+});
+
+describe("uistore label seat", () => {
+  it("answers the manifest verbatim through the store — the copy law moves the access, never the wording", () => {
+    for (const [id, text] of Object.entries(labelManifest)) {
+      expect(label(id as LabelKey)).toBe(text);
+    }
+  });
+
+  it("the seed never blocks the boot and the manifest always answers", async () => {
+    // the node runner holds no IndexedDB: the row store refuses honestly
+    // and the boot lane catches (App.tsx void seedLabels().catch(() => {}))
+    await expect(seedLabels().catch(() => "boot survives")).resolves.toBe("boot survives");
+    // after the refused seed the overrides stay empty — the manifest answers
+    expect(label("chat.composer.send")).toBe("Send message");
+    expect(label("console.boot.name")).toBe("DEVTHINK");
+    expect(label("explore.sidebar.categories")).toBe("the categories");
   });
 });

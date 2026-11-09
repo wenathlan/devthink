@@ -97,12 +97,65 @@ describe("the face surfaces", () => {
       expect(names).toContain(winget);
     }
   });
+
+  it("the my files surface rides the family design standard", () => {
+    // the fluent glyph law: the drive answers the fluent set — the panel
+    // glyph, the reread press and the stat labels wear one icon each
+    expect(MYFILES).toContain("@fluentui/react-icons");
+    expect(MYFILES).toContain("FolderOpenRegular");
+    expect(MYFILES).toContain("ArrowClockwiseRegular");
+    expect(MYFILES).toContain("HardDriveRegular");
+    // the capacity law: the meter rides the real usage against the limit —
+    // the track, the fill, the critical tint and the honest unlimited line
+    expect(MYFILES).toContain('className="vc-meter__track"');
+    expect(MYFILES).toContain('className="vc-meter__fill"');
+    expect(MYFILES).toContain("data-critical={pct >= METER_CRITICAL_PCT");
+    expect(MYFILES).toContain('role="meter"');
+    expect(MYFILES).toContain('uicopy("face.myfiles.meter.unlimited")');
+    expect(CSS).toContain('.vc-meter__fill[data-critical="true"]');
+    // the store law of the drive: every word rides the ui store — the old
+    // mono prompt literals never come back
+    expect(MYFILES).not.toContain("vc-console__prompt");
+    expect(MYFILES).not.toMatch(/>drive<|>hd<|>left<|>state<|>census</);
+    // the lane law: the data rides the internal api doors — quota, usage,
+    // objects — and the rehearsal never renders the person's bytes
+    expect(MYFILES).toContain("useVaultQuota(");
+    expect(MYFILES).toContain("useVaultUsage(");
+    expect(MYFILES).toContain("useVaultObjects(");
+    expect(MYFILES).toContain("client.setQuota(");
+    expect(MYFILES).not.toContain("seedVault");
+    // the honest states: loading answers the skeleton, absence answers the
+    // shared empty state, the away lane keeps the surface honest
+    expect(MYFILES).toContain("<Skeleton rows={3} />");
+    expect(MYFILES).toContain("<Skeleton rows={4} />");
+    expect(MYFILES).toContain("<EmptyState");
+    expect(MYFILES).toContain('uicopy("face.myfiles.awayTitle")');
+    expect(MYFILES).toContain('uicopy("face.myfiles.empty")');
+    // the verdict rows: usage, limit, remaining, state — minimalist cells,
+    // one label one value each
+    expect(MYFILES).toContain('uicopy("face.myfiles.quota.usageLabel")');
+    expect(MYFILES).toContain('uicopy("face.myfiles.quota.limitLabel")');
+    expect(MYFILES).toContain('uicopy("face.myfiles.quota.remainingLabel")');
+    expect(MYFILES).toContain('uicopy("face.myfiles.quota.stateLabel")');
+  });
 });
 
 describe("the store law (no literal, no dead key)", () => {
   it("every face key a surface cites lives in the seed; every other key lives in the manifest", () => {
     const seed = uistoreseedrows();
-    const surfaces = [HOME, PLANSTABLE, BROWSE, MYFILES, CONSOLE, TOASTER, SKELETON, OBJECTS, BUCKETS, RETENTION, SHELL];
+    const surfaces = [
+      HOME,
+      PLANSTABLE,
+      BROWSE,
+      MYFILES,
+      CONSOLE,
+      TOASTER,
+      SKELETON,
+      OBJECTS,
+      BUCKETS,
+      RETENTION,
+      SHELL,
+    ];
     const citations = new Map<string, string>();
     for (const surface of surfaces) {
       for (const key of citedkeys(surface)) {

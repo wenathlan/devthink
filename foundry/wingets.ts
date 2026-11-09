@@ -1,11 +1,10 @@
 /**
- * wingets.ts — the universal winget surface of foundry, seated at the
- * root beside the sol theme folder (the family law: every .ts logic file
- * lives at the root, only .tsx components live inside sol): every winget
- * of the sol/wingets folder answers from this one module, so the pages
- * import their components from a single place and the dotted winget file
- * name lives exactly once (here) instead of repeating across every page —
- * the components stay complete independent files inside the theme.
+ * wingets.ts — the universal winget surface of foundry: every winget of the
+ * sol/wingets folder answers from this one module at the app root, so the
+ * pages import their components from a single place and the dotted winget
+ * file name lives exactly once (here) instead of repeating across every
+ * page — the components stay complete independent files inside the
+ * sol/wingets folder.
  */
 export { default as GraphPanel } from "./sol/wingets/ArtifactsGraphpanel.tsx";
 export * from "./sol/wingets/HomeEntry.tsx";
