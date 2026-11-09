@@ -1,5 +1,34 @@
 # DevThink release notes
 
+## 2.0.174
+
+This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.173 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@wenathlan/argan": "~2.0.172",
+- "@wenathlan/argan": "~2.1.8",
+- "@wenathlan/cadria": "~2.0.172",
+- "@wenathlan/cadria": "~2.1.8",
+- "@wenathlan/cobaia": "~2.0.172",
+- "@wenathlan/cobaia": "~2.0.173",
+- "@wenathlan/debonair": "~2.0.172",
+- "@wenathlan/debonair": "~2.1.8",
+- "@wenathlan/devthink": "~2.0.170",
+- "@wenathlan/devthink": "~2.1.8",
+- "@wenathlan/forge": "~2.0.172",
+- "@wenathlan/forge": "~2.1.8",
+- "@wenathlan/foundry": "~2.0.172",
+- "@wenathlan/foundry": "~2.1.8",
+- "@wenathlan/getry": "~2.0.172",
+- "@wenathlan/getry": "~2.0.173",
+- "@wenathlan/saddle": "~2.0.172",
+- "@wenathlan/saddle": "~2.1.8",
+- "@wenathlan/stealthhead": "~2.0.172",
+- "@wenathlan/stealthhead": "~2.1.8",
+- "@wenathlan/vault": "~2.0.172",
+- "@wenathlan/vault": "~2.1.8",
+- "eslint-config-next": "^16.4.5",
+- "eslint-config-next": "^16.4.6",
+- "next": "^16.4.5",
+- "next": "^16.4.6",. The version stamps 2.0.174 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+
 ## 2.0.173
 
 This release is the rung the containerlanes heal cut: the digest stamp reads the platform seat the family Dockerfiles carry while the twenty-stamp table walks the whole surface, the saddle container heals the dead COPY arm the modalityregistry fold left behind, the sdk rung seats @anthropic-ai/sdk 1.7.0 beside the axios, framer-motion, motion and openai minors across the eleven manifests, the saddle bun lock answers the family regeneration the pages owner-install lane reads, and the publish mirror attaches the os-distribution catalog seats beside the registry push — the thousand-asset ladder the release ladder answers with the oscatalogseats family.

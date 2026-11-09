@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-foundry"
-version = "2.0.173"
+version = "2.0.174"
 edition = "2021"
 description = "The e2b and docker clone interface — sandboxes and images while the engine lives in saddle"
 license = "GPL-3.0-only"
