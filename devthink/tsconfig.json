@@ -144,6 +144,16 @@
        * ("@wenathlan/vault/uistore"), and this program resolves it to the
        * sibling source the same way the label store seat above rides. */
       "@wenathlan/vault/uistore": ["../vault/uistore.ts"],
+      /* the react typing bridge the uistore seam demands: the sibling
+       * source the bridge above carries imports react and the
+       * node_modules walk from the vault tree never finds the
+       * consumer's @types seat (the verify lanes install no vault
+       * dependencies), so the program resolves the specifier onto the
+       * app's own @types/react — the typecheck walks the real react
+       * surface while the runtime lanes never touch this mapping: vite
+       * resolves its own react, the tsx children answer the seam's
+       * honest refusal. */
+      "react": ["./node_modules/@types/react"],
       /** the onboarding store bridge of the ownership law: the gateway db
        * the os typecheck walks imports the vault factory through the
        * published library specifier ("@wenathlan/vault/onboardingstore"),
