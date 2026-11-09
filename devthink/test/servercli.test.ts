@@ -42,6 +42,13 @@ async function runcli(
     return { stdout, stderr, code: 0 };
   } catch (err) {
     const e = err as { stdout?: string; stderr?: string; code?: number };
+    /* the child's own failure text rides the assertion context so the ci
+     * log answers WHY the exec died (the crash trace the empty stdout
+     * never carried — the runner-only failures read as bare exit codes
+     * before this seat existed) */
+    if ((e.code ?? 1) !== 0 && !e.stdout && !e.stderr)
+      console.error(`cli exec failure (code ${e.code ?? 1}) with no output — args: ${args.join(" ")}`);
+    else if ((e.code ?? 1) !== 0) console.error(`cli exec stderr (${args.join(" ")}):\n${e.stderr ?? "(empty)"}`);
     return { stdout: e.stdout ?? "", stderr: e.stderr ?? "", code: e.code ?? 1 };
   }
 }
