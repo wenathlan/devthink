@@ -98,9 +98,13 @@ export default defineConfig({
      * monorepo lanes resolved the same imports by accident (the sibling
      * saddle/node_modules dev tree), a resolution the container never
      * carried — the external law makes every lane answer the same honest
-     * bundle instead. */
+     * bundle instead. The libsql vault roundtrip seat rides the same law:
+     * modalities.ts lazy-imports @libsql/client for the engine host's
+     * database driver (the visitor law — the browser never owns the db
+     * runtime), so the android lanes that stage no saddle dependency tree
+     * externalize it the same honest way. */
     rolldownOptions: {
-      external: ["@babel/core", "webpack"],
+      external: ["@babel/core", "webpack", "@libsql/client"],
     },
   },
   /** the theme (sol/) and the root logics (runner, api, utils) share one app root, so the dev server allows the app root — and the ownership bridge (wave 3) resolves the saddle mode surface the runner seam imports, so the saddle root rides the allow list beside the vault root. */
