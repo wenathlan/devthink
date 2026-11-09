@@ -10,7 +10,7 @@ package com.wenathlan.stealthhead;
  */
 final class Stealthhead {
   /** The version of the stealthhead envelope (the family five-package wave). */
-  public static final String VERSION = "2.0.172";
+  public static final String VERSION = "2.0.173";
   private Stealthhead() {
   }
 }

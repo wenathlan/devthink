@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.173
+
+This release is the rung the containerlanes heal cut: the digest stamp reads the platform seat the family Dockerfiles carry while the twenty-stamp table walks the whole surface, the saddle container heals the dead COPY arm the modalityregistry fold left behind, the sdk rung seats @anthropic-ai/sdk 1.7.0 beside the axios, framer-motion, motion and openai minors across the eleven manifests, the saddle bun lock answers the family regeneration the pages owner-install lane reads, and the publish mirror attaches the os-distribution catalog seats beside the registry push — the thousand-asset ladder the release ladder answers with the oscatalogseats family.
+
 ## 2.0.172
 
 The 2.0.172 rung answers the door law the frozen lanes charged — the eleven manifests and the root stamp the rung the release ladder auto-tags, the eleven locks regenerate whole under the pinned 1.4.4 grammar with the saddle npm lock walking the all-registry closure, and the depfresh and engine waves the antiquity law merged ride this rung whole (the LOGICS root catalog, the containers lane's public registry default and the debonair studio console surfacing the real engine state).

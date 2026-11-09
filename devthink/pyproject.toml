@@ -11,7 +11,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-devthink"
-version = "2.0.172"
+version = "2.0.173"
 authors = [{name = "wenathlan"}]
 description = "Builds explicit local DevThink CLI invocations without storing provider credentials"
 readme = "README.md"

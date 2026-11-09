@@ -4,7 +4,7 @@
     <AssemblyName>cobaia</AssemblyName>
     <RootNamespace>cobaia</RootNamespace>
     <PackageId>cobaia</PackageId>
-    <Version>2.0.172</Version>
+    <Version>2.0.173</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the cobaia documentation set and the tests directory. cobaia is the monetization surface — the plans, the support rails and the honest advertisement slots.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>

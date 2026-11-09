@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/cadria",
-  "version": "2.0.172",
+  "version": "2.0.173",
   "private": false,
   "description": "cadria is the video and image player, editor and studio of the wenathlan family: it houses the versawase engine at the folder root, absorbs iukka (player) and create (editor), and imports katexis from debonair and gateway, AI and workflow from devthink. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
   "license": "GPL-3.0-only",
