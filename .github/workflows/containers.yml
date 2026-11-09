@@ -1479,10 +1479,12 @@ jobs:
         # @libsql/client, playwright and webpack: the browser lanes install
         # no saddle tree, so the host seat resolves them and the lazy
         # import guards answer the honest coded absence) — and the frozen
-        # install's own webpack 5.112.2 (the manifest seat, walked through
-        # a config file: the CLI-flag parse dies on the commander major
-        # the saddle tree carries — "prev is not iterable" — while the
-        # config form sidesteps the flag parser whole) packs the one
+        # install's own webpack 5.112.2 with its webpack-cli 7.3.1 peer
+        # (the exact pins the install line carries beside the manifest
+        # seats — the pin is real, visible and never floating), walked
+        # through a config file: the CLI-flag parse dies on the commander
+        # major the saddle tree carries — "prev is not iterable" — while
+        # the config form sidesteps the flag parser whole) packs the one
         # entry into the one webpack bundle the six channel legs
         # distribute - a real, non-empty, single-file engine
         # distribution (the local verification measured a 718 KiB esm
@@ -1492,7 +1494,7 @@ jobs:
         run: |
           set -euo pipefail
           cd saddle
-          npm install --ignore-scripts --no-audit --no-fund
+          npm install --ignore-scripts --no-audit --no-fund webpack@5.112.2 webpack-cli@7.3.1
           node scripts.ts buildengine
           node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js --external:@babel/core --external:@libsql/client --external:playwright --external:webpack
           test -s distpackage/index.js
