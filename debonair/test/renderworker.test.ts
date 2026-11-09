@@ -26,7 +26,7 @@ import { RENDER_TAIL_S } from "../audio.ts";
 import { mintid } from "../bigintids.ts";
 import { composeFromProfile } from "../composer.ts";
 import { MASTERING, trackNameFromPrompt } from "../katexis.ts";
-import { truePeakLinear } from "../kathesis.ts";
+import { analyzeLoudness, truePeakLinear } from "../kathesis.ts";
 import { LANE_STEPS, serializePattern, validatePatternProject } from "../pattern.ts";
 import { type GenreProfile, segmentVector } from "../pattern.ts";
 import {
@@ -41,6 +41,7 @@ import {
   rendertrackseat,
   updaterenderjob,
 } from "../render.ts";
+import { renderPatternMix, schedulePattern } from "../renderengine.ts";
 import {
   RENDER_PHASES,
   RENDER_SAMPLE_RATE,
@@ -358,6 +359,86 @@ describe("the composed plan renders through the engine recipes", () => {
     assert.ok(
       tp <= 10 ** (MASTERING.truePeakDbtp / 20) + 1e-4,
       `the bounce's true peak ${(20 * Math.log10(tp)).toFixed(4)} dBTP must sit at or under the −1 promise`,
+    );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// the mastering close (the measured loudness law — the opt-in walk's own
+// battery: law 340, loudness measured, never claimed)
+// ---------------------------------------------------------------------------
+
+describe("the mastering close lands the measured loudness law", () => {
+  it("lands the bounce on the target the lufsTarget option names (the measured law)", async () => {
+    // law 340: loudness measured, never claimed — the bounce's own decoded
+    // pcm measures at the target the option carries: only a real
+    // measure → gain → limit walk over the rendered samples can put two
+    // numbers there, a claimed constant never touches the samples
+    const result = await renderPlan(PLAN, "seed-one", new MemoryStore(), undefined, {
+      lufsTarget: MASTERING.platformTargetsLufs.spotify,
+    });
+    assert.ok(result.ok);
+    const pcm = pcmOf(result.bytes);
+    const report = analyzeLoudness([Array.from(pcm)], RENDER_SAMPLE_RATE);
+    assert.ok(report.ok, "the decoded bounce answers its own measurement");
+    const integrated = report.value.integrated;
+    assert.ok(
+      integrated >= -16 && integrated <= -12.5,
+      `the bounce measures ${integrated.toFixed(2)} LUFS — the spotify −14 target band is [−16, −12.5]`,
+    );
+    const tp = truePeakLinear(pcm);
+    assert.ok(tp <= 10 ** (MASTERING.truePeakDbtp / 20) + 1e-4, "the target gain never reopens the ceiling");
+  });
+
+  it("rides the measurement, never a stamped claim (the two-mix discriminator)", async () => {
+    // two different walks must both land on the target band — and the
+    // surgical kick mix must move from its own pre-master loudness (the
+    // gain the walk applied came from ITS measurement, not a stamp the
+    // plan could never hear)
+    const kick = kickOnlyPlan();
+    assert.ok(validatePatternProject(kick).ok);
+    const schedule = schedulePattern(kick);
+    const mix = renderPatternMix(schedule, "noise:surgical:");
+    const preMaster = analyzeLoudness([Array.from(mix)], RENDER_SAMPLE_RATE);
+    assert.ok(
+      preMaster.ok && Number.isFinite(preMaster.value.integrated),
+      "the pre-master mix answers its measurement",
+    );
+    const preMasterLufs = preMaster.value.integrated;
+
+    const result = await renderPlan(kick, "surgical", new MemoryStore(), undefined, {
+      lufsTarget: MASTERING.platformTargetsLufs.spotify,
+    });
+    assert.ok(result.ok);
+    const bounce = analyzeLoudness([Array.from(pcmOf(result.bytes))], RENDER_SAMPLE_RATE);
+    assert.ok(bounce.ok);
+    const bounceLufs = bounce.value.integrated;
+    assert.ok(
+      bounceLufs >= -16 && bounceLufs <= -12.5,
+      `the kick bounce measures ${bounceLufs.toFixed(2)} LUFS — the spotify −14 band`,
+    );
+    assert.ok(
+      Math.abs(bounceLufs - preMasterLufs) > 1,
+      `the bounce moved from the mix's own ${preMasterLufs.toFixed(2)} LUFS to ${bounceLufs.toFixed(2)} — the walk measured and gained, it never claimed`,
+    );
+  });
+
+  it("keeps the bare bounce untouched (the dormant default the byte-stable law owns)", async () => {
+    // the opt-in law: without a target the walk never gains — the pinned
+    // bounces stay byte-stable, and a named target answers its own bytes
+    const bare = await renderPlan(PLAN, "seed-one", new MemoryStore());
+    assert.ok(bare.ok);
+    const again = await renderPlan(PLAN, "seed-one", new MemoryStore());
+    assert.deepStrictEqual(bare.bytes, again.bytes, "the dormant default stays byte-stable");
+
+    const targeted = await renderPlan(PLAN, "seed-one", new MemoryStore(), undefined, {
+      lufsTarget: MASTERING.platformTargetsLufs.apple,
+    });
+    assert.ok(targeted.ok);
+    assert.notDeepStrictEqual(
+      bare.bytes,
+      targeted.bytes,
+      "the apple −16 target answers its own bytes — the walk measured and gained, the dormant bounce never moved",
     );
   });
 });
