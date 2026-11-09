@@ -125,7 +125,29 @@ jobs:
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
-        run: cd devthink && bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+        # the family lockstep law the config parity gate owns: the
+        # eleven manifests carry the same dependency union, so the
+        # proposal walks every app root — the foundry gate reads the
+        # manifest of the tree it runs from, and a devthink-only pass
+        # reddens the parity cell the validate step walks (the sibling
+        # floors drift against the refreshed devthink seats the moment
+        # the registry moves). The devthink envelope keeps its manifest
+        # script seat (bun run dependency:updates) while the siblings
+        # answer the foundry gate directly — the same law the rung
+        # stamps carry.
+        run: |
+          set -euo pipefail
+          cd devthink && bun run dependency:updates ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../argan && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../cadria && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../cobaia && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../debonair && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../forge && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../foundry && node dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../getry && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../saddle && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../stealthhead && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../vault && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
       - name: Update package-manager and Node engine recommendations
         if: steps.window.outputs.active == 'true'
         run: cd devthink && bun run sync:maintenance ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
@@ -267,6 +289,13 @@ jobs:
         # the rung would ship a package.json its own frozen install
         # refuses). The probe itself accepts every semver constraint form
         # (>=12.2.0 <13, ^12.1.0, 12.x) so no envelope shape breaks it.
+        # The family lockstep the proposal now walks answers its own lock
+        # refresh: every sibling manifest the dependency gate touched
+        # regenerates the lock its frozen lanes read (the ten bun locks
+        # under the pinned grammar the family law carries, the saddle npm
+        # lock through the package-lock-only seat), so the validate step's
+        # frozen installs and every lane that answers a lock walk the
+        # proposed tree whole.
         run: |
           set -euo pipefail
           cd devthink
@@ -277,6 +306,23 @@ jobs:
           npm install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
           bun install --ignore-scripts
+          # the family lockstep refresh: every sibling manifest the
+          # proposal walked regenerates the lock its lanes read (the
+          # ten bun locks, the saddle npm lock answering its own
+          # package-lock-only seat — the both-blocks grammar the
+          # container base install derives from stays untouched,
+          # only the resolution floors move).
+          cd ../argan && bun install --ignore-scripts
+          cd ../cadria && bun install --ignore-scripts
+          cd ../cobaia && bun install --ignore-scripts
+          cd ../debonair && bun install --ignore-scripts
+          cd ../forge && bun install --ignore-scripts
+          cd ../foundry && bun install --ignore-scripts
+          cd ../getry && bun install --ignore-scripts
+          cd ../stealthhead && bun install --ignore-scripts
+          cd ../vault && bun install --ignore-scripts
+          cd ../saddle && bun install --ignore-scripts
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Install the gateway and saddle family dependencies
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         # the gateway family law the verify ladder carries: the
@@ -284,11 +330,11 @@ jobs:
         # validate step walks bridges ../getry/server.ts and the saddle
         # sandbox beside the devthink root — their hono runtime and the
         # sibling seats resolve from their own node_modules, and the
-        # propose's lock refresh only ever installs the devthink tree
-        # (the proposal walks the eleven manifests, so the sibling locks
-        # answer their own frozen installs here — the same steps the
-        # verify ladder's Install the gateway/saddle family dependencies
-        # carried, materializing exactly what the validation reads).
+        # frozen pass here answers the consistency gate the refreshed
+        # locks owe (the lock refresh above installs the family whole;
+        # this frozen re-install proves zero drift the same way the
+        # verify ladder's gateway/saddle install steps always carried
+        # it, materializing exactly what the validation reads).
         run: |
           set -euo pipefail
           cd getry && bun install --frozen-lockfile --ignore-scripts

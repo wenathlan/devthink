@@ -62,8 +62,7 @@ const matrixof = (workflow: workflow, job: string): lanematrix[] =>
   ((workflow.jobs?.[job]?.strategy as { matrix?: { include?: lanematrix[] } } | undefined)?.matrix?.include ??
     []) as lanematrix[];
 const flatmatrix = (workflow: workflow, job: string): string[] =>
-  ((workflow.jobs?.[job]?.strategy as { matrix?: { app?: string[]; channel?: string[] } } | undefined)?.matrix
-    ?.app ??
+  ((workflow.jobs?.[job]?.strategy as { matrix?: { app?: string[]; channel?: string[] } } | undefined)?.matrix?.app ??
     []) as string[];
 
 /** the ten sibling applications of the app-containers matrix (the saddle
@@ -139,9 +138,11 @@ describe.skipIf(!inrepo)("the eleven container lanes of the registry standard", 
      * docker buildx imagetools (never a rebuild, never a placeholder -
      * the digest is the registry's own answer) and the best-effort
      * lanes fail closed without reddening the wave. */
-    expect(containers).toContain("ghcr.io/${{ github.repository_owner }}/${{ matrix.app }}:${{ steps.release.outputs.version }}");
+    expect(containers).toContain(
+      "ghcr.io/${{ github.repository_owner }}/${{ matrix.app }}:${{ steps.release.outputs.version }}",
+    );
     expect(containers).toContain("ghcr.io/${{ github.repository_owner }}/${{ matrix.app }}:latest");
-    expect(containers).toContain("docker buildx imagetools create -t \"${image}:${version}-${slug}\"");
+    expect(containers).toContain('docker buildx imagetools create -t "${image}:${version}-${slug}"');
     expect(containers).toContain("continue-on-error: true");
     /* the census law: 1 (version) + 1 (latest) + carried arches + exotic
      * arches > 11 for every leg of the matrix - the site homes answer
@@ -198,12 +199,27 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
      * archlinux, alpine, debian, fedora, nixos, void, postmarketos -
      * every flavor binds the full tier axis the master stamped: the
      * max, balanced and lite plans each their own lane). */
-    const flavorlegs = (["linux", "omarchy", "vanillaos", "android", "archlinux", "alpine", "debian", "fedora", "nixos", "void", "postmarketos"] as const).flatMap((os) =>
-      ([
-        ["max", `os${os}`, `-${os}`],
-        ["balanced", `os${os}-balanced`, `-${os}-balanced`],
-        ["lite", `os${os}-lite`, `-${os}-lite`],
-      ] as const),
+    const flavorlegs = (
+      [
+        "linux",
+        "omarchy",
+        "vanillaos",
+        "android",
+        "archlinux",
+        "alpine",
+        "debian",
+        "fedora",
+        "nixos",
+        "void",
+        "postmarketos",
+      ] as const
+    ).flatMap(
+      (os) =>
+        [
+          ["max", `os${os}`, `-${os}`],
+          ["balanced", `os${os}-balanced`, `-${os}-balanced`],
+          ["lite", `os${os}-lite`, `-${os}-lite`],
+        ] as const,
     );
     expect(legs.map((leg) => [leg.profile, leg.target, leg.suffix])).toEqual([
       ["max", "max", ""],
@@ -221,12 +237,14 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
      * stamp (the flavor lanes ship their umbrella tag alone), and the
      * census arithmetic answers the owner's more-than-fifteen directive:
      * 3 umbrellas + 3 profiles x 4 arch seats + 4 flavors = 19 tags. */
-    expect(legs.map((leg) => leg.seatprefix ?? "")).toEqual(["max", "balanced", "lite", ...Array.from({ length: 33 }, () => "")]);
+    expect(legs.map((leg) => leg.seatprefix ?? "")).toEqual([
+      "max",
+      "balanced",
+      "lite",
+      ...Array.from({ length: 33 }, () => ""),
+    ]);
     const umbrellas = legs.length;
-    const seats = legs
-      .map((leg) => leg.seatprefix ?? "")
-      .filter((prefix) => prefix !== "")
-      .length * SEATARCHES.length;
+    const seats = legs.map((leg) => leg.seatprefix ?? "").filter((prefix) => prefix !== "").length * SEATARCHES.length;
     const flavors = legs.filter((leg) => (leg.seatprefix ?? "") === "").length;
     const census = umbrellas + seats;
     expect(flavors).toBe(33);
@@ -244,7 +262,9 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
      * <version>-max-linux-arm64 answers the arm64 image of the max
      * profile (never a rebuild, never a placeholder). */
     expect(containers).toContain("Stamp the per-architecture seat tags (the arch-seat lanes of the profile legs)");
-    expect(containers).toContain('docker buildx imagetools create -t "${img}:${ver}-${SEATPREFIX}-${slug}" "${img}@${digest}"');
+    expect(containers).toContain(
+      'docker buildx imagetools create -t "${img}:${ver}-${SEATPREFIX}-${slug}" "${img}@${digest}"',
+    );
     expect(containers).toContain("if: matrix.seatprefix != ''");
     /* the per-leg guard of the partial-publish freeze fix: a re-run
      * completes exactly the missing lanes of the family (the seat
@@ -269,7 +289,19 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
     expect(dockerfile).toContain("AS max");
     expect(dockerfile).toContain("AS balanced");
     expect(dockerfile).toContain("AS lite");
-    for (const os of ["oslinux", "osomarchy", "osvanillaos", "osandroid", "osarchlinux", "osalpine", "osdebian", "osfedora", "osnixos", "osvoid", "ospostmarketos"]) {
+    for (const os of [
+      "oslinux",
+      "osomarchy",
+      "osvanillaos",
+      "osandroid",
+      "osarchlinux",
+      "osalpine",
+      "osdebian",
+      "osfedora",
+      "osnixos",
+      "osvoid",
+      "ospostmarketos",
+    ]) {
       expect(dockerfile).toContain(`AS ${os}`);
       expect(dockerfile).toContain(`AS ${os}-balanced`);
       expect(dockerfile).toContain(`AS ${os}-lite`);
@@ -288,9 +320,8 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
      * produces - beside the base npmjs envelope the family-npmjs mirror
      * of the publish workflow already ships for the saddle leg, so the
      * webpack axis owns SEVEN distribution lanes. */
-    const channels = (workflow.jobs?.["saddle-webpack"]?.strategy as
-      | { matrix?: { channel?: string[] } }
-      | undefined)?.matrix?.channel;
+    const channels = (workflow.jobs?.["saddle-webpack"]?.strategy as { matrix?: { channel?: string[] } } | undefined)
+      ?.matrix?.channel;
     expect(channels).toEqual(["npmjs", "githubnpm", "maven", "nuget", "gradle", "rubygems"]);
     /* the seventh lane: the base npmjs envelope of the saddle engine
      * the family mirror publishes (the saddle leg of the family-npmjs
@@ -306,13 +337,22 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
     const containers = await readworkflow("containers.yml");
     /* the cross-bundler rung the ci battery verifies, carried to the
      * saddle engine: the tsc engine build (scripts.ts buildengine, the
-     * lane-word dispatcher the scripts consolidation seated) produces
-     * distpackage/index.js and the exact-pinned webpack fetch (webpack
-     * 5.112.2 with its webpack-cli 6.0.1 peer) packs the one entry into
-     * the one webpack bundle the six channel legs distribute. */
+     * lane-word dispatcher the scripts consolidation seated) walks the
+     * noEmit typecheck the app manifest carries, the esbuild bundle the
+     * manifest dependency owns emits the distpackage/index.js entry with
+     * the four host-owned externals, and the frozen install's own
+     * webpack 5.112.2 (the manifest seat the lock pins — the exact pin
+     * the saddle lock resolution answers, never a floating fetch) packs
+     * the one entry through the config form (the CLI-flag parse dies on
+     * the commander major the saddle tree carries — prev is not
+     * iterable — the config sidesteps the flag parser whole) into the
+     * one webpack bundle the six channel legs distribute. */
     expect(containers).toContain("node scripts.ts buildengine");
-    expect(containers).toContain("-p webpack@5.112.2 -p webpack-cli@6.0.1");
-    expect(containers).toContain("--output-filename saddle.webpack.js");
+    expect(containers).toContain(
+      "node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js",
+    );
+    expect(containers).toContain('filename: "saddle.webpack.js"');
+    expect(containers).toContain("node_modules/.bin/webpack -c distpackage/webpack.config.mjs");
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
      * collide with the engine envelope the publish lanes own: the
@@ -338,7 +378,18 @@ describe.skipIf(!inrepo)("the channel census (the eleven-plus distribution lanes
     for (const lane of REGISTRYLANES) {
       const matrix = (publish.jobs?.[lane]?.strategy as { matrix?: { package?: string[] } })?.matrix;
       expect(matrix?.package, `the ${lane} matrix must answer the ten family envelopes`).toHaveLength(10);
-      for (const app of ["argan", "cadria", "cobaia", "debonair", "forge", "foundry", "getry", "stealthhead", "vault", "saddle"]) {
+      for (const app of [
+        "argan",
+        "cadria",
+        "cobaia",
+        "debonair",
+        "forge",
+        "foundry",
+        "getry",
+        "stealthhead",
+        "vault",
+        "saddle",
+      ]) {
         expect(matrix?.package, `the ${lane} matrix must seat ${app}`).toContain(app);
       }
     }
