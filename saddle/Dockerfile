@@ -166,7 +166,7 @@ WORKDIR /app
 
 ENV NPM_CONFIG_LEGACY_PEER_DEPS=true
 
-COPY saddle/package.json saddle/package-lock.json ./
+COPY saddle/package.json saddle/package-lock.json saddle/pnpm-workspace.yaml ./
 RUN npm ci --ignore-scripts --legacy-peer-deps
 COPY saddle/ .
 # the engine-ownership sibling: the saddle labels resolve
@@ -262,7 +262,7 @@ RUN case "${TARGETARCH:-}" in \
         exit 1 ;; \
     esac
 
-COPY --from=solbuild /app/package.json /app/package-lock.json ./
+COPY --from=solbuild /app/package.json /app/package-lock.json /app/pnpm-workspace.yaml ./
 # the both-blocks grammar heal (the saddle container law): the family
 # manifest carries the same seats inside dependencies and
 # devDependencies, and every npm tested (11.19.1 and 12.0.2) answers
@@ -270,12 +270,21 @@ COPY --from=solbuild /app/package.json /app/package-lock.json ./
 # so a plain `npm ci --omit=dev` installs nothing and the runtime stage
 # dies at the cleanup walk with no node_modules to sweep. The derived
 # prod-only manifest (the dependencies block alone, byte-identical
-# specs) restores the honest production install: the lock the
-# foundry/lockprod.ts heal stamped walks beside it and the --omit=dev
-# lane lands the full production closure (the 1372-package install the
-# local verification measured). Nothing is removed - the dev seats stay
-# in the lock for the full-install lanes, only the runtime's own view
-# of the manifest narrows.
+# specs) restores the honest production install. Nothing is removed -
+# the dev seats stay in the lock for the full-install lanes, only the
+# runtime's own view of the manifest narrows.
+# THE PNPM INSTALL LAW (the containerlanes heal, the vault enginedeps
+# precedent): the dependency install walks through pnpm --prod the same
+# lane the vault engine carries - the npm ci lane died on the exotic
+# arch legs (EBADPLATFORM: the libsql native gates its cpu field to
+# x64/arm64/wasm32/arm and the @libsql/client envelope declares libsql
+# as a REGULAR dependency, so npm ci hard-fails on ppc64le and s390x),
+# while pnpm's resolver omits the platform-gated native on every arch
+# it cannot carry (x64 and arm64 keep the full libsql closure; the
+# exotic legs answer the honest absence the lazy import guard owns -
+# the HOST_RUNTIME_ABSENT lane, the ram memory engine the container
+# default). The npm@12.0.2 runtime tool stays (the CVE-swap heal below
+# owns the operator toolchain); only the dependency walk changes.
 RUN node -e "const fs=require('node:fs');const m=JSON.parse(fs.readFileSync('package.json','utf8'));delete m.devDependencies;fs.writeFileSync('package.json',JSON.stringify(m,null,2)+'\n')"
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -300,7 +309,19 @@ RUN apt-get update \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/tar/package.json').version")" = "7.5.22" \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/undici/package.json').version")" = "6.29.1" \
     && rm -rf "$tempdir" \
-    && npm ci --omit=dev --ignore-scripts --legacy-peer-deps \
+    # THE PNPM DEPENDENCY WALK (the containerlanes heal): the pnpm
+    # --prod lane replaces the npm ci walk - the pinned pnpm of the
+    # family (12.18.0, the root packageManager seat) installs the
+    # production closure the derived manifest names, omitting every
+    # platform-gated native the current arch cannot carry (the libsql
+    # lesson: npm ci hard-failed EBADPLATFORM on ppc64le/s390x because
+    # @libsql/client declares the gated libsql as a regular dep, while
+    # pnpm omits it - x64/arm64 keep the full closure, the exotic legs
+    # answer the honest absence the lazy import guard owns). The
+    # pnpm-workspace.yaml rides the saddle context the same file always
+    # carried (the vulnerability overrides the lock lanes read).
+    && npm install --global pnpm@12.18.0 \
+    && pnpm install --prod --no-frozen-lockfile --ignore-scripts \
     # prune the vendored build toolchains of optional native deps: the
     # cpu-features cmake sources ship nested Dockerfiles (build CI of
     # the dependency) that the trivy misconfig scanner flags (DS-0002

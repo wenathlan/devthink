@@ -43,6 +43,19 @@ COPY devthink/ /src/devthink/
 COPY debonair/ /src/debonair/
 # the saddle workload law the ../saddle aliases resolve
 COPY saddle/ /src/saddle/
+# THE SIBLING RESOLUTION LAW (the containerlanes heal): the sibling
+# sources resolve their bare specifiers against the app install — the
+# monorepo lanes answered every @wenathlan door and engine import from
+# each sibling's own node_modules, a tree the container never carries
+# (the sources-only copy law), so the app's own install answers every
+# sibling path: the devthink graph (serve.ts through security.ts) reads
+# the @wenathlan/getry registry doors this way, and the install's
+# pnpm symlink layout resolves identically behind the link. The link is
+# build-time only — the runtime stage never carries it.
+RUN ln -s /src/app/node_modules /src/devthink/node_modules \
+ && ln -s /src/app/node_modules /src/debonair/node_modules \
+ && ln -s /src/app/node_modules /src/saddle/node_modules \
+ && ln -s /src/app/node_modules /src/vault/node_modules
 RUN pnpm build
 
 # ════════════════════════════════════════════════════════════════════

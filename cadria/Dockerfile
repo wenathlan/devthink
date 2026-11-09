@@ -46,6 +46,18 @@ COPY vault/ /src/vault/
 COPY devthink/ /src/devthink/
 # the argan dns law the cleanurl bridge resolves (the ../argan import)
 COPY argan/ /src/argan/
+# THE SIBLING RESOLUTION LAW (the containerlanes heal): the sibling
+# sources resolve their bare specifiers against the app install — the
+# monorepo lanes answered every @wenathlan door import from each
+# sibling's own node_modules, a tree the container never carries (the
+# sources-only copy law), so the app's own install answers every
+# sibling path (the devthink graph reads the @wenathlan/getry registry
+# doors this way). The link is build-time only — the runtime stage
+# never carries it.
+RUN ln -s /src/app/node_modules /src/devthink/node_modules \
+ && ln -s /src/app/node_modules /src/debonair/node_modules \
+ && ln -s /src/app/node_modules /src/vault/node_modules \
+ && ln -s /src/app/node_modules /src/argan/node_modules
 RUN pnpm build
 
 # ════════════════════════════════════════════════════════════════════

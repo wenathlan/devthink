@@ -86,6 +86,22 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "."),
     emptyOutDir: false,
     assetsDir: "",
+    /** the optional runtimes external law (the honest absence the browser
+     * graph carries): the saddle sources this app's bridges resolve
+     * (../saddle/modalities.ts and ../saddle/edgelandes.ts) load @babel/core
+     * and webpack through lazy imports the engine guards with the honest
+     * coded absence (HOST_RUNTIME_ABSENT / the babel and webpack lanes'
+     * runtime probes) — the browser bundle never carries either (a static
+     * site never compiles babel and never bundles webpack), so the build
+     * externalizes both: rolldown leaves the dynamic specifiers bare and
+     * the runtime rejection answers the absence lane the engine owns. The
+     * monorepo lanes resolved the same imports by accident (the sibling
+     * saddle/node_modules dev tree), a resolution the container never
+     * carried — the external law makes every lane answer the same honest
+     * bundle instead. */
+    rolldownOptions: {
+      external: ["@babel/core", "webpack"],
+    },
   },
   /** the theme (sol/) and the root logics (runner, api, utils) share one app root, so the dev server allows the app root — and the ownership bridge (wave 3) resolves the saddle mode surface the runner seam imports, so the saddle root rides the allow list beside the vault root. */
   server: {

@@ -254,6 +254,45 @@ jobs:
             echo "version=$version"
             echo "revision=$(git rev-parse HEAD)"
           } >> "$GITHUB_OUTPUT"
+      - name: wait for the family envelopes on npmjs
+        # THE REGISTRY GATE (the containerlanes heal): the release event
+        # fires the container lanes the moment the tag publishes, but the
+        # family npmjs envelopes land minutes later (the publish wave
+        # walks its own lane beside this one) - the v2.0.172 run raced
+        # exactly this way (the release event at 21:13, the envelopes on
+        # npmjs at 21:49) and every lane that installs @wenathlan seats
+        # reddened resolving versions the registry never carried yet
+        # (ERR_MODULE_NOT_FOUND on the doors the late envelopes ship, the
+        # stale-resolve walks). The gate polls the public npmjs registry
+        # until the ten sibling envelopes answer the release version (the
+        # devthink os seat stays off the list: the distpackage lane
+        # publishes it a rung late by doctrine and every manifest pins
+        # its already-published floor), bounded to a 60 minute patience
+        # window, 30 seconds apart - then every install walks against
+        # envelopes that truly exist.
+        shell: bash
+        env:
+          WAIT_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          packages=(argan cadria cobaia debonair forge foundry getry saddle stealthhead vault)
+          deadline=$(( $(date +%s) + 3600 ))
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            missing=0
+            for pkg in "${packages[@]}"; do
+              if ! curl -fsSL --max-time 20 "https://registry.npmjs.org/@wenathlan%2F${pkg}/${WAIT_VERSION}" >/dev/null 2>&1; then
+                missing=1
+                echo "still waiting: @wenathlan/${pkg}@${WAIT_VERSION}"
+              fi
+            done
+            if [ "$missing" -eq 0 ]; then
+              echo "all ten sibling envelopes answer ${WAIT_VERSION} on npmjs"
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "the family envelopes never answered ${WAIT_VERSION} on npmjs within the patience window" >&2
+          exit 1
       - name: login ghcr
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
         with:
@@ -1133,6 +1172,41 @@ jobs:
           } >> "$GITHUB_OUTPUT"
           echo "the saddle ${version} lanes ride the node base digest ${node_digest} resolved at build time."
 
+      - name: wait for the family envelopes on npmjs
+        # THE REGISTRY GATE (the containerlanes heal, the app-containers
+        # law the same): the release event fires this wave the moment
+        # the tag publishes while the family npmjs envelopes land minutes
+        # later - the v2.0.172 race reddened the saddle lanes the same
+        # way (the base install resolves the @wenathlan sibling seats the
+        # production closure carries). The gate polls the public npmjs
+        # registry until the ten sibling envelopes answer the release
+        # version (the devthink os seat stays off the list: the
+        # distpackage lane publishes it a rung late by doctrine), bounded
+        # to a 60 minute patience window, 30 seconds apart.
+        shell: bash
+        env:
+          WAIT_VERSION: ${{ steps.resolve.outputs.version }}
+        run: |
+          set -euo pipefail
+          packages=(argan cadria cobaia debonair forge foundry getry saddle stealthhead vault)
+          deadline=$(( $(date +%s) + 3600 ))
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            missing=0
+            for pkg in "${packages[@]}"; do
+              if ! curl -fsSL --max-time 20 "https://registry.npmjs.org/@wenathlan%2F${pkg}/${WAIT_VERSION}" >/dev/null 2>&1; then
+                missing=1
+                echo "still waiting: @wenathlan/${pkg}@${WAIT_VERSION}"
+              fi
+            done
+            if [ "$missing" -eq 0 ]; then
+              echo "all ten sibling envelopes answer ${WAIT_VERSION} on npmjs"
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "the family envelopes never answered ${WAIT_VERSION} on npmjs within the patience window" >&2
+          exit 1
+
       - name: Set up QEMU (the emulated legs of the build index)
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
@@ -1359,6 +1433,40 @@ jobs:
             echo "tag=$tag"
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
+      - name: wait for the family envelopes on npmjs
+        # THE REGISTRY GATE (the containerlanes heal, the app-containers
+        # law the same): the frozen bun install below resolves the
+        # @wenathlan sibling seats the saddle lock pins - the v2.0.172
+        # race reddened every webpack leg the same way (the envelopes
+        # landed on npmjs 36 minutes after the release event fired this
+        # wave). The gate polls the public npmjs registry until the ten
+        # sibling envelopes answer the release version (the devthink os
+        # seat stays off the list: the distpackage lane publishes it a
+        # rung late by doctrine), bounded to a 60 minute patience
+        # window, 30 seconds apart.
+        shell: bash
+        env:
+          WAIT_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+          packages=(argan cadria cobaia debonair forge foundry getry saddle stealthhead vault)
+          deadline=$(( $(date +%s) + 3600 ))
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            missing=0
+            for pkg in "${packages[@]}"; do
+              if ! curl -fsSL --max-time 20 "https://registry.npmjs.org/@wenathlan%2F${pkg}/${WAIT_VERSION}" >/dev/null 2>&1; then
+                missing=1
+                echo "still waiting: @wenathlan/${pkg}@${WAIT_VERSION}"
+              fi
+            done
+            if [ "$missing" -eq 0 ]; then
+              echo "all ten sibling envelopes answer ${WAIT_VERSION} on npmjs"
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "the family envelopes never answered ${WAIT_VERSION} on npmjs within the patience window" >&2
+          exit 1
       - name: build the engine bundle and pack it through webpack
         # the cross-bundler rung the ci battery verifies, carried to the
         # saddle engine: the tsc engine build (scripts.ts buildengine, the
