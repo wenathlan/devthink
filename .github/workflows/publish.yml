@@ -6287,7 +6287,11 @@ jobs:
         shell: bash
     timeout-minutes: 15
     permissions:
-      contents: read
+      # the catalog lane attaches its assets beside the registry push
+      # (the thousand-asset ladder: every os-distribution seat the
+      # catalog answers rides the release as the profile record, its
+      # checksum and its lane manifest).
+      contents: write
       packages: write
     strategy:
       fail-fast: false
@@ -6445,6 +6449,49 @@ jobs:
             org.opencontainers.image.version=${{ steps.releaseversion.outputs.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+      - name: checksum and manifest the catalog lane
+        # THE THOUSAND-ASSET LADDER (the owner's release-assets directive):
+        # every os-distribution catalog seat the lane publishes rides the
+        # release beside the registry push — the rendered profile record
+        # the engine reads, its sha256 and the lane manifest naming the
+        # image coordinate (the naming law: dotted, no underscore).
+        if: steps.meta.outputs.skip != 'true'
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ steps.releaseversion.outputs.version }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          version="${RELEASE_VERSION}"
+          app="${{ matrix.app }}"
+          profile="${{ matrix.osprofile }}"
+          seat="${version}-${profile}"
+          profilejson="${app}.osprofile.${seat}.json"
+          checksums="${app}.sha256.osprofile.${seat}"
+          manifest="${app}.manifest.oscatalog.${seat}.json"
+          cp "oscatalogctx/osprofiles/${profile}.json" "${profilejson}"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/${app}:${seat}"
+          digest="$(docker buildx imagetools inspect "${image}" --format '{{json .Manifest.Digest}}' | tr -d '"')"
+          sha256sum "${profilejson}" > "${checksums}"
+          printf '{\n  "version": "%s",\n  "application": "%s",\n  "platform": "oscatalog",\n  "osprofile": "%s",\n  "image": "%s",\n  "digest": "%s",\n  "profile": "%s",\n  "signing": "caller-owned"\n}\n' \
+            "$version" "$app" "$profile" "$image" "$digest" "$profilejson" > "${manifest}"
+      - name: attach the catalog lane assets
+        # the automatic workflow_run path attaches the same assets the
+        # release event does (the resolver's tag output carries the tag)
+        if: steps.meta.outputs.skip != 'true' && (github.event_name != 'workflow_dispatch' || inputs.release_tag != '')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
+        run: |
+          set -euo pipefail
+          version="${{ steps.releaseversion.outputs.version }}"
+          app="${{ matrix.app }}"
+          profile="${{ matrix.osprofile }}"
+          seat="${version}-${profile}"
+          gh release upload "$RELEASE_TAG" \
+            "${app}.osprofile.${seat}.json" \
+            "${app}.sha256.osprofile.${seat}" \
+            "${app}.manifest.oscatalog.${seat}.json" --clobber
 
   family-metadata:
     name: family release metadata ${{ matrix.app }}
