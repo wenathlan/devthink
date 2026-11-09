@@ -16,7 +16,6 @@
        * declaration pass reads, never the registry envelope the
        * node_modules tree may carry behind the published rung. */
       "@wenathlan/vault/labelstore": ["../getry/dist/types/vault/labelstore.d.ts"],
-      "@wenathlan/vault/uistore": ["../getry/dist/types/vault/uistore.d.ts"],
       "@wenathlan/vault/onboardingstore": ["../getry/dist/types/vault/onboardingstore.d.ts"],
       "@wenathlan/foundry/bundlescan": ["../foundry/bundlescan.ts"],
       "@wenathlan/foundry/readiness": ["../foundry/readiness.ts"],
