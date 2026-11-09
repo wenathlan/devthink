@@ -171,22 +171,17 @@ const workflowpins: [string, [RegExp, string][]][] = [
    era carried retires. the .nvmrc walks the same node pin beside it. */
 const edits = [
   [".nvmrc", `${nodepin}\n`],
-  /* the 2.0.128 node standardization wave: the family envelopes and the
-     monorepo root answer the one node declaration the ladder pins — the
-     engines floors walk with the os engines (the bounded form, one version
-     family wide) and the member .nvmrc files carry the same pin the os
-     .nvmrc carries, so no application of the repository ever answers a
-     node the os retired. The engines walk replaces the first node key of
-     each envelope (the engines block sits before every other node
-     occurrence in every manifest of the family). */
-  ...(await Promise.all(
-    ["argan", "cadria", "debonair", "stealthhead", "forge", "foundry", "vault", "getry", "saddle", "cobaia"].map(
-      async (app) => {
-        const file = join(repoRoot, app, "package.json");
-        return [file, (await readFile(file, "utf8")).replace(/"node": "[^"]+"/, `"node": "${next.engines.node}"`)];
-      },
-    ),
-  )),
+  /* the 2.0.128 node standardization wave: the member .nvmrc files carry the
+     same pin the os .nvmrc carries, so no application of the repository ever
+     answers a node the os retired. The engines walk the family envelopes once
+     carried retired with the PR5 engines law (the eleven member manifests own
+     no engines block — the root envelope the law owns answers the floors one
+     hop up), and the first-node replace the walk rode proved destructive the
+     day the vault node faces landed (the exports conditions `"node": "./build/<face>.js"`
+     are the first node keys of the member manifests, so the walk rewrote the
+     runtime face the nodeface law pins into a version range and reddened the
+     gate with its own render). The member manifests stay untouched: the root
+     walk below owns the engines floors alone. */
   ...["argan", "cadria", "debonair", "stealthhead", "forge", "foundry", "vault", "getry", "saddle"].map((app) => [
     join(repoRoot, app, ".nvmrc"),
     `${nodepin}\n`,
