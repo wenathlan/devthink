@@ -84,7 +84,18 @@ export default defineConfig({
      * rolldown graph (the fold law keeps one gateway file, the build
      * law keeps the node seats out of the web). */
     rolldownOptions: {
-      external: [/better-sqlite3/, /@hono\/node-server/],
+      external: [
+        /better-sqlite3/,
+        /@hono\/node-server/,
+        /* the getry lane the devthink serve stack the personalstore security
+         * seam drags into the staged container resolves nowhere (the sibling
+         * copy law stages sources only, never installs) and the babel and libsql lanes
+         * the saddle modality seat carries — the browser chunks never call
+         * them, the node lanes resolve them from their own install. */
+        /@wenathlan\/getry\//,
+        /@babel\/core/,
+        /@libsql\/client/,
+      ],
     },
   },
   /** the theme sources live in the Sol folder of this app root: the pages import

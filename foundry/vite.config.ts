@@ -79,6 +79,7 @@ export default defineConfig({
     outDir: path.resolve(import.meta.dirname, "."),
     emptyOutDir: false,
     assetsDir: "",
+<<<<<<< HEAD
     /** the optional runtimes external law (the honest absence the browser
      * graph carries): the saddle sources this app's bridges resolve
      * (../saddle/modalities.ts and ../saddle/edgelandes.ts) load @babel/core
@@ -94,6 +95,18 @@ export default defineConfig({
      * bundle instead. */
     rolldownOptions: {
       external: ["@babel/core", "webpack"],
+=======
+    /* the node seats the staged family graph reaches but the browser never
+     * loads: the devthink serve stack the personalstore security seam drags
+     * into every family site container resolves its @wenathlan/getry bare
+     * imports nowhere inside the staged tree (the sibling copy law stages
+     * sources only, never installs), and the saddle modality seat carries
+     * the babel and libsql lanes the same way — the bare imports stay external the same
+     * law the cadria external block pins, the browser chunks never call
+     * them, the node lanes resolve them from their own install. */
+    rolldownOptions: {
+      external: [/better-sqlite3/, /@hono\/node-server/, /@wenathlan\/getry\//, /@babel\/core/, /@libsql\/client/],
+>>>>>>> fee37d34 (wave: the greenheels ride the three container cures — the saddle copy name the fold left behind, the stamp tolerance the cross-arch flags demand and the node-seat externals the family containers stage (the Trivy gate's cache walk died on the modalityregistry arm the consolidation wave renamed to modalities, so the lane's whole publish ladder — the fifteen-plus os/arch legs, the catalog seats and the container archive — never left the gate: the copy line walks the live name now; the digests stamper reads the FROM --platform=BUILDPLATFORM shape every family stage carries and the sync pass moves the pin while the flag rides forward, so the maintenance propose leg the literal-pattern refusal killed answers again, all five stamps pinned, drift false; and the seven family site vite configs gain the node-seat externals the staged graphs reach but the browsers never call — the devthink serve stack the personalstore security seam drags resolves its @wenathlan/getry bare imports nowhere inside the sibling-copied tree and the saddle modality seat carries the babel lane the same way, so the six red family container archives walk green beside the cadria repro the fix rides) — verified locally: the containerlanes, containerpack and publishlanes batteries walk 61 green legs, the workflow contract answers thirteen files, digests:check pins all five stamps and the staged-context cadria build answers 314 modules whole)
     },
   },
   /** the theme (sol/) and the root logics (runner, api, utils, db) share one app root, so the dev server allows the app root — and the ownership bridges (wave 3) resolve the saddle engine modules the sandbox page and the runner seam import, so the saddle root rides the allow list beside the vault root. */
