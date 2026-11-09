@@ -62,15 +62,17 @@ const UISCHEMA =
   "CREATE TABLE IF NOT EXISTS uicopy (key TEXT NOT NULL, locale TEXT NOT NULL DEFAULT 'en', value TEXT NOT NULL, updated TEXT NOT NULL DEFAULT (datetime('now')), PRIMARY KEY (key, locale))";
 
 /** The narrow prepared surface the lane drives of one sqlite database
- * (the better-sqlite3 runtime — bound parameters only, never a
- * concatenated statement). */
+ * (the better-sqlite3 seat first, the node:sqlite builtin behind it — bound
+ * parameters only, never a concatenated statement; the builtin answers
+ * the pragmas through exec, so the pragma seat rides optional). */
 interface UiDatabase {
   prepare(statement: string): {
     get(...params: unknown[]): unknown;
     all(...params: unknown[]): unknown[];
     run(...params: unknown[]): { changes: number; lastInsertRowid: number | bigint };
   };
-  pragma(statement: string): unknown;
+  pragma?(statement: string): unknown;
+  exec(statement: string): unknown;
   close(): void;
 }
 
@@ -217,6 +219,30 @@ export function createuistore(options: uistoreoptions): uistoreseat {
    * when this host carries no sqlite lane — the browser answers the seed). */
   let openedlane: uistorelane | null | undefined;
 
+  /** walks the pragma ladder on whichever driver answered: the family
+   * seat carries the pragma method, the node builtin answers through
+   * exec — one law, both faces (the storage doctrine's walkPragmas pair). */
+  const walkuipragmas = (db: UiDatabase): void => {
+    if (typeof db.pragma === "function") {
+      db.pragma("journal_mode = WAL");
+      db.pragma("foreign_keys = ON");
+    } else {
+      db.exec("PRAGMA journal_mode = WAL;");
+      db.exec("PRAGMA foreign_keys = ON;");
+    }
+  };
+
+  /** binds the prepared statement triple over whichever driver answered
+   * (the same bound-parameter surface both seats carry). */
+  const uistorelaneof = (db: UiDatabase): uistorelane => ({
+    db,
+    get: db.prepare("SELECT key, value, locale, updated FROM uicopy WHERE key = ? AND locale = ?"),
+    list: db.prepare("SELECT key, value, locale, updated FROM uicopy WHERE locale = ? ORDER BY key"),
+    upsert: db.prepare(
+      "INSERT INTO uicopy (key, locale, value, updated) VALUES (?, ?, ?, datetime('now')) ON CONFLICT(key, locale) DO UPDATE SET value = excluded.value, updated = datetime('now')",
+    ),
+  });
+
   /**
    * uistoreopen — open (and create) the ui store: the uicopy table lays
    * down on first use, the prepared statements ride the handle. The native
@@ -237,21 +263,32 @@ export function createuistore(options: uistoreoptions): uistoreseat {
             file: string,
           ) => UiDatabase)
         | undefined;
-      if (typeof Database !== "function") return openedlane;
+      if (typeof Database !== "function") throw new Error("the better-sqlite3 seat is absent on this host");
       const db = new Database(options.dbfile());
-      db.pragma("journal_mode = WAL");
-      db.pragma("foreign_keys = ON");
-      db.prepare(UISCHEMA).run();
-      openedlane = {
-        db,
-        get: db.prepare("SELECT key, value, locale, updated FROM uicopy WHERE key = ? AND locale = ?"),
-        list: db.prepare("SELECT key, value, locale, updated FROM uicopy WHERE locale = ? ORDER BY key"),
-        upsert: db.prepare(
-          "INSERT INTO uicopy (key, locale, value, updated) VALUES (?, ?, ?, datetime('now')) ON CONFLICT(key, locale) DO UPDATE SET value = excluded.value, updated = datetime('now')",
-        ),
-      };
+      walkuipragmas(db);
+      db.exec(UISCHEMA);
+      openedlane = uistorelaneof(db);
     } catch {
-      openedlane = null;
+      /* the family seat could not answer (the ci lanes install with
+       * ignore-scripts, so the native binding never builds — the mirror
+       * lottery the saddle npmrc pin keeps visible): the node:sqlite
+       * builtin rides the same prepared surface the family seat carries
+       * (the sandboxlane sqlite precedent, the vaulthandoff driver pair
+       * the storage doctrine names), and only a host with neither seat
+       * answers null — the routes and the ingestion degrade honestly to
+       * the build seed. */
+      try {
+        const builtin = (process as unknown as { getBuiltinModule?: (id: string) => unknown }).getBuiltinModule?.(
+          "node:sqlite",
+        ) as { DatabaseSync?: new (file: string) => UiDatabase } | undefined;
+        if (typeof builtin?.DatabaseSync !== "function") return openedlane;
+        const db = new builtin.DatabaseSync(options.dbfile());
+        walkuipragmas(db);
+        db.exec(UISCHEMA);
+        openedlane = uistorelaneof(db);
+      } catch {
+        openedlane = null;
+      }
     }
     return openedlane;
   }
