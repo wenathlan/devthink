@@ -45,7 +45,7 @@
  * @section 8  sync — the local snapshot export and remote sync status
  */
 
-import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 /* the prisma adapter rides a lazy lane: the top-level graph stays
@@ -56,11 +56,11 @@ import { dirname, join, resolve } from "node:path";
  * build. */
 import type { PrismaLibSql as prismaadapter } from "@prisma/adapter-libsql";
 import type { PrismaClient } from "@prisma/client";
-import { ensurePaths, resolvePaths, type DevThinkConfig, type DevThinkPaths } from "./config.js";
-import { createCompactId } from "./queue.ts";
 import type { ChatMessage } from "@wenathlan/getry/providers";
 import { getIdentity } from "./account.js";
+import { type DevThinkConfig, type DevThinkPaths, ensurePaths, resolvePaths } from "./config.js";
 import { isSecureRemoteEndpoint } from "./gateway.js";
+import { createCompactId } from "./queue.ts";
 
 /* ============================================================================
  * @section 1 — storage: the local sqlite mirror of the workbench records.
@@ -295,9 +295,10 @@ const SCHEMASTATEMENTS = [
   "CREATE INDEX IF NOT EXISTS storageobjectsowner ON storageobjects(owner, updatedat DESC)",
 ];
 
-/** Opens the storage database once per process and lays the vault-shaped schema down. The private `Statement`/`Database` twins the lane once declared are gone: it rides the ONE family driver type of §1 (the driver object carries exec, prepare and close at runtime), and the call resolves the §1 driver itself (the `sharedatabasedriver` alias names the export the account lane imports — inside the family the local name is `databasedriver`). */
+/** Opens the storage database once per process and lays the vault-shaped schema down. The private `Statement`/`Database` twins the lane once declared are gone: it rides the ONE family driver type of §1 (the driver object carries exec, prepare and close at runtime), and the call resolves the §1 driver itself (the `sharedatabasedriver` alias names the export the account lane imports — inside the family the local name is `databasedriver`). The directory seat rides the same ensure law the server boot carries (preparestorage below): the sqlite constructor refuses a path whose parent directory does not exist — ERR_SQLITE_ERROR 14, unable to open database file — and the direct lane walks (the storage-lane tests beside any embedded engine boot) reach this seat without the boot's async prepare, so the mkdir answers synchronously here, recursive and idempotent the way every prepare call is. */
 function storagedatabase(): Database {
   if (cacheddatabase !== undefined) return cacheddatabase;
+  mkdirSync(dirname(storagedatabasepath()), { recursive: true });
   const DatabaseConstructor = databasedriver() as unknown as new (path: string) => Database;
   const database = new DatabaseConstructor(storagedatabasepath());
   for (const statement of SCHEMASTATEMENTS) database.prepare(statement).run();
@@ -397,9 +398,9 @@ export function deleteobject(owner: string, key: string): boolean {
 export function usagefor(owner: string, quotamb: number): StorageUsage {
   if (!ownervalid(owner)) throw new StorageError("invalid owner");
   const database = storagedatabase();
-  const count = database
-    .prepare("SELECT COUNT(*) AS total FROM storageobjects WHERE owner = ?")
-    .all(owner) as Array<{ total: number }>;
+  const count = database.prepare("SELECT COUNT(*) AS total FROM storageobjects WHERE owner = ?").all(owner) as Array<{
+    total: number;
+  }>;
   return { bytes: usedbytes(database, owner), objects: Number(count[0]?.total ?? 0), quotamb };
 }
 
@@ -883,15 +884,7 @@ export type BrowserStoreSummary = {
   mode: "local-only" | "paired-gateway" | "remote-adapter";
 };
 
-type StoreName =
-  | "meta"
-  | "workspaces"
-  | "sessions"
-  | "tabs"
-  | "messages"
-  | "preferences"
-  | "labels"
-  | "credentials";
+type StoreName = "meta" | "workspaces" | "sessions" | "tabs" | "messages" | "preferences" | "labels" | "credentials";
 type MetaEntry = { key: string; value: BrowserIdentity };
 
 const databaseName = "devthink.db";
@@ -1071,9 +1064,7 @@ export async function readLabel(id: string): Promise<BrowserLabel | undefined> {
 }
 
 export async function readAllLabels(): Promise<BrowserLabel[]> {
-  return withStore("labels", "readonly", async (store) =>
-    (await request(store.getAll())) as unknown as BrowserLabel[],
-  );
+  return withStore("labels", "readonly", async (store) => (await request(store.getAll())) as unknown as BrowserLabel[]);
 }
 
 /** Reads one locally stored credential value by its provider id, or null when the machine holds none. The value never leaves the browser: the caller receives the stored string itself, so account hashes stay device-local. */

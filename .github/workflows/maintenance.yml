@@ -277,6 +277,22 @@ jobs:
           npm install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
           bun install --ignore-scripts
+      - name: Install the gateway and saddle family dependencies
+        if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
+        # the gateway family law the verify ladder carries: the
+        # deterministic suite boots the getry gateway and the check the
+        # validate step walks bridges ../getry/server.ts and the saddle
+        # sandbox beside the devthink root — their hono runtime and the
+        # sibling seats resolve from their own node_modules, and the
+        # propose's lock refresh only ever installs the devthink tree
+        # (the proposal walks the eleven manifests, so the sibling locks
+        # answer their own frozen installs here — the same steps the
+        # verify ladder's Install the gateway/saddle family dependencies
+        # carried, materializing exactly what the validation reads).
+        run: |
+          set -euo pipefail
+          cd getry && bun install --frozen-lockfile --ignore-scripts
+          cd ../saddle && bun install --frozen-lockfile --ignore-scripts
       - name: Validate the complete proposed update
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         # every artifact the validation walks (build.ts, the
