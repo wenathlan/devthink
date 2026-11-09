@@ -378,8 +378,17 @@ RUN set -eux; \
         tar -xJf /tmp/wasmtime.tar.xz --strip-components=1 -C /opt/wasmtime; \
         ln -sf /opt/wasmtime/wasmtime /usr/local/bin/wasmtime; \
         wasmtime --version; \
-        git clone --depth 1 --branch 0.5.2 https://github.com/vlang/v.git /opt/v; \
-        make -C /opt/v; \
+        # the v seat rides the official prebuilt binary the 0.5.2 release
+        # publishes (v_linux.zip beside v_linux_arm64.zip): the source
+        # bootstrap the lane carried died because make clones TODAY'S vc
+        # master to compile the pinned 0.5.2 vlib — a bootstrap compiler
+        # months newer than the tree it compiles, the deprecation wall the
+        # make answered Error 1 on. the prebuilt zip carries the matched
+        # binary beside its own vlib (5,385 sources), the exact pin the
+        # engines catalog names, and the assert below proves it.
+        vasset="v_linux.zip"; [ "$arch" = "arm64" ] && vasset="v_linux_arm64.zip"; \
+        curl -fsSL "https://github.com/vlang/v/releases/download/0.5.2/${vasset}" -o /tmp/v.zip; \
+        unzip -q /tmp/v.zip -d /opt; \
         ln -sf /opt/v/v /usr/local/bin/v; \
         v version; \
         git clone --depth 1 --branch v2.4.0 https://github.com/nim-lang/Nim.git /opt/nim; \
