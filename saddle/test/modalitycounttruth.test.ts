@@ -16,7 +16,7 @@ import {
   MODALITYPLANCOUNT,
   MODALITY_COUNT,
   planreport,
-} from "../modalityregistry.ts";
+} from "../modalities.ts";
 
 /** the frozen ladder band the owner charged (law 47: the modality
  * ladder target freezes at 30-90, doctrine 100+1). */
