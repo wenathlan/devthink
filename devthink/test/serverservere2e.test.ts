@@ -88,6 +88,10 @@ const upstream = http.createServer((req, res) => {
 const serverport = 22000 + Math.floor(Math.random() * 8000);
 let gateway: ChildProcess | null = null;
 let configdir = "";
+/* the captured boot output of the gateway child (the failure report the
+ * deadline prints — empty until the child speaks, whole after the crash) */
+let gatewaystdout = "";
+let gatewaystderr = "";
 
 /** the tests village sits inside the devthink app folder, so the gateway
  * entry and its tsx binary resolve through the app root one hop up
@@ -100,7 +104,7 @@ const httpts = join(import.meta.dirname, "..", "server.ts");
 const tsconfigpath = join(import.meta.dirname, "..", "tsconfig.json");
 
 async function waitforready(): Promise<void> {
-  const deadline = Date.now() + 30000;
+  const deadline = Date.now() + 90000;
   for (;;) {
     try {
       const res = await fetch(`http://127.0.0.1:${serverport}/api/config`);
@@ -108,7 +112,15 @@ async function waitforready(): Promise<void> {
     } catch {
       /* not up yet */
     }
-    if (Date.now() > deadline) throw new Error("gateway server did not become ready");
+    if (Date.now() > deadline) {
+      /* the child's boot output rides the failure so the ci log answers
+       * WHY the gateway never came up (the crash trace, the warning flood,
+       * the module that refused to load — the pipe carried it all silently
+       * before this seat existed and every failure read as a bare timeout) */
+      console.error(`gateway boot output (stdout):\n${gatewaystdout || "(empty)"}`);
+      console.error(`gateway boot output (stderr):\n${gatewaystderr || "(empty)"}`);
+      throw new Error("gateway server did not become ready");
+    }
     await new Promise((r) => setTimeout(r, 200));
   }
 }
@@ -163,8 +175,18 @@ export default config
     detached: true,
     stdio: ["ignore", "pipe", "pipe"],
   });
+  /* the child's streams drain from the first breath (a piped child nobody
+   * reads blocks the moment its output crosses the pipe buffer — the ci
+   * lane's chatty boots deadlocked here reading as a bare timeout), and
+   * the captured text answers the failure report the deadline carries */
+  gateway.stdout?.on("data", (d: Buffer) => {
+    gatewaystdout += d.toString();
+  });
+  gateway.stderr?.on("data", (d: Buffer) => {
+    gatewaystderr += d.toString();
+  });
   await waitforready();
-}, 40000);
+}, 100000);
 
 afterAll(async () => {
   if (gateway?.pid) {
