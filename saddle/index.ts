@@ -17,11 +17,11 @@
 
 /* ── Section 1: the e2ugh virtual-hardware engine core ── */
 
-import { randomInt, randomUUID } from 'node:crypto';
-import { EventEmitter } from 'node:events';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
-import type { migprofileid } from './virtual.ts';
+import { randomInt, randomUUID } from "node:crypto";
+import { EventEmitter } from "node:events";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import type { migprofileid } from "./virtual.ts";
 
 /* ------------------------------------------------------------------ */
 /* Section 1: reference versions                                       */
@@ -37,29 +37,29 @@ import type { migprofileid } from './virtual.ts';
  */
 export const engineversions = {
   /** npm latest confirmed 2026-08-23 (v12 shipped july 2026). */
-  npm: '12.0.2',
+  npm: "12.0.2",
   /** python stable confirmed 2026-08-23. */
-  python: '3.14.7',
-  nodecurrent: '26.13.0',
-  nodelts: '24.19.0',
-  typescript: '7.0.2',
-  docker: '29.7.2',
-  compose: '5.5.0',
-  mesaa: '26.2.1',
-  qemu: '11.1.0',
-  firecracker: '1.16.1',
-  kata: '4.1.0',
-  gvisor: 'release-20260817.0',
-  cloudhypervisor: '53.0',
-  criu: '4.2.1',
+  python: "3.14.7",
+  nodecurrent: "26.13.0",
+  nodelts: "24.19.0",
+  typescript: "7.0.2",
+  docker: "29.7.2",
+  compose: "5.5.0",
+  mesaa: "26.2.1",
+  qemu: "11.1.0",
+  firecracker: "1.16.1",
+  kata: "4.1.0",
+  gvisor: "release-20260817.0",
+  cloudhypervisor: "53.0",
+  criu: "4.2.1",
   /* v3-VERIFY corrections (worklog 2026-08-23): kernel "7.2.1" never
    * existed (mainline 7.2, stable 7.1.9, longterm 6.18.45) and wgpu
    * moved from 24.x to 30.x; wasmtime 48.0.0 LTS confirmed. */
-  kernelmainline: '7.2',
-  kernelstable: '7.1.9',
-  kernellongterm: '6.18.45',
-  wasmtime: '48.0.0',
-  wgpu: '30.x',
+  kernelmainline: "7.2",
+  kernelstable: "7.1.9",
+  kernellongterm: "6.18.45",
+  wasmtime: "48.0.0",
+  wgpu: "30.x",
 } as const satisfies Record<string, string>;
 
 /** Union of every key available in the engineversions table. */
@@ -99,10 +99,10 @@ export const enginelimits = {
 } as const satisfies enginelimits;
 
 /** Runtime backend that executes the virtual machine workload. */
-export type engineruntime = 'qemu' | 'firecracker' | 'docker' | 'gvisor';
+export type engineruntime = "qemu" | "firecracker" | "docker" | "gvisor";
 
 /** Lifecycle states of a virtual engine instance. */
-export type enginestate = 'created' | 'starting' | 'running' | 'degraded' | 'stopped';
+export type enginestate = "created" | "starting" | "running" | "degraded" | "stopped";
 
 /** Full declarative specification of one virtual hardware machine. */
 export type enginespec = {
@@ -152,21 +152,15 @@ export type engineoptions = {
  */
 export function randomPort(override?: number): number {
   try {
-    if (typeof override === 'number') {
-      if (
-        !Number.isInteger(override) ||
-        override < enginelimits.minport ||
-        override > enginelimits.maxport
-      ) {
-        throw new RangeError(
-          `port must be an integer between ${enginelimits.minport} and ${enginelimits.maxport}`,
-        );
+    if (typeof override === "number") {
+      if (!Number.isInteger(override) || override < enginelimits.minport || override > enginelimits.maxport) {
+        throw new RangeError(`port must be an integer between ${enginelimits.minport} and ${enginelimits.maxport}`);
       }
       return override;
     }
     return 30000 + randomInt(30000);
   } catch (cause) {
-    throw new engineerror('randomPort failed', { cause: cause as Error });
+    throw new engineerror("randomPort failed", { cause: cause as Error });
   }
 }
 
@@ -184,9 +178,9 @@ export function resolveHost(preferred?: string): string {
   try {
     const fromenv = process.env.virtualenginehost ?? process.env.vhehost;
     const chosen = preferred ?? fromenv;
-    if (typeof chosen !== 'string' || chosen.trim().length === 0) {
+    if (typeof chosen !== "string" || chosen.trim().length === 0) {
       throw new engineerror(
-        'host is required: pass an explicit host or set virtualenginehost; the engine never assumes a default address',
+        "host is required: pass an explicit host or set virtualenginehost; the engine never assumes a default address",
       );
     }
     return chosen.trim();
@@ -194,7 +188,7 @@ export function resolveHost(preferred?: string): string {
     if (cause instanceof engineerror) {
       throw cause;
     }
-    throw new engineerror('resolveHost failed', { cause: cause as Error });
+    throw new engineerror("resolveHost failed", { cause: cause as Error });
   }
 }
 
@@ -212,7 +206,7 @@ export function buildEndpoint(host: string, port?: number): engineendpoint {
       url: `http://${resolvedhost}:${resolvedport}`,
     };
   } catch (cause) {
-    throw new engineerror('buildEndpoint failed', { cause: cause as Error });
+    throw new engineerror("buildEndpoint failed", { cause: cause as Error });
   }
 }
 
@@ -221,7 +215,7 @@ export function buildEndpoint(host: string, port?: number): engineendpoint {
 /* ------------------------------------------------------------------ */
 
 /** Kinds of primitives understood by the built-in rule engine. */
-export type rulekind = 'number' | 'string' | 'boolean' | 'enum';
+export type rulekind = "number" | "string" | "boolean" | "enum";
 
 /** One validation rule bound to a specification field. */
 export type specrule = {
@@ -249,59 +243,59 @@ export type specvalidationresult = {
  * field of enginespec and validateSpec walks the table collecting errors.
  */
 export const specschema: readonly specrule[] = [
-  { key: 'model', kind: 'string', pattern: /\S+/, description: 'non-empty processor model name' },
+  { key: "model", kind: "string", pattern: /\S+/, description: "non-empty processor model name" },
   {
-    key: 'vcpus',
-    kind: 'number',
+    key: "vcpus",
+    kind: "number",
     min: enginelimits.minvcpu,
     max: enginelimits.maxvcpu,
-    description: 'vCPU count between 1 and 192',
+    description: "vCPU count between 1 and 192",
   },
   {
-    key: 'ramgb',
-    kind: 'number',
+    key: "ramgb",
+    kind: "number",
     min: enginelimits.minramgb,
     max: enginelimits.maxramgb,
-    description: 'guest RAM in GB between 1 and 1024',
+    description: "guest RAM in GB between 1 and 1024",
   },
   {
-    key: 'vramgb',
-    kind: 'number',
+    key: "vramgb",
+    kind: "number",
     min: enginelimits.minvramgb,
     max: enginelimits.maxvramgb,
-    description: 'virtualized VRAM in GB between 8 and 96',
+    description: "virtualized VRAM in GB between 8 and 96",
   },
   {
-    key: 'mig',
-    kind: 'enum',
-    values: ['1g.24gb', '2g.48gb', '4g.96gb', 'off'],
-    description: 'MIG slicing profile',
+    key: "mig",
+    kind: "enum",
+    values: ["1g.24gb", "2g.48gb", "4g.96gb", "off"],
+    description: "MIG slicing profile",
   },
   {
-    key: 'runtime',
-    kind: 'enum',
-    values: ['qemu', 'firecracker', 'docker', 'gvisor'],
-    description: 'execution backend',
+    key: "runtime",
+    kind: "enum",
+    values: ["qemu", "firecracker", "docker", "gvisor"],
+    description: "execution backend",
   },
   {
-    key: 'host',
-    kind: 'string',
+    key: "host",
+    kind: "string",
     pattern: /\S+/,
-    description: 'user chosen bind host, never defaulted',
+    description: "user chosen bind host, never defaulted",
   },
   {
-    key: 'port',
-    kind: 'number',
+    key: "port",
+    kind: "number",
     min: enginelimits.minport,
     max: enginelimits.maxport,
-    description: 'port between 30000 and 59999',
+    description: "port between 30000 and 59999",
   },
   {
-    key: 'metricsintervalms',
-    kind: 'number',
+    key: "metricsintervalms",
+    kind: "number",
     min: 100,
     max: 3600000,
-    description: 'sampling interval in milliseconds',
+    description: "sampling interval in milliseconds",
   },
 ];
 
@@ -328,8 +322,8 @@ export function validateSpec<const T extends enginespec>(spec: T): specvalidatio
         continue;
       }
       switch (rule.kind) {
-        case 'number': {
-          if (typeof value !== 'number' || !Number.isFinite(value)) {
+        case "number": {
+          if (typeof value !== "number" || !Number.isFinite(value)) {
             errors.push(`${rule.key}: expected a finite number`);
             break;
           }
@@ -341,8 +335,8 @@ export function validateSpec<const T extends enginespec>(spec: T): specvalidatio
           }
           break;
         }
-        case 'string': {
-          if (typeof value !== 'string') {
+        case "string": {
+          if (typeof value !== "string") {
             errors.push(`${rule.key}: expected a string`);
             break;
           }
@@ -351,15 +345,15 @@ export function validateSpec<const T extends enginespec>(spec: T): specvalidatio
           }
           break;
         }
-        case 'boolean': {
-          if (typeof value !== 'boolean') {
+        case "boolean": {
+          if (typeof value !== "boolean") {
             errors.push(`${rule.key}: expected a boolean`);
           }
           break;
         }
-        case 'enum': {
-          if (typeof value !== 'string' || rule.values?.includes(value as string) !== true) {
-            errors.push(`${rule.key}: expected one of ${rule.values?.join(', ') ?? 'nothing'}`);
+        case "enum": {
+          if (typeof value !== "string" || rule.values?.includes(value as string) !== true) {
+            errors.push(`${rule.key}: expected one of ${rule.values?.join(", ") ?? "nothing"}`);
           }
           break;
         }
@@ -368,22 +362,14 @@ export function validateSpec<const T extends enginespec>(spec: T): specvalidatio
         }
       }
     }
-    if (
-      typeof spec.vramgb === 'number' &&
-      typeof spec.ramgb === 'number' &&
-      spec.vramgb > spec.ramgb
-    ) {
-      warnings.push(
-        'vramgb exceeds ramgb: legitimate for GPU-first layouts, confirm this is intended',
-      );
+    if (typeof spec.vramgb === "number" && typeof spec.ramgb === "number" && spec.vramgb > spec.ramgb) {
+      warnings.push("vramgb exceeds ramgb: legitimate for GPU-first layouts, confirm this is intended");
     }
-    if (spec.mig === 'off' && typeof spec.vramgb === 'number' && spec.vramgb >= 96) {
-      warnings.push('vramgb of 96 GB without MIG slicing dedicates the whole device to one guest');
+    if (spec.mig === "off" && typeof spec.vramgb === "number" && spec.vramgb >= 96) {
+      warnings.push("vramgb of 96 GB without MIG slicing dedicates the whole device to one guest");
     }
-    if (typeof spec.vcpus === 'number' && spec.vcpus > 64 && spec.runtime === 'firecracker') {
-      warnings.push(
-        'firecracker boots fastest with small vCPU counts; large counts increase restore time',
-      );
+    if (typeof spec.vcpus === "number" && spec.vcpus > 64 && spec.runtime === "firecracker") {
+      warnings.push("firecracker boots fastest with small vCPU counts; large counts increase restore time");
     }
     if (errors.length > 0) {
       return { valid: false, errors, warnings, normalized: null };
@@ -480,7 +466,7 @@ export class InternalMemory {
       this.#gauges.set(name, value);
       return this;
     } catch (cause) {
-      throw new engineerror('setgauge failed', { cause: cause as Error });
+      throw new engineerror("setgauge failed", { cause: cause as Error });
     }
   }
 
@@ -523,7 +509,7 @@ export class InternalMemory {
       this.#series.set(engineid, bucket);
       return bucket.length;
     } catch (cause) {
-      throw new engineerror('pushsample failed', { cause: cause as Error });
+      throw new engineerror("pushsample failed", { cause: cause as Error });
     }
   }
 
@@ -613,11 +599,11 @@ export class MetricsStore {
   /** Records a sample into the rolling series. */
   record(sample: metricssample): this {
     if (this.#disposed) {
-      throw new engineerror('MetricsStore is disposed and cannot record');
+      throw new engineerror("MetricsStore is disposed and cannot record");
     }
     this.#memory.pushsample(this.#engineid, sample);
-    this.#memory.setgauge('lastcpu', sample.cpuutilization);
-    this.#memory.setgauge('lastmemgb', sample.memusedgb);
+    this.#memory.setgauge("lastcpu", sample.cpuutilization);
+    this.#memory.setgauge("lastmemgb", sample.memusedgb);
     return this;
   }
 
@@ -635,10 +621,10 @@ export class MetricsStore {
       );
       mkdirSync(this.#snapshotdir, { recursive: true });
       const file = join(this.#snapshotdir, `${this.#engineid}.metrics.json`);
-      writeFileSync(file, payload, 'utf8');
+      writeFileSync(file, payload, "utf8");
       return file;
     } catch (cause) {
-      throw new engineerror('MetricsStore.flush failed', { cause: cause as Error });
+      throw new engineerror("MetricsStore.flush failed", { cause: cause as Error });
     }
   }
 
@@ -649,7 +635,7 @@ export class MetricsStore {
         return null;
       }
       const file = join(this.#snapshotdir, `${this.#engineid}.metrics.json`);
-      const raw = readFileSync(file, 'utf8');
+      const raw = readFileSync(file, "utf8");
       return JSON.parse(raw) as Record<string, unknown>;
     } catch {
       return null;
@@ -693,133 +679,133 @@ export class MetricsStore {
  * a subclass of enginebus. no second bus exists anywhere in the library.
  */
 export type enginetopics = {
-  readonly 'engine:created': { readonly engineid: string; readonly at: number };
-  readonly 'engine:starting': { readonly engineid: string; readonly spec: enginespec };
-  readonly 'engine:running': { readonly engineid: string; readonly endpoint: engineendpoint };
-  readonly 'engine:stopped': { readonly engineid: string; readonly uptimems: number };
-  readonly 'engine:error': { readonly engineid: string; readonly error: Error };
-  readonly 'metrics:sample': { readonly engineid: string; readonly sample: metricssample };
-  readonly 'engine:statechanged': {
+  readonly "engine:created": { readonly engineid: string; readonly at: number };
+  readonly "engine:starting": { readonly engineid: string; readonly spec: enginespec };
+  readonly "engine:running": { readonly engineid: string; readonly endpoint: engineendpoint };
+  readonly "engine:stopped": { readonly engineid: string; readonly uptimems: number };
+  readonly "engine:error": { readonly engineid: string; readonly error: Error };
+  readonly "metrics:sample": { readonly engineid: string; readonly sample: metricssample };
+  readonly "engine:statechanged": {
     readonly engineid: string;
     readonly from: enginestate;
     readonly to: enginestate;
   };
-  readonly 'sandbox:created': {
+  readonly "sandbox:created": {
     readonly id: string;
     readonly runtime: string;
     readonly host: string;
     readonly ports: readonly { readonly host: number; readonly container: number }[];
   };
-  readonly 'sandbox:started': {
+  readonly "sandbox:started": {
     readonly id: string;
     readonly runtime: string;
     readonly bootms: number;
   };
-  readonly 'sandbox:stopped': { readonly id: string; readonly reason: string };
-  readonly 'sandbox:snapshotted': { readonly id: string; readonly file: string };
-  readonly 'sandbox:restored': { readonly id: string; readonly snapshotfile: string };
-  readonly 'sandbox:destroyed': { readonly id: string };
-  readonly 'sandbox:pooled': { readonly size: number };
-  readonly 'sandbox:error': {
+  readonly "sandbox:stopped": { readonly id: string; readonly reason: string };
+  readonly "sandbox:snapshotted": { readonly id: string; readonly file: string };
+  readonly "sandbox:restored": { readonly id: string; readonly snapshotfile: string };
+  readonly "sandbox:destroyed": { readonly id: string };
+  readonly "sandbox:pooled": { readonly size: number };
+  readonly "sandbox:error": {
     readonly id?: string;
     readonly phase: string;
     readonly message: string;
   };
-  readonly 'vm:created': { readonly vmid: string; readonly tenantid: string };
-  readonly 'vm:started': { readonly vmid: string; readonly pid: number };
-  readonly 'vm:stopped': { readonly vmid: string; readonly reason: string };
-  readonly 'vm:error': { readonly vmid: string; readonly error: string };
-  readonly 'vm:phase': { readonly vmid: string; readonly to: string };
-  readonly 'vcpu:scheduled': {
+  readonly "vm:created": { readonly vmid: string; readonly tenantid: string };
+  readonly "vm:started": { readonly vmid: string; readonly pid: number };
+  readonly "vm:stopped": { readonly vmid: string; readonly reason: string };
+  readonly "vm:error": { readonly vmid: string; readonly error: string };
+  readonly "vm:phase": { readonly vmid: string; readonly to: string };
+  readonly "vcpu:scheduled": {
     readonly vmid: string;
     readonly vcpuid: string;
     readonly cpu: number;
   };
-  readonly 'sched:overcommitwarn': {
+  readonly "sched:overcommitwarn": {
     readonly vmid: string;
     readonly requested: number;
     readonly host: number;
     readonly overcommit: number;
   };
-  readonly 'vram:adjusted': {
+  readonly "vram:adjusted": {
     readonly vmid: string;
     readonly targetmib: number;
     readonly actualmib: number;
   };
-  readonly 'gpu:assigned': {
+  readonly "gpu:assigned": {
     readonly vmid: string;
     readonly gpuid: string;
     readonly vfid?: string;
   };
-  readonly 'gpu:released': { readonly gpuid: string; readonly vmid: string };
-  readonly 'sriov:vfcreated': { readonly pf: string; readonly vfid: string };
-  readonly 'passage:routecreated': {
+  readonly "gpu:released": { readonly gpuid: string; readonly vmid: string };
+  readonly "sriov:vfcreated": { readonly pf: string; readonly vfid: string };
+  readonly "passage:routecreated": {
     readonly id: string;
     readonly srcvm: string;
     readonly dstvm: string;
     readonly protocol: string;
   };
-  readonly 'mttg:jobdone': { readonly jobid: string; readonly durationms: number };
-  readonly 'mttg:enqueued': {
+  readonly "mttg:jobdone": { readonly jobid: string; readonly durationms: number };
+  readonly "mttg:enqueued": {
     readonly jobid: string;
     readonly tenant: string;
     readonly qos: string;
   };
-  readonly 'mttg:preempted': { readonly incoming: string; readonly preempted: readonly string[] };
-  readonly 'docker:attached': {
+  readonly "mttg:preempted": { readonly incoming: string; readonly preempted: readonly string[] };
+  readonly "docker:attached": {
     readonly vmid: string;
     readonly bridge: string;
     readonly ipv4: string;
   };
-  readonly 'qemu:exit': { readonly vmid: string; readonly code: number | null };
-  readonly 'qemu:versionmismatch': { readonly expected: string; readonly got: string };
-  readonly 'health:change': {
+  readonly "qemu:exit": { readonly vmid: string; readonly code: number | null };
+  readonly "qemu:versionmismatch": { readonly expected: string; readonly got: string };
+  readonly "health:change": {
     readonly checkid: string;
     readonly old: string;
     readonly new: string;
   };
-  readonly 'autoscale:trigger': {
+  readonly "autoscale:trigger": {
     readonly policyid: string;
     readonly action: string;
     readonly count: number;
   };
-  readonly 'numa:rebalance': { readonly moves: number; readonly from: number; readonly to: number };
-  readonly 'migration:progress': {
+  readonly "numa:rebalance": { readonly moves: number; readonly from: number; readonly to: number };
+  readonly "migration:progress": {
     readonly jobid: string;
     readonly vmid: string;
     readonly state: string;
     readonly progress: number;
   };
-  readonly 'snapshot:created': { readonly snapshotid: string; readonly vmid: string };
-  readonly 'checkpoint:created': {
+  readonly "snapshot:created": { readonly snapshotid: string; readonly vmid: string };
+  readonly "checkpoint:created": {
     readonly checkpointid: string;
     readonly vmid: string;
     readonly method: string;
   };
-  readonly 'config:reloaded': { readonly file: string };
-  readonly 'plugin:loaded': { readonly pluginid: string };
-  readonly 'plugin:unloaded': { readonly pluginid: string };
-  readonly 'rbac:denied': { readonly userid: string; readonly action: string };
-  readonly 'audit:entry': {
+  readonly "config:reloaded": { readonly file: string };
+  readonly "plugin:loaded": { readonly pluginid: string };
+  readonly "plugin:unloaded": { readonly pluginid: string };
+  readonly "rbac:denied": { readonly userid: string; readonly action: string };
+  readonly "audit:entry": {
     readonly actor: string;
     readonly action: string;
     readonly target: string;
     readonly result: string;
   };
-  readonly 'leader:changed': { readonly leader: string; readonly term: number };
-  readonly 'quota:set': {
+  readonly "leader:changed": { readonly leader: string; readonly term: number };
+  readonly "quota:set": {
     readonly tenantid: string;
     readonly vcpu: number;
     readonly vrammib: number;
     readonly gpu: number;
   };
-  readonly 'node:drained': {
+  readonly "node:drained": {
     readonly labelkey: string;
     readonly labelvalue: string;
     readonly drained: readonly string[];
   };
-  readonly 'system:error': { readonly kind: string; readonly message: string };
-  readonly 'otel:exporterstarted': { readonly host: string; readonly port: number };
+  readonly "system:error": { readonly kind: string; readonly message: string };
+  readonly "otel:exporterstarted": { readonly host: string; readonly port: number };
 };
 
 /** Union of all topic names; template literal types keep it extensible. */
@@ -842,19 +828,13 @@ export class enginebus {
   }
 
   /** Subscribes a typed listener to one topic. */
-  subscribe<t extends enginetopicname>(
-    topic: t,
-    listener: (payload: enginetopics[t]) => void,
-  ): this {
+  subscribe<t extends enginetopicname>(topic: t, listener: (payload: enginetopics[t]) => void): this {
     this.#emitter.on(topic, listener as (...args: unknown[]) => void);
     return this;
   }
 
   /** Removes a previously subscribed listener. */
-  unsubscribe<t extends enginetopicname>(
-    topic: t,
-    listener: (payload: enginetopics[t]) => void,
-  ): this {
+  unsubscribe<t extends enginetopicname>(topic: t, listener: (payload: enginetopics[t]) => void): this {
     this.#emitter.off(topic, listener as (...args: unknown[]) => void);
     return this;
   }
@@ -893,15 +873,13 @@ export class engineerror extends Error {
 
   constructor(message: string, options?: { cause?: Error; subsystem?: string }) {
     super(message, options);
-    this.name = 'engineerror';
-    this.subsystem = options?.subsystem ?? 'core';
+    this.name = "engineerror";
+    this.subsystem = options?.subsystem ?? "core";
   }
 }
 
 /** Outcome shape returned by safecall. */
-export type safeoutcome<t> =
-  | { readonly ok: true; readonly value: t }
-  | { readonly ok: false; readonly error: Error };
+export type safeoutcome<t> = { readonly ok: true; readonly value: t } | { readonly ok: false; readonly error: Error };
 
 /**
  * Runs an action inside a try/catch catcher and reports the outcome as a
@@ -913,10 +891,8 @@ export function safecall<t>(label: string, action: () => t, fallback?: () => t):
     return { ok: true, value: action() };
   } catch (cause) {
     const error =
-      cause instanceof Error
-        ? cause
-        : new engineerror(`safecall ${label} failed`, { cause: cause as Error });
-    engineeventbus.publish('engine:error', { engineid: label, error });
+      cause instanceof Error ? cause : new engineerror(`safecall ${label} failed`, { cause: cause as Error });
+    engineeventbus.publish("engine:error", { engineid: label, error });
     if (fallback !== undefined) {
       try {
         return { ok: true, value: fallback() };
@@ -975,14 +951,14 @@ export class VirtualEngine {
   constructor(spec: enginespec, bus: enginebus) {
     this.#id = randomUUID();
     this.#spec = spec;
-    this.#state = 'created';
+    this.#state = "created";
     this.#memory = new InternalMemory();
     this.#bus = bus;
     this.#createdat = Date.now();
     this.#startedat = null;
     this.#endpoint = null;
-    this.#memory.setlabel('model', spec.model);
-    this.#memory.setlabel('runtime', spec.runtime);
+    this.#memory.setlabel("model", spec.model);
+    this.#memory.setlabel("runtime", spec.runtime);
   }
 
   /** Unique identifier of this engine instance. */
@@ -1018,42 +994,41 @@ export class VirtualEngine {
   #transition(to: enginestate): void {
     const from = this.#state;
     this.#state = to;
-    this.#bus.publish('engine:statechanged', { engineid: this.#id, from, to });
+    this.#bus.publish("engine:statechanged", { engineid: this.#id, from, to });
   }
 
   /** Moves the engine to running, binding the resolved endpoint. */
   start(): engineendpoint {
     try {
-      if (this.#state === 'running') {
-        throw new engineerror('engine is already running');
+      if (this.#state === "running") {
+        throw new engineerror("engine is already running");
       }
-      this.#transition('starting');
-      this.#bus.publish('engine:starting', { engineid: this.#id, spec: this.#spec });
+      this.#transition("starting");
+      this.#bus.publish("engine:starting", { engineid: this.#id, spec: this.#spec });
       this.#endpoint = buildEndpoint(this.#spec.host, this.#spec.port);
       this.#startedat = Date.now();
-      this.#memory.setgauge('port', this.#endpoint.port);
-      this.#memory.bump('starts');
-      this.#transition('running');
-      this.#bus.publish('engine:running', { engineid: this.#id, endpoint: this.#endpoint });
+      this.#memory.setgauge("port", this.#endpoint.port);
+      this.#memory.bump("starts");
+      this.#transition("running");
+      this.#bus.publish("engine:running", { engineid: this.#id, endpoint: this.#endpoint });
       return this.#endpoint;
     } catch (cause) {
-      this.#transition('degraded');
-      const error =
-        cause instanceof Error ? cause : new engineerror('start failed', { cause: cause as Error });
-      this.#bus.publish('engine:error', { engineid: this.#id, error });
+      this.#transition("degraded");
+      const error = cause instanceof Error ? cause : new engineerror("start failed", { cause: cause as Error });
+      this.#bus.publish("engine:error", { engineid: this.#id, error });
       throw error;
     }
   }
 
   /** Stops a running engine and publishes the measured uptime. */
   stop(): void {
-    if (this.#state === 'stopped') {
+    if (this.#state === "stopped") {
       return;
     }
     const started = this.#startedat ?? this.#createdat;
-    this.#memory.bump('stops');
-    this.#transition('stopped');
-    this.#bus.publish('engine:stopped', { engineid: this.#id, uptimems: Date.now() - started });
+    this.#memory.bump("stops");
+    this.#transition("stopped");
+    this.#bus.publish("engine:stopped", { engineid: this.#id, uptimems: Date.now() - started });
   }
 
   /** Builds an immutable snapshot of the engine state. */
@@ -1073,27 +1048,22 @@ export class VirtualEngine {
     const checks: { name: string; passed: boolean; detail: string }[] = [];
     const validation = validateSpec(this.#spec);
     checks.push({
-      name: 'spec',
+      name: "spec",
       passed: validation.valid,
-      detail: validation.valid
-        ? 'specification passes the rule table'
-        : validation.errors.join('; '),
+      detail: validation.valid ? "specification passes the rule table" : validation.errors.join("; "),
     });
     checks.push({
-      name: 'state',
-      passed: this.#state === 'running' || this.#state === 'created',
+      name: "state",
+      passed: this.#state === "running" || this.#state === "created",
       detail: `current state is ${this.#state}`,
     });
     checks.push({
-      name: 'endpoint',
-      passed: this.#state !== 'running' || this.#endpoint !== null,
-      detail:
-        this.#endpoint === null
-          ? 'no endpoint bound'
-          : `bound to ${this.#endpoint.host}:${this.#endpoint.port}`,
+      name: "endpoint",
+      passed: this.#state !== "running" || this.#endpoint !== null,
+      detail: this.#endpoint === null ? "no endpoint bound" : `bound to ${this.#endpoint.host}:${this.#endpoint.port}`,
     });
     checks.push({
-      name: 'samples',
+      name: "samples",
       passed: true,
       detail: `${this.#memory.aggregate(this.#id).count} samples retained`,
     });
@@ -1127,32 +1097,32 @@ export function createVirtualEngine(options: engineoptions): VirtualEngine {
   try {
     const host = resolveHost(options.host);
     const candidate: enginespec = {
-      model: options.model ?? 'AMD EPYC 9965',
+      model: options.model ?? "AMD EPYC 9965",
       vcpus: options.vcpus ?? 8,
       ramgb: options.ramgb ?? 16,
       vramgb: options.vramgb ?? 24,
-      mig: options.mig ?? '1g.24gb',
-      runtime: options.runtime ?? 'qemu',
+      mig: options.mig ?? "1g.24gb",
+      runtime: options.runtime ?? "qemu",
       host,
       port: randomPort(options.port),
       metricsintervalms: options.metricsintervalms ?? 1000,
     };
     const validation = validateSpec(candidate);
     if (!validation.valid || validation.normalized === null) {
-      throw new engineerror(`invalid engine specification: ${validation.errors.join('; ')}`);
+      throw new engineerror(`invalid engine specification: ${validation.errors.join("; ")}`);
     }
     const engine = new VirtualEngine(validation.normalized, engineeventbus);
     (engineRegistry as Map<string, VirtualEngine>).set(engine.id, engine);
-    engine.memory.setgauge('vcpus', validation.normalized.vcpus);
-    engine.memory.setgauge('ramgb', validation.normalized.ramgb);
-    engine.memory.setgauge('vramgb', validation.normalized.vramgb);
-    engineeventbus.publish('engine:created', { engineid: engine.id, at: Date.now() });
+    engine.memory.setgauge("vcpus", validation.normalized.vcpus);
+    engine.memory.setgauge("ramgb", validation.normalized.ramgb);
+    engine.memory.setgauge("vramgb", validation.normalized.vramgb);
+    engineeventbus.publish("engine:created", { engineid: engine.id, at: Date.now() });
     return engine;
   } catch (cause) {
     if (cause instanceof engineerror) {
       throw cause;
     }
-    throw new engineerror('createVirtualEngine failed', { cause: cause as Error });
+    throw new engineerror("createVirtualEngine failed", { cause: cause as Error });
   }
 }
 
@@ -1186,10 +1156,7 @@ export type samplinghandle = { readonly stop: () => void };
  * store, emitting a metrics:sample event per iteration. The returned handle
  * implements Symbol.dispose so it composes with `using` declarations.
  */
-export function startsampling(
-  engine: VirtualEngine,
-  store: MetricsStore,
-): samplinghandle & Disposable {
+export function startsampling(engine: VirtualEngine, store: MetricsStore): samplinghandle & Disposable {
   let _tick = 0;
   const total = engine.spec.ramgb;
   const vtotal = engine.spec.vramgb;
@@ -1205,7 +1172,7 @@ export function startsampling(
       iops: randomInt(1000, 250000),
     };
     store.record(sample);
-    engineeventbus.publish('metrics:sample', { engineid: engine.id, sample });
+    engineeventbus.publish("metrics:sample", { engineid: engine.id, sample });
   }, engine.spec.metricsintervalms);
   const handle = {
     stop: () => {
@@ -1227,7 +1194,7 @@ export function startsampling(
  * control plane) and stays intentionally distinct from the runtime gpu
  * assignment modes of orchestrator.ts (none/passthrough/vgpu/mdev).
  */
-export type plangpumode = 'vfio' | 'vgpu' | 'mig' | 'virtio' | 'none';
+export type plangpumode = "vfio" | "vgpu" | "mig" | "virtio" | "none";
 
 /** Declarative machine plan consumed by the argv renderers below. */
 export type plan = {
@@ -1252,9 +1219,9 @@ export type plan = {
  * RTX 5090, 65536 multiplexed MTTG threads and a 4x cpu overcommit.
  */
 export const defaultplan = {
-  name: 'aether-lab',
-  cpu: 'AMD Ryzen 9 9950X3D',
-  gpu: 'NVIDIA GeForce RTX 5090',
+  name: "aether-lab",
+  cpu: "AMD Ryzen 9 9950X3D",
+  gpu: "NVIDIA GeForce RTX 5090",
   sockets: 1,
   dies: 2,
   cores: 8,
@@ -1263,7 +1230,7 @@ export const defaultplan = {
   memorygib: 64,
   vramgib: 32,
   overcommit: 4,
-  gpumode: 'vfio',
+  gpumode: "vfio",
   mttg: true,
   mttgthreads: 65536,
 } as const satisfies plan;
@@ -1287,35 +1254,35 @@ export function plantopology(candidate: plan): number {
 export function qemuargv(candidate: plan): readonly string[] {
   const maxcpus = Math.max(candidate.vcpus, plantopology(candidate));
   const args: string[] = [
-    'qemu-system-x86_64',
-    '-nodefaults',
-    '-machine',
-    'q35,accel=kvm,kernel-irqchip=split,hpet=off',
-    '-cpu',
-    'host,kvm=on,l3-cache=on,topoext=on,+x2apic',
-    '-smp',
+    "qemu-system-x86_64",
+    "-nodefaults",
+    "-machine",
+    "q35,accel=kvm,kernel-irqchip=split,hpet=off",
+    "-cpu",
+    "host,kvm=on,l3-cache=on,topoext=on,+x2apic",
+    "-smp",
     `cpus=${Math.min(candidate.vcpus, plantopology(candidate))},sockets=${candidate.sockets},dies=${candidate.dies},cores=${candidate.cores},threads=${candidate.threads},maxcpus=${maxcpus}`,
-    '-m',
+    "-m",
     `${candidate.memorygib}G,slots=4,maxmem=${Math.max(candidate.memorygib * 2, candidate.memorygib + 32)}G`,
-    '-name',
+    "-name",
     `${candidate.name},debug-threads=on`,
-    '-nographic',
-    '-serial',
-    'mon:stdio',
-    '-device',
-    'virtio-balloon-pci,deflate-on-oom=on,free-page-reporting=on',
-    '-device',
-    'virtio-net-pci,netdev=n0,mq=on,vectors=10',
-    '-netdev',
-    'tap,id=n0,vhost=on,queues=4,script=no,downscript=no',
+    "-nographic",
+    "-serial",
+    "mon:stdio",
+    "-device",
+    "virtio-balloon-pci,deflate-on-oom=on,free-page-reporting=on",
+    "-device",
+    "virtio-net-pci,netdev=n0,mq=on,vectors=10",
+    "-netdev",
+    "tap,id=n0,vhost=on,queues=4,script=no,downscript=no",
   ];
-  if (candidate.gpumode === 'vfio') {
-    args.push('-device', 'vfio-pci,host=01:00.0,multifunction=on,x-vga=on', '-vga', 'none');
-  } else if (candidate.gpumode === 'virtio') {
-    args.push('-device', 'virtio-gpu-gl,hostmem=8G,blob=on,venus=on');
+  if (candidate.gpumode === "vfio") {
+    args.push("-device", "vfio-pci,host=01:00.0,multifunction=on,x-vga=on", "-vga", "none");
+  } else if (candidate.gpumode === "virtio") {
+    args.push("-device", "virtio-gpu-gl,hostmem=8G,blob=on,venus=on");
   }
   if (candidate.mttg) {
-    args.push('-fw_cfg', `name=opt/aetherforge/mttg,string=${candidate.mttgthreads}`);
+    args.push("-fw_cfg", `name=opt/aetherforge/mttg,string=${candidate.mttgthreads}`);
   }
   return args;
 }
@@ -1323,8 +1290,8 @@ export function qemuargv(candidate: plan): readonly string[] {
 /** renders the plan argv as a copy-pasteable shell command. */
 export function qemucommand(candidate: plan): string {
   return qemuargv(candidate)
-    .map((token) => (token.includes(' ') || token.includes(',') ? `'${token}'` : token))
-    .join(' \\\n  ');
+    .map((token) => (token.includes(" ") || token.includes(",") ? `'${token}'` : token))
+    .join(" \\\n  ");
 }
 
 /**
@@ -1338,11 +1305,11 @@ export function dockerrun(candidate: plan): string {
     `docker run --rm -it --name ${candidate.name}`,
     `  --cpus=${cpus} --memory=${candidate.memorygib}g --pids-limit=0`,
     `  -e AETHER_MTTG_THREADS=${candidate.mttgthreads}`,
-    candidate.gpumode === 'none' || candidate.gpumode === 'virtio' ? '' : '  --gpus all',
-    '  ghcr.io/aetherforge/runtime:5',
+    candidate.gpumode === "none" || candidate.gpumode === "virtio" ? "" : "  --gpus all",
+    "  ghcr.io/aetherforge/runtime:5",
   ]
     .filter(Boolean)
-    .join(' \\\n');
+    .join(" \\\n");
 }
 
 /** renders the vm.config.toml block of a plan. */
@@ -1378,13 +1345,13 @@ virtual_threads = ${candidate.mttgthreads}
 export function planlint(candidate: plan): readonly string[] {
   const notes: string[] = [];
   if (candidate.mttg && candidate.mttgthreads < candidate.vcpus) {
-    notes.push('mttg threads must cover the vcpu count');
+    notes.push("mttg threads must cover the vcpu count");
   }
   if (candidate.overcommit > 64) {
-    notes.push('overcommit ceiling is 64x');
+    notes.push("overcommit ceiling is 64x");
   }
   if (candidate.vcpus > 4096) {
-    notes.push('vcpu ceiling is 4096');
+    notes.push("vcpu ceiling is 4096");
   }
   if (plantopology(candidate) !== candidate.vcpus) {
     notes.push(`topology product ${plantopology(candidate)} differs from vcpus ${candidate.vcpus}`);
@@ -1399,7 +1366,7 @@ export function planlint(candidate: plan): readonly string[] {
 /** Re-exports the compute domain (wasm/wasmtime 48 lts, webgpu on
  * lavapipe, node 26 runtime surface, ai workload planners, wasm canary,
  * wasi:gfx, chatops, gpu ebpf telemetry, ai migration predictor). */
-export * from './compute.ts';
+export * from "./compute.ts";
 /* the media pipeline and transcode domain moved to devthink (the saddle
  * ownership law, wave a, actions 108-112: the master virtualization engine
  * keeps only the sandbox/vm/runner/vgpu/vcpu/ports/hardware-virtual
@@ -1420,12 +1387,12 @@ export {
   quantumsim,
   runbb84,
   rune91,
-} from './quantum.ts';
+} from "./quantum.ts";
 /** Re-exports the scheduling and allocation domain (typecheck sharding,
  * shared-memory cache, project graph, MIG/vCPU/RAM/GPU/NUMA/PCI
  * allocation, aipsched, psi lstm, tenant QoS, anomaly detector,
  * hot reload, otel, health, shutdown, plugin hooks). */
-export * from './scheduler.ts';
+export * from "./scheduler.ts";
 export {
   cgroupsv2slice,
   creatiersengine,
@@ -1445,7 +1412,7 @@ export {
   tierserror,
   tmpfsrecipe,
   zramrecipe,
-} from './tiers.ts';
+} from "./tiers.ts";
 /* the virtual family fold (the edgelandes law, wave/virtualfold): the
  * four arm modules — virtualcpu.ts, virtualgpu.ts, virtualization.ts and
  * virtualmemory.ts — retired into the one keyword file virtual.ts, so
@@ -1460,16 +1427,29 @@ export {
  * virtualization engine keeps only the sandbox/vm/runner/vgpu/vcpu/ports/
  * hardware-virtual modalities — the automation and intelligence lanes ride
  * their new owner). */
-export * from './browser.ts';
-export * from './communication.ts';
-export * from './distribution.ts';
-export * from './execution.ts';
-export * from './foundation.ts';
-export * from './integration.ts';
-export * from './isolation.ts';
+export * from "./browser.ts";
+export * from "./communication.ts";
+export * from "./distribution.ts";
+export * from "./execution.ts";
+export * from "./foundation.ts";
+export * from "./integration.ts";
+export * from "./isolation.ts";
 /** Re-exports the sandbox modality registry — the catalog the join
  * resolver reads (the spine of the sandbox modalities the engine opens). */
-export * from './modalities.ts';
+export * from "./modalities.ts";
+/** The explicit yaml interpreter seat the ambiguity law owns: the
+ * modalities file and the scripts file both export a function named
+ * interpretyaml — the YamlValue parser here, the ScriptPlan parser
+ * there — and two star exports answering one name leave it ambiguous
+ * on the public surface (the ESM spec drops the name silently while
+ * the bundlers answer the conflict as an error: the webpack engine
+ * lane reddened exactly there). The explicit re-export takes
+ * precedence over every star (the spec law), so the public surface
+ * answers the generic yaml interpreter — the seat the catalog's
+ * storage lanes and the cli yaml walk read — while the ScriptPlan
+ * parser stays reachable through its own module path the script-lane
+ * consumers already import. */
+export { interpretyaml } from "./modalities.ts";
 /** Re-exports the script lanes — the sh execution through the universal
  * runner, the yml/yaml interpretation through the house yaml subset with
  * the babel compile roundtrip, the detached background runs on the house
@@ -1477,5 +1457,5 @@ export * from './modalities.ts';
  * webserver routes and the script cli command consume) — riding the one
  * scripts keyword file beside its build-engine, security-gate and
  * flat-native validation lanes (the consolidation law of the root). */
-export * from './scripts.ts';
-export * from './virtual.ts';
+export * from "./scripts.ts";
+export * from "./virtual.ts";

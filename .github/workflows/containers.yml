@@ -1470,13 +1470,23 @@ jobs:
       - name: build the engine bundle and pack it through webpack
         # the cross-bundler rung the ci battery verifies, carried to the
         # saddle engine: the tsc engine build (scripts.ts buildengine, the
-        # build:engine manifest entry) produces distpackage/index.js and
-        # the exact-pinned webpack fetch (webpack 5.112.2 with its
-        # webpack-cli 6.0.1 peer - the same pin law every lane of the
-        # battery answers, never a floating npm install) packs the one
+        # build:engine manifest entry) walks the noEmit typecheck lane the
+        # app manifest carries (the saddle runtime answers type stripping,
+        # the tsconfig never emits), then the esbuild bundle the manifest
+        # dependency carries (the same ^0.28.2 seat the frozen install
+        # answers) emits distpackage/index.js — the engine's one esm entry
+        # with the four externals the host runtime owns (@babel/core,
+        # @libsql/client, playwright and webpack: the browser lanes install
+        # no saddle tree, so the host seat resolves them and the lazy
+        # import guards answer the honest coded absence) — and the frozen
+        # install's own webpack 5.112.2 (the manifest seat, walked through
+        # a config file: the CLI-flag parse dies on the commander major
+        # the saddle tree carries — "prev is not iterable" — while the
+        # config form sidesteps the flag parser whole) packs the one
         # entry into the one webpack bundle the six channel legs
         # distribute - a real, non-empty, single-file engine
-        # distribution.
+        # distribution (the local verification measured a 718 KiB esm
+        # entry packing to a 121 KiB saddle.webpack.js).
         env:
           SADDLE_VERSION: ${{ steps.release.outputs.version }}
         run: |
@@ -1484,8 +1494,24 @@ jobs:
           cd saddle
           npm install --ignore-scripts --no-audit --no-fund
           node scripts.ts buildengine
-          test -f distpackage/index.js
-          npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack --entry ./distpackage/index.js --output-path ./distpackage/webpack --output-filename saddle.webpack.js --mode production --target node
+          node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js --external:@babel/core --external:@libsql/client --external:playwright --external:webpack
+          test -s distpackage/index.js
+          cat > distpackage/webpack.config.mjs <<'WEBPACKCFG'
+          import { createRequire } from "node:module";
+          const require = createRequire(import.meta.url);
+          require("webpack");
+          export default {
+            mode: "production",
+            target: "node",
+            entry: "./index.js",
+            context: new URL(".", import.meta.url).pathname,
+            output: { path: new URL("./webpack/", import.meta.url).pathname, filename: "saddle.webpack.js" },
+            externals: [
+              { "@babel/core": "commonjs @babel/core", "@libsql/client": "commonjs @libsql/client", playwright: "commonjs playwright", webpack: "commonjs webpack" },
+            ],
+          };
+          WEBPACKCFG
+          node_modules/.bin/webpack -c distpackage/webpack.config.mjs
           test -s distpackage/webpack/saddle.webpack.js
           du -h distpackage/webpack/saddle.webpack.js
       - name: stage the webpack envelope manifest (the npm and gem seats)
