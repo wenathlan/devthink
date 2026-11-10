@@ -107,7 +107,10 @@ describe("webscrape schema seats", () => {
     /* the strictObject wall: an unknown key fails the parse */
     expect(() => ScrapeOptionsSchema.parse({ bogus: 1 })).toThrowError();
     /* caller values override every prefault */
-    expect(ScrapeOptionsSchema.parse({ timeout: 5000, format: "json" })).toMatchObject({ timeout: 5000, format: "json" });
+    expect(ScrapeOptionsSchema.parse({ timeout: 5000, format: "json" })).toMatchObject({
+      timeout: 5000,
+      format: "json",
+    });
   });
 
   it("BrowserAgentConfigSchema answers the browser defaults", () => {
@@ -297,7 +300,10 @@ describe("webscrape agent and llms-txt seats", () => {
 
   it("generateLlmsTxt groups pages and documentation with the site header", () => {
     const generated = generateLlmsTxt(
-      [fixtureresult(), fixtureresult({ url: "https://example.com/docs/api", metadata: { title: "API", description: "d" } })],
+      [
+        fixtureresult(),
+        fixtureresult({ url: "https://example.com/docs/api", metadata: { title: "API", description: "d" } }),
+      ],
       { siteName: "S", description: "D" },
     );
     expect(generated.startsWith("# S\n\n> D")).toBe(true);
@@ -311,5 +317,19 @@ describe("webscrape agent and llms-txt seats", () => {
     const full = generateLlmsFullTxt([fixtureresult()]);
     expect(full.startsWith("# Example\n\nSource: https://example.com/page")).toBe(true);
     expect(full).toContain("the body text");
+  });
+});
+
+describe("the manual sentence walk seats (the second redos heal)", () => {
+  it("consecutive terminators answer as one maximal run and the capped run keeps the bounded pattern's cap semantics", () => {
+    /* the terminator run law: 'Wow!!' and 'Really?.' walk as single sentences, never split per mark */
+    const run = chunkMarkdown("Wow!! Really?. Yes.", { maxTokens: 1 });
+    expect(run.map((chunk) => chunk.content.trim())).toEqual(["Wow!!", "Really?.", "Yes."]);
+    /* the cap law: a non-terminator run longer than two thousand answers its last two thousand
+     * characters beside its terminator — the exact {0,2000} semantics the manual walk keeps */
+    const capped = chunkMarkdown(`${"x".repeat(2500)}!`, { maxTokens: 1 });
+    expect(capped).toHaveLength(1);
+    expect(capped[0].content.length).toBe(2001);
+    expect(capped[0].content.endsWith("!")).toBe(true);
   });
 });
