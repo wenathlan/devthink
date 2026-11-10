@@ -272,6 +272,17 @@ describe("webscrape serializer seats", () => {
     expect(style.content).not.toContain("<style");
     expect(style.content).toContain("plain");
   });
+
+  it("the tag strip walks its own fixpoint against the interleaved reassembly", () => {
+    /* the tag-strip fixpoint: stripping `<i>` once leaves `<scr` and
+     * `ipt>` splicing back into a fresh `<script>` tag — the generic
+     * strip re-rides until no tag shape survives */
+    const interleaved = serializeHtml("<scr<i>ipt>alert(1)</i>", { format: "text" });
+    expect(interleaved.content).not.toContain("<script");
+    expect(interleaved.content).toBe("alert(1)");
+    const nested = serializeHtml("<a<b>c>d", { format: "text" });
+    expect(nested.content).not.toContain("<");
+  });
 });
 
 describe("webscrape agent and llms-txt seats", () => {

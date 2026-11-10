@@ -130,7 +130,7 @@ describe("the construction law of debonair", () => {
       const page = read(file);
       for (const engine of ENGINE_MODULES) {
         expect(
-          new RegExp(`from "\.\./\.\./${engine}(\.ts)?"`).test(page),
+          new RegExp(`from "\\.\\./\\.\\./${engine}(\\.ts)?"`).test(page),
           `${file} must not import the ${engine} logic — the flow faces stay structural`,
         ).toBe(false);
       }
