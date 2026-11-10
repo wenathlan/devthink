@@ -281,7 +281,7 @@ RUN set -eux; \
     test "${bunversion}" != ""; \
     npmversion="$(node -p "require('/package.json').engines.npm.match(/>=?\s*(\d+\.\d+\.\d+[^\s>]*)/)?.[1] ?? require('/package.json').engines.npm.replace(/^[~^]/,'')")"; \
     test "${npmversion}" != ""; \
-    npx --yes "npm@${npmversion}" install --global "bun@${bunversion}"; \
+    npx --yes "npm@${npmversion}" install --global "bun@${bunversion}" --allow-scripts=bun; \
     test "$(bun --version)" = "${bunversion}"
 
 # the standalone container answers the sibling-family law: the manifest
@@ -352,7 +352,7 @@ RUN set -eux; \
     test "${bunversion}" != ""; \
     npmversion="$(node -p "require('/package.json').engines.npm.match(/>=?\s*(\d+\.\d+\.\d+[^\s>]*)/)?.[1] ?? require('/package.json').engines.npm.replace(/^[~^]/,'')")"; \
     test "${npmversion}" != ""; \
-    npx --yes "npm@${npmversion}" install --global "bun@${bunversion}"; \
+    npx --yes "npm@${npmversion}" install --global "bun@${bunversion}" --allow-scripts=bun; \
     test "$(bun --version)" = "${bunversion}"
 
 # the sibling strip of the deps stage repeated verbatim: the builder
