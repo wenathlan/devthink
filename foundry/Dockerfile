@@ -204,6 +204,29 @@ LABEL org.opencontainers.image.title="foundry (the void os-distribution catalog 
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/void.json /foundry/osprofile.json
 
+FROM scratch AS oslinux
+ARG FOUNDRY_VERSION=2.0.174
+ARG FOUNDRY_OS_PROFILE="linux"
+ENV FOUNDRY_OS_PROFILE=linux
+LABEL org.opencontainers.image.title="foundry (the linux os-distribution catalog lane)" \
+      org.opencontainers.image.description="the linux os-distribution seat as a catalog lane of the foundry container: the normal linux guest — the default host profile the sandbox lanes boot (the seventeen-seat standard carries the linux seats) — the lane publishes the profile config the engine reads beside the runnable linux legs the saddle engine's own flavor lanes carry." \
+      org.opencontainers.image.version="${FOUNDRY_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/linux.json /foundry/osprofile.json
+
+FROM scratch AS osomarchy
+ARG FOUNDRY_VERSION=2.0.174
+ARG FOUNDRY_OS_PROFILE="omarchy"
+ENV FOUNDRY_OS_PROFILE=omarchy
+LABEL org.opencontainers.image.title="foundry (the omarchy os-distribution catalog lane)" \
+      org.opencontainers.image.description="the omarchy os-distribution seat as a catalog lane of the foundry container: the arch linux-based distribution created by dhh — the desktop guest profile the sandbox may host with the pacman package grammar — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${FOUNDRY_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/omarchy.json /foundry/osprofile.json
+
+
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
 ARG FOUNDRY_VERSION=2.0.175

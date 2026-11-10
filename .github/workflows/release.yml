@@ -852,7 +852,7 @@ jobs:
       contents: read
     # THE OS-CATALOG SEAT LANE (the thousand asset ladder, the
     # container-lane law): every family container answers the release
-    # with its thirteen os-distribution catalog seats beside the
+    # with its fifteen os-distribution catalog seats beside the
     # per-architecture saves — the scratch profile images the publish
     # mirror pushes to the registry answer their portable archives too
     # (docker save of the built scratch target), so the person who
@@ -866,7 +866,7 @@ jobs:
       fail-fast: false
       matrix:
         app: [devthink, argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
-        osprofile: [grapheneos, maruos, v, windows, postmarketos, lineageos, calyxos, archlinux, alpine, debian, fedora, nixos, void]
+        osprofile: [grapheneos, maruos, v, windows, postmarketos, lineageos, calyxos, archlinux, alpine, debian, fedora, nixos, void, linux, omarchy]
     steps:
       - name: Checkout the DevThink release source
         # the ref rides the workflow's own trusted context (the dispatch tag
