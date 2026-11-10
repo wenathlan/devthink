@@ -1,23 +1,22 @@
-// # constructionface.test — the construction law of cadria (the owner order
-//   of the waves, pinned): the app is in construction — the detailed engine
-//   wave builds the debonair and the cadria later, with the time their
-//   engines, protocols and processes deserve — so the visible platform
-//   surface is ONE component (the Constructionface winget) and every
-//   platform route (home behind the entry gate, player, studio, edit,
-//   gallery, settings) answers it under its own eyebrow, while the
-//   first-run flow (the intro with its real demo chain, the onboarding,
-//   the entrada the gate reveals) rides unchanged. The old premature
-//   surfaces (the greeting home, the disc player, the studio panes, the
-//   timeline editor, the gallery shelves, the preferences) are retired: no
-//   sol page imports the engine or data modules any more, the face is a
-//   drawn scene (the rose mark with the flow band, the bloom light, the
-//   scan panel, the status chip) — never a dry text notice — and the
-//   design bans hold on it (fluent icons, label-store copy, no emoji, no
-//   transition: all). The truth lane stays whole beneath the face: the
-//   versawase engine, the gateway over the site db and the deterministic
-//   demo chain keep riding their own files untouched, so the day the
-//   detailed wave lands the faces read their rows from the database
-//   again. runnable with vitest:
+// # constructionface.test — the detailed engine law of cadria (the owner order
+//   of the waves, landed): the seven composite wingets the wave rebuilt ride
+//   their real engine seats — the studio bench and pipeline, the edit
+//   timeline, the gallery wall, the home strip, the player viewer, the
+//   settings surface — and every platform route (home behind the entry gate,
+//   player, studio, edit, gallery, settings) mounts its composite with the
+//   construction face carried as the arming face (the honest first paint
+//   before the engine seats land), while the first-run flow (the intro with
+//   its real demo chain, the onboarding, the entrada the gate reveals) rides
+//   unchanged. The anchors stay thin — the one law the wave keeps: a page
+//   anchor imports only the label store and the winget barrel, never the
+//   engine or data modules directly (the composite wingets own that wiring),
+//   the face stays a drawn scene (the rose mark with the flow band, the
+//   bloom light, the scan panel, the status chip) — never a dry text notice
+//   — and the design bans hold on it (fluent icons, label-store copy, no
+//   emoji, no transition: all). The truth lane stays whole beneath the
+//   surfaces: the versawase engine, the gateway over the site db and the
+//   deterministic demo chain keep riding their own files. runnable with
+//   vitest:
 //   pnpm test
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
@@ -35,21 +34,34 @@ const INTRO = read("../sol/intro/intro.tsx");
 const ONBOARDING = read("../sol/onboarding/onboarding.tsx");
 const GATE = read("../sol/wingets/HomeEntrygate.tsx");
 
-/** the platform anchors the construction face owns — home mounts it behind
- * the entry gate, the five surfaces mount it bare inside the one shell,
- * every one under its own eyebrow from the label store. */
-const ANCHORS: { route: string; file: string; eyebrow: string }[] = [
-  { route: "home", file: "../sol/home/home.tsx", eyebrow: "home.eyebrow" },
-  { route: "player", file: "../sol/player/player.tsx", eyebrow: "player.eyebrow" },
-  { route: "studio", file: "../sol/studio/studio.tsx", eyebrow: "studio.eyebrow" },
-  { route: "edit", file: "../sol/edit/edit.tsx", eyebrow: "edit.eyebrow" },
-  { route: "gallery", file: "../sol/gallery/gallery.tsx", eyebrow: "gallery.eyebrow" },
-  { route: "settings", file: "../sol/settings/settings.tsx", eyebrow: "settings.eyebrow" },
+/** the platform anchors the detailed engine wave owns — home mounts the
+ * HomeSurface behind the entry gate, the five surfaces mount their composites
+ * bare inside the one shell, every one with the construction face as the
+ * arming face under its own eyebrow from the label store. */
+const ANCHORS: { route: string; file: string; eyebrow: string; mount: string }[] = [
+  { route: "home", file: "../sol/home/home.tsx", eyebrow: "home.eyebrow", mount: "HomeSurface" },
+  { route: "player", file: "../sol/player/player.tsx", eyebrow: "player.eyebrow", mount: "PlayerViewer" },
+  { route: "studio", file: "../sol/studio/studio.tsx", eyebrow: "studio.eyebrow", mount: "StudioBench" },
+  { route: "edit", file: "../sol/edit/edit.tsx", eyebrow: "edit.eyebrow", mount: "EditTimeline" },
+  { route: "gallery", file: "../sol/gallery/gallery.tsx", eyebrow: "gallery.eyebrow", mount: "GalleryWall" },
+  { route: "settings", file: "../sol/settings/settings.tsx", eyebrow: "settings.eyebrow", mount: "SettingsSurface" },
 ];
 
-/** the engine and data logics that stay real beneath the face — a sol page
- * importing any of them would be a premature surface rendering as if the
- * detailed engine wave had already shipped. */
+/** the composite wingets the detailed engine wave rebuilt — one mount per
+ * platform surface, each carrying the construction face as its arming prop. */
+const COMPOSITES: { file: string; name: string }[] = [
+  { file: "../sol/wingets/StudioBench.tsx", name: "StudioBench" },
+  { file: "../sol/wingets/StudioPipeline.tsx", name: "PipelineBench" },
+  { file: "../sol/wingets/EditTimeline.tsx", name: "EditTimeline" },
+  { file: "../sol/wingets/GalleryWall.tsx", name: "GalleryWall" },
+  { file: "../sol/wingets/HomeSurface.tsx", name: "HomeSurface" },
+  { file: "../sol/wingets/PlayerViewer.tsx", name: "PlayerViewer" },
+  { file: "../sol/wingets/SettingsSurface.tsx", name: "SettingsSurface" },
+];
+
+/** the engine and data logics the anchors must never import directly — the
+ * composite wingets own that wiring; an anchor importing one would break the
+ * thin-anchor law the wave keeps. */
 const ENGINE_MODULES = [
   "gateway",
   "image",
@@ -61,10 +73,10 @@ const ENGINE_MODULES = [
   "video",
 ];
 
-/** the platform faces the engine ban sweeps — the six routes the
- * construction face owns (the first-run flow keeps its real engine chain:
- * the onboarding hears the mic and renders with the genuine seats, the
- * opening runs the deterministic demo — real capabilities, never fake). */
+/** the platform faces the engine ban sweeps — the six routes the detailed
+ * engine wave owns (the first-run flow keeps its real engine chain: the
+ * onboarding hears the mic and renders with the genuine seats, the opening
+ * runs the deterministic demo — real capabilities, never fake). */
 const PAGE_FILES = [
   "../sol/home/home.tsx",
   "../sol/player/player.tsx",
@@ -75,19 +87,18 @@ const PAGE_FILES = [
 ];
 
 /** the first-run flow faces — they never read the project data lane (the
- * gateway strip the retired home fetched); their engine use is real. */
+ * gateway strip the home surface fetches); their engine use is real. */
 const FLOW_FILES = ["../sol/intro/intro.tsx", "../sol/onboarding/onboarding.tsx", "../sol/notfound/notfound.tsx"];
 
-/** the platform faces the hardcoded-data ban sweeps — the six routes the
- * construction face owns (the first-run flow keeps its step ladder and the
- * intro keeps its nav map: flow structure, never data rows). */
-const DATA_FACE_FILES = ANCHORS.filter((anchor) => anchor.route !== "home").map((anchor) => anchor.file);
-
-describe("the construction law of cadria", () => {
-  it("answers every platform route with the one construction face under its own eyebrow", () => {
+describe("the detailed engine law of cadria", () => {
+  it("answers every platform route with its composite winget, the construction face riding as the arming face", () => {
     for (const anchor of ANCHORS) {
       const page = read(anchor.file);
-      expect(page.includes("<Constructionface"), `the ${anchor.route} route must render the construction face`).toBe(
+      expect(
+        page.includes(`<${anchor.mount} face={`),
+        `the ${anchor.route} route must mount the ${anchor.mount} composite with its arming face`,
+      ).toBe(true);
+      expect(page.includes("<Constructionface"), `the ${anchor.route} arming face must be the construction face`).toBe(
         true,
       );
       expect(
@@ -96,35 +107,38 @@ describe("the construction law of cadria", () => {
       ).toBe(true);
       expect(
         page.includes('from "../../wingets"'),
-        `the ${anchor.route} anchor must import the face from the winget barrel`,
+        `the ${anchor.route} anchor must import its mount from the winget barrel`,
       ).toBe(true);
     }
-    // home decides first — the face mounts only behind the finished flow
+    // home decides first — the surface mounts only behind the finished flow
     const home = read("../sol/home/home.tsx");
     expect(home).toMatch(/<EntryGate>/);
-    expect(home.indexOf("<EntryGate>")).toBeLessThan(home.indexOf("<Constructionface"));
+    expect(home.indexOf("<EntryGate>")).toBeLessThan(home.indexOf("<HomeSurface"));
+    // the studio page mounts the generation bench with the pipeline below it
+    const studio = read("../sol/studio/studio.tsx");
+    expect(studio).toMatch(/<StudioBench face=\{/);
+    expect(studio).toMatch(/<PipelineBench \/>/);
+    expect(studio.indexOf("<StudioBench")).toBeLessThan(studio.indexOf("<PipelineBench"));
     // the platform pages render bare — the ONE shell chrome lives in Sol
     for (const route of ["player", "studio", "edit", "gallery", "settings"]) {
       expect(read(`../sol/${route}/${route}.tsx`)).not.toMatch(/<Shell /);
     }
   });
 
-  it("serves the face from the winget barrel — the dotted name lives once", () => {
+  it("serves every composite from the winget barrel — the dotted name lives once", () => {
     expect(BARREL).toMatch(/export \{ default as Constructionface \} from "\.\/sol\/wingets\/Constructionface\.tsx"/);
+    for (const composite of COMPOSITES) {
+      expect(
+        BARREL.includes(`./sol/wingets/${composite.file.split("/").pop()}`),
+        `the ${composite.name} composite must ride the barrel`,
+      ).toBe(true);
+    }
     for (const anchor of ANCHORS) {
       const page = read(anchor.file);
       expect(
-        /from "\.\.\/\.\.\/sol\/wingets\/Constructionface/.test(page),
-        `the ${anchor.route} anchor must not import the dotted winget file directly`,
+        /from "\.\.\/\.\.\/sol\/wingets\//.test(page),
+        `the ${anchor.route} anchor must not import a dotted winget file directly`,
       ).toBe(false);
-      expect(
-        /from "\.\.\/\.\.\/sol\/wingets\/Constructionface/.test(page),
-        `the ${anchor.route} anchor must not import the dotted winget file directly`,
-      ).toBe(false);
-    }
-    // the retired page furniture left with the faces that rendered it
-    for (const retired of ["StudioControls", "StudioSourcerail", "StudioStageart", "ShellEmptystate"]) {
-      expect(BARREL.includes(retired), `the retired ${retired} winget must not ride the barrel`).toBe(false);
     }
     // the intro strip the opening keeps still rides the barrel
     for (const kept of ["IntroSplash", "IntroDemo", "IntroCapabilities", "IntroFooter"]) {
@@ -132,13 +146,13 @@ describe("the construction law of cadria", () => {
     }
   });
 
-  it("retires the premature surfaces — no platform page imports the engine or data logics any more", () => {
+  it("keeps the anchors thin — no platform page imports the engine or data logics directly", () => {
     for (const file of PAGE_FILES) {
       const page = read(file);
       for (const engine of ENGINE_MODULES) {
         expect(
           new RegExp(`from "\\.\\./\\.\\./${engine}(\\.ts|\\.tsx)?"`).test(page),
-          `${file} must not import the ${engine} logic — the premature surfaces are retired`,
+          `${file} must not import the ${engine} logic — the composite wingets own that wiring`,
         ).toBe(false);
       }
     }
@@ -149,24 +163,51 @@ describe("the construction law of cadria", () => {
         `${file} must not import the gateway data lane`,
       ).toBe(false);
     }
-    // a hardcoded data array inside a platform face is the defect the owner
-    // named: the rows answer from the db seam, never from a component literal
-    for (const file of DATA_FACE_FILES) {
-      const page = read(file);
+    // a hardcoded data array inside a platform anchor is the defect the owner
+    // named: the rows answer from the db seam, never from an anchor literal
+    for (const anchor of ANCHORS) {
+      const page = read(anchor.file);
       expect(
         /const [A-Z][A-Z_]+: readonly \{/.test(page),
-        `${file} must not carry a hardcoded data array — the rows ride the db seam`,
+        `${anchor.file} must not carry a hardcoded data array — the rows ride the db seam`,
       ).toBe(false);
       expect(
         /useState</.test(page),
-        `${file} renders no stateful rows — the face is the one construction surface`,
+        `${anchor.file} renders no stateful rows — the anchor stays the thin face`,
       ).toBe(false);
     }
-    // the retired home never fetches the gateway strip directly again
-    expect(read("../sol/home/home.tsx").includes("listGatewayProjects")).toBe(false);
   });
 
-  it("keeps the truth lane whole beneath the face — the engines and the db seam stay", () => {
+  it("wires the composites onto the real engine seats — the wingets import the logics the anchors never touch", () => {
+    // the gallery wall reads the gateway lane the retired face rode
+    const galleryWall = read("../sol/wingets/GalleryWall.tsx");
+    expect(galleryWall).toMatch(/from "\.\.\/\.\.\/gateway\.ts"/);
+    // the home strip reads the same lane
+    const homeSurface = read("../sol/wingets/HomeSurface.tsx");
+    expect(homeSurface).toMatch(/from "\.\.\/\.\.\/gateway\.ts"/);
+    // the edit timeline folds through the real edit algebra
+    const editTimeline = read("../sol/wingets/EditTimeline.tsx");
+    expect(editTimeline).toMatch(/from "\.\.\/\.\.\/timeline\.ts"/);
+    expect(editTimeline).toMatch(/from "\.\.\/\.\.\/motion\.ts"/);
+    // the studio bench rides the analysis chain and the generation fold
+    const studioBench = read("../sol/wingets/StudioBench.tsx");
+    expect(studioBench).toMatch(/from "\.\.\/\.\.\/(studio|gateway|image)\.ts"/);
+    // the pipeline bench reads the engine tables over the gateway lane
+    const pipeline = read("../sol/wingets/StudioPipeline.tsx");
+    expect(pipeline).toMatch(/from "\.\.\/\.\.\/gateway\.ts"/);
+    expect(pipeline).toMatch(/from "\.\.\/\.\.\/transcode\.ts"/);
+    // every composite accepts the arming face prop
+    for (const composite of COMPOSITES) {
+      if (composite.name === "PipelineBench") continue; // the pipeline owns its own honest states
+      const body = read(composite.file);
+      expect(
+        body.includes("face }:"),
+        `the ${composite.name} composite must carry the arming face prop`,
+      ).toBe(true);
+    }
+  });
+
+  it("keeps the truth lane whole beneath the surfaces — the engines and the db seam stay", () => {
     // the engine seats keep riding their own files at the folder root
     const image = read("../image.ts");
     expect(image).toMatch(/export function renderSvg\(/);
@@ -177,6 +218,8 @@ describe("the construction law of cadria", () => {
     // the gateway keeps answering the project rows over the site db
     const gateway = read("../gateway.ts");
     expect(gateway).toMatch(/export async function listGatewayProjects\(/);
+    expect(gateway).toMatch(/export async function fetchPipelineCatalog\(/);
+    expect(gateway).toMatch(/export async function runGatewayPipeline\(/);
     // the db keeps seeding the first-run rows from the seed module
     const db = read("../db.ts");
     expect(db).toMatch(/export function seedIfEmpty\(\): void/);
@@ -204,7 +247,7 @@ describe("the construction law of cadria", () => {
     expect(platform.indexOf('path="/onboarding"')).toBeLessThan(platform.indexOf("component={HomeGate}"));
   });
 
-  it("draws the scene — the face is a composed visual, never a dry text notice", () => {
+  it("draws the scene — the arming face is a composed visual, never a dry text notice", () => {
     // the app's own identity rides the panel: the drawn rose mark with the
     // flow band travelling inside the glyph strokes
     expect(FACE).toMatch(/<CadriaMark size=\{88\} flow \/>/);
@@ -232,7 +275,7 @@ describe("the construction law of cadria", () => {
     expect(CSS).toMatch(/\.cdrconstr__panel::before,\s*\n\s*\.cdrconstr__pulsedot \{\s*\n\s*animation: none;/);
   });
 
-  it("holds the design bans on the face — fluent icons, label-store copy, no emoji", () => {
+  it("holds the design bans on the arming face — fluent icons, label-store copy, no emoji", () => {
     // the icon rides the fluent family, never a drawn emoji
     expect(FACE).toMatch(/import \{ HomeRegular \} from "@fluentui\/react-icons"/);
     // every word the face renders rides the label store — no hardcoded copy
@@ -254,6 +297,17 @@ describe("the construction law of cadria", () => {
       expect(LABELS.includes(`"${anchor.eyebrow}":`), `the label store must carry the ${anchor.eyebrow} eyebrow`).toBe(
         true,
       );
+    }
+    // the pipeline labels the bench speaks ride the same store
+    for (const key of [
+      "studio.pipeline.head",
+      "studio.pipeline.lede",
+      "studio.pipeline.run",
+      "studio.pipeline.stageDone",
+      "studio.pipeline.stageSkipped",
+      "studio.pipeline.stageFailed",
+    ]) {
+      expect(LABELS.includes(`"${key}":`), `the label store must carry the ${key} key`).toBe(true);
     }
     // no all-properties transition inside the scene pass
     const scene = CSS.slice(CSS.indexOf(".cdrconstr {"), CSS.indexOf("@keyframes cdrconstrScan"));

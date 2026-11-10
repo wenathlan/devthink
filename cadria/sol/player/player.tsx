@@ -6,24 +6,24 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * player — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the cadria later, with the time its
- * engines, protocols and processes deserve, so the disc player of the old
- * face (the stored frame viewer, the offline wall) is retired and the route
- * answers the honest construction face under the player eyebrow. The
- * engine logics the player rode (gateway, image, video) keep riding their
- * own files untouched — only this page's face changed, nothing was deleted.
- * the anchor renders BARE: the one Shell chrome lives in sol/Sol.tsx.
+ * player — the detailed engine wave (the owner order of the waves,
+ * landed): the disc player rides the real engine lanes again — the
+ * PlayerViewer composite winget (one mount: the stored frame viewer over
+ * the gateway read and the demo compute, the offline wall) answers the
+ * route with the construction face carried as its arming face. The
+ * engine logics the player rode (gateway, image, video) never left their
+ * own files. the anchor renders BARE: the one Shell chrome lives in
+ * sol/Sol.tsx.
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface } from "../../wingets";
+import { Constructionface, PlayerViewer } from "../../wingets";
 
 /**
- * the player page: the in-construction face under the player eyebrow.
+ * the player page: the real artwork viewer under the player eyebrow.
  *
- * @returns the construction face element.
+ * @returns the viewer element with its arming face.
  */
 export default function Player() {
-  return <Constructionface eyebrow={label("player.eyebrow")} />;
+  return <PlayerViewer face={<Constructionface eyebrow={label("player.eyebrow")} />} />;
 }

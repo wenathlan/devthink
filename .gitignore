@@ -277,6 +277,10 @@ argan/icon-*.png
 argan/apple-touch-icon*.png
 argan/*.woff2
 cadria/index-*.js
+# the lazy sqlite lane chunk the flat vite emit names after its source module
+# (generation-<hash>.js — the dynamic-import split of generation.ts) rides the
+# same regenerable-bundle law the index hashes answer.
+cadria/generation-*.js
 cadria/index-*.css
 cadria/index-*.wasm
 cadria/favicon-*.svg

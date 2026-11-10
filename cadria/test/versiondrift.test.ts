@@ -17,8 +17,12 @@ describe("the version drift gate", () => {
     const manifest = JSON.parse(await readFile(join(approot, "package.json"), "utf8")) as { version: string };
     const versionmodule = await readFile(join(approot, "version.ts"), "utf8");
     expect(versionmodule).toContain(`export const packageversion = "${manifest.version}" as const;`);
+    // the detailed engine wave moved the about row into the SettingsSurface
+    // composite — the anchor stays thin, the surface owns the version read
+    const surface = await readFile(join(approot, "sol", "wingets", "SettingsSurface.tsx"), "utf8");
+    expect(surface).toContain('from "../../version.ts"');
+    expect(surface).not.toMatch(/const VERSION = "2\./);
     const settings = await readFile(join(approot, "sol", "settings", "settings.tsx"), "utf8");
-    expect(settings).toContain('from "../../version.ts"');
     expect(settings).not.toMatch(/const VERSION = "2\./);
   });
 

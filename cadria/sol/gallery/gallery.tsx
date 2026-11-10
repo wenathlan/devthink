@@ -6,25 +6,24 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * gallery — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the cadria later, with the time its
- * engines, protocols and processes deserve, so the render wall of the old
- * face (the style chips, the generations the gateway answered) is retired
- * and the route answers the honest construction face under the gallery
- * eyebrow. The engine logics the wall rode (gateway, image) keep riding
- * their own files untouched — only this page's face changed, nothing was
- * deleted. the anchor renders BARE: the one Shell chrome lives in
- * sol/Sol.tsx.
+ * gallery — the detailed engine wave (the owner order of the waves,
+ * landed): the render wall rides the real gateway lane again — the
+ * GalleryWall composite winget (one mount: the style chips from the
+ * imagestyles table, the generations of listGatewayProjects, the
+ * per-item renderSvg thumbnails and the honest deletes) answers the route
+ * with the construction face carried as its arming face. The engine
+ * logics the wall rode (gateway, image) never left their own files. the
+ * anchor renders BARE: the one Shell chrome lives in sol/Sol.tsx.
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface } from "../../wingets";
+import { Constructionface, GalleryWall } from "../../wingets";
 
 /**
- * the gallery page: the in-construction face under the gallery eyebrow.
+ * the gallery page: the real render wall under the gallery eyebrow.
  *
- * @returns the construction face element.
+ * @returns the wall element with its arming face.
  */
 export default function Gallery() {
-  return <Constructionface eyebrow={label("gallery.eyebrow")} />;
+  return <GalleryWall face={<Constructionface eyebrow={label("gallery.eyebrow")} />} />;
 }

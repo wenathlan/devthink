@@ -6,19 +6,27 @@
  * page — the components stay complete independent files inside the
  * sol/wingets folder.
  *
- * the in-construction pass (the owner order of the waves): the platform
- * surface is ONE face, so the barrel answers the construction face beside
- * the chrome and the first-run flow that stay (the entry gates, the drawn
- * marks the shell re-exports, the opening strip of the intro — its demo
- * chain is real, so the intro keeps its wingets) — the page furniture of
- * the retired surfaces (the studio controls, the source rail, the stage
- * art, the export and readout rows, the empty state) left the barrel with
- * the faces that rendered it, while the winget files themselves keep
- * riding their own files untouched for the day the detailed engine wave
- * lands them again.
+ * the detailed engine wave (the owner order of the waves): the platform
+ * surfaces ride their real mounts — the seven composite wingets the wave
+ * rebuilt (the studio bench and pipeline, the edit timeline, the gallery
+ * wall, the home strip, the player viewer, the settings surface) answer
+ * from this barrel beside the construction face that stays as the arming
+ * face their face prop carries, the chrome and the first-run flow that
+ * stay (the entry gates, the drawn marks the shell re-exports, the opening
+ * strip of the intro — its demo chain is real, so the intro keeps its
+ * wingets) and the page furniture the composite mounts wire themselves
+ * (the studio controls, the source rail, the stage art, the export and
+ * readout rows, the empty state).
  */
 export { default as Constructionface } from "./sol/wingets/Constructionface.tsx";
 export * from "./sol/wingets/Constructionface.tsx";
+export { default as EditTimeline } from "./sol/wingets/EditTimeline.tsx";
+export { GalleryWall } from "./sol/wingets/GalleryWall.tsx";
+export { HomeSurface } from "./sol/wingets/HomeSurface.tsx";
+export { default as PlayerViewer } from "./sol/wingets/PlayerViewer.tsx";
+export { SettingsSurface } from "./sol/wingets/SettingsSurface.tsx";
+export { StudioBench } from "./sol/wingets/StudioBench.tsx";
+export { PipelineBench } from "./sol/wingets/StudioPipeline.tsx";
 export { default as HomeEntrygate } from "./sol/wingets/HomeEntrygate.tsx";
 export * from "./sol/wingets/HomeEntrygate.tsx";
 export { default as IntroCapabilities } from "./sol/wingets/IntroCapabilities.tsx";

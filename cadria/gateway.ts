@@ -48,6 +48,20 @@ import { buildImageProject, type ImageProject, ProjectError, parseProject, seria
 import { renderCommands, renderSvg } from "./image.ts";
 import { styleByName, styleForDescriptor } from "./image.ts";
 import {
+  buildTranscodePlan,
+  createoptimal,
+  mediapipeline,
+  mediaversions,
+  type mediajob,
+  type mediaprobe,
+  probefromname,
+  type SourceMedia,
+  stagecatalog,
+  type TranscodePlan,
+  type TranscodeRung,
+  transcodemodecatalog,
+} from "./transcode.ts";
+import {
   compositionBlocks,
   rhythmScatter,
   synthMotion,
@@ -409,6 +423,85 @@ export function createGateway(store: GenerationStore): Hono {
     return c.json({ analyses, count: analyses.length });
   });
 
+  // ---- pipeline lane (the 24-stage transcode walk): the catalog reads
+  // straight off the engine's own tables and one run walks the real
+  // stages over the deterministic name-derived probe — zero hardcoded
+  // rows, the same law the generation lanes answer.
+  app.get("/api/pipeline", (c) => {
+    return c.json({
+      modes: transcodemodecatalog.map((entry) => ({ mode: entry.mode, note: entry.note })),
+      stages: stagecatalog.map((stage) => ({
+        name: stage.name,
+        index: stage.index,
+        description: stage.description,
+        gpurequired: stage.gpurequired,
+        skippable: stage.skippable,
+      })),
+      versions: {
+        ffmpeg: mediaversions.ffmpeg,
+        nvencSdk: mediaversions.nvencSdk,
+        cuda: mediaversions.cuda,
+        stages: mediaversions.stages,
+        modes: mediaversions.modes,
+      },
+    });
+  });
+
+  app.post("/api/pipeline", async (c) => {
+    const body = parseJsonObject(new TextDecoder().decode(await readBodyBytes(c)));
+    const inputpath = typeof body.inputpath === "string" ? body.inputpath.trim() : "";
+    if (inputpath.length === 0)
+      throw new GatewayError(400, "gateway-missing-input", "gateway: pipeline run needs inputpath");
+    const modeentry = transcodemodecatalog.find((entry) => entry.mode === body.mode);
+    if (modeentry === undefined)
+      throw new GatewayError(400, "gateway-unknown-mode", `gateway: unknown pipeline mode ${String(body.mode)}`);
+    const videocodec = body.videocodec;
+    if (videocodec !== "h264" && videocodec !== "hevc" && videocodec !== "av1")
+      throw new GatewayError(400, "gateway-bad-codec", "gateway: videocodec must be h264, hevc or av1");
+    const ladder: readonly TranscodeRung[] = Array.isArray(body.ladder) ? (body.ladder as TranscodeRung[]) : [];
+    const probe: mediaprobe = probefromname(inputpath);
+    const source: SourceMedia = {
+      width: probe.video?.width ?? 1920,
+      height: probe.video?.height ?? 1080,
+      durationSeconds: probe.durationsec,
+      fps: probe.video?.fps ?? 30,
+      videoCodec: probe.video?.codec ?? "h264",
+      audioCodec: probe.audio[0]?.codec ?? "aac",
+    };
+    let plan: TranscodePlan;
+    try {
+      plan = buildTranscodePlan(source, ladder);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new GatewayError(400, "gateway-bad-ladder", message);
+    }
+    // the job rides the top variant of the plan (highest-first) with the
+    // rung's own bitrate answering the profile's single-rate seat.
+    const top = plan.variants[0];
+    const bitratekbps = Math.round(
+      Number.parseInt(String(top.rung.videoBitrate), 10) / 1000 || 8000,
+    );
+    const job: mediajob = {
+      id: `job-${hex8(fnv1a(JSON.stringify({ inputpath, mode: modeentry.mode, videocodec, ladder })))}`,
+      inputpath,
+      outputpath: `${inputpath}.${videocodec}`,
+      mode: modeentry.mode,
+      outputprofile: {
+        videocodec,
+        audiocodec: top.rung.audioCodec === "opus" ? "opus" : "ac3" === top.rung.audioCodec ? "ac3" : "aac",
+        resolution: { w: top.width, h: top.height },
+        bitratekbps,
+        preset: "p4",
+        tonemap: modeentry.family === "hdr-tonemap",
+      },
+      priority: 1,
+    };
+    const pipeline = new mediapipeline();
+    const result = pipeline.executejob(job, probe);
+    const encoder = createoptimal(job, probe);
+    return c.json({ mode: modeentry.mode, probe, plan, result, encoder }, 201);
+  });
+
   return app;
 }
 
@@ -592,4 +685,117 @@ export async function fetchGatewayRender(id: string, timeoutMs = DEFAULT_TIMEOUT
 /** deletes one generation: DELETE /api/projects/:id — resolves or throws the honest error. */
 export async function deleteGatewayProject(id: string, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<void> {
   await gatewayRequest(`/api/projects/${encodeURIComponent(id)}`, { method: "DELETE" }, timeoutMs);
+}
+
+// ---- pipeline client lane (the 24-stage transcode walk): the catalog and
+// one run over the same timed-fetch family — the shapes mirror the server
+// route's json answers field-for-field, the way the generation lane rides.
+
+/** one mode row of GET /api/pipeline (the engine's own mode catalog). */
+export type PipelineModeRow = {
+  mode: string;
+  note: string;
+};
+
+/** one stage row of GET /api/pipeline (the engine's own 24-stage catalog). */
+export type PipelineStageRow = {
+  name: string;
+  index: number;
+  description: string;
+  gpurequired: boolean;
+  skippable: boolean;
+};
+
+/** the toolchain versions the catalog carries (the engine's own table). */
+export type PipelineVersions = {
+  ffmpeg: string;
+  nvencSdk: string;
+  cuda: string;
+  stages: number;
+  modes: number;
+};
+
+/** the GET /api/pipeline answer — the engine's own tables, never a hardcoded row. */
+export type PipelineCatalog = {
+  modes: readonly PipelineModeRow[];
+  stages: readonly PipelineStageRow[];
+  versions: PipelineVersions;
+};
+
+/** one stage record of a run (the engine's own stagerecord shape). */
+export type PipelineStageRecord = {
+  stage: string;
+  index: number;
+  skipped: boolean;
+  success: boolean;
+  gpurequired: boolean;
+  error?: string;
+};
+
+/** the probe the run derives server-side from the input name. */
+export type PipelineProbe = {
+  durationsec: number;
+  estimatedworkingsetmb: number;
+  video: {
+    codec: string;
+    width: number;
+    height: number;
+    fps: number;
+    bitdepth: number;
+    hdr: boolean;
+    interlaced: boolean;
+  } | null;
+  audio: readonly { codec: string; samplerate: number; channels: number }[];
+};
+
+/** one planned variant (the engine's own planner output). */
+export type PipelineVariant = {
+  rung: { id: string; videoCodec: string };
+  width: number;
+  height: number;
+  fps: number;
+  container: string;
+  estimatedBytes: number;
+};
+
+/** the encoder policy row of a run (the engine's own optimalencoder shape). */
+export type PipelineEncoder = {
+  vendor: string;
+  preset: string;
+  reason: string;
+  maxinstances: number;
+};
+
+/** the POST /api/pipeline answer — one real 24-stage walk. */
+export type PipelineRun = {
+  mode: string;
+  probe: PipelineProbe;
+  plan: { variants: readonly PipelineVariant[]; estimatedBytes: number };
+  result: {
+    jobid: string;
+    success: boolean;
+    metrics: readonly PipelineStageRecord[];
+    ffmpegpreview: readonly string[];
+    passageframes: number;
+  };
+  encoder: PipelineEncoder;
+};
+
+/** the pipeline catalog: GET /api/pipeline (the engine's own tables). */
+export async function fetchPipelineCatalog(timeoutMs = 1600): Promise<PipelineCatalog> {
+  return gatewayRequest<PipelineCatalog>("/api/pipeline", {}, timeoutMs);
+}
+
+/** one pipeline run: POST /api/pipeline with the input path, the mode, the
+ * codec and the caller's ladder (the caller owns the table — the same law
+ * the stock slate bin answers). */
+export async function runGatewayPipeline(
+  request: { inputpath: string; mode: string; videocodec: "h264" | "hevc" | "av1"; ladder: readonly unknown[] },
+  timeoutMs = 8000,
+): Promise<PipelineRun> {
+  return gatewayRequest<PipelineRun>("/api/pipeline", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(request),
+  }, timeoutMs);
 }

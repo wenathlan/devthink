@@ -6,37 +6,26 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * settings — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the cadria later, with the time its
- * engines, protocols and processes deserve, so the preferences of the old
- * face (the theme flip, the gateway url field, the motion switch) are
- * retired and the route answers the honest construction face under the
- * settings eyebrow — with the one about row that stays honest metadata:
- * the version line reading the canonical version module the manifest
- * carries (never a hand-synced literal — the drift gate walks it). The
- * logics the preferences rode (theme, gateway client) keep riding their
- * own files untouched — only this page's face changed, nothing was
- * deleted. the anchor renders BARE: the one Shell chrome lives in
- * sol/Sol.tsx.
+ * settings — the detailed engine wave (the owner order of the waves,
+ * landed): the platform preferences ride the real engine lanes again —
+ * the SettingsSurface composite winget (one mount: the theme flip, the
+ * gateway url field, the motion switch and the about ledger whose version
+ * row reads the canonical version module the manifest carries — never a
+ * hand-synced literal, the drift gate walks it) answers the route with
+ * the construction face carried as its arming face. The logics the
+ * preferences rode (theme, gateway client) never left their own files.
+ * the anchor renders BARE: the one Shell chrome lives in sol/Sol.tsx.
  */
 
 import { label } from "../../labels.ts";
-import { packageversion } from "../../version.ts";
-import { Constructionface } from "../../wingets";
+import { Constructionface, SettingsSurface } from "../../wingets";
 
 /**
- * the settings page: the in-construction face under the settings eyebrow,
- * the honest version row beneath it.
+ * the settings page: the real preferences surface under the settings
+ * eyebrow.
  *
- * @returns the construction face element with the version row.
+ * @returns the preferences element with its arming face.
  */
 export default function Settings() {
-  return (
-    <>
-      <Constructionface eyebrow={label("settings.eyebrow")} />
-      <p className="mono-label" style={{ margin: "14px 0 0" }}>
-        {label("settings.about.version")}: {packageversion}
-      </p>
-    </>
-  );
+  return <SettingsSurface face={<Constructionface eyebrow={label("settings.eyebrow")} />} />;
 }

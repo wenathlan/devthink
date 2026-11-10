@@ -6,25 +6,34 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * studio — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the cadria later, with the time its
- * engines, protocols and processes deserve, so the generation panes of the
- * old face (the source rail, the stage, the controls) are retired and the
- * route answers the honest construction face under the studio eyebrow. The
- * engine logics the panes rode (gateway, image, introfixtures, synth) keep
- * riding their own files untouched — only this page's face changed, nothing
- * was deleted. the anchor renders BARE: the one Shell chrome lives in
- * sol/Sol.tsx.
+ * studio — the detailed engine wave (the owner order of the waves,
+ * landed): the generation panes ride the real engine seats again — the
+ * StudioBench composite winget (one mount: the source rail over the dual
+ * decode path, the generation through the style-biased project chain, the
+ * stage art breathing the descriptor's beat grid, the export row and the
+ * visualize panel of the versawase engine) answers the route with the
+ * construction face carried as its arming face, and the PipelineBench of
+ * the transcode walk rides below it (the 24-stage pipeline over the
+ * gateway's node lane — its own honest reading/offline states). The
+ * engine logics the panes rode (gateway, image, introfixtures, synth)
+ * never left their own files. the anchor renders BARE: the one Shell
+ * chrome lives in sol/Sol.tsx.
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface } from "../../wingets";
+import { Constructionface, PipelineBench, StudioBench } from "../../wingets";
 
 /**
- * the studio page: the in-construction face under the studio eyebrow.
+ * the studio page: the real generation bench and the transcode pipeline
+ * under the studio eyebrow.
  *
- * @returns the construction face element.
+ * @returns the bench element with its arming face, the pipeline below.
  */
 export default function Studio() {
-  return <Constructionface eyebrow={label("studio.eyebrow")} />;
+  return (
+    <>
+      <StudioBench face={<Constructionface eyebrow={label("studio.eyebrow")} />} />
+      <PipelineBench />
+    </>
+  );
 }
