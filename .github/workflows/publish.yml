@@ -831,6 +831,7 @@ jobs:
           test -f "${tarball}"
           attempt=0
           published=0
+          billing=0
           until [ "$attempt" -ge 3 ]; do
             attempt=$((attempt + 1))
             # the explicit latest tag (the npmtag law the npmjs lanes
@@ -838,10 +839,25 @@ jobs:
             # rung the emergency era stamped, so an implicit latest tag
             # reddens every publish below it - the dist-tag step below
             # pins latest to the release version the same way.
-            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public --tag latest; then
+            publishlog="$(mktemp)"
+            if npm publish "${tarball}" --registry=https://npm.pkg.github.com --access public --tag latest 2>&1 | tee "${publishlog}"; then
               published=1
+              rm -f "${publishlog}"
               break
             fi
+            # the billing wall seat: the account quota the github packages
+            # registry carries answers E403 permission_denied with the
+            # billing-limit body - a wall the code never lifts, so the lane
+            # notices it and keeps the mirror rung seat unpublished instead
+            # of reddening the wave (the maintenance dispatch retries the
+            # same release idempotently once the quota lifts).
+            if grep -qi "billing limit" "${publishlog}"; then
+              billing=1
+              echo "::warning::the github npm registry answered the account billing limit on the ${RELEASE_VERSION} devthink envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              rm -f "${publishlog}"
+              break
+            fi
+            rm -f "${publishlog}"
             # the dual-trigger race tolerance: the ladder's own registry
             # pass or the sibling firing may have landed the identical
             # built tarball while this lane built — an existence answer is
@@ -854,7 +870,7 @@ jobs:
             echo "github registry publish attempt ${attempt}/3 failed; retrying with backoff."
             sleep "$((attempt * 5))"
           done
-          if [ "$published" -ne 1 ]; then
+          if [ "$published" -ne 1 ] && [ "$billing" -ne 1 ]; then
             echo "::error::github registry publish failed after ${attempt} attempts."
             exit 1
           fi
@@ -877,6 +893,14 @@ jobs:
           set -euo pipefail
           cd devthink
           package_name="@${GITHUB_REPOSITORY_OWNER}/devthink"
+          # the absent-version seat: the billing wall above may have kept
+          # the rung unpublished - the dist-tag lane only moves a tag over
+          # an envelope the registry answers, so an absent rung keeps its
+          # notice instead of reddening the wave.
+          if ! npm view "${package_name}@${RELEASE_VERSION}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "::warning::the github registry carries no devthink ${RELEASE_VERSION} envelope yet (the billing wall seat) - the latest dist-tag keeps its seat and the next maintenance dispatch retries the rung idempotently."
+            exit 0
+          fi
           npm dist-tag add "${package_name}@${RELEASE_VERSION}" latest --registry=https://npm.pkg.github.com
           echo "the github registry latest dist-tag now answers ${RELEASE_VERSION}."
 
@@ -962,6 +986,7 @@ jobs:
           else
             attempt=0
             published=0
+            billing=0
             until [ "$attempt" -ge 3 ]; do
               attempt=$((attempt + 1))
               # the explicit latest tag (the npmtag law the npmjs
@@ -969,10 +994,25 @@ jobs:
               # 2.1.8 rung the emergency era stamped, so an implicit
               # latest tag reddens every publish below it - the dist-tag
               # step below pins latest to the release version.
-              if npm publish --registry=https://npm.pkg.github.com --access public --tag latest; then
+              publishlog="$(mktemp)"
+              if npm publish --registry=https://npm.pkg.github.com --access public --tag latest 2>&1 | tee "${publishlog}"; then
                 published=1
+                rm -f "${publishlog}"
                 break
               fi
+              # the billing wall seat: the account quota the github packages
+              # registry carries answers E403 permission_denied with the
+              # billing-limit body - a wall the code never lifts, so the lane
+              # notices it and keeps the mirror rung seat unpublished instead
+              # of reddening the wave (the maintenance dispatch retries the
+              # same release idempotently once the quota lifts).
+              if grep -qi "billing limit" "${publishlog}"; then
+                billing=1
+                echo "::warning::the github npm registry answered the account billing limit on the ${{ matrix.package }} ${RELEASE_VERSION} envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+                rm -f "${publishlog}"
+                break
+              fi
+              rm -f "${publishlog}"
               if npm view "@${GITHUB_REPOSITORY_OWNER}/${{ matrix.package }}@${RELEASE_VERSION}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
                 echo "the github registry already answers ${RELEASE_VERSION}; the publish race resolved with the same built content."
                 published=1
@@ -981,7 +1021,7 @@ jobs:
               echo "github registry publish attempt ${attempt}/3 failed; retrying with backoff."
               sleep "$((attempt * 5))"
             done
-            if [ "$published" -ne 1 ]; then
+            if [ "$published" -ne 1 ] && [ "$billing" -ne 1 ]; then
               echo "::error::github registry publish failed after ${attempt} attempts."
               exit 1
             fi
@@ -995,6 +1035,14 @@ jobs:
         run: |
           set -euo pipefail
           cd "${{ matrix.package }}"
+          # the absent-version seat: the billing wall above may have kept
+          # the rung unpublished - the dist-tag lane only moves a tag over
+          # an envelope the registry answers, so an absent rung keeps its
+          # notice instead of reddening the wave.
+          if ! npm view "@${GITHUB_REPOSITORY_OWNER}/${{ matrix.package }}@${RELEASE_VERSION}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "::warning::the github registry carries no ${{ matrix.package }} ${RELEASE_VERSION} envelope yet (the billing wall seat) - the latest dist-tag keeps its seat and the next maintenance dispatch retries the rung idempotently."
+            exit 0
+          fi
           npm dist-tag add "@${GITHUB_REPOSITORY_OWNER}/${{ matrix.package }}@${RELEASE_VERSION}" latest --registry=https://npm.pkg.github.com
           echo "the github registry latest dist-tag of ${{ matrix.package }} now answers ${RELEASE_VERSION}."
 
@@ -1271,12 +1319,30 @@ jobs:
             echo "The single maven distribution devthink-${VERSION} is already published; skipping the re-upload."
           else
             published=false
+            billing=0
             for attempt in 1 2 3; do
-              if mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${VERSION}" deploy; then published=true; break; fi
+              deploylog="$(mktemp)"
+              if mvn --batch-mode --file pom.xml --settings settings.xml -Drevision="${VERSION}" deploy 2>&1 | tee "${deploylog}"; then published=true; rm -f "${deploylog}"; break; fi
+              # the billing wall seat: the account quota the github packages
+              # registry carries answers 403 forbidden with the billing body
+              # on the deploy - a wall the code never lifts, so the lane
+              # notices it and keeps the mirror rung seat unpublished instead
+              # of reddening the wave (the maintenance dispatch retries the
+              # same release idempotently once the quota lifts).
+              if grep -qi "billing limit" "${deploylog}"; then
+                billing=1
+                echo "::warning::the maven registry answered the account billing limit on the devthink ${VERSION} envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+                rm -f "${deploylog}"
+                break
+              fi
+              rm -f "${deploylog}"
               echo "The maven deploy attempt ${attempt} of the single distribution failed; the bounded retry policy retries inside three attempts."
               sleep "$((attempt * 5))"
             done
-            test "$published" = true
+            if [ "$published" != true ] && [ "$billing" -ne 1 ]; then
+              echo "::error::the maven deploy of the single distribution failed after the bounded retries."
+              exit 1
+            fi
           fi
       - name: retain the single distribution pom, jar and the classifier zips
         run: |
@@ -1408,12 +1474,30 @@ jobs:
             echo "The family maven distribution ${PKG}-${VERSION} is already published; skipping the re-upload."
           else
             published=false
+            billing=0
             for attempt in 1 2 3; do
-              if mvn --batch-mode --file "${PKG}/pom.xml" --settings settings.xml -Drevision="${VERSION}" deploy; then published=true; break; fi
+              deploylog="$(mktemp)"
+              if mvn --batch-mode --file "${PKG}/pom.xml" --settings settings.xml -Drevision="${VERSION}" deploy 2>&1 | tee "${deploylog}"; then published=true; rm -f "${deploylog}"; break; fi
+              # the billing wall seat: the account quota the github packages
+              # registry carries answers 403 forbidden with the billing body
+              # on the deploy - a wall the code never lifts, so the lane
+              # notices it and keeps the mirror rung seat unpublished instead
+              # of reddening the wave (the maintenance dispatch retries the
+              # same release idempotently once the quota lifts).
+              if grep -qi "billing limit" "${deploylog}"; then
+                billing=1
+                echo "::warning::the maven registry answered the account billing limit on the ${PKG} ${VERSION} envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+                rm -f "${deploylog}"
+                break
+              fi
+              rm -f "${deploylog}"
               echo "The maven deploy attempt ${attempt} of the ${PKG} envelope failed; the bounded retry policy retries inside three attempts."
               sleep "$((attempt * 5))"
             done
-            test "$published" = true
+            if [ "$published" != true ] && [ "$billing" -ne 1 ]; then
+              echo "::error::the maven deploy of the ${PKG} envelope failed after the bounded retries."
+              exit 1
+            fi
           fi
       - name: retain the family envelope jar
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -1544,12 +1628,30 @@ jobs:
           cd devthink
           VERSION="${{ steps.release.outputs.version }}"
           pushed=false
+          billing=0
           for attempt in 1 2 3; do
-            if dotnet nuget push "nuget/devthink.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            pushlog="$(mktemp)"
+            if dotnet nuget push "nuget/devthink.${VERSION}.nupkg" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate 2>&1 | tee "${pushlog}"; then pushed=true; rm -f "${pushlog}"; break; fi
+            # the billing wall seat: the account quota the github packages
+            # registry carries answers 403 forbidden on the push - a wall the
+            # code never lifts, so the lane notices it and keeps the mirror
+            # rung seat unpublished instead of reddening the wave (the
+            # maintenance dispatch retries the same release idempotently once
+            # the quota lifts).
+            if grep -qi "403" "${pushlog}"; then
+              billing=1
+              echo "::warning::the nuget registry answered 403 forbidden (the account packages billing wall) on the devthink ${VERSION} envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              rm -f "${pushlog}"
+              break
+            fi
+            rm -f "${pushlog}"
             echo "The nuget push attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
             sleep "$((attempt * 5))"
           done
-          test "$pushed" = true
+          if [ "$pushed" != true ] && [ "$billing" -ne 1 ]; then
+            echo "::error::the nuget push of the devthink envelope failed after the bounded retries."
+            exit 1
+          fi
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-nuget-${{ steps.release.outputs.version }}
@@ -1663,12 +1765,30 @@ jobs:
           NUPKG="$(find nuget -maxdepth 1 -name "*.${VERSION}.nupkg" -print -quit)"
           test -n "${NUPKG}" && test -f "${NUPKG}"
           pushed=false
+          billing=0
           for attempt in 1 2 3; do
-            if dotnet nuget push "${NUPKG}" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
+            pushlog="$(mktemp)"
+            if dotnet nuget push "${NUPKG}" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate 2>&1 | tee "${pushlog}"; then pushed=true; rm -f "${pushlog}"; break; fi
+            # the billing wall seat: the account quota the github packages
+            # registry carries answers 403 forbidden on the push - a wall the
+            # code never lifts, so the lane notices it and keeps the mirror
+            # rung seat unpublished instead of reddening the wave (the
+            # maintenance dispatch retries the same release idempotently once
+            # the quota lifts).
+            if grep -qi "403" "${pushlog}"; then
+              billing=1
+              echo "::warning::the nuget registry answered 403 forbidden (the account packages billing wall) on the ${{ matrix.package }} ${VERSION} envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              rm -f "${pushlog}"
+              break
+            fi
+            rm -f "${pushlog}"
             echo "The nuget push attempt ${attempt} of the ${{ matrix.package }} envelope failed; the bounded retry policy retries inside three attempts."
             sleep "$((attempt * 5))"
           done
-          test "$pushed" = true
+          if [ "$pushed" != true ] && [ "$billing" -ne 1 ]; then
+            echo "::error::the nuget push of the ${{ matrix.package }} envelope failed after the bounded retries."
+            exit 1
+          fi
       - name: retain the family content package
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -1862,7 +1982,33 @@ jobs:
         run: cd devthink && DEVTHINK_VERSION="${{ needs.rubygems-resolve.outputs.version }}" gem build devthink.gemspec
 
       - name: Publish package
-        run: cd devthink && gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}"
+        # the billing wall seat rides the application gem lane too: an
+        # account out of quota answers forbidden on the push - a wall the
+        # code never lifts, so the lane notices it and keeps the mirror
+        # rung seat unpublished instead of reddening the wave (the
+        # maintenance dispatch retries the same release idempotently once
+        # the quota lifts).
+        run: |
+          set -euo pipefail
+          cd devthink
+          pushlog="$(mktemp)"
+          if gem push devthink-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}" 2>&1 | tee "${pushlog}"; then
+            rm -f "${pushlog}"
+            exit 0
+          fi
+          if grep -qi "billing limit\|403" "${pushlog}"; then
+            echo "::warning::the rubygems registry answered the account billing wall on the devthink envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+            rm -f "${pushlog}"
+            exit 0
+          fi
+          if grep -q "has already been pushed" "${pushlog}"; then
+            echo "::notice::the registry already carries the devthink gem; the immutable envelope is present."
+            rm -f "${pushlog}"
+            exit 0
+          fi
+          rm -f "${pushlog}"
+          echo "::error::the gem push of the devthink envelope failed."
+          exit 1
 
   family-rubygems:
     needs: [release-resolve, release-approval]
@@ -2002,10 +2148,20 @@ jobs:
               published=1
               break
             fi
+            # the billing wall seat: the account quota wall answers
+            # forbidden on the push - a wall the code never lifts, so the
+            # lane notices it and keeps the mirror rung seat unpublished
+            # instead of reddening the wave (the maintenance dispatch
+            # retries the same release idempotently once the quota lifts).
+            if echo "$pushlog" | grep -qi "billing limit\|403"; then
+              billing=1
+              echo "::warning::the rubygems registry answered the account billing wall on the ${{ matrix.package }} ${{ steps.release.outputs.version }} envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              break
+            fi
             echo "gem push attempt ${attempt}/3 failed; retrying with backoff."
             sleep "$((attempt * 5))"
           done
-          if [ "$published" -ne 1 ]; then
+          if [ "$published" -ne 1 ] && [ "${billing:-0}" -ne 1 ]; then
             echo "::error::gem push failed after ${attempt} attempts."
             exit 1
           fi
