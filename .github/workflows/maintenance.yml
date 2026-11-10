@@ -684,29 +684,37 @@ jobs:
           printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
           echo "NPMTAG_ARMED=true" >> "$GITHUB_ENV"
       - name: realign the eleven latest dist-tags
-        # the heal answers the highest version each package really holds
-        # (the emergency train left different rungs on different packages),
-        # never a repo version the registry may not carry yet.
+        # the realign answers the honest rung each app manifest carries
+        # live at dispatch time (the dynamic rung law the registryheal
+        # lane owns) — NEVER the semver-highest version the registry
+        # holds: the stale 2.1.x emergency era sits semver-above the
+        # current 2.0.x line forever, so a highest-version realign
+        # resurrects the poisoned envelopes every dispatch (the 00:24
+        # regression the heal raced) while the manifest rung keeps the
+        # latest tag riding the version cascade the tree actually ships.
+        # the registry check below guards the chicken-and-egg: the rung
+        # the manifest names must already exist on npmjs before the tag
+        # moves, and a manifest rung the registry never carried keeps its
+        # seat with a notice instead of a failing write.
         if: env.NPMTAG_ARMED == 'true'
         shell: bash
         run: |
           set -euo pipefail
           for package in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
-            top="$(npm view "@wenathlan/${package}" versions --json 2>/dev/null | node -e "
-              let raw=''; process.stdin.on('data', (d) => raw += d); process.stdin.on('end', () => {
-                const versions = JSON.parse(raw || '[]');
-                const clean = versions.filter((v) => /^\d+\.\d+\.\d+$/.test(v));
-                clean.sort((a, b) => {
-                  const pa = a.split('.').map(Number); const pb = b.split('.').map(Number);
-                  for (let i = 0; i < 3; i += 1) { if (pa[i] !== pb[i]) return pa[i] - pb[i]; }
-                  return 0;
-                });
-                process.stdout.write(clean.length ? clean[clean.length - 1] : '');
-              });")"
-            if [ -z "${top}" ]; then
-              echo "::notice::@wenathlan/${package} answers no stable version on the registry; its dist-tag keeps its seat."
+            rung="$(node -p "require('./${package}/package.json').version" 2>/dev/null || true)"
+            if [ -z "${rung}" ]; then
+              echo "::notice::the ${package} manifest answers no version; its dist-tag keeps its seat."
               continue
             fi
-            npm dist-tag add "@wenathlan/${package}@${top}" latest
-            echo "the latest dist-tag of ${package} now answers ${top}."
+            if ! npm view "@wenathlan/${package}@${rung}" version >/dev/null 2>&1; then
+              echo "::notice::@wenathlan/${package}@${rung} answers no registry envelope yet; its dist-tag keeps its seat."
+              continue
+            fi
+            current="$(npm view "@wenathlan/${package}" dist-tags.latest || echo absent)"
+            if [ "${current}" = "${rung}" ]; then
+              echo "the latest tag of ${package} already answers ${rung} — skipping"
+              continue
+            fi
+            npm dist-tag add "@wenathlan/${package}@${rung}" latest
+            echo "the latest dist-tag of ${package} moved from ${current} to ${rung} (the ${package} manifest rung)."
           done
