@@ -287,7 +287,7 @@ function closefrom(html: string, lower: string, tag: string, start: number): num
 
 /** Linear tag-body slice: the open tag matches once and the body rides the closefrom scan — `null` when either seat never lands, the tempered token idiom retired whole. */
 function tagbody(html: string, tag: string): string | null {
-  const open = new RegExp(`<${tag}\\b[^<>]*>`, "i").exec(html);
+  const open = new RegExp(`<${tag}\\b[^<>]{0,500}>`, "i").exec(html);
   if (!open) return null;
   const start = open.index + open[0].length;
   const close = closefrom(html, html.toLowerCase(), tag, start);
@@ -315,7 +315,7 @@ const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"'
 function decode(value: string): string { return value.replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole); }
 /** Script/style block removal at the fixpoint: the strip re-rides until the output stops changing, so an opener a single pass reassembles (the `<scr` before a dropped block and the `ipt>` after it splicing back into `<script>`) dies on the next walk — one linear scan per pass, no regex backtracking. */
 function stripblocks(html: string, ...tags: string[]): string {
-  const open = new RegExp(`<(${tags.join("|")})\\b[^<>]*>`, "i");
+  const open = new RegExp(`<(${tags.join("|")})\\b[^<>]{0,500}>`, "i");
   /* the fixpoint law (the sanitization heal): one pass can splice a fresh
    * opener out of the survivors, so the strip walks again until nothing
    * changes — the complete-sanitization idiom the codeql law seats. */
@@ -363,9 +363,9 @@ function matchmeta(html: string, name: string): string | undefined { return matc
 function extractlinks(html: string): LinkInfo[] { /* the linear anchor walk (the redos heal): the open matches once, the body rides the closefrom scan and the lastIndex seat advances past the close exactly the way the tempered matchall swallowed its whole match */ const lower = html.toLowerCase(); const open = /<a\b[^<>]{0,500}href=["']([^"']+)["'][^<>]*>/gi; const links: LinkInfo[] = []; let item: RegExpExecArray | null; while ((item = open.exec(html)) !== null) { const close = closefrom(html, lower, "a", item.index + item[0].length); if (close < 0) continue; const end = html.indexOf(">", close); open.lastIndex = end < 0 ? html.length : end + 1; links.push({ href: resolveurl(item[1]) ?? item[1], text: htmltotext(html.slice(item.index + item[0].length, close)).slice(0, 200), isInternal: false, isExternal: true }); } return links; }
 function extractimages(html: string): ImageInfo[] { return [...html.matchAll(/<img\b[^<>]{0,500}src=["']([^"']+)["'][^<>]*>/gi)].map((item) => ({ src: item[1], alt: match(item[0], /alt=["']([^"']*)["']/i) ?? "", width: numberattribute(item[0], "width"), height: numberattribute(item[0], "height") })); }
 function numberattribute(value: string, name: string): number | undefined { const parsed = Number(match(value, new RegExp(`${name}=["'](\\d+)["']`, "i"))); return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined; }
-function extracttables(html: string): TableInfo[] { return [...html.matchAll(/<table\b[^<>]*>[\s\S]*?<\/table\s*>/gi)].map((table) => { const source = table[0]; const body = source.match(/<tbody\b[^<>]*>[\s\S]*?<\/tbody\s*>/i)?.[0] ?? source; return { headers: [...source.matchAll(/<th\b[^<>]*>([\s\S]*?)<\/th\s*>/gi)].map((item) => htmltotext(item[1])), rows: [...body.matchAll(/<tr\b[^<>]*>([\s\S]*?)<\/tr\s*>/gi)].map((row) => [...row[1].matchAll(/<td\b[^<>]*>([\s\S]*?)<\/td\s*>/gi)].map((item) => htmltotext(item[1]))).filter((row) => row.length) }; }); }
+function extracttables(html: string): TableInfo[] { return [...html.matchAll(/<table\b[^<>]{0,500}>[\s\S]*?<\/table\s*>/gi)].map((table) => { const source = table[0]; const body = source.match(/<tbody\b[^<>]{0,500}>[\s\S]*?<\/tbody\s*>/i)?.[0] ?? source; return { headers: [...source.matchAll(/<th\b[^<>]{0,500}>([\s\S]*?)<\/th\s*>/gi)].map((item) => htmltotext(item[1])), rows: [...body.matchAll(/<tr\b[^<>]{0,500}>([\s\S]*?)<\/tr\s*>/gi)].map((row) => [...row[1].matchAll(/<td\b[^<>]{0,500}>([\s\S]*?)<\/td\s*>/gi)].map((item) => htmltotext(item[1]))).filter((row) => row.length) }; }); }
 function extractjsonld(html: string): unknown[] { /* the linear json-ld walk (the redos heal): the typed open matches once, the body rides the closefrom scan and the lastIndex seat advances past the close the tempered matchall swallowed */ const values: unknown[] = []; const lower = html.toLowerCase(); const open = /<script\b[^<>]{0,500}type=["']application\/ld\+json["'][^<>]*>/gi; let item: RegExpExecArray | null; while ((item = open.exec(html)) !== null) { const close = closefrom(html, lower, "script", item.index + item[0].length); if (close < 0) continue; const end = html.indexOf(">", close); open.lastIndex = end < 0 ? html.length : end + 1; try { values.push(JSON.parse(html.slice(item.index + item[0].length, close))); } catch { /* malformed structured data remains non fatal */ } } return values; }
-function removeSelector(html: string, selector: string): string { const tag = selector.match(/^\s*([a-z][a-z0-9]*)\s*$/i)?.[1]; if (tag) return html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\/${tag}>`, "gi"), ""); const className = selector.match(/^\.([a-z0-9_-]+)$/i)?.[1]; return className ? html.replace(new RegExp(`<([a-z][a-z0-9]*)[^>]*class=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>[\\s\\S]*?<\\/\\1>`, "gi"), "") : html; }
+function removeSelector(html: string, selector: string): string { const tag = selector.match(/^\s*([a-z][a-z0-9]*)\s*$/i)?.[1]; if (tag) return html.replace(new RegExp(`<${tag}[^>]{0,500}>[\\s\\S]*?<\/${tag}>`, "gi"), ""); const className = selector.match(/^\.([a-z0-9_-]+)$/i)?.[1]; return className ? html.replace(new RegExp(`<([a-z][a-z0-9]*)[^>]{0,500}class=["'][^"']*\\b${className}\\b[^"']*["'][^>]{0,500}>[\\s\\S]*?<\\/\\1>`, "gi"), "") : html; }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 8: scrape/schema.ts — schema extraction accepts safe field descriptors and never evaluates source strings. */
@@ -410,7 +410,7 @@ function extractfield(html, descriptor, url) {
      * the open tag matches once and the close rides the same lowercase
      * indexof walk stripblocks answers, the content slicing between, the
      * exact `</titlex` answer the battery pins preserved whole. */
-    const open = /<title[^>]*>/i.exec(html);
+    const open = /<title[^>]{0,500}>/i.exec(html);
     if (!open) return null;
     const start = open.index + open[0].length;
     const close = html.toLowerCase().indexOf("</title>", start);
@@ -418,7 +418,7 @@ function extractfield(html, descriptor, url) {
   }
   const escaped = descriptor.selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const attribute = descriptor.attribute;
-  const pattern = attribute ? new RegExp(`<[^>]+${escaped}[^>]*${attribute}=["']([^"']+)["'][^>]*>`, "i") : new RegExp(`<${escaped}[^>]*>([\\s\\S]*?)<\\/${escaped}>`, "i");
+  const pattern = attribute ? new RegExp(`<[^>]{1,500}${escaped}[^>]{0,500}${attribute}=["']([^"']+)["'][^>]{0,500}>`, "i") : new RegExp(`<${escaped}[^>]{0,500}>([\\s\\S]*?)<\\/${escaped}>`, "i");
   return pattern.exec(html)?.[1]?.replace(/<[^<>]+>/g, " ").replace(/\s+/g, " ").trim() ?? null;
 }
 
@@ -472,8 +472,8 @@ function byteLength(value) { return new TextEncoder().encode(String(value)).byte
 export function extractsemantic(html, url) {
   const source = String(html ?? "");
   const lowered = source.toLowerCase();
-  const headings = [...source.matchAll(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 100).map((match) => ({ level: Number(match[1]), text: clean(match[2]) })).filter((item) => item.text);
-  const landmarks = [...source.matchAll(/<(main|nav|header|footer|aside|section|article)\b([^>]*)>/gi)].slice(0, 100).map((match) => ({ role: match[1].toLowerCase(), label: attribute(match[2], "aria-label") ?? attribute(match[2], "id") ?? "" }));
+  const headings = [...source.matchAll(/<h([1-6])\b[^>]{0,500}>([\s\S]*?)<\/h\1>/gi)].slice(0, 100).map((match) => ({ level: Number(match[1]), text: clean(match[2]) })).filter((item) => item.text);
+  const landmarks = [...source.matchAll(/<(main|nav|header|footer|aside|section|article)\b([^>]{0,500})>/gi)].slice(0, 100).map((match) => ({ role: match[1].toLowerCase(), label: attribute(match[2], "aria-label") ?? attribute(match[2], "id") ?? "" }));
   const controls = controlmatches(source).slice(0, 200).map((control, index) => ({ ref: `e${index + 1}`, role: attribute(control.attrs, "role") ?? control.tag, name: attribute(control.attrs, "aria-label") ?? attribute(control.attrs, "placeholder") ?? clean(control.content), type: attribute(control.attrs, "type") }));
   /* the linear anchor walk (the redos heal): the open matches once, the
    * body rides the closefrom scan and the lastIndex seat advances past
@@ -496,9 +496,9 @@ export function extractsemantic(html, url) {
 function clean(value) { return String(value ?? "").replace(/<[^<>]+>/g, " ").replace(/\s+/g, " ").replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole).trim(); }
 /** Collects paired and standalone control elements in document order through hardened linear patterns so inputs without closing tags stay extractable. */
 function controlmatches(source) {
-  const paired = [...source.matchAll(/<(button|input|textarea|select|a)\b([^<>]*)>([\s\S]*?)<\/\1\s*>/gi)].map((match) => ({ index: match.index ?? 0, tag: match[1].toLowerCase(), attrs: match[2], content: match[3] }));
+  const paired = [...source.matchAll(/<(button|input|textarea|select|a)\b([^<>]{0,500})>([\s\S]*?)<\/\1\s*>/gi)].map((match) => ({ index: match.index ?? 0, tag: match[1].toLowerCase(), attrs: match[2], content: match[3] }));
   const pairedstarts = new Set(paired.map((item) => item.index));
-  const standalone = [...source.matchAll(/<input\b([^<>]*)>/gi)].filter((match) => !pairedstarts.has(match.index ?? 0)).map((match) => ({ index: match.index ?? 0, tag: "input", attrs: match[1], content: "" }));
+  const standalone = [...source.matchAll(/<input\b([^<>]{0,500})>/gi)].filter((match) => !pairedstarts.has(match.index ?? 0)).map((match) => ({ index: match.index ?? 0, tag: "input", attrs: match[1], content: "" }));
   return [...paired, ...standalone].sort((left, right) => left.index - right.index);
 }
 function attribute(value, name) { return value.match(new RegExp(`${name}=["']([^"']*)["']`, "i"))?.[1] ?? null; }

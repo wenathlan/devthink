@@ -1022,7 +1022,7 @@ const ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"'
 
 /** Script/style block removal at the fixpoint: case-insensitive, tolerant of `</script >` closing whitespace, and no opener fragment survives — the strip re-rides until the output stops changing, so an opener a single pass reassembles (the `<scr` before a dropped block and the `ipt>` after it splicing back into `<script>`) dies on the next walk. One linear scan per pass, no regex backtracking. */
 function stripblocks(html: string, ...tags: string[]): string {
-  const open = new RegExp(`<(${tags.join('|')})\\b[^<>]*>`, 'i');
+  const open = new RegExp(`<(${tags.join('|')})\\b[^<>]{0,500}>`, 'i');
   const fragment = new RegExp(`<(${tags.join('|')})\\b`, 'i');
   /* the fixpoint law (the sanitization heal): one pass can splice a fresh
    * opener out of the survivors — the text before a dropped block ending
@@ -1062,20 +1062,30 @@ function strippass(html: string, open: RegExp, fragment: RegExp): string {
 /** Converts sanitized HTML to plain text: entities decode first in a single pass that never
  * re-examines its own output — the double-escaped literal keeps its single decoding — so every
  * script-shaped sequence the decoded text reveals meets the block and tag strips that follow,
- * and no <script fragment survives the lane. Blocks drop in one linear pass, tags strip once. */
+ * and no <script fragment survives the lane. Blocks drop at the fixpoint, tags strip to the fixpoint too. */
 function plainText(html: string): string {
   const decoded = html
     .replace(/&nbsp;/g, ' ')
     .replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole);
-  return stripblocks(decoded, 'script', 'style')
+  const structured = stripblocks(decoded, 'script', 'style')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n\n')
     .replace(/<\/h[1-6]>/gi, '\n')
     .replace(/<\/li>/gi, '\n')
     .replace(/<\/tr>/gi, '\n')
     .replace(/<\/td>/gi, ' | ')
-    .replace(/<\/th>/gi, ' | ')
-    .replace(/<[^<>]+>/g, '')
+    .replace(/<\/th>/gi, ' | ');
+  /* the tag-strip fixpoint (the sanitization heal): one pass can splice a
+   * fresh tag out of the survivors — the `<scr` before a stripped `<i>`
+   * and the `ipt>` after it reassemble into `<script>` — so the strip
+   * walks again until nothing changes, the complete-sanitization idiom. */
+  let current = structured;
+  for (;;) {
+    const next = current.replace(/<[^<>]+>/g, '');
+    if (next === current) break;
+    current = next;
+  }
+  return current
     .replace(/<\/?(?:script|style)\b[^<>]*$/i, '')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
@@ -2115,7 +2125,7 @@ export interface SitemapResult {
 
 function parseSitemapXml(xml: string): SitemapUrl[] {
   const urls: SitemapUrl[] = [];
-  const urlMatches = xml.match(/<url[^>]*>([\s\S]*?)<\/url>/gi) || [];
+  const urlMatches = xml.match(/<url[^>]{0,500}>([\s\S]*?)<\/url>/gi) || [];
 
   for (const urlBlock of urlMatches) {
     const loc = urlBlock.match(/<loc>([\s\S]*?)<\/loc>/i)?.[1]?.trim();
@@ -2134,7 +2144,7 @@ function parseSitemapXml(xml: string): SitemapUrl[] {
 
 function extractSitemapUrls(xml: string): string[] {
   const urls: string[] = [];
-  const sitemapMatches = xml.match(/<sitemap[^>]*>[\s\S]*?<loc>([\s\S]*?)<\/loc>[\s\S]*?<\/sitemap>/gi) || [];
+  const sitemapMatches = xml.match(/<sitemap[^>]{0,500}>[\s\S]*?<loc>([\s\S]*?)<\/loc>[\s\S]*?<\/sitemap>/gi) || [];
   for (const match of sitemapMatches) {
     const loc = match.match(/<loc>([\s\S]*?)<\/loc>/i)?.[1]?.trim();
     if (loc) urls.push(loc);
