@@ -312,3 +312,28 @@ ever. claim verified live:
   law holding with the my files window inside the panel without url
   redirect — zero errors across the whole walk, the mobile width holding
   at 390 by 844.
+
+## the fold record — the union of the parallel strides (2026-11-10 20:00 utc)
+
+the mainfix wave rebased onto the sibling strides the maintenance automation
+folded while the instance worked — the occupied-fronts law held: every seat
+the siblings landed whole keeps their form (the polarauth coarse constants,
+the title linear walk, the tag-strip fixpoint, the strict typing of the
+restored ports, the flat-contract catalog exemption, the runtime stale-anchor
+heal, the bun allow-scripts seat), and the wave re-lands only the seats the
+remote still reddened:
+
+- the sentence seat the peel heal left charged: the bounded match call still
+  rode the remote lane — the manual one-pass walk replaces it, sixty thousand
+  fuzz cases identical, the regression seats pinning the run and cap laws
+  (3395db34).
+- the fifteen-lane build: the pack tarball's publish-time 644 bins still
+  killed every vhe lane on 'pnpm: Permission denied' — the chmod restores
+  the execute bit before the symlink resolves it (9868a8cc).
+- the depfresh freshest rung: the registry moved past the sibling stride's
+  7.0.168 while the fold walked — the eleven manifests stamp 7.0.169 whole
+  in lockstep with the locks under the pinned grammar.
+
+the ladder answers 1,623 commits at the fold, the suites green whole
+(devthink 3,549 over 208, saddle 522 over 34), and the lanes re-dispatch on
+the healed head.
