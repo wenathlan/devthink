@@ -1,22 +1,22 @@
-// # constructionface.test — the construction law of debonair (the owner
-//   order of the waves, pinned): the app is in construction — the detailed
-//   engine wave builds the debonair and the cadria later, with the time
-//   their engines, protocols and processes deserve — so the visible
-//   platform surface is ONE component (the Constructionface winget) and
-//   every platform route (home behind the entry gate, studio, generate,
-//   ingest, library, settings) answers it under its own eyebrow, while the
-//   first-run flow (the intro, the onboarding, the entrada the gate
-//   reveals) rides unchanged. The old premature surfaces (the prompt-first
-//   landing, the DAW console, the composer loop, the decomposition bench,
-//   the shelf, the preferences) are retired: no sol page imports the
-//   engine or data modules any more, the face is a drawn scene (the amber
-//   mark, the bloom light, the scan panel, the status chip) — never a dry
-//   text notice — and the design bans hold on it (fluent icons,
-//   label-store copy, no emoji, no transition: all). The truth lane stays
-//   whole beneath the face: the engine logics and the db seam keep riding
-//   their own files untouched, so the day the detailed wave lands the
-//   faces read their rows from the database again. runnable with vitest:
-//   pnpm test
+// # constructionface.test — the remount law of debonair (the owner order
+//   of the waves, evolved): the detailed engine wave HAS LANDED — the
+//   owner's standing order ("abandone a simulação, os textos falsos e a
+//   disfuncionalidade vigente nos 11 módulos, reconstruindo suas
+//   interfaces e engines de modo 100% autêntico e funcional") retires the
+//   in-construction pass: every platform route (home behind the entry
+//   gate, studio, generate, ingest, library, settings) answers its REAL
+//   remounted surface over the real engines — the prompt-first landing,
+//   the composer loop, the decomposition bench, the shelf and the
+//   preferences ride again exactly as the retired-era faces carried them
+//   (the same label-store copy, the same engine rows, zero hardcoded
+//   data), while the first-run flow (the intro, the onboarding, the
+//   entrada the gate reveals) rides unchanged and keeps the engine ban
+//   (flow structure, never data). The construction face winget stays as
+//   the arming-beat seat the surfaces wear while their engines arm (the
+//   studio pattern: the first paint before the bus lands its snapshot —
+//   never a dead desk). The truth lane stays whole beneath the faces: the
+//   engine logics and the db seam keep riding their own files untouched.
+//   runnable with vitest: pnpm test
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
@@ -38,10 +38,10 @@ const PLAYERBAR = read("../sol/wingets/ShellPlayerbar.tsx");
  * the entry gate, the five surfaces mount it inside the shell, every one
  * under its own eyebrow from the label store. */
 const ANCHORS: { route: string; file: string; eyebrow: string }[] = [
-  { route: "home", file: "../sol/home/home.tsx", eyebrow: "home.eyebrow" },
+  { route: "home", file: "../sol/home/home.tsx", eyebrow: "home.rail.eyebrow" },
   { route: "studio", file: "../sol/studio/studio.tsx", eyebrow: "studio.eyebrow" },
   { route: "generate", file: "../sol/generate/generate.tsx", eyebrow: "generate.eyebrow" },
-  { route: "ingest", file: "../sol/ingest/ingest.tsx", eyebrow: "ingest.eyebrow" },
+  { route: "ingest", file: "../sol/ingest/ingest.tsx", eyebrow: "ingest.doc.eyebrow" },
   { route: "library", file: "../sol/library/library.tsx", eyebrow: "library.eyebrow" },
   { route: "settings", file: "../sol/settings/settings.tsx", eyebrow: "settings.eyebrow" },
 ];
@@ -84,74 +84,84 @@ const PAGE_FILES = [
 const DATA_FACE_FILES = ANCHORS.map((anchor) => anchor.file);
 
 describe("the construction law of debonair", () => {
-  it("answers every platform route with the one construction face under its own eyebrow", () => {
+  it("answers every platform route with the real remounted surface under its own eyebrow", () => {
     for (const anchor of ANCHORS) {
       const page = read(anchor.file);
-      expect(page.includes("<Constructionface"), `the ${anchor.route} route must render the construction face`).toBe(
-        true,
-      );
       expect(
-        page.includes(`eyebrow={label("${anchor.eyebrow}")}`),
-        `the ${anchor.route} face must wear the ${anchor.eyebrow} eyebrow from the label store`,
+        page.includes(`label("${anchor.eyebrow}")`),
+        `the ${anchor.route} surface must wear the ${anchor.eyebrow} eyebrow from the label store`,
       ).toBe(true);
       expect(
-        page.includes('from "../../wingets"'),
-        `the ${anchor.route} anchor must import the face from the winget barrel`,
+        /from "\.\.\/\.\.\/[a-z]+\.ts"/.test(page),
+        `the ${anchor.route} anchor must import the real engine logics it mounts`,
       ).toBe(true);
     }
-    // home decides first — the face mounts only behind the finished flow
+    // home decides first — the landing mounts only behind the finished flow
     const home = read("../sol/home/home.tsx");
     expect(home).toMatch(/<EntryGate>/);
-    expect(home.indexOf("<EntryGate>")).toBeLessThan(home.indexOf("<Constructionface"));
     // the five surfaces ride the app shell — the rail and the transport stay
+    // (the multiline JSX openings answer includes: the props ride the lines
+    // that follow the opening tag)
     for (const route of ["studio", "generate", "ingest", "library", "settings"]) {
-      expect(read(`../sol/${route}/${route}.tsx`)).toMatch(/<Shell /);
+      expect(read(`../sol/${route}/${route}.tsx`).includes("<Shell")).toBe(true);
     }
   });
 
-  it("serves the face from the winget barrel — the dotted name lives once", () => {
+  it("serves the furniture from the winget barrel — the dotted names live once", () => {
     expect(BARREL).toMatch(/export \{ default as Constructionface \} from "\.\/sol\/wingets\/Constructionface\.tsx"/);
+    // the page furniture the remounted surfaces render rides the barrel again
+    for (const furniture of ["HomeGenrecard", "HomeSongcard", "HomeCoverart"]) {
+      expect(BARREL.includes(furniture), `the ${furniture} winget must ride the barrel again`).toBe(true);
+    }
+    // the anchors import the barrel, never the dotted winget file directly
     for (const anchor of ANCHORS) {
       const page = read(anchor.file);
       expect(
-        /from "\.\.\/\.\.\/sol\/wingets\/Constructionface/.test(page),
+        /from "\.\.\/\.\.\/sol\/wingets\/[A-Z]/.test(page),
         `the ${anchor.route} anchor must not import the dotted winget file directly`,
       ).toBe(false);
-      expect(
-        /from "\.\.\/\.\.\/sol\/wingets\/Constructionface/.test(page),
-        `the ${anchor.route} anchor must not import the dotted winget file directly`,
-      ).toBe(false);
-    }
-    // the retired page furniture left with the faces that rendered it
-    for (const retired of ["HomeGenrecard", "HomeSongcard", "StudioFader", "StudioTimeline"]) {
-      expect(BARREL.includes(retired), `the retired ${retired} winget must not ride the barrel`).toBe(false);
     }
   });
 
-  it("retires the premature surfaces — no sol page imports the engine or data logics any more", () => {
-    for (const file of PAGE_FILES) {
+  it("remounts the real surfaces — the flow faces keep the engine ban, the platform routes import their engines", () => {
+    // the first-run flow keeps the ban: the intro, the onboarding and the
+    // notfound seat are flow structure, never engine surfaces
+    for (const file of ["../sol/intro/intro.tsx", "../sol/onboarding/onboarding.tsx", "../sol/notfound/notfound.tsx"]) {
       const page = read(file);
       for (const engine of ENGINE_MODULES) {
         expect(
-          new RegExp(`from "\\.\\./\\.\\./${engine}(\\.ts)?"`).test(page),
-          `${file} must not import the ${engine} logic — the premature surfaces are retired`,
+          new RegExp(`from "\.\./\.\./${engine}(\.ts)?"`).test(page),
+          `${file} must not import the ${engine} logic — the flow faces stay structural`,
         ).toBe(false);
       }
     }
-    // a hardcoded data array inside a platform face is the defect the owner
-    // named: the rows answer from the db seam, never from a component literal
-    for (const file of DATA_FACE_FILES) {
+    // the platform routes import their engines again — the remount the owner
+    // ordered (the studio precedent: the anchor carries the mount the page
+    // header law names, the engines ride their own files at the root)
+    const REMOUNTED = ["../sol/home/home.tsx", "../sol/generate/generate.tsx", "../sol/ingest/ingest.tsx", "../sol/library/library.tsx", "../sol/settings/settings.tsx"];
+    for (const file of REMOUNTED) {
       const page = read(file);
       expect(
-        /const [A-Z][A-Z_]+: readonly \{/.test(page),
-        `${file} must not carry a hardcoded data array — the rows ride the db seam`,
-      ).toBe(false);
-      expect(/useState</.test(page), `${file} renders no stateful rows — the face is the one construction surface`).toBe(
-        false,
-      );
+        /from "\.\.\/\.\.\/[a-z]+\.ts"/.test(page),
+        `${file} must import the real engine logics it mounts`,
+      ).toBe(true);
     }
-    // the retired landing never mounts the hero stage directly again
-    expect(read("../sol/home/home.tsx").includes("HERO_WAVE")).toBe(false);
+    // the data rows answer from the db seam: the landing and the shelf read
+    // the catalog seam the owner's law names (the vitrine rows, the genre
+    // profile cards, the library tracks — the db reads the surfaces render,
+    // never a literal row array), while the presentation constants the
+    // surfaces declare (the deterministic hero waveform walk, the numbered
+    // flow steps, the spec proof of the engine's own MASTERING numbers)
+    // read the label store at render time — never fake data rows
+    const HOME = read("../sol/home/home.tsx");
+    expect(HOME.includes("listVitrineTracks"), "the home song grid must read the vitrine rows from the catalog seam").toBe(true);
+    expect(HOME.includes("listGenreProfileCards"), "the home genre vitrine must read the profile cards from the catalog seam").toBe(true);
+    expect(HOME.includes("listLibraryTracks"), "the home song grid must read the library rows from the catalog seam").toBe(true);
+    const LIBRARY = read("../sol/library/library.tsx");
+    expect(LIBRARY.includes("listLibraryTracks"), "the library shelf must read the library rows from the catalog seam").toBe(true);
+    // the remounted landing mounts the hero stage again — the engine's own
+    // deterministic walk, the same value every render
+    expect(read("../sol/home/home.tsx").includes("HERO_WAVE")).toBe(true);
   });
 
   it("keeps the truth lane whole beneath the face — the engines and the db seam stay", () => {
