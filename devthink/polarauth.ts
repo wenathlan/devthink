@@ -86,7 +86,12 @@ async function requestcode(): Promise<void> {
     log(`new code ${usercode} (expires in ${Math.round((expiresat - Date.now()) / 1000)}s)`);
   } catch (error) {
     phase = "error";
-    lasterror = String(error);
+    /* the response body carries the coarse class alone — the message and
+     * the stack stay server-side in the log (the stack-trace-exposure
+     * law the security gate seats: String(error) can carry engine
+     * internals a hostile reader mines, so the lane answers the class
+     * and the log answers the detail) */
+    lasterror = error instanceof Error ? error.name : "request_failed";
     save();
     log(`requestcode error: ${error}`);
   }

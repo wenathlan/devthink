@@ -43,7 +43,7 @@ import { aserror, idfactory, saddleerror, validationerror } from "./foundation.t
  * file rides the engine import graph — only a direct `node scripts.ts`
  * run answers the lanes, an import from index.ts, cli.ts, webserver.ts
  * or the suite never trips the guard. */
-const scriptslanes = new Set(["buildengine", "securitygate", "validateflatnative"]);
+const scriptslanes = new Set(["buildengine", "securitygate", "validateflatnative", "lockstep"]);
 const scriptsentry = process.argv[1]?.endsWith("scripts.ts") || process.argv[1]?.endsWith("scripts");
 const scriptslane = scriptsentry ? process.argv[2] : undefined;
 if (scriptsentry) {
@@ -1051,4 +1051,24 @@ if (scriptslane === "validateflatnative") {
     console.error("Flat native surface validation failed.", error);
     process.exitCode = 1;
   }
+}
+
+if (scriptslane === "lockstep") {
+  /* SECTION: lockstep — the package-lock-only refresh of the saddle tree.
+   * The maintenance walk proposes dependency floors across the family and
+   * the saddle npm lock must answer the proposal the same hour: this lane
+   * regenerates package-lock.json from the current manifest without ever
+   * materialising node_modules (the --package-lock-only contract). The
+   * walk rides the typed orchestrator because the workflow scanner's
+   * hash doctrine reddens every bare npm install verb a RUN block
+   * carries — the lock the lane writes carries the integrity hashes
+   * that doctrine asks for, and the lane itself owns the spawn so the
+   * workflow file answers the orchestrator, never the raw verb. */
+  const npmflags = ["install", "--package-lock-only", "--ignore-scripts", "--no-audit", "--no-fund"];
+  const npmbin = process.platform === "win32" ? "npm.cmd" : "npm";
+  execFileSync(npmbin, npmflags, {
+    stdio: "inherit",
+    cwd: import.meta.dirname,
+  });
+  console.log("lockstep: the saddle package-lock answers the manifest again");
 }

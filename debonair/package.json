@@ -764,6 +764,8 @@
   "trustedDependencies": [
     "@parcel/watcher",
     "@swc/core",
+    "better-sqlite3",
+    "esbuild",
     "pnpm",
     "protobufjs"
   ]

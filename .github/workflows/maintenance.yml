@@ -322,7 +322,12 @@ jobs:
           cd ../stealthhead && bun install --ignore-scripts
           cd ../vault && bun install --ignore-scripts
           cd ../saddle && bun install --ignore-scripts
-          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          # the lock refresh rides the typed orchestrator (the scorecard
+          # pin law): the scripts.ts lockstep lane owns the package-lock-only
+          # walk — the lock it writes carries the integrity hashes the hash
+          # doctrine demands, and the workflow answers the orchestrator
+          # seat the family law prefers
+          node scripts.ts lockstep
       - name: Install the gateway and saddle family dependencies
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         # the gateway family law the verify ladder carries: the

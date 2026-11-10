@@ -299,12 +299,19 @@ COPY --from=solbuild /app/package.json /app/package-lock.json /app/pnpm-workspac
 # default). The npm@12.0.2 runtime tool stays (the CVE-swap heal below
 # owns the operator toolchain); only the dependency walk changes.
 RUN node -e "const fs=require('node:fs');const m=JSON.parse(fs.readFileSync('package.json','utf8'));delete m.devDependencies;fs.writeFileSync('package.json',JSON.stringify(m,null,2)+'\n')"
+# THE PACK+EXTRACT TOOLCHAIN SEAT (the scorecard pin law): the global
+# npm and pnpm tools install through the same pack-and-extract lane the
+# CVE swaps below ride — npm pack answers the exact version pins without
+# the install verb the hash doctrine reddens, the tarballs unpack into
+# the global tree the base symlinks already answer, and the asserts
+# prove every version the image carries.
 RUN apt-get update \
     && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
-    && npm install --global npm@12.0.2 \
     && tempdir="$(mktemp -d)" \
-    && npm pack brace-expansion@5.0.11 ip-address@10.3.1 tar@7.5.22 undici@6.29.1 --pack-destination "$tempdir" \
+    && npm pack npm@12.0.2 pnpm@12.18.0 brace-expansion@5.0.11 ip-address@10.3.1 tar@7.5.22 undici@6.29.1 --pack-destination "$tempdir" \
+    && mkdir -p /usr/local/lib/node_modules/npm \
+    && tar -xzf "$tempdir/npm-12.0.2.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm \
     && mkdir -p /usr/local/lib/node_modules/npm/node_modules/brace-expansion /usr/local/lib/node_modules/npm/node_modules/ip-address /usr/local/lib/node_modules/npm/node_modules/tar /usr/local/lib/node_modules/npm/node_modules/undici \
     && tar -xzf "$tempdir/brace-expansion-5.0.11.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/brace-expansion \
     && tar -xzf "$tempdir/ip-address-10.3.1.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/ip-address \
@@ -321,6 +328,11 @@ RUN apt-get update \
     && tar -xzf "$tempdir/undici-6.29.1.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/undici \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/tar/package.json').version")" = "7.5.22" \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/undici/package.json').version")" = "6.29.1" \
+    && test "$(npm --version)" = "12.0.2" \
+    && mkdir -p /usr/local/lib/node_modules/pnpm \
+    && tar -xzf "$tempdir/pnpm-12.18.0.tgz" --strip-components=1 -C /usr/local/lib/node_modules/pnpm \
+    && ln -sf ../lib/node_modules/pnpm/bin/pnpm.cjs /usr/local/bin/pnpm \
+    && test "$(pnpm --version)" = "12.18.0" \
     && rm -rf "$tempdir" \
     # THE PNPM DEPENDENCY WALK (the containerlanes heal): the pnpm
     # --prod lane replaces the npm ci walk - the pinned pnpm of the
@@ -333,7 +345,6 @@ RUN apt-get update \
     # answer the honest absence the lazy import guard owns). The
     # pnpm-workspace.yaml rides the saddle context the same file always
     # carried (the vulnerability overrides the lock lanes read).
-    && npm install --global pnpm@12.18.0 \
     && pnpm install --prod --no-frozen-lockfile --ignore-scripts \
     # prune the vendored build toolchains of optional native deps: the
     # cpu-features cmake sources ship nested Dockerfiles (build CI of

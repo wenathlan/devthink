@@ -352,7 +352,7 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
     expect(containers).toContain(
       "node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js",
     );
-    expect(containers).toContain("npm install --ignore-scripts --no-audit --no-fund webpack@5.112.2 webpack-cli@7.3.1");
+    expect(containers).toContain("npm ci --ignore-scripts --no-audit --no-fund");
     expect(containers).toContain("node_modules/.bin/webpack -c distpackage/webpack.config.mjs");
     expect(containers).toContain('filename: "saddle.webpack.js"');
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");

@@ -533,7 +533,12 @@ jobs:
         run: |
           set -euo pipefail
           cd vault
-          npm install --no-save --ignore-scripts --no-audit --no-fund esbuild@^0.28.2
+          # the locked tree answers the build seat (the scorecard pin law):
+          # the committed bun.lock carries the integrity hashes the ad-hoc
+          # npm install never could — the same lane the maintenance walk
+          # rides for every sibling, esbuild resolving from the lock the
+          # manifest already seats
+          bun install --ignore-scripts
           node --experimental-strip-types build.ts
           test -s build/onboardingstore.js
           test -s build/labelstore.js
