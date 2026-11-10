@@ -751,6 +751,21 @@
       "types": "./reveal.ts",
       "import": "./reveal.ts",
       "default": "./reveal.ts"
+    },
+    "./acquisition": {
+      "types": "./build/acquisition.d.ts",
+      "import": "./build/acquisition.js",
+      "default": "./build/acquisition.js"
+    },
+    "./webscrape": {
+      "types": "./build/webscrape.d.ts",
+      "import": "./build/webscrape.js",
+      "default": "./build/webscrape.js"
+    },
+    "./operations": {
+      "types": "./build/operations.d.ts",
+      "import": "./build/operations.js",
+      "default": "./build/operations.js"
     }
   },
   "files": [

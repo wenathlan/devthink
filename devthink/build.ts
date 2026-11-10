@@ -98,6 +98,9 @@ const bundlebudgets: Record<string, number> = {
   pack: 600_000,
   personalstore: 720_000, /* the theme seat inlines the security guard the suspend lane leans on */
   reveal: 40_000, /* the reveal door rides react and wouter as externals */
+  acquisition: 400_000, /* the scrape-domain restore (wave-restore-8): the robots, cache, extract and crawl contracts beside the evidence seats */
+  webscrape: 1_500_000, /* the legacy toolkit generation — the schemas and serializers of the scrape formats stay one seat */
+  operations: 120_000, /* the orchestration face leans on the acquisition engine beside it */
 };
 
 /** Every build bundle the build emits: the accounting, the naming check, the checksums file and the minified parity expectations read this one list. */
@@ -348,6 +351,25 @@ const familybridges = {
    * copy inside devthink: the owner source answers at build time; the
    * typecheck programs keep answering the saddlefaces typed face). */
   "@wenathlan/saddle/modalityregistry": join(root, "..", "saddle", "modalities.ts"),
+  /** the saddle foundation/integration/browser seats of the scrape-domain
+   * restore (wave-restore-8): the acquisition and operations engines the
+   * devthink root now owns import the sha256 hash seat, the fetch
+   * transport seat and the browser agent contract through the published
+   * library specifiers with the .js suffix the saddle sources speak — the
+   * entries resolve each specifier to the monorepo source the sibling
+   * engine carries (the installed envelope carries no
+   * foundation/integration/browser export surfaces), the same bridge the
+   * vite, vitest and tsconfig resolutions ride. */
+  "@wenathlan/saddle/foundation.js": join(root, "..", "saddle", "foundation.ts"),
+  "@wenathlan/saddle/integration.js": join(root, "..", "saddle", "integration.ts"),
+  "@wenathlan/saddle/browser.js": join(root, "..", "saddle", "browser.ts"),
+  /** the getry intelligence seat of the scrape-domain restore: the
+   * operations face imports the token and chunk contracts through the
+   * .js-suffixed specifier the esbuild alias table never prefix-matches —
+   * without this bridge the resolution falls through to the installed
+   * envelope's bundled artifact and the reviewed vocabulary law reddens on
+   * the envelope's renamed internals. */
+  "@wenathlan/getry/intelligence.js": join(root, "..", "getry", "intelligence.ts"),
   "@wenathlan/getry/thinking": join(root, "..", "getry", "thinking.ts"),
   /** the getry engine module bridges of the ownership wave
    * (wave/ownership.getry): the gateway pipeline sources (engine, llm,
@@ -466,6 +488,15 @@ const libraryexternals = [
   "ink",
   "react",
   "z-ai-web-dev-sdk",
+  /* the scrape-domain optional peers (wave-restore-8): the acquisition
+   * and operations entries lean on the saddle browser seat whose
+   * playwright adapter and the legacy webscrape toolkit's jsdom stay
+   * optional peer runtimes — the same law the @babel/core seat above
+   * answers, the bundles keep the imports dynamic and the consumer's
+   * dependency tree answers them when the lanes walk. */
+  "playwright",
+  "playwright-core",
+  "jsdom",
 ];
 await build({
   entryPoints: ["server.ts"],
@@ -502,7 +533,16 @@ await build({
     the prisma stack), keep the runtime dependencies external exactly the way the server entry
     does, and inline the gateway owner modules through the family bridges the same way — the
     bundle stays the reviewed repository sources alone. */
-for (const modulename of ["config", "constants", "core", "data", "os", "graph", "hono", "commands", "engines", "storage", "security", "tools", "types"]) {
+for (const modulename of ["config", "constants", "core", "data", "os", "graph", "hono", "commands", "engines", "storage", "security", "tools", "types", "acquisition", "webscrape", "operations"]) {
+  /* the webscrape seat of the scrape-domain restore leans on lazy runtime
+   * lanes the toolkit guards (commander, cheerio, the p-retry and p-limit
+   * family, emittery — the manifest carries every one) beside the optional
+   * peers the library externals already answer (jsdom, playwright): the
+   * bundle keeps every one of them dynamic-external exactly the way the
+   * toolkit's own guarded imports declare them, so the reviewed vocabulary
+   * of the emitted bundle stays the repository sources alone. */
+  const scrapemodulexternals =
+    modulename === "webscrape" ? [...libraryexternals, "commander", "cheerio", "p-retry", "p-limit", "emittery", "zod"] : libraryexternals;
   await build({
     entryPoints: [`${modulename}.ts`],
     outfile: record(`${modulename}.js`),
@@ -512,7 +552,7 @@ for (const modulename of ["config", "constants", "core", "data", "os", "graph", 
     target: "node22",
     sourcemap: true,
     banner: { js: banner },
-    external: libraryexternals,
+    external: scrapemodulexternals,
     alias: familybridges,
   });
   await build({
@@ -525,7 +565,7 @@ for (const modulename of ["config", "constants", "core", "data", "os", "graph", 
     sourcemap: true,
     minify: true,
     banner: { js: banner },
-    external: libraryexternals,
+    external: scrapemodulexternals,
     alias: familybridges,
   });
 }
@@ -1416,6 +1456,12 @@ const stagerootfiles = [
    * entry rides. */
   "personalstore.js",
   "reveal.js",
+  /* the scrape-domain seats of the restore (wave-restore-8): the flat
+   * package answers the published ./acquisition, ./webscrape and
+   * ./operations specifiers with their bundles at the package root. */
+  "acquisition.js",
+  "webscrape.js",
+  "operations.js",
 ];
 const stagedeclarations = [
   "index",
@@ -1458,6 +1504,13 @@ const stagedeclarations = [
   "bun",
   "deno",
   "companion",
+  /* the scrape-domain seats of the restore (wave-restore-8): the published
+     ./acquisition, ./webscrape and ./operations specifiers stage their
+     declarations beside their bundles the same grammar every module entry
+     above rides. */
+  "acquisition",
+  "webscrape",
+  "operations",
 ];
 for (const file of stagerootfiles) await writeFile(join(stage, file), await readFile(join(root, "build", file)));
 /** the source-is-library seat of the reveal door (the tsroot law's family

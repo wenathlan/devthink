@@ -48,6 +48,18 @@
       "@wenathlan/saddle": ["./saddlefaces.ts"],
       "@wenathlan/saddle/memory": ["./saddlefaces.ts"],
       "@wenathlan/saddle/workloadlaw": ["./saddlefaces.ts"],
+      /* the saddle foundation, integration and browser faces of the
+       * scrape-domain restore (wave-restore-8): the acquisition and
+       * operations engines the os root now owns import the sha256 hash
+       * seat, the fetch transport seat and the browser agent contract
+       * through the published library specifiers with the .js suffix the
+       * saddle sources speak, and the declaration pass resolves every
+       * one onto the ambient scrape lane of the saddle face the same way
+       * the memory seam above rides it — the sibling source never enters
+       * this program, the emit stays flat under the application rootDir. */
+      "@wenathlan/saddle/foundation.js": ["./saddlefaces.ts"],
+      "@wenathlan/saddle/integration.js": ["./saddlefaces.ts"],
+      "@wenathlan/saddle/browser.js": ["./saddlefaces.ts"],
       "@babel/core": ["./babelcoreface.ts"],
       /* the modality registry of the ladder retirement (wave/engineregroup1):
        * the sandbox lane reads the saddle catalog through the published
@@ -96,6 +108,13 @@
       "@wenathlan/getry/utils": ["../getry/dist/types/getry/utils.d.ts"],
       "@wenathlan/getry/versionregistry": ["../getry/dist/types/getry/versionregistry.d.ts"],
       "@wenathlan/getry/intelligence": ["../getry/dist/types/getry/intelligence.d.ts"],
+      /* the intelligence face of the scrape-domain restore
+       * (wave-restore-8): the operations engine the os root now owns
+       * imports the token estimation and chunkmarkdown seats through the
+       * published library specifier with the .js suffix the family
+       * sources speak — the declaration pass resolves it onto the owner's
+       * generated face exactly like the unsuffixed sibling above. */
+      "@wenathlan/getry/intelligence.js": ["../getry/dist/types/getry/intelligence.d.ts"],
       "@wenathlan/getry/json": ["../getry/dist/types/getry/json.d.ts"],
       "@wenathlan/getry/jsonpolicy": ["../getry/dist/types/getry/jsonpolicy.d.ts"],
       "@wenathlan/getry/jsonschema": ["../getry/dist/types/getry/jsonschema.d.ts"],
@@ -180,6 +199,14 @@
        module entry rides. */
     "personalstore.ts",
     "reveal.ts",
+    /* the scrape-domain seats of the restore (wave-restore-8): the
+       exports map answers the published ./acquisition, ./webscrape and
+       ./operations specifiers, so the declaration emit covers every
+       entry the flat package stages — the same grammar every module
+       entry above rides. */
+    "acquisition.ts",
+    "webscrape.ts",
+    "operations.ts",
     "version.ts",
     "runtime.ts",
     "cjs.ts",

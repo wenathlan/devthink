@@ -60,6 +60,17 @@
       "@wenathlan/saddle/modalityregistry": ["../saddle/modalities.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/saddle/sandbox": ["../saddle/sandbox.ts"],
+      /* the saddle foundation/integration/browser seats of the
+       * scrape-domain restore (wave-restore-8): the acquisition and
+       * operations engines the devthink root now owns import the sha256
+       * hash seat, the fetch transport seat and the browser agent contract
+       * through the published library specifiers with the .js suffix the
+       * saddle sources speak — the entries resolve each specifier to the
+       * monorepo source the sibling engine carries (the installed envelope
+       * carries no foundation/integration/browser export surfaces). */
+      "@wenathlan/saddle/foundation.js": ["../saddle/foundation.ts"],
+      "@wenathlan/saddle/integration.js": ["../saddle/integration.ts"],
+      "@wenathlan/saddle/browser.js": ["../saddle/browser.ts"],
       "@wenathlan/getry/thinking": ["../getry/thinking.ts"],
       "@wenathlan/getry/validate": ["../getry/validate.ts"],
       /* the queue self-bridge: the getry llm source (imported through the
@@ -83,6 +94,13 @@
       "@wenathlan/getry/utils": ["../getry/utils.ts"],
       "@wenathlan/getry/versionregistry": ["../getry/versionregistry.ts"],
       "@wenathlan/getry/intelligence": ["../getry/intelligence.ts"],
+      /* the getry intelligence seat of the scrape-domain restore
+       * (wave-restore-8): the operations engine the devthink root now owns
+       * imports the token estimation and chunkmarkdown seats through the
+       * published library specifier with the .js suffix the family
+       * sources speak — the entry resolves it to the monorepo source the
+       * getry owner carries. */
+      "@wenathlan/getry/intelligence.js": ["../getry/intelligence.ts"],
       "@wenathlan/getry/json": ["../getry/json.ts"],
       "@wenathlan/getry/jsonpolicy": ["../getry/jsonpolicy.ts"],
       "@wenathlan/getry/jsonschema": ["../getry/jsonschema.ts"],
