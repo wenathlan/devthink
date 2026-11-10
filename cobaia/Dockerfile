@@ -194,7 +194,7 @@ LABEL org.opencontainers.image.title="cobaia (the void os-distribution catalog l
 COPY osprofiles/void.json /cobaia/osprofile.json
 
 FROM scratch AS oslinux
-ARG COBAIA_VERSION=2.0.174
+ARG COBAIA_VERSION=2.0.175
 ARG COBAIA_OS_PROFILE="linux"
 ENV COBAIA_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="cobaia (the linux os-distribution catalog lane)" \
@@ -205,7 +205,7 @@ LABEL org.opencontainers.image.title="cobaia (the linux os-distribution catalog 
 COPY osprofiles/linux.json /cobaia/osprofile.json
 
 FROM scratch AS osomarchy
-ARG COBAIA_VERSION=2.0.174
+ARG COBAIA_VERSION=2.0.175
 ARG COBAIA_OS_PROFILE="omarchy"
 ENV COBAIA_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="cobaia (the omarchy os-distribution catalog lane)" \

@@ -208,7 +208,7 @@ LABEL org.opencontainers.image.title="forge (the void os-distribution catalog la
 COPY osprofiles/void.json /forge/osprofile.json
 
 FROM scratch AS oslinux
-ARG FORGE_VERSION=2.0.174
+ARG FORGE_VERSION=2.0.175
 ARG FORGE_OS_PROFILE="linux"
 ENV FORGE_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="forge (the linux os-distribution catalog lane)" \
@@ -219,7 +219,7 @@ LABEL org.opencontainers.image.title="forge (the linux os-distribution catalog l
 COPY osprofiles/linux.json /forge/osprofile.json
 
 FROM scratch AS osomarchy
-ARG FORGE_VERSION=2.0.174
+ARG FORGE_VERSION=2.0.175
 ARG FORGE_OS_PROFILE="omarchy"
 ENV FORGE_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="forge (the omarchy os-distribution catalog lane)" \

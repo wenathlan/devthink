@@ -228,7 +228,7 @@ LABEL org.opencontainers.image.title="debonair (the void os-distribution catalog
 COPY osprofiles/void.json /debonair/osprofile.json
 
 FROM scratch AS oslinux
-ARG DEBONAIR_VERSION=2.0.174
+ARG DEBONAIR_VERSION=2.0.175
 ARG DEBONAIR_OS_PROFILE="linux"
 ENV DEBONAIR_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="debonair (the linux os-distribution catalog lane)" \
@@ -239,7 +239,7 @@ LABEL org.opencontainers.image.title="debonair (the linux os-distribution catalo
 COPY osprofiles/linux.json /debonair/osprofile.json
 
 FROM scratch AS osomarchy
-ARG DEBONAIR_VERSION=2.0.174
+ARG DEBONAIR_VERSION=2.0.175
 ARG DEBONAIR_OS_PROFILE="omarchy"
 ENV DEBONAIR_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="debonair (the omarchy os-distribution catalog lane)" \

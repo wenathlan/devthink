@@ -219,7 +219,7 @@ LABEL org.opencontainers.image.title="vault (the void os-distribution catalog la
 COPY osprofiles/void.json /vault/osprofile.json
 
 FROM scratch AS oslinux
-ARG VAULT_VERSION=2.0.174
+ARG VAULT_VERSION=2.0.175
 ARG VAULT_OS_PROFILE="linux"
 ENV VAULT_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="vault (the linux os-distribution catalog lane)" \
@@ -230,7 +230,7 @@ LABEL org.opencontainers.image.title="vault (the linux os-distribution catalog l
 COPY osprofiles/linux.json /vault/osprofile.json
 
 FROM scratch AS osomarchy
-ARG VAULT_VERSION=2.0.174
+ARG VAULT_VERSION=2.0.175
 ARG VAULT_OS_PROFILE="omarchy"
 ENV VAULT_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="vault (the omarchy os-distribution catalog lane)" \

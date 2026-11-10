@@ -735,7 +735,7 @@ LABEL org.opencontainers.image.title="devthink (the void os-distribution catalog
 COPY osprofiles/void.json /devthink/osprofile.json
 
 FROM scratch AS oslinux
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="linux"
 ENV DEVTHINK_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="devthink (the linux os-distribution catalog lane)" \
@@ -746,7 +746,7 @@ LABEL org.opencontainers.image.title="devthink (the linux os-distribution catalo
 COPY osprofiles/linux.json /devthink/osprofile.json
 
 FROM scratch AS osomarchy
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="omarchy"
 ENV DEVTHINK_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="devthink (the omarchy os-distribution catalog lane)" \

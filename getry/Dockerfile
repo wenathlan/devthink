@@ -193,7 +193,7 @@ LABEL org.opencontainers.image.title="getry (the void os-distribution catalog la
 COPY osprofiles/void.json /getry/osprofile.json
 
 FROM scratch AS oslinux
-ARG GETRY_VERSION=2.0.174
+ARG GETRY_VERSION=2.0.175
 ARG GETRY_OS_PROFILE="linux"
 ENV GETRY_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="getry (the linux os-distribution catalog lane)" \
@@ -204,7 +204,7 @@ LABEL org.opencontainers.image.title="getry (the linux os-distribution catalog l
 COPY osprofiles/linux.json /getry/osprofile.json
 
 FROM scratch AS osomarchy
-ARG GETRY_VERSION=2.0.174
+ARG GETRY_VERSION=2.0.175
 ARG GETRY_OS_PROFILE="omarchy"
 ENV GETRY_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="getry (the omarchy os-distribution catalog lane)" \

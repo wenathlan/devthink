@@ -213,7 +213,7 @@ LABEL org.opencontainers.image.title="argan (the void os-distribution catalog la
 COPY osprofiles/void.json /argan/osprofile.json
 
 FROM scratch AS oslinux
-ARG ARGAN_VERSION=2.0.174
+ARG ARGAN_VERSION=2.0.175
 ARG ARGAN_OS_PROFILE="linux"
 ENV ARGAN_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="argan (the linux os-distribution catalog lane)" \
@@ -224,7 +224,7 @@ LABEL org.opencontainers.image.title="argan (the linux os-distribution catalog l
 COPY osprofiles/linux.json /argan/osprofile.json
 
 FROM scratch AS osomarchy
-ARG ARGAN_VERSION=2.0.174
+ARG ARGAN_VERSION=2.0.175
 ARG ARGAN_OS_PROFILE="omarchy"
 ENV ARGAN_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="argan (the omarchy os-distribution catalog lane)" \

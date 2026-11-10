@@ -216,7 +216,7 @@ LABEL org.opencontainers.image.title="cadria (the void os-distribution catalog l
 COPY osprofiles/void.json /cadria/osprofile.json
 
 FROM scratch AS oslinux
-ARG CADRIA_VERSION=2.0.174
+ARG CADRIA_VERSION=2.0.175
 ARG CADRIA_OS_PROFILE="linux"
 ENV CADRIA_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="cadria (the linux os-distribution catalog lane)" \
@@ -227,7 +227,7 @@ LABEL org.opencontainers.image.title="cadria (the linux os-distribution catalog 
 COPY osprofiles/linux.json /cadria/osprofile.json
 
 FROM scratch AS osomarchy
-ARG CADRIA_VERSION=2.0.174
+ARG CADRIA_VERSION=2.0.175
 ARG CADRIA_OS_PROFILE="omarchy"
 ENV CADRIA_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="cadria (the omarchy os-distribution catalog lane)" \

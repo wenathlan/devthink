@@ -207,7 +207,7 @@ LABEL org.opencontainers.image.title="stealthhead (the void os-distribution cata
 COPY osprofiles/void.json /stealthhead/osprofile.json
 
 FROM scratch AS oslinux
-ARG STEALTHHEAD_VERSION=2.0.174
+ARG STEALTHHEAD_VERSION=2.0.175
 ARG STEALTHHEAD_OS_PROFILE="linux"
 ENV STEALTHHEAD_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="stealthhead (the linux os-distribution catalog lane)" \
@@ -218,7 +218,7 @@ LABEL org.opencontainers.image.title="stealthhead (the linux os-distribution cat
 COPY osprofiles/linux.json /stealthhead/osprofile.json
 
 FROM scratch AS osomarchy
-ARG STEALTHHEAD_VERSION=2.0.174
+ARG STEALTHHEAD_VERSION=2.0.175
 ARG STEALTHHEAD_OS_PROFILE="omarchy"
 ENV STEALTHHEAD_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="stealthhead (the omarchy os-distribution catalog lane)" \
