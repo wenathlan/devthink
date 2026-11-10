@@ -331,7 +331,7 @@ RUN apt-get update \
     && test "$(npm --version)" = "12.0.2" \
     && mkdir -p /usr/local/lib/node_modules/pnpm \
     && tar -xzf "$tempdir/pnpm-12.18.0.tgz" --strip-components=1 -C /usr/local/lib/node_modules/pnpm \
-    && ln -sf ../lib/node_modules/pnpm/bin/pnpm.cjs /usr/local/bin/pnpm \
+    && ln -sf ../lib/node_modules/pnpm/bin/pnpm.mjs /usr/local/bin/pnpm \
     && test "$(pnpm --version)" = "12.18.0" \
     && rm -rf "$tempdir" \
     # THE PNPM DEPENDENCY WALK (the containerlanes heal): the pnpm
