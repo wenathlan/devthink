@@ -9,6 +9,12 @@
  * ./<domain>.js. Every capability of every source file is preserved here;
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
+/** the house error carrier: every typed error of the engine folds carries the
+ * plain Error surface beside the structured fields the callers read (the
+ * code, the retryable flag, the details, the status code, the recovery hint
+ * and the severity the responses and audits answer). */
+type carriererror = Error & { code?: string; retryable?: boolean; details?: unknown; statuscode?: number; recovery?: string; severity?: string; name?: string; message?: string };
+
 
 import { jsondecode, jsonencode } from "./communication.ts";
 
@@ -18,12 +24,12 @@ import { jsondecode, jsonencode } from "./communication.ts";
 /**
  * transport centralizes timeout retry and jitter without choosing a host or vendor.
  */
-export function transport(options = {}) {
+export function transport(options: Record<string, unknown> = {}): Record<string, unknown> {
   const fetcher = options.fetcher ?? fetch;
   const attempts = options.attempts ?? 3;
   const timeout = options.timeout ?? 30000;
   const retrycodes = new Set(options.retrycodes ?? [408, 409, 429, 500, 502, 503, 504]);
-  async function request(url, init = {}) {
+  async function request(url: unknown, init: Record<string, unknown> = {}) {
     let last;
     for (let attempt = 0; attempt < attempts; attempt += 1) {
       const controller = new AbortController();
@@ -32,7 +38,8 @@ export function transport(options = {}) {
         const response = await fetcher(url, { ...init, signal: init.signal ?? controller.signal });
         if (response.ok || !retrycodes.has(response.status) || attempt === attempts - 1) return response;
         last = new Error(`request failed with ${response.status}`);
-      } catch (error) {
+      } catch (rawerror) {
+    const error = rawerror as carriererror;
         last = error;
         if (attempt === attempts - 1) throw error;
       } finally { clearTimeout(timer); }
@@ -43,8 +50,8 @@ export function transport(options = {}) {
   return { request };
 }
 
-function backoff(options, attempt) { const base = options.backoff ?? 250; const jitter = options.jitter ?? 0; return base * 2 ** attempt + Math.floor(Math.random() * jitter); }
-function delay(milliseconds) { return new Promise((resolve) => setTimeout(resolve, milliseconds)); }
+function backoff(options: unknown, attempt: unknown) { const base = options.backoff ?? 250; const jitter = options.jitter ?? 0; return base * 2 ** attempt + Math.floor(Math.random() * jitter); }
+function delay(milliseconds: unknown) { return new Promise((resolve) => setTimeout(resolve, milliseconds)); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 2: adapters/socket.ts — socket adapter keeps realtime optional and accepts a caller supplied websocket constructor. */
@@ -52,7 +59,7 @@ function delay(milliseconds) { return new Promise((resolve) => setTimeout(resolv
 /**
  * socket adapter keeps realtime optional and accepts a caller supplied websocket constructor.
  */
-export function socketadapter(options = {}) {
+export function socketadapter(options: Record<string, unknown> = {}): Record<string, unknown> {
   const websocket = options.websocket ?? globalThis.WebSocket;
   if (!websocket) throw new Error("websocket implementation is required");
   return {
@@ -71,17 +78,17 @@ export function socketadapter(options = {}) {
  * github adapter uses caller supplied credentials and base url configuration.
  */
 
-export function githubadapter(options = {}) {
+export function githubadapter(options: Record<string, unknown> = {}): Record<string, unknown> {
   if (!options.baseurl || typeof options.token !== "function") throw new TypeError("github adapter requires baseurl and token function");
   const client = transport({ fetcher: options.fetcher, attempts: options.attempts, timeout: options.timeout });
-  async function call(path, init = {}) {
+  async function call(path: unknown, init: Record<string, unknown> = {}) {
     const token = await options.token();
     const headers = { accept: "application/vnd.github+json", authorization: `Bearer ${token}`, "x-github-api-version": options.apiversion ?? "2022-11-28", ...(init.headers ?? {}) };
     return client.request(new URL(path, options.baseurl), { ...init, headers });
   }
   return {
     async health() { const response = await call("/rate_limit"); return { ok: response.ok, status: response.status }; },
-    async dispatch(owner, repository, workflow, input = {}) { const response = await call(`/repos/${owner}/${repository}/actions/workflows/${workflow}/dispatches`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ref: input.ref ?? "main", inputs: input.inputs ?? {} }) }); return { accepted: response.status === 204, status: response.status }; },
+    async dispatch(owner, repository, workflow, input: Record<string, unknown> = {}) { const response = await call(`/repos/${owner}/${repository}/actions/workflows/${workflow}/dispatches`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ref: input.ref ?? "main", inputs: input.inputs ?? {} }) }); return { accepted: response.status === 204, status: response.status }; },
     async run(owner, repository, runid) { const response = await call(`/repos/${owner}/${repository}/actions/runs/${runid}`); return response.json(); }
   };
 }
@@ -93,7 +100,7 @@ export function githubadapter(options = {}) {
  * gitlab adapter keeps project addressing and token ownership outside the package.
  */
 
-export function gitlabadapter(options = {}) {
+export function gitlabadapter(options: Record<string, unknown> = {}): Record<string, unknown> {
   const project = encodeURIComponent(options.project ?? "");
   const base = forgeadapter({ ...options, kind: "gitlab" });
   return { ...base, async dispatch(spec) { return base.dispatch({ ...spec, path: spec.path ?? `/api/v4/projects/${project}/pipeline` }); } };
@@ -106,13 +113,13 @@ export function gitlabadapter(options = {}) {
  * forge adapter defines the common dispatch and artifact surface for compatible forges.
  */
 
-export function forgeadapter(options = {}) {
+export function forgeadapter(options: Record<string, unknown> = {}): Record<string, unknown> {
   if (!options.baseurl || typeof options.token !== "function") throw new TypeError("forge adapter requires baseurl and token function");
   const client = transport({ fetcher: options.fetcher, attempts: options.attempts, timeout: options.timeout });
-  async function call(path, init = {}) { const token = await options.token(); return client.request(new URL(path, options.baseurl), { ...init, headers: { authorization: `Bearer ${token}`, accept: "application/json", ...(init.headers ?? {}) } }); }
+  async function call(path: unknown, init: Record<string, unknown> = {}) { const token = await options.token(); return client.request(new URL(path, options.baseurl), { ...init, headers: { authorization: `Bearer ${token}`, accept: "application/json", ...(init.headers ?? {}) } }); }
   return {
     kind: options.kind ?? "forge",
-    async health(path = "/") { const response = await call(path); return { ok: response.ok, status: response.status }; },
+    async health(path: string = "/") { const response = await call(path); return { ok: response.ok, status: response.status }; },
     async dispatch(spec) { if (!spec?.path || !spec.ref) throw new TypeError("forge dispatch requires path and ref"); const response = await call(spec.path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ ref: spec.ref, inputs: spec.inputs ?? {} }) }); return { accepted: response.ok, status: response.status, body: response.json ? await response.json() : undefined }; },
     async upload(spec) { if (!spec?.path || !spec.data) throw new TypeError("forge upload requires path and data"); const response = await call(spec.path, { method: "PUT", headers: { "content-type": spec.contenttype ?? "application/octet-stream" }, body: spec.data }); return { accepted: response.ok, status: response.status }; }
   };
@@ -125,9 +132,9 @@ export function forgeadapter(options = {}) {
  * forgejo and gitea can reuse the open forge contract with a caller supplied base url.
  */
 
-export function forgejoadapter(options = {}) { return forgeadapter({ ...options, kind: "forgejo" }); }
-export function giteaadapter(options = {}) { return forgeadapter({ ...options, kind: "gitea" }); }
-export function codebergadapter(options = {}) { return forgeadapter({ ...options, kind: "codeberg" }); }
+export function forgejoadapter(options: Record<string, unknown> = {}): Record<string, unknown> { return forgeadapter({ ...options, kind: "forgejo" }); }
+export function giteaadapter(options: Record<string, unknown> = {}): Record<string, unknown> { return forgeadapter({ ...options, kind: "gitea" }); }
+export function codebergadapter(options: Record<string, unknown> = {}): Record<string, unknown> { return forgeadapter({ ...options, kind: "codeberg" }); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 7: adapters/huggingface.ts — hugging face storage remains an explicit adapter with caller supplied repository path. */
@@ -136,7 +143,7 @@ export function codebergadapter(options = {}) { return forgeadapter({ ...options
  * hugging face storage remains an explicit adapter with caller supplied repository path.
  */
 
-export function huggingfaceadapter(options = {}) { return forgeadapter({ ...options, kind: "huggingface" }); }
+export function huggingfaceadapter(options: Record<string, unknown> = {}): Record<string, unknown> { return forgeadapter({ ...options, kind: "huggingface" }); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 8: adapters/apps.ts — app registry keeps installation, scope and revocation state outside platform credentials. */
@@ -148,21 +155,21 @@ export function huggingfaceadapter(options = {}) { return forgeadapter({ ...opti
 export const appstatuses = Object.freeze(["installed", "suspended", "revoked"]);
 
 /** Creates a caller-owned app installation registry with explicit scopes. */
-export function appregistry(options = {}) {
+export function appregistry(options: Record<string, unknown> = {}): Record<string, unknown> {
   const values = new Map(options.apps ? options.apps.map((app) => [app.id, normalize(app)]) : []);
-  function install(input = {}) { if (!input.id || !input.name) throw new TypeError("app installation requires id and name"); const app = normalize({ ...input, status: "installed", installedat: input.installedat ?? Date.now() }); values.set(app.id, app); return { ...app, scopes: [...app.scopes] }; }
-  function suspend(id) { return transition(id, "suspended"); }
-  function revoke(id) { return transition(id, "revoked"); }
-  function restore(id) { return transition(id, "installed"); }
-  function authorize(id, required = []) { const app = requireapp(id); if (app.status !== "installed") return { allowed: false, reason: `app-${app.status}` }; const missing = required.filter((scope) => !app.scopes.includes(scope)); return { allowed: missing.length === 0, missing, appid: app.id }; }
-  function get(id) { const app = values.get(String(id)); return app ? { ...app, scopes: [...app.scopes] } : null; }
-  function list() { return [...values.values()].map((app) => ({ ...app, scopes: [...app.scopes] })); }
+  function install(input: Record<string, unknown> = {}): Record<string, unknown> { if (!input.id || !input.name) throw new TypeError("app installation requires id and name"); const app = normalize({ ...input, status: "installed", installedat: input.installedat ?? Date.now() }); values.set(app.id, app); return { ...app, scopes: [...app.scopes] }; }
+  function suspend(id: unknown) { return transition(id, "suspended"); }
+  function revoke(id: unknown) { return transition(id, "revoked"); }
+  function restore(id: unknown) { return transition(id, "installed"); }
+  function authorize(id: unknown, required: unknown[] = []) { const app = requireapp(id); if (app.status !== "installed") return { allowed: false, reason: `app-${app.status}` }; const missing = required.filter((scope) => !app.scopes.includes(scope)); return { allowed: missing.length === 0, missing, appid: app.id }; }
+  function get(id: unknown) { const app = values.get(String(id)); return app ? { ...app, scopes: [...app.scopes] } : null; }
+  function list(): Record<string, unknown> { return [...values.values()].map((app) => ({ ...app, scopes: [...app.scopes] })); }
   return { install, suspend, revoke, restore, authorize, get, list };
-  function requireapp(id) { const app = values.get(String(id)); if (!app) throw new Error(`app not found: ${id}`); return app; }
-  function transition(id, status) { const app = requireapp(id); if (!appstatuses.includes(status)) throw new TypeError(`unsupported app status: ${status}`); app.status = status; app.updatedat = Date.now(); return get(id); }
+  function requireapp(id: unknown) { const app = values.get(String(id)); if (!app) throw new Error(`app not found: ${id}`); return app; }
+  function transition(id: unknown, status: unknown) { const app = requireapp(id); if (!appstatuses.includes(status)) throw new TypeError(`unsupported app status: ${status}`); app.status = status; app.updatedat = Date.now(); return get(id); }
 }
 
-function normalize(input) { return { id: String(input.id), name: String(input.name), status: input.status ?? "installed", scopes: [...new Set((input.scopes ?? []).map(String))], installedat: Number(input.installedat ?? Date.now()), updatedat: Number(input.updatedat ?? Date.now()), metadata: { ...(input.metadata ?? {}) } }; }
+function normalize(input: Record<string, unknown>) { return { id: String(input.id), name: String(input.name), status: input.status ?? "installed", scopes: [...new Set((input.scopes ?? []).map(String))], installedat: Number(input.installedat ?? Date.now()), updatedat: Number(input.updatedat ?? Date.now()), metadata: { ...(input.metadata ?? {}) } }; }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 9: adapters/mcptransport.ts — mcp transport keeps JSON RPC framing separate from the tool server. */
@@ -172,7 +179,7 @@ function normalize(input) { return { id: String(input.id), name: String(input.na
  */
 
 /** Creates JSONL and HTTP handlers for the transport agnostic MCP server. */
-export function mcptransport(server) {
+export function mcptransport(server: unknown) {
   if (typeof server?.handle !== "function") throw new TypeError("mcp transport requires server");
   return {
     async handleline(line) { const request = jsondecode(line); return jsonencode(await server.handle(request)); },
@@ -188,7 +195,7 @@ export function mcptransport(server) {
  * mcp server implements a small JSON RPC tool surface and remains transport agnostic.
  */
 
-export function mcpserver(options = {}) {
+export function mcpserver(options: Record<string, unknown> = {}): Record<string, unknown> {
   const tools = {
     serialize: async (input) => jsonencode(input.value),
     ...(options.browser ? browsertools(options.browser) : {}),
@@ -198,7 +205,8 @@ export function mcpserver(options = {}) {
     listtools() { return Object.keys(tools).map((name) => ({ name, description: `saddle ${name} tool` })); },
     async handle(request) {
       if (request.method === "tools/list") return { jsonrpc: "2.0", id: request.id, result: { tools: this.listtools() } };
-      if (request.method === "tools/call") { const handler = tools[request.params?.name]; if (!handler) return { jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "tool not found" } }; try { return { jsonrpc: "2.0", id: request.id, result: { content: [{ type: "text", text: JSON.stringify(await handler(request.params.arguments ?? {})) }] } }; } catch (error) { return { jsonrpc: "2.0", id: request.id, error: { code: -32000, message: error.message } }; } }
+      if (request.method === "tools/call") { const handler = tools[request.params?.name]; if (!handler) return { jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "tool not found" } }; try { return { jsonrpc: "2.0", id: request.id, result: { content: [{ type: "text", text: JSON.stringify(await handler(request.params.arguments ?? {})) }] } }; } catch (rawerror) {
+    const error = rawerror as carriererror; return { jsonrpc: "2.0", id: request.id, error: { code: -32000, message: error.message } }; } }
       return { jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "method not found" } };
     }
   };
@@ -212,10 +220,10 @@ export function mcpserver(options = {}) {
  */
 
 /** Creates optional browser tools for an MCP server without selecting Playwright or another vendor. */
-export function browsertools(browser) {
+export function browsertools(browser: unknown) {
   if (typeof browser?.snapshot !== "function" || typeof browser?.action !== "function") throw new TypeError("browser MCP tools require snapshot and action");
   return {
-    browser_snapshot: async (input = {}) => browser.snapshot(input),
-    browser_action: async (input = {}) => browser.action(input)
+    browser_snapshot: async (input: Record<string, unknown> = {}) => browser.snapshot(input),
+    browser_action: async (input: Record<string, unknown> = {}) => browser.action(input)
   };
 }
