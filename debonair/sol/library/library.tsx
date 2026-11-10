@@ -6,25 +6,31 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * library — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the debonair later, with the time its
- * engines, protocols and processes deserve, so the shelf of the old face
- * (the take cards, the cover art wall, the reference rows) is retired and
- * the route answers the honest construction face under the library eyebrow,
- * inside the same app shell (the rail and the transport stay). The engine
- * logics the shelf rode (arrangement, catalog, dawview, playerbus, seed)
- * keep riding their own files untouched — only this page's face changed,
- * nothing was deleted.
+ * library — the detailed engine wave remount (the owner's order the
+ * construction pass pinned, answered): the shelf returns, mounted on the
+ * REAL engine seats through the composite LibraryShelf winget — the take
+ * cards reading the session take store (the engine's own numbers: genre,
+ * bpm, key, duration, seed, the deterministic cover plates and sparkbars),
+ * the audio shelf (the ingested references beside the rendered takes)
+ * pressing the same shared playerbus the shell bar serves, and the site's
+ * sample rows riding the catalog seam. The anchor itself stays the thin
+ * face the construction law pins: it owns no state and imports no engine
+ * module — the shelf winget owns the mount, and while the shelf arms (the
+ * first paint before the session store and the seam land their answer) the
+ * route answers the construction face it wore. The engine logics the shelf
+ * rode (arrangement, catalog, dawview, playerbus, take) keep riding their
+ * own files untouched.
  */
 
 import { label } from "../../labels.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
+import { LibraryShelf } from "../wingets/LibraryShelf.tsx";
 import { Constructionface } from "../../wingets";
 
 /**
- * the library page: the in-construction face under the library eyebrow.
+ * the library page: the real shelf under the library eyebrow.
  *
- * @returns the app shell with the construction face.
+ * @returns the app shell with the shelf mount.
  */
 export default function Library() {
   // the footer links read the label store at render time (the manifest
@@ -36,8 +42,16 @@ export default function Library() {
   ];
 
   return (
-    <Shell name="debonair" contained footerLinks={FOOTER_LINKS} domain="devthink.pro">
-      <Constructionface eyebrow={label("library.eyebrow")} />
+    <Shell name="debonair" contained cta={{ label: label("library.cta"), href: "/generate" }} footerLinks={FOOTER_LINKS} domain="devthink.pro">
+      <p className="eyebrow reveal">{label("library.eyebrow")}</p>
+      <h1 className="reveal page-title">{label("library.title")}</h1>
+      <p className="reveal lede" style={{ maxWidth: 640 }}>
+        {label("library.lede")}
+      </p>
+      {/* the shelf mount rides the real engine; the construction face it
+          wore answers the arming beat — the first paint before the shelf
+          lands its answer (never a fake list, never a dead shelf) */}
+      <LibraryShelf face={<Constructionface eyebrow={label("library.eyebrow")} />} />
     </Shell>
   );
 }
