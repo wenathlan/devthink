@@ -16,7 +16,8 @@ wave opens its pr by theme, merges with squash and the ladder walks on.
 - npmjs registry: all eleven @wenathlan envelopes at 2.0.174, the 2.0.175 publish queued
 - github packages: npm seat saddle and container seat saddle (the 60+ packages law: blocked by the account billing wall — every mirror lane seats a notice and retries idempotently once the quota lifts, never a red)
 - ghcr container images: 4 versions, latest tag 1.8.1 — the 2.0.175 fifteen-lane build is queued on the saddle lanes workflow (the stale-image complaint: healing in flight)
-- local suites: 3,497 green legs over 206 files at the 2.0.175 rung (the 900/1000 vitest law: held)
+- trylle hairline law: confirmed live against the production cdn this wave — the 7.5% oklab mix rides token-level in both themes; the designtokenstrylle record refreshed with the eight drift items the live artifact answered
+- local suites: 3,494 green legs and 4 skips over 205 files walked green this wave after the getry and saddle dependency seats materialized (the 29 reds the fresh sandbox answered were the missing sibling node_modules, not the tree — the seats healed them to zero; the 900/1000 vitest law: held)
 - root of my-project: the family tree only — .github, eleven apps, .gitignore, package.json — the next residue (src, venv, .next, caches) eradicated, the empty node_modules and the stale .env deleted this wave
 - machine seats (gitignored, never staged): upload (the inbox), alan (the competitor corpus, blobless clone with organizado/md seated), Neo.Temp and Neo.img (the design reference seats), .github-token (the credential law)
 - auth: the token captured, embedded in the devthink remote and seated at .github-token — fetch, push and the api all answer it

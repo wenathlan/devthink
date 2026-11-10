@@ -1,8 +1,24 @@
 {
   "fetchedFrom": "https://trylle.com/",
-  "fetchedAt": "2026-05-30",
-  "fetchStatus": "success (HTTP 200 via curl -L, 486995 bytes de HTML; CSS inline no <style>, sem arquivos .css externos)",
+  "fetchedAt": "2026-11-10",
+  "fetchStatus": "success (HTTP 200 via curl -L, 486995 bytes de HTML no registro de 2026-05-30, CSS inline no <style>, sem arquivos .css externos; verificação live de 2026-11-10 contra o artefato de produção https://cdn.trylle.com/marketing/_astro/useProductionMarketingSession.F46zdv58.css fetched to Neo.Temp/trylle/ — o css de marketing agora navega como chunk externo de 290807 bytes, ver drift)",
   "stack": "Astro v7.4.4 + Tailwind CSS v4.3.3 (inline), tema dark ativo por padrão (<html class=\"dark\" data-theme=\"dark\">)",
+  "drift": {
+    "verifiedAt": "2026-11-10",
+    "verifiedAgainst": "https://cdn.trylle.com/marketing/_astro/useProductionMarketingSession.F46zdv58.css (live production artifact, fetched to Neo.Temp/trylle/)",
+    "summary": "8 drift items found against the 2026-05-30 record — the amendment layer over the original sections below; all other recorded traits re-verified intact",
+    "items": {
+      "borderLaw": "--border, --input and --border-illustration are now DEFINED as color-mix(in oklab, var(--foreground) 7.5%, transparent) at token level in both :root and [data-theme=dark], behind @supports (color:color-mix(in lab,red,red)) guards; the old solid oklch(27.4% 0 0) --border remains only as the @supports fallback. Total color-mix uses in file: 442, of which 212 are the guard",
+      "fontStack": "\"Inter Fallback\" dropped from --font-sans (now \"Inter Variable\",\"Inter\",\"Avenir Next\",ui-sans-serif,system-ui,sans-serif)",
+      "keyframes": "@keyframes skeleton-pulse removed (9 keyframes remain: the enter/exit/spin/pulse/accordion/marketing* set)",
+      "destructiveScale": "#ff716b retired; dark uses oklch(39.6% .141 25.723) via --color-red-700, light uses --color-red-600, plus new --form-error-foreground",
+      "lightMutedForeground": "oklch(52.5% 0 0) retired, now var(--color-zinc-600)",
+      "delivery": "the marketing css now ships as an external 290807-byte chunk (was inline ~298KB style block)",
+      "newTokens": "--illustration, --border-illustration, --color-foreground/--color-background, dark --secondary:zinc-800 with light --secondary:sky-100/--secondary-foreground:sky-600, card layering #151517 and color-mix(zinc-800 55%,#000), button-tone shadow stacks, relative-color oklch(from var(--primary) ...) x4, dark --ring:var(--color-zinc-600)",
+      "metaColorNote": "#09090b theme-color meta color absent from the css itself (its oklch(14.1% 0 0) equivalent is present)"
+    },
+    "confirmedIntact": "the full dark palette verbatim, the text/radius/spacing scales, body 13px/450, the hero-peek range, the ease-out curve, the .01ms reduced-motion, and 10 total 7.5% hairline occurrences (7 verbatim var(--foreground) + 3 var(--color-foreground) siblings in .marketing-social* rules)"
+  },
   "fonts": {
     "sans": "\"Inter Variable\", \"Inter\", \"Inter Fallback\", \"Avenir Next\", ui-sans-serif, system-ui, sans-serif",
     "mono": "\"Geist Mono Variable\", \"Fira Code\", monospace",
