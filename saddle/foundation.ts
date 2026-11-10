@@ -9,6 +9,12 @@
  * ./<domain>.js. Every capability of every source file is preserved here;
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
+/** the house error carrier: every typed error of the engine folds carries the
+ * plain Error surface beside the structured fields the callers read (the
+ * code, the retryable flag, the details, the status code, the recovery hint
+ * and the severity the responses and audits answer). */
+type carriererror = Error & { code?: string; retryable?: boolean; details?: unknown; statuscode?: number; recovery?: string; severity?: string; name?: string; message?: string };
+
 
 
 
@@ -48,7 +54,7 @@ export function runnerunavailable(jobid: unknown) {
   return saddleerror(`no runner is available for job ${jobid}`, { code: errorcodes.runnerunavailable, retryable: true, details: { jobid } });
 }
 
-export function aserror(error: unknown, jobid: unknown) {
+export function aserror(error: carriererror, jobid: unknown) {
   if (error?.name === "saddleerror") return error;
   return saddleerror(`job ${jobid} failed`, { code: errorcodes.jobfailed, cause: error, details: { jobid } });
 }
@@ -73,7 +79,7 @@ export const errorcatalog = Object.freeze({
 export function operationerror(kind: unknown, message: string, options: Record<string, unknown> = {}) { const preset = errorcatalog[kind] ?? errorcatalog.config; const error = new Error(message, { cause: options.cause }); error.name = "operationerror"; error.code = options.code ?? preset.code; error.statuscode = options.statuscode ?? preset.statuscode; error.retryable = options.retryable ?? preset.retryable; error.recovery = options.recovery ?? preset.recovery; error.severity = options.severity ?? (error.statuscode >= 500 ? "high" : "medium"); error.details = options.details ?? {}; return error; }
 
 /** Converts unknown failures into the stable operational taxonomy. */
-export function classifyerror(error: unknown) { if (error?.name === "operationerror") return error; const message = String(error?.message ?? error); if (/timeout|aborted/i.test(message)) return operationerror("timeout", message, { cause: error }); if (/dns|enotfound/i.test(message)) return operationerror("dns", message, { cause: error }); return operationerror("config", message, { cause: error }); }
+export function classifyerror(error: carriererror) { if (error?.name === "operationerror") return error; const message = String(error?.message ?? error); if (/timeout|aborted/i.test(message)) return operationerror("timeout", message, { cause: error }); if (/dns|enotfound/i.test(message)) return operationerror("dns", message, { cause: error }); return operationerror("config", message, { cause: error }); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 2: core/events.ts — append only events are the small protocol shared by adapters. */
@@ -305,7 +311,7 @@ function validateevent(value: unknown, index: unknown) {
 function validatecontext(value: unknown, index: unknown) {
   if (value.context !== undefined && (value.context === null || typeof value.context !== "object" || Array.isArray(value.context))) throw validationerror(`session event ${index} context is invalid`);
   const source = value.context ?? value;
-  const context = {};
+  const context: Record<string, unknown> = {};
   for (const name of ["windowid", "tabid", "frameid"]) if (source[name] !== undefined) {
     if (typeof source[name] !== "string" || !source[name]) throw validationerror(`session event ${index} ${name} is invalid`);
     context[name] = source[name];

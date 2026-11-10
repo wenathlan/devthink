@@ -9,6 +9,12 @@
  * ./<domain>.js. Every capability of every source file is preserved here;
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
+/** the house error carrier: every typed error of the engine folds carries the
+ * plain Error surface beside the structured fields the callers read (the
+ * code, the retryable flag, the details, the status code, the recovery hint
+ * and the severity the responses and audits answer). */
+type carriererror = Error & { code?: string; retryable?: boolean; details?: unknown; statuscode?: number; recovery?: string; severity?: string; name?: string; message?: string };
+
 
 import { constanttimeequal, hmacsha256 } from "./foundation.ts";
 
@@ -46,7 +52,7 @@ export const controloperations = Object.freeze([
 /** the message a caught value carries for the wire: an Error answers its
  * message only and every other shape answers the fallback (the caught
  * value as a whole never rides the payload). */
-const controlerrormessage = (error: unknown, fallback: string = "operation failed"): string => {
+const controlerrormessage = (error: carriererror, fallback: string = "operation failed"): string => {
   if (error instanceof Error) return error.message;
   return fallback;
 };
@@ -57,7 +63,8 @@ async function controlrespond({ ok, result, code, message, context, audit }: { o
   if (audit)
     try {
       await audit(response);
-    } catch (error) {
+    } catch (rawerror) {
+    const error = rawerror as carriererror;
       response.auditerror = controlerrormessage(error);
     }
   return response;
@@ -74,7 +81,7 @@ export function controlsurface(options: Record<string, unknown> = {}): Record<st
     if (!controlresources.includes(resource) || !adapters[resource] || typeof adapters[resource] !== "object")
       throw new TypeError(`unsupported control resource: ${resource}`);
 
-  async function execute(request: Record<string, unknown> = {}): Record<string, unknown> {
+  async function execute(request: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
     const resource = String(request.resource ?? "");
     const operation = String(request.operation ?? "");
     if (!controlresources.includes(resource) || !controloperations.includes(operation))
@@ -96,7 +103,8 @@ export function controlsurface(options: Record<string, unknown> = {}): Record<st
     try {
       const result = await handler(request.input ?? {}, context);
       return controlrespond({ ok: true, result, context, audit });
-    } catch (error) {
+    } catch (rawerror) {
+    const error = rawerror as carriererror;
       return controlrespond({
         ok: false,
         code: String(error?.code ?? "CONTROL_FAILED"),
@@ -250,7 +258,7 @@ function redactstack(value: unknown) {
   if (value instanceof Error) return { name: value.name, message: value.message };
   if (Array.isArray(value)) return value.map(redactstack);
   if (value && typeof value === "object") {
-    const out = {};
+    const out: Record<string, unknown> = {};
     for (const [key, item] of Object.entries(value)) if (key !== "stack" && key !== "stackTrace") out[key] = redactstack(item);
     return out;
   }
@@ -260,7 +268,7 @@ function redactstack(value: unknown) {
 export function jsonresponse(data: unknown, options: Record<string, unknown> = {}) { return new Response(JSON.stringify(redactstack(data)), { status: options.status ?? 200, headers: { "content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", ...(options.headers ?? {}) } }); }
 
 /** The failure code a response may carry: the caught value selects from the literal table — an Error object never reaches the wire (its shape answers a known code or the fallback answers), so no stack-derived byte rides the payload the way the exposure gate refused. */
-const responsecode = (error: unknown, fallback: string): string => {
+const responsecode = (error: carriererror, fallback: string): string => {
   const code = (error as { code?: unknown } | null | undefined)?.code;
   switch (typeof code === "string" ? code : "") {
     case "UNAUTHORIZED": return "UNAUTHORIZED";
@@ -326,7 +334,7 @@ export function sseencode(event: Record<string, unknown>) {
 }
 
 export function ssedecode(chunk: unknown) {
-  const fields = {};
+  const fields: Record<string, unknown> = {};
   for (const line of String(chunk).split(/\r?\n/)) {
     const index = line.indexOf(":");
     if (index < 0) continue;
@@ -382,7 +390,8 @@ export function controlservice(options: Record<string, unknown> = {}): Record<st
       const input = typeof request.json === "function" ? await request.json() : {};
       const result = await controls.execute(input);
       return jsonresponse({ requestid: context.requestid, data: result }, { status: result.ok ? 200 : 409 });
-    } catch (error) {
+    } catch (rawerror) {
+    const error = rawerror as carriererror;
       console.error(error);
       return errorresponse(responsecode(error, "CONTROL_REQUEST_FAILED"), "control request failed", { status: error?.code === "UNAUTHORIZED" ? 401 : 400, requestid: context.requestid });
     }
@@ -421,7 +430,8 @@ export function deliveryqueue(options: Record<string, unknown> = {}): Record<str
     while (record.attempts < maxattempts) {
       record.attempts += 1;
       try { record.result = await handler(input.event, input); record.status = "delivered"; record.updatedat = Date.now(); return { ...record }; }
-      catch (error) { record.error = { code: String(error.code ?? "DELIVERY_FAILED"), message: String(error.message ?? error), retryable: Boolean(error.retryable) }; if (!error.retryable) break; }
+      catch (rawerror) {
+    const error = rawerror as carriererror; record.error = { code: String(error.code ?? "DELIVERY_FAILED"), message: String(error.message ?? error), retryable: Boolean(error.retryable) }; if (!error.retryable) break; }
     }
     record.status = "dead";
     dead.push({ ...record });

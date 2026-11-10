@@ -9,6 +9,12 @@
  * ./<domain>.js. Every capability of every source file is preserved here;
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
+/** the house error carrier: every typed error of the engine folds carries the
+ * plain Error surface beside the structured fields the callers read (the
+ * code, the retryable flag, the details, the status code, the recovery hint
+ * and the severity the responses and audits answer). */
+type carriererror = Error & { code?: string; retryable?: boolean; details?: unknown; statuscode?: number; recovery?: string; severity?: string; name?: string; message?: string };
+
 
 import { jsondecode, jsonencode } from "./communication.ts";
 
@@ -32,7 +38,8 @@ export function transport(options: Record<string, unknown> = {}): Record<string,
         const response = await fetcher(url, { ...init, signal: init.signal ?? controller.signal });
         if (response.ok || !retrycodes.has(response.status) || attempt === attempts - 1) return response;
         last = new Error(`request failed with ${response.status}`);
-      } catch (error) {
+      } catch (rawerror) {
+    const error = rawerror as carriererror;
         last = error;
         if (attempt === attempts - 1) throw error;
       } finally { clearTimeout(timer); }
@@ -198,7 +205,8 @@ export function mcpserver(options: Record<string, unknown> = {}): Record<string,
     listtools() { return Object.keys(tools).map((name) => ({ name, description: `saddle ${name} tool` })); },
     async handle(request) {
       if (request.method === "tools/list") return { jsonrpc: "2.0", id: request.id, result: { tools: this.listtools() } };
-      if (request.method === "tools/call") { const handler = tools[request.params?.name]; if (!handler) return { jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "tool not found" } }; try { return { jsonrpc: "2.0", id: request.id, result: { content: [{ type: "text", text: JSON.stringify(await handler(request.params.arguments ?? {})) }] } }; } catch (error) { return { jsonrpc: "2.0", id: request.id, error: { code: -32000, message: error.message } }; } }
+      if (request.method === "tools/call") { const handler = tools[request.params?.name]; if (!handler) return { jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "tool not found" } }; try { return { jsonrpc: "2.0", id: request.id, result: { content: [{ type: "text", text: JSON.stringify(await handler(request.params.arguments ?? {})) }] } }; } catch (rawerror) {
+    const error = rawerror as carriererror; return { jsonrpc: "2.0", id: request.id, error: { code: -32000, message: error.message } }; } }
       return { jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "method not found" } };
     }
   };
