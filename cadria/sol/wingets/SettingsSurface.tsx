@@ -72,6 +72,17 @@ export function SettingsSurface({ face }: SettingsSurfaceProps) {
     setSeated(true);
   }, []);
 
+  /** asks the gateway for health; the answer lands in the quiet readout.
+   * The hook rides the top-level seat the arming guard never strands: the
+   * early return below answers the first paint alone, so every hook of the
+   * mount stays unconditional the way the react law demands. */
+  const checkHealth = useCallback(async () => {
+    setHealth("checking");
+    const online = await gatewayHealth();
+    setHealth(online ? "online" : "offline");
+    toast.show(online ? label("settings.onlineToast") : label("settings.offlineToast"), online ? "success" : "error");
+  }, [toast]);
+
   // the arming beat: the session seats have not landed yet — the route
   // answers the face it wore (never a preferences column answering state
   // it never read)
@@ -98,14 +109,6 @@ export function SettingsSurface({ face }: SettingsSurfaceProps) {
     setHealth("unknown");
     toast.show(label("settings.gateway.savedToast").replace("{url}", saved), "info");
   };
-
-  /** asks the gateway for health; the answer lands in the quiet readout. */
-  const checkHealth = useCallback(async () => {
-    setHealth("checking");
-    const online = await gatewayHealth();
-    setHealth(online ? "online" : "offline");
-    toast.show(online ? label("settings.onlineToast") : label("settings.offlineToast"), online ? "success" : "error");
-  }, [toast]);
 
   return (
     <div className="stack" style={{ marginTop: 26, maxWidth: 640 }}>
