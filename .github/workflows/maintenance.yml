@@ -376,69 +376,21 @@ jobs:
           git switch -C "$BRANCH"
           git config user.name "iakadion"
           git config user.email "ogenhoanimation01@gmail.com"
-          # the staged set answers every file the metadata family stamps:
-          # the application lockstep (release.mjs sync) and the 2.0.46
-          # family envelopes beside it — a rung missing one stamped file
-          # would answer drift red in the verify pipeline below. the flat
-          # typed folder law (the tests → testes move) renamed the freeze
-          # and permission baselines from the retired devthink/test/*.json
-          # artifacts into the dense typescript modules of the testes
-          # folder, so the staged set carries the modules the freeze steps
-          # above now rewrite — the dead json pathspecs answered "pathspec
-          # did not match" and the rung died at the landing.
-          git add \
-            package.json \
-            devthink/CHANGELOG.md \
-            devthink/README.md \
-            devthink/package.json \
-            devthink/bun.lock \
-            devthink/.nvmrc \
-            devthink/Dockerfile \
-            devthink/deno.json \
-            devthink/version.ts \
-            devthink/devthink.gemspec \
-            devthink/devthink.java \
-            devthink/devthinkcli.cs \
-            devthink/manifest.json \
-            devthink/tauri.conf.json \
-            devthink/design.html \
-            devthink/index.html \
-            devthink/pom.xml \
-            devthink/devthink.csproj \
-            devthink/docs \
-            devthink/test/freezebaseline.ts \
-            devthink/test/permbaseline.ts \
-            devthink/docs/releasenotes.md \
-            .github/workflows \
-            argan/package.json \
-            argan/argan.csproj \
-            argan/argan.gemspec \
-            argan/argan.java \
-            argan/pom.xml \
-            argan/Dockerfile \
-            cadria/package.json \
-            cadria/cadria.csproj \
-            cadria/cadria.gemspec \
-            cadria/cadria.java \
-            cadria/pom.xml \
-            cadria/Dockerfile \
-            cobaia/package.json \
-            debonair/package.json \
-            debonair/debonair.csproj \
-            debonair/debonair.gemspec \
-            debonair/debonair.java \
-            debonair/pom.xml \
-            debonair/Dockerfile \
-            getry/package.json \
-            stealthhead/package.json \
-            stealthhead/stealthhead.csproj \
-            stealthhead/stealthhead.gemspec \
-            stealthhead/stealthhead.java \
-            stealthhead/pom.xml \
-            forge/package.json \
-            foundry/package.json \
-            saddle/package.json \
-            vault/package.json
+          # the whole-tree staging law: the family grew past the explicit
+          # list this landing once carried — the rung now walks the eleven
+          # manifests with their locks (the ten bun locks beside the
+          # saddle npm lock the family refresh regenerates), the twelve
+          # certification records the records:sync walk re-stamps, the
+          # readiness seat the foundry root owns and the digest stamps
+          # the container images carry — an explicit list missed one
+          # seat each rung the family gained, and the branch shipped a
+          # manifest whose own frozen install refused (the family suites
+          # reddened at the install step, the config parity cell walked
+          # stale floors) while the post-close switch refused on the
+          # unstaged stragglers. The ignore law keeps the tree safe for
+          # the whole walk: node_modules, distpackage, the databases and
+          # the upload seat never stage, so -A answers exactly the rung.
+          git add -A
           git commit -m "chore: land the automated maintenance rung v${NEXT}"
           # the archive tag preserves the automation branch verbatim before
           # the squash merge replaces it, so the ladder keeps its history
