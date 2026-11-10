@@ -384,3 +384,40 @@ seats — no new substantive directive beyond the laws this map carries.
   carried 50 releases and 2,297 assets with zero drafts on the walking
   page, the thousand-assets law holding twenty-four times over at the
   last full census.
+
+## the 2.0.177 webpack rung (the corridor clarification closed whole)
+
+- the webpack doctrine the corridor clarified rides its own workflow now:
+  the webpack the platform speaks is THE WORKFLOW THAT CREATES THE WEBPACK
+  DISTRIBUTION (the github actions seat, never a file naming flavor), the
+  reason every envelope carries the webpack cli and its dependencies.
+- the DevThink Webpack workflow (.github/workflows/webpack.yml) answers the
+  six registry matrices the distribution law stamps — NuGet x Webpack,
+  Maven x Webpack, Gradle x Webpack, npmjs x Webpack, RubyGems x Webpack
+  and GitHub Packages x Webpack — for every one of the eleven applications:
+  sixty-six webpack seats every rung beside the eleven bundles the census
+  law counts, all behind the release approval gate.
+- the bundle seat builds once per rung (the esbuild carrier transpiles the
+  cli entry with the packages external, the webpack cli bundles the
+  generated config into the .cjs commonjs2 seat the type module trees
+  never break), the registry lanes never re-installing the tree.
+- the identification law holds: @wenathlan/<app>.webpack on the npm seats,
+  the webpack classifier beside the family jar on maven, the
+  com.wenathlan.<app>.webpack artifactId on gradle, the <app>.webpack
+  packageId on nuget, the gemspec derivation on rubygems — dots, never
+  hyphens, never colliding with the saddle-webpack hyphen seat the
+  containers wave owns or the family documentation envelopes.
+- the honest notices hold: the absent NPM_TOKEN skip alone, the billing
+  wall mirror seats that never redden, the existence pre-checks and the
+  bounded three attempt retries on every lane.
+- the certification on the 2.0.177 rung: the webpacklanes battery answers
+  11 green legs, the actionlint walk answers the new workflow clean under
+  the house config, the metadata check answers drift false, the full
+  devthink suite answers 3,562 green legs over 209 files with the sibling
+  seats installed, the tsc walk answers zero errors and the smoke seat
+  proves the argan leg whole (the commonjs2 seat executing the argan
+  console under the house design).
+- the ground numbers at the rung: 1,634 commits (the 1,600 law exceeded by
+  thirty-four), the twelve manifests walking 2.0.177 in lockstep with the
+  sync cascade stamping the language carriers, the container files and the
+  certification records whole.
