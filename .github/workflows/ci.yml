@@ -305,9 +305,14 @@ jobs:
           # 512-byte stub floor — the family pnpmboot lock joins them
           # (the nine pnpm images provision the one pinned pnpm from the
           # same hash-verified lock, the digest-pinning law of the
-          # security heal).
+          # security heal); the vault corpora join the same deliberate
+          # set (the eleven-root standardization seats the protocols.types
+          # wire catalog and the mime.types corpus byte-identical in
+          # every app dir — the owner's configurable-items law the
+          # storage engine owns, the same standardization the golden-table
+          # law holds trivially under identity).
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/test/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/test/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$|/protocols\.types$|/mime\.types$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then
