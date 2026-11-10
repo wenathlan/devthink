@@ -90,7 +90,7 @@ jobs:
           # alone: every floor probe reads one hop up from the app root,
           # so the app copy #501 emptied never reddens the ladder again.
           npm_version="$(node -p "const m=String(require('../package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
-          npm install --global "npm@${npm_version}"
+          npx --yes "npm@${npm_version}" install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
@@ -516,7 +516,8 @@ jobs:
         run: |
           set -euo pipefail
           npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
-          npm install --global "npm@${npm_version}"
+          npx --yes "npm@${npm_version}" install --global "npm@${npm_version}"
+          echo "npm_version=${npm_version}" >> "$GITHUB_ENV"
       - name: Install root dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: Install the gateway family dependencies
@@ -548,7 +549,7 @@ jobs:
           set -euo pipefail
           cd /tmp/devthink-consumer-smoke/consumer
           npm init -y >/dev/null
-          npm install ../pack/wenathlan-getry-*.tgz ../pack/wenathlan-devthink-*.tgz
+          npx --yes "npm@${npm_version}" install ../pack/wenathlan-getry-*.tgz ../pack/wenathlan-devthink-*.tgz
       - name: Run the library smoke as the consumer
         run: |
           set -euo pipefail

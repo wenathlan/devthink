@@ -430,8 +430,25 @@ function parseTtl(token: string): number {
   if (token.length > TTLTOKENLIMIT) return Number.NaN;
   if (/^\d+$/.test(token)) return Number.parseInt(token, 10);
   const lower = token.toLowerCase();
-  const units = lower.match(/\d+[smhdw]/g);
-  if (!units || units.join("") !== lower) return Number.NaN;
+  // the linear unit scan (the redos heal): the old global regex walked
+  // back over every digit of a unit-less token before advancing, a
+  // polynomial cost on crafted inputs - the manual walk visits each
+  // character exactly once and answers the same units list.
+  const units: string[] = [];
+  let index = 0;
+  while (index < lower.length) {
+    const start = index;
+    while (index < lower.length && lower.charCodeAt(index) >= 48 && lower.charCodeAt(index) <= 57) index += 1;
+    if (index === start) {
+      index += 1;
+      continue;
+    }
+    if (index < lower.length && TTLUNITS[lower[index]] !== undefined) {
+      units.push(lower.slice(start, index + 1));
+    }
+    index += 1;
+  }
+  if (units.length === 0 || units.join("") !== lower) return Number.NaN;
   return units.reduce((total, part) => total + Number.parseInt(part, 10) * TTLUNITS[part.slice(-1)], 0);
 }
 

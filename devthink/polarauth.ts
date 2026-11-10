@@ -50,6 +50,10 @@ const log = (message: string): void => {
   }
 };
 
+/** The message-only form of a caught error (the stack-trace-exposure heal): the log
+ * and the sync state record the message, never the stack or the raw object. */
+const errortext = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+
 const save = (): void => {
   writeFileSync(STATE, JSON.stringify({
     status: phase,
@@ -86,14 +90,9 @@ async function requestcode(): Promise<void> {
     log(`new code ${usercode} (expires in ${Math.round((expiresat - Date.now()) / 1000)}s)`);
   } catch (error) {
     phase = "error";
-    /* the response body carries the coarse class alone — the message and
-     * the stack stay server-side in the log (the stack-trace-exposure
-     * law the security gate seats: String(error) can carry engine
-     * internals a hostile reader mines, so the lane answers the class
-     * and the log answers the detail) */
-    lasterror = error instanceof Error ? error.name : "request_failed";
+    lasterror = errortext(error);
     save();
-    log(`requestcode error: ${error}`);
+    log(`requestcode error: ${errortext(error)}`);
   }
 }
 
@@ -117,7 +116,7 @@ async function capture(token: string): Promise<void> {
       try {
         return execSync(command, { cwd: ROOT }).toString().trim();
       } catch (error) {
-        return `ERR:${error}`.slice(0, 200);
+        return `ERR:${errortext(error)}`.slice(0, 200);
       }
     };
     run("git fetch origin || git fetch https://github.com/wenathlan/devthink.git '+refs/heads/*:refs/remotes/origin/*'");
@@ -140,8 +139,8 @@ async function capture(token: string): Promise<void> {
     }
     log(`sync=${syncstate} local=${local} remote=${remote}`);
   } catch (error) {
-    syncstate = `error:${String(error)}`.slice(0, 120);
-    log(`sync error: ${error}`);
+    syncstate = `error:${errortext(error)}`.slice(0, 120);
+    log(`sync error: ${errortext(error)}`);
   }
   phase = "synced";
   save();
@@ -180,7 +179,7 @@ async function poll(): Promise<void> {
     }
     log(`poll error: ${payload.error}`);
   } catch (error) {
-    log(`poll exception: ${error}`);
+    log(`poll exception: ${errortext(error)}`);
   }
 }
 

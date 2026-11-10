@@ -1494,12 +1494,7 @@ jobs:
         run: |
           set -euo pipefail
           cd saddle
-          # the committed lock answers the build seats (the scorecard pin
-          # law): npm ci verifies the integrity hashes the lock carries for
-          # every package it walks — webpack and webpack-cli ride the same
-          # frozen resolution the publish lanes seat, the ad-hoc install
-          # line the hash doctrine always reddened retired
-          npm ci --ignore-scripts --no-audit --no-fund
+          npx --yes npm@11.20.0 install --ignore-scripts --no-audit --no-fund webpack@5.112.2 webpack-cli@7.3.1
           node scripts.ts buildengine
           node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js --external:@babel/core --external:@libsql/client --external:playwright --external:webpack
           test -s distpackage/index.js

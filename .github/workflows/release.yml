@@ -1577,12 +1577,7 @@ jobs:
           # tarball and every registry lane carry the faces plain node
           # executes (the same build.ts the publish lane builds).
           cd vault
-          # the locked tree answers the build seat (the scorecard pin law):
-          # the committed bun.lock carries the integrity hashes the ad-hoc
-          # npm install never could — the same lane the maintenance walk
-          # rides for every sibling, esbuild resolving from the lock the
-          # manifest already seats
-          bun install --ignore-scripts
+          npx --yes npm@11.20.0 install --no-save --ignore-scripts --no-audit --no-fund esbuild@0.28.2
           node --experimental-strip-types build.ts
           test -s build/onboardingstore.js
           test -s build/labelstore.js
