@@ -88,6 +88,17 @@ export const LABEL_MANIFEST = {
   "home.quad.engineLine2": "{standard} · {dbtp} dBTP",
   "home.songcard.playAria": "Play {name}",
   "home.songcard.playTitle": "Play {name} — {genre} · {duration}",
+  // the landing strip of the detailed engine wave (the composite home
+  // surface): the second entry key, the shelf count and the honest shelf
+  // states the catalog seam answers (empty, silent, the retry)
+  "home.cta.ingest": "Ingest a track",
+  "home.rail.count": "{count} on the shelf",
+  "home.rail.emptyTitle": "Nothing on the shelf yet",
+  "home.rail.emptyLine": "Render a take in the composer — the vitrine fills when the publish lane lands one.",
+  "home.rail.openGenerate": "Open the composer",
+  "home.rail.offlineTitle": "The catalog seam is silent",
+  "home.rail.offlineLine": "The rows ride the site db over the catalog lane — it did not answer this time.",
+  "home.rail.retry": "Retry the read",
   // the vitrine genre cards of the home (the trained profile rows the
   // catalog seam serves; the untrained card wears the honest empty face)
   "home.vitrine.eyebrow": "the vitrine",
@@ -299,6 +310,7 @@ export const LABEL_MANIFEST = {
   "generate.lane.rendering": "rendering · {phase} · {percent}%",
   "generate.lane.composed": "composed — the render needs the gateway",
   "generate.lane.failed": "failed · {error}",
+  "generate.lane.jobFailed": "the job failed without a message",
   "generate.lane.timeout": "the render kept silent past the poll window",
   "generate.lane.walkFailed": "the walk failed",
   "generate.render.meta": "{key} · {bpm} bpm · {bars} bars · {clock} · {kb} kB · salt {salt} · {voice}",
@@ -416,6 +428,11 @@ export const LABEL_MANIFEST = {
   "ingest.toast.dropRefused": "the drop refused: {message}",
   "ingest.shelf.iaLine":
     "the system ia lane posts the same route with the service identity — the reference library grows without a human",
+  // the bench summary of the detailed engine wave (the composite ingest
+  // surface): the document line the engine's own header answers and the
+  // honest refusal note the bench surfaces
+  "ingest.doc.summary": "{bpm} bpm · {key} · {lufs} LUFS · {frames} vector frames · {stems} stems",
+  "ingest.bench.refused": "the bench refused this file — {message}",
   // the intro page anchor (the akash-floor splash)
   "intro.aria": "debonair is opening",
   "intro.name": "debonair",
@@ -447,6 +464,10 @@ export const LABEL_MANIFEST = {
   "library.toast.dropped": "{name} left the shelf",
   "library.samples.aria": "Sample rows",
   "library.samples.head": "site samples — served content rows",
+  "library.samples.empty": "The sample bank answered empty — the site db carries no library rows yet.",
+  "library.samples.offlineTitle": "The catalog seam is silent",
+  "library.samples.offlineLine": "The sample rows ride the site db over the catalog lane — it did not answer this time.",
+  "library.samples.retry": "Retry the read",
   "library.formats.title": "Formats",
   "library.formats.lead":
     "Takes carry the engine mastering spec — 48 kHz WAV with −1 dBTP true peak and per-platform loudness targets (Spotify −14 / Apple −16 / Beatport −9 LUFS). Stems and MIDI bounce per take ride the export wave of the ",
@@ -487,6 +508,17 @@ export const LABEL_MANIFEST = {
   "settings.toast.motionOff": "Motion restored for this session",
   "settings.toast.cleaned": "URL cleaned — no hash, no trackers",
   "settings.toast.saved": "Preferences saved locally",
+  // the about ledger of the detailed engine wave (the composite settings
+  // surface): the version row reads the canonical version module the
+  // release sync stamps (never a hand-synced literal)
+  "settings.about.head": "About",
+  "settings.about.version": "version",
+  "settings.about.engine": "engine",
+  "settings.about.engineValue": "kathesis — the audio engine of the family",
+  "settings.about.storage": "storage",
+  "settings.about.storageValue": "session only — nothing writes to this machine",
+  "settings.about.license": "license",
+  "settings.about.domain": "domain",
   // the onboarding page anchor (the first-run frames)
   "onboarding.aria": "debonair first run",
   "onboarding.title": "welcome to debonair",

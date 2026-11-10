@@ -6,30 +6,24 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * ingest — the detailed engine wave remount (the owner's order the
- * construction pass pinned, answered): the decomposition bench returns,
- * mounted on the REAL engine seats through the composite IngestBench
- * winget — the dropzone posting the upload route with the owner stamp, the
- * phase meter reading the polled job row (the same six phases the worker
- * walks), the document cards carrying the engine's own numbers (rms, peak,
- * onsets, frames, the pcm hash), the stem audition soloing through the
- * shared bus, and the reference shelf merging the gateway rows with the
- * offline mirror. The anchor itself stays the thin face the construction
- * law pins: it owns no state and imports no engine module — the bench
- * winget owns the mount, and while the shelf arms (the first paint before
- * the ingest store lands its answer) the route answers the construction
- * face it wore. The engine logics the bench rode (blobstore, coverpalette,
- * gatewayapi, ingest, kathesis, playerbus, wavwriter) keep riding their
- * own files untouched.
+ * ingest — the detailed engine wave (the owner order of the waves, landed):
+ * the decomposition bench rides the real engine lanes again — the
+ * IngestSurface composite winget (one mount: the dropzone, the phase meter
+ * of the engine's own walk, the document summary the engine answers, the
+ * store key over the gateway/mirror lanes and the shelf of the ingest
+ * records) answers the route inside the same app shell, with the
+ * construction face carried as its arming face (the first paint before
+ * the shelf read lands). The engine lanes the bench rode (ingest,
+ * kathesis, playerbus, wavwriter) keep riding their own files untouched —
+ * only this page's mount changed, nothing was deleted.
  */
 
 import { label } from "../../labels.ts";
+import { Constructionface, IngestSurface } from "../../wingets";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { IngestBench } from "../wingets/IngestBench.tsx";
-import { Constructionface } from "../../wingets";
 
 /**
- * the ingest page: the decomposition bench under the ingest eyebrow.
+ * the ingest page: the real decomposition bench under the ingest eyebrow.
  *
  * @returns the app shell with the bench mount.
  */
@@ -44,10 +38,10 @@ export default function Ingest() {
 
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} domain="devthink.pro">
-      {/* the bench mount rides the real engines; the construction face it
+      {/* the bench mount rides the real engine; the construction face it
           wore answers the arming beat — the first paint before the shelf
-          lands its answer (never a fake meter, never a dead bench) */}
-      <IngestBench face={<Constructionface eyebrow={label("ingest.eyebrow")} />} />
+          read lands (never a fake document, never a dead bench) */}
+      <IngestSurface face={<Constructionface eyebrow={label("ingest.eyebrow")} />} />
     </Shell>
   );
 }
