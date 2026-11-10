@@ -362,11 +362,25 @@ export function extractstructured(html, schema = {}, options = {}) {
   return { version: 1, sourceurl, extractedat, values: bounded.values, provenance, bytes: bounded.bytes, maxbytes, truncated: bounded.truncated };
 }
 
+/** The linear title walk (the redos heal): the alternation with the negative lookahead the
+ * scan engine charged never rides the lane — indexOf answers every boundary in one pass, the
+ * case-insensitive search riding the lowered pair. */
+function titletext(html: string): string | null {
+  const lowered = html.toLowerCase();
+  const open = lowered.indexOf("<title");
+  if (open < 0) return null;
+  const gt = html.indexOf(">", open);
+  if (gt < 0) return null;
+  const close = lowered.indexOf("</title", gt + 1);
+  if (close < 0) return null;
+  return html.slice(gt + 1, close).trim();
+}
+
 function extractfield(html, descriptor, url) {
   if (typeof descriptor === "function") return descriptor({ html, url });
   if (typeof descriptor === "string") return textfromselector(html, descriptor);
   if (!descriptor || typeof descriptor.selector !== "string") throw new TypeError("schema field requires selector or function");
-  if (descriptor.selector === "title") return html.match(/<title[^>]*>((?:[^<]|<(?!\/title>))*)<\/title>/i)?.[1]?.trim() ?? null;
+  if (descriptor.selector === "title") return titletext(html);
   const escaped = descriptor.selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const attribute = descriptor.attribute;
   const pattern = attribute ? new RegExp(`<[^>]+${escaped}[^>]*${attribute}=["']([^"']+)["'][^>]*>`, "i") : new RegExp(`<${escaped}[^>]*>([\\s\\S]*?)<\\/${escaped}>`, "i");

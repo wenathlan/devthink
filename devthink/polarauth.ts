@@ -51,8 +51,9 @@ const log = (message: string): void => {
 };
 
 /** The message-only form of a caught error (the stack-trace-exposure heal): the log
- * and the sync state record the message alone — never the stack, never the raw
- * object, never the stringify of an unknown value the taint tracker cannot narrow. */
+ * lane records the message alone — never the stack, never the raw object, never the
+ * stringify of an unknown value the taint tracker cannot narrow — while the response
+ * surface carries fixed error codes only, nothing derived from the caught value. */
 const errortext = (error: unknown): string => {
   if (error instanceof Error) return error.message;
   if (typeof error === "string") return error;
@@ -95,7 +96,7 @@ async function requestcode(): Promise<void> {
     log(`new code ${usercode} (expires in ${Math.round((expiresat - Date.now()) / 1000)}s)`);
   } catch (error) {
     phase = "error";
-    lasterror = errortext(error);
+    lasterror = "requestcode-failed";
     save();
     log(`requestcode error: ${errortext(error)}`);
   }
@@ -121,7 +122,8 @@ async function capture(token: string): Promise<void> {
       try {
         return execSync(command, { cwd: ROOT }).toString().trim();
       } catch (error) {
-        return `ERR:${errortext(error)}`.slice(0, 200);
+        log(`run error: ${errortext(error)}`);
+        return "ERR:git-command-failed";
       }
     };
     run("git fetch origin || git fetch https://github.com/wenathlan/devthink.git '+refs/heads/*:refs/remotes/origin/*'");
@@ -144,7 +146,7 @@ async function capture(token: string): Promise<void> {
     }
     log(`sync=${syncstate} local=${local} remote=${remote}`);
   } catch (error) {
-    syncstate = `error:${errortext(error)}`.slice(0, 120);
+    syncstate = "error:sync-failed";
     log(`sync error: ${errortext(error)}`);
   }
   phase = "synced";
