@@ -81,25 +81,38 @@ const HEALTHLANE: Record<string, RegExp> = {
 };
 
 describe("the eleven roots carry the container configuration law", () => {
-  it("stamps nginx.conf, docker-compose.yml, docker.config and Dockerfile at every app root", () => {
+  it("stamps the single Dockerfile and nginx.conf at every app root — the consolidation dissolved the standalone pair", () => {
     for (const app of FAMILY) {
-      for (const file of ["Dockerfile", "docker-compose.yml", "nginx.conf", "docker.config"] as const) {
+      for (const file of ["Dockerfile", "nginx.conf"] as const) {
         assert.ok(
           existsSync(new URL(`../../${app}/${file}`, import.meta.url)),
           `${app}/${file} must sit at the application root`,
         );
       }
+      /* the one-dockerfile consolidation law: the compose and config the
+       * owner standardization dissolved never return as standalone seats —
+       * the saddle engine alone keeps its docker.config (the containerization
+       * catalog the orchestrator and the specs battery read, the sibling of
+       * the qemu and passage configs — engine data, never a deploy manifest:
+       * the content-adaptation law the standardization carries). */
+      const dissolvedfiles = app === "saddle" ? (["docker-compose.yml"] as const) : (["docker-compose.yml", "docker.config"] as const);
+      for (const dissolved of dissolvedfiles) {
+        assert.ok(
+          !existsSync(new URL(`../../${app}/${dissolved}`, import.meta.url)),
+          `${app}/${dissolved} must not return — the deploy pair rides the Dockerfile`,
+        );
+      }
     }
   });
 
-  it("keeps one distinct host door per family face — no two composes claim the same port", () => {
+  it("keeps one distinct host door per family face — no two deploy labels claim the same port", () => {
     const doors = Object.values(HOSTDOOR);
     assert.equal(new Set(doors).size, doors.length, "the host doors never collide");
     for (const app of FAMILY) {
-      const compose = read(app, "docker-compose.yml");
+      const dockerfile = read(app, "Dockerfile");
       assert.ok(
-        compose.includes(`"${HOSTDOOR[app]}:8080"`),
-        `${app}/docker-compose.yml must publish the face on ${HOSTDOOR[app]}:8080`,
+        dockerfile.includes(`wenathlan.deploy.hostdoor="${HOSTDOOR[app]}"`),
+        `${app}/Dockerfile must label the face door ${HOSTDOOR[app]}`,
       );
     }
   });
@@ -145,69 +158,69 @@ describe("the nginx face law (the vault pattern every conf carries)", () => {
   });
 });
 
-describe("the compose pair law (the vault precedent every app seats)", () => {
+describe("the deploy pair law (the consolidated stanza every Dockerfile seats)", () => {
   it("wires the engine beside the face with the health gate and the real health lane", () => {
     for (const app of FAMILY) {
-      const compose = read(app, "docker-compose.yml");
+      const dockerfile = read(app, "Dockerfile");
       const { engine, face } = pairOf(app);
-      assert.ok(compose.includes("services:"), `${app}/docker-compose.yml declares services`);
+      assert.ok(dockerfile.includes("services:"), `${app}/Dockerfile documents the deploy services`);
       assert.ok(
-        new RegExp(`^  ${engine}:$`, "m").test(compose),
-        `${app}/docker-compose.yml seats the ${engine} service`,
+        new RegExp(`^#     ${engine}:$`, "m").test(dockerfile),
+        `${app}/Dockerfile seats the ${engine} service of the stanza`,
       );
       assert.ok(
-        new RegExp(`^  ${face}:$`, "m").test(compose),
-        `${app}/docker-compose.yml seats the ${face} service`,
+        new RegExp(`^#     ${face}:$`, "m").test(dockerfile),
+        `${app}/Dockerfile seats the ${face} service of the stanza`,
       );
       assert.ok(
-        compose.includes("condition: service_healthy"),
-        `${app}/docker-compose.yml gates the face on the engine health lane`,
+        dockerfile.includes("condition: service_healthy"),
+        `${app}/Dockerfile gates the face on the engine health lane`,
       );
       assert.match(
-        compose,
+        dockerfile,
         HEALTHLANE[app],
-        `${app}/docker-compose.yml documents the real health lane the engine image rides`,
+        `${app}/Dockerfile documents the real health lane the engine image rides`,
       );
       assert.ok(
-        compose.includes("restart: unless-stopped"),
-        `${app}/docker-compose.yml keeps the pair answering across host reboots`,
+        dockerfile.includes("restart: unless-stopped"),
+        `${app}/Dockerfile keeps the pair answering across host reboots`,
+      );
+      assert.ok(
+        dockerfile.includes(`"${HOSTDOOR[app]}:8080"`),
+        `${app}/Dockerfile publishes the face on ${HOSTDOOR[app]}:8080`,
       );
     }
   });
 });
 
-describe("the docker.config law (the saddle meta format every app stamps)", () => {
-  it("answers the meta format with the version the app manifest declares", () => {
+describe("the container config law (the wenathlan labels every Dockerfile stamps)", () => {
+  it("answers the config manifest with the version the app manifest declares", () => {
     for (const app of FAMILY) {
-      const raw = read(app, "docker.config");
-      let meta: {
-        name: string;
-        title: string;
-        version: string;
-        date: string;
-        language: string;
-        sources: string[];
-        mergeReport: Record<string, unknown>;
-      };
-      try {
-        meta = JSON.parse(raw).meta;
-      } catch (error) {
-        assert.fail(`${app}/docker.config must parse as json: ${(error as Error).message}`);
-      }
-      assert.equal(meta.name, "docker.config", `${app}/docker.config names the seat`);
-      assert.ok(
-        meta.title.startsWith(app),
-        `${app}/docker.config titles the app honestly`,
+      const dockerfile = read(app, "Dockerfile");
+      const version = (JSON.parse(read(app, "package.json")) as { version: string }).version;
+      assert.match(
+        dockerfile,
+        new RegExp(`wenathlan\\.config\\.title="${app}[^"]*"`),
+        `${app}/Dockerfile titles the app honestly`,
       );
-      const manifest = JSON.parse(read(app, "package.json")) as { version: string };
-      assert.equal(meta.version, manifest.version, `${app}/docker.config carries the manifest version`);
-      assert.equal(meta.date, "2026-11-06", `${app}/docker.config carries the wave date`);
-      assert.equal(meta.language, "en", `${app}/docker.config carries the language`);
+      /* the label rides the ARG the lockstep stamps — the default must
+       * answer the manifest version the way every ARG seat does. */
       assert.ok(
-        Array.isArray(meta.sources) && meta.sources.length > 0 && meta.sources.every((s) => typeof s === "string"),
-        `${app}/docker.config lists the real sources`,
+        new RegExp(`wenathlan\\.config\\.version="\\$\\{${app.toUpperCase()}_VERSION\\}"`).test(dockerfile),
+        `${app}/Dockerfile labels the version through the stamped ARG`,
       );
-      assert.ok(meta.mergeReport, `${app}/docker.config carries the merge report`);
+      assert.ok(
+        dockerfile.includes(`ARG ${app.toUpperCase()}_VERSION=${version}`),
+        `${app}/Dockerfile carries the manifest version as the ARG default`,
+      );
+      assert.ok(
+        dockerfile.includes('wenathlan.config.language="en"'),
+        `${app}/Dockerfile carries the language`,
+      );
+      assert.ok(
+        dockerfile.includes('wenathlan.deploy.engineport="8080"'),
+        `${app}/Dockerfile labels the engine door`,
+      );
     }
   });
 });

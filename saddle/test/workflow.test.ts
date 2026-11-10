@@ -730,49 +730,49 @@ describe("the workflow contract", () => {
   /* gate 8: the container pair contract (the nginxfamily law)           */
   /* ------------------------------------------------------------------ */
 
-  it("ci gate container: the Dockerfile and compose pair carry the family container contract", () => {
-    /* the nginxfamily wave reconciles the container law the gateway 1.1.5
-     * standard once wrote: the compose is no longer merged into the
-     * Dockerfile — every one of the eleven roots seats docker-compose.yml
-     * beside the Dockerfile (the family law the devthink battery pins),
-     * the vault precedent's engine/face pair answers inside it with the
-     * face gated on the engine health lane, and the one container file
-     * keeps every setting the merge wave baked in (the services, the
-     * state volumes, the non-root user and the healthcheck now answer
-     * across the pair the way the family wires them). the alternate
-     * compose spellings and the wrapper entrypoint stay retired. */
+  it("ci gate container: the single Dockerfile carries the family container contract the consolidation seats", () => {
+    /* the one-dockerfile consolidation law (the owner standardization
+     * wave): the standalone docker-compose.yml the nginxfamily law once
+     * seated at every root dissolved into the Dockerfile — the deploy
+     * stanza the file documents answers the vault precedent's engine/face
+     * pair with the face gated on the engine health lane, the named state
+     * volume and the one distinct host door, and the alternate compose
+     * spellings and the wrapper entrypoint stay retired. */
     assert.equal(
       existsSync(join(reporoot, "docker-compose.yml")),
-      true,
-      "docker-compose.yml must sit at the application root (the family law the nginxfamily wave stamps)",
+      false,
+      "docker-compose.yml must not return — the deploy pair rides the Dockerfile (the consolidation law)",
     );
     for (const alternate of ["docker-compose.yaml", "compose.yml", "compose.yaml"]) {
       assert.equal(
         existsSync(join(reporoot, alternate)),
         false,
-        `${alternate} is retired — the family compose spelling is docker-compose.yml`,
+        `${alternate} is retired — the deploy stanza rides the Dockerfile`,
       );
     }
-    const compose = readFileSync(join(reporoot, "docker-compose.yml"), "utf8");
-    assert.ok(compose.includes("services:"), "the compose declares services");
+    const dockerfile = readFileSync(join(reporoot, "Dockerfile"), "utf8");
+    assert.ok(dockerfile.includes("services:"), "the Dockerfile documents the deploy services stanza");
     assert.ok(
-      /^  saddle-engine:$/m.test(compose),
-      "the compose seats the saddle-engine service (the vault precedent's engine seat)",
+      /^#     saddle-engine:$/m.test(dockerfile),
+      "the stanza seats the saddle-engine service (the vault precedent's engine seat)",
     );
     assert.ok(
-      /^  saddle-face:$/m.test(compose),
-      "the compose seats the saddle-face service (the vault precedent's face seat)",
+      /^#     saddle-face:$/m.test(dockerfile),
+      "the stanza seats the saddle-face service (the vault precedent's face seat)",
     );
-    assert.ok(compose.includes("condition: service_healthy"), "the compose gates the face on the engine health lane");
-    assert.match(compose, /\/api\/v1\/health/, "the compose documents the real health lane the engine image rides");
+    assert.ok(dockerfile.includes("condition: service_healthy"), "the stanza gates the face on the engine health lane");
+    assert.match(dockerfile, /\/api\/v1\/health/, "the stanza documents the real health lane the engine image rides");
     assert.ok(
-      compose.includes('"8089:8080"'),
-      "the compose publishes the face on the saddle host door 8089:8080 (the one distinct door the collision law maps)",
+      dockerfile.includes('"8089:8080"'),
+      "the stanza publishes the face on the saddle host door 8089:8080 (the one distinct door the collision law maps)",
     );
-    assert.ok(compose.includes("restart: unless-stopped"), "the compose keeps the pair answering across host reboots");
     assert.ok(
-      /^  saddledata:$/m.test(compose),
-      "the compose carries the named state volume the engine's sqlite home rides",
+      dockerfile.includes("restart: unless-stopped"),
+      "the stanza keeps the pair answering across host reboots",
+    );
+    assert.ok(
+      dockerfile.includes("saddledata"),
+      "the stanza carries the named state volume the engine's sqlite home rides",
     );
     assert.equal(
       existsSync(join(reporoot, "Dockerfile.full")),

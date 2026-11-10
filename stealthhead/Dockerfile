@@ -252,3 +252,48 @@ USER 101
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD ["wget", "-qO-", "http://127.0.0.1:8080/"]
+
+# THE CONTAINER CONFIGURATION AND DEPLOY PAIR (the one-dockerfile
+# consolidation the owner standardization law seats): the standalone
+# docker-compose.yml and docker.config this project once carried ride
+# this dockerfile alone now — the OCI labels above answer the config
+# manifest (the title, the version the ARG stamps, the license and the
+# source), and the two-service deploy the compose wired walks from the
+# stanza below (the health gate the face answers, one distinct host door
+# per family member).
+#
+#   stealthhead-engine  this image (the registry lane publishes it at
+#           ghcr.io/wenathlan/stealthhead:${STEALTHHEAD_VERSION}): the built
+#           site behind the unprivileged nginx, EXPOSE 8080, the listen
+#           probe the image carries as its healthcheck
+#   stealthhead-face  the same image with the family conf (nginx.conf) mounted
+#           over the default conf — the resolver law, the security
+#           header law, the /api/* proxy lane to the engine, the spa
+#           rewrite as try_files
+#
+#   the health lane  the wget -qO- http://127.0.0.1:8080/ listen probe the image carries
+#
+# the operator seats the pair with one compose stanza (or the equivalent
+# docker run pair) beside the pulled image:
+#
+#   services:
+#     stealthhead-engine:
+#       image: "ghcr.io/wenathlan/stealthhead:${STEALTHHEAD_VERSION:-2.0.175}"
+#       init: true
+#       restart: unless-stopped
+#     stealthhead-face:
+#       image: "ghcr.io/wenathlan/stealthhead:${STEALTHHEAD_VERSION:-2.0.175}"
+#       volumes:
+#         - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+#       depends_on:
+#         stealthhead-engine:
+#           condition: service_healthy
+#       ports:
+#         - "8090:8080"
+#       restart: unless-stopped
+LABEL wenathlan.config.title="stealthhead - the container configuration of the arena site (the compose pair, the nginx face, the site container)" \
+      wenathlan.config.version="${STEALTHHEAD_VERSION}" \
+      wenathlan.config.date="2026-11-06" \
+      wenathlan.config.language="en" \
+      wenathlan.deploy.hostdoor="8090" \
+      wenathlan.deploy.engineport="8080"

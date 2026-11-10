@@ -1103,3 +1103,53 @@ COPY archseat.json /saddle/archseat.json
 # and the profile axis (max / balanced / lite) stays addressable behind
 # its names exactly as before.
 FROM balanced
+
+# THE CONTAINER CONFIGURATION AND DEPLOY PAIR (the one-dockerfile
+# consolidation the owner standardization law seats): the standalone
+# docker-compose.yml and docker.config this project once carried ride
+# this dockerfile alone now — the OCI labels above answer the config
+# manifest (the title, the version the ARG stamps, the license and the
+# source), and the two-service deploy the compose wired walks from the
+# stanza below (the health gate the face answers, one distinct host door
+# per family member).
+#
+#   saddle-engine  this image (the registry lane publishes it at
+#           ghcr.io/wenathlan/saddle:${SADDLE_VERSION}): the built
+#           site behind the unprivileged nginx, EXPOSE 8080, the listen
+#           probe the image carries as its healthcheck
+#   saddle-face  the same image with the family conf (nginx.conf) mounted
+#           over the default conf — the resolver law, the security
+#           header law, the /api/* proxy lane to the engine, the spa
+#           rewrite as try_files
+#
+#   the health lane  the /api/v1/health route the saddle engine answers
+#
+# the operator seats the pair with one compose stanza (or the equivalent
+# docker run pair) beside the pulled image:
+#
+#   services:
+#     saddle-engine:
+#       image: "ghcr.io/wenathlan/saddle:${SADDLE_VERSION:-2.0.175}"
+#       init: true
+#       volumes:
+#         - saddledata:/sandbox
+#       restart: unless-stopped
+#     volumes:
+#       saddledata:
+#     saddle-face:
+#       image: "ghcr.io/wenathlan/saddle:${SADDLE_VERSION:-2.0.175}"
+#       volumes:
+#         - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+#       depends_on:
+#         saddle-engine:
+#           condition: service_healthy
+#       ports:
+#         - "8089:8080"
+#       restart: unless-stopped
+ARG SADDLE_VERSION=2.0.175
+LABEL wenathlan.config.title="saddle - Docker Engine and Containerization Configuration" \
+      wenathlan.config.version="${SADDLE_VERSION}" \
+      wenathlan.config.date="2026-11-06" \
+      wenathlan.config.language="en" \
+      wenathlan.deploy.hostdoor="8089" \
+      wenathlan.deploy.engineport="8080"

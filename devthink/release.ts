@@ -464,48 +464,39 @@ async function runreleasewalk(): Promise<void> {
         content.replace(/ENV\.fetch\("SADDLE_VERSION", "[0-9A-Za-z.-]+"\)/, `ENV.fetch("SADDLE_VERSION", "${version}")`),
     ],
     ["../saddle/tauri.conf.json", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`)],
-    /* The 2.0.169 triple-seat wave: the eleven pyproject, Cargo and
-       docker.config seats join the lockstep surface — the 2.0.168 rung heal
+    /* The 2.0.169 triple-seat wave seated the eleven pyproject, Cargo and
+       docker.config stamps on the lockstep surface — the 2.0.168 rung heal
        (568c753a) walked these stamps by hand because the sync cascade never
        carried them, so every rung after it reddened the same eight gate
-       batteries until a heal landed. The cascade now owns the walk: the
-       pyproject version row, the Cargo package version and the docker
-       config manifest (the version field beside the image tag) answer the
-       one version the release chain stamps, on every family seat the
+       batteries until a heal landed. The one-dockerfile consolidation
+       dissolved the standalone docker.config manifests (their metadata
+       rides the wenathlan.config labels of the eleven Dockerfiles now, the
+       version through the ARG seats the stamp list already carries), so
+       the pyproject version row and the Cargo package version alone answer
+       the one version the release chain stamps, on every family seat the
        matrixverify gate reads. */
     ["../argan/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../argan/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../argan/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/argan:[0-9A-Za-z.-]+"/, `/argan:${version}"`)],
     ["../cadria/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../cadria/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../cadria/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/cadria:[0-9A-Za-z.-]+"/, `/cadria:${version}"`)],
     ["../cobaia/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../cobaia/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../cobaia/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/cobaia:[0-9A-Za-z.-]+"/, `/cobaia:${version}"`)],
     ["../debonair/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../debonair/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../debonair/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/debonair:[0-9A-Za-z.-]+"/, `/debonair:${version}"`)],
     ["pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/devthink:[0-9A-Za-z.-]+"/, `/devthink:${version}"`)],
     ["../forge/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../forge/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../forge/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/forge:[0-9A-Za-z.-]+"/, `/forge:${version}"`)],
     ["../foundry/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../foundry/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../foundry/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/foundry:[0-9A-Za-z.-]+"/, `/foundry:${version}"`)],
     ["../getry/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../getry/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../getry/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/getry:[0-9A-Za-z.-]+"/, `/getry:${version}"`)],
     ["../saddle/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../saddle/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../saddle/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/saddle:[0-9A-Za-z.-]+"/, `/saddle:${version}"`)],
     ["../stealthhead/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../stealthhead/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../stealthhead/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/stealthhead:[0-9A-Za-z.-]+"/, `/stealthhead:${version}"`)],
     ["../vault/pyproject.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
     ["../vault/Cargo.toml", (content) => content.replace(/^version = "[0-9A-Za-z.-]+"/m, `version = "${version}"`)],
-    ["../vault/docker.config", (content) => content.replace(/"version": "[0-9A-Za-z.-]+"/, `"version": "${version}"`).replace(/\/vault:[0-9A-Za-z.-]+"/, `/vault:${version}"`)],
     /* The gate record seats: the release field the verify batteries
        read (agentcert, costcert, doccheck, matrixverify, pentest,
        recipes, sweep, telemetryfree, wcag, soak, readiness) answers the

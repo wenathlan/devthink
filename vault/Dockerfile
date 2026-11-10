@@ -315,3 +315,48 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 # engine would seal every storage route anyway (503 on each data call), so
 # the operator gets the loud refusal at boot instead of the quiet seal.
 CMD ["sh", "-c", "test -n \"$VAULT_TOKEN\" || { echo 'VAULT_TOKEN is not set — the vault engine refuses to boot (pin the bearer the storage routes demand)'; exit 1; }; exec node account.ts"]
+
+# THE CONTAINER CONFIGURATION AND DEPLOY PAIR (the one-dockerfile
+# consolidation the owner standardization law seats): the standalone
+# docker-compose.yml and docker.config this project once carried ride
+# this dockerfile alone now — the OCI labels above answer the config
+# manifest (the title, the version the ARG stamps, the license and the
+# source), and the two-service deploy the compose wired walks from the
+# stanza below (the health gate the face answers, one distinct host door
+# per family member).
+#
+#   engine  this image (the registry lane publishes it at
+#           ghcr.io/wenathlan/vault:${VAULT_VERSION}): the built
+#           site behind the unprivileged nginx, EXPOSE 8080, the listen
+#           probe the image carries as its healthcheck
+#   face  the same image with the family conf (nginx.conf) mounted
+#           over the default conf — the resolver law, the security
+#           header law, the /api/* proxy lane to the engine, the spa
+#           rewrite as try_files
+#
+#   the health lane  the /api/health route the vault engine answers
+#
+# the operator seats the pair with one compose stanza (or the equivalent
+# docker run pair) beside the pulled image:
+#
+#   services:
+#     engine:
+#       image: "ghcr.io/wenathlan/vault:${VAULT_VERSION:-2.0.175}"
+#       init: true
+#       restart: unless-stopped
+#     face:
+#       image: "ghcr.io/wenathlan/vault:${VAULT_VERSION:-2.0.175}"
+#       volumes:
+#         - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+#       depends_on:
+#         vault-engine:
+#           condition: service_healthy
+#       ports:
+#         - "80:8080"
+#       restart: unless-stopped
+LABEL wenathlan.config.title="vault - the container configuration of the storage engine (the reference compose pair, the reference nginx face, the storage engine)" \
+      wenathlan.config.version="${VAULT_VERSION}" \
+      wenathlan.config.date="2026-11-06" \
+      wenathlan.config.language="en" \
+      wenathlan.deploy.hostdoor="80" \
+      wenathlan.deploy.engineport="8080"
