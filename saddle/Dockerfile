@@ -341,12 +341,17 @@ RUN apt-get update \
 # ride the two native legs (amd64, arm64) their publishers ship — the
 # exotic legs (ppc64le, s390x) answer the honest coded absence the
 # seats' probes name at dispatch (HOST_RUNTIME_ABSENT — the seat never
-# fakes a run), the same law the arch case above carries.
+# fakes a run), the same law the arch case above carries. the icu seat:
+# the dotnet runtime hard-fails its own version assert (FailFast, SIGABRT
+# exit 134) the moment the carrier image answers no libicu — the .net
+# globalization stack refuses to boot without it — so the library rides
+# the apt lane on every arch leg and the dotnet --version assert below
+# walks green the same way the v seat walks the prebuilt binary.
 RUN set -eux; \
     arch="${TARGETARCH:-$(dpkg --print-architecture)}"; \
     apt-get update; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      build-essential ca-certificates curl git lua5.4 ninja-build php-cli unzip xz-utils; \
+      build-essential ca-certificates curl git libicu-dev lua5.4 ninja-build php-cli unzip xz-utils; \
     ln -sf /usr/bin/lua5.4 /usr/local/bin/lua; \
     make --version | head -1; \
     ninja --version; \
