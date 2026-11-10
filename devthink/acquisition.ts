@@ -269,7 +269,32 @@ export interface ExtractOptions { readable?: boolean; preserveLinks?: boolean; p
 export interface ExtractedContent { content: string; text: string; links: LinkInfo[]; images: ImageInfo[]; tables: TableInfo[]; metadata: PageMetadata; jsonLd: unknown[]; }
 
 /** Extracts the compact active scrape result without a DOM dependency. */
-export function extracthtml(html: string, url?: string) { const title = match(html, /<title\b[^<>]*>((?:[^<]|<(?!\/title\s*>))*)<\/title\s*>/i); const description = match(html, /<meta\b[^<>]{0,500}name=["']description["'][^<>]{0,500}content=["']([^"']*)["']/i) ?? match(html, /<meta\b[^<>]{0,500}content=["']([^"']*)["'][^<>]{0,500}name=["']description["']/i); const links = [...html.matchAll(/<a\b[^<>]{0,500}href=["']([^"']+)["'][^<>]*>/gi)].map((item) => resolveurl(item[1], url)).filter((value): value is string => Boolean(value)); const text = htmltotext(html); return { url, title: decode(title ?? ""), description: decode(description ?? ""), text, links: [...new Set(links)] }; }
+/* the linear tag-body seats (the redos heal family): every tempered token
+ * idiom `((?:[^<]|<(?!\/tag\s*>))*)` answers a failing close in polynomial
+ * time — the open tag matches once, the close rides the lowercase indexof
+ * scan and the body slices between, one linear pass, no backtracking. */
+function closefrom(html: string, lower: string, tag: string, start: number): number {
+  const closeTag = `</${tag}`;
+  let at = lower.indexOf(closeTag, start);
+  while (at >= 0) {
+    let end = at + closeTag.length;
+    while (end < html.length && /\s/.test(html[end])) end++;
+    if (html[end] === ">") return at;
+    at = lower.indexOf(closeTag, at + 1);
+  }
+  return -1;
+}
+
+/** Linear tag-body slice: the open tag matches once and the body rides the closefrom scan — `null` when either seat never lands, the tempered token idiom retired whole. */
+function tagbody(html: string, tag: string): string | null {
+  const open = new RegExp(`<${tag}\\b[^<>]*>`, "i").exec(html);
+  if (!open) return null;
+  const start = open.index + open[0].length;
+  const close = closefrom(html, html.toLowerCase(), tag, start);
+  return close < 0 ? null : html.slice(start, close);
+}
+
+export function extracthtml(html: string, url?: string) { const title = tagbody(html, "title"); const description = match(html, /<meta\b[^<>]{0,500}name=["']description["'][^<>]{0,500}content=["']([^"']*)["']/i) ?? match(html, /<meta\b[^<>]{0,500}content=["']([^"']*)["'][^<>]{0,500}name=["']description["']/i); const links = [...html.matchAll(/<a\b[^<>]{0,500}href=["']([^"']+)["'][^<>]*>/gi)].map((item) => resolveurl(item[1], url)).filter((value): value is string => Boolean(value)); const text = htmltotext(html); return { url, title: decode(title ?? ""), description: decode(description ?? ""), text, links: [...new Set(links)] }; }
 
 /** Extracts structured content for historical TypeScript callers. */
 export async function extractContent(html: string, options: ExtractOptions = {}): Promise<ExtractedContent> {
@@ -288,9 +313,22 @@ function match(value: string, expression: RegExp): string | undefined { return v
 /** Single-pass XML/HTML entity decode: the pattern never re-examines its own output, so a double-escaped `&amp;lt;` decodes once to the literal text `&lt;` and never again to `<`. */
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'" };
 function decode(value: string): string { return value.replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole); }
-/** Linear single-pass script/style block removal: case-insensitive, tolerates `</script >` closing whitespace, and drops any unterminated block so no `<script` fragment can survive. One scan, no regex backtracking. */
+/** Script/style block removal at the fixpoint: the strip re-rides until the output stops changing, so an opener a single pass reassembles (the `<scr` before a dropped block and the `ipt>` after it splicing back into `<script>`) dies on the next walk — one linear scan per pass, no regex backtracking. */
 function stripblocks(html: string, ...tags: string[]): string {
   const open = new RegExp(`<(${tags.join("|")})\\b[^<>]*>`, "i");
+  /* the fixpoint law (the sanitization heal): one pass can splice a fresh
+   * opener out of the survivors, so the strip walks again until nothing
+   * changes — the complete-sanitization idiom the codeql law seats. */
+  let current = html;
+  for (;;) {
+    const next = strippass(current, open);
+    if (next === current) return current;
+    current = next;
+  }
+}
+
+/** One linear pass of the block strip: the open-tag scan, the unterminated drop and the tail keep the fixpoint loop re-rides. */
+function strippass(html: string, open: RegExp): string {
   let out = "";
   let cursor = 0;
   let match: RegExpExecArray | null;
@@ -320,13 +358,13 @@ function readabletext(html: string): string {
   }
   return htmltotext(html);
 }
-function extractmetadata(html: string): PageMetadata { return { title: match(html, /<title\b[^<>]*>((?:[^<]|<(?!\/title\s*>))*)<\/title\s*>/i) ?? match(html, /<meta\b[^<>]{0,500}property=["']og:title["'][^<>]{0,500}content=["']([^"']*)["']/i) ?? "", description: matchmeta(html, "description") ?? matchmeta(html, "og:description"), favicon: match(html, /<link\b[^<>]{0,500}rel=["'](?:icon|shortcut icon)["'][^<>]{0,500}href=["']([^"']*)["']/i), language: match(html, /<html\b[^<>]{0,500}lang=["']([^"']*)["']/i), author: matchmeta(html, "author"), ogImage: matchmeta(html, "og:image"), ogType: matchmeta(html, "og:type"), keywords: matchmeta(html, "keywords")?.split(",").map((value) => value.trim()) }; }
+function extractmetadata(html: string): PageMetadata { return { title: tagbody(html, "title") ?? match(html, /<meta\b[^<>]{0,500}property=["']og:title["'][^<>]{0,500}content=["']([^"']*)["']/i) ?? "", description: matchmeta(html, "description") ?? matchmeta(html, "og:description"), favicon: match(html, /<link\b[^<>]{0,500}rel=["'](?:icon|shortcut icon)["'][^<>]{0,500}href=["']([^"']*)["']/i), language: match(html, /<html\b[^<>]{0,500}lang=["']([^"']*)["']/i), author: matchmeta(html, "author"), ogImage: matchmeta(html, "og:image"), ogType: matchmeta(html, "og:type"), keywords: matchmeta(html, "keywords")?.split(",").map((value) => value.trim()) }; }
 function matchmeta(html: string, name: string): string | undefined { return match(html, new RegExp(`<meta\\b[^<>]{0,500}(?:name|property)=["']${name}["'][^<>]{0,500}content=["']([^"']*)["']`, "i")) ?? match(html, new RegExp(`<meta\\b[^<>]{0,500}content=["']([^"']*)["'][^<>]{0,500}(?:name|property)=["']${name}["']`, "i")); }
-function extractlinks(html: string): LinkInfo[] { return [...html.matchAll(/<a\b[^<>]{0,500}href=["']([^"']+)["'][^<>]*>((?:[^<]|<(?!\/a\s*>))*)<\/a\s*>/gi)].map((item) => ({ href: resolveurl(item[1]) ?? item[1], text: htmltotext(item[2]).slice(0, 200), isInternal: false, isExternal: true })); }
+function extractlinks(html: string): LinkInfo[] { /* the linear anchor walk (the redos heal): the open matches once, the body rides the closefrom scan and the lastIndex seat advances past the close exactly the way the tempered matchall swallowed its whole match */ const lower = html.toLowerCase(); const open = /<a\b[^<>]{0,500}href=["']([^"']+)["'][^<>]*>/gi; const links: LinkInfo[] = []; let item: RegExpExecArray | null; while ((item = open.exec(html)) !== null) { const close = closefrom(html, lower, "a", item.index + item[0].length); if (close < 0) continue; const end = html.indexOf(">", close); open.lastIndex = end < 0 ? html.length : end + 1; links.push({ href: resolveurl(item[1]) ?? item[1], text: htmltotext(html.slice(item.index + item[0].length, close)).slice(0, 200), isInternal: false, isExternal: true }); } return links; }
 function extractimages(html: string): ImageInfo[] { return [...html.matchAll(/<img\b[^<>]{0,500}src=["']([^"']+)["'][^<>]*>/gi)].map((item) => ({ src: item[1], alt: match(item[0], /alt=["']([^"']*)["']/i) ?? "", width: numberattribute(item[0], "width"), height: numberattribute(item[0], "height") })); }
 function numberattribute(value: string, name: string): number | undefined { const parsed = Number(match(value, new RegExp(`${name}=["'](\\d+)["']`, "i"))); return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined; }
 function extracttables(html: string): TableInfo[] { return [...html.matchAll(/<table\b[^<>]*>[\s\S]*?<\/table\s*>/gi)].map((table) => { const source = table[0]; const body = source.match(/<tbody\b[^<>]*>[\s\S]*?<\/tbody\s*>/i)?.[0] ?? source; return { headers: [...source.matchAll(/<th\b[^<>]*>([\s\S]*?)<\/th\s*>/gi)].map((item) => htmltotext(item[1])), rows: [...body.matchAll(/<tr\b[^<>]*>([\s\S]*?)<\/tr\s*>/gi)].map((row) => [...row[1].matchAll(/<td\b[^<>]*>([\s\S]*?)<\/td\s*>/gi)].map((item) => htmltotext(item[1]))).filter((row) => row.length) }; }); }
-function extractjsonld(html: string): unknown[] { const values: unknown[] = []; for (const item of html.matchAll(/<script\b[^<>]{0,500}type=["']application\/ld\+json["'][^<>]*>((?:[^<]|<(?!\/script\s*>))*)<\/script\s*>/gi)) try { values.push(JSON.parse(item[1])); } catch { /* malformed structured data remains non fatal */ } return values; }
+function extractjsonld(html: string): unknown[] { /* the linear json-ld walk (the redos heal): the typed open matches once, the body rides the closefrom scan and the lastIndex seat advances past the close the tempered matchall swallowed */ const values: unknown[] = []; const lower = html.toLowerCase(); const open = /<script\b[^<>]{0,500}type=["']application\/ld\+json["'][^<>]*>/gi; let item: RegExpExecArray | null; while ((item = open.exec(html)) !== null) { const close = closefrom(html, lower, "script", item.index + item[0].length); if (close < 0) continue; const end = html.indexOf(">", close); open.lastIndex = end < 0 ? html.length : end + 1; try { values.push(JSON.parse(html.slice(item.index + item[0].length, close))); } catch { /* malformed structured data remains non fatal */ } } return values; }
 function removeSelector(html: string, selector: string): string { const tag = selector.match(/^\s*([a-z][a-z0-9]*)\s*$/i)?.[1]; if (tag) return html.replace(new RegExp(`<${tag}[^>]*>[\\s\\S]*?<\/${tag}>`, "gi"), ""); const className = selector.match(/^\.([a-z0-9_-]+)$/i)?.[1]; return className ? html.replace(new RegExp(`<([a-z][a-z0-9]*)[^>]*class=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>[\\s\\S]*?<\\/\\1>`, "gi"), "") : html; }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -335,7 +373,7 @@ function removeSelector(html: string, selector: string): string { const tag = se
 /**
  * schema extraction accepts safe field descriptors and never evaluates source strings.
  */
-export function extractwithschema(html, schema = {}, url) {
+export function extractwithschema(html, schema = {}, url?) {
   const result = {};
   for (const [name, descriptor] of Object.entries(schema)) result[name] = extractfield(html, descriptor, url);
   return result;
@@ -366,7 +404,17 @@ function extractfield(html, descriptor, url) {
   if (typeof descriptor === "function") return descriptor({ html, url });
   if (typeof descriptor === "string") return textfromselector(html, descriptor);
   if (!descriptor || typeof descriptor.selector !== "string") throw new TypeError("schema field requires selector or function");
-  if (descriptor.selector === "title") return html.match(/<title[^>]*>((?:[^<]|<(?!\/title>))*)<\/title>/i)?.[1]?.trim() ?? null;
+  if (descriptor.selector === "title") {
+    /* the linear title seat (the redos heal): the tempered token idiom the
+     * original engine carried answers a failing close in polynomial time —
+     * the open tag matches once and the close rides the same lowercase
+     * indexof walk stripblocks answers, the content slicing between. */
+    const open = /<title[^>]*>/i.exec(html);
+    if (!open) return null;
+    const start = open.index + open[0].length;
+    const close = html.toLowerCase().indexOf("</title>", start);
+    return close < 0 ? null : html.slice(start, close).trim();
+  }
   const escaped = descriptor.selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const attribute = descriptor.attribute;
   const pattern = attribute ? new RegExp(`<[^>]+${escaped}[^>]*${attribute}=["']([^"']+)["'][^>]*>`, "i") : new RegExp(`<${escaped}[^>]*>([\\s\\S]*?)<\\/${escaped}>`, "i");
@@ -422,11 +470,25 @@ function byteLength(value) { return new TextEncoder().encode(String(value)).byte
 /** Extracts semantic page facts from HTML using safe built-in parsing heuristics. */
 export function extractsemantic(html, url) {
   const source = String(html ?? "");
+  const lowered = source.toLowerCase();
   const headings = [...source.matchAll(/<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi)].slice(0, 100).map((match) => ({ level: Number(match[1]), text: clean(match[2]) })).filter((item) => item.text);
   const landmarks = [...source.matchAll(/<(main|nav|header|footer|aside|section|article)\b([^>]*)>/gi)].slice(0, 100).map((match) => ({ role: match[1].toLowerCase(), label: attribute(match[2], "aria-label") ?? attribute(match[2], "id") ?? "" }));
   const controls = controlmatches(source).slice(0, 200).map((control, index) => ({ ref: `e${index + 1}`, role: attribute(control.attrs, "role") ?? control.tag, name: attribute(control.attrs, "aria-label") ?? attribute(control.attrs, "placeholder") ?? clean(control.content), type: attribute(control.attrs, "type") }));
-  const links = [...source.matchAll(/<a\b([^<>]{0,500})href=["']([^"']+)["'][^<>]*>((?:[^<]|<(?!\/a\s*>))*)<\/a\s*>/gi)].slice(0, 500).map((match) => ({ url: resolveurlhelper(match[2], url), text: clean(match[3]), rel: attribute(match[1], "rel") })).filter((link) => link.url);
-  return { url, title: clean(source.match(/<title\b[^<>]*>((?:[^<]|<(?!\/title\s*>))*)<\/title\s*>/i)?.[1] ?? ""), headings, landmarks, controls, links: dedupe(links, (item) => item.url), semantictext: clean(stripblocks(source, "script", "style").replace(/<[^<>]+>/g, " ")).slice(0, 100000) };
+  /* the linear anchor walk (the redos heal): the open matches once, the
+   * body rides the closefrom scan and the lastIndex seat advances past
+   * the close exactly the way the tempered matchall swallowed its match */
+  const collected: Array<{ url: string | null; text: string; rel: string | null }> = [];
+  const anchor = /<a\b([^<>]{0,500})href=["']([^"']+)["'][^<>]*>/gi;
+  let anchorMatch: RegExpExecArray | null;
+  while ((anchorMatch = anchor.exec(source)) !== null && collected.length < 500) {
+    const close = closefrom(source, lowered, "a", anchorMatch.index + anchorMatch[0].length);
+    if (close < 0) continue;
+    const end = source.indexOf(">", close);
+    anchor.lastIndex = end < 0 ? source.length : end + 1;
+    collected.push({ url: resolveurlhelper(anchorMatch[2], url), text: clean(source.slice(anchorMatch.index + anchorMatch[0].length, close)), rel: attribute(anchorMatch[1], "rel") });
+  }
+  const links = collected.filter((link) => link.url);
+  return { url, title: clean(tagbody(source, "title") ?? ""), headings, landmarks, controls, links: dedupe(links, (item) => item.url), semantictext: clean(stripblocks(source, "script", "style").replace(/<[^<>]+>/g, " ")).slice(0, 100000) };
 }
 
 /** Strips remaining tags, collapses whitespace and decodes entities exactly once in a single pass. */

@@ -212,7 +212,19 @@ describe("extraction seat", () => {
     const semantic = extractsemantic(rich, "https://example.com/");
     expect(semantic.title).toBe("Rich");
     expect(semantic.headings).toEqual([{ level: 1, text: "Heading" }]);
-    expect(semantic.links.map((link) => link.url)).toEqual(["https://a.example/1"]);
+    expect(semantic.links.map((link: { url: string }) => link.url)).toEqual(["https://a.example/1"]);
+  });
+
+  it("the title seat answers the linear walk on uppercase, attributed and unterminated shapes", () => {
+    /* the redos heal: the tempered token idiom retired for the open-match
+     * plus indexof close — the answers stay the ones the engine carried,
+     * the failing close costing one linear scan instead of a polynomial
+     * backtrack */
+    expect(extractwithschema("<TITLE>Mixed Case</TITLE>", { title: { selector: "title" } })).toEqual({ title: "Mixed Case" });
+    expect(extractwithschema('<title id="t">attributed</title>', { title: { selector: "title" } })).toEqual({ title: "attributed" });
+    expect(extractwithschema("<title>a</titlex>b</title>", { title: { selector: "title" } })).toEqual({ title: "a</titlex>b" });
+    expect(extractwithschema("<title>never closed", { title: { selector: "title" } })).toEqual({ title: null });
+    expect(extractwithschema("no title at all", { title: { selector: "title" } })).toEqual({ title: null });
   });
 });
 

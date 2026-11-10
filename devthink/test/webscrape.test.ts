@@ -197,6 +197,18 @@ describe("webscrape chunking seats", () => {
     expect(legacychunktext("abcdef", 3)).toEqual(["abc", "def"]);
   });
 
+  it("the sentence split peels the unterminated tail and keeps the terminated whole", () => {
+    /* the linear peel heal: three lastindexof walks answer the trailing
+     * run the anchored star walked in quadratic time — the answer stays
+     * the one the engine carried, terminated sentences riding and the
+     * unterminated tail dropping before the global match runs */
+    const chunks = chunkMarkdown("first sentence here. second one follows. no terminator tail", { maxTokens: 5 });
+    const joined = chunks.map((chunk) => chunk.content).join(" ");
+    expect(joined).toContain("first sentence here.");
+    expect(joined).toContain("second one follows.");
+    expect(joined).not.toContain("no terminator tail");
+  });
+
   it("formatChunksForRAG renders a chunk list into a context string", () => {
     const rendered = formatChunksForRAG([{ content: "x", headingPath: [], tokenCount: 1, index: 0 }]);
     expect(rendered).toContain("x");
@@ -246,6 +258,19 @@ describe("webscrape serializer seats", () => {
     expect(text.size).toBe(8);
     const json = serializeHtml("<p>x</p>", { format: "json" });
     expect(JSON.parse(json.content)).toEqual({ html: "<p>x</p>" });
+  });
+
+  it("the text strip kills the reassembled opener a single pass could splice", () => {
+    /* the fixpoint law: the `<scr` before a dropped block and the `ipt>`
+     * after it splice back into `<script>` on one pass — the strip
+     * re-rides until nothing changes and nothing survives the walk */
+    const script = serializeHtml("<scr<script>alert(1)</script>ipt>tail", { format: "text" });
+    expect(script.content).toBe("");
+    expect(script.content).not.toContain("<script");
+    expect(script.content).not.toContain("alert");
+    const style = serializeHtml("<st<style>x</style>yle>y</style>plain", { format: "text" });
+    expect(style.content).not.toContain("<style");
+    expect(style.content).toContain("plain");
   });
 });
 

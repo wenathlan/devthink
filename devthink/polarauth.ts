@@ -195,13 +195,17 @@ setInterval(() => {
 
 Bun.serve({
   port: PORT,
+  /* the response answers the coarse class alone (the stack-exposure law):
+   * the status field carries the phase and the user code the owner reads,
+   * while the message and the stack stay server-side in the state file
+   * and the log — no error property ever rides the lane, so the taint
+   * tracker finds nothing to model on the wire. */
   fetch: () => new Response(JSON.stringify({
     status: phase,
     user_code: usercode,
     verification_uri: "https://github.com/login/device",
     expires_at: expiresat,
     sync: syncstate,
-    error: lasterror,
     token_present: existsSync(TOKEN_FILE),
     cycles,
   }), { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } }),

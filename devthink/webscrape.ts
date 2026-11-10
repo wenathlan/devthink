@@ -611,9 +611,11 @@ function splitByParagraphs(text: string): string[] {
 
 function splitBySentences(text: string): string[] {
   /* the linear sentence scan (the redos heal): the trailing unterminated
-   * run peels first so the possessive global match never restarts inside
-   * a failing tail, every remaining position answering in one pass. */
-  const terminated = text.replace(/[^.!?]*$/, "");
+   * run peels first so the global sentence match never restarts inside a
+   * failing tail — three lastindexof walks answer the peel, each one a
+   * single linear pass, no backtracking engine ever touching the input. */
+  const last = Math.max(text.lastIndexOf("."), text.lastIndexOf("!"), text.lastIndexOf("?"));
+  const terminated = last < 0 ? "" : text.slice(0, last + 1);
   return terminated.match(/[^.!?]{0,2000}[.!?]+/g) || [text];
 }
 
@@ -1018,9 +1020,25 @@ function htmlToRedisJson(html: string, key = 'page'): string {
 /** Single-pass HTML entity decode map: the replace callback resolves each entity exactly once so a double-escaped `&amp;lt;` decodes to the literal text `&lt;` and never again to `<`. */
 const ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" };
 
-/** Linear single-pass script/style block removal: case-insensitive, tolerates `</script >` closing whitespace, and drops any unterminated block so no `<script` fragment can survive. One scan, no regex backtracking. */
+/** Script/style block removal at the fixpoint: case-insensitive, tolerant of `</script >` closing whitespace, and no opener fragment survives — the strip re-rides until the output stops changing, so an opener a single pass reassembles (the `<scr` before a dropped block and the `ipt>` after it splicing back into `<script>`) dies on the next walk. One linear scan per pass, no regex backtracking. */
 function stripblocks(html: string, ...tags: string[]): string {
   const open = new RegExp(`<(${tags.join('|')})\\b[^<>]*>`, 'i');
+  const fragment = new RegExp(`<(${tags.join('|')})\\b`, 'i');
+  /* the fixpoint law (the sanitization heal): one pass can splice a fresh
+   * opener out of the survivors — the text before a dropped block ending
+   * in `<scr` and the text after it starting with `ipt>` reassemble into
+   * `<script>` — so the strip walks again until nothing changes, the
+   * complete-sanitization idiom the codeql law seats. */
+  let current = html;
+  for (;;) {
+    const next = strippass(current, open, fragment);
+    if (next === current) return current;
+    current = next;
+  }
+}
+
+/** One linear pass of the block strip: the open-tag scan, the unterminated drop and the dangling-fragment guard the fixpoint loop re-rides. */
+function strippass(html: string, open: RegExp, fragment: RegExp): string {
   let out = '';
   let cursor = 0;
   let match: RegExpExecArray | null;
@@ -1033,11 +1051,11 @@ function stripblocks(html: string, ...tags: string[]): string {
     const gt = html.indexOf('>', close);
     cursor = gt < 0 ? html.length : gt + 1;
   }
-  /* the dangling-fragment guard (the sanitization heal): an open tag with
-   * no closing bracket never matches the block scan above, so the tail is
-   * searched for the bare fragment and everything from it drops too. */
+  /* the dangling-fragment guard: an open tag with no closing bracket never
+   * matches the block scan above, so the tail is searched for the bare
+   * fragment and everything from it drops too. */
   const rest = html.slice(cursor);
-  const dangling = new RegExp(`<(${tags.join('|')})\\b`, 'i').exec(rest);
+  const dangling = fragment.exec(rest);
   return out + (dangling ? rest.slice(0, dangling.index) : rest);
 }
 
