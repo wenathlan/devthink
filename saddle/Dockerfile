@@ -331,7 +331,13 @@ RUN apt-get update \
     && test "$(npm --version)" = "12.0.2" \
     && mkdir -p /usr/local/lib/node_modules/pnpm \
     && tar -xzf "$tempdir/pnpm-12.18.0.tgz" --strip-components=1 -C /usr/local/lib/node_modules/pnpm \
+    # the pack tarball freezes its bins at publish-time mode 644 (npm
+    # normalizes every non-.bin entry to rw-r--r--), so the shebang the
+    # symlink answers could never execute - the chmod restores the
+    # execute bit the pack lane dropped before the symlink resolves it.
+    && chmod +x /usr/local/lib/node_modules/pnpm/bin/pnpm.mjs /usr/local/lib/node_modules/pnpm/bin/pnpx.mjs \
     && ln -sf ../lib/node_modules/pnpm/bin/pnpm.mjs /usr/local/bin/pnpm \
+    && ln -sf ../lib/node_modules/pnpm/bin/pnpx.mjs /usr/local/bin/pnpx \
     && test "$(pnpm --version)" = "12.18.0" \
     && rm -rf "$tempdir" \
     # THE PNPM DEPENDENCY WALK (the containerlanes heal): the pnpm
