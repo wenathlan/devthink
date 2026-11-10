@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-vault"
-version = "2.0.174"
+version = "2.0.175"
 edition = "2021"
 description = "The supabase clone — the self-hosted database, auth and storage surface"
 license = "GPL-3.0-only"

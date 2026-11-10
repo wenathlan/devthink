@@ -474,7 +474,7 @@ The readiness gate answers **${report.godecision === "go" ? "go" : "no-go"}** fo
  * replays byte identical (the duration stays the live measurement the
  * recorded run took). */
 export const readinessrecord: readinessreport = {
-  "release": "2.0.174",
+  "release": "2.0.175",
   "mode": "sync",
   "generatedat": 1800000000000,
   "verdicts": [
