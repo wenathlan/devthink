@@ -90,7 +90,7 @@ wave opens its pr by theme, merges with squash and the ladder walks on.
 - interaction: the 35 native pages, the shell, the taskbar, the alt-tab, the panel, the entrygate, the intro, the onboarding, the home.
 - interactivity: the micro animations, the shaders, the window controls, the dock, the acrylic footer start menu.
 - logic: the plan system (the only seat that limits — plans, never engines), the agent fleet, the workflow runner, the mcp server, the bridge pairing, the swarm.
-- bugs: the panel versus standalone render parity (the /devthink/app/ versus /panel cut complaint), the familyurl x10 collapse, the onboarding x10, the sha256 x24 pending seats, the sites version triple sync.
+- bugs: the closed complaint seats (the panel versus standalone parity now pinned by the renderparity battery, the familyurl x10 and onboarding x10 seats landed, the sha256 x24 seats answering in release.yml, the sites version triple sync held by the lockstep) beside the live ci follow-ups (the ghcr catch-up, the packages billing wall).
 - storage: planstore.ts, session.ts, the prisma schema seat, the immutable log.
 - implementation: the fifteen engines of the manifest orchestrated by the node maestro, the web scrape absorbed from saddle, the gateway consumed from getry, storage from vault, vm from saddle.
 - organization: the docs tree (160 docs), the test tree (222 files), the sol tree with wingets.
@@ -172,4 +172,4 @@ it, only main survives. The pending scopes the audit reddened:
 - pr the container catch-up: the queued fifteen-lane build verification for 2.0.175 and the stale 1.8.1 heal on ghcr.
 - pr the packages seats: the billing-wall mirror lanes stay noticed and idempotent, the npmjs dual keeps walking.
 - pr the design references: repos.case.md read, the links cloned into Neo.Temp and Neo.img, the selectors, tokens and css variables rechecked against the live references.
-- pr the parity fixes: the panel versus standalone render parity, the familyurl triple sync, the pending sha256 seats the map carries.
+- pr the parity record: the panel parity, the familyurl triple sync and the sha256 seats the corpus demanded are LANDED (the renderparity battery walks 12/12 green, the seat law rides all ten siblings, the x24 sha256 seats answer in release.yml) — the map once carried them as pending, the audit closed them.

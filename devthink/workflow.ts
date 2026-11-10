@@ -4511,9 +4511,9 @@ const gatedependency = (name: string) => `${name}`;
 
 /** Verifies the workflow yaml house of the repository: the yaml well-formedness of every config and workflow file, the on and jobs contract of every workflow file and the pinned control table of the release lanes; every check throws on the first drift and the summary prints the verified file count. */
 async function verifyworkflowyamlcontrols(): Promise<void> {
-  const { readdir, readFile } = await import(gatebuiltin("fs/promises"));
-  const { join, resolve } = await import(gatebuiltin("path"));
-  const { parseDocument } = await import(gatedependency("yaml"));
+  const { readdir, readFile } = await import(/* @vite-ignore */ gatebuiltin("fs/promises"));
+  const { join, resolve } = await import(/* @vite-ignore */ gatebuiltin("path"));
+  const { parseDocument } = await import(/* @vite-ignore */ gatedependency("yaml"));
   const repoRoot = resolve(process.cwd(), "..");
   const workflowdirectory = join(repoRoot, ".github/workflows");
   /* The workflow folder groups every workflow yaml AND the config yamls the
@@ -4924,8 +4924,8 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
  * The devfold wave folded the lane into the family base: the whole walk rides one async lane behind the direct entry check, so an import of the library module never reads a file and the bundled faces never resolve a platform import — and only the direct entry lane (`node workflow.ts check`, `node workflow.ts sync`, the workflow:updates script and the verify workflow step) drives it.
  */
 async function syncworkflowactiontags(): Promise<void> {
-  const { readdir, readFile, writeFile } = await import(gatebuiltin("fs/promises"));
-  const { join, resolve } = await import(gatebuiltin("path"));
+  const { readdir, readFile, writeFile } = await import(/* @vite-ignore */ gatebuiltin("fs/promises"));
+  const { join, resolve } = await import(/* @vite-ignore */ gatebuiltin("path"));
   const repoRoot = resolve(process.cwd(), "..");
   const mode = process.argv[2] ?? "check";
   if (!new Set(["check", "sync"]).has(mode)) throw new Error("Use check or sync.");
