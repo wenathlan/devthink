@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-stealthhead"
-version = "2.0.173"
+version = "2.0.174"
 edition = "2021"
 description = "The FPS game platform — only game logics (match, ranking, weapons, world); the versawase and audio engines ride the published library"
 license = "GPL-3.0-only"

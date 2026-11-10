@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.174
+
+This release is the 2.0.174 rung of the healed tree: the depfresh cascade (next and eslint-config-next at their fresh 16.4.6 minor over the healed registry line), the webpack seat law (the config-form pack the exact-pinned install line answers), the landing whole-tree law (the eleven locks the lockstep refresh writes ride the rung commit whole), the family scope leaving the registry ladder, the trylle hairline rung (the reference cdn exact 7.5% border mix on both faces), the contract batteries answering the laws the tree carries and the saddle npm lock healing the workspace drift — every fix the 2.0.173 tag preceded now rides the tagged source the release ladder builds.
+
 ## 2.0.173
 
 This release is the rung the containerlanes heal cut: the digest stamp reads the platform seat the family Dockerfiles carry while the twenty-stamp table walks the whole surface, the saddle container heals the dead COPY arm the modalityregistry fold left behind, the sdk rung seats @anthropic-ai/sdk 1.7.0 beside the axios, framer-motion, motion and openai minors across the eleven manifests, the saddle bun lock answers the family regeneration the pages owner-install lane reads, and the publish mirror attaches the os-distribution catalog seats beside the registry push — the thousand-asset ladder the release ladder answers with the oscatalogseats family.
