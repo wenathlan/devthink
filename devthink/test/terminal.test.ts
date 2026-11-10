@@ -109,8 +109,9 @@ describe("the conversion map — colors ride the token chain to ansi", () => {
   });
 
   it("blends color-mix over the canvas (the hairline of the dark face)", () => {
-    // color-mix(in oklab, #fefefe 5%, transparent) over the #202020 canvas
-    expect(cssColorToRgb("var(--dt-edge)", tokens)).toEqual([43, 43, 43]);
+    // color-mix(in oklab, #fefefe 7.5%, transparent) over the #202020 canvas —
+    // the trylle rung (ea387dcc) rides the reference cdn's exact 7.5% mix
+    expect(cssColorToRgb("var(--dt-edge)", tokens)).toEqual([49, 49, 49]);
   });
 
   it("quantizes rgb down the 256 cube and grayscale ramp", () => {

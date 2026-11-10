@@ -97,12 +97,15 @@ describe("the rung lockstep (every seat stamps the same number)", () => {
 
 describe("the maintenance rung (the stamp ladder carries every seat)", () => {
   it.skipIf(maintenance === "")(
-    "the git add of the landing step stages all eleven app package.json paths",
+    "the git add of the landing step stages the family whole (the -A law)",
     () => {
+      // the whole-tree law (the 6a1c843d wave): the explicit list the
+      // family outgrew retired — the eleven refreshed locks and the twelve
+      // re-stamped certification records never answered it, so the landing
+      // walks `git add -A` and the ignore surface keeps the tree safe; the
+      // staged seats above (the rung lockstep) still pin every manifest.
       expect(stamp, "the landing step carries a git add line").toContain("git add ");
-      for (const seat of seats) {
-        expect(stamp, `${seat} rides the staged set`).toContain(`${seat}/package.json`);
-      }
+      expect(stamp.replace(/\\\n/g, " "), "the landing stages the whole tree").toMatch(/git add\s+-A\b/);
     },
   );
 
