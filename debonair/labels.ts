@@ -17,7 +17,7 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 7;
+export const LABEL_REVISION = 8;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -289,6 +289,7 @@ export const LABEL_MANIFEST = {
     "Nothing composed yet. Describe a track above — the arrangement plan (key, chords, drum grid, clips, desk) appears here with its seed and lands in the studio and the library.",
   "generate.shelf.ready": "ready",
   "generate.row.meta": "{key} · {bpm} bpm · {bars} bars ({total}) · {clock} · {events} events · seed {seed}",
+  "generate.row.untitled": "untitled",
   "generate.row.open": "Open in studio",
   "generate.lane.head": "the render lane — {count} take{s}",
   "generate.lane.empty":
@@ -299,6 +300,7 @@ export const LABEL_MANIFEST = {
   "generate.lane.composed": "composed — the render needs the gateway",
   "generate.lane.failed": "failed · {error}",
   "generate.lane.timeout": "the render kept silent past the poll window",
+  "generate.lane.walkFailed": "the walk failed",
   "generate.render.meta": "{key} · {bpm} bpm · {bars} bars · {clock} · {kb} kB · salt {salt} · {voice}",
   "generate.render.canonical": "canonical",
   "generate.render.voiced": "with voice",
@@ -353,6 +355,7 @@ export const LABEL_MANIFEST = {
   "ingest.phase.readyDetail": "the document is complete",
   "ingest.phase.error": "failed",
   "ingest.phase.errorDetail": "the file did not survive the bench",
+  "ingest.phase.walkFailed": "the walk failed",
   "ingest.eyebrow": "debonair · ingest",
   "ingest.doc.eyebrow": "the document",
   "ingest.doc.meta": "· {clock} · {khz} kHz · schema {schema}",
@@ -369,6 +372,7 @@ export const LABEL_MANIFEST = {
   "ingest.saved.db": "in the library",
   "ingest.saved.offline": "offline mirror",
   "ingest.json.truncated": "… {size} kB total — copy or download for the whole document",
+  "ingest.json.downloadName": "ingest",
   "ingest.shelf.eyebrow": "the reference shelf",
   "ingest.shelf.title": "Ingested documents",
   "ingest.shelf.empty": "The shelf is empty — ingest the first real track above.",
@@ -406,6 +410,7 @@ export const LABEL_MANIFEST = {
   "ingest.lane.deviceHint": "the drop posts the gateway walk by default — the key opts the pipeline into this browser",
   "ingest.lane.deviceAria": "Toggle the run-on-device lane",
   "ingest.toast.laneRefused": "the gateway lane refused: {message}",
+  "ingest.toast.noDocumentId": "the job landed done without a document id",
   "ingest.toast.jobFailed": "the walk failed: {message}",
   "ingest.toast.serverLanded": "the server walked {name} into the library — {frames} frames",
   "ingest.toast.dropRefused": "the drop refused: {message}",

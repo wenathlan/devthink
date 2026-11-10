@@ -6,33 +6,52 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * home — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the debonair later, with the time its
- * engines, protocols and processes deserve, so the prompt-first landing of
- * the old face (the giant mono field, the song grid, the genre vitrine, the
- * flow steps, the engine ledger, the meta-quad) is retired and the route
- * answers the honest construction face behind the same entry gate. The
+ * home — the detailed engine wave remount (the owner's order the
+ * construction pass pinned, answered): the prompt-first landing returns,
+ * mounted on the REAL engine seats through the composite HomeLanding
+ * winget — the hero chips riding the genre matrix, the song grid reading
+ * the catalog seam (the vitrine rows beside the sample rows, every play
+ * key pressing the shared playerbus), the genre vitrine, the flow steps
+ * and the engine ledger over the MASTERING spec, the family meta-quad. The
+ * anchor itself stays the thin face the construction law pins: it owns no
+ * state and imports no engine module — the landing winget owns the mount,
+ * and while the catalog seam arms (the first paint before the shelf lands
+ * its answer) the route answers the construction face it wore. The
  * first-run flow (intro, onboarding) rides exactly as it was and the root
- * engine logics the landing read (arrangement, catalog, dawview,
- * genrematrix, katexis, playerbus) keep riding their own files untouched —
- * only this page's face changed, nothing was deleted.
+ * engine logics (arrangement, catalog, dawview, family, genre, katexis,
+ * playerbus) keep riding their own files untouched.
  */
 
 import { label } from "../../labels.ts";
 import { Constructionface, EntryGate } from "../../wingets";
+import { HomeLanding } from "../wingets/HomeLanding.tsx";
+import { type NavLink, Shell } from "../shell/Shell.tsx";
 
 /**
  * the home anchor: the entry gate decides first (intro unseen hands to
  * /intro, onboarding unseen hands to /onboarding, null renders while the
- * state resolves) and the construction face mounts only behind a finished
- * flow.
+ * state resolves) and the landing mounts only behind a finished flow.
  *
- * @returns the gated construction face element.
+ * @returns the gated landing element.
  */
 export default function Home() {
+  // the footer links read the label store at render time (the manifest
+  // answers english, the store answers the translated rows the seed protected)
+  const FOOTER_LINKS: readonly NavLink[] = [
+    { label: label("nav.studio"), href: "/studio" },
+    { label: label("nav.generate"), href: "/generate" },
+    { label: label("nav.library"), href: "/library" },
+    { label: label("nav.settings"), href: "/settings" },
+  ];
+
   return (
     <EntryGate>
-      <Constructionface eyebrow={label("home.eyebrow")} />
+      <Shell name="debonair" contained={false} cta={{ label: label("home.cta"), href: "/studio" }} footerLinks={FOOTER_LINKS} domain="devthink.pro">
+        {/* the landing mount rides the real engines; the construction face
+            it wore answers the arming beat — the first paint before the
+            catalog seam lands its answer (never a fake grid, never a dead hero) */}
+        <HomeLanding face={<Constructionface eyebrow={label("home.eyebrow")} />} />
+      </Shell>
     </EntryGate>
   );
 }

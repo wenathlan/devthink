@@ -6,25 +6,33 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * generate — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the debonair later, with the time its
- * engines, protocols and processes deserve, so the composer loop of the old
- * face (the prompt bench, the take queue, the lyric desk) is retired and the
- * route answers the honest construction face under the generate eyebrow,
- * inside the same app shell (the rail and the transport stay). The engine
- * logics the loop rode (arrangement, composer, genrematrix, playerbus, seed)
- * keep riding their own files untouched — only this page's face changed,
- * nothing was deleted.
+ * generate — the detailed engine wave remount (the owner's order the
+ * construction pass pinned, answered): the composer loop returns, mounted
+ * on the REAL engine seats through the composite GenerateBench winget —
+ * the prompt bench scoring the genre matrix chips, the compose walk
+ * folding the session references into the miner's profile (the composer
+ * answering the seeded plan with the salt law and the opt-in voice), the
+ * render lane polling the gateway walk (queued → rendering → done, the
+ * wav landing in the blob store, the take playing through the shared bus)
+ * and the session shelf handing takes to the studio. The anchor itself
+ * stays the thin face the construction law pins: it owns no state and
+ * imports no engine module — the bench winget owns the mount, and while
+ * the session shelf arms (the first paint before the take store lands its
+ * answer) the route answers the construction face it wore. The engine
+ * logics the loop rode (arrangement, audio, generateclient, genre, ingest,
+ * pattern, playerbus, renderengine, take) keep riding their own files
+ * untouched.
  */
 
 import { label } from "../../labels.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
+import { GenerateBench } from "../wingets/GenerateBench.tsx";
 import { Constructionface } from "../../wingets";
 
 /**
- * the generate page: the in-construction face under the generate eyebrow.
+ * the generate page: the composer loop under the generate eyebrow.
  *
- * @returns the app shell with the construction face.
+ * @returns the app shell with the bench mount.
  */
 export default function Generate() {
   // the footer links read the label store at render time (the manifest
@@ -36,8 +44,18 @@ export default function Generate() {
   ];
 
   return (
-    <Shell name="debonair" contained footerLinks={FOOTER_LINKS} domain="devthink.pro">
-      <Constructionface eyebrow={label("generate.eyebrow")} />
+    <Shell name="debonair" contained cta={{ label: label("generate.cta"), href: "/studio" }} footerLinks={FOOTER_LINKS} domain="devthink.pro">
+      <p className="eyebrow reveal">{label("generate.eyebrow")}</p>
+      <h1 className="reveal page-title">{label("generate.title")}</h1>
+      <p className="reveal lede" style={{ maxWidth: 640 }}>
+        {label("generate.ledeLead")}
+        <code>studio</code>
+        {label("generate.ledeTail")}
+      </p>
+      {/* the bench mount rides the real engines; the construction face it
+          wore answers the arming beat — the first paint before the session
+          shelf lands its answer (never a fake lane, never a dead bench) */}
+      <GenerateBench face={<Constructionface eyebrow={label("generate.eyebrow")} />} />
     </Shell>
   );
 }
