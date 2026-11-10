@@ -1,6 +1,6 @@
 # the mapping — the stage and app map that defines every branch and pr scope
 
-The structured map of the operation: one stage ladder, five rule types,
+The structured map of the operation: one stage ladder, six rule types,
 eleven apps, eight categories per app. Every complaint ever filed is a
 mandatory directive of change or correction — the map carries them all as
 scope lines, and the set of lines under each app directly defines the
@@ -21,16 +21,17 @@ wave opens its pr by theme, merges with squash and the ladder walks on.
 - root of my-project: the family tree only — .github, eleven apps, .gitignore, package.json — the next residue (src, venv, .next, caches) eradicated, the empty node_modules and the stale .env deleted this wave
 - machine seats (gitignored, never staged): upload (the inbox), alan (the competitor corpus, blobless clone with organizado/md seated), Neo.Temp and Neo.img (the design reference seats), .github-token (the credential law)
 - auth: the token captured in real time this session (the corrected polar.sh seated from the polarauth corpus, the F8 promise held — code issued 07:57, owner authorization 08:00:11, token stored 0600 the same second), embedded in the devthink remote and seated at .github-token — fetch, push and the api all answer it
-- security panel: the eight open alerts walked to one — the polynomial-redos heal (the ttl bound, squashed from wave/redosheal) and the seven-alert codeql-zero stride (the npx-carrier law over every npm verb, the pip require-hashes closures, the esbuild exact rung, the redos linear scan, the polarauth message-only heal) both landed and merged; the last seat (the stack-trace exposure) closes on the fresh scan of the merged head
+- security panel: the fresh analysis on the merged head answered four open alerts (2102, 2101, 2100, 2079 — two polynomial redos on the restored scrape seats, one incomplete multi-character sanitization, one stack-trace exposure) and the security wave heals them by commit beside the five sibling tempered sites the same files carried; the panel walked from eight to one through the earlier strides (the ttl bound, the seven-alert codeql-zero pass) and this wave closes the rest whole
 - branches: every wave branch folded or squashed into main and deleted (archos-interno, debonair-surfaces, redosheal, rung.2.0.174, trivyvex) — only main survives, the house law held
 - the reading protocol: the conversa19 corpus (85,022 lines) and the polarauth corpus (8,695 lines) read integrally this session — seventeen of the eighteen infra blocks byte-identical (checksum-verified), the final voice transcript (PR0 through PR22 plus the punctuation and final operation rules) carried whole
 
-## the five rule types (the map of every directive)
+## the six rule types (the map of every directive)
 
 - operation (operação): the reading protocol (linear, hierarchical, sed X to Y, no read tools), the wave law (subagents by wave, ignore collisions, advance), the vitest-before-push gate, the squash merge law, only main survives, the commit count law (1,600+), the workflow green law (branches and main), the release and packages law (6 distributions per structure, 60+ packages, 1,000+ assets), the closing quality check.
 - project (projeto): the first layer (.github + 11 apps + .gitignore + package.json, 12 folders + 2 files), inside each app only sol / test / docs, the build at the root (publish ".", outDir ".", webDir "."), folder = app = page with anchors only, the ts logics at the app root before sol, the engine ownership law (gateway comes from getry, storage from vault, vm from saddle, video and 3d from cadria — import, never reimplement), the unlimited engine law (plans limit inside devthink system, never the engines), the 15+ os/arch lanes, the 90 modalities, the edge processing, vault supabase-coherent persistence, never touch the user browser, gpu, cpu or disk.
 - formatting (formatação): modern jsdoc, lowercase, flags, tags, smart syntax, pattern design, blocks synchronized with json via biome, all english, no emoji, no decorative dots, no ansi art, no vibe code, no unnecessary hyphen, files with dots never hyphens, folders clean, zero hardcode in ts/tsx (every interface string lives in the app db via internal api), sha256 generated at build never hardcoded, no fake data (ratings, movies, unsplash, infinite metrics, fake tracks, fake creators).
 - coding (codificação): typescript and node first (native solutions and orcheststration), the 15 engines node maestro, python, go, rust, ruby free, the storage pillar (better sqlite main layer, mysql2, prisma schema, drizzle orm, git lfs, libgit2, blobs, bigint, pointers), mimetypes 3000/4000/6000, https protocols 100/200/1000, one lockfile grammar, identical dependencies across the eleven manifests without removing any, same numbering when the root moves, tests only ts at the test root without subfolders or json or images, the artifacts prohibition, the cli per app as workspace with its own binary.
+- security (segurança): every code-scanning alert and cve closes by real commit, never by ignore, dismissal or a hardcoded failure suppress (configuring the system to ignore alerts is prohibited), the npx-carrier law over every npm verb the hash doctrine reddens, the pip require-hashes closures, the redos bound law (tempered token idioms and anchored peels retire for linear scans — lastindexof walks, indexof closes, bounded runs), the sanitization fixpoint law (a strip re-rides until the output stops changing so no reassembled opener survives), the stack-exposure law (the response answers the coarse class alone, the message and the stack stay server-side in the log), the message-only errortext (no stringify of an unknown the taint tracker cannot narrow), the credential law (tokens at 0600, gitignored, embedded in the remote, never in the tree).
 - design (design): the reference is the original .devthink/web/index.html at 97 to 99 percent, no blue glows, no blue button on the os hero, no leaking shadow on login, no white border, no transition all, the trylle.com house with the windows 11 refinement (titlebar 28/30px, close rgb(232,17,35), 8 handles, accent ice, focus without white ring, pill 999px), the navbar obvious names (floating and pinned), 1mm from the walls, the calendar follows the dock, the footer start menu win11 acrylic sticky, fluent icons aligned, minimalist text, the awwwards level minimal professional visual, the competitors cloned in Neo.Temp and Neo.img with selectors, tokens and css variables inspected directly.
 
 ## the stage ladder (the etapas)
@@ -235,3 +236,40 @@ and closed the fronts the resets reddened, every claim verified live:
   neo.temp design clones), and the conversa49 corpus read at head and
   tail — the standing directives answering the distilled laws the map
   carries, byte-coherent with the session ledger.
+
+## the session record — the security wave (this instance, 2026-11-10 19:00 utc)
+
+the sixth rule family seats and the four open alerts answer real heals,
+ever. claim verified live:
+
+- the auth verified before anything: the token answered the api under the
+  login the remote carries (rate 5000, 4999 remaining), the .github-token
+  machine seat re-seated at 0600 — no background capture needed, the
+  credential was alive in the remote the reset never touched.
+- the sync: the local main walked six behind (a9afcde2 → 7f32e90b), the
+  mode noise the reset stamped on 308 files neutralized through
+  core.filemode, the fast-forward whole, zero divergence after.
+- the bun floor re-pinned: the reset downgraded the runtime to 1.3.14 and
+  the frozen install reddened on the 1.4.4 lockfile grammar — bun 1.4.4
+  re-seated at ~/.bun/bin, the devthink frozen install walking 1,363
+  packages clean.
+- the four alerts, four heals, never a dismissal: the sentence peel
+  (2102) trades the anchored star for three lastindexof walks — the
+  trailing run answering in linear time; the title seat (2101) retires
+  the tempered token for the open-match plus indexof close, the exact
+  `</titlex` semantics preserved and pinned; the stripblocks seats (2100)
+  answer the fixpoint law — the `<scr` before a dropped block and the
+  `ipt>` after it splice back into `<script>` on one pass, so the strip
+  re-rides until nothing changes, both the webscrape and the acquisition
+  engines; the polarauth response (2079) drops the error property whole,
+  the coarse class riding the status field alone, the message and the
+  stack staying server-side.
+- the sibling sweep: five more tempered sites the same acquisition file
+  carried (three title seats, two anchor walks, the json-ld body) walked
+  to the same linear grammar through the shared closefrom and tagbody
+  seats — the file exits the polynomial class entire, and the optional
+  url seat cleared seven typecheck residuals the test file carried.
+- the batteries: the scrape domain answers 55 green legs over the three
+  files (24 webscrape, 24 acquisition, 7 operations) with four new pins
+  seating the heals, the biome gate clean on every touched file, and the
+  full devthink suite walking in the background of the record.
