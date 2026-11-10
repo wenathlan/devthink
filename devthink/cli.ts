@@ -1540,9 +1540,125 @@ export async function runclifamily(argv: string[]): Promise<void> {
   }
 }
 
+/* ════════════════════════════════════════════════════════════════════ */
+/* The chat console seat — the clibin wave law (PR13): the os binary carries */
+/* the same windows 11 chat console every family clibin seat renders, the */
+/* only difference the responsiveness / DPI (the 28px top rule folded to one */
+/* terminal line, the palette folded to the ansi 256 ladder). */
+/* ════════════════════════════════════════════════════════════════════ */
+
+/** the chat accent of the prompt and the titlebar name (ansi 117 — the family accent #a3d7e6). */
+const CHATACCENT = "\x1b[38;5;117m" as const;
+/** the focus ink of the active top rule (ansi 75 — the family focus #4cc2ff). */
+const CHATFOCUS = "\x1b[38;5;75m" as const;
+/** the hover red of the unknown-command rows (ansi 203 — rgb(232, 17, 35)). */
+const CHATHOVER = "\x1b[38;5;203m" as const;
+/** the dim ink of the description rows (the minimal text law). */
+const CHATINK = "\x1b[2m" as const;
+/** the reset token that closes every colored run. */
+const CHATRESET = "\x1b[0m" as const;
+/** the single glyph of the rules and the rails. */
+const CHATBAR = "─" as const;
+/** the app name of this binary seat — the titlebar text. */
+const CHATAPP = "devthink" as const;
+/** the engine ownership one-liner of the os, quoted from the catalog rows. */
+const CHATENGINE =
+  "the self-hosted development platform that behaves like an operating system — the cli, the local gateway and the workbench share one configuration, one catalog and one local store (catalog.ts)" as const;
+/** the scale ladder the native detection resolves (the automatic scaling law). */
+const CHATSCALESTEPS = [1, 1.5, 2, 3] as const;
+
+/** the dpi frame the chat chrome renders inside: the resolved scale seat, the terminal columns and the rail length the titlebar draws. */
+interface chatframe {
+  /** the scale seat of the ladder (1, 1.5, 2 or 3). */
+  scale: number;
+  /** the columns the terminal answers (windows terminal, conpty, xterm, tmux — every pty reports them). */
+  columns: number;
+  /** the titlebar rail length in cells (the pixel rail folded to the grid and clamped so the line never wraps). */
+  rail: number;
+}
+
+/** resolves the dpi frame natively, zero dependencies: the columns come from stdout (every windows and linux terminal answers them), the scale seat from the column ladder — the explicit DEVTHINK_DPI environment override wins first (the native scaling knob) — and the rail clamps inside the frame so the chrome never wraps a narrow console. */
+function chatdetectframe(): chatframe {
+  const columns = Number.isFinite(process.stdout.columns) && Number(process.stdout.columns) > 0 ? Number(process.stdout.columns) : 80;
+  const override = Number(process.env.DEVTHINK_DPI ?? "");
+  const scale =
+    Number.isFinite(override) && override > 0 && CHATSCALESTEPS.includes(override as (typeof CHATSCALESTEPS)[number])
+      ? override
+      : columns >= 200
+        ? 3
+        : columns >= 160
+          ? 2
+          : columns >= 120
+            ? 1.5
+            : 1;
+  const rail = Math.max(4, Math.min(Math.round(24 * scale), columns - CHATAPP.length - 16));
+  return { scale, columns, rail };
+}
+
+/** the dpi frame the console booted with (resolved once, before any chrome prints — a piped stdin answers the deterministic 80-column seat). */
+const CHATFRAME = chatdetectframe();
+
+/** the titlebar bar: the app name on the left rail, the window controls on the right — the windows 11 chrome inside the terminal, the rail folded through the dpi frame. */
+function chattitlebar(): string {
+  return `${CHATACCENT}┌ ${CHATAPP} ─ cli${CHATRESET}  ${CHATINK}${CHATBAR.repeat(CHATFRAME.rail)} ─ ❐ ✕${CHATRESET}`;
+}
+
+/** the top rule: the 28px divider of the web surface folded to one terminal line, scaled by the dpi seat. */
+function chattoprule(): string {
+  const rail = Math.max(3, Math.round(3 * CHATFRAME.scale));
+  return `${CHATFOCUS}${CHATBAR.repeat(rail)} ${CHATAPP} ${CHATBAR.repeat(rail)}${CHATRESET}`;
+}
+
+/** the command help of the console — minimal text law: title + description only. */
+function chathelp(): string[] {
+  return [
+    `${CHATINK}commands${CHATRESET}`,
+    `  help      ${CHATINK}this list${CHATRESET}`,
+    `  version   ${CHATINK}the package version, read from the frozen version constant${CHATRESET}`,
+    `  dpi       ${CHATINK}the resolved dpi seat of this terminal (scale, columns, rail)${CHATRESET}`,
+    `  engine    ${CHATINK}the engine ownership one-liner of the os${CHATRESET}`,
+    `  exit      ${CHATINK}close the console${CHATRESET}`,
+  ];
+}
+
+/** runs the chat console: the titlebar, the top rule, the ❯ prompt and the dispatch (help, version, dpi, engine, exit) — the same chat look the web / desktop surfaces carry, an eof on stdin closing the console the same way exit does. */
+async function renderchat(): Promise<void> {
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  let eof = false;
+  rl.on("close", () => { eof = true; });
+  console.log(chattitlebar());
+  console.log(chattoprule());
+  console.log(`${CHATACCENT}${CHATAPP}${CHATRESET} ${CHATINK}v${packageversion}${CHATRESET}`);
+  console.log(`${CHATINK}the ${CHATAPP} console — same design as web / desktop, only the DPI differs. type help.${CHATRESET}`);
+  rl.setPrompt(`${CHATACCENT}❯${CHATRESET} `);
+  rl.prompt();
+  for await (const raw of rl) {
+    const line = raw.trim();
+    const chatcommand = line.length > 0 ? line.split(/\s+/)[0]!.toLowerCase() : "";
+    if (chatcommand === "exit") rl.close();
+    else if (chatcommand === "help") for (const row of chathelp()) console.log(row);
+    else if (chatcommand === "version") console.log(`${CHATACCENT}${CHATAPP}${CHATRESET} ${packageversion}`);
+    else if (chatcommand === "dpi")
+      console.log(
+        `${CHATACCENT}${CHATAPP}${CHATRESET} ${CHATINK}dpi seat ${CHATFRAME.scale}x on ${CHATFRAME.columns} columns — rail ${CHATFRAME.rail} cells, ladder 1x / 1.5x / 2x / 3x${CHATRESET}`,
+      );
+    else if (chatcommand === "engine") console.log(`${CHATINK}${CHATENGINE}${CHATRESET}`);
+    else if (chatcommand.length > 0)
+      console.log(`${CHATHOVER}✕${CHATRESET} ${CHATINK}unknown command: ${chatcommand} — type help${CHATRESET}`);
+    if (chatcommand === "exit") break;
+    /* the prompt is cosmetic chrome: a piped stdin that already reached eof skips it, the buffered lines still answer. */
+    if (!eof) rl.prompt();
+  }
+  console.log(`${CHATINK}${CHATAPP} console closed.${CHATRESET}`);
+}
+
 async function main(): Promise<void> {
   const command = process.argv[2] ?? "help";
   const args = process.argv.slice(3);
+  if (command === "chat") {
+    await renderchat();
+    return;
+  }
   if (command === "manifest") {
     const manifesttext = await readFile(resolve("manifest.json"), "utf8");
     const manifest = JSON.parse(manifesttext) as {
