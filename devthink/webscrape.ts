@@ -610,11 +610,11 @@ function splitByParagraphs(text: string): string[] {
 }
 
 function splitBySentences(text: string): string[] {
-  /* the linear sentence scan (the redos heal): the trailing unterminated
-   * run peels first so the global sentence match never restarts inside a
-   * failing tail — three lastindexof walks answer the peel, each one a
-   * single linear pass, no backtracking engine ever touching the input. */
-  const last = Math.max(text.lastIndexOf("."), text.lastIndexOf("!"), text.lastIndexOf("?"));
+  /* the linear sentence scan (the redos heal): the trailing unterminated run peels
+   * through the last terminator index the manual walk answers in one pass — the
+   * anchored star the scan engine charged never rides the lane again, and the
+   * possessive global match never restarts inside a failing tail. */
+  const last = Math.max(text.lastIndexOf('.'), text.lastIndexOf('!'), text.lastIndexOf('?'));
   const terminated = last < 0 ? "" : text.slice(0, last + 1);
   return terminated.match(/[^.!?]{0,2000}[.!?]+/g) || [text];
 }
@@ -1059,9 +1059,15 @@ function strippass(html: string, open: RegExp, fragment: RegExp): string {
   return out + (dangling ? rest.slice(0, dangling.index) : rest);
 }
 
-/** Converts sanitized HTML to plain text: script/style blocks drop in one linear pass, remaining tags strip once and entities decode once. */
+/** Converts sanitized HTML to plain text: entities decode first in a single pass that never
+ * re-examines its own output — the double-escaped literal keeps its single decoding — so every
+ * script-shaped sequence the decoded text reveals meets the block and tag strips that follow,
+ * and no <script fragment survives the lane. Blocks drop in one linear pass, tags strip once. */
 function plainText(html: string): string {
-  return stripblocks(html, 'script', 'style')
+  const decoded = html
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole);
+  return stripblocks(decoded, 'script', 'style')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n\n')
     .replace(/<\/h[1-6]>/gi, '\n')
@@ -1071,8 +1077,6 @@ function plainText(html: string): string {
     .replace(/<\/th>/gi, ' | ')
     .replace(/<[^<>]+>/g, '')
     .replace(/<\/?(?:script|style)\b[^<>]*$/i, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole)
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }

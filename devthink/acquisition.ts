@@ -408,7 +408,8 @@ function extractfield(html, descriptor, url) {
     /* the linear title seat (the redos heal): the tempered token idiom the
      * original engine carried answers a failing close in polynomial time —
      * the open tag matches once and the close rides the same lowercase
-     * indexof walk stripblocks answers, the content slicing between. */
+     * indexof walk stripblocks answers, the content slicing between, the
+     * exact `</titlex` answer the battery pins preserved whole. */
     const open = /<title[^>]*>/i.exec(html);
     if (!open) return null;
     const start = open.index + open[0].length;
