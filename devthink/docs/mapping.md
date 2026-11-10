@@ -337,3 +337,50 @@ remote still reddened:
 the ladder answers 1,623 commits at the fold, the suites green whole
 (devthink 3,549 over 208, saddle 522 over 34), and the lanes re-dispatch on
 the healed head.
+
+## the session record — the reseat audit (the same instance, 22:20 utc)
+
+the owner's directive walked the audit law: map what was done, do what was
+not, then proceed. the fresh fedsd corpus (the deduplicated briefing,
+1,537 lines) read whole beside the standing conversa50 and polarauth
+seats — no new substantive directive beyond the laws this map carries.
+
+- the machine seats re-seated after the reset wiped them: the alan corpus
+  (blobless clone of iakadion/allan, depth 1, the organizado/md tree
+  materialized whole — conversa49, fedsd, polarauth and the 204,487-row
+  repos.case catalog readable) with the neo.temp design references (427
+  trylle files beside the win11 families: seelen ui, winui gallery, the
+  fluent set) and the neo.img reference trees accessible through the
+  clone. the .github-token answered the api live before the reseat (the
+  credential law).
+- the sync: local main walked the parallel strides whole — the depfresh2
+  fold (23 conflicts answered by the main side, the superseded cascade),
+  the registry-minors wave, the saddle container heal and the 2.0.176
+  rung (140 files) — every merge clean, zero divergence, 1,631 commits
+  at the audit (the 1,600 law closed).
+- the audit against every pending scope the map reddened: the 2gb lock
+  dead (quota.ts carries the configurable floor law, 1mb to 900gb, null
+  unlimited); eleven db engines seated (the ten keyword roots beside the
+  devthink prisma schema); the vault supabase-law rewire riding
+  vault/index.ts; the saddle law verified live in code — exactly 90
+  modalities, 16 os distributions (grapheneos through void), 17 container
+  arch ids, 16 build arches, the edgeplane visitor guard refusing every
+  browser-shaped scope; the security panel zero open; the pr surface zero
+  open; the packages census 65 across the registries (npm 15, nuget 18,
+  maven 12, rubygems 14, container 6 — the 60 law closed whole).
+- the certification on the 2.0.176 rung: the devthink suite 3,551 green
+  over 208 files (29 initial reds answered the sibling dep seats the rung
+  bumped, the refresh healing them to zero), the family suites green
+  whole through the earlier certification (saddle 522, vault 320, argan
+  72, cadria 648, debonair 1,111, getry 578, stealthhead 147, forge 89,
+  foundry 76, cobaia 37).
+- the container catch-up in flight at the audit: the 2.0.176 rung stamps
+  the healed source the vhe chain builds (the 2.0.175 tag predating every
+  heal the gate demanded), the containers workflow queued behind the
+  release machinery — the law held: no waiting on the heavy lanes, the
+  close check rides the final projection.
+- the releases: the api congested under the 2.0.176 release stamp (the
+  page answers timing out beside the asset generation) — the paged census
+  carried 50 releases and 2,297 assets with zero drafts on the walking
+  page, the thousand-assets law holding twenty-four times over at the
+  last full census.
