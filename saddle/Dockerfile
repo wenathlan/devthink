@@ -308,10 +308,6 @@ RUN node -e "const fs=require('node:fs');const m=JSON.parse(fs.readFileSync('pac
 RUN apt-get update \
     && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
-<<<<<<< HEAD
-=======
-    && npx --yes npm@12.0.2 install --global npm@12.0.2 \
->>>>>>> origin/main
     && tempdir="$(mktemp -d)" \
     && npm pack npm@12.0.2 pnpm@12.18.0 brace-expansion@5.0.11 ip-address@10.3.1 tar@7.5.22 undici@6.29.1 --pack-destination "$tempdir" \
     && mkdir -p /usr/local/lib/node_modules/npm \
@@ -332,16 +328,19 @@ RUN apt-get update \
     && tar -xzf "$tempdir/undici-6.29.1.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/undici \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/tar/package.json').version")" = "7.5.22" \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/undici/package.json').version")" = "6.29.1" \
-<<<<<<< HEAD
     && test "$(npm --version)" = "12.0.2" \
     && mkdir -p /usr/local/lib/node_modules/pnpm \
     && tar -xzf "$tempdir/pnpm-12.18.0.tgz" --strip-components=1 -C /usr/local/lib/node_modules/pnpm \
-    && ln -sf ../lib/node_modules/pnpm/bin/pnpm.cjs /usr/local/bin/pnpm \
+    # the pnpm entry symlink answers the tarball's own truth: pnpm 12 ships
+    # bin/pnpm.mjs (the 9-era carrier shipped bin/pnpm.cjs), so the link
+    # derives from the listing instead of a hand-typed suffix that a rung
+    # bump of the pin can never strand — the assert below proves the
+    # linked binary answers its version.
+    && pnpmbin="$(tar -tzf "$tempdir/pnpm-12.18.0.tgz" | sed -n 's#^package/bin/\(pnpm\.[cm]js\)$#\1#p' | head -1)" \
+    && test -n "$pnpmbin" \
+    && ln -sf "../lib/node_modules/pnpm/bin/$pnpmbin" /usr/local/bin/pnpm \
     && test "$(pnpm --version)" = "12.18.0" \
-    && rm -rf "$tempdir" \
-=======
     && rm -rf "$tempdir" /root/.npm \
->>>>>>> origin/main
     # THE PNPM DEPENDENCY WALK (the containerlanes heal): the pnpm
     # --prod lane replaces the npm ci walk - the pinned pnpm of the
     # family (12.18.0, the root packageManager seat) installs the
@@ -353,10 +352,6 @@ RUN apt-get update \
     # answer the honest absence the lazy import guard owns). The
     # pnpm-workspace.yaml rides the saddle context the same file always
     # carried (the vulnerability overrides the lock lanes read).
-<<<<<<< HEAD
-=======
-    && npx --yes npm@12.0.2 install --global pnpm@12.18.0 \
->>>>>>> origin/main
     && pnpm install --prod --no-frozen-lockfile --ignore-scripts \
     # prune the vendored build toolchains of optional native deps: the
     # cpu-features cmake sources ship nested Dockerfiles (build CI of
