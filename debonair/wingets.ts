@@ -34,3 +34,13 @@ export { LibrarySurface } from "./sol/wingets/LibrarySurface.tsx";
 export { SettingsSurface } from "./sol/wingets/SettingsSurface.tsx";
 export * from "./sol/wingets/ShellPlayerbar.tsx";
 export { default as ShellPlayerbar } from "./sol/wingets/ShellPlayerbar.tsx";
+/* the detailed engine wave lands the page furniture again (the barrel law
+ * the in-construction pass kept: the winget files themselves never left
+ * their own files — the genre and song cards, the cover art beside them,
+ * re-answer the barrel for the home and library surfaces that mount them) */
+export { GenreCard } from "./sol/wingets/HomeGenrecard.tsx";
+export * from "./sol/wingets/HomeGenrecard.tsx";
+export { SongCard, SongCardSkeleton } from "./sol/wingets/HomeSongcard.tsx";
+export * from "./sol/wingets/HomeSongcard.tsx";
+export { CoverArt, coverHash } from "./sol/wingets/HomeCoverart.tsx";
+export * from "./sol/wingets/HomeCoverart.tsx";
