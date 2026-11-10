@@ -340,19 +340,21 @@ describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
      * lane-word dispatcher the scripts consolidation seated) walks the
      * noEmit typecheck the app manifest carries, the esbuild bundle the
      * manifest dependency owns emits the distpackage/index.js entry with
-     * the four host-owned externals, and the frozen install's own
-     * webpack 5.112.2 (the manifest seat the lock pins — the exact pin
-     * the saddle lock resolution answers, never a floating fetch) packs
-     * the one entry through the config form (the CLI-flag parse dies on
-     * the commander major the saddle tree carries — prev is not
-     * iterable — the config sidesteps the flag parser whole) into the
-     * one webpack bundle the six channel legs distribute. */
+     * the four host-owned externals, and the exact-pinned webpack seat
+     * (webpack 5.112.2 with its webpack-cli 7.3.1 peer — the pins the
+     * install line carries beside the manifest seats the frozen lock
+     * resolution answers, never a floating fetch) packs the one entry
+     * through the config form (the CLI-flag parse dies on the commander
+     * major the saddle tree carries — prev is not iterable — the config
+     * sidesteps the flag parser whole) into the one webpack bundle the
+     * six channel legs distribute. */
     expect(containers).toContain("node scripts.ts buildengine");
     expect(containers).toContain(
       "node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js",
     );
-    expect(containers).toContain('filename: "saddle.webpack.js"');
+    expect(containers).toContain("npm install --ignore-scripts --no-audit --no-fund webpack@5.112.2 webpack-cli@7.3.1");
     expect(containers).toContain("node_modules/.bin/webpack -c distpackage/webpack.config.mjs");
+    expect(containers).toContain('filename: "saddle.webpack.js"');
     expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
     /* the envelope coordinates of the webpack distribution never
      * collide with the engine envelope the publish lanes own: the
