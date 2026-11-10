@@ -193,13 +193,15 @@ COPY vault/ /vault
 # the re-export (sources only - the same never-installed law the vault
 # sibling above rides, the family context fix the lanes carry).
 COPY devthink/ /devthink
+# the theme build emits the hashed SPA bundles straight at the app
+# root (the family static-first vite contract): stage them into a
+# clean folder so the runtime stages copy exactly the console
+# surface - the shell, the hashed js/css bundles and the icon and
+# manifest assets the shell references. the extension popup
+# stylesheet is the one root css that never belongs to the spa.
+# (the continuation law: comments never ride inside a continuation
+# line - the parser drops comment-delimited command groups mid-run.)
 RUN npm run web:build:pages \
-    # the theme build emits the hashed SPA bundles straight at the app
-    # root (the family static-first vite contract): stage them into a
-    # clean folder so the runtime stages copy exactly the console
-    # surface - the shell, the hashed js/css bundles and the icon and
-    # manifest assets the shell references. the extension popup
-    # stylesheet is the one root css that never belongs to the spa.
     && mkdir -p /out/spa \
     && cp index.html *.js *.css *.svg *.webmanifest /out/spa/ \
     && rm -f /out/spa/popup.css
@@ -304,7 +306,42 @@ RUN node -e "const fs=require('node:fs');const m=JSON.parse(fs.readFileSync('pac
 # CVE swaps below ride — npm pack answers the exact version pins without
 # the install verb the hash doctrine reddens, the tarballs unpack into
 # the global tree the base symlinks already answer, and the asserts
-# prove every version the image carries.
+# prove every version the image carries. the npm@12.0.2 tarball freezes
+# its bundled node_modules at publish time (the same lesson as the
+# builder's fixdep): its tar@7.5.19 carries CVE-2026-73566 (long-path
+# DoS), fixed in 7.5.21+. The lockfile already resolves app tar to
+# 7.5.22 - the global npm tree gets the same treatment and the version
+# is asserted after install. The same freeze ships brace-expansion
+# 5.0.9 (CVE-2026-102276 / CVE-2026-102278, fixed in 5.0.10+) and
+# undici 6.28.0 (CVE-2026-109383 / CVE-2026-109869 / CVE-2026-19534 /
+# CVE-2026-87018, fixed in 6.29.1+): both carriers ride the swap and
+# the assert proves it. the pack tarball freezes its bins at
+# publish-time mode 644 (npm normalizes every non-.bin entry to
+# rw-r--r--), so the shebang the symlink answers could never execute -
+# the chmod restores the execute bit the pack lane dropped before the
+# symlink resolves it. THE PNPM DEPENDENCY WALK (the containerlanes
+# heal): the pnpm --prod lane replaces the npm ci walk - the pinned
+# pnpm of the family (12.18.0, the root packageManager seat) installs
+# the production closure the derived manifest names, omitting every
+# platform-gated native the current arch cannot carry (the libsql
+# lesson: npm ci hard-failed EBADPLATFORM on ppc64le/s390x because
+# @libsql/client declares the gated libsql as a regular dep, while
+# pnpm omits it - x64/arm64 keep the full closure, the exotic legs
+# answer the honest absence the lazy import guard owns). The
+# pnpm-workspace.yaml rides the saddle context the same file always
+# carried (the vulnerability overrides the lock lanes read). the
+# post-install prunes ride the same continuation law the toolchain
+# layer owns (comments never inside a continuation): the vendored
+# build toolchains of optional native deps — the cpu-features cmake
+# sources ship nested Dockerfiles the trivy misconfig scanner flags
+# (DS-0002 USER, DS-0029 no-install-recommends) inside the shipped
+# image, and with --ignore-scripts the binding never builds so the
+# package degrades to a no-op at runtime, dead weight — and the
+# package caches the image never needs to carry: the pnpm
+# content-addressed store ships npm test fixtures (keypair-style
+# "secrets" the trivy secret scanner flags) and the npm cacache
+# answers only bloat, node_modules/.pnpm surviving because its files
+# are hardlinks inside this same layer.
 RUN apt-get update \
     && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
@@ -315,15 +352,6 @@ RUN apt-get update \
     && mkdir -p /usr/local/lib/node_modules/npm/node_modules/brace-expansion /usr/local/lib/node_modules/npm/node_modules/ip-address /usr/local/lib/node_modules/npm/node_modules/tar /usr/local/lib/node_modules/npm/node_modules/undici \
     && tar -xzf "$tempdir/brace-expansion-5.0.11.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/brace-expansion \
     && tar -xzf "$tempdir/ip-address-10.3.1.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/ip-address \
-    # the npm@12.0.2 tarball freezes its bundled node_modules at publish
-    # time (the same lesson as the builder's fixdep): its tar@7.5.19
-    # carries CVE-2026-73566 (long-path DoS), fixed in 7.5.21+. The
-    # lockfile already resolves app tar to 7.5.22 - the global npm tree
-    # gets the same treatment and the version is asserted after install.
-    # The same freeze ships brace-expansion 5.0.9 (CVE-2026-102276 /
-    # CVE-2026-102278, fixed in 5.0.10+) and undici 6.28.0 (CVE-2026-109383
-    # / CVE-2026-109869 / CVE-2026-19534 / CVE-2026-87018, fixed in
-    # 6.29.1+): both carriers ride the swap and the assert proves it.
     && tar -xzf "$tempdir/tar-7.5.22.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/tar \
     && tar -xzf "$tempdir/undici-6.29.1.tgz" --strip-components=1 -C /usr/local/lib/node_modules/npm/node_modules/undici \
     && test "$(node -p "require('/usr/local/lib/node_modules/npm/node_modules/tar/package.json').version")" = "7.5.22" \
@@ -331,40 +359,14 @@ RUN apt-get update \
     && test "$(npm --version)" = "12.0.2" \
     && mkdir -p /usr/local/lib/node_modules/pnpm \
     && tar -xzf "$tempdir/pnpm-12.18.0.tgz" --strip-components=1 -C /usr/local/lib/node_modules/pnpm \
-    # the pack tarball freezes its bins at publish-time mode 644 (npm
-    # normalizes every non-.bin entry to rw-r--r--), so the shebang the
-    # symlink answers could never execute - the chmod restores the
-    # execute bit the pack lane dropped before the symlink resolves it.
     && chmod +x /usr/local/lib/node_modules/pnpm/bin/pnpm.mjs /usr/local/lib/node_modules/pnpm/bin/pnpx.mjs \
     && ln -sf ../lib/node_modules/pnpm/bin/pnpm.mjs /usr/local/bin/pnpm \
     && ln -sf ../lib/node_modules/pnpm/bin/pnpx.mjs /usr/local/bin/pnpx \
     && test "$(pnpm --version)" = "12.18.0" \
     && rm -rf "$tempdir" \
-    # THE PNPM DEPENDENCY WALK (the containerlanes heal): the pnpm
-    # --prod lane replaces the npm ci walk - the pinned pnpm of the
-    # family (12.18.0, the root packageManager seat) installs the
-    # production closure the derived manifest names, omitting every
-    # platform-gated native the current arch cannot carry (the libsql
-    # lesson: npm ci hard-failed EBADPLATFORM on ppc64le/s390x because
-    # @libsql/client declares the gated libsql as a regular dep, while
-    # pnpm omits it - x64/arm64 keep the full closure, the exotic legs
-    # answer the honest absence the lazy import guard owns). The
-    # pnpm-workspace.yaml rides the saddle context the same file always
-    # carried (the vulnerability overrides the lock lanes read).
     && pnpm install --prod --no-frozen-lockfile --ignore-scripts \
-    # prune the vendored build toolchains of optional native deps: the
-    # cpu-features cmake sources ship nested Dockerfiles (build CI of
-    # the dependency) that the trivy misconfig scanner flags (DS-0002
-    # USER, DS-0029 no-install-recommends) inside the shipped image.
-    # With --ignore-scripts the binding never builds and the package
-    # degrades to a no-op at runtime - the sources are dead weight.
     && rm -rf node_modules/cpu-features/deps \
     && find node_modules -type f -name Dockerfile -delete \
-    # prune the package caches the image never needs to carry: the pnpm
-    # content-addressed store ships npm test fixtures (keypair-style
-    # "secrets" the trivy secret scanner flags - forty-one findings)
-    # and the npm cacache answers only bloat - node_modules/.pnpm
-    # survives because its files are hardlinks inside this same layer.
     && rm -rf /root/.local/share/pnpm/store /root/.cache/pnpm /root/.npm
 # THE TOOLCHAIN LAYER — the fourteen planned seats walk live (the pr13
 # completion law): the engine host carries the runtimes the language,
@@ -383,6 +385,23 @@ RUN apt-get update \
 # globalization stack refuses to boot without it — so the library rides
 # the apt lane on every arch leg and the dotnet --version assert below
 # walks green the same way the v seat walks the prebuilt binary.
+# THE CONTINUATION LAW (the trivy heal): comments never ride inside a
+# dockerfile continuation line — the parser drops comment-delimited
+# command groups mid-run, so the 29dc953c prunes seated behind inline
+# comments never executed in any real build, the buildkit cache
+# matching the pre-prune instruction text whole and the trivy lane
+# charging the dead weight (the /opt toolchain dockerfiles, the
+# vlib test trees and the h2spec keypair) the image kept carrying.
+# the strips below ride the same continuation the toolchain case
+# owns, comment-free: the v toolchain test trees the compiler never
+# walks (the h2spec server fixture carries an embedded rsa test key
+# the secret scanner charges and the autobahn websocket tree ships a
+# Dockerfile the misconfig seat flags), and the build-CI dockerfiles
+# the prefab toolchain carriers ship whole — the v repo rides its own
+# Dockerfile family and nimble carries test fixtures under dist,
+# every one flagged (DS-0002, DS-0029) while no runtime seat ever
+# reads a dockerfile from /opt, the same dead-weight law the
+# node_modules prune owns.
 RUN set -eux; \
     arch="${TARGETARCH:-$(dpkg --print-architecture)}"; \
     apt-get update; \
@@ -419,14 +438,6 @@ RUN set -eux; \
         tar -xJf /tmp/wasmtime.tar.xz --strip-components=1 -C /opt/wasmtime; \
         ln -sf /opt/wasmtime/wasmtime /usr/local/bin/wasmtime; \
         wasmtime --version; \
-        # the v seat rides the official prebuilt binary the 0.5.2 release
-        # publishes (v_linux.zip beside v_linux_arm64.zip): the source
-        # bootstrap the lane carried died because make clones TODAY'S vc
-        # master to compile the pinned 0.5.2 vlib — a bootstrap compiler
-        # months newer than the tree it compiles, the deprecation wall the
-        # make answered Error 1 on. the prebuilt zip carries the matched
-        # binary beside its own vlib (5,385 sources), the exact pin the
-        # engines catalog names, and the assert below proves it.
         vasset="v_linux.zip"; [ "$arch" = "arm64" ] && vasset="v_linux_arm64.zip"; \
         curl -fsSL "https://github.com/vlang/v/releases/download/0.5.2/${vasset}" -o /tmp/v.zip; \
         unzip -q /tmp/v.zip -d /opt; \
@@ -445,19 +456,8 @@ RUN set -eux; \
         echo "the toolchain layer answers the honest coded absence on ${arch}: the prefab carriers ship amd64 and arm64 alone (the seats' probes name the requirement at dispatch)" ;; \
     esac; \
     rm -rf /var/lib/apt/lists/* /tmp/* /opt/nim/.git /opt/v/.git; \
-    # strip the v toolchain test trees the compiler never walks: the
-    # h2spec server fixture carries an embedded rsa test key (a secret
-    # finding) and the autobahn websocket tree ships a Dockerfile the
-    # misconfig scanner flags (DS-0002) - test files are not needed to
-    # compile v user code.
     find /opt/v/vlib -type d -name tests -exec rm -rf {} + 2>/dev/null || true; \
     rm -rf /opt/v/vlib/net/http/h2spec; \
-    # strip the build-CI dockerfiles the prefab toolchain carriers ship
-    # whole: the v repo rides its own Dockerfile family (the root pair,
-    # the ci workflow pair and the examples tree) and nimble carries
-    # test fixtures under dist - the misconfig scanner flags every one
-    # (DS-0002, DS-0029) while no runtime seat ever reads a dockerfile
-    # from /opt - the same dead-weight law the node_modules prune owns.
     find /opt -type f -name 'Dockerfile*' -delete 2>/dev/null || true; \
     mkdir -p /sandbox && chown node:node /sandbox
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
