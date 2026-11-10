@@ -51,8 +51,13 @@ const log = (message: string): void => {
 };
 
 /** The message-only form of a caught error (the stack-trace-exposure heal): the log
- * and the sync state record the message, never the stack or the raw object. */
-const errortext = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+ * and the sync state record the message alone — never the stack, never the raw
+ * object, never the stringify of an unknown value the taint tracker cannot narrow. */
+const errortext = (error: unknown): string => {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "unknown error";
+};
 
 const save = (): void => {
   writeFileSync(STATE, JSON.stringify({
