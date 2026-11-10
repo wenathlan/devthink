@@ -12,7 +12,7 @@
  * plain esm typescript on bun, zero external dependencies. the port is
  * fixed (3010) — the sandbox gateway law: never an env port. */
 
-import { appendFileSync, chmodSync, existsSync, writeFileSync } from "node:fs";
+import { appendFileSync, chmodSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { setInterval } from "node:timers";
 import path from "node:path";
@@ -61,16 +61,56 @@ const errortext = (error: unknown): string => {
 };
 
 const save = (): void => {
-  writeFileSync(STATE, JSON.stringify({
-    status: phase,
-    user_code: usercode,
-    verification_uri: "https://github.com/login/device",
-    expires_at: expiresat,
-    sync: syncstate,
-    error: lasterror,
-    cycles,
-    at: Date.now(),
-  }));
+  writeFileSync(
+    STATE,
+    JSON.stringify({
+      status: phase,
+      user_code: usercode,
+      device_code: devicecode,
+      interval,
+      verification_uri: "https://github.com/login/device",
+      expires_at: expiresat,
+      sync: syncstate,
+      error: lasterror,
+      cycles,
+      at: Date.now(),
+    }),
+  );
+};
+
+/* the sandbox reaper: every background lane of this machine dies between
+ * tool calls (the container resets sweep the whole user process tree), so a
+ * relaunched seat must ADOPT the still-fresh pending code the previous
+ * instance saved instead of churning a new one the owner never sees in
+ * time. a fresh request only rides when no adoptable code remains. */
+const adopt = (): boolean => {
+  try {
+    const saved = JSON.parse(readFileSync(STATE, "utf8")) as {
+      status?: string;
+      user_code?: string;
+      device_code?: string;
+      interval?: number;
+      expires_at?: number;
+    };
+    if (
+      saved.status === "pending" &&
+      saved.user_code &&
+      saved.device_code &&
+      (saved.expires_at ?? 0) > Date.now() + 30_000
+    ) {
+      usercode = saved.user_code;
+      devicecode = saved.device_code;
+      interval = saved.interval ?? 5;
+      expiresat = saved.expires_at ?? 0;
+      phase = "pending";
+      save();
+      log(`adopted pending code ${usercode} (expires in ${Math.round((expiresat - Date.now()) / 1000)}s)`);
+      return true;
+    }
+  } catch {
+    /* no state or unreadable state — the fresh request below answers */
+  }
+  return false;
 };
 
 async function requestcode(): Promise<void> {
@@ -83,7 +123,11 @@ async function requestcode(): Promise<void> {
       body: `client_id=${CLIENT_ID}&scope=${encodeURIComponent(SCOPES)}`,
     });
     const payload = (await response.json()) as {
-      device_code?: string; user_code?: string; interval?: number; expires_in?: number; error?: string;
+      device_code?: string;
+      user_code?: string;
+      interval?: number;
+      expires_in?: number;
+      error?: string;
     };
     if (!payload.device_code) throw new Error(payload.error || "no device_code");
     devicecode = payload.device_code;
@@ -126,7 +170,9 @@ async function capture(token: string): Promise<void> {
         return "ERR:git-command-failed";
       }
     };
-    run("git fetch origin || git fetch https://github.com/wenathlan/devthink.git '+refs/heads/*:refs/remotes/origin/*'");
+    run(
+      "git fetch origin || git fetch https://github.com/wenathlan/devthink.git '+refs/heads/*:refs/remotes/origin/*'",
+    );
     const local = run("git rev-parse HEAD");
     const remote = run("git rev-parse origin/main");
     if (local === remote) {
@@ -141,7 +187,9 @@ async function capture(token: string): Promise<void> {
         const merged = run('git merge -m "wave: auth sync — merge origin/main" origin/main');
         syncstate = merged.includes("ERR")
           ? "merge-conflict"
-          : (run("git push origin main:main").includes("ERR") ? "merged-push-failed" : "merged-pushed");
+          : run("git push origin main:main").includes("ERR")
+            ? "merged-push-failed"
+            : "merged-pushed";
       }
     }
     log(`sync=${syncstate} local=${local} remote=${remote}`);
@@ -190,7 +238,7 @@ async function poll(): Promise<void> {
   }
 }
 
-await requestcode();
+if (!adopt()) await requestcode();
 setInterval(() => {
   void poll();
 }, interval * 1000);
@@ -202,15 +250,19 @@ Bun.serve({
    * while the message and the stack stay server-side in the state file
    * and the log — no error property ever rides the lane, so the taint
    * tracker finds nothing to model on the wire. */
-  fetch: () => new Response(JSON.stringify({
-    status: phase,
-    user_code: usercode,
-    verification_uri: "https://github.com/login/device",
-    expires_at: expiresat,
-    sync: syncstate,
-    token_present: existsSync(TOKEN_FILE),
-    cycles,
-  }), { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } }),
+  fetch: () =>
+    new Response(
+      JSON.stringify({
+        status: phase,
+        user_code: usercode,
+        verification_uri: "https://github.com/login/device",
+        expires_at: expiresat,
+        sync: syncstate,
+        token_present: existsSync(TOKEN_FILE),
+        cycles,
+      }),
+      { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } },
+    ),
 });
 log(`polarauth service live on port ${PORT}`);
 console.log(`polarauth live :${PORT} code=${usercode}`);

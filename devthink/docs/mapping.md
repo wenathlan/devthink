@@ -312,3 +312,20 @@ ever. claim verified live:
   law holding with the my files window inside the panel without url
   redirect — zero errors across the whole walk, the mobile width holding
   at 390 by 844.
+
+## the session record — the sync and settle wave (a parallel instance, 2026-11-10 19:00 utc)
+
+- the branch ladder: the seven open waves walked oldest to newest — measuredlaw folded (the measured loudness seats answer on main's renderworker battery), greenheels folded (the squash resolve answered a no-op merge, all seven sibling vite externals already on main), gameface folded (the 205-line battery byte-identical on main), redosheal folded (the ttl bound at dns.ts:424, the cadria hook at 2001eb1f, the depfresh carried by the depfresh2 absorption), saddleconflictheal folded (the pnpm.mjs seat at the container file's line 334), depfresh2 and typewave absorbed by squash with the batteries walking green on the merged head.
+- the typing tail: the 168 semantic residuals the typewave snapshot documented closed error-driven — the strict grammar rides foundation, communication and integration end to end, both typechecks at zero, never an any escape.
+- the polarauth heal: the adoption law the parallel stride carried and the remote merge dropped restored onto the synced head — the state file carries the device_code and interval again, the relaunch adopts the still-fresh pending pair (verified live: the kill and relaunch answered the identical code, device code and expiry).
+
+## the session record — the recovery wave (this instance, 2026-11-10 20:40 utc)
+
+the sandbox swapped the whole tree onto a stale morning snapshot at 20:34 (the polar.sh-era checkout with the next template re-scaffolded beside the eleven apps, a .git nine commits behind the b6a81dc7 remote and a cron-seat commit absorbing the snapshot's untracked leftovers) — the recovery walked whole:
+
+- the reset: the fetch carried origin/main to c16fef1e (the bun allow-scripts heal a parallel stride landed beside the typing-tail and debonair-escape strides) and the tree reset onto it whole — the stale local line and the cron garbage discarded, every seat superseded by the remote's evolution (the one-container law and the cadria hook riding main through the landed strides), zero loss.
+- the adoption law seated a third time: the remote line dropped the polarauth adoption heal twice — restored again (the state file carrying the device_code and interval, the relaunch adopting the still-fresh pending pair) and verified live the same breath: the kill and relaunch answered the identical code, device code and expiry, the service riding the orphan-spawn law now.
+- the orphan-spawn law (the reaper answered): processes born as children of the tool shell die at the call boundary, orphaned spawns — the parentheses seat, the parent exiting at once — survive (the marker walked five minutes whole); the polarauth and the web lane ride the orphan form.
+- the getry context seats: four hono callbacks walking the honest Context typing the registry minor's contextual pass dropped, the typecheck answering zero whole.
+- the manifest polar heal: the three root scripts point at the tree-resident seat now (bun devthink/polarauth.ts, the state file print, the live lane read) — a fresh clone never chases the machine-local polar.sh again.
+- the root cleaned again: the next template residue (src, public, prisma, the configs, the stale .env) and the stale morning seats (the .polar and .waves machinery, the auth-status and device-flow copies) deleted — the family tree plus the machine seats the map carries.

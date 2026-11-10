@@ -56,6 +56,7 @@ import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { Hono } from "hono";
+import type { Context } from "hono";
 import { cors } from "hono/cors";
 import { createversion } from "@wenathlan/getry/engine";
 import type { gatewayconfig, gatewaydefinition } from "@wenathlan/getry/types";
@@ -548,7 +549,7 @@ async function createserver(): Promise<Hono> {
   const problems = validateconfig(definition);
 
   // config endpoint — reports the loaded definition shape
-  app.get("/api/config", (c) =>
+  app.get("/api/config", (c: Context) =>
     c.json({
       name: definition.name ?? "gateway",
       description: definition.description ?? "",
@@ -567,14 +568,14 @@ async function createserver(): Promise<Hono> {
     for (const prefix of [`/api/${versionid}`, `/${versionid}`]) {
       // info routes — get returns the version descriptor
       for (const resource of resources) {
-        app.get(`${prefix}/${resource}`, (c) => handlers.handleinfo(c.req.raw));
+        app.get(`${prefix}/${resource}`, (c: Context) => handlers.handleinfo(c.req.raw));
       }
 
       // action routes — post dispatches to the resource handler
       for (const resource of resources) {
         const handler = handlermap(handlers, resource);
         if (handler) {
-          app.post(`${prefix}/${resource}`, (c) => handler(c.req.raw));
+          app.post(`${prefix}/${resource}`, (c: Context) => handler(c.req.raw));
         }
       }
     }
@@ -590,7 +591,7 @@ async function createserver(): Promise<Hono> {
   }
 
   // api 404 fallback
-  app.notFound((c) => {
+  app.notFound((c: Context) => {
     if (c.req.path.startsWith("/api/")) {
       return c.json({ error: "not found", path: c.req.path }, 404);
     }
@@ -767,4 +768,3 @@ export async function listversions(): Promise<string[]> {
  * verbatim: one definition in, one problem list out, synchronous always. */
 import { validateconfig } from "./validate.js";
 export { validateconfig };
-

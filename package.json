@@ -34,9 +34,9 @@
   "scripts": {
     "dev": "cd devthink && (bun server.ts serve &) && bunx vite --port 3000 --host 0.0.0.0",
     "gateway": "cd devthink && bun server.ts serve",
-    "polar": "bash polar.sh start",
-    "polarstatus": "bash polar.sh status",
-    "polarcode": "bash polar.sh code",
+    "polar": "bun devthink/polarauth.ts",
+    "polarstatus": "cat .polar-auth.json",
+    "polarcode": "curl -s http://localhost:3010/",
     "start": "bun run dev",
     "wavelaunch": "bun devthink/wavelaunch.ts"
   }
