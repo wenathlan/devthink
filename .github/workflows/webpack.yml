@@ -134,34 +134,47 @@ jobs:
         # the carrier law the corridor clarified: the webpack CLI and the
         # webpack dependencies the envelopes carry exist FOR this seat —
         # the esbuild carrier transpiles the typescript entry (the cli
-        # logic every application root owns) to the plain script and the
-        # webpack CLI bundles it through the generated config into the
-        # single-file distribution (the config the seat generates answers
-        # the variadic target flag the webpack cli grammar cannot carry
-        # on the command line), the node target under production, the
-        # commonjs2 library riding the .cjs extension so the bundle
-        # answers both the direct node run and the require of the
-        # envelopes the registry lanes publish (the type:module trees
-        # never break the commonjs seat).
+        # logic every application root owns) to the esm script with the
+        # packages external (the top level await the saddle scripts carry
+        # and the import.meta the entries read answer through the esm
+        # form) and the webpack CLI bundles it through the generated
+        # config into the single-file distribution (the config the seat
+        # generates answers the variadic target flag the webpack cli
+        # grammar cannot carry on the command line, the externals law
+        # keeps every package a runtime require the envelope dependency
+        # blocks already answer and the parser url switch keeps the
+        # runtime file reads the devthink caps seat carries runtime reads
+        # instead of build time assets), the node target under
+        # production, the commonjs2 library riding the .cjs extension so
+        # the bundle answers both the direct node run and the require of
+        # the envelopes the registry lanes publish (the type:module
+        # trees never break the commonjs seat).
         run: |
           set -euo pipefail
           PKG="${{ matrix.package }}"
           VERSION="${{ steps.release.outputs.version }}"
           cd "${PKG}"
           bun install --frozen-lockfile --ignore-scripts
-          npx esbuild cli.ts --bundle --platform=node --format=cjs --packages=external --outfile=webpacksrc.js
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
           cat > webpack.config.cjs <<CFG
           "use strict";
           const path = require("node:path");
           module.exports = {
             mode: "production",
             target: "node",
-            entry: "./webpacksrc.js",
+            entry: "./webpacksrc.mjs",
             output: {
               path: path.resolve(__dirname, "webpackdist"),
               filename: "${PKG}.webpack.cjs",
               library: { type: "commonjs2" }
             },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
             devtool: false
           };
           CFG
@@ -169,7 +182,7 @@ jobs:
           test -s "webpackdist/${PKG}.webpack.cjs"
           mv "webpackdist/${PKG}.webpack.cjs" "../${PKG}.webpack.${VERSION}.cjs"
           cd ..
-          rm -rf "${PKG}/webpackdist" "${PKG}/webpacksrc.js" "${PKG}/webpack.config.cjs"
+          rm -rf "${PKG}/webpackdist" "${PKG}/webpacksrc.mjs" "${PKG}/webpack.config.cjs"
           sha256sum "${PKG}.webpack.${VERSION}.cjs" > "${PKG}.sha256.webpack.${VERSION}"
           test -s "${PKG}.sha256.webpack.${VERSION}"
           # the family asset naming gate: no underscore ever rides a

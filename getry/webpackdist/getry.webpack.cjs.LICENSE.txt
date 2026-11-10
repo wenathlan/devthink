@@ -1,0 +1,274 @@
+/**
+ * @file auth.ts
+ * @module gateway/auth
+ * @description
+ *  The gateway request auth and key resolution family of the ownership
+ *  wave (wave/ownership.gateway): moved verbatim from devthink/server.ts
+ *  section 1D (the grand-merge interned gateway request auth), so the
+ *  gateway owns its auth surface — one owner, the family consumes, and
+ *  devthink re-exports the public face for the compat consumers.
+ *
+ *  Responsibilities isolated here:
+ *   - Gateway client key resolution — db / env / inline / ephemeral
+ *     sources walked in the configured order (resolvekeys and the
+ *     private keysfrom* helpers, keys labeled and length-filtered)
+ *   - Token extraction / validation / masking from client requests
+ *     (extracttoken, extractchatid, extractsessionid, extractrequestid,
+ *     validatetoken, masktoken)
+ *   - Auth header and query param construction for upstream provider
+ *     calls (buildauthheaders, buildauthqueryparams, appendqueryparams —
+ *     the 12 auth methods plus the ride-along headers and params)
+ *   - Round robin key helpers kept for backward compat (getkey,
+ *     getkeycount)
+ *
+ *  Architectural constraints:
+ *   - Verbatim move: every export name and signature preserved — the
+ *     devthink server keeps answering the family through one re-export
+ *     shim, so no consumer edits with the move
+ *   - The db seam stays dynamic: keysfromdb imports the os storage layer
+ *     through the published "@wenathlan/devthink/storage" specifier (the
+ *     prisma persistence owner) at call time, so this leaf never links
+ *     the persistence stack statically and a source-less consumer still
+ *     loads
+ *   - Zero external dependencies: global fetch / Buffer beside the
+ *     owner's types and utils faces
+ *
+ *  Version: 2.1.7 — the ownership wave auth family extraction
+ *
+ *  Related modules:
+ *   - types.ts — authconfig, resolvedkey (the configuration surface)
+ *   - utils.ts — genid (the generated identifier family)
+ *   - engine.ts — the universal request pipeline riding these builders
+ *   - devthink/server.ts — the compat re-export face of the moved family
+ *
+ * @author devthink
+ * @license MIT
+ */
+
+/**
+ * @file cli.ts
+ * @module gateway/cli
+ * @description
+ *  The gateway console cli of the ownership wave (wave/ownership.gateway,
+ *  step 4 — the final double move): moved verbatim from devthink/server.ts
+ *  (the grand-merge interned gateway console cli), so the gateway owns its
+ *  console family — one owner, the family consumes, and devthink re-exports
+ *  the public face for the compat consumers.
+ *
+ *  Responsibilities isolated here (one section, one module):
+ *   - the console family — the zero-dependency arg parser, the version
+ *     probe, the ansi colors, the shared stdin question stream, the config
+ *     search and the scaffold generators (config.mjs, schema.prisma,
+ *     prismaconfig.ts, .env.example), the interactive version builder, the
+ *     command dispatch (init add list show validate keys models serve
+ *     export help), the family entry runclifamily and the console main.
+ *
+ *  Architectural constraints:
+ *   - Verbatim move: every export name and signature preserved — the
+ *     devthink server keeps answering the family through one re-export
+ *     shim, so no consumer edits with the move.
+ *   - The serve seam (the step 3 report): cmdserve boots THIS owner's
+ *     transport main (./server.js — the getry transport boot). The devthink
+ *     server entry keeps its own composed boot for its os lanes and answers
+ *     serve there itself; the autorun guard below moved with the family and
+ *     is re-keyed on the cli module, so only a direct `bun cli.ts` (or a
+ *     built cli.js entry) run executes the console here.
+ *   - The banner text keeps the historical string the cli test pins
+ *     ("@wenathlan/devthink gateway"); the house may rename faces in a
+ *     later wave.
+ *
+ *  Version: 2.1.8 — the ownership wave console cli extraction
+ *
+ *  Related modules:
+ *   - server.ts — the transport this cli's serve boots (main/runserver)
+ *   - devthink/server.ts — the compat re-export face of the moved family
+ *
+ * @author devthink
+ * @license MIT
+ */
+
+/**
+ * @file config.ts
+ * @module provider/config
+ * @description
+ *  THE single configuration-management module of the merged provider lineage — v2.1.14
+ *  consolidation of config.ts + validate.ts + system.ts into one file
+ *  (one file per correlated context, per the governance skill).
+ *  Merged configuration module — v2 schema-driven base with the complete
+ *  v1 surface ported on top. Nothing from either version was dropped.
+ *
+ *  Third-person observer: the library watches how Antigravity Manager
+ *  and Gemini CLI persist user preferences and reproduces that contract
+ *  without depending on their runtime. The observer never leaks secrets,
+ *  validates production inputs strictly, and enforces chmod 600 on disk.
+ *
+ *  Layout: library-first, root-first.
+ *  Runtime: only node:* builtins + global fetch (Node >=18). Zero external deps.
+ *
+ *  Merge notes (conflict resolutions):
+ *  - v2.1.14 consolidation             : the validation helpers (former
+ *    validate.ts, deleted) and the system utilities (former system.ts, now a
+ *    pure compatibility re-export shim for the published ./system subpath)
+ *    live in the trailing sections of this file. Canonical names resolve to
+ *    the hardened implementations; legacy names survive as documented
+ *    aliases or renames.
+ *  - loadConfig / agsaveConfig          : v1 synchronous cached API keeps the
+ *    original names because existing modules import them synchronously.
+ *    The minimal raw JSON IO helpers of the former system.ts survive under
+ *    the renamed loadConfigRaw / saveConfigRaw.
+ *  - loadConfigAsync / saveConfigAsync: v2 asynchronous implementations are
+ *    exposed under these names (the names already existed in v1 as thin
+ *    wrappers; the v2 implementations absorb that contract).
+ *  - AntigravityConfig                : single interface covering both the
+ *    v1 field set and the v2 field set.
+ *  - ConfigValidationError            : single class accepting both the v1
+ *    constructor (string error list) and the v2 constructor
+ *    (message + structured ValidationError list).
+ *  - isValidEmail / isValidSemver /
+ *    isValidProjectId / validateAccount / validateModelId: canonical hardened
+ *    validators from the former validate.ts (ReDoS-safe, documented).
+ *  - validateEmail / validateSemver /
+ *    validateProjectId                 : legacy system.ts names kept as
+ *    one-line aliases of the canonical validators above.
+ *  - validateModelIdCharset           : former system.ts validateModelId
+ *    charset regex variant, renamed because the canonical validateModelId
+ *    is the semantic gemini/claude/antigravity check.
+ *
+ *  Contract:
+ *  - Path: ~/.config/opencode/antigravity.json (honors OPENCODE_CONFIG_DIR
+ *    and XDG_CONFIG_HOME)
+ *  - Schema: JSON Schema Draft-07 compatible
+ *  - Persistence: atomic write (tmp + chmod 600 + rename), dir 0755/0700
+ *  - Defaults: cli_first, rotation round-robin, quota_refresh 15min,
+ *    google_search enabled, debug off
+ *
+ *  Bypass metadata documented in schema description:
+ *  Antigravity bypass relies on mimicking antigravity/{ver} {os}/{arch} UA
+ *  and bypassing x-goog-user-project stripping, endpoint cascade 403/404/5xx.
+ *
+ * @author devthink
+ * @license MIT
+ * @version 2.1.16
+ */
+
+/**
+ * @file server.ts
+ * @module gateway/server
+ * @description
+ *  The gateway transport of the ownership wave (wave/ownership.gateway):
+ *  moved verbatim from devthink/server.ts (the grand-merge interned http
+ *  transport) and devthink/config.ts (the gateway configuration loader),
+ *  so the gateway owns its transport — one owner, the family consumes, and
+ *  devthink re-exports the public faces for the compat consumers.
+ *
+ *  Responsibilities isolated here (three sections, one module):
+ *   - sse transport — the keepalive constants, the sse/ndjson header
+ *     builders, the event writers, the heartbeat discard, the frame
+ *     parser, the chunk builders, the stream tracking state and
+ *     makestreamresponse (the byte passthrough with masking and
+ *     tracking) plus trackwrite
+ *   - gateway routes — the canonical route kinds (GATEWAYROUTES of
+ *     gateway.ts), the engine handler map, the gateway half of the
+ *     merged createserver (cors, the /api/config endpoint, the version
+ *     loop, the console static roots and the spa fallback), consoleroots
+ *     and main (the transport boot, exported as runserver too)
+ *   - gateway config loader — the .mjs-first probe chain over the search
+ *     bases (loadconfig, reloadconfig, getversion, listversions,
+ *     validateconfig and the private builtindefault/tryimport/
+ *     searchbases helpers)
+ *
+ *  Architectural constraints:
+ *   - Verbatim move: every export name and signature preserved — the
+ *     devthink server keeps answering the family through one re-export
+ *     shim, so no consumer edits with the move
+ *   - The devthink composed createserver still answers the whole surface:
+ *     the os lanes register on the app this module's createserver built
+ *     (devthink/server.ts owns the composition, this module owns the
+ *     transport — no os-lane import ever lands here)
+ *   - The private createtracker / framedatapayload / trackframe helpers
+ *     moved with makestreamresponse and stay private in the owner; the
+ *     private builtindefault / tryimport / searchbases helpers moved with
+ *     loadconfig the same way
+ *
+ *  Version: 2.1.8 — the ownership wave server family extraction
+ *
+ *  Related modules:
+ *   - gateway.ts — GATEWAYROUTES (the canonical seven route kinds)
+ *   - engine.ts — createversion (the version loop mounts its handlers)
+ *   - types.ts — gatewayconfig, gatewaydefinition (the config surface)
+ *   - utils.ts — corsheaders, ctsse, ctndjson, the safe json family
+ *   - devthink/server.ts — the compat re-export face + the composed server
+ *
+ * @author devthink
+ * @license MIT
+ */
+
+/**
+ * constants — the provider constants module of the getry ownership split
+ * (wave/ownership.getry): every antigravity / gemini-cli / cloudcode-pa /
+ * opencode constant family moved here from devthink/constants.ts (the os
+ * module keeps only the generic leaf constants its core.ts utility module
+ * consumes — FETCH_TIMEOUT_MS, the JITTER_* pair and the DEBUG_* trio —
+ * behind the @wenathlan/devthink/constants specifier). the module is raw
+ * values only: every function that used to live here moved to its domain
+ * owner (core.ts for generic utilities, fingerprint.ts for identity
+ * masquerade) in the v2.1.15 phases, except the small path/url helpers
+ * that ride their value families below.
+ *
+ * Third-person observer view — library-first, root-first, production-ready.
+ *
+ * Merged constants module — v2.1.2 base (strict superset) with every unique
+ * export from the v1.0.0 constants module ported on top. Nothing dropped.
+ *
+ * Third-person observer view: the library observes real traffic from the
+ * Antigravity IDE, Gemini CLI, OmniRoute, 9router and pi-antigravity-auth
+ * and reproduces its fingerprint without executing Antigravity.
+ *
+ * The V2 correction addresses the opencode.txt timeline gap: models released
+ * up to 25/08/2026 were missing and Project ID bypass was not fully
+ * Gemini CLI-like.
+ *
+ *  - Plugin: the merged provider lineage 2.1.2 (ONDA 5 V2)
+ *  - Replaces the upstream research lineage which failed due to an outdated UA
+ *    (1.11.5 -> "This version of Antigravity is no longer supported")
+ *    and missing 2026 models.
+ *  - Must work WITHOUT the localhost v1 base-url proxy, straight to
+ *    cloudcode-pa.googleapis.com via endpoint cascade with retry 403/404/5xx.
+ *  - Project ID bypass behaves EXACTLY like Gemini CLI would:
+ *      1) try loadCodeAssist without projectId -> server returns the existing
+ *         cloudaicompanionProject
+ *      2) if null -> onboardUser FREE tier -> long-running operation polling
+ *      3) loadCodeAssist again -> provisioned projectId
+ *      4) fetchAvailableModels as best-effort validation
+ *      5) blinded rising-fact-p41fc fallback only if every endpoint fails
+ *    Implemented references: pi-antigravity-auth (loadCodeAssist parsing),
+ *    OmniRoute/9router (header stripping, prod-first cascade).
+ *
+ *  Model timeline complete up to 25/08/2026:
+ *  - Gemini 3.6 Flash family (high/medium/low/tiered/base)
+ *  - Gemini 3.5 Flash family (high/medium/base/lite/lite-preview)
+ *  - Gemini 3.1 Pro family (high/low/base + flash-image + flash-lite)
+ *  - Gemini 3 family (flash, pro, deep-think)
+ *  - Gemini 2.5 family (pro, flash, flash-lite)
+ *  - Claude 4.6 thinking (opus + sonnet), Claude 4.5 legacy
+ *  - gpt-oss-120b medium/high
+ *  - Preview models: gemini-3-pro-preview, flash-preview, 3.1-pro-preview, customtools
+ *
+ *  Merge notes (conflict resolutions):
+ *  - ANTIGRAVITY_ENDPOINTS   : kept from v2 (cascade URL array); the v1
+ *    versioned-base object is exported as ANTIGRAVITY_ENDPOINT_SET.
+ *  - CODE_ASSIST_ENDPOINTS   : kept from v2 (PROD/DAILY/SANDBOX/AUTOPUSH URL
+ *    map); the v1 v1internal path map is exported as CODE_ASSIST_PATH_MAP.
+ *  - CONSTANTS               : kept from v2; the v1 compatibility barrel is
+ *    exported as CONSTANTS_V1 (also provided as the module default export).
+ *  - FALLBACK_PROJECT_ID     : identical value in both versions; single v2
+ *    definition retained.
+ *
+ *  Runtime constraint: only node:* builtins + global fetch (Node >=18).
+ *  Library-first, root-first: no /src, no folder inside folder.
+ *
+ *  @module provider/constants
+ *  @author devthink
+ *  @license MIT
+ *  @version 2.1.2 — ONDA 5 CORRECTION V2 26/08/2026
+ */
