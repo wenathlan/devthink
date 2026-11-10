@@ -43,6 +43,19 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
      * the monorepo itself, so the update pass skips them instead of
      * parsing a path as a semver. */
     if (/^(file|link|workspace):/.test(declared)) continue;
+    /* the @wenathlan family scope never answers the registry ladder at
+     * all — registry specs beside the local links: the sibling floors
+     * ride the rung convention the wave stamps carry (the published
+     * floor one rung back), and the registry's latest dist-tag answers
+     * the emergency train's highest semver, not the rung line — the
+     * realign heal that walks beside every dispatch flips latest onto
+     * the train the moment a 2.1.x envelope outranks the 2.0.x rungs,
+     * and a family-wide proposal reading that tag drags every manifest
+     * onto floors the rung never cut (the parity lockstep reddens with
+     * half the family on the train and half on the line — the exact
+     * drift the 2.0.174 proposal met). the rung machinery owns the
+     * @wenathlan specs; the ladder walks the public registry alone. */
+    if (name.startsWith("@wenathlan/")) continue;
     const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`);
     if (!response.ok) throw new Error(`npm registry returned ${response.status} for ${name}`);
     const registry = await response.json();
