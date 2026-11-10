@@ -212,7 +212,7 @@ describe("extraction seat", () => {
     const semantic = extractsemantic(rich, "https://example.com/");
     expect(semantic.title).toBe("Rich");
     expect(semantic.headings).toEqual([{ level: 1, text: "Heading" }]);
-    expect(semantic.links.map((link) => link.url)).toEqual(["https://a.example/1"]);
+    expect(semantic.links.map((link: { url: string }) => link.url)).toEqual(["https://a.example/1"]);
   });
 });
 

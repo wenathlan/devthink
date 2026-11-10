@@ -335,7 +335,7 @@ function removeSelector(html: string, selector: string): string { const tag = se
 /**
  * schema extraction accepts safe field descriptors and never evaluates source strings.
  */
-export function extractwithschema(html, schema = {}, url) {
+export function extractwithschema(html: unknown, schema: Record<string, unknown> = {}, url = "") {
   const result = {};
   for (const [name, descriptor] of Object.entries(schema)) result[name] = extractfield(html, descriptor, url);
   return result;
