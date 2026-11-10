@@ -420,8 +420,14 @@ const NAMEFIELDS: Record<string, readonly number[]> = {
 /** TTL unit multipliers for the RFC 2308 spellings ("1h30m"). */
 const TTLUNITS: Record<string, number> = { s: 1, m: 60, h: 3600, d: 86400, w: 604800 };
 
+/** The bounded seat of the ttl grammar: the longest ttl spelling any zone file and any registrar answer carries sits far below this ceiling, so a hostile unbounded digit run (the polynomial-redos wall the code scanning gate flagged — the match over `\d+[smhdw]` walked cubic backtracking on a run of zeros the unit never ends) never reaches the engine. */
+const TTLTOKENLIMIT = 32;
+
 /** Parses a TTL token: plain seconds ("300") or unit spellings ("1h30m"). */
 function parseTtl(token: string): number {
+  /* the bounded seat guards both regex paths at once — the plain-seconds
+   * test and the unit scan — before any pattern touches the input. */
+  if (token.length > TTLTOKENLIMIT) return Number.NaN;
   if (/^\d+$/.test(token)) return Number.parseInt(token, 10);
   const lower = token.toLowerCase();
   const units = lower.match(/\d+[smhdw]/g);
