@@ -405,11 +405,18 @@ export function writeOutput(path: string, content: string): void {
 }
 
 export function slugify(text: string): string {
-  return text
+  /* the linear slug lane (the redos heal): the hyphen trims answer the
+   * anchored lead strip and the manual tail walk — the alternation the
+   * model charged restarted inside every hyphen run, the single-pass
+   * forms never backtrack. */
+  const lead = text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/[\s_]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/^-+/, '');
+  let end = lead.length;
+  while (end > 0 && lead[end - 1] === '-') end -= 1;
+  return lead.slice(0, end);
 }
 
 export function truncate(text: string, max: number, suffix = '...'): string {
@@ -603,7 +610,11 @@ function splitByParagraphs(text: string): string[] {
 }
 
 function splitBySentences(text: string): string[] {
-  return text.match(/[^.!?]+[.!?]+/g) || [text];
+  /* the linear sentence scan (the redos heal): the trailing unterminated
+   * run peels first so the possessive global match never restarts inside
+   * a failing tail, every remaining position answering in one pass. */
+  const terminated = text.replace(/[^.!?]*$/, "");
+  return terminated.match(/[^.!?]{0,2000}[.!?]+/g) || [text];
 }
 
 export function chunkMarkdown(markdown: string, options: ChunkOptions = {}): Chunk[] {
@@ -1022,7 +1033,12 @@ function stripblocks(html: string, ...tags: string[]): string {
     const gt = html.indexOf('>', close);
     cursor = gt < 0 ? html.length : gt + 1;
   }
-  return out + html.slice(cursor);
+  /* the dangling-fragment guard (the sanitization heal): an open tag with
+   * no closing bracket never matches the block scan above, so the tail is
+   * searched for the bare fragment and everything from it drops too. */
+  const rest = html.slice(cursor);
+  const dangling = new RegExp(`<(${tags.join('|')})\\b`, 'i').exec(rest);
+  return out + (dangling ? rest.slice(0, dangling.index) : rest);
 }
 
 /** Converts sanitized HTML to plain text: script/style blocks drop in one linear pass, remaining tags strip once and entities decode once. */
