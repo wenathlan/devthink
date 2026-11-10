@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.174
+
+This release is the rung the v seat heal cuts: the saddle toolchain layer rides the official 0.5.2 prebuilt binary the release pins (the source bootstrap answered the deprecation wall a months-newer vc carried into the pinned vlib, so every buildx leg that reached the toolchain reddened and the vhe lanes skipped below the Trivy gate), so the tagged source this ladder builds finally walks the scan and the Saddle container lanes publish with the family — while the android wrapper law walks the template the 8.6 line carries, the escaping heal and the timeout seat answering the real wrapper both mobile lanes gate on.
+
 ## 2.0.173
 
 This release is the rung the containerlanes heal cut: the digest stamp reads the platform seat the family Dockerfiles carry while the twenty-stamp table walks the whole surface, the saddle container heals the dead COPY arm the modalityregistry fold left behind, the sdk rung seats @anthropic-ai/sdk 1.7.0 beside the axios, framer-motion, motion and openai minors across the eleven manifests, the saddle bun lock answers the family regeneration the pages owner-install lane reads, and the publish mirror attaches the os-distribution catalog seats beside the registry push — the thousand-asset ladder the release ladder answers with the oscatalogseats family.
