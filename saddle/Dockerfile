@@ -446,6 +446,13 @@ RUN set -eux; \
     # compile v user code.
     find /opt/v/vlib -type d -name tests -exec rm -rf {} + 2>/dev/null || true; \
     rm -rf /opt/v/vlib/net/http/h2spec; \
+    # strip the build-CI dockerfiles the prefab toolchain carriers ship
+    # whole: the v repo rides its own Dockerfile family (the root pair,
+    # the ci workflow pair and the examples tree) and nimble carries
+    # test fixtures under dist - the misconfig scanner flags every one
+    # (DS-0002, DS-0029) while no runtime seat ever reads a dockerfile
+    # from /opt - the same dead-weight law the node_modules prune owns.
+    find /opt -type f -name 'Dockerfile*' -delete 2>/dev/null || true; \
     mkdir -p /sandbox && chown node:node /sandbox
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_NOLOGO=1 \

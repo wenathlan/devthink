@@ -773,8 +773,11 @@ async function validateruntimebaselines(): Promise<void> {
   const metadataprobe = ["node", "-p", `"${["require", "('/package.json')"].join("")}`].join(" ");
   if (!containerfile.includes(metadataprobe))
     throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
-  if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
-    throw new Error("the Dockerfile must install the root package manager from the canonical packageManager field.");
+  /* the npx-carrier law (the codeql hash doctrine): the root manager seat
+   * installs through the version-pinned carrier, never the bare npm verb —
+   * the runtime baseline pins the landed security form the Dockerfile rides. */
+  if (!containerfile.includes('npx --yes "npm@${npmversion}" install --global "bun@${bunversion}"'))
+    throw new Error("the Dockerfile must install the root package manager from the canonical packageManager field through the pinned npx carrier.");
   if (!containerfile.includes('bun install --frozen-lockfile'))
     throw new Error("the Dockerfile must retain frozen-lockfile installation.");
   /* the dependency union law rides the manager seat on the pnpm rung while the
