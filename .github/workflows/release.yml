@@ -977,6 +977,7 @@ jobs:
         # carrier — the same temurin toolchain the maven lanes use).
         uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
+          distribution: 'temurin'
           java-version: '26'
       - name: Download every release lane artifact
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -1752,127 +1753,73 @@ jobs:
             fi
             image="ghcr.io/${OWNER,,}/${app}"
             echo "building ${image}:${RELEASE_VERSION}"
+            # THE CONTAINERS-LANE CONTEXT LAW (the tsroot sibling sync): the
+            # case map mirrors the containers workflow the eleven-container
+            # standard proved — every site home stages the routerbase base
+            # (app + vault + devthink, sources only) beside the per-app
+            # sibling map its Dockerfile COPYs read (the tsroot wave seated
+            # the cross-app imports the older maps predate), the vault
+            # engine rides the staged closure (vault at the context root
+            # with its devthink, foundry and saddle siblings), and the
+            # workbench owns the repository root the family law records.
             case "${app}" in
-              argan)
-                # the staged family shape: the application rides the
-                # context nested under app/ and the copy-law vault sibling
-                # rides beside it (sources only - the build never installs
-                # the sibling, the vite aliases read the .ts files)
-                rm -rf familybuildctx
-                mkdir -p familybuildctx/app familybuildctx/vault
-                cp -a "${app}/." familybuildctx/app/
-                cp -a vault/. familybuildctx/vault/
-                rm -rf familybuildctx/vault/node_modules \
-                       familybuildctx/vault/dist \
-                       familybuildctx/vault/build
-                # the -f the staged shape demands (the 2.0.153 family
-                # context fix follow-through): the dockerfile stays at
-                # ${app}/Dockerfile outside the staged context, and a bare
-                # context path would look for familybuildctx/Dockerfile -
-                # the same explicit file the publish lane's family-ghcr
-                # mirror carries.
-                docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
-                ;;
-              debonair)
-                # the staged family shape plus the engine-ownership
-                # sibling: debonair resolves the cadria synth palette
-                # through the ../cadria/synthpalette vite aliases
-                # (coverpalette.ts), so the cadria sibling rides the
-                # context whole beside the copy-law vault sibling (the
-                # map is symmetric with the cadria lane below)
-                rm -rf familybuildctx
-                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/cadria familybuildctx/saddle
-                cp -a "${app}/." familybuildctx/app/
-                cp -a vault/. familybuildctx/vault/
-                cp -a cadria/. familybuildctx/cadria/
-                cp -a saddle/. familybuildctx/saddle/
-                rm -rf familybuildctx/vault/node_modules \
-                       familybuildctx/vault/dist \
-                       familybuildctx/vault/build \
-                       familybuildctx/cadria/node_modules \
-                       familybuildctx/cadria/dist \
-                       familybuildctx/cadria/build \
-                       familybuildctx/saddle/node_modules \
-                       familybuildctx/saddle/dist \
-                       familybuildctx/saddle/build
-                docker build -t "${image}:${RELEASE_VERSION}" familybuildctx
-                ;;
-              cadria)
-                # the engine-ownership sibling map: cadria resolves the
-                # debonair audio engine through the ../debonair vite
-                # aliases, so the debonair sibling rides the context whole
-                # beside the copy-law vault sibling
-                rm -rf familybuildctx
-                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/debonair
-                cp -a cadria/. familybuildctx/app/
-                cp -a vault/. familybuildctx/vault/
-                cp -a debonair/. familybuildctx/debonair/
-                rm -rf familybuildctx/vault/node_modules \
-                       familybuildctx/vault/dist \
-                       familybuildctx/vault/build \
-                       familybuildctx/debonair/node_modules \
-                       familybuildctx/debonair/dist \
-                       familybuildctx/debonair/build
-                # the -f the staged shape demands (the same explicit file
-                # the publish lane's family-ghcr mirror carries).
-                docker build -t "${image}:${RELEASE_VERSION}" -f cadria/Dockerfile familybuildctx
-                ;;
               devthink)
-                # the workbench container law: the context is THE REPOSITORY
-                # ROOT (the family-context law the Dockerfile header
-                # records) and the runtime target the publish lane pins
                 docker build -t "${image}:${RELEASE_VERSION}" -f devthink/Dockerfile --target runtime .
                 ;;
-              cobaia|stealthhead)
-                # the copy-law vault sibling (the label store bridge the
-                # flat village form could not answer inside the app-only
-                # context - the vite step died on labels.ts)
-                rm -rf familybuildctx
-                mkdir -p familybuildctx/app familybuildctx/vault
-                cp -a "${app}/." familybuildctx/app/
-                cp -a vault/. familybuildctx/vault/
-                rm -rf familybuildctx/vault/node_modules \
-                       familybuildctx/vault/dist \
-                       familybuildctx/vault/build
-                docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
+              vault)
+                # the vault closure heal: vault at the context root (the
+                # shape its COPYs read) with the devthink routerbase, the
+                # foundry pipeline and the saddle modality siblings nested
+                rm -rf vaultbuildctx
+                mkdir -p vaultbuildctx/devthink vaultbuildctx/foundry vaultbuildctx/saddle
+                cp -a vault/. vaultbuildctx/
+                cp -a devthink/. vaultbuildctx/devthink/
+                cp -a foundry/. vaultbuildctx/foundry/
+                cp -a saddle/. vaultbuildctx/saddle/
+                rm -rf vaultbuildctx/devthink/.git \
+                       vaultbuildctx/devthink/node_modules \
+                       vaultbuildctx/devthink/dist \
+                       vaultbuildctx/devthink/build \
+                       vaultbuildctx/foundry/node_modules \
+                       vaultbuildctx/foundry/dist \
+                       vaultbuildctx/foundry/build \
+                       vaultbuildctx/saddle/node_modules \
+                       vaultbuildctx/saddle/dist \
+                       vaultbuildctx/saddle/build
+                printf '%s\n' 'devthink/.git' 'devthink/node_modules' 'foundry/node_modules' 'saddle/node_modules' '**/node_modules' > vaultbuildctx/.dockerignore
+                docker build -t "${image}:${RELEASE_VERSION}" -f vault/Dockerfile vaultbuildctx
                 ;;
-              forge|foundry)
-                # the vault copy law plus the saddle engine ownership (the
-                # modes and sandbox bridges the ../saddle aliases own)
+              *)
+                # the staged family shape: the routerbase base every home
+                # answers (app + vault + devthink) beside the sibling map
                 rm -rf familybuildctx
-                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle
+                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/devthink
                 cp -a "${app}/." familybuildctx/app/
+                printf '\nminimumReleaseAge: 0\n' >> familybuildctx/app/pnpm-workspace.yaml
                 cp -a vault/. familybuildctx/vault/
-                cp -a saddle/. familybuildctx/saddle/
+                cp -a devthink/. familybuildctx/devthink/
                 rm -rf familybuildctx/vault/node_modules \
                        familybuildctx/vault/dist \
                        familybuildctx/vault/build \
-                       familybuildctx/saddle/node_modules \
-                       familybuildctx/saddle/dist \
-                       familybuildctx/saddle/build
+                       familybuildctx/devthink/node_modules \
+                       familybuildctx/devthink/dist \
+                       familybuildctx/devthink/build
+                case "${app}" in
+                  argan)          siblings="debonair saddle" ;;
+                  cobaia|stealthhead) siblings="saddle" ;;
+                  cadria)         siblings="debonair argan" ;;
+                  debonair)       siblings="cadria saddle argan" ;;
+                  forge)          siblings="saddle foundry" ;;
+                  foundry)        siblings="saddle" ;;
+                  getry)          siblings="saddle debonair" ;;
+                  *)              siblings="" ;;
+                esac
+                for sib in $siblings; do
+                  mkdir -p "familybuildctx/${sib}"
+                  cp -a "${sib}/." "familybuildctx/${sib}/"
+                  rm -rf "familybuildctx/${sib}/node_modules" "familybuildctx/${sib}/dist" "familybuildctx/${sib}/build"
+                done
                 docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
-                ;;
-              getry)
-                # the gateway sibling map: the vault copy law, the saddle
-                # modality registry, the devthink config bridges and the
-                # debonair route table all ride the context whole
-                rm -rf familybuildctx
-                mkdir -p familybuildctx/app familybuildctx/vault familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
-                cp -a "${app}/." familybuildctx/app/
-                cp -a vault/. familybuildctx/vault/
-                cp -a saddle/. familybuildctx/saddle/
-                cp -a devthink/. familybuildctx/devthink/
-                cp -a debonair/. familybuildctx/debonair/
-                rm -rf familybuildctx/vault/node_modules familybuildctx/vault/dist familybuildctx/vault/build \
-                       familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
-                       familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
-                       familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
-                docker build -t "${image}:${RELEASE_VERSION}" -f "${app}/Dockerfile" familybuildctx
-                ;;
-              *)
-                # the self-contained engine shape: the application folder is
-                # the context (the vault engine owns its own closure)
-                docker build -t "${image}:${RELEASE_VERSION}" "./${app}"
                 ;;
             esac
             docker push "${image}:${RELEASE_VERSION}"

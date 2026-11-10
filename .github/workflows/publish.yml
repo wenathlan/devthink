@@ -4354,24 +4354,52 @@ jobs:
           rm -rf familybuildctx/vault/node_modules \
                  familybuildctx/vault/dist \
                  familybuildctx/vault/build
+          # the routerbase sibling every family home answers (the tsroot
+          # sync the containers lane carries): each app's routerbase.ts
+          # re-exports the family routerBase from ../devthink/routerbase.ts,
+          # so the devthink sources ride the base context beside the app
+          # and the vault (sources only - the never-installed law)
+          mkdir -p familybuildctx/devthink
+          cp -a devthink/. familybuildctx/devthink/
+          rm -rf familybuildctx/devthink/node_modules \
+                 familybuildctx/devthink/dist \
+                 familybuildctx/devthink/build
           case "${{ matrix.package }}" in
-            argan|cobaia|stealthhead)
-              # the copy-law pair the base staging already answers (app +
-              # vault): these site homes consume no further sibling
-              # through the vite aliases, so the case registers the shape
-              # the map documents for each leg
+            cobaia|stealthhead)
+              # the saddle modality registry the ../saddle aliases resolve
+              # (the tsroot wave seated the cross-app imports these homes
+              # now read beside the copy-law vault pair the base answers)
+              mkdir -p familybuildctx/saddle
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/saddle/node_modules \
+                     familybuildctx/saddle/dist \
+                     familybuildctx/saddle/build
+              ;;
+            argan)
+              # the engine-ownership map: argan resolves the debonair
+              # audio engine through the ../debonair import lanes beside
+              # the saddle workload law the ../saddle aliases own
+              mkdir -p familybuildctx/debonair familybuildctx/saddle
+              cp -a debonair/. familybuildctx/debonair/
+              cp -a saddle/. familybuildctx/saddle/
+              rm -rf familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build \
+                     familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build
               ;;
             cadria)
               # the engine-ownership sibling map: cadria resolves the
               # debonair audio engine through the ../debonair vite
-              # aliases, so the sibling rides the context whole (sources
-              # only - the build never installs it, the aliases read
-              # the .ts files directly)
-              mkdir -p familybuildctx/debonair
+              # aliases and the argan dns law through the cleanurl
+              # bridge (the ../argan import the tsroot wave seated), so
+              # both siblings ride the context whole (sources only)
+              mkdir -p familybuildctx/debonair familybuildctx/argan
               cp -a debonair/. familybuildctx/debonair/
+              cp -a argan/. familybuildctx/argan/
               rm -rf familybuildctx/debonair/node_modules \
                      familybuildctx/debonair/dist \
-                     familybuildctx/debonair/build
+                     familybuildctx/debonair/build \
+                     familybuildctx/argan/node_modules \
+                     familybuildctx/argan/dist \
+                     familybuildctx/argan/build
               ;;
             debonair)
               # the engine-ownership sibling map is symmetric: debonair
@@ -4382,37 +4410,53 @@ jobs:
               # never installs them, the aliases read the .ts files
               # directly) the same way the cadria lane stages the debonair
               # audio engine above
-              mkdir -p familybuildctx/cadria familybuildctx/saddle
+              mkdir -p familybuildctx/cadria familybuildctx/saddle familybuildctx/argan
               cp -a cadria/. familybuildctx/cadria/
               cp -a saddle/. familybuildctx/saddle/
+              cp -a argan/. familybuildctx/argan/
               rm -rf familybuildctx/cadria/node_modules \
                      familybuildctx/cadria/dist \
                      familybuildctx/cadria/build \
                      familybuildctx/saddle/node_modules \
                      familybuildctx/saddle/dist \
-                     familybuildctx/saddle/build
+                     familybuildctx/saddle/build \
+                     familybuildctx/argan/node_modules \
+                     familybuildctx/argan/dist \
+                     familybuildctx/argan/build
               ;;
-            forge|foundry)
+            foundry)
               # the vault copy law plus the saddle engine ownership: the
               # modes and sandbox bridges the ../saddle aliases own (the
-              # map the archive lane proved for both runner homes)
+              # map the archive lane proved for the runner home)
               mkdir -p familybuildctx/saddle
               cp -a saddle/. familybuildctx/saddle/
               rm -rf familybuildctx/saddle/node_modules \
                      familybuildctx/saddle/dist \
                      familybuildctx/saddle/build
               ;;
-            getry)
-              # the gateway sibling map: the vault copy law, the saddle
-              # modality registry, the devthink config bridges and the
-              # debonair route table all ride the context whole (the map
-              # the archive lane proved for the gateway home)
-              mkdir -p familybuildctx/saddle familybuildctx/devthink familybuildctx/debonair
+            forge)
+              # the foundry pipeline the ../foundry imports resolve beside
+              # the saddle engine ownership (the tsroot sibling map)
+              mkdir -p familybuildctx/saddle familybuildctx/foundry
               cp -a saddle/. familybuildctx/saddle/
-              cp -a devthink/. familybuildctx/devthink/
+              cp -a foundry/. familybuildctx/foundry/
+              rm -rf familybuildctx/saddle/node_modules \
+                     familybuildctx/saddle/dist \
+                     familybuildctx/saddle/build \
+                     familybuildctx/foundry/node_modules \
+                     familybuildctx/foundry/dist \
+                     familybuildctx/foundry/build
+              ;;
+            getry)
+              # the gateway sibling map: the saddle modality registry and
+              # the debonair route table ride the context whole (the
+              # devthink config bridges the gateway aliases resolve answer
+              # the base staging every family home now carries - the
+              # duplicated devthink seat the routerbase heal retired)
+              mkdir -p familybuildctx/saddle familybuildctx/debonair
+              cp -a saddle/. familybuildctx/saddle/
               cp -a debonair/. familybuildctx/debonair/
               rm -rf familybuildctx/saddle/node_modules familybuildctx/saddle/dist familybuildctx/saddle/build \
-                     familybuildctx/devthink/node_modules familybuildctx/devthink/dist familybuildctx/devthink/build \
                      familybuildctx/debonair/node_modules familybuildctx/debonair/dist familybuildctx/debonair/build
               ;;
           esac
@@ -4426,7 +4470,30 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${{ matrix.package }}" = "vault" ]; then
-            echo "context=./vault" >> "$GITHUB_OUTPUT"
+            # the vault closure heal (the tsroot sync): vault at the
+            # context root (the shape its COPYs read) with the devthink
+            # routerbase, the foundry pipeline and the saddle modality
+            # siblings nested - the self-contained folder the older map
+            # staged could never answer the sibling COPYs the engine
+            # now reads
+            rm -rf vaultbuildctx
+            mkdir -p vaultbuildctx/devthink vaultbuildctx/foundry vaultbuildctx/saddle
+            cp -a vault/. vaultbuildctx/
+            cp -a devthink/. vaultbuildctx/devthink/
+            cp -a foundry/. vaultbuildctx/foundry/
+            cp -a saddle/. vaultbuildctx/saddle/
+            rm -rf vaultbuildctx/devthink/.git \
+                   vaultbuildctx/devthink/node_modules \
+                   vaultbuildctx/devthink/dist \
+                   vaultbuildctx/devthink/build \
+                   vaultbuildctx/foundry/node_modules \
+                   vaultbuildctx/foundry/dist \
+                   vaultbuildctx/foundry/build \
+                   vaultbuildctx/saddle/node_modules \
+                   vaultbuildctx/saddle/dist \
+                   vaultbuildctx/saddle/build
+            printf '%s\n' 'devthink/.git' 'devthink/node_modules' 'foundry/node_modules' 'saddle/node_modules' '**/node_modules' > vaultbuildctx/.dockerignore
+            echo "context=vaultbuildctx" >> "$GITHUB_OUTPUT"
           else
             echo "context=familybuildctx" >> "$GITHUB_OUTPUT"
           fi
