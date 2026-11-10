@@ -62,8 +62,9 @@ surfaces 1-8   #171717 #1e1e1e #252525 #2c2c2c #333333 #3a3a3a #414141 #484848
 windows zinc   --sol-surface-1..8 = #242424 #2b2b2b #2c2c2c #323232 #373737 #3d3d3d
                #434343 #494949; bg #202020 / bg-2 #2b2b2b / canvas-deep #191919
                text #fff, muted #c3c3c3, faint #999999 (light #1a1a1a/#3c3c3c/#555)
-hairlines      color-mix(in oklab, var(--sol-ink) 5%, transparent); strong 10%
-               (light 8%/16%)
+hairlines      color-mix(in oklab, var(--foreground) 7.5%, transparent) both faces
+               (the trylle ruler's exact rung — dark and light carry the same
+               7.5% mix; strong 15%, the house's doubled rung)
 radius         --sol-radius .625rem (10px); sm/lg/xl calc(±2/4px); 2xl 16px; 3xl 24px
 type           h1 clamp(2.25rem,5vw,3.75rem); h2 clamp(1.65rem,3vw,2rem);
                h3 clamp(1.3rem,2vw,1.5rem); display tracking -0.02em; label tracking .14em
