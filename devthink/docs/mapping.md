@@ -176,3 +176,54 @@ it, only main survives. The pending scopes the audit reddened:
 - pr the packages seats: the billing-wall mirror lanes stay noticed and idempotent, the npmjs dual keeps walking.
 - pr the design references: repos.case.md read, the links cloned into Neo.Temp and Neo.img, the selectors, tokens and css variables rechecked against the live references.
 - pr the parity record: the panel parity, the familyurl triple sync and the sha256 seats the corpus demanded are LANDED (the renderparity battery walks 12/12 green, the seat law rides all ten siblings, the x24 sha256 seats answer in release.yml) — the map once carried them as pending, the audit closed them.
+
+## the session record — the verification wave (this instance, 2026-11-10 09:00 utc)
+
+the fresh-sandbox instance walked the stage ladder beside the parallel strides
+and closed the fronts the resets reddened, every claim verified live:
+
+- the lockstep heal (9710643f): the security stride's lock regen answered a
+  tree the family manifests never carried — every frozen install reddened
+  (the gate ladder, the consumer smoke and the three library-mode lanes at
+  the root dependencies step, overrides-changed notes on both verify and ci
+  firings) — the five stale locks (argan, debonair, devthink, getry, saddle)
+  re-stamped under the pinned bun 1.4.4, the frozen installs walking clean
+  across all eleven apps, the devthink suite answering 3494 green over 205
+  files after the heal.
+- the mergeheal (2ca4cda8): the parallel stride's merge left three unresolved
+  conflict markers inside the saddle Dockerfile — the saddlelanes dispatch
+  reddened on the dockerfile parse error (thirteen of twenty-one vhe lanes
+  at buildx solve, the release-event containers runs cancelled behind the
+  same wall) — the three blocks resolved against the pack+extract form the
+  merged file's own structure carries (npm pack answering the six exact
+  pins, the tarballs unpacking into the global tree, the version asserts,
+  the pnpm symlink), the tree scanning clean of every marker, the saddle
+  suite answering 522 green over 34 files, and the fifteen-lane build
+  re-dispatched on the healed head (in flight).
+- the stale v2.1.8 draft: the drift-era draft release (321 assets, the
+  2.1.x curve the family law corrects) walks to deletion — the api
+  answered transient 502s on both attempts, the draft stays queued for the
+  next wave's retry.
+- the npmjs envelopes: all eleven @wenathlan envelopes verified live at
+  2.0.175 (published 08:05 utc), the v2.0.175 release carrying exactly
+  1000 assets beside v2.0.174 — the thousand-assets law closed at the
+  release level, the 153-release / 23,765-asset census twenty-three times
+  over.
+- the production browser verification (the sandbox-lies law): the live
+  site walked green — the homepage answering the hero, the navbar, the
+  sign-in and launch seats with zero console errors; the /panel golden
+  path walked whole — the lock screen, the unlock, the account creation
+  (the honest device-only fallback the static lane answers), the desktop
+  with the full taskbar (start menu, search, the pinned chat, console,
+  gateway and docs, quick settings, calendar) and the desktop icons; the
+  dual-route law verified with the my files window opening inside the
+  panel without url redirect, the close window seat answering — zero
+  errors across the whole walk.
+- the machine seats re-seated after the sandbox reset: the root cleaned
+  of every next-template residue (the stale .env, the empty node_modules
+  and the pnpm-lock residue deleted, the twelve-folder-plus-two-files law
+  holding), the alan corpus seated blobless (the conversa49, fedsd,
+  polarauth and repos.case corpora readable with organizado/md beside the
+  neo.temp design clones), and the conversa49 corpus read at head and
+  tail — the standing directives answering the distilled laws the map
+  carries, byte-coherent with the session ledger.
