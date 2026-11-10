@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.176
+
+This release is the rung the healed tree cuts: the four code-scanning seats close on real fixes (the manual sentence walk the bounded pattern could never answer, the linear title walk, the tag-strip fixpoint and the coarse error classes the polarauth face answers), the restored ports answer the strict typecheck whole with zero behavior moved, the pack lane restores the execute bit the publish-time 644 mode froze so the twelve vhe lanes and the Trivy gate walk green, and the vlib test trees the misconfig scanner charged leave the tagged source beside the secrets the prune seats always owned — the container family the lanes publish to GHCR finally answers the healed source the release ladder builds.
+
 ## 2.0.175
 
 This release is the rung the Saddle unlock cuts: the toolchain layer walks its last two walls — the v seat rides the official 0.5.2 prebuilt binary and the icu seat answers the dotnet assert the carrier image failed — so the tagged source this ladder builds finally walks the Trivy gate and the Saddle vhe lanes publish the container family to GHCR, while the android wrapper law walks the template the 8.6 line carries and the github packages mirrors answer the billing wall with a notice, never a red.

@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "vault"
-  spec.version = ENV.fetch("VAULT_VERSION", "2.0.175")
+  spec.version = ENV.fetch("VAULT_VERSION", "2.0.176")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The vault documentation and tests envelope (the supabase clone — the self-hosted database, auth and storage surface)."
