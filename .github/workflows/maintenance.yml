@@ -303,7 +303,7 @@ jobs:
           # law): the floor probe answers one hop up, the lock refresh
           # stays inside the application where its lock lives.
           npm_version="$(node -p "const m=String(require('../package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
-          npm install --global "npm@${npm_version}"
+          npx --yes "npm@${npm_version}" install --global "npm@${npm_version}"
           test "$(npm --version)" = "$npm_version"
           bun install --ignore-scripts
           # the family lockstep refresh: every sibling manifest the
@@ -322,7 +322,7 @@ jobs:
           cd ../stealthhead && bun install --ignore-scripts
           cd ../vault && bun install --ignore-scripts
           cd ../saddle && bun install --ignore-scripts
-          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npx --yes "npm@${npm_version}" install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Install the gateway and saddle family dependencies
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         # the gateway family law the verify ladder carries: the

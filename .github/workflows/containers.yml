@@ -1494,7 +1494,7 @@ jobs:
         run: |
           set -euo pipefail
           cd saddle
-          npm install --ignore-scripts --no-audit --no-fund webpack@5.112.2 webpack-cli@7.3.1
+          npx --yes npm@11.20.0 install --ignore-scripts --no-audit --no-fund webpack@5.112.2 webpack-cli@7.3.1
           node scripts.ts buildengine
           node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js --external:@babel/core --external:@libsql/client --external:playwright --external:webpack
           test -s distpackage/index.js

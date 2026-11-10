@@ -533,7 +533,7 @@ jobs:
         run: |
           set -euo pipefail
           cd vault
-          npm install --no-save --ignore-scripts --no-audit --no-fund esbuild@^0.28.2
+          npx --yes npm@11.20.0 install --no-save --ignore-scripts --no-audit --no-fund esbuild@0.28.2
           node --experimental-strip-types build.ts
           test -s build/onboardingstore.js
           test -s build/labelstore.js
@@ -587,13 +587,13 @@ jobs:
           # build's floating npm): the engines floor of the root manifest
           # answers the one npm rung the engine install below carries.
           npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
-          npm install --global "npm@${npm_version}"
+          npx --yes "npm@${npm_version}" install --global "npm@${npm_version}"
           # the manifest law (#498) answers one dependency rung through the
           # bun lock alone — the npm package-lock the ci lane froze on
           # retired with the union, so the engine build resolves the
           # manifest live (install, never the frozen ci) and the compile
           # walks the same 172-name floor the bun lane pins.
-          npm --prefix saddle install --ignore-scripts --no-audit --no-fund
+          npx --yes "npm@${npm_version}" --prefix saddle install --ignore-scripts --no-audit --no-fund
           test -f saddle/index.ts
           test -f saddle/cli.ts
           test -f saddle/browser.ts
@@ -2231,7 +2231,7 @@ jobs:
       # lanes ride
       run: cd devthink && python3 -c "import re,sys; p=open('pyproject.toml').read(); p=re.sub(r'version = \"[^\"]+\"', 'version = \"'+sys.argv[1]+'\"', p, count=1); open('pyproject.toml','w').write(p)" "${{ steps.release.outputs.version }}"
     - name: Build the wheel and the sdist
-      run: cd devthink && python3 -m pip install --user --quiet "build==1.2.2.post1" && python3 -m build
+      run: cd devthink && python3 -m pip install --user --quiet --require-hashes -r "${GITHUB_WORKSPACE}/devthink/pythonrequirements.txt" && python3 -m build
     - name: Check PyPI token availability
       id: token
       shell: bash
@@ -2269,7 +2269,7 @@ jobs:
         TWINE_PASSWORD: ${{ env.PYPI_TOKEN }}
       run: |
         set -euo pipefail
-        python3 -m pip install --user --quiet "twine==6.1.0"
+        python3 -m pip install --user --quiet --require-hashes -r "${GITHUB_WORKSPACE}/devthink/pythontwine.txt"
         cd devthink
         python3 -m twine upload --repository pypi --non-interactive --verbose dist/*
     - name: Attach the python artifacts to the release
@@ -2361,7 +2361,7 @@ jobs:
       # lanes ride
       run: cd ${{ matrix.package }} && python3 -c "import re,sys; p=open('pyproject.toml').read(); p=re.sub(r'version = \"[^\"]+\"', 'version = \"'+sys.argv[1]+'\"', p, count=1); open('pyproject.toml','w').write(p)" "${{ steps.release.outputs.version }}"
     - name: Build the wheel and the sdist
-      run: cd ${{ matrix.package }} && python3 -m pip install --user --quiet "build==1.2.2.post1" && python3 -m build
+      run: cd ${{ matrix.package }} && python3 -m pip install --user --quiet --require-hashes -r "${GITHUB_WORKSPACE}/devthink/pythonrequirements.txt" && python3 -m build
     - name: Check PyPI token availability
       id: token
       shell: bash
@@ -2399,7 +2399,7 @@ jobs:
         TWINE_PASSWORD: ${{ env.PYPI_TOKEN }}
       run: |
         set -euo pipefail
-        python3 -m pip install --user --quiet "twine==6.1.0"
+        python3 -m pip install --user --quiet --require-hashes -r "${GITHUB_WORKSPACE}/devthink/pythontwine.txt"
         cd "${{ matrix.package }}"
         python3 -m twine upload --repository pypi --non-interactive --verbose dist/*
     - name: Attach the python artifacts to the release

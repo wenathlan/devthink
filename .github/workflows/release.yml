@@ -1577,7 +1577,7 @@ jobs:
           # tarball and every registry lane carry the faces plain node
           # executes (the same build.ts the publish lane builds).
           cd vault
-          npm install --no-save --ignore-scripts --no-audit --no-fund esbuild@^0.28.2
+          npx --yes npm@11.20.0 install --no-save --ignore-scripts --no-audit --no-fund esbuild@0.28.2
           node --experimental-strip-types build.ts
           test -s build/onboardingstore.js
           test -s build/labelstore.js
