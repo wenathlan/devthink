@@ -9,6 +9,12 @@
  * ./<domain>.js. Every capability of every source file is preserved here;
  * the pure re-export barrels (none in this domain) folded their surface into this file directly.
  */
+/** the house error carrier: every typed error of the engine folds carries the
+ * plain Error surface beside the structured fields the callers read (the
+ * code, the retryable flag, the details, the status code, the recovery hint
+ * and the severity the responses and audits answer). */
+type carriererror = Error & { code?: string; retryable?: boolean; details?: unknown; statuscode?: number; recovery?: string; severity?: string; name?: string; message?: string };
+
 
 
 
@@ -27,7 +33,7 @@ export const errorcodes = Object.freeze({
   sessioninvalid: "SESSION_INVALID"
 });
 
-export function saddleerror(message, options = {}) {
+export function saddleerror(message: string, options: Record<string, unknown> = {}) {
   const error = new Error(message, { cause: options.cause });
   error.name = "saddleerror";
   error.code = options.code ?? errorcodes.jobfailed;
@@ -36,19 +42,19 @@ export function saddleerror(message, options = {}) {
   return error;
 }
 
-export function validationerror(message, details = {}) {
+export function validationerror(message: string, details: Record<string, unknown> = {}) {
   return saddleerror(message, { code: errorcodes.invalidinput, details });
 }
 
-export function artifactnotfound(key) {
+export function artifactnotfound(key: unknown) {
   return saddleerror(`artifact not found: ${key}`, { code: errorcodes.artifactnotfound, details: { key } });
 }
 
-export function runnerunavailable(jobid) {
+export function runnerunavailable(jobid: unknown) {
   return saddleerror(`no runner is available for job ${jobid}`, { code: errorcodes.runnerunavailable, retryable: true, details: { jobid } });
 }
 
-export function aserror(error, jobid) {
+export function aserror(error: carriererror, jobid: unknown) {
   if (error?.name === "saddleerror") return error;
   return saddleerror(`job ${jobid} failed`, { code: errorcodes.jobfailed, cause: error, details: { jobid } });
 }
@@ -70,10 +76,10 @@ export const errorcatalog = Object.freeze({
 });
 
 /** Creates a stable operational error with recovery metadata. */
-export function operationerror(kind, message, options = {}) { const preset = errorcatalog[kind] ?? errorcatalog.config; const error = new Error(message, { cause: options.cause }); error.name = "operationerror"; error.code = options.code ?? preset.code; error.statuscode = options.statuscode ?? preset.statuscode; error.retryable = options.retryable ?? preset.retryable; error.recovery = options.recovery ?? preset.recovery; error.severity = options.severity ?? (error.statuscode >= 500 ? "high" : "medium"); error.details = options.details ?? {}; return error; }
+export function operationerror(kind: unknown, message: string, options: Record<string, unknown> = {}) { const preset = errorcatalog[kind] ?? errorcatalog.config; const error = new Error(message, { cause: options.cause }); error.name = "operationerror"; error.code = options.code ?? preset.code; error.statuscode = options.statuscode ?? preset.statuscode; error.retryable = options.retryable ?? preset.retryable; error.recovery = options.recovery ?? preset.recovery; error.severity = options.severity ?? (error.statuscode >= 500 ? "high" : "medium"); error.details = options.details ?? {}; return error; }
 
 /** Converts unknown failures into the stable operational taxonomy. */
-export function classifyerror(error) { if (error?.name === "operationerror") return error; const message = String(error?.message ?? error); if (/timeout|aborted/i.test(message)) return operationerror("timeout", message, { cause: error }); if (/dns|enotfound/i.test(message)) return operationerror("dns", message, { cause: error }); return operationerror("config", message, { cause: error }); }
+export function classifyerror(error: carriererror) { if (error?.name === "operationerror") return error; const message = String(error?.message ?? error); if (/timeout|aborted/i.test(message)) return operationerror("timeout", message, { cause: error }); if (/dns|enotfound/i.test(message)) return operationerror("dns", message, { cause: error }); return operationerror("config", message, { cause: error }); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 2: core/events.ts — append only events are the small protocol shared by adapters. */
@@ -92,7 +98,7 @@ export const eventtypes = Object.freeze([
   "jobfailed"
 ]);
 
-export function eventbus() {
+export function eventbus(): Record<string, unknown> {
   const recorded = [];
   return {
     emit(event) { recorded.push(Object.freeze({ ...event })); },
@@ -106,11 +112,11 @@ export function eventbus() {
 /**
  * injectable time and id factories make every engine path reproducible.
  */
-export function systemclock() {
+export function systemclock(): Record<string, unknown> {
   return { now: () => Date.now() };
 }
 
-export function idfactory(randomuuid = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)) {
+export function idfactory(randomuuid = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)): Record<string, unknown> {
   return {
     next(prefix) {
       const suffix = randomuuid?.() ?? `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
@@ -138,10 +144,10 @@ const constants = Object.freeze([
 ]);
 
 /** Returns a SHA-256 hexadecimal digest for bytes or text. */
-export function sha256(value) { return tohex(hashbytes(value)); }
+export function sha256(value: unknown) { return tohex(hashbytes(value)); }
 
 /** Returns an HMAC-SHA-256 hexadecimal digest for bytes or text. */
-export function hmacsha256(value, secret) {
+export function hmacsha256(value: unknown, secret: unknown) {
   let key = tobytes(secret);
   if (key.length > 64) key = hashbytes(key);
   const padded = new Uint8Array(64);
@@ -153,9 +159,9 @@ export function hmacsha256(value, secret) {
 }
 
 /** Compares hexadecimal values without early exit based on content. */
-export function constanttimeequal(left, right) { const a = String(left ?? ""); const b = String(right ?? ""); let difference = a.length ^ b.length; const length = Math.max(a.length, b.length); for (let index = 0; index < length; index += 1) difference |= (a.charCodeAt(index) || 0) ^ (b.charCodeAt(index) || 0); return difference === 0; }
+export function constanttimeequal(left: Uint8Array, right: Uint8Array) { const a = String(left ?? ""); const b = String(right ?? ""); let difference = a.length ^ b.length; const length = Math.max(a.length, b.length); for (let index = 0; index < length; index += 1) difference |= (a.charCodeAt(index) || 0) ^ (b.charCodeAt(index) || 0); return difference === 0; }
 
-function hashbytes(value) {
+function hashbytes(value: unknown) {
   const input = tobytes(value);
   const bitlength = BigInt(input.length) * 8n;
   const length = Math.ceil((input.length + 9) / 64) * 64;
@@ -193,10 +199,10 @@ function hashbytes(value) {
   return output;
 }
 
-function tobytes(value) { if (value instanceof Uint8Array) return value; if (value instanceof ArrayBuffer) return new Uint8Array(value); return new TextEncoder().encode(String(value ?? "")); }
-function concat(left, right) { const result = new Uint8Array(left.length + right.length); result.set(left); result.set(right, left.length); return result; }
-function smallright(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
-function tohex(value) { return [...value].map((byte) => byte.toString(16).padStart(2, "0")).join(""); }
+function tobytes(value: unknown) { if (value instanceof Uint8Array) return value; if (value instanceof ArrayBuffer) return new Uint8Array(value); return new TextEncoder().encode(String(value ?? "")); }
+function concat(left: Uint8Array, right: Uint8Array) { const result = new Uint8Array(left.length + right.length); result.set(left); result.set(right, left.length); return result; }
+function smallright(value: unknown, amount: unknown) { return (value >>> amount) | (value << (32 - amount)); }
+function tohex(value: unknown) { return [...value].map((byte) => byte.toString(16).padStart(2, "0")).join(""); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 5: core/artifacts.ts — artifacts are serializable manifests with content checksums. */
@@ -204,7 +210,7 @@ function tohex(value) { return [...value].map((byte) => byte.toString(16).padSta
 /**
  * artifacts are serializable manifests with content checksums.
  */
-export function artifactmanifest(input) {
+export function artifactmanifest(input: Record<string, unknown>) {
   return {
     key: input.key,
     sizebytes: input.sizebytes,
@@ -224,7 +230,7 @@ export function artifactmanifest(input) {
 
 export const jobstatuses = Object.freeze(["queued", "preparing", "running", "syncing", "completed", "failed", "cancelled"]);
 
-export function createjob(spec, ids, clock) {
+export function createjob(spec: Record<string, unknown>, ids: unknown, clock: unknown) {
   if (!spec?.name || !spec.name.trim()) throw validationerror("job name cannot be empty");
   return {
     id: ids.next("job"),
@@ -246,7 +252,7 @@ export function createjob(spec, ids, clock) {
  */
 export const runnerstatuses = Object.freeze(["available", "busy", "offline"]);
 
-export function runnercontext(job, workingset, signal) {
+export function runnercontext(job: unknown, workingset: unknown, signal: unknown) {
   return { job, workingset, signal };
 }
 
@@ -256,11 +262,11 @@ export function runnercontext(job, workingset, signal) {
 /**
  * runtime records describe temporary process space without claiming physical vram.
  */
-export function workingset(jobid, location, resultpath, createdat = Date.now()) {
+export function workingset(jobid, location, resultpath, createdat = Date.now()): Record<string, unknown> {
   return { jobid, location, resultpath, createdat };
 }
 
-export function syncresult(bytes, location) {
+export function syncresult(bytes: Uint8Array, location: unknown) {
   return { bytes, location };
 }
 
@@ -273,7 +279,7 @@ export function syncresult(bytes, location) {
 
 const sessioneventtypes = new Set(["move", "click", "drag", "scroll", "key"]);
 
-export function validatesession(value) {
+export function validatesession(value: unknown) {
   if (!value || typeof value !== "object") throw validationerror("session must be an object");
   if (value.version !== 1 || typeof value.id !== "string" || typeof value.agentname !== "string" || typeof value.originurl !== "string" || typeof value.seed !== "string") throw validationerror("session header is invalid");
   if (!Array.isArray(value.events)) throw validationerror("session events must be an array");
@@ -292,7 +298,7 @@ export function validatesession(value) {
   };
 }
 
-function validateevent(value, index) {
+function validateevent(value: unknown, index: unknown) {
   if (!value || typeof value !== "object" || !Number.isFinite(value.t) || value.t < 0 || !sessioneventtypes.has(value.type)) throw validationerror(`session event ${index} is invalid`);
   for (const name of ["x", "y", "tx", "ty", "dx", "dy"]) if (value[name] !== undefined && !Number.isFinite(value[name])) throw validationerror(`session event ${index} ${name} is invalid`);
   if (value.key !== undefined && typeof value.key !== "string") throw validationerror(`session event ${index} key is invalid`);
@@ -302,10 +308,10 @@ function validateevent(value, index) {
   return context ? { ...value, context } : { ...value };
 }
 
-function validatecontext(value, index) {
+function validatecontext(value: unknown, index: unknown) {
   if (value.context !== undefined && (value.context === null || typeof value.context !== "object" || Array.isArray(value.context))) throw validationerror(`session event ${index} context is invalid`);
   const source = value.context ?? value;
-  const context = {};
+  const context: Record<string, unknown> = {};
   for (const name of ["windowid", "tabid", "frameid"]) if (source[name] !== undefined) {
     if (typeof source[name] !== "string" || !source[name]) throw validationerror(`session event ${index} ${name} is invalid`);
     context[name] = source[name];
