@@ -108,9 +108,12 @@
   --color-ink-3: #999999;
 
   /* ---- hairlines: ink mixed to transparency (runtime-mixed so the light
-     theme flips them) — separation by respiro, never stacked borders ---- */
-  --color-hairline: color-mix(in oklab, #fefefe 5%, transparent);
-  --color-hairline-strong: color-mix(in oklab, #fefefe 10%, transparent);
+     theme flips them) — separation by respiro, never stacked borders. The
+     7.5% rung answers the trylle ruler's border mix (the production cdn
+     mines color-mix(in oklab, var(--foreground) 7.5%, transparent)) so the
+     dark hairline carries the same crisp definition the reference wears. ---- */
+  --color-hairline: color-mix(in oklab, #fefefe 7.5%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #fefefe 15%, transparent);
 
   /* ---- the signal: THE WHITE SUN — one Sol, one light. The name is Sol
      but the sun is WHITE, never the yellow of the retired theme. The dark
@@ -655,8 +658,8 @@
   --color-ink: #1a1a1a;
   --color-ink-2: #3c3c3c;
   --color-ink-3: #555555;
-  --color-hairline: color-mix(in oklab, #1a1a1a 8%, transparent);
-  --color-hairline-strong: color-mix(in oklab, #1a1a1a 16%, transparent);
+  --color-hairline: color-mix(in oklab, #1a1a1a 7.5%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #1a1a1a 15%, transparent);
   --color-signal: #3f434b;
   --color-signal-strong: #18181b;
   --color-signal-2: #52565e;
