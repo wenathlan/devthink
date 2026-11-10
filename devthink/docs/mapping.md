@@ -9,7 +9,7 @@ wave opens its pr by theme, merges with squash and the ladder walks on.
 
 ## the verified ground numbers (audited live this wave)
 
-- commits on main: 1,540 (the 1,600+ law: 60 to go, one per real step)
+- commits on main: 1,571 (the 1,600+ law: 29 to go, one per real step — the session landed the redos heal, the six-seat security pass, four sync merges and the branch consolidation)
 - tags: 304 (the family ladder at 2.0.175)
 - releases: 153 carrying 23,765 assets (the 1,000+ assets complaint: closed, twenty-three times over)
 - workflow runs on github: 13,982 (the 1,500+ lost workflows complaint: closed, the runs live)
@@ -20,7 +20,10 @@ wave opens its pr by theme, merges with squash and the ladder walks on.
 - local suites: 3,494 green legs and 4 skips over 205 files walked green this wave after the getry and saddle dependency seats materialized (the 29 reds the fresh sandbox answered were the missing sibling node_modules, not the tree — the seats healed them to zero; the 900/1000 vitest law: held)
 - root of my-project: the family tree only — .github, eleven apps, .gitignore, package.json — the next residue (src, venv, .next, caches) eradicated, the empty node_modules and the stale .env deleted this wave
 - machine seats (gitignored, never staged): upload (the inbox), alan (the competitor corpus, blobless clone with organizado/md seated), Neo.Temp and Neo.img (the design reference seats), .github-token (the credential law)
-- auth: the token captured, embedded in the devthink remote and seated at .github-token — fetch, push and the api all answer it
+- auth: the token captured in real time this session (the corrected polar.sh seated from the polarauth corpus, the F8 promise held — code issued 07:57, owner authorization 08:00:11, token stored 0600 the same second), embedded in the devthink remote and seated at .github-token — fetch, push and the api all answer it
+- security panel: the eight open alerts walked to one — the polynomial-redos heal (the ttl bound, squashed from wave/redosheal) and the seven-alert codeql-zero stride (the npx-carrier law over every npm verb, the pip require-hashes closures, the esbuild exact rung, the redos linear scan, the polarauth message-only heal) both landed and merged; the last seat (the stack-trace exposure) closes on the fresh scan of the merged head
+- branches: every wave branch folded or squashed into main and deleted (archos-interno, debonair-surfaces, redosheal, rung.2.0.174, trivyvex) — only main survives, the house law held
+- the reading protocol: the conversa19 corpus (85,022 lines) and the polarauth corpus (8,695 lines) read integrally this session — seventeen of the eighteen infra blocks byte-identical (checksum-verified), the final voice transcript (PR0 through PR22 plus the punctuation and final operation rules) carried whole
 
 ## the five rule types (the map of every directive)
 
