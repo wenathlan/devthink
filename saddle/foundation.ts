@@ -33,11 +33,11 @@ export const errorcodes = Object.freeze({
   sessioninvalid: "SESSION_INVALID"
 });
 
-export function saddleerror(message: string, options: Record<string, unknown> = {}) {
-  const error = new Error(message, { cause: options.cause });
+export function saddleerror(message: string, options: Record<string, unknown> = {}): carriererror {
+  const error = new Error(message, { cause: options.cause }) as carriererror;
   error.name = "saddleerror";
-  error.code = options.code ?? errorcodes.jobfailed;
-  error.retryable = options.retryable ?? false;
+  error.code = String(options.code ?? errorcodes.jobfailed);
+  error.retryable = Boolean(options.retryable ?? false);
   error.details = options.details ?? {};
   return error;
 }
@@ -59,11 +59,14 @@ export function aserror(error: carriererror, jobid: unknown) {
   return saddleerror(`job ${jobid} failed`, { code: errorcodes.jobfailed, cause: error, details: { jobid } });
 }
 
+/** the preset shape every catalog row answers: the code, the status code, the retryable flag and the recovery hint one operational error reads. */
+type errorpreset = { code: string; statuscode: number; retryable: boolean; recovery: string };
+
 /** Operational error presets keep status, recovery and retry decisions
  * explicit for the engine's outbound lanes (registry pulls, runner
  * handshakes, package fetches); the presets answer the sandbox engine
  * only — the scrape lanes that once consumed them left the package. */
-export const errorcatalog = Object.freeze({
+export const errorcatalog: Readonly<Record<string, errorpreset>> = Object.freeze({
   timeout: { code: "E1001", statuscode: 504, retryable: true, recovery: "WAIT_AND_RETRY" },
   connectionrefused: { code: "E1002", statuscode: 503, retryable: true, recovery: "WAIT_AND_RETRY" },
   dns: { code: "E1003", statuscode: 503, retryable: true, recovery: "WAIT_AND_RETRY" },
@@ -76,7 +79,7 @@ export const errorcatalog = Object.freeze({
 });
 
 /** Creates a stable operational error with recovery metadata. */
-export function operationerror(kind: unknown, message: string, options: Record<string, unknown> = {}) { const preset = errorcatalog[kind] ?? errorcatalog.config; const error = new Error(message, { cause: options.cause }); error.name = "operationerror"; error.code = options.code ?? preset.code; error.statuscode = options.statuscode ?? preset.statuscode; error.retryable = options.retryable ?? preset.retryable; error.recovery = options.recovery ?? preset.recovery; error.severity = options.severity ?? (error.statuscode >= 500 ? "high" : "medium"); error.details = options.details ?? {}; return error; }
+export function operationerror(kind: unknown, message: string, options: Record<string, unknown> = {}): carriererror { const preset = errorcatalog[String(kind)] ?? errorcatalog.config; const error = new Error(message, { cause: options.cause }) as carriererror; error.name = "operationerror"; error.code = String(options.code ?? preset.code); error.statuscode = Number(options.statuscode ?? preset.statuscode); error.retryable = Boolean(options.retryable ?? preset.retryable); error.recovery = String(options.recovery ?? preset.recovery); error.severity = String(options.severity ?? (error.statuscode >= 500 ? "high" : "medium")); error.details = options.details ?? {}; return error; }
 
 /** Converts unknown failures into the stable operational taxonomy. */
 export function classifyerror(error: carriererror) { if (error?.name === "operationerror") return error; const message = String(error?.message ?? error); if (/timeout|aborted/i.test(message)) return operationerror("timeout", message, { cause: error }); if (/dns|enotfound/i.test(message)) return operationerror("dns", message, { cause: error }); return operationerror("config", message, { cause: error }); }
@@ -99,9 +102,9 @@ export const eventtypes = Object.freeze([
 ]);
 
 export function eventbus(): Record<string, unknown> {
-  const recorded = [];
+  const recorded: Array<Record<string, unknown>> = [];
   return {
-    emit(event) { recorded.push(Object.freeze({ ...event })); },
+    emit(event: Record<string, unknown>) { recorded.push(Object.freeze({ ...event })); },
     all() { return [...recorded]; }
   };
 }
@@ -118,7 +121,7 @@ export function systemclock(): Record<string, unknown> {
 
 export function idfactory(randomuuid = globalThis.crypto?.randomUUID?.bind(globalThis.crypto)): Record<string, unknown> {
   return {
-    next(prefix) {
+    next(prefix: string) {
       const suffix = randomuuid?.() ?? `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
       return `${prefix}${suffix}`;
     }
@@ -159,7 +162,7 @@ export function hmacsha256(value: unknown, secret: unknown) {
 }
 
 /** Compares hexadecimal values without early exit based on content. */
-export function constanttimeequal(left: Uint8Array, right: Uint8Array) { const a = String(left ?? ""); const b = String(right ?? ""); let difference = a.length ^ b.length; const length = Math.max(a.length, b.length); for (let index = 0; index < length; index += 1) difference |= (a.charCodeAt(index) || 0) ^ (b.charCodeAt(index) || 0); return difference === 0; }
+export function constanttimeequal(left: unknown, right: unknown) { const a = String(left ?? ""); const b = String(right ?? ""); let difference = a.length ^ b.length; const length = Math.max(a.length, b.length); for (let index = 0; index < length; index += 1) difference |= (a.charCodeAt(index) || 0) ^ (b.charCodeAt(index) || 0); return difference === 0; }
 
 function hashbytes(value: unknown) {
   const input = tobytes(value);
@@ -201,8 +204,8 @@ function hashbytes(value: unknown) {
 
 function tobytes(value: unknown) { if (value instanceof Uint8Array) return value; if (value instanceof ArrayBuffer) return new Uint8Array(value); return new TextEncoder().encode(String(value ?? "")); }
 function concat(left: Uint8Array, right: Uint8Array) { const result = new Uint8Array(left.length + right.length); result.set(left); result.set(right, left.length); return result; }
-function smallright(value: unknown, amount: unknown) { return (value >>> amount) | (value << (32 - amount)); }
-function tohex(value: unknown) { return [...value].map((byte) => byte.toString(16).padStart(2, "0")).join(""); }
+function smallright(value: number, amount: number): number { return (value >>> amount) | (value << (32 - amount)); }
+function tohex(value: Uint8Array): string { return [...value].map((byte) => byte.toString(16).padStart(2, "0")).join(""); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 5: core/artifacts.ts — artifacts are serializable manifests with content checksums. */
@@ -230,8 +233,8 @@ export function artifactmanifest(input: Record<string, unknown>) {
 
 export const jobstatuses = Object.freeze(["queued", "preparing", "running", "syncing", "completed", "failed", "cancelled"]);
 
-export function createjob(spec: Record<string, unknown>, ids: unknown, clock: unknown) {
-  if (!spec?.name || !spec.name.trim()) throw validationerror("job name cannot be empty");
+export function createjob(spec: Record<string, unknown>, ids: { next: (prefix: string) => string }, clock: { now: () => number }) {
+  if (typeof spec?.name !== "string" || !spec.name.trim()) throw validationerror("job name cannot be empty");
   return {
     id: ids.next("job"),
     name: spec.name,
@@ -262,7 +265,7 @@ export function runnercontext(job: unknown, workingset: unknown, signal: unknown
 /**
  * runtime records describe temporary process space without claiming physical vram.
  */
-export function workingset(jobid, location, resultpath, createdat = Date.now()): Record<string, unknown> {
+export function workingset(jobid: unknown, location: unknown, resultpath: unknown, createdat: number = Date.now()): Record<string, unknown> {
   return { jobid, location, resultpath, createdat };
 }
 
@@ -281,36 +284,39 @@ const sessioneventtypes = new Set(["move", "click", "drag", "scroll", "key"]);
 
 export function validatesession(value: unknown) {
   if (!value || typeof value !== "object") throw validationerror("session must be an object");
-  if (value.version !== 1 || typeof value.id !== "string" || typeof value.agentname !== "string" || typeof value.originurl !== "string" || typeof value.seed !== "string") throw validationerror("session header is invalid");
-  if (!Array.isArray(value.events)) throw validationerror("session events must be an array");
-  if (!["created", "recording", "closed"].includes(value.status)) throw validationerror("session status is invalid");
-  if (!Number.isFinite(value.startedat) || value.startedat < 0) throw validationerror("session startedat is invalid");
+  const source = value as { version?: unknown; id?: unknown; agentname?: unknown; originurl?: unknown; seed?: unknown; status?: unknown; startedat?: unknown; finishedat?: unknown; events?: unknown };
+  if (source.version !== 1 || typeof source.id !== "string" || typeof source.agentname !== "string" || typeof source.originurl !== "string" || typeof source.seed !== "string") throw validationerror("session header is invalid");
+  if (!Array.isArray(source.events)) throw validationerror("session events must be an array");
+  if (!["created", "recording", "closed"].includes(String(source.status))) throw validationerror("session status is invalid");
+  if (typeof source.startedat !== "number" || !Number.isFinite(source.startedat) || source.startedat < 0) throw validationerror("session startedat is invalid");
   return {
     version: 1,
-    id: value.id,
-    agentname: value.agentname,
-    originurl: value.originurl,
-    seed: value.seed,
-    status: value.status,
-    startedat: value.startedat,
-    finishedat: Number.isFinite(value.finishedat) ? value.finishedat : undefined,
-    events: value.events.map((event, index) => validateevent(event, index))
+    id: source.id,
+    agentname: source.agentname,
+    originurl: source.originurl,
+    seed: source.seed,
+    status: source.status,
+    startedat: source.startedat,
+    finishedat: Number.isFinite(source.finishedat) ? source.finishedat : undefined,
+    events: source.events.map((event, index) => validateevent(event, index))
   };
 }
 
 function validateevent(value: unknown, index: unknown) {
-  if (!value || typeof value !== "object" || !Number.isFinite(value.t) || value.t < 0 || !sessioneventtypes.has(value.type)) throw validationerror(`session event ${index} is invalid`);
-  for (const name of ["x", "y", "tx", "ty", "dx", "dy"]) if (value[name] !== undefined && !Number.isFinite(value[name])) throw validationerror(`session event ${index} ${name} is invalid`);
-  if (value.key !== undefined && typeof value.key !== "string") throw validationerror(`session event ${index} key is invalid`);
-  if (value.target !== undefined && typeof value.target !== "string") throw validationerror(`session event ${index} target is invalid`);
-  if (value.button !== undefined && !["left", "right"].includes(value.button)) throw validationerror(`session event ${index} button is invalid`);
-  const context = validatecontext(value.context ?? value, index);
-  return context ? { ...value, context } : { ...value };
+  const source = value as Record<string, unknown>;
+  if (!value || typeof value !== "object" || typeof source.t !== "number" || !Number.isFinite(source.t) || source.t < 0 || !sessioneventtypes.has(String(source.type))) throw validationerror(`session event ${index} is invalid`);
+  for (const name of ["x", "y", "tx", "ty", "dx", "dy"]) if (source[name] !== undefined && !Number.isFinite(source[name])) throw validationerror(`session event ${index} ${name} is invalid`);
+  if (source.key !== undefined && typeof source.key !== "string") throw validationerror(`session event ${index} key is invalid`);
+  if (source.target !== undefined && typeof source.target !== "string") throw validationerror(`session event ${index} target is invalid`);
+  if (source.button !== undefined && !["left", "right"].includes(String(source.button))) throw validationerror(`session event ${index} button is invalid`);
+  const context = validatecontext(source.context ?? source, index);
+  return context ? { ...source, context } : { ...source };
 }
 
 function validatecontext(value: unknown, index: unknown) {
-  if (value.context !== undefined && (value.context === null || typeof value.context !== "object" || Array.isArray(value.context))) throw validationerror(`session event ${index} context is invalid`);
-  const source = value.context ?? value;
+  const candidate = value as Record<string, unknown>;
+  if (candidate.context !== undefined && (candidate.context === null || typeof candidate.context !== "object" || Array.isArray(candidate.context))) throw validationerror(`session event ${index} context is invalid`);
+  const source = (candidate.context ?? candidate) as Record<string, unknown>;
   const context: Record<string, unknown> = {};
   for (const name of ["windowid", "tabid", "frameid"]) if (source[name] !== undefined) {
     if (typeof source[name] !== "string" || !source[name]) throw validationerror(`session event ${index} ${name} is invalid`);

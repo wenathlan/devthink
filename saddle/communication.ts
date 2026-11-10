@@ -59,10 +59,10 @@ const controlerrormessage = (error: carriererror, fallback: string = "operation 
 
 /** answers one control response and rides the optional audit hook. */
 async function controlrespond({ ok, result, code, message, context, audit }: { ok?: unknown; result?: unknown; code?: string; message?: string; context?: Record<string, unknown>; audit?: unknown }) {
-  const response = { version: 1, ok, ...context, ...(ok ? { result } : { code, message }) };
+  const response: Record<string, unknown> = { version: 1, ok, ...context, ...(ok ? { result } : { code, message }) };
   if (audit)
     try {
-      await audit(response);
+      await (audit as (response: unknown) => unknown)(response);
     } catch (rawerror) {
     const error = rawerror as carriererror;
       response.auditerror = controlerrormessage(error);
@@ -74,7 +74,7 @@ async function controlrespond({ ok, result, code, message, context, audit }: { o
  * optional audit recording — the default surface the control service
  * mounts when the caller sends adapters without a prebuilt surface. */
 export function controlsurface(options: Record<string, unknown> = {}): Record<string, unknown> {
-  const adapters = { ...(options.adapters ?? {}) };
+  const adapters: Record<string, unknown> = { ...((options.adapters ?? {}) as Record<string, unknown>) };
   const audit = options.audit;
   if (audit !== undefined && typeof audit !== "function") throw new TypeError("control audit must be callable");
   for (const resource of Object.keys(adapters))
@@ -86,7 +86,7 @@ export function controlsurface(options: Record<string, unknown> = {}): Record<st
     const operation = String(request.operation ?? "");
     if (!controlresources.includes(resource) || !controloperations.includes(operation))
       throw new TypeError("control request is invalid");
-    const handler = adapters[resource]?.[operation];
+    const handler = (adapters[resource] as Record<string, unknown> | undefined)?.[operation];
     const context = {
       requestid: String(request.requestid ?? `control${Date.now().toString(36)}`),
       resource,
@@ -137,11 +137,12 @@ export function controlsurface(options: Record<string, unknown> = {}): Record<st
 
 /** Authorizes a request through an injected verifier or returns an anonymous principal. */
 export async function authorize(request: Record<string, unknown>, options: Record<string, unknown> = {}) {
-  const token = request?.headers?.get?.("authorization")?.replace(/^Bearer\s+/i, "") ?? request?.headers?.get?.("x-api-key");
+  const headers = request?.headers as { get?: (name: string) => string | null | undefined } | null | undefined;
+  const token = headers?.get?.("authorization")?.replace(/^Bearer\s+/i, "") ?? headers?.get?.("x-api-key");
   if (typeof options.verify !== "function") return { authenticated: false, subject: "anonymous", tokenpresent: Boolean(token) };
   if (!token) return { authenticated: false, subject: "anonymous", tokenpresent: false };
   const principal = await options.verify(token, request);
-  if (!principal) { const error = new Error("request is not authorized"); error.code = "UNAUTHORIZED"; throw error; }
+  if (!principal) { const error = new Error("request is not authorized") as carriererror; error.code = "UNAUTHORIZED"; throw error; }
   return { authenticated: true, subject: String(principal.subject ?? principal.id ?? "caller"), claims: { ...(principal.claims ?? {}) } };
 }
 
@@ -156,7 +157,8 @@ export const apiversion = 1;
 
 /** Extracts a caller supplied request id or creates a local id without exposing secrets. */
 export function requestcontext(request: Record<string, unknown>, options: Record<string, unknown> = {}) {
-  const requestid = request?.headers?.get?.("x-request-id") ?? options.requestid ?? `request${Date.now().toString(36)}`;
+  const headers = request?.headers as { get?: (name: string) => string | null | undefined } | null | undefined;
+  const requestid = headers?.get?.("x-request-id") ?? options.requestid ?? `request${Date.now().toString(36)}`;
   return { version: apiversion, requestid: String(requestid), method: request?.method ?? options.method, path: options.path };
 }
 
@@ -174,7 +176,7 @@ export function errorpayload(code: string, message: string, context: Record<stri
  * DNS resolution remains a host adapter concern and is never performed silently.
  */
 export function assertpublicurl(value: unknown, options: Record<string, unknown> = {}) {
-  const url = new URL(value);
+  const url = new URL(String(value));
   if (!["http:", "https:"].includes(url.protocol)) throw new TypeError("url protocol is not allowed");
   if (Array.isArray(options.allowedhosts) && options.allowedhosts.length > 0 && !options.allowedhosts.includes(url.hostname)) throw new Error("url host is not allowed");
   if (options.allowprivate) return url;
@@ -193,7 +195,7 @@ export async function assertresolvedpublicurl(value: unknown, options: Record<st
 }
 
 /** Validates a redirect chain as public and bounded before a caller follows it. */
-export function assertredirectchain(values: unknown[] = [], options: Record<string, unknown> = {}): Record<string, unknown> {
+export function assertredirectchain(values: unknown[] = [], options: Record<string, unknown> = {}): string[] {
   const maxredirects = Number(options.maxredirects ?? 5);
   if (!Array.isArray(values) || values.length > maxredirects + 1) throw new Error("redirect chain exceeds configured limit");
   return values.map((value) => assertpublicurl(value, options).href);
@@ -218,12 +220,17 @@ function privateip(hostname: string) {
 /**
  * token bucket rate limiting supports global user and domain keys.
  */
-export function ratebucket(options: Record<string, unknown> = {}): Record<string, unknown> {
-  const capacity = options.capacity ?? 10;
-  const refill = options.refill ?? capacity;
-  const interval = options.interval ?? 60000;
-  const buckets = new Map();
-  function consume(key: unknown, cost: number = 1) {
+/** the answer one rate check carries: whether the lane is allowed and how long the caller waits. */
+type rateanswer = { allowed: boolean; retryafter: number };
+/** the rate bucket lane: one consume callable over a keyed token bucket with a clear sweep. */
+type ratelane = { consume: (key: unknown, cost?: number) => rateanswer; clear: () => void };
+
+export function ratebucket(options: Record<string, unknown> = {}): ratelane {
+  const capacity = Number(options.capacity ?? 10);
+  const refill = Number(options.refill ?? capacity);
+  const interval = Number(options.interval ?? 60000);
+  const buckets = new Map<unknown, { tokens: number; at: number }>();
+  function consume(key: unknown, cost: number = 1): rateanswer {
     const now = Date.now();
     const previous = buckets.get(key) ?? { tokens: capacity, at: now };
     const tokens = Math.min(capacity, previous.tokens + ((now - previous.at) / interval) * refill);
@@ -235,12 +242,12 @@ export function ratebucket(options: Record<string, unknown> = {}): Record<string
 }
 
 export function ratelimiter(options: Record<string, unknown> = {}): Record<string, unknown> {
-  const global = ratebucket(options.global ?? { capacity: 1000, refill: 1000 });
-  const user = ratebucket(options.user ?? { capacity: 100, refill: 100 });
-  const domain = ratebucket(options.domain ?? { capacity: 10, refill: 10 });
+  const global = ratebucket((options.global ?? { capacity: 1000, refill: 1000 }) as Record<string, unknown>);
+  const user = ratebucket((options.user ?? { capacity: 100, refill: 100 }) as Record<string, unknown>);
+  const domain = ratebucket((options.domain ?? { capacity: 10, refill: 10 }) as Record<string, unknown>);
   return {
     check(input: Record<string, unknown> = {}) {
-      const checks = [[global, "global"], [user, `user:${input.user ?? "anonymous"}`], [domain, `domain:${input.domain ?? "unknown"}`]];
+      const checks: Array<[ratelane, string]> = [[global, "global"], [user, `user:${input.user ?? "anonymous"}`], [domain, `domain:${input.domain ?? "unknown"}`]];
       for (const [bucket, key] of checks) { const result = bucket.consume(key); if (!result.allowed) return { allowed: false, retryafter: result.retryafter, scope: key }; }
       return { allowed: true, retryafter: 0 };
     }
@@ -254,7 +261,7 @@ export function ratelimiter(options: Record<string, unknown> = {}): Record<strin
  * http helpers use the web request response contract and remain framework neutral.
  */
 /** redactstack — the payload boundary of the wire: an Error serializes as its name and message only, and a stack field of any nested object never rides the response. */
-function redactstack(value: unknown) {
+function redactstack(value: unknown): unknown {
   if (value instanceof Error) return { name: value.name, message: value.message };
   if (Array.isArray(value)) return value.map(redactstack);
   if (value && typeof value === "object") {
@@ -265,7 +272,7 @@ function redactstack(value: unknown) {
   return value;
 }
 
-export function jsonresponse(data: unknown, options: Record<string, unknown> = {}) { return new Response(JSON.stringify(redactstack(data)), { status: options.status ?? 200, headers: { "content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", ...(options.headers ?? {}) } }); }
+export function jsonresponse(data: unknown, options: Record<string, unknown> = {}) { return new Response(JSON.stringify(redactstack(data)), { status: Number(options.status ?? 200), headers: { "content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", ...(options.headers ?? {}) } }); }
 
 /** The failure code a response may carry: the caught value selects from the literal table — an Error object never reaches the wire (its shape answers a known code or the fallback answers), so no stack-derived byte rides the payload the way the exposure gate refused. */
 const responsecode = (error: carriererror, fallback: string): string => {
@@ -283,7 +290,7 @@ const responsecode = (error: carriererror, fallback: string): string => {
 
 export function errorresponse(code: string, message: string, options: Record<string, unknown> = {}) { return jsonresponse({ error: { code, message, retryafter: options.retryafter ?? 0, requestid: options.requestid ?? `request${Date.now().toString(36)}` } }, { status: options.status ?? 400, headers: options.headers }); }
 
-export function sseresponse(events: unknown[]) {
+export function sseresponse(events: Array<Record<string, unknown>>) {
   const encoder = new TextEncoder();
   const stream = new ReadableStream({ start(controller) { for (const event of events) controller.enqueue(encoder.encode(`event: ${event.event ?? "message"}\ndata: ${JSON.stringify(event.data ?? {})}\n\n`)); controller.close(); } });
   return new Response(stream, { headers: { "content-type": "text/event-stream", "cache-control": "no-cache, no-store", connection: "keep-alive", "x-accel-buffering": "no", "x-content-type-options": "nosniff" } });
@@ -296,7 +303,7 @@ export function sseresponse(events: unknown[]) {
  * json helpers keep serialization rules explicit at the protocol boundary.
  */
 export function jsonencode(value: unknown) { return JSON.stringify(value); }
-export function jsondecode(value: unknown) { return JSON.parse(value); }
+export function jsondecode(value: unknown): unknown { return JSON.parse(String(value)); }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 7: api/ndjson.ts — ndjson supports append only records and incremental parsing. */
@@ -305,9 +312,9 @@ export function jsondecode(value: unknown) { return JSON.parse(value); }
  * ndjson supports append only records and incremental parsing.
  */
 
-export async function* ndjsonencode(values) { for await (const value of values) yield `${jsonencode(value)}\n`; }
+export async function* ndjsonencode(values: AsyncIterable<unknown> | Iterable<unknown>) { for await (const value of values) yield `${jsonencode(value)}\n`; }
 
-export async function* ndjsondecode(input) {
+export async function* ndjsondecode(input: AsyncIterable<string | Uint8Array> | Iterable<string | Uint8Array>) {
   let buffer = "";
   for await (const chunk of input) {
     buffer += typeof chunk === "string" ? chunk : new TextDecoder().decode(chunk);
@@ -349,9 +356,9 @@ export function ssedecode(chunk: unknown) {
 /**
  * block streaming yields bounded chunks and lets the consumer control backpressure.
  */
-export async function* blockstream(input, options: Record<string, unknown> = {}) {
+export async function* blockstream(input: AsyncIterable<unknown> | Iterable<unknown>, options: Record<string, unknown> = {}) {
   const blockbytes = options.blockbytes;
-  if (!Number.isInteger(blockbytes) || blockbytes < 1) throw new TypeError("blockbytes must be a positive integer");
+  if (typeof blockbytes !== "number" || !Number.isInteger(blockbytes) || blockbytes < 1) throw new TypeError("blockbytes must be a positive integer");
   let index = 0;
   let offset = 0;
   let pending = new Uint8Array(0);
@@ -373,9 +380,12 @@ function concat(left: Uint8Array, right: Uint8Array) { const output = new Uint8A
  */
 
 
+/** the control surface lane the service rides: describe and execute over the operator resources. */
+type controllane = { describe: () => Record<string, unknown>; execute: (input?: unknown) => Promise<Record<string, unknown>> };
+
 /** Creates a framework-neutral HTTP handler for an injected operator control surface. */
 export function controlservice(options: Record<string, unknown> = {}): Record<string, unknown> {
-  const controls = options.controls ?? controlsurface({ adapters: options.adapters, audit: options.audit });
+  const controls = (options.controls ?? controlsurface({ adapters: options.adapters, audit: options.audit })) as controllane;
   const path = String(options.path ?? "/v1/control");
   if (!path.startsWith("/")) throw new TypeError("control service path must be absolute");
 
@@ -383,7 +393,7 @@ export function controlservice(options: Record<string, unknown> = {}): Record<st
     const context = requestcontext(request, { path });
     try {
       await authorize(request, { verify: options.verify });
-      const url = new URL(request.url ?? request);
+      const url = new URL(String(request.url ?? request));
       if (url.pathname !== path) return errorresponse("NOT_FOUND", "control route not found", { status: 404, requestid: context.requestid });
       if (request.method === "GET") return jsonresponse({ ...controls.describe(), requestid: context.requestid });
       if (request.method !== "POST") return errorresponse("METHOD_NOT_ALLOWED", "control route requires GET or POST", { status: 405, requestid: context.requestid });
@@ -417,15 +427,18 @@ export function webhookverify(payload: unknown, signature: unknown, secret: unkn
  * webhook delivery tracks attempts and dead letters without choosing a queue vendor.
  */
 
+/** the delivery record the queue tracks: one webhook event riding its attempts, result and failure metadata. */
+type deliveryrecord = { id: string; status: string; attempts: number; createdat: number; updatedat?: number; event: unknown; metadata: Record<string, unknown>; result?: unknown; error?: { code: string; message: string; retryable: boolean } };
+
 /** Creates a sequential delivery queue with retryable failure handling. */
 export function deliveryqueue(options: Record<string, unknown> = {}): Record<string, unknown> {
   const maxattempts = Number(options.maxattempts ?? 3);
-  const records = new Map();
-  const dead = [];
+  const records = new Map<string, deliveryrecord>();
+  const dead: Array<Record<string, unknown>> = [];
   async function deliver(input: Record<string, unknown> = {}, handler: unknown) {
     if (typeof handler !== "function") throw new TypeError("delivery handler must be a function");
     const id = String(input.id ?? `delivery${Date.now().toString(36)}${records.size}`);
-    const record = { id, status: "pending", attempts: 0, createdat: Date.now(), event: input.event, metadata: { ...(input.metadata ?? {}) } };
+    const record: deliveryrecord = { id, status: "pending", attempts: 0, createdat: Date.now(), event: input.event, metadata: { ...((input.metadata ?? {}) as Record<string, unknown>) } };
     records.set(id, record);
     while (record.attempts < maxattempts) {
       record.attempts += 1;
@@ -438,7 +451,7 @@ export function deliveryqueue(options: Record<string, unknown> = {}): Record<str
     record.updatedat = Date.now();
     return { ...record };
   }
-  return { deliver, get(id) { return records.get(String(id)); }, list() { return [...records.values()].map((record) => ({ ...record })); }, deadletters() { return dead.map((record) => ({ ...record })); } };
+  return { deliver, get(id: unknown) { return records.get(String(id)); }, list() { return [...records.values()].map((record) => ({ ...record })); }, deadletters() { return dead.map((record) => ({ ...record })); } };
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -450,6 +463,7 @@ export function deliveryqueue(options: Record<string, unknown> = {}): Record<str
 
 export function webhookreceiver(options: Record<string, unknown> = {}): Record<string, unknown> {
   if (typeof options.secret !== "string" || typeof options.handle !== "function") throw new TypeError("webhook receiver requires secret and handler");
+  const handle = options.handle as (event: unknown, body: unknown) => unknown;
   const deliveries = new Set();
   return {
     async receive(input: Record<string, unknown> = {}) {
@@ -457,7 +471,7 @@ export function webhookreceiver(options: Record<string, unknown> = {}): Record<s
       const id = input.deliveryid ?? input.eventid;
       if (id && deliveries.has(id)) return { accepted: false, status: 200, duplicate: true };
       if (id) deliveries.add(id);
-      const result = await options.handle(input.event, input.body);
+      const result = await handle(input.event, input.body);
       return { accepted: true, status: 202, deliveryid: id, result };
     },
     deliveries() { return [...deliveries]; }
