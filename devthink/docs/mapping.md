@@ -7,6 +7,14 @@ scope lines, and the set of lines under each app directly defines the
 scope of its branch and pull request. The house keeps only main: every
 wave opens its pr by theme, merges with squash and the ladder walks on.
 
+## the verification-first wave record (the permdiff heal and the 2.0.177 audit)
+
+- the map check answered first: the conversa50 corpus (86,534 lines) and the feedssd corpus (1,575 lines) read integrally — both carry the same directive frame the previous waves seated (PR0 through PR17, the category law, the wave law), no new rule the live tree misses, so the wave advances the stages the map reddened instead of repeating closed ground.
+- the verify ladder reddened on the merged 72637393 head: the permdiff baseline still carried the 2.0.176 stamp while the twelve manifests rode 2.0.177 — the webpack rung bumped the manifests without the baseline sync the gate itself orders — the sync landed the 2.0.177 record whole (zero added, zero removed, none reordered, hash 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over eleven permission entries) beside the apifreeze stamp and the readiness review the regeneration walks.
+- the local gate answered the full CI sequence: the frozen installs under bun 1.4.4 (1,363 packages devthink, 1,375 getry and saddle), the root build (160 artifacts, the vsix, the site, the browser payloads), the wcag sweep (10 passed, 0 failed) and the deterministic suite green whole — 210 files, 3,565 legs, 1 baseline skip kept.
+- the remote panel at the audit moment: code-scanning zero open, pull requests zero open, branches only main, releases live (v2.0.173 through v2.0.175 at the thousand-assets ceiling, v2.0.176 carrying 110 and the 2.0.177 rung behind the release machinery), workflows 17 active, runs 14,304 (the fifteen-hundred law exceeded nine times over), commits 1,639 (the sixteen-hundred law exceeded), tags 322.
+- the root of my-project walked clean: the family tree only (.github, eleven apps, .gitignore, package.json) — no next template, no src, no venv, no python residue, the machine seats (upload, node_modules, tool-results) gitignored as the law seats them.
+
 ## the verified ground numbers (audited live this wave)
 
 - commits on main: 1,571 (the 1,600+ law: 29 to go, one per real step — the session landed the redos heal, the six-seat security pass, four sync merges and the branch consolidation)
