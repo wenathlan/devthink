@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-forge"
-version = "2.0.174"
+version = "2.0.175"
 edition = "2021"
 description = "The sandbox runner surface — the runners on the saddle engine boundary"
 license = "GPL-3.0-only"

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# devthink 2.0.174 — THE ONE CONTAINER FILE (the saddle standard: a single
+# devthink 2.0.175 — THE ONE CONTAINER FILE (the saddle standard: a single
 # Dockerfile manages every container concern of the repository, compose is
 # absorbed, and Containerfile is the same format under the OCI name —
 # Dockerfile is the universally compatible spelling, so it is the one file
@@ -111,7 +111,7 @@
 # assets (SHA256SUMS), never written into the sources.
 #
 # build args (all overridable, workflow-friendly):
-#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.174
+#   DEVTHINK_VERSION   baked into the OCI version label, default 2.0.175
 #   DEVTHINK_REVISION  git sha baked into the OCI revision label
 #
 # runtime contract (the compose.yml stack is MERGED INTO this file: the
@@ -153,7 +153,7 @@
 #     --tmpfs /tmp:size=2g,mode=1777 \
 #     -e DEVTHINK_MEMORY_ENGINE=ram -e DEVTHINK_PLATFORM= -e DEVTHINK_CDN_URL= \
 #     -p 31080:8080 \
-#     ghcr.io/wenathlan/devthink:2.0.174
+#     ghcr.io/wenathlan/devthink:2.0.175
 #
 #   network isolation notes: `--network none` is the default posture — the
 #   site, the relay and the loopback mcp listener all answer inside the
@@ -517,7 +517,7 @@ RUN set -eux; \
     test -x /out/devthink
 
 FROM gcr.io/distroless/cc-debian12:nonroot@sha256:9dac0a79194e45a7da0158a9c6da57b217585af0786db3845d1f0ec1a0dd182f AS binary-runtime
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_REVISION=unknown
 
 # OCI labels of the DevThink identity for the binary surface.
@@ -588,7 +588,7 @@ RUN set -eux; \
 # ════════════════════════════════════════════════════════════════════
 
 FROM scratch AS osgrapheneos
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="grapheneos"
 ENV DEVTHINK_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="devthink (the grapheneos os-distribution catalog lane)" \
@@ -599,7 +599,7 @@ LABEL org.opencontainers.image.title="devthink (the grapheneos os-distribution c
 COPY osprofiles/grapheneos.json /devthink/osprofile.json
 
 FROM scratch AS osmaruos
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="maruos"
 ENV DEVTHINK_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="devthink (the maru os os-distribution catalog lane)" \
@@ -610,7 +610,7 @@ LABEL org.opencontainers.image.title="devthink (the maru os os-distribution cata
 COPY osprofiles/maruos.json /devthink/osprofile.json
 
 FROM scratch AS osv
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="v"
 ENV DEVTHINK_OS_PROFILE=v
 LABEL org.opencontainers.image.title="devthink (the v os-distribution catalog lane)" \
@@ -621,7 +621,7 @@ LABEL org.opencontainers.image.title="devthink (the v os-distribution catalog la
 COPY osprofiles/v.json /devthink/osprofile.json
 
 FROM scratch AS oswindows
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="windows"
 ENV DEVTHINK_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="devthink (the windows os-distribution catalog lane)" \
@@ -632,7 +632,7 @@ LABEL org.opencontainers.image.title="devthink (the windows os-distribution cata
 COPY osprofiles/windows.json /devthink/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="postmarketos"
 ENV DEVTHINK_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="devthink (the postmarketos os-distribution catalog lane)" \
@@ -643,7 +643,7 @@ LABEL org.opencontainers.image.title="devthink (the postmarketos os-distribution
 COPY osprofiles/postmarketos.json /devthink/osprofile.json
 
 FROM scratch AS oslineageos
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="lineageos"
 ENV DEVTHINK_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="devthink (the lineageos os-distribution catalog lane)" \
@@ -654,7 +654,7 @@ LABEL org.opencontainers.image.title="devthink (the lineageos os-distribution ca
 COPY osprofiles/lineageos.json /devthink/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="calyxos"
 ENV DEVTHINK_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="devthink (the calyxos os-distribution catalog lane)" \
@@ -665,7 +665,7 @@ LABEL org.opencontainers.image.title="devthink (the calyxos os-distribution cata
 COPY osprofiles/calyxos.json /devthink/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="archlinux"
 ENV DEVTHINK_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="devthink (the archlinux os-distribution catalog lane)" \
@@ -676,7 +676,7 @@ LABEL org.opencontainers.image.title="devthink (the archlinux os-distribution ca
 COPY osprofiles/archlinux.json /devthink/osprofile.json
 
 FROM scratch AS osalpine
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="alpine"
 ENV DEVTHINK_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="devthink (the alpine os-distribution catalog lane)" \
@@ -687,7 +687,7 @@ LABEL org.opencontainers.image.title="devthink (the alpine os-distribution catal
 COPY osprofiles/alpine.json /devthink/osprofile.json
 
 FROM scratch AS osdebian
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="debian"
 ENV DEVTHINK_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="devthink (the debian os-distribution catalog lane)" \
@@ -698,7 +698,7 @@ LABEL org.opencontainers.image.title="devthink (the debian os-distribution catal
 COPY osprofiles/debian.json /devthink/osprofile.json
 
 FROM scratch AS osfedora
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="fedora"
 ENV DEVTHINK_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="devthink (the fedora os-distribution catalog lane)" \
@@ -709,7 +709,7 @@ LABEL org.opencontainers.image.title="devthink (the fedora os-distribution catal
 COPY osprofiles/fedora.json /devthink/osprofile.json
 
 FROM scratch AS osnixos
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="nixos"
 ENV DEVTHINK_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="devthink (the nixos os-distribution catalog lane)" \
@@ -720,7 +720,7 @@ LABEL org.opencontainers.image.title="devthink (the nixos os-distribution catalo
 COPY osprofiles/nixos.json /devthink/osprofile.json
 
 FROM scratch AS osvoid
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_OS_PROFILE="void"
 ENV DEVTHINK_OS_PROFILE=void
 LABEL org.opencontainers.image.title="devthink (the void os-distribution catalog lane)" \
@@ -736,7 +736,7 @@ COPY osprofiles/void.json /devthink/osprofile.json
 # the file)
 # ---------------------------------------------------------------------------
 FROM debian:trixie-slim@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2 AS runtime
-ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_VERSION=2.0.175
 ARG DEVTHINK_REVISION=unknown
 # the node runtime of the five-architecture surface: the verified tarball
 # the nodefetch stage extracted lands under /usr/local (bin/node, the npm

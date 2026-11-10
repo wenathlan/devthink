@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.175
+
+This release is the rung the Saddle unlock cuts: the toolchain layer walks its last two walls — the v seat rides the official 0.5.2 prebuilt binary and the icu seat answers the dotnet assert the carrier image failed — so the tagged source this ladder builds finally walks the Trivy gate and the Saddle vhe lanes publish the container family to GHCR, while the android wrapper law walks the template the 8.6 line carries and the github packages mirrors answer the billing wall with a notice, never a red.
+
 ## 2.0.174
 
 This release is the 2.0.174 rung of the healed tree: the depfresh cascade (next and eslint-config-next at their fresh 16.4.6 minor over the healed registry line), the webpack seat law (the config-form pack the exact-pinned install line answers), the landing whole-tree law (the eleven locks the lockstep refresh writes ride the rung commit whole), the family scope leaving the registry ladder, the trylle hairline rung (the reference cdn exact 7.5% border mix on both faces), the contract batteries answering the laws the tree carries and the saddle npm lock healing the workspace drift — every fix the 2.0.173 tag preceded now rides the tagged source the release ladder builds.
