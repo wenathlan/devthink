@@ -730,6 +730,29 @@ LABEL org.opencontainers.image.title="devthink (the void os-distribution catalog
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/void.json /devthink/osprofile.json
 
+FROM scratch AS oslinux
+ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_OS_PROFILE="linux"
+ENV DEVTHINK_OS_PROFILE=linux
+LABEL org.opencontainers.image.title="devthink (the linux os-distribution catalog lane)" \
+      org.opencontainers.image.description="the linux os-distribution seat as a catalog lane of the devthink container: the normal linux guest — the default host profile the sandbox lanes boot (the seventeen-seat standard carries the linux seats) — the lane publishes the profile config the engine reads beside the runnable linux legs the saddle engine's own flavor lanes carry." \
+      org.opencontainers.image.version="${DEVTHINK_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/linux.json /devthink/osprofile.json
+
+FROM scratch AS osomarchy
+ARG DEVTHINK_VERSION=2.0.174
+ARG DEVTHINK_OS_PROFILE="omarchy"
+ENV DEVTHINK_OS_PROFILE=omarchy
+LABEL org.opencontainers.image.title="devthink (the omarchy os-distribution catalog lane)" \
+      org.opencontainers.image.description="the omarchy os-distribution seat as a catalog lane of the devthink container: the arch linux-based distribution created by dhh — the desktop guest profile the sandbox may host with the pacman package grammar — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${DEVTHINK_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/omarchy.json /devthink/osprofile.json
+
+
 # ---------------------------------------------------------------------------
 # stage 6: runtime (the multi-arch debian base with the fetched node tree,
 # the self hosting runner — the default build target, the last stage of

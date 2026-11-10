@@ -1,12 +1,13 @@
 // # osprofiles.ts — the guest operating system host profiles of the
-// saddle engine (the pr15 catalog law): the operating systems the
+// saddle engine (the pr15 catalog law grown by the archos wave): the
+// operating systems the
 // sandbox modalities may host inside the engine, catalogued only — the
 // engine never installs a host distribution, the catalog answers the
 // profile rows the modality seats and the container lanes stamp (the
 // os profile an edge run requests, the guest identity a microvm boots,
 // the host vocabulary the console answers). Every row is pure data:
 // the id, the display name, the kind, the upstream base, the package
-// format the profile answers, the architectures of the eleven-seat
+// format the profile answers, the architectures of the seventeen-seat
 // standard the profile carries and the honest note the spec pins.
 //
 // THE CATALOG LAW (pr15): the spec names the guest vocabulary —
@@ -57,7 +58,7 @@ export interface OSProfileRecord {
   readonly base: string;
   /** The package format the profile answers. */
   readonly package: OSProfilePackage;
-  /** The architecture seats of the eleven-architecture standard the
+  /** The architecture seats of the seventeen-seat standard the
    * profile carries (the containerarch ids). */
   readonly archs: readonly string[];
   /** Whether the profile presents a gpu path through the virtual drivers. */
@@ -82,9 +83,9 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "distribution",
     base: "the plain linux baseline the engine container rides",
     package: "apt",
-    archs: ["linux-x64", "linux-arm64", "linux-x64-musl", "linux-riscv64"],
+    archs: ["linux-x64", "linux-arm64", "linux-x64-musl", "linux-riscv64", "linux-ppc64le", "linux-s390x"],
     gpu: true,
-    note: "the normal linux guest: the default host profile the sandbox lanes boot (the eleven-architecture standard carries the linux seats).",
+    note: "the normal linux guest: the default host profile the sandbox lanes boot (the seventeen-seat standard carries the linux seats, the ppc64le and s390x legs the archos wave seated beside the riscv64 leg the baseline already answered).",
   },
   {
     id: "grapheneos",
@@ -102,9 +103,9 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "desktop",
     base: "arch linux",
     package: "pacman",
-    archs: ["linux-x64", "linux-x64-musl", "linux-arm64"],
+    archs: ["linux-x64", "linux-x64-musl", "linux-arm64", "linux-ppc64le", "linux-s390x"],
     gpu: true,
-    note: "omarchy is the arch linux-based distribution created by dhh: the desktop guest profile the sandbox may host with the pacman package grammar.",
+    note: "omarchy is the arch linux-based distribution created by dhh: the desktop guest profile the sandbox may host with the pacman package grammar, the ppc64le and s390x legs the archos wave seated beside the amd64 and arm64 legs the desktop seat already answered.",
   },
   {
     id: "maruos",
@@ -122,9 +123,9 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "distribution",
     base: "ubuntu",
     package: "apt",
-    archs: ["linux-x64", "linux-x64-musl", "linux-arm64"],
+    archs: ["linux-x64", "linux-x64-musl", "linux-arm64", "linux-ppc64le", "linux-s390x"],
     gpu: true,
-    note: "vanilla os is based on ubuntu: the atomic desktop guest profile the sandbox may host beside the plain linux baseline.",
+    note: "vanilla os is based on ubuntu: the atomic desktop guest profile the sandbox may host beside the plain linux baseline, the ppc64le and s390x legs the archos wave seated beside the amd64 and arm64 legs.",
   },
   {
     id: "v",
@@ -192,9 +193,9 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "desktop",
     base: "arch linux",
     package: "pacman",
-    archs: ["linux-x64", "linux-arm64"],
+    archs: ["linux-x64", "linux-arm64", "linux-ppc64le", "linux-s390x"],
     gpu: true,
-    note: "archlinux is the rolling-release distribution omarchy builds on: the pacman desktop seat on the amd64 and arm64 legs the catalog carries.",
+    note: "archlinux is the rolling-release distribution omarchy builds on: the pacman desktop seat on the amd64 and arm64 legs the catalog carries, the ppc64le and s390x legs the archos wave seated beside them.",
   },
   {
     id: "alpine",
@@ -202,9 +203,20 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "distribution",
     base: "musl libc busybox",
     package: "apk",
-    archs: ["linux-x64", "linux-arm64", "linux-x64-musl", "linux-arm64-musl"],
+    archs: [
+      "linux-x64",
+      "linux-arm64",
+      "linux-x64-musl",
+      "linux-arm64-musl",
+      "linux-riscv64",
+      "linux-ppc64le",
+      "linux-s390x",
+      "linux-armv7",
+      "linux-armv6",
+      "linux-386",
+    ],
     gpu: false,
-    note: "alpine is the musl-based lightweight distribution: the small-footprint seat the musl legs answer, the postmarketos base the mobile seat builds on.",
+    note: "alpine is the musl-based lightweight distribution: the small-footprint seat the musl legs answer, the postmarketos base the mobile seat builds on — the widest arch pairing the catalog carries (the ppc64le, s390x, armv7, armv6 and 386 seats the archos wave seated, the armv7/armv6/386 package grammar the musl distro's apk repositories honestly ship).",
   },
   {
     id: "debian",
@@ -212,9 +224,9 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "desktop",
     base: "the debian project",
     package: "apt",
-    archs: ["linux-x64", "linux-arm64", "linux-riscv64", "linux-ppc64le"],
+    archs: ["linux-x64", "linux-arm64", "linux-riscv64", "linux-ppc64le", "linux-s390x"],
     gpu: true,
-    note: "debian is the universal operating system: the apt desktop seat the widest hardware matrix answers, the vanillaos upstream the atomic seat builds on.",
+    note: "debian is the universal operating system: the apt desktop seat the widest hardware matrix answers, the vanillaos upstream the atomic seat builds on — the s390x leg the archos wave seated beside the ppc64le and riscv64 legs the seat already carried.",
   },
   {
     id: "fedora",
@@ -222,9 +234,9 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "desktop",
     base: "red hat linux upstream",
     package: "rpm",
-    archs: ["linux-x64", "linux-arm64"],
+    archs: ["linux-x64", "linux-arm64", "linux-ppc64le", "linux-s390x"],
     gpu: true,
-    note: "fedora is the red-hat-upstream community distribution: the rpm desktop seat beside the apt rows the package grammar grows.",
+    note: "fedora is the red-hat-upstream community distribution: the rpm desktop seat beside the apt rows the package grammar grows, the ppc64le and s390x legs the archos wave seated beside the amd64 and arm64 legs.",
   },
   {
     id: "nixos",
@@ -232,9 +244,9 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "distribution",
     base: "the nix package manager",
     package: "nix",
-    archs: ["linux-x64", "linux-arm64"],
+    archs: ["linux-x64", "linux-arm64", "linux-ppc64le", "linux-s390x"],
     gpu: false,
-    note: "nixos is the declarative distribution the nix package manager builds: the reproducible-system seat the catalog carries, the package grammar the nix rows answer.",
+    note: "nixos is the declarative distribution the nix package manager builds: the reproducible-system seat the catalog carries, the package grammar the nix rows answer — the ppc64le and s390x legs the archos wave seated beside the amd64 and arm64 legs.",
   },
   {
     id: "void",
@@ -242,9 +254,9 @@ export const OSPROFILES: readonly OSProfileRecord[] = Object.freeze([
     kind: "distribution",
     base: "xbps",
     package: "xbps",
-    archs: ["linux-x64", "linux-arm64", "linux-x64-musl", "linux-arm64-musl"],
+    archs: ["linux-x64", "linux-arm64", "linux-x64-musl", "linux-arm64-musl", "linux-ppc64le", "linux-s390x"],
     gpu: false,
-    note: "void is the independent source-rolling distribution: the xbps seat the musl legs answer beside alpine, the package grammar the xbps rows grow.",
+    note: "void is the independent source-rolling distribution: the xbps seat the musl legs answer beside alpine, the package grammar the xbps rows grow — the ppc64le and s390x legs the archos wave seated beside them.",
   }
 ]);
 
@@ -268,7 +280,7 @@ export function getosprofile(id: string): OSProfileRecord | undefined {
 
 /**
  * Answers the host profiles that carry one architecture seat of the
- * eleven-architecture standard (the arch join of the catalog).
+ * seventeen-seat standard (the arch join of the catalog).
  *
  * @param arch the architecture id (a containerarch id).
  * @returns the profile records that carry the seat, catalog order.
@@ -307,7 +319,7 @@ export function resolveosprofile(id: string, arch?: string): OSProfileRecord {
   }
   if (arch !== undefined && !profile.archs.includes(arch)) {
     throw Object.assign(
-      new Error(`the host profile ${id} carries no ${arch} seat of the eleven-architecture standard`),
+      new Error(`the host profile ${id} carries no ${arch} seat of the seventeen-seat standard`),
       { code: "OS_PROFILE_ARCH_ABSENT" },
     );
   }

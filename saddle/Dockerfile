@@ -82,9 +82,11 @@
 # community distribution), nixos (the declarative distribution the nix
 # package manager builds) and void (the independent source-rolling
 # distribution) —
-# every seat paired with the architecture legs the eleven-architecture
+# every seat paired with the architecture legs the seventeen-seat
 # standard already carries (the mobile and firmware seats ride the arm64
-# legs, the desktop and baseline seats ride amd64 and arm64) and bound
+# legs, the desktop and baseline seats ride amd64 and arm64, the alpine
+# seat carries the widest pairing — the ppc64le, s390x, armv7, armv6 and
+# 386 seats the archos wave seated) and bound
 # to the max/balanced/lite engine plan trio the engineplans table owns.
 # The distribution matrix needs NO new build legs: the seats ride the
 # existing arch axis of this file (the amd64 and arm64 legs the pinned
@@ -97,12 +99,18 @@
 # devthink plan logic stamps, never a container cap: the engines are
 # unlimited.
 #
-# THE ELEVEN-ARCHITECTURE PLATFORM STANDARD (the pr15 law): every
-# profile answers the eleven architecture seats the container standard
-# names — the CONTAINERARCHIDS of saddle/containerarch.ts (linux-x64,
-# darwin-arm64, windows-x64, linux-arm64, darwin-x64, windows-arm64,
-# linux-x64-musl, linux-riscv64, wasm32, darwin-arm64-v8,
-# windows-x64-gnu). The build legs follow the four base-carried legs
+# THE SEVENTEEN-ARCHITECTURE PLATFORM STANDARD (the pr15 law grown by
+# the archos wave, the owner's directive: "expanda ali o OS/Arch
+# (restrito a linux/arm64 e unknown) para 15+ lanes tanto nos sistemas
+# operacionais (Alpine, NixOS, V, Arch Linux e Debian) quanto no
+# respectivo ArchOS interno"): every
+# profile answers the seventeen architecture seats the container
+# standard names — the CONTAINERARCHIDS of saddle/containerarch.ts
+# (linux-x64, darwin-arm64, windows-x64, linux-arm64, darwin-x64,
+# windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
+# darwin-arm64-v8, windows-x64-gnu beside the six archos seats:
+# linux-ppc64le, linux-s390x, linux-armv7, linux-armv6, linux-386 and
+# linux-mips64le). The build legs follow the four base-carried legs
 # the pinned node base honestly answers (the go-style build index of
 # containerarch.ts): the amd64 leg serves linux-x64 and linux-x64-musl,
 # the arm64 leg serves linux-arm64 and the darwin-arm64-v8 abi seat
@@ -111,8 +119,13 @@
 # The linux-riscv64 seat the
 # containerarch standard carries on the bash:5 driver base answers the
 # honest coded absence on this node engine base (the pinned base ships
-# no riscv64 manifest), and the six target seats (the darwin and
-# windows seats and wasm32) answer the standard's honest coded absence
+# no riscv64 manifest), the archos armv7/armv6/386 seats ride the bash
+# driver base alone (the legs this node engine base never pretends —
+# the container drivers answer them, the vhe publish lanes keep their
+# four build legs), the linux-mips64le seat owns the honest target
+# class (no pinned base carries a mips64le leg), and the six target
+# seats (the darwin and windows seats and wasm32) answer the standard's
+# honest coded absence
 # (ARCH_TARGET_NOT_CONTAINER), never a pretended build leg — the same
 # honesty law the containerarch table keeps for its own pinned base: a
 # leg never claims a manifest the base does not carry. The base stage
@@ -201,7 +214,7 @@ ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_REVISION=unknown
 # the automatic platform args (the devthink standard arch interface):
 # the multi-arch node base resolves each leg's platform itself, and the
-# arch guard below reads TARGETARCH to stamp the eleven-architecture
+# arch guard below reads TARGETARCH to stamp the seventeen-seat
 # law into the build log of every leg.
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -240,7 +253,7 @@ ENV NODE_ENV=production \
     SADDLE_PROFILE_GPU=${VHE_PROFILE_GPU} \
     SADDLE_PROFILE_GPUS=${VHE_PROFILE_GPUS}
 
-# the arch-leg guard of the eleven-architecture standard: the pinned
+# the arch-leg guard of the seventeen-seat standard: the pinned
 # node base resolves the platform of every leg buildx names, and this
 # echo layer stamps the honesty law into the build log — the four
 # arches the base carries answer their leg line (the amd64 leg serves
@@ -254,11 +267,11 @@ ENV NODE_ENV=production \
 # resolution first; the guard keeps the law loud on every builder).
 RUN case "${TARGETARCH:-}" in \
       amd64|arm64|ppc64le|s390x) \
-        echo "arch leg ${TARGETARCH} of ${TARGETPLATFORM:-<unresolved>}: one of the four arches the pinned node base carries — the build legs of the eleven-architecture standard (linux-x64 and linux-x64-musl on amd64, linux-arm64 and the darwin-arm64-v8 abi seat on arm64, the ppc64le and s390x go-style build-index legs under qemu emulation)" ;; \
+        echo "arch leg ${TARGETARCH} of ${TARGETPLATFORM:-<unresolved>}: one of the four arches the pinned node base carries — the build legs of the seventeen-seat architecture standard (linux-x64 and linux-x64-musl on amd64, linux-arm64 and the darwin-arm64-v8 abi seat on arm64, the ppc64le and s390x go-style build-index legs under qemu emulation)" ;; \
       "") \
         echo "arch leg unresolved: the legacy builder carries no platform axis; buildkit answers TARGETARCH per leg" ;; \
       *) \
-        echo "the eleven-architecture standard answers the ${TARGETARCH} arch with the honest coded absence (ARCH_TARGET_NOT_CONTAINER for the target seats, ARCH_IMAGE_ABSENT for the riscv64 seat the node engine base does not ship): the pinned node base carries no such manifest" >&2; \
+        echo "the seventeen-seat architecture standard answers the ${TARGETARCH} arch with the honest coded absence (ARCH_TARGET_NOT_CONTAINER for the target seats, ARCH_IMAGE_ABSENT for the riscv64 seat the node engine base does not ship — the archos armv7/armv6/386 seats ride the bash driver base the vhe lanes never build): the pinned node base carries no such manifest" >&2; \
         exit 1 ;; \
     esac
 
@@ -808,9 +821,25 @@ LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution l
 # seats execute — never pretend a runnable image. the catalog lane
 # publishes the profile itself: a scratch-based image (no base at all —
 # the digest law rides trivially) whose config carries the seat stamp and
-# whose single file is the profile row the osprofiles catalog answers,
-# rendered to json beside the build context (osprofiles/<id>.json, the
-# publish lane generates it from the tagged source). the catalog stages
+# whose files are the profile row the osprofiles catalog answers and the
+# arch seat row the containerarch standard answers, both rendered to json
+# beside the build context (osprofiles/<id>.json and archseat.json, the
+# publish lane generates them from the tagged source).
+#
+# THE ARCHOS INTERNO LAW (the owner's directive: "expanda ali o OS/Arch
+# (restrito a linux/arm64 e unknown) para 15+ lanes tanto nos sistemas
+# operacionais (Alpine, NixOS, V, Arch Linux e Debian) quanto no
+# respectivo ArchOS interno"): every catalog lane publishes as a
+# MULTI-ARCH manifest index carrying ALL SEVENTEEN architecture seats of
+# the containerarch standard — the publish lane loops the seventeen
+# seats, stamps each per-arch manifest with the SADDLE_ARCH_SEAT env and
+# the arch seat row json (archseats/<seat>.json copied to archseat.json
+# per leg), pushes each under its arch-suffixed variant tag
+# (saddle:VERSION-<seat suffix>-<arch seat>) and folds the seventeen
+# into the lane's umbrella tag — scratch images are config-only, so the
+# per-arch entries are honest documentation lanes that publish for real
+# (each a real manifest on the registry, never a pretended build leg).
+# the catalog stages
 # carry the -catalog target suffix: the bare os<id> names above seat the
 # RUNNABLE flavor lanes of the 11×3 standardization, and the seven
 # distributions that own both families (archlinux, alpine, debian,
@@ -826,144 +855,209 @@ FROM scratch AS osgrapheneos-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="grapheneos"
 ENV SADDLE_OS_PROFILE=grapheneos
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the grapheneos os-distribution catalog lane)" \
       org.opencontainers.image.description="the grapheneos os-distribution seat as a catalog lane: a privacy and security hardened version of android — no runnable container base exists for an android firmware seat, the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/grapheneos.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS osmaruos-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="maruos"
 ENV SADDLE_OS_PROFILE=maruos
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the maru os os-distribution catalog lane)" \
       org.opencontainers.image.description="the maru os os-distribution seat as a catalog lane: maru os is firmware, not an application — no runnable container base exists for a firmware seat, the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/maruos.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS osv-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="v"
 ENV SADDLE_OS_PROFILE=v
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the v os-distribution catalog lane)" \
       org.opencontainers.image.description="the v os-distribution seat as a catalog lane: the v language platform target the languagev compiler seat of the ninety modalities answers, never a guest distribution — the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/v.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS oswindows-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="windows"
 ENV SADDLE_OS_PROFILE=windows
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the windows os-distribution catalog lane)" \
       org.opencontainers.image.description="the windows os-distribution seat as a catalog lane: the guest vocabulary the exe seats execute — the container standard answers the windows seats as binary targets, the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/windows.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS ospostmarketos-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="postmarketos"
 ENV SADDLE_OS_PROFILE=postmarketos
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the postmarketos os-distribution catalog lane)" \
       org.opencontainers.image.description="the postmarketos os-distribution seat as a catalog lane: postmarketos is the alpine-based mobile distribution real devices boot — no runnable container base exists for this seat, the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/postmarketos.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS oslineageos-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="lineageos"
 ENV SADDLE_OS_PROFILE=lineageos
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the lineageos os-distribution catalog lane)" \
       org.opencontainers.image.description="the lineageos os-distribution seat as a catalog lane: lineageos is the community android continuation — the aftermarket mobile seat on the arm64 legs, the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/lineageos.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS oscalyxos-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="calyxos"
 ENV SADDLE_OS_PROFILE=calyxos
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the calyxos os-distribution catalog lane)" \
       org.opencontainers.image.description="the calyxos os-distribution seat as a catalog lane: calyxos is the privacy-focused android distribution, the hardened mobile seat beside grapheneos — the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/calyxos.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS osarchlinux-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="archlinux"
 ENV SADDLE_OS_PROFILE=archlinux
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the archlinux os-distribution catalog lane)" \
       org.opencontainers.image.description="the archlinux os-distribution seat as a catalog lane: archlinux is the rolling-release distribution omarchy builds on, the pacman desktop seat — the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/archlinux.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS osalpine-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="alpine"
 ENV SADDLE_OS_PROFILE=alpine
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the alpine os-distribution catalog lane)" \
       org.opencontainers.image.description="the alpine os-distribution seat as a catalog lane: alpine is the musl-based lightweight distribution, the small-footprint seat the musl legs answer — the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/alpine.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS osdebian-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="debian"
 ENV SADDLE_OS_PROFILE=debian
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the debian os-distribution catalog lane)" \
       org.opencontainers.image.description="the debian os-distribution seat as a catalog lane: debian is the universal operating system, the apt desktop seat the widest hardware matrix answers — the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/debian.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS osfedora-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="fedora"
 ENV SADDLE_OS_PROFILE=fedora
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the fedora os-distribution catalog lane)" \
       org.opencontainers.image.description="the fedora os-distribution seat as a catalog lane: fedora is the red-hat-upstream community distribution, the rpm desktop seat beside the apt rows — the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/fedora.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS osnixos-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="nixos"
 ENV SADDLE_OS_PROFILE=nixos
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the nixos os-distribution catalog lane)" \
       org.opencontainers.image.description="the nixos os-distribution seat as a catalog lane: nixos is the declarative distribution the nix package manager builds, the reproducible-system seat — the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/nixos.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 FROM scratch AS osvoid-catalog
 ARG SADDLE_VERSION=2.0.174
 ARG SADDLE_OS_PROFILE="void"
 ENV SADDLE_OS_PROFILE=void
+ARG SADDLE_ARCH_SEAT=""
+ENV SADDLE_ARCH_SEAT=${SADDLE_ARCH_SEAT}
+ARG SADDLE_TIER="max"
+ENV SADDLE_PROFILE=${SADDLE_TIER}
 LABEL org.opencontainers.image.title="saddle (the void os-distribution catalog lane)" \
       org.opencontainers.image.description="the void os-distribution seat as a catalog lane: void is the independent source-rolling distribution, the xbps seat the musl legs answer beside alpine — the lane publishes the profile config the engine reads." \
       org.opencontainers.image.version="${SADDLE_VERSION}" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/void.json /saddle/osprofile.json
+COPY archseat.json /saddle/archseat.json
 
 # ===== stage: default — the trailing balanced seat the header documents =====
 # THE DEFAULT TARGET LAW (the local-build heal): the header declares the

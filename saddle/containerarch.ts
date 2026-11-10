@@ -1,22 +1,43 @@
-// # containerarch.ts — the 11-architecture standard and the os
-// distribution catalog of the saddle engine (the pr15 law, the family
-// platform axis): every container and
-// every engine target of the family answers the eleven standardized
+// # containerarch.ts — the seventeen-seat architecture standard and
+// the os distribution catalog of the saddle engine (the pr15 law grown
+// by the archos wave, the family platform axis): every container and
+// every engine target of the family answers the seventeen standardized
 // architecture seats the owner's law names — linux-x64, darwin-arm64,
 // windows-x64, linux-arm64, darwin-x64, windows-arm64, linux-x64-musl,
-// linux-riscv64, wasm32, darwin-arm64-v8 and windows-x64-gnu — one
+// linux-riscv64, wasm32, darwin-arm64-v8, windows-x64-gnu, the six
+// seats the archos expansion appended (linux-ppc64le, linux-s390x,
+// linux-armv7, linux-armv6, linux-386 and linux-mips64le) — one
 // honest row per seat: the display label, the os family, the cpu
 // architecture, the npm-style target triple the binary lanes stamp,
 // the docker --platform spec the container drivers pass where a linux
 // container seat exists, and the honest availability of that seat
-// against the pinned multi-arch base. beside the standard seats the
-// file carries the build architecture table — the eleven go-style arch
-// seats the container build legs stamp (x64, arm64, armv7, riscv64,
-// ppc64le, s390x, 386, mips64le, loong64, wasm32, wasip1): the four
-// legs the pinned base honestly carries (the native x64 leg beside the
-// arm64, ppc64le and s390x QEMU-emulated legs) and the seven honest
-// coded absences (ARCH_LEG_NOT_BUILT) the publish lanes never pretend
-// to build. beside both tables the file carries the os distribution
+// against the pinned multi-arch base. THE OWNER'S DIRECTIVE (the
+// archos law, verbatim): "expanda ali o OS/Arch (restrito a
+// linux/arm64 e unknown) para 15+ lanes tanto nos sistemas operacionais
+// (Alpine, NixOS, V, Arch Linux e Debian) quanto no respectivo ArchOS
+// interno" — the axis grows past fifteen seats on both tables, and
+// every new row answers the ground truth the live registries carry:
+// the vhe image's pinned node base (node:26.13.0-slim) carries exactly
+// four real legs (linux/amd64, linux/arm64/v8, linux/ppc64le and
+// linux/s390x — the publish lanes build those four, never a pretended
+// fifth), while the container drivers' pinned bash base (bash:5)
+// carries eight (amd64, arm/v6, arm/v7, arm64/v8, 386, ppc64le,
+// riscv64 and s390x) — so the ppc64le and s390x seats ride both bases,
+// the armv7, armv6 and 386 seats ride the bash driver base alone (the
+// leg the vhe image's node base never pretends), and the mips64le seat
+// answers the honest target class (no pinned base carries a mips64le
+// leg — the binary and npm lanes own it, the container drivers answer
+// the ARCH_TARGET_NOT_CONTAINER coded absence). beside the standard
+// seats the file carries the build architecture table — the sixteen
+// go-style arch seats the container build legs stamp (x64, arm64,
+// armv7, riscv64, ppc64le, s390x, 386, mips64le, loong64, wasm32,
+// wasip1 beside the five the archos expansion appended: armv6, ppc64,
+// mipsle, mips64 and mips): the four legs the pinned node base
+// honestly carries (the native x64 leg beside the arm64, ppc64le and
+// s390x QEMU-emulated legs), the armv6 leg the pinned bash driver base
+// carries (the container drivers' own build leg) and the honest coded
+// absences (ARCH_LEG_NOT_BUILT) the publish lanes never pretend to
+// build. beside both tables the file carries the os distribution
 // catalog — the sixteen system seats the saddle container carries
 // (the osdistrib law, the owner's sentences: "iniciar distribuição do
 // container saddle com por exemplo, grapheneos, omarchy e outros
@@ -38,7 +59,7 @@
 // declarative distribution the nix package manager builds) and void
 // (the independent source-rolling distribution) — one
 // honest row per seat: the true base fact, the package grammar, the
-// architecture seats of the eleven-seat standard the seat rides (the
+// architecture seats of the seventeen-seat standard the seat rides (the
 // amd64 and arm64 legs the pairing derives), the engine plan profiles
 // it binds (the max, balanced and lite trio the engineplans table
 // owns — reused, never duplicated) and the virtual device presentation
@@ -49,15 +70,22 @@
 // engine limits law of engineplans.ts stays the law of record and the
 // engines are unlimited.
 //
-// THE HONEST AVAILABILITY LAW (the same law the pre-pr15 table kept):
-// a row never claims a build the pinned base cannot answer. the linux
-// seats the base carries (linux-x64 through linux/amd64, linux-arm64
-// through linux/arm64, linux-x64-musl through the amd64 musl flavor,
-// linux-riscv64 through linux/riscv64 and the darwin-arm64-v8 abi seat
-// through the linux/arm64/v8 leg) declare carried; the darwin and
-// windows seats and the wasm32 seat are target rows — the binary and
-// npm lanes build them, the container drivers answer the honest
-// ARCH_TARGET_NOT_CONTAINER coded absence, never a pretended pull.
+// THE HONEST AVAILABILITY LAW (the same law the pre-pr15 table kept,
+// the ground truth the archos wave verified live): a row never claims
+// a build the pinned base cannot answer. the linux seats the bases
+// carry (linux-x64 through linux/amd64, linux-arm64 through
+// linux/arm64, linux-x64-musl through the amd64 musl flavor,
+// linux-riscv64 through the bash base's linux/riscv64 leg, the
+// darwin-arm64-v8 abi seat through the linux/arm64/v8 leg, the
+// linux-ppc64le and linux-s390x seats through the legs both pinned
+// bases carry, and the linux-armv7, linux-armv6 and linux-386 seats
+// through the container drivers' pinned bash base — the arm/v7, arm/v6
+// and 386 legs the vhe image's node base never pretends) declare
+// carried; the darwin and windows seats, the wasm32 seat and the
+// linux-mips64le seat (no pinned base carries a mips64le leg) are
+// target rows — the binary and npm lanes build them, the container
+// drivers answer the honest ARCH_TARGET_NOT_CONTAINER coded absence,
+// never a pretended pull.
 //
 // THE VISITOR LAW (the critical law): every seat of the standard and
 // every system seat of the os distribution catalog is a TARGET or a
@@ -78,8 +106,11 @@ import { ENGINELIMITS, ENGINEPLANS, type EngineLimitsLaw, type EngineProfileId }
 /* Section 1: the standard table — one honest row per architecture.   */
 /* ════════════════════════════════════════════════════════════════════ */
 
-/** the eleven architecture seat ids of the pr15 standard, in the order
- * the owner's law names them (linux-x64 first, windows-x64-gnu last). */
+/** the seventeen architecture seat ids of the standard (the pr15 law
+ * the archos wave grew past the owner's fifteen-seat directive), in
+ * the order the owner's law names them (linux-x64 first, the six
+ * archos seats last: linux-ppc64le, linux-s390x, linux-armv7,
+ * linux-armv6, linux-386 and linux-mips64le). */
 export const CONTAINERARCHIDS: readonly string[] = Object.freeze([
   "linux-x64",
   "darwin-arm64",
@@ -92,9 +123,15 @@ export const CONTAINERARCHIDS: readonly string[] = Object.freeze([
   "wasm32",
   "darwin-arm64-v8",
   "windows-x64-gnu",
+  "linux-ppc64le",
+  "linux-s390x",
+  "linux-armv7",
+  "linux-armv6",
+  "linux-386",
+  "linux-mips64le",
 ]);
 
-/** the os families the eleven seats group under. */
+/** the os families the seventeen seats group under. */
 export type containerarchfamily = "linux" | "darwin" | "windows" | "wasm";
 
 /** the honest availability of one seat: carried — the pinned multi-arch
@@ -136,12 +173,15 @@ export interface containerarchrow {
 
 /** the multi-arch base the container drivers ride: the official bash
  * image carries the linux legs the standard's carried seats map to
- * (amd64, arm64/v8 and riscv64) — the pinned tag the drivers declare. */
+ * (amd64, arm/v6, arm/v7, arm64/v8, 386, ppc64le, riscv64 and s390x —
+ * the eight-leg ground truth the archos wave verified live) — the
+ * pinned tag the drivers declare. */
 export const CONTAINERBASEIMAGE = "docker.io/library/bash:5";
 
-/** the eleven rows of the pr15 standard — every seat the owner's law
- * names, one honest row each: the five carried linux container legs
- * and the six target seats the binary and npm lanes own. */
+/** the seventeen rows of the standard (the pr15 law the archos wave
+ * grew) — every seat the owner's law names, one honest row each: the
+ * ten carried linux container legs and the seven target seats the
+ * binary and npm lanes own. */
 export const CONTAINERARCHES: readonly containerarchrow[] = Object.freeze([
   {
     id: "linux-x64",
@@ -286,6 +326,84 @@ export const CONTAINERARCHES: readonly containerarchrow[] = Object.freeze([
     availability: "target",
     note: "the gnu abi seat of the windows x64 target: the mingw grammar the binary lanes build — the container drivers answer ARCH_TARGET_NOT_CONTAINER.",
   },
+  {
+    id: "linux-ppc64le",
+    label: "linux ppc64le",
+    platform: "linux/ppc64le",
+    dockerarch: "ppc64le",
+    family: "linux",
+    arch: "ppc64le",
+    target: "linux-ppc64le",
+    baseimage: CONTAINERBASEIMAGE,
+    baseimagecarries: true,
+    availability: "carried",
+    note: "the 64-bit powerpc little-endian seat: the ppc64le leg both pinned bases carry (the vhe node base builds it under QEMU, the bash driver base answers it beside) — the archos wave's first appended seat.",
+  },
+  {
+    id: "linux-s390x",
+    label: "linux s390x",
+    platform: "linux/s390x",
+    dockerarch: "s390x",
+    family: "linux",
+    arch: "s390x",
+    target: "linux-s390x",
+    baseimage: CONTAINERBASEIMAGE,
+    baseimagecarries: true,
+    availability: "carried",
+    note: "the ibm z seat: the s390x big-endian leg both pinned bases carry — the mainframe-flavored linux seat the archos wave seats beside ppc64le.",
+  },
+  {
+    id: "linux-armv7",
+    label: "linux armv7",
+    platform: "linux/arm/v7",
+    dockerarch: "arm",
+    family: "linux",
+    arch: "armv7",
+    target: "linux-armv7",
+    baseimage: CONTAINERBASEIMAGE,
+    baseimagecarries: true,
+    availability: "carried",
+    note: "the 32-bit arm v7 seat: the container drivers' pinned bash base carries the arm/v7 leg the vhe image's node base never pretends — the driver lanes answer it honestly, the vhe publish lanes keep their four build legs.",
+  },
+  {
+    id: "linux-armv6",
+    label: "linux armv6",
+    platform: "linux/arm/v6",
+    dockerarch: "arm",
+    family: "linux",
+    arch: "armv6",
+    target: "linux-armv6",
+    baseimage: CONTAINERBASEIMAGE,
+    baseimagecarries: true,
+    availability: "carried",
+    note: "the 32-bit arm v6 seat: the container drivers' pinned bash base carries the arm/v6 leg the vhe image's node base never pretends — the raspberry-pi-flavored seat the armv7 law answers beside.",
+  },
+  {
+    id: "linux-386",
+    label: "linux 386",
+    platform: "linux/386",
+    dockerarch: "386",
+    family: "linux",
+    arch: "386",
+    target: "linux-386",
+    baseimage: CONTAINERBASEIMAGE,
+    baseimagecarries: true,
+    availability: "carried",
+    note: "the 32-bit x86 seat: the container drivers' pinned bash base carries the 386 leg the vhe image's node base never pretends — the legacy ia32 seat the archos wave seats.",
+  },
+  {
+    id: "linux-mips64le",
+    label: "linux mips64le",
+    platform: "",
+    dockerarch: "",
+    family: "linux",
+    arch: "mips64le",
+    target: "linux-mips64le",
+    baseimage: CONTAINERBASEIMAGE,
+    baseimagecarries: false,
+    availability: "target",
+    note: "the mips64 little-endian seat: no pinned base carries a mips64le leg — the binary and npm lanes own it, the container drivers answer ARCH_TARGET_NOT_CONTAINER.",
+  },
 ]);
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -293,11 +411,13 @@ export const CONTAINERARCHES: readonly containerarchrow[] = Object.freeze([
 /* vocabulary the container build legs stamp.                          */
 /* ════════════════════════════════════════════════════════════════════ */
 
-/** the eleven build architecture seat ids of the container build index
- * — the go-style arch names the docker --platform axis and the publish
- * lanes stamp (x64, arm64, armv7, riscv64, ppc64le, s390x, 386,
- * mips64le, loong64, wasm32, wasip1), the vocabulary the build legs
- * and the base-carried coverage report answer through. */
+/** the sixteen build architecture seat ids of the container build
+ * index — the go-style arch names the docker --platform axis and the
+ * publish lanes stamp (x64, arm64, armv7, riscv64, ppc64le, s390x,
+ * 386, mips64le, loong64, wasm32, wasip1 beside the five the archos
+ * expansion appended: armv6, ppc64, mipsle, mips64 and mips), the
+ * vocabulary the build legs and the base-carried coverage report
+ * answer through. */
 export const CONTAINERBUILDARCHIDS: readonly string[] = Object.freeze([
   "x64",
   "arm64",
@@ -310,6 +430,11 @@ export const CONTAINERBUILDARCHIDS: readonly string[] = Object.freeze([
   "loong64",
   "wasm32",
   "wasip1",
+  "armv6",
+  "ppc64",
+  "mipsle",
+  "mips64",
+  "mips",
 ]);
 
 /** one honest row of the build architecture table: the go-style arch
@@ -328,13 +453,16 @@ export interface containerbuildarchrow {
   readonly note: string;
 }
 
-/** the eleven build architecture rows of the container build index: the
- * four legs the pinned multi-arch base honestly carries (the native x64
- * amd64 leg beside the arm64, ppc64le and s390x QEMU-emulated legs) and
- * the seven seats the base does not ship — every one of those answers
- * the honest ARCH_LEG_NOT_BUILT coded absence, never a pretended build
- * leg (the node engine family index adds the riscv64 leg beside the
- * four; the vhe container index answers the coded absence for it). */
+/** the sixteen build architecture rows of the container build index: the
+ * four legs the pinned node base honestly carries (the native x64
+ * amd64 leg beside the arm64, ppc64le and s390x QEMU-emulated legs),
+ * the armv6 leg the pinned bash driver base carries (the container
+ * drivers' own build leg — the archos wave's bash-carriage row) and
+ * the eleven seats the bases do not ship a vhe build leg for — every
+ * one of those answers the honest ARCH_LEG_NOT_BUILT coded absence,
+ * never a pretended build leg (the node engine family index adds the
+ * riscv64 leg beside the four; the vhe container index answers the
+ * coded absence for it). */
 export const CONTAINERBUILDARCHES: readonly containerbuildarchrow[] = Object.freeze([
   {
     arch: "x64",
@@ -402,10 +530,40 @@ export const CONTAINERBUILDARCHES: readonly containerbuildarchrow[] = Object.fre
     baseimagecarries: false,
     note: "the wasi preview 1 seat answers ARCH_LEG_NOT_BUILT on the container index — the wasm lanes build the wasip1 target.",
   },
+  {
+    arch: "armv6",
+    platform: "linux/arm/v6",
+    baseimagecarries: true,
+    note: "the 32-bit arm v6 seat rides the arm/v6 leg the pinned bash driver base carries (the container drivers' own build leg) — the vhe node index builds no arm/v6 leg, the publish lanes' build legs stay the honest four.",
+  },
+  {
+    arch: "ppc64",
+    platform: "linux/ppc64",
+    baseimagecarries: false,
+    note: "the 32-bit-compatible powerpc big-endian seat answers ARCH_LEG_NOT_BUILT — the publish lanes carry no ppc64 leg (the little-endian ppc64le twin is the leg the bases carry).",
+  },
+  {
+    arch: "mipsle",
+    platform: "linux/mipsle",
+    baseimagecarries: false,
+    note: "the mips little-endian seat answers ARCH_LEG_NOT_BUILT — the publish lanes carry no mipsle leg.",
+  },
+  {
+    arch: "mips64",
+    platform: "linux/mips64",
+    baseimagecarries: false,
+    note: "the mips64 big-endian seat answers ARCH_LEG_NOT_BUILT — the publish lanes carry no mips64 leg (the little-endian mips64le twin stays the target-row seat of the standard).",
+  },
+  {
+    arch: "mips",
+    platform: "linux/mips",
+    baseimagecarries: false,
+    note: "the plain mips seat answers ARCH_LEG_NOT_BUILT — the publish lanes carry no mips leg.",
+  },
 ]);
 
 /** answers one build architecture row by its go-style arch seat id —
- * undefined when the id is not one of the eleven the build index names.
+ * undefined when the id is not one of the sixteen the build index names.
  *
  * @param arch the go-style arch seat id (x64, arm64, armv7, ...).
  * @returns the build row, or undefined for an unknown arch.
@@ -414,10 +572,12 @@ export function getcontainerbuildarch(arch: string): containerbuildarchrow | und
   return CONTAINERBUILDARCHES.find((row) => row.arch === arch);
 }
 
-/** the honest coverage report of the build index: the eleven go-style
- * arch seats, the legs the pinned base carries (four — the native x64
- * leg beside the three QEMU-emulated seats) and the seven honest coded
- * absences — the table the publish lanes and the coverage lines read. */
+/** the honest coverage report of the build index: the sixteen go-style
+ * arch seats, the legs the pinned bases carry (five — the native x64
+ * leg beside the three QEMU-emulated seats the node base answers and
+ * the armv6 leg the bash driver base carries) and the eleven honest
+ * coded absences — the table the publish lanes and the coverage lines
+ * read. */
 export function containerbuildarchcoverage(): {
   count: number;
   carries: number;
@@ -490,7 +650,7 @@ export type osdistributionpackage = "apk" | "apt" | "pacman" | "abuild" | "vpm" 
 /** one honest row of the os distribution catalog: the seat id, the
  * display label, the honest kind, the upstream base (the true fact the
  * owner's law pins), the package grammar, the architecture seats of
- * the eleven-architecture standard the seat rides, the engine plan
+ * the seventeen-seat standard the seat rides, the engine plan
  * profiles it binds, the virtual device presentation and the honest
  * note the catalog prints. */
 export interface osdistributionrow {
@@ -504,7 +664,7 @@ export interface osdistributionrow {
   readonly base: string;
   /** the package format grammar the seat answers. */
   readonly package: osdistributionpackage;
-  /** the architecture seats of the eleven-architecture standard the
+  /** the architecture seats of the seventeen-seat standard the
    * seat rides (the arch pairing the container matrix reads). */
   readonly archs: readonly string[];
   /** the engine plan profiles the seat binds (the tier law — the ids
@@ -809,7 +969,7 @@ export function resolveosdistribution(input: unknown): osdistributionrow {
 }
 
 /** answers the os distribution seats that ride one architecture seat
- * of the eleven-architecture standard (the arch join the modality
+ * of the seventeen-seat standard (the arch join the modality
  * system reads when it hosts a distribution on a seat).
  *
  * @param arch the architecture seat id (a containerarch id).
@@ -942,7 +1102,7 @@ export function osdistributionlines(): string[] {
 /* ════════════════════════════════════════════════════════════════════ */
 
 /** answers one row of the standard by seat id — undefined when the id
- * is not one of the eleven the owner's law names.
+ * is not one of the seventeen the owner's law names.
  *
  * @param id the seat id (linux-x64, darwin-arm64, ...).
  * @returns the row, or undefined for an unknown id.
@@ -953,10 +1113,10 @@ export function getcontainerarch(id: string): containerarchrow | undefined {
 
 /** the coded refusal of the resolver: an architecture the standard does
  * not carry. The name carries the standard's shape so the message names
- * the law (the eleven seats), never a bare invalid-input. */
+ * the law (the seventeen seats), never a bare invalid-input. */
 export function containerarcherror(id: string): Error & { code: string } {
   const error = new Error(
-    `the 11-architecture standard carries no seat "${id}": the eleven seats the owner's law names are ${CONTAINERARCHIDS.join(", ")}`,
+    `the seventeen-seat architecture standard carries no seat "${id}": the seventeen seats the owner's law names are ${CONTAINERARCHIDS.join(", ")}`,
   ) as Error & { code: string };
   error.name = "containerarcherror";
   error.code = "CONTAINER_ARCH_UNKNOWN";
@@ -967,7 +1127,7 @@ export function containerarcherror(id: string): Error & { code: string } {
  * an undefined or null input answers the linux-x64 default row (the
  * standard's first seat), a known id answers its row, and anything
  * else throws the coded CONTAINER_ARCH_UNKNOWN refusal naming the
- * eleven seats — the resolver never silently rewrites the caller's
+ * seventeen seats — the resolver never silently rewrites the caller's
  * architecture.
  *
  * @param input the caller architecture seat id (inputs.arch of the drivers).
@@ -982,12 +1142,12 @@ export function resolvecontainerarch(input: unknown): containerarchrow {
 }
 
 /** the honest coverage report of the standard: the count the owner's
- * law charges (eleven), the count the pinned base carries, the
+ * law charges (seventeen), the count the pinned base carries, the
  * per-seat rows with their platform specs and availability, and the
  * driver pair the rows serve. Pure data, frozen — the report the
  * drivers stamp on every profile run. */
 export interface containerarchreport {
-  /** the architecture seats the standard covers (eleven). */
+  /** the architecture seats the standard covers (seventeen). */
   count: number;
   /** the seats the pinned multi-arch base carries. */
   carries: number;
@@ -1009,10 +1169,10 @@ export interface containerarchreport {
   }[];
 }
 
-/** answers the honest coverage report of the 11-architecture standard —
- * the table the drivers stamp on every run and the tests pin: eleven
- * rows, every seat exactly once, the platform specs honest per seat
- * and the availability following the pinned base. */
+/** answers the honest coverage report of the seventeen-seat architecture
+ * standard — the table the drivers stamp on every run and the tests pin:
+ * seventeen rows, every seat exactly once, the platform specs honest per
+ * seat and the availability following the pinned bases. */
 export function containerarchcoverage(): containerarchreport {
   return {
     count: CONTAINERARCHES.length,
@@ -1043,8 +1203,8 @@ const DRIVERDISPLAY: Readonly<Record<string, string>> = Object.freeze({
 });
 
 /** renders the coverage table as report lines (the drivers append these
- * under their profile line so every run answers the eleven-seat law of
- * the pr15 standard). */
+ * under their profile line so every run answers the seventeen-seat law
+ * of the archos-grown standard). */
 export function containerarchlines(): string[] {
   const coverage = containerarchcoverage();
   return [

@@ -6301,10 +6301,12 @@ jobs:
         # catalog seats in the vhe block, so the family-oscatalog lane
         # seats the ten remaining containers of the family.
         app: [devthink, argan, cadria, cobaia, debonair, forge, foundry, getry, stealthhead, vault]
-        # the thirteen os-distribution seats the saddle osprofiles catalog
-        # answers — the same seat list the saddle-vhe-catalog lane carries,
-        # one scratch lane per seat per app.
-        osprofile: [grapheneos, maruos, v, windows, postmarketos, lineageos, calyxos, archlinux, alpine, debian, fedora, nixos, void]
+        # the fifteen os-distribution seats the saddle osprofiles catalog
+        # answers — the thirteen no-base seats beside the linux and omarchy
+        # catalog seats the archos wave seated, the same seat list the
+        # release oscatalogseats lane carries, one scratch lane per seat
+        # per app.
+        osprofile: [grapheneos, maruos, v, windows, postmarketos, lineageos, calyxos, archlinux, alpine, debian, fedora, nixos, void, linux, omarchy]
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

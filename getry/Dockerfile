@@ -192,6 +192,29 @@ LABEL org.opencontainers.image.title="getry (the void os-distribution catalog la
       org.opencontainers.image.source="https://github.com/wenathlan/devthink"
 COPY osprofiles/void.json /getry/osprofile.json
 
+FROM scratch AS oslinux
+ARG GETRY_VERSION=2.0.174
+ARG GETRY_OS_PROFILE="linux"
+ENV GETRY_OS_PROFILE=linux
+LABEL org.opencontainers.image.title="getry (the linux os-distribution catalog lane)" \
+      org.opencontainers.image.description="the linux os-distribution seat as a catalog lane of the getry container: the normal linux guest — the default host profile the sandbox lanes boot (the seventeen-seat standard carries the linux seats) — the lane publishes the profile config the engine reads beside the runnable linux legs the saddle engine's own flavor lanes carry." \
+      org.opencontainers.image.version="${GETRY_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/linux.json /getry/osprofile.json
+
+FROM scratch AS osomarchy
+ARG GETRY_VERSION=2.0.174
+ARG GETRY_OS_PROFILE="omarchy"
+ENV GETRY_OS_PROFILE=omarchy
+LABEL org.opencontainers.image.title="getry (the omarchy os-distribution catalog lane)" \
+      org.opencontainers.image.description="the omarchy os-distribution seat as a catalog lane of the getry container: the arch linux-based distribution created by dhh — the desktop guest profile the sandbox may host with the pacman package grammar — the lane publishes the profile config the engine reads." \
+      org.opencontainers.image.version="${GETRY_VERSION}" \
+      org.opencontainers.image.licenses="GPL-3.0-only" \
+      org.opencontainers.image.source="https://github.com/wenathlan/devthink"
+COPY osprofiles/omarchy.json /getry/osprofile.json
+
+
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
 ARG GETRY_VERSION=2.0.174
