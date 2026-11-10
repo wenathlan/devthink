@@ -416,6 +416,18 @@ export default defineConfig({
        * prefixes the import, and a bare parent would swallow the subpath
        * into a path that never exists) */
       "@wenathlan/saddle/modes": path.resolve(import.meta.dirname, "../saddle/modes.ts"),
+      /* the saddle foundation/integration/browser seats of the
+       * scrape-domain restore (wave-restore-8), mirrored from the tsconfig
+       * pass: the acquisition and operations engines the devthink root now
+       * owns import the sha256 hash seat, the fetch transport seat and the
+       * browser agent contract through the published library specifiers
+       * with the .js suffix the saddle sources speak — the entries ride
+       * AHEAD of the bare saddle prefix alias below so the suffixed
+       * specifiers resolve to the monorepo sources, never into the index
+       * face the prefix match would build. */
+      "@wenathlan/saddle/foundation.js": path.resolve(import.meta.dirname, "../saddle/foundation.ts"),
+      "@wenathlan/saddle/integration.js": path.resolve(import.meta.dirname, "../saddle/integration.ts"),
+      "@wenathlan/saddle/browser.js": path.resolve(import.meta.dirname, "../saddle/browser.ts"),
       "@wenathlan/saddle": path.resolve(import.meta.dirname, "../saddle/index.ts"),
       "@wenathlan/saddle/memory": path.resolve(import.meta.dirname, "../saddle/virtual.ts"),
       /** the debonair audio face bridge (the family dev seat): the cadria
@@ -479,6 +491,12 @@ export default defineConfig({
       "@wenathlan/getry/utils": path.resolve(import.meta.dirname, "../getry/utils.ts"),
       "@wenathlan/getry/versionregistry": path.resolve(import.meta.dirname, "../getry/versionregistry.ts"),
       "@wenathlan/getry/intelligence": path.resolve(import.meta.dirname, "../getry/intelligence.ts"),
+      /* the getry intelligence seat of the scrape-domain restore
+       * (wave-restore-8), mirrored from the tsconfig pass: the operations
+       * engine the devthink root now owns imports the token estimation and
+       * chunkmarkdown seats through the published library specifier with
+       * the .js suffix the family sources speak. */
+      "@wenathlan/getry/intelligence.js": path.resolve(import.meta.dirname, "../getry/intelligence.ts"),
       "@wenathlan/getry/json": path.resolve(import.meta.dirname, "../getry/json.ts"),
       "@wenathlan/getry/gatewayconfig": path.resolve(import.meta.dirname, "../getry/gateway.ts"),
       "@wenathlan/getry/gatewayviewconfig": path.resolve(import.meta.dirname, "../getry/gateway.ts"),

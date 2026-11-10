@@ -161,3 +161,53 @@
   export declare function localstorage(root: string): {
     put(entry: { key: string; data: Uint8Array; contenttype: string; metadata: Record<string, string> }): Promise<{ key: string; sha256: string }>;
   };
+
+  /* ── the scrape-domain face of the restore (wave-restore-8): the
+   * foundation, integration and browser subpaths the acquisition and
+   * operations engines the os root now owns import through the published
+   * library specifiers with the .js suffix the saddle sources speak. ── */
+
+  /** the transport-neutral sha256 digest (hex) of the foundation hash seat. */
+  export declare function sha256(value: string | Uint8Array): string;
+
+  /** the retrying fetch transport client of the integration seat. */
+  export declare function transport(options?: {
+    fetcher?: typeof fetch;
+    timeout?: number;
+    attempts?: number;
+    retrycodes?: number[];
+  }): {
+    request(url: string, init?: { headers?: Record<string, string>; signal?: AbortSignal }): Promise<Response>;
+  };
+
+  /** the browser agent contract of the browser seat: wraps an injected
+   * runtime adapter behind the navigate, click, type, screenshot, html,
+   * text, title, scrolltobottom and executecommands surface. */
+  export declare function browseragent(adapter: {
+    navigate(options: { url: string; waituntil?: string }): Promise<unknown>;
+    click(target: unknown): Promise<unknown>;
+    type(value: string): Promise<unknown>;
+    screenshot(options?: Record<string, unknown>): Promise<unknown>;
+    html(): Promise<string>;
+    text(): Promise<string>;
+    title(): Promise<string>;
+    scrolltobottom(options?: Record<string, unknown>): Promise<unknown>;
+    executecommands(commands: unknown[]): Promise<unknown>;
+    [capability: string]: unknown;
+  }): {
+    navigate(options: { url: string; waituntil?: string }): Promise<unknown>;
+    click(target: unknown): Promise<unknown>;
+    type(value: string): Promise<unknown>;
+    screenshot(options?: Record<string, unknown>): Promise<unknown>;
+    html(): Promise<string>;
+    text(): Promise<string>;
+    title(): Promise<string>;
+    scrolltobottom(options?: Record<string, unknown>): Promise<unknown>;
+    executecommands(commands: unknown[]): Promise<unknown>;
+    fill(...args: unknown[]): unknown;
+    key(...args: unknown[]): unknown;
+    upload(...args: unknown[]): unknown;
+    snapshot(...args: unknown[]): unknown;
+    tabs(...args: unknown[]): unknown;
+    frames(...args: unknown[]): unknown;
+  };
