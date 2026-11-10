@@ -6,25 +6,26 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * generate — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the debonair later, with the time its
- * engines, protocols and processes deserve, so the composer loop of the old
- * face (the prompt bench, the take queue, the lyric desk) is retired and the
- * route answers the honest construction face under the generate eyebrow,
- * inside the same app shell (the rail and the transport stay). The engine
- * logics the loop rode (arrangement, composer, genrematrix, playerbus, seed)
- * keep riding their own files untouched — only this page's face changed,
- * nothing was deleted.
+ * generate — the detailed engine wave (the owner order of the waves,
+ * landed): the composer loop rides the real engine lanes again — the
+ * GenerateSurface composite winget (one mount: the prompt bench with the
+ * engine matrix chips, the fold over the ingest references, the render
+ * walk over the gateway lane, the session shelf and the explain card)
+ * answers the route inside the same app shell, with the construction face
+ * carried as its arming face (the first paint before the references read
+ * lands). The engine lanes the loop rode (arrangement, generateclient,
+ * genre, ingest, playerbus, take) keep riding their own files untouched —
+ * only this page's mount changed, nothing was deleted.
  */
 
 import { label } from "../../labels.ts";
+import { Constructionface, GenerateSurface } from "../../wingets";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { Constructionface } from "../../wingets";
 
 /**
- * the generate page: the in-construction face under the generate eyebrow.
+ * the generate page: the real composer loop under the generate eyebrow.
  *
- * @returns the app shell with the construction face.
+ * @returns the app shell with the composer mount.
  */
 export default function Generate() {
   // the footer links read the label store at render time (the manifest
@@ -37,7 +38,17 @@ export default function Generate() {
 
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} domain="devthink.pro">
-      <Constructionface eyebrow={label("generate.eyebrow")} />
+      <p className="eyebrow reveal">{label("generate.eyebrow")}</p>
+      <h1 className="reveal page-title">{label("generate.title")}</h1>
+      <p className="reveal lede" style={{ maxWidth: 640 }}>
+        {label("generate.ledeLead")}
+        <code>studio</code>
+        {label("generate.ledeTail")}
+      </p>
+      {/* the composer mount rides the real engine; the construction face it
+          wore answers the arming beat — the first paint before the
+          references read lands (never a fake corpus, never a dead bench) */}
+      <GenerateSurface face={<Constructionface eyebrow={label("generate.eyebrow")} />} />
     </Shell>
   );
 }

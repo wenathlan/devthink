@@ -6,25 +6,26 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * ingest — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the debonair later, with the time its
- * engines, protocols and processes deserve, so the decomposition bench of
- * the old face (the dropzone stage, the phase meter, the stem audition, the
- * reference shelf) is retired and the route answers the honest construction
- * face under the ingest eyebrow, inside the same app shell (the rail and the
- * transport stay). The engine logics the bench rode (arrangement, audio,
- * catalog, dawview, playerbus) keep riding their own files untouched — only
- * this page's face changed, nothing was deleted.
+ * ingest — the detailed engine wave (the owner order of the waves, landed):
+ * the decomposition bench rides the real engine lanes again — the
+ * IngestSurface composite winget (one mount: the dropzone, the phase meter
+ * of the engine's own walk, the document summary the engine answers, the
+ * store key over the gateway/mirror lanes and the shelf of the ingest
+ * records) answers the route inside the same app shell, with the
+ * construction face carried as its arming face (the first paint before
+ * the shelf read lands). The engine lanes the bench rode (ingest,
+ * kathesis, playerbus, wavwriter) keep riding their own files untouched —
+ * only this page's mount changed, nothing was deleted.
  */
 
 import { label } from "../../labels.ts";
+import { Constructionface, IngestSurface } from "../../wingets";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { Constructionface } from "../../wingets";
 
 /**
- * the ingest page: the in-construction face under the ingest eyebrow.
+ * the ingest page: the real decomposition bench under the ingest eyebrow.
  *
- * @returns the app shell with the construction face.
+ * @returns the app shell with the bench mount.
  */
 export default function Ingest() {
   // the footer links read the label store at render time (the manifest
@@ -37,7 +38,10 @@ export default function Ingest() {
 
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} domain="devthink.pro">
-      <Constructionface eyebrow={label("ingest.eyebrow")} />
+      {/* the bench mount rides the real engine; the construction face it
+          wore answers the arming beat — the first paint before the shelf
+          read lands (never a fake document, never a dead bench) */}
+      <IngestSurface face={<Constructionface eyebrow={label("ingest.eyebrow")} />} />
     </Shell>
   );
 }

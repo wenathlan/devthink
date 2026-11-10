@@ -6,25 +6,26 @@
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  *
- * library — the in-construction pass (the owner order of the waves, pinned):
- * the detailed engine wave builds the debonair later, with the time its
- * engines, protocols and processes deserve, so the shelf of the old face
- * (the take cards, the cover art wall, the reference rows) is retired and
- * the route answers the honest construction face under the library eyebrow,
- * inside the same app shell (the rail and the transport stay). The engine
- * logics the shelf rode (arrangement, catalog, dawview, playerbus, seed)
- * keep riding their own files untouched — only this page's face changed,
- * nothing was deleted.
+ * library — the detailed engine wave (the owner order of the waves, landed):
+ * the shelf rides the real engine lanes again — the LibrarySurface
+ * composite winget (one mount: the session takes of the take store, the
+ * audio shelf of the reference records, the sample bank over the catalog
+ * seam with its honest empty and offline states, the search field, the
+ * open-in-studio and drop keys) answers the route inside the same app
+ * shell, with the construction face carried as its arming face (the first
+ * paint before the catalog read lands). The engine lanes the shelf rode
+ * (arrangement, catalog, playerbus, take) keep riding their own files
+ * untouched — only this page's mount changed, nothing was deleted.
  */
 
 import { label } from "../../labels.ts";
+import { Constructionface, LibrarySurface } from "../../wingets";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { Constructionface } from "../../wingets";
 
 /**
- * the library page: the in-construction face under the library eyebrow.
+ * the library page: the real shelf under the library eyebrow.
  *
- * @returns the app shell with the construction face.
+ * @returns the app shell with the shelf mount.
  */
 export default function Library() {
   // the footer links read the label store at render time (the manifest
@@ -37,7 +38,15 @@ export default function Library() {
 
   return (
     <Shell name="debonair" contained footerLinks={FOOTER_LINKS} domain="devthink.pro">
-      <Constructionface eyebrow={label("library.eyebrow")} />
+      <p className="eyebrow reveal">{label("library.eyebrow")}</p>
+      <h1 className="reveal page-title">{label("library.title")}</h1>
+      <p className="reveal lede" style={{ maxWidth: 640 }}>
+        {label("library.lede")}
+      </p>
+      {/* the shelf mount rides the real engine; the construction face it
+          wore answers the arming beat — the first paint before the sample
+          bank read lands (never a fake row, never a dead shelf) */}
+      <LibrarySurface face={<Constructionface eyebrow={label("library.eyebrow")} />} />
     </Shell>
   );
 }

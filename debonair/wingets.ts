@@ -6,18 +6,31 @@
  * page — the components stay complete independent files inside the
  * sol/wingets folder.
  *
- * the in-construction pass (the owner order of the waves): the platform
- * surface is ONE face, so the barrel answers the construction face beside
- * the chrome the shell keeps (the entry gate of the first-run flow, the
- * shared transport of the app frame) — the page furniture of the retired
- * surfaces (the genre and song cards, the studio faders, timelines, rolls,
- * spectra and meters) left the barrel with the faces that rendered it,
- * while the winget files themselves keep riding their own files untouched
- * for the day the detailed engine wave lands them again.
+ * the detailed engine wave (the owner order of the waves, landed): the
+ * platform surfaces ride their real mounts again — the five composite
+ * wingets the wave rebuilt (the landing strip of the home, the
+ * decomposition bench of the ingest, the library shelf, the composer loop
+ * of the generate and the preferences surface of the settings) answer from
+ * this barrel beside the construction face that stays as the arming face
+ * their face prop carries, and the chrome of the app frame (the entry gate
+ * of the first-run flow, the shared transport of the shell). the DAW
+ * console the studio wave landed keeps its own mount through its route
+ * (sol/studio/studio.tsx — the studio wave's own geometry); the page
+ * furniture the composites render (the song and genre cards, the drawn
+ * cover art, the faders, timelines, rolls, spectra and meters) keeps
+ * riding its own winget files, imported by the composites that own the
+ * wiring — the barrel answers the composites and the chrome, the furniture
+ * answers the composites.
  */
-export { default as Constructionface } from "./sol/wingets/Constructionface.tsx";
+
 export * from "./sol/wingets/Constructionface.tsx";
-export { default as HomeEntrygate } from "./sol/wingets/HomeEntrygate.tsx";
+export { default as Constructionface } from "./sol/wingets/Constructionface.tsx";
+export { GenerateSurface } from "./sol/wingets/GenerateSurface.tsx";
 export * from "./sol/wingets/HomeEntrygate.tsx";
-export { default as ShellPlayerbar } from "./sol/wingets/ShellPlayerbar.tsx";
+export { default as HomeEntrygate } from "./sol/wingets/HomeEntrygate.tsx";
+export { HomeSurface } from "./sol/wingets/HomeSurface.tsx";
+export { IngestSurface } from "./sol/wingets/IngestSurface.tsx";
+export { LibrarySurface } from "./sol/wingets/LibrarySurface.tsx";
+export { SettingsSurface } from "./sol/wingets/SettingsSurface.tsx";
 export * from "./sol/wingets/ShellPlayerbar.tsx";
+export { default as ShellPlayerbar } from "./sol/wingets/ShellPlayerbar.tsx";
