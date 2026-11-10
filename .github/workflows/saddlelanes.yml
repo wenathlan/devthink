@@ -650,7 +650,45 @@ jobs:
           sudo install -m 0755 /tmp/trivy /usr/local/bin/trivy
           trivy --version
       - name: Scan the release image
+        # the vex seat answers both trees the gate can scan (the trivyvex
+        # law): the resolve lane checks out the frozen tag tree, and the
+        # frozen 2.0.175 tag predates the committed saddle/.trivyignore
+        # the later rungs carry - the gate reddened FATAL on the missing
+        # file and stranded the rung whole. the fallback below writes the
+        # same fifteen-vulnid notice the committed seat carries when the
+        # checkout answers no file, so every tree the gate scans finds
+        # the notice beside it. the fifteen HIGH findings all live in the
+        # one go binary the image carries - the native tsc compiler of
+        # @typescript/typescript-linux-x64 7.0.2 (the language-typescript
+        # modality seat), every one an embedded Go stdlib CVE the
+        # upstream stable pin cannot heal yet - while the gate keeps
+        # every tooth it owns: any other HIGH or CRITICAL finding, in
+        # any other library, binary or package, still reddens the lane
+        # with exit-code 1.
         run: |
+          if [ ! -f saddle/.trivyignore ]; then
+            cat > saddle/.trivyignore <<'VEX'
+          # the tsgo seat - the offline compiler binary's embedded Go
+          # stdlib CVEs ride the documented notice; drop each entry the
+          # day a patched stable typescript ships.
+          CVE-2026-56851
+          CVE-2026-56852
+          CVE-2026-56853
+          CVE-2026-56858
+          CVE-2026-56859
+          CVE-2026-56860
+          CVE-2026-56862
+          CVE-2026-111943
+          CVE-2026-33818
+          CVE-2026-39821
+          CVE-2026-39822
+          CVE-2026-46600
+          CVE-2026-78667
+          CVE-2026-78669
+          CVE-2026-97031
+          VEX
+            sed -i 's/^[[:space:]]*//' saddle/.trivyignore
+          fi
           trivy image saddle-vhe-release-scan:${{ needs.saddle-vhe-resolve.outputs.version }} \
             --scanners vuln,secret,misconfig \
             --severity HIGH,CRITICAL \
