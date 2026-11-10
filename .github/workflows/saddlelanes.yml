@@ -128,7 +128,7 @@ jobs:
     # scan, the registry push, the verify and the archive - to the release
     # wave; the twelve-leg validation matrix (PR15: 3 profiles x the
     # four build legs of the container-carried seats the pinned node base answers of the
-    # seventeen-seat architecture standard) answers the maintenance dispatch
+    # eleven-architecture standard) answers the maintenance dispatch
     # alone, where its
     # cost belongs). The grand-merge era validated a spoofed /proc the
     # from-source mesa stages carried; the family doctrine ships the
@@ -153,27 +153,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # THE SEVENTEEN-ARCH CONTAINER LAW (PR15 grown by the archos
-        # wave, the owner's directive: "expanda ali o OS/Arch (restrito a
-        # linux/arm64 e unknown) para 15+ lanes tanto nos sistemas
-        # operacionais (Alpine, NixOS, V, Arch Linux e Debian) quanto no
-        # respectivo ArchOS interno"): the standard covers the
-        # seventeen architecture seats of saddle/containerarch.ts
-        # (linux-x64, darwin-arm64, windows-x64, linux-arm64, darwin-x64,
+        # THE ELEVEN-ARCH CONTAINER LAW (PR15): the standard covers the
+        # eleven architecture seats of saddle/containerarch.ts (linux-x64,
+        # darwin-arm64, windows-x64, linux-arm64, darwin-x64,
         # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
-        # darwin-arm64-v8, windows-x64-gnu beside the six archos seats —
-        # linux-ppc64le, linux-s390x, linux-armv7, linux-armv6,
-        # linux-386 and linux-mips64le) and the build legs follow the
+        # darwin-arm64-v8, windows-x64-gnu) and the build legs follow the
         # container-carried seats the pinned node base honestly answers:
         # the native amd64 leg that serves linux-x64 and linux-x64-musl
         # beside the arm64, ppc64le and s390x legs under QEMU emulation
         # on the amd64 runner. The linux-riscv64 seat the containerarch
         # standard carries on the bash:5 driver base answers the honest
         # coded absence here (the node engine base ships no riscv64
-        # manifest), the archos armv7/armv6/386 seats ride the bash
-        # driver base the vhe lanes never build, the linux-mips64le
-        # seat owns the target class (no pinned base carries it), and
-        # the six target seats (the darwin and windows
+        # manifest), and the six target seats (the darwin and windows
         # seats and wasm32) answer ARCH_TARGET_NOT_CONTAINER, never a
         # pretended build leg. 3 profiles x 4 build legs = 12 validation
         # legs.
@@ -481,7 +472,7 @@ jobs:
           # landed only the max leg before failing froze balanced and
           # lite out of every re-run (the duplicate no-op answered forever
           # while the family stayed incomplete). The complete-family law:
-          # the resolve only no-ops when ALL TWENTY-EIGHT lane tags of the
+          # the resolve only no-ops when ALL ELEVEN lane tags of the
           # version are live (the three profile tags — ${version},
           # ${version}-balanced, ${version}-lite — beside the four
           # os-distribution flavor lanes of the tier grid — ${version}-linux,
@@ -501,7 +492,7 @@ jobs:
             exit 0
           fi
           if [ "${api_out}" != "0" ]; then
-            echo "GHCR container ${OWNER}/saddle carries a partial ${version} family (${api_out} of 28 tags); proceeding so the missing lanes ship (the per-leg guard skips the published legs)."
+            echo "GHCR container ${OWNER}/saddle carries a partial ${version} family (${api_out} of 11 tags); proceeding so the missing lanes ship (the per-leg guard skips the published legs)."
           fi
           echo "proceed=true" >> "$GITHUB_OUTPUT"
 
@@ -659,65 +650,12 @@ jobs:
           sudo install -m 0755 /tmp/trivy /usr/local/bin/trivy
           trivy --version
       - name: Scan the release image
-        # the vex seat rides the scan inline (the workflow the dispatch and
-        # the workflow_run firings read answers from main, never from the
-        # frozen tag tree, so the seat lives here and never strands a rung):
-        # the fifteen HIGH findings the 2.0.175 scan answered all live in
-        # the one go binary the image carries — the native tsc compiler of
-        # @typescript/typescript-linux-x64 7.0.2 (the language-typescript
-        # modality seat), every one an embedded Go stdlib CVE (x/text,
-        # crypto/x509, encoding/asn1, net/http punycode, os.Root) the
-        # upstream stable pin cannot heal yet (7.0.2 is the latest stable
-        # the exact-pin doctrine seats; the 7.1.0 nightlies are dev builds
-        # the production image never rides). the compiler binary answers
-        # the language seat alone — it never serves, never parses
-        # untrusted network input, and the vulnerable stdlib paths sit
-        # outside its compile loop — so the fifteen ride the documented
-        # vex notice below while the gate keeps every tooth it owns: any
-        # other HIGH or CRITICAL finding, in any other library, binary or
-        # package, still reddens the lane with exit-code 1.
         run: |
-          # THE VEX SEAT (the tsc compiler binary, fifteen embedded Go stdlib CVEs)
-          cat > /tmp/saddle.trivyignore <<'VEX'
-          # CVE-2026-56851 golang.org/x/text DoS (nickname profile)
-          CVE-2026-56851
-          # CVE-2026-56852 golang.org/x/text DoS (invalid UTF-8)
-          CVE-2026-56852
-          # CVE-2026-56853 golang.org/x/text
-          CVE-2026-56853
-          # CVE-2026-56858 golang.org/x/text
-          CVE-2026-56858
-          # CVE-2026-56859 golang.org/x/text
-          CVE-2026-56859
-          # CVE-2026-56860 golang.org/x/text
-          CVE-2026-56860
-          # CVE-2026-56862 golang.org/x/text
-          CVE-2026-56862
-          # CVE-2026-111943 crypto/x509 MITM (untrusted intermediates)
-          CVE-2026-111943
-          # CVE-2026-33818 encoding/asn1 DoS (recursion)
-          CVE-2026-33818
-          # CVE-2026-39821 net/http punycode privilege escalation
-          CVE-2026-39821
-          # CVE-2026-39822 os.Root symlink following
-          CVE-2026-39822
-          # CVE-2026-46600
-          CVE-2026-46600
-          # CVE-2026-78667
-          CVE-2026-78667
-          # CVE-2026-78669
-          CVE-2026-78669
-          # CVE-2026-97031
-          CVE-2026-97031
-          VEX
-          # the heredoc rides the yaml indentation — strip it so the
-          # ignorefile answers one bare vulnid per line the parser reads.
-          sed -i 's/^[[:space:]]*//' /tmp/saddle.trivyignore
           trivy image saddle-vhe-release-scan:${{ needs.saddle-vhe-resolve.outputs.version }} \
             --scanners vuln,secret,misconfig \
             --severity HIGH,CRITICAL \
             --ignore-unfixed \
-            --ignorefile /tmp/saddle.trivyignore \
+            --ignorefile saddle/.trivyignore \
             --exit-code 1
 
   saddle-vhe-publish:
@@ -746,40 +684,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # THE SEVENTEEN-ARCH CONTAINER LAW (PR15 grown by the archos
-        # wave) BESIDE THE OS-DISTRIBUTION
+        # THE ELEVEN-ARCH CONTAINER LAW (PR15) BESIDE THE OS-DISTRIBUTION
         # LANE AXIS (the owner's container-lane law: the saddle container
-        # carries MORE THAN 15 lanes): the standard covers the seventeen
+        # carries MORE THAN 15 lanes): the standard covers the eleven
         # architecture seats of saddle/containerarch.ts (linux-x64,
         # darwin-arm64, windows-x64, linux-arm64, darwin-x64,
         # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
-        # darwin-arm64-v8, windows-x64-gnu beside the six archos seats —
-        # linux-ppc64le, linux-s390x, linux-armv7, linux-armv6,
-        # linux-386 and linux-mips64le) and the three profile lanes
+        # darwin-arm64-v8, windows-x64-gnu) and the three profile lanes
         # ship the build legs of the container-carried seats the pinned
         # node base honestly answers (the native amd64 leg that serves
         # linux-x64 and linux-x64-musl beside the arm64, ppc64le and
         # s390x legs under QEMU emulation — 3 lanes x 4 arch legs = 12
-        # arch-lanes, every one kept — the archos armv7/armv6/386 seats
-        # ride the bash driver base the vhe lanes never build and the
-        # mips64le seat owns the target class, so no pretended fifth
-        # build leg ever rides here). beside them the os-distribution
+        # arch-lanes, every one kept). beside them the os-distribution
         # axis rides the tier grid the owner's standardization
         # directive charged: twelve flavor lanes (linux, omarchy,
         # vanillaos, android — every distribution carrying its max,
         # balanced and lite twins) stamp their OSDISTRIBUTIONS catalog
         # profile into the image config (SADDLE_OS_PROFILE + the OCI
         # labels) and build on the same honest node base legs (12
-        # lanes x 4 arch legs = 48 arch-lanes), and the thirteen catalog
+        # lanes x 4 arch legs = 48 arch-lanes), and the four catalog
         # lanes the saddle-vhe-catalog job owns (grapheneos, maruos,
-        # v, windows, postmarketos, lineageos, calyxos, archlinux,
-        # alpine, debian, fedora, nixos, void — profiles with no
-        # runnable container base: Android firmware and guest seats
-        # beside the honest osdistrib additions) complete the family,
-        # every catalog lane publishing its seventeen-seat ArchOS
-        # manifest index (the archos interno law below).
-        # twelve + thirty-nine = fifty-one legs over
-        # sixty-four lane tags, each
+        # v, windows — profiles with no runnable container base:
+        # Android firmware and guest seats) complete the family.
+        # twelve + forty-eight + four = sixty-four lanes, each
         # carrying a single version tag on the saddle container
         # package. One tag per version, no rolling aliases.
         include:
@@ -1104,44 +1031,18 @@ jobs:
     # firmware seats, the v seat is the vlang platform target and the
     # windows seat is the guest vocabulary the exe seats execute — never
     # pretend a runnable image. the lane publishes the profile itself as
-    # a manifest index: a scratch-based multi-arch index whose config
-    # carries the SADDLE_OS_PROFILE stamp, the OCI labels and the profile
-    # row the osprofiles catalog answers (rendered to json at build
-    # time), so the operator reading the registry finds every seat the
-    # owner's law names — honest, documented, still a real published
-    # lane.
-    #
-    # THE ARCHOS INTERNO LAW (the owner's directive: "expanda ali o
-    # OS/Arch (restrito a linux/arm64 e unknown) para 15+ lanes tanto
-    # nos sistemas operacionais (Alpine, NixOS, V, Arch Linux e Debian)
-    # quanto no respectivo ArchOS interno"): every catalog lane's
-    # umbrella tag publishes as a manifest index carrying ALL SEVENTEEN
-    # architecture seats of the containerarch standard — one real
-    # published scratch manifest per seat, each stamped with its
-    # SADDLE_ARCH_SEAT env and its arch seat row (archseats/<seat>.json,
-    # rendered from saddle/containerarch.ts at build time the same
-    # import law the profile rows ride), each pushed under its
-    # arch-suffixed variant tag (${version}${suffix}-${arch seat}) and
-    # all seventeen folded into the lane's umbrella tag through
-    # docker buildx imagetools create. scratch images are config-only
-    # — no RUN step, no base, no emulation — so the per-arch entries are
-    # honest documentation lanes that publish for real: a darwin/arm64
-    # or windows/amd64 or wasm32 entry is a real manifest on the
-    # registry the operator can inspect, never a pretended build leg
-    # (the vhe image's four honest node legs live in the publish lanes,
-    # untouched). 13 seats x 3 tiers = 39 catalog lanes x 17 arch seats
-    # = 663 arch-suffixed tags beside the 39 umbrellas.
+    # an image manifest: a scratch-based image whose config carries the
+    # SADDLE_OS_PROFILE stamp, the OCI labels and the profile row the
+    # osprofiles catalog answers (rendered to json at build time), so the
+    # operator reading the registry finds every seat the owner's law
+    # names — honest, documented, still a real published lane.
     needs: [saddle-vhe-resolve, saddle-vhe-scan]
     if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-    # 30 min: the seventeen-seat loop rides seventeen tiny scratch
-    # builds per leg (no base, no RUN, no emulation — the context
-    # transfer dominates), so the ceiling grows past the old 15-minute
-    # single-build shape with headroom for cold-builder context churn.
-    timeout-minutes: 30
+    timeout-minutes: 15
     permissions:
       contents: read
       packages: write
@@ -1547,17 +1448,12 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Stage the saddle build context and render the profile and arch seat config
+      - name: Stage the saddle build context and render the profile config
         # the same staged tree the runnable lanes build (the saddle nested
         # under saddle/ with the vault and devthink sources beside it) plus
         # the rendered osprofiles json the catalog stages COPY: the profile
         # rows the osprofiles catalog answers, one json per seat, generated
-        # from the tagged source the lane checks out (never a placeholder)
-        # — beside the rendered archseats json the archos interno law
-        # rides: the seventeen arch seat rows the containerarch standard
-        # answers, one json per seat, the same import law (the catalog
-        # data lives in saddle/containerarch.ts alone, the lane renders
-        # it at build time, never a committed json).
+        # from the tagged source the lane checks out (never a placeholder).
         if: steps.meta.outputs.skip != 'true'
         shell: bash
         run: |
@@ -1576,119 +1472,45 @@ jobs:
           cat > osprofile-dump.ts <<'DUMP'
           import { mkdirSync, writeFileSync } from "node:fs";
           import { OSPROFILES } from "./saddlebuildctx/saddle/osprofiles.ts";
-          import { CONTAINERARCHES } from "./saddlebuildctx/saddle/containerarch.ts";
           mkdirSync("saddlebuildctx/osprofiles", { recursive: true });
           for (const profile of OSPROFILES) {
             writeFileSync(`saddlebuildctx/osprofiles/${profile.id}.json`, JSON.stringify(profile, null, 2) + "\n");
           }
           console.log(`the os profile catalog answered ${OSPROFILES.length} seats`);
-          mkdirSync("saddlebuildctx/archseats", { recursive: true });
-          for (const seat of CONTAINERARCHES) {
-            writeFileSync(`saddlebuildctx/archseats/${seat.id}.json`, JSON.stringify(seat, null, 2) + "\n");
-          }
-          console.log(`the arch standard answered ${CONTAINERARCHES.length} seats`);
           DUMP
           node osprofile-dump.ts
           rm -f osprofile-dump.ts
           test -s "saddlebuildctx/osprofiles/${{ matrix.osprofile }}.json"
-          test "$(ls saddlebuildctx/archseats | wc -l)" -eq 17
-          # the mini catalog context the seventeen-seat loop rides: only the
-          # Dockerfile, the rendered osprofiles and the arch seat rows — the
-          # scratch stages COPY three files and pin no base, so the loop's
-          # seventeen tiny builds transfer kilobytes instead of the family
-          # tree the runnable lanes carry (the same files, a lighter walk)
-          rm -rf catalogctx
-          mkdir -p catalogctx/osprofiles catalogctx/archseats
-          cp saddlebuildctx/saddle/Dockerfile catalogctx/Dockerfile
-          cp -a saddlebuildctx/osprofiles/. catalogctx/osprofiles/
-          cp -a saddlebuildctx/archseats/. catalogctx/archseats/
 
-      - name: Build and push the catalog lane (the seventeen-seat archos index)
-        # THE ARCHOS INTERNO LAW (the owner's directive: "expanda ali o
-        # OS/Arch (restrito a linux/arm64 e unknown) para 15+ lanes tanto
-        # nos sistemas operacionais (Alpine, NixOS, V, Arch Linux e Debian)
-        # quanto no respectivo ArchOS interno"): every catalog lane's
-        # umbrella tag publishes as a manifest index carrying ALL
-        # SEVENTEEN architecture seats of the containerarch standard — one
-        # real published scratch manifest per seat, each stamped with its
-        # SADDLE_ARCH_SEAT env and its arch seat row (archseats/<seat>.json,
-        # rendered from saddle/containerarch.ts at build time the same
-        # import law the profile rows ride), each pushed under its
-        # arch-suffixed variant tag (${version}${suffix}-${arch seat}) and
-        # all seventeen folded into the lane's umbrella tag through the
-        # docker manifest create/annotate/push grammar. scratch images are
-        # config-only — no RUN step, no base, no emulation — so the per-arch
-        # entries are honest documentation lanes that publish for real: the
-        # linux platform seats build on their true platform (buildx never
-        # resolves a base for a scratch stage), a darwin/arm64 or
-        # windows/amd64 or wasm32 entry is a real manifest on the registry
-        # the operator can inspect, never a pretended build leg (the vhe
-        # image's four honest node legs live in the publish lanes,
-        # untouched). 13 seats x 3 tiers = 39 catalog lanes x 17 arch seats
-        # = 663 arch-suffixed tags beside the 39 umbrellas.
+      - name: Build and push the catalog lane
+        # the scratch target of the profile: no runnable base (the digest
+        # law rides trivially — a scratch stage pins no base at all), the
+        # profile config and the stamps the config carries.
         if: steps.meta.outputs.skip != 'true'
-        shell: bash
-        env:
-          TAG: ${{ steps.meta.outputs.tag }}
-          VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
-          PROFILE: ${{ matrix.osprofile }}
-          TIER: ${{ matrix.tier }}
-        run: |
-          set -euo pipefail
-          tag="${TAG}"
-          # the seventeen seats the rendered archseats directory answers —
-          # the import law keeps the catalog in saddle/containerarch.ts
-          # alone, the loop reads the rendered rows (id, platform, family,
-          # arch), never a duplicated list inside the workflow
-          mapfile -t SEATS < <(node -e '
-            const { readdirSync, readFileSync } = require("node:fs");
-            for (const name of readdirSync("catalogctx/archseats").sort()) {
-              const row = JSON.parse(readFileSync("catalogctx/archseats/" + name, "utf8"));
-              console.log([row.id, row.platform, row.family, row.arch].join("\t"));
-            }')
-          test "${#SEATS[@]}" -eq 17
-          # one real published scratch manifest per seat: the linux platform
-          # seats build on their true platform (the exotic legs included — a
-          # scratch stage pins no base, so buildx never resolves one), the
-          # platform-less target seats build on the native amd64 leg and the
-          # umbrella annotation below stamps the seat's true os/arch
-          for seat in "${SEATS[@]}"; do
-            IFS=$'\t' read -r seatid platform family arch <<< "${seat}"
-            cp "catalogctx/archseats/${seatid}.json" "catalogctx/archseat.json"
-            plat="${platform:-linux/amd64}"
-            docker buildx build \
-              --target "os${PROFILE}-catalog" \
-              --platform "${plat}" \
-              -t "${tag}-${seatid}" \
-              --push \
-              --build-arg "SADDLE_VERSION=${VERSION}" \
-              --build-arg "SADDLE_OS_PROFILE=${PROFILE}" \
-              --build-arg "SADDLE_TIER=${TIER}" \
-              --build-arg "SADDLE_ARCH_SEAT=${seatid}" \
-              -f catalogctx/Dockerfile catalogctx
-          done
-          # the fold: the umbrella manifest index carrying all seventeen
-          # seats, the platform-less rows annotated with their true os/arch
-          # (a real manifest the operator inspects, never a pretended leg)
-          docker manifest rm "${tag}" >/dev/null 2>&1 || true
-          sources=""
-          for seat in "${SEATS[@]}"; do
-            IFS=$'\t' read -r seatid _ _ _ <<< "${seat}"
-            sources="${sources} ${tag}-${seatid}"
-          done
-          # shellcheck disable=SC2086
-          docker manifest create "${tag}" ${sources}
-          for seat in "${SEATS[@]}"; do
-            IFS=$'\t' read -r seatid platform family arch <<< "${seat}"
-            if [ -z "${platform}" ]; then
-              docker manifest annotate "${tag}" "${tag}-${seatid}" --os "${family}" --arch "${arch}"
-            fi
-          done
-          docker manifest push "${tag}" >/dev/null
-          # the census assert: the umbrella index answers all seventeen
-          # arch seats (no attestation entries ride the raw cli builds)
-          test "$(docker manifest inspect "${tag}" | jq -r '[.manifests[]? | select(.platform.os != "unknown")] | length')" -eq 17
-          echo "published ${tag}: the ${PROFILE} catalog lane carries the seventeen-seat archos index (one real manifest per arch seat — the profile row the osprofiles catalog carries stamped beside the arch seat row, the platform-less target seats annotated with their true os/arch — never a pretended build leg)"
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./saddlebuildctx
+          file: ./saddlebuildctx/saddle/Dockerfile
+          target: os${{ matrix.osprofile }}
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tag }}
+          build-args: |
+            SADDLE_VERSION=${{ needs.saddle-vhe-resolve.outputs.version }}
+            SADDLE_OS_PROFILE=${{ matrix.osprofile }}
+            SADDLE_TIER=${{ matrix.tier }}
+            VHE_PROFILE_CPU=${{ matrix.profilecpu }}
+            VHE_PROFILE_VCPUS=${{ matrix.profilevcpus }}
+            VHE_PROFILE_THREADS=${{ matrix.profilethreads }}
+            VHE_PROFILE_RAM_GB=${{ matrix.profileram }}
+            VHE_PROFILE_GPU=${{ matrix.profilegpu }}
+            VHE_PROFILE_GPUS=${{ matrix.profilegpus }}
+          labels: |
+            org.opencontainers.image.title=saddle (the ${{ matrix.osprofile }} os-distribution catalog lane, the ${{ matrix.tier }} tier)
+            org.opencontainers.image.description=the ${{ matrix.osprofile }} os-distribution seat the osprofiles catalog carries on the ${{ matrix.tier }} virtual hardware plan — no runnable container base exists for this seat, the lane publishes the profile config the engine reads.
+            org.opencontainers.image.version=${{ needs.saddle-vhe-resolve.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
   saddle-vhe-verify:
     name: Verify published saddle vhe image (${{ matrix.profile }})

@@ -342,7 +342,13 @@ RUN apt-get update \
     # With --ignore-scripts the binding never builds and the package
     # degrades to a no-op at runtime - the sources are dead weight.
     && rm -rf node_modules/cpu-features/deps \
-    && find node_modules -type f -name Dockerfile -delete
+    && find node_modules -type f -name Dockerfile -delete \
+    # prune the package caches the image never needs to carry: the pnpm
+    # content-addressed store ships npm test fixtures (keypair-style
+    # "secrets" the trivy secret scanner flags - forty-one findings)
+    # and the npm cacache answers only bloat - node_modules/.pnpm
+    # survives because its files are hardlinks inside this same layer.
+    && rm -rf /root/.local/share/pnpm/store /root/.cache/pnpm /root/.npm/_cacache
 # THE TOOLCHAIN LAYER — the fourteen planned seats walk live (the pr13
 # completion law): the engine host carries the runtimes the language,
 # build and wasi seats spawn, every carrier pinned to the exact version
@@ -422,6 +428,13 @@ RUN set -eux; \
         echo "the toolchain layer answers the honest coded absence on ${arch}: the prefab carriers ship amd64 and arm64 alone (the seats' probes name the requirement at dispatch)" ;; \
     esac; \
     rm -rf /var/lib/apt/lists/* /tmp/* /opt/nim/.git /opt/v/.git; \
+    # strip the v toolchain test trees the compiler never walks: the
+    # h2spec server fixture carries an embedded rsa test key (a secret
+    # finding) and the autobahn websocket tree ships a Dockerfile the
+    # misconfig scanner flags (DS-0002) - test files are not needed to
+    # compile v user code.
+    find /opt/v/vlib -type d -name tests -exec rm -rf {} + 2>/dev/null || true; \
+    rm -rf /opt/v/vlib/net/http/h2spec; \
     mkdir -p /sandbox && chown node:node /sandbox
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1 \
     DOTNET_NOLOGO=1 \

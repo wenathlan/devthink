@@ -1,0 +1,21 @@
+# the tsgo seat — microsoft's typescript 7.0.2 native compiler binary
+# carries the go 1.26.4 stdlib and x/text 0.38.0 cves listed below; no
+# fixed stable typescript release exists (latest is 7.0.2, the fixes
+# ride go >= 1.26.10 / x/text >= 0.41.0); tsc is an offline compiler
+# seat, never a network service — drop each entry the day typescript
+# ships a patched stable build.
+CVE-2026-56851
+CVE-2026-56852
+CVE-2026-111943
+CVE-2026-33818
+CVE-2026-39821
+CVE-2026-39822
+CVE-2026-46600
+CVE-2026-56853
+CVE-2026-56858
+CVE-2026-56859
+CVE-2026-56860
+CVE-2026-56862
+CVE-2026-78667
+CVE-2026-78669
+CVE-2026-97031
