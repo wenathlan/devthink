@@ -1268,14 +1268,21 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf saddlebuildctx
-          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault saddlebuildctx/devthink
           cp -a saddle/. saddlebuildctx/saddle/
           cp -a vault/. saddlebuildctx/vault/
+          # the routerbase sibling the family law carries: the saddle
+          # solbuild stage COPYs devthink/ at /devthink where the
+          # routerbase re-export resolves (sources only, never
+          # installed - the same law the vault sibling rides).
+          cp -a devthink/. saddlebuildctx/devthink/
           rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git \
                  saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules \
                  saddlebuildctx/saddle/dist saddlebuildctx/vault/dist \
-                 saddlebuildctx/vault/test
-          printf '%s\n' 'saddle/.git' 'vault/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+                 saddlebuildctx/vault/test \
+                 saddlebuildctx/devthink/.git saddlebuildctx/devthink/node_modules \
+                 saddlebuildctx/devthink/dist saddlebuildctx/devthink/build
+          printf '%s\n' 'saddle/.git' 'vault/.git' 'devthink/.git' 'devthink/node_modules' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
 
       - name: Build and push the multi-arch lane image
         # the per-leg guard: a leg whose tag already ships on the
@@ -1494,7 +1501,7 @@ jobs:
         run: |
           set -euo pipefail
           cd saddle
-          npx --yes npm@11.20.0 install --ignore-scripts --no-audit --no-fund webpack@5.112.2 webpack-cli@7.3.1
+          npx --yes npm@11.20.0 install --ignore-scripts --no-audit --no-fund webpack@^5.112.2 webpack-cli@^7.3.1
           node scripts.ts buildengine
           node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js --external:@babel/core --external:@libsql/client --external:playwright --external:webpack
           test -s distpackage/index.js
