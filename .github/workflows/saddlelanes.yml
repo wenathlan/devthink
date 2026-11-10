@@ -655,6 +655,7 @@ jobs:
             --scanners vuln,secret,misconfig \
             --severity HIGH,CRITICAL \
             --ignore-unfixed \
+            --ignorefile saddle/.trivyignore \
             --exit-code 1
 
   saddle-vhe-publish:
