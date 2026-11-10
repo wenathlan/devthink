@@ -5200,15 +5200,23 @@ jobs:
           node -e 'const fs=require("node:fs");const file="devthink/capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
 
       - name: generate and synchronize the android wrapper
-        # the capacitor cli pinned to the 8.5.0 the mobile shell declares;
-        # cap add materializes the android template inside the application and
-        # sync copies the built workbench output into its assets. the wrapper
-        # patch rides beside the generation: the stock template wrapper carries
-        # the 10s default network timeout that reddened the lane on a slow
+        # the capacitor cli the mobile shell declares; cap add materializes
+        # the android template inside the application and sync copies the
+        # built workbench output into its assets. the wrapper patch rides
+        # beside the generation: the stock template wrapper carries the 10s
+        # default network timeout that reddened the lane on a slow
         # services.gradle.org answer (the 8.14.3-all timeout flake), so the
         # patch seats networkTimeout=180000 and the -bin distribution (the
-        # smaller artifact the same checksum lane verifies) before any gradlew
-        # walk ever runs.
+        # smaller artifact the same checksum lane verifies) before any
+        # gradlew walk ever runs. the 8.6 template heal walks two seats the
+        # 8.5-era law broke: the template now carries networkTimeout=10000
+        # itself, so the append-only seat died at the final gate (the patch
+        # now replaces whatever default rode the wrapper), and the escaped
+        # double backslashes the single-quoted literal block carried never
+        # matched a single real dot (the sed and the bin gate searched for
+        # literal backslashes the wrapper never answers), so the patterns
+        # walk the plain dots and the -all swap rides the version-agnostic
+        # suffix a template rung bump can never strand.
         working-directory: devthink
         shell: bash
         run: |
@@ -5217,10 +5225,14 @@ jobs:
           npx cap sync android
           wrapper="android/gradle/wrapper/gradle-wrapper.properties"
           test -f "$wrapper"
-          sed -i 's#gradle-8\\.14\\.3-all\\.zip#gradle-8.14.3-bin.zip#' "$wrapper"
-          grep -q 'networkTimeout=' "$wrapper" || printf 'networkTimeout=180000\n' >> "$wrapper"
-          grep -q 'distributionUrl=.*bin\\.zip' "$wrapper"
-          grep -q 'networkTimeout=180000' "$wrapper"
+          sed -i 's#-all\.zip#-bin.zip#' "$wrapper"
+          if grep -q '^networkTimeout=' "$wrapper"; then
+            sed -i 's#^networkTimeout=.*#networkTimeout=180000#' "$wrapper"
+          else
+            printf 'networkTimeout=180000\n' >> "$wrapper"
+          fi
+          grep -q 'distributionUrl=.*bin\.zip' "$wrapper"
+          grep -q '^networkTimeout=180000$' "$wrapper"
 
       - name: derive android version values
         # the saddle release lane recipe: the version and the derived

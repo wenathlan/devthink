@@ -131,8 +131,30 @@ jobs:
           test -f build/web/index.html
           node -e 'const fs=require("node:fs");const file="capacitor.config.ts";const source=fs.readFileSync(file,"utf8");const rewritten=source.replace(/webDir:\s*"[^"]*"/,`webDir: "build/web"`);if(rewritten===source)throw new Error("the capacitor config carries no webDir to aim");fs.writeFileSync(file,rewritten);'
       - name: generate and synchronize the android wrapper
+        # the wrapper patch the publish android lane healed rides the family
+        # leg too (the one law both lanes walk): the stock template wrapper
+        # carries the 10s default network timeout that reddened the lane on
+        # a slow services.gradle.org answer, the 8.6 template seats
+        # networkTimeout=10000 itself (so the patch replaces whatever
+        # default rode the wrapper, appending only when the line never
+        # rode it), and the -all to -bin swap rides the version-agnostic
+        # suffix the plain-dot patterns answer before any gradlew walk.
         working-directory: ${{ matrix.app }}
-        run: npx cap add android && npx cap sync android
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx cap add android
+          npx cap sync android
+          wrapper="android/gradle/wrapper/gradle-wrapper.properties"
+          test -f "$wrapper"
+          sed -i 's#-all\.zip#-bin.zip#' "$wrapper"
+          if grep -q '^networkTimeout=' "$wrapper"; then
+            sed -i 's#^networkTimeout=.*#networkTimeout=180000#' "$wrapper"
+          else
+            printf 'networkTimeout=180000\n' >> "$wrapper"
+          fi
+          grep -q 'distributionUrl=.*bin\.zip' "$wrapper"
+          grep -q '^networkTimeout=180000$' "$wrapper"
       - name: generate Android icons
         working-directory: ${{ matrix.app }}
         shell: bash
