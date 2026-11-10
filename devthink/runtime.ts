@@ -773,7 +773,16 @@ async function validateruntimebaselines(): Promise<void> {
   const metadataprobe = ["node", "-p", `"${["require", "('/package.json')"].join("")}`].join(" ");
   if (!containerfile.includes(metadataprobe))
     throw new Error("the Dockerfile must evaluate package metadata with Node rather than pass it as a quoted literal.");
-  if (!containerfile.includes('npm install --global "bun@${bunversion}"'))
+  /* the manager seat answers either carrier form: the plain npm install the
+   * original ladder stamped and the npx-carrier law the security family
+   * seats (the pinned npm riding npx --yes beside the same bun install the
+   * canonical field reads) — both install the root package manager from
+   * the packageManager field's own grammar, the gate reading the intent,
+   * never one spelling alone. */
+  if (
+    !containerfile.includes('npm install --global "bun@${bunversion}"') &&
+    !containerfile.includes('npx --yes "npm@${npmversion}" install --global "bun@${bunversion}"')
+  )
     throw new Error("the Dockerfile must install the root package manager from the canonical packageManager field.");
   if (!containerfile.includes('bun install --frozen-lockfile'))
     throw new Error("the Dockerfile must retain frozen-lockfile installation.");

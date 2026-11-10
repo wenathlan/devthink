@@ -130,7 +130,11 @@ describe("the construction law of debonair", () => {
       const page = read(file);
       for (const engine of ENGINE_MODULES) {
         expect(
-          new RegExp(`from "\\.\\./\\.\\./${engine}(\\.ts)?"`).test(page),
+          /* the literal-dot walk rides character classes — no backslash
+           * escape in the template, the useless-escape panel the scan
+           * gate charged on the double-escape form never seats again,
+           * the pattern testing the same literal points it always meant. */
+          new RegExp(`from "[.][.]/[.][.]/${engine}([.]ts)?"`).test(page),
           `${file} must not import the ${engine} logic — the flow faces stay structural`,
         ).toBe(false);
       }
