@@ -1,5 +1,9 @@
 # DevThink release notes
 
+## 2.0.177
+
+This release is the rung the webpack distribution cuts whole: the DevThink Webpack workflow answers the six registry matrices the distribution law stamps — NuGet x Webpack, Maven x Webpack, Gradle x Webpack, npmjs x Webpack, RubyGems x Webpack and GitHub Packages x Webpack — for every one of the eleven applications (the per-application law the corridor clarified: the webpack the platform speaks is the workflow that creates the webpack distribution, the reason every envelope carries the webpack CLI and its dependencies), the bundle seat building the single-file engine payload once per rung through the esbuild carrier and the webpack config the seat generates (the .cjs seat the type:module trees never break, the commonjs2 library answering both the direct node run and the require of the envelopes), every registry lane walking behind the release-approval gate with the existence pre-check, the bounded three-attempt retry and the honest notices — the absent NPM_TOKEN skip, the billing wall mirror seats that never redden — while the dotted asset grammar (<app>.<registry>.webpack.<version>) attaches the sixty-six seats beside the eleven bundles the census law counts.
+
 ## 2.0.176
 
 This release is the rung the healed tree cuts: the four code-scanning seats close on real fixes (the manual sentence walk the bounded pattern could never answer, the linear title walk, the tag-strip fixpoint and the coarse error classes the polarauth face answers), the restored ports answer the strict typecheck whole with zero behavior moved, the pack lane restores the execute bit the publish-time 644 mode froze so the twelve vhe lanes and the Trivy gate walk green, and the vlib test trees the misconfig scanner charged leave the tagged source beside the secrets the prune seats always owned — the container family the lanes publish to GHCR finally answers the healed source the release ladder builds.

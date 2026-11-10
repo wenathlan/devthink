@@ -4,7 +4,7 @@
     <AssemblyName>getry</AssemblyName>
     <RootNamespace>getry</RootNamespace>
     <PackageId>getry</PackageId>
-    <Version>2.0.176</Version>
+    <Version>2.0.177</Version>
     <Authors>wenathlan</Authors>
     <Description>Distribution package containing the getry documentation set and the tests directory. getry is the AI gateway — five provider gateways serving 35 OpenAI-compatible routes.</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>

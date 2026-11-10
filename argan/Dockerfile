@@ -1,4 +1,4 @@
-# argan 2.0.176 — THE SITE CONTAINER FILE
+# argan 2.0.177 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -14,7 +14,7 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS solbuild
 
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 
 # The 2.0.153 family context fix: the application rides the context
 # nested under app/ (the uniform shape the three site containers read).
@@ -70,7 +70,7 @@ RUN pnpm build
 # the catalog lanes ride before the runtime stage so the default build keeps answering the runtime target (the family builds never pass --target — the saddle lanes always do, the os seats close the saddle file the same law).
 # ════════════════════════════════════════════════════════════════════
 FROM scratch AS osgrapheneos
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="grapheneos"
 ENV ARGAN_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="argan (the grapheneos os-distribution catalog lane)" \
@@ -81,7 +81,7 @@ LABEL org.opencontainers.image.title="argan (the grapheneos os-distribution cata
 COPY osprofiles/grapheneos.json /argan/osprofile.json
 
 FROM scratch AS osmaruos
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="maruos"
 ENV ARGAN_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="argan (the maruos os-distribution catalog lane)" \
@@ -92,7 +92,7 @@ LABEL org.opencontainers.image.title="argan (the maruos os-distribution catalog 
 COPY osprofiles/maruos.json /argan/osprofile.json
 
 FROM scratch AS osv
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="v"
 ENV ARGAN_OS_PROFILE=v
 LABEL org.opencontainers.image.title="argan (the v os-distribution catalog lane)" \
@@ -103,7 +103,7 @@ LABEL org.opencontainers.image.title="argan (the v os-distribution catalog lane)
 COPY osprofiles/v.json /argan/osprofile.json
 
 FROM scratch AS oswindows
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="windows"
 ENV ARGAN_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="argan (the windows os-distribution catalog lane)" \
@@ -114,7 +114,7 @@ LABEL org.opencontainers.image.title="argan (the windows os-distribution catalog
 COPY osprofiles/windows.json /argan/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="postmarketos"
 ENV ARGAN_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="argan (the postmarketos os-distribution catalog lane)" \
@@ -125,7 +125,7 @@ LABEL org.opencontainers.image.title="argan (the postmarketos os-distribution ca
 COPY osprofiles/postmarketos.json /argan/osprofile.json
 
 FROM scratch AS oslineageos
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="lineageos"
 ENV ARGAN_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="argan (the lineageos os-distribution catalog lane)" \
@@ -136,7 +136,7 @@ LABEL org.opencontainers.image.title="argan (the lineageos os-distribution catal
 COPY osprofiles/lineageos.json /argan/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="calyxos"
 ENV ARGAN_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="argan (the calyxos os-distribution catalog lane)" \
@@ -147,7 +147,7 @@ LABEL org.opencontainers.image.title="argan (the calyxos os-distribution catalog
 COPY osprofiles/calyxos.json /argan/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="archlinux"
 ENV ARGAN_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="argan (the archlinux os-distribution catalog lane)" \
@@ -158,7 +158,7 @@ LABEL org.opencontainers.image.title="argan (the archlinux os-distribution catal
 COPY osprofiles/archlinux.json /argan/osprofile.json
 
 FROM scratch AS osalpine
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="alpine"
 ENV ARGAN_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="argan (the alpine os-distribution catalog lane)" \
@@ -169,7 +169,7 @@ LABEL org.opencontainers.image.title="argan (the alpine os-distribution catalog 
 COPY osprofiles/alpine.json /argan/osprofile.json
 
 FROM scratch AS osdebian
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="debian"
 ENV ARGAN_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="argan (the debian os-distribution catalog lane)" \
@@ -180,7 +180,7 @@ LABEL org.opencontainers.image.title="argan (the debian os-distribution catalog 
 COPY osprofiles/debian.json /argan/osprofile.json
 
 FROM scratch AS osfedora
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="fedora"
 ENV ARGAN_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="argan (the fedora os-distribution catalog lane)" \
@@ -191,7 +191,7 @@ LABEL org.opencontainers.image.title="argan (the fedora os-distribution catalog 
 COPY osprofiles/fedora.json /argan/osprofile.json
 
 FROM scratch AS osnixos
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="nixos"
 ENV ARGAN_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="argan (the nixos os-distribution catalog lane)" \
@@ -202,7 +202,7 @@ LABEL org.opencontainers.image.title="argan (the nixos os-distribution catalog l
 COPY osprofiles/nixos.json /argan/osprofile.json
 
 FROM scratch AS osvoid
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="void"
 ENV ARGAN_OS_PROFILE=void
 LABEL org.opencontainers.image.title="argan (the void os-distribution catalog lane)" \
@@ -213,7 +213,7 @@ LABEL org.opencontainers.image.title="argan (the void os-distribution catalog la
 COPY osprofiles/void.json /argan/osprofile.json
 
 FROM scratch AS oslinux
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="linux"
 ENV ARGAN_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="argan (the linux os-distribution catalog lane)" \
@@ -224,7 +224,7 @@ LABEL org.opencontainers.image.title="argan (the linux os-distribution catalog l
 COPY osprofiles/linux.json /argan/osprofile.json
 
 FROM scratch AS osomarchy
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 ARG ARGAN_OS_PROFILE="omarchy"
 ENV ARGAN_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="argan (the omarchy os-distribution catalog lane)" \
@@ -237,7 +237,7 @@ COPY osprofiles/omarchy.json /argan/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG ARGAN_VERSION=2.0.176
+ARG ARGAN_VERSION=2.0.177
 
 LABEL org.opencontainers.image.title="argan" \
       org.opencontainers.image.description="argan — the DNS and gateway library; zones, records, dnssec and handshake." \
