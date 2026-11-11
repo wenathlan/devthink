@@ -488,3 +488,37 @@ seats — no new substantive directive beyond the laws this map carries.
 - the cred helper rebuilt (the .git-cred-helper.sh seat the reset swept — the machine-local law: the helper echoes the token the state file carries).
 - the head sync resolved by union: the local adoption heal (the polarauth seat the remote line dropped twice) riding the merged tree whole, the mapping ledger carrying all four records chronologically ordered beside this record — no record lost.
 - the wavelaunch ladder answered whole: the polar seat (3010), the envelope dependencies, the node gateway (3001 answering 204) and the os face (3000 answering 200) all live.
+
+## the session record — the integral reading and the checklist map (this instance, 2026-11-11 18:15 utc)
+
+- the owner's fresh order answered whole: the /upload corpus walked
+  integral and linear with bash, sed and grep in line segments (the pasted
+  briefing, fedsd with its 43 unique blocks, feedssd with the six exclusive
+  seats, polarauth with the polar.sh corrected build and rule 45, and the
+  two conversation corpora through the 58 extract chunks), the webpack
+  doctrine reconfirmed against the corridor (the workflow that creates the
+  webpack distribution, never a file naming flavor — the webpack.yml seat
+  answering the six registry matrices for the eleven envelopes), and the
+  checklist map seated at devthink/docs/checklist.md — the stage and app
+  map with every rule typed (operation, project, formatting, coding,
+  security, design), every complaint converted into its order with the
+  verified state, and the branch and pr scope the owner law owns (only
+  main at the close).
+- the head sync answered: the vault icon lfs heal merged (7198a19d), the
+  kts wave and the merge pushed (c4a95bd6), the 626 stride closed as
+  superseded (its com.<app>.app convention already riding main through
+  7568ed74 — the branch sat 108 files behind with its battery red from
+  staleness alone) and the wave/appid ref deleted: zero open pull requests,
+  only the main branch answering the remote.
+- the post-merge certification walked the whole family on the fresh
+  runtime (bun 1.4.4 reseeded after the container sweep, the eleven roots
+  reinstalled): 7189 green legs with zero failures — devthink 3589,
+  debonair 1111, getry 578, cadria 648, saddle 522, vault 320,
+  stealthhead 147, forge 89, argan 72, foundry 76, cobaia 37 — the family
+  suite greener than any prior certification (the 6650 record exceeded by
+  539 legs through the merged seats).
+- the open lanes the map pins: the scorecard alert 1759 closes when the
+  next scorecard read walks the healed evidence order (the fix rides main,
+  never a dismissal), the saddle container publication rides the release
+  machinery behind the 2.0.178 stamp, and the game lanes stay the owner
+  paced future.
