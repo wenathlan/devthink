@@ -12,7 +12,7 @@
  * plain esm typescript on bun, zero external dependencies. the port is
  * fixed (3010) — the sandbox gateway law: never an env port. */
 
-import { appendFileSync, chmodSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, chmodSync, existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { setInterval } from "node:timers";
 import path from "node:path";
@@ -146,12 +146,12 @@ async function requestcode(): Promise<void> {
   }
 }
 
-async function capture(token: string): Promise<void> {
-  writeFileSync(TOKEN_FILE, token);
-  chmodSync(TOKEN_FILE, 0o600);
-  log("token captured");
-  phase = "syncing";
-  save();
+/** The head-sync walk the capture doctrine charges (the credential store
+ * seats the token across the git surfaces, then the local head and the
+ * remote head answer one another — fast-forward, push or merge, never
+ * forced). shared by the fresh capture and the rule-45 arrival: an already
+ * authorized seat syncs the head the same breath it adopts the synced phase. */
+const synchead = (token: string): void => {
   try {
     const credential = `https://x-access-token:${token}@github.com\n`;
     try {
@@ -197,12 +197,60 @@ async function capture(token: string): Promise<void> {
     syncstate = "error:sync-failed";
     log(`sync error: ${errortext(error)}`);
   }
+};
+
+/** Rule 45 — once the authorization answers, the lane never polls again: a
+ * live token on arrival adopts the synced phase directly (the head sync
+ * walks in place of the poll), and only a dead credential clears the store
+ * and mints a fresh code the owner can authorize in real time. returns the
+ * live token or null; never throws (the network lane never breaks the seat). */
+const tokenlive = async (): Promise<string | null> => {
+  try {
+    const token = readFileSync(TOKEN_FILE, "utf8").trim();
+    if (!token) return null;
+    const response = await fetch("https://api.github.com/user", {
+      headers: { Authorization: `token ${token}`, "User-Agent": "polarauth" },
+    });
+    return response.ok ? token : null;
+  } catch {
+    return null;
+  }
+};
+
+/** The synced-phase walk both arrival paths share: the seat answers synced
+ * with the head sync seated whole, never minting a code the owner already
+ * answered (the seven-times-ordered law: real-time capture, never re-poll). */
+const arrivesynced = async (token: string, why: string): Promise<void> => {
+  phase = "syncing";
+  save();
+  synchead(token);
   phase = "synced";
   save();
+  log(why);
+};
+
+async function capture(token: string): Promise<void> {
+  writeFileSync(TOKEN_FILE, token);
+  chmodSync(TOKEN_FILE, 0o600);
+  log("token captured");
+  await arrivesynced(token, "capture seated — token stored and head synced");
 }
 
 async function poll(): Promise<void> {
   cycles += 1;
+  if (phase === "pending" && existsSync(TOKEN_FILE)) {
+    /* rule 45: the token landed from outside this poll (the polar.sh seat,
+     * the owner's own sync, a sibling lane's capture) — the poll stops and
+     * the head sync walks instead; a dead file clears the store the same
+     * law the door applies, so the guard never re-validates a corpse */
+    const landed = await tokenlive();
+    if (landed) {
+      await arrivesynced(landed, "token landed outside the poll — synced, never re-polled (rule 45)");
+      return;
+    }
+    rmSync(TOKEN_FILE);
+    log("dead token cleared mid-poll — the fresh code keeps the capture lane open");
+  }
   if (phase === "error" || phase === "expired" || (phase === "pending" && Date.now() > expiresat)) {
     await requestcode();
     return;
@@ -238,7 +286,20 @@ async function poll(): Promise<void> {
   }
 }
 
-if (!adopt()) await requestcode();
+/* rule 45 at the door: a live token on arrival answers synced whole (the
+ * head sync walks in place of any poll — the owner already authorized, the
+ * seat never mints a code again); a dead credential clears the store and
+ * the real-time capture lane opens for the owner's fresh authorization. */
+const opentoken = await tokenlive();
+if (opentoken) {
+  await arrivesynced(opentoken, "token present and live on arrival — the lane answers synced (rule 45)");
+} else {
+  if (existsSync(TOKEN_FILE)) {
+    rmSync(TOKEN_FILE);
+    log("dead token cleared — minting a fresh code for the real-time capture");
+  }
+  if (!adopt()) await requestcode();
+}
 setInterval(() => {
   void poll();
 }, interval * 1000);
