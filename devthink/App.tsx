@@ -21,7 +21,7 @@ import {
   reportguardstrike,
   showdevtoolsinterstitial,
 } from "./security.ts";
-import { seedLabels } from "./uistore.ts";
+import { seedChatLabels, seedLabels } from "./uistore.ts";
 import Sol from "./sol/Sol.tsx";
 import { loadDevtoolsWall } from "./personalstore.ts";
 import "@fontsource-variable/geist-mono";
@@ -29,8 +29,13 @@ import "@fontsource-variable/inter";
 import "./sol/sol.css";
 
 // the label seed rides the boot: the manifest ingests into the store and the
-// translation overrides load before the surfaces read their copy
-if (typeof window !== "undefined") void seedLabels().catch(() => {});
+// translation overrides load before the surfaces read their copy — the chat
+// seed walks beside it so every chat string the wingets render answers the
+// same database lane (the copy law's chat seat)
+if (typeof window !== "undefined") {
+  void seedLabels().catch(() => {});
+  void seedChatLabels().catch(() => {});
+}
 
 /* the zoom lock law (the faun pattern the owner pinned in the reference):
    the viewport meta rides every html entry and pins the touch door, but the

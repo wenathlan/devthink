@@ -551,7 +551,13 @@ export function copyseed(): Readonly<Record<string, string>> {
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
 import { createLabelStore, type LabelRowStore } from "@wenathlan/vault/labelstore";
-import { LABEL_REVISION, labelManifest, type LabelKey } from "./labels.ts";
+import {
+  LABEL_REVISION,
+  labelManifest,
+  seedChatStrings,
+  type ChatStringId,
+  type LabelKey,
+} from "./labels.ts";
 import { readAllLabels, saveLabel } from "./storage.ts";
 
 /** the rowStore adapter: the browser label lane the seed reads and the
@@ -569,6 +575,44 @@ const labelStore = createLabelStore({
   revision: LABEL_REVISION,
   rowStore: labelRowStore,
 });
+
+/* ===== block: chatlabelseat ===== */
+/** the chat label store of the copy law: the chat wingets read every chat
+ * string through this store door — the indexeddb rows the boot seed loads
+ * answer the overrides first (the translated rows the person chose and the
+ * refreshed rows the revision waves carry) while the flattened seed stays
+ * the offline answer — the same two-door law the shell label rides, now
+ * seated for the chat domain the seed accessor alone served before (the
+ * graph-below modules keep the pure labels.ts door because this store
+ * seat sits above storage in the module graph).
+ * @family labels */
+const chatLabelManifest: Readonly<Record<ChatStringId, string>> = Object.fromEntries(
+  seedChatStrings.map((row) => [row.id, row.text]),
+) as Record<ChatStringId, string>;
+
+/** the chat store mechanism rides the same vault factory and the same
+ * indexeddb lane the shell store seeds — one database door, one copy law. */
+const chatLabelStore = createLabelStore({
+  manifest: chatLabelManifest,
+  revision: LABEL_REVISION,
+  rowStore: labelRowStore,
+});
+
+/** the typed chat accessor of the copy: the only door a chat winget uses
+ * (the override row answers first, the seed text answers last, and an
+ * unknown id renders the empty string — never a crash on the interface).
+ * @family labels */
+export function chatText(id: ChatStringId): string {
+  return chatLabelStore.label(id) || "";
+}
+
+/** the chat seed ingests the chat rows into the labels store, idempotent,
+ * and the translated rows stay protected from the overwrite — the boot
+ * call rides beside the shell seed.
+ * @family labels */
+export function seedChatLabels(): Promise<{ seeded: number; protected: number }> {
+  return chatLabelStore.seedLabels();
+}
 
 /** the typed accessor of the copy: the only door a widget uses. */
 export function label(key: LabelKey): string {

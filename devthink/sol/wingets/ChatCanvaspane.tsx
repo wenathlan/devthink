@@ -30,7 +30,7 @@ import {
   PanelRightContractRegular as PanelRightClose,
 } from "@fluentui/react-icons";
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
-import { chatText } from "../../labels.ts";
+import { chatText } from "../../uistore.ts";
 import { Markdown } from "./ChatMarkdown.tsx";
 
 /** CANVAS_OPEN_EVENT — the dom event lane of the openers: any floor
