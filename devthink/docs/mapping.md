@@ -790,3 +790,53 @@ in-sync, the api answering under the iakadion login at rate 5000).
   verification carrying the quality burden (the family suites 7,192
   green, the workflow contract batteries 240 green, the structural audits
   green whole).
+
+## the session record — the eooverride heal and the registry freshness audit (this instance, 2026-11-11 20:55 utc)
+
+- the owner directive read whole first (the polar authorization confirmed
+  live — the token answering the api under the iakadion login, the head
+  sync in-sync, the root swept of the template residue again before and
+  after the work: tool-results and the stale credential backup deleted,
+  the next/src/venv/python seats verified absent, the family tree law
+  holding at the root). four reading waves closed the corpus gaps this
+  instance walked (conversa51 tail whole — the v50 checklist seat, the
+  mapping documents and the final english checklist re-paste; feedssd
+  whole at 1,603 lines; the pasted content whole at 33,162 bytes — four
+  iterative rewrites with the escalating numbers and the two dictated
+  interludes the webpack clarification rides in; the conversa19 tail the
+  reports missed) — the extraction reports seated at leitura/, the frame
+  every corpus carries the seated pr0-pr23 law, no new rule the live tree
+  misses.
+- the registry freshness audit answered the stale seat: ten family
+  envelopes ride 2.0.178 on npmjs while @wenathlan/vault sits stale at
+  2.0.175 — the root cause reproduced locally whole (the npx npm carrier
+  the codeql heal seated over the vault node face install answers
+  eooverride, npm refusing any override a direct dependency already
+  owns, the manifest law having seated esbuild in the overrides block of
+  all eleven roots beside the dependencies pin) — the heal drops the
+  invalid overrides entry from the eleven manifests (zero dependency
+  removed, the ^0.28.2 pin staying in dependencies and devDependencies,
+  the identical eleven structure and the union law intact), the vault
+  node face build reproduced clean end to end (the esbuild install
+  resolving, build.ts emitting onboardingstore.js and labelstore.js
+  whole) — the fix rides the fresh head at 15389dc4 with the family
+  certification green (config parity across the eleven roots, locksync
+  zero drift, the manifest and workflow contract batteries, the full
+  devthink suite 3,589 legs and the vault suite 320 legs).
+- the webpack envelope discovery: the @wenathlan/<app>.webpack seats
+  never landed on npmjs (the registry answering not found for every
+  probe) — the webpack lanes reddened on the v2.0.177 and v2.0.178 tags
+  (the seats built, rubygems consuming them green for eight legs) while
+  the npmjs, maven, nuget, github npm and gradle matrices walked red
+  scattered — the actions platform outage the sibling record diagnosed
+  answers the frozen machinery (the scattered eight of the hundred fifty
+  os-distribution catalog lanes the same wall), the queued v2.0.180
+  train carrying the retry whole.
+- the live panels at the audit: packages 172 across the five seats (npm
+  33, containers 13, nuget 30, maven 44, rubygems 52 — the sixty law
+  exceeded), the thousand-assets ceiling holding six rungs (v2.0.173
+  through v2.0.178 at exactly 1000, v2.0.179 filling at 397 behind the
+  outage), the go proxy answering v2.0.179 live (the lane current), pull
+  requests zero open, branches only main, code scanning one open (1759,
+  the fix in main awaiting the projection), releases flowing to
+  v2.0.180 (the parallel stride cutting the rung the same hour).
