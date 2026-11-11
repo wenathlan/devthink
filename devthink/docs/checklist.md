@@ -217,7 +217,19 @@ commits and merges — this file is the map that pins where each order stands.
   deleted after the supersede close).
 - feito: the commit identity law — every commit rides the owner identity
   (iakadion), never the x-access-token ghost.
-- parcial: the tip checks — the merged head (c4a95bd6) walks the battery
+- feito: the permdiff heal of the 2.0.179 rung (a3847973) — the verify
+  gate reddened on the fresh rung because the release bump walked the
+  twelve manifests without the versioned permission baseline the gate
+  trusts (the baseline records 2.0.178 while the package carries 2.0.179);
+  the sync mode the gate itself dictates rewrote the record (clean over
+  2.0.178, zero added, zero removed, none reordered, the same hash over
+  the eleven permission entries — never a dismissal, never an ignore
+  entry), the freeze baseline and the readiness record walking the same
+  rung whole. verified locally: the family install answers green under
+  bun 1.4.4 the CI parity pins, the root build walks clean and the
+  deterministic suite answers 3,592 green legs over 211 files with the
+  matrixverify cell green again.
+- parcial: the tip checks — the healed head (a3847973) walks the battery
   now; the projection closes green when the family suites, the webpack
   seats and the container lanes land (the stride cancellation pattern the
   concurrency groups own stays a known lane, never a blocker).
@@ -230,9 +242,10 @@ commits and merges — this file is the map that pins where each order stands.
   the family (devthink 3550, debonair 1111, getry 578, cadria 648, saddle
   522, vault 320, stealthhead 147, foundry 76, argan 72, forge 89, cobaia
   37) with zero failures.
-- parcial: the post-merge re-certification — the merged head (the vault
-  icon heal plus the kts wave) walks the suites again at the close of this
-  session; any red answers immediately.
+- parcial: the post-merge re-certification — the healed head (the permdiff
+  sync of the 2.0.179 rung) walks the suites again at the close of this
+  session; any red answers immediately (the local walk already answers
+  3,592 green legs over the 211 devthink files).
 
 ## the app seats (the engine each application owns)
 
@@ -367,11 +380,14 @@ commits and merges — this file is the map that pins where each order stands.
 ## the open lanes (the pendente seats at this breath)
 
 - the alert 1759 close: the scorecard run must read the healed head (the
-  evidence order) — the projection green closes it; never a dismissal.
+  evidence order) — the projection green closes it; never a dismissal
+  (the security battery on a3847973 carries the codeql analyze ladder
+  the scorecard seat reads).
 - the post-merge certification: the merged head walks the family suites,
   the webpack seats and the container lanes; any red answers immediately.
-- the saddle npm freshness on the 2.0.178 rung (the publish lane walked
-  the rung at the last certification; the close check rides the final
+- the saddle npm freshness on the 2.0.179 rung (the registry answered
+  2.0.178 at the last read; the v2.0.179 publish lane queues behind the
+  healed head's battery — the close check rides the final
   projection).
 - the stem separation hub lane (the debonair open seat the hub refuses —
   the documented future lane).
