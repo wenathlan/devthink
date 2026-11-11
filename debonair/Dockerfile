@@ -1,4 +1,4 @@
-# debonair 2.0.179 — THE SITE CONTAINER FILE
+# debonair 2.0.180 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -14,7 +14,7 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS solbuild
 
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 
 # The 2.0.153 family context fix: the application rides the context
 # nested under app/ (the uniform shape the three site containers read).
@@ -85,7 +85,7 @@ RUN pnpm build
 # ════════════════════════════════════════════════════════════════════
 
 FROM scratch AS osgrapheneos
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="grapheneos"
 ENV DEBONAIR_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="debonair (the grapheneos os-distribution catalog lane)" \
@@ -96,7 +96,7 @@ LABEL org.opencontainers.image.title="debonair (the grapheneos os-distribution c
 COPY osprofiles/grapheneos.json /debonair/osprofile.json
 
 FROM scratch AS osmaruos
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="maruos"
 ENV DEBONAIR_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="debonair (the maru os os-distribution catalog lane)" \
@@ -107,7 +107,7 @@ LABEL org.opencontainers.image.title="debonair (the maru os os-distribution cata
 COPY osprofiles/maruos.json /debonair/osprofile.json
 
 FROM scratch AS osv
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="v"
 ENV DEBONAIR_OS_PROFILE=v
 LABEL org.opencontainers.image.title="debonair (the v os-distribution catalog lane)" \
@@ -118,7 +118,7 @@ LABEL org.opencontainers.image.title="debonair (the v os-distribution catalog la
 COPY osprofiles/v.json /debonair/osprofile.json
 
 FROM scratch AS oswindows
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="windows"
 ENV DEBONAIR_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="debonair (the windows os-distribution catalog lane)" \
@@ -129,7 +129,7 @@ LABEL org.opencontainers.image.title="debonair (the windows os-distribution cata
 COPY osprofiles/windows.json /debonair/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="postmarketos"
 ENV DEBONAIR_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="debonair (the postmarketos os-distribution catalog lane)" \
@@ -140,7 +140,7 @@ LABEL org.opencontainers.image.title="debonair (the postmarketos os-distribution
 COPY osprofiles/postmarketos.json /debonair/osprofile.json
 
 FROM scratch AS oslineageos
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="lineageos"
 ENV DEBONAIR_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="debonair (the lineageos os-distribution catalog lane)" \
@@ -151,7 +151,7 @@ LABEL org.opencontainers.image.title="debonair (the lineageos os-distribution ca
 COPY osprofiles/lineageos.json /debonair/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="calyxos"
 ENV DEBONAIR_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="debonair (the calyxos os-distribution catalog lane)" \
@@ -162,7 +162,7 @@ LABEL org.opencontainers.image.title="debonair (the calyxos os-distribution cata
 COPY osprofiles/calyxos.json /debonair/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="archlinux"
 ENV DEBONAIR_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="debonair (the archlinux os-distribution catalog lane)" \
@@ -173,7 +173,7 @@ LABEL org.opencontainers.image.title="debonair (the archlinux os-distribution ca
 COPY osprofiles/archlinux.json /debonair/osprofile.json
 
 FROM scratch AS osalpine
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="alpine"
 ENV DEBONAIR_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="debonair (the alpine os-distribution catalog lane)" \
@@ -184,7 +184,7 @@ LABEL org.opencontainers.image.title="debonair (the alpine os-distribution catal
 COPY osprofiles/alpine.json /debonair/osprofile.json
 
 FROM scratch AS osdebian
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="debian"
 ENV DEBONAIR_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="debonair (the debian os-distribution catalog lane)" \
@@ -195,7 +195,7 @@ LABEL org.opencontainers.image.title="debonair (the debian os-distribution catal
 COPY osprofiles/debian.json /debonair/osprofile.json
 
 FROM scratch AS osfedora
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="fedora"
 ENV DEBONAIR_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="debonair (the fedora os-distribution catalog lane)" \
@@ -206,7 +206,7 @@ LABEL org.opencontainers.image.title="debonair (the fedora os-distribution catal
 COPY osprofiles/fedora.json /debonair/osprofile.json
 
 FROM scratch AS osnixos
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="nixos"
 ENV DEBONAIR_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="debonair (the nixos os-distribution catalog lane)" \
@@ -217,7 +217,7 @@ LABEL org.opencontainers.image.title="debonair (the nixos os-distribution catalo
 COPY osprofiles/nixos.json /debonair/osprofile.json
 
 FROM scratch AS osvoid
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="void"
 ENV DEBONAIR_OS_PROFILE=void
 LABEL org.opencontainers.image.title="debonair (the void os-distribution catalog lane)" \
@@ -228,7 +228,7 @@ LABEL org.opencontainers.image.title="debonair (the void os-distribution catalog
 COPY osprofiles/void.json /debonair/osprofile.json
 
 FROM scratch AS oslinux
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="linux"
 ENV DEBONAIR_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="debonair (the linux os-distribution catalog lane)" \
@@ -239,7 +239,7 @@ LABEL org.opencontainers.image.title="debonair (the linux os-distribution catalo
 COPY osprofiles/linux.json /debonair/osprofile.json
 
 FROM scratch AS osomarchy
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 ARG DEBONAIR_OS_PROFILE="omarchy"
 ENV DEBONAIR_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="debonair (the omarchy os-distribution catalog lane)" \
@@ -252,7 +252,7 @@ COPY osprofiles/omarchy.json /debonair/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG DEBONAIR_VERSION=2.0.179
+ARG DEBONAIR_VERSION=2.0.180
 
 LABEL org.opencontainers.image.title="debonair" \
       org.opencontainers.image.description="debonair — the audio and DAW app; the katexis engine home." \

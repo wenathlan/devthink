@@ -11,7 +11,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-cadria"
-version = "2.0.179"
+version = "2.0.180"
 authors = [{name = "wenathlan"}]
 description = "The video and image player, editor and studio; it houses the versawase engine at the folder root"
 readme = "README.md"

@@ -110,19 +110,29 @@ export function createOnboardingStore(lane: OnboardingLane, options: OnboardingS
   /* the idempotent ddl (the cadria shape — the cleanest seat the family
    * rides): the app's own schema block usually creates the table first,
    * and this block is the belt-and-braces seat so the lane answers even
-   * before the app schema ran. only the developer-pinned table name rides
-   * the text; every value rides a bound parameter. */
-  lane.exec(`CREATE TABLE IF NOT EXISTS ${table} (
+   * before the app schema ran. the ddl runs lazily on the first accessor
+   * call, memoized once: a module-load creation never touches the driver
+   * (the browser graph imports the mechanism whole behind the node seam —
+   * the lazy law of the family), while the first use still finds the
+   * table in place. only the developer-pinned table name rides the text;
+   * every value rides a bound parameter. */
+  let seated = false;
+  const ensure = (): void => {
+    if (seated) return;
+    seated = true;
+    lane.exec(`CREATE TABLE IF NOT EXISTS ${table} (
   id             INTEGER PRIMARY KEY AUTOINCREMENT,
   visitor        TEXT NOT NULL UNIQUE,
   introseen      INTEGER NOT NULL DEFAULT 0,
   onboardingseen INTEGER NOT NULL DEFAULT 0,
   updatedAt      TEXT NOT NULL DEFAULT (datetime('now'))
 )`);
+  };
 
   /** the flag read: parameterized by visitor, undefined before the first
    * write, the 0/1 cells coerced to the booleans the gates consult. */
   function getOnboardingState(visitor: string): OnboardingFlags | undefined {
+    ensure();
     const row = lane.queryOne(`SELECT introseen, onboardingseen FROM ${table} WHERE visitor = ?`, [visitor]) as
       | Pick<OnboardingStateRowSql, "introseen" | "onboardingseen">
       | undefined;
@@ -135,6 +145,7 @@ export function createOnboardingStore(lane: OnboardingLane, options: OnboardingS
    * (the lowercase seat the game app rides) so every row answers the same
    * key whatever the schema spelled. */
   function getOnboardingRow(visitor: string): OnboardingStateRow | undefined {
+    ensure();
     const row = lane.queryOne(
       `SELECT id, visitor, introseen, onboardingseen, updatedAt AS updatedAt FROM ${table} WHERE visitor = ?`,
       [visitor],
@@ -154,6 +165,7 @@ export function createOnboardingStore(lane: OnboardingLane, options: OnboardingS
    * and the MAX arms keep a replayed or out-of-order write from ever
    * unseeing a stage. */
   function setOnboardingStage(visitor: string, stage: OnboardingStage): void {
+    ensure();
     lane.execute(
       `INSERT INTO ${table} (visitor, introseen, onboardingseen, updatedAt)
        VALUES (?, ?, ?, datetime('now'))

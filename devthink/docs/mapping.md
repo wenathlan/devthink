@@ -7,6 +7,19 @@ scope lines, and the set of lines under each app directly defines the
 scope of its branch and pull request. The house keeps only main: every
 wave opens its pr by theme, merges with squash and the ladder walks on.
 
+## the session record — the verification-first reseat wave (this instance, 2026-11-11 20:00 utc)
+
+- the fresh briefing read whole before any tree move: conversa51.txt walked linear (the 86,534-line prefix byte-identical to the seated conversa50 corpus, the 2,108 new tail lines carrying the v50 checklist, the stage-and-app map and the prior session records — zero new rule the live tree misses), feedssd.txt rewalked (1,603 lines, the seated frame reconfirmed) and the current message itself the fresh upgrade numbers ride (the 1,700+ audit target, the 3,000+ asset law, the labels.ts and blind-engine doctrine, the sol and widgets database pull, the icon four-piece static law, the doc and sol and tests folder law, the ts to rust didactic readiness, the qemu seat).
+- the auth law answered first: the token verified live against the api (login iakadion), the credential staged under the 0600 door.
+- the head sync: the 22-commit catch of the parallel lanes (a20e60a2 to 78f0d258) walked fast-forward, never forced — the 2.0.179 rung, the two permdiff heals, the rule-45 polarauth door, the reading-integral certification, the root first-layer law and the maven cascade seats all folded whole.
+- the root purge after the reset: the environment reset seeded 95 untracked strays over the tree (50 stale ts orphans the consolidation waves retired — logics.ts the owner order deleted at 603, modes.ts the modalities fold, the debonair dsp seats the kathesis and theory twins own, the cadria pixel seats the color twin owns — beside the docker-compose and docker.config disk copies the onedockerfile law dissolved and the watchdog scripts of the platform); nothing deleted before read — the twin-check walk proved every orphan's content rides a tracked consolidated twin or the deletion order the record carries, and the untracked list answered clean after the purge.
+- the alan corpus re-seated after the reset (the second reset the seat survived): the blobless sparse clone with organizado/md whole (the 204,487-row repos.case catalog, conversa50, feedssd, polarauth) and the .devthink/web design reference, the wav blobs the disk law refuses left out — 131 megabytes the infra budget keeps.
+- the structural audit batch green whole: the folder law exact in the eleven apps (docs, sol and test beside the configurables — no build directory, no loose assets), the icon family 5/5 in the eleven roots (icon.svg, svg.icon, icon.ico, icon192 and icon512), the mime corpus at 4,133 types, the kts and rs convention seats 11/11, the com.app capacitor identities, the qemu exception law holding (the mentions outside saddle answering comments, catalog rows and mime registrations — never a dependency), the wingets two-door law (uicopy and fill accessors, the label manifest seeding the store the vault factory owns) and the simulation scan answering zero real hits (the flagged seats carry honesty comments, the static seed law and the copy-law carriers).
+- the 1,700+ commits audit verdict: the tree carries zero false simulations (the fake ratings, invented movies and echo seats the prior waves purged — the scan walks green), the conversion families intact (v2.0.175 the strict superset of the 168 and 171 rungs, the capability diff against the original saddle repo answering zero features lost), the count at 1,674 riding main with the parallel lanes in flight.
+- the live ground at the audit: 85 registry packages (npm 16, maven 22, nuget 15, rubygems 26, container 6 — the 60+ law exceeded), 155 releases carrying 26,255+ assets (the fresh 3,000+ law exceeded eight times over), the per-release ceiling holding 1,000 on the 173 through 178 rungs, v2.0.179 interrupted at 298 assets (the supersede pattern the concurrency groups own — the fresh rung answers the train), one open code-scanning alert (1759, the scorecard evidence read the security battery of the fresh head owns), zero open pull requests, only main.
+- the open lanes this wave answers: the 2.0.180 rung (the release train completion with the full asset cascade and the saddle npm freshness the registry read pins at 2.0.178 behind), the scorecard close verification after the security battery lands, the browser verification of the production face and the final projection walk.
+- the parallel-lane law honored: the sibling instance's seats (the chat seat, the rung stamps) rode untouched — this wave reads and purges what the tracked tree never carried, zero conflict.
+
 ## the kts-seat wave record (this instance, the fresh briefing)
 
 - the naming law the briefing stamps closed whole: the conversion files answer the application name followed by the target extension (vault.kts the owner law named) — the eleven roots now seat the app-named .kts convention carrier beside the java, rs, csproj and gemspec seats (argan.kts through vault.kts, devthink.kts at the os root), every carrier holding the envelopeVersion literal the release lockstep re-stamps the way the rs carriers walk (the cascade gains the eleven kts entries under the rust block).
@@ -624,3 +637,156 @@ in-sync, the api answering under the iakadion login at rate 5000).
   and the mapping merge landed while this wave walked — the final
   fast-forward riding the fresh head whole, this record seated in its
   chronological order beside the sibling strides.
+
+## the session record — the integral reading wave and the machine seats (this instance, 2026-11-11 20:35 utc)
+
+- the auth first law answered live: the polar seat relaunched on the swept
+  container, the device code CE58-65EA pending with the poller and watchdog
+  pair, and the token landed the same breath the owner authorized (19:26:11
+  utc, the capture in real time, the credential persisted three layers at
+  0600, the api answering under the iakadion login at rate 5000 with 4,890
+  remaining) — the telemetry verified whole (polar.log carrying the poller
+  launch, the code renewal window, the authorization stamp and the capture
+  record, rule 45 honored: the authorized seat never polls again).
+- the head sync answered twice: the first fetch carried the parallel
+  strides whole (d63ce56a → 78f0d258, the permdiff heal and the checklist
+  map the sibling record carries), the second walked the 2.0.180 rung
+  (78f0d258 → 401dd3d0, the verification-first reseat with the twelve
+  manifest cascade, the structural audit batch and the 7,201 green family
+  legs) — both fast-forwards clean, zero divergence, 1,676 commits at the
+  sync (the fresh 1,700+ law twenty-four real steps to go).
+- the integral reading wave, the fresh corpus whole: conversa51 (88,642
+  lines, the cumulative superset the md5 head proved over conversa50) read
+  through sixteen linear reading agents walking 5,540-line ranges with
+  twenty-line overlaps, feedssd (1,603 lines) whole, polarauth (8,695
+  lines) through the pair, fedsd (762 lines) beside the superset
+  verification (fedsd inside feedssd confirmed — the twenty-five inserted
+  lines carrying the oracle and virtualbox competitor law, the github
+  pages static platform, the ts to rs readiness, the doc sol tests folder
+  law, the labels.ts complaint, the icon family law, the actions
+  marketplace mandate, the webpack clarification and the distribution list
+  extensions), the pasted briefing seat walked by the wave beside the
+  empty snapshot verified empty — 185,708 lines against the seated frame:
+  zero new rule the live tree misses, the per-range extractions seated at
+  upload/extract (twenty files, the four corpus folders).
+- the machine seats re-seated after the reset wiped them: the alan corpus
+  whole (the blobless sparse clone of iakadion/allan on the orphan-spawn
+  law — the first launch died at the call boundary the reaper answers, the
+  relaunch surviving — organizado/md materialized with the 204,487-row
+  repos.case catalog beside the conversa50, feedssd and polarauth
+  corpora), the Neo.Temp trylle production raw re-fetched byte-matching
+  the record (the 486,995-byte index, the 290,807-byte master css, the
+  robots seat and the js chunks), and the Neo.img tokens record regenerated
+  from the fresh css — 435 distinct custom properties, 154 distinct oklch
+  values, the color-mix guard family and the hairline law verified
+  token-level live (color-mix(in oklab, var(--foreground) 7.5%,
+  transparent) answering in the fresh artifact).
+- the local dependency seats healed: the reset wiped eight of the eleven
+  app seats — the frozen installs walked under the pinned bun 1.4.4 (argan
+  through vault, the family ready for the local certification walks).
+- the remote panels at the wave: pull requests zero open, branches only
+  main, code scanning the single scorecard sastid seat 1759 (the
+  display-name and needs-ordering fix riding main, the queued security
+  battery of the 401dd3d0 head carrying the evidence closure — the fix is
+  a fix, never a dismissal), the publish workflow queued on the fresh head
+  (the v2.0.180 release ladder, the assets train, the registry publishes
+  and the container catch-up riding it), 14,535 workflow runs live (the
+  fifteen-hundred law exceeded nine times over).
+- the actions inventory audited against the owner categories: the sixteen
+  workflows carry the sha-pinned family whole — pages (the configure,
+  upload and deploy trio), automation (stale, first-interaction, labeler),
+  continuous-integration (checkout, the setup chain of node, bun, go,
+  java, dotnet, ruby, deno, android and chrome, the artifact pair),
+  security (codeql, dependency-review, scorecard, osv-scanner, dockle,
+  trufflehog, actionlint) and deployment (the docker chain with the qemu
+  seat, the attest lane) — the marketplace mandate answered across every
+  category the briefing names, zero genuine gap.
+
+## the session record — the family certification and the build refresh (this instance, 2026-11-11 21:05 utc)
+
+- the post-merge certification closed whole: the root build walked the
+  fresh head first (the 2.0.180 stamp the local build seat lacked — 159
+  bundles with the checksums, the 160-artifact manifest with the vsix, the
+  declarations zip, the site payload and the browser extensions, the
+  distpackage of 196 files) and the eleven batteries answer green after
+  the refresh — devthink 3,592 passed with the one owned skip over 211
+  files, debonair 1,111, cadria 648, getry 578, saddle 522 with the two
+  readiness skips, vault 320, stealthhead 147, forge 89, foundry 76,
+  argan 72, cobaia 37: 7,192 green legs, zero failures (the four stale
+  batteries the first local walk reddened — apifreeze, librarymodes,
+  manifest and matrixverify — answered the build refresh alone, the built
+  bundles carrying the 2.0.179 banner while the source rode 2.0.180, the
+  same build step the rung itself runs before its own certification).
+- the packages census fresh: 170 seats across the five registries (npm 32,
+  maven 44, nuget 30, rubygems 52, container 12) — the sixty-plus law
+  answered almost three times over, the webpack classifier family the
+  rungs keep publishing.
+- the remote machinery at the record: the security battery queued on both
+  the 401dd3d0 and 6661e2fb heads (the codeql analyze ladder the scorecard
+  reads — the alert 1759 evidence closure riding it), the publish workflow
+  queued behind the runner congestion (the v2.0.180 release ladder, the
+  assets train and the container catch-up answering behind it).
+
+## the session record — the publish startup investigation and the reseat (this instance, 2026-11-11 21:15 utc)
+
+- the publish startup failure investigated whole: the two dispatch runs the
+  parallel stride fired (449 on 401dd3d0 and 450 on 15b197ad) answered
+  startup_failure with zero jobs ever starting — the structural walk
+  cleared the file entire (the strict yaml parse clean, the environment
+  seat release-approval answering the repo, every needs reference
+  resolving, the duplicate-key scan clean and the 599-line diff since the
+  last working dispatch of november 9 carrying step-script bodies alone,
+  never a structural seat), and the fresh dispatch on the 16090c5d head
+  (run 451) answered queued clean the same breath — the transient
+  dispatch-processing wall the platform answered, never a tree defect,
+  the publish ladder walking again behind it.
+- the workflow contract batteries verified independent on the synced
+  head: the containerlanes, publishingpipeline, publishlanes,
+  releasenotes, tortureworkflow, webpacklanes and containerpack seats
+  answer 240 green legs over the seven files — the publish envelope the
+  batteries pin answering whole beside the strict parse.
+- the head sync answered a third time: the parallel strides landed while
+  the wave walked (the browser seam heal 32e3f742 with its merge, the
+  wave record 3a1d4f82 with the checklist reseat and the merge 16090c5d)
+  — every fast-forward clean, the rebased certification record riding
+  the fresh line, 1,682 commits at the breath (the 1,700+ law eighteen
+  real steps to go).
+- the machinery queue at the record: nine runs queued across the three
+  fresh heads (the security battery carrying the codeql ladder the
+  scorecard reads — the alert 1759 evidence closure riding the first
+  completion; the publish run 451 carrying the v2.0.180 release ladder,
+  the assets train and the container catch-up) — the law held: the wave
+  never waits on the heavy lanes, the close check rides the final
+  projection.
+
+## the session record — the independent structural audit (this instance, 2026-11-11 21:30 utc)
+
+- the fresh-briefing laws verified independent on the synced head: the
+  icon family answering five of five in all eleven roots (icon.svg,
+  svg.icon, icon.ico, icon192.png and icon512.png), the folder law exact
+  in the tracked tree (docs, sol and test per app — the build,
+  distpackage, dist and pycache seats the local walks leave answering
+  ignored residue the gitignore carries, never tracked), and the tests
+  seat pure typescript (477 files across the eleven apps, zero non-ts
+  entries) — the audit the 2.0.180 rung certified walked again on the
+  fresh line, whole.
+
+## the session record — the actions outage diagnosis (this instance, 2026-11-11 21:40 utc)
+
+- the frozen machinery diagnosed whole: the queue carried forty-two runs
+  across the eleven workflow families (nine security, eight ci, eight
+  verify, eight pages, the release, the publish, the maintenance, the
+  saddle lanes, the webpack, the desktop) with zero in progress and the
+  oldest waiting seventy-five minutes — the behavioral walk cleared the
+  tree entire (the actions permissions answering enabled, the batteries
+  green, the dispatch seating clean) and the platform status answered the
+  truth: the github actions component sits in major outage — every
+  startup failure (the two publish dispatches, the dependabot graph lane)
+  and every frozen run riding the incident, never a tree defect, never a
+  billing wall. the queued ladder (the v2.0.180 release train of run 394,
+  the publish of run 451, the scorecard evidence read the alert 1759
+  closure needs) processes automatically the moment the platform restores
+  — the law held: the wave never waits on the heavy lanes, the local
+  verification carrying the quality burden (the family suites 7,192
+  green, the workflow contract batteries 240 green, the structural audits
+  green whole).

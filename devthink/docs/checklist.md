@@ -21,6 +21,19 @@ commits and merges — this file is the map that pins where each order stands.
   8695-line corpus with the polar.sh corrected build and rule 45, conversa19
   85022 lines and conversa50 86534 lines through the 58 extract chunks plus
   actions inventory).
+- feito: the fresh conversa51 corpus (88,642 lines, the cumulative superset
+  the md5 head proved over conversa50) read whole through sixteen linear
+  reading agents walking 5,540-line ranges with twenty-line overlaps, the
+  feedssd corpus (1,603 lines) whole, the polarauth pair whole and the fedsd
+  corpus (762 lines) beside the superset verification (fedsd inside feedssd
+  confirmed — the twenty-five inserted lines carrying the oracle and
+  virtualbox competitor law, the github pages static platform, the ts to rs
+  readiness, the doc sol tests folder law, the labels.ts complaint, the
+  icon family law, the actions marketplace mandate, the webpack
+  clarification and the distribution list extensions) — 185,708 lines
+  walked against the seated frame, zero new rule the live tree misses, the
+  per-range extractions seated at upload/extract (twenty files, the four
+  corpus folders).
 - feito: this checklist file generated as the map by stage and app, the
   duplicated directives collapsed to one entry each, every complaint seated
   as a mandatory order with its state.
@@ -35,6 +48,11 @@ commits and merges — this file is the map that pins where each order stands.
 - feito: the head sync — fetch, merge, push answered clean this session (the
   vault icon lfs heal 7198a19d merged, the local kts wave d6d56ea7 and the
   merge commit c4a95bd6 pushed; local equals remote on main).
+- feito: the fresh instance sync — the polar telemetry verified whole (the
+  code CE58-65EA authorized at 19:26:11 utc, the token captured in real
+  time, three layers at 0600, the api answering under iakadion at rate
+  5000), the two fast-forwards carrying the permdiff heal and the 2.0.180
+  rung (78f0d258 → 401dd3d0) whole, 1,676 commits at the breath.
 
 ## etapa 3 — the root structure law
 
@@ -217,7 +235,19 @@ commits and merges — this file is the map that pins where each order stands.
   deleted after the supersede close).
 - feito: the commit identity law — every commit rides the owner identity
   (iakadion), never the x-access-token ghost.
-- parcial: the tip checks — the merged head (c4a95bd6) walks the battery
+- feito: the permdiff heal of the 2.0.179 rung (a3847973) — the verify
+  gate reddened on the fresh rung because the release bump walked the
+  twelve manifests without the versioned permission baseline the gate
+  trusts (the baseline records 2.0.178 while the package carries 2.0.179);
+  the sync mode the gate itself dictates rewrote the record (clean over
+  2.0.178, zero added, zero removed, none reordered, the same hash over
+  the eleven permission entries — never a dismissal, never an ignore
+  entry), the freeze baseline and the readiness record walking the same
+  rung whole. verified locally: the family install answers green under
+  bun 1.4.4 the CI parity pins, the root build walks clean and the
+  deterministic suite answers 3,592 green legs over 211 files with the
+  matrixverify cell green again.
+- parcial: the tip checks — the healed head (a3847973) walks the battery
   now; the projection closes green when the family suites, the webpack
   seats and the container lanes land (the stride cancellation pattern the
   concurrency groups own stays a known lane, never a blocker).
@@ -230,9 +260,10 @@ commits and merges — this file is the map that pins where each order stands.
   the family (devthink 3550, debonair 1111, getry 578, cadria 648, saddle
   522, vault 320, stealthhead 147, foundry 76, argan 72, forge 89, cobaia
   37) with zero failures.
-- parcial: the post-merge re-certification — the merged head (the vault
-  icon heal plus the kts wave) walks the suites again at the close of this
-  session; any red answers immediately.
+- parcial: the post-merge re-certification — the healed head (the permdiff
+  sync of the 2.0.179 rung) walks the suites again at the close of this
+  session; any red answers immediately (the local walk already answers
+  3,592 green legs over the 211 devthink files).
 
 ## the app seats (the engine each application owns)
 
@@ -363,20 +394,87 @@ commits and merges — this file is the map that pins where each order stands.
 39. the six hundred forty-five commit docs consolidated — feito (the
     infra seat the docs carry).
 40. the three branches — feito (only main, etapa 13).
+41. the deployed saddle standalone opening blank (the resolve is not a
+    function refusal on the typed url, the panel iframe and every door) —
+    feito (the browser seam heal this session pinned: the dashboard chain
+    pulls auth.ts then db.ts into the browser graph and the import time
+    seats walked the node drivers the browser stubs — the dbpath resolve,
+    the opendatabase call, the schema boot and the vault factory ddl at
+    creation all ran at module evaluation; the lazy law of the family
+    seats the whole chain, the onboarding ddl of the shared factory seats
+    on the first accessor call memoized once, and the live browser walk
+    proves the face whole — zero console errors, the onboarding flow and
+    the spin a sandbox home rendering, the 309 module graph built from
+    the clean entry).
 
 ## the open lanes (the pendente seats at this breath)
 
-- the alert 1759 close: the scorecard run must read the healed head (the
-  evidence order) — the projection green closes it; never a dismissal.
-- the post-merge certification: the merged head walks the family suites,
-  the webpack seats and the container lanes; any red answers immediately.
-- the saddle npm freshness on the 2.0.178 rung (the publish lane walked
-  the rung at the last certification; the close check rides the final
-  projection).
+- the alert 1759 close: the security battery of the 15b197ad head (the
+  browser seam heal riding the fresh 2.0.180 line) carries the codeql
+  analyze ladder the scorecard seat reads — the queued run walks the
+  evidence order; the projection green closes it; never a dismissal.
+- the 2.0.180 release ladder: the publish workflow queued behind the
+  battery — the assets train, the registry publishes (the saddle npm
+  freshness the registry read pinned behind) and the container catch-up
+  answer behind it; the close check rides the final projection, never a
+  wait on the heavy lane.
+- the deployed face catch-up: the family pages lane of the 15b197ad head
+  carries the browser seam heal to production — the close check reads
+  the deployed saddle standalone answering whole (the local proof
+  already green: the 309 module graph, zero console errors, the
+  onboarding and home faces verified live).
+- the 1,700+ commits law: 1,679 at this breath, twenty-one real steps to
+  go — one per real step, the wave records and the release train carry it.
 - the stem separation hub lane (the debonair open seat the hub refuses —
   the documented future lane).
 - the game lanes the owner paces (the stealthhead real game beyond the
   honest under-construction seat).
+
+## the wave record of this session (the browser seam heal, 15b197ad)
+
+- the reading law answered first: the conversa51 delta (the 2,108 new
+  lines beyond the seated 86,534 superset — the v50 checklist, the three
+  mapping seats and the english map, the duplicated tails proven byte
+  identical) and the feedssd corpus whole walked linear through bash, sed
+  and grep before any action; zero new rule the seated frame misses.
+- the auth first law honored: the polar telemetry verified live (the
+  token answering the api as iakadion), the head synced twice whole (the
+  four commit fast-forward and the parallel 2.0.180 rung caught, the
+  browser seam heal merged with the sync law never forced).
+- the production walk found the real defect: the golden path verified
+  through the browser agent (the home, the auth lock screen, the account
+  creation, the panel desktop with the taskbar, the start menu, the
+  calendar and the twenty three icons, zero console errors on every
+  face) until the saddle window opened blank — the deployed bundle
+  crashing at module evaluation with the resolve refusal.
+- the hunt walked the whole chain: the stack trace pinned the
+  onboardinglane exec, the vault factory ddl at creation answered as the
+  module load caller, and the db.ts import time seats (the dbpath
+  resolve, the opendatabase call, the executeschema boot and the broken
+  catch re calling the same failing resolve) rode the same crash.
+- the heal seated the lazy law family wide: the saddle connection chain
+  memoized behind the dbpathseat and the connection seam (the schema and
+  the label seed riding the same lazy boot), the store dbpath a getter,
+  the close guarding the null seat, and the vault factory ddl seating
+  on the first accessor call (the belt and braces preserved — the first
+  use still finds the table in place, the four module load creations of
+  the saddle, the forge, the cobaia and the debonair seats healed at the
+  mechanism the same stroke).
+- the local build discipline pinned: the self cannibalizing rebuild
+  answered (the outDir root entry swallowing the stale hashed bundle —
+  five modules transformed, the font names accumulating suffixes); the
+  tracked index html restored to the app tsx entry, the hashed residue
+  cleaned, and the single clean build walking the 309 module graph
+  whole.
+- the certification green: the family suites walked on the merged head
+  — devthink 3,589 legs over 210 files, debonair 1,111, cadria 648,
+  getry 578, saddle 522, vault 320, stealthhead 147, forge 89, foundry
+  76, argan 72, cobaia 37 — 7,189 legs whole with zero failures (the
+  readiness and torturedata skips the documented conditional seats).
+- the typecheck and the gates: the saddle and the vault tsc walks clean,
+  the saddle battery green twice over (before and after the merge), and
+  the remote battery queued on the fresh head (ci, verify, security and
+  the family pages lane carrying the heal to production).
 
 ## the branch and pr scope this file defines
 
