@@ -505,3 +505,10 @@ alan/
 webpack.config.cjs
 webpacksrc.mjs
 webpackdist/
+
+# the sandbox gateway seat stays machine-local — the Caddyfile is the preview
+# platform's own door (the single exposed port the XTransformPort lane routes
+# through), infrastructure of the machine the family tree never carries: the
+# root first-layer law counts only the twelve folders and the two files while
+# the gateway config answers the polar lane's machine-local doctrine
+Caddyfile
