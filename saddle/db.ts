@@ -235,7 +235,7 @@ export type WriteReceipt = {
 /* ------------------------------------------------------------------ */
 
 /**
- * resolves the database file location once at import time: the saddle_db
+ * resolves the database file location on demand: the saddle_db
  * environment variable wins, then ./saddle.db relative to the current
  * working directory. the special value ":memory:" keeps the database in
  * ram (used by tests and throwaway boots).
@@ -248,14 +248,29 @@ function resolvedbpath(): string {
     if (fromenv.length > 0) {
       return fromenv;
     }
-    return resolve('./saddle.db');
   } catch {
-    return resolve('./saddle.db');
+    /* the env seat is absent on exotic runtimes; the relative default stands */
   }
+  return resolve('./saddle.db');
 }
 
-/** the database file path resolved once at module load. */
-export const dbpath = resolvedbpath();
+/**
+ * the database file path memoized on first use: the module must stay
+ * loadable inside the platform-portable bundles where the browser stubs
+ * the node builtins behind the seam, so the path driver never runs in a
+ * runtime without the node seat — the lazy law of the family (the
+ * devthink storage seam, the vault driver precedent).
+ *
+ * @returns the memoized database path.
+ */
+let dbpathmemo: string | null = null;
+
+function dbpathseat(): string {
+  if (dbpathmemo === null) {
+    dbpathmemo = resolvedbpath();
+  }
+  return dbpathmemo;
+}
 
 /**
  * builds the standardized database error thrown by every wrapper below.
@@ -469,8 +484,31 @@ function migrateusagecolumns(target: DatabaseSync): void {
 /* context: the connection and the prepared statement cache            */
 /* ------------------------------------------------------------------ */
 
-/** the single database connection owned by this module. */
-let database = opendatabase(dbpath);
+/**
+ * the single database connection owned by this module, opened lazily on
+ * first use: the browser graph imports this module for the store seat
+ * without ever touching the node driver (the family vault is the engine,
+ * the browser never stores — the no storage law).
+ */
+let database: DatabaseSync | null = null;
+
+/**
+ * returns the single connection, opening it once on first use with the
+ * schema and the label seed riding the same boot (the very first request
+ * finds the tables in place — the import time doctrine preserved whole
+ * under the lazy law, a boot failure surfacing at first use instead of
+ * the module evaluation the browser walks).
+ *
+ * @returns the open database connection.
+ */
+function connection(): DatabaseSync {
+  if (database === null) {
+    database = opendatabase(dbpathseat());
+    executeschema(database);
+    void seedlabelrows().catch(() => {});
+  }
+  return database;
+}
 
 /** memoized prepared statements keyed by their sql text. */
 const statements = new Map<string, StatementSync>();
@@ -486,7 +524,7 @@ function stmt(sql: string): StatementSync {
   try {
     let prepared = statements.get(sql);
     if (prepared === undefined) {
-      prepared = database.prepare(sql);
+      prepared = connection().prepare(sql);
       statements.set(sql, prepared);
     }
     return prepared;
@@ -1171,7 +1209,7 @@ export function listaudit(limit: number = 200): AuditRow[] {
 const onboardinglane: OnboardingLane = {
   execute: (sql, params = []) => stmt(sql).run(...params),
   queryOne: (sql, params = []) => stmt(sql).get(...params),
-  exec: (ddl) => database.exec(ddl),
+  exec: (ddl) => connection().exec(ddl),
 };
 
 /** the onboarding store of the node: the vault factory over the structural
@@ -1415,7 +1453,7 @@ export function healthcheck(): boolean {
  *   connection).
  * @returns void.
  */
-export function executeschema(target: DatabaseSync = database): void {
+export function executeschema(target: DatabaseSync = connection()): void {
   try {
     target.exec(schema);
     migrateusagecolumns(target);
@@ -1426,7 +1464,9 @@ export function executeschema(target: DatabaseSync = database): void {
 
 /** the store singleton: every api function plus close and dispose. */
 const store = {
-  dbpath,
+  get dbpath() {
+    return dbpathseat();
+  },
   createuser,
   finduserbyname,
   finduserbyid,
@@ -1468,7 +1508,9 @@ const store = {
   /** closes the connection (idempotent). */
   close() {
     try {
-      database.close();
+      if (database !== null) {
+        database.close();
+      }
     } catch {
       /* closing twice or after dispose is a no-op */
     }
@@ -1479,15 +1521,10 @@ const store = {
   },
 };
 
-/* the schema runs at import time so the very first request finds the
- * tables in place; a failure here is fatal by design (bad path, locked
- * file) and surfaces as a boot error instead of a runtime 500. */
-executeschema();
-
-/* the copy law rides the db boot: the label seed ingests the english
- * manifest of labels.ts beside the schema (fire and forget with the
- * catch — the interface strings land in the store, the translated rows
- * protected from the overwrite). */
-void seedlabelrows().catch(() => {});
-
+/* the schema and the label seed ride the lazy boot inside connection():
+ * the very first use finds the tables in place, a failure is fatal by
+ * design (bad path, locked file) and surfaces as a boot error instead of
+ * a runtime 500 — the module evaluation stays side effect free so the
+ * browser bundles load it whole (the resolve crash of the deployed face
+ * answered: no node driver call ever runs at import time). */
 export default store;
