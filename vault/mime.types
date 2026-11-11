@@ -2138,7 +2138,7 @@ application/x-axcrypt axx
 application/x-bam
 application/x-bam-index bai
 application/x-bat bat cmd
-application/x-bb-appworld bbaw;
+application/x-bb-appworld bbaw
 application/x-bcpio bcpio
 application/x-bdoc bdoc
 application/x-bentley-besqlite
@@ -2567,7 +2567,7 @@ application/x-oleobject hhc
 application/x-openscad scad
 application/x-openvpn-profile
 application/x-openzim
-application/x-opera-extension oex;
+application/x-opera-extension oex
 application/x-osm-pbf
 application/x-oz-application oza
 application/x-pagemaker
@@ -3883,7 +3883,7 @@ text/vnd.ms-mediapackage
 text/vnd.net2phone.commcenter.command ccc
 text/vnd.qt.linguist
 text/vnd.radisys.msml-basic-layout
-text/vnd.rim.location.xloc xloc;
+text/vnd.rim.location.xloc xloc
 text/vnd.rn-realtext
 text/vnd.senx.warpscript mc2
 text/vnd.si.uricatalogue
