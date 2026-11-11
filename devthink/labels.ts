@@ -323,7 +323,11 @@ export function chatGreetingForHour(hour: number): string {
  * quote, the text is the exact copy the surface renders. */
 export type ChatStringRow = { id: string; text: string };
 
-const seedChatStrings: ChatStringRow[] = [
+/** the chat string seed: the id→text rows the chat store of uistore.ts
+ * flattens into the manifest its IndexedDB lane seeds — exported for the
+ * store seat (the acyclic law keeps the pure data here while the store
+ * owns the overrides the boot seed loads). */
+export const seedChatStrings: ChatStringRow[] = [
   { id: "welcome.temporarySub", text: "temporary chat: nothing saves on this device" },
   { id: "welcome.modelLine", text: "sol {model}" },
   { id: "chat.temporaryPill", text: "temporary chat" },
@@ -392,9 +396,18 @@ const seedChatStrings: ChatStringRow[] = [
 
 export type ChatStringId = (typeof seedChatStrings)[number]["id"];
 
-/** chatText — the typed string accessor: the dot id quotes the row, the
- * seed answers today and the paired database answers tomorrow. An unknown
- * id renders the empty string (never a crash on the interface). */
+/** chatText — the pure seed answer: the dot id quotes the row the chat
+ * store mirrors. the chat wingets read the store accessor instead (the
+ * chat label seat of uistore.ts — the same two-door law the shell label
+ * rides: the manifest text stays the offline answer while the store owns
+ * the overrides the boot seed loads from the database lane, and the
+ * graph-below modules keep this pure door because the store seat sits
+ * above storage in the module graph). An unknown id renders the empty
+ * string (never a crash on the interface).
+ *
+ * @param id the chat string key of the row.
+ * @returns the seed text the id quotes.
+ */
 export function chatText(id: ChatStringId): string {
   const row = seedChatStrings.find((entry) => entry.id === id);
   return row ? row.text : "";

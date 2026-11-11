@@ -24,7 +24,8 @@ import {
 } from "@fluentui/react-icons";
 import { type FormEvent, useEffect, useState } from "react";
 import { Link } from "wouter";
-import { chatLimit, chatText } from "../../labels.ts";
+import { chatLimit } from "../../labels.ts";
+import { chatText } from "../../uistore.ts";
 import { addTag, CHAT_TOOLS, type ChatSession, removeTag, type ToolId } from "../../chatstate.ts";
 import { GATEWAY_REQUIRED_COPY, type GatewayRegistration, gatewayStatusLabel } from "../../gateway.ts";
 import { CHAT_NAV } from "./ChatSidebar.tsx";

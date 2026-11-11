@@ -15,11 +15,13 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { labelManifest, type LabelKey } from "../labels.ts";
+import { labelManifest, seedChatStrings, type ChatStringId, type LabelKey } from "../labels.ts";
 import { copyseed } from "../uistore.ts";
 import {
+  chatText,
   label,
   loaduicopy,
+  seedChatLabels,
   seedLabels,
   uicopy,
   uistoreget,
@@ -143,5 +145,43 @@ describe("uistore label seat", () => {
     expect(label("chat.composer.send")).toBe("Send message");
     expect(label("console.boot.name")).toBe("DEVTHINK");
     expect(label("explore.sidebar.categories")).toBe("the categories");
+  });
+});
+
+describe("uistore chat label seat", () => {
+  it("answers every chat string verbatim through the store — the chat wingets read the database door, the seed text answers offline", () => {
+    // the copy law's chat seat: the winget accessor rides the store the
+    // indexeddb lane seeds — every row of the seed answers through the
+    // store door with zero invented copy and zero dropped rows
+    expect(seedChatStrings.length).toBeGreaterThan(50);
+    for (const row of seedChatStrings) {
+      expect(chatText(row.id as ChatStringId)).toBe(row.text);
+    }
+    // the dot ids stay dotted addresses (the manifest key law)
+    for (const row of seedChatStrings) {
+      expect(row.id.includes(".")).toBe(true);
+      expect(row.id.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("the chat seed never blocks the boot and the seed always answers", async () => {
+    // the node runner holds no IndexedDB: the row store refuses honestly
+    // and the boot lane catches (App.tsx void seedChatLabels().catch(() => {}))
+    await expect(seedChatLabels().catch(() => "boot survives")).resolves.toBe("boot survives");
+    // after the refused seed the overrides stay empty — the seed answers
+    expect(chatText("welcome.temporarySub" as ChatStringId)).toBe(
+      "temporary chat: nothing saves on this device",
+    );
+    expect(chatText("toast.stopped" as ChatStringId)).toBe("Generation stopped");
+  });
+
+  it("the two doors answer identically offline — the pure labels.ts seat and the store seat of uistore.ts", async () => {
+    // the acyclic law keeps the pure door for the graph-below modules
+    // (gateway.ts) while the wingets read the store door: before any seed
+    // the overrides stay empty on both doors and the texts agree whole
+    const { chatText: pureChatText } = await import("../labels.ts");
+    for (const row of seedChatStrings) {
+      expect(chatText(row.id as ChatStringId)).toBe(pureChatText(row.id as ChatStringId));
+    }
   });
 });
