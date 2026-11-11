@@ -637,3 +637,67 @@ in-sync, the api answering under the iakadion login at rate 5000).
   and the mapping merge landed while this wave walked — the final
   fast-forward riding the fresh head whole, this record seated in its
   chronological order beside the sibling strides.
+
+## the session record — the integral reading wave and the machine seats (this instance, 2026-11-11 20:35 utc)
+
+- the auth first law answered live: the polar seat relaunched on the swept
+  container, the device code CE58-65EA pending with the poller and watchdog
+  pair, and the token landed the same breath the owner authorized (19:26:11
+  utc, the capture in real time, the credential persisted three layers at
+  0600, the api answering under the iakadion login at rate 5000 with 4,890
+  remaining) — the telemetry verified whole (polar.log carrying the poller
+  launch, the code renewal window, the authorization stamp and the capture
+  record, rule 45 honored: the authorized seat never polls again).
+- the head sync answered twice: the first fetch carried the parallel
+  strides whole (d63ce56a → 78f0d258, the permdiff heal and the checklist
+  map the sibling record carries), the second walked the 2.0.180 rung
+  (78f0d258 → 401dd3d0, the verification-first reseat with the twelve
+  manifest cascade, the structural audit batch and the 7,201 green family
+  legs) — both fast-forwards clean, zero divergence, 1,676 commits at the
+  sync (the fresh 1,700+ law twenty-four real steps to go).
+- the integral reading wave, the fresh corpus whole: conversa51 (88,642
+  lines, the cumulative superset the md5 head proved over conversa50) read
+  through sixteen linear reading agents walking 5,540-line ranges with
+  twenty-line overlaps, feedssd (1,603 lines) whole, polarauth (8,695
+  lines) through the pair, fedsd (762 lines) beside the superset
+  verification (fedsd inside feedssd confirmed — the twenty-five inserted
+  lines carrying the oracle and virtualbox competitor law, the github
+  pages static platform, the ts to rs readiness, the doc sol tests folder
+  law, the labels.ts complaint, the icon family law, the actions
+  marketplace mandate, the webpack clarification and the distribution list
+  extensions), the pasted briefing seat walked by the wave beside the
+  empty snapshot verified empty — 185,708 lines against the seated frame:
+  zero new rule the live tree misses, the per-range extractions seated at
+  upload/extract (twenty files, the four corpus folders).
+- the machine seats re-seated after the reset wiped them: the alan corpus
+  whole (the blobless sparse clone of iakadion/allan on the orphan-spawn
+  law — the first launch died at the call boundary the reaper answers, the
+  relaunch surviving — organizado/md materialized with the 204,487-row
+  repos.case catalog beside the conversa50, feedssd and polarauth
+  corpora), the Neo.Temp trylle production raw re-fetched byte-matching
+  the record (the 486,995-byte index, the 290,807-byte master css, the
+  robots seat and the js chunks), and the Neo.img tokens record regenerated
+  from the fresh css — 435 distinct custom properties, 154 distinct oklch
+  values, the color-mix guard family and the hairline law verified
+  token-level live (color-mix(in oklab, var(--foreground) 7.5%,
+  transparent) answering in the fresh artifact).
+- the local dependency seats healed: the reset wiped eight of the eleven
+  app seats — the frozen installs walked under the pinned bun 1.4.4 (argan
+  through vault, the family ready for the local certification walks).
+- the remote panels at the wave: pull requests zero open, branches only
+  main, code scanning the single scorecard sastid seat 1759 (the
+  display-name and needs-ordering fix riding main, the queued security
+  battery of the 401dd3d0 head carrying the evidence closure — the fix is
+  a fix, never a dismissal), the publish workflow queued on the fresh head
+  (the v2.0.180 release ladder, the assets train, the registry publishes
+  and the container catch-up riding it), 14,535 workflow runs live (the
+  fifteen-hundred law exceeded nine times over).
+- the actions inventory audited against the owner categories: the sixteen
+  workflows carry the sha-pinned family whole — pages (the configure,
+  upload and deploy trio), automation (stale, first-interaction, labeler),
+  continuous-integration (checkout, the setup chain of node, bun, go,
+  java, dotnet, ruby, deno, android and chrome, the artifact pair),
+  security (codeql, dependency-review, scorecard, osv-scanner, dockle,
+  trufflehog, actionlint) and deployment (the docker chain with the qemu
+  seat, the attest lane) — the marketplace mandate answered across every
+  category the briefing names, zero genuine gap.
