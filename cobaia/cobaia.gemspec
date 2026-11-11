@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "cobaia"
-  spec.version = ENV.fetch("COBAIA_VERSION", "2.0.178")
+  spec.version = ENV.fetch("COBAIA_VERSION", "2.0.179")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The cobaia documentation and tests envelope (the monetization surface — the plans, the support rails and the honest advertisement slots)."

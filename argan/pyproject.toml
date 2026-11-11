@@ -11,7 +11,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-argan"
-version = "2.0.178"
+version = "2.0.179"
 authors = [{name = "wenathlan"}]
 description = "The DNS and gateway library — zones, records, dnssec and handshake"
 readme = "README.md"
