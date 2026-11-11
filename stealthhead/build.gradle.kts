@@ -24,6 +24,7 @@ version = (findProperty("releaseVersion") as String?) ?: envelopeVersion
 
 tasks.jar {
     from(layout.projectDirectory) {
+        include("stealthhead.kts")
         include("README.md")
         include("docs/**")
         include("test/**")
