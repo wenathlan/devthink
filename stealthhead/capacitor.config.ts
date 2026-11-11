@@ -29,7 +29,7 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the stealthhead mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "im.stealthhead.app",
+  appId: "com.stealthhead.app",
   appName: "Stealthhead",
   /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
   webDir: ".",

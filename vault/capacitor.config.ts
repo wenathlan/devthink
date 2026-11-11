@@ -30,7 +30,7 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the vault mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "im.vault.app",
+  appId: "com.vault.app",
   appName: "Vault",
   /** the vite build of the theme: pnpm build emits the hashed bundles flat
    * at the app root (the Publish Altier law — the build directory is the

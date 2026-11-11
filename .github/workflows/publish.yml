@@ -5253,7 +5253,7 @@ jobs:
     # doctrine of the repository), the lane builds it with the workspace's
     # own frozen lockfile, relocates the DevThink mobile identity the
     # repository carries (devthink/capacitor.config.ts - appId
-    # im.devthink.app) onto the app root on the runner (a native wrapper
+    # com.devthink.app) onto the app root on the runner (a native wrapper
     # is toolchain output, generated and stamped on the runner, never
     # tracked), and runs the capacitor add/sync from working-directory:
     # devthink. the lane gates on the real locations (devthink/package.json,
@@ -5388,7 +5388,7 @@ jobs:
       - name: relocate the mobile identity onto the web root
         # the saddle native wrapper doctrine: the shell is runner-side
         # toolchain output. the lane reads the DevThink mobile identity the
-        # repository carries (appId im.devthink.app, appName DevThink) and
+        # repository carries (appId com.devthink.app, appName DevThink) and
         # writes it at the app root with the webDir aimed at the staged
         # workbench output, so the capacitor add/sync below runs with
         # working-directory: devthink exactly like the saddle mobile lane.
