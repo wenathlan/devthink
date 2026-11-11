@@ -726,3 +726,35 @@ in-sync, the api answering under the iakadion login at rate 5000).
   reads — the alert 1759 evidence closure riding it), the publish workflow
   queued behind the runner congestion (the v2.0.180 release ladder, the
   assets train and the container catch-up answering behind it).
+
+## the session record — the publish startup investigation and the reseat (this instance, 2026-11-11 21:15 utc)
+
+- the publish startup failure investigated whole: the two dispatch runs the
+  parallel stride fired (449 on 401dd3d0 and 450 on 15b197ad) answered
+  startup_failure with zero jobs ever starting — the structural walk
+  cleared the file entire (the strict yaml parse clean, the environment
+  seat release-approval answering the repo, every needs reference
+  resolving, the duplicate-key scan clean and the 599-line diff since the
+  last working dispatch of november 9 carrying step-script bodies alone,
+  never a structural seat), and the fresh dispatch on the 16090c5d head
+  (run 451) answered queued clean the same breath — the transient
+  dispatch-processing wall the platform answered, never a tree defect,
+  the publish ladder walking again behind it.
+- the workflow contract batteries verified independent on the synced
+  head: the containerlanes, publishingpipeline, publishlanes,
+  releasenotes, tortureworkflow, webpacklanes and containerpack seats
+  answer 240 green legs over the seven files — the publish envelope the
+  batteries pin answering whole beside the strict parse.
+- the head sync answered a third time: the parallel strides landed while
+  the wave walked (the browser seam heal 32e3f742 with its merge, the
+  wave record 3a1d4f82 with the checklist reseat and the merge 16090c5d)
+  — every fast-forward clean, the rebased certification record riding
+  the fresh line, 1,682 commits at the breath (the 1,700+ law eighteen
+  real steps to go).
+- the machinery queue at the record: nine runs queued across the three
+  fresh heads (the security battery carrying the codeql ladder the
+  scorecard reads — the alert 1759 evidence closure riding the first
+  completion; the publish run 451 carrying the v2.0.180 release ladder,
+  the assets train and the container catch-up) — the law held: the wave
+  never waits on the heavy lanes, the close check rides the final
+  projection.
