@@ -5,9 +5,9 @@
     "": {
       "name": "@wenathlan/debonair",
       "dependencies": {
-        "@ai-sdk/openai": "^4.0.113",
-        "@ai-sdk/openai-compatible": "^3.0.89",
-        "@ai-sdk/provider-utils": "^5.0.78",
+        "@ai-sdk/openai": "^4.0.114",
+        "@ai-sdk/openai-compatible": "^3.0.90",
+        "@ai-sdk/provider-utils": "^5.0.79",
         "@anthropic-ai/sdk": "^1.8.0",
         "@biomejs/biome": "^2.6.6",
         "@capacitor/android": "^8.6.0",
@@ -85,7 +85,7 @@
         "@wenathlan/saddle": "~2.0.173",
         "@wenathlan/vault": "~2.0.173",
         "add": "^2.0.9",
-        "ai": "^7.0.168",
+        "ai": "^7.0.169",
         "autoprefixer": "^10.6.2",
         "axios": "^1.21.1",
         "baseline-browser-mapping": "^2.11.35",
@@ -179,9 +179,9 @@
         "zustand": "^5.1.0",
       },
       "devDependencies": {
-        "@ai-sdk/openai": "^4.0.113",
-        "@ai-sdk/openai-compatible": "^3.0.89",
-        "@ai-sdk/provider-utils": "^5.0.78",
+        "@ai-sdk/openai": "^4.0.114",
+        "@ai-sdk/openai-compatible": "^3.0.90",
+        "@ai-sdk/provider-utils": "^5.0.79",
         "@anthropic-ai/sdk": "^1.8.0",
         "@biomejs/biome": "^2.6.6",
         "@capacitor/android": "^8.6.0",
@@ -263,7 +263,7 @@
         "@wenathlan/stealthhead": "~2.0.173",
         "@wenathlan/vault": "~2.0.173",
         "add": "^2.0.9",
-        "ai": "^7.0.168",
+        "ai": "^7.0.169",
         "autoprefixer": "^10.6.2",
         "axios": "^1.21.1",
         "baseline-browser-mapping": "^2.11.35",
@@ -365,9 +365,9 @@
     "pnpm",
   ],
   "overrides": {
-    "@ai-sdk/openai": "^4.0.113",
-    "@ai-sdk/openai-compatible": "^3.0.89",
-    "@ai-sdk/provider-utils": "^5.0.78",
+    "@ai-sdk/openai": "^4.0.114",
+    "@ai-sdk/openai-compatible": "^3.0.90",
+    "@ai-sdk/provider-utils": "^5.0.79",
     "@anthropic-ai/sdk": "^1.8.0",
     "@biomejs/biome": "^2.6.6",
     "@capacitor/android": "^8.6.0",
@@ -445,7 +445,7 @@
     "@wenathlan/saddle": "~2.0.173",
     "@wenathlan/vault": "~2.0.173",
     "add": "^2.0.9",
-    "ai": "^7.0.168",
+    "ai": "^7.0.169",
     "autoprefixer": "^10.6.2",
     "axios": "^1.21.1",
     "baseline-browser-mapping": "^2.11.35",
@@ -542,15 +542,15 @@
     "zustand": "^5.1.0",
   },
   "packages": {
-    "@ai-sdk/gateway": ["@ai-sdk/gateway@4.0.141", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@ai-sdk/provider-utils": "5.0.78", "@vercel/oidc": "3.2.0" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-WWJgwE6+FPSp2y2wPmsaGYjoNqhsMI0PP8bfRcfuB70dPCCdEBDuH8yFXWxaqpv0C9jJ1UZJ5lYjXmt+ChVGmQ=="],
+    "@ai-sdk/gateway": ["@ai-sdk/gateway@4.0.142", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@ai-sdk/provider-utils": "5.0.79", "@vercel/oidc": "3.2.0" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-X5UpG2dMLT29OkHLOEknZ0/4/iEyPTuVEiNypiUc3ltuNz2k9ixssgBc/XcV4PylpBpz3RAdGQB4qDmVbUMX8A=="],
 
-    "@ai-sdk/openai": ["@ai-sdk/openai@4.0.113", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@ai-sdk/provider-utils": "5.0.78" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-K/vecxo7Q3RB+pKTGcX/AyDgEsWzCRLdaj3d6dK3zprgRotqlIE1KYJSFelAL6ZCFNQvEPgLgFEQHT4Axr4YOQ=="],
+    "@ai-sdk/openai": ["@ai-sdk/openai@4.0.114", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@ai-sdk/provider-utils": "5.0.79" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-HceWOUPej4zSYvjZhICQVoQWzwXP3SyJY8GN/P0a+dqJaUMdn3NQMEW6KyhbS+/ltAgR6MauW9KgDx8NDbFe3g=="],
 
-    "@ai-sdk/openai-compatible": ["@ai-sdk/openai-compatible@3.0.89", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@ai-sdk/provider-utils": "5.0.78" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-fjTA46WQJph9bwQ29A/bWaSwoBQLDrZxnC9y0cT2S6xqTQErhvp0rf3fV9Rx4ShYOlRqZOKhMfXdKFRPqivGbw=="],
+    "@ai-sdk/openai-compatible": ["@ai-sdk/openai-compatible@3.0.90", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@ai-sdk/provider-utils": "5.0.79" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-XIPiZ483cAnELGJ4xjYIqqnQWE/qRmL5YWx+1fFrVbA2yg1ioJAvv2Qs26bg21XwaxT3GSGIviBejKFqeZR/JQ=="],
 
     "@ai-sdk/provider": ["@ai-sdk/provider@4.0.37", "", { "dependencies": { "json-schema": "^0.4.0" } }, "sha512-4uPgZ3qiX/JaQFr0dQoibUzHImZit9u05ro2BxGUnJwU4fV28BOAbKUa2OjQvqtM1tMac3bTKkaXdyzGovQXqg=="],
 
-    "@ai-sdk/provider-utils": ["@ai-sdk/provider-utils@5.0.78", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@standard-schema/spec": "^1.1.0", "@workflow/serde": "4.1.0", "eventsource-parser": "^3.0.8", "undici": "^7.29.1" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-MTob5fTOCPUPCjOCMaarvpEaSqtDWqVZrKBYa3H0KIUtP/AyxoNvhLkf3LHCXagNlyld7qs4Z6IhgOr3L0y8Ag=="],
+    "@ai-sdk/provider-utils": ["@ai-sdk/provider-utils@5.0.79", "", { "dependencies": { "@ai-sdk/provider": "4.0.37", "@standard-schema/spec": "^1.1.0", "@workflow/serde": "4.1.0", "eventsource-parser": "^3.0.8", "undici": "^7.29.1" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-IYu6MT0NDE3JFWBWEJWAXjhskHTSj6NfRp9FuEAOcyS2Jrj3qBePu7OEoXVmoCWT3pYPgrF4DBKzjjjOMRyw9Q=="],
 
     "@alcalzone/ansi-tokenize": ["@alcalzone/ansi-tokenize@0.3.1", "", { "dependencies": { "ansi-styles": "^6.2.1", "is-fullwidth-code-point": "^5.0.0" } }, "sha512-cUD0PT0YX+rImRhfn7BfMRduP/tX/Zqt/N0dHlAyn2RlcJssCb5KsCJkhln61eh9vuJDkH8wKn3L8zJzzWXPFg=="],
 
@@ -1818,7 +1818,7 @@
 
     "agent-base": ["agent-base@6.0.2", "", { "dependencies": { "debug": "4" } }, "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ=="],
 
-    "ai": ["ai@7.0.168", "", { "dependencies": { "@ai-sdk/gateway": "4.0.141", "@ai-sdk/provider": "4.0.37", "@ai-sdk/provider-utils": "5.0.78" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-splDioC01ZxX9HjpPURppssRuMymmniVDfPihbzSPk1dj6E95cvIkjTl7VC5jojVKkd/6xscE1x0816KBmFA3w=="],
+    "ai": ["ai@7.0.169", "", { "dependencies": { "@ai-sdk/gateway": "4.0.142", "@ai-sdk/provider": "4.0.37", "@ai-sdk/provider-utils": "5.0.79" }, "peerDependencies": { "zod": "^3.25.76 || ^4.1.8" } }, "sha512-p2GHNRXnIP7EE5/pV8pq2RrFDtXrSMSAZB6/CQHYXCaFXrKqspzDyXn89wSg5bv61V3KukjQQtguSOVkN5KI9w=="],
 
     "ajv": ["ajv@6.15.0", "", { "dependencies": { "fast-deep-equal": "^3.1.1", "fast-json-stable-stringify": "^2.0.0", "json-schema-traverse": "^0.4.1", "uri-js": "^4.2.2" } }, "sha512-fgFx7Hfoq60ytK2c7DhnF8jIvzYgOMxfugjLOSMHjLIPgenqa7S7oaagATUq99mV6IYvN2tRmC0wnTYX6iPbMw=="],
 

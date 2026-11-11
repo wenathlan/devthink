@@ -44,7 +44,7 @@
     </repository>
   </distributionManagement>
   <properties>
-    <revision>2.0.175</revision>
+    <revision>2.0.178</revision>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>

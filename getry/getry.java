@@ -10,7 +10,7 @@ package com.wenathlan.getry;
  */
 final class Getry {
   /** The version of the getry envelope (the six-distribution completeness wave). */
-  public static final String VERSION = "2.0.175";
+  public static final String VERSION = "2.0.178";
   private Getry() {
   }
 }

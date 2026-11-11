@@ -500,3 +500,8 @@ Neo.img/
 # iakadion/allan — the local seat carries the shallow clones the design
 # research walks, machine-local material outside the family tree)
 alan/
+
+# the webpack carrier residue the local validation walks leave behind (the workflow cleans them in ci, the local seats never commit them)
+webpack.config.cjs
+webpacksrc.mjs
+webpackdist/

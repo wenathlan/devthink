@@ -11,6 +11,11 @@ on:
     # the 2.0.18 pass restores): the twice-daily cadence keeps the gha
     # cache storage bounded inside one working day.
     - cron: "17 15 * * *"
+    # the dormant-thread sweep window (the automation category pass): the
+    # stale lane walks the issues and pull requests the tree stopped
+    # hearing from, off-peak from the cache and ladder windows it shares
+    # the file with.
+    - cron: "47 5 * * *"
   workflow_dispatch:
     inputs:
       allow_major_updates:
@@ -28,6 +33,12 @@ on:
         required: false
         default: com.wenathlan.extension-mcp,com.wenathlan.extension-headless,com.wenathlan.extension-cli,com.wenathlan.extension-library
         type: string
+  issues:
+    # the first-interaction lane (the automation category pass): the
+    # greeting answers the first issue an author ever opens the same way
+    # the pull_request_target firing below answers their first change -
+    # the opened action alone, never an edit or a reopen.
+    types: [opened]
   pull_request_target:
     # the absorbed labeler lane (the consolidation pass): the pull request
     # labels follow the folders the change touches, one label per family
@@ -614,6 +625,74 @@ jobs:
           done
           echo "the single distribution com.wenathlan.devthink is the only maven coordinate"
 
+  stale:
+    # the dormant-thread lane (the automation category pass): an issue or
+    # a pull request that went ninety days without a word carries no
+    # signal the tree can act on, so the daily sweep marks it stale and
+    # closes it fourteen quiet days later - any comment or push removes
+    # the mark the moment it lands, and the exempt labels (the pinned,
+    # security and planned seats the owner holds threads open with) keep
+    # the deliberate threads outside the clock. The lane answers the
+    # 47 5 * * * window alone, so the ladder firings and the cache passes
+    # never queue behind it.
+    if: github.event_name == 'schedule' && github.event.schedule == '47 5 * * *'
+    name: Mark the dormant issues and pull requests stale
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      # the lane's own group (the labeler pattern): a stale pass never
+      # queues behind the dependency ladder the maintain-versions group
+      # serializes, and a draining pass is never cancelled mid-batch.
+      group: devthink-stale
+      cancel-in-progress: false
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Sweep the dormant issues and pull requests
+        # the exact-version pin (Regra 56a/125: one version per action in
+        # every workflow, never the bare moving @v11 major tag).
+        uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
+        with:
+          # ninety quiet days before the mark, fourteen more before the
+          # close - a generous clock that never rushes a live thread.
+          days-before-stale: 90
+          days-before-close: 14
+          # the bounded pass: at most sixty threads a day, so a backlog
+          # drains over a few passes without hammering the api.
+          operations-per-run: 60
+          # the mark leaves the moment a thread wakes (the action
+          # default, stated so the law reads whole).
+          remove-stale-when-updated: true
+          # a draft pull request is work in flight, never dormancy.
+          exempt-draft-pr: true
+          # the exempt seats: a thread the owner pins, a security report
+          # the battery owns, a planned item the roadmap carries.
+          exempt-issue-labels: pinned,security,planned
+          exempt-pr-labels: pinned,security,planned
+          stale-issue-message: >-
+            this issue has gone ninety days without a reply - the
+            maintenance lane marks it stale. any comment removes the mark
+            at once, and fourteen more quiet days close the thread; an
+            issue that still matters reopens any time, nothing is lost.
+          close-issue-message: >-
+            the stale window ran out: ninety quiet days, then fourteen
+            more after the mark. the lane closes the thread unmanned - if
+            the issue still stands, reopen it with a word and the clock
+            starts clean.
+          stale-pr-message: >-
+            this pull request has gone ninety days without a push or a
+            reply - the maintenance lane marks it stale. any commit or
+            comment removes the mark at once, and fourteen more quiet
+            days close the change; the branch stays yours and a reopened
+            pull request rides the same verify ladder whole.
+          close-pr-message: >-
+            the stale window ran out: ninety quiet days, then fourteen
+            more after the mark. the lane closes the change unmanned -
+            the branch stays yours, and a reopened pull request runs the
+            full verify ladder again.
+
   label:
     # the absorbed labeler lane (the consolidation pass): the pull request
     # labels follow the folders the change touches, one label per family
@@ -640,6 +719,48 @@ jobs:
         uses: actions/labeler@634933edcd8ababfe52f92936142cc22ac488b1b # v6.0.1
         with:
           configuration-path: .github/workflows/labeler-config.cfg
+
+  greet:
+    # the first-interaction lane (the automation category pass): the first
+    # issue or the first pull request an author ever opens against the
+    # tree answers one orientation comment naming the lanes the change
+    # rides (the labeler that routes the folders, the verify pipeline
+    # every pull request runs), so a first seat never opens onto silence.
+    # The action reads the author's whole history before it speaks, so
+    # the lane stays silent for every familiar seat, and it answers the
+    # opened action alone - never the synchronize or reopened firings the
+    # labeler lane shares the trigger with.
+    if: (github.event_name == 'pull_request_target' || github.event_name == 'issues') && github.event.action == 'opened'
+    name: Greet the first-time contributor
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      # the lane's own group (the labeler pattern): a greeting never
+      # queues behind the dependency ladder the maintain-versions group
+      # serializes, and a superseded firing of the same thread cancels.
+      group: devthink-greet-${{ github.event_name }}-${{ github.event.issue.number || github.event.pull_request.number }}
+      cancel-in-progress: true
+    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Greet the first issue or the first pull request
+        # the exact-version pin (Regra 56a/125: one version per action in
+        # every workflow, never the bare moving @v3 major tag).
+        uses: actions/first-interaction@1c4688942c71f71d4f5502a26ea67c331730fa4d # v3.1.0
+        with:
+          issue_message: >-
+            thank you for the first issue against the devthink tree. the
+            family publishes eleven applications and reads every seat -
+            the more the issue names (the app, the version, the steps to
+            reproduce), the faster the fix rides the ladder.
+          pr_message: >-
+            thank you for the first change against the devthink tree.
+            the labeler has already routed the folders this pull request
+            touches, and the verify pipeline - the full gate ladder of
+            the family - runs on every push: a red names its gate, and
+            the ladder lands only green.
 
   npmtag:
     # the dist-tag heal lane (the owner report of the stale latest): the

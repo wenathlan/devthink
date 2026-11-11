@@ -40,17 +40,17 @@ import type { Browser, BrowserContext, Page } from "playwright";
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 12: scrape/types.ts */
 /* ════════════════════════════════════════════════════════════════════ */
-export const ScrapeFormatSchema = z.enum(['markdown', 'html', 'text', 'json', 'xml', 'redis']);
+export const ScrapeFormatSchema = z.enum(["markdown", "html", "text", "json", "xml", "redis"]);
 export type ScrapeFormat = z.infer<typeof ScrapeFormatSchema>;
 
-export const SerializeTargetSchema = z.enum(['markdown', 'xml', 'json', 'redis', 'text']);
+export const SerializeTargetSchema = z.enum(["markdown", "xml", "json", "redis", "text"]);
 export type SerializeTarget = z.infer<typeof SerializeTargetSchema>;
 
 export const ScrapeOptionsSchema = z.strictObject({
   url: z.string().url().optional(),
   html: z.string().optional(),
-  mode: z.enum(['auto', 'fetch', 'browser']).prefault('auto').optional(),
-  waitUntil: z.enum(['load', 'domcontentloaded', 'networkidle', 'commit']).prefault('networkidle').optional(),
+  mode: z.enum(["auto", "fetch", "browser"]).prefault("auto").optional(),
+  waitUntil: z.enum(["load", "domcontentloaded", "networkidle", "commit"]).prefault("networkidle").optional(),
   timeout: z.number().positive().prefault(30000).optional(),
   scroll: z.boolean().prefault(false).optional(),
   scrollDelay: z.number().nonnegative().prefault(300).optional(),
@@ -60,7 +60,7 @@ export const ScrapeOptionsSchema = z.strictObject({
   extractLinks: z.boolean().prefault(true).optional(),
   extractTables: z.boolean().prefault(true).optional(),
   maxContentLength: z.number().positive().optional(),
-  format: ScrapeFormatSchema.prefault('markdown').optional(),
+  format: ScrapeFormatSchema.prefault("markdown").optional(),
   language: z.string().optional(),
   proxy: z.string().optional(),
   retries: z.number().nonnegative().prefault(3).optional(),
@@ -131,7 +131,7 @@ export const BrowserAgentConfigSchema = z.strictObject({
     })
     .prefault({ width: 1280, height: 720 })
     .optional(),
-  locale: z.string().prefault('en-US').optional(),
+  locale: z.string().prefault("en-US").optional(),
   geolocation: z
     .strictObject({
       latitude: z.number(),
@@ -140,8 +140,8 @@ export const BrowserAgentConfigSchema = z.strictObject({
     .optional(),
   timeout: z.number().positive().prefault(30000).optional(),
   recordVideo: z.boolean().prefault(false).optional(),
-  proxy: z.string().prefault('').optional(),
-  storageState: z.string().prefault('').optional(),
+  proxy: z.string().prefault("").optional(),
+  storageState: z.string().prefault("").optional(),
   blockAds: z.boolean().prefault(true).optional(),
   stealth: z.boolean().prefault(true).optional(),
 });
@@ -188,13 +188,13 @@ export interface RenderOptions {
   width?: number;
   height?: number;
   fullPage?: boolean;
-  type?: 'png' | 'jpeg';
+  type?: "png" | "jpeg";
   quality?: number;
   output?: string;
 }
 
 export interface ChromeCommand {
-  action: 'goto' | 'click' | 'type' | 'screenshot' | 'evaluate' | 'wait' | 'scroll' | 'extract';
+  action: "goto" | "click" | "type" | "screenshot" | "evaluate" | "wait" | "scroll" | "extract";
   args?: Record<string, unknown>;
 }
 
@@ -203,7 +203,7 @@ export interface CliOptions {
   file?: string;
   format?: ScrapeFormat;
   output?: string;
-  'no-headless'?: boolean;
+  "no-headless"?: boolean;
   timeout?: number;
   scroll?: boolean;
   readable?: boolean;
@@ -211,13 +211,13 @@ export interface CliOptions {
   pretty?: boolean;
   proxy?: string;
   retries?: number;
-  mode?: 'auto' | 'fetch' | 'browser';
+  mode?: "auto" | "fetch" | "browser";
 }
 
 export interface RetryConfig {
   retries: number;
   delay: number;
-  backoff: 'exponential' | 'linear' | 'constant';
+  backoff: "exponential" | "linear" | "constant";
   maxDelay?: number;
   statusCodes?: number[];
 }
@@ -232,7 +232,7 @@ export interface LegacyCacheConfig {
   enabled: boolean;
   ttlMs?: number;
   maxEntries?: number;
-  storage?: 'memory' | 'redis' | 'sqlite' | 'indexeddb';
+  storage?: "memory" | "redis" | "sqlite" | "indexeddb";
 }
 
 export interface CrawlStats {
@@ -247,7 +247,7 @@ export interface CrawlStats {
 export interface BatchOptions {
   urls: string[];
   concurrency?: number;
-  mode?: 'auto' | 'fetch' | 'browser';
+  mode?: "auto" | "fetch" | "browser";
   format?: ScrapeFormat;
   onProgress?: (completed: number, total: number, currentUrl: string) => void;
   onError?: (url: string, error: Error) => void;
@@ -257,21 +257,21 @@ export interface BatchOptions {
 /* Section 13: scrape/errors.ts */
 /* ════════════════════════════════════════════════════════════════════ */
 export const ErrorCode = {
-  VALIDATION_FAILED: 'VALIDATION_FAILED',
-  INVALID_URL: 'INVALID_URL',
-  TIMEOUT: 'TIMEOUT',
-  BLOCKED: 'BLOCKED',
-  RATE_LIMITED: 'RATE_LIMITED',
-  PROXY_ERROR: 'PROXY_ERROR',
-  PARSE_ERROR: 'PARSE_ERROR',
-  AUTH_REQUIRED: 'AUTH_REQUIRED',
-  NETWORK_ERROR: 'NETWORK_ERROR',
-  BROWSER_NOT_AVAILABLE: 'BROWSER_NOT_AVAILABLE',
-  CRAWL_DEPTH_EXCEEDED: 'CRAWL_DEPTH_EXCEEDED',
-  MAX_RETRIES_EXCEEDED: 'MAX_RETRIES_EXCEEDED',
+  VALIDATION_FAILED: "VALIDATION_FAILED",
+  INVALID_URL: "INVALID_URL",
+  TIMEOUT: "TIMEOUT",
+  BLOCKED: "BLOCKED",
+  RATE_LIMITED: "RATE_LIMITED",
+  PROXY_ERROR: "PROXY_ERROR",
+  PARSE_ERROR: "PARSE_ERROR",
+  AUTH_REQUIRED: "AUTH_REQUIRED",
+  NETWORK_ERROR: "NETWORK_ERROR",
+  BROWSER_NOT_AVAILABLE: "BROWSER_NOT_AVAILABLE",
+  CRAWL_DEPTH_EXCEEDED: "CRAWL_DEPTH_EXCEEDED",
+  MAX_RETRIES_EXCEEDED: "MAX_RETRIES_EXCEEDED",
 } as const;
 
-export type ErrorCode = typeof ErrorCode[keyof typeof ErrorCode];
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
 export class WebScrapeError extends Error {
   public readonly code: ErrorCode;
@@ -287,10 +287,10 @@ export class WebScrapeError extends Error {
     statusCode: number,
     isRetryable: boolean,
     details?: Record<string, unknown>,
-    cause?: Error
+    cause?: Error,
   ) {
     super(message);
-    this.name = 'WebScrapeError';
+    this.name = "WebScrapeError";
     this.code = code;
     this.statusCode = statusCode;
     this.isRetryable = isRetryable;
@@ -319,34 +319,29 @@ export class WebScrapeError extends Error {
 export class ValidationError extends WebScrapeError {
   constructor(message: string, details?: Record<string, unknown>, cause?: Error) {
     super(message, ErrorCode.VALIDATION_FAILED, 400, false, details, cause);
-    this.name = 'ValidationError';
+    this.name = "ValidationError";
   }
 }
 
 export class TimeoutError extends WebScrapeError {
   constructor(message: string, details?: Record<string, unknown>, cause?: Error) {
     super(message, ErrorCode.TIMEOUT, 504, true, details, cause);
-    this.name = 'TimeoutError';
+    this.name = "TimeoutError";
   }
 }
 
 export class BlockedError extends WebScrapeError {
   constructor(message: string, details?: Record<string, unknown>, cause?: Error) {
     super(message, ErrorCode.BLOCKED, 403, false, details, cause);
-    this.name = 'BlockedError';
+    this.name = "BlockedError";
   }
 }
 
 export class RateLimitError extends WebScrapeError {
   public readonly retryAfterMs?: number;
-  constructor(
-    message: string,
-    retryAfterMs?: number,
-    details?: Record<string, unknown>,
-    cause?: Error
-  ) {
+  constructor(message: string, retryAfterMs?: number, details?: Record<string, unknown>, cause?: Error) {
     super(message, ErrorCode.RATE_LIMITED, 429, true, { ...details, retryAfterMs }, cause);
-    this.name = 'RateLimitError';
+    this.name = "RateLimitError";
     this.retryAfterMs = retryAfterMs;
   }
 }
@@ -354,38 +349,38 @@ export class RateLimitError extends WebScrapeError {
 export class ProxyError extends WebScrapeError {
   constructor(message: string, details?: Record<string, unknown>, cause?: Error) {
     super(message, ErrorCode.PROXY_ERROR, 502, true, details, cause);
-    this.name = 'ProxyError';
+    this.name = "ProxyError";
   }
 }
 
 export class ParseError extends WebScrapeError {
   constructor(message: string, details?: Record<string, unknown>, cause?: Error) {
     super(message, ErrorCode.PARSE_ERROR, 422, false, details, cause);
-    this.name = 'ParseError';
+    this.name = "ParseError";
   }
 }
 
 export class AuthError extends WebScrapeError {
   constructor(message: string, details?: Record<string, unknown>, cause?: Error) {
     super(message, ErrorCode.AUTH_REQUIRED, 401, false, details, cause);
-    this.name = 'AuthError';
+    this.name = "AuthError";
   }
 }
 
 export class NetworkError extends WebScrapeError {
   constructor(message: string, details?: Record<string, unknown>, cause?: Error) {
     super(message, ErrorCode.NETWORK_ERROR, 503, true, details, cause);
-    this.name = 'NetworkError';
+    this.name = "NetworkError";
   }
 }
 
 export class BrowserNotAvailableError extends WebScrapeError {
   constructor(
-    message: string = 'Playwright is not installed. Install it with: npm install playwright',
-    details?: Record<string, unknown>
+    message: string = "Playwright is not installed. Install it with: npm install playwright",
+    details?: Record<string, unknown>,
   ) {
     super(message, ErrorCode.BROWSER_NOT_AVAILABLE, 500, false, details);
-    this.name = 'BrowserNotAvailableError';
+    this.name = "BrowserNotAvailableError";
   }
 }
 
@@ -401,7 +396,7 @@ export function ensureDir(path: string): void {
 
 export function writeOutput(path: string, content: string): void {
   ensureDir(path);
-  writeFileSync(path, content, 'utf-8');
+  writeFileSync(path, content, "utf-8");
 }
 
 export function slugify(text: string): string {
@@ -411,15 +406,15 @@ export function slugify(text: string): string {
    * forms never backtrack. */
   const lead = text
     .toLowerCase()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_]+/g, '-')
-    .replace(/^-+/, '');
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_]+/g, "-")
+    .replace(/^-+/, "");
   let end = lead.length;
-  while (end > 0 && lead[end - 1] === '-') end -= 1;
+  while (end > 0 && lead[end - 1] === "-") end -= 1;
   return lead.slice(0, end);
 }
 
-export function truncate(text: string, max: number, suffix = '...'): string {
+export function truncate(text: string, max: number, suffix = "..."): string {
   if (text.length <= max) return text;
   return text.slice(0, max - suffix.length) + suffix;
 }
@@ -434,7 +429,7 @@ export function legacychunktext(text: string, chunkSize: number): string[] {
   while (i < text.length) {
     let end = i + chunkSize;
     if (end < text.length) {
-      const breakIdx = text.lastIndexOf('\n', end);
+      const breakIdx = text.lastIndexOf("\n", end);
       if (breakIdx > i) end = breakIdx + 1;
     }
     chunks.push(text.slice(i, end).trim());
@@ -444,7 +439,7 @@ export function legacychunktext(text: string, chunkSize: number): string[] {
 }
 
 export function delay(ms: number): Promise<void> {
-  return new Promise(r => setTimeout(r, ms));
+  return new Promise((r) => setTimeout(r, ms));
 }
 
 export function isValidUrl(url: string): boolean {
@@ -499,35 +494,35 @@ export function resetPort(): void {
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 16: scrape/tokens.ts */
 /* ════════════════════════════════════════════════════════════════════ */
-export type ModelType = 'gpt-4o' | 'gpt-4' | 'gpt-3.5-turbo' | 'claude' | 'gemini' | 'default';
+export type ModelType = "gpt-4o" | "gpt-4" | "gpt-3.5-turbo" | "claude" | "gemini" | "default";
 
 const MODEL_TOKEN_RATIOS: Record<ModelType, number> = {
-  'gpt-4o': 3.5,
-  'gpt-4': 3.5,
-  'gpt-3.5-turbo': 4,
-  'claude': 3.2,
-  'gemini': 3.5,
-  'default': 4,
+  "gpt-4o": 3.5,
+  "gpt-4": 3.5,
+  "gpt-3.5-turbo": 4,
+  claude: 3.2,
+  gemini: 3.5,
+  default: 4,
 };
 
-export function estimateTokens(text: string, model: ModelType = 'default'): number {
+export function estimateTokens(text: string, model: ModelType = "default"): number {
   const ratio = MODEL_TOKEN_RATIOS[model] || 4;
   return Math.ceil(text.length / ratio);
 }
 
-export function countTokens(text: string, model: ModelType = 'default'): number {
+export function countTokens(text: string, model: ModelType = "default"): number {
   return estimateTokens(text, model);
 }
 
-export function fitsInContext(text: string, maxTokens: number, model: ModelType = 'default'): boolean {
+export function fitsInContext(text: string, maxTokens: number, model: ModelType = "default"): boolean {
   return estimateTokens(text, model) <= maxTokens;
 }
 
-export function truncateToTokens(text: string, maxTokens: number, model: ModelType = 'default'): string {
+export function truncateToTokens(text: string, maxTokens: number, model: ModelType = "default"): string {
   const estimatedTokens = estimateTokens(text, model);
   if (estimatedTokens <= maxTokens) return text;
   const charLimit = Math.floor(maxTokens * (MODEL_TOKEN_RATIOS[model] || 4));
-  return text.slice(0, charLimit) + '...';
+  return text.slice(0, charLimit) + "...";
 }
 
 export function tokenCost(text: string, model: ModelType, pricePer1kTokens: number): number {
@@ -536,13 +531,13 @@ export function tokenCost(text: string, model: ModelType, pricePer1kTokens: numb
 }
 
 export const MODEL_PRICES: Record<string, { input: number; output: number }> = {
-  'gpt-4o': { input: 0.0025, output: 0.01 },
-  'gpt-4o-mini': { input: 0.00015, output: 0.0006 },
-  'gpt-4-turbo': { input: 0.01, output: 0.03 },
-  'claude-3-5-sonnet': { input: 0.003, output: 0.015 },
-  'claude-3-haiku': { input: 0.00025, output: 0.00125 },
-  'gemini-1.5-pro': { input: 0.00125, output: 0.005 },
-  'gemini-1.5-flash': { input: 0.000075, output: 0.0003 },
+  "gpt-4o": { input: 0.0025, output: 0.01 },
+  "gpt-4o-mini": { input: 0.00015, output: 0.0006 },
+  "gpt-4-turbo": { input: 0.01, output: 0.03 },
+  "claude-3-5-sonnet": { input: 0.003, output: 0.015 },
+  "claude-3-haiku": { input: 0.00025, output: 0.00125 },
+  "gemini-1.5-pro": { input: 0.00125, output: 0.005 },
+  "gemini-1.5-flash": { input: 0.000075, output: 0.0003 },
 };
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -571,8 +566,8 @@ const DEFAULT_CHUNK_OPTIONS: Required<ChunkOptions> = {
 
 function splitByHeaders(markdown: string): { heading: string; level: number; content: string }[] {
   const sections: { heading: string; level: number; content: string }[] = [];
-  const lines = markdown.split('\n');
-  let currentHeading = '';
+  const lines = markdown.split("\n");
+  let currentHeading = "";
   let currentLevel = 0;
   let currentContent: string[] = [];
 
@@ -583,7 +578,7 @@ function splitByHeaders(markdown: string): { heading: string; level: number; con
         sections.push({
           heading: currentHeading,
           level: currentLevel,
-          content: currentContent.join('\n').trim(),
+          content: currentContent.join("\n").trim(),
         });
       }
       currentLevel = headerMatch[1].length;
@@ -598,7 +593,7 @@ function splitByHeaders(markdown: string): { heading: string; level: number; con
     sections.push({
       heading: currentHeading,
       level: currentLevel,
-      content: currentContent.join('\n').trim(),
+      content: currentContent.join("\n").trim(),
     });
   }
 
@@ -606,17 +601,34 @@ function splitByHeaders(markdown: string): { heading: string; level: number; con
 }
 
 function splitByParagraphs(text: string): string[] {
-  return text.split(/\n\n+/).filter(p => p.trim().length > 0);
+  return text.split(/\n\n+/).filter((p) => p.trim().length > 0);
 }
 
+const isterminator = (code: number): boolean => code === 46 || code === 33 || code === 63;
+
 function splitBySentences(text: string): string[] {
-  /* the linear sentence scan (the redos heal): the trailing unterminated run peels
-   * through the last terminator index the manual walk answers in one pass — the
-   * anchored star the scan engine charged never rides the lane again, and the
-   * possessive global match never restarts inside a failing tail. */
-  const last = Math.max(text.lastIndexOf('.'), text.lastIndexOf('!'), text.lastIndexOf('?'));
+  /* the manual sentence walk (the redos heal the pattern could not answer): the
+   * trailing unterminated run peels through the last terminator index, then one
+   * linear pass answers every sentence — each maximal non-terminator run joins
+   * the terminator run that follows, the run capped at its last two thousand
+   * characters exactly the way the bounded pattern answered, with no engine
+   * restart the polynomial model can charge (the bounded quantifier form the
+   * scanner flagged twice: the anchored peel heal left the match call riding). */
+  const last = Math.max(text.lastIndexOf("."), text.lastIndexOf("!"), text.lastIndexOf("?"));
   const terminated = last < 0 ? "" : text.slice(0, last + 1);
-  return terminated.match(/[^.!?]{0,2000}[.!?]+/g) || [text];
+  if (!terminated) return [text];
+  const sentences: string[] = [];
+  let cursor = 0;
+  while (cursor < terminated.length) {
+    const runstart = cursor;
+    while (cursor < terminated.length && !isterminator(terminated.charCodeAt(cursor))) cursor += 1;
+    const run = terminated.slice(runstart, cursor);
+    const capped = run.length > 2000 ? run.slice(run.length - 2000) : run;
+    const terminatorstart = cursor;
+    while (cursor < terminated.length && isterminator(terminated.charCodeAt(cursor))) cursor += 1;
+    sentences.push(capped + terminated.slice(terminatorstart, cursor));
+  }
+  return sentences;
 }
 
 export function chunkMarkdown(markdown: string, options: ChunkOptions = {}): Chunk[] {
@@ -636,7 +648,9 @@ export function chunkMarkdown(markdown: string, options: ChunkOptions = {}): Chu
       headingPath.push(section.heading);
     }
 
-    const sectionText = section.heading ? `#${'#'.repeat(section.level - 1)} ${section.heading}\n\n${section.content}` : section.content;
+    const sectionText = section.heading
+      ? `#${"#".repeat(section.level - 1)} ${section.heading}\n\n${section.content}`
+      : section.content;
 
     if (estimateTokens(sectionText) <= opts.maxTokens) {
       chunks.push({
@@ -647,7 +661,7 @@ export function chunkMarkdown(markdown: string, options: ChunkOptions = {}): Chu
       });
     } else {
       const paragraphs = splitByParagraphs(sectionText);
-      let currentChunk = '';
+      let currentChunk = "";
 
       for (const paragraph of paragraphs) {
         const testChunk = currentChunk ? `${currentChunk}\n\n${paragraph}` : paragraph;
@@ -666,7 +680,7 @@ export function chunkMarkdown(markdown: string, options: ChunkOptions = {}): Chu
 
           if (estimateTokens(paragraph) > opts.maxTokens) {
             const sentences = splitBySentences(paragraph);
-            let sentenceChunk = '';
+            let sentenceChunk = "";
             for (const sentence of sentences) {
               const testSentence = sentenceChunk ? `${sentenceChunk} ${sentence}` : sentence;
               if (estimateTokens(testSentence) <= opts.maxTokens) {
@@ -708,7 +722,7 @@ export function chunkText(text: string, options: ChunkOptions = {}): Chunk[] {
   const opts = { ...DEFAULT_CHUNK_OPTIONS, ...options };
   const chunks: Chunk[] = [];
   const paragraphs = splitByParagraphs(text);
-  let currentChunk = '';
+  let currentChunk = "";
 
   for (const paragraph of paragraphs) {
     const testChunk = currentChunk ? `${currentChunk}\n\n${paragraph}` : paragraph;
@@ -740,35 +754,37 @@ export function chunkText(text: string, options: ChunkOptions = {}): Chunk[] {
 }
 
 export function formatChunksForRAG(chunks: Chunk[]): string {
-  return chunks.map(chunk => {
-    const heading = chunk.headingPath.length > 0 ? `## ${chunk.headingPath.join(' > ')}\n\n` : '';
-    return `${heading}${chunk.content}`;
-  }).join('\n\n---\n\n');
+  return chunks
+    .map((chunk) => {
+      const heading = chunk.headingPath.length > 0 ? `## ${chunk.headingPath.join(" > ")}\n\n` : "";
+      return `${heading}${chunk.content}`;
+    })
+    .join("\n\n---\n\n");
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 18: scrape/formats.ts */
 /* ════════════════════════════════════════════════════════════════════ */
 const FORMAT_ALIASES: Record<string, ScrapeFormat> = {
-  md: 'markdown',
-  txt: 'text',
-  plain: 'text',
-  xml: 'xml',
-  json: 'json',
-  redis: 'redis',
-  html: 'html',
-  h: 'html',
+  md: "markdown",
+  txt: "text",
+  plain: "text",
+  xml: "xml",
+  json: "json",
+  redis: "redis",
+  html: "html",
+  h: "html",
 };
 
 const FORMAT_EXTENSIONS: Record<string, ScrapeFormat> = {
-  '.md': 'markdown',
-  '.markdown': 'markdown',
-  '.html': 'html',
-  '.htm': 'html',
-  '.txt': 'text',
-  '.json': 'json',
-  '.xml': 'xml',
-  '.redis': 'redis',
+  ".md": "markdown",
+  ".markdown": "markdown",
+  ".html": "html",
+  ".htm": "html",
+  ".txt": "text",
+  ".json": "json",
+  ".xml": "xml",
+  ".redis": "redis",
 };
 
 export function resolveFormat(format: string): ScrapeFormat {
@@ -782,37 +798,43 @@ export function formatFromExtension(ext: string): ScrapeFormat | null {
 
 export function extensionForFormat(format: ScrapeFormat): string {
   const map: Record<ScrapeFormat, string> = {
-    markdown: '.md',
-    html: '.html',
-    text: '.txt',
-    json: '.json',
-    xml: '.xml',
-    redis: '.redis',
+    markdown: ".md",
+    html: ".html",
+    text: ".txt",
+    json: ".json",
+    xml: ".xml",
+    redis: ".redis",
   };
-  return map[format] || '.md';
+  return map[format] || ".md";
 }
 
-export function detectContentType(html: string): 'article' | 'list' | 'page' | 'other' {
-  if (html.includes('<article') || html.includes('entry-content') || html.includes('class="post-content"') || html.includes('class="article-content"') || html.includes('role="main"')) {
-    return 'article';
+export function detectContentType(html: string): "article" | "list" | "page" | "other" {
+  if (
+    html.includes("<article") ||
+    html.includes("entry-content") ||
+    html.includes('class="post-content"') ||
+    html.includes('class="article-content"') ||
+    html.includes('role="main"')
+  ) {
+    return "article";
   }
   const listCount = (html.match(/<li>/gi) || []).length;
-  if (listCount > 20) return 'list';
-  if (html.includes('<article') || html.includes('entry-content')) return 'article';
-  return 'page';
+  if (listCount > 20) return "list";
+  if (html.includes("<article") || html.includes("entry-content")) return "article";
+  return "page";
 }
 
 export function buildSerializeOptions(format: ScrapeFormat, pretty = true): SerializeOptions {
   const targetMap: Record<ScrapeFormat, SerializeTarget> = {
-    markdown: 'markdown',
-    html: 'markdown',
-    text: 'text',
-    json: 'json',
-    xml: 'xml',
-    redis: 'redis',
+    markdown: "markdown",
+    html: "markdown",
+    text: "text",
+    json: "json",
+    xml: "xml",
+    redis: "redis",
   };
   return {
-    format: targetMap[format] || 'markdown',
+    format: targetMap[format] || "markdown",
     pretty,
     includeMetadata: true,
   };
@@ -838,12 +860,12 @@ export async function convertResult(result: ScrapeResult, targetFormat: ScrapeFo
 function htmlToMarkdown(html: string): string {
   const dom = new JSDOM(html);
   const doc = dom.window.document;
-  let md = '';
+  let md = "";
 
   function processNode(node: globalThis.Node, depth = 0): void {
     if (node.nodeType === 3) {
       const text = (node as globalThis.Text).textContent?.trim();
-      if (text) md += text + ' ';
+      if (text) md += text + " ";
       return;
     }
     if (node.nodeType !== 1) return;
@@ -851,77 +873,95 @@ function htmlToMarkdown(html: string): string {
     const tag = el.tagName.toLowerCase();
 
     switch (tag) {
-      case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': {
+      case "h1":
+      case "h2":
+      case "h3":
+      case "h4":
+      case "h5":
+      case "h6": {
         const level = parseInt(tag[1]);
-        md += '\n' + '#'.repeat(level) + ' ' + el.textContent?.trim() + '\n\n';
+        md += "\n" + "#".repeat(level) + " " + el.textContent?.trim() + "\n\n";
         break;
       }
-      case 'p':
-        md += '\n' + el.textContent?.trim() + '\n\n';
+      case "p":
+        md += "\n" + el.textContent?.trim() + "\n\n";
         break;
-      case 'br':
-        md += '\n';
+      case "br":
+        md += "\n";
         break;
-      case 'hr':
-        md += '\n---\n\n';
+      case "hr":
+        md += "\n---\n\n";
         break;
-      case 'ul': case 'ol': {
-        el.childNodes.forEach(li => {
+      case "ul":
+      case "ol": {
+        el.childNodes.forEach((li) => {
           if (li.nodeType === 1) {
             const liEl = li as globalThis.Element;
-            if (liEl.tagName.toLowerCase() === 'li') {
-              md += '  '.repeat(depth) + '- ' + liEl.textContent?.trim() + '\n';
+            if (liEl.tagName.toLowerCase() === "li") {
+              md += "  ".repeat(depth) + "- " + liEl.textContent?.trim() + "\n";
             }
           }
         });
-        md += '\n';
+        md += "\n";
         break;
       }
-      case 'a': {
-        const href = el.getAttribute('href') || '';
+      case "a": {
+        const href = el.getAttribute("href") || "";
         const text = el.textContent?.trim() || href;
-        if (href && href !== '#') md += `[${text}](${href}) `;
-        else md += text + ' ';
+        if (href && href !== "#") md += `[${text}](${href}) `;
+        else md += text + " ";
         break;
       }
-      case 'img': {
-        const src = el.getAttribute('src') || '';
-        const alt = el.getAttribute('alt') || '';
+      case "img": {
+        const src = el.getAttribute("src") || "";
+        const alt = el.getAttribute("alt") || "";
         if (src) md += `![${alt}](${src}) `;
         break;
       }
-      case 'strong': case 'b':
-        md += '**' + el.textContent?.trim() + '** ';
+      case "strong":
+      case "b":
+        md += "**" + el.textContent?.trim() + "** ";
         break;
-      case 'em': case 'i':
-        md += '*' + el.textContent?.trim() + '* ';
+      case "em":
+      case "i":
+        md += "*" + el.textContent?.trim() + "* ";
         break;
-      case 'code':
-        md += '`' + el.textContent?.trim() + '` ';
+      case "code":
+        md += "`" + el.textContent?.trim() + "` ";
         break;
-      case 'pre': {
-        const code = el.querySelector('code');
-        const lang = code?.getAttribute('class')?.replace(/^language-/, '') || '';
-        md += '\n```' + lang + '\n' + (code || el).textContent + '\n```\n\n';
+      case "pre": {
+        const code = el.querySelector("code");
+        const lang = code?.getAttribute("class")?.replace(/^language-/, "") || "";
+        md += "\n```" + lang + "\n" + (code || el).textContent + "\n```\n\n";
         break;
       }
-      case 'blockquote':
-        md += '\n> ' + el.textContent?.trim().replace(/\n/g, '\n> ') + '\n\n';
+      case "blockquote":
+        md += "\n> " + el.textContent?.trim().replace(/\n/g, "\n> ") + "\n\n";
         break;
-      case 'table': {
-        const rows = el.querySelectorAll('tr');
+      case "table": {
+        const rows = el.querySelectorAll("tr");
         rows.forEach((row, i) => {
-          const cells = row.querySelectorAll('td, th');
-          md += '| ' + Array.from(cells).map(c => c.textContent?.trim()).join(' | ') + ' |\n';
-          if (i === 0 && row.parentElement?.tagName === 'THEAD') {
-            md += '|' + Array.from(cells).map(() => ' --- ').join('|') + '|\n';
+          const cells = row.querySelectorAll("td, th");
+          md +=
+            "| " +
+            Array.from(cells)
+              .map((c) => c.textContent?.trim())
+              .join(" | ") +
+            " |\n";
+          if (i === 0 && row.parentElement?.tagName === "THEAD") {
+            md +=
+              "|" +
+              Array.from(cells)
+                .map(() => " --- ")
+                .join("|") +
+              "|\n";
           }
         });
-        md += '\n';
+        md += "\n";
         break;
       }
       default:
-        el.childNodes.forEach(child => {
+        el.childNodes.forEach((child) => {
           processNode(child, depth);
         });
     }
@@ -930,15 +970,15 @@ function htmlToMarkdown(html: string): string {
   doc.body?.childNodes.forEach((child: globalThis.Node) => {
     processNode(child);
   });
-  return md.replace(/\n{3,}/g, '\n\n').trim();
+  return md.replace(/\n{3,}/g, "\n\n").trim();
 }
 
-function htmlToXml(html: string, root = 'document'): string {
+function htmlToXml(html: string, root = "document"): string {
   const dom = new JSDOM(html);
   const doc = dom.window.document;
 
   function serialize(el: globalThis.Element, depth = 0): string {
-    const indent = '  '.repeat(depth);
+    const indent = "  ".repeat(depth);
     const tag = el.tagName.toLowerCase();
     if (el.childNodes.length === 0) {
       return `${indent}<${tag} />\n`;
@@ -948,7 +988,7 @@ function htmlToXml(html: string, root = 'document'): string {
       return `${indent}<${tag}>${escapeXml(text)}</${tag}>\n`;
     }
     let xml = `${indent}<${tag}>\n`;
-    el.childNodes.forEach(child => {
+    el.childNodes.forEach((child) => {
       if (child.nodeType === 1) xml += serialize(child as globalThis.Element, depth + 1);
       else if (child.nodeType === 3 && (child as globalThis.Text).textContent?.trim()) {
         xml += `${indent}  ${escapeXml((child as globalThis.Text).textContent!.trim())}\n`;
@@ -959,7 +999,7 @@ function htmlToXml(html: string, root = 'document'): string {
   }
 
   function escapeXml(s: string): string {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<${root}>\n`;
@@ -970,20 +1010,20 @@ function htmlToXml(html: string, root = 'document'): string {
   return xml;
 }
 
-function htmlToRedisJson(html: string, key = 'page'): string {
+function htmlToRedisJson(html: string, key = "page"): string {
   const dom = new JSDOM(html);
   const doc = dom.window.document;
 
   function extract(el: globalThis.Element): Record<string, unknown> {
     const tag = el.tagName.toLowerCase();
     const children = Array.from(el.children);
-    if (children.length === 0) return { _tag: tag, _text: el.textContent?.trim() || '' };
+    if (children.length === 0) return { _tag: tag, _text: el.textContent?.trim() || "" };
     const result: Record<string, unknown> = { _tag: tag };
-    if (el.getAttribute('href')) result.href = el.getAttribute('href')!;
-    if (el.getAttribute('src')) result.src = el.getAttribute('src')!;
-    if (el.getAttribute('alt')) result.alt = el.getAttribute('alt')!;
-    if (el.getAttribute('class')) result.class = el.getAttribute('class')!;
-    children.forEach(child => {
+    if (el.getAttribute("href")) result.href = el.getAttribute("href")!;
+    if (el.getAttribute("src")) result.src = el.getAttribute("src")!;
+    if (el.getAttribute("alt")) result.alt = el.getAttribute("alt")!;
+    if (el.getAttribute("class")) result.class = el.getAttribute("class")!;
+    children.forEach((child) => {
       const childTag = child.tagName.toLowerCase();
       if (result[childTag]) {
         if (!Array.isArray(result[childTag])) result[childTag] = [result[childTag]];
@@ -1004,13 +1044,13 @@ function htmlToRedisJson(html: string, key = 'page'): string {
   const json: Record<string, unknown> = {
     title,
     body: bodyArr,
-    links: Array.from(doc.querySelectorAll('a[href]')).map((a) => ({
-      href: (a as globalThis.Element).getAttribute('href'),
+    links: Array.from(doc.querySelectorAll("a[href]")).map((a) => ({
+      href: (a as globalThis.Element).getAttribute("href"),
       text: (a as globalThis.Element).textContent?.trim(),
     })),
-    images: Array.from(doc.querySelectorAll('img[src]')).map((img) => ({
-      src: (img as globalThis.Element).getAttribute('src'),
-      alt: (img as globalThis.Element).getAttribute('alt'),
+    images: Array.from(doc.querySelectorAll("img[src]")).map((img) => ({
+      src: (img as globalThis.Element).getAttribute("src"),
+      alt: (img as globalThis.Element).getAttribute("alt"),
     })),
   };
 
@@ -1018,12 +1058,12 @@ function htmlToRedisJson(html: string, key = 'page'): string {
 }
 
 /** Single-pass HTML entity decode map: the replace callback resolves each entity exactly once so a double-escaped `&amp;lt;` decodes to the literal text `&lt;` and never again to `<`. */
-const ENTITIES: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" };
+const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'" };
 
 /** Script/style block removal at the fixpoint: case-insensitive, tolerant of `</script >` closing whitespace, and no opener fragment survives — the strip re-rides until the output stops changing, so an opener a single pass reassembles (the `<scr` before a dropped block and the `ipt>` after it splicing back into `<script>`) dies on the next walk. One linear scan per pass, no regex backtracking. */
 function stripblocks(html: string, ...tags: string[]): string {
-  const open = new RegExp(`<(${tags.join('|')})\\b[^<>]{0,500}>`, 'i');
-  const fragment = new RegExp(`<(${tags.join('|')})\\b`, 'i');
+  const open = new RegExp(`<(${tags.join("|")})\\b[^<>]{0,500}>`, "i");
+  const fragment = new RegExp(`<(${tags.join("|")})\\b`, "i");
   /* the fixpoint law (the sanitization heal): one pass can splice a fresh
    * opener out of the survivors — the text before a dropped block ending
    * in `<scr` and the text after it starting with `ipt>` reassemble into
@@ -1039,7 +1079,7 @@ function stripblocks(html: string, ...tags: string[]): string {
 
 /** One linear pass of the block strip: the open-tag scan, the unterminated drop and the dangling-fragment guard the fixpoint loop re-rides. */
 function strippass(html: string, open: RegExp, fragment: RegExp): string {
-  let out = '';
+  let out = "";
   let cursor = 0;
   let match: RegExpExecArray | null;
   while ((match = open.exec(html.slice(cursor))) !== null) {
@@ -1048,7 +1088,7 @@ function strippass(html: string, open: RegExp, fragment: RegExp): string {
     const closeTag = `</${match[1].toLowerCase()}`;
     const close = html.toLowerCase().indexOf(closeTag, start + match[0].length);
     if (close < 0) return out; /* unterminated block: the rest is dropped */
-    const gt = html.indexOf('>', close);
+    const gt = html.indexOf(">", close);
     cursor = gt < 0 ? html.length : gt + 1;
   }
   /* the dangling-fragment guard: an open tag with no closing bracket never
@@ -1065,44 +1105,44 @@ function strippass(html: string, open: RegExp, fragment: RegExp): string {
  * and no <script fragment survives the lane. Blocks drop at the fixpoint, tags strip to the fixpoint too. */
 function plainText(html: string): string {
   const decoded = html
-    .replace(/&nbsp;/g, ' ')
+    .replace(/&nbsp;/g, " ")
     .replace(/&(amp|lt|gt|quot|#39);/g, (whole: string, entity: string) => ENTITIES[entity] ?? whole);
-  const structured = stripblocks(decoded, 'script', 'style')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/p>/gi, '\n\n')
-    .replace(/<\/h[1-6]>/gi, '\n')
-    .replace(/<\/li>/gi, '\n')
-    .replace(/<\/tr>/gi, '\n')
-    .replace(/<\/td>/gi, ' | ')
-    .replace(/<\/th>/gi, ' | ');
+  const structured = stripblocks(decoded, "script", "style")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>/gi, "\n\n")
+    .replace(/<\/h[1-6]>/gi, "\n")
+    .replace(/<\/li>/gi, "\n")
+    .replace(/<\/tr>/gi, "\n")
+    .replace(/<\/td>/gi, " | ")
+    .replace(/<\/th>/gi, " | ");
   /* the tag-strip fixpoint (the sanitization heal): one pass can splice a
    * fresh tag out of the survivors — the `<scr` before a stripped `<i>`
    * and the `ipt>` after it reassemble into `<script>` — so the strip
    * walks again until nothing changes, the complete-sanitization idiom. */
   let current = structured;
   for (;;) {
-    const next = current.replace(/<[^<>]+>/g, '');
+    const next = current.replace(/<[^<>]+>/g, "");
     if (next === current) break;
     current = next;
   }
   return current
-    .replace(/<\/?(?:script|style)\b[^<>]*$/i, '')
-    .replace(/\n{3,}/g, '\n\n')
+    .replace(/<\/?(?:script|style)\b[^<>]*$/i, "")
+    .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
 
 function tableToMarkdown(headers: string[], rows: string[][], caption?: string): string {
-  let md = caption ? `### ${caption}\n\n` : '';
-  md += '| ' + headers.join(' | ') + ' |\n';
-  md += '|' + headers.map(() => ' --- ').join('|') + '|\n';
+  let md = caption ? `### ${caption}\n\n` : "";
+  md += "| " + headers.join(" | ") + " |\n";
+  md += "|" + headers.map(() => " --- ").join("|") + "|\n";
   for (const row of rows) {
-    md += '| ' + row.join(' | ') + ' |\n';
+    md += "| " + row.join(" | ") + " |\n";
   }
-  return md + '\n';
+  return md + "\n";
 }
 
 export function serializeResult(result: ScrapeResult, options: SerializeOptions): SerializedOutput {
-  let content = '';
+  let content = "";
 
   if (options.includeMetadata !== false) {
     content += `# ${result.title}\n\n`;
@@ -1114,40 +1154,50 @@ export function serializeResult(result: ScrapeResult, options: SerializeOptions)
   }
 
   switch (options.format) {
-    case 'markdown':
+    case "markdown":
       content += result.content;
       if (result.tables.length) {
-        content += '\n\n## Tables\n\n';
+        content += "\n\n## Tables\n\n";
         for (const t of result.tables) {
           content += tableToMarkdown(t.headers, t.rows, t.caption);
         }
       }
       break;
 
-    case 'text':
+    case "text":
       content += result.text;
       break;
 
-    case 'xml':
-      content = htmlToXml(`<html><head><title>${result.title}</title></head><body>${result.content}</body></html>`, options.xmlRoot || 'document');
+    case "xml":
+      content = htmlToXml(
+        `<html><head><title>${result.title}</title></head><body>${result.content}</body></html>`,
+        options.xmlRoot || "document",
+      );
       break;
 
-    case 'json':
-      content = JSON.stringify({
-        title: result.title,
-        url: result.url,
-        metadata: result.metadata,
-        content: result.content,
-        links: result.links,
-        images: result.images,
-        tables: result.tables,
-        extractedAt: result.extractedAt,
-        duration: result.duration,
-      }, null, options.pretty ? 2 : undefined);
+    case "json":
+      content = JSON.stringify(
+        {
+          title: result.title,
+          url: result.url,
+          metadata: result.metadata,
+          content: result.content,
+          links: result.links,
+          images: result.images,
+          tables: result.tables,
+          extractedAt: result.extractedAt,
+          duration: result.duration,
+        },
+        null,
+        options.pretty ? 2 : undefined,
+      );
       break;
 
-    case 'redis':
-      content = htmlToRedisJson(`<html><head><title>${result.title}</title></head><body>${result.content}</body></html>`, options.redisKey || `page:${encodeURIComponent(result.url)}`);
+    case "redis":
+      content = htmlToRedisJson(
+        `<html><head><title>${result.title}</title></head><body>${result.content}</body></html>`,
+        options.redisKey || `page:${encodeURIComponent(result.url)}`,
+      );
       break;
   }
 
@@ -1179,12 +1229,18 @@ export function serializeResult(result: ScrapeResult, options: SerializeOptions)
 export function serializeHtml(html: string, options: SerializeOptions): SerializedOutput {
   const content = (() => {
     switch (options.format) {
-      case 'markdown': return htmlToMarkdown(html);
-      case 'xml': return htmlToXml(html, options.xmlRoot || 'document');
-      case 'json': return JSON.stringify({ html }, null, options.pretty ? 2 : undefined);
-      case 'redis': return htmlToRedisJson(html, options.redisKey || 'page:1');
-      case 'text': return plainText(html);
-      default: return plainText(html);
+      case "markdown":
+        return htmlToMarkdown(html);
+      case "xml":
+        return htmlToXml(html, options.xmlRoot || "document");
+      case "json":
+        return JSON.stringify({ html }, null, options.pretty ? 2 : undefined);
+      case "redis":
+        return htmlToRedisJson(html, options.redisKey || "page:1");
+      case "text":
+        return plainText(html);
+      default:
+        return plainText(html);
     }
   })();
 
@@ -1211,31 +1267,34 @@ export interface HeaderProfile {
 
 const CHROME_PROFILES: HeaderProfile[] = [
   {
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-    acceptLanguage: 'en-US,en;q=0.9',
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    acceptLanguage: "en-US,en;q=0.9",
     secChUa: '"Chromium";v="131", "Not_A Brand";v="24"',
     secChUaPlatform: '"Windows"',
   },
   {
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-    acceptLanguage: 'en-US,en;q=0.9',
+    userAgent:
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+    acceptLanguage: "en-US,en;q=0.9",
     secChUa: '"Chromium";v="131", "Not_A Brand";v="24"',
     secChUaPlatform: '"macOS"',
   },
   {
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0',
-    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-    acceptLanguage: 'en-US,en;q=0.5',
-    secChUa: '',
+    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0",
+    accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+    acceptLanguage: "en-US,en;q=0.5",
+    secChUa: "",
     secChUaPlatform: '"Windows"',
   },
   {
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Safari/605.1.15',
-    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    acceptLanguage: 'en-US,en;q=0.9',
-    secChUa: '',
+    userAgent:
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Safari/605.1.15",
+    accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    acceptLanguage: "en-US,en;q=0.9",
+    secChUa: "",
     secChUaPlatform: '"macOS"',
   },
 ];
@@ -1247,29 +1306,26 @@ export function getRandomProfile(): HeaderProfile {
 export function getHeaders(profile?: HeaderProfile): Record<string, string> {
   const p = profile || getRandomProfile();
   const headers: Record<string, string> = {
-    'User-Agent': p.userAgent,
-    'Accept': p.accept,
-    'Accept-Language': p.acceptLanguage,
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Connection': 'keep-alive',
-    'Upgrade-Insecure-Requests': '1',
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'none',
-    'Sec-Fetch-User': '?1',
+    "User-Agent": p.userAgent,
+    Accept: p.accept,
+    "Accept-Language": p.acceptLanguage,
+    "Accept-Encoding": "gzip, deflate, br",
+    Connection: "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "none",
+    "Sec-Fetch-User": "?1",
   };
   if (p.secChUa) {
-    headers['sec-ch-ua'] = p.secChUa;
-    headers['sec-ch-ua-mobile'] = '?0';
-    headers['sec-ch-ua-platform'] = p.secChUaPlatform;
+    headers["sec-ch-ua"] = p.secChUa;
+    headers["sec-ch-ua-mobile"] = "?0";
+    headers["sec-ch-ua-platform"] = p.secChUaPlatform;
   }
   return headers;
 }
 
-export function mergeHeaders(
-  base: Record<string, string>,
-  override: Record<string, string>
-): Record<string, string> {
+export function mergeHeaders(base: Record<string, string>, override: Record<string, string>): Record<string, string> {
   return { ...base, ...override };
 }
 
@@ -1290,7 +1346,7 @@ export class CookieJar {
   private cookies = new Map<string, Cookie>();
 
   set(cookie: Cookie): void {
-    const key = `${cookie.domain || ''}:${cookie.path || '/'}:${cookie.name}`;
+    const key = `${cookie.domain || ""}:${cookie.path || "/"}:${cookie.name}`;
     this.cookies.set(key, cookie);
   }
 
@@ -1323,31 +1379,31 @@ export class CookieJar {
 
   toString(domain?: string): string {
     return this.getAll(domain)
-      .map(c => `${c.name}=${c.value}`)
-      .join('; ');
+      .map((c) => `${c.name}=${c.value}`)
+      .join("; ");
   }
 
   parseSetCookie(header: string, defaultDomain?: string): void {
-    const parts = header.split(';').map(s => s.trim());
+    const parts = header.split(";").map((s) => s.trim());
     const [nameValue, ...attrs] = parts;
-    const [name, ...valueParts] = nameValue.split('=');
-    const value = valueParts.join('=');
+    const [name, ...valueParts] = nameValue.split("=");
+    const value = valueParts.join("=");
 
     const cookie: Cookie = {
       name: name.trim(),
       value: value.trim(),
       domain: defaultDomain,
-      path: '/',
+      path: "/",
     };
 
     for (const attr of attrs) {
-      const [key, val] = attr.split('=').map(s => s.trim());
+      const [key, val] = attr.split("=").map((s) => s.trim());
       const lower = key.toLowerCase();
-      if (lower === 'domain') cookie.domain = val;
-      else if (lower === 'path') cookie.path = val;
-      else if (lower === 'expires') cookie.expires = new Date(val).getTime();
-      else if (lower === 'httponly') cookie.httpOnly = true;
-      else if (lower === 'secure') cookie.secure = true;
+      if (lower === "domain") cookie.domain = val;
+      else if (lower === "path") cookie.path = val;
+      else if (lower === "expires") cookie.expires = new Date(val).getTime();
+      else if (lower === "httponly") cookie.httpOnly = true;
+      else if (lower === "secure") cookie.secure = true;
     }
 
     this.set(cookie);
@@ -1415,7 +1471,7 @@ export class BrowserPool {
   }
 
   async acquire(): Promise<AgentBrowser> {
-    const idle = this.pool.find(e => !e.inUse && e.browser.isConnected());
+    const idle = this.pool.find((e) => !e.inUse && e.browser.isConnected());
     if (idle) {
       idle.inUse = true;
       return idle.browser;
@@ -1433,7 +1489,7 @@ export class BrowserPool {
       const timeout = setTimeout(() => {
         const idx = this.waitQueue.indexOf(waiter);
         if (idx !== -1) this.waitQueue.splice(idx, 1);
-        reject(new Error('Timeout waiting for browser'));
+        reject(new Error("Timeout waiting for browser"));
       }, this.config.acquireTimeoutMs);
 
       const waiter = (browser: AgentBrowser) => {
@@ -1445,7 +1501,7 @@ export class BrowserPool {
   }
 
   release(browser: AgentBrowser): void {
-    const entry = this.pool.find(e => e.browser === browser);
+    const entry = this.pool.find((e) => e.browser === browser);
     if (entry) {
       entry.inUse = false;
 
@@ -1471,8 +1527,8 @@ export class BrowserPool {
   getStatus(): { total: number; idle: number; inUse: number; waiting: number } {
     return {
       total: this.pool.length,
-      idle: this.pool.filter(e => !e.inUse).length,
-      inUse: this.pool.filter(e => e.inUse).length,
+      idle: this.pool.filter((e) => !e.inUse).length,
+      inUse: this.pool.filter((e) => e.inUse).length,
       waiting: this.waitQueue.length,
     };
   }
@@ -1495,7 +1551,7 @@ interface ProxyStats {
   disabledAt?: number;
 }
 
-export type ProxyRotationStrategy = 'round-robin' | 'random';
+export type ProxyRotationStrategy = "round-robin" | "random";
 
 export interface ProxyPoolConfig {
   maxFailures?: number;
@@ -1506,7 +1562,7 @@ export interface ProxyPoolConfig {
 const DEFAULT_POOL_CONFIG: Required<ProxyPoolConfig> = {
   maxFailures: 3,
   reviveAfterMs: 30 * 60 * 1000,
-  strategy: 'round-robin',
+  strategy: "round-robin",
 };
 
 export class ProxyPool {
@@ -1525,10 +1581,10 @@ export class ProxyPool {
 
   private getActiveProxies(): ProxyConfig[] {
     const now = Date.now();
-    return this.proxies.filter(p => {
+    return this.proxies.filter((p) => {
       const s = this.stats.get(p.url);
       if (!s) return true;
-      if (s.disabled && s.disabledAt && (now - s.disabledAt) >= this.config.reviveAfterMs) {
+      if (s.disabled && s.disabledAt && now - s.disabledAt >= this.config.reviveAfterMs) {
         s.disabled = false;
         s.failures = 0;
         s.consecutiveFailures = 0;
@@ -1542,7 +1598,7 @@ export class ProxyPool {
     const active = this.getActiveProxies();
     if (active.length === 0) return null;
 
-    if (this.config.strategy === 'random') {
+    if (this.config.strategy === "random") {
       return active[Math.floor(Math.random() * active.length)];
     }
 
@@ -1594,176 +1650,216 @@ export function createProxyPool(proxies: ProxyConfig[], config?: Partial<ProxyPo
  * proxy pool chooses healthy least used entries and never rotates blindly.
  */
 export function proxypool(options = {}) {
-  const entries = (options.proxies ?? []).map((proxy) => ({ ...proxy, failures: 0, uses: 0, status: "active", lastused: 0 }));
+  const entries = (options.proxies ?? []).map((proxy) => ({
+    ...proxy,
+    failures: 0,
+    uses: 0,
+    status: "active",
+    lastused: 0,
+  }));
   const threshold = options.failurethreshold ?? 3;
   const recovery = options.recoverytime ?? 300000;
-  function revive() { const now = Date.now(); for (const entry of entries) if (entry.status === "graveyard" && now - entry.failedat >= recovery) { entry.status = "active"; entry.failures = 0; } }
-  function choose() { revive(); const available = entries.filter((entry) => entry.status === "active"); if (!available.length) throw new Error("proxy pool has no healthy entries"); const selected = [...available].sort((left, right) => left.uses - right.uses || left.lastused - right.lastused)[0]; selected.uses += 1; selected.lastused = Date.now(); return { ...selected }; }
-  function report(id, result = {}) { const entry = entries.find((value) => value.id === id); if (!entry) return null; if (result.ok) { entry.failures = 0; entry.status = "active"; } else { entry.failures += 1; entry.status = entry.failures >= threshold ? "graveyard" : "active"; entry.failedat = Date.now(); } return { ...entry }; }
-  return { choose, report, list() { revive(); return entries.map((entry) => ({ ...entry })); } };
+  function revive() {
+    const now = Date.now();
+    for (const entry of entries)
+      if (entry.status === "graveyard" && now - entry.failedat >= recovery) {
+        entry.status = "active";
+        entry.failures = 0;
+      }
+  }
+  function choose() {
+    revive();
+    const available = entries.filter((entry) => entry.status === "active");
+    if (!available.length) throw new Error("proxy pool has no healthy entries");
+    const selected = [...available].sort((left, right) => left.uses - right.uses || left.lastused - right.lastused)[0];
+    selected.uses += 1;
+    selected.lastused = Date.now();
+    return { ...selected };
+  }
+  function report(id, result = {}) {
+    const entry = entries.find((value) => value.id === id);
+    if (!entry) return null;
+    if (result.ok) {
+      entry.failures = 0;
+      entry.status = "active";
+    } else {
+      entry.failures += 1;
+      entry.status = entry.failures >= threshold ? "graveyard" : "active";
+      entry.failedat = Date.now();
+    }
+    return { ...entry };
+  }
+  return {
+    choose,
+    report,
+    list() {
+      revive();
+      return entries.map((entry) => ({ ...entry }));
+    },
+  };
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 25: scrape/rate-limiter.ts */
 /* ════════════════════════════════════════════════════════════════════ */
 interface TokenBucket {
-        tokens: number;
-        lastRefill: number;
-        maxTokens: number;
-        refillRate: number;
+  tokens: number;
+  lastRefill: number;
+  maxTokens: number;
+  refillRate: number;
 }
 
 export interface RateLimiterConfig {
-        maxTokensPerInterval: number;
-        intervalMs: number;
-        maxConcurrent?: number;
+  maxTokensPerInterval: number;
+  intervalMs: number;
+  maxConcurrent?: number;
 }
 
 const DEFAULT_CONFIG: Required<RateLimiterConfig> = {
-        maxTokensPerInterval: 10,
-        intervalMs: 1000,
-        maxConcurrent: 5,
+  maxTokensPerInterval: 10,
+  intervalMs: 1000,
+  maxConcurrent: 5,
 };
 
 export class RateLimiter {
-        private buckets = new Map<string, TokenBucket>();
-        private active = new Map<string, number>();
-        private config: Required<RateLimiterConfig>;
+  private buckets = new Map<string, TokenBucket>();
+  private active = new Map<string, number>();
+  private config: Required<RateLimiterConfig>;
 
-        constructor(config: Partial<RateLimiterConfig> = {}) {
-                this.config = { ...DEFAULT_CONFIG, ...config };
-        }
+  constructor(config: Partial<RateLimiterConfig> = {}) {
+    this.config = { ...DEFAULT_CONFIG, ...config };
+  }
 
-        private getBucket(key: string): TokenBucket {
-                if (!this.buckets.has(key)) {
-                        this.buckets.set(key, {
-                                tokens: this.config.maxTokensPerInterval,
-                                lastRefill: Date.now(),
-                                maxTokens: this.config.maxTokensPerInterval,
-                                refillRate: this.config.maxTokensPerInterval / (this.config.intervalMs / 1000),
-                        });
-                }
-                return this.buckets.get(key)!;
-        }
+  private getBucket(key: string): TokenBucket {
+    if (!this.buckets.has(key)) {
+      this.buckets.set(key, {
+        tokens: this.config.maxTokensPerInterval,
+        lastRefill: Date.now(),
+        maxTokens: this.config.maxTokensPerInterval,
+        refillRate: this.config.maxTokensPerInterval / (this.config.intervalMs / 1000),
+      });
+    }
+    return this.buckets.get(key)!;
+  }
 
-        private refill(bucket: TokenBucket): void {
-                const now = Date.now();
-                const elapsed = (now - bucket.lastRefill) / 1000;
-                bucket.tokens = Math.min(bucket.maxTokens, bucket.tokens + elapsed * bucket.refillRate);
-                bucket.lastRefill = now;
-        }
+  private refill(bucket: TokenBucket): void {
+    const now = Date.now();
+    const elapsed = (now - bucket.lastRefill) / 1000;
+    bucket.tokens = Math.min(bucket.maxTokens, bucket.tokens + elapsed * bucket.refillRate);
+    bucket.lastRefill = now;
+  }
 
-        async acquire(key: string): Promise<void> {
-                const bucket = this.getBucket(key);
-                const currentActive = this.active.get(key) || 0;
+  async acquire(key: string): Promise<void> {
+    const bucket = this.getBucket(key);
+    const currentActive = this.active.get(key) || 0;
 
-                if (currentActive >= this.config.maxConcurrent) {
-                        await new Promise((resolve) => setTimeout(resolve, 100));
-                        return this.acquire(key);
-                }
+    if (currentActive >= this.config.maxConcurrent) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      return this.acquire(key);
+    }
 
-                this.refill(bucket);
+    this.refill(bucket);
 
-                if (bucket.tokens < 1) {
-                        const waitMs = ((1 - bucket.tokens) / bucket.refillRate) * 1000;
-                        await new Promise((resolve) => setTimeout(resolve, Math.ceil(waitMs)));
-                        this.refill(bucket);
-                }
+    if (bucket.tokens < 1) {
+      const waitMs = ((1 - bucket.tokens) / bucket.refillRate) * 1000;
+      await new Promise((resolve) => setTimeout(resolve, Math.ceil(waitMs)));
+      this.refill(bucket);
+    }
 
-                bucket.tokens -= 1;
-                this.active.set(key, currentActive + 1);
-        }
+    bucket.tokens -= 1;
+    this.active.set(key, currentActive + 1);
+  }
 
-        release(key: string): void {
-                const current = this.active.get(key) || 0;
-                if (current <= 1) {
-                        this.active.delete(key);
-                } else {
-                        this.active.set(key, current - 1);
-                }
-        }
+  release(key: string): void {
+    const current = this.active.get(key) || 0;
+    if (current <= 1) {
+      this.active.delete(key);
+    } else {
+      this.active.set(key, current - 1);
+    }
+  }
 
-        getStats(key: string): { tokens: number; active: number } {
-                const bucket = this.buckets.get(key);
-                if (bucket) this.refill(bucket);
-                return {
-                        tokens: bucket?.tokens ?? this.config.maxTokensPerInterval,
-                        active: this.active.get(key) || 0,
-                };
-        }
+  getStats(key: string): { tokens: number; active: number } {
+    const bucket = this.buckets.get(key);
+    if (bucket) this.refill(bucket);
+    return {
+      tokens: bucket?.tokens ?? this.config.maxTokensPerInterval,
+      active: this.active.get(key) || 0,
+    };
+  }
 
-        clear(): void {
-                this.buckets.clear();
-                this.active.clear();
-        }
+  clear(): void {
+    this.buckets.clear();
+    this.active.clear();
+  }
 }
 
 export function createRateLimiter(config?: Partial<RateLimiterConfig>): RateLimiter {
-        return new RateLimiter(config);
+  return new RateLimiter(config);
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 26: scrape/retry.ts */
 /* ════════════════════════════════════════════════════════════════════ */
 export const DEFAULT_RETRY_CONFIG: Required<RetryConfig> = {
-        retries: 3,
-        delay: 1000,
-        backoff: "exponential",
-        maxDelay: 30000,
-        statusCodes: [408, 429, 500, 502, 503, 504],
+  retries: 3,
+  delay: 1000,
+  backoff: "exponential",
+  maxDelay: 30000,
+  statusCodes: [408, 429, 500, 502, 503, 504],
 };
 
 const RETRYABLE_NETWORK_CODES = ["ECONNREFUSED", "ECONNRESET", "ETIMEDOUT", "EPIPE", "ENOTFOUND"];
 
 export function isRetryableError(error: Error): boolean {
-        const code = (error as any).code;
-        if (code && RETRYABLE_NETWORK_CODES.includes(code)) return true;
-        const status = (error as any).statusCode || (error as any).status;
-        if (status && [408, 429, 500, 502, 503, 504].includes(status)) return true;
-        if (error.name === "AbortError") return false;
-        return false;
+  const code = (error as any).code;
+  if (code && RETRYABLE_NETWORK_CODES.includes(code)) return true;
+  const status = (error as any).statusCode || (error as any).status;
+  if (status && [408, 429, 500, 502, 503, 504].includes(status)) return true;
+  if (error.name === "AbortError") return false;
+  return false;
 }
 
 function calculateDelay(attempt: number, config: Required<RetryConfig>): number {
-        switch (config.backoff) {
-                case "exponential":
-                        return Math.min(config.delay * 2 ** attempt, config.maxDelay);
-                case "linear":
-                        return Math.min(config.delay * (attempt + 1), config.maxDelay);
-                case "constant":
-                        return config.delay;
-        }
+  switch (config.backoff) {
+    case "exponential":
+      return Math.min(config.delay * 2 ** attempt, config.maxDelay);
+    case "linear":
+      return Math.min(config.delay * (attempt + 1), config.maxDelay);
+    case "constant":
+      return config.delay;
+  }
 }
 
 export async function withRetry<T>(
-        fn: (attemptNumber: number) => Promise<T>,
-        config: Partial<RetryConfig> = {},
-        onRetry?: (error: Error, attempt: number) => void,
+  fn: (attemptNumber: number) => Promise<T>,
+  config: Partial<RetryConfig> = {},
+  onRetry?: (error: Error, attempt: number) => void,
 ): Promise<T> {
-        const cfg = { ...DEFAULT_RETRY_CONFIG, ...config };
-        const { default: pRetry } = await import("p-retry");
+  const cfg = { ...DEFAULT_RETRY_CONFIG, ...config };
+  const { default: pRetry } = await import("p-retry");
 
-        return pRetry(
-                async (attemptNumber) => {
-                        try {
-                                return await fn(attemptNumber);
-                        } catch (error) {
-                                if (!isRetryableError(error as Error)) {
-                                        throw new AbortError((error as Error).message);
-                                }
-                                throw error;
-                        }
-                },
-                {
-                        retries: cfg.retries,
-                        minTimeout: calculateDelay(0, cfg),
-                        maxTimeout: cfg.maxDelay,
-                        randomize: cfg.backoff === "exponential",
-                        onFailedAttempt: (context) => {
-                                onRetry?.(context.error, context.attemptNumber);
-                        },
-                },
-        );
+  return pRetry(
+    async (attemptNumber) => {
+      try {
+        return await fn(attemptNumber);
+      } catch (error) {
+        if (!isRetryableError(error as Error)) {
+          throw new AbortError((error as Error).message);
+        }
+        throw error;
+      }
+    },
+    {
+      retries: cfg.retries,
+      minTimeout: calculateDelay(0, cfg),
+      maxTimeout: cfg.maxDelay,
+      randomize: cfg.backoff === "exponential",
+      onFailedAttempt: (context) => {
+        onRetry?.(context.error, context.attemptNumber);
+      },
+    },
+  );
 }
 
 /**
@@ -1790,7 +1886,7 @@ export interface MiddlewareContext<T = Record<string, unknown>> {
 export type MiddlewareNext = () => Promise<void>;
 export type Middleware<T = Record<string, unknown>> = (
   ctx: MiddlewareContext<T>,
-  next: MiddlewareNext
+  next: MiddlewareNext,
 ) => Promise<void>;
 
 export class MiddlewarePipeline<T = Record<string, unknown>> {
@@ -1807,7 +1903,9 @@ export class MiddlewarePipeline<T = Record<string, unknown>> {
       state: {},
       startTime: Date.now(),
       aborted: false,
-      abort() { this.aborted = true; },
+      abort() {
+        this.aborted = true;
+      },
     };
 
     let index = 0;
@@ -1859,7 +1957,7 @@ export function retryMiddleware(maxRetries: number, delayMs: number): Middleware
         return;
       } catch (error) {
         if (attempt === maxRetries) throw error;
-        await new Promise(r => setTimeout(r, delayMs * Math.pow(2, attempt)));
+        await new Promise((r) => setTimeout(r, delayMs * Math.pow(2, attempt)));
         attempt++;
       }
     }
@@ -1874,19 +1972,19 @@ export function createPipeline<T = Record<string, unknown>>(): MiddlewarePipelin
 /* Section 28: scrape/events.ts */
 /* ════════════════════════════════════════════════════════════════════ */
 export interface WebScrapeEvents {
-  'request:start': { url: string; options: ScrapeOptions; timestamp: number };
-  'request:response': { url: string; status: number; attempt: number; duration: number };
-  'request:error': { url: string; error: Error; attempt: number };
-  'request:retry': { url: string; attempt: number; maxRetries: number; delayMs: number };
-  'request:complete': { url: string; duration: number; success: boolean };
-  'cache:hit': { key: string };
-  'cache:miss': { key: string };
-  'cache:set': { key: string; ttlMs?: number };
-  'proxy:rotate': { proxy: string; reason: string };
-  'proxy:error': { proxy: string; error: Error };
-  'proxy:disabled': { proxy: string; reason: string };
-  'crawl:discover': { url: string; depth: number; parentUrl?: string };
-  'crawl:complete': { totalUrls: number; successful: number; failed: number; duration: number };
+  "request:start": { url: string; options: ScrapeOptions; timestamp: number };
+  "request:response": { url: string; status: number; attempt: number; duration: number };
+  "request:error": { url: string; error: Error; attempt: number };
+  "request:retry": { url: string; attempt: number; maxRetries: number; delayMs: number };
+  "request:complete": { url: string; duration: number; success: boolean };
+  "cache:hit": { key: string };
+  "cache:miss": { key: string };
+  "cache:set": { key: string; ttlMs?: number };
+  "proxy:rotate": { proxy: string; reason: string };
+  "proxy:error": { proxy: string; error: Error };
+  "proxy:disabled": { proxy: string; reason: string };
+  "crawl:discover": { url: string; depth: number; parentUrl?: string };
+  "crawl:complete": { totalUrls: number; successful: number; failed: number; duration: number };
 }
 
 export type EventEmitter = Emittery<WebScrapeEvents>;
@@ -1925,125 +2023,121 @@ interface PygameConfig {
 }
 
 const DEFAULT_PYGAME_CONFIG: Required<PygameConfig> = {
-  pythonPath: 'python',
+  pythonPath: "python",
   width: 1280,
   height: 720,
   fps: 30,
   fullscreen: false,
 };
 
-function generatePygameScript(
-  imagePath: string,
-  config: Required<PygameConfig>,
-  interactive = false
-): string {
+function generatePygameScript(imagePath: string, config: Required<PygameConfig>, interactive = false): string {
   const lines = [
-    'import sys, json',
-    'import pygame',
-    'pygame.init()',
-    `screen = pygame.display.set_mode((${config.width}, ${config.height})${config.fullscreen ? ', pygame.FULLSCREEN' : ''})`,
+    "import sys, json",
+    "import pygame",
+    "pygame.init()",
+    `screen = pygame.display.set_mode((${config.width}, ${config.height})${config.fullscreen ? ", pygame.FULLSCREEN" : ""})`,
     'pygame.display.set_caption("DevThink WebScrape Renderer")',
     `clock = pygame.time.Clock()`,
-    '',
-    'try:',
+    "",
+    "try:",
     `  img = pygame.image.load(${JSON.stringify(imagePath)})`,
-    '  img_rect = img.get_rect(center=(screen.get_width()//2, screen.get_height()//2))',
-    'except:',
-    '  img = None',
-    '',
-    'font = pygame.font.Font(None, 36)',
-    '',
-    'running = True',
-    'while running:',
-    '  for event in pygame.event.get():',
-    '    if event.type == pygame.QUIT:',
-    '      running = False',
-    '    elif event.type == pygame.KEYDOWN:',
-    '      if event.key == pygame.K_ESCAPE:',
-    '        running = False',
-    ...(interactive ? [
-    '      elif event.key == pygame.K_SPACE:',
-    '        print(json.dumps({"action": "next"}))',
-    '        sys.stdout.flush()',
-    ] : []),
-    '',
-    '  screen.fill((30, 30, 40))',
-    '  if img:',
-    '    screen.blit(img, img_rect)',
-    '  else:',
+    "  img_rect = img.get_rect(center=(screen.get_width()//2, screen.get_height()//2))",
+    "except:",
+    "  img = None",
+    "",
+    "font = pygame.font.Font(None, 36)",
+    "",
+    "running = True",
+    "while running:",
+    "  for event in pygame.event.get():",
+    "    if event.type == pygame.QUIT:",
+    "      running = False",
+    "    elif event.type == pygame.KEYDOWN:",
+    "      if event.key == pygame.K_ESCAPE:",
+    "        running = False",
+    ...(interactive
+      ? [
+          "      elif event.key == pygame.K_SPACE:",
+          '        print(json.dumps({"action": "next"}))',
+          "        sys.stdout.flush()",
+        ]
+      : []),
+    "",
+    "  screen.fill((30, 30, 40))",
+    "  if img:",
+    "    screen.blit(img, img_rect)",
+    "  else:",
     '    text = font.render("No screenshot available", True, (200, 200, 200))',
-    '    screen.blit(text, (config.width//2 - text.get_width()//2, config.height//2))',
-    '',
-    '  pygame.display.flip()',
-    '  clock.tick(30)',
-    '',
-    'pygame.quit()',
+    "    screen.blit(text, (config.width//2 - text.get_width()//2, config.height//2))",
+    "",
+    "  pygame.display.flip()",
+    "  clock.tick(30)",
+    "",
+    "pygame.quit()",
   ];
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
-function generateDoomScript(
-  config: Required<PygameConfig>
-): string {
+function generateDoomScript(config: Required<PygameConfig>): string {
   const lines = [
-    'import sys, json, asyncio, subprocess',
-    'import pygame',
-    'pygame.init()',
-    `screen = pygame.display.set_mode((${config.width}, ${config.height})${config.fullscreen ? ', pygame.FULLSCREEN' : ''})`,
+    "import sys, json, asyncio, subprocess",
+    "import pygame",
+    "pygame.init()",
+    `screen = pygame.display.set_mode((${config.width}, ${config.height})${config.fullscreen ? ", pygame.FULLSCREEN" : ""})`,
     'pygame.display.set_caption("DevThink WebScrape - DOOM")',
-    '',
-    'font = pygame.font.Font(None, 24)',
-    'small_font = pygame.font.Font(None, 18)',
-    '',
-    'frames = []',
-    'current_frame = 0',
-    'running = True',
-    '',
-    'def load_frames(path):',
-    '  import os',
-    '  frames_dir = os.path.expanduser(path)',
-    '  if os.path.isdir(frames_dir):',
-    '    files = sorted(os.listdir(frames_dir))',
-    '    for f in files:',
+    "",
+    "font = pygame.font.Font(None, 24)",
+    "small_font = pygame.font.Font(None, 18)",
+    "",
+    "frames = []",
+    "current_frame = 0",
+    "running = True",
+    "",
+    "def load_frames(path):",
+    "  import os",
+    "  frames_dir = os.path.expanduser(path)",
+    "  if os.path.isdir(frames_dir):",
+    "    files = sorted(os.listdir(frames_dir))",
+    "    for f in files:",
     '      if f.endswith((".png", ".jpg", ".jpeg")):',
-    '        try:',
-    '          img = pygame.image.load(os.path.join(frames_dir, f))',
-    '          frames.append(img)',
-    '        except: pass',
-    '',
+    "        try:",
+    "          img = pygame.image.load(os.path.join(frames_dir, f))",
+    "          frames.append(img)",
+    "        except: pass",
+    "",
     'load_frames("~/devthink/webscrape/doom_frames")',
-    '',
-    'while running:',
-    '  for event in pygame.event.get():',
-    '    if event.type == pygame.QUIT:',
-    '      running = False',
-    '    elif event.type == pygame.KEYDOWN:',
-    '      if event.key == pygame.K_ESCAPE: running = False',
-    '      elif event.key == pygame.K_LEFT: current_frame = max(0, current_frame - 1)',
-    '      elif event.key == pygame.K_RIGHT: current_frame = min(len(frames)-1, current_frame + 1)',
-    '      elif event.key == pygame.K_SPACE:',
+    "",
+    "while running:",
+    "  for event in pygame.event.get():",
+    "    if event.type == pygame.QUIT:",
+    "      running = False",
+    "    elif event.type == pygame.KEYDOWN:",
+    "      if event.key == pygame.K_ESCAPE: running = False",
+    "      elif event.key == pygame.K_LEFT: current_frame = max(0, current_frame - 1)",
+    "      elif event.key == pygame.K_RIGHT: current_frame = min(len(frames)-1, current_frame + 1)",
+    "      elif event.key == pygame.K_SPACE:",
     '        out = {"action": "frame", "index": current_frame, "total": len(frames)}',
-    '        print(json.dumps(out))',
-    '        sys.stdout.flush()',
-    '',
-    '  screen.fill((20, 20, 30))',
-    '  if frames and current_frame < len(frames):',
-    '    img = pygame.transform.scale(frames[current_frame], (config.width, config.height - 60))',
-    '    screen.blit(img, (0, 0))',
-    '  else:',
+    "        print(json.dumps(out))",
+    "        sys.stdout.flush()",
+    "",
+    "  screen.fill((20, 20, 30))",
+    "  if frames and current_frame < len(frames):",
+    "    img = pygame.transform.scale(frames[current_frame], (config.width, config.height - 60))",
+    "    screen.blit(img, (0, 0))",
+    "  else:",
     '    text = font.render("No DOOM frames loaded", True, (200, 80, 80))',
-    '    screen.blit(text, (config.width//2 - 150, config.height//2))',
-    '',
+    "    screen.blit(text, (config.width//2 - 150, config.height//2))",
+    "",
     '  info = f"Frame {current_frame+1}/{len(frames)} | ESC: quit | <- ->: navigate | SPACE: capture"',
-    '  info_surf = small_font.render(info, True, (180, 180, 180))',
-    '  screen.blit(info_surf, (10, config.height - 40))',
-    '',
-    '  pygame.display.flip()',
-    '  clock.tick(30)',
-    '',
-    'pygame.quit()',
+    "  info_surf = small_font.render(info, True, (180, 180, 180))",
+    "  screen.blit(info_surf, (10, config.height - 40))",
+    "",
+    "  pygame.display.flip()",
+    "  clock.tick(30)",
+    "",
+    "pygame.quit()",
   ];
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 export class PygameRenderer {
@@ -2054,18 +2148,18 @@ export class PygameRenderer {
 
   constructor(config: PygameConfig = {}) {
     this.config = { ...DEFAULT_PYGAME_CONFIG, ...config };
-    this.tempDir = join(process.cwd(), '.webscrape');
-    this.screenDir = join(this.tempDir, 'screenshots');
+    this.tempDir = join(process.cwd(), ".webscrape");
+    this.screenDir = join(this.tempDir, "screenshots");
     if (!existsSync(this.tempDir)) mkdirSync(this.tempDir, { recursive: true });
     if (!existsSync(this.screenDir)) mkdirSync(this.screenDir, { recursive: true });
   }
 
   async renderScreenshot(imageBuffer: Buffer): Promise<void> {
-    const imagePath = join(this.screenDir, 'current.png');
+    const imagePath = join(this.screenDir, "current.png");
     writeFileSync(imagePath, imageBuffer);
 
     const script = generatePygameScript(imagePath, this.config);
-    const scriptPath = join(this.tempDir, 'render_screenshot.py');
+    const scriptPath = join(this.tempDir, "render_screenshot.py");
     writeFileSync(scriptPath, script);
 
     await this.runScript(scriptPath);
@@ -2073,7 +2167,7 @@ export class PygameRenderer {
 
   async renderDoom(): Promise<void> {
     const script = generateDoomScript(this.config);
-    const scriptPath = join(this.tempDir, 'render_doom.py');
+    const scriptPath = join(this.tempDir, "render_doom.py");
     writeFileSync(scriptPath, script);
 
     await this.runScript(scriptPath);
@@ -2082,16 +2176,16 @@ export class PygameRenderer {
   private runScript(scriptPath: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.process = spawn(this.config.pythonPath, [scriptPath], {
-        stdio: ['inherit', 'inherit', 'pipe'],
+        stdio: ["inherit", "inherit", "pipe"],
       });
 
-      this.process.on('close', code => {
+      this.process.on("close", (code) => {
         this.process = null;
         if (code === 0) resolve();
         else reject(new Error(`Pygame exited with code ${code}`));
       });
 
-      this.process.on('error', err => reject(err));
+      this.process.on("error", (err) => reject(err));
     });
   }
 
@@ -2152,25 +2246,34 @@ function extractSitemapUrls(xml: string): string[] {
   return urls;
 }
 
-export async function fetchSitemap(url: string, options: { timeout?: number; headers?: Record<string, string>; fetcher?: typeof fetch } = {}): Promise<SitemapResult> {
+export async function fetchSitemap(
+  url: string,
+  options: { timeout?: number; headers?: Record<string, string>; fetcher?: typeof fetch } = {},
+): Promise<SitemapResult> {
   const startTime = Date.now();
   const fetcher = options.fetcher ?? fetch;
 
   try {
     const response = await fetcher(url, {
       headers: {
-        'User-Agent': 'DevThink-WebScrape/2.0 (sitemap parser)',
+        "User-Agent": "DevThink-WebScrape/2.0 (sitemap parser)",
         ...options.headers,
       },
       signal: AbortSignal.timeout(options.timeout || 10000),
     });
 
     if (!response.ok) {
-      throw new WebScrapeError(`Failed to fetch sitemap: ${response.status}`, ErrorCode.NETWORK_ERROR, response.status, false, { url });
+      throw new WebScrapeError(
+        `Failed to fetch sitemap: ${response.status}`,
+        ErrorCode.NETWORK_ERROR,
+        response.status,
+        false,
+        { url },
+      );
     }
 
     const text = await response.text();
-    const isIndex = text.includes('<sitemapindex');
+    const isIndex = text.includes("<sitemapindex");
     const urls = isIndex ? [] : parseSitemapXml(text);
     const sitemaps = isIndex ? extractSitemapUrls(text) : [];
 
@@ -2181,36 +2284,37 @@ export async function fetchSitemap(url: string, options: { timeout?: number; hea
     };
   } catch (error) {
     if (error instanceof WebScrapeError) throw error;
-    throw new WebScrapeError(`Failed to parse sitemap: ${(error as Error).message}`, ErrorCode.PARSE_ERROR, 422, false, { url }, error as Error);
+    throw new WebScrapeError(
+      `Failed to parse sitemap: ${(error as Error).message}`,
+      ErrorCode.PARSE_ERROR,
+      422,
+      false,
+      { url },
+      error as Error,
+    );
   }
 }
 
 export async function discoverSitemaps(siteUrl: string): Promise<string[]> {
-  const candidates = [
-    '/sitemap.xml',
-    '/sitemap_index.xml',
-    '/sitemap-index.xml',
-    '/sitemaps.xml',
-    '/robots.txt',
-  ];
+  const candidates = ["/sitemap.xml", "/sitemap_index.xml", "/sitemap-index.xml", "/sitemaps.xml", "/robots.txt"];
 
   const found: string[] = [];
-  const base = siteUrl.replace(/\/$/, '');
+  const base = siteUrl.replace(/\/$/, "");
 
   for (const path of candidates) {
     try {
-      const url = path === '/robots.txt' ? `${base}/robots.txt` : `${base}${path}`;
+      const url = path === "/robots.txt" ? `${base}/robots.txt` : `${base}${path}`;
       const response = await fetch(url, {
-        headers: { 'User-Agent': 'DevThink-WebScrape/2.0' },
+        headers: { "User-Agent": "DevThink-WebScrape/2.0" },
         signal: AbortSignal.timeout(5000),
       });
       if (response.ok) {
         const text = await response.text();
-        if (path === '/robots.txt') {
+        if (path === "/robots.txt") {
           const sitemapUrls = text.match(/Sitemap:\s*(https?:\/\/[^\s]+)/gi);
           if (sitemapUrls) {
             for (const s of sitemapUrls) {
-              found.push(s.replace(/Sitemap:\s*/i, '').trim());
+              found.push(s.replace(/Sitemap:\s*/i, "").trim());
             }
           }
         } else {
@@ -2228,7 +2332,17 @@ export async function discoverSitemaps(siteUrl: string): Promise<string[]> {
   return [...new Set(found)];
 }
 
-export async function parseSitemap(url: string, options: { timeout?: number; headers?: Record<string, string>; fetcher?: typeof fetch; followIndexes?: boolean; maxUrls?: number; maxDepth?: number } = {}): Promise<SitemapUrl[]> {
+export async function parseSitemap(
+  url: string,
+  options: {
+    timeout?: number;
+    headers?: Record<string, string>;
+    fetcher?: typeof fetch;
+    followIndexes?: boolean;
+    maxUrls?: number;
+    maxDepth?: number;
+  } = {},
+): Promise<SitemapUrl[]> {
   const maxUrls = Math.max(0, Number(options.maxUrls ?? 10000));
   const maxDepth = Math.max(0, Number(options.maxDepth ?? 8));
   const allUrls: SitemapUrl[] = [];
@@ -2259,7 +2373,15 @@ export async function parseSitemap(url: string, options: { timeout?: number; hea
   return allUrls;
 }
 
-function sitemapidentity(value: string) { try { const parsed = new URL(value); parsed.hash = ""; return parsed.href; } catch { return String(value).trim(); } }
+function sitemapidentity(value: string) {
+  try {
+    const parsed = new URL(value);
+    parsed.hash = "";
+    return parsed.href;
+  } catch {
+    return String(value).trim();
+  }
+}
 
 /* ════════════════════════════════════════════════════════════════════ */
 /* Section 31: scrape/agent.ts */
@@ -2271,7 +2393,7 @@ export interface AgentFormatOptions {
   includeRaw?: boolean;
   maxTokens?: number;
   chunkSize?: number;
-  model?: 'gpt-4o' | 'gpt-4' | 'gpt-3.5-turbo' | 'claude' | 'gemini' | 'default';
+  model?: "gpt-4o" | "gpt-4" | "gpt-3.5-turbo" | "claude" | "gemini" | "default";
 }
 
 const DEFAULT_OPTIONS: Required<AgentFormatOptions> = {
@@ -2281,7 +2403,7 @@ const DEFAULT_OPTIONS: Required<AgentFormatOptions> = {
   includeRaw: true,
   maxTokens: 8000,
   chunkSize: 512,
-  model: 'default',
+  model: "default",
 };
 
 function generateSummary(result: ScrapeResult): string {
@@ -2318,9 +2440,9 @@ function buildSystemPrompt(result: ScrapeResult): string {
   if (result.tables.length > 0) {
     prompt += `## Tables (${result.tables.length} found)\n`;
     for (const t of result.tables.slice(0, 3)) {
-      prompt += `- ${t.caption || 'Unnamed table'}: ${t.headers.join(', ')}\n`;
+      prompt += `- ${t.caption || "Unnamed table"}: ${t.headers.join(", ")}\n`;
     }
-    prompt += '\n';
+    prompt += "\n";
   }
 
   prompt += `## Content\n${result.content}\n\n`;
@@ -2329,7 +2451,7 @@ function buildSystemPrompt(result: ScrapeResult): string {
 
 export function formatForAgent(result: ScrapeResult, options?: AgentFormatOptions): AgentOutput {
   const opts = { ...DEFAULT_OPTIONS, ...options };
-  let content = '';
+  let content = "";
 
   if (opts.includeSummary) {
     content += `## Summary\n${generateSummary(result)}\n\n`;
@@ -2337,17 +2459,17 @@ export function formatForAgent(result: ScrapeResult, options?: AgentFormatOption
 
   if (opts.includeKeyPoints) {
     const points = generateKeyPoints(result);
-    content += `## Key Points\n${points.map(p => `- ${p}`).join('\n')}\n\n`;
+    content += `## Key Points\n${points.map((p) => `- ${p}`).join("\n")}\n\n`;
   }
 
   if (opts.includeUrls) {
-    const externalUrls = result.links.filter(l => l.isExternal).slice(0, 15);
+    const externalUrls = result.links.filter((l) => l.isExternal).slice(0, 15);
     if (externalUrls.length) {
-      content += `## External Links\n${externalUrls.map(l => `- [${l.text || l.href}](${l.href})`).join('\n')}\n\n`;
+      content += `## External Links\n${externalUrls.map((l) => `- [${l.text || l.href}](${l.href})`).join("\n")}\n\n`;
     }
-    const internalUrls = result.links.filter(l => l.isInternal).slice(0, 10);
+    const internalUrls = result.links.filter((l) => l.isInternal).slice(0, 10);
     if (internalUrls.length) {
-      content += `## Internal Links\n${internalUrls.map(l => `- [${l.text || l.href}](${l.href})`).join('\n')}\n\n`;
+      content += `## Internal Links\n${internalUrls.map((l) => `- [${l.text || l.href}](${l.href})`).join("\n")}\n\n`;
     }
   }
 
@@ -2359,7 +2481,7 @@ export function formatForAgent(result: ScrapeResult, options?: AgentFormatOption
 
   if (totalTokens > opts.maxTokens) {
     const charLimit = Math.floor(opts.maxTokens * 4);
-    content = content.slice(0, charLimit) + '\n\n... (truncated)';
+    content = content.slice(0, charLimit) + "\n\n... (truncated)";
   }
 
   const chunks = chunkMarkdown(content, { maxTokens: opts.chunkSize });
@@ -2368,12 +2490,15 @@ export function formatForAgent(result: ScrapeResult, options?: AgentFormatOption
     summary: generateSummary(result),
     content,
     keyPoints: generateKeyPoints(result),
-    relevantUrls: result.links.filter(l => l.isExternal).map(l => l.href).slice(0, 10),
+    relevantUrls: result.links
+      .filter((l) => l.isExternal)
+      .map((l) => l.href)
+      .slice(0, 10),
     tokens: estimateTokens(content, opts.model),
   };
 
   if (chunks.length > 1) {
-    (output as unknown as Record<string, unknown>).chunks = chunks.map(c => c.content);
+    (output as unknown as Record<string, unknown>).chunks = chunks.map((c) => c.content);
   }
 
   return output;
@@ -2392,19 +2517,16 @@ export interface LlmsTxtOptions {
   includeOptional?: boolean;
 }
 
-export function generateLlmsTxt(
-  results: ScrapeResult[],
-  options: LlmsTxtOptions = {}
-): string {
-  const siteName = options.siteName || results[0]?.metadata?.title || 'Site';
-  const description = options.description || results[0]?.metadata?.description || '';
+export function generateLlmsTxt(results: ScrapeResult[], options: LlmsTxtOptions = {}): string {
+  const siteName = options.siteName || results[0]?.metadata?.title || "Site";
+  const description = options.description || results[0]?.metadata?.description || "";
 
   const lines: string[] = [];
   lines.push(`# ${siteName}`);
-  lines.push('');
+  lines.push("");
   if (description) {
     lines.push(`> ${description}`);
-    lines.push('');
+    lines.push("");
   }
 
   const pages: ScrapeResult[] = [];
@@ -2412,7 +2534,7 @@ export function generateLlmsTxt(
 
   for (const result of results) {
     const url = result.url.toLowerCase();
-    if (url.includes('doc') || url.includes('guide') || url.includes('api')) {
+    if (url.includes("doc") || url.includes("guide") || url.includes("api")) {
       docs.push(result);
     } else {
       pages.push(result);
@@ -2420,53 +2542,53 @@ export function generateLlmsTxt(
   }
 
   if (pages.length > 0) {
-    lines.push('## Pages');
-    lines.push('');
+    lines.push("## Pages");
+    lines.push("");
     for (const page of pages.slice(0, 20)) {
       const title = page.metadata.title || page.title;
-      const desc = page.metadata.description || '';
+      const desc = page.metadata.description || "";
       lines.push(`- ${title}: ${desc || page.url}`);
     }
-    lines.push('');
+    lines.push("");
   }
 
   if (docs.length > 0) {
-    lines.push('## Documentation');
-    lines.push('');
+    lines.push("## Documentation");
+    lines.push("");
     for (const doc of docs.slice(0, 20)) {
       const title = doc.metadata.title || doc.title;
-      const desc = doc.metadata.description || '';
+      const desc = doc.metadata.description || "";
       lines.push(`- ${title}: ${desc || doc.url}`);
     }
-    lines.push('');
+    lines.push("");
   }
 
   if (options.includeOptional && results.length > 5) {
-    lines.push('## Optional');
-    lines.push('');
+    lines.push("## Optional");
+    lines.push("");
     lines.push(`- Full content: ${results.length} pages scraped`);
-    lines.push(`- Last updated: ${new Date().toISOString().split('T')[0]}`);
-    lines.push('');
+    lines.push(`- Last updated: ${new Date().toISOString().split("T")[0]}`);
+    lines.push("");
   }
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 export function generateLlmsFullTxt(results: ScrapeResult[]): string {
   const parts: string[] = [];
 
   for (const result of results) {
-    parts.push(`# ${result.title || result.metadata.title || 'Untitled'}`);
-    parts.push('');
+    parts.push(`# ${result.title || result.metadata.title || "Untitled"}`);
+    parts.push("");
     parts.push(`Source: ${result.url}`);
-    parts.push('');
+    parts.push("");
     parts.push(result.content);
-    parts.push('');
-    parts.push('---');
-    parts.push('');
+    parts.push("");
+    parts.push("---");
+    parts.push("");
   }
 
-  return parts.join('\n');
+  return parts.join("\n");
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -2480,18 +2602,21 @@ export interface FetchResult {
   duration: number;
 }
 
-export async function fetchHtml(url: string, options: {
-  timeout?: number;
-  headers?: Record<string, string>;
-  userAgent?: string;
-  proxy?: string;
-  signal?: AbortSignal;
-} = {}): Promise<FetchResult> {
+export async function fetchHtml(
+  url: string,
+  options: {
+    timeout?: number;
+    headers?: Record<string, string>;
+    userAgent?: string;
+    proxy?: string;
+    signal?: AbortSignal;
+  } = {},
+): Promise<FetchResult> {
   const startTime = Date.now();
   const profile = getRandomProfile();
   const baseHeaders = getHeaders(profile);
   const headers = { ...baseHeaders, ...options.headers };
-  if (options.userAgent) headers['User-Agent'] = options.userAgent;
+  if (options.userAgent) headers["User-Agent"] = options.userAgent;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), options.timeout || 30000);
@@ -2499,10 +2624,10 @@ export async function fetchHtml(url: string, options: {
 
   try {
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers,
       signal,
-      redirect: 'follow',
+      redirect: "follow",
     });
 
     clearTimeout(timeoutId);
@@ -2510,19 +2635,24 @@ export async function fetchHtml(url: string, options: {
     if (!response.ok) {
       throw new WebScrapeError(
         `HTTP ${response.status}: ${response.statusText}`,
-        response.status === 403 ? ErrorCode.BLOCKED :
-        response.status === 429 ? ErrorCode.RATE_LIMITED :
-        response.status >= 500 ? ErrorCode.NETWORK_ERROR :
-        ErrorCode.NETWORK_ERROR,
+        response.status === 403
+          ? ErrorCode.BLOCKED
+          : response.status === 429
+            ? ErrorCode.RATE_LIMITED
+            : response.status >= 500
+              ? ErrorCode.NETWORK_ERROR
+              : ErrorCode.NETWORK_ERROR,
         response.status,
         [408, 429, 500, 502, 503, 504].includes(response.status),
-        { url, status: response.status }
+        { url, status: response.status },
       );
     }
 
     const html = await response.text();
     const responseHeaders: Record<string, string> = {};
-    response.headers.forEach((value, key) => { responseHeaders[key] = value; });
+    response.headers.forEach((value, key) => {
+      responseHeaders[key] = value;
+    });
 
     return {
       html,
@@ -2534,14 +2664,11 @@ export async function fetchHtml(url: string, options: {
   } catch (error) {
     clearTimeout(timeoutId);
     if (error instanceof WebScrapeError) throw error;
-    if ((error as Error).name === 'AbortError') {
-      throw new WebScrapeError(
-        `Request timeout after ${options.timeout || 30000}ms`,
-        ErrorCode.TIMEOUT,
-        504,
-        true,
-        { url, timeout: options.timeout || 30000 }
-      );
+    if ((error as Error).name === "AbortError") {
+      throw new WebScrapeError(`Request timeout after ${options.timeout || 30000}ms`, ErrorCode.TIMEOUT, 504, true, {
+        url,
+        timeout: options.timeout || 30000,
+      });
     }
     throw new WebScrapeError(
       `Network error: ${(error as Error).message}`,
@@ -2549,7 +2676,7 @@ export async function fetchHtml(url: string, options: {
       503,
       true,
       { url },
-      error as Error
+      error as Error,
     );
   }
 }
@@ -2563,15 +2690,16 @@ export async function fetchAndParse(url: string, options: Partial<ScrapeOptions>
   });
 }
 
-export async function detectRenderingMode(html: string): Promise<'static' | 'spa' | 'hydrated'> {
-  if (/<div id=["'](?:root|app|__next|__nuxt)["']>\s*<\/div>/.test(html)) return 'spa';
-  if (html.includes('__NEXT_DATA__') || html.includes('__NUXT__') || html.includes('__VUE_SSR_DATA__')) return 'hydrated';
+export async function detectRenderingMode(html: string): Promise<"static" | "spa" | "hydrated"> {
+  if (/<div id=["'](?:root|app|__next|__nuxt)["']>\s*<\/div>/.test(html)) return "spa";
+  if (html.includes("__NEXT_DATA__") || html.includes("__NUXT__") || html.includes("__VUE_SSR_DATA__"))
+    return "hydrated";
   const cheeriomodule = await import("cheerio");
   const $ = cheeriomodule.load(html);
-  if ($('script[type="application/ld+json"]').length > 0) return 'static';
-  const textContent = $.text().replace(/\s+/g, ' ').trim();
-  if (textContent.length > 500) return 'static';
-  return 'spa';
+  if ($('script[type="application/ld+json"]').length > 0) return "static";
+  const textContent = $.text().replace(/\s+/g, " ").trim();
+  if (textContent.length > 500) return "static";
+  return "spa";
 }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -2595,7 +2723,7 @@ export async function batchScrape(options: BatchOptions, scrapeOpts: ScrapeOptio
   const tasks = options.urls.map((url) =>
     limit(async () => {
       try {
-        const result = await scrapeUrl(url, { ...scrapeOpts, mode: scrapeOpts.mode || 'auto' });
+        const result = await scrapeUrl(url, { ...scrapeOpts, mode: scrapeOpts.mode || "auto" });
         results.push(result);
         options.onProgress?.(results.length + errors.length, options.urls.length, url);
       } catch (error) {
@@ -2603,7 +2731,7 @@ export async function batchScrape(options: BatchOptions, scrapeOpts: ScrapeOptio
         options.onError?.(url, error as Error);
         options.onProgress?.(results.length + errors.length, options.urls.length, url);
       }
-    })
+    }),
   );
 
   await Promise.allSettled(tasks);
@@ -2624,7 +2752,7 @@ export async function batchScrapeSequential(
     onResult?: (result: ScrapeResult, index: number) => void;
     onError?: (url: string, error: Error, index: number) => void;
     delayMs?: number;
-  }
+  },
 ): Promise<BatchResult> {
   const startTime = Date.now();
   const results: ScrapeResult[] = [];
@@ -2641,7 +2769,7 @@ export async function batchScrapeSequential(
     }
 
     if (callbacks?.delayMs && i < urls.length - 1) {
-      await new Promise(r => setTimeout(r, callbacks.delayMs));
+      await new Promise((r) => setTimeout(r, callbacks.delayMs));
     }
   }
 
@@ -2661,17 +2789,19 @@ export class AgentBrowser {
   private browser: Browser | null = null;
   private context: BrowserContext | null = null;
   private page: Page | null = null;
-  private config: Required<Omit<BrowserAgentConfig, 'userAgent' | 'geolocation'>> & Pick<BrowserAgentConfig, 'userAgent' | 'geolocation'>;
+  private config: Required<Omit<BrowserAgentConfig, "userAgent" | "geolocation">> &
+    Pick<BrowserAgentConfig, "userAgent" | "geolocation">;
 
   private static DEFAULTS = {
     headless: true,
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
     viewport: { width: 1280, height: 720 },
-    locale: 'en-US',
+    locale: "en-US",
     timeout: 30000,
     recordVideo: false,
-    proxy: '',
-    storageState: '',
+    proxy: "",
+    storageState: "",
     blockAds: true,
     stealth: true,
   };
@@ -2680,18 +2810,22 @@ export class AgentBrowser {
     this.config = { ...AgentBrowser.DEFAULTS, ...config };
   }
 
-  async launch(browserType: 'chromium' | 'firefox' | 'webkit' = 'chromium'): Promise<void> {
+  async launch(browserType: "chromium" | "firefox" | "webkit" = "chromium"): Promise<void> {
     try {
       const playwrightmodule = await import("playwright");
-      const launcher = { chromium: playwrightmodule.chromium, firefox: playwrightmodule.firefox, webkit: playwrightmodule.webkit }[browserType];
+      const launcher = {
+        chromium: playwrightmodule.chromium,
+        firefox: playwrightmodule.firefox,
+        webkit: playwrightmodule.webkit,
+      }[browserType];
       const launchOpts: Parameters<typeof playwrightmodule.chromium.launch>[0] = {
         headless: this.config.headless,
         args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-web-security',
-          '--disable-features=IsolateOrigins,site-per-process',
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-web-security",
+          "--disable-features=IsolateOrigins,site-per-process",
         ],
       };
       if (this.config.proxy) {
@@ -2699,17 +2833,17 @@ export class AgentBrowser {
       }
       this.browser = await launcher.launch(launchOpts);
 
-      const ctxOpts: Parameters<Browser['newContext']>[0] = {
+      const ctxOpts: Parameters<Browser["newContext"]>[0] = {
         viewport: this.config.viewport,
         locale: this.config.locale,
         userAgent: this.config.userAgent,
       };
       if (this.config.recordVideo) {
-        ctxOpts.recordVideo = { dir: './videos' };
+        ctxOpts.recordVideo = { dir: "./videos" };
       }
       if (this.config.geolocation) {
         ctxOpts.geolocation = this.config.geolocation;
-        ctxOpts.permissions = ['geolocation'];
+        ctxOpts.permissions = ["geolocation"];
       }
       if (this.config.storageState) {
         ctxOpts.storageState = this.config.storageState;
@@ -2717,99 +2851,99 @@ export class AgentBrowser {
       this.context = await this.browser.newContext(ctxOpts);
 
       if (this.config.blockAds) {
-        await this.context.route('**/*.{png,jpg,jpeg,gif,svg,ico,css,woff,woff2,mp4,webm}', r => r.abort());
+        await this.context.route("**/*.{png,jpg,jpeg,gif,svg,ico,css,woff,woff2,mp4,webm}", (r) => r.abort());
       }
 
       this.page = await this.context.newPage();
       this.page.setDefaultTimeout(this.config.timeout);
     } catch (error) {
-      if ((error as Error).message?.includes('playwright') || (error as Error).message?.includes('chromium')) {
+      if ((error as Error).message?.includes("playwright") || (error as Error).message?.includes("chromium")) {
         throw new BrowserNotAvailableError();
       }
       throw error;
     }
   }
 
-  async navigate(url: string, waitUntil: 'load' | 'domcontentloaded' | 'networkidle' = 'networkidle'): Promise<void> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+  async navigate(url: string, waitUntil: "load" | "domcontentloaded" | "networkidle" = "networkidle"): Promise<void> {
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     await this.page.goto(url, { waitUntil, timeout: this.config.timeout });
   }
 
   async screenshot(opts: RenderOptions = {}): Promise<Buffer> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     return this.page.screenshot({
       fullPage: opts.fullPage ?? false,
-      type: opts.type ?? 'png',
+      type: opts.type ?? "png",
       quality: opts.quality ?? 80,
     }) as Promise<Buffer>;
   }
 
   async evaluate<T = unknown>(fn: string | (() => T), args?: unknown[]): Promise<T> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
-    if (typeof fn === 'string') {
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (typeof fn === "string") {
       return this.page.evaluate(new Function(fn) as () => T);
     }
     return this.page.evaluate(fn, args);
   }
 
   async click(selector: string): Promise<void> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     await this.page.click(selector);
   }
 
   async type(selector: string, text: string, delayMs = 0): Promise<void> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
-    await this.page.fill(selector, '');
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    await this.page.fill(selector, "");
     await this.page.type(selector, text, { delay: delayMs });
   }
 
   async scrollToBottom(step = 800, delayMs = 300, maxScrolls = 50): Promise<number> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     let scrolls = 0;
     let prevHeight = 0;
     while (scrolls < maxScrolls) {
       const height = await this.page.evaluate(() => document.body.scrollHeight);
       if (height === prevHeight && scrolls > 2) break;
       prevHeight = height;
-      await this.page.evaluate(y => window.scrollBy(0, y), step);
-      await new Promise(r => setTimeout(r, delayMs));
+      await this.page.evaluate((y) => window.scrollBy(0, y), step);
+      await new Promise((r) => setTimeout(r, delayMs));
       scrolls++;
     }
     return scrolls;
   }
 
   async scrollTo(x: number, y: number): Promise<void> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     await this.page.evaluate(([px, py]) => window.scrollTo(px, py), [x, y]);
   }
 
   async waitFor(selector: string, timeout?: number): Promise<void> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     await this.page.waitForSelector(selector, { timeout: timeout ?? this.config.timeout });
   }
 
   async waitForLoad(): Promise<void> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
-    await this.page.waitForLoadState('networkidle');
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    await this.page.waitForLoadState("networkidle");
   }
 
   async html(): Promise<string> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     return this.page.content();
   }
 
   async text(): Promise<string> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     return this.page.evaluate(() => document.body.innerText);
   }
 
   async title(): Promise<string> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     return this.page.title();
   }
 
   async url(): Promise<string> {
-    if (!this.page) throw new WebScrapeError('Browser not launched', ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
+    if (!this.page) throw new WebScrapeError("Browser not launched", ErrorCode.BROWSER_NOT_AVAILABLE, 500, false);
     return this.page.url();
   }
 
@@ -2817,29 +2951,29 @@ export class AgentBrowser {
     const results: unknown[] = [];
     for (const cmd of commands) {
       switch (cmd.action) {
-        case 'goto':
+        case "goto":
           await this.navigate(cmd.args?.url as string);
           results.push({ ok: true });
           break;
-        case 'click':
+        case "click":
           await this.click(cmd.args?.selector as string);
           results.push({ ok: true });
           break;
-        case 'type':
+        case "type":
           await this.type(cmd.args?.selector as string, cmd.args?.text as string);
           results.push({ ok: true });
           break;
-        case 'screenshot':
+        case "screenshot":
           results.push(await this.screenshot(cmd.args as RenderOptions));
           break;
-        case 'evaluate':
+        case "evaluate":
           results.push(await this.evaluate(cmd.args?.fn as string));
           break;
-        case 'wait':
+        case "wait":
           await this.waitFor(cmd.args?.selector as string);
           results.push({ ok: true });
           break;
-        case 'scroll':
+        case "scroll":
           if (cmd.args?.to) {
             await this.scrollTo(0, cmd.args.to as number);
           } else {
@@ -2847,7 +2981,7 @@ export class AgentBrowser {
           }
           results.push({ ok: true });
           break;
-        case 'extract':
+        case "extract":
           results.push({
             html: await this.html(),
             text: await this.text(),
@@ -2881,14 +3015,14 @@ export function createBrowser(config?: BrowserAgentConfig): AgentBrowser {
 /* Section 36: scrape/scrape.ts */
 /* ════════════════════════════════════════════════════════════════════ */
 export async function scrapeUrl(url: string, options: ScrapeOptions = {}): Promise<ScrapeResult> {
-  if (!url || !url.startsWith('http')) {
+  if (!url || !url.startsWith("http")) {
     throw new WebScrapeError(`Invalid URL: ${url}`, ErrorCode.VALIDATION_FAILED, 400, false);
   }
 
   const startTime = Date.now();
-  const mode = options.mode || 'auto';
+  const mode = options.mode || "auto";
 
-  if (mode === 'fetch' || mode === 'auto') {
+  if (mode === "fetch" || mode === "auto") {
     try {
       const fetchResult = await fetchHtml(url, {
         timeout: options.timeout,
@@ -2896,16 +3030,16 @@ export async function scrapeUrl(url: string, options: ScrapeOptions = {}): Promi
         userAgent: options.userAgent,
       });
 
-      if (mode === 'auto') {
+      if (mode === "auto") {
         const renderMode = await detectRenderingMode(fetchResult.html);
-        if (renderMode === 'static') {
+        if (renderMode === "static") {
           return buildResult(fetchResult.html, fetchResult.url, options, startTime);
         }
       } else {
         return buildResult(fetchResult.html, fetchResult.url, options, startTime);
       }
     } catch (error) {
-      if (mode === 'fetch') throw error;
+      if (mode === "fetch") throw error;
       if (!(error instanceof WebScrapeError) || error.isRetryable) {
         // Fall through to browser mode
       } else {
@@ -2917,13 +3051,13 @@ export async function scrapeUrl(url: string, options: ScrapeOptions = {}): Promi
   const browser = new AgentBrowser({
     headless: true,
     timeout: options.timeout ?? 30000,
-    proxy: options.proxy ?? '',
+    proxy: options.proxy ?? "",
     userAgent: options.userAgent,
   });
 
   try {
     await browser.launch();
-    await browser.navigate(url, (options.waitUntil as 'load' | 'domcontentloaded' | 'networkidle') ?? 'networkidle');
+    await browser.navigate(url, (options.waitUntil as "load" | "domcontentloaded" | "networkidle") ?? "networkidle");
 
     if (options.scroll) {
       await browser.scrollToBottom(800, options.scrollDelay ?? 300, options.maxScrolls ?? 50);
@@ -2941,17 +3075,17 @@ export async function scrapeUrl(url: string, options: ScrapeOptions = {}): Promi
 
 export async function scrapeHtml(html: string, options: ScrapeOptions = {}): Promise<ScrapeResult> {
   const startTime = Date.now();
-  return buildResult(html, 'about:blank', options, startTime);
+  return buildResult(html, "about:blank", options, startTime);
 }
 
 export async function scrapeWithBrowser(
   browser: AgentBrowser,
   url: string,
-  options: ScrapeOptions = {}
+  options: ScrapeOptions = {},
 ): Promise<ScrapeResult> {
   const startTime = Date.now();
 
-  await browser.navigate(url, (options.waitUntil as 'load' | 'domcontentloaded' | 'networkidle') ?? 'networkidle');
+  await browser.navigate(url, (options.waitUntil as "load" | "domcontentloaded" | "networkidle") ?? "networkidle");
 
   if (options.scroll) {
     await browser.scrollToBottom(800, options.scrollDelay ?? 300, options.maxScrolls ?? 50);
@@ -2984,9 +3118,9 @@ async function buildResult(
 
   return {
     url,
-    title: title || extracted.metadata.title || '',
+    title: title || extracted.metadata.title || "",
     content: extracted.content,
-    format: options.format ?? 'markdown',
+    format: options.format ?? "markdown",
     text: extracted.text,
     links: extracted.links,
     images: extracted.images,
@@ -3028,9 +3162,9 @@ function isSameDomain(url1: string, url2: string): boolean {
 function normalizeForDedup(url: string): string {
   try {
     const u = new URL(url);
-    u.hash = '';
-    u.search = '';
-    return u.href.replace(/\/+$/, '') || u.href;
+    u.hash = "";
+    u.search = "";
+    return u.href.replace(/\/+$/, "") || u.href;
   } catch {
     return url;
   }
@@ -3038,7 +3172,7 @@ function normalizeForDedup(url: string): string {
 
 export async function legacycrawl(
   startUrl: string,
-  options: CrawlOptions = {}
+  options: CrawlOptions = {},
 ): Promise<{ results: ScrapeResult[]; stats: CrawlStats }> {
   const {
     maxDepth = 2,
@@ -3095,7 +3229,7 @@ export async function legacycrawl(
     await Promise.all(promises);
 
     if (delayMs > 0 && queue.length > 0) {
-      await new Promise(r => setTimeout(r, delayMs));
+      await new Promise((r) => setTimeout(r, delayMs));
     }
   }
 
@@ -3133,115 +3267,127 @@ async function buildscrapeserver() {
   const { cors } = await import("hono/cors");
   const app = new Hono();
 
-  app.use('*', cors());
+  app.use("*", cors());
 
   const api = new Hono();
 
-api.post('/scrape', async (c) => {
-  const body = await c.req.json();
-  const { url, options = {} } = body;
+  api.post("/scrape", async (c) => {
+    const body = await c.req.json();
+    const { url, options = {} } = body;
 
-  if (!url) {
-    return c.json({ error: { code: 'MISSING_URL', message: 'URL is required' } }, 400);
-  }
+    if (!url) {
+      return c.json({ error: { code: "MISSING_URL", message: "URL is required" } }, 400);
+    }
 
-  try {
-    const result = await scrapeUrl(url, options as ScrapeOptions);
-    return c.json({ status: 'ok', data: result });
-  } catch (error) {
-    return c.json({
-      error: {
-        code: (error as any).code || 'SCRAPE_ERROR',
-        message: (error as Error).message,
-      }
-    }, (error as any).statusCode || 500);
-  }
-});
+    try {
+      const result = await scrapeUrl(url, options as ScrapeOptions);
+      return c.json({ status: "ok", data: result });
+    } catch (error) {
+      return c.json(
+        {
+          error: {
+            code: (error as any).code || "SCRAPE_ERROR",
+            message: (error as Error).message,
+          },
+        },
+        (error as any).statusCode || 500,
+      );
+    }
+  });
 
-api.post('/scrape/agent', async (c) => {
-  const body = await c.req.json();
-  const { url, options = {} } = body;
+  api.post("/scrape/agent", async (c) => {
+    const body = await c.req.json();
+    const { url, options = {} } = body;
 
-  if (!url) {
-    return c.json({ error: { code: 'MISSING_URL', message: 'URL is required' } }, 400);
-  }
+    if (!url) {
+      return c.json({ error: { code: "MISSING_URL", message: "URL is required" } }, 400);
+    }
 
-  try {
-    const result = await scrapeUrl(url, options as ScrapeOptions);
-    const agentOutput = formatForAgent(result);
-    return c.json({ status: 'ok', data: agentOutput });
-  } catch (error) {
-    return c.json({
-      error: {
-        code: (error as any).code || 'SCRAPE_ERROR',
-        message: (error as Error).message,
-      }
-    }, (error as any).statusCode || 500);
-  }
-});
+    try {
+      const result = await scrapeUrl(url, options as ScrapeOptions);
+      const agentOutput = formatForAgent(result);
+      return c.json({ status: "ok", data: agentOutput });
+    } catch (error) {
+      return c.json(
+        {
+          error: {
+            code: (error as any).code || "SCRAPE_ERROR",
+            message: (error as Error).message,
+          },
+        },
+        (error as any).statusCode || 500,
+      );
+    }
+  });
 
-api.post('/batch', async (c) => {
-  const body = await c.req.json();
-  const { urls, options = {}, scrapeOptions = {} } = body;
+  api.post("/batch", async (c) => {
+    const body = await c.req.json();
+    const { urls, options = {}, scrapeOptions = {} } = body;
 
-  if (!urls || !Array.isArray(urls) || urls.length === 0) {
-    return c.json({ error: { code: 'MISSING_URLS', message: 'urls array is required' } }, 400);
-  }
+    if (!urls || !Array.isArray(urls) || urls.length === 0) {
+      return c.json({ error: { code: "MISSING_URLS", message: "urls array is required" } }, 400);
+    }
 
-  try {
-    const result = await batchScrape({ urls, ...options }, scrapeOptions as ScrapeOptions);
-    return c.json({
-      status: 'ok',
-      data: {
-        successful: result.successful,
-        failed: result.failed,
-        duration: result.duration,
-        results: result.results,
-        errors: result.errors.map(e => ({ url: e.url, error: e.error.message })),
-      },
-    });
-  } catch (error) {
-    return c.json({
-      error: {
-        code: 'BATCH_ERROR',
-        message: (error as Error).message,
-      }
-    }, 500);
-  }
-});
+    try {
+      const result = await batchScrape({ urls, ...options }, scrapeOptions as ScrapeOptions);
+      return c.json({
+        status: "ok",
+        data: {
+          successful: result.successful,
+          failed: result.failed,
+          duration: result.duration,
+          results: result.results,
+          errors: result.errors.map((e) => ({ url: e.url, error: e.error.message })),
+        },
+      });
+    } catch (error) {
+      return c.json(
+        {
+          error: {
+            code: "BATCH_ERROR",
+            message: (error as Error).message,
+          },
+        },
+        500,
+      );
+    }
+  });
 
-api.post('/crawl', async (c) => {
-  const body = await c.req.json();
-  const { url, options = {} } = body;
+  api.post("/crawl", async (c) => {
+    const body = await c.req.json();
+    const { url, options = {} } = body;
 
-  if (!url) {
-    return c.json({ error: { code: 'MISSING_URL', message: 'URL is required' } }, 400);
-  }
+    if (!url) {
+      return c.json({ error: { code: "MISSING_URL", message: "URL is required" } }, 400);
+    }
 
-  try {
-    const result = await legacycrawl(url, options);
-    return c.json({
-      status: 'ok',
-      data: {
-        stats: result.stats,
-        results: result.results.slice(0, 100),
-      },
-    });
-  } catch (error) {
-    return c.json({
-      error: {
-        code: 'CRAWL_ERROR',
-        message: (error as Error).message,
-      }
-    }, 500);
-  }
-});
+    try {
+      const result = await legacycrawl(url, options);
+      return c.json({
+        status: "ok",
+        data: {
+          stats: result.stats,
+          results: result.results.slice(0, 100),
+        },
+      });
+    } catch (error) {
+      return c.json(
+        {
+          error: {
+            code: "CRAWL_ERROR",
+            message: (error as Error).message,
+          },
+        },
+        500,
+      );
+    }
+  });
 
-api.get('/health', (c) => {
-  return c.json({ status: 'ok', version: '2.0.0', uptime: process.uptime() });
-});
+  api.get("/health", (c) => {
+    return c.json({ status: "ok", version: "2.0.0", uptime: process.uptime() });
+  });
 
-  app.route('/v1', api);
+  app.route("/v1", api);
 
   return app;
 }
@@ -3256,7 +3402,7 @@ export async function createServer(config: ServerConfig = {}) {
   return {
     fetch: app.fetch,
     port: config.port || randomPort(),
-    host: config.host || '0.0.0.0',
+    host: config.host || "0.0.0.0",
   };
 }
 
@@ -3272,96 +3418,105 @@ export async function runscrapecli() {
   const { Command } = await import("commander");
   const program = new Command();
 
-program
-  .name('webscrape')
-  .description('DevThink WebScrape — Universal AI-powered web scraping toolkit')
-  .version('2.0.0');
+  program
+    .name("webscrape")
+    .description("DevThink WebScrape — Universal AI-powered web scraping toolkit")
+    .version("2.0.0");
 
-program
-  .argument('[url]', 'URL to scrape')
-  .option('-f, --format <type>', 'Output format: markdown, html, text, json, xml, redis', 'markdown')
-  .option('-o, --output <file>', 'Write output to file')
-  .option('--file <path>', 'Scrape HTML from local file')
-  .option('--mode <mode>', 'Scraping mode: auto, fetch, browser', 'auto')
-  .option('--no-headless', 'Show browser window')
-  .option('--timeout <ms>', 'Navigation timeout', '30000')
-  .option('--scroll', 'Scroll page to load dynamic content')
-  .option('--readable', 'Extract readable content only')
-  .option('--agent', 'Format output for AI agent consumption')
-  .option('--pretty', 'Pretty-print JSON output')
-  .option('--proxy <url>', 'Proxy server URL')
-  .option('--retries <n>', 'Number of retries', '3')
-  .option('--user-agent <ua>', 'Custom User-Agent string')
-  .action(async (url, options) => {
-    if (!url && !options.file) {
-      program.help();
-    }
-
-    const format = resolveFormat(options.format);
-    const scrapeOpts: ScrapeOptions = {
-      format,
-      timeout: parseInt(options.timeout),
-      scroll: options.scroll,
-      readable: options.readable,
-      mode: options.mode,
-      proxy: options.proxy,
-      retries: parseInt(options.retries),
-      userAgent: options.userAgent,
-      extractLinks: true,
-      extractImages: true,
-      extractTables: true,
-    };
-
-    if (options.readable) {
-      scrapeOpts.removeSelectors = [
-        'script', 'style', 'nav', 'footer', 'header',
-        '.sidebar', '.advertisement', '.ads', '.menu',
-        '.comments', '.comment', '#comments',
-      ];
-    }
-
-    console.error(`Scraping: ${url || options.file}`);
-
-    let result: ScrapeResult;
-
-    if (options.file) {
-      const filePath = resolve(options.file);
-      if (!existsSync(filePath)) {
-        console.error(`File not found: ${filePath}`);
-        process.exit(1);
+  program
+    .argument("[url]", "URL to scrape")
+    .option("-f, --format <type>", "Output format: markdown, html, text, json, xml, redis", "markdown")
+    .option("-o, --output <file>", "Write output to file")
+    .option("--file <path>", "Scrape HTML from local file")
+    .option("--mode <mode>", "Scraping mode: auto, fetch, browser", "auto")
+    .option("--no-headless", "Show browser window")
+    .option("--timeout <ms>", "Navigation timeout", "30000")
+    .option("--scroll", "Scroll page to load dynamic content")
+    .option("--readable", "Extract readable content only")
+    .option("--agent", "Format output for AI agent consumption")
+    .option("--pretty", "Pretty-print JSON output")
+    .option("--proxy <url>", "Proxy server URL")
+    .option("--retries <n>", "Number of retries", "3")
+    .option("--user-agent <ua>", "Custom User-Agent string")
+    .action(async (url, options) => {
+      if (!url && !options.file) {
+        program.help();
       }
-      const html = readFileSync(filePath, 'utf-8');
-      result = await scrapeHtml(html, scrapeOpts);
-    } else {
-      result = await scrapeUrl(url, scrapeOpts);
-    }
 
-    console.error(`Done in ${result.duration}ms (${(result.size / 1024).toFixed(1)} KB)`);
+      const format = resolveFormat(options.format);
+      const scrapeOpts: ScrapeOptions = {
+        format,
+        timeout: parseInt(options.timeout),
+        scroll: options.scroll,
+        readable: options.readable,
+        mode: options.mode,
+        proxy: options.proxy,
+        retries: parseInt(options.retries),
+        userAgent: options.userAgent,
+        extractLinks: true,
+        extractImages: true,
+        extractTables: true,
+      };
 
-    if (options.agent) {
-      const agentOutput = formatForAgent(result);
-      const output = JSON.stringify(agentOutput, null, 2);
+      if (options.readable) {
+        scrapeOpts.removeSelectors = [
+          "script",
+          "style",
+          "nav",
+          "footer",
+          "header",
+          ".sidebar",
+          ".advertisement",
+          ".ads",
+          ".menu",
+          ".comments",
+          ".comment",
+          "#comments",
+        ];
+      }
 
-      if (options.output) {
-        writeOutput(options.output, output);
-        console.error(`Saved to ${options.output}`);
+      console.error(`Scraping: ${url || options.file}`);
+
+      let result: ScrapeResult;
+
+      if (options.file) {
+        const filePath = resolve(options.file);
+        if (!existsSync(filePath)) {
+          console.error(`File not found: ${filePath}`);
+          process.exit(1);
+        }
+        const html = readFileSync(filePath, "utf-8");
+        result = await scrapeHtml(html, scrapeOpts);
       } else {
-        console.log(output);
+        result = await scrapeUrl(url, scrapeOpts);
       }
-    } else {
-      const serializeOpts = buildSerializeOptions(format, options.pretty);
-      const serialized = serializeResult(result, serializeOpts);
 
-      if (options.output) {
-        const ext = extensionForFormat(format);
-        const finalPath = options.output.endsWith(ext) ? options.output : options.output + ext;
-        writeOutput(finalPath, serialized.content);
-        console.error(`Saved to ${finalPath}`);
+      console.error(`Done in ${result.duration}ms (${(result.size / 1024).toFixed(1)} KB)`);
+
+      if (options.agent) {
+        const agentOutput = formatForAgent(result);
+        const output = JSON.stringify(agentOutput, null, 2);
+
+        if (options.output) {
+          writeOutput(options.output, output);
+          console.error(`Saved to ${options.output}`);
+        } else {
+          console.log(output);
+        }
       } else {
-        console.log(serialized.content);
+        const serializeOpts = buildSerializeOptions(format, options.pretty);
+        const serialized = serializeResult(result, serializeOpts);
+
+        if (options.output) {
+          const ext = extensionForFormat(format);
+          const finalPath = options.output.endsWith(ext) ? options.output : options.output + ext;
+          writeOutput(finalPath, serialized.content);
+          console.error(`Saved to ${finalPath}`);
+        } else {
+          console.log(serialized.content);
+        }
       }
-    }
-  });
+    });
 
   program.parse();
 }
@@ -3378,82 +3533,88 @@ export function startdevserver() {
   const PORT = randomPort();
 
   const server = createnodeserver(async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method === 'OPTIONS') {
-    res.writeHead(200);
-    res.end();
-    return;
-  }
-
-  if (req.method !== 'POST' || req.url !== '/api/scrape') {
-    res.writeHead(404);
-    res.end(JSON.stringify({ error: 'Not found' }));
-    return;
-  }
-
-  let body = '';
-  req.on('data', (chunk: Buffer) => { body += chunk.toString(); });
-  req.on('end', async () => {
-    try {
-      const { url, format: fmt, options = {} }: {
-        url: string;
-        format?: string;
-        options?: Record<string, unknown>;
-      } = JSON.parse(body);
-      if (!url) throw new Error('URL is required');
-
-      const format = resolveFormat(fmt || 'markdown');
-      const result = await scrapeUrl(url, {
-        timeout: 30000,
-        scroll: options.scroll as boolean,
-        extractLinks: (options.extractLinks as boolean) ?? true,
-        extractImages: (options.extractImages as boolean) ?? true,
-        extractTables: (options.extractTables as boolean) ?? true,
-      } as ScrapeOptions);
-
-      let response: Record<string, unknown>;
-
-      if (options.agent) {
-        const agentOutput = formatForAgent(result);
-        response = {
-          success: true,
-          title: result.title,
-          url: result.url,
-          duration: result.duration,
-          size: result.size,
-          agentOutput,
-        };
-      } else {
-        const serializeOpts = buildSerializeOptions(format);
-        const serialized = serializeResult(result, serializeOpts);
-        response = {
-          success: true,
-          title: result.title,
-          url: result.url,
-          format,
-          content: serialized.content,
-          duration: result.duration,
-          size: serialized.size,
-          metadata: result.metadata,
-          links: result.links,
-          images: result.images,
-          tables: result.tables,
-          result,
-        };
-      }
-
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(response));
-    } catch (err) {
-      const error = err as Error;
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: error.message }));
+    if (req.method === "OPTIONS") {
+      res.writeHead(200);
+      res.end();
+      return;
     }
+
+    if (req.method !== "POST" || req.url !== "/api/scrape") {
+      res.writeHead(404);
+      res.end(JSON.stringify({ error: "Not found" }));
+      return;
+    }
+
+    let body = "";
+    req.on("data", (chunk: Buffer) => {
+      body += chunk.toString();
+    });
+    req.on("end", async () => {
+      try {
+        const {
+          url,
+          format: fmt,
+          options = {},
+        }: {
+          url: string;
+          format?: string;
+          options?: Record<string, unknown>;
+        } = JSON.parse(body);
+        if (!url) throw new Error("URL is required");
+
+        const format = resolveFormat(fmt || "markdown");
+        const result = await scrapeUrl(url, {
+          timeout: 30000,
+          scroll: options.scroll as boolean,
+          extractLinks: (options.extractLinks as boolean) ?? true,
+          extractImages: (options.extractImages as boolean) ?? true,
+          extractTables: (options.extractTables as boolean) ?? true,
+        } as ScrapeOptions);
+
+        let response: Record<string, unknown>;
+
+        if (options.agent) {
+          const agentOutput = formatForAgent(result);
+          response = {
+            success: true,
+            title: result.title,
+            url: result.url,
+            duration: result.duration,
+            size: result.size,
+            agentOutput,
+          };
+        } else {
+          const serializeOpts = buildSerializeOptions(format);
+          const serialized = serializeResult(result, serializeOpts);
+          response = {
+            success: true,
+            title: result.title,
+            url: result.url,
+            format,
+            content: serialized.content,
+            duration: result.duration,
+            size: serialized.size,
+            metadata: result.metadata,
+            links: result.links,
+            images: result.images,
+            tables: result.tables,
+            result,
+          };
+        }
+
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(response));
+      } catch (err) {
+        const error = err as Error;
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: error.message }));
+      }
+    });
   });
-});
 
   server.listen(PORT, () => {
     console.log(`API server running at http://localhost:${PORT}`);

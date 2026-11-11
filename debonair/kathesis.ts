@@ -4722,14 +4722,11 @@ export interface VoiceRender {
   peak: number;
 }
 
-/** Maps a midi note to hz (a4 = 440). */
-function midiToHz(midi: number): number {
-  return 440 * 2 ** ((midi - 69) / 12);
-}
-
 /**
  * Renders one syllable into a fresh buffer: glottal saw with seeded vibrato,
  * the three formant bandpasses, the consonant burst, the envelope.
+ * The midi seat answers through the theory kernel the file imports (the
+ * no-duplicate-logic law: midiToHz lives in theory.ts alone).
  *
  * @param syllable the syllable to sing.
  * @param options the render options.

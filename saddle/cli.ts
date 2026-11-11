@@ -20,7 +20,7 @@ import { eventbus } from "./foundation.ts";
 import { localmemory, localstorage } from "./virtual.ts";
 import { engine, inprocess, scheduler } from "./execution.ts";
 import { mcpserver } from "./integration.ts";
-import { modecatalog } from "./modes.ts";
+import { modecatalog } from "./modalities.ts";
 import { creategrid, defaultplan, dockerrun, multiplex, planlint, plantoml, qemucommand, type plan } from "./index.ts";
 import {
   compilewithbabel,

@@ -1,4 +1,4 @@
-# foundry 2.0.175 — THE SITE CONTAINER FILE
+# foundry 2.0.178 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -14,7 +14,7 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS solbuild
 
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 
 # The family context fix (the staged shape the site containers read): the
 # application rides the context nested under app/ with the sibling sources
@@ -62,7 +62,7 @@ RUN pnpm build
 # the catalog lanes ride before the runtime stage so the default build keeps answering the runtime target (the family builds never pass --target — the saddle lanes always do, the os seats close the saddle file the same law).
 # ════════════════════════════════════════════════════════════════════
 FROM scratch AS osgrapheneos
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="grapheneos"
 ENV FOUNDRY_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="foundry (the grapheneos os-distribution catalog lane)" \
@@ -73,7 +73,7 @@ LABEL org.opencontainers.image.title="foundry (the grapheneos os-distribution ca
 COPY osprofiles/grapheneos.json /foundry/osprofile.json
 
 FROM scratch AS osmaruos
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="maruos"
 ENV FOUNDRY_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="foundry (the maruos os-distribution catalog lane)" \
@@ -84,7 +84,7 @@ LABEL org.opencontainers.image.title="foundry (the maruos os-distribution catalo
 COPY osprofiles/maruos.json /foundry/osprofile.json
 
 FROM scratch AS osv
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="v"
 ENV FOUNDRY_OS_PROFILE=v
 LABEL org.opencontainers.image.title="foundry (the v os-distribution catalog lane)" \
@@ -95,7 +95,7 @@ LABEL org.opencontainers.image.title="foundry (the v os-distribution catalog lan
 COPY osprofiles/v.json /foundry/osprofile.json
 
 FROM scratch AS oswindows
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="windows"
 ENV FOUNDRY_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="foundry (the windows os-distribution catalog lane)" \
@@ -106,7 +106,7 @@ LABEL org.opencontainers.image.title="foundry (the windows os-distribution catal
 COPY osprofiles/windows.json /foundry/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="postmarketos"
 ENV FOUNDRY_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="foundry (the postmarketos os-distribution catalog lane)" \
@@ -117,7 +117,7 @@ LABEL org.opencontainers.image.title="foundry (the postmarketos os-distribution 
 COPY osprofiles/postmarketos.json /foundry/osprofile.json
 
 FROM scratch AS oslineageos
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="lineageos"
 ENV FOUNDRY_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="foundry (the lineageos os-distribution catalog lane)" \
@@ -128,7 +128,7 @@ LABEL org.opencontainers.image.title="foundry (the lineageos os-distribution cat
 COPY osprofiles/lineageos.json /foundry/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="calyxos"
 ENV FOUNDRY_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="foundry (the calyxos os-distribution catalog lane)" \
@@ -139,7 +139,7 @@ LABEL org.opencontainers.image.title="foundry (the calyxos os-distribution catal
 COPY osprofiles/calyxos.json /foundry/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="archlinux"
 ENV FOUNDRY_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="foundry (the archlinux os-distribution catalog lane)" \
@@ -150,7 +150,7 @@ LABEL org.opencontainers.image.title="foundry (the archlinux os-distribution cat
 COPY osprofiles/archlinux.json /foundry/osprofile.json
 
 FROM scratch AS osalpine
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="alpine"
 ENV FOUNDRY_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="foundry (the alpine os-distribution catalog lane)" \
@@ -161,7 +161,7 @@ LABEL org.opencontainers.image.title="foundry (the alpine os-distribution catalo
 COPY osprofiles/alpine.json /foundry/osprofile.json
 
 FROM scratch AS osdebian
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="debian"
 ENV FOUNDRY_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="foundry (the debian os-distribution catalog lane)" \
@@ -172,7 +172,7 @@ LABEL org.opencontainers.image.title="foundry (the debian os-distribution catalo
 COPY osprofiles/debian.json /foundry/osprofile.json
 
 FROM scratch AS osfedora
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="fedora"
 ENV FOUNDRY_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="foundry (the fedora os-distribution catalog lane)" \
@@ -183,7 +183,7 @@ LABEL org.opencontainers.image.title="foundry (the fedora os-distribution catalo
 COPY osprofiles/fedora.json /foundry/osprofile.json
 
 FROM scratch AS osnixos
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="nixos"
 ENV FOUNDRY_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="foundry (the nixos os-distribution catalog lane)" \
@@ -194,7 +194,7 @@ LABEL org.opencontainers.image.title="foundry (the nixos os-distribution catalog
 COPY osprofiles/nixos.json /foundry/osprofile.json
 
 FROM scratch AS osvoid
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="void"
 ENV FOUNDRY_OS_PROFILE=void
 LABEL org.opencontainers.image.title="foundry (the void os-distribution catalog lane)" \
@@ -205,7 +205,7 @@ LABEL org.opencontainers.image.title="foundry (the void os-distribution catalog 
 COPY osprofiles/void.json /foundry/osprofile.json
 
 FROM scratch AS oslinux
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="linux"
 ENV FOUNDRY_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="foundry (the linux os-distribution catalog lane)" \
@@ -216,7 +216,7 @@ LABEL org.opencontainers.image.title="foundry (the linux os-distribution catalog
 COPY osprofiles/linux.json /foundry/osprofile.json
 
 FROM scratch AS osomarchy
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 ARG FOUNDRY_OS_PROFILE="omarchy"
 ENV FOUNDRY_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="foundry (the omarchy os-distribution catalog lane)" \
@@ -229,7 +229,7 @@ COPY osprofiles/omarchy.json /foundry/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG FOUNDRY_VERSION=2.0.175
+ARG FOUNDRY_VERSION=2.0.178
 
 LABEL org.opencontainers.image.title="foundry" \
       org.opencontainers.image.description="foundry — the run and store site role of the network: the containers and the buckets under one console." \
@@ -276,11 +276,11 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 #
 #   services:
 #     foundry-engine:
-#       image: "ghcr.io/wenathlan/foundry:${FOUNDRY_VERSION:-2.0.175}"
+#       image: "ghcr.io/wenathlan/foundry:${FOUNDRY_VERSION:-2.0.176}"
 #       init: true
 #       restart: unless-stopped
 #     foundry-face:
-#       image: "ghcr.io/wenathlan/foundry:${FOUNDRY_VERSION:-2.0.175}"
+#       image: "ghcr.io/wenathlan/foundry:${FOUNDRY_VERSION:-2.0.176}"
 #       volumes:
 #         - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
 #       depends_on:

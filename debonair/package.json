@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/debonair",
-  "version": "2.0.175",
+  "version": "2.0.178",
   "private": false,
   "description": "debonair is the audio and DAW app of the wenathlan family: the exclusive owner of the kathesis engine — the complete audio and music DAW infrastructure and sound AI (music studio, mixer, effects rack, transport, sampler, synthesis, voice, mixing, mastering, the v1 payload ingest and its reverse ingest) — housed at the app root beside the katexis site vocabulary, importing gateway, AI and workflow from devthink, versawase from cadria, storage from vault and the sandbox lanes from saddle. The envelope distributes the documentation set, the zero-build site and the tests directory as one package.",
   "license": "GPL-3.0-only",
@@ -15,9 +15,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^4.0.113",
-    "@ai-sdk/openai-compatible": "^3.0.89",
-    "@ai-sdk/provider-utils": "^5.0.78",
+    "@ai-sdk/openai": "^4.0.114",
+    "@ai-sdk/openai-compatible": "^3.0.90",
+    "@ai-sdk/provider-utils": "^5.0.79",
     "@anthropic-ai/sdk": "^1.8.0",
     "@biomejs/biome": "^2.6.6",
     "@capacitor/android": "^8.6.0",
@@ -95,7 +95,7 @@
     "@wenathlan/saddle": "~2.0.173",
     "@wenathlan/vault": "~2.0.173",
     "add": "^2.0.9",
-    "ai": "^7.0.168",
+    "ai": "^7.0.169",
     "autoprefixer": "^10.6.2",
     "axios": "^1.21.1",
     "baseline-browser-mapping": "^2.11.35",
@@ -189,9 +189,9 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
-    "@ai-sdk/openai": "^4.0.113",
-    "@ai-sdk/openai-compatible": "^3.0.89",
-    "@ai-sdk/provider-utils": "^5.0.78",
+    "@ai-sdk/openai": "^4.0.114",
+    "@ai-sdk/openai-compatible": "^3.0.90",
+    "@ai-sdk/provider-utils": "^5.0.79",
     "@anthropic-ai/sdk": "^1.8.0",
     "@biomejs/biome": "^2.6.6",
     "@capacitor/android": "^8.6.0",
@@ -273,7 +273,7 @@
     "@wenathlan/stealthhead": "~2.0.173",
     "@wenathlan/vault": "~2.0.173",
     "add": "^2.0.9",
-    "ai": "^7.0.168",
+    "ai": "^7.0.169",
     "autoprefixer": "^10.6.2",
     "axios": "^1.21.1",
     "baseline-browser-mapping": "^2.11.35",
@@ -367,9 +367,9 @@
     "zustand": "^5.1.0"
   },
   "overrides": {
-    "@ai-sdk/openai": "^4.0.113",
-    "@ai-sdk/openai-compatible": "^3.0.89",
-    "@ai-sdk/provider-utils": "^5.0.78",
+    "@ai-sdk/openai": "^4.0.114",
+    "@ai-sdk/openai-compatible": "^3.0.90",
+    "@ai-sdk/provider-utils": "^5.0.79",
     "@anthropic-ai/sdk": "^1.8.0",
     "@biomejs/biome": "^2.6.6",
     "@capacitor/android": "^8.6.0",
@@ -447,7 +447,7 @@
     "@wenathlan/saddle": "~2.0.173",
     "@wenathlan/vault": "~2.0.173",
     "add": "^2.0.9",
-    "ai": "^7.0.168",
+    "ai": "^7.0.169",
     "autoprefixer": "^10.6.2",
     "axios": "^1.21.1",
     "baseline-browser-mapping": "^2.11.35",

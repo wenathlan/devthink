@@ -1,0 +1,1153 @@
+# the webpack distribution workflow of the house — the owner doctrine the
+# corridor clarified: the webpack the platform speaks is THE WORKFLOW THAT
+# CREATES THE WEBPACK DISTRIBUTION (the github actions seat, never a file
+# naming flavor), the reason every application envelope carries the
+# webpack and webpack-cli dependencies beside the esbuild carrier the
+# transpile rides. the six main matrices the distribution law stamps —
+# NuGet x Webpack, Maven x Webpack, Gradle x Webpack, npmjs x Webpack,
+# RubyGems x Webpack and GitHub Packages x Webpack — bundle every one of
+# the eleven applications through the webpack CLI into the single-file
+# distribution seat (the esbuild carrier walks the typescript sources to
+# the plain script the webpack CLI bundles, the packages staying external
+# the way the envelope dependency blocks already answer), so the family
+# counts sixty-six webpack seats every rung beside the seats the bundle
+# lane attaches whole: the asset grammar rides the dotted law
+# (<app>.<registry>.webpack.<version>.<ext>) and never an underscore,
+# every lane answers the one existence pre-check, the bounded retry and
+# the honest notices (the absent NPM_TOKEN answers the skip alone, the
+# billing wall keeps its seat unpublished behind the warning and the
+# next maintenance dispatch retries idempotently) — never a red that a
+# mirror seat could answer, and every publish walks only after the
+# release-approval doctrine the house stamps on every registry lane.
+name: DevThink Webpack
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: the release tag the webpack matrices publish (empty answers the latest release)
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  # the event-scoped group (the family concurrency doctrine): the release
+  # published and dispatch firings are distinct lanes that never cancel
+  # one another; only a superseded firing of the SAME event and ref waits
+  # behind the running one (cancel-in-progress stays false so no webpack
+  # leg is ever cancelled mid-push).
+  group: devthink-webpack-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  RELEASE_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+
+jobs:
+  release-approval:
+    name: release approval gate
+    # the explicit approval point of the webpack wave (the release approval
+    # flow repair the publish mirror carries): one named job holds the
+    # release-approval environment and every registry matrix below needs
+    # it, so the review the owner grants answers once for the whole
+    # webpack wave — a rejected gate skips the lanes honestly and the
+    # bundle seat of the wave never waits on the review at all (the
+    # asset lanes of the house doctrine stay outside the gate).
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    environment: release-approval
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: confirm the release approval
+        run: |
+          echo "the release-approval environment granted this webpack wave: every registry lane below flows."
+
+  webpackseats:
+    name: webpack ${{ matrix.package }}
+    # the bundle lane: every application walks the esbuild carrier (the
+    # typescript sources to the plain commonjs script, the packages
+    # external the way the envelope dependency blocks already answer)
+    # and the webpack CLI bundles the carrier into the single-file
+    # distribution seat — the one build every registry matrix consumes,
+    # so the bundle compiles once per rung and the six lanes never
+    # re-install the tree.
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        # the eleven applications the webpack law covers — the envelope
+        # beside the ten siblings, the canonical alphabetical pass order.
+        package: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: bundle the webpack distribution seat
+        # the carrier law the corridor clarified: the webpack CLI and the
+        # webpack dependencies the envelopes carry exist FOR this seat —
+        # the esbuild carrier transpiles the typescript entry (the cli
+        # logic every application root owns) to the esm script with the
+        # packages external (the top level await the saddle scripts carry
+        # and the import.meta the entries read answer through the esm
+        # form) and the webpack CLI bundles it through the generated
+        # config into the single-file distribution (the config the seat
+        # generates answers the variadic target flag the webpack cli
+        # grammar cannot carry on the command line, the externals law
+        # keeps every package a runtime require the envelope dependency
+        # blocks already answer and the parser url switch keeps the
+        # runtime file reads the devthink caps seat carries runtime reads
+        # instead of build time assets), the node target under
+        # production, the commonjs2 library riding the .cjs extension so
+        # the bundle answers both the direct node run and the require of
+        # the envelopes the registry lanes publish (the type:module
+        # trees never break the commonjs seat).
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          cd "${PKG}"
+          bun install --frozen-lockfile --ignore-scripts
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "../${PKG}.webpack.${VERSION}.cjs"
+          cd ..
+          rm -rf "${PKG}/webpackdist" "${PKG}/webpacksrc.mjs" "${PKG}/webpack.config.cjs"
+          sha256sum "${PKG}.webpack.${VERSION}.cjs" > "${PKG}.sha256.webpack.${VERSION}"
+          test -s "${PKG}.sha256.webpack.${VERSION}"
+          # the family asset naming gate: no underscore ever rides a
+          # published asset (the two names the seat attaches answer the
+          # check, never the whole repository root).
+          ! printf '%s\n' \
+            "${PKG}.webpack.${VERSION}.cjs" \
+            "${PKG}.sha256.webpack.${VERSION}" | grep -q "_"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-webpack-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.webpack.${{ steps.release.outputs.version }}.cjs
+            ${{ matrix.package }}.sha256.webpack.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        # the release event path attaches the bundle beside its checksum
+        # (the dispatch path answers the same attach once the tag rides
+        # the input), and --clobber keeps the re-run idempotent over its
+        # own names, which carry the application prefix and never
+        # collide with another lane's grammar.
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.webpack.${VERSION}.cjs" \
+            "${{ matrix.package }}.sha256.webpack.${VERSION}" --clobber
+
+  webpacknpmjs:
+    name: webpack npmjs ${{ matrix.package }}
+    needs: [webpackseats, release-approval]
+    # the npmjs x webpack matrix: the @wenathlan/<app>.webpack envelope
+    # packs the single-file bundle as the main payload and publishes to
+    # npmjs.com — the absent NPM_TOKEN answers the graceful skip alone
+    # (the notice the mirror doctrine stamps, never a red), the registry
+    # existence pre-check keeps the re-run idempotent and the bounded
+    # retry walks the twin-409 race the registry's own refusal answers.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      # the npmjs publish answers the registry's attestation endpoint
+      # (the provenance law the application lane carries), so the job
+      # holds the oidc write beside the asset attach write.
+      contents: write
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: download the webpack seat
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-webpack-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: seat
+      - name: pack the webpack envelope
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          test -s "seat/${PKG}.webpack.${VERSION}.cjs"
+          mkdir -p envelope
+          cp "seat/${PKG}.webpack.${VERSION}.cjs" "envelope/${PKG}.webpack.cjs"
+          cp "seat/${PKG}.sha256.webpack.${VERSION}" "envelope/${PKG}.sha256.webpack"
+          node -e "
+          const fs = require('node:fs');
+          const envelope = {
+            name: '@wenathlan/${PKG}.webpack',
+            version: '${VERSION}',
+            private: false,
+            description: 'The ${PKG} webpack distribution bundle (the engine payload the webpack CLI seat bundles).',
+            license: 'GPL-3.0-only',
+            repository: { type: 'git', url: 'git+https://github.com/wenathlan/devthink.git' },
+            main: '${PKG}.webpack.cjs',
+            files: ['${PKG}.webpack.cjs']
+          };
+          fs.writeFileSync('envelope/package.json', JSON.stringify(envelope, null, 2) + '\n');
+          fs.writeFileSync('envelope/README.md', '# @wenathlan/${PKG}.webpack\n\nThe ${PKG} webpack distribution bundle — the single-file engine payload the DevThink Webpack workflow cuts at release ${VERSION}.\n');
+          fs.writeFileSync('envelope/${PKG}.sha256.webpack', fs.readFileSync('envelope/${PKG}.sha256.webpack', 'utf8').replace('${PKG}.webpack.${VERSION}.cjs', '${PKG}.webpack.cjs'));
+          "
+          cd envelope
+          npm pack --pack-destination ..
+          cd ..
+          # the scoped tarball name the npm pack stamps: the scope rides
+          # the prefix (wenathlan-<app>.webpack-<version>.tgz).
+          mv "wenathlan-${PKG}.webpack-${VERSION}.tgz" "${PKG}.npmjs.webpack.${VERSION}.tgz"
+          sha256sum "${PKG}.npmjs.webpack.${VERSION}.tgz" > "${PKG}.sha256.npmjs.webpack.${VERSION}"
+          test -s "${PKG}.sha256.npmjs.webpack.${VERSION}"
+          ! printf '%s\n' \
+            "${PKG}.npmjs.webpack.${VERSION}.tgz" \
+            "${PKG}.sha256.npmjs.webpack.${VERSION}" | grep -q "_"
+      - name: publish the webpack envelope when absent
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com webpack publication of @wenathlan/${PKG}.webpack@${VERSION} is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the webpack envelope."
+            exit 0
+          fi
+          if npm view "@wenathlan/${PKG}.webpack@${VERSION}" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
+            echo "The @wenathlan/${PKG}.webpack ${VERSION} envelope already exists on npmjs; skipping the re-upload."
+            exit 0
+          fi
+          published=false
+          for attempt in 1 2 3; do
+            publishlog="$(mktemp)"
+            if npm publish "envelope" --registry=https://registry.npmjs.org --access public --provenance --tag latest 2>&1 | tee "${publishlog}"; then published=true; rm -f "${publishlog}"; break; fi
+            if grep -qiE "cannot publish over previously (published|staged)" "${publishlog}"; then
+              echo "The twin lane already landed @wenathlan/${PKG}.webpack@${VERSION}; the race answers the idempotent win."
+              published=true
+              rm -f "${publishlog}"
+              break
+            fi
+            rm -f "${publishlog}"
+            echo "The npmjs webpack publish attempt ${attempt} of the ${PKG} envelope failed; the bounded retry policy retries inside three attempts."
+            sleep "$((attempt * 5))"
+          done
+          test "$published" = true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-webpacknpmjs-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.npmjs.webpack.${{ steps.release.outputs.version }}.tgz
+            ${{ matrix.package }}.sha256.npmjs.webpack.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.npmjs.webpack.${VERSION}.tgz" \
+            "${{ matrix.package }}.sha256.npmjs.webpack.${VERSION}" --clobber
+
+  webpackgithubnpm:
+    name: webpack github npm ${{ matrix.package }}
+    needs: [webpackseats, release-approval]
+    # the GitHub Packages x webpack matrix: the same @wenathlan/<app>.webpack
+    # envelope publishes to the github npm registry — the billing wall the
+    # account quota answers keeps its seat unpublished behind the warning
+    # (never a red the mirror seats could answer) and the next maintenance
+    # dispatch retries it idempotently once the quota lifts.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          registry-url: https://npm.pkg.github.com
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: download the webpack seat
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-webpack-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: seat
+      - name: pack the webpack envelope
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          test -s "seat/${PKG}.webpack.${VERSION}.cjs"
+          mkdir -p envelope
+          cp "seat/${PKG}.webpack.${VERSION}.cjs" "envelope/${PKG}.webpack.cjs"
+          node -e "
+          const fs = require('node:fs');
+          const envelope = {
+            name: '@wenathlan/${PKG}.webpack',
+            version: '${VERSION}',
+            private: false,
+            description: 'The ${PKG} webpack distribution bundle (the engine payload the webpack CLI seat bundles).',
+            license: 'GPL-3.0-only',
+            repository: { type: 'git', url: 'git+https://github.com/wenathlan/devthink.git' },
+            main: '${PKG}.webpack.cjs',
+            files: ['${PKG}.webpack.cjs']
+          };
+          fs.writeFileSync('envelope/package.json', JSON.stringify(envelope, null, 2) + '\n');
+          fs.writeFileSync('envelope/README.md', '# @wenathlan/${PKG}.webpack\n\nThe ${PKG} webpack distribution bundle — the single-file engine payload the DevThink Webpack workflow cuts at release ${VERSION}.\n');
+          "
+          cd envelope
+          npm pack --pack-destination ..
+          cd ..
+          # the scoped tarball name the npm pack stamps: the scope rides
+          # the prefix (wenathlan-<app>.webpack-<version>.tgz).
+          mv "wenathlan-${PKG}.webpack-${VERSION}.tgz" "${PKG}.github.webpack.${VERSION}.tgz"
+          sha256sum "${PKG}.github.webpack.${VERSION}.tgz" > "${PKG}.sha256.github.webpack.${VERSION}"
+          test -s "${PKG}.sha256.github.webpack.${VERSION}"
+          ! printf '%s\n' \
+            "${PKG}.github.webpack.${VERSION}.tgz" \
+            "${PKG}.sha256.github.webpack.${VERSION}" | grep -q "_"
+      - name: publish the webpack envelope when absent
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          if npm view "@wenathlan/${PKG}.webpack@${VERSION}" version --registry=https://npm.pkg.github.com >/dev/null 2>&1; then
+            echo "The @wenathlan/${PKG}.webpack ${VERSION} envelope already exists on the github npm registry; skipping the re-upload."
+            exit 0
+          fi
+          published=false
+          billing=0
+          for attempt in 1 2 3; do
+            publishlog="$(mktemp)"
+            if npm publish "envelope" --registry=https://npm.pkg.github.com --access public --tag latest 2>&1 | tee "${publishlog}"; then published=true; rm -f "${publishlog}"; break; fi
+            if grep -qi "billing limit" "${publishlog}"; then
+              billing=1
+              echo "::warning::the github npm registry answered the account billing limit on the @wenathlan/${PKG}.webpack ${VERSION} envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              rm -f "${publishlog}"
+              break
+            fi
+            if grep -qiE "cannot publish over previously (published|staged)" "${publishlog}"; then
+              echo "The twin lane already landed @wenathlan/${PKG}.webpack@${VERSION}; the race answers the idempotent win."
+              published=true
+              rm -f "${publishlog}"
+              break
+            fi
+            rm -f "${publishlog}"
+            echo "The github npm webpack publish attempt ${attempt} of the ${PKG} envelope failed; the bounded retry policy retries inside three attempts."
+            sleep "$((attempt * 5))"
+          done
+          if [ "$published" != true ] && [ "$billing" -ne 1 ]; then
+            echo "::error::the github npm webpack publish of the ${PKG} envelope failed after the bounded retries."
+            exit 1
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-webpackgithubnpm-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.github.webpack.${{ steps.release.outputs.version }}.tgz
+            ${{ matrix.package }}.sha256.github.webpack.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.github.webpack.${VERSION}.tgz" \
+            "${{ matrix.package }}.sha256.github.webpack.${VERSION}" --clobber
+
+  webpackmaven:
+    name: webpack maven ${{ matrix.package }}
+    needs: [webpackseats, release-approval]
+    # the Maven x webpack matrix: the bundle rides the com.wenathlan
+    # coordinates the family maven lane owns, the single-file seat
+    # attaching under the webpack classifier beside the main jar (the
+    # classifier grammar the sources and javadoc seats already answer)
+    # — the existence pre-check, the bounded retry and the billing wall
+    # mirror pattern serve every leg alike.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup java
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          java-version: '26'
+          distribution: temurin
+      - name: download the webpack seat
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-webpack-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: seat
+      - name: pack the webpack classifier jar
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          test -s "seat/${PKG}.webpack.${VERSION}.cjs"
+          cd seat
+          jar cf "../${PKG}.maven.webpack.${VERSION}.jar" "${PKG}.webpack.${VERSION}.cjs"
+          cd ..
+          sha256sum "${PKG}.maven.webpack.${VERSION}.jar" > "${PKG}.sha256.maven.webpack.${VERSION}"
+          test -s "${PKG}.sha256.maven.webpack.${VERSION}"
+          ! printf '%s\n' \
+            "${PKG}.maven.webpack.${VERSION}.jar" \
+            "${PKG}.sha256.maven.webpack.${VERSION}" | grep -q "_"
+      - name: publish the webpack classifier when absent
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          printf -- '<?xml version="1.0" encoding="UTF-8"?>\n<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"><servers><server><id>github</id><username>%s</username><password>%s</password></server></servers></settings>\n' "${GITHUB_ACTOR}" "${GITHUB_TOKEN}" > settings.xml
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}-webpack.jar"; then
+            echo "The family maven webpack classifier ${PKG}-${VERSION} is already published; skipping the re-upload."
+            exit 0
+          fi
+          published=false
+          billing=0
+          for attempt in 1 2 3; do
+            deploylog="$(mktemp)"
+            if mvn --batch-mode deploy:deploy-file -DgroupId=com.wenathlan -DartifactId="${PKG}" -Dversion="${VERSION}" -Dclassifier=webpack -Dpackaging=jar -Dfile="${PKG}.maven.webpack.${VERSION}.jar" -DgeneratePom=false -DrepositoryId=github -Durl="${PUBLISH}" --settings settings.xml 2>&1 | tee "${deploylog}"; then published=true; rm -f "${deploylog}"; break; fi
+            if grep -qi "billing limit" "${deploylog}"; then
+              billing=1
+              echo "::warning::the maven registry answered the account billing limit on the ${PKG} ${VERSION} webpack classifier - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              rm -f "${deploylog}"
+              break
+            fi
+            rm -f "${deploylog}"
+            echo "The maven webpack deploy attempt ${attempt} of the ${PKG} classifier failed; the bounded retry policy retries inside three attempts."
+            sleep "$((attempt * 5))"
+          done
+          if [ "$published" != true ] && [ "$billing" -ne 1 ]; then
+            echo "::error::the maven webpack deploy of the ${PKG} classifier failed after the bounded retries."
+            exit 1
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-webpackmaven-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.maven.webpack.${{ steps.release.outputs.version }}.jar
+            ${{ matrix.package }}.sha256.maven.webpack.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.maven.webpack.${VERSION}.jar" \
+            "${{ matrix.package }}.sha256.maven.webpack.${VERSION}" --clobber
+
+  webpackgradle:
+    name: webpack gradle ${{ matrix.package }}
+    needs: [webpackseats, release-approval]
+    # the Gradle x webpack matrix: the bundle rides its own
+    # com.wenathlan.<app>.webpack artifactId (the dotted identification
+    # grammar the package law stamps) with the module pom the gradle
+    # consumer resolves, deployed to the same GitHub Packages maven
+    # registry the family gradle lane owns — the coordinate never
+    # collides with the family module and the classifier seat the maven
+    # lane answers.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup java
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          java-version: '26'
+          distribution: temurin
+      - name: download the webpack seat
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-webpack-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: seat
+      - name: pack the webpack module
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          test -s "seat/${PKG}.webpack.${VERSION}.cjs"
+          cd seat
+          jar cf "../${PKG}.gradle.webpack.${VERSION}.jar" "${PKG}.webpack.${VERSION}.cjs"
+          cd ..
+          cat > "${PKG}.gradle.webpack.${VERSION}.pom" <<POM
+          <?xml version="1.0" encoding="UTF-8"?>
+          <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+            <modelVersion>4.0.0</modelVersion>
+            <groupId>com.wenathlan</groupId>
+            <artifactId>${PKG}.webpack</artifactId>
+            <version>${VERSION}</version>
+            <packaging>jar</packaging>
+            <name>${PKG}.webpack</name>
+            <description>The ${PKG} webpack distribution bundle — the single-file engine payload the DevThink Webpack workflow cuts.</description>
+            <url>https://github.com/wenathlan/devthink</url>
+            <licenses>
+              <license>
+                <name>GPL-3.0-only</name>
+                <url>https://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
+              </license>
+            </licenses>
+            <developers>
+              <developer>
+                <id>wenathlan</id>
+                <name>wenathlan</name>
+              </developer>
+            </developers>
+            <scm>
+              <url>https://github.com/wenathlan/devthink</url>
+            </scm>
+          </project>
+          POM
+          sha256sum "${PKG}.gradle.webpack.${VERSION}.jar" "${PKG}.gradle.webpack.${VERSION}.pom" > "${PKG}.sha256.gradle.webpack.${VERSION}"
+          test -s "${PKG}.sha256.gradle.webpack.${VERSION}"
+          ! printf '%s\n' \
+            "${PKG}.gradle.webpack.${VERSION}.jar" \
+            "${PKG}.gradle.webpack.${VERSION}.pom" \
+            "${PKG}.sha256.gradle.webpack.${VERSION}" | grep -q "_"
+      - name: publish the webpack module when absent
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          printf -- '<?xml version="1.0" encoding="UTF-8"?>\n<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"><servers><server><id>github</id><username>%s</username><password>%s</password></server></servers></settings>\n' "${GITHUB_ACTOR}" "${GITHUB_TOKEN}" > settings.xml
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/${PKG}.webpack/${VERSION}/${PKG}.webpack-${VERSION}.jar"; then
+            echo "The family gradle webpack module ${PKG}.webpack-${VERSION} is already published; skipping the re-upload."
+            exit 0
+          fi
+          published=false
+          billing=0
+          for attempt in 1 2 3; do
+            deploylog="$(mktemp)"
+            if mvn --batch-mode deploy:deploy-file -DgroupId=com.wenathlan -DartifactId="${PKG}.webpack" -Dversion="${VERSION}" -Dpackaging=jar -Dfile="${PKG}.gradle.webpack.${VERSION}.jar" -DpomFile="${PKG}.gradle.webpack.${VERSION}.pom" -DrepositoryId=github -Durl="${PUBLISH}" --settings settings.xml 2>&1 | tee "${deploylog}"; then published=true; rm -f "${deploylog}"; break; fi
+            if grep -qi "billing limit" "${deploylog}"; then
+              billing=1
+              echo "::warning::the maven registry answered the account billing limit on the ${PKG}.webpack ${VERSION} module - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              rm -f "${deploylog}"
+              break
+            fi
+            rm -f "${deploylog}"
+            echo "The gradle webpack deploy attempt ${attempt} of the ${PKG}.webpack module failed; the bounded retry policy retries inside three attempts."
+            sleep "$((attempt * 5))"
+          done
+          if [ "$published" != true ] && [ "$billing" -ne 1 ]; then
+            echo "::error::the gradle webpack deploy of the ${PKG}.webpack module failed after the bounded retries."
+            exit 1
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-webpackgradle-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.gradle.webpack.${{ steps.release.outputs.version }}.jar
+            ${{ matrix.package }}.gradle.webpack.${{ steps.release.outputs.version }}.pom
+            ${{ matrix.package }}.sha256.gradle.webpack.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.gradle.webpack.${VERSION}.jar" \
+            "${{ matrix.package }}.gradle.webpack.${VERSION}.pom" \
+            "${{ matrix.package }}.sha256.gradle.webpack.${VERSION}" --clobber
+
+  webpacknuget:
+    name: webpack nuget ${{ matrix.package }}
+    needs: [webpackseats, release-approval]
+    # the NuGet x webpack matrix: the bundle rides its own
+    # <app>.webpack packageId (the dotted identification grammar) with
+    # the single-file payload as the packaged content, pushed to the
+    # GitHub Packages nuget registry — the 403 billing wall keeps its
+    # seat unpublished behind the warning and --skip-duplicate answers
+    # the overlapping publish the twin lanes race.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup dotnet
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.112
+      - name: download the webpack seat
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-webpack-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: seat
+      - name: pack the webpack package
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          test -s "seat/${PKG}.webpack.${VERSION}.cjs"
+          mkdir -p nugetwork
+          cp "seat/${PKG}.webpack.${VERSION}.cjs" "nugetwork/${PKG}.webpack.js"
+          cat > "nugetwork/${PKG}.webpack.csproj" <<CSPROJ
+          <Project Sdk="Microsoft.NET.Sdk">
+            <PropertyGroup>
+              <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+              <AssemblyName>${PKG}.webpack</AssemblyName>
+              <RootNamespace>${PKG}.webpack</RootNamespace>
+              <PackageId>${PKG}.webpack</PackageId>
+              <Version>${VERSION}</Version>
+              <Authors>wenathlan</Authors>
+              <Description>The ${PKG} webpack distribution bundle — the single-file engine payload the DevThink Webpack workflow cuts.</Description>
+              <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
+              <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
+              <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
+              <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+              <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+            </PropertyGroup>
+            <ItemGroup>
+              <None Include="${PKG}.webpack.cjs" Pack="true" PackagePath="webpack/" />
+            </ItemGroup>
+          </Project>
+          CSPROJ
+          cd nugetwork
+          dotnet pack "${PKG}.webpack.csproj" --configuration Release --output . -p:PackageVersion="${VERSION}"
+          cd ..
+          NUPKG="$(find nugetwork -maxdepth 1 -name "${PKG}.webpack.${VERSION}.nupkg" -print -quit)"
+          test -n "$NUPKG"
+          cp "$NUPKG" "${PKG}.nuget.webpack.${VERSION}.nupkg"
+          sha256sum "${PKG}.nuget.webpack.${VERSION}.nupkg" > "${PKG}.sha256.nuget.webpack.${VERSION}"
+          test -s "${PKG}.sha256.nuget.webpack.${VERSION}"
+          ! printf '%s\n' \
+            "${PKG}.nuget.webpack.${VERSION}.nupkg" \
+            "${PKG}.sha256.nuget.webpack.${VERSION}" | grep -q "_"
+      - name: publish the webpack package when absent
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          pushed=false
+          billing=0
+          for attempt in 1 2 3; do
+            pushlog="$(mktemp)"
+            if dotnet nuget push "${PKG}.nuget.webpack.${VERSION}.nupkg" --api-key "${GITHUB_TOKEN}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate 2>&1 | tee "${pushlog}"; then pushed=true; rm -f "${pushlog}"; break; fi
+            if grep -qi "403" "${pushlog}"; then
+              billing=1
+              echo "::warning::the nuget registry answered 403 forbidden (the account packages billing wall) on the ${PKG}.webpack ${VERSION} envelope - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              rm -f "${pushlog}"
+              break
+            fi
+            rm -f "${pushlog}"
+            echo "the nuget webpack push attempt ${attempt}/3 of the ${PKG}.webpack envelope failed; retrying with backoff."
+            sleep "$((attempt * 5))"
+          done
+          if [ "$pushed" != true ] && [ "$billing" -ne 1 ]; then
+            echo "::error::the nuget webpack push of the ${PKG}.webpack envelope failed after the bounded retries."
+            exit 1
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-webpacknuget-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.nuget.webpack.${{ steps.release.outputs.version }}.nupkg
+            ${{ matrix.package }}.sha256.nuget.webpack.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.nuget.webpack.${VERSION}.nupkg" \
+            "${{ matrix.package }}.sha256.nuget.webpack.${VERSION}" --clobber
+
+  webpackrubygems:
+    name: webpack rubygems ${{ matrix.package }}
+    needs: [webpackseats, release-approval]
+    # the RubyGems x webpack matrix: the <app>.webpack gem derives from
+    # the folder gemspec the family rubygems lane builds (the spec name
+    # and the file list rewritten to the bundle payload), pushed to the
+    # GitHub Packages rubygems registry — the already-pushed refusal and
+    # the billing wall answer the honest notices, never a red.
+    if: github.event_name != 'release' || startsWith(github.event.release.tag_name, 'v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [argan, cadria, cobaia, debonair, devthink, forge, foundry, getry, saddle, stealthhead, vault]
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+      - name: setup node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.0
+          package-manager-cache: false
+      - name: resolve release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKOUT_TAG: "true"
+          RELEASE_TAG: ${{ env.RELEASE_TAG }}
+        run: |
+          set -euo pipefail
+          tag="${RELEASE_TAG:-}"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
+            exit 1
+          fi
+          version="${tag#v}"
+          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
+          if [[ "$CHECKOUT_TAG" == "true" ]]; then
+            git checkout --detach "$tag"
+          fi
+          package_version=$(node -p "require('./${{ matrix.package }}/package.json').version")
+          if [[ "$package_version" != "$version" ]]; then
+            echo "Release tag ${tag} does not match the ${{ matrix.package }} envelope version ${package_version}" >&2
+            exit 1
+          fi
+          {
+            echo "tag=$tag"
+            echo "version=$version"
+            echo "versionarg=$(echo '${{ matrix.package }}' | tr '[:lower:]' '[:upper:]')_VERSION"
+          } >> "$GITHUB_OUTPUT"
+      - name: setup ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+        with:
+          # the pinned interpreter the family rubygems lane carries (the
+          # family runtime doctrine: never the `ruby` mutable alias) —
+          # the gemspec envelope declares required_ruby_version >= 3.1,
+          # so the pin rides the supported 3.4 line at its patch release.
+          ruby-version: 3.4.10
+      - name: configure github credentials
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.gem"
+          printf -- "---\n:github: Bearer %s\n" "${GITHUB_TOKEN}" > "$HOME/.gem/credentials"
+          chmod 0600 "$HOME/.gem/credentials"
+      - name: download the webpack seat
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-webpack-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: seat
+      - name: pack the webpack gem
+        # the gemspec derivation law: the folder gemspec the family lane
+        # builds stays the source of truth — the webpack seat rewrites
+        # the spec name (the dotted identification the package law
+        # stamps) and the file list to the bundle payload alone, the
+        # version still riding the env override the family lane passes.
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          test -s "seat/${PKG}.webpack.${VERSION}.cjs"
+          test -f "${PKG}/${PKG}.gemspec"
+          mkdir -p gemwork
+          cp "seat/${PKG}.webpack.${VERSION}.cjs" "gemwork/${PKG}.webpack.cjs"
+          sed -e "s|spec.name = \"${PKG}\"|spec.name = \"${PKG}.webpack\"|" \
+              -e "s|spec.files = .*|spec.files = Dir[\"${PKG}.webpack.js\"]|" \
+              -e "s|spec.summary = \".*\"|spec.summary = \"The ${PKG} webpack distribution bundle (the engine payload the webpack CLI seat bundles).\"|" \
+              "${PKG}/${PKG}.gemspec" > "gemwork/${PKG}.webpack.gemspec"
+          grep -q "spec.name = \"${PKG}.webpack\"" "gemwork/${PKG}.webpack.gemspec"
+          cd gemwork
+          env "${{ steps.release.outputs.versionarg }}=${VERSION}" gem build "${PKG}.webpack.gemspec"
+          test -f "${PKG}.webpack-${VERSION}.gem"
+          cd ..
+          cp "gemwork/${PKG}.webpack-${VERSION}.gem" "${PKG}.rubygems.webpack.${VERSION}.gem"
+          sha256sum "${PKG}.rubygems.webpack.${VERSION}.gem" > "${PKG}.sha256.rubygems.webpack.${VERSION}"
+          test -s "${PKG}.sha256.rubygems.webpack.${VERSION}"
+          ! printf '%s\n' \
+            "${PKG}.rubygems.webpack.${VERSION}.gem" \
+            "${PKG}.sha256.rubygems.webpack.${VERSION}" | grep -q "_"
+      - name: publish the webpack gem
+        # the gem name glob stays unquoted on purpose: gem push does not
+        # glob the path itself, and the work directory carries the one
+        # gem the seat built.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          VERSION="${{ steps.release.outputs.version }}"
+          published=false
+          billing=0
+          for attempt in 1 2 3; do
+            pushlog="$(mktemp)"
+            if pushlog_out="$(cd gemwork && gem push ${PKG}.webpack-${VERSION}.gem --key github --host "https://rubygems.pkg.github.com/${{ github.repository_owner }}" 2>&1)"; then
+              printf '%s' "$pushlog_out" | tee "${pushlog}"
+              published=true
+              rm -f "${pushlog}"
+              break
+            fi
+            printf '%s' "$pushlog_out" | tee "${pushlog}" >/dev/null
+            if echo "$pushlog_out" | grep -q "has already been pushed"; then
+              echo "::notice::the registry already carries ${PKG}.webpack ${VERSION}; the immutable envelope is present."
+              published=true
+              rm -f "${pushlog}"
+              break
+            fi
+            if echo "$pushlog_out" | grep -qiE "billing limit|403"; then
+              billing=1
+              echo "::warning::the rubygems registry answered the account billing wall on the ${PKG}.webpack ${VERSION} gem - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+              rm -f "${pushlog}"
+              break
+            fi
+            rm -f "${pushlog}"
+            echo "gem push attempt ${attempt}/3 of the ${PKG}.webpack gem failed; retrying with backoff."
+            sleep "$((attempt * 5))"
+          done
+          if [ "$published" != true ] && [ "$billing" -ne 1 ]; then
+            echo "::error::gem push of the ${PKG}.webpack envelope failed after the bounded retries."
+            exit 1
+          fi
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-webpackrubygems-${{ matrix.package }}-${{ steps.release.outputs.version }}
+          path: |
+            ${{ matrix.package }}.rubygems.webpack.${{ steps.release.outputs.version }}.gem
+            ${{ matrix.package }}.sha256.rubygems.webpack.${{ steps.release.outputs.version }}
+          if-no-files-found: error
+          retention-days: 90
+      - name: attach release assets
+        if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          gh release upload "$RELEASE_TAG" \
+            "${{ matrix.package }}.rubygems.webpack.${VERSION}.gem" \
+            "${{ matrix.package }}.sha256.rubygems.webpack.${VERSION}" --clobber

@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/vault",
-  "version": "2.0.175",
+  "version": "2.0.178",
   "private": false,
   "description": "vault is the supabase clone of the wenathlan family: it owns the self-hosted database, auth and storage surface, and ships the documentation set and the tests directory as one package",
   "license": "GPL-3.0-only",
@@ -19,9 +19,9 @@
     "engine:check": "node --experimental-strip-types -e \"process.env.VAULT_PORT='0'; process.env.VAULT_TOKEN='check'; await import('./account.ts').then(async (m) => { const srv = m.createVaultServer?.() ?? null; if (!srv) { console.error('engine boot failed'); process.exit(1); } setTimeout(() => { process.exit(0); }, 400); })\""
   },
   "dependencies": {
-    "@ai-sdk/openai": "^4.0.113",
-    "@ai-sdk/openai-compatible": "^3.0.89",
-    "@ai-sdk/provider-utils": "^5.0.78",
+    "@ai-sdk/openai": "^4.0.114",
+    "@ai-sdk/openai-compatible": "^3.0.90",
+    "@ai-sdk/provider-utils": "^5.0.79",
     "@anthropic-ai/sdk": "^1.8.0",
     "@biomejs/biome": "^2.6.6",
     "@capacitor/android": "^8.6.0",
@@ -99,7 +99,7 @@
     "@wenathlan/saddle": "~2.0.173",
     "@wenathlan/vault": "~2.0.173",
     "add": "^2.0.9",
-    "ai": "^7.0.168",
+    "ai": "^7.0.169",
     "autoprefixer": "^10.6.2",
     "axios": "^1.21.1",
     "baseline-browser-mapping": "^2.11.35",
@@ -193,9 +193,9 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
-    "@ai-sdk/openai": "^4.0.113",
-    "@ai-sdk/openai-compatible": "^3.0.89",
-    "@ai-sdk/provider-utils": "^5.0.78",
+    "@ai-sdk/openai": "^4.0.114",
+    "@ai-sdk/openai-compatible": "^3.0.90",
+    "@ai-sdk/provider-utils": "^5.0.79",
     "@anthropic-ai/sdk": "^1.8.0",
     "@biomejs/biome": "^2.6.6",
     "@capacitor/android": "^8.6.0",
@@ -277,7 +277,7 @@
     "@wenathlan/stealthhead": "~2.0.173",
     "@wenathlan/vault": "~2.0.173",
     "add": "^2.0.9",
-    "ai": "^7.0.168",
+    "ai": "^7.0.169",
     "autoprefixer": "^10.6.2",
     "axios": "^1.21.1",
     "baseline-browser-mapping": "^2.11.35",
@@ -371,9 +371,9 @@
     "zustand": "^5.1.0"
   },
   "overrides": {
-    "@ai-sdk/openai": "^4.0.113",
-    "@ai-sdk/openai-compatible": "^3.0.89",
-    "@ai-sdk/provider-utils": "^5.0.78",
+    "@ai-sdk/openai": "^4.0.114",
+    "@ai-sdk/openai-compatible": "^3.0.90",
+    "@ai-sdk/provider-utils": "^5.0.79",
     "@anthropic-ai/sdk": "^1.8.0",
     "@biomejs/biome": "^2.6.6",
     "@capacitor/android": "^8.6.0",
@@ -451,7 +451,7 @@
     "@wenathlan/saddle": "~2.0.173",
     "@wenathlan/vault": "~2.0.173",
     "add": "^2.0.9",
-    "ai": "^7.0.168",
+    "ai": "^7.0.169",
     "autoprefixer": "^10.6.2",
     "axios": "^1.21.1",
     "baseline-browser-mapping": "^2.11.35",

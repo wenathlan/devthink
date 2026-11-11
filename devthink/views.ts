@@ -589,6 +589,13 @@ export function clicommands(
       terminal: true,
     },
     {
+      id: "chat",
+      label: "Open the windows 11 chat console seat of the os binary — the same chat look the web and desktop surfaces carry",
+      keywords: ["chat", "console", "clibin", "windows", "terminal", "repl"],
+      surface: "terminal",
+      terminal: true,
+    },
+    {
       id: "help",
       label: "List every command with the version banner and the exit codes",
       keywords: ["help", "usage", "commands", "version"],

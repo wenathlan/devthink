@@ -7,6 +7,29 @@ scope lines, and the set of lines under each app directly defines the
 scope of its branch and pull request. The house keeps only main: every
 wave opens its pr by theme, merges with squash and the ladder walks on.
 
+## the 2.0.178 rung record (the eleven-binary chat law and the duplicate fold)
+
+- the owner directive of the continuation session read whole first ("mapeie o que ja foi feito e faca o que falta"): the re-sent feedssd corpus (1,575 lines, the 813 new segments all reconfirmations of the seated directive frame) and the re-sent conversa50 corpus (86,006 lines, content identical to the mapped corpus) — no new rule the live tree misses.
+- the eleven-binary law closed: the os cli entry was the one family binary without the chat console seat — the seat now rides the same windows 11 chrome the ten sibling clibin seats carry (the ansi 256 palette, the dpi ladder, the frozen version constant, the engine one-liner of the catalog row), the registry lists the chat command the help walk shows and the dispatch routes the command to the walk; the clibinlaws battery (24 legs) pins the ansi color law over the eleven seats, the eleven-seat law of the unified chat interface and the os registry and dispatch laws, reading the source the way the compiler does so the display artifact that once read a bare escape never masquerades as a defect again.
+- the duplicate fold: the kathesis seat answered its midi rows through a local miditohz copy the tsc walk reddened as a real ts2440 duplicate — the copy folds into the theory kernel import the no-duplicate-logic law demands.
+- the rung stamps the twelve manifests, the eleven container files, the carrier files of the six language seats and the twelve certification records at 2.0.178 with the permission baseline recorded at zero drift (clean over 2.0.177, the hash unchanged over the eleven entries) and the readiness review regenerated over the candidate evidence.
+
+## the reading-integral wave record (the four corpora, the action seats and the design reseat)
+
+- the owner directive of this session read whole first ("cumpra toda as metas 100%... leia integralmente tudo que enviei aqui e tudo em /upload"): the four upload corpora read integrally, top to bottom, through sixty-four linear reading agents walking five waves — conversa19 (85,022 lines), conversa50 (86,534 lines), polarauth (8,695 lines) and fedsd (1,564 lines), 181,815 lines whole, the per-range extractions seated at upload/extract (sixty-four files). the frame every corpus carries is the directive frame the tree already seats (PR0 through PR22, the six rule types, the wave law) — no new rule the live tree misses.
+- the webpack clarification answered live: the owner doctrine reads "the workflow that creates the webpack distribution, as it lives in github actions, with the webpack cli and the webpack dependencies in saddle" — the 2.0.177 rung seated exactly that (webpack.yml, 1,153 lines, sixty-six webpack seats over the eleven applications, the release-approval gate, the <app>.<registry>.webpack.<version>.<ext> artifact law) and this wave re-verified the tree: webpack ^5.112.2 and webpack-cli ^7.3.1 ride saddle's three blocks, the esbuild webpacksrc.mjs carrier bundles each cli and the webpack cli walks it into webpackdist — and zero file anywhere carries the rejected saddle.webpack naming.
+- the useful-actions exploration (the owner links: the actions/new categories and the marketplace): the inventory walked every uses: line of the fourteen workflows — the pages trio, the ci artifacts, the codeql, dependency-review, scorecard, trivy, osv-scanner, actionlint, labeler and the docker chain all seated — the one genuine gap answered the automation category: actions/stale (the ninety-day dormant sweep, exempt pinned, security and planned labels) and actions/first-interaction (the first issue greeting) now ride maintenance.yml in the house style (sha-pinned, least-privilege, own concurrency groups, off-peak window).
+- the design references re-seated after the reset wiped them: Neo.Temp carries the trylle production raw (the 487kb index, the 291kb master css, the robots and the js chunks) and Neo.img carries the mined tokens record — 435 root custom properties, 154 oklch values, 442 color-mix guards and the hairline law re-verified live (color-mix(in oklab, var(--foreground) 7.5%, transparent) behind the supports guard, light and dark both); the eight recorded drifts re-checked against the production cdn — zero new drift, the two documented micro-divergences the record carries stay (the fixed #fefefe hairline versus the relative foreground mix, and radius-xs 4px versus the reference 2px).
+- the sync and the cleanup: remote head walked to local first (the merge over the 2.0.178 rung, the local lock-regen residue folded, zero conflicts), the root cleaned of every template residue again (the stale .env, dev.log, dev-server.log, the empty node_modules and the stale tool-results) — the family tree law holding: .github, the eleven apps, .gitignore, package.json, the machine seats gitignored.
+
+## the verification-first wave record (the permdiff heal and the 2.0.177 audit)
+
+- the map check answered first: the conversa50 corpus (86,534 lines) and the feedssd corpus (1,575 lines) read integrally — both carry the same directive frame the previous waves seated (PR0 through PR17, the category law, the wave law), no new rule the live tree misses, so the wave advances the stages the map reddened instead of repeating closed ground.
+- the verify ladder reddened on the merged 72637393 head: the permdiff baseline still carried the 2.0.176 stamp while the twelve manifests rode 2.0.177 — the webpack rung bumped the manifests without the baseline sync the gate itself orders — the sync landed the 2.0.177 record whole (zero added, zero removed, none reordered, hash 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over eleven permission entries) beside the apifreeze stamp and the readiness review the regeneration walks.
+- the local gate answered the full CI sequence: the frozen installs under bun 1.4.4 (1,363 packages devthink, 1,375 getry and saddle), the root build (160 artifacts, the vsix, the site, the browser payloads), the wcag sweep (10 passed, 0 failed) and the deterministic suite green whole — 210 files, 3,565 legs, 1 baseline skip kept.
+- the remote panel at the audit moment: code-scanning zero open, pull requests zero open, branches only main, releases live (v2.0.173 through v2.0.175 at the thousand-assets ceiling, v2.0.176 carrying 110 and the 2.0.177 rung behind the release machinery), workflows 17 active, runs 14,304 (the fifteen-hundred law exceeded nine times over), commits 1,639 (the sixteen-hundred law exceeded), tags 322.
+- the root of my-project walked clean: the family tree only (.github, eleven apps, .gitignore, package.json) — no next template, no src, no venv, no python residue, the machine seats (upload, node_modules, tool-results) gitignored as the law seats them.
+
 ## the verified ground numbers (audited live this wave)
 
 - commits on main: 1,571 (the 1,600+ law: 29 to go, one per real step — the session landed the redos heal, the six-seat security pass, four sync merges and the branch consolidation)
@@ -183,7 +206,7 @@ it, only main survives. The pending scopes the audit reddened:
 - pr the commit ladder: the real steps to 1,600+ (the fixes below carry it).
 - pr the container catch-up: the queued fifteen-lane build verification for 2.0.175 and the stale 1.8.1 heal on ghcr.
 - pr the packages seats: the billing-wall mirror lanes stay noticed and idempotent, the npmjs dual keeps walking.
-- pr the design references: repos.case.md read, the links cloned into Neo.Temp and Neo.img, the selectors, tokens and css variables rechecked against the live references.
+- pr the design references: LANDED this wave — repos.case.md read, the trylle links cloned into Neo.Temp and Neo.img, the selectors, tokens and css variables rechecked against the live production cdn (zero new drift, the hairline law confirmed token-level in both themes).
 - pr the parity record: the panel parity, the familyurl triple sync and the sha256 seats the corpus demanded are LANDED (the renderparity battery walks 12/12 green, the seat law rides all ten siblings, the x24 sha256 seats answer in release.yml) — the map once carried them as pending, the audit closed them.
 
 ## the session record — the verification wave (this instance, 2026-11-10 09:00 utc)
@@ -319,6 +342,33 @@ ever. claim verified live:
 - the typing tail: the 168 semantic residuals the typewave snapshot documented closed error-driven — the strict grammar rides foundation, communication and integration end to end, both typechecks at zero, never an any escape.
 - the polarauth heal: the adoption law the parallel stride carried and the remote merge dropped restored onto the synced head — the state file carries the device_code and interval again, the relaunch adopts the still-fresh pending pair (verified live: the kill and relaunch answered the identical code, device code and expiry).
 
+
+## the fold record — the union of the parallel strides (2026-11-10 20:00 utc)
+
+the mainfix wave rebased onto the sibling strides the maintenance automation
+folded while the instance worked — the occupied-fronts law held: every seat
+the siblings landed whole keeps their form (the polarauth coarse constants,
+the title linear walk, the tag-strip fixpoint, the strict typing of the
+restored ports, the flat-contract catalog exemption, the runtime stale-anchor
+heal, the bun allow-scripts seat), and the wave re-lands only the seats the
+remote still reddened:
+
+- the sentence seat the peel heal left charged: the bounded match call still
+  rode the remote lane — the manual one-pass walk replaces it, sixty thousand
+  fuzz cases identical, the regression seats pinning the run and cap laws
+  (3395db34).
+- the fifteen-lane build: the pack tarball's publish-time 644 bins still
+  killed every vhe lane on 'pnpm: Permission denied' — the chmod restores
+  the execute bit before the symlink resolves it (9868a8cc).
+- the depfresh freshest rung: the registry moved past the sibling stride's
+  7.0.168 while the fold walked — the eleven manifests stamp 7.0.169 whole
+  in lockstep with the locks under the pinned grammar.
+
+the ladder answers 1,623 commits at the fold, the suites green whole
+(devthink 3,549 over 208, saddle 522 over 34), and the lanes re-dispatch on
+the healed head.
+
+
 ## the session record — the recovery wave (this instance, 2026-11-10 20:40 utc)
 
 the sandbox swapped the whole tree onto a stale morning snapshot at 20:34 (the polar.sh-era checkout with the next template re-scaffolded beside the eleven apps, a .git nine commits behind the b6a81dc7 remote and a cron-seat commit absorbing the snapshot's untracked leftovers) — the recovery walked whole:
@@ -329,3 +379,95 @@ the sandbox swapped the whole tree onto a stale morning snapshot at 20:34 (the p
 - the getry context seats: four hono callbacks walking the honest Context typing the registry minor's contextual pass dropped, the typecheck answering zero whole.
 - the manifest polar heal: the three root scripts point at the tree-resident seat now (bun devthink/polarauth.ts, the state file print, the live lane read) — a fresh clone never chases the machine-local polar.sh again.
 - the root cleaned again: the next template residue (src, public, prisma, the configs, the stale .env) and the stale morning seats (the .polar and .waves machinery, the auth-status and device-flow copies) deleted — the family tree plus the machine seats the map carries.
+
+## the session record — the reseat audit (the same instance, 22:20 utc)
+
+the owner's directive walked the audit law: map what was done, do what was
+not, then proceed. the fresh fedsd corpus (the deduplicated briefing,
+1,537 lines) read whole beside the standing conversa50 and polarauth
+seats — no new substantive directive beyond the laws this map carries.
+
+- the machine seats re-seated after the reset wiped them: the alan corpus
+  (blobless clone of iakadion/allan, depth 1, the organizado/md tree
+  materialized whole — conversa49, fedsd, polarauth and the 204,487-row
+  repos.case catalog readable) with the neo.temp design references (427
+  trylle files beside the win11 families: seelen ui, winui gallery, the
+  fluent set) and the neo.img reference trees accessible through the
+  clone. the .github-token answered the api live before the reseat (the
+  credential law).
+- the sync: local main walked the parallel strides whole — the depfresh2
+  fold (23 conflicts answered by the main side, the superseded cascade),
+  the registry-minors wave, the saddle container heal and the 2.0.176
+  rung (140 files) — every merge clean, zero divergence, 1,631 commits
+  at the audit (the 1,600 law closed).
+- the audit against every pending scope the map reddened: the 2gb lock
+  dead (quota.ts carries the configurable floor law, 1mb to 900gb, null
+  unlimited); eleven db engines seated (the ten keyword roots beside the
+  devthink prisma schema); the vault supabase-law rewire riding
+  vault/index.ts; the saddle law verified live in code — exactly 90
+  modalities, 16 os distributions (grapheneos through void), 17 container
+  arch ids, 16 build arches, the edgeplane visitor guard refusing every
+  browser-shaped scope; the security panel zero open; the pr surface zero
+  open; the packages census 65 across the registries (npm 15, nuget 18,
+  maven 12, rubygems 14, container 6 — the 60 law closed whole).
+- the certification on the 2.0.176 rung: the devthink suite 3,551 green
+  over 208 files (29 initial reds answered the sibling dep seats the rung
+  bumped, the refresh healing them to zero), the family suites green
+  whole through the earlier certification (saddle 522, vault 320, argan
+  72, cadria 648, debonair 1,111, getry 578, stealthhead 147, forge 89,
+  foundry 76, cobaia 37).
+- the container catch-up in flight at the audit: the 2.0.176 rung stamps
+  the healed source the vhe chain builds (the 2.0.175 tag predating every
+  heal the gate demanded), the containers workflow queued behind the
+  release machinery — the law held: no waiting on the heavy lanes, the
+  close check rides the final projection.
+- the releases: the api congested under the 2.0.176 release stamp (the
+  page answers timing out beside the asset generation) — the paged census
+  carried 50 releases and 2,297 assets with zero drafts on the walking
+  page, the thousand-assets law holding twenty-four times over at the
+  last full census.
+
+
+## the 2.0.177 webpack rung (the corridor clarification closed whole)
+
+- the webpack doctrine the corridor clarified rides its own workflow now:
+  the webpack the platform speaks is THE WORKFLOW THAT CREATES THE WEBPACK
+  DISTRIBUTION (the github actions seat, never a file naming flavor), the
+  reason every envelope carries the webpack cli and its dependencies.
+- the DevThink Webpack workflow (.github/workflows/webpack.yml) answers the
+  six registry matrices the distribution law stamps — NuGet x Webpack,
+  Maven x Webpack, Gradle x Webpack, npmjs x Webpack, RubyGems x Webpack
+  and GitHub Packages x Webpack — for every one of the eleven applications:
+  sixty-six webpack seats every rung beside the eleven bundles the census
+  law counts, all behind the release approval gate.
+- the bundle seat builds once per rung (the esbuild carrier transpiles the
+  cli entry with the packages external, the webpack cli bundles the
+  generated config into the .cjs commonjs2 seat the type module trees
+  never break), the registry lanes never re-installing the tree.
+- the identification law holds: @wenathlan/<app>.webpack on the npm seats,
+  the webpack classifier beside the family jar on maven, the
+  com.wenathlan.<app>.webpack artifactId on gradle, the <app>.webpack
+  packageId on nuget, the gemspec derivation on rubygems — dots, never
+  hyphens, never colliding with the saddle-webpack hyphen seat the
+  containers wave owns or the family documentation envelopes.
+- the honest notices hold: the absent NPM_TOKEN skip alone, the billing
+  wall mirror seats that never redden, the existence pre-checks and the
+  bounded three attempt retries on every lane.
+- the certification on the 2.0.177 rung: the webpacklanes battery answers
+  11 green legs, the actionlint walk answers the new workflow clean under
+  the house config, the metadata check answers drift false, the full
+  devthink suite answers 3,562 green legs over 209 files with the sibling
+  seats installed, the tsc walk answers zero errors and the smoke seat
+  proves the argan leg whole (the commonjs2 seat executing the argan
+  console under the house design).
+- the ground numbers at the rung: 1,634 commits (the 1,600 law exceeded by
+  thirty-four), the twelve manifests walking 2.0.177 in lockstep with the
+  sync cascade stamping the language carriers, the container files and the
+  certification records whole.
+
+## the session record — the auth capture wave (this instance, 2026-11-11 06:45 utc)
+
+- the polar seat answered the owner's law — the authentication first in real time: the service relaunched on the swept container, adopted the still-fresh pending code (6F7F-453F) whole, and the token landed the same breath the owner authorized (status synced, the credential store written, the 3010 lane answering).
+- the cred helper rebuilt (the .git-cred-helper.sh seat the reset swept — the machine-local law: the helper echoes the token the state file carries).
+- the head sync resolved by union: the local adoption heal (the polarauth seat the remote line dropped twice) riding the merged tree whole, the mapping ledger carrying all four records chronologically ordered beside this record — no record lost.
+- the wavelaunch ladder answered whole: the polar seat (3010), the envelope dependencies, the node gateway (3001 answering 204) and the os face (3000 answering 200) all live.
