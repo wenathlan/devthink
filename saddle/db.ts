@@ -23,6 +23,7 @@ import type { StatementSync } from 'node:sqlite';
 import { resolve } from 'node:path';
 import process from 'node:process';
 import { createOnboardingStore, type OnboardingLane } from '../vault/onboardingstore.ts';
+import { createLabelStore, type LabelRowStore } from '../vault/labelstore.ts';
 import { LABEL_REVISION, labelmanifest } from './labels.ts';
 
 /* ------------------------------------------------------------------ */
@@ -1305,28 +1306,38 @@ export function readalllabels(): LabelRow[] {
   }
 }
 
+/** the sqlite row door of the label store: the vault factory owns the
+ * seed and protect mechanism (the onboarding lane precedent, the storage
+ * lane law of the family — the mechanism is never duplicated inside the
+ * node) while the labels table stays the saddle schema's own seat. */
+const labelrowdoor: LabelRowStore = {
+  readAll: async () => readalllabels(),
+  save: async (row) => {
+    savelabel(row.id, row.text, row.revision, row.translated === true);
+  },
+};
+
+/** the label store of the node: the vault factory over the sqlite row door
+ * above (the typed accessor, the placeholder filler and the seed every
+ * family app rides — the copy law's shared mechanism). */
+const labelstorenode = createLabelStore({
+  manifest: labelmanifest,
+  revision: LABEL_REVISION,
+  rowStore: labelrowdoor,
+});
+
 /**
  * ingests the english manifest of labels.ts into the labels table — the
- * db-side twin of the browser seedlabels: idempotent, the changed rows
- * refresh, and the translated rows stay protected from the overwrite.
+ * db-side twin of the browser seedlabels riding the vault factory's
+ * seed: idempotent, the changed rows refresh, and the translated rows
+ * stay protected from the overwrite.
  *
  * @returns the seeded and protected row counts.
  */
 export async function seedlabelrows(): Promise<{ seeded: number; protected: number }> {
   try {
     executeschema();
-    const rows = new Map(readalllabels().map((row) => [row.id, row]));
-    let seeded = 0;
-    let saved = 0;
-    for (const [id, text] of Object.entries(labelmanifest)) {
-      const row = rows.get(id);
-      if (row === undefined || (row.translated !== true && row.text !== text)) {
-        savelabel(id, text, LABEL_REVISION, row?.translated ?? false);
-        seeded += 1;
-      }
-      saved += 1;
-    }
-    return { seeded, protected: saved - seeded };
+    return await labelstorenode.seedLabels();
   } catch (error) {
     throw dberror('db-label-failed', error instanceof Error ? error.message : String(error));
   }
