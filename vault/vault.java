@@ -10,7 +10,7 @@ package com.wenathlan.vault;
  */
 final class Vault {
   /** The version of the vault envelope (the six-distribution completeness wave). */
-  public static final String VERSION = "2.0.176";
+  public static final String VERSION = "2.0.178";
   private Vault() {
   }
 }

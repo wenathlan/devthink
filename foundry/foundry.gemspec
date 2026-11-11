@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "foundry"
-  spec.version = ENV.fetch("FOUNDRY_VERSION", "2.0.176")
+  spec.version = ENV.fetch("FOUNDRY_VERSION", "2.0.178")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The foundry documentation and tests envelope (the e2b and docker clone interface — sandboxes and images while the engine lives in saddle)."

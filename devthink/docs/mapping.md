@@ -7,6 +7,21 @@ scope lines, and the set of lines under each app directly defines the
 scope of its branch and pull request. The house keeps only main: every
 wave opens its pr by theme, merges with squash and the ladder walks on.
 
+## the 2.0.178 rung record (the eleven-binary chat law and the duplicate fold)
+
+- the owner directive of the continuation session read whole first ("mapeie o que ja foi feito e faca o que falta"): the re-sent feedssd corpus (1,575 lines, the 813 new segments all reconfirmations of the seated directive frame) and the re-sent conversa50 corpus (86,006 lines, content identical to the mapped corpus) — no new rule the live tree misses.
+- the eleven-binary law closed: the os cli entry was the one family binary without the chat console seat — the seat now rides the same windows 11 chrome the ten sibling clibin seats carry (the ansi 256 palette, the dpi ladder, the frozen version constant, the engine one-liner of the catalog row), the registry lists the chat command the help walk shows and the dispatch routes the command to the walk; the clibinlaws battery (24 legs) pins the ansi color law over the eleven seats, the eleven-seat law of the unified chat interface and the os registry and dispatch laws, reading the source the way the compiler does so the display artifact that once read a bare escape never masquerades as a defect again.
+- the duplicate fold: the kathesis seat answered its midi rows through a local miditohz copy the tsc walk reddened as a real ts2440 duplicate — the copy folds into the theory kernel import the no-duplicate-logic law demands.
+- the rung stamps the twelve manifests, the eleven container files, the carrier files of the six language seats and the twelve certification records at 2.0.178 with the permission baseline recorded at zero drift (clean over 2.0.177, the hash unchanged over the eleven entries) and the readiness review regenerated over the candidate evidence.
+
+## the verification-first wave record (the permdiff heal and the 2.0.177 audit)
+
+- the map check answered first: the conversa50 corpus (86,534 lines) and the feedssd corpus (1,575 lines) read integrally — both carry the same directive frame the previous waves seated (PR0 through PR17, the category law, the wave law), no new rule the live tree misses, so the wave advances the stages the map reddened instead of repeating closed ground.
+- the verify ladder reddened on the merged 72637393 head: the permdiff baseline still carried the 2.0.176 stamp while the twelve manifests rode 2.0.177 — the webpack rung bumped the manifests without the baseline sync the gate itself orders — the sync landed the 2.0.177 record whole (zero added, zero removed, none reordered, hash 1d6e1579114bf176eba45a159e9f166c9c4a2587a53644bd2a63f880506a6262 over eleven permission entries) beside the apifreeze stamp and the readiness review the regeneration walks.
+- the local gate answered the full CI sequence: the frozen installs under bun 1.4.4 (1,363 packages devthink, 1,375 getry and saddle), the root build (160 artifacts, the vsix, the site, the browser payloads), the wcag sweep (10 passed, 0 failed) and the deterministic suite green whole — 210 files, 3,565 legs, 1 baseline skip kept.
+- the remote panel at the audit moment: code-scanning zero open, pull requests zero open, branches only main, releases live (v2.0.173 through v2.0.175 at the thousand-assets ceiling, v2.0.176 carrying 110 and the 2.0.177 rung behind the release machinery), workflows 17 active, runs 14,304 (the fifteen-hundred law exceeded nine times over), commits 1,639 (the sixteen-hundred law exceeded), tags 322.
+- the root of my-project walked clean: the family tree only (.github, eleven apps, .gitignore, package.json) — no next template, no src, no venv, no python residue, the machine seats (upload, node_modules, tool-results) gitignored as the law seats them.
+
 ## the verified ground numbers (audited live this wave)
 
 - commits on main: 1,571 (the 1,600+ law: 29 to go, one per real step — the session landed the redos heal, the six-seat security pass, four sync merges and the branch consolidation)
@@ -384,3 +399,40 @@ seats — no new substantive directive beyond the laws this map carries.
   carried 50 releases and 2,297 assets with zero drafts on the walking
   page, the thousand-assets law holding twenty-four times over at the
   last full census.
+
+## the 2.0.177 webpack rung (the corridor clarification closed whole)
+
+- the webpack doctrine the corridor clarified rides its own workflow now:
+  the webpack the platform speaks is THE WORKFLOW THAT CREATES THE WEBPACK
+  DISTRIBUTION (the github actions seat, never a file naming flavor), the
+  reason every envelope carries the webpack cli and its dependencies.
+- the DevThink Webpack workflow (.github/workflows/webpack.yml) answers the
+  six registry matrices the distribution law stamps — NuGet x Webpack,
+  Maven x Webpack, Gradle x Webpack, npmjs x Webpack, RubyGems x Webpack
+  and GitHub Packages x Webpack — for every one of the eleven applications:
+  sixty-six webpack seats every rung beside the eleven bundles the census
+  law counts, all behind the release approval gate.
+- the bundle seat builds once per rung (the esbuild carrier transpiles the
+  cli entry with the packages external, the webpack cli bundles the
+  generated config into the .cjs commonjs2 seat the type module trees
+  never break), the registry lanes never re-installing the tree.
+- the identification law holds: @wenathlan/<app>.webpack on the npm seats,
+  the webpack classifier beside the family jar on maven, the
+  com.wenathlan.<app>.webpack artifactId on gradle, the <app>.webpack
+  packageId on nuget, the gemspec derivation on rubygems — dots, never
+  hyphens, never colliding with the saddle-webpack hyphen seat the
+  containers wave owns or the family documentation envelopes.
+- the honest notices hold: the absent NPM_TOKEN skip alone, the billing
+  wall mirror seats that never redden, the existence pre-checks and the
+  bounded three attempt retries on every lane.
+- the certification on the 2.0.177 rung: the webpacklanes battery answers
+  11 green legs, the actionlint walk answers the new workflow clean under
+  the house config, the metadata check answers drift false, the full
+  devthink suite answers 3,562 green legs over 209 files with the sibling
+  seats installed, the tsc walk answers zero errors and the smoke seat
+  proves the argan leg whole (the commonjs2 seat executing the argan
+  console under the house design).
+- the ground numbers at the rung: 1,634 commits (the 1,600 law exceeded by
+  thirty-four), the twelve manifests walking 2.0.177 in lockstep with the
+  sync cascade stamping the language carriers, the container files and the
+  certification records whole.

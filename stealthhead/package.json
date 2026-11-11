@@ -1,6 +1,6 @@
 {
   "name": "@wenathlan/stealthhead",
-  "version": "2.0.176",
+  "version": "2.0.178",
   "private": false,
   "description": "stealthhead is the FPS game platform of the wenathlan family: it imports versawase from cadria and audio from debonair via the published library, with no engine file of its own — only game logics (match, ranking, weapons, world). The envelope distributes the documentation set and the tests directory as one package.",
   "license": "GPL-3.0-only",

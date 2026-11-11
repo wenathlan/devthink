@@ -224,6 +224,7 @@ describe("the library on every runtime", () => {
       "export",
       "init",
       "doctor",
+      "chat",
       "help",
     ]);
     expect(shared).toHaveLength(palette.length);

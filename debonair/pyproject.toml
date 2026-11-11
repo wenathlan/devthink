@@ -11,7 +11,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-debonair"
-version = "2.0.176"
+version = "2.0.178"
 authors = [{name = "wenathlan"}]
 description = "The audio and DAW app; it houses the katexis engine at the folder root"
 readme = "README.md"
