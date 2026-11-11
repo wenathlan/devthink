@@ -787,6 +787,16 @@ jobs:
     # branch answers the same refusal the action carries (only the default
     # branch is supported), so the guard keeps every lane the action can
     # honestly serve.
+    # the evidence ordering the SAST check reads: the scorecard measures
+    # the head commit's check-runs, and the CodeQL analyze seat of this
+    # same battery is the tool signature it walks — so the scorecard waits
+    # for the analyze ladder to complete before it measures (the parallel
+    # seat once raced the analyzer: a cancelled or in-flight analyze leg
+    # left the head without the CodeQL check-run evidence and the SASTID
+    # alert opened on a tree the codeql lane was already healing — the
+    # needs seat closes the race the way the display-name law closed the
+    # signature gap, the alert healing by evidence, never a dismissal).
+    needs: analyze
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     name: OSSF scorecard analysis
     runs-on: ubuntu-24.04
