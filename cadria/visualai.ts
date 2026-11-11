@@ -43,6 +43,15 @@ import {
   valueNoise2,
 } from "./versawase.ts";
 
+/* the wrapped versawase contract rides the public surface: the variation
+ * seat builds on the meshgen doctrine and its consumers import the
+ * doctrine symbols through this door — the mutual-dependency law (one
+ * import path per concept, never a duplicated re-declaration). The
+ * GeneratedMesh and MeshValidation types answer in the exported
+ * signatures above, so the surface owes them to every consumer. */
+export { MeshGenError } from "./versawase.ts";
+export type { GeneratedMesh, MeshValidation } from "./versawase.ts";
+
 // ---------------------------------------------------------------------------
 // seat 1: the procedural mesh variation
 // ---------------------------------------------------------------------------

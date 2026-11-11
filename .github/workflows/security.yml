@@ -731,7 +731,13 @@ jobs:
   # governance lanes answer every push and pull request of the battery,
   # cheap gates that never skip (Regra 124: nothing skipped).
   analyze:
-    name: analyze (${{ matrix.language }})
+    # the display name carries the CodeQL token so the OSSF scorecard SAST
+    # check recognizes the analysis evidence on every head commit (the bare
+    # "analyze" name the seat once carried left the SASTID alert open: the
+    # scorecard walks the check-run names for the tool signature, so the
+    # check runs answer "CodeQL analyze (javascript-typescript)" and the
+    # SAST coverage of every push reads true — Regra 124 in the codeql law).
+    name: CodeQL analyze (${{ matrix.language }})
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     # the merged repository carries a far larger TypeScript surface than the
     # family baseline (the whole engine + workbench + test corpus answers as
