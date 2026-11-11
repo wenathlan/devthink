@@ -865,3 +865,18 @@ in-sync, the api answering under the iakadion login at rate 5000).
   documented exceptions (the vault seal and the devthink site rows), the
   protocols corpus one hash at the eleven roots, and the config parity
   gate green across the family.
+
+## the session record — the outage lifts and the machinery drains (this instance, 2026-11-11 22:25 utc)
+
+- the platform restoration answered: the actions component the status page
+  carried at major outage for the hour the wave walked returns operational
+  and the forty-seven-run backlog begins draining (the security battery of
+  the fresh head pending, the release ladder of run 394, the publish train
+  and the scorecard evidence read the alert closure needs walking behind
+  the queue) — the law held through the whole incident: the wave never
+  waited on the frozen lanes, the local verification carrying the quality
+  burden whole (the family certification 7,192 green, the contract
+  batteries 240 green, the five real heals the sweep landed while the
+  runners stood still: the mime cascade, the lucide regression, the
+  mysql2 floor, the homebrew lockstep with its assert stamp and the
+  debonair version mirror).
