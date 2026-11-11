@@ -4,8 +4,8 @@
 class WenathlanArgan < Formula
   desc "The DNS and gateway library — zones, records, dnssec and handshake"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.167/wenathlan-argan-2.0.167.tgz"
-  version "2.0.167"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.180/wenathlan-argan-2.0.180.tgz"
+  version "2.0.180"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanArgan < Formula
   end
 
   test do
-    assert_match "2.0.167", shell_output("#{bin}/wenathlan-argan --version")
+    assert_match "2.0.180", shell_output("#{bin}/wenathlan-argan --version")
   end
 end
