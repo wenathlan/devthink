@@ -375,7 +375,7 @@ RUN apt-get update \
 # the binary answers its version. the apt lanes (make, ninja, lua, php,
 # the gcc toolchain the v and nim codegen rides) install on every arch
 # leg debian ships them for; the prefab carriers (rustup 1.99.1, zig
-# 0.17.1, wasmtime 50.0.1, v 0.5.2, nim 2.4.0, dotnet sdk 10.0.403)
+# 0.17.1, wasmtime 50.0.1, v 0.5.2, nim 2.4.0, dotnet sdk 10.0.404)
 # ride the two native legs (amd64, arm64) their publishers ship — the
 # exotic legs (ppc64le, s390x) answer the honest coded absence the
 # seats' probes name at dispatch (HOST_RUNTIME_ABSENT — the seat never
@@ -448,7 +448,7 @@ RUN set -eux; \
         ln -sf /opt/nim/bin/nim /usr/local/bin/nim; \
         nim --version | head -1; \
         curl -fsSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh; \
-        bash /tmp/dotnet-install.sh --channel 10.0 --version 10.0.403 --install-dir /usr/share/dotnet; \
+        bash /tmp/dotnet-install.sh --channel 10.0 --version 10.0.404 --install-dir /usr/share/dotnet; \
         ln -sf /usr/share/dotnet/dotnet /usr/local/bin/dotnet; \
         dotnet --version; \
         ;; \
