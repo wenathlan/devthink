@@ -561,3 +561,66 @@ seats — no new substantive directive beyond the laws this map carries.
   lanes projection closes on the dispatched run's green, and the stem
   separation hub lane and the owner paced game seats stay the documented
   future.
+
+## the session record — the reading-integral and certification wave (this instance, 2026-11-11 19:35 utc)
+
+the owner directive read whole first (the authentication-first order, the
+fresh briefing re-sent beside the standing corpora): the polar seat answered
+live — the service relaunched on the swept container, the device code
+F812-E860 pending, and the token landed the same breath the owner authorized
+(status synced, the credential store written, the head sync answering
+in-sync, the api answering under the iakadion login at rate 5000).
+
+- the sync: local main walked the parallel strides whole (ae975b60 →
+  7198a19d → 8b4971cb, every merge clean, zero divergence) — the parallel
+  instance healing the depfresh drift, the dotnet cve trio, the 2.0.179
+  release rung and the checklist map seat the same hours this wave walked
+  (the occupied-fronts law held, zero collision; the depfresh check answers
+  drift false on the synced head, the verify lane green on 8b4971cb).
+- the reading-integral wave: the deduplicated upload corpus read whole
+  through seventeen linear reading agents walking one wave (the md5 dedup
+  answering eight exact-duplicate groups; conversa50 whole in six ranges,
+  v whole, the pasted families whole, the polar pair whole, the small set
+  whole, the six older snapshots sampled head/tail/mid) — the per-range
+  extractions seated at upload/extract (seventeen files). the verdict: every
+  corpus carries the seated PR0–PR23 frame, no new rule the live tree
+  misses; the deltas the readers flagged seat as notes (the zoom-lock
+  viewport law verified live on the eleven index doors, the no-md-inside-
+  .github law landing below, the io.github retirement riding the publish
+  lane the check-run answered green, the commit-signing law carrying the
+  public key alone — the private key stays with the owner, the wallet
+  joining the no-touch family, the 20-second watchdog answered by the
+  adoption and orphan-spawn laws).
+- the remote panels audited live: pull requests zero open, branches only
+  main (the wave/appid stride folded and deleted by the parallel lane), code
+  scanning one open (1759, the scorecard sast seat — the needs-ordering fix
+  in history, the fresh security runs carrying the closure in flight),
+  dependabot zero open, releases zero drafts (the stale v2.1.8 draft
+  deleted, the queued retry closed), the thousand-assets law holding six
+  rungs whole (v2.0.173 through v2.0.178 at exactly 1000), 14,448 workflow
+  runs live (the fifteen-hundred law exceeded nine times over).
+- the certification: the family suites answer green whole on the synced head
+  — devthink 3,589 legs over 211 files, debonair 1,111, cadria 648, saddle
+  522, getry 578, vault 320, stealthhead 147, forge 89, foundry 76, argan
+  72, cobaia 37 (7,189 green legs the eleven batteries answer).
+- the housekeeping: the three stale stashes dropped (the 2.0.172 no-go
+  draft, the pre-rename tests-path era, the superseded tier-grid work the
+  landed thirty-three-flavor grid answers), the bun 1.3.14 floor's
+  nine-lock rewrite restored whole (the frozen 1.4.4 grammar never drifting
+  a commit).
+- the machine seats re-seated after the reset: the alan corpus (blobless
+  sparse clone of iakadion/allan — organizado/md whole with the
+  204,487-row repos.case catalog and the conversa50/feedssd/polarauth
+  corpora, neo.img 530, the .devthink/web design reference with the 98kb
+  index face, the trylle subtree materialized) with the Neo.Temp and
+  Neo.img seats seated beside it, the wavelaunch lanes live (os 200, gateway
+  204, polar 3010), and the scheduled continuation riding the platform cron
+  (the hourly wave the owner's scheduled-task directive ordered).
+- the no-md law: the platform security policy rides the repository root now
+  (the .github folder carrying CODEOWNERS, the commit key, the dependabot
+  config and the workflows alone — no markdown inside the house folder, the
+  corpus directive answered).
+- the close sync: the parallel wave's 2.0.179 rung, the checklist map seat
+  and the mapping merge landed while this wave walked — the final
+  fast-forward riding the fresh head whole, this record seated in its
+  chronological order beside the sibling strides.
