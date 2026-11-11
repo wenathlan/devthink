@@ -840,3 +840,28 @@ in-sync, the api answering under the iakadion login at rate 5000).
   requests zero open, branches only main, code scanning one open (1759,
   the fix in main awaiting the projection), releases flowing to
   v2.0.180 (the parallel stride cutting the rung the same hour).
+
+## the session record — the identity sweep and the two regressions healed (this instance, 2026-11-11 22:05 utc)
+
+- the identity-law sweep the mime cascade opened answered two real
+  regressions: the lucide seat the sdk rung (d184eb92, november 9)
+  reintroduced from the union history after the fluent purge (bbefba38,
+  november 7) retired it — the eight siblings carrying the overrides
+  entry, the three roots the full three-block form, the two workspace
+  age-excludes and the eleven locks all healed (the manifests clean, the
+  excludes retired, the locks regenerated lockfile-only with the
+  transitive residue the published 2.0.175 envelopes carry resolving at
+  the next rung's clean publishes), the fluenticons guard and the
+  locksync battery pinning the heal — and the mysql2 workspace pin the
+  two waves split (the 2.0.137 rung moving four roots to ^3.24.6 while
+  the override-contract wave seated seven at ^3.23.1) unified to the one
+  ^3.24.6 floor the manifests carry.
+- the verification sweep the regressions rode: the version lockstep
+  whole (the twelve manifests, the forty-four kts csproj gemspec and pom
+  carriers, the eleven rs carriers — every stamp at 2.0.180, the
+  dockerfile old refs the comment examples they always were), the svg
+  icon mirrors eleven of eleven, the biome baseline one hash, the
+  headers family identical across the nine siblings with the two
+  documented exceptions (the vault seal and the devthink site rows), the
+  protocols corpus one hash at the eleven roots, and the config parity
+  gate green across the family.
