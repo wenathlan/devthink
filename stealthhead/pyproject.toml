@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-stealthhead"
-version = "2.0.178"
+version = "2.0.179"
 authors = [{name = "wenathlan"}]
 description = "The FPS game platform — only game logics (match, ranking, weapons, world); the versawase and audio engines ride the published library"
 readme = "README.md"
