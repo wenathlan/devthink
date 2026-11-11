@@ -7,6 +7,13 @@ scope lines, and the set of lines under each app directly defines the
 scope of its branch and pull request. The house keeps only main: every
 wave opens its pr by theme, merges with squash and the ladder walks on.
 
+## the 2.0.178 rung record (the eleven-binary chat law and the duplicate fold)
+
+- the owner directive of the continuation session read whole first ("mapeie o que ja foi feito e faca o que falta"): the re-sent feedssd corpus (1,575 lines, the 813 new segments all reconfirmations of the seated directive frame) and the re-sent conversa50 corpus (86,006 lines, content identical to the mapped corpus) — no new rule the live tree misses.
+- the eleven-binary law closed: the os cli entry was the one family binary without the chat console seat — the seat now rides the same windows 11 chrome the ten sibling clibin seats carry (the ansi 256 palette, the dpi ladder, the frozen version constant, the engine one-liner of the catalog row), the registry lists the chat command the help walk shows and the dispatch routes the command to the walk; the clibinlaws battery (24 legs) pins the ansi color law over the eleven seats, the eleven-seat law of the unified chat interface and the os registry and dispatch laws, reading the source the way the compiler does so the display artifact that once read a bare escape never masquerades as a defect again.
+- the duplicate fold: the kathesis seat answered its midi rows through a local miditohz copy the tsc walk reddened as a real ts2440 duplicate — the copy folds into the theory kernel import the no-duplicate-logic law demands.
+- the rung stamps the twelve manifests, the eleven container files, the carrier files of the six language seats and the twelve certification records at 2.0.178 with the permission baseline recorded at zero drift (clean over 2.0.177, the hash unchanged over the eleven entries) and the readiness review regenerated over the candidate evidence.
+
 ## the verification-first wave record (the permdiff heal and the 2.0.177 audit)
 
 - the map check answered first: the conversa50 corpus (86,534 lines) and the feedssd corpus (1,575 lines) read integrally — both carry the same directive frame the previous waves seated (PR0 through PR17, the category law, the wave law), no new rule the live tree misses, so the wave advances the stages the map reddened instead of repeating closed ground.

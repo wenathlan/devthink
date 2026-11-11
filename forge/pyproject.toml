@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-forge"
-version = "2.0.177"
+version = "2.0.178"
 authors = [{name = "wenathlan"}]
 description = "The sandbox runner surface — the runners on the saddle engine boundary"
 readme = "README.md"

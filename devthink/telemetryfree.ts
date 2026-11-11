@@ -253,7 +253,7 @@ export interface telemetryfreereport {
  * first layer: the inventory, the gates, the entries and the zero outbound
  * attempts, no timestamps, so the record replays byte identical. */
 export const telemetryfreerecord: telemetryfreereport = {
-  "release": "2.0.177",
+  "release": "2.0.178",
   "callsites": [
     {
       "bundle": "bun.js",
