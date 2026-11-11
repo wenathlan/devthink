@@ -4,8 +4,8 @@
 class WenathlanStealthhead < Formula
   desc "The FPS game platform — only game logics (match, ranking, weapons, world); the versawase and audio engines ride the published library"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.167/wenathlan-stealthhead-2.0.167.tgz"
-  version "2.0.167"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.180/wenathlan-stealthhead-2.0.180.tgz"
+  version "2.0.180"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanStealthhead < Formula
   end
 
   test do
-    assert_match "2.0.167", shell_output("#{bin}/wenathlan-stealthhead --version")
+    assert_match "2.0.180", shell_output("#{bin}/wenathlan-stealthhead --version")
   end
 end

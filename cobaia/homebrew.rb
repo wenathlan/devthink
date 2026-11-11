@@ -4,8 +4,8 @@
 class WenathlanCobaia < Formula
   desc "The monetization surface — the plans, the support rails and the honest advertisement slots"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.167/wenathlan-cobaia-2.0.167.tgz"
-  version "2.0.167"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.180/wenathlan-cobaia-2.0.180.tgz"
+  version "2.0.180"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanCobaia < Formula
   end
 
   test do
-    assert_match "2.0.167", shell_output("#{bin}/wenathlan-cobaia --version")
+    assert_match "2.0.180", shell_output("#{bin}/wenathlan-cobaia --version")
   end
 end

@@ -2756,7 +2756,7 @@ jobs:
           version="${RELEASE_VERSION}"
           sha256="${ASSET_SHA256}"
           url="https://github.com/wenathlan/devthink/releases/download/v${version}/wenathlan-devthink-${version}.tgz"
-          sed -i.bak -e "s|url \"https://github.com/wenathlan/devthink/releases/download/[^\"]*\"|url \"${url}\"|" -e "s/^  version \"[^\"]*\"/  version \"${version}\"/" -e "s/^  sha256 \"[0-9a-f]\\{64\\}\"/  sha256 \"${sha256}\"/" homebrew.rb
+          sed -i.bak -e "s|url \"https://github.com/wenathlan/devthink/releases/download/[^\"]*\"|url \"${url}\"|" -e "s/^  version \"[^\"]*\"/  version \"${version}\"/" -e "s/^  sha256 \"[0-9a-f]\\{64\\}\"/  sha256 \"${sha256}\"/" -e "s/assert_match \"[0-9][0-9.]*\"/assert_match \"${version}\"/" homebrew.rb
           rm -f homebrew.rb.bak
           grep -q "sha256 \"${sha256}\"" homebrew.rb
           grep -q "version \"${version}\"" homebrew.rb
@@ -2891,7 +2891,7 @@ jobs:
           version="${RELEASE_VERSION}"
           sha256="${ASSET_SHA256}"
           url="https://github.com/wenathlan/devthink/releases/download/v${version}/wenathlan-${{ matrix.package }}-${version}.tgz"
-          sed -i.bak -e "s|url \"https://github.com/wenathlan/devthink/releases/download/[^\"]*\"|url \"${url}\"|" -e "s/^  version \"[^\"]*\"/  version \"${version}\"/" -e "s/^  sha256 \"[0-9a-f]\\{64\\}\"/  sha256 \"${sha256}\"/" ${{ matrix.package }}/homebrew.rb
+          sed -i.bak -e "s|url \"https://github.com/wenathlan/devthink/releases/download/[^\"]*\"|url \"${url}\"|" -e "s/^  version \"[^\"]*\"/  version \"${version}\"/" -e "s/^  sha256 \"[0-9a-f]\\{64\\}\"/  sha256 \"${sha256}\"/" -e "s/assert_match \"[0-9][0-9.]*\"/assert_match \"${version}\"/" ${{ matrix.package }}/homebrew.rb
           rm -f ${{ matrix.package }}/homebrew.rb.bak
           grep -q "sha256 \"${sha256}\"" ${{ matrix.package }}/homebrew.rb
           grep -q "version \"${version}\"" ${{ matrix.package }}/homebrew.rb

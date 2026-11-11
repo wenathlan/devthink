@@ -4,8 +4,8 @@
 class WenathlanFoundry < Formula
   desc "The e2b and docker clone interface — sandboxes and images while the engine lives in saddle"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.167/wenathlan-foundry-2.0.167.tgz"
-  version "2.0.167"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.180/wenathlan-foundry-2.0.180.tgz"
+  version "2.0.180"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanFoundry < Formula
   end
 
   test do
-    assert_match "2.0.167", shell_output("#{bin}/wenathlan-foundry --version")
+    assert_match "2.0.180", shell_output("#{bin}/wenathlan-foundry --version")
   end
 end
