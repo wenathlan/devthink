@@ -33,7 +33,7 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the devthink mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "im.devthink.app",
+  appId: "com.devthink.app",
   appName: "DevThink",
   /** the vite build of the workbench: the bundles answer at the application root. */
   webDir: ".",

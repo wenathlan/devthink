@@ -29,7 +29,7 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the getry mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "im.getry.app",
+  appId: "com.getry.app",
   appName: "getry",
   /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
   webDir: ".",

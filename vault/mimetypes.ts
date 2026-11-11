@@ -3,14 +3,12 @@
 // answers every static file with — the correct content type for every file
 // type, never a guess, never a hardcoded dozen. The corpus lives beside this
 // module in mime.types (the site's own mime lane, grown from its dozen-site
-// rows to the full registry): 3807 media types and 2818 extension mappings —
-// 6625 entries in all — generated programmatically from the known extension
-// corpus (the live IANA media types registry, the node mime-db, the apache
-// httpd and nginx mime.types, the apache tika catalog, the rust mime_guess
-// table, the go builtin table, the family catalog of the argan gateway and
-// the saddle golden table — every type and every extension mapping the
-// family's own mime lane carries rides this corpus, the golden-table battery
-// pins the coverage) — with the family law rows pinned: .ts answers video/mp2t
+// rows to the full registry): 4133 media types and 2527 unique extension
+// mappings — the apache tika catalog, the freedesktop shared-mime-info types
+// and legacy aliases, and the h5bp augmented nginx lane joined the iana live
+// snapshot — every type and every extension mapping the family's own mime lane
+// carries rides this corpus, the golden-table battery of test/mimetypes.test.ts
+// pins the coverage — with the family law rows pinned: .ts answers video/mp2t
 // and .tsx answers application/typescript). Real types only, no filler: every
 // row answers a registration a real registry carries.
 //

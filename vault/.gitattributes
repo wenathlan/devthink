@@ -10,3 +10,14 @@
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.mp4 filter=lfs diff=lfs merge=lfs -text
 *.zip filter=lfs diff=lfs merge=lfs -text
+
+# the icon family the static domains serve (icon192.png and icon512.png,
+# the faun standard the icon wave seated) rides the plain git lane: the
+# system assets answer at 4 to 19 kb — far under the heavy binary class
+# the lfs rules above own — and the release lanes that checkout tags with
+# a clean working tree need them as regular blobs the way every sibling
+# app carries its own pair (the exclusion keeps the storage lfs law whole
+# for the visitor artifacts while the infrastructure icons never pay the
+# pointer round trip).
+/icon192.png -filter -diff -merge
+/icon512.png -filter -diff -merge
