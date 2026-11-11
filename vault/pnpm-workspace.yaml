@@ -138,7 +138,6 @@ minimumReleaseAgeExclude:
   - '@hono/node-server@2.1.7'
   - better-sqlite3@13.1.1
   - icu-minify@4.15.0
-  - lucide-react@1.72.0
   - next-intl-swc-plugin-extractor@4.15.0
   - next-intl@4.15.0
   - prettier@3.10.0
