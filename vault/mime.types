@@ -1,6 +1,6 @@
 # MIME types served by the site — the vault mime lane (the wave D growth).
 # Generated programmatically from the known extension corpus: the live IANA
-# media types registry (2026-10-30 snapshot), the node mime-db, the apache httpd
+# media types registry (2026-11-11 live snapshot), the node mime-db, the apache httpd
 # mime.types, the nginx mime.types, the apache tika catalog, the rust mime_guess
 # table (the MimeTypeMap corpus), the go builtin table, the family catalog of
 # the argan gateway and the saddle golden table (the family's own mime lane —
@@ -29,6 +29,7 @@ application/ace-groupcomm+cbor
 application/ace-trl+cbor
 application/ace+cbor
 application/ace+json
+application/acrobat
 application/activemessage
 application/activity+json
 application/aif+cbor
@@ -80,12 +81,14 @@ application/auth-policy+xml apxml
 application/automationml-aml+xml aml
 application/automationml-amlx+zip amlx
 application/bacnet-xdd+zip xdd
+application/bat
 application/batch-smtp
 application/bbolin lin
 application/bdoc bdoc
 application/beep+xml
 application/bizagi-modeler bpm
 application/bufr
+application/bzip2
 application/c2pa c2pa
 application/calendar+json
 application/calendar+xml xcs
@@ -105,6 +108,7 @@ application/cdmi-domain cdmid
 application/cdmi-object cdmio
 application/cdmi-queue cdmiq
 application/cdni
+application/cdr
 application/ce+cbor
 application/cea cea
 application/cea-2018+xml
@@ -161,6 +165,8 @@ application/dash-patch+xml mpp
 application/dash+xml mpd
 application/dashdelta mpdd
 application/davmount+xml davmount
+application/dbase
+application/dbf
 application/dca-rft
 application/dcd dcd
 application/dec-dx
@@ -209,6 +215,7 @@ application/emergencycalldata.providerinfo+xml
 application/emergencycalldata.serviceinfo+xml
 application/emergencycalldata.subscriberinfo+xml
 application/emergencycalldata.veds+xml
+application/emf
 application/emma+xml emma
 application/emotionml+xml emotionml
 application/encaprtp
@@ -256,6 +263,7 @@ application/gnap-binding-jwsd
 application/gnap-binding-rotation-jws
 application/gnap-binding-rotation-jwsd
 application/gnunet-directory
+application/gpx
 application/gpx+xml gpx
 application/grib
 application/gxf gxf
@@ -273,6 +281,8 @@ application/hyperstudio stk
 application/ibe-key-request+xml
 application/ibe-pkg-reply+xml
 application/ibe-pp-data
+application/ico
+application/ics
 application/iges
 application/illustrator ai
 application/illustrator+ps
@@ -290,7 +300,9 @@ application/ipfix ipfix
 application/ipp
 application/isup
 application/its+xml its
+application/java
 application/java-archive ear jar war
+application/java-byte-code
 application/java-serialized-object ser
 application/java-vm class
 application/javascript
@@ -327,9 +339,11 @@ application/load-control+xml
 application/logout+jwt
 application/lost+xml lostxml
 application/lostsync+xml lostsyncxml
+application/lotus123
 application/lpf+zip lpf
 application/lxf lxf
 application/m3g m3g
+application/m3u
 application/mac-binhex40 hqx
 application/mac-compactpro cpt
 application/macwriteii
@@ -353,6 +367,7 @@ application/mbms-register+xml
 application/mbms-schedule+xml
 application/mbms-user-service-description+xml
 application/mbox mbox
+application/mdb
 application/measured-component+cbor
 application/measured-component+json
 application/media_control+xml
@@ -381,6 +396,7 @@ application/mpeg4-iod
 application/mpeg4-iod-xmt
 application/mrb-consumer+xml
 application/mrb-publish+xml
+application/ms-tnef
 application/ms-vsi vsi
 application/msaccess accdb accde accdt ade adp mda mdb mde
 application/msaccess.addin accda
@@ -390,8 +406,10 @@ application/msaccess.runtime accdr
 application/msaccess.webapplication accdw
 application/msc-ivr+xml
 application/msc-mixer+xml
+application/msexcel
 application/msix msix
 application/msixbundle msixbundle
+application/mspowerpoint
 application/msword doc dot wbk wiz
 application/msword-template
 application/msword2
@@ -401,6 +419,7 @@ application/multipart-core
 application/mxf mxf
 application/n-quads nq
 application/n-triples nt
+application/nappdf
 application/nasdata
 application/news-checkgroups
 application/news-groupinfo
@@ -436,12 +455,15 @@ application/p2p-overlay+xml relo
 application/parityfec
 application/passport
 application/patch-ops-error+xml xer
+application/pcap
 application/pdf pdf
 application/pdx pdx
 application/pem-certificate-chain pem
+application/pgp
 application/pgp-encrypted gpg pgp
 application/pgp-keys asc key
 application/pgp-signature asc sig
+application/photoshop
 application/pics-rules prf
 application/pidf-diff+xml
 application/pidf+xml
@@ -456,9 +478,11 @@ application/pkix-cert cer
 application/pkix-crl crl
 application/pkix-pkipath pkipath
 application/pkixcmp pki
+application/pls
 application/pls+xml pls
 application/poc-settings+xml
 application/postscript ai eps eps2 eps3 epsf epsi ps
+application/powerpoint
 application/powershell psc1
 application/ppsp-tracker+json
 application/private-token-issuer-directory
@@ -604,6 +628,7 @@ application/step step stp
 application/stix+json stix
 application/stratum
 application/streamingmedia ssm
+application/stuffit
 application/suit-envelope+cose
 application/suit-report+cose
 application/swid+cbor coswid
@@ -629,6 +654,7 @@ application/teep+cbor
 application/tei+xml odd tei teicorpus
 application/tetra_isi
 application/texinfo
+application/tga
 application/thraud+xml tfi
 application/timestamp-query tsq
 application/timestamp-reply tsr
@@ -779,6 +805,7 @@ application/vnd.adobe.air-application-installer-package+zip air
 application/vnd.adobe.flash.movie swf
 application/vnd.adobe.formscentral.fcdt fcdt
 application/vnd.adobe.fxp fxp fxpl
+application/vnd.adobe.illustrator
 application/vnd.adobe.indesign-idml-package idml
 application/vnd.adobe.partial-upload
 application/vnd.adobe.xdp+xml xdp
@@ -1195,6 +1222,8 @@ application/vnd.groove-injector grv
 application/vnd.groove-tool-message gtm
 application/vnd.groove-tool-template tpl
 application/vnd.groove-vcard vcg
+application/vnd.haansoft-hwp
+application/vnd.haansoft-hwt
 application/vnd.hal+json
 application/vnd.hal+xml hal
 application/vnd.handheld-entertainment+xml zmm
@@ -1468,6 +1497,7 @@ application/vnd.ms-works wcm wdb wks wps
 application/vnd.ms-wpl wpl
 application/vnd.ms-xpsdocument oxps xps
 application/vnd.msa-disk-image msa
+application/vnd.msaccess
 application/vnd.mseq mseq
 application/vnd.msgpack
 application/vnd.msign
@@ -1531,6 +1561,7 @@ application/vnd.nubaltec.nudoku-game
 application/vnd.oai.workflows
 application/vnd.oai.workflows+json
 application/vnd.oai.workflows+yaml
+application/vnd.oasis.docbook+xml
 application/vnd.oasis.opendocument.base odb
 application/vnd.oasis.opendocument.chart odc
 application/vnd.oasis.opendocument.chart-template otc
@@ -1816,6 +1847,7 @@ application/vnd.sarif+json
 application/vnd.sbm.cid
 application/vnd.sbm.mid2
 application/vnd.scribus scd sla slaz
+application/vnd.sdp
 application/vnd.sealed.3df s3df
 application/vnd.sealed.csf scsf
 application/vnd.sealed.doc s1w sdo sdoc
@@ -1848,6 +1880,7 @@ application/vnd.simtech-mindmapper twd twds
 application/vnd.siren+json
 application/vnd.sirtx.vmv0
 application/vnd.sketchometry sketch sketcho
+application/vnd.sketchup.skp
 application/vnd.smaf mmf
 application/vnd.smart.notebook notebook
 application/vnd.smart.teacher teacher
@@ -2005,6 +2038,7 @@ application/vnd.xacml+json
 application/vnd.xara xar
 application/vnd.xarin.cpj cpj
 application/vnd.xcdn
+application/vnd.xdgapp
 application/vnd.xecrets-encrypted axx
 application/vnd.xfdl xfd xfdl
 application/vnd.xfdl.webform
@@ -2052,11 +2086,16 @@ application/widget wgt
 application/windows-library+xml library-ms
 application/winhlp hlp
 application/wita
+application/wk1
 application/wlmoviemaker wlmp
+application/wmf
+application/wordperfect
 application/wordperfect5.1
 application/wsdl+xml wsdl
 application/wspolicy+xml wspolicy
+application/wwf
 application/x-123 wk
+application/x-3ds-max max
 application/x-7z-compressed 7z
 application/x-abiword abw
 application/x-ace
@@ -2064,11 +2103,16 @@ application/x-ace-compressed ace
 application/x-activemime
 application/x-adobe-indesign indd
 application/x-adobe-indesign-interchange inx
+application/x-adobe-swatch-exchange
 application/x-alz
 application/x-amf amf
 application/x-amiga-disk-format adf
+application/x-amiga-executable
 application/x-amipro
+application/x-anki-package apkg colpkg
+application/x-annodex
 application/x-aportisdoc
+application/x-appinventor-project aia
 application/x-apple-diskimage dmg img smi
 application/x-apple-systemprofiler+xml
 application/x-appleworks cwk
@@ -2088,15 +2132,21 @@ application/x-atari-lynx-rom
 application/x-authorware-bin aab u32 vox x32
 application/x-authorware-map aam
 application/x-authorware-seg aas
+application/x-autodesk-revit rvt rfa rte rft
 application/x-awk
 application/x-axcrypt axx
+application/x-bam
+application/x-bam-index bai
 application/x-bat bat cmd
+application/x-bb-appworld bbaw;
 application/x-bcpio bcpio
 application/x-bdoc bdoc
 application/x-bentley-besqlite
 application/x-bentley-localization
 application/x-berkeley-db
 application/x-bibtex-text-file bib bibtex
+application/x-bigbed bigbed
+application/x-bigwig bigwig
 application/x-bittorrent torrent
 application/x-blender blend
 application/x-blorb blb blorb
@@ -2107,6 +2157,7 @@ application/x-brotli br brotli
 application/x-bsdiff
 application/x-bzdvi
 application/x-bzip bz tbz
+application/x-bzip-compressed-tar
 application/x-bzip1
 application/x-bzip1-compressed-tar
 application/x-bzip2 boz bz2 tbz2
@@ -2115,19 +2166,27 @@ application/x-bzip3
 application/x-bzip3-compressed-tar
 application/x-bzpdf
 application/x-bzpostscript
+application/x-casio-fxi fxi
+application/x-casio-g1m g1m g1r g2m g2r g3m
 application/x-cb7
 application/x-cbr cb7 cba cbr cbt cbz
 application/x-cbt
+application/x-cbz
 application/x-ccmx
+application/x-cd-image
 application/x-cdf cda cdf
 application/x-cdlink vcd
+application/x-cdr
 application/x-cdrdao-toc
 application/x-cfs-compressed cfs
 application/x-chat chat
 application/x-chess-pgn pgn
+application/x-chm
 application/x-chrome-extension crx
 application/x-chrome-package crx
 application/x-cisco-vpn-settings
+application/x-clamav-database cvd cld
+application/x-clamav-diff cdiff
 application/x-class-file
 application/x-cocoa cco
 application/x-compress z
@@ -2138,23 +2197,27 @@ application/x-comsol mph
 application/x-conference nsc
 application/x-core
 application/x-coredump
+application/x-coreldraw
 application/x-corelpresentations shw
 application/x-cpio cpio
 application/x-cpio-compressed
 application/x-csh csh tcsh
 application/x-cue
 application/x-dar
+application/x-dbase
 application/x-dbf dbase dbase3 dbf
 application/x-deb
 application/x-debian-package deb udeb
 application/x-designer
 application/x-desktop
+application/x-device-tree-blob dtbo itb
 application/x-dex dex
 application/x-dgc-compressed dgc
 application/x-dia-diagram
 application/x-dia-shape
 application/x-director cct cst cxt dcr dir dxr fgd swa w3d
 application/x-discjuggler-cd-image
+application/x-dmp
 application/x-docbook+xml
 application/x-doom wad
 application/x-doom-wad
@@ -2169,8 +2232,10 @@ application/x-dxf dxf
 application/x-e-theme
 application/x-ebu-stl stl
 application/x-egon
+application/x-elasto-mania-level
 application/x-elc elc
 application/x-elf
+application/x-emf
 application/x-endace-erf erf
 application/x-endnote-refer enr enw
 application/x-endnote-style ens
@@ -2182,11 +2247,20 @@ application/x-esri-spatially-enabled-db
 application/x-eva eva
 application/x-excellon
 application/x-executable
+application/x-extension-fcstd fcstd
+application/x-fastcad fcw
 application/x-fat-diskimage
+application/x-fbx fbx
+application/x-fd-file
 application/x-fds-disk
+application/x-fec fec
+application/x-fictionbook
+application/x-fictionbook3 fb3
 application/x-fictionbook+xml fb2
 application/x-filemaker fp7
+application/x-finale
 application/x-fishscript
+application/x-flash-video
 application/x-fluid
 application/x-font gsf pfa pfb
 application/x-font-adobe-metric acfm afm amfm
@@ -2213,26 +2287,38 @@ application/x-fossil-checkout
 application/x-fossil-global-conf
 application/x-fossil-repository
 application/x-foxmail
+application/x-frame
 application/x-freearc arc
 application/x-freemind mm
+application/x-fritzing-bundle fzz
 application/x-futuresplash spl
 application/x-gameboy-color-rom
 application/x-gameboy-rom
+application/x-gamecube-iso-image
 application/x-gamecube-rom
 application/x-gamegear-rom
 application/x-ganttproject gan
+application/x-garmin-gdb
 application/x-gba-rom
+application/x-gbx gbx
 application/x-gca-compressed gca
+application/x-gcov-data gcda
+application/x-gcov-notes gcno
 application/x-gd-rom-cue
 application/x-gdbm
 application/x-gdscript
+application/x-gedcom
 application/x-genesis-32x-rom
 application/x-genesis-rom
 application/x-geopackage gpkg
+application/x-gerber
 application/x-gerber-job
+application/x-gettext
 application/x-gettext-translation
+application/x-git-pack
 application/x-glade
 application/x-glulx ulx
+application/x-gnome-app-info
 application/x-gnucash gnucash
 application/x-gnumeric gnumeric
 application/x-gnuplot
@@ -2241,6 +2327,8 @@ application/x-godot-project
 application/x-godot-resource
 application/x-godot-scene
 application/x-godot-shader
+application/x-gpx
+application/x-gpx+xml
 application/x-gramps-xml gramps
 application/x-graphing-calculator gcf
 application/x-graphite
@@ -2255,8 +2343,10 @@ application/x-gzdvi
 application/x-gzip gz
 application/x-gzpdf
 application/x-gzpostscript
+application/x-haihaisoft-drm
 application/x-hdf h5 hdf he5
 application/x-hdf5
+application/x-hfe-file
 application/x-hfe-floppy-image
 application/x-httpd-php php
 application/x-httpresponse
@@ -2265,10 +2355,13 @@ application/x-hwp-v5
 application/x-hwt
 application/x-ibooks+zip ibooks
 application/x-ica ica
+application/x-ichitaro jtd jtt jtdc
 application/x-idl-save-file
 application/x-iff
+application/x-imagedisk
 application/x-info info
 application/x-install-instructions install
+application/x-intel-aml aml
 application/x-internet-archive arc
 application/x-internet-signup ins isp
 application/x-iphone iii
@@ -2293,25 +2386,31 @@ application/x-itunes-itpc itpc
 application/x-iwork-keynote-sffkey key
 application/x-iwork-numbers-sffnumbers numbers
 application/x-iwork-pages-sffpages pages
+application/x-jar
 application/x-java
 application/x-java-applet class
+application/x-java-archive
 application/x-java-archive-diff jardiff
+application/x-java-class
 application/x-java-jce-keystore
 application/x-java-jnilib jnilib
 application/x-java-jnlp-file jnlp
 application/x-java-keystore jks
 application/x-java-pack200 pack
+application/x-java-vm
 application/x-javascript
 application/x-jbuilder-project
 application/x-jeol-jdf jdf
 application/x-jigdo
 application/x-jmol jmz
+application/x-jw-cad jww jwc jws
 application/x-karbon
 application/x-kchart
 application/x-kdelnk
 application/x-keepass2 kdbx
 application/x-kexi-connectiondata
 application/x-kexiproject-shortcut
+application/x-kexiproject-sqlite
 application/x-kexiproject-sqlite2
 application/x-kexiproject-sqlite3
 application/x-kformula
@@ -2329,13 +2428,18 @@ application/x-kugar
 application/x-kword
 application/x-kword-crypt
 application/x-latex latex
+application/x-lego-lxf lxf
 application/x-lha lha
 application/x-lharc
 application/x-lhz
+application/x-ligo-frame gwf
+application/x-linguist
 application/x-lmdb
+application/x-lotus123
 application/x-lrzip
 application/x-lrzip-compressed-tar
 application/x-lua-bytecode luac
+application/x-lucene-index
 application/x-lyx lyx
 application/x-lz4 lz4
 application/x-lz4-compressed-tar
@@ -2368,24 +2472,32 @@ application/x-maker fb fbdoc
 application/x-makeself run
 application/x-mame-chd
 application/x-markaby
+application/x-mathematica
 application/x-matlab-data mat
 application/x-matroska
 application/x-mbtiles
+application/x-mdb
 application/x-memgraph memgraph
 application/x-mie mie
 application/x-mif
+application/x-mikrotik-npk npk
 application/x-mimearchive
 application/x-miva-compiled mvc
 application/x-mmm-digisonde mmm
 application/x-mmxp mxp
+application/x-mobi8-ebook
 application/x-mobipocket-ebook mobi prc
 application/x-modrinth-modpack+zip
 application/x-monotone-source-repo
 application/x-mozilla-bookmarks
+application/x-mozlz4 jsonlz4 mozlz4 baklz4
 application/x-mpegurl
+application/x-mpq mpq
 application/x-ms-application application
 application/x-ms-asx asx
 application/x-ms-compress-szdd
+application/x-ms-dos-executable
+application/x-ms-hlk-package hlkx hckx
 application/x-ms-installer msi msp mst
 application/x-ms-license slupkg-ms
 application/x-ms-manifest manifest
@@ -2395,6 +2507,7 @@ application/x-ms-owner
 application/x-ms-pdb
 application/x-ms-reader lit
 application/x-ms-shortcut lnk
+application/x-ms-thumbs-db
 application/x-ms-vsto vsto
 application/x-ms-wim
 application/x-ms-wmd wmd
@@ -2406,16 +2519,20 @@ application/x-mscardfile crd
 application/x-msclip clp
 application/x-msdos-program bat com exe
 application/x-msdownload bat com dll exe msi
+application/x-msexcel
 application/x-msi
 application/x-msmediaview m13 m14 mvb
 application/x-msmetafile emf emz wmf wmz
 application/x-msmoney mny
+application/x-mspowerpoint
 application/x-mspublisher pub
 application/x-msschedule scd
 application/x-msterminal trm
 application/x-mswinurl
+application/x-msword
 application/x-mswrite wri
 application/x-msx-rom
+application/x-musescore mscz
 application/x-mysql-db
 application/x-mysql-misam-compressed-index myi
 application/x-mysql-misam-data myd
@@ -2424,38 +2541,51 @@ application/x-mysql-table-definition
 application/x-n64-rom
 application/x-nautilus-link
 application/x-navi-animation ani
+application/x-navitel-map
 application/x-neo-geo-pocket-color-rom
 application/x-neo-geo-pocket-rom
 application/x-nes-rom
 application/x-nesrom nes
 application/x-netcdf cdf nc
+application/x-netscape-bookmarks
 application/x-netshow-channel
+application/x-nexrad-level3
 application/x-nintendo-3ds-executable
 application/x-nintendo-3ds-rom
 application/x-nintendo-ds-rom
 application/x-ns-proxy-autoconfig pac
+application/x-nufx shk
+application/x-nupkg nupkg snupkg
 application/x-nuscript
 application/x-nwc nwc
 application/x-nzb nzb
 application/x-object o
+application/x-ogg
 application/x-ole-storage
 application/x-oleo
 application/x-oleobject hhc
 application/x-openscad scad
 application/x-openvpn-profile
 application/x-openzim
+application/x-opera-extension oex;
+application/x-osm-pbf
 application/x-oz-application oza
 application/x-pagemaker
 application/x-pak
+application/x-palm-database
 application/x-par2
 application/x-parquet parquet
 application/x-partial-download
 application/x-pc-engine-rom
+application/x-pcap
+application/x-pcp-archive
+application/x-pdf
 application/x-pds
 application/x-pef-executable
 application/x-perf-data
 application/x-perfmon pma pmc pml pmr pmw
 application/x-perl pl pm
+application/x-photoshop
 application/x-php
 application/x-pilot pdb prc
 application/x-pkcs12 p12 pfx
@@ -2467,32 +2597,43 @@ application/x-plist
 application/x-pn-realaudio
 application/x-pocket-word
 application/x-podcast pcast
+application/x-powerbi pbix pbit
 application/x-powershell
+application/x-procreate procreate
 application/x-profile
 application/x-project mpx
+application/x-promethean-flipchart
 application/x-prt prt
+application/x-ps3-package
+application/x-ps3-theme p3t
 application/x-pw
 application/x-pyspread-bz-spreadsheet
 application/x-pyspread-spreadsheet
 application/x-python-bytecode
 application/x-python-code pyc pyo
+application/x-python-pickle pkl pickle
 application/x-qed-disk
 application/x-qemu-disk
 application/x-qgis qgs
 application/x-qpress
+application/x-qt-translation qm
 application/x-qtiplot
 application/x-quattro-pro qpw wb1 wb2 wb3 wkq wq1 wq2
 application/x-quattropro
 application/x-quicktime-media-link
 application/x-quicktimeplayer qtl
 application/x-qw
+application/x-rar
 application/x-rar-compressed rar
+application/x-raw-disk-image
 application/x-raw-disk-image-xz-compressed
 application/x-raw-floppy-disk-image
 application/x-rdp rdp
 application/x-redhat-package-manager rpm
+application/x-reject
 application/x-research-info-systems ris
 application/x-riff
+application/x-rnc
 application/x-roxio-toast toast
 application/x-rpm rpm
 application/x-rss+xml
@@ -2500,6 +2641,7 @@ application/x-ruby rb
 application/x-safari-safariextz safariextz
 application/x-safari-webarchive webarchive
 application/x-sami
+application/x-sap-file
 application/x-sas sas
 application/x-sas-access sa7 sas7bacs
 application/x-sas-audit sas7baud st7
@@ -2522,9 +2664,12 @@ application/x-saturn-rom
 application/x-sc
 application/x-scilab sci
 application/x-scilab-xcos xcos
+application/x-scratch-project sb2 sb3
+application/x-sdp
 application/x-sea sea
 application/x-sega-cd-rom
 application/x-sega-pico-rom
+application/x-selinux-policy-package
 application/x-sfdu sfdu
 application/x-sg1000-rom
 application/x-sgimb sgimb
@@ -2540,17 +2685,26 @@ application/x-siag
 application/x-sibelius sib
 application/x-silverlight scr
 application/x-silverlight-app xap
+application/x-sit
+application/x-sitx
+application/x-sketch sketch
 application/x-slp
 application/x-smaf mmf
+application/x-smarttech-notebook notebook
 application/x-sms-rom
 application/x-snappy-framed sz
+application/x-snes-rom
+application/x-source-bsp
 application/x-source-rpm
+application/x-spectrum-rzx rzx
 application/x-spectrum-tzx tzx
 application/x-spss-por
 application/x-spss-sav sav
+application/x-spss-savefile
 application/x-sql sql
 application/x-sqlite2
 application/x-sqlite3
+application/x-srt
 application/x-staroffice-template vor
 application/x-stata-do do
 application/x-stata-dta dta
@@ -2563,6 +2717,7 @@ application/x-t3vm-image t3
 application/x-t602
 application/x-tads gam
 application/x-tar tar
+application/x-targa
 application/x-tarz
 application/x-tcl tcl tk
 application/x-tex tex
@@ -2572,6 +2727,7 @@ application/x-tex-tfm tfm
 application/x-tex-virtual-font vf
 application/x-texinfo texi texinfo
 application/x-texnicard
+application/x-tga
 application/x-tgif obj
 application/x-theme
 application/x-thomson-cartridge-memo7
@@ -2594,16 +2750,23 @@ application/x-tiled-tsx
 application/x-tmx tmx
 application/x-touhou rpy
 application/x-toutdoux
+application/x-trainz-cdp cdp
 application/x-trash % bak old sik ~
+application/x-trig
 application/x-troff roff t tr
 application/x-troff-man man
 application/x-troff-man-compressed
 application/x-troff-me me
 application/x-troff-ms ms
 application/x-tzo
+application/x-ubi-image ubi
+application/x-uboot-image
 application/x-uc2-compressed uc2
+application/x-ucsc-2bit 2bit
 application/x-ufraw
+application/x-unreal-uz uz uz2
 application/x-ustar ustar
+application/x-vcdiff vcdiff
 application/x-vdi-disk
 application/x-vhd
 application/x-vhd-disk
@@ -2616,24 +2779,38 @@ application/x-virtualbox-vbox vbox
 application/x-virtualbox-vbox-extpack vbox-extpack
 application/x-virtualbox-vdi vdi
 application/x-virtualbox-vhd vhd
+application/x-virtualbox-vhdx
 application/x-virtualbox-vmdk vmdk
 application/x-vmdk vmdk
 application/x-vmdk-disk
+application/x-vnd.corel.draw.document+zip
 application/x-vnd.datapackage+gz
 application/x-vnd.datapackage+json
 application/x-vnd.datapackage+zip
+application/x-vnd.kde.kexi
+application/x-vst-preset fxp fxb
 application/x-wacz
 application/x-wais-source src
+application/x-warcraft3-map w3m w3x
+application/x-warcraft3-replay w3g
+application/x-wbfs
 application/x-web-app-manifest+json webapp
 application/x-webarchive webarchive
+application/x-wfdb-annotation
+application/x-wia
+application/x-wii-iso-image
 application/x-wii-rom
 application/x-wii-wad
+application/x-win-lnk
+application/x-windows-kernel-dump
 application/x-windows-themepack
 application/x-wingz wz
 application/x-wlpg-detect wlpginstall
 application/x-wlpg3-detect wlpginstall3
+application/x-wmf
 application/x-wonderswan-color-rom
 application/x-wonderswan-rom
+application/x-wordperfect
 application/x-wpg
 application/x-wwf
 application/x-www-form-urlencoded
@@ -2646,22 +2823,28 @@ application/x-x509-key
 application/x-x509-next-ca-cert
 application/x-xar
 application/x-xbel
+application/x-xdelta
 application/x-xfig fig
+application/x-xliff
 application/x-xliff+xml xlf xliff
 application/x-xliff+zip xlz
 application/x-xmind xmap xmind
 application/x-xpinstall xpi
+application/x-xspf+xml
 application/x-xz xz
 application/x-xz-compressed-tar
 application/x-xzpdf
+application/x-yaml
 application/x-zerosize
 application/x-zim
+application/x-zip
 application/x-zip-compressed zip
 application/x-zip-compressed-fb2
 application/x-zmachine z1 z2 z3 z4 z5 z6 z7 z8
 application/x-zoo zoo
 application/x-zpaq
 application/x-zstd-compressed-tar
+application/x-zsync zsync
 application/x400-bp
 application/x400bp
 application/xacml+xml
@@ -2687,6 +2870,7 @@ application/xml-patch+xml
 application/xmpp+xml
 application/xop+xml xop
 application/xproc+xml xpl
+application/xps
 application/xquery xq xquery
 application/xslfo+xml fo xslfo
 application/xslt+xml xsl xslt
@@ -2706,11 +2890,14 @@ application/zip+dotlottie lottie
 application/zlib
 application/zstd zst zstd
 video/1d-interleaved-parityfec
+video/3gp
 video/3gpp 3gp 3gpp
+video/3gpp-encrypted
 video/3gpp-tt
 video/3gpp2 3g2 3gp2
 video/annodex axv
 video/av1
+video/avi
 video/bmpeg
 video/bt656
 video/bv16
@@ -2724,6 +2911,7 @@ video/example
 video/ffv1
 video/flexfec
 video/fli fli
+video/flv
 video/gl gl
 video/h261 h261
 video/h263 h263
@@ -2751,8 +2939,10 @@ video/mp2t ts m2t m2ts mts
 video/mp4 m4v mp4 mp4v mpg4
 video/mp4v-es
 video/mpeg m1v m2v mod mp2 mp2v mpa mpe mpeg mpg mpv2 vbk
+video/mpeg-system
 video/mpeg4-generic
 video/mpv
+video/msvideo
 video/nv
 video/ogg ogv
 video/parityfec
@@ -2772,6 +2962,7 @@ video/theora
 video/ulpfec
 video/vc1
 video/vc2
+video/vivo
 video/vnd.avi
 video/vnd.blockfact.factv
 video/vnd.cctv
@@ -2783,6 +2974,7 @@ video/vnd.dece.sd uvs uvvs
 video/vnd.dece.video uvv uvvv
 video/vnd.directv.mpeg
 video/vnd.directv.mpeg-tts
+video/vnd.divx
 video/vnd.dlna.mpeg-tts m2t m2ts mts ts tts
 video/vnd.dvb.file dvb
 video/vnd.fvt fvt
@@ -2819,6 +3011,8 @@ video/vp9
 video/wavelet
 video/webm webm
 video/x-anim
+video/x-annodex
+video/x-avi
 video/x-dirac drc
 video/x-dv dif dv
 video/x-f4v f4v
@@ -2835,8 +3029,14 @@ video/x-matroska mk3d mks mkv mpv
 video/x-matroska-3d
 video/x-mjpeg
 video/x-mng mng
+video/x-mpeg
+video/x-mpeg-system
+video/x-mpeg2
+video/x-mpegurl
 video/x-ms-asf asf asr asx nsc
+video/x-ms-asf-plugin
 video/x-ms-vob vob
+video/x-ms-wax
 video/x-ms-wm wm
 video/x-ms-wmp wmp
 video/x-ms-wmv wmv
@@ -2844,24 +3044,30 @@ video/x-ms-wmx wmx
 video/x-ms-wvx wvx
 video/x-msvideo avi
 video/x-nsv
+video/x-ogg
 video/x-oggrgb
 video/x-ogguvs
 video/x-oggyuv
 video/x-ogm ogm
 video/x-ogm+ogg
+video/x-real-video
 video/x-sgi-movie movie
 video/x-smv smv
+video/x-theora
 video/x-theora+ogg
 audio/1d-interleaved-parityfec
 audio/32kadpcm 726
 audio/3gpp 3gpp
+audio/3gpp-encrypted
 audio/3gpp2
 audio/aac aac adts ass
 audio/ac3 ac3
 audio/adpcm adp
 audio/aiff aif aifc aiff cdda
 audio/amr amr
+audio/amr-encrypted
 audio/amr-wb awb
+audio/amr-wb-encrypted
 audio/amr-wb+
 audio/annodex axa
 audio/aptx
@@ -2877,7 +3083,10 @@ audio/clearmode
 audio/cn
 audio/csound csd orc sco
 audio/dat12
+audio/dff
 audio/dls dls
+audio/dsd
+audio/dsf
 audio/dsr-es201108
 audio/dsr-es202050
 audio/dsr-es202211
@@ -2922,6 +3131,7 @@ audio/gsm
 audio/gsm-efr
 audio/gsm-hr-08
 audio/ilbc lbc
+audio/imelody
 audio/ip-mr_v2.5
 audio/isac
 audio/l16 l16
@@ -2929,6 +3139,7 @@ audio/l20
 audio/l24
 audio/l8
 audio/lpc
+audio/m3u
 audio/m4a m4a
 audio/m4b m4b
 audio/m4p m4p
@@ -2989,6 +3200,7 @@ audio/tetra_acelp
 audio/tetra_acelp_bb
 audio/tone
 audio/tsvcis
+audio/tta
 audio/uemclip
 audio/ulpfec
 audio/usac loas xhe
@@ -2997,6 +3209,7 @@ audio/vmr-wb
 audio/vnd.3gpp.iufp
 audio/vnd.4sb
 audio/vnd.adobe.soundbooth asnd
+audio/vnd.audible
 audio/vnd.audible.aax aax
 audio/vnd.audible.aaxc
 audio/vnd.audiokoz koz
@@ -3026,6 +3239,7 @@ audio/vnd.dvb.file
 audio/vnd.everad.plj plj
 audio/vnd.hns.audio
 audio/vnd.lucent.voice lvp
+audio/vnd.m-realaudio
 audio/vnd.ms-playready.media.pya pya
 audio/vnd.nokia.mobile-xmf
 audio/vnd.nortel.vbk vbk
@@ -3047,34 +3261,50 @@ audio/vorbis-config
 audio/wav wav wave
 audio/wave wav
 audio/webm weba
+audio/wma
 audio/x-aac aac
 audio/x-adpcm
 audio/x-aifc
 audio/x-aiff aif aifc aiff
+audio/x-aiffc
 audio/x-amzxml
+audio/x-annodex
 audio/x-ape
 audio/x-caf caf
 audio/x-dec-adpcm
 audio/x-dec-basic
 audio/x-dff
+audio/x-dsd
 audio/x-dsf
+audio/x-dts
+audio/x-dtshd
 audio/x-flac flac
 audio/x-flac+ogg
 audio/x-gsm gsm
+audio/x-imelody
 audio/x-iriver-pla
 audio/x-it
+audio/x-m3u
 audio/x-m4a m4a
 audio/x-m4b
 audio/x-m4r m4r
 audio/x-matroska mka
+audio/x-mfi mld
+audio/x-midi
 audio/x-minipsf
 audio/x-mo3
 audio/x-mod mod
+audio/x-mp2
+audio/x-mp3
+audio/x-mp3-playlist
+audio/x-mpeg
 audio/x-mpegurl m3u m3u8
+audio/x-mpg
 audio/x-ms-asx
 audio/x-ms-wax wax
 audio/x-ms-wma wma
 audio/x-musepack
+audio/x-ogg
 audio/x-oggflac
 audio/x-oggpcm
 audio/x-opus+ogg
@@ -3084,18 +3314,26 @@ audio/x-pn-realaudio-plugin rmp rpm
 audio/x-psf gsf gslib minigsf minipsf minipsf1 psf psf1 psflib
 audio/x-psflib
 audio/x-realaudio ra
+audio/x-rex2 rx2
 audio/x-riff
+audio/x-rn-3gpp-amr
+audio/x-rn-3gpp-amr-encrypted
+audio/x-rn-3gpp-amr-wb
+audio/x-rn-3gpp-amr-wb-encrypted
 audio/x-s3m
 audio/x-sap sap
 audio/x-scpls
 audio/x-sd2 sd2
+audio/x-shorten
 audio/x-smd smd smx smz
+audio/x-soundfont sf2
 audio/x-speex
 audio/x-speex+ogg
 audio/x-stm
 audio/x-tak
 audio/x-tta
 audio/x-voc
+audio/x-vorbis
 audio/x-vorbis+ogg
 audio/x-wav wav
 audio/x-wavpack
@@ -3103,7 +3341,9 @@ audio/x-wavpack-correction
 audio/x-xi
 audio/x-xm
 audio/x-xmf
+audio/x-ym ym
 audio/xm xm
+audio/xmf
 image/aces exr
 image/apng apng
 image/astc
@@ -3114,12 +3354,14 @@ image/avif-sequence avifs
 image/b44
 image/b44a
 image/bmp bmp dib
+image/cdr
 image/cgm cgm
 image/cis-cod cod
 image/dicom-rle drle
 image/dpx dpx
 image/emf emf
 image/example
+image/fax-g3
 image/fits fit fits fts
 image/g3fax g3
 image/gif gif
@@ -3130,6 +3372,8 @@ image/heif-sequence heifs
 image/hej2k hej2
 image/hsj2 hsj2
 image/icns icns
+image/ico
+image/icon
 image/ief ief
 image/j2c j2c j2k
 image/jaii jaii
@@ -3137,6 +3381,8 @@ image/jais jais
 image/jls jls
 image/jp2 jp2 jpg2
 image/jpeg jfi jfif jif jpe jpeg jpg pjp pjpeg
+image/jpeg2000
+image/jpeg2000-image
 image/jph jph
 image/jphc jhc jphc
 image/jpm jpgm jpm
@@ -3154,12 +3400,15 @@ image/ktx2 ktx2
 image/naplps
 image/nitf nitf ntf
 image/openraster
+image/pdf
+image/photoshop
 image/pict pct pic pict
 image/pjpeg jfif
 image/png png pnz
 image/prs.aimg
 image/prs.btif btf btif
 image/prs.pti pti
+image/psd
 image/pwg-raster
 image/qoi qoi
 image/rle
@@ -3167,6 +3416,8 @@ image/sgi sgi
 image/svg+xml svg svgz
 image/svg+xml-compressed
 image/t38 t38
+image/targa
+image/tga
 image/tiff tif tiff
 image/tiff-fx tfx
 image/vnd.adobe.photoshop psd
@@ -3189,6 +3440,7 @@ image/vnd.fst fst
 image/vnd.fujixerox.edmics-mmr mmr
 image/vnd.fujixerox.edmics-rlc rlc
 image/vnd.globalgraphics.pgb pgb
+image/vnd.imgformats.ssimf
 image/vnd.microsoft.icon ico
 image/vnd.mix
 image/vnd.mozilla.apng
@@ -3216,11 +3468,13 @@ image/wmf wmf
 image/x-3ds 3ds
 image/x-adobe-dng dng
 image/x-applix-graphics
+image/x-bmp
 image/x-bpg bpg
 image/x-bzeps
 image/x-canon-cr2 cr2
 image/x-canon-cr3 cr3
 image/x-canon-crw crw
+image/x-cdr
 image/x-cmu-raster ras
 image/x-cmx cmx
 image/x-compressed-xcf
@@ -3231,12 +3485,14 @@ image/x-corelphotopaint
 image/x-dcraw
 image/x-dds
 image/x-dib
+image/x-djvu
 image/x-dpx dpx
 image/x-emf
 image/x-emf-compressed emz
 image/x-eps
 image/x-epson-erf erf
 image/x-exr
+image/x-fits
 image/x-fpx
 image/x-freehand fh fh10 fh11 fh12 fh4 fh40 fh5 fh50 fh7 fh8 fh9 fhc ft10 ft11 ft12 ft7 ft8 ft9
 image/x-fuji-raf raf
@@ -3244,14 +3500,18 @@ image/x-gimp-gbr
 image/x-gimp-gih
 image/x-gimp-pat
 image/x-gzeps
+image/x-icb
 image/x-icns
+image/x-ico
 image/x-icon ico
+image/x-iff
 image/x-ilbm
 image/x-jbig2 jb2 jbig2
 image/x-jg art
 image/x-jng jng
 image/x-jp2-codestream j2c
 image/x-jp2-container
+image/x-jpeg2000-image
 image/x-kodak-dcr dcr
 image/x-kodak-k25 k25
 image/x-kodak-kdc kdc
@@ -3267,18 +3527,24 @@ image/x-nikon-nef nef
 image/x-nikon-nrw nrw
 image/x-olympus-orf orf
 image/x-os2-graphics
+image/x-paintshoppro pspimage
+image/x-panasonic-raw
+image/x-panasonic-raw2
 image/x-panasonic-rw raw
 image/x-panasonic-rw2 rw2 rwl
 image/x-pcx pcx
 image/x-pentax-pef pef
 image/x-photo-cd
+image/x-photoshop
 image/x-pict pct pic pict
 image/x-portable-anymap pnm
 image/x-portable-arbitrarymap pam
 image/x-portable-bitmap pbm
 image/x-portable-graymap pgm
 image/x-portable-pixmap ppm
+image/x-psd
 image/x-qoi qoi
+image/x-quake-sprite spr
 image/x-quicktime qti qtif
 image/x-raw-adobe dng
 image/x-raw-canon crw
@@ -3310,16 +3576,21 @@ image/x-sony-arw arw
 image/x-sony-sr2 sr2
 image/x-sony-srf srf
 image/x-sun-raster
+image/x-svm svm
+image/x-targa
 image/x-tga icb tga vda vst
 image/x-tiff-multipage
 image/x-win-bitmap cur
+image/x-win-metafile
 image/x-wmf
 image/x-xbitmap xbm
 image/x-xcf xcf
 image/x-xcursor
 image/x-xfig
 image/x-xpixmap xpm
+image/x-xpm
 image/x-xwindowdump xwd
+image/x.djvu
 font/collection ttc
 font/otf otf
 font/sfnt
@@ -3491,6 +3762,7 @@ text/cql cql
 text/cql-expression
 text/cql-extension
 text/cql-identifier
+text/crystal
 text/css css
 text/csv csv
 text/csv-schema csvs
@@ -3504,18 +3776,22 @@ text/example
 text/fhirpath
 text/flexfec
 text/fwdred
+text/gedcom
 text/gemini gemini gmi
 text/gff3 gff3
+text/google-video-pointer
 text/grammar-ref-list
 text/h323 323
 text/hl7v2
 text/html ehtml htm html hxt shtml
 text/htmlh
+text/ico
 text/iso19139+xml iso19139
 text/iuls uls
 text/jade jade
 text/javascript ecma es js jsm jsx mjs
 text/jcr-cnd cnd
+text/jscript
 text/jscript.encode
 text/jsx jsx
 text/julia
@@ -3538,9 +3814,11 @@ text/prs.rowih
 text/prs.texi
 text/qml
 text/raptorfec
+text/rdf
 text/red
 text/rfc822-headers
 text/richtext rtx
+text/rss
 text/rtf rtf
 text/rtp-enc-aescm128
 text/rtploopback
@@ -3563,6 +3841,7 @@ text/troff man me ms nroff roff t tr
 text/turtle ttl
 text/ulpfec
 text/uri-list uri uris urls
+text/vbs
 text/vbscript vbs
 text/vbscript.encode
 text/vcard vcard vcf
@@ -3602,7 +3881,9 @@ text/vnd.longform
 text/vnd.motorola.reflex
 text/vnd.ms-mediapackage
 text/vnd.net2phone.commcenter.command ccc
+text/vnd.qt.linguist
 text/vnd.radisys.msml-basic-layout
+text/vnd.rim.location.xloc xloc;
 text/vnd.rn-realtext
 text/vnd.senx.warpscript mc2
 text/vnd.si.uricatalogue
@@ -3636,6 +3917,8 @@ text/x-bibtex bib
 text/x-blueprint
 text/x-boo boo
 text/x-c c cc cpp cxx dic h hh
+text/x-comma-separated-values
+text/x-csv
 text/x-c++hdr h h++ hh hp hpp hxx
 text/x-c++src c c++ cc cpp cxx
 text/x-cgi cgi
@@ -3656,6 +3939,7 @@ text/x-csh
 text/x-csharp cs
 text/x-csrc c
 text/x-d d
+text/x-dart
 text/x-dbus-service
 text/x-dcl
 text/x-devicetree-binary
@@ -3663,11 +3947,13 @@ text/x-devicetree-source
 text/x-diff diff patch
 text/x-dsl
 text/x-dsrc d
+text/x-dtd
 text/x-eiffel e
 text/x-elixir
 text/x-emacs-lisp el
 text/x-erlang erl
 text/x-expect exp
+text/x-fish
 text/x-forth 4th
 text/x-fortran f f77 f90 for
 text/x-gcode-gx
@@ -3705,6 +3991,7 @@ text/x-lilypond ly
 text/x-literate-haskell lhs
 text/x-log log
 text/x-lua lua
+text/x-lyx
 text/x-makefile
 text/x-markdown md mkd
 text/x-matlab m
@@ -3728,10 +4015,12 @@ text/x-mup
 text/x-nfo nfo
 text/x-nim
 text/x-nimscript
+text/x-nu
 text/x-objc++src
 text/x-objcsrc m
 text/x-ocaml mli ocaml
 text/x-ocl
+text/x-octave
 text/x-ooc
 text/x-opencl-src
 text/x-opml opml
@@ -3742,6 +4031,8 @@ text/x-patch
 text/x-pcs-gcd gcd
 text/x-perl al perl pl pm
 text/x-php php php3 php4
+text/x-po
+text/x-pot
 text/x-processing pde
 text/x-prolog pl pro
 text/x-python py
@@ -3781,6 +4072,7 @@ text/x-texinfo
 text/x-tika-text-based-message
 text/x-todo-txt
 text/x-toml toml
+text/x-troff
 text/x-troff-me
 text/x-troff-mm
 text/x-troff-ms
@@ -3810,14 +4102,48 @@ text/xml-dtd
 text/xml-external-parsed-entity
 text/yaml yaml yml
 drawing/x-dwf dwf
+haptics/hjif
+haptics/hmpg
 haptics/ivs
 inode/blockdevice
 inode/chardevice
 inode/directory
 inode/directory-locked
 inode/fifo
+inode/mount-point
 inode/socket
+inode/symlink
 x-conference/x-cooltalk ice
 x-shader/x-fragment
 x-shader/x-vertex
 x-world/x-vrml flr wrl wrz xaf xof
+x-content/audio-cdda
+x-content/audio-dvd
+x-content/audio-player
+x-content/blank-bd
+x-content/blank-cd
+x-content/blank-dvd
+x-content/blank-hddvd
+x-content/ebook-reader
+x-content/image-dcf
+x-content/image-picturecd
+x-content/ostree-repository
+x-content/software
+x-content/unix-software
+x-content/video-bluray
+x-content/video-dvd
+x-content/video-hddvd
+x-content/video-svcd
+x-content/video-vcd
+x-content/win32-software
+flv-application/octet-stream
+x-directory/normal
+x-epoc/x-sisx-app sisx
+zz-application/zz-winassoc-123
+zz-application/zz-winassoc-cab
+zz-application/zz-winassoc-cdr
+zz-application/zz-winassoc-doc
+zz-application/zz-winassoc-hlp
+zz-application/zz-winassoc-mdb
+zz-application/zz-winassoc-uu
+zz-application/zz-winassoc-xls
