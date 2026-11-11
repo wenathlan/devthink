@@ -28,7 +28,7 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the cadria mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "im.cadria.app",
+  appId: "com.cadria.app",
   appName: "Cadria",
   /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
   webDir: ".",

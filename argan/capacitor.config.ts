@@ -28,7 +28,7 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the argan mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "im.argan.app",
+  appId: "com.argan.app",
   appName: "Argan",
   /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
   webDir: ".",

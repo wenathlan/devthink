@@ -28,7 +28,7 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the cobaia mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "im.cobaia.app",
+  appId: "com.cobaia.app",
   appName: "Cobaia",
   /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
   webDir: ".",

@@ -28,7 +28,7 @@ type CapacitorConfigShape = {
 
 const config: CapacitorConfigShape = {
   /** the foundry mobile identity — the id the mobile lane stamps onto the generated shells. */
-  appId: "im.foundry.app",
+  appId: "com.foundry.app",
   appName: "Foundry",
   /** the vite build of the theme: pnpm build emits the hashed bundles at the app root. */
   webDir: ".",
