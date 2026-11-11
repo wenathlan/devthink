@@ -26,6 +26,9 @@ val envelopeVersion = file("package.json").readText()
 version = (findProperty("releaseVersion") as String?) ?: envelopeVersion
 
 tasks.jar {
+    from(layout.projectDirectory) {
+        include("devthink.kts")
+    }
     from(layout.projectDirectory.dir("build")) {
         include("index.js")
         include("index.cjs")

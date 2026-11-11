@@ -32,6 +32,12 @@ tasks.compileJava {
     options.release.set(17)
 }
 
+tasks.jar {
+    from(layout.projectDirectory) {
+        include("saddle.kts")
+    }
+}
+
 publishing {
     repositories {
         maven {

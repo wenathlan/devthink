@@ -527,6 +527,22 @@ async function runreleasewalk(): Promise<void> {
     ["../saddle/saddle.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
     ["../stealthhead/stealthhead.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
     ["../vault/vault.rs", (content) => content.replace(/VERSION: &str = "[0-9A-Za-z.-]+"/, `VERSION: &str = "${version}"`)],
+    /* The kts seat carriers (the briefing naming law: the conversion file
+       answers the application name followed by the target extension —
+       vault.kts the owner law named): the eleven .kts convention seats
+       ride the documentation jar the gradle lane ships, the lockstep
+       re-stamps the version literal the way the rs carriers walk. */
+    ["../argan/argan.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../cadria/cadria.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../cobaia/cobaia.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../debonair/debonair.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["devthink.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../forge/forge.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../foundry/foundry.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../getry/getry.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../saddle/saddle.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../stealthhead/stealthhead.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
+    ["../vault/vault.kts", (content) => content.replace(/envelopeVersion = "[0-9A-Za-z.-]+"/, `envelopeVersion = "${version}"`)],
     /* The logic ownership regroup (the mv3 extension left the saddle for the
        os envelope seat): the extension manifest the lockstep stamped at the
        saddle root rides the devthink root today as extensionmanifest.json —
