@@ -75,3 +75,23 @@
   X-Robots-Tag: noindex, nofollow, noarchive
   Content-Type: application/octet-stream
   Content-Disposition: attachment
+
+# the icon family law of the static domains: icon.svg, svg.icon, icon.ico
+# and the png sizes ride every app root — the svg.icon variant carries the
+# typed door (image/svg+xml) the deploy lanes serve, the whole family
+# immutable at the edge.
+/svg.icon
+  Content-Type: image/svg+xml
+  Cache-Control: public, max-age=31536000, immutable
+/icon.svg
+  Cache-Control: public, max-age=31536000, immutable
+/favicon.svg
+  Cache-Control: public, max-age=31536000, immutable
+/icon.ico
+  Cache-Control: public, max-age=31536000, immutable
+/favicon.ico
+  Cache-Control: public, max-age=31536000, immutable
+/icon192.png
+  Cache-Control: public, max-age=31536000, immutable
+/icon512.png
+  Cache-Control: public, max-age=31536000, immutable

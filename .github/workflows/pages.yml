@@ -229,7 +229,7 @@ jobs:
             mkdir -p staging
             cp "${app}/index.html" staging/
             cp "${app}/404.html" staging/ 2>/dev/null || true
-            for kind in js css webmanifest xml txt svg png ico woff woff2 webp; do
+            for kind in js css webmanifest xml txt svg icon png ico woff woff2 webp; do
               cp "${app}"/*."${kind}" staging/ 2>/dev/null || true
             done
             touch staging/.nojekyll
@@ -237,7 +237,7 @@ jobs:
             mkdir -p "staging/${app}"
             cp "${app}/index.html" "staging/${app}/"
             cp "${app}/404.html" "staging/${app}/" 2>/dev/null || true
-            for kind in js css webmanifest xml txt svg png ico woff woff2 webp; do
+            for kind in js css webmanifest xml txt svg icon png ico woff woff2 webp; do
               cp "${app}"/*."${kind}" "staging/${app}/" 2>/dev/null || true
             done
             # the static asset folder the theme references by relative path

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- DevThink desktop icon source: the workbench mark. A square rounded
+       tile with the dev node glyph (the angle brackets of the terminal
+       surface) over the layered planes of the merged interfaces. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#101828"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </linearGradient>
+    <linearGradient id="bracket" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="plane" x1="0" y1="0" x2="0" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#172033"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="960" height="960" rx="176" fill="url(#tile)"/>
+  <rect x="32" y="32" width="960" height="960" rx="176" fill="none" stroke="#1e293b" stroke-width="8"/>
+  <!-- the layered planes: the three surfaces (web, mobile, container) -->
+  <g opacity="0.9">
+    <rect x="212" y="236" width="600" height="552" rx="72" fill="url(#plane)" stroke="#334155" stroke-width="10" transform="rotate(-6 512 512)"/>
+    <rect x="212" y="236" width="600" height="552" rx="72" fill="url(#plane)" stroke="#334155" stroke-width="10" transform="rotate(6 512 512)"/>
+  </g>
+  <rect x="192" y="216" width="640" height="592" rx="80" fill="url(#plane)" stroke="#475569" stroke-width="12"/>
+  <!-- the terminal glyph: the angle brackets of the cli surface -->
+  <g fill="none" stroke="url(#bracket)" stroke-width="64" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 384 404 L 288 512 L 384 620"/>
+    <path d="M 640 404 L 736 512 L 640 620"/>
+    <path d="M 552 372 L 472 652"/>
+  </g>
+</svg>

@@ -310,9 +310,18 @@ jobs:
           # wire catalog and the mime.types corpus byte-identical in
           # every app dir — the owner's configurable-items law the
           # storage engine owns, the same standardization the golden-table
-          # law holds trivially under identity).
+          # law holds trivially under identity); the svg icon variant
+          # joins the same deliberate set (the owner's static-domain law
+          # seats svg.icon beside icon.svg in every app root — the same
+          # mark bytes under the inverted extension the static hosts
+          # serve, the deliberate serving copy the faun standard
+          # documents); the ten sibling _headers join the same deliberate
+          # set (the family-standard deploy header block rides byte-identical
+          # across the sibling roots — the security headers plus the icon
+          # family law the static lanes serve — while the vault seal and the
+          # devthink site rows stay app-specific above it).
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/test/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$|/protocols\.types$|/mime\.types$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/test/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$|/protocols\.types$|/mime\.types$|/svg\.icon$|/_headers$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then
