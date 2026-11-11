@@ -582,3 +582,60 @@ jobs:
         # run (the vitest-only law), so the matrix walks the same dialect
         # the family template names and no app may answer a second runner.
         run: npm test
+
+  native:
+    name: Native sources syntax check (gcc/g++ -fsyntax-only)
+    # the e2ugh native gate restored from the original saddle repo (the
+    # 2.1.2 ladder carried it until the family integration folded the
+    # workflow surface): the three C/C++ shims of the virtual hardware
+    # engine live at the saddle root in the merged layout, and the
+    # build-free syntax walk proves the native seats answer the toolchain
+    # the Dockerfile pins (Regra 124: nothing skipped, the gate rides
+    # every push and pull request).
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install g++ 14 (the engine needs the C++23 print header)
+        # ubuntu-24.04 runners default to g++ 13 whose libstdc++ lacks
+        # the C++23 <print> header the gpumonitor shim imports; g++ 14
+        # ships it. pin the explicit compiler instead of probing the
+        # default toolchain.
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq g++-14 gcc-14 >/dev/null
+          g++-14 --version | head -1
+      - name: Resolve the C++ standard of the runner toolchain
+        id: std
+        run: |
+          set -euo pipefail
+          # the engine targets C++26; the gate prefers the g++ spelling
+          # c++2c and falls back through the alias and c++23 for older
+          # runner images.
+          std=c++23
+          for candidate in c++2c c++26 c++23; do
+            if printf 'int main(){return 0;}\n' | g++-14 -std="$candidate" -x c++ -fsyntax-only - >/dev/null 2>&1; then
+              std="$candidate"
+              break
+            fi
+          done
+          echo "std=${std}" >> "$GITHUB_OUTPUT"
+          echo "Syntax checks will run with -std=${std}"
+      - name: Syntax-check the C and C++ sources
+        env:
+          CXX_STD: ${{ steps.std.outputs.std }}
+        run: |
+          set -euo pipefail
+          # direct compiler invocation, mirroring the saddle Dockerfile:
+          # no cmake, no build system. gpumonitor.cpp compiles as a
+          # multi-mode translation unit; -DVHE_NO_MODULES selects the
+          # classic include path for toolchains without the std module.
+          # the merged layout carries the shims at the saddle root.
+          gcc-14 -std=c11 -Wall -fsyntax-only saddle/virtualhardware.c
+          echo 'saddle/virtualhardware.c: gcc-14 -std=c11 -fsyntax-only ok'
+          g++-14 -std="${CXX_STD}" -Wall -DVHE_NO_MODULES -fsyntax-only saddle/gpumonitor.cpp
+          echo "saddle/gpumonitor.cpp: g++-14 -std=${CXX_STD} -fsyntax-only ok"
+          g++-14 -std="${CXX_STD}" -Wall -fsyntax-only saddle/virtualizationcore.cpp
+          echo "saddle/virtualizationcore.cpp: g++-14 -std=${CXX_STD} -fsyntax-only ok"

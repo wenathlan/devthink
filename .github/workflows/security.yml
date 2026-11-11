@@ -764,6 +764,13 @@ jobs:
           # the TypeScript engine domains + the web workbench surface
           - language: javascript-typescript
             build-mode: none
+          # the native C/C++ sources of the virtual hardware engine
+          # (saddle/virtualhardware.c, saddle/gpumonitor.cpp and
+          # saddle/virtualizationcore.cpp — the build-free extractor the
+          # original saddle repo's codeql lane carried until the family
+          # integration folded it, restored by the capability-diff wave)
+          - language: cpp
+            build-mode: none
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
