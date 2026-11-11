@@ -21,6 +21,19 @@ commits and merges — this file is the map that pins where each order stands.
   8695-line corpus with the polar.sh corrected build and rule 45, conversa19
   85022 lines and conversa50 86534 lines through the 58 extract chunks plus
   actions inventory).
+- feito: the fresh conversa51 corpus (88,642 lines, the cumulative superset
+  the md5 head proved over conversa50) read whole through sixteen linear
+  reading agents walking 5,540-line ranges with twenty-line overlaps, the
+  feedssd corpus (1,603 lines) whole, the polarauth pair whole and the fedsd
+  corpus (762 lines) beside the superset verification (fedsd inside feedssd
+  confirmed — the twenty-five inserted lines carrying the oracle and
+  virtualbox competitor law, the github pages static platform, the ts to rs
+  readiness, the doc sol tests folder law, the labels.ts complaint, the
+  icon family law, the actions marketplace mandate, the webpack
+  clarification and the distribution list extensions) — 185,708 lines
+  walked against the seated frame, zero new rule the live tree misses, the
+  per-range extractions seated at upload/extract (twenty files, the four
+  corpus folders).
 - feito: this checklist file generated as the map by stage and app, the
   duplicated directives collapsed to one entry each, every complaint seated
   as a mandatory order with its state.
@@ -35,6 +48,11 @@ commits and merges — this file is the map that pins where each order stands.
 - feito: the head sync — fetch, merge, push answered clean this session (the
   vault icon lfs heal 7198a19d merged, the local kts wave d6d56ea7 and the
   merge commit c4a95bd6 pushed; local equals remote on main).
+- feito: the fresh instance sync — the polar telemetry verified whole (the
+  code CE58-65EA authorized at 19:26:11 utc, the token captured in real
+  time, three layers at 0600, the api answering under iakadion at rate
+  5000), the two fast-forwards carrying the permdiff heal and the 2.0.180
+  rung (78f0d258 → 401dd3d0) whole, 1,676 commits at the breath.
 
 ## etapa 3 — the root structure law
 
@@ -379,16 +397,21 @@ commits and merges — this file is the map that pins where each order stands.
 
 ## the open lanes (the pendente seats at this breath)
 
-- the alert 1759 close: the scorecard run must read the healed head (the
-  evidence order) — the projection green closes it; never a dismissal
-  (the security battery on a3847973 carries the codeql analyze ladder
-  the scorecard seat reads).
+- the alert 1759 close: the security battery of the 401dd3d0 head (the
+  2.0.180 rung) carries the codeql analyze ladder the scorecard seat
+  reads — the queued run walks the evidence order; the projection green
+  closes it; never a dismissal.
+- the 2.0.180 release ladder: the publish workflow queued on the fresh
+  head — the assets train, the registry publishes and the container
+  catch-up (the saddle publication riding the workflow_run dual trigger)
+  answer behind it; the close check rides the final projection, never a
+  wait on the heavy lane.
 - the post-merge certification: the merged head walks the family suites,
-  the webpack seats and the container lanes; any red answers immediately.
-- the saddle npm freshness on the 2.0.179 rung (the registry answered
-  2.0.178 at the last read; the v2.0.179 publish lane queues behind the
-  healed head's battery — the close check rides the final
-  projection).
+  the webpack seats and the container lanes; any red answers immediately
+  (the local dependency seats healed — the eight wiped app seats
+  reinstalled under the pinned bun 1.4.4 after the reset).
+- the 1,700+ commits law: 1,676 at this breath, twenty-four real steps to
+  go — one per real step, the wave records and the release train carry it.
 - the stem separation hub lane (the debonair open seat the hub refuses —
   the documented future lane).
 - the game lanes the owner paces (the stealthhead real game beyond the

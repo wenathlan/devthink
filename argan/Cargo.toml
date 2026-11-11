@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-argan"
-version = "2.0.179"
+version = "2.0.180"
 edition = "2021"
 description = "The DNS and gateway library — zones, records, dnssec and handshake"
 license = "GPL-3.0-only"

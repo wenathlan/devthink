@@ -1,4 +1,4 @@
-# stealthhead 2.0.179 — THE SITE CONTAINER FILE
+# stealthhead 2.0.180 — THE SITE CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -15,7 +15,7 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS solbuild
 
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 
 # The family context fix (the staged shape the site containers read): the
 # application rides the context nested under app/ with the sibling sources
@@ -64,7 +64,7 @@ RUN pnpm build
 # ════════════════════════════════════════════════════════════════════
 
 FROM scratch AS osgrapheneos
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="grapheneos"
 ENV STEALTHHEAD_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="stealthhead (the grapheneos os-distribution catalog lane)" \
@@ -75,7 +75,7 @@ LABEL org.opencontainers.image.title="stealthhead (the grapheneos os-distributio
 COPY osprofiles/grapheneos.json /stealthhead/osprofile.json
 
 FROM scratch AS osmaruos
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="maruos"
 ENV STEALTHHEAD_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="stealthhead (the maru os os-distribution catalog lane)" \
@@ -86,7 +86,7 @@ LABEL org.opencontainers.image.title="stealthhead (the maru os os-distribution c
 COPY osprofiles/maruos.json /stealthhead/osprofile.json
 
 FROM scratch AS osv
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="v"
 ENV STEALTHHEAD_OS_PROFILE=v
 LABEL org.opencontainers.image.title="stealthhead (the v os-distribution catalog lane)" \
@@ -97,7 +97,7 @@ LABEL org.opencontainers.image.title="stealthhead (the v os-distribution catalog
 COPY osprofiles/v.json /stealthhead/osprofile.json
 
 FROM scratch AS oswindows
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="windows"
 ENV STEALTHHEAD_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="stealthhead (the windows os-distribution catalog lane)" \
@@ -108,7 +108,7 @@ LABEL org.opencontainers.image.title="stealthhead (the windows os-distribution c
 COPY osprofiles/windows.json /stealthhead/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="postmarketos"
 ENV STEALTHHEAD_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="stealthhead (the postmarketos os-distribution catalog lane)" \
@@ -119,7 +119,7 @@ LABEL org.opencontainers.image.title="stealthhead (the postmarketos os-distribut
 COPY osprofiles/postmarketos.json /stealthhead/osprofile.json
 
 FROM scratch AS oslineageos
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="lineageos"
 ENV STEALTHHEAD_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="stealthhead (the lineageos os-distribution catalog lane)" \
@@ -130,7 +130,7 @@ LABEL org.opencontainers.image.title="stealthhead (the lineageos os-distribution
 COPY osprofiles/lineageos.json /stealthhead/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="calyxos"
 ENV STEALTHHEAD_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="stealthhead (the calyxos os-distribution catalog lane)" \
@@ -141,7 +141,7 @@ LABEL org.opencontainers.image.title="stealthhead (the calyxos os-distribution c
 COPY osprofiles/calyxos.json /stealthhead/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="archlinux"
 ENV STEALTHHEAD_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="stealthhead (the archlinux os-distribution catalog lane)" \
@@ -152,7 +152,7 @@ LABEL org.opencontainers.image.title="stealthhead (the archlinux os-distribution
 COPY osprofiles/archlinux.json /stealthhead/osprofile.json
 
 FROM scratch AS osalpine
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="alpine"
 ENV STEALTHHEAD_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="stealthhead (the alpine os-distribution catalog lane)" \
@@ -163,7 +163,7 @@ LABEL org.opencontainers.image.title="stealthhead (the alpine os-distribution ca
 COPY osprofiles/alpine.json /stealthhead/osprofile.json
 
 FROM scratch AS osdebian
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="debian"
 ENV STEALTHHEAD_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="stealthhead (the debian os-distribution catalog lane)" \
@@ -174,7 +174,7 @@ LABEL org.opencontainers.image.title="stealthhead (the debian os-distribution ca
 COPY osprofiles/debian.json /stealthhead/osprofile.json
 
 FROM scratch AS osfedora
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="fedora"
 ENV STEALTHHEAD_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="stealthhead (the fedora os-distribution catalog lane)" \
@@ -185,7 +185,7 @@ LABEL org.opencontainers.image.title="stealthhead (the fedora os-distribution ca
 COPY osprofiles/fedora.json /stealthhead/osprofile.json
 
 FROM scratch AS osnixos
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="nixos"
 ENV STEALTHHEAD_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="stealthhead (the nixos os-distribution catalog lane)" \
@@ -196,7 +196,7 @@ LABEL org.opencontainers.image.title="stealthhead (the nixos os-distribution cat
 COPY osprofiles/nixos.json /stealthhead/osprofile.json
 
 FROM scratch AS osvoid
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="void"
 ENV STEALTHHEAD_OS_PROFILE=void
 LABEL org.opencontainers.image.title="stealthhead (the void os-distribution catalog lane)" \
@@ -207,7 +207,7 @@ LABEL org.opencontainers.image.title="stealthhead (the void os-distribution cata
 COPY osprofiles/void.json /stealthhead/osprofile.json
 
 FROM scratch AS oslinux
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="linux"
 ENV STEALTHHEAD_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="stealthhead (the linux os-distribution catalog lane)" \
@@ -218,7 +218,7 @@ LABEL org.opencontainers.image.title="stealthhead (the linux os-distribution cat
 COPY osprofiles/linux.json /stealthhead/osprofile.json
 
 FROM scratch AS osomarchy
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 ARG STEALTHHEAD_OS_PROFILE="omarchy"
 ENV STEALTHHEAD_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="stealthhead (the omarchy os-distribution catalog lane)" \
@@ -231,7 +231,7 @@ COPY osprofiles/omarchy.json /stealthhead/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG STEALTHHEAD_VERSION=2.0.179
+ARG STEALTHHEAD_VERSION=2.0.180
 
 LABEL org.opencontainers.image.title="stealthhead" \
       org.opencontainers.image.description="stealthhead — the first person shooter of the family: pre compiled, the visitor hardware never compiles." \
