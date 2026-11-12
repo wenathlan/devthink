@@ -1,0 +1,75 @@
+name: DevThink Rung Records
+# the one-shot rung records lane: a manual rung that lands by hand (the
+# security closure rung 2.0.182) carries the same re-stamp the automated
+# ladder performs before its pull request — the build, the re-frozen
+# apifreeze artifact, the recorded permission baseline and the twelve
+# certification records — executed on the runner the local seats cannot
+# seat (the 14,500-package tree the sandbox memory cannot hold). the lane
+# runs on the dispatched ref, commits the re-stamped records back to the
+# same ref and leaves the pull request wave to the owner's merge law.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  records:
+    name: Re-stamp the certification records at the rung
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout the rung branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          # the repo-declared Node line (the family runtime doctrine,
+          # Regra 54: never the mutable `node`/latest alias)
+          node-version-file: devthink/.nvmrc
+
+      - name: Install the locked tree
+        # the ladder lanes never touch the native sqlite binding: the
+        # scripts stay off so the frozen install never rides the prebuild
+        # mirror or the broken bunx node-gyp fallback the flaky lanes hit
+        # — the prisma client the validation reads generates inside
+        # build.ts itself.
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build the tree the records read
+        run: cd devthink && node build.ts
+
+      - name: Re-freeze the apifreeze artifact and record the permission baseline
+        run: |
+          set -euo pipefail
+          cd devthink
+          bun run apifreeze:sync
+          bun run permdiff:sync
+
+      - name: Re-stamp the certification records at the rung
+        # the sweep seat walks FIRST (the matrixverify cell of the chain
+        # reads the committed sweep record and refuses a record that
+        # still stamps the previous rung), then the full chain re-stamps
+        # the rest — the same order the automated ladder carries.
+        run: cd devthink && node sweep.ts sync && bun run records:sync
+
+      - name: Commit the re-stamped records to the rung branch
+        run: |
+          set -euo pipefail
+          git config user.name "iakadion"
+          git config user.email "iakadion@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "the records already answer the rung — nothing to commit"
+          else
+            git add -A
+            git commit -m "release: the 2.0.182 rung records — the certification seats answer the fresh rung whole (the build, the re-frozen apifreeze artifact, the recorded permission baseline and the twelve gate records the validation suite reads)"
+            git push origin HEAD:"${GITHUB_REF_NAME}"
+          fi
