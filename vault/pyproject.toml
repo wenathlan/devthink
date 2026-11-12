@@ -87,7 +87,7 @@ dependencies = [
   "audio-separator ==0.30.2",
   "audioread ==3.0.1",
   "auditwheel ==6.7.0",
-  "authlib ==1.7.2",
+  "authlib ==1.9.1",
   "autogen ==0.6.1",
   "autogen-agentchat >=0.4.0",
   "autograd",
