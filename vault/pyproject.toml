@@ -845,7 +845,7 @@ dependencies = [
   "torchtune ==0.4.0",
   "torchvision ==0.26.0",
   "torchviz ==0.0.3",
-  "tornado ==6.4.2",
+  "tornado ==6.6",
   "tox >= 3.9.0",
   "tqdm ==4.70.0",
   "trafilatura ==2.0.0",
