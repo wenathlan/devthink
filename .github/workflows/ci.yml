@@ -563,6 +563,19 @@ jobs:
           if [ "${{ matrix.app }}" = "foundry" ] || [ "${{ matrix.app }}" = "forge" ]; then
             (cd ../saddle && bun install --frozen-lockfile --ignore-scripts)
           fi
+          # the host runtime shadow law: the ignore-scripts install leaves
+          # the npm seat of bun without its platform binary (the postinstall
+          # the flag blocks is exactly what fetches it), so the bin shim the
+          # package drops into node_modules/.bin answers every later `bun`
+          # spawn with "Bun's postinstall script was not run" — the family
+          # batteries (the saddle runnerbun seat, the debonair wavwriter
+          # probes) spawn the real host runtime the setup-bun lane pins, and
+          # npm test puts node_modules/.bin ahead of it on PATH. the shims
+          # walk out of every install root the same lane seated, so the
+          # host bun the batteries spawn is the only bun the suite answers.
+          for bindir in node_modules/.bin ../devthink/node_modules/.bin ../saddle/node_modules/.bin; do
+            rm -f "$bindir/bun" "$bindir/bunx"
+          done
 
       - name: Build the app surface
         if: steps.suite.outputs.present == 'true'
