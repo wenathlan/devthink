@@ -786,11 +786,16 @@ COPY --from=nodefetch /out /usr/local
 # the install list now names them beside the shared runtimes so the
 # trixie-security candidates (zlib deb13u1 and apt 3.0.4) upgrade the
 # base seats inside the same retry loop — the image the security lane
-# scans never answers a fixed cve with the vulnerable build again.
+# scans never answers a fixed cve with the vulnerable build again. the
+# security closure widens the same seat to every base package the trivy
+# container lane charged (gzip, the libc pair, liblzma5, the sqlite
+# runtime and perl-base beside the pcre seat already named): naming each
+# one upgrades it to the trixie-security candidate the digest froze
+# behind, so no container cve answers the scanned image.
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
-        if apt-get update && apt-get install -y --no-install-recommends apt libapt-pkg7.0 zlib1g libstdc++6 libatomic1 libssl3t64 openssl libpcre2-8-0; then break; fi; \
+        if apt-get update && apt-get install -y --no-install-recommends apt libapt-pkg7.0 zlib1g gzip libc-bin libc6 liblzma5 libpcre2-8-0 libsqlite3-0 perl-base libstdc++6 libatomic1 libssl3t64 openssl; then break; fi; \
         apt_update_tries=$((apt_update_tries - 1)); \
         echo "apt-get update/install failed (mirror sync?), $apt_update_tries retries left"; \
         sleep 10; \

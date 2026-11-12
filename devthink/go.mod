@@ -262,7 +262,6 @@ require (
 	github.com/lufia/plan9stats v0.0.0-20261101121723-be84dd9509a0
 	github.com/lxn/win v0.0.0-20210218163916-a377121e959e
 	github.com/mailru/easyjson v0.9.0
-	github.com/mark3labs/mcp-go v1.5.0
 	github.com/mattn/go-colorable v0.1.13
 	github.com/mattn/go-isatty v0.0.20
 	github.com/mattn/go-localereader v0.0.1
