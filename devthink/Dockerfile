@@ -201,7 +201,7 @@ ARG NODE_IMAGE="node:26.13.0-bookworm-slim@sha256:bc0a2afd3b74ce12222fc8bab99271
 # Dockerfile always anticipated in its nodesource case arm. the version
 # pins to the .nvmrc/engines floor the toolchain stages carry: the
 # toolchain only builds, the runtime serves the same line.
-ARG NODE_RUNTIME_VERSION="26.13.0"
+ARG NODE_RUNTIME_VERSION="26.13.1"
 
 # ---------------------------------------------------------------------------
 # stage 1: deps (the pinned toolchain and the frozen dependency layer)
@@ -1208,7 +1208,7 @@ ENTRYPOINT ["node", "container.mjs"]
 #       ports:
 #         - "8085:8080"
 #       restart: unless-stopped
-LABEL wenathlan.config.title="devthink - the container configuration of the os (the compose pair, the nginx face, the runner engine)" \
+LABEL wenathlan.config.title="devthink" \
       wenathlan.config.version="${DEVTHINK_VERSION}" \
       wenathlan.config.date="2026-11-06" \
       wenathlan.config.language="en" \
