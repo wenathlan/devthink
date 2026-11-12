@@ -2122,7 +2122,7 @@
         "computed-types": "^1.11.2",
         "concurrently": "^10.0.5",
         "conf": "^13.0.0",
-        "confbox": "^0.2.4",
+        "confbox": "^0.3.2",
         "connect": "^3.7.0",
         "connect-history-api-fallback": "^1.6.0",
         "connect-redis": "^10.0.0",
@@ -6031,7 +6031,7 @@
         "computed-types": "^1.11.2",
         "concurrently": "^10.0.5",
         "conf": "^13.0.0",
-        "confbox": "^0.2.4",
+        "confbox": "^0.3.2",
         "connect": "^3.7.0",
         "connect-history-api-fallback": "^1.6.0",
         "connect-redis": "^10.0.0",
@@ -9975,7 +9975,6 @@
     "computed-types": "^1.11.2",
     "concurrently": "^10.0.5",
     "conf": "^13.0.0",
-    "confbox": "^0.2.4",
     "connect": "^3.7.0",
     "connect-history-api-fallback": "^1.6.0",
     "connect-redis": "^10.0.0",
@@ -12126,19 +12125,19 @@
 
     "@apollo/client": ["@apollo/client@4.3.8", "", { "dependencies": { "@graphql-typed-document-node/core": "^3.1.1", "@wry/caches": "^1.0.0", "@wry/equality": "^0.5.6", "@wry/trie": "^0.5.0", "graphql-tag": "^2.12.6", "optimism": "^0.18.0", "tslib": "^2.3.0" }, "peerDependencies": { "graphql": "^16.0.0 || ^17.0.0", "graphql-ws": "^5.5.5 || ^6.0.3", "react": "^17.0.0 || ^18.0.0 || >=19.0.0-rc", "react-dom": "^17.0.0 || ^18.0.0 || >=19.0.0-rc", "rxjs": "^7.3.0", "subscriptions-transport-ws": "^0.9.0 || ^0.11.0" }, "optionalPeers": ["graphql-ws", "react", "react-dom", "subscriptions-transport-ws"] }, "sha512-g04oCNYjbbjpecZmcUOE0fZLt3vMFwoZJ+o4iu0N3bDDhMR95/ZVzWL9v3mM7WDSPxI0++P2348yAbSWceLoZA=="],
 
-    "@applitools/core": ["@applitools/core@4.75.0", "", { "dependencies": { "@applitools/core-base": "1.42.0", "@applitools/dom-capture": "11.8.11", "@applitools/dom-snapshot": "4.18.9", "@applitools/driver": "1.26.15", "@applitools/ec-client": "1.12.57", "@applitools/image": "1.3.5", "@applitools/logger": "2.3.3", "@applitools/nml-client": "1.12.13", "@applitools/req": "1.11.7", "@applitools/screenshoter": "3.12.37", "@applitools/snippets": "2.9.10", "@applitools/socket": "1.3.19", "@applitools/task-manager": "1.0.0", "@applitools/ufg-client": "1.26.0", "@applitools/utils": "1.15.3", "abort-controller": "3.0.0", "chalk": "4.1.2", "fast-xml-parser": "5.11.1", "node-fetch": "2.6.7", "semver": "7.6.2", "shell-quote": "^1.8.4", "throat": "6.0.2" }, "bin": { "eyes-check-network": "./dist/troubleshoot/check-network.js" } }, "sha512-55QBQAvnBK+bWxnXBmdLlco+b8f4+arJU0MT7RQQa8igWd6tiuMq+r+qCkrDfqQUfWQks04EYIbrPkXgKRtB9Q=="],
+    "@applitools/core": ["@applitools/core@4.76.0", "", { "dependencies": { "@applitools/core-base": "1.43.0", "@applitools/dom-capture": "11.8.12", "@applitools/dom-snapshot": "4.18.10", "@applitools/driver": "1.26.16", "@applitools/ec-client": "1.12.58", "@applitools/image": "1.3.6", "@applitools/logger": "2.3.4", "@applitools/nml-client": "1.12.14", "@applitools/req": "1.11.8", "@applitools/screenshoter": "3.12.38", "@applitools/snippets": "2.9.11", "@applitools/socket": "1.3.20", "@applitools/task-manager": "1.0.1", "@applitools/ufg-client": "1.27.0", "@applitools/utils": "1.15.4", "abort-controller": "3.0.0", "chalk": "4.1.2", "fast-xml-parser": "5.11.1", "node-fetch": "2.6.7", "semver": "7.6.2", "shell-quote": "^1.8.4", "throat": "6.0.2" }, "bin": { "eyes-check-network": "./dist/troubleshoot/check-network.js" } }, "sha512-8/acyC/8Jj78r+0PuqhtClAacnfTBJf0o/8JXIuZcvEECiN+1121u1JG7rVn3NADg9SOk6JvqkNtYOqgRjWC7w=="],
 
-    "@applitools/core-base": ["@applitools/core-base@1.42.0", "", { "dependencies": { "@applitools/image": "1.3.5", "@applitools/logger": "2.3.3", "@applitools/req": "1.11.7", "@applitools/utils": "1.15.3", "abort-controller": "3.0.0", "chalk": "^3.0.0", "throat": "6.0.2" } }, "sha512-4tb9rCRCTQ8a+JQh3rslAXvLjVB4/sQ5WQfZ74vfVydG1WKCSCNC2/W8+xFhFcAIKEYFnjXZqONy9IU9T4mRpA=="],
+    "@applitools/core-base": ["@applitools/core-base@1.43.0", "", { "dependencies": { "@applitools/image": "1.3.6", "@applitools/logger": "2.3.4", "@applitools/req": "1.11.8", "@applitools/utils": "1.15.4", "abort-controller": "3.0.0", "chalk": "^3.0.0", "throat": "6.0.2" } }, "sha512-+GKd2sHimJF1lfNUx3N/r8DfulKJaawSOWeexlay6WT4mbg0iaJ8xlPjS1BAVdorqOg7BWclgnFWsSiv9b07aw=="],
 
-    "@applitools/dom-capture": ["@applitools/dom-capture@11.8.11", "", { "dependencies": { "@applitools/dom-shared": "1.2.5", "@applitools/functional-commons": "1.6.0" } }, "sha512-LPC9PbE8b1TJA6vsDoHiAtWBfvtw5UTPRPzFvs3f/TTEvJstKa+TMfi/qKrUax6cytPDZCeNv7S06um4XWfQFA=="],
+    "@applitools/dom-capture": ["@applitools/dom-capture@11.8.12", "", { "dependencies": { "@applitools/dom-shared": "1.2.5", "@applitools/functional-commons": "1.6.0" } }, "sha512-eHOfXSWLV/1jR9H98V3CJ04lUNDS0bQu0zJKXmHEMKRYErEy0DSvU7Yib9MK0ds0zdyfc9rHewb0NiAYxhuRag=="],
 
     "@applitools/dom-shared": ["@applitools/dom-shared@1.2.5", "", {}, "sha512-4ZQGYvf6erj9Rux3b91XE3QqUxItP4v8HbvzICcpG4wazsoXsXJh3jBcraQCpBJ2Sf/V/8wLHgDZOMuN4g8GTQ=="],
 
-    "@applitools/dom-snapshot": ["@applitools/dom-snapshot@4.18.9", "", { "dependencies": { "@applitools/dom-shared": "1.2.5", "@applitools/functional-commons": "1.6.0", "css-tree": "^3.1.0", "pako": "1.0.11", "throat": "6.0.2" } }, "sha512-5QusxFJRdEl/5rSXTfEzn4hXQPLVyMns/ioP5rasvu0X/t2Vn78caNXMVaP/GHJqtIqAXjc/uIvDzQctfmlyYw=="],
+    "@applitools/dom-snapshot": ["@applitools/dom-snapshot@4.18.10", "", { "dependencies": { "@applitools/dom-shared": "1.2.5", "@applitools/functional-commons": "1.6.0", "css-tree": "^3.1.0", "pako": "1.0.11", "throat": "6.0.2" } }, "sha512-Nj4DXKsWKeqCR4VjQBTaonPmb+sRwr8YlUz7vEzLDracf5yIbEyayeUDvpFiV9FfFAKtDC+neJrwYp4tn5CGAA=="],
 
-    "@applitools/driver": ["@applitools/driver@1.26.15", "", { "dependencies": { "@applitools/logger": "2.3.3", "@applitools/snippets": "2.9.10", "@applitools/utils": "1.15.3", "semver": "7.6.2" } }, "sha512-Zw6ldeomV9h6co/uG4Rn0leGi9dsktRJeXBgjcbovpMfxVSOIzBItj/MdcQJs+/XxQ17qZdOuS5SaKY2EVptmA=="],
+    "@applitools/driver": ["@applitools/driver@1.26.16", "", { "dependencies": { "@applitools/logger": "2.3.4", "@applitools/snippets": "2.9.11", "@applitools/utils": "1.15.4", "semver": "7.6.2" } }, "sha512-48HV2L/PodtejbEK2PQszdWt8c2f49muWPGl2ZPsjy5PQuhrW5potYMT+PQSp65pnc5FAvNGtD7bL3dvlyrDXw=="],
 
-    "@applitools/ec-client": ["@applitools/ec-client@1.12.57", "", { "dependencies": { "@applitools/core-base": "1.42.0", "@applitools/driver": "1.26.15", "@applitools/logger": "2.3.3", "@applitools/req": "1.11.7", "@applitools/socket": "1.3.19", "@applitools/spec-driver-webdriver": "1.6.15", "@applitools/utils": "1.15.3", "abort-controller": "3.0.0", "yargs": "^17.7.2" }, "optionalDependencies": { "@applitools/tunnel-client": ">=1.12.10" }, "bin": { "ec-client": "./dist/cli/cli.js", "eg-client": "./dist/cli/cli.js" } }, "sha512-Dg2OjfAHHGa6qQcZ9oFuL+wegDAFazocWKvRuTHHWWW89dhdhmYLeSTjTj07T5d/Ayt9vZ5IBaW9UZuAIzPFhw=="],
+    "@applitools/ec-client": ["@applitools/ec-client@1.12.58", "", { "dependencies": { "@applitools/core-base": "1.43.0", "@applitools/driver": "1.26.16", "@applitools/logger": "2.3.4", "@applitools/req": "1.11.8", "@applitools/socket": "1.3.20", "@applitools/spec-driver-webdriver": "1.6.16", "@applitools/utils": "1.15.4", "abort-controller": "3.0.0", "yargs": "^17.7.2" }, "optionalDependencies": { "@applitools/tunnel-client": ">=1.12.11" }, "bin": { "ec-client": "./dist/cli/cli.js", "eg-client": "./dist/cli/cli.js" } }, "sha512-M4GP9zWqBGyMQKXEID5KNfkotf/jUfjHPHWdxxIgZSoQDFctUnHonFdYKAMGVG22RL96niNPu4NZLuk+VndOqg=="],
 
     "@applitools/eg-frpc": ["@applitools/eg-frpc@1.0.5", "", {}, "sha512-9qUNiCK3R3VKxIAaLr5HO5QnUx6TioLFkJ2JcpU1ZqefApt1X2bdfS7eA4TGDXDWv/a0OIl2Lddzuo5/h3vbTw=="],
 
@@ -12146,35 +12145,35 @@
 
     "@applitools/execution-grid-tunnel": ["@applitools/execution-grid-tunnel@4.1.0", "", { "dependencies": { "@applitools/eg-frpc": "1.0.5", "@applitools/eg-socks5-proxy-server": "^1.1.0", "@applitools/logger": "^2.1.4", "dotenv": "^16.0.0", "encoding": "^0.1.13", "fastify": "^5.0.0", "fastify-plugin": "^5.0.0", "find-process": "^1.4.7", "ini": "^3.0.0", "node-cleanup": "^2.1.2", "node-fetch": "^2.6.7", "p-retry": "^4.6.2", "pac-resolver": "^9.0.1", "quickjs-wasi": "^2.2.0", "teen_process": "^1.16.0" }, "bin": { "run-execution-grid-tunnel": "scripts/run-execution-grid-tunnel.js" } }, "sha512-BblN8ounlDyh0jFG0p8bERLQsBKH1dpUbY4Ai20Sn+hH0EQwPDBPBSC2j1G/GZ60Krp1nhrI5eP2ZzzMrNQFEQ=="],
 
-    "@applitools/eyes": ["@applitools/eyes@1.49.3", "", { "dependencies": { "@applitools/core": "4.75.0", "@applitools/logger": "2.3.3", "@applitools/utils": "1.15.3", "chalk": "4.1.2", "yargs": "17.7.2" }, "bin": "./dist/cli/cli.js" }, "sha512-3s3ryI4/Almkfwa3K3gFUjezHMnv5NUP1HSH6evUIu0ZMMrwUweLTeCRmnZzBX2x+d7xhdYppUB8GsjXvS4eZQ=="],
+    "@applitools/eyes": ["@applitools/eyes@1.49.4", "", { "dependencies": { "@applitools/core": "4.76.0", "@applitools/logger": "2.3.4", "@applitools/utils": "1.15.4", "chalk": "4.1.2", "yargs": "17.7.2" }, "bin": "./dist/cli/cli.js" }, "sha512-/b4PWpAJ4i8bSBnwrXX5hQnOlc478AdLkhQj9yyOUSUdRkPozJSqdQjYT5RfUDixD1VnRzQbulg2yBIwuYsjvw=="],
 
-    "@applitools/eyes-webdriverio": ["@applitools/eyes-webdriverio@5.62.0", "", { "dependencies": { "@applitools/driver": "1.26.15", "@applitools/eyes": "1.49.3", "@applitools/spec-driver-webdriver": "1.6.15" }, "peerDependencies": { "webdriverio": ">=5.0.0" } }, "sha512-mo63hbTxhw8owxO3+zAGRGwZ9wdYRCdAASZIYOt5Kpvkj/vRLFUr3VDgSZvnPYMu2BUsyAdVllZtzm8hI6LeDw=="],
+    "@applitools/eyes-webdriverio": ["@applitools/eyes-webdriverio@5.62.1", "", { "dependencies": { "@applitools/driver": "1.26.16", "@applitools/eyes": "1.49.4", "@applitools/spec-driver-webdriver": "1.6.16" }, "peerDependencies": { "webdriverio": ">=5.0.0" } }, "sha512-ueTwopEUcGh/3jPLvoEFHQy6RPXk7cwZ0MlX0VA/y4QyjKcLU4Ne0pW8EpPUO+WgKYhDlKKtgVLObiKbWsVaAg=="],
 
     "@applitools/functional-commons": ["@applitools/functional-commons@1.6.0", "", {}, "sha512-fwiF0CbeYHDEOTD/NKaFgaI8LvRcGYG2GaJJiRwcedKko16sQ8F3TK5wXfj2Ytjf+8gjwHwsEEX550z3yvDWxA=="],
 
-    "@applitools/image": ["@applitools/image@1.3.5", "", { "dependencies": { "@applitools/logger": "2.3.3", "@applitools/utils": "1.15.3", "bmpimagejs": "1.0.4", "jpeg-js": "0.4.4", "omggif": "1.0.10", "png-async": "0.9.4", "sharp": "^0.35.3" } }, "sha512-Yo1+QdTUE2dTJtKC1gU58XfP3EflQp1mUDI5Hp7nsB5TpER6J5uV3sF6oqtI9lbHg+7O/nlYJNtJ5DEA2uZd7Q=="],
+    "@applitools/image": ["@applitools/image@1.3.6", "", { "dependencies": { "@applitools/logger": "2.3.4", "@applitools/utils": "1.15.4", "bmpimagejs": "1.0.4", "jpeg-js": "0.4.4", "omggif": "1.0.10", "png-async": "0.9.4", "sharp": "^0.35.5" } }, "sha512-yzTWaQJh9JiESz6qrR50yjG/7WHNzWXNJGxOIAY+HvA5kEtKHP+BBNeXQhg/4ycKQxAMqtR94JLeCK6+7PJrBA=="],
 
-    "@applitools/logger": ["@applitools/logger@2.3.3", "", { "dependencies": { "@applitools/utils": "1.15.3", "chalk": "4.1.2", "debug": "4.3.4" } }, "sha512-1N2/uChYROS0nIh6MB9Zd0eb8xquKsdDTpro9ShG++WkVvutiv2WfVPCfY66wJap1H8Bv6Q5aId2ZF+Ff3oabA=="],
+    "@applitools/logger": ["@applitools/logger@2.3.4", "", { "dependencies": { "@applitools/utils": "1.15.4", "chalk": "4.1.2", "debug": "4.3.4" } }, "sha512-+r6v1nIpIjCFzVdlQDs1Cy1PKgaGrTa+maSWkcUzYMVfIrnjHtGUNjygypbDwnAqlJ2Qz0YA6In2oYzv7rclTw=="],
 
-    "@applitools/nml-client": ["@applitools/nml-client@1.12.13", "", { "dependencies": { "@applitools/logger": "2.3.3", "@applitools/req": "1.11.7", "@applitools/utils": "1.15.3" }, "peerDependencies": { "@applitools/core-base": "1.42.0" } }, "sha512-/nyYbI0oeWGsOjymVOjmcMBW4efcPHfbBh2V0IZtGRPyHQfYK/EPh7AGUP9yFwaFM+WzAzZpyqIOC8nJ1C/iFQ=="],
+    "@applitools/nml-client": ["@applitools/nml-client@1.12.14", "", { "dependencies": { "@applitools/logger": "2.3.4", "@applitools/req": "1.11.8", "@applitools/utils": "1.15.4" }, "peerDependencies": { "@applitools/core-base": "1.43.0" } }, "sha512-1nqH3wK9f0LJVCdAgKLWHDq4Nk/rLqhdoKH0rLQvMwOvXICB9zltLzp0JrqIJw3hAoOXWuF4F7IJCHnx+/PaWA=="],
 
-    "@applitools/req": ["@applitools/req@1.11.7", "", { "dependencies": { "@applitools/logger": "2.3.3", "@applitools/utils": "1.15.3", "http-proxy-agent": "^7.0.2", "https-proxy-agent": "^7.0.6" }, "optionalDependencies": { "undici": ">=6.23.0 <8.0.0" } }, "sha512-IrcIxtVUcUM1xGy3ldIVfOuy1A96sXDwFU1iq+RdH7izf0OmSWEIgrPnwKqNMfRHEb69FHFF+zBQSGy6VW3YyA=="],
+    "@applitools/req": ["@applitools/req@1.11.8", "", { "dependencies": { "@applitools/logger": "2.3.4", "@applitools/utils": "1.15.4", "http-proxy-agent": "^7.0.2", "https-proxy-agent": "^7.0.6" }, "optionalDependencies": { "undici": ">=6.23.0 <8.0.0" } }, "sha512-2i8mKga1c2q9A3/WakGqRKGSKySl1eArDlQDwzcf1wpT5VJafF7y3ty9fKT6rZkFvq/LipnmFOQ8f40w7kVSbQ=="],
 
-    "@applitools/screenshoter": ["@applitools/screenshoter@3.12.37", "", { "dependencies": { "@applitools/image": "1.3.5", "@applitools/logger": "2.3.3", "@applitools/snippets": "2.9.10", "@applitools/utils": "1.15.3" } }, "sha512-RWPtiKSPu5sxJ1r5sp3xdDiFhonpZ3zk0puCAe4CoJfxJ8WXN12pbOhLGOl3SNeT/NEihM+EZS02fzttuOzW8g=="],
+    "@applitools/screenshoter": ["@applitools/screenshoter@3.12.38", "", { "dependencies": { "@applitools/image": "1.3.6", "@applitools/logger": "2.3.4", "@applitools/snippets": "2.9.11", "@applitools/utils": "1.15.4" } }, "sha512-GdKVZqDdanTlEJZSXK9mG0lSQpqY+iZrzy9zIdLDHaKNYCRIWz+l3Eg0NamZUX46hv60xb3/FCPscrBc6a8HuA=="],
 
-    "@applitools/snippets": ["@applitools/snippets@2.9.10", "", {}, "sha512-Jl+F3cprIaNx7LGE3uqg51iamkbjjzBOBeBfJIL185Tzpv9OSWe8CtNDa4nHn7MejkP3pMSoQ3rEUdYfezkJLw=="],
+    "@applitools/snippets": ["@applitools/snippets@2.9.11", "", {}, "sha512-AtWsuVHpH78P8fUhj9S6bs0Oivx8Tfe8dvARF60qGCjg/5PDqJqBEJh1L9ODUEmUYm2TDEVJwnsniLbjl3aSSQ=="],
 
-    "@applitools/socket": ["@applitools/socket@1.3.19", "", { "dependencies": { "@applitools/logger": "2.3.3", "@applitools/utils": "1.15.3" } }, "sha512-VE+eVor+Ts39epHDX2ArnpTjMqCOvTIHk6kCQupyYeicDCINGJczJrxV+PVs8KlCalc/I+1aOtj6zmGCWe5aOQ=="],
+    "@applitools/socket": ["@applitools/socket@1.3.20", "", { "dependencies": { "@applitools/logger": "2.3.4", "@applitools/utils": "1.15.4" } }, "sha512-h3qGJYt+wTPvkVMQU4bL6dJOhKlX14QNXRasrUf0a4hNHNloutpIcC/lsjpn7rQCNMdA18D8XjS7tVXyyiZikg=="],
 
-    "@applitools/spec-driver-webdriver": ["@applitools/spec-driver-webdriver@1.6.15", "", { "dependencies": { "@applitools/driver": "1.26.15", "@applitools/utils": "1.15.3", "http-proxy-agent": "^7.0.2", "https-proxy-agent": "^7.0.6" }, "peerDependencies": { "webdriver": ">=6.0.0" } }, "sha512-PDTm4XyUDWL70j8C4UEYc+gixW7jVbBc1c3IgI2NAAErDgIt0JKAqCIAdYe0mXgVBsqCkzlilrhXUFMpFVBPIQ=="],
+    "@applitools/spec-driver-webdriver": ["@applitools/spec-driver-webdriver@1.6.16", "", { "dependencies": { "@applitools/driver": "1.26.16", "@applitools/utils": "1.15.4", "http-proxy-agent": "^7.0.2", "https-proxy-agent": "^7.0.6" }, "peerDependencies": { "webdriver": ">=6.0.0" } }, "sha512-KyLsDNfWV9z6aJmapNgdKKrfp8tyNnyJuWiJKU6zF+WPwIrHZp1az6xuSsd2/EegodT1nDZyAdAf331JjyAA6w=="],
 
-    "@applitools/task-manager": ["@applitools/task-manager@1.0.0", "", { "dependencies": { "@applitools/utils": "1.15.3" } }, "sha512-VXoAXyXdsgnJHbnZFCbMHH5kwK+lbMmG3mB2F41cGrOQGmarDeWHYbb4I5L+vInhDw+pJ4D0hXAcps0cwtCVxg=="],
+    "@applitools/task-manager": ["@applitools/task-manager@1.0.1", "", { "dependencies": { "@applitools/utils": "1.15.4" } }, "sha512-K24cNAVtj4eH+Tk+4HDYbjrdKaSh/WGHwqn89RhL2pHn4CfhIosAJjUUYIWjZsggym/A3k1aQlIVzbd0tY/wbw=="],
 
-    "@applitools/tunnel-client": ["@applitools/tunnel-client@1.12.10", "", { "dependencies": { "@applitools/execution-grid-tunnel": "4.1.0", "@applitools/logger": "2.3.3", "@applitools/req": "1.11.7", "@applitools/socket": "1.3.19", "@applitools/utils": "1.15.3", "abort-controller": "3.0.0", "chalk": "^3.0.0", "yargs": "17.7.2" }, "bin": "./dist/cli/cli.js" }, "sha512-B51gwCf0AqBIdt6rXC5tWrLMPZYE6X6fEexEbMnKEqiZdJZtqFN0HRvyklQUDv+v6XiwtvQ7ddsxckw+2Ueihg=="],
+    "@applitools/tunnel-client": ["@applitools/tunnel-client@1.12.11", "", { "dependencies": { "@applitools/execution-grid-tunnel": "4.1.0", "@applitools/logger": "2.3.4", "@applitools/req": "1.11.8", "@applitools/socket": "1.3.20", "@applitools/utils": "1.15.4", "abort-controller": "3.0.0", "chalk": "^3.0.0", "yargs": "17.7.2" }, "bin": "./dist/cli/cli.js" }, "sha512-cRgNbcnDLTglmekcHWPpZW1P5XmvnbQXeXcsqqU8IXpcgZ+6Kt03quKJLAXH/akf5L/O3RSddwBipai1qUq/+g=="],
 
-    "@applitools/ufg-client": ["@applitools/ufg-client@1.26.0", "", { "dependencies": { "@applitools/image": "1.3.5", "@applitools/logger": "2.3.3", "@applitools/req": "1.11.7", "@applitools/utils": "1.15.3", "@xmldom/xmldom": "^0.8.12", "abort-controller": "3.0.0", "css-tree": "^3.1.0", "throat": "6.0.2" } }, "sha512-Uys46JW+w5w0mZSpiPxTa/vSWZ15+UJp3emz4PF7d5wHh9WWebWY5Su1qfd39hiUM7u4gew74NtO7rALvWPbMA=="],
+    "@applitools/ufg-client": ["@applitools/ufg-client@1.27.0", "", { "dependencies": { "@applitools/image": "1.3.6", "@applitools/logger": "2.3.4", "@applitools/req": "1.11.8", "@applitools/utils": "1.15.4", "@xmldom/xmldom": "^0.8.12", "abort-controller": "3.0.0", "css-tree": "^3.1.0", "throat": "6.0.2" } }, "sha512-vR/It4BmRLw/q3BU5OqkMihtjBVDmYhDsSiuYpHwnAE5Sa9SKk3k/FsQgi4sX9Jawrpdbi1gys/P6GjZe8m/Kw=="],
 
-    "@applitools/utils": ["@applitools/utils@1.15.3", "", {}, "sha512-4uesxPMr0Utrd9mxRS4S1xK17sqUfg3DL1w9CARnOtj9+j8vuAe9hn4+x83QADjb7zXsT6sBOC/XkZRoRoM9bg=="],
+    "@applitools/utils": ["@applitools/utils@1.15.4", "", {}, "sha512-K4U1//mdSHIemVAVH4zrOQ5rdb6H+3yBiuY+V7HhuEpQusd0SFPQHhVubBBcxMoeQnWu+nVgIeHeI4meLkiIoA=="],
 
     "@arethetypeswrong/cli": ["@arethetypeswrong/cli@0.18.5", "", { "dependencies": { "@arethetypeswrong/core": "0.18.5", "chalk": "^4.1.2", "cli-table3": "^0.6.3", "commander": "^10.0.1", "marked": "^9.1.2", "marked-terminal": "^7.1.0", "semver": "^7.5.4" }, "bin": { "attw": "./dist/index.js" } }, "sha512-gM+8vRsQOD/Uc7EnBedUhkG5OCsDWE4uoak5QvomGpMpaky0Eh41p04nIMgrWb8EOmqZUJGc6zz9hsP6E56R7g=="],
 
@@ -18666,7 +18665,7 @@
 
     "@posthog/core": ["@posthog/core@1.67.1", "", { "dependencies": { "@posthog/types": "^1.423.0" } }, "sha512-Fq8YySx3G2ggxKV/dLf5nfbQocB3/yU6TNSGIyRvVynizrIW8tZfB2HQ/13cY61PoU+cNzvKch+B7Ac+OUkORw=="],
 
-    "@posthog/types": ["@posthog/types@1.424.0", "", {}, "sha512-58RE0+Lt4vMLYmty2MlyAyfxFJvlM3Fp0tgRT25Klky7FSQvpznX+W9xKyVESB5oIAEJDxfHKX0cwEBHROZKqw=="],
+    "@posthog/types": ["@posthog/types@1.424.1", "", {}, "sha512-p82S3QPoyewUdzLVNvGsbowUe8qds15ij/7lKXav17vccuR2bioCVaizNZw+u9WgsaY1DmEycsD1dNS5nlqjLA=="],
 
     "@preact/compat": ["@preact/compat@18.3.2", "", { "peerDependencies": { "preact": "*" } }, "sha512-5vSl55K5yLMvocT7PBKxDOHGgYPjMrKQqqr6roSNjIXcJOtSgDDMjpiCAF3s7klRdmGrN75b/Przmjw8gmlg/w=="],
 
@@ -25510,7 +25509,7 @@
 
     "conf": ["conf@13.1.0", "", { "dependencies": { "ajv": "^8.17.1", "ajv-formats": "^3.0.1", "atomically": "^2.0.3", "debounce-fn": "^6.0.0", "dot-prop": "^9.0.0", "env-paths": "^3.0.0", "json-schema-typed": "^8.0.1", "semver": "^7.6.3", "uint8array-extras": "^1.4.0" } }, "sha512-Bi6v586cy1CoTFViVO4lGTtx780lfF96fUmS1lSX6wpZf6330NvHUu6fReVuDP1de8Mg0nkZb01c8tAQdz1o3w=="],
 
-    "confbox": ["confbox@0.2.4", "", {}, "sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ=="],
+    "confbox": ["confbox@0.3.2", "", {}, "sha512-ZUAKhKlkCOrIGKc8cj7zek9s9z1mveHif/25nUshI2BzCRzF7KH7KHa+Lnh2ubq+e1tIlaFuP763mzW4qVoehg=="],
 
     "config-chain": ["config-chain@1.1.13", "", { "dependencies": { "ini": "^1.3.4", "proto-list": "~1.2.1" } }, "sha512-qj+f8APARXHrM0hraqXYb2/bOVSV4PvJQlNZ/DVj0QrmNM2q2euizkeuVckQ57J+W0mRH6Hvi+k50M4Jul2VRQ=="],
 
@@ -32094,7 +32093,7 @@
 
     "postgres-interval": ["postgres-interval@1.2.0", "", { "dependencies": { "xtend": "^4.0.0" } }, "sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ=="],
 
-    "posthog-js": ["posthog-js@1.447.12", "", { "dependencies": { "@posthog/browser-common": "^0.10.8", "@posthog/core": "^1.67.1", "@posthog/types": "^1.424.0", "core-js": "^3.49.0", "dompurify": "^3.4.13", "fflate": "^0.4.8", "preact": "^10.29.3", "query-selector-shadow-dom": "^1.0.1", "web-vitals": "^6.2.1", "web-vitals-soft-navs": "npm:web-vitals@6.2.1" }, "peerDependencies": { "@types/react": ">=16.8.0", "react": ">=16.8.0" }, "optionalPeers": ["@types/react", "react"] }, "sha512-FN97nANDsi62K/ywRxL8XwSw8X/29cWheMzduxRiM6g7PmOWFA2MlttPM00Q+YIwzRAiTCZu0j2HMlJbbc5HLA=="],
+    "posthog-js": ["posthog-js@1.447.13", "", { "dependencies": { "@posthog/browser-common": "^0.10.8", "@posthog/core": "^1.67.1", "@posthog/types": "^1.424.1", "core-js": "^3.49.0", "dompurify": "^3.4.13", "fflate": "^0.4.8", "preact": "^10.29.3", "query-selector-shadow-dom": "^1.0.1", "web-vitals": "^6.2.1", "web-vitals-soft-navs": "npm:web-vitals@6.2.1" }, "peerDependencies": { "@types/react": ">=16.8.0", "react": ">=16.8.0" }, "optionalPeers": ["@types/react", "react"] }, "sha512-DNWhBK6VbKRVrH1x0MZR3Mr/M2+DOYFchp1i33dvP1LKCgbIDFiSqJUpHScvPajEs4EqKWu3Ln+KQh+4T3R2iw=="],
 
     "posthog-node": ["posthog-node@4.18.0", "", { "dependencies": { "axios": "^1.8.2" } }, "sha512-XROs1h+DNatgKh/AlIlCtDxWzwrKdYDb2mOs58n4yN8BkGN9ewqeQwG5ApS4/IzwCb7HPttUkOVulkYatd2PIw=="],
 
@@ -38204,6 +38203,8 @@
 
     "browserstack-local/agent-base": ["agent-base@6.0.2", "", { "dependencies": { "debug": "4" } }, "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ=="],
 
+    "c12/confbox": ["confbox@0.2.4", "", {}, "sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ=="],
+
     "c8/test-exclude": ["test-exclude@8.0.0", "", { "dependencies": { "@istanbuljs/schema": "^0.1.2", "glob": "^13.0.6", "minimatch": "^10.2.2" } }, "sha512-ZOffsNrXYggvU1mDGHk54I96r26P8SyMjO5slMKSc7+IWmtB/MQKnEC2fP51imB3/pT6YK5cT5E8f+Dd9KdyOQ=="],
 
     "cacache/p-map": ["p-map@7.1.1", "", {}, "sha512-6Lh3jQPLthYujSrlw6ccWXBGZTkoTCz27Hd92g79LH/kjAbgoEu0t442cCCNbegPSJsA0lwDX8z0bcKtkpA32g=="],
@@ -39231,6 +39232,8 @@
     "nitropack/@rollup/plugin-alias": ["@rollup/plugin-alias@6.0.1", "", { "peerDependencies": { "rollup": ">=4.0.0" }, "optionalPeers": ["rollup"] }, "sha512-08wjv2HEuyxIuriLELnksoX+so83XnJ5E4hbVeCHkWlwOcaRQaHYxpUTAplnZjrlh/l5mZgvH1itNC9kcTfTTA=="],
 
     "nitropack/archiver": ["archiver@8.0.0", "", { "dependencies": { "async": "^3.2.4", "buffer-crc32": "^1.0.0", "is-stream": "^4.0.0", "lazystream": "^1.0.0", "normalize-path": "^3.0.0", "readable-stream": "^4.0.0", "readdir-glob": "^3.0.0", "tar-stream": "^3.0.0", "zip-stream": "^7.0.2" } }, "sha512-fV1orZfsnPn9BaSByR/qE67rJCLJEy2Ox5bq7nJh+jquWaNh6Sfec75kJ2T6PtdGUbPQlrVoSVCEOa5SdiTQ1g=="],
+
+    "nitropack/confbox": ["confbox@0.2.4", "", {}, "sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ=="],
 
     "nitropack/dot-prop": ["dot-prop@10.2.0", "", { "dependencies": { "type-fest": "^5.0.0" } }, "sha512-BTJ9aZYL3vCfZlZOBLy9v8TUqWGQ0pzFnygKwFZt5udj6viBoFIBviKPUoZLDCPn1FoXffv6McQFDenrm5Krfw=="],
 
@@ -41784,11 +41787,15 @@
 
     "chalk-animation/meow/trim-newlines": ["trim-newlines@4.1.1", "", {}, "sha512-jRKj0n0jXWo6kh62nA5TEh3+4igKDXLvzBJcPpiizP7oOolUrYIxmVBG9TOtHYFHoddUk6YvAkGeGoSVTXfQXQ=="],
 
+    "changelogen/c12/confbox": ["confbox@0.1.8", "", {}, "sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w=="],
+
     "changelogen/c12/ohash": ["ohash@1.1.6", "", {}, "sha512-TBu7PtV8YkAZn0tSxobKY2n2aAQva936lhRrj6957aDaCf9IEtqsKbgMzXE/F/sjqYOwmrukeORHNLe5glk7Cg=="],
 
     "changelogen/c12/perfect-debounce": ["perfect-debounce@1.0.0", "", {}, "sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA=="],
 
     "changelogen/c12/rc9": ["rc9@2.1.2", "", { "dependencies": { "defu": "^6.1.4", "destr": "^2.0.3" } }, "sha512-btXCnMmRIBINM2LDZoEmOogIZU7Qe7zn4BpomSKZ/ykbLObuBdvG+mFq11DL6fjH1DRwHhrlgtYWG96bJiC7Cg=="],
+
+    "changelogen/pkg-types/confbox": ["confbox@0.1.8", "", {}, "sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w=="],
 
     "color-normalize/color-rgba/color-parse": ["color-parse@1.4.2", "", { "dependencies": { "color-name": "^1.0.0" } }, "sha512-RI7s49/8yqDj3fECFZjUI1Yi0z/Gq1py43oNJivAIIDSyJiOZLfYCRQEgn8HEVAj++PcRe8AnL2XF0fRJ3BTnA=="],
 
@@ -42310,6 +42317,8 @@
 
     "minimizer-webpack-plugin/jest-worker/supports-color": ["supports-color@8.1.1", "", { "dependencies": { "has-flag": "^4.0.0" } }, "sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q=="],
 
+    "mlly/pkg-types/confbox": ["confbox@0.1.8", "", {}, "sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w=="],
+
     "neon/@clack/core/sisteransi": ["sisteransi@1.0.5", "", {}, "sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg=="],
 
     "neon/@segment/analytics-node/@segment/analytics-core": ["@segment/analytics-core@1.4.1", "", { "dependencies": { "@lukeed/uuid": "^2.0.0", "@segment/analytics-generic-utils": "1.1.1", "dset": "^3.1.2", "tslib": "^2.4.1" } }, "sha512-kV0Pf33HnthuBOVdYNani21kYyj118Fn+9757bxqoksiXoZlYvBsFq6giNdCsKcTIE1eAMqNDq3xE1VQ0cfsHA=="],
@@ -42517,6 +42526,8 @@
     "regexpu-core/regjsparser/jsesc": ["jsesc@0.5.0", "", { "bin": { "jsesc": "bin/jsesc" } }, "sha512-uZz5UnB7u4T9LvwmFqXii7pZSouaRPorGs5who1Ip7VO0wxanFvBL7GkM6dTHlgX+jhBApRetaWpnDabOeTcnA=="],
 
     "rehype-prism-plus/refractor/@types/hast": ["@types/hast@2.3.10", "", { "dependencies": { "@types/unist": "^2" } }, "sha512-McWspRw8xx8J9HurkVBfYj0xKoE25tOFlHGdx4MJ5xORQrMGZNqJhVQWaIbm6Oyla5kYOXtDiopzKRJzEOkwJw=="],
+
+    "release-it/c12/confbox": ["confbox@0.2.4", "", {}, "sha512-ysOGlgTFbN2/Y6Cg3Iye8YKulHw+R2fNXHrgSmXISQdMnomY6eNDprVdW9R5xBguEqI954+S6709UyiO7B+6OQ=="],
 
     "release-it/c12/rc9": ["rc9@2.1.2", "", { "dependencies": { "defu": "^6.1.4", "destr": "^2.0.3" } }, "sha512-btXCnMmRIBINM2LDZoEmOogIZU7Qe7zn4BpomSKZ/ykbLObuBdvG+mFq11DL6fjH1DRwHhrlgtYWG96bJiC7Cg=="],
 
