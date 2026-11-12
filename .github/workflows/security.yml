@@ -112,7 +112,18 @@ jobs:
               }
               return "  " + JSON.stringify(name) + ": " + JSON.stringify(value);
             }).filter(function (line) { return line.length > 0; });
-            fs.writeFileSync("auditwork/pnpm-workspace.yaml", "overrides:\n" + lines.join("\n") + "\n");
+            // the dedupe law the family mirror answers: two override
+            // seats that expand to the same workspace key (the literal
+            // selector form and the object form of one pin) would fold
+            // into a duplicated yaml mapping the resolver refuses, so
+            // the generator keeps one seat per key — the last write
+            // wins exactly the way the manifest merge intends.
+            const seated = new Map();
+            for (const line of lines) {
+              const key = line.slice(0, line.indexOf(":"));
+              seated.set(key, line);
+            }
+            fs.writeFileSync("auditwork/pnpm-workspace.yaml", "overrides:\n" + [...seated.values()].join("\n") + "\n");
           '
           pnpm --dir auditwork install --lockfile-only
           set +e
