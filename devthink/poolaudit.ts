@@ -277,7 +277,7 @@ export interface poolcoveragereport {
  * identical. */
 export const poolcoveragerecord: poolcoveragereport = {
   "release": "2.0.182",
-  "corpus": 4425,
+  "corpus": 4486,
   "pool": {
     "total": 626,
     "implemented": 623,
@@ -385,7 +385,7 @@ export const poolcoveragerecord: poolcoveragereport = {
     {
       "name": "every pool item carries its disposition",
       "ok": true,
-      "detail": "every item matched the shipped symbol corpus of 4425 symbols: 623 implemented, 3 planned"
+      "detail": "every item matched the shipped symbol corpus of 4486 symbols: 623 implemented, 3 planned"
     },
     {
       "name": "the implemented count holds the recorded floor",

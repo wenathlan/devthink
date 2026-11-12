@@ -358,7 +358,7 @@ export const matrixverifyrecord: matrixverifyreport = {
       "family": "cli",
       "name": "the cli surface answers the manifest and help commands in library mode",
       "outcome": "pass",
-      "detail": "manifest and help answered for 2.0.181"
+      "detail": "manifest and help answered for 2.0.182"
     },
     {
       "family": "mcp",

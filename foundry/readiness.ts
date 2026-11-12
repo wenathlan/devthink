@@ -526,7 +526,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "the permbaseline module: clean over 2.0.180 to 2.0.181 with zero unjustified entries"
+      "evidence": "the permbaseline module: clean over 2.0.181 to 2.0.182 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",
@@ -571,7 +571,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the changelog covers every version from 1.1.31",
       "ok": true,
-      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.181"
+      "evidence": "the changelog carries every version of the chain from 1.1.31 through 2.0.182"
     },
     {
       "gate": "the migration guide covers every supported path",
@@ -596,7 +596,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the capability manifests carry the release version pins",
       "ok": true,
-      "evidence": "the 7 capability manifests of build/caps pin the release 2.0.181"
+      "evidence": "the 7 capability manifests of build/caps pin the release 2.0.182"
     },
     {
       "gate": "the soak run keeps a long workflow alive across the retention window without drift",
