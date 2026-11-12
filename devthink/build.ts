@@ -474,6 +474,13 @@ const familybridges = {
 const libraryexternals = [
   "hono",
   "@hono/node-server",
+  /* the fluent icon seat rides external the family library law answers:
+   * the os seam bundles the repository sources alone, so the icon
+   * package's published helpers never walk into the reviewed vocabulary
+   * (the naming gate reddened on the dependency tree the full install
+   * resolves; the consumer's dependency tree answers the icons exactly
+   * the way react rides above). */
+  "@fluentui/react-icons",
   /* the babel engine seat the saddle modalities own: the compile lane
    * reads the runtime through a guarded dynamic import (the
    * HOST_RUNTIME_ABSENT degradation the engine law designs), so the
