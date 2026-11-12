@@ -526,7 +526,7 @@ export const readinessrecord: readinessreport = {
     {
       "gate": "the permission diff reports no unjustified drift",
       "ok": true,
-      "evidence": "the permbaseline module: clean over 2.0.181 to 2.0.182 with zero unjustified entries"
+      "evidence": "the permbaseline module: clean over 2.0.182 to 2.0.182 with zero unjustified entries"
     },
     {
       "gate": "the transparency page lists every live permission",

@@ -15,7 +15,7 @@ The readiness gate of the 2.0.182 platform release walked every release gate of 
 | the battery aware and network aware gates hold their tests | green | test/resourceaware.test.ts carries the battery aware and network aware gate families the readiness review reads |
 | the pentest checklist holds zero failed entries | green | pentest.ts: 21 entries, 0 failed |
 | the csp audit reports no wildcard policies | green | the manifest carries 1 strict content security policies with no wildcard source |
-| the permission diff reports no unjustified drift | green | the permbaseline module: clean over 2.0.181 to 2.0.182 with zero unjustified entries |
+| the permission diff reports no unjustified drift | green | the permbaseline module: clean over 2.0.182 to 2.0.182 with zero unjustified entries |
 | the transparency page lists every live permission | green | the frozen permission coverage of apifreeze.ts lists all 10 live permissions and transparencypage.ts renders every row through the permission section |
 | the agent certification covers every coordination scenario | green | agentcert.ts: 30 scenarios, 0 failed |
 | the cost certification reconciles every recorded run | green | costcert.ts: 9 reconciliations, 0 failed |
