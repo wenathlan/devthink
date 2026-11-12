@@ -4,8 +4,8 @@
 class WenathlanDevthink < Formula
   desc "Builds explicit local DevThink CLI invocations without storing provider credentials"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.180/wenathlan-devthink-2.0.180.tgz"
-  version "2.0.180"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.181/wenathlan-devthink-2.0.181.tgz"
+  version "2.0.181"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanDevthink < Formula
   end
 
   test do
-    assert_match "2.0.180", shell_output("#{bin}/wenathlan-devthink --version")
+    assert_match "2.0.181", shell_output("#{bin}/wenathlan-devthink --version")
   end
 end

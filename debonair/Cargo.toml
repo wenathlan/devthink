@@ -5,7 +5,7 @@
 # and stamps the version before building.
 [package]
 name = "wenathlan-debonair"
-version = "2.0.180"
+version = "2.0.181"
 edition = "2021"
 description = "The audio and DAW app; it houses the katexis engine at the folder root"
 license = "GPL-3.0-only"

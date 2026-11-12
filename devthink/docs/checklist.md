@@ -407,17 +407,54 @@ commits and merges — this file is the map that pins where each order stands.
     the spin a sandbox home rendering, the 309 module graph built from
     the clean entry).
 
+## the esbuild cve close — the fresh wave record (this instance, the later breath)
+
+- the security law closed whole: the audit this wave found twelve open
+  code-scanning alerts all tracing one root (esbuild@0.18.20 the
+  drizzle-kit chain carried — @esbuild-kit/esm-loader@2.6.5 ->
+  @esbuild-kit/core-utils@3.3.2 -> esbuild ~0.18.20, the eleven bun.lock
+  seats the ghsa-67mh-4wv8-2f99 warnings named and the scorecard
+  VulnerabilitiesId alert 243 the same breath); the fix rides the
+  override law (esbuild ^0.28.2 seated in the eleven overrides blocks
+  mirroring the dependencies and devdependencies), the locks regenerated
+  under the ci bun ladder (1.4.4 the exact engine pin), and the registry
+  census answering zero 0.18.20 resolutions — the alerts read closed at
+  the default branch scan: zero open.
+- the publish freshness lane closed: the family npm seats answer 2.0.180
+  whole (the saddle npm freshness the registry read pinned behind now
+  current — @wenathlan/saddle, debonair, cadria and devthink all at
+  the 2.0.180 rung, the release v2.0.180 carrying 999 assets at the
+  ceiling).
+- the local certification this wave: the family suites walked green on
+  the fresh head — devthink 3,587 legs over 210 files, debonair 1,111,
+  cadria 648, getry 578, saddle 522, vault 320, stealthhead 147, forge
+  89, foundry 76, argan 72, cobaia 37 — 7,187 legs whole with zero
+  failures; the frozen-lockfile gate verified locally under the 1.4.4
+  pin across the eleven roots.
+- the production face verified live through the browser agent: the
+  devthink site renders whole (the os, explorer, creators, cadria and
+  debonair sections), the panel face answers the unlock lane, the
+  account creation signs in (the honest offline notice the static seat
+  carries), the desktop renders the taskbar, the start menu and the
+  twenty-three icons, and the console window opens — zero page errors
+  on every face.
+- the alan corpus re-seated after the environment reset: the blobless
+  sparse clone carrying organizado/md whole (the repos.case catalog,
+  conversa50, feedssd, polarauth) and the .devthink/web design
+  reference — 122 megabytes, the disk law honored.
+
 ## the open lanes (the pendente seats at this breath)
 
-- the alert 1759 close: the security battery of the 15b197ad head (the
-  browser seam heal riding the fresh 2.0.180 line) carries the codeql
-  analyze ladder the scorecard seat reads — the queued run walks the
-  evidence order; the projection green closes it; never a dismissal.
-- the 2.0.180 release ladder: the publish workflow queued behind the
-  battery — the assets train, the registry publishes (the saddle npm
-  freshness the registry read pinned behind) and the container catch-up
-  answer behind it; the close check rides the final projection, never a
-  wait on the heavy lane.
+- the runner fleet allocation the platform owes: the queued trains on
+  the fresh head (ci, verify, security, family pages, maintenance,
+  release) hold their order behind the freeze the platform owns —
+  nothing lost, the concurrency groups answer the supersede law; the
+  close check rides the final projection.
+- the 1,700+ commits law: 1,679 at this breath, twenty-one real steps to
+  go — one per real step, the wave records and the release train carry it.
+- the stem separation hub lane (the debonair open seat the hub refuses —
+  the documented future lane).
+- the game lanes the owner paces (the stealthhead real game beyond the
 - the deployed face catch-up: the family pages lane of the 15b197ad head
   carries the browser seam heal to production — the close check reads
   the deployed saddle standalone answering whole (the local proof
