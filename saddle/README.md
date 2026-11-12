@@ -9,6 +9,6 @@ Saddle is a **TypeScript-first ESM engine** compiled to JavaScript, declarations
 
 | Surface | Files |
 | --- | --- |
-| `server.ts`, `sandbox.ts` | the zero-dependency self-hosted API of the 2.0.181 grand-merge envelope (`node server.ts`; the api answers its version at `/api/v1/health`) and the browser-pure engine port |
+| `server.ts`, `sandbox.ts` | the zero-dependency self-hosted API of the 2.0.182 grand-merge envelope (`node server.ts`; the api answers its version at `/api/v1/health`) and the browser-pure engine port |
 
 The consolidated documentation of the whole operation lives in [`devthink/docs`](../devthink/docs) — the law, the operation state, the apps dossier, the security census and the checklist. This README is the envelope surface the release lane stamps; the five documents carry the whole corpus.

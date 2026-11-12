@@ -60,3 +60,15 @@ o censo completo dos erros de segurança e das falhas de workflow do repositóri
 - as frentes de publicação: a fusão do assento do bundler no envelope, o envelope gradle ausente e as faces node do vault seguem pendentes de leitura de log
 - as lanes do saddle e o tema das páginas seguem pendentes de leitura de log
 - o scan de container falhou no apt do build da imagem com retentativa esgotada; verificar transitoriedade
+
+## o registro do fechamento (a rung 2.0.182)
+
+- os dois mil trezentos e setenta e seis alertas de dependência fecharam por cura real, nunca por dismiss: a api confirma zero alertas abertos depois do reescaneamento do grafo sobre a main curada
+- a onda um fechou no pr de segurança mesclado: os quarenta e oito nomes vulneráveis subiram nos onze envelopes python, as variantes maiúsculas dobraram nos pinos únicos, o pacote morto virou o sucessor, o pytorch-lightning saiu do envelope, os sem correção subiram acima do teto vulnerável
+- os quatro prs do bot ficaram superseded e fecharam com resposta registrada; as doze branches laterais deletaram, só a main resta
+- a bateria de verificação curou com o retorno dos envelopes readme: o build da distribuição lia o readme que a consolidação dos documentos deletou
+- a bateria de segurança curou com a deduplicação das overrides do workspace: a entrada malformada do esbuild-kit saiu do manifest, o windows-sys subiu para 0.61.2 no grafo rust
+- as suítes do saddle e do debonair curaram com a lei da sombra do bun: o shim do pacote npm que o ignore-scripts deixa quebrado nunca mais sombreia o runtime real que as baterias spawnam
+- o workbench estático curou com o pino do rolldown: a override larga deixava a 1.3.2 driftar contra o pino próprio do vite e o motor panicava na lane de base do repositório; a override aperta para ~1.2.18 nos onze manifests e nos doze locks
+- o alerta do scorecard renova com a análise fresca da main verde: os merges da operação carregam bateria rodada
+- a rung 2.0.182 sela o fechamento com o version lockstep inteiro da família
