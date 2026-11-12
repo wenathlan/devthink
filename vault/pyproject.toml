@@ -370,7 +370,7 @@ dependencies = [
   "jiter ==0.16.0",
   "jmespath ==1.0.1",
   "joblib ==1.5.1",
-  "joserfc ==1.7.3",
+  "joserfc ==1.7.6",
   "jsbeautifier ==1.15.4",
   "json-tricks ==3.17.3",
   "jsonpatch",
