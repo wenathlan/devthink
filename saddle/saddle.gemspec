@@ -27,4 +27,17 @@ Gem::Specification.new do |spec|
     "bug_tracker_uri" => "https://github.com/wenathlan/saddle/issues",
     "github_repo" => "ssh://github.com/wenathlan/saddle"
   }
+
+  # the lost-dependency recovery union (the additive mirror law)
+  spec.add_dependency "aws-sdk-s3", ">= 1.242.0"
+  spec.add_dependency "daytona_api_client", ">= 1.0.0"
+  spec.add_dependency "daytona_toolbox_api_client", ">= 0.231.1"
+  spec.add_dependency "dotenv", ">= 3.2.0"
+  spec.add_dependency "observer", ">= 0.1.2"
+  spec.add_dependency "opentelemetry-exporter-otlp", ">= 0.37.0"
+  spec.add_dependency "opentelemetry-exporter-otlp-metrics", ">= 0.15.0"
+  spec.add_dependency "opentelemetry-metrics-sdk", ">= 0.22.0"
+  spec.add_dependency "opentelemetry-sdk", ">= 1.13.1"
+  spec.add_dependency "toml", ">= 0.3.0"
+  spec.add_dependency "websocket-client-simple", ">= 0.9.0"
 end
