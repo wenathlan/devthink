@@ -47,3 +47,16 @@ o censo completo dos erros de segurança e das falhas de workflow do repositóri
 - onda cinco: cura da bateria de segurança
 - onda seis: cura da bateria de integração e verificação
 - onda sete: rerun geral, confirmação do verde total, fechamento do alerta do scorecard com o histórico de merges verdes
+
+## as causas raiz mapeadas nas ondas de cura
+
+- a frente do pacote de ícones: o assento do sistema operacional era o único feixe que atingia o pacote de ícones inline, então os identificadores sublinhados da árvore resolvida só entraram por ele; a cura andou o assento externo exatamente como o react já andava, mantendo o pacote no manifest do consumidor
+- a frente do assento de override duplicado: o pino da ferramenta de build andava em duas formas no manifest do aplicativo principal, a literal com seletor e a forma de objeto; toda leitura npm do manifest quebrava no assento sem nome e o workspace do auditor dobrou a chave duplicada que o resolvedor recusa; a cura removeu as formas literais mantendo os objetos como os dez irmãos já respondem, subiu o pino das janelas no cargo que o grafo demanda e ensinou o gerador a deduplicar
+- a frente do fumo do consumidor: um dos milhares de assentos publicados carrega o protocolo de workspace na dependência que o registro do npm recusa; a identificação do assento culpado e a sobrescrita seguem pendentes
+- a frente da paridade de configuração: o teste chama a saída de processo inesperada; investigar o gate que dispara
+- a frente da suíte do debonair: a sonda registra que o postinstall do runtime não rodou por causa da instalação com scripts ignorados; investigar a sonda
+- a frente da suíte do saddle: a requisição não autorizada na suíte; investigar a autenticação do teste
+- a frente do workbench estático: o argumento de formatação fora de faixa; investigar a chamada
+- as frentes de publicação: a fusão do assento do bundler no envelope, o envelope gradle ausente e as faces node do vault seguem pendentes de leitura de log
+- as lanes do saddle e o tema das páginas seguem pendentes de leitura de log
+- o scan de container falhou no apt do build da imagem com retentativa esgotada; verificar transitoriedade
