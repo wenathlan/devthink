@@ -755,7 +755,8 @@
     "test",
     "theory.ts",
     "timelinemodel.ts",
-    "wavwriter.ts"
+    "wavwriter.ts",
+    "debonair.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

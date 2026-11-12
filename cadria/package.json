@@ -768,7 +768,8 @@
     "color.ts",
     "synth.ts",
     "image.ts",
-    "labels.ts"
+    "labels.ts",
+    "cadria.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

@@ -554,7 +554,8 @@
     "bundlescan.ts",
     "hometypes.ts",
     "pipeline.ts",
-    "readiness.ts"
+    "readiness.ts",
+    "foundry.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

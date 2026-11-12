@@ -284,31 +284,36 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
     /* the half-megabyte split carried the vhe lane family to the
      * saddlelanes workflow — the battery reads the lanes where they
      * ride (the same grids, the same gates, the home file answering
-     * the size law the publish workflow could not). */
+     * the size law the publish workflow could not). the TWELVE-LANE
+     * LAW and the NORMAL DISTRIBUTION doctrine of the latest breath:
+     * the max profile rides its own dedicated saddle-vhe-normal job
+     * (the bare version tag — the closing top stamp above grapheneos),
+     * the publish matrix walks balanced and lite beside the flavor
+     * lanes. */
     const publish = await parseworkflow("saddlelanes.yml");
     const profiles = matrixof(publish, "saddle-vhe-publish");
-    /* the fifteen runnable publish legs: the three profile lanes (max,
-     * balanced, lite — nothing removed) beside the twelve flavor lanes
-     * of the tier grid the standardization directive charged (linux,
-     * omarchy, vanillaos, android — every distribution carrying its
-     * max, balanced and lite twins, the prior four max flavors keep
-     * their tags and the balanced and lite twins join them). */
+    /* the fourteen runnable publish legs: the two profile lanes
+     * (balanced, lite — the max umbrella rides the normal job) beside
+     * the twelve flavor lanes of the tier grid the standardization
+     * directive charged (linux, omarchy, vanillaos, android — every
+     * distribution carrying its max, balanced and lite twins, the
+     * prior four max flavors keep their tags and the balanced and lite
+     * twins join them). */
     expect(profiles.map((leg) => leg.profile)).toEqual([
-      "max", "balanced", "lite",
+      "balanced", "lite",
       "max", "balanced", "lite",
       "max", "balanced", "lite",
       "max", "balanced", "lite",
       "max", "balanced", "lite",
     ]);
     expect(profiles.map((leg) => leg.osprofile ?? "")).toEqual([
-      "", "", "",
+      "", "",
       "linux", "linux", "linux",
       "omarchy", "omarchy", "omarchy",
       "vanillaos", "vanillaos", "vanillaos",
       "android", "android", "android",
     ]);
     expect(profiles.map((leg) => [leg.target, leg.suffix ?? ""])).toEqual([
-      ["max", ""],
       ["balanced", "-balanced"],
       ["lite", "-lite"],
       ["oslinux", "-linux"],
@@ -329,14 +334,6 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
      * count — the constants the runtime stage bakes and the verify leg
      * probes through the spoofed /proc/cpuinfo. */
     expect(profiles[0]).toMatchObject({
-      profilecpu: "epyc9965",
-      profilevcpus: 192,
-      profilethreads: 384,
-      profileram: 1024,
-      profilegpu: "b200",
-      profilegpus: 8,
-    });
-    expect(profiles[1]).toMatchObject({
       profilecpu: "threadripperpro9995wx",
       profilevcpus: 96,
       profilethreads: 192,
@@ -344,7 +341,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
       profilegpu: "b200",
       profilegpus: 2,
     });
-    expect(profiles[2]).toMatchObject({
+    expect(profiles[1]).toMatchObject({
       profilecpu: "ryzen9950x3d",
       profilevcpus: 16,
       profilethreads: 32,
@@ -352,14 +349,55 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
       profilegpu: "rtx5090",
       profilegpus: 1,
     });
-    /* every profile ships the build legs the pinned base honestly
-     * carries (the eleven-arch container law the saddle container heal
-     * landed): amd64 the native x64 leg, arm64, ppc64le and s390x under
-     * QEMU — the seven seats the base does not ship answer the
-     * standard's honest coded absence, never a pretended build leg. */
+    /* every profile ships the EIGHT primary build legs the pinned base
+     * honestly carries under the twelve-lane law: the native x64 leg
+     * beside the 386, arm/v6, arm/v7, arm64, ppc64le, riscv64 and s390x
+     * legs under QEMU — the four exotic best-effort arches answer the
+     * documented lanes the exotic step stamps, never a pretended build
+     * leg. */
     for (const leg of profiles) {
-      expect(leg.platforms).toBe("linux/amd64,linux/arm64,linux/ppc64le,linux/s390x");
+      expect(leg.platforms).toBe(
+        "linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x",
+      );
     }
+  });
+
+  it("the normal distribution rides its dedicated closing job — the bare version tag above grapheneos", async () => {
+    const publish = await parseworkflow("saddlelanes.yml");
+    /* THE NORMAL DISTRIBUTION LAW (the owner's latest breath): the
+     * standard seat owns its own job — the bare version tag without
+     * the v trace (never the -vhe trace the stale 2.1.6 era carried),
+     * the max profile the plain docker pull resolves, completing AFTER
+     * the profile, flavor and catalog lanes so the registry version
+     * list answers the normal seat above every os-specific
+     * distribution (grapheneos included, the seat the owner named the
+     * most recent today). */
+    const normal = publish.jobs?.["saddle-vhe-normal"] as
+      | { needs?: string[]; steps?: Array<Record<string, unknown>> }
+      | undefined;
+    expect(normal, "the normal distribution job exists").toBeTruthy();
+    expect(normal?.needs, "the normal stamps close the rung after the distributions").toEqual([
+      "saddle-vhe-resolve",
+      "saddle-vhe-scan",
+      "saddle-vhe-publish",
+      "saddle-vhe-catalog",
+    ]);
+    const text = await readworkflow("saddlelanes.yml");
+    const block = text.split("  saddle-vhe-normal:")[1]?.split("\n  saddle-vhe-verify:")[0] ?? "";
+    expect(block, "the normal tag is the bare version without the v trace").toContain(
+      'echo "tag=${img}:${ver}" >> "$GITHUB_OUTPUT"',
+    );
+    expect(block, "the normal walks the max profile target").toContain("target: max");
+    expect(block, "the normal carries the eight primary legs").toContain(
+      "platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x",
+    );
+    expect(block, "the normal answers the four exotic best-effort lanes too").toContain(
+      "linux/arm/v5 linux/mips64le linux/mips64 linux/loong64",
+    );
+    expect(block, "the closing top stamp doctrine rides the job").toContain("closing top stamp");
+    /* the verify gate reads the whole family including the normal. */
+    const verify = publish.jobs?.["saddle-vhe-verify"] as { needs?: string[] } | undefined;
+    expect(verify?.needs).toContain("saddle-vhe-normal");
   });
 
   it("the dockerfile defaults bake the max profile and pin the base the local build rides", async () => {
@@ -518,13 +556,18 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
 
   it("the published vhe index answers the base-carried build legs and the honest console smokes", async () => {
     const publish = await readworkflow("saddlelanes.yml");
-    /* the saddle container heal law (the eleven-arch standard of the
-     * containerarch table): the build legs answer the four platforms
-     * the pinned base honestly carries — the native x64 leg beside the
-     * three QEMU-emulated seats — while the seven seats the base does
-     * not ship keep the honest coded absence of the standard table. */
-    expect(publish).toContain("platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x");
-    expect(publish).toContain("platforms: linux/arm64,linux/ppc64le,linux/s390x");
+    /* the saddle container heal law under the TWELVE-LANE LAW: the
+     * build legs answer the eight primary platforms the pinned base
+     * honestly carries — the native x64 leg beside the seven
+     * QEMU-emulated seats — while the four exotic arches answer the
+     * documented best-effort lanes and the standard table keeps every
+     * seat the honest coded absence answers. */
+    expect(publish).toContain(
+      "platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x",
+    );
+    expect(publish).toContain(
+      "platforms: linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x",
+    );
     const standard = await readFile(join(repoRoot, "saddle", "containerarch.ts"), "utf8");
     for (const id of ["x64", "arm64", "armv7", "riscv64", "ppc64le", "s390x", "386", "mips64le", "loong64", "wasm32", "wasip1"]) {
       expect(standard, `the container standard must keep the ${id} seat`).toContain(`"${id}"`);

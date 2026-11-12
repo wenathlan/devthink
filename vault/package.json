@@ -744,7 +744,8 @@
     "build/onboardingstore.js",
     "build/onboardingstore.js.map",
     "build/labelstore.js",
-    "build/labelstore.js.map"
+    "build/labelstore.js.map",
+    "vault.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

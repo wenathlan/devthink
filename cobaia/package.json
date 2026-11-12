@@ -548,5 +548,8 @@
     "@swc/core",
     "pnpm",
     "protobufjs"
+  ],
+  "files": [
+    "cobaia.webpack.cjs"
   ]
 }

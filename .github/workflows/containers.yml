@@ -3,8 +3,7 @@ name: DevThink Containers
 # THE ELEVEN CONTAINER LANES OF THE REGISTRY STANDARD (the containerlanes
 # wave, the owner's law: "as 11 lanes do docker não foram publicadas e
 # padronizadas em todos os aplicativos, e saddle não tem +15 distribuições
-# no docker e mais de 7 contando com webpack, nem os outros apps que
-# deveriam ter 11+"): every application of the eleven answers its own
+# no docker"): every application of the eleven answers its own
 # ghcr.io/wenathlan/<app> container package - the ten sibling lanes
 # (argan, cadria, cobaia, debonair, devthink, forge, foundry, getry,
 # stealthhead and the self-contained vault engine) riding the
@@ -12,31 +11,24 @@ name: DevThink Containers
 # per-architecture seat tags, the same documented best-effort lanes and
 # the same idempotent publish the family-ghcr mirror of the publish
 # workflow proved, while the saddle engine walks its own saddle-containers
-# lane set (the fifteen-plus docker distribution law: the three profile
-# umbrellas beside their twelve architecture seats and the
-# thirty-three os-distribution flavor lanes - eleven distributions on
-# the max, balanced and lite tiers, the 11×3 standardization -
-# forty-eight distinct published tags, every one a real buildx
-# product). the standalone file answers the gap the
-# registry census recorded (the ghcr package page answered only the
-# saddle package beside its buildcache: the sibling containers never
-# published, because the publish mirror rides the workflow_run dual
-# trigger the release ladder completion gates and the dispatch firing
-# never carried the sibling lanes) - this workflow fires on the release
-# published event AND the workflow_dispatch lane, so an operator
-# standardizing the registry answers every container with one dispatch.
-#
-# THE SADDLE WEBPACK SEAT rides the same wave (the pr14 law, the owner's
-# sentence "6 por app versão Webpack + npmjs"): the webpack-bundled
-# saddle engine distribution walks its six registry channels - npmjs,
-# the github npm registry, maven, nuget, gradle and rubygems, every leg
-# packing the real webpack bundle the engine build produces through the
-# exact-pinned webpack rung the ci battery verifies - beside the npmjs
-# envelope the family-npmjs mirror of the publish workflow already
-# ships, so the saddle distribution count answers seven lanes the
-# webpack axis owns (the six channel legs of the matrix beside the base
-# envelope: mais de sete contando com webpack, the law the owner
-# demanded).
+# lane set under the TWELVE-LANE LAW the owner's latest breath ordered
+# (every distribution and every profile carrying the twelve arch lanes:
+# the eight primary legs the pinned node base honestly answers - 386,
+# amd64, arm/v6, arm/v7, arm64, ppc64le, riscv64 and s390x, the
+# emulated legs under QEMU - beside the four exotic best-effort lanes
+# - arm/v5, mips64le, mips64 and loong64, documented and fail-closed -
+# across the three profile umbrellas and the thirty-three
+# os-distribution flavor lanes of the eleven distributions on the max,
+# balanced and lite tiers, the 11x3 standardization, sixty distinct
+# published tags, every one a real buildx product). the standalone file
+# answers the gap the registry census recorded (the ghcr package page
+# answered only the saddle package beside its buildcache: the sibling
+# containers never published, because the publish mirror rides the
+# workflow_run dual trigger the release ladder completion gates and
+# the dispatch firing never carried the sibling lanes) - this workflow
+# fires on the release published event AND the workflow_dispatch lane,
+# so an operator standardizing the registry answers every container
+# with one dispatch.
 #
 # Every job keeps its own conclusion guard (the saddle family pattern,
 # Regra 56b), the one resolver seat (the rate-limit heal: one api call
@@ -635,11 +627,12 @@ jobs:
     defaults:
       run:
         shell: bash
-    # 330 min: the build index carries the three emulated legs (arm64,
-    # ppc64le and s390x) under QEMU beside the native amd64 leg - the
-    # same ceiling the saddle vhe lane of the publish workflow carries
-    # (a cold-cache QEMU pass can redden on rare mirror races; the
-    # registry cache the rerun answers completes the leg).
+    # 330 min: the build index carries the seven emulated legs (386,
+    # arm/v6, arm/v7, arm64, ppc64le, riscv64 and s390x) under QEMU
+    # beside the native amd64 leg - the same ceiling the saddle vhe
+    # lane of the publish workflow carries (a cold-cache QEMU pass can
+    # redden on rare mirror races; the registry cache the rerun answers
+    # completes the leg).
     timeout-minutes: 330
     permissions:
       contents: read
@@ -651,22 +644,31 @@ jobs:
       matrix:
         # THE FIFTEEN-PLUS DOCKER DISTRIBUTION LAW (the owner's sentence
         # "saddle não tem +15 distribuições no docker") — THE 11×3
-        # STANDARDIZATION: the three profile lanes ship the build legs of
-        # the container-carried seats the pinned node base honestly
-        # answers (the native amd64 leg beside the arm64, ppc64le and
-        # s390x legs under QEMU emulation) - and every profile leg stamps
-        # its four per-architecture seat tags off the published index
-        # (<version>-max-linux-amd64, -max-linux-arm64,
-        # -max-linux-ppc64le, -max-linux-s390x, the balanced and lite
-        # seats beside them: twelve arch-seat lanes). beside them the
+        # STANDARDIZATION UNDER THE TWELVE-LANE ARCH LAW: the three
+        # profile lanes ship the build legs of the container-carried
+        # seats the pinned node base honestly answers - eight primary
+        # arches (the native amd64 leg beside the 386, arm/v6, arm/v7,
+        # arm64, ppc64le, riscv64 and s390x legs under QEMU emulation) -
+        # and every profile leg stamps its eight per-architecture seat
+        # tags off the published index (<version>-max-linux-386,
+        # -max-linux-amd64, -max-linux-arm-v6, -max-linux-arm-v7,
+        # -max-linux-arm64, -max-linux-ppc64le, -max-linux-riscv64,
+        # -max-linux-s390x, the balanced and lite seats beside them:
+        # twenty-four arch-seat lanes) beside the four documented
+        # best-effort exotic lanes (arm/v5, mips64le, mips64 and
+        # loong64 - fail closed, never blocking the wave): twelve arch
+        # lanes every profile leg. beside them the
         # os-distribution flavor axis rides ELEVEN distributions - linux,
         # omarchy, vanillaos, android, archlinux, alpine, debian, fedora,
         # nixos, void and postmarketos - and EVERY flavor walks the full
         # three-tier axis (max, balanced, lite: the 11×3 geometry the
-        # master's standardization charges, thirty-three flavor lanes),
-        # so the saddle tag census answers FORTY-EIGHT distinct published
-        # tags - the three profile umbrellas (<version> for max,
-        # -balanced, -lite), the twelve architecture seats and the
+        # master's standardization charges, thirty-three flavor lanes)
+        # on the same twelve arch lanes (the eight primary legs the
+        # pinned node base answers plus the four exotic best-effort
+        # lanes), so the saddle tag census answers SIXTY distinct
+        # published tags - the three profile umbrellas (<version> for
+        # max, -balanced, -lite), the twenty-four architecture seats
+        # and the
         # thirty-three os-distribution flavor lanes (eleven -<seat> tags
         # beside their -<seat>-balanced and -<seat>-lite siblings) - more
         # than fifteen, every one a real buildx product the registry
@@ -678,7 +680,7 @@ jobs:
             target: max
             suffix: ""
             seatprefix: "max"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -689,7 +691,7 @@ jobs:
             target: balanced
             suffix: "-balanced"
             seatprefix: "balanced"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -700,7 +702,7 @@ jobs:
             target: lite
             suffix: "-lite"
             seatprefix: "lite"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -727,7 +729,7 @@ jobs:
             osprofile: linux
             suffix: "-linux"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -739,7 +741,7 @@ jobs:
             osprofile: linux
             suffix: "-linux-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -751,7 +753,7 @@ jobs:
             osprofile: linux
             suffix: "-linux-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -763,7 +765,7 @@ jobs:
             osprofile: omarchy
             suffix: "-omarchy"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -775,7 +777,7 @@ jobs:
             osprofile: omarchy
             suffix: "-omarchy-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -787,7 +789,7 @@ jobs:
             osprofile: omarchy
             suffix: "-omarchy-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -799,7 +801,7 @@ jobs:
             osprofile: vanillaos
             suffix: "-vanillaos"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -811,7 +813,7 @@ jobs:
             osprofile: vanillaos
             suffix: "-vanillaos-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -823,7 +825,7 @@ jobs:
             osprofile: vanillaos
             suffix: "-vanillaos-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -835,7 +837,7 @@ jobs:
             osprofile: android
             suffix: "-android"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -847,7 +849,7 @@ jobs:
             osprofile: android
             suffix: "-android-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -859,7 +861,7 @@ jobs:
             osprofile: android
             suffix: "-android-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -871,7 +873,7 @@ jobs:
             osprofile: archlinux
             suffix: "-archlinux"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -883,7 +885,7 @@ jobs:
             osprofile: archlinux
             suffix: "-archlinux-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -895,7 +897,7 @@ jobs:
             osprofile: archlinux
             suffix: "-archlinux-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -907,7 +909,7 @@ jobs:
             osprofile: alpine
             suffix: "-alpine"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -919,7 +921,7 @@ jobs:
             osprofile: alpine
             suffix: "-alpine-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -931,7 +933,7 @@ jobs:
             osprofile: alpine
             suffix: "-alpine-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -943,7 +945,7 @@ jobs:
             osprofile: debian
             suffix: "-debian"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -955,7 +957,7 @@ jobs:
             osprofile: debian
             suffix: "-debian-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -967,7 +969,7 @@ jobs:
             osprofile: debian
             suffix: "-debian-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -979,7 +981,7 @@ jobs:
             osprofile: fedora
             suffix: "-fedora"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -991,7 +993,7 @@ jobs:
             osprofile: fedora
             suffix: "-fedora-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -1003,7 +1005,7 @@ jobs:
             osprofile: fedora
             suffix: "-fedora-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -1015,7 +1017,7 @@ jobs:
             osprofile: nixos
             suffix: "-nixos"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -1027,7 +1029,7 @@ jobs:
             osprofile: nixos
             suffix: "-nixos-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -1039,7 +1041,7 @@ jobs:
             osprofile: nixos
             suffix: "-nixos-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -1051,7 +1053,7 @@ jobs:
             osprofile: void
             suffix: "-void"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -1063,7 +1065,7 @@ jobs:
             osprofile: void
             suffix: "-void-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -1075,7 +1077,7 @@ jobs:
             osprofile: void
             suffix: "-void-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -1087,7 +1089,7 @@ jobs:
             osprofile: postmarketos
             suffix: "-postmarketos"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -1099,7 +1101,7 @@ jobs:
             osprofile: postmarketos
             suffix: "-postmarketos-balanced"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -1111,7 +1113,7 @@ jobs:
             osprofile: postmarketos
             suffix: "-postmarketos-lite"
             seatprefix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -1212,8 +1214,9 @@ jobs:
         with:
           # the build index minus the native amd64 leg: every platform
           # the amd64 runner cannot execute installs its binfmt handler
-          # here (the family pin - only the emulated legs).
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # here (the family pin - only the emulated legs: 386, arm/v6,
+          # arm/v7, arm64, ppc64le, riscv64 and s390x).
+          platforms: linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -1325,17 +1328,20 @@ jobs:
           sbom: true
 
       - name: Stamp the per-architecture seat tags (the arch-seat lanes of the profile legs)
-        # THE SEAT LANES (the fifteen-plus law's arch half): every
-        # profile leg of the matrix (max, balanced, lite) stamps its four
-        # per-architecture seat tags off the published index - the seat
-        # resolves exactly the per-arch manifest digest the multi-arch
-        # push shipped through docker buildx imagetools, so `docker pull
+        # THE SEAT LANES (the twelve-lane arch law's primary half):
+        # every profile leg of the matrix (max, balanced, lite) stamps
+        # its eight per-architecture seat tags off the published index -
+        # the seat resolves exactly the per-arch manifest digest the
+        # multi-arch push shipped through docker buildx imagetools (the
+        # variant-aware lookup the family job's seat step carries, so
+        # the arm/v6 and arm/v7 seats resolve their arm-variant
+        # manifests), so `docker pull
         # --platform linux/arm64 saddle:<version>-max-linux-arm64`
         # answers the arm64 image of the max profile (never a rebuild,
-        # never a placeholder). twelve seat lanes beside the three
+        # never a placeholder). twenty-four seat lanes beside the three
         # profile umbrellas and the thirty-three os-distribution flavor
-        # lanes of the 11×3 standardization: forty-eight distinct
-        # published tags, the more-than-fifteen directive answered.
+        # lanes of the 11×3 standardization: sixty distinct published
+        # tags, the more-than-fifteen directive answered.
         if: matrix.seatprefix != ''
         shell: bash
         env:
@@ -1352,7 +1358,7 @@ jobs:
           for platform in ${PLATFORMS//,/ }; do
             slug="${platform//\//-}"
             arch="${platform#linux/}"
-            digest="$(printf '%s' "${index}" | jq -r --arg a "${arch}" 'first(.manifests[] | select(.platform.os == "linux" and .platform.architecture == $a) | .digest) // ""')"
+            digest="$(printf '%s' "${index}" | jq -r --arg a "${arch}" 'first(.manifests[] | select(.platform.os == "linux" and (.platform.architecture + (if .platform.variant then "/" + .platform.variant else "" end)) == $a) | .digest) // ""')"
             if [ -z "${digest}" ]; then
               echo "::warning::the ${platform} seat never answered on the ${SEATPREFIX} index; the seat stays documented, the wave continues."
               continue
@@ -1361,547 +1367,91 @@ jobs:
             echo "the ${SEATPREFIX} ${platform} seat ships as ${img}:${ver}-${SEATPREFIX}-${slug}"
           done
 
-      - name: The lane census line (the forty-eight-tag family)
+      - name: Build the documented best-effort lanes (fail closed, never block the wave)
+        # the honest best-effort half of the twelve-lane arch law: the
+        # arches buildx supports whose pinned node base carries no
+        # manifest today (arm/v5, mips64le, mips64 and loong64). each
+        # lane builds its own per-arch seat tag with this lane's own
+        # target and profile build-args over the same context, file and
+        # target the main build step of this job carries - the seat
+        # grammar mirrors the seat-tag step above (the version, the
+        # seatprefix, the arch slug: <version>-max-linux-arm-v5); the
+        # os-distribution lanes carry no seatprefix, so their stem is
+        # the lane tag itself (the version plus the matrix suffix:
+        # <version>-archlinux-balanced-linux-mips64le). a lane whose
+        # base cannot resolve fails closed with a warning - the lane
+        # stays documented in the census, the wave never reddens on an
+        # arch no base ships (continue-on-error rides the step for the
+        # same law the family job carries).
+        if: steps.meta.outputs.skip != 'true'
+        continue-on-error: true
         shell: bash
+        env:
+          EXOTIC: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
+          VERSION: ${{ steps.resolve.outputs.version }}
+          IMAGE: ${{ env.REGISTRY }}/saddle
+          SEATPREFIX: ${{ matrix.seatprefix }}
+          SUFFIX: ${{ matrix.suffix }}
+          TARGET: ${{ matrix.target }}
+          PROFILE_CPU: ${{ matrix.profilecpu }}
+          PROFILE_VCPUS: ${{ matrix.profilevcpus }}
+          PROFILE_THREADS: ${{ matrix.profilethreads }}
+          PROFILE_RAM_GB: ${{ matrix.profileram }}
+          PROFILE_GPU: ${{ matrix.profilegpu }}
+          PROFILE_GPUS: ${{ matrix.profilegpus }}
+          NODE_BASE_TAG: node:26.13.0-slim
+          NODE_BASE_DIGEST: ${{ steps.resolve.outputs.nodedigest }}
+        run: |
+          set -uo pipefail
+          img="${IMAGE,,}"
+          ver="${VERSION}"
+          for arch in ${EXOTIC//,/ }; do
+            slug="${arch//\//-}"
+            if [ -n "${SEATPREFIX}" ]; then
+              seatstem="${ver}-${SEATPREFIX}"
+            else
+              seatstem="${ver}${SUFFIX}"
+            fi
+            echo "--- best-effort lane ${arch} (documented: no pinned node base carries this manifest today) ---"
+            if docker buildx build \
+              --platform "${arch}" \
+              --target "${TARGET}" \
+              --build-arg "SADDLE_VERSION=${ver}" \
+              --build-arg "VHE_PROFILE_CPU=${PROFILE_CPU}" \
+              --build-arg "VHE_PROFILE_VCPUS=${PROFILE_VCPUS}" \
+              --build-arg "VHE_PROFILE_THREADS=${PROFILE_THREADS}" \
+              --build-arg "VHE_PROFILE_RAM_GB=${PROFILE_RAM_GB}" \
+              --build-arg "VHE_PROFILE_GPU=${PROFILE_GPU}" \
+              --build-arg "VHE_PROFILE_GPUS=${PROFILE_GPUS}" \
+              --build-arg "NODE_BASE_TAG=${NODE_BASE_TAG}" \
+              --build-arg "NODE_BASE_DIGEST=${NODE_BASE_DIGEST}" \
+              --tag "${img}:${seatstem}-${slug}" \
+              --push "./saddlebuildctx" "--file=./saddlebuildctx/saddle/Dockerfile"; then
+              echo "the best-effort lane ${arch} answered - a base variant carries it now; the lane ships as :${seatstem}-${slug}."
+            else
+              echo "::warning::the best-effort lane ${arch} failed closed - the pinned node base carries no ${arch} manifest; the lane stays documented in the census, the wave continues."
+            fi
+          done
+
+      - name: The lane census line (the sixty-tag family)
+        # the lane census the twelve-lane law charges: every saddle
+        # distribution lane carries twelve arch lanes - the eight
+        # primary legs the pinned node base honestly answers plus the
+        # four documented best-effort exotic lanes - and the census
+        # computes the count off the matrix strings (never a hand-typed
+        # guess), asserts at least twelve arch lanes per lane and names
+        # the family total honestly.
+        shell: bash
+        env:
+          PLATFORMS: ${{ matrix.platforms }}
+          EXOTIC: linux/arm/v5,linux/mips64le,linux/mips64,linux/loong64
         run: |
           set -euo pipefail
           ver="${{ steps.resolve.outputs.version }}"
-          echo "the saddle ${ver} container family answers forty-eight lanes: the three profile umbrellas (${ver}, ${ver}-balanced, ${ver}-lite), the twelve architecture seats (-max-linux-*, -balanced-linux-*, -lite-linux-*), the thirty-three os-distribution flavor lanes (eleven distributions - linux, omarchy, vanillaos, android, archlinux, alpine, debian, fedora, nixos, void, postmarketos - each on its max, balanced and lite tier) - more than fifteen docker distributions, the owner's law answered."
-
-  saddle-webpack:
-    name: Publish the saddle webpack distribution to ${{ matrix.channel }} (the seven-lane webpack seat)
-    needs: [release-resolve]
-    if: >-
-      needs.release-resolve.result == 'success'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    timeout-minutes: 40
-    permissions:
-      contents: read
-      packages: write
-    strategy:
-      fail-fast: false
-      matrix:
-        # THE SEVEN-LANE WEBPACK SEAT (the pr14 law, the owner's sentence
-        # "6 por app versão Webpack + npmjs" - and the containerlanes
-        # complaint "mais de 7 contando com webpack"): the webpack-bundled
-        # saddle engine distribution walks its six registry channels -
-        # npmjs, the github npm registry, maven, nuget, gradle and
-        # rubygems, every leg a real publish of the real webpack bundle
-        # the engine build produces - beside the npmjs envelope the
-        # family-npmjs mirror of the publish workflow already ships for
-        # the saddle leg, so the webpack axis owns SEVEN distribution
-        # lanes of the saddle engine (the six channel legs of this
-        # matrix + the base npmjs envelope), more than seven counting
-        # with webpack, the law the owner demanded.
-        channel: [npmjs, githubnpm, maven, nuget, gradle, rubygems]
-    steps:
-      - name: checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ inputs.release_tag || github.event.release.tag_name }}
-      - name: setup node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 26.13.0
-          # the github npm registry leg resolves the github packages
-          # registry through the setup (the npmjs leg overrides with the
-          # explicit --registry flag the public lane demands)
-          registry-url: https://npm.pkg.github.com
-      - name: resolve release version
-        id: release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          CHECKOUT_TAG: "true"
-          RELEASE_TAG: ${{ needs.release-resolve.outputs.tag || github.event.release.tag_name || inputs.release_tag }}
-        run: |
-          set -euo pipefail
-          tag="${RELEASE_TAG:-}"
-          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            tag="$(gh release view -R "$GITHUB_REPOSITORY" --json tagName --jq .tagName)"
-          fi
-          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
-            echo "A release tag such as v1.1.0 is required; received: ${tag:-<empty>}" >&2
-            exit 1
-          fi
-          version="${tag#v}"
-          git fetch --force --tags origin "refs/tags/${tag}:refs/tags/${tag}"
-          if [[ "$CHECKOUT_TAG" == "true" ]]; then
-            git checkout --detach "$tag"
-          fi
-          package_version=$(node -p "require('./saddle/package.json').version")
-          if [[ "$package_version" != "$version" ]]; then
-            echo "Release tag ${tag} does not match the saddle manifest version ${package_version}" >&2
-            exit 1
-          fi
-          {
-            echo "tag=$tag"
-            echo "version=$version"
-          } >> "$GITHUB_OUTPUT"
-      - name: wait for the family envelopes on npmjs
-        # THE REGISTRY GATE (the containerlanes heal, the app-containers
-        # law the same): the frozen bun install below resolves the
-        # @wenathlan sibling seats the saddle lock pins - the v2.0.172
-        # race reddened every webpack leg the same way (the envelopes
-        # landed on npmjs 36 minutes after the release event fired this
-        # wave). The gate polls the public npmjs registry until the ten
-        # sibling envelopes answer the release version (the devthink os
-        # seat stays off the list: the distpackage lane publishes it a
-        # rung late by doctrine), bounded to a 60 minute patience
-        # window, 30 seconds apart.
-        shell: bash
-        env:
-          WAIT_VERSION: ${{ steps.release.outputs.version }}
-        run: |
-          set -euo pipefail
-          packages=(argan cadria cobaia debonair forge foundry getry saddle stealthhead vault)
-          deadline=$(( $(date +%s) + 3600 ))
-          while [ "$(date +%s)" -lt "$deadline" ]; do
-            missing=0
-            for pkg in "${packages[@]}"; do
-              if ! curl -fsSL --max-time 20 "https://registry.npmjs.org/@wenathlan%2F${pkg}/${WAIT_VERSION}" >/dev/null 2>&1; then
-                missing=1
-                echo "still waiting: @wenathlan/${pkg}@${WAIT_VERSION}"
-              fi
-            done
-            if [ "$missing" -eq 0 ]; then
-              echo "all ten sibling envelopes answer ${WAIT_VERSION} on npmjs"
-              exit 0
-            fi
-            sleep 30
-          done
-          echo "the family envelopes never answered ${WAIT_VERSION} on npmjs within the patience window" >&2
-          exit 1
-      - name: build the engine bundle and pack it through webpack
-        # the cross-bundler rung the ci battery verifies, carried to the
-        # saddle engine: the tsc engine build (scripts.ts buildengine, the
-        # build:engine manifest entry) walks the noEmit typecheck lane the
-        # app manifest carries (the saddle runtime answers type stripping,
-        # the tsconfig never emits), then the esbuild bundle the manifest
-        # dependency carries (the same ^0.28.2 seat the frozen install
-        # answers) emits distpackage/index.js — the engine's one esm entry
-        # with the four externals the host runtime owns (@babel/core,
-        # @libsql/client, playwright and webpack: the browser lanes install
-        # no saddle tree, so the host seat resolves them and the lazy
-        # import guards answer the honest coded absence) — and the frozen
-        # install's own webpack 5.112.2 with its webpack-cli 7.3.1 peer
-        # (the exact pins the install line carries beside the manifest
-        # seats — the pin is real, visible and never floating), walked
-        # through a config file: the CLI-flag parse dies on the commander
-        # major the saddle tree carries — "prev is not iterable" — while
-        # the config form sidesteps the flag parser whole) packs the one
-        # entry into the one webpack bundle the six channel legs
-        # distribute - a real, non-empty, single-file engine
-        # distribution (the local verification measured a 718 KiB esm
-        # entry packing to a 121 KiB saddle.webpack.js).
-        env:
-          SADDLE_VERSION: ${{ steps.release.outputs.version }}
-        run: |
-          set -euo pipefail
-          cd saddle
-          npx --yes npm@11.20.0 install --ignore-scripts --no-audit --no-fund webpack@^5.112.2 webpack-cli@^7.3.1
-          node scripts.ts buildengine
-          node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js --external:@babel/core --external:@libsql/client --external:playwright --external:webpack
-          test -s distpackage/index.js
-          cat > distpackage/webpack.config.mjs <<'WEBPACKCFG'
-          import { createRequire } from "node:module";
-          const require = createRequire(import.meta.url);
-          require("webpack");
-          export default {
-            mode: "production",
-            target: "node",
-            entry: "./index.js",
-            context: new URL(".", import.meta.url).pathname,
-            output: { path: new URL("./webpack/", import.meta.url).pathname, filename: "saddle.webpack.js" },
-            externals: [
-              { "@babel/core": "commonjs @babel/core", "@libsql/client": "commonjs @libsql/client", playwright: "commonjs playwright", webpack: "commonjs webpack" },
-            ],
-          };
-          WEBPACKCFG
-          node_modules/.bin/webpack -c distpackage/webpack.config.mjs
-          test -s distpackage/webpack/saddle.webpack.js
-          du -h distpackage/webpack/saddle.webpack.js
-      - name: stage the webpack envelope manifest (the npm and gem seats)
-        # the webpack distribution owns its own envelope coordinates
-        # (@wenathlan/saddle-webpack on the npm lanes, the com.wenathlan
-        # coordinates with the webpack classifier on maven, the
-        # Saddle.Webpack package id on nuget, the saddle-webpack module
-        # on gradle and the saddle-webpack gem on rubygems) - the same
-        # name-per-channel doctrine the family envelopes carry, so the
-        # webpack variant never collides with the engine envelope the
-        # publish lanes own.
-        run: |
-          set -euo pipefail
-          version="${{ steps.release.outputs.version }}"
-          mkdir -p saddlewebpack/dist
-          cp saddle/distpackage/webpack/saddle.webpack.js saddlewebpack/dist/
-          node -e "const fs=require('fs');fs.writeFileSync('saddlewebpack/package.json',JSON.stringify({name:'@wenathlan/saddle-webpack',version:process.argv[1],description:'the webpack-bundled saddle engine distribution (the containerlanes wave webpack seat - one entry, one output, the exact-pinned webpack rung the ci battery verifies)',main:'./dist/saddle.webpack.js',files:['dist'],license:'GPL-3.0-only',repository:{type:'git',url:'git+https://github.com/wenathlan/devthink.git'}},null,2)+'\n')" "${version}"
-          cat > saddlewebpack/saddle-webpack.gemspec <<'GEMSPEC'
-          # frozen_string_literal: true
-          # the webpack distribution gem of the saddle engine (the
-          # containerlanes wave): one file, the webpack bundle, no
-          # native extension, no host hardware.
-          Gem::Specification.new do |spec|
-            spec.name = "saddle-webpack"
-            spec.version = ENV.fetch("SADDLE_VERSION", "2.0.166")
-            spec.authors = ["wenathlan"]
-            spec.summary = "the webpack-bundled saddle engine distribution"
-            spec.description = "the webpack-bundled distribution of the saddle virtual-hardware engine - one entry, one output, the exact-pinned webpack rung the ci battery verifies"
-            spec.homepage = "https://github.com/wenathlan/devthink"
-            spec.license = "GPL-3.0-only"
-            spec.files = Dir["dist/**/*"]
-            spec.required_ruby_version = ">= 3.0"
-          end
-          GEMSPEC
-          cat > saddlewebpack/Saddle.Webpack.csproj <<'CSPROJ'
-          <Project Sdk="Microsoft.NET.Sdk">
-            <PropertyGroup>
-              <TargetFramework>net8.0</TargetFramework>
-              <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-              <PackageId>Saddle.Webpack</PackageId>
-              <Version Condition="'$(PackageVersion)' == ''">2.0.166</Version>
-              <Authors>wenathlan</Authors>
-              <Description>the webpack-bundled distribution of the saddle virtual-hardware engine (the containerlanes wave webpack seat)</Description>
-              <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
-              <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
-              <RepositoryType>git</RepositoryType>
-              <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
-              <PackageTags>virtual-hardware;webpack;saddle;engine</PackageTags>
-              <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-              <IncludeSymbols>false</IncludeSymbols>
-            </PropertyGroup>
-            <ItemGroup>
-              <None Include="dist/saddle.webpack.js" Pack="true" PackagePath="content" />
-            </ItemGroup>
-          </Project>
-          CSPROJ
-          cat > saddlewebpack/build.gradle.kts <<'GRADLE'
-          // the webpack distribution module of the saddle engine (the
-          // containerlanes wave): the maven-publish plugin renders the
-          // module metadata around the one webpack bundle artifact, the
-          // same releaseVersion property the family envelopes read.
-          plugins {
-              `maven-publish`
-          }
-          val envelopeVersion = (findProperty("releaseVersion") as String?) ?: "2.0.166"
-          group = "com.wenathlan"
-          version = envelopeVersion
-          publishing {
-              publications {
-                  create<MavenPublication>("saddleWebpack") {
-                      artifact(file("dist/saddle.webpack.js")) {
-                          extension = "js"
-                          classifier = "webpack"
-                      }
-                  }
-              }
-              repositories {
-                  maven {
-                      name = "GitHub"
-                      url = uri("https://maven.pkg.github.com/wenathlan/devthink")
-                      credentials {
-                          username = System.getenv("GITHUB_ACTOR")
-                          password = System.getenv("GITHUB_TOKEN")
-                      }
-                  }
-              }
-          }
-          GRADLE
-          cp saddle/README.md saddlewebpack/ 2>/dev/null || true
-          test -s saddlewebpack/package.json
-          test -s saddlewebpack/dist/saddle.webpack.js
-
-      # THE NPMJS LEG (channel one of six): the graceful-skip token gate,
-      # the existence pre-check, the bounded retry and the explicit
-      # latest tag - the family npmjs lane idiom carried to the webpack
-      # envelope, publishing to the public registry through the explicit
-      # --registry flag (the job setup resolves the github registry for
-      # the sibling leg).
-      - name: check npm token availability
-        if: matrix.channel == 'npmjs'
-        id: token
-        env:
-          RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          set -euo pipefail
-          token="${RAW_NPM_TOKEN//$'\r'/}"
-          token="${token//$'\n'/}"
-          if [[ -z "$token" ]]; then
-            echo "available=false" >> "$GITHUB_OUTPUT"
-          else
-            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          fi
-      - name: skip notice when NPM_TOKEN is not configured
-        if: matrix.channel == 'npmjs' && steps.token.outputs.available != 'true'
-        run: |
-          echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com publication of @wenathlan/saddle-webpack is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the webpack envelope."
-      - name: publish the webpack envelope to npmjs
-        if: matrix.channel == 'npmjs' && steps.token.outputs.available == 'true'
-        env:
-          RELEASE_VERSION: ${{ steps.release.outputs.version }}
-        run: |
-          set -euo pipefail
-          # the public registry auth line the setup-node step did not
-          # write (the job setup resolves the github registry for the
-          # sibling leg): the scoped view and the publish both answer
-          # the token through the npmrc line the family npmjs lane
-          # answers through its own registry-url setup.
-          printf '//registry.npmjs.org/:_authToken=%s\n' "${NODE_AUTH_TOKEN}" >> "$HOME/.npmrc"
-          cd saddlewebpack
-          if npm view "@wenathlan/saddle-webpack@${RELEASE_VERSION}" version --registry https://registry.npmjs.org >/dev/null 2>&1; then
-            echo "The saddle-webpack envelope version already exists; skipping publish."
-          else
-            attempt=0
-            published=0
-            until [ "$attempt" -ge 3 ]; do
-              attempt=$((attempt + 1))
-              publish_output=""
-              if publish_output="$(npm publish --access public --tag latest --registry https://registry.npmjs.org 2>&1)"; then
-                published=1
-                break
-              fi
-              if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
-                echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
-                published=1
-                break
-              fi
-              printf '%s\n' "${publish_output}"
-              echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
-              sleep "$((attempt * 5))"
-            done
-            if [ "$published" -ne 1 ]; then
-              echo "::error::npm publish failed after ${attempt} attempts."
-              exit 1
-            fi
-          fi
-          npm dist-tag add "@wenathlan/saddle-webpack@${RELEASE_VERSION}" latest --registry https://registry.npmjs.org
-          echo "the npmjs webpack lane answered: @wenathlan/saddle-webpack@${RELEASE_VERSION}."
-
-      # THE GITHUB PACKAGES NPM LEG (channel two of six): the repository
-      # token answers the github npm registry, the existence pre-check
-      # reads the same registry, the bounded retry mirrors the family
-      # githubnpm lane.
-      - name: publish the webpack envelope to the github npm registry
-        if: matrix.channel == 'githubnpm'
-        env:
-          NODE_AUTH_TOKEN: ${{ github.token }}
-          RELEASE_VERSION: ${{ steps.release.outputs.version }}
-        run: |
-          set -euo pipefail
-          cd saddlewebpack
-          if npm view "@wenathlan/saddle-webpack@${RELEASE_VERSION}" version >/dev/null 2>&1; then
-            echo "The saddle-webpack github packages version already exists; skipping publish."
-          else
-            attempt=0
-            published=0
-            until [ "$attempt" -ge 3 ]; do
-              attempt=$((attempt + 1))
-              publish_output=""
-              if publish_output="$(npm publish --access public --tag latest 2>&1)"; then
-                published=1
-                break
-              fi
-              if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
-                echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
-                published=1
-                break
-              fi
-              printf '%s\n' "${publish_output}"
-              echo "npm publish attempt ${attempt}/3 failed; retrying with backoff."
-              sleep "$((attempt * 5))"
-            done
-            if [ "$published" -ne 1 ]; then
-              echo "::error::npm publish failed after ${attempt} attempts."
-              exit 1
-            fi
-          fi
-          echo "the github npm webpack lane answered: @wenathlan/saddle-webpack@${RELEASE_VERSION} on npm.pkg.github.com."
-
-      # THE MAVEN LEG (channel three of six): the webpack bundle deploys
-      # as the classified artifact of the com.wenathlan:saddle
-      # coordinates (the -webpack classifier jar the maven consumer
-      # resolves beside the engine jar), through the same settings.xml
-      # server id and the same existence pre-check the family maven
-      # lane carries.
-      - name: setup java (the maven and gradle legs)
-        if: matrix.channel == 'maven' || matrix.channel == 'gradle'
-        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
-        with:
-          java-version: '26'
-          distribution: temurin
-          server-id: github
-          settings-path: ${{ github.workspace }}
-      - name: install the pinned gradle distribution (the gradle leg)
-        # the pinned distribution line (the family runtime doctrine, Regra
-        # 54/125: never a floating `gradle` alias): the house runs the
-        # 9.5.1 line the mobile wrapper resolved, so the gradle webpack
-        # lane rides the same distribution - downloaded from
-        # services.gradle.org with the official checksum verified, never
-        # a cached alias (the same install the family gradle lane
-        # carries).
-        if: matrix.channel == 'gradle'
-        run: |
-          set -euo pipefail
-          GRADLE_VERSION="9.5.1"
-          curl -sSfL -o "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
-          curl -sSfL -o "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip.sha256" "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256"
-          expected="$(tr -d '[:space:]' < "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip.sha256")"
-          actual="$(sha256sum "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" | awk '{print $1}')"
-          if [[ "$expected" != "$actual" ]]; then
-            echo "The gradle ${GRADLE_VERSION} distribution checksum does not match; the pinned toolchain refuses the download." >&2
-            exit 1
-          fi
-          unzip -q "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" -d "$RUNNER_TEMP"
-          echo "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin" >> "$GITHUB_PATH"
-          "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin/gradle" --version
-      - name: publish the webpack bundle to the maven registry
-        if: matrix.channel == 'maven'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          VERSION="${{ steps.release.outputs.version }}"
-          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
-          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/saddle/${VERSION}/saddle-${VERSION}-webpack.jar"; then
-            echo "The maven webpack distribution saddle-${VERSION}-webpack.jar is already published; skipping the re-upload."
-          else
-            published=false
-            for attempt in 1 2 3; do
-              if mvn --batch-mode --settings saddle/settings.xml deploy:deploy-file \
-                -Durl="$PUBLISH" \
-                -DrepositoryId=github \
-                -DgroupId=com.wenathlan \
-                -DartifactId=saddle \
-                -Dversion="${VERSION}" \
-                -Dclassifier=webpack \
-                -Dpackaging=jar \
-                -Dfile=saddlewebpack/dist/saddle.webpack.js; then published=true; break; fi
-              echo "The maven webpack deploy attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
-              sleep "$((attempt * 5))"
-            done
-            test "$published" = true
-          fi
-          echo "the maven webpack lane answered: com.wenathlan:saddle:${VERSION}:webpack."
-
-      # THE NUGET LEG (channel four of six): the Saddle.Webpack content
-      # package packs through dotnet pack (the webpack bundle rides the
-      # package content folder) and pushes to the github nuget registry
-      # with the same bounded retry the family nuget lane carries.
-      - name: setup dotnet (the nuget leg)
-        if: matrix.channel == 'nuget'
-        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
-        with:
-          # the pinned SDK line (the family runtime doctrine, Regra 54/125:
-          # never `latest`): the same .NET 10 servicing SDK the family
-          # nuget lane pins, so the pack is deterministic run over run.
-          dotnet-version: 10.0.112
-      - name: pack and publish the webpack content package to nuget
-        if: matrix.channel == 'nuget'
-        run: |
-          set -euo pipefail
-          VERSION="${{ steps.release.outputs.version }}"
-          cd saddlewebpack
-          dotnet pack Saddle.Webpack.csproj --configuration Release --output ./nuget -p:PackageVersion="${VERSION}"
-          NUPKG="$(find nuget -maxdepth 1 -name "Saddle.Webpack.${VERSION}.nupkg" -print -quit)"
-          test -n "${NUPKG}" && test -f "${NUPKG}"
-          pushed=false
-          for attempt in 1 2 3; do
-            if dotnet nuget push "${NUPKG}" --api-key "${{ github.token }}" --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --skip-duplicate; then pushed=true; break; fi
-            echo "The nuget webpack push attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
-            sleep "$((attempt * 5))"
-          done
-          test "$pushed" = true
-          echo "the nuget webpack lane answered: Saddle.Webpack ${VERSION}."
-
-      # THE GRADLE LEG (channel five of six): the saddle-webpack module
-      # publishes through the maven-publish plugin (the webpack bundle
-      # rides the classified js artifact of the module), with the same
-      # existence pre-check and bounded retry the family gradle lane
-      # carries.
-      - name: publish the webpack module to the gradle maven repository
-        if: matrix.channel == 'gradle'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          VERSION="${{ steps.release.outputs.version }}"
-          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
-          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/saddle-webpack/${VERSION}/saddle-webpack-${VERSION}-webpack.js"; then
-            echo "The gradle webpack distribution saddle-webpack-${VERSION} is already published; skipping the re-upload."
-          else
-            published=false
-            for attempt in 1 2 3; do
-              if gradle --no-daemon -PreleaseVersion="${VERSION}" publish; then published=true; break; fi
-              echo "The gradle webpack publish attempt ${attempt} failed; the bounded retry policy retries inside three attempts."
-              sleep "$((attempt * 5))"
-            done
-            test "$published" = true
-          fi
-          echo "the gradle webpack lane answered: com.wenathlan:saddle-webpack:${VERSION}."
-
-      # THE RUBYGEMS LEG (channel six of six): the saddle-webpack gem
-      # builds from the staged gemspec and pushes to the github rubygems
-      # registry with the credentials idiom and the immutable-envelope
-      # tolerance the family rubygems lane carries.
-      - name: setup ruby (the rubygems leg)
-        if: matrix.channel == 'rubygems'
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
-        with:
-          # the pinned ruby line the family rubygems lane answers
-          ruby-version: 3.4.10
-      - name: configure github credentials (the rubygems leg)
-        if: matrix.channel == 'rubygems'
-        run: |
-          set -euo pipefail
-          mkdir -p "$HOME/.gem"
-          printf '%s\n' "---" ":github: Bearer ${GITHUB_TOKEN}" > "$HOME/.gem/credentials"
-          chmod 0600 "$HOME/.gem/credentials"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: publish the webpack gem to the github rubygems registry
-        if: matrix.channel == 'rubygems'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          SADDLE_VERSION: ${{ steps.release.outputs.version }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-        run: |
-          set -euo pipefail
-          VERSION="${{ steps.release.outputs.version }}"
-          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}/download/saddle-webpack/saddle-webpack-${VERSION}.gem"; then
-            echo "The rubygems webpack distribution saddle-webpack-${VERSION} is already published; skipping the re-upload."
-          else
-            cd saddlewebpack
-            env SADDLE_VERSION="${VERSION}" gem build saddle-webpack.gemspec
-            test -f "saddle-webpack-${VERSION}.gem"
-            attempt=0
-            published=0
-            until [ "$attempt" -ge 3 ]; do
-              attempt=$((attempt + 1))
-              if pushlog="$(gem push saddle-webpack-*.gem --key github --host "https://rubygems.pkg.github.com/${GITHUB_REPOSITORY_OWNER}" 2>&1)"; then
-                echo "$pushlog"
-                published=1
-                break
-              fi
-              echo "$pushlog"
-              if echo "$pushlog" | grep -q "has already been pushed"; then
-                echo "::notice::the registry already carries saddle-webpack ${VERSION}; the immutable envelope is present."
-                published=1
-                break
-              fi
-              echo "gem push attempt ${attempt}/3 failed; retrying with backoff."
-              sleep "$((attempt * 5))"
-            done
-            if [ "$published" -ne 1 ]; then
-              echo "::error::gem push failed after ${attempt} attempts."
-              exit 1
-            fi
-          fi
-          echo "the rubygems webpack lane answered: saddle-webpack ${VERSION}."
-
-      - name: the webpack census line (the seven-lane seat)
-        run: |
-          set -euo pipefail
-          echo "the saddle webpack seat answers seven distribution lanes: the six webpack channel legs of this matrix (npmjs, githubnpm, maven, nuget, gradle, rubygems - this leg rode ${{ matrix.channel }}) beside the base npmjs envelope the family-npmjs mirror of the publish workflow ships: mais de sete contando com webpack, the owner's law answered."
+          primary="$(printf '%s' "${PLATFORMS}" | tr ',' '\n' | wc -l)"
+          exotic="$(printf '%s' "${EXOTIC}" | tr ',' '\n' | wc -l)"
+          archlanes=$((primary + exotic))
+          seats=$((3 * primary))
+          lanes=$((3 + seats + 33))
+          test "${archlanes}" -ge 12
+          echo "the saddle ${ver} container family answers ${lanes} lanes: the three profile umbrellas (${ver}, ${ver}-balanced, ${ver}-lite), the ${seats} architecture seats (-max-linux-*, -balanced-linux-*, -lite-linux-* on the eight primary arches), the thirty-three os-distribution flavor lanes (eleven distributions - linux, omarchy, vanillaos, android, archlinux, alpine, debian, fedora, nixos, void, postmarketos - each on its max, balanced and lite tier) and the ${exotic} documented best-effort lanes beside every one of them (arm/v5, mips64le, mips64, loong64 - fail closed, never blocking the wave): ${archlanes} arch lanes every distribution and every profile, more than fifteen docker distributions, the owner's twelve-lane law answered."

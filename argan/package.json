@@ -562,7 +562,8 @@
     "test",
     "cli.ts",
     "dns.ts",
-    "mimetypes.ts"
+    "mimetypes.ts",
+    "argan.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

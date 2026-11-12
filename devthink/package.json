@@ -767,7 +767,8 @@
     }
   },
   "files": [
-    "distpackage"
+    "distpackage",
+    "devthink.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

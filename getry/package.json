@@ -745,7 +745,8 @@
     "types.ts",
     "utils.ts",
     "validate.ts",
-    "versionregistry.ts"
+    "versionregistry.ts",
+    "getry.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

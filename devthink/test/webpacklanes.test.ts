@@ -1,18 +1,24 @@
 /**
  * webpacklanes.test.ts — the webpack distribution workflow contract of the
- * owner doctrine: the webpack the platform speaks is THE WORKFLOW THAT
- * CREATES THE WEBPACK DISTRIBUTION (the github actions seat the corridor
- * clarified, never a file naming flavor), the reason every application
- * envelope carries the webpack and webpack-cli dependencies beside the
- * esbuild carrier the transpile rides. the six main matrices the
- * distribution law stamps — NuGet x Webpack, Maven x Webpack, Gradle x
- * Webpack, npmjs x Webpack, RubyGems x Webpack and GitHub Packages x
- * Webpack — walk every one of the eleven applications through the one
- * bundle seat, so a lane dropped from the workflow, a leg dropped from
- * a matrix, a publish walking without the release-approval gate, an
- * asset riding an underscore, a notice pattern lost (the absent
- * NPM_TOKEN skip, the billing wall mirror seat) or the bounded retry
- * unbound reddens this gate before a release ever ships the seats.
+ * owner doctrine sealed by the fusion order of the latest breath: the
+ * webpack the platform speaks is THE WORKFLOW THAT CREATES THE WEBPACK
+ * DISTRIBUTION (the github actions seat the corridor clarified, never a
+ * file naming flavor), the reason every application envelope carries the
+ * webpack and webpack-cli dependencies beside the esbuild carrier the
+ * transpile rides. the fusion law the corridor stamped ("cancela elas,
+ * exclui elas e embute elas dentro do original"): the variant registry
+ * seats the older wave published under the .webpack names are DEAD — the
+ * bundle the webpackseats job builds attaches to the release beside its
+ * checksum while the REGISTRY PUBLICATION of that bundle rides INSIDE the
+ * original envelopes the publish workflow's family lanes ship (the files
+ * field carrying the <app>.webpack.cjs seat, the maven classifier on the
+ * normal com.wenathlan.<app> coordinates the owner named — forge, cadria
+ * and the eleven — the gradle module, the nuget package and the rubygem
+ * the same embed), so a variant lane reappearing, a .webpack package name
+ * landing anywhere, the bundle seat losing its esbuild carrier or its
+ * frozen lockfile, an asset riding an underscore, or the fusion step
+ * dropping from a publish family lane reddens this gate before a release
+ * ever ships the seats.
  */
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
@@ -35,10 +41,9 @@ const parseworkflow = async (file: string) =>
 
 /** every application of the monorepo the webpack law covers — the
  * envelope beside the ten siblings, the per-application doctrine the
- * corridor stamped (the six matrices ride every leg alike, devthink
- * included: the @wenathlan/devthink.webpack envelope and the
- * com.wenathlan classifier seats never collide with the documentation
- * envelopes the family lanes own). */
+ * corridor stamped (the bundle seat rides every leg alike, devthink
+ * included: the webpack distribution embeds in every original envelope
+ * the family lanes own). */
 const WEBPACKFAMILY = [
   "argan",
   "cadria",
@@ -53,8 +58,11 @@ const WEBPACKFAMILY = [
   "vault",
 ];
 
-/** the six registry matrices the distribution law stamps. */
-const WEBPACKLANES = [
+/** the six variant registry lanes the fusion order killed — every one of
+ * these job keys must stay absent from webpack.yml forever (the corridor
+ * order: the variant seats are canceled, excluded, the feature embedded
+ * in the original packages). */
+const DEADVARIANTLANES = [
   "webpacknpmjs",
   "webpackgithubnpm",
   "webpackmaven",
@@ -70,47 +78,30 @@ type lanejob = {
   steps?: Array<Record<string, unknown>>;
 };
 
-describe.skipIf(!inrepo)("the webpack distribution workflow", () => {
-  it("the workflow exists with the bundle seat and the six registry matrices", async () => {
+describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", () => {
+  it("the workflow exists with the bundle seat alone — the variant registry lanes are dead", async () => {
     const webpack = await parseworkflow("webpack.yml");
     expect(webpack.jobs).toBeTruthy();
-    for (const lane of ["webpackseats", ...WEBPACKLANES]) {
-      expect(webpack.jobs?.[lane], `the ${lane} lane answers in webpack.yml`).toBeTruthy();
+    expect(webpack.jobs?.["webpackseats"], "the bundle seat answers in webpack.yml").toBeTruthy();
+    for (const lane of DEADVARIANTLANES) {
+      expect(webpack.jobs?.[lane], `the ${lane} variant lane is dead by the fusion order`).toBeUndefined();
     }
+    expect(Object.keys(webpack.jobs ?? {}), "the workflow answers exactly the bundle seat").toEqual(["webpackseats"]);
   });
 
-  it("the six matrices walk every application — the per-application webpack law", async () => {
+  it("the bundle seat walks every application — the per-application webpack law", async () => {
     const webpack = await parseworkflow("webpack.yml");
-    for (const lane of WEBPACKLANES) {
-      const job = webpack.jobs?.[lane] as lanejob | undefined;
-      const family = job?.strategy?.matrix?.package ?? [];
-      expect(
-        [...family].sort(),
-        `the ${lane} matrix carries the eleven applications the webpack law covers`,
-      ).toEqual(WEBPACKFAMILY);
-    }
-  });
-
-  it("every registry lane needs the bundle seat and the release-approval gate", async () => {
-    const webpack = await parseworkflow("webpack.yml");
-    for (const lane of WEBPACKLANES) {
-      const job = webpack.jobs?.[lane] as lanejob | undefined;
-      const needs = Array.isArray(job?.needs) ? job?.needs : [job?.needs].filter(Boolean);
-      expect(needs, `the ${lane} lane needs its parents`).toContain("webpackseats");
-      expect(
-        needs,
-        `the ${lane} publish walks only after the release-approval gate (the house doctrine)`,
-      ).toContain("release-approval");
-    }
-    const gate = webpack.jobs?.["release-approval"] as { environment?: string } | undefined;
-    expect(gate?.environment, "the gate carries the release-approval environment").toBe(
-      "release-approval",
-    );
+    const job = webpack.jobs?.["webpackseats"] as lanejob | undefined;
+    const family = job?.strategy?.matrix?.package ?? [];
+    expect(
+      [...family].sort(),
+      "the bundle seat matrix carries the eleven applications the webpack law covers",
+    ).toEqual(WEBPACKFAMILY);
   });
 
   it("the bundle seat builds through the webpack CLI beside the esbuild carrier", async () => {
     const text = await readworkflow("webpack.yml");
-    const seats = text.split("  webpackseats:")[1]?.split("\n  webpack")[0] ?? "";
+    const seats = text.split("  webpackseats:")[1] ?? "";
     expect(seats, "the seat transpiles the typescript entry through the esbuild carrier").toContain(
       "npx esbuild cli.ts",
     );
@@ -122,65 +113,28 @@ describe.skipIf(!inrepo)("the webpack distribution workflow", () => {
       "bun install --frozen-lockfile --ignore-scripts",
     );
     expect(seats, "the seat validates the bundle exists").toContain("test -s");
+    expect(seats, "the seat validates the checksum beside the bundle").toContain("sha256sum");
   });
 
-  it("every publish answers the existence pre-check and the bounded retry", async () => {
+  it("the workflow never names a variant registry seat — the .webpack package grammar is dead", async () => {
     const text = await readworkflow("webpack.yml");
-    /* the idempotency grammar the registries answer: the npm lanes and the
-     * maven seats pre-check the registry before the push, the rubygems
-     * lane rescues the registry's own already-pushed refusal and the
-     * nuget lane rides the registry's --skip-duplicate refusal — every
-     * lane answers at least one idempotent form. */
-    const idempotent = ["is already published", "already exists", "has already been pushed", "--skip-duplicate"];
-    for (const lane of WEBPACKLANES) {
-      const laneblock = text.split(`  ${lane}:`)[1]?.split("\n  webpack")[0] ?? "";
-      expect(
-        idempotent.some((form) => laneblock.includes(form)),
-        `the ${lane} lane answers an idempotent existence form`,
-      ).toBe(true);
-      expect(
-        laneblock.split("for attempt in 1 2 3").length - 1,
-        `the ${lane} lane walks the bounded three-attempt retry`,
-      ).toBe(1);
-    }
-  });
-
-  it("the npmjs lane carries the provenance permission and the absent-token notice", async () => {
-    const webpack = await parseworkflow("webpack.yml");
-    const npmjs = webpack.jobs?.["webpacknpmjs"] as lanejob | undefined;
-    expect(npmjs?.permissions?.["id-token"], "the npmjs publish answers the attestation endpoint").toBe(
-      "write",
-    );
-    const text = await readworkflow("webpack.yml");
-    const laneblock = text.split("  webpacknpmjs:")[1]?.split("\n  webpackgithubnpm")[0] ?? "";
-    expect(laneblock, "the absent NPM_TOKEN answers the graceful skip notice").toContain(
-      "Secret NPM_TOKEN is not configured",
-    );
-    expect(laneblock, "the npmjs webpack publish stamps the public access").toContain("--access public");
-  });
-
-  it("the github registry lanes carry the billing wall mirror notices", async () => {
-    const text = await readworkflow("webpack.yml");
-    for (const lane of ["webpackgithubnpm", "webpackmaven", "webpackgradle", "webpacknuget", "webpackrubygems"]) {
-      const laneblock = text.split(`  ${lane}:`)[1]?.split("\n  webpack")[0] ?? "";
-      expect(
-        laneblock,
-        `the ${lane} lane keeps its seat unpublished behind the billing warning (never a red)`,
-      ).toMatch(/billing|403/);
-    }
+    /* the fusion law the corridor sealed: the registry publication of the
+     * bundle rides INSIDE the original packages, so no variant package
+     * name (the @wenathlan/<app>.webpack npm envelope, the
+     * com.wenathlan.<app>.webpack artifactId, the <app>.webpack nuget
+     * packageId or the <app>.webpack gem) ever lands in the webpack
+     * workflow again. */
+    expect(text).not.toContain("'@wenathlan/${PKG}.webpack'");
+    expect(text).not.toContain("-DartifactId=\"${PKG}.webpack\"");
+    expect(text).not.toContain("<PackageId>${PKG}.webpack</PackageId>");
+    expect(text).not.toContain("${PKG}/${PKG}.webpack.gemspec");
   });
 
   it("the asset grammar rides the dotted law and never an underscore", async () => {
     const text = await readworkflow("webpack.yml");
-    const grammars = [
-      "npmjs.webpack.${VERSION}.tgz",
-      "github.webpack.${VERSION}.tgz",
-      "maven.webpack.${VERSION}.jar",
-      "gradle.webpack.${VERSION}.jar",
-      "nuget.webpack.${VERSION}.nupkg",
-      "rubygems.webpack.${VERSION}.gem",
-      "webpack.${VERSION}.cjs",
-    ];
+    /* the release assets the bundle seat attaches: the cjs bundle beside
+     * its sha256 twin, the dotted law, never an underscore. */
+    const grammars = ["webpack.${VERSION}.cjs", "sha256.webpack.${VERSION}"];
     for (const grammar of grammars) {
       expect(text, `the ${grammar} asset grammar answers the dotted law`).toContain(grammar);
     }
@@ -194,16 +148,16 @@ describe.skipIf(!inrepo)("the webpack distribution workflow", () => {
           .filter((line) => line.trim().startsWith('"${{ matrix.package }}.'))
           .map((line) => line.trim()),
       );
-    expect(attachLines.length, "the attach grammar lines answer").toBeGreaterThan(12);
+    expect(attachLines.length, "the attach grammar lines answer").toBeGreaterThanOrEqual(2);
     for (const line of attachLines) {
       expect(line, `no underscore ever rides a published asset: ${line}`).not.toMatch(/_\{?[A-Z]|_[a-z]/);
     }
   });
 
-  it("the resolver validates the version lockstep of every leg", async () => {
+  it("the resolver validates the version lockstep of the seat", async () => {
     const text = await readworkflow("webpack.yml");
     const resolvers = text.split("resolve release version").length - 1;
-    expect(resolvers, "the seven jobs (the seat and the six lanes) resolve the release version").toBe(7);
+    expect(resolvers, "the bundle seat resolves the release version").toBe(1);
     expect(text, "every resolver validates the envelope version against the tag").toContain(
       "does not match the ${{ matrix.package }} envelope version",
     );
@@ -212,20 +166,26 @@ describe.skipIf(!inrepo)("the webpack distribution workflow", () => {
   it("every action rides the sha pin the house stamps", async () => {
     const text = await readworkflow("webpack.yml");
     const uses = [...text.matchAll(/uses:\s*([^\s]+)/g)].map((match) => match[1]);
-    expect(uses.length, "the workflow uses pinned actions").toBeGreaterThan(20);
+    expect(uses.length, "the workflow uses pinned actions").toBeGreaterThanOrEqual(3);
     for (const use of uses) {
       expect(use, `the ${use} action rides the sha pin`).toMatch(/@[0-9a-f]{40}/);
     }
   });
 
-  it("the registry lanes never collide with the family envelopes", async () => {
-    const text = await readworkflow("webpack.yml");
-    expect(text, "the npm lanes publish the scoped webpack envelopes").toContain(
-      "'@wenathlan/${PKG}.webpack'",
+  it("the fusion embeds the bundle inside the original envelopes the publish lanes ship", async () => {
+    const publish = await readworkflow("publish.yml");
+    /* the embed the fusion law seats in the publish workflow: the family
+     * lanes bundle the webpack seat beside the sources their original
+     * envelopes already carry — the esbuild carrier, the webpack CLI
+     * bundle through the generated config, the cjs landing at the app
+     * root where the files field (and the staged distpackage, the maven
+     * classifier, the gradle module jar, the nuget package and the
+     * rubygem) ship it. */
+    const fusionsteps = publish.split("bundle the webpack seat inside the original envelope (the fusion law)").length - 1;
+    expect(fusionsteps, "the fusion step rides the publish family lanes (npm, maven, gradle, nuget, rubygems)").toBe(
+      8,
     );
-    expect(text, "the maven lane attaches the webpack classifier").toContain("-Dclassifier=webpack");
-    expect(text, "the gradle lane rides the dotted artifactId").toContain("-DartifactId=\"${PKG}.webpack\"");
-    expect(text, "the nuget lane rides the dotted packageId").toContain("<PackageId>${PKG}.webpack</PackageId>");
-    expect(text, "the rubygems lane derives from the folder gemspec").toContain("${PKG}/${PKG}.gemspec");
+    expect(publish).toContain("publish the webpack classifier the fusion embeds on the normal artifact");
+    expect(publish).toContain('-DartifactId="${PKG}" -Dversion="${VERSION}" -Dclassifier=webpack');
   });
 });

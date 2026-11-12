@@ -548,7 +548,8 @@
     "README.md",
     "docs",
     "test",
-    "cli.ts"
+    "cli.ts",
+    "stealthhead.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

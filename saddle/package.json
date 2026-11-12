@@ -698,7 +698,8 @@
     "tsconfig.json",
     "biome.jsonc",
     "tiers.ts",
-    "quantum.ts"
+    "quantum.ts",
+    "saddle.webpack.cjs"
   ],
   "main": "./index.ts",
   "types": "./index.ts"

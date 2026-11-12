@@ -550,7 +550,8 @@
     "docs",
     "test",
     "README.md",
-    "cli.ts"
+    "cli.ts",
+    "forge.webpack.cjs"
   ],
   "trustedDependencies": [
     "@parcel/watcher",

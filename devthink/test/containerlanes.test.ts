@@ -2,28 +2,34 @@
  * containerlanes.test.ts — the containerlanes wave contract of the registry
  * doctrine: the four laws the owner's complaint charged ("as 11 lanes do
  * docker não foram publicadas e padronizadas em todos os aplicativos, e
- * saddle não tem +15 distribuições no docker e mais de 7 contando com
- * webpack, nem os outros apps que deveriam ter 11+"). the eleven container
- * lanes — every application of the monorepo answers its own
- * ghcr.io/wenathlan/<app> container package through the containers workflow
- * (the ten sibling lanes of the app-containers matrix beside the saddle
- * engine's own saddle-containers lane set), each leg carrying the version
- * tag, the latest alias, the per-architecture seat tags of every
- * base-carried arch and the documented best-effort lanes - more than eleven
- * lanes every app, honestly counted. the fifteen-plus docker distributions
- * — the saddle tag census answers forty-eight distinct published tags (the
- * three profile umbrellas, the twelve architecture seats stamped off the
- * published index and the eleven os-distribution flavor lanes riding
- * the three-tier axis the master stamped). the thirty-six
- * webpack lanes — the webpack-bundled saddle engine distribution walks its
- * six registry channels (npmjs, the github npm registry, maven, nuget,
- * gradle and rubygems) beside the base npmjs envelope the family-npmjs
- * mirror ships: mais de sete contando com webpack. the channel census —
- * every application rides the eleven-plus distribution lanes the registries
- * answer (the ten registry family matrices of the publish workflow beside
- * the tri-channel wave of the PR12 eleven-channel law seated (the pypi,
- * cargo and homebrew family lanes beside the seven the distfamily wave
- * closed)
+ * saddle não tem +15 distribuições no docker") sealed by the TWELVE-LANE
+ * LAW of the owner's latest breath (every distribution carrying the
+ * twelve arch lanes). the eleven container lanes — every application of
+ * the monorepo answers its own ghcr.io/wenathlan/<app> container package
+ * through the containers workflow (the ten sibling lanes of the
+ * app-containers matrix beside the saddle engine's own saddle-containers
+ * lane set), each leg carrying the version tag, the latest alias, the
+ * per-architecture seat tags of every base-carried arch and the documented
+ * best-effort lanes - more than eleven lanes every app, honestly counted.
+ * the fifteen-plus docker distributions under the twelve-lane law — the
+ * saddle tag census answers SIXTY distinct published tags (the three
+ * profile umbrellas, the twenty-four architecture seats stamped off the
+ * published index across the eight primary arches and the thirty-three
+ * os-distribution flavor lanes riding the three-tier axis the master
+ * stamped, the four exotic best-effort arches documented beside every
+ * lane). the webpack fusion — the owner's corridor order ("cancela elas,
+ * exclui elas e embute elas dentro do original"): the variant registry
+ * seats the older wave published under the .webpack names are DEAD, the
+ * webpack distribution bundle rides INSIDE the original envelopes the
+ * publish workflow's family lanes ship (the files field carrying the
+ * <app>.webpack.cjs seat, the maven classifier on the normal
+ * com.wenathlan.<app> coordinates, the gradle module, the nuget package
+ * and the rubygem the same embed), never a variant package anywhere. the
+ * channel census — every application rides the eleven-plus distribution
+ * lanes the registries answer (the ten registry family matrices of the
+ * publish workflow beside the tri-channel wave of the PR12 eleven-channel
+ * law seated (the pypi, cargo and homebrew family lanes beside the seven
+ * the distfamily wave closed)
  * the container lanes of the containers workflow), so the regression that
  * once left the ghcr package page answering only the saddle container can
  * never land silently again.
@@ -101,10 +107,14 @@ const REGISTRYLANES = [
   "family-goget",
 ] as const;
 
-/** the four architecture seats the pinned node base honestly carries for
- * the saddle engine (the native amd64 leg beside the three QEMU-emulated
- * seats - the same build index the vhe lane family rides). */
-const SEATARCHES = ["amd64", "arm64", "ppc64le", "s390x"];
+/** the eight primary architecture seats the pinned node base honestly
+ * carries for the saddle engine (the native amd64 leg beside the seven
+ * QEMU-emulated seats - the same build index the vhe lane family rides
+ * under the twelve-lane law, the four exotic best-effort arches riding
+ * the documented lanes beside them). */
+const SEATARCHES = ["386", "amd64", "arm/v6", "arm/v7", "arm64", "ppc64le", "riscv64", "s390x"];
+const TWELVEPLATFORMS =
+  "linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x";
 
 describe.skipIf(!inrepo)("the eleven container lanes of the registry standard", () => {
   it("every sibling application answers its own container lane — the ten matrix legs beside the saddle lane set", async () => {
@@ -189,7 +199,7 @@ describe.skipIf(!inrepo)("the eleven container lanes of the registry standard", 
 });
 
 describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
-  it("the saddle lane family answers three profile umbrellas, eleven os-distribution flavors riding the three-tier axis and the twelve architecture seats — forty-eight distinct tags", async () => {
+  it("the saddle lane family answers three profile umbrellas, eleven os-distribution flavors riding the three-tier axis and the twenty-four architecture seats — sixty distinct tags under the twelve-lane law", async () => {
     const workflow = await parseworkflow("containers.yml");
     const legs = matrixof(workflow, "saddle-containers");
     /* the thirty-six runnable lane legs: the three profile lanes (max,
@@ -227,16 +237,18 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
       ["lite", "lite", "-lite"],
       ...flavorlegs,
     ]);
-    /* every leg ships the build legs the pinned node base honestly
-     * carries: the native amd64 leg beside the arm64, ppc64le and s390x
-     * legs under QEMU - the same build index the vhe lanes ride. */
+    /* every leg ships the EIGHT primary build legs the pinned node base
+     * honestly carries under the twelve-lane law: the native amd64 leg
+     * beside the 386, arm/v6, arm/v7, arm64, ppc64le, riscv64 and s390x
+     * legs under QEMU - the same build index the vhe lanes ride, the
+     * four exotic best-effort arches documented beside every lane. */
     for (const leg of legs) {
-      expect(leg.platforms).toBe("linux/amd64,linux/arm64,linux/ppc64le,linux/s390x");
+      expect(leg.platforms).toBe(TWELVEPLATFORMS);
     }
     /* the seat axis: only the three profile legs carry the seatprefix
      * stamp (the flavor lanes ship their umbrella tag alone), and the
-     * census arithmetic answers the owner's more-than-fifteen directive:
-     * 3 umbrellas + 3 profiles x 4 arch seats + 4 flavors = 19 tags. */
+     * census arithmetic answers the twelve-lane law: 3 umbrellas +
+     * 3 profiles x 8 arch seats + 33 flavors = 60 tags. */
     expect(legs.map((leg) => leg.seatprefix ?? "")).toEqual([
       "max",
       "balanced",
@@ -248,8 +260,8 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
     const flavors = legs.filter((leg) => (leg.seatprefix ?? "") === "").length;
     const census = umbrellas + seats;
     expect(flavors).toBe(33);
-    expect(census).toBe(3 + 33 + 12);
-    expect(census).toBe(48);
+    expect(census).toBe(3 + 33 + 24);
+    expect(census).toBe(60);
     expect(census).toBeGreaterThan(15);
   });
 
@@ -309,70 +321,46 @@ describe.skipIf(!inrepo)("the saddle fifteen-plus docker distributions", () => {
   });
 });
 
-describe.skipIf(!inrepo)("the saddle webpack seat (the seven-lane law)", () => {
-  it("the webpack-bundled engine distribution walks its six registry channels beside the base npmjs envelope", async () => {
+describe.skipIf(!inrepo)("the webpack fusion (the owner's corridor order)", () => {
+  it("the variant registry seats are dead — no saddle-webpack job, no .webpack package name anywhere in the container lanes", async () => {
     const workflow = await parseworkflow("containers.yml");
-    /* the pr14 law (the owner's sentence "6 por app versão Webpack +
-     * npmjs" and the containerlanes complaint "mais de 7 contando com
-     * webpack"): the six webpack channel legs of the matrix - npmjs,
-     * the github npm registry, maven, nuget, gradle and rubygems, every
-     * leg a real publish of the real webpack bundle the engine build
-     * produces - beside the base npmjs envelope the family-npmjs mirror
-     * of the publish workflow already ships for the saddle leg, so the
-     * webpack axis owns SEVEN distribution lanes. */
-    const channels = (workflow.jobs?.["saddle-webpack"]?.strategy as { matrix?: { channel?: string[] } } | undefined)
-      ?.matrix?.channel;
-    expect(channels).toEqual(["npmjs", "githubnpm", "maven", "nuget", "gradle", "rubygems"]);
-    /* the seventh lane: the base npmjs envelope of the saddle engine
-     * the family mirror publishes (the saddle leg of the family-npmjs
-     * matrix of the publish workflow). */
-    const publish = await parseworkflow("publish.yml");
-    const family = (publish.jobs?.["family-npmjs"]?.strategy as { matrix?: { package?: string[] } })?.matrix;
-    expect(family?.package).toContain("saddle");
-    const total = (channels ?? []).length + 1;
-    expect(total).toBeGreaterThanOrEqual(7);
+    /* the fusion law the owner sealed ("cancela elas, exclui elas e
+     * embute elas dentro do original"): the webpack-bundled engine
+     * distribution never walks a variant registry seat again — the
+     * saddle-webpack job the older wave carried is gone, and no package
+     * name the container lanes answer ever carries the .webpack trace
+     * (@wenathlan/saddle-webpack, Saddle.Webpack, the saddle-webpack
+     * gemspec and module all dead at the source). */
+    expect(workflow.jobs?.["saddle-webpack"]).toBeUndefined();
+    const containers = await readworkflow("containers.yml");
+    expect(containers).not.toContain("@wenathlan/saddle-webpack");
+    expect(containers).not.toContain("Saddle.Webpack.csproj");
+    expect(containers).not.toContain("saddle-webpack.gemspec");
   });
 
-  it("the webpack bundle is the real exact-pinned cross-bundler product the ci battery verifies", async () => {
-    const containers = await readworkflow("containers.yml");
-    /* the cross-bundler rung the ci battery verifies, carried to the
-     * saddle engine: the tsc engine build (scripts.ts buildengine, the
-     * lane-word dispatcher the scripts consolidation seated) walks the
-     * noEmit typecheck the app manifest carries, the esbuild bundle the
-     * manifest dependency owns emits the distpackage/index.js entry with
-     * the four host-owned externals, and the exact-pinned webpack seat
-     * (webpack 5.112.2 with its webpack-cli 7.3.1 peer — the pins the
-     * install line carries beside the manifest seats the frozen lock
-     * resolution answers, never a floating fetch) packs the one entry
-     * through the config form (the CLI-flag parse dies on the commander
-     * major the saddle tree carries — prev is not iterable — the config
-     * sidesteps the flag parser whole) into the one webpack bundle the
-     * six channel legs distribute. */
-    expect(containers).toContain("node scripts.ts buildengine");
-    expect(containers).toContain(
-      "node_modules/.bin/esbuild index.ts --bundle --platform=node --format=esm --outfile=distpackage/index.js",
-    );
-    expect(containers).toContain(
-      "npx --yes npm@11.20.0 install --ignore-scripts --no-audit --no-fund webpack@^5.112.2 webpack-cli@^7.3.1",
-    );
-    expect(containers).toContain("node_modules/.bin/webpack -c distpackage/webpack.config.mjs");
-    expect(containers).toContain('filename: "saddle.webpack.js"');
-    expect(containers).toContain("test -s distpackage/webpack/saddle.webpack.js");
-    /* the envelope coordinates of the webpack distribution never
-     * collide with the engine envelope the publish lanes own: the
-     * npm lanes carry @wenathlan/saddle-webpack, maven carries the
-     * webpack classifier of the com.wenathlan:saddle coordinates,
-     * nuget carries Saddle.Webpack, gradle carries the saddle-webpack
-     * module and rubygems carries the saddle-webpack gem. */
-    expect(containers).toContain("@wenathlan/saddle-webpack");
-    expect(containers).toContain("-Dclassifier=webpack");
-    expect(containers).toContain("Saddle.Webpack.csproj");
-    expect(containers).toContain("saddle-webpack.gemspec");
-    /* the graceful-skip token gate the npmjs leg carries (the family
-     * contract, Regra 54: NPM_TOKEN is OPTIONAL - a repository without
-     * the secret skips the publication with a notice instead of
-     * hard-failing the wave). */
-    expect(containers).toContain("RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}");
+  it("the webpack distribution rides INSIDE the original envelopes the family lanes ship", async () => {
+    const publish = await readworkflow("publish.yml");
+    /* the embed the fusion law seats: every registry family lane that
+     * publishes an original package runs the bundling step (the esbuild
+     * carrier walking cli.ts to the esm script with the packages
+     * external, the webpack CLI bundling through the generated config
+     * into the <app>.webpack.cjs seat) and packs the bundle inside the
+     * normal envelope — the npm files field carrying the cjs, the maven
+     * classifier riding the normal com.wenathlan.<app> coordinates (the
+     * owner's normal name: forge, cadria and the eleven), the gradle
+     * module jar including the cjs, the nuget package carrying it under
+     * webpack/ and the rubygem listing it in the files. */
+    expect(publish).toContain("bundle the webpack seat inside the original envelope (the fusion law)");
+    expect(publish).toContain("npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs");
+    expect(publish).toContain('filename: "${PKG}.webpack.cjs"');
+    expect(publish).toContain("publish the webpack classifier the fusion embeds on the normal artifact");
+    expect(publish).toContain('-DartifactId="${PKG}" -Dversion="${VERSION}" -Dclassifier=webpack');
+    /* the npm envelopes carry the cjs seat in the files field (the
+     * eleven application manifests listing the bundle they ship). */
+    for (const app of ["argan", "cadria", "cobaia", "debonair", "devthink", "forge", "foundry", "getry", "saddle", "stealthhead", "vault"]) {
+      const manifest = JSON.parse(await readFile(join(repoRoot, app, "package.json"), "utf8")) as { files?: string[] };
+      expect(manifest.files, `the ${app} envelope files must carry the webpack seat`).toContain(`${app}.webpack.cjs`);
+    }
   });
 });
 
@@ -424,9 +412,10 @@ describe.skipIf(!inrepo)("the channel census (the eleven-plus distribution lanes
       }
       /* the container seats: every app answers its own ghcr lane set
        * (the app-containers matrix legs carry the twelve-plus lane
-       * axis; the saddle engine carries the nineteen-tag family). */
+       * axis; the saddle engine carries the sixty-tag family under the
+       * twelve-lane law). */
       expect(containerapps.has(app), `the ${app} container lane must seat`).toBe(true);
-      const containerlanes = app === "saddle" ? 19 : 14;
+      const containerlanes = app === "saddle" ? 60 : 14;
       const total = registrylanes + containerlanes;
       expect(total, `the ${app} distribution lane census must answer more than eleven`).toBeGreaterThan(11);
     }

@@ -5,7 +5,17 @@
 # publish lanes, the scan, the validate gate, the cleanup and the
 # saddle-container archive — rides its own workflow the same triggers and
 # the same gates answer, the resolver and the approval seats riding beside
-# them the way the containers workflow always carried its own).
+# them the way the containers workflow always carried its own.
+# THE TWELVE-LANE LAW the owner's latest breath ordered rides the whole
+# family: every distribution — the profile lanes, the os-distribution
+# flavors, the catalog seats (grapheneos, maruos, archlinux, alpine,
+# debian, nixos, void, fedora and the rest) — carries the twelve arch
+# lanes (the eight primary legs the pinned node base answers beside the
+# four documented best-effort arches), and the NORMAL distribution owns
+# its dedicated closing job: the bare version tag without the v trace
+# (never the -vhe trace the stale 2.1.6 era carried), published as the
+# top stamp of every rung — the seat the owner named to ride above
+# grapheneos, the standard the plain docker pull resolves.
 name: DevThink Saddle Lanes
 on:
   release:
@@ -208,9 +218,10 @@ jobs:
         with:
           # the build index minus the native amd64 leg: every platform
           # the amd64 runner cannot execute installs its binfmt handler
-          # here (the family pin - only the emulated legs: arm64, ppc64le
-          # and s390x).
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # here (the family pin - the seven emulated legs of the
+          # twelve-lane law: 386, arm/v6, arm/v7, arm64, ppc64le,
+          # riscv64 and s390x).
+          platforms: linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -562,9 +573,10 @@ jobs:
         with:
           # the build index minus the native amd64 leg: every platform
           # the amd64 runner cannot execute installs its binfmt handler
-          # here (the family pin - only the emulated legs: arm64, ppc64le
-          # and s390x).
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # here (the family pin - the seven emulated legs of the
+          # twelve-lane law: 386, arm/v6, arm/v7, arm64, ppc64le,
+          # riscv64 and s390x).
+          platforms: linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -704,10 +716,10 @@ jobs:
     defaults:
       run:
         shell: bash
-    # 330 min: the build index (PR15) carries the three emulated legs
-    # (arm64, ppc64le and s390x) under QEMU beside the native amd64 leg -
-    # the cold-cache publish legs ran past the old 180-minute ceiling and
-    # were killed by the timeout.
+    # 330 min: the build index (PR15) carries the seven emulated legs
+    # (386, arm/v6, arm/v7, arm64, ppc64le, riscv64 and s390x) under
+    # QEMU beside the native amd64 leg - the cold-cache publish legs ran
+    # past the old 180-minute ceiling and were killed by the timeout.
     # 5.5h stays under the 6h hosted-runner job cap with headroom for
     # mirror races; the warm registry cache completes the legs far under
     # the ceiling (a cold-cache QEMU pass can still redden on rare
@@ -722,47 +734,34 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # THE ELEVEN-ARCH CONTAINER LAW (PR15) BESIDE THE OS-DISTRIBUTION
-        # LANE AXIS (the owner's container-lane law: the saddle container
-        # carries MORE THAN 15 lanes): the standard covers the eleven
-        # architecture seats of saddle/containerarch.ts (linux-x64,
-        # darwin-arm64, windows-x64, linux-arm64, darwin-x64,
-        # windows-arm64, linux-x64-musl, linux-riscv64, wasm32,
-        # darwin-arm64-v8, windows-x64-gnu) and the three profile lanes
-        # ship the build legs of the container-carried seats the pinned
-        # node base honestly answers (the native amd64 leg that serves
-        # linux-x64 and linux-x64-musl beside the arm64, ppc64le and
-        # s390x legs under QEMU emulation — 3 lanes x 4 arch legs = 12
-        # arch-lanes, every one kept). beside them the os-distribution
-        # axis rides the tier grid the owner's standardization
-        # directive charged: twelve flavor lanes (linux, omarchy,
-        # vanillaos, android — every distribution carrying its max,
-        # balanced and lite twins) stamp their OSDISTRIBUTIONS catalog
-        # profile into the image config (SADDLE_OS_PROFILE + the OCI
-        # labels) and build on the same honest node base legs (12
-        # lanes x 4 arch legs = 48 arch-lanes), and the four catalog
-        # lanes the saddle-vhe-catalog job owns (grapheneos, maruos,
-        # v, windows — profiles with no runnable container base:
-        # Android firmware and guest seats) complete the family.
-        # twelve + forty-eight + four = sixty-four lanes, each
-        # carrying a single version tag on the saddle container
-        # package. One tag per version, no rolling aliases.
+        # THE TWELVE-LANE LAW BESIDE THE OS-DISTRIBUTION LANE AXIS (the
+        # owner's container-lane law in its latest breath: every
+        # distribution carries the TWELVE arch lanes): the profile and
+        # flavor lanes here ship the eight primary legs the pinned node
+        # base honestly answers (the native amd64 leg beside the 386,
+        # arm/v6, arm/v7, arm64, ppc64le, riscv64 and s390x legs under
+        # QEMU emulation) — every lane x 8 primary legs, plus the four
+        # exotic best-effort lanes (arm/v5, mips64le, mips64, loong64)
+        # the step below documents per arch — twelve arch lanes every
+        # lane. beside them the os-distribution axis rides the tier grid
+        # the owner's standardization directive charged: twelve flavor
+        # lanes (linux, omarchy, vanillaos, android — every distribution
+        # carrying its max, balanced and lite twins) stamp their
+        # OSDISTRIBUTIONS catalog profile into the image config
+        # (SADDLE_OS_PROFILE + the OCI labels), and the catalog lanes the
+        # saddle-vhe-catalog job owns (grapheneos, maruos, v, windows,
+        # postmarketos, lineageos, calyxos, archlinux, alpine, debian,
+        # fedora, nixos, void) complete the family on the same
+        # twelve-arch law. the NORMAL distribution — the bare version
+        # tag without the v trace, the max profile the saddle-vhe-normal
+        # job owns — rides its own seat as the closing top stamp of the
+        # rung (above every os-specific seat, grapheneos included).
+        # One tag per version, no rolling aliases.
         include:
-          - profile: max
-            target: max
-            suffix: ""
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
-            profilecpu: epyc9965
-            profilevcpus: 192
-            profilethreads: 384
-            profileram: 1024
-            profilegpu: b200
-            profilegpus: 8
-            expectcpu: EPYC 9965
           - profile: balanced
             target: balanced
             suffix: "-balanced"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -773,7 +772,7 @@ jobs:
           - profile: lite
             target: lite
             suffix: "-lite"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -793,7 +792,7 @@ jobs:
             target: oslinux
             osprofile: linux
             suffix: "-linux"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -805,7 +804,7 @@ jobs:
             target: oslinux
             osprofile: linux
             suffix: "-balanced-linux"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -817,7 +816,7 @@ jobs:
             target: oslinux
             osprofile: linux
             suffix: "-lite-linux"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -829,7 +828,7 @@ jobs:
             target: osomarchy
             osprofile: omarchy
             suffix: "-omarchy"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -841,7 +840,7 @@ jobs:
             target: osomarchy
             osprofile: omarchy
             suffix: "-balanced-omarchy"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -853,7 +852,7 @@ jobs:
             target: osomarchy
             osprofile: omarchy
             suffix: "-lite-omarchy"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -865,7 +864,7 @@ jobs:
             target: osvanillaos
             osprofile: vanillaos
             suffix: "-vanillaos"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -877,7 +876,7 @@ jobs:
             target: osvanillaos
             osprofile: vanillaos
             suffix: "-balanced-vanillaos"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -889,7 +888,7 @@ jobs:
             target: osvanillaos
             osprofile: vanillaos
             suffix: "-lite-vanillaos"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -901,7 +900,7 @@ jobs:
             target: osandroid
             osprofile: android
             suffix: "-android"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: epyc9965
             profilevcpus: 192
             profilethreads: 384
@@ -913,7 +912,7 @@ jobs:
             target: osandroid
             osprofile: android
             suffix: "-balanced-android"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: threadripperpro9995wx
             profilevcpus: 96
             profilethreads: 192
@@ -925,7 +924,7 @@ jobs:
             target: osandroid
             osprofile: android
             suffix: "-lite-android"
-            platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x
+            platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
             profilecpu: ryzen9950x3d
             profilevcpus: 16
             profilethreads: 32
@@ -944,9 +943,10 @@ jobs:
         with:
           # the build index minus the native amd64 leg: every platform
           # the amd64 runner cannot execute installs its binfmt handler
-          # here (the family pin - only the emulated legs: arm64, ppc64le
-          # and s390x).
-          platforms: linux/arm64,linux/ppc64le,linux/s390x
+          # here (the family pin - the seven emulated legs of the
+          # twelve-lane law: 386, arm/v6, arm/v7, arm64, ppc64le,
+          # riscv64 and s390x).
+          platforms: linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
@@ -1060,6 +1060,50 @@ jobs:
           cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
           provenance: mode=max
           sbom: true
+
+      - name: build the documented best-effort lanes (fail closed, never block the wave)
+        # the exotic half of the twelve-lane law the owner's breath
+        # ordered: the arches buildx supports whose pinned runtime base
+        # carries no manifest today. each lane builds its own per-arch
+        # tag off the lane's version tag, and a lane whose base cannot
+        # resolve fails closed with a warning - the lane stays
+        # documented in the census, the wave never reddens on an arch
+        # no base ships (continue-on-error rides the step for the same
+        # law the family container lane carries).
+        if: steps.meta.outputs.skip != 'true'
+        continue-on-error: true
+        shell: bash
+        env:
+          VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
+          SUFFIX: ${{ matrix.suffix }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -uo pipefail
+          ver="${VERSION}"
+          suffix="${SUFFIX}"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/saddle"
+          for arch in linux/arm/v5 linux/mips64le linux/mips64 linux/loong64; do
+            slug="${arch//\//-}"
+            echo "--- best-effort lane ${arch} (documented: no pinned base carries this manifest today) ---"
+            if docker buildx build \
+              --platform "${arch}" \
+              --target ${{ matrix.target }} \
+              --build-arg SADDLE_VERSION="${ver}" \
+              --build-arg VHE_PROFILE_CPU=${{ matrix.profilecpu }} \
+              --build-arg VHE_PROFILE_VCPUS=${{ matrix.profilevcpus }} \
+              --build-arg VHE_PROFILE_THREADS=${{ matrix.profilethreads }} \
+              --build-arg VHE_PROFILE_RAM_GB=${{ matrix.profileram }} \
+              --build-arg VHE_PROFILE_GPU=${{ matrix.profilegpu }} \
+              --build-arg VHE_PROFILE_GPUS=${{ matrix.profilegpus }} \
+              --build-arg NODE_BASE_TAG=node:26.13.0-slim \
+              --build-arg NODE_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodedigest }} \
+              --tag "${image}:${ver}${suffix}-${slug}" \
+              --push ./saddlebuildctx --file=./saddlebuildctx/saddle/Dockerfile; then
+              echo "the best-effort lane ${arch} answered - a base variant carries it now; the lane ships as :${ver}${suffix}-${slug}."
+            else
+              echo "::warning::the best-effort lane ${arch} failed closed - the pinned runtime base carries no ${arch} manifest; the lane stays documented in the census, the wave continues."
+            fi
+          done
 
   saddle-vhe-catalog:
     name: Publish the saddle os-distribution catalog lane ${{ matrix.osprofile }} to GHCR
@@ -1522,15 +1566,22 @@ jobs:
 
       - name: Build and push the catalog lane
         # the scratch target of the profile: no runnable base (the digest
-        # law rides trivially — a scratch stage pins no base at all), the
-        # profile config and the stamps the config carries.
+        # law rides trivially — a scratch stage pins no base at all),
+        # the profile config and the stamps the config carries. THE
+        # TWELVE-LANE LAW the owner's breath ordered rides the manifest
+        # index itself: the scratch seat carries nothing to execute, so
+        # the full twelve-platform index (the eight primary legs beside
+        # the four exotic arches) builds without emulation and every
+        # os-distribution — grapheneos, maruos, archlinux, alpine,
+        # debian, nixos and the whole catalog family — answers the same
+        # twelve arch lanes the runnable lanes stamp.
         if: steps.meta.outputs.skip != 'true'
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: ./saddlebuildctx
           file: ./saddlebuildctx/saddle/Dockerfile
           target: os${{ matrix.osprofile }}
-          platforms: linux/amd64
+          platforms: linux/386,linux/amd64,linux/arm/v5,linux/arm/v6,linux/arm/v7,linux/arm64,linux/mips64le,linux/mips64,linux/loong64,linux/ppc64le,linux/riscv64,linux/s390x
           push: true
           tags: ${{ steps.meta.outputs.tag }}
           build-args: |
@@ -1550,9 +1601,182 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
 
+  saddle-vhe-normal:
+    name: Publish the saddle normal distribution lane to GHCR (the closing top stamp)
+    # THE NORMAL DISTRIBUTION (the owner's latest breath): the standard
+    # seat — the bare version tag WITHOUT the v trace (and never the
+    # -vhe trace the stale 2.1.6 era carried), the max profile the
+    # operator resolves with a plain docker pull. the lane rides its own
+    # dedicated job as the CLOSING TOP STAMP of every rung: it completes
+    # after the profile, flavor and catalog lanes, so the registry
+    # version list answers the normal seat above every os-specific
+    # distribution — grapheneos included, the seat the owner named as
+    # the most recent today — while the pull the operator runs lands the
+    # twelve-lane index the law stamps (the eight primary legs plus the
+    # four documented best-effort lanes).
+    needs: [saddle-vhe-resolve, saddle-vhe-scan, saddle-vhe-publish, saddle-vhe-catalog]
+    if: >-
+      always() &&
+      needs.saddle-vhe-resolve.result == 'success' &&
+      needs.saddle-vhe-resolve.outputs.proceed == 'true' &&
+      needs.saddle-vhe-scan.result == 'success'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    # the same ceiling the publish legs carry (the closing stamp walks
+    # the same heavy index the max profile always built).
+    timeout-minutes: 330
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.saddle-vhe-resolve.outputs.tag }}
+
+      - name: Set up QEMU (the emulated legs of the build index)
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+        with:
+          # the build index minus the native amd64 leg: every platform
+          # the amd64 runner cannot execute installs its binfmt handler
+          # here (the family pin - the seven emulated legs of the
+          # twelve-lane law: 386, arm/v6, arm/v7, arm64, ppc64le,
+          # riscv64 and s390x).
+          platforms: linux/386,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve the single normal version tag
+        id: meta
+        env:
+          VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
+          IMAGE: ${{ env.REGISTRY }}/saddle
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          img="${IMAGE,,}"
+          ver="${VERSION}"
+          # THE NORMAL TAG: the bare version without the v trace (never
+          # the -vhe trace the stale 2.1.6 era carried) — the standard
+          # seat the owner's law names, one tag per version, no rolling
+          # alias, no profile suffix.
+          echo "tag=${img}:${ver}" >> "$GITHUB_OUTPUT"
+          echo "resolved normal tag: ${img}:${ver}"
+          # the per-leg guard the publish legs carry: a re-run that
+          # follows a partial rung skips only when the tag already
+          # answers on the registry.
+          leg_out="$(gh api "/users/${OWNER,,}/packages/container/saddle/versions" --jq "[.[] | select(.metadata.container.tags[]? | . == \"${ver}\")] | length" 2>/dev/null || true)"
+          case "${leg_out}" in
+            ''|*[!0-9]*) leg_out=0 ;;
+          esac
+          if [ "${leg_out}" != "0" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "tag ${ver} already ships on the registry; the normal stamp will skip."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stage the saddle build context (the engine-ownership sibling)
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf saddlebuildctx
+          mkdir -p saddlebuildctx/saddle saddlebuildctx/vault saddlebuildctx/devthink
+          cp -a saddle/. saddlebuildctx/saddle/
+          cp -a vault/. saddlebuildctx/vault/
+          cp -a devthink/. saddlebuildctx/devthink/
+          rm -rf saddlebuildctx/saddle/.git saddlebuildctx/vault/.git saddlebuildctx/devthink/.git \
+                 saddlebuildctx/saddle/node_modules saddlebuildctx/vault/node_modules saddlebuildctx/devthink/node_modules \
+                 saddlebuildctx/saddle/dist saddlebuildctx/vault/dist saddlebuildctx/devthink/dist \
+                 saddlebuildctx/devthink/build \
+                 saddlebuildctx/vault/test
+          printf '%s\n' 'saddle/.git' 'vault/.git' 'devthink/.git' '**/node_modules' '**/dist' > saddlebuildctx/.dockerignore
+
+      - name: Build and push the normal multi-arch image
+        if: steps.meta.outputs.skip != 'true'
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: ./saddlebuildctx
+          file: ./saddlebuildctx/saddle/Dockerfile
+          # the max profile the normal seat always answered (the same
+          # variant stage the publish legs build).
+          target: max
+          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/riscv64,linux/s390x
+          push: true
+          tags: ${{ steps.meta.outputs.tag }}
+          build-args: |
+            SADDLE_VERSION=${{ needs.saddle-vhe-resolve.outputs.version }}
+            VHE_PROFILE_CPU=epyc9965
+            VHE_PROFILE_VCPUS=192
+            VHE_PROFILE_THREADS=384
+            VHE_PROFILE_RAM_GB=1024
+            VHE_PROFILE_GPU=b200
+            VHE_PROFILE_GPUS=8
+            NODE_BASE_TAG=node:26.13.0-slim
+            NODE_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodedigest }}
+          labels: |
+            org.opencontainers.image.title=saddle (the master virtualization engine)
+            org.opencontainers.image.description=the ninety modalities the self-hosted edge answers (the normal distribution - the standard seat)
+            org.opencontainers.image.version=${{ needs.saddle-vhe-resolve.outputs.version }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          cache-from: type=registry,ref=${{ env.CACHE_IMAGE }}
+          cache-to: type=registry,ref=${{ env.CACHE_IMAGE }},mode=max
+          provenance: mode=max
+          sbom: true
+
+      - name: build the documented best-effort lanes (fail closed, never block the wave)
+        # the exotic half of the twelve-lane law the normal seat answers
+        # too: the four documented arches beside the eight primary legs,
+        # per-arch tags off the bare version, fail closed.
+        if: steps.meta.outputs.skip != 'true'
+        continue-on-error: true
+        shell: bash
+        env:
+          VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -uo pipefail
+          ver="${VERSION}"
+          image="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/saddle"
+          for arch in linux/arm/v5 linux/mips64le linux/mips64 linux/loong64; do
+            slug="${arch//\//-}"
+            echo "--- best-effort lane ${arch} (documented: no pinned base carries this manifest today) ---"
+            if docker buildx build \
+              --platform "${arch}" \
+              --target max \
+              --build-arg SADDLE_VERSION="${ver}" \
+              --build-arg VHE_PROFILE_CPU=epyc9965 \
+              --build-arg VHE_PROFILE_VCPUS=192 \
+              --build-arg VHE_PROFILE_THREADS=384 \
+              --build-arg VHE_PROFILE_RAM_GB=1024 \
+              --build-arg VHE_PROFILE_GPU=b200 \
+              --build-arg VHE_PROFILE_GPUS=8 \
+              --build-arg NODE_BASE_TAG=node:26.13.0-slim \
+              --build-arg NODE_BASE_DIGEST=${{ needs.saddle-vhe-resolve.outputs.nodedigest }} \
+              --tag "${image}:${ver}-${slug}" \
+              --push ./saddlebuildctx --file=./saddlebuildctx/saddle/Dockerfile; then
+              echo "the best-effort lane ${arch} answered - a base variant carries it now; the lane ships as :${ver}-${slug}."
+            else
+              echo "::warning::the best-effort lane ${arch} failed closed - the pinned runtime base carries no ${arch} manifest; the lane stays documented in the census, the wave continues."
+            fi
+          done
+
   saddle-vhe-verify:
     name: Verify published saddle vhe image (${{ matrix.profile }})
-    needs: [saddle-vhe-resolve, saddle-vhe-publish, saddle-vhe-catalog]
+    needs: [saddle-vhe-resolve, saddle-vhe-publish, saddle-vhe-catalog, saddle-vhe-normal]
     if: needs.saddle-vhe-resolve.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     defaults:

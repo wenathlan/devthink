@@ -298,6 +298,49 @@ jobs:
           bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
         run: cd devthink && node build.ts
+      - name: bundle the webpack seat inside the original envelope (the fusion law)
+        # the devthink envelope carries the same embed the family lane
+        # packs: the webpack distribution rides INSIDE the original
+        # package (the staged distpackage gains devthink.webpack.cjs
+        # beside the library surface — the staged manifest carries no
+        # files allowlist so the copied seat ships whole), never a
+        # variant registry seat (the @wenathlan/devthink.webpack package
+        # the older wave published is dead, canceled at every registry).
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG="devthink"
+          cd "${PKG}"
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "./${PKG}.webpack.cjs"
+          rm -rf webpackdist webpacksrc.mjs webpack.config.cjs
+          test -s "./${PKG}.webpack.cjs"
+          cp "./${PKG}.webpack.cjs" "./distpackage/${PKG}.webpack.cjs"
+          test -s "./distpackage/${PKG}.webpack.cjs"
       - name: package dry-run
         run: cd devthink && npm run pack:check
       - name: Verify release package versions
@@ -537,6 +580,54 @@ jobs:
           node --experimental-strip-types build.ts
           test -s build/onboardingstore.js
           test -s build/labelstore.js
+      - name: setup bun for the webpack seat
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: bundle the webpack seat inside the original envelope (the fusion law)
+        # the owner order the corridor sealed: the webpack distribution
+        # rides INSIDE the original package — the envelope packs the
+        # <app>.webpack.cjs beside the sources (the files field carries
+        # it), never a variant registry seat (the @wenathlan/<app>.webpack
+        # packages the older wave published are dead, canceled at every
+        # registry). the same carrier the webpack workflow rides: the
+        # esbuild transpile to the esm script with the packages external
+        # and the webpack CLI bundle through the generated config into
+        # the commonjs2 seat the envelope dependency blocks answer.
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          cd "${PKG}"
+          bun install --frozen-lockfile --ignore-scripts
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "./${PKG}.webpack.cjs"
+          rm -rf webpackdist webpacksrc.mjs webpack.config.cjs
+          test -s "./${PKG}.webpack.cjs"
       - name: package dry-run
         run: cd "${{ matrix.package }}" && npm pack --dry-run >/dev/null
       - name: check npm token availability
@@ -778,6 +869,49 @@ jobs:
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: build the distribution set
         run: cd devthink && node build.ts
+      - name: bundle the webpack seat inside the original envelope (the fusion law)
+        # the devthink envelope carries the same embed the family lane
+        # packs: the webpack distribution rides INSIDE the original
+        # package (the staged distpackage gains devthink.webpack.cjs
+        # beside the library surface — the staged manifest carries no
+        # files allowlist so the copied seat ships whole), never a
+        # variant registry seat (the @wenathlan/devthink.webpack package
+        # the older wave published is dead, canceled at every registry).
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG="devthink"
+          cd "${PKG}"
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "./${PKG}.webpack.cjs"
+          rm -rf webpackdist webpacksrc.mjs webpack.config.cjs
+          test -s "./${PKG}.webpack.cjs"
+          cp "./${PKG}.webpack.cjs" "./distpackage/${PKG}.webpack.cjs"
+          test -s "./distpackage/${PKG}.webpack.cjs"
       - name: package dry-run
         run: cd devthink && npm run pack:check
       - name: align the github package scope on the staged manifest
@@ -970,6 +1104,50 @@ jobs:
             echo "tag=$tag"
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
+      - name: setup bun for the webpack seat
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: bundle the webpack seat inside the original envelope (the fusion law)
+        # the same embed the npmjs family lane packs: the webpack
+        # distribution rides INSIDE the original package (the files
+        # field carries the <app>.webpack.cjs seat), never a variant
+        # registry seat (the @wenathlan/<app>.webpack packages the older
+        # wave published are dead, canceled at every registry).
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          cd "${PKG}"
+          bun install --frozen-lockfile --ignore-scripts
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "./${PKG}.webpack.cjs"
+          rm -rf webpackdist webpacksrc.mjs webpack.config.cjs
+          test -s "./${PKG}.webpack.cjs"
       - name: package dry-run
         run: cd "${{ matrix.package }}" && npm pack --dry-run >/dev/null
       - name: publish the family envelope when absent
@@ -1454,6 +1632,54 @@ jobs:
           distribution: temurin
           server-id: github
           settings-path: ${{ github.workspace }}
+      - name: setup bun for the webpack seat
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: bundle the webpack seat inside the original envelope (the fusion law)
+        # the owner order (the normal name the maven seat carries): the
+        # webpack distribution rides INSIDE the original artifact — the
+        # classifier seat on com.wenathlan.<app> (forge, cadria and the
+        # eleven the family matrix walks), never the variant artifactId
+        # the older wave published (com.wenathlan.<app>.webpack — dead,
+        # canceled at the registry). the same carrier the webpack
+        # workflow rides: the esbuild transpile to the esm script with
+        # the packages external and the webpack CLI bundle through the
+        # generated config into the commonjs2 seat.
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          cd "${PKG}"
+          bun install --frozen-lockfile --ignore-scripts
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "./${PKG}.webpack.cjs"
+          rm -rf webpackdist webpacksrc.mjs webpack.config.cjs
+          test -s "./${PKG}.webpack.cjs"
       - name: pack the family envelope jar
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1462,6 +1688,7 @@ jobs:
           VERSION="${{ steps.release.outputs.version }}"
           mvn --batch-mode --file "${{ matrix.package }}/pom.xml" --settings settings.xml -Drevision="${VERSION}" package
           test -f "${{ matrix.package }}/target/${{ matrix.package }}-${VERSION}.jar"
+          jar cf "${{ matrix.package }}/target/${{ matrix.package }}-${VERSION}-webpack.jar" -C "${{ matrix.package }}" "${{ matrix.package }}.webpack.cjs"
       - name: publish the family envelope when absent
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -1496,6 +1723,44 @@ jobs:
             done
             if [ "$published" != true ] && [ "$billing" -ne 1 ]; then
               echo "::error::the maven deploy of the ${PKG} envelope failed after the bounded retries."
+              exit 1
+            fi
+          fi
+      - name: publish the webpack classifier the fusion embeds on the normal artifact
+        # the fusion law the owner order sealed (the normal name the
+        # maven seat answers): the webpack distribution rides INSIDE the
+        # original com.wenathlan.<app> artifact as the webpack classifier
+        # — the same deploy-file grammar the registry answers, the
+        # bounded retry and the billing wall the family deploy carries,
+        # the variant artifactId (com.wenathlan.<app>.webpack) the older
+        # wave published dead at the registry.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.release.outputs.version }}"
+          PKG="${{ matrix.package }}"
+          PUBLISH="https://maven.pkg.github.com/wenathlan/devthink"
+          if curl -s -f -H "Authorization: Bearer $GITHUB_TOKEN" -o /dev/null "$PUBLISH/com/wenathlan/${PKG}/${VERSION}/${PKG}-${VERSION}-webpack.jar"; then
+            echo "The family maven webpack classifier ${PKG}-${VERSION} is already published; skipping the re-upload."
+          else
+            published=false
+            billing=0
+            for attempt in 1 2 3; do
+              deploylog="$(mktemp)"
+              if mvn --batch-mode deploy:deploy-file -DgroupId=com.wenathlan -DartifactId="${PKG}" -Dversion="${VERSION}" -Dclassifier=webpack -Dpackaging=jar -Dfile="${PKG}/target/${PKG}-${VERSION}-webpack.jar" -DgeneratePom=false -DrepositoryId=github -Durl="${PUBLISH}" --settings settings.xml 2>&1 | tee "${deploylog}"; then published=true; rm -f "${deploylog}"; break; fi
+              if grep -qi "billing limit" "${deploylog}"; then
+                billing=1
+                echo "::warning::the maven registry answered the account billing limit on the ${PKG} ${VERSION} webpack classifier - the mirror rung keeps its seat unpublished and the next maintenance dispatch retries it idempotently once the quota lifts."
+                rm -f "${deploylog}"
+                break
+              fi
+              rm -f "${deploylog}"
+              echo "The maven webpack classifier deploy attempt ${attempt} of the ${PKG} envelope failed; the bounded retry policy retries inside three attempts."
+              sleep "$((attempt * 5))"
+            done
+            if [ "$published" != true ] && [ "$billing" -ne 1 ]; then
+              echo "::error::the maven webpack classifier deploy of the ${PKG} envelope failed after the bounded retries."
               exit 1
             fi
           fi
@@ -1742,6 +2007,58 @@ jobs:
           # content packages target netstandard2.0;netstandard2.1 the
           # same way devthink.csproj does, so the one pin serves both.
           dotnet-version: 10.0.112
+      - name: setup bun for the webpack seat
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: bundle the webpack seat inside the original envelope (the fusion law)
+        # the owner order the corridor sealed: the webpack distribution
+        # rides INSIDE the original package — never a variant registry
+        # seat (the <app>.webpack modules, PackageIds and gems the older
+        # wave published are dead, canceled at every registry).
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          cd "${PKG}"
+          bun install --frozen-lockfile --ignore-scripts
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "./${PKG}.webpack.cjs"
+          rm -rf webpackdist webpacksrc.mjs webpack.config.cjs
+          test -s "./${PKG}.webpack.cjs"
+          # the fusion embed on the normal content package (the
+          # webpack/ seat): the family project file the envelope
+          # carries gains the one None item the dotnet pack task
+          # answers, so the <app> PackageId the pack step cuts packs
+          # <app>.webpack.cjs under webpack/ inside the original
+          # nupkg — never a <app>.webpack PackageId the older wave
+          # published.
+          sed -i "s#<ItemGroup>#<ItemGroup>\n    <None Include=\"${PKG}.webpack.cjs\" Pack=\"true\" PackagePath=\"webpack/\" />#" "${PKG}.csproj"
+          grep -q "None Include=\"${PKG}.webpack.cjs\"" "${PKG}.csproj"
       - name: pack the family content package
         run: |
           set -euo pipefail
@@ -2106,6 +2423,62 @@ jobs:
           else
             echo "present=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: setup bun for the webpack seat
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: bundle the webpack seat inside the original envelope (the fusion law)
+        # the owner order the corridor sealed: the webpack distribution
+        # rides INSIDE the original package — never a variant registry
+        # seat (the <app>.webpack modules, PackageIds and gems the older
+        # wave published are dead, canceled at every registry).
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          cd "${PKG}"
+          bun install --frozen-lockfile --ignore-scripts
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "./${PKG}.webpack.cjs"
+          rm -rf webpackdist webpacksrc.mjs webpack.config.cjs
+          test -s "./${PKG}.webpack.cjs"
+          # the fusion embed on the normal gem (the files list seat):
+          # the family gemspec the envelope carries gains the one file
+          # entry the gem build task answers, so the <app> gem the
+          # build step cuts packs <app>.webpack.cjs beside the
+          # documentation set and the tests directory the files glob
+          # already carries — the gem name stays the normal one,
+          # never a <app>.webpack seat the older wave published. the
+          # saddle engine leg answers the %w grammar the documentation
+          # legs answer with the Dir glob: the two sed seats ride
+          # whichever shape the family gemspec carries.
+          sed -i "s#Dir\[\"README.md\"#Dir[\"${PKG}.webpack.cjs\", \"README.md\"#" "${PKG}.gemspec"
+          sed -i "s#%w\[LICENSE#%w[${PKG}.webpack.cjs LICENSE#" "${PKG}.gemspec"
+          grep -q "${PKG}.webpack.cjs" "${PKG}.gemspec"
       - name: build the family gem
         if: steps.exists.outputs.present != 'true'
         env:
@@ -3261,6 +3634,69 @@ jobs:
           unzip -q "$RUNNER_TEMP/gradle-${GRADLE_VERSION}-bin.zip" -d "$RUNNER_TEMP"
           "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin/gradle" --no-daemon --version >/dev/null
           echo "$RUNNER_TEMP/gradle-${GRADLE_VERSION}/bin" >> "$GITHUB_PATH"
+      - name: setup bun for the webpack seat
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: bundle the webpack seat inside the original envelope (the fusion law)
+        # the owner order the corridor sealed: the webpack distribution
+        # rides INSIDE the original package — never a variant registry
+        # seat (the <app>.webpack modules, PackageIds and gems the older
+        # wave published are dead, canceled at every registry).
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG="${{ matrix.package }}"
+          cd "${PKG}"
+          bun install --frozen-lockfile --ignore-scripts
+          npx esbuild cli.ts --bundle --platform=node --format=esm --packages=external --outfile=webpacksrc.mjs
+          cat > webpack.config.cjs <<CFG
+          "use strict";
+          const path = require("node:path");
+          module.exports = {
+            mode: "production",
+            target: "node",
+            entry: "./webpacksrc.mjs",
+            output: {
+              path: path.resolve(__dirname, "webpackdist"),
+              filename: "${PKG}.webpack.cjs",
+              library: { type: "commonjs2" }
+            },
+            externals: [
+              function externallaw({ request }, callback) {
+                if (request.startsWith(".") || request.startsWith("node:") || path.isAbsolute(request)) return callback();
+                return callback(null, "commonjs " + request);
+              }
+            ],
+            module: { parser: { javascript: { url: false } } },
+            devtool: false
+          };
+          CFG
+          npx webpack --config webpack.config.cjs
+          test -s "webpackdist/${PKG}.webpack.cjs"
+          mv "webpackdist/${PKG}.webpack.cjs" "./${PKG}.webpack.cjs"
+          rm -rf webpackdist webpacksrc.mjs webpack.config.cjs
+          test -s "./${PKG}.webpack.cjs"
+          # the fusion embed on the normal module jar (the archive root
+          # seat): the family build file the envelope carries gains
+          # the one jar include the gradle task answers, so the
+          # com.wenathlan.<app> module the pack step stages packs
+          # <app>.webpack.cjs beside the envelope resources it already
+          # embeds — the artifactId stays the normal one, never a
+          # com.wenathlan.<app>.webpack seat the older wave published.
+          cat >> build.gradle.kts <<KTS
+
+              // the fusion law the owner order sealed: the webpack
+              // distribution rides INSIDE the normal module jar (the
+              // <app>.webpack.cjs seat at the archive root), never a
+              // variant artifactId the older wave published.
+              tasks.jar {
+                  from(layout.projectDirectory) {
+                      include("${PKG}.webpack.cjs")
+                  }
+              }
+          KTS
+          grep -q "${PKG}.webpack.cjs" build.gradle.kts
       - name: pack the family envelope module
         # the maven family lane mold (package before deploy): the leg
         # stages the module in the local repository and asserts the
