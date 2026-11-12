@@ -2,3 +2,4 @@
 # Mirrors the file list the devthink gemspec declares in spec.files: the
 # readme beside the runner adapter seat; the runner folder the spec
 # also declares has no folder in the app root, so it never lists.
+include README.md

@@ -14,6 +14,7 @@ name = "wenathlan-debonair"
 version = "2.0.182"
 authors = [{name = "wenathlan"}]
 description = "The audio and DAW app; it houses the katexis engine at the folder root"
+readme = "README.md"
 license = {text = "GPL-3.0-only"}
 requires-python = ">=3.11"
 

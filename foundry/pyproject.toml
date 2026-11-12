@@ -13,6 +13,7 @@ name = "wenathlan-foundry"
 version = "2.0.182"
 authors = [{name = "wenathlan"}]
 description = "The e2b and docker clone interface — sandboxes and images while the engine lives in saddle"
+readme = "README.md"
 license = {text = "GPL-3.0-only"}
 requires-python = ">=3.11"
 
