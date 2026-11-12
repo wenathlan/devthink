@@ -37,7 +37,7 @@ import {
         register,
         roleof,
         session,
-} from '../auth.ts';
+} from '../authbrowser.ts';
 
 /** repository root resolved from this test file location. */
 const reporoot = join(dirname(fileURLToPath(import.meta.url)), '..');

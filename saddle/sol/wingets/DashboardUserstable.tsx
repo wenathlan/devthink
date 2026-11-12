@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { apiresult, asarray, chipclass, fmtdate, pick } from '../../dashboardlib.ts';
 import { label, labelfill } from '../../labels.ts';
-import { available, localaccountnames, roleof } from '../../auth.ts';
+import { available, localaccountnames, roleof } from '../../authbrowser.ts';
 
 type UsersTableProps = {
         /** "api" lists /api/v1/admin/users; "local" the browser account registry. */

@@ -77,7 +77,7 @@ export default function Register() {
                 let cancelled = false;
                 const detect = async () => {
                         const base = apibase();
-                        const localauth = await import('../../auth.ts');
+                        const localauth = await import('../../authbrowser.ts');
                         const apianswers = await localauth.probe(base);
                         if (cancelled) return;
                         if (!apianswers) {
@@ -150,7 +150,7 @@ export default function Register() {
                 /* static edge: no api at this base -> browser-local account */
                 if (apimode === 'local') {
                         try {
-                                const localauth = await import('../../auth.ts');
+                                const localauth = await import('../../authbrowser.ts');
                                 await localauth.register(username, password);
                                 setSucceeded(true);
                                 navigate('/dashboard');

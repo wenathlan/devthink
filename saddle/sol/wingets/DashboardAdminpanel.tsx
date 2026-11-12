@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { apiresult, fmtuptime, pick, readlocalsandboxes } from '../../dashboardlib.ts';
 import { label } from '../../labels.ts';
-import { available, localaccountnames } from '../../auth.ts';
+import { available, localaccountnames } from '../../authbrowser.ts';
 import AuditLog from './DashboardAuditlog.tsx';
 import GlobalSandboxesTable from './DashboardGlobalsandboxestable.tsx';
 import MeshNodesTable from './DashboardMeshnodestable.tsx';
