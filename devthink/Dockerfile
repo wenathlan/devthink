@@ -187,7 +187,7 @@
 # carry: the digest rides the tag so every pull of the image family lands
 # the exact bytes the ladder audited (the scorecard pin rule the code
 # scanning alerts 1965-1967 asked for).
-ARG NODE_IMAGE="node:26.13.0-bookworm-slim@sha256:bc0a2afd3b74ce12222fc8bab99271e66257f021078f5f4a5d687a77d280c1d9"
+ARG NODE_IMAGE="node:26.13.1-bookworm-slim@sha256:5df79989ed685e09f0a98019db4cebfb22fb9df1a53c0161664a011f7ff6b0f1"
 
 # the runtime node version of the five-architecture surface (the 2.0.16
 # pass): the nodejs.org distribution answers official linux tarballs for
