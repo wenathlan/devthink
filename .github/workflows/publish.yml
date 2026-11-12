@@ -247,7 +247,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: resolve release version
@@ -531,7 +531,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
       - name: resolve release version
@@ -818,7 +818,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
           registry-url: https://npm.pkg.github.com
           package-manager-cache: false
       - name: resolve release version
@@ -1071,7 +1071,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
           registry-url: https://npm.pkg.github.com
           package-manager-cache: false
       - name: resolve release version
@@ -1261,7 +1261,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
           registry-url: https://gitlab.com/api/v4/packages/npm/
           package-manager-cache: false
       - name: resolve release version
@@ -1424,7 +1424,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -1594,7 +1594,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -1825,7 +1825,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -1969,7 +1969,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -2358,7 +2358,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -2567,7 +2567,7 @@ jobs:
     - name: Set up node
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
-        node-version: 26.13.0
+        node-version: 26.13.1
     - name: Resolve release version
       id: release
       env:
@@ -2697,7 +2697,7 @@ jobs:
     - name: Set up node
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
-        node-version: 26.13.0
+        node-version: 26.13.1
     - name: Resolve release version
       id: release
       env:
@@ -2833,7 +2833,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: Resolve release version
         id: release
         env:
@@ -2956,7 +2956,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: Resolve release version
         id: release
         env:
@@ -3075,7 +3075,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: Resolve release version
         id: release
         env:
@@ -3211,7 +3211,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: Resolve release version
         id: release
         env:
@@ -3373,7 +3373,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -3576,7 +3576,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -3837,7 +3837,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -4042,7 +4042,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -4222,7 +4222,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -4425,7 +4425,7 @@ jobs:
           # callback function(r){}). the remaining entries are the
           # runtime knobs, the build args and the OCI labels - no secret
           # material anywhere.
-          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,smokebudget,apt_update_tries,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision
+          accept-key: NODE_ENV,DEVTHINK_HTTP_BIND,DEVTHINK_HTTP_PORT,DEVTHINK_RELAY_PATH,DEVTHINK_MCP_BIND,DEVTHINK_MCP_PORT,DEVTHINK_MCP_PATH,DEVTHINK_MEMORY_ENGINE,DEVTHINK_PLATFORM,DEVTHINK_CDN_URL,NODE_IMAGE,DEVTHINK_VERSION,DEVTHINK_REVISION,PATH,NODE_VERSION,runnerpid,waited,smokebudget,apt_update_tries,dpkgArch,ARCH,OPENSSL_ARCH,GNUPGHOME,--strip-components,--chown,/,APT::AutoRemove::RecommendsImportant,org.opencontainers.image.title,org.opencontainers.image.description,org.opencontainers.image.documentation,org.opencontainers.image.version,org.opencontainers.image.licenses,org.opencontainers.image.source,org.opencontainers.image.revision,wenathlan.config.title,wenathlan.config.version,wenathlan.config.date,wenathlan.config.language,wenathlan.deploy.hostdoor,wenathlan.deploy.engineport
       - name: build and push image with attestations
         if: steps.published.outputs.skip != 'true'
         # the context is THE REPOSITORY ROOT (the family-context law the
@@ -4664,7 +4664,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: resolve release version
         id: release
         env:
@@ -5770,7 +5770,7 @@ jobs:
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.18.0
@@ -6215,7 +6215,7 @@ jobs:
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.18.0
@@ -6396,7 +6396,7 @@ jobs:
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
           version: 12.18.0
@@ -6989,7 +6989,7 @@ jobs:
         # imports the osprofiles.ts source straight, no build step between.
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Log in to GHCR
@@ -8133,7 +8133,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
 
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -8574,7 +8574,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 26.13.0
+          node-version: 26.13.1
           package-manager-cache: false
       - name: resolve the saddle version and the family release tag
         # the resolver answers every firing the saddle-extension mold carries:
