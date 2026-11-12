@@ -1,522 +1,1020 @@
-# devthink checklist — the stage and app mapping (the briefing read whole, the corpus deduplicated)
+# checklist
 
-the owner law this file answers: read every line of the corpus (the pasted
-briefing, fedsd, feedssd, polarauth, conversa19, conversa50 and the extract
-chunks), deduplicate the repeated directives, organize rules by type
-(operation, project, formatting, coding, security, design), convert every
-complaint into an immediate change order, and classify priorities, metas,
-features, objetivos, expectativas, problems and micro or macro errors by theme
-and key category (interacao, interatividade, logica, bugs, armazenamento,
-implementacao, organizacao, reagrupamento) so the set defines the branch and
-pull request scope directly. every item carries its verified state at the
-writing breath: feito (done and verified), parcial (riding but incomplete) or
-pendente (open). the debiting itself happens in the remote repository through
-commits and merges — this file is the map that pins where each order stands.
+o total da operação de forma hierárquica. cada item é uma ação real verificável, agrupada por categoria, tema e aplicativo, em ordem do fácil para o difícil. o tema e a categoria de cada bloco definem diretamente o escopo da branch e do pull request correspondente. cada reclamação mapeada virou ação. nenhum item especifica código, tamanho, cor ou medida: a geometria, a composição e o espaçamento mapeiam direto nas referências clonadas na área de estudo de design.
 
-## etapa 1 — the integral reading and the map itself
+## operação de leitura e sincronização
 
-- feito: the whole /upload corpus walked linearly with bash, sed and grep in
-  line segments (the pasted briefing 166 wrapped segments, fedsd 43 unique
-  blocks of 1564 lines, feedssd the six exclusive blocks, polarauth the
-  8695-line corpus with the polar.sh corrected build and rule 45, conversa19
-  85022 lines and conversa50 86534 lines through the 58 extract chunks plus
-  actions inventory).
-- feito: the fresh conversa51 corpus (88,642 lines, the cumulative superset
-  the md5 head proved over conversa50) read whole through sixteen linear
-  reading agents walking 5,540-line ranges with twenty-line overlaps, the
-  feedssd corpus (1,603 lines) whole, the polarauth pair whole and the fedsd
-  corpus (762 lines) beside the superset verification (fedsd inside feedssd
-  confirmed — the twenty-five inserted lines carrying the oracle and
-  virtualbox competitor law, the github pages static platform, the ts to rs
-  readiness, the doc sol tests folder law, the labels.ts complaint, the
-  icon family law, the actions marketplace mandate, the webpack
-  clarification and the distribution list extensions) — 185,708 lines
-  walked against the seated frame, zero new rule the live tree misses, the
-  per-range extractions seated at upload/extract (twenty files, the four
-  corpus folders).
-- feito: this checklist file generated as the map by stage and app, the
-  duplicated directives collapsed to one entry each, every complaint seated
-  as a mandatory order with its state.
+- [x] ler integralmente o briefing mestre completo do topo ao fim por segmentos de linha no terminal
+- [x] ler integralmente os arquivos de feedback do proprietário, deduplicando os blocos repetidos
+- [x] ler integralmente o corpus de autenticação, mapeando as dezenas de variantes de script e o build corrigido consolidado
+- [x] ler integralmente a conversa completa em dezenas de milhares de linhas, em sete segmentos por subagentes, todos lendo por terminal
+- [x] auditar todos os commits da main do repositório principal, tema por tema
+- [x] inventariar todos os txt e md de todos os grupos do repositório
+- [x] identificar os documentos com informação única versus boilerplate por comparação
+- [x] extrair o script de autenticação corrigido do corpus e validar a sintaxe
+- [x] lançar a autenticação em background com poller e watchdog
+- [ ] capturar o token em tempo real assim que o proprietário autorizar
+- [x] sincronizar o head remoto para o local antes de qualquer alteração
+- [x] limpar a raiz do ambiente mantendo apenas o repositório principal e a área de estudo
+- [x] consolidar a leitura nos cinco documentos centrais na pasta de documentação
+- [ ] mapear cada regra dos cinco documentos contra o código para auditar cumprimento
+- [ ] auditar os commits dos repositórios históricos da família citados nos textos para resgatar conversões perdidas
+- [ ] ler os blobs de manifests dos repositórios históricos com subagente dedicado em background
+- [ ] comparar o projeto original do saddle com a versão integrada registrando capacidades perdidas
+- [ ] comparar cada aplicativo com seu dossiê histórico registrando features falsas, reais e perdidas
+- [ ] registrar a lista de prs abertos, branchs pendentes e prs arquivados por categoria
+- [ ] definir a lista interna de mais de dez mil ações com até novecentas por frente
+- [ ] verificar a cada onda o que foi feito e o que falta antes de avançar
+- [ ] ler os commits dos workflows do repositório histórico resgatando features de conversão perdidas
+- [ ] registrar os assets que sumiram dos releases ao longo das regressões
+- [ ] restaurar as conversões multimodais perdidas no padrão atual
+- [ ] auditar onde cada item do mapeamento está no código antes de corrigir
 
-## etapa 2 — authentication and head sync
+## segurança por request
 
-- feito: the polar seat rides the tree (devthink/polarauth.ts, the 3010 lane,
-  device flow, the token capture in real time, rule 45 honored — once
-  authorized never poll again). the credential lives in the remote url and
-  the .polar-auth.json state; the service relaunches via
-  `bun devthink/polarauth.ts` the moment a fresh authorization is needed.
-- feito: the head sync — fetch, merge, push answered clean this session (the
-  vault icon lfs heal 7198a19d merged, the local kts wave d6d56ea7 and the
-  merge commit c4a95bd6 pushed; local equals remote on main).
-- feito: the fresh instance sync — the polar telemetry verified whole (the
-  code CE58-65EA authorized at 19:26:11 utc, the token captured in real
-  time, three layers at 0600, the api answering under iakadion at rate
-  5000), the two fast-forwards carrying the permdiff heal and the 2.0.180
-  rung (78f0d258 → 401dd3d0) whole, 1,676 commits at the breath.
+- [ ] bump da biblioteca de imagens nos onze manifests para a versão corrigida
+- [ ] bump da biblioteca de git nos onze manifests para a versão corrigida
+- [ ] bump do servidor web assíncrono nos onze manifests para a versão corrigida
+- [ ] bump da biblioteca de tokens nos onze manifests para a versão corrigida
+- [ ] bump do lock de arquivo nos onze manifests para a versão corrigida
+- [ ] bump do framework de agentes nos onze manifests para a versão corrigida
+- [ ] bump do servidor de rede nos onze manifests para a versão corrigida
+- [ ] bump do cliente http nos onze manifests para a versão corrigida
+- [ ] bump do instalador nos onze manifests para a versão corrigida
+- [ ] bump do driver de banco nos onze manifests para a versão corrigida
+- [ ] bump do parser de sql nos onze manifests para a versão corrigida
+- [ ] bump do parser de asn nos onze manifests para a versão corrigida
+- [ ] bump do protocolo de modelos nos onze manifests para a versão corrigida
+- [ ] bump da pilha de grafos de linguagem nos onze manifests nas três variantes
+- [ ] bump do roteador de modelos nos onze manifests para a versão corrigida
+- [ ] bump do formatador nos onze manifests para a versão corrigida
+- [ ] bump do certificado nos onze manifests para a versão corrigida
+- [ ] bump do conjunto de ferramentas nos onze manifests para a versão corrigida
+- [ ] bump do filtro de sopa nos onze manifests para a versão corrigida
+- [ ] bump do runtime de agente de nuvem nos onze manifests para a versão corrigida
+- [ ] bump do sdk de agentes nos onze manifests para a versão corrigida
+- [ ] bump do framework de agentes de código nos onze manifests para a versão corrigida
+- [ ] bump do servidor de aplicação nos onze manifests para a versão corrigida
+- [ ] bump do protocolo http2 nos onze manifests para a versão corrigida
+- [ ] bump da biblioteca de assinaturas nos onze manifests para a versão corrigida
+- [ ] bump da biblioteca wsgi nos onze manifests para a versão corrigida
+- [ ] bump do cliente dns nos onze manifests para a versão corrigida
+- [ ] bump da biblioteca de templates nos onze manifests para a versão corrigida
+- [ ] bump do motor de aprendizado nos onze manifests para a versão corrigida
+- [ ] bump do índice de llamas nos onze manifests para a versão corrigida
+- [ ] bump da biblioteca de mpack nos onze manifests para a versão corrigida
+- [ ] bump do dicionário multivalorado nos onze manifests para a versão corrigida
+- [ ] bump do kit de linguagem natural nos onze manifests para a versão corrigida
+- [ ] bump da telemetria nos onze manifests para a versão corrigida
+- [ ] bump do acelerador nos onze manifests para a mais recente sem correção publicada
+- [ ] bump do compositor de agentes nos onze manifests para a mais recente sem correção publicada
+- [ ] bump da biblioteca dsp nos onze manifests para a mais recente sem correção publicada
+- [ ] bump do servidor de dados nos onze manifests para a versão corrigida
+- [ ] bump do servidor mcp rápido nos onze manifests para a versão corrigida
+- [ ] bump da biblioteca mlx nos onze manifests para a versão corrigida
+- [ ] bump do servidor graphql rápido nos onze manifests para a versão corrigida
+- [ ] bump do roteador jwt nos onze manifests para a versão corrigida
+- [ ] bump da biblioteca de domínios nos onze manifests para a versão corrigida
+- [ ] bump do cliente mongo nos onze manifests para a versão corrigida
+- [ ] converter o leitor de pdf morto no sucessor vivo já presente na união
+- [ ] mesclar a variante maiúscula da biblioteca de git no pino minúsculo corrigido
+- [ ] mesclar a variante maiúscula da biblioteca de imagens no pino minúsculo corrigido
+- [ ] mesclar a variante maiúscula da biblioteca de tokens no pino minúsculo corrigido
+- [ ] mesclar as variantes de caixa do compilador python, da marcação segura, dos trechos de código, do arquivo de som e do sql na versão maior
+- [ ] elevar o piso da template mako para a versão corrigida
+- [ ] verificar a paridade dos manifests após todos os bumps
+- [ ] abrir o pr da onda de segurança com a lista completa
+- [ ] deixar a bateria verde no pr
+- [ ] mesclar o pr por request
+- [ ] fechar os quatro prs do bot superseded com justificativa
+- [ ] confirmar o fechamento dos alertas pela api após o merge
+- [ ] rerun das baterias de segurança na main após o merge
+- [ ] zerar o alerta do scorecard com histórico de merges verdes
+- [ ] gerar a assinatura de hash dinamicamente no build nos vinte e quatro sítios mapeados
+- [ ] remover qualquer configuração que ignore alertas ou vulnerabilidades em qualquer linguagem
+- [ ] revisar os cabeçalhos de segurança do site estático
+- [ ] revisar o bloqueio de download do banco estático
+- [ ] revisar a guarda contra ferramentas de desenvolvedor com o falso positivo corrigido
+- [ ] revisar que nenhum token aparece inline em url
+- [ ] confirmar zero dados de conta no navegador do visitante
+- [ ] auditar a política de segurança documental do repositório
+- [ ] auditar o escaneamento de segredos verificado
+- [ ] auditar o scan de sistema de arquivos
+- [ ] auditar o scan de imagem de container
+- [ ] auditar o scanner de vulnerabilidades osv
+- [ ] auditar a revisão de dependências nos prs
 
-## etapa 3 — the root structure law
+## workflows por frente
 
-- feito: the root answers exactly the twelve folders plus two files —
-  .github, argan, cadria, cobaia, debonair, devthink, forge, foundry, getry,
-  saddle, stealthhead, vault, .gitignore, package.json. the next template,
-  src, venv and python are gone from the tracked tree (the sandbox-local
-  .env, node_modules, skills and upload lanes stay ignored, never tracked).
-- feito: inside every app the allowed seats hold — sol, docs and test (the
-  logic files live at the app root, never inside sol; the test seat only in
-  typescript; no src, dist, assets, build or scripts folders).
-- feito: pnpm-lock.yaml hidden by the ignore law, infra records ignored.
-- feito: no stray .webpack file anywhere — the webpack doctrine answers the
-  workflow seat alone (see etapa 8).
+- [ ] ler o log da falha da fusão do bundler no envelope original em cada aplicativo
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o devthink
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o debonair
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o cadria
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o saddle
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o vault
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o getry
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o forge
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o foundry
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o argan
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o stealthhead
+- [ ] corrigir a fusão do assento do bundler dentro do envelope original para o cobaia
+- [ ] ler o log da falha da publicação gradle quando ausente
+- [ ] corrigir a publicação do envelope gradle do argan
+- [ ] corrigir a publicação do envelope gradle do debonair
+- [ ] corrigir a publicação do envelope gradle do foundry
+- [ ] corrigir a publicação do envelope gradle do forge
+- [ ] corrigir o build das faces node do vault
+- [ ] ler o log da falha das publicações de imagem multiarquitetura do saddle
+- [ ] corrigir o build e push da lane leve do saddle
+- [ ] corrigir o build e push da lane equilibrada do saddle
+- [ ] corrigir o build e push da lane máxima do saddle
+- [ ] corrigir o build e push das lanes com variantes de sistema do saddle
+- [ ] corrigir o build e push das lanes do catálogo alpine
+- [ ] corrigir o build e push das lanes do catálogo arch
+- [ ] corrigir o build e push das lanes do catálogo debian
+- [ ] corrigir o build e push das lanes do catálogo fedora
+- [ ] corrigir o build e push das lanes do catálogo windows
+- [ ] corrigir o build e push das lanes do catálogo android das variantes endurecidas
+- [ ] corrigir o build e push das lanes do catálogo das variantes móveis e de firmware
+- [ ] corrigir o build e push da lane da linguagem v
+- [ ] corrigir o anexo de assets do release do saddle
+- [ ] ler o log da falha do build do tema do saddle nas páginas
+- [ ] corrigir a instalação e o build do tema do saddle
+- [ ] reexecutar o fluxo das páginas com os onze temas verdes
+- [ ] corrigir a auditoria das dependências resolvidas do workbench
+- [ ] corrigir as regras de segurança do linter
+- [ ] corrigir a checagem de licenças das dependências
+- [ ] corrigir o build da imagem para o scan de containers
+- [ ] corrigir a auditoria do grafo rust
+- [ ] corrigir o gate de paridade de configuração da família
+- [ ] corrigir o contrato de cli no runtime bun
+- [ ] corrigir o contrato de cli no runtime node
+- [ ] corrigir o contrato de cli no runtime deno
+- [ ] corrigir o empacotamento do bundle pelo bundler na integração
+- [ ] corrigir a suíte do debonair na integração
+- [ ] corrigir a suíte do saddle na integração
+- [ ] corrigir o workbench estático na integração
+- [ ] corrigir o build da distribuição raiz na verificação
+- [ ] corrigir a instalação da versão npm declarada na verificação
+- [ ] corrigir o smoke do consumidor na verificação
+- [ ] corrigir os modos de biblioteca nos três runtimes na verificação
+- [ ] reexecutar a bateria de integração verde na main
+- [ ] reexecutar a bateria de verificação verde na main
+- [ ] reexecutar a bateria de segurança verde na main
+- [ ] reexecutar o fluxo de publicação verde na main
+- [ ] reexecutar o fluxo das lanes verde na main
+- [ ] reexecutar o fluxo das páginas verde na main
+- [ ] reexecutar o fluxo de manutenção verde na main
+- [ ] confirmar o histórico de merges verdes normalizando o scorecard
+- [ ] reagrupar os mil e quinhentos workflows históricos por assunto acumulando rotinas correlatas num lugar só
+- [ ] explorar e incorporar actions úteis do marketplace na divisão de páginas
+- [ ] explorar e incorporar actions úteis do marketplace na divisão de automação
+- [ ] explorar e incorporar actions úteis do marketplace na divisão de integração contínua
+- [ ] explorar e incorporar actions úteis do marketplace na divisão de segurança
+- [ ] explorar e incorporar actions úteis do marketplace na divisão de deploy
 
-## etapa 4 — the logic regrouping (the keyword law)
+## estrutura e formatação por aplicativo
 
-- feito: every app root carries the keyword seat files (auth.ts, db.ts,
-  sandbox.ts, storage.ts, protocols.ts and the family the briefing named —
-  edgelandes, modalities, virtual, objects, dns, gateway, runner, match,
-  ranking, world, monetization, agents, security, dist, dashboard), the
-  variant logics consolidated per domain, the long compound names retired.
-- feito: the wingets seat answers the same law (the shell variants together
-  in one file, never one variant per file).
-- parcial: the continuous audit — every new wave must seat its logic in the
-  keyword file, never open a variant name; the duplicate-implementation walk
-  (the capability diff) keeps answering zero pairs outside the documented
-  law.
+- [ ] auditar a raiz do devthink contra a regra das três pastas
+- [ ] auditar a raiz do debonair contra a regra das três pastas
+- [ ] auditar a raiz do cadria contra a regra das três pastas
+- [ ] auditar a raiz do saddle contra a regra das três pastas
+- [ ] auditar a raiz do vault contra a regra das três pastas
+- [ ] auditar a raiz do getry contra a regra das três pastas
+- [ ] auditar a raiz do forge contra a regra das três pastas
+- [ ] auditar a raiz do foundry contra a regra das três pastas
+- [ ] auditar a raiz do argan contra a regra das três pastas
+- [ ] auditar a raiz do stealthhead contra a regra das três pastas
+- [ ] auditar a raiz do cobaia contra a regra das três pastas
+- [ ] remover pastas proibidas do devthink
+- [ ] remover pastas proibidas do debonair
+- [ ] remover pastas proibidas do cadria
+- [ ] remover pastas proibidas do saddle
+- [ ] remover pastas proibidas do vault
+- [ ] remover pastas proibidas do getry
+- [ ] remover pastas proibidas do forge
+- [ ] remover pastas proibidas do foundry
+- [ ] remover pastas proibidas do argan
+- [ ] remover pastas proibidas do stealthhead
+- [ ] remover pastas proibidas do cobaia
+- [ ] mover a saída do build para a raiz em cada aplicativo
+- [ ] auditar os nomes de arquivo de cada aplicativo contra a lei da palavra única minúscula
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no devthink
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no debonair
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no cadria
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no saddle
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no vault
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no getry
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no forge
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no foundry
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no argan
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no stealthhead
+- [ ] renomear arquivos com hífen, underscore, ponto interno ou emoji no cobaia
+- [ ] renomear pastas com hífen, underscore, ponto ou espaço em todos
+- [ ] reagrupar as lógicas de autenticação no arquivo único do domínio em cada aplicativo
+- [ ] reagrupar as lógicas de banco no arquivo único do domínio em cada aplicativo
+- [ ] reagrupar as lógicas de sandbox no arquivo único do domínio no saddle
+- [ ] reagrupar as lógicas de armazenamento no arquivo único do domínio no vault
+- [ ] reagrupar as lógicas de protocolos no arquivo único do domínio no vault
+- [ ] reagrupar as lógicas de dns no arquivo único do domínio no argan
+- [ ] reagrupar as lógicas de catálogo no arquivo único do domínio no devthink
+- [ ] reagrupar as lógicas de raciocínio no arquivo único do domínio no getry
+- [ ] reagrupar as lógicas de gateway no arquivo único do domínio no getry
+- [ ] reagrupar as lógicas de runner no arquivo único do domínio no forge
+- [ ] reagrupar as lógicas de pipeline no arquivo único do domínio no foundry
+- [ ] reagrupar as lógicas de partida e ranqueamento no arquivo único do domínio no stealthhead
+- [ ] reagrupar as lógicas de mundo no arquivo único do domínio no stealthhead
+- [ ] reagrupar as lógicas de monetização no arquivo único do domínio no cobaia
+- [ ] reagrupar as lógicas de agentes no arquivo único do domínio no devthink
+- [ ] reagrupar as lógicas de segurança no arquivo único do domínio no devthink
+- [ ] reagrupar as lógicas de distribuição no arquivo único do domínio no devthink
+- [ ] reagrupar as lógicas de modalidades no arquivo único do domínio no saddle
+- [ ] reagrupar as lógicas virtuais no arquivo único do domínio no saddle
+- [ ] reagrupar as lógicas de objetos no arquivo único do domínio no vault
+- [ ] reagrupar as lógicas de conta no arquivo único do domínio no devthink
+- [ ] mesclar variantes dispersas no arquivo único do domínio em todos os aplicativos
+- [ ] recortar lógicas de vídeo duplicadas para o cadria
+- [ ] recortar lógicas de áudio duplicadas para o debonair
+- [ ] recortar lógicas de gateway duplicadas para o getry
+- [ ] recortar lógicas de sandbox duplicadas para o saddle
+- [ ] recortar lógicas de armazenamento duplicadas para o vault
+- [ ] recortar lógicas de dns duplicadas para o argan
+- [ ] converter imports de caminho de pasta em dependência de pacote em todos
+- [ ] deduplicar lógicas repetidas entre aplicativos
+- [ ] compartilhar a biblioteca tridimensional entre cadria e debonair via dependência
+- [ ] auditar o jsdoc e o padrão moderno em cada arquivo reagrupado
+- [ ] auditar os comentários em inglês em todo o código
+- [ ] padronizar os onze manifests no mesmo template e sequência de chaves
+- [ ] igualar as dependências nos três blocos de todos os manifests
+- [ ] sincronizar a versão nos onze manifests na curva corrente
+- [ ] manter só as engines no manifest da raiz
+- [ ] manter as dependências de emulação exclusivas do saddle
+- [ ] padronizar o package json do devthink com a metodologia da família
+- [ ] padronizar o package json do debonair com a metodologia da família
+- [ ] padronizar o package json do cadria com a metodologia da família
+- [ ] padronizar o package json do saddle com a metodologia da família
+- [ ] padronizar o package json do vault com a metodologia da família
+- [ ] padronizar o package json do getry com a metodologia da família
+- [ ] padronizar o package json do forge com a metodologia da família
+- [ ] padronizar o package json do foundry com a metodologia da família
+- [ ] padronizar o package json do argan com a metodologia da família
+- [ ] padronizar o package json do stealthhead com a metodologia da família
+- [ ] padronizar o package json do cobaia com a metodologia da família
+- [ ] adicionar os configuráveis ausentes no devthink
+- [ ] adicionar os configuráveis ausentes no debonair
+- [ ] adicionar os configuráveis ausentes no cadria
+- [ ] adicionar os configuráveis ausentes no saddle
+- [ ] adicionar os configuráveis ausentes no vault
+- [ ] adicionar os configuráveis ausentes no getry
+- [ ] adicionar os configuráveis ausentes no forge
+- [ ] adicionar os configuráveis ausentes no foundry
+- [ ] adicionar os configuráveis ausentes no argan
+- [ ] adicionar os configuráveis ausentes no stealthhead
+- [ ] adicionar os configuráveis ausentes no cobaia
+- [ ] espelhar o protocols types do vault em todos os aplicativos
+- [ ] espelhar a versão de mimetypes com milhares de tipos em todos
+- [ ] unificar docker compose e docker config num único dockerfile no devthink
+- [ ] unificar docker compose e docker config num único dockerfile no debonair
+- [ ] unificar docker compose e docker config num único dockerfile no cadria
+- [ ] unificar docker compose e docker config num único dockerfile no saddle
+- [ ] unificar docker compose e docker config num único dockerfile no vault
+- [ ] unificar docker compose e docker config num único dockerfile no getry
+- [ ] unificar docker compose e docker config num único dockerfile no forge
+- [ ] unificar docker compose e docker config num único dockerfile no foundry
+- [ ] unificar docker compose e docker config num único dockerfile no argan
+- [ ] unificar docker compose e docker config num único dockerfile no stealthhead
+- [ ] unificar docker compose e docker config num único dockerfile no cobaia
+- [ ] corrigir os identificadores de pacote para o padrão com ponto reverso em todos
+- [ ] nomear os arquivos de conversão com o nome do aplicativo e a extensão alvo
+- [ ] gerar o arquivo de conversão gradle do vault
+- [ ] avaliar a personalização de nome nos gerenciadores go e python sem quebrar
+- [ ] migrar o grupo de publicação maven para o novo padrão nos onze
+- [ ] deletar os pacotes do grupo maven antigo e republicar no novo
+- [ ] converter os testes restantes para typescript na raiz da pasta de testes
+- [ ] reagrupar os testes por domínio correlato em todos
+- [ ] limpar mocks, fixtures e binários da pasta de testes mantendo só typescript
+- [ ] rodar a suíte completa verde antes de cada push
 
-## etapa 5 — the blind engine law (zero hardcode)
+## documentação
 
-- feito: the ts and tsx seats pull text, image and asset data from the
-  database through the internal api and the tag syntax — the engines carry
-  no textual information of their own (the tests may mock, the config files
-  may configure).
-- feito: the false data purged (the fake ratings, invented movies, unsplash
-  links, infinite metrics, real artists as fake tracks, fictitious creators,
-  the fake tool pills, invented answers, echo send, false toasts).
-- feito: the internal icons reformed into the database base while the static
-  domains serve icon.svg, svg.icon, icon.ico and the png pair (icon192 and
-  icon512) in all eleven roots — the faun and allan pattern.
-- feito: the texts that revealed infrastructure removed (the translate-via
-  seat and its siblings gone from every winget).
+- [x] escrever o documento da lei com todas as regras deduplicadas
+- [x] escrever o dossiê dos aplicativos e engines
+- [x] escrever o documento da operação com o estado auditado
+- [x] escrever o documento de segurança com o censo e as ondas de cura
+- [x] escrever o checklist hierárquico total
+- [ ] deletar todos os txt e md antigos da pasta do devthink
+- [ ] deletar todos os txt e md antigos da pasta do debonair
+- [ ] deletar todos os txt e md antigos da pasta do cadria
+- [ ] deletar todos os txt e md antigos da pasta do saddle
+- [ ] deletar todos os txt e md antigos da pasta do vault
+- [ ] deletar todos os txt e md antigos da pasta do getry
+- [ ] deletar todos os txt e md antigos da pasta do forge
+- [ ] deletar todos os txt e md antigos da pasta do foundry
+- [ ] deletar todos os txt e md antigos da pasta do argan
+- [ ] deletar todos os txt e md antigos da pasta do stealthhead
+- [ ] deletar todos os txt e md antigos da pasta do cobaia
+- [ ] deletar os txt e md antigos da raiz do repositório
+- [ ] atualizar as referências de build dos envelopes para os caminhos sobreviventes
+- [ ] confirmar que os fluxos de publicação empacotam os envelopes sem os arquivos deletados
+- [ ] confirmar zero documento redundante após a consolidação
+- [ ] manter os cinco documentos como única documentação viva
 
-## etapa 6 — the persistence engine (vault, the supabase competitor)
+## design por aplicativo
 
-- feito: every web application owns its database, managed or mirrored
-  through the vault logic — better-sqlite3 the primary layer, mysql2,
-  drizzle, prisma, git lfs, libgit2, blobs and bigint the allied seats, no
-  supabase sdk, no data in the browser, the static db download blocked (the
-  faun lesson).
-- feito: the 2gb hard cap removed from my files and the whole structure —
-  the quota configurable by plan (900mb through 900gb and beyond).
-- feito: protocols.types identical in every project beside the mimetypes
-  version with 4133 types (the 4000 law exceeded) — vault/mimetypes.ts and
-  mime.types the carriers.
-- feito: vault.kts generated — the eleven conversion seats ride the app-name
-  law (argan.kts through vault.kts, the java, rs, csproj and gemspec seats
-  beside them, the envelopeversion literal the release lockstep re-stamps).
+- [ ] clonar as referências visuais na área de estudo de design
+- [ ] inspecionar seletores, tokens e variáveis de estilo das referências
+- [ ] mapear a geometria, a composição e o espaçamento das referências
+- [ ] definir o padrão visual único da família combinando o sistema operacional de referência com o site premium de referência
+- [ ] aplicar o tema único branco no devthink com variação clara e escura
+- [ ] aplicar o tema único branco no debonair com variação clara e escura
+- [ ] aplicar o tema único branco no cadria com variação clara e escura
+- [ ] aplicar o tema único branco no saddle com variação clara e escura
+- [ ] aplicar o tema único branco no vault com variação clara e escura
+- [ ] aplicar o tema único branco no getry com variação clara e escura
+- [ ] aplicar o tema único branco no forge com variação clara e escura
+- [ ] aplicar o tema único branco no foundry com variação clara e escura
+- [ ] aplicar o tema único branco no argan com variação clara e escura
+- [ ] aplicar o tema único branco no stealthhead com variação clara e escura
+- [ ] aplicar o tema único branco no cobaia com variação clara e escura
+- [ ] trocar a logo para a versão limpa sem texto
+- [ ] aplicar os fluent icons em todos os aplicativos
+- [ ] aplicar a fonte moderna da web em todos
+- [ ] refazer o hero com gradiente no aplicativo principal
+- [ ] reduzir os textos para título e descrição no máximo em todas as telas
+- [ ] limpar a caixa de login para só ícones dos provedores
+- [ ] remover todo texto que revela infraestrutura interna
+- [ ] implementar a navbar flutuante e fixável no devthink com as interações inteligentes
+- [ ] implementar a navbar flutuante e fixável nos demais aplicativos
+- [ ] implementar o calendário acoplado acompanhando o dock flutuante
+- [ ] implementar as microanimações curtas com transform e opacity no devthink
+- [ ] implementar as microanimações curtas nos demais aplicativos
+- [ ] implementar os shaders no lugar das linhas divisórias
+- [ ] travar o zoom via viewport do index como na referência
+- [ ] corrigir o bug de rolagem com a área vazia antes do painel
+- [ ] corrigir o bug do ícone de fechar saindo da janela no redimensionamento
+- [ ] corrigir a sombra vazando no login
+- [ ] corrigir a janela cortada ao abrir via painel versus url direta
+- [ ] alinhar a tela de login com o tema do sistema
+- [ ] colocar o relógio à esquerda na barra
+- [ ] corrigir os dez pontos de colapso do construtor de urls de família
+- [ ] corrigir os dez pontos pendentes do onboarding
+- [ ] refazer a página de explore no padrão do próprio aplicativo
+- [ ] refazer os widgets do devthink do zero em ordem alfabética sem pasta aninhada
+- [ ] refazer os widgets dos demais aplicativos do zero
+- [ ] zerar o hardcode de texto nos widgets puxando do banco via apis internas
+- [ ] colocar o componente de obra em construção em todo aplicativo não oficial
+- [ ] colocar o componente de jogo em construção no stealthhead
+- [ ] unificar a identidade da extensão com a interface principal
+- [ ] unificar a identidade da cli com o chat no terminal
+- [ ] unificar a identidade da tv com detecção de dpi e escala
+- [ ] validar a mesma interface em web, desktop, cli, tv e extensão
+- [ ] implementar as janelas com titlebar completa, alças e efeito acrílico no rodapé
+- [ ] implementar o dock com avatar e power sempre visíveis
+- [ ] implementar o modo standalone em tela cheia para url direta
+- [ ] implementar a abertura em janela pelo clique no painel
+- [ ] validar a página de produção estável sem tela branca
 
-## etapa 7 — the eleven conversions and the root standardization
+## persistência e dados
 
-- feito: the fifteen-plus distribution seats standard in every app root —
-  package.json, npm, nginx (nginx.conf everywhere, the absent-seat complaint
-  answered), netlify (_headers and _redirects), homebrew.rb, cargo
-  (cargo.toml), capacitor.config.ts, maven, gradle kts, robots.txt,
-  devthink.toml, .env examples, gemspec, csproj, rs, rb, java, xml, yml,
-  json, go.mod, doc.go, pyproject.toml.
-- feito: docker compose and docker config unified in the single dockerfile
-  per project (the saddle docker.config seat rides only where the vhe chain
-  demands it — the documented exception).
-- feito: the package identification law — dots only where the lowercase
-  identity demands (com.debonair.app, com.wenathlan.app, com.devthink.app
-  and the eleven family, the aimdebonite and im.* artifacts retired, the
-  io.github.wenathlan maven scope deleted, com.wenathlan the only seat).
-- feito: the package.json law — the root envelope carries engines only, the
-  eleven apps carry dependencies, devdependencies and overrides in the same
-  sequence and the same numbers (the header, the scripts, the three blocks;
-  no publishconfig, no packagemanager, no peerdependencies, no unknown
-  flags), the vm and qemu seats only in saddle.
-- feito: the version lockstep — one number for the whole family (the 2.0.x
-  curve, the 2.1.6 regression never again; the envelope answers 2.0.178 at
-  this breath), the root bump cascades the eleven manifests, the language
-  carriers and the changelog.
+- [ ] remover o limite de dois gigabytes do sistema de arquivos e da plataforma
+- [ ] implementar a quota configurável até ilimitado
+- [ ] bloquear o download direto do banco estático
+- [ ] mover toda persistência de conta para a engine de armazenamento
+- [ ] zerar o salvamento de dados no navegador do visitante
+- [ ] dar banco próprio a cada aplicativo web espelhando a lógica da engine de armazenamento
+- [ ] interligar os bancos por protocolos e apis internas
+- [ ] limpar os dados falsos de avaliações inventadas do banco
+- [ ] limpar os dados falsos de filmes fictícios do banco
+- [ ] limpar os dados falsos de artistas reais em faixas falsas do banco
+- [ ] limpar os dados falsos de criadores fictícios do banco
+- [ ] limpar as métricas infinitas falsas do banco
+- [ ] substituir links externos de imagem por assets próprios no banco
+- [ ] implementar a camada de objetos git como verdade com chunks e deduplicação
+- [ ] implementar o banco isca para sondas anônimas
+- [ ] implementar o fluxo ordinal de entrada persistindo no banco
+- [ ] implementar o gerenciador de onboarding com estado no banco
+- [ ] implementar a reformulação de todos os ícones de todos os módulos no banco
+- [ ] servir os arquivos de ícone estáticos obrigatórios nos domínios estáticos
+- [ ] seguir o padrão de web estático da referência para os assets servidos
 
-## etapa 8 — the webpack doctrine (the corridor clarification, corrected)
+## engines reais por aplicativo
 
-- feito: the webpack the platform speaks is the workflow that creates the
-  webpack distribution — the github actions seat .github/workflows/webpack.yml,
-  never a file naming flavor. no saddle.webpack artifact exists; the webpack
-  cli and its dependencies ride every envelope because the workflow builds
-  the bundles from them.
-- feito: the six registry matrices answer for the eleven applications —
-  nuget x webpack, maven x webpack, gradle x webpack, npmjs x webpack,
-  rubygems x webpack and github packages x webpack (sixty-six webpack seats
-  every rung beside the eleven bundles), behind the release approval gate,
-  the identification law holding (@wenathlan/<app>.webpack, the
-  com.wenathlan.<app>.webpack artifactid, dots never hyphens).
-- feito: the actions exploration seated — the house actions inventory walked
-  (checkout, setup seats, upload and download artifacts, bun, node, docker
-  buildx, qemu, login, build-push, attest, codeql, osv, trufflehog, dockle,
-  scorecard, dependency-review, actionlint via reviewdog, the pages trio),
-  the automation gap healed (the stale seat and the first-interaction greet
-  riding maintenance.yml with sha-pinned references), the ci cache law held
-  (no cache by doctrine, the cleanup twice a day), the gh cli over
-  github-script doctrine documented.
+### saddle
+- [ ] implementar o executor das modalidades registradas sem executor real
+- [ ] implementar a modalidade wasm
+- [ ] implementar a modalidade do bundler de módulos
+- [ ] implementar a modalidade do transpilador
+- [ ] implementar a modalidade de arquivo virtual
+- [ ] implementar a modalidade de sistema de arquivos virtual
+- [ ] implementar a modalidade de container
+- [ ] implementar a execução direta de binários via fila de lançamento
+- [ ] implementar a emulação com drives reais
+- [ ] implementar a modalidade de computação em nuvem
+- [ ] implementar a modalidade do runtime node
+- [ ] implementar as modalidades de gpu e cpu virtuais
+- [ ] implementar o processamento de portas
+- [ ] implementar a modalidade de sandbox
+- [ ] implementar a modalidade de microvm
+- [ ] implementar o runner de hardware virtual
+- [ ] implementar a execução de scripts em background
+- [ ] implementar a interpretação de yaml com compilação em background
+- [ ] implementar as noventa modalidades verificáveis uma a uma
+- [ ] remover funções alheias a execução, vm e sandbox
+- [ ] manter o fluxo do bundler embutido com cli e pacotes
+- [ ] descartar os arquivos avulsos do fluxo do bundler
+- [ ] restaurar capacidades perdidas do projeto original
+- [ ] publicar o container exótico com perfis e lanes completas
+- [ ] validar a execução sem tocar navegador, gpu, cpu ou disco
 
-## etapa 9 — the distribution and release train
+### vault
+- [ ] reconstruir a conta em runtime sem depender de serviço externo
+- [ ] completar o catálogo de mime types na casa dos milhares
+- [ ] completar os protocolos https na casa das centenas
+- [ ] refazer o app de arquivos com o novo design
+- [ ] servir o bucket self-hosted para aplicativos externos
+- [ ] espelhar o sistema de armazenamento nos demais aplicativos
+- [ ] implementar os chunks de um mebibito com deduplicação por hash
+- [ ] implementar a base selada com o banco isca
 
-- feito: the packages census — 85 seats in the github registry at this
-  breath (npm 16, maven 22, nuget 15, rubygems 26, container 6), the
-  sixty-plus law exceeded; the six distributions per application walking.
-- feito: the releases — the latest rungs v2.0.177 and v2.0.178 answer one
-  thousand assets each (the api cap reading; the full census carried
-  thousands more), the thousand-assets law holding rung after rung, the
-  release notes and the attestation seats riding.
-- feito: the os/arch matrix — the standard twelve lanes per family container
-  (linux/386, amd64, arm/v6, arm/v7, arm64, ppc64le, riscv64, s390x plus
-  the exotic arm/v5, mips64le, mips, loong64), the saddle matrix walking
-  its own forty-eight-tag lane family with the os distribution seats
-  (alpine, the arch family, the grapheneos line, debian and the v and nixos
-  catalog seats) — the fifteen-plus law answered in both the os and the
-  internal archos dimensions.
-- parcial: the saddle container publication rides the release machinery (the
-  2.0.178 stamp queued behind the vhe chain the 2.0.176 heal demanded) —
-  the close check rides the final projection, never a wait on the heavy
-  lane.
+### debonair
+- [ ] implementar a decomposição de música em payload estruturado
+- [ ] implementar a reconstrução tocável do payload
+- [ ] rodar a ingestão reversa na sandbox sem tocar recursos locais
+- [ ] separar as stems na ingestão
+- [ ] ingerir dados de referência nos bancos da engine
+- [ ] completar o mixer do estúdio
+- [ ] completar o rack de efeitos do estúdio
+- [ ] completar o transporte do estúdio
+- [ ] completar a síntese do estúdio
+- [ ] completar a mixagem e masterização
+- [ ] completar o sampler e a biblioteca de amostras
+- [ ] pesquisar e documentar as referências de áudio em documento próprio
+- [ ] estudar os espaços de música da plataforma de modelos abertos
+- [ ] implementar a feature de geração de música
 
-## etapa 10 — the saddle focus (the exclusive seat)
+### cadria
+- [ ] implementar o encoder de vídeo real
+- [ ] completar a timeline do editor
+- [ ] completar o render do editor
+- [ ] completar o player do editor
+- [ ] completar o controle de camadas
+- [ ] completar os movimentos e rigs
+- [ ] completar o pipeline de pixels com brilho
+- [ ] completar o pipeline de pixels com contraste e saturação
+- [ ] completar o pipeline de pixels com sépia e escala de cinza
+- [ ] completar o pipeline de pixels com convolução e desfoque
+- [ ] completar o pipeline de pixels com redimensionamento
+- [ ] implementar o gerador de malha tridimensional
+- [ ] implementar os shaders
+- [ ] compartilhar a biblioteca tridimensional com o debonair via dependência
 
-- feito: the capability diff against the original wenathlan/saddle answered
-  — the native gates restored (the gcc-14 c11 seat over virtualhardware.c,
-  the g++-14 c++2c probes over gpumonitor.cpp and virtualizationcore.cpp,
-  the codeql cpp leg), the authorized scrape wrapper seated as acquisition
-  domain in the os (the scrape, crawler and spider lanes left the engine —
-  run, vm and sandbox the only doctrine), the run-vm-sandbox law documented
-  in the ownership notes.
-- feito: the ninety modality seats ride the engine (the live modality
-  family, the vhe chain, the microvm autonomous modes), the edge processing
-  doctrine held — the work never touches the user browser, gpu, cpu or
-  disk; the static-platform law (github pages and every static host) holds.
-- parcial: the publish lane freshness — the family npm seats publish every
-  rung; the saddle npm seat must keep answering the same lockstep (the
-  stale-since-2.1.6 complaint never again).
+### getry
+- [ ] implementar o gateway com autenticação de provedores
+- [ ] implementar a rotação de chaves
+- [ ] implementar o raciocínio em sete níveis
+- [ ] implementar as trinta e cinco rotas compatíveis com o padrão openai
+- [ ] implementar os cinco provedores conforme cadastro
+- [ ] implementar o júri de três com regra anti bajulação
+- [ ] implementar o cofre de chaves
 
-## etapa 11 — the design law (windows 11 plus trylle, the awwwards bar)
+### forge
+- [ ] implementar o runner de binários na sandbox
+- [ ] completar a fila de lançamento de binários pesados
+- [ ] validar a execução dos binários de referência dos concorrentes
 
-- feito: the sol theme (white, never yellow), the windows 11 window family
-  (the titlebar 28/30, the close seat rgb(232,17,35), the eight handles,
-  the pill 999px, the aero effects), the trylle minimalism, the fluent
-  icons on the home, the zoom lock through the viewport meta (the faun
-  law), the touch targets at 44px, the dock floating and pinned grammar.
-- feito: the production face verified through the browser agent this cycle
-  family (the home, the auth, the panel with taskbar, search, calendar and
-  the thirteen icons, my files the full explorer) — the golden path walked
-  with zero console errors at the last certification.
-- parcial: every new face must keep the reference parity (the 97-99 percent
-  fidelity to the web reference) — the audit rides each wave.
+### foundry
+- [ ] implementar a execução de estágios do pipeline
+- [ ] implementar os artefatos no storage
+- [ ] implementar a interface clone de e2b e docker
+- [ ] implementar o controle administrativo
+- [ ] implementar os chunks de yaml, o tar e os mime types
 
-## etapa 12 — the security gates
+### argan
+- [ ] implementar os transportes dns completos nas quatro vias
+- [ ] implementar o dnssec com rotação
+- [ ] implementar o cluster de réplicas com fofoca autenticada
+- [ ] implementar o email self-hosted
+- [ ] implementar o meta buscador
+- [ ] publicar os domínios suspensos em sete passos
+- [ ] implementar o cleanurl e o familyurl
+- [ ] implementar as keywords
 
-- feito: the secrets scan clean, the metadata drift false, the depfresh
-  walk zero, the honest gates (no ignore configured anywhere, no hardcoded
-  alert suppression in any language — the go cve seat solved by fix, never
-  by dismissal).
-- parcial: the alert 1759 (sastid, the scorecard seat) — the root fix rides
-  main (the scorecard now waits for the codeql analyze ladder, the evidence
-  order healed by ae975b60); the alert closes when the next scorecard run
-  reads the check-runs on the healed head. the law held: the fix is a fix,
-  never a dismissal.
-- feito: the sha256 signatures generated during the build (the twenty-four
-  hardcoded sites healed, the workflow signatures dynamic).
+### stealthhead
+- [ ] implementar o mundo pré-compilado com física determinística
+- [ ] implementar o multiplayer com netcode real no banco
+- [ ] implementar o matchmaking
+- [ ] implementar o combate
+- [ ] implementar as arenas
+- [ ] implementar os veículos
+- [ ] implementar os cinco mapas
+- [ ] implementar as cinquenta armas
+- [ ] implementar os dez personagens
+- [ ] implementar os quinze veículos do mundo
+- [ ] manter os nomes hardcoded nas colunas do banco, nunca no código
+- [ ] absorver física, áudio, raio x, camadas, arena, player e combate no editor
+- [ ] implementar o hud por flags por dispositivo no build
+- [ ] validar o app pequeno baixando o banco do site
 
-## etapa 13 — the branches, the prs and the green close
+### cobaia
+- [ ] implementar os planos de receita recorrente
+- [ ] implementar os espaços de anúncio honestos
+- [ ] implementar os links de apoio
+- [ ] implementar os badges
+- [ ] implementar o roster
+- [ ] implementar o billing
+- [ ] implementar o rastreamento de receita e churn
+- [ ] mapear as quarenta formas de monetização do catálogo
 
-- feito: zero open pull requests (the 626 stride closed as superseded this
-  session — its com.<app>.app convention already rode main through 7568ed74,
-  the branch sat 108 files behind, the owner law demands only main).
-- feito: only the main branch answers the remote (the wave/appid ref
-  deleted after the supersede close).
-- feito: the commit identity law — every commit rides the owner identity
-  (iakadion), never the x-access-token ghost.
-- feito: the permdiff heal of the 2.0.179 rung (a3847973) — the verify
-  gate reddened on the fresh rung because the release bump walked the
-  twelve manifests without the versioned permission baseline the gate
-  trusts (the baseline records 2.0.178 while the package carries 2.0.179);
-  the sync mode the gate itself dictates rewrote the record (clean over
-  2.0.178, zero added, zero removed, none reordered, the same hash over
-  the eleven permission entries — never a dismissal, never an ignore
-  entry), the freeze baseline and the readiness record walking the same
-  rung whole. verified locally: the family install answers green under
-  bun 1.4.4 the CI parity pins, the root build walks clean and the
-  deterministic suite answers 3,592 green legs over 211 files with the
-  matrixverify cell green again.
-- parcial: the tip checks — the healed head (a3847973) walks the battery
-  now; the projection closes green when the family suites, the webpack
-  seats and the container lanes land (the stride cancellation pattern the
-  concurrency groups own stays a known lane, never a blocker).
+### devthink
+- [ ] absorver o scraper do saddle
+- [ ] implementar o sistema de arquivos próprio sem limite
+- [ ] completar a cli com a mesma interface do chat
+- [ ] validar a extensão com pareamento por código
+- [ ] servir a extensão dos assets do release
+- [ ] validar o download da extensão pelos assets do release versionado
+- [ ] validar o deploy estático em múltiplas plataformas sincronizadas
+- [ ] implementar o painel de janelas da família com modo standalone
+- [ ] implementar a orquestração das engines importadas como biblioteca
 
-## etapa 14 — the test suite
+## distribuição e release
 
-- feito: the test seat back inside every application (the eleven test
-  folders, 477 proof files), the vitest runner the official seat
-  (`bunx vitest run`), the last full certification 6650 green legs over
-  the family (devthink 3550, debonair 1111, getry 578, cadria 648, saddle
-  522, vault 320, stealthhead 147, foundry 76, argan 72, forge 89, cobaia
-  37) with zero failures.
-- parcial: the post-merge re-certification — the healed head (the permdiff
-  sync of the 2.0.179 rung) walks the suites again at the close of this
-  session; any red answers immediately (the local walk already answers
-  3,592 green legs over the 211 devthink files).
+- [ ] publicar o pacote principal no canal npmjs
+- [ ] completar as seis distribuições por aplicativo
+- [ ] completar os onze canais por aplicativo
+- [ ] completar as onze arquiteturas nos containers dos dez aplicativos
+- [ ] completar as lanes com perfis do saddle no espelho de containers
+- [ ] completar as lanes do catálogo de distribuições de sistema
+- [ ] restaurar o fluxo de aprovação de release em cascata
+- [ ] ultrapassar mil assets nos release notes
+- [ ] validar os binários nos assets com assinatura dinâmica
+- [ ] bump de versão na raiz a cada bloco de grandes ações
+- [ ] validar o changelog automático em cascata
+- [ ] verificar todos os pacotes publicados na meta de sessenta ou mais
+- [ ] publicar os containers docker pendentes de todos os serviços
+- [ ] expandir a matriz de arquiteturas nos dockerfiles do espelho
+- [ ] implantar o processamento de borda nas noventa modalidades
+- [ ] gerar os release notes com as conversões multimodais
 
-## the app seats (the engine each application owns)
+## verificação final
 
-- argan: the network, edge and dns gateway library (the cloudflare and
-  route53 competitor) — zones, records (never delete, only alter), dnssec,
-  handshake, cleanurl, mimetypes, familyurl, keywords. feito: the seats
-  ride the root beside the two restored domain seats.
-- cadria: the versawaze engine — the video, image, 3d mesh, shader and
-  visual ai studio (the blender, raybox, capcut and after effects
-  competitor) — timeline, render, effects, player, layers, rigs, the pixel
-  pipeline, the 3d library shared with debonair through the internal
-  dependency. feito: the seats ride; the blender documentation seat rides
-  the docs.
-- cobaia: the monetization surface — the mrr plans, the honest ad slots,
-  the support links, the badges, the roster, the billing, the churn
-  tracking. feito: the public face rides with the intro and onboarding.
-- debonair: the kathesis engine — the audio, music, voice and daw studio
-  (the suno, flow music and fl studio competitor) — mixer, effects rack,
-  transport, synthesis, mastering, sampler, the reverse payload ingestion
-  (the v1 pattern the allan blobs carried, updated to the saddle sandbox).
-  feito: the seats ride; the stem separation through the hub stays the
-  documented open lane (the hub refuses the transformers seat).
-- devthink: the operating system, the monorepo envelope and the native page
-  suite (the github, gitlab, grok, chatgpt, windows and e2b competitor) —
-  the eleven applications as family windows plus the standalone fullscreen
-  mode, the orchestrator consuming argan, cadria, debonair, getry, vault
-  and saddle as libraries, the web scraper seat owned here. feito: the
-  seats ride; the explore page at the app standard, the win11 desktop face
-  certified.
-- forge: the deployable execution clone — the pure runner consuming the
-  saddle engine (the heavy binaries through queuebinarylaunch). feito: the
-  root mount healed (the missing mount complaint answered), the container
-  lane riding the family context.
-- foundry: the deployable pipeline clone — the full pipeline (saddle plus
-  vault as libraries), stages, artifacts in the vault, the e2b and docker
-  interface, the yml chunks, tar.xz, mime type seats. feito: the seats
-  ride.
-- getry: the universal ai and llm gateway library (the chatgpt competitor)
-  — provider authentication, key rotation, the reasoning levels, the
-  openai-compatible routes, the engines unlimited opt-in (the limits only
-  through the devthink plans). feito: the rewrite answered (the six routes
-  per version, the oom war won — the dynamic load, the bounded buffers,
-  the one-route-at-a-time doctrine).
-- saddle: the master virtualization engine — the vm, run and sandbox
-  competitor of oracle and virtualbox over the 100 percent virtual edge
-  hardware, the ninety autonomous microvm modalities, the wasm, webpack,
-  babel, vfs, docker, exe, qemu, node, e2b, daytona, vgpu, vcpu seats —
-  working fully on the internet on static platforms, never touching the
-  user machine. feito: the doctrine seats ride (etapa 10).
-- stealthhead: the fps game platform (the first, survival, battle and
-  scene-control family) — the under-construction seat the honest face
-  (never a text placeholder), the netcode and matchmaking through the
-  database. feito: the honest seat rides; the game itself stays the future
-  lane the owner paces.
-- vault: the deployable storage engine — the self-hosted bucket and the
-  network database (the supabase and s3 competitor) — the account seat,
-  the per-application database creation with its own id, the unlock from
-  900mb through 900gb and beyond, the supabase-clone logic without the
-  sdk. feito: the seats ride (etapa 6).
+- [ ] rodar a suíte completa com mil passos ou mais verde
+- [ ] rodar todas as baterias de workflow verde na main
+- [ ] confirmar zero alerta aberto de segurança
+- [ ] confirmar zero vulnerabilidade aberta de dependência
+- [ ] confirmar zero branch pendente além da main
+- [ ] confirmar zero pr aberto
+- [ ] verificar a produção no browser em múltiplas plataformas
+- [ ] verificar o site estático no ar com os onze temas
+- [ ] verificar a extensão instalável dos assets
+- [ ] verificar a cli instalável pelo pacote
+- [ ] verificar a resposta da api de alertas zerada
+- [ ] atualizar os cinco documentos com o estado final
+- [ ] fechar o ciclo com projeção e status totalmente verdes
 
-## the complaint ledger (every complaint an immediate order — the state)
+## pendências especificas mapeadas nas reclamações
 
-1. the logics.ts generic file — feito (the keyword law, etapa 4).
-2. the workflows not green, the distributions not landing — feito (the
-   battery green at the certifications, the 85 packages and the thousand
-   asset rungs, etapa 9).
-3. the lane confusion (archos five seats, the saddle max/lite/balanced
-   lost) — feito (the twelve standard lanes plus the forty-eight-tag
-   saddle matrix with the os distribution seats, etapa 9).
-4. the ts inside sol, the hardcoded component data, the tests outside —
-   feito (etapa 3 and 5).
-5. the 2gb cap, the account saved on the machine — feito (etapa 6).
-6. the pnpm-lock and infra visible — feito (etapa 3).
-7. the nginx absent seats — feito (etapa 7).
-8. the release approval broken since 118/140 — feito (the release train
-   with the draft, the verify and the immutable lock through the gh cli,
-   the cascade green at the certifications).
-9. the version regression 2.1.6 — feito (the lockstep curve 2.0.178, never
-   the 2.1 line again).
-10. the assets below five hundred — feito (the thousand law, etapa 9).
-11. the io.github.wenathlan maven scope — feito (com.wenathlan only).
-12. the aimdebonite.app identity — feito (com.debonair.app, etapa 7).
-13. the io seats deleted, com published — feito (etapa 9).
-14. the devthink npm package unpublished — feito (the family npm seats
-    walking every rung).
-15. the docker containers below eleven lanes, saddle below fifteen — feito
-    (etapa 9).
-16. the saddle scraper seats — feito (the ownership law, etapa 10).
-17. the jSDoc, pattern 2026, flags and tags absent — feito (the house
-    comment law rides every seat; the audit walks each wave).
-18. the sha256 hardcoded in workflows — feito (etapa 12).
-19. the winget variant separation — feito (etapa 4).
-20. the logo carrying the name, the hyphens, the dots, the vibe code —
-    feito (the white logo without text, the naming law).
-21. the internal apps not saying under construction, the calculator seat —
-    feito (the honest under-construction faces, the library law).
-22. the mini-services folder in the repo — feito (the sandbox-local lane
-    never tracked; the gateway seat rides the tree).
-23. the gatewayview rename — feito (gateway the only name).
-24. the windowregistry strays — feito (the seats ride the test or the tree
-    per the law).
-25. the z-user commit identity — feito (iakadion only, etapa 13).
-26. the white screen on production while the sandbox looks normal — feito
-    (the browser agent verification the close law owns; the pages lane
-    green).
-27. the x icon leaving the window on resize, the login shadow leak, the
-    native-a cut, the familyurl collapses — feito (the window family
-    healed through the certification walks).
-28. the zoom and scroll bugs — feito (the viewport lock, etapa 11).
-29. the black auth screen beside the white system — feito (the sol theme
-    one law).
-30. the icons emoji-like and inconsistent — feito (the fluent family, the
-    drawn icons).
-31. the texts revealing infrastructure — feito (etapa 5).
-32. the fake platform pillars (the browser storage, the simulated sandbox,
-    the local accounts, the split databases) — feito (etapa 5 and 6; the
-    edge doctrine).
-33. the explorer page ugly — feito (removed from the os per the order).
-34. the two ripped dns domains — feito (restored).
-35. the enter-open differing from the double click, the icon drag broken —
-    feito (the interaction family healed at the certifications).
-36. the chat bar bug, the session name generation — feito.
-37. the scorecard alert 1759 — parcial (the fix rides main; the alert
-    closes at the next scorecard read, etapa 12).
-38. the dots of the 645 commits deleted before reading — feito (the
-    infrastructure consolidation seat; the lesson law: never delete before
-    reading).
-39. the six hundred forty-five commit docs consolidated — feito (the
-    infra seat the docs carry).
-40. the three branches — feito (only main, etapa 13).
-41. the deployed saddle standalone opening blank (the resolve is not a
-    function refusal on the typed url, the panel iframe and every door) —
-    feito (the browser seam heal this session pinned: the dashboard chain
-    pulls auth.ts then db.ts into the browser graph and the import time
-    seats walked the node drivers the browser stubs — the dbpath resolve,
-    the opendatabase call, the schema boot and the vault factory ddl at
-    creation all ran at module evaluation; the lazy law of the family
-    seats the whole chain, the onboarding ddl of the shared factory seats
-    on the first accessor call memoized once, and the live browser walk
-    proves the face whole — zero console errors, the onboarding flow and
-    the spin a sandbox home rendering, the 309 module graph built from
-    the clean entry).
+- [ ] resolver o arquivo de rótulos com dados hardcoded transformando em teste que popula o banco
+- [ ] remover a calculadora legada usando biblioteca pronta
+- [ ] remover o log de lógica na raiz do aplicativo principal
+- [ ] atualizar os documentos templateáveis espelhando o app principal
+- [ ] recolocar a pasta de testes aprovando toda a suíte
+- [ ] corrigir os sítios de assinatura hardcoded nos workflows
+- [ ] restaurar a curva de assets dos releases que despencou
+- [ ] marcar os aplicativos internos como em construção
+- [ ] padronizar a nomenclatura dos canais de publicação
+- [ ] restaurar os arquivos de infraestrutura dos commits antigos consolidados em arquivo único
+- [ ] gerar os dossiês por aplicativo consolidados nos cinco documentos
+- [ ] validar o fluxo de download da extensão pelos assets do release
+- [ ] implementar a feature de scrape no aplicativo principal
+- [ ] estudar os espaços de referência de música da plataforma de modelos abertos
+- [ ] validar a versão do site publicada contra o servidor local
+- [ ] confirmar o merge de todas as branchs do bot superseded
 
-## the esbuild cve close — the fresh wave record (this instance, the later breath)
+## detalhamento por aplicativo das frentes de código
 
-- the security law closed whole: the audit this wave found twelve open
-  code-scanning alerts all tracing one root (esbuild@0.18.20 the
-  drizzle-kit chain carried — @esbuild-kit/esm-loader@2.6.5 ->
-  @esbuild-kit/core-utils@3.3.2 -> esbuild ~0.18.20, the eleven bun.lock
-  seats the ghsa-67mh-4wv8-2f99 warnings named and the scorecard
-  VulnerabilitiesId alert 243 the same breath); the fix rides the
-  override law (esbuild ^0.28.2 seated in the eleven overrides blocks
-  mirroring the dependencies and devdependencies), the locks regenerated
-  under the ci bun ladder (1.4.4 the exact engine pin), and the registry
-  census answering zero 0.18.20 resolutions — the alerts read closed at
-  the default branch scan: zero open.
-- the publish freshness lane closed: the family npm seats answer 2.0.180
-  whole (the saddle npm freshness the registry read pinned behind now
-  current — @wenathlan/saddle, debonair, cadria and devthink all at
-  the 2.0.180 rung, the release v2.0.180 carrying 999 assets at the
-  ceiling).
-- the local certification this wave: the family suites walked green on
-  the fresh head — devthink 3,587 legs over 210 files, debonair 1,111,
-  cadria 648, getry 578, saddle 522, vault 320, stealthhead 147, forge
-  89, foundry 76, argan 72, cobaia 37 — 7,187 legs whole with zero
-  failures; the frozen-lockfile gate verified locally under the 1.4.4
-  pin across the eleven roots.
-- the production face verified live through the browser agent: the
-  devthink site renders whole (the os, explorer, creators, cadria and
-  debonair sections), the panel face answers the unlock lane, the
-  account creation signs in (the honest offline notice the static seat
-  carries), the desktop renders the taskbar, the start menu and the
-  twenty-three icons, and the console window opens — zero page errors
-  on every face.
-- the alan corpus re-seated after the environment reset: the blobless
-  sparse clone carrying organizado/md whole (the repos.case catalog,
-  conversa50, feedssd, polarauth) and the .devthink/web design
-  reference — 122 megabytes, the disk law honored.
+### devthink detalhado
+- [ ] reagrupar a lógica de autenticação do devthink no arquivo único
+- [ ] reagrupar a lógica de conta do devthink no arquivo único
+- [ ] reagrupar a lógica de agentes do devthink no arquivo único
+- [ ] reagrupar a lógica de catálogo do devthink no arquivo único
+- [ ] reagrupar a lógica de pensamento do devthink no arquivo único
+- [ ] reagrupar a lógica de automação do devthink no arquivo único
+- [ ] reagrupar a lógica de captura do devthink no arquivo único
+- [ ] reagrupar a lógica de bridge do devthink no arquivo único
+- [ ] reagrupar a lógica de certificado de agente no arquivo único
+- [ ] reagrupar a lógica de congelamento de api no arquivo único
+- [ ] reagrupar a lógica de registro de aplicativos no arquivo único
+- [ ] reagrupar a lógica de auditoria do devthink no arquivo único
+- [ ] zerar hardcode de texto nos componentes do tema sol do devthink
+- [ ] zerar hardcode de texto nos widgets do devthink
+- [ ] puxar os textos do painel do banco via apis internas
+- [ ] puxar os ícones do painel do banco via apis internas
+- [ ] corrigir o gerenciador de janelas do painel
+- [ ] corrigir o dock do painel com as interações inteligentes
+- [ ] corrigir a barra de tarefas do painel
+- [ ] corrigir o menu iniciar com o efeito acrílico no rodapé
+- [ ] corrigir a área de notificações do painel
+- [ ] implementar o modo televisão do devthink com a mesma interface
+- [ ] implementar o modo desktop do devthink com a mesma interface
+- [ ] implementar a extensão com a mesma interface do painel
+- [ ] validar a cli espelhando o chat com o mesmo design
+- [ ] implementar o instalador pwa offline first com manifest correto
+- [ ] gerar o apk pelo build único
+- [ ] gerar os templates de deploy para as plataformas de hospedagem
+- [ ] implementar a sincronização dos clones em múltiplas plataformas
+- [ ] implementar o intro ordinal com a intro de saída fluida
+- [ ] corrigir os dez pontos do onboarding em janela
+- [ ] implementar o gerenciador de onboarding
 
-## the open lanes (the pendente seats at this breath)
+### saddle detalhado
+- [ ] auditar as noventa modalidades contra o registro do catálogo
+- [ ] implementar o executor de cada modalidade registrada sem executor
+- [ ] implementar as três modalidades de perfil como dados
+- [ ] implementar a fila de lançamento de binários com prioridade
+- [ ] implementar o hardware virtual de borda funcionando na internet
+- [ ] implementar o processamento sem tocar os recursos locais do visitante
+- [ ] implementar o runner de containers com as distribuições emuladas
+- [ ] implementar o drive real na emulação
+- [ ] implementar as portas virtuais
+- [ ] implementar a compilação em background dos scripts
+- [ ] auditar o código do saddle contra funções alheias persistentes
+- [ ] recortar o scraper do saddle para o devthink
+- [ ] recortar qualquer função de web do saddle que não seja de execução
+- [ ] comparar o saddle original com o integrado funcional por funcional
+- [ ] registrar as capacidades perdidas do saddle original
+- [ ] restaurar as capacidades perdidas no padrão atual
+- [ ] publicar o container do saddle no espelho com as lanes
+- [ ] publicar as lanes de catálogo de cada sistema operacional
+- [ ] validar as lanes com perfis máximo, equilibrado e leve
+- [ ] validar o container exótico com as mais de quinze lanes
+- [ ] manter a cli do fluxo do bundler embutida
+- [ ] manter os pacotes do fluxo do bundler embutidos
+- [ ] descartar os arquivos avulsos do fluxo do bundler
+- [ ] rodar a suíte do saddle verde
+- [ ] validar a execução de binários pesados de referência
 
-- the runner fleet allocation the platform owes: the queued trains on
-  the fresh head (ci, verify, security, family pages, maintenance,
-  release) hold their order behind the freeze the platform owns —
-  nothing lost, the concurrency groups answer the supersede law; the
-  close check rides the final projection.
-- the 1,700+ commits law: 1,679 at this breath, twenty-one real steps to
-  go — one per real step, the wave records and the release train carry it.
-- the stem separation hub lane (the debonair open seat the hub refuses —
-  the documented future lane).
-- the game lanes the owner paces (the stealthhead real game beyond the
-- the deployed face catch-up: the family pages lane of the 15b197ad head
-  carries the browser seam heal to production — the close check reads
-  the deployed saddle standalone answering whole (the local proof
-  already green: the 309 module graph, zero console errors, the
-  onboarding and home faces verified live).
-- the 1,700+ commits law: 1,679 at this breath, twenty-one real steps to
-  go — one per real step, the wave records and the release train carry it.
-- the stem separation hub lane (the debonair open seat the hub refuses —
-  the documented future lane).
-- the game lanes the owner paces (the stealthhead real game beyond the
-  honest under-construction seat).
+### vault detalhado
+- [ ] reconstruir a engine do vault do zero nos cinco pilares
+- [ ] implementar a conta em runtime sem serviço externo
+- [ ] implementar a criação de aplicativo com identificador próprio
+- [ ] implementar a camada principal em sqlite melhorado
+- [ ] implementar as camadas mysql, drizzle e prisma
+- [ ] implementar o git lfs e a libgit
+- [ ] implementar os blobs e ponteiros com bigint
+- [ ] implementar os chunks de um mebibito
+- [ ] implementar a deduplicação por hash
+- [ ] implementar o bloqueio de download do banco
+- [ ] implementar o banco isca com projetos falsos plausíveis
+- [ ] implementar a base real selada
+- [ ] remover o limite de dois gigabytes do my files
+- [ ] implementar a quota configurável
+- [ ] completar os mime types na casa dos milhares
+- [ ] completar os protocolos https na casa das centenas
+- [ ] distribuir a engine open source nos registros
+- [ ] espelhar o protocols types em todos os aplicativos
+- [ ] refazer o app de arquivos com o design da família
+- [ ] servir o bucket self-hosted para aplicativos externos
+- [ ] rodar a suíte do vault verde
 
-## the wave record of this session (the browser seam heal, 15b197ad)
+### debonair detalhado
+- [ ] implementar a lei do payload na terceira versão
+- [ ] implementar as dezenas de parâmetros do payload
+- [ ] implementar a faixa de blob por hash
+- [ ] implementar as taxas de amostragem distintas de reconhecimento e render
+- [ ] proibir a codificação baseada em sessenta e quatro no payload
+- [ ] implementar a decomposição de música completa
+- [ ] implementar a reconstrução tocável
+- [ ] implementar a separação de stems
+- [ ] implementar a ingestão de referências no banco da engine
+- [ ] rodar a ingestão reversa na sandbox
+- [ ] implementar o reconstrutor ingerindo o json
+- [ ] completar o daw completo com mixer
+- [ ] completar o rack de efeitos
+- [ ] completar o transporte
+- [ ] completar a síntese
+- [ ] completar a mixagem
+- [ ] completar a masterização
+- [ ] completar o sampler
+- [ ] completar a biblioteca de amostras
+- [ ] documentar a pesquisa de áudio em documento da engine
+- [ ] rodar a suíte do debonair verde
 
-- the reading law answered first: the conversa51 delta (the 2,108 new
-  lines beyond the seated 86,534 superset — the v50 checklist, the three
-  mapping seats and the english map, the duplicated tails proven byte
-  identical) and the feedssd corpus whole walked linear through bash, sed
-  and grep before any action; zero new rule the seated frame misses.
-- the auth first law honored: the polar telemetry verified live (the
-  token answering the api as iakadion), the head synced twice whole (the
-  four commit fast-forward and the parallel 2.0.180 rung caught, the
-  browser seam heal merged with the sync law never forced).
-- the production walk found the real defect: the golden path verified
-  through the browser agent (the home, the auth lock screen, the account
-  creation, the panel desktop with the taskbar, the start menu, the
-  calendar and the twenty three icons, zero console errors on every
-  face) until the saddle window opened blank — the deployed bundle
-  crashing at module evaluation with the resolve refusal.
-- the hunt walked the whole chain: the stack trace pinned the
-  onboardinglane exec, the vault factory ddl at creation answered as the
-  module load caller, and the db.ts import time seats (the dbpath
-  resolve, the opendatabase call, the executeschema boot and the broken
-  catch re calling the same failing resolve) rode the same crash.
-- the heal seated the lazy law family wide: the saddle connection chain
-  memoized behind the dbpathseat and the connection seam (the schema and
-  the label seed riding the same lazy boot), the store dbpath a getter,
-  the close guarding the null seat, and the vault factory ddl seating
-  on the first accessor call (the belt and braces preserved — the first
-  use still finds the table in place, the four module load creations of
-  the saddle, the forge, the cobaia and the debonair seats healed at the
-  mechanism the same stroke).
-- the local build discipline pinned: the self cannibalizing rebuild
-  answered (the outDir root entry swallowing the stale hashed bundle —
-  five modules transformed, the font names accumulating suffixes); the
-  tracked index html restored to the app tsx entry, the hashed residue
-  cleaned, and the single clean build walking the 309 module graph
-  whole.
-- the certification green: the family suites walked on the merged head
-  — devthink 3,589 legs over 210 files, debonair 1,111, cadria 648,
-  getry 578, saddle 522, vault 320, stealthhead 147, forge 89, foundry
-  76, argan 72, cobaia 37 — 7,189 legs whole with zero failures (the
-  readiness and torturedata skips the documented conditional seats).
-- the typecheck and the gates: the saddle and the vault tsc walks clean,
-  the saddle battery green twice over (before and after the merge), and
-  the remote battery queued on the fresh head (ci, verify, security and
-  the family pages lane carrying the heal to production).
+### cadria detalhado
+- [ ] implementar o encoder de vídeo real na engine
+- [ ] implementar a timeline completa
+- [ ] implementar o render completo
+- [ ] implementar o player completo
+- [ ] implementar o editor com controle de camadas
+- [ ] implementar os movimentos
+- [ ] implementar os rigs
+- [ ] implementar o pipeline de pixels inteiro
+- [ ] implementar o gerador de malha tridimensional
+- [ ] implementar os shaders
+- [ ] implementar a ia visual
+- [ ] compartilhar a biblioteca tridimensional via dependência
+- [ ] rodar a suíte do cadria verde
 
-## the branch and pr scope this file defines
+### getry detalhado
+- [ ] implementar as cinco pontes de provedores
+- [ ] implementar as trinta e cinco rotas
+- [ ] implementar a compatibilidade com o padrão openai
+- [ ] implementar o mascaramento do meta modelo
+- [ ] implementar a autenticação dos provedores
+- [ ] implementar a rotação de chaves
+- [ ] implementar o raciocínio nos sete níveis
+- [ ] implementar o júri de três modelos
+- [ ] implementar a regra anti bajulação
+- [ ] implementar o cofre de chaves
+- [ ] rodar a suíte do getry verde
 
-the map above seats every order inside the main line the owner law owns
-(only main at the close). the wave pattern answers the batch law: each wave
-opens its stride, walks its proofs and folds into main through the squash
-seat with the checks green — the parallel strides close as superseded when
-their content already rides the head (the 626 lesson this session pinned).
+### forge detalhado
+- [ ] implementar o runner consumindo a engine do saddle
+- [ ] implementar a fila de lançamento
+- [ ] implementar a execução de binários pesados
+- [ ] validar a execução dos binários de referência
+- [ ] rodar a suíte do forge verde
+
+### foundry detalhado
+- [ ] implementar os estágios do pipeline
+- [ ] implementar os artefatos no storage do vault
+- [ ] implementar a interface clone de e2b e docker
+- [ ] implementar o controle administrativo
+- [ ] implementar os chunks de yaml
+- [ ] implementar o tar comprimido
+- [ ] implementar os mime types do pipeline
+- [ ] rodar a suíte do foundry verde
+
+### argan detalhado
+- [ ] implementar as zonas dns com o registro raiz
+- [ ] implementar os subdomínios
+- [ ] implementar os registros que alteram sem excluir
+- [ ] implementar o dnssec com rotação
+- [ ] implementar o handshake
+- [ ] implementar os quatro transportes dns
+- [ ] implementar o cluster de réplicas com fofoca autenticada
+- [ ] implementar o email self-hosted
+- [ ] implementar o meta buscador
+- [ ] implementar a publicação de domínios em sete passos
+- [ ] implementar o cleanurl
+- [ ] implementar o familyurl sem os dez pontos de colapso
+- [ ] implementar as keywords
+- [ ] rodar a suíte do argan verde
+
+### stealthhead detalhado
+- [ ] manter o componente de jogo em construção como única face pública
+- [ ] implementar o mundo pré-compilado
+- [ ] implementar a física determinística
+- [ ] implementar o editor absorvendo a física
+- [ ] implementar o editor absorvendo o áudio
+- [ ] implementar o editor absorvendo o raio x
+- [ ] implementar o editor absorvendo as camadas
+- [ ] implementar o editor absorvendo a arena, o player e o combate
+- [ ] implementar o multiplayer com o servidor no banco
+- [ ] implementar o netcode real
+- [ ] implementar o matchmaking
+- [ ] implementar os cinco mapas
+- [ ] implementar as cinquenta armas
+- [ ] implementar os dez personagens
+- [ ] implementar os quinze veículos
+- [ ] implementar os inventários
+- [ ] manter os nomes nas colunas do banco, nunca no código
+- [ ] implementar o hud por flags por dispositivo
+- [ ] validar o app pequeno baixando o banco do site
+- [ ] rodar a suíte do stealthhead verde
+
+### cobaia detalhado
+- [ ] implementar os planos de mrr
+- [ ] implementar os espaços de anúncio honestos
+- [ ] implementar os links de apoio das plataformas de patrocínio
+- [ ] implementar os badges
+- [ ] implementar o roster
+- [ ] implementar o billing
+- [ ] implementar o rastreamento de mrr
+- [ ] implementar o rastreamento de churn
+- [ ] mapear as quarenta formas de monetização
+- [ ] rodar a suíte do cobaia verde
+
+## recuperação de dependências e blobs
+
+- [ ] colher todos os manifests de todos os blobs dos repositórios da família
+- [ ] deduplicar os nomes de dependências por caixa e por variante
+- [ ] somar os nomes faltantes nos onze manifests sem remoção
+- [ ] espelhar a união nos três blocos de cada manifest
+- [ ] espelhar a união nos overrides do workspace
+- [ ] regenerar os locks honestos sob o veredito do resolvedor
+- [ ] validar os nomes contra os registros vivos
+- [ ] reportar os nomes não publicados como pesquisa, nunca silenciosamente descartados
+- [ ] auditar a união do pip nos onze envelopes
+- [ ] auditar a união do cargo nos assentos rust
+- [ ] auditar a união do go nos requires
+- [ ] auditar a união das gems nos assentos ruby
+- [ ] auditar a união do nuget nos assentos csproj
+- [ ] ler os scripts de união da área de organização aproveitando o que existe
+- [ ] manter a família espelhada com a mesma lista em todos
+
+## verificação por browser
+
+- [ ] verificar o site principal no ar contra o servidor local
+- [ ] verificar os onze temas no site da família
+- [ ] verificar o painel sem tela branca em produção
+- [ ] verificar o login sem sombra vazando
+- [ ] verificar a rolagem sem área vazia
+- [ ] verificar o zoom travado
+- [ ] verificar o resize sem o ícone de fechar escapando
+- [ ] verificar a abertura via painel igual à url direta
+- [ ] verificar o calendário acompanhando o dock flutuante
+- [ ] verificar a navbar flutuante e fixável
+- [ ] verificar o explore no padrão do aplicativo
+- [ ] verificar os widgets puxando do banco
+- [ ] verificar a extensão instalada conectando
+- [ ] verificar a cli no terminal com o mesmo design
+- [ ] verificar o jogo com o componente de construção
+- [ ] verificar a responsividade no mobile
+- [ ] verificar a detecção de dpi na televisão
+- [ ] verificar os links de download dos assets do release
+
+## publicação por canal
+
+- [ ] publicar o envelope npmjs do devthink
+- [ ] publicar o envelope npmjs do debonair
+- [ ] publicar o envelope npmjs do cadria
+- [ ] publicar o envelope npmjs do saddle
+- [ ] publicar o envelope npmjs do vault
+- [ ] publicar o envelope npmjs do getry
+- [ ] publicar o envelope npmjs do forge
+- [ ] publicar o envelope npmjs do foundry
+- [ ] publicar o envelope npmjs do argan
+- [ ] publicar o envelope npmjs do stealthhead
+- [ ] publicar o envelope npmjs do cobaia
+- [ ] publicar o envelope github packages de cada aplicativo
+- [ ] publicar o envelope gitlab de cada aplicativo
+- [ ] publicar o envelope maven de cada aplicativo no grupo novo
+- [ ] publicar o envelope gradle de cada aplicativo
+- [ ] publicar o envelope nuget de cada aplicativo
+- [ ] publicar a gem de cada aplicativo
+- [ ] publicar o envelope pypi de cada aplicativo
+- [ ] publicar o envelope cargo de cada aplicativo
+- [ ] publicar o formula homebrew de cada aplicativo
+- [ ] publicar o módulo go de cada aplicativo
+- [ ] publicar o container de cada aplicativo no espelho
+- [ ] validar o assento do bundler fundido no envelope original de cada aplicativo
+- [ ] validar as faces node do vault no fluxo de publicação
+- [ ] validar o pacote da documentação python do devthink
+
+## testes por aplicativo
+
+- [ ] rodar a suíte do devthink com os testes reagrupados em typescript
+- [ ] rodar a suíte do debonair com os testes reagrupados em typescript
+- [ ] rodar a suíte do cadria com os testes reagrupados em typescript
+- [ ] rodar a suíte do saddle com os testes reagrupados em typescript
+- [ ] rodar a suíte do vault com os testes reagrupados em typescript
+- [ ] rodar a suíte do getry com os testes reagrupados em typescript
+- [ ] rodar a suíte do forge com os testes reagrupados em typescript
+- [ ] rodar a suíte do foundry com os testes reagrupados em typescript
+- [ ] rodar a suíte do argan com os testes reagrupados em typescript
+- [ ] rodar a suíte do stealthhead com os testes reagrupados em typescript
+- [ ] rodar a suíte do cobaia com os testes reagrupados em typescript
+- [ ] validar a bateria de locksync da família
+- [ ] validar a bateria de paridade de configuração da família
+- [ ] validar a bateria de manifestos da família
+- [ ] validar a bateria de artefatos da família
+- [ ] validar a suíte completa com o runner oficial no pino do runtime fixo
+
+## conteúdo e dados por aplicativo
+
+- [ ] auditar o banco do devthink contra dados falsos
+- [ ] auditar o banco do debonair contra dados falsos
+- [ ] auditar o banco do cadria contra dados falsos
+- [ ] auditar o banco do saddle contra dados falsos
+- [ ] auditar o banco do vault contra dados falsos
+- [ ] auditar o banco do getry contra dados falsos
+- [ ] auditar o banco do forge contra dados falsos
+- [ ] auditar o banco do foundry contra dados falsos
+- [ ] auditar o banco do argan contra dados falsos
+- [ ] auditar o banco do stealthhead contra dados falsos
+- [ ] auditar o banco do cobaia contra dados falsos
+- [ ] migrar os textos dos componentes para o banco de cada aplicativo
+- [ ] migrar as imagens dos componentes para o banco de cada aplicativo
+- [ ] migrar os ícones de cada módulo para o banco
+- [ ] servir os ícones estáticos obrigatórios nos domínios estáticos
+- [ ] validar o padrão de web estático da referência para os assets
+- [ ] implementar a ingestão de dados de referência nas engines de áudio
+- [ ] implementar a ingestão de dados de referência nas engines de vídeo
+
+## design por widget do painel
+
+- [ ] refazer o widget de chat no padrão de referência
+- [ ] refazer o widget de arquivos no padrão de referência
+- [ ] refazer o widget de calculadora como biblioteca pronta
+- [ ] refazer o widget de calendário acoplado ao dock
+- [ ] refazer o widget de relógio à esquerda da barra
+- [ ] refazer o widget de configurações sem textos de infraestrutura
+- [ ] refazer o widget de exploração no padrão do aplicativo
+- [ ] refazer o widget de terminal com a cli
+- [ ] refazer o widget de música com a engine de áudio
+- [ ] refazer o widget de vídeo com a engine de vídeo
+- [ ] refazer o widget de máquinas com a engine de virtualização
+- [ ] refazer o widget de banco com a engine de armazenamento
+- [ ] refazer o widget de rede com a engine de dns
+- [ ] refazer o widget de pipeline com a engine de pipeline
+- [ ] refazer o widget de execução com a engine de runner
+- [ ] refazer o widget de monetização com a superfície pública
+- [ ] refazer o widget de jogo com o componente de construção
+- [ ] validar os widgets em ordem alfabética sem pasta aninhada
+
+## autenticação e identidade
+
+- [ ] capturar o token em tempo real na autorização do proprietário
+- [ ] instalar o token na cli e no helper de credenciais
+- [ ] persistir o token em três camadas
+- [ ] reutilizar o token válido sem novo pareamento
+- [ ] manter o poller e o watchdog em background até a captura
+- [ ] confirmar o status autorizado no arquivo de estado
+- [ ] assinar os commits com a identidade do proprietário
+- [ ] validar os commits verificados pela assinatura da plataforma
+- [ ] configurar o pareamento por código da extensão
+- [ ] validar a autorização da extensão conectando ao servidor estático
+
+## ciclo de fechamento
+
+- [ ] conferir cada item deste checklist contra o código antes de marcar
+- [ ] atualizar o checklist a cada onda com o estado real
+- [ ] fundir duplicatas novas num único item
+- [ ] manter a lista interna de dez mil ações sincronizada com este documento
+- [ ] reportar cada onda em minúsculas com frases completas
+- [ ] fechar cada pr por request com a bateria verde
+- [ ] mesclar cada pr por request na main
+- [ ] validar o scorecard com o histórico de merges verdes
+- [ ] validar a projeção final com status totalmente verde
+
+## interações por superfície
+
+- [ ] implementar a interação de puxar para cima flutuando a navbar no devthink
+- [ ] implementar a interação de puxar para a esquerda fixando a navbar
+- [ ] implementar a interação de descolar da parede tornando a navbar flutuante
+- [ ] implementar o destaque de foco nos controles de janela
+- [ ] implementar o formato pílula nos controles
+- [ ] implementar o efeito acrílico no rodapé do menu
+- [ ] implementar as oito alças de redimensionamento das janelas
+- [ ] implementar o duplo clique abrindo dentro da janela do sistema
+- [ ] implementar a url direta abrindo standalone em tela cheia
+- [ ] implementar a detecção de dpi com escala automática por superfície
+- [ ] implementar a apresentação de tela por superfície mantendo o mesmo design
+- [ ] validar a interação idêntica na web, desktop, cli, tv e extensão
+- [ ] implementar a responsividade mobile com alvos de toque adequados
+- [ ] implementar a animação de entrada das janelas
+- [ ] implementar a animação de saída das janelas
+- [ ] implementar o magnestismo do dock nas bordas
+- [ ] implementar o snap das janelas nas bordas
+- [ ] implementar a busca do menu iniciar
+- [ ] implementar os atalhos de teclado do painel
+- [ ] implementar o modo escuro sincronizado com o sistema
+
+## versão e mecânica de release
+
+- [ ] validar o rung corrente sincronizado nos onze manifests
+- [ ] implantar o bump de versão na raiz a cada bloco de ações
+- [ ] validar o espelhamento automático do bump nos onze
+- [ ] validar a geração do changelog no bump
+- [ ] validar o disparo em cascata das distribuições no bump
+- [ ] validar a aprovação de release em cascata restaurada
+- [ ] validar os release notes com as notas de cada rung
+- [ ] validar os assets do release com os binários das arquiteturas
+- [ ] validar a assinatura dinâmica dos assets
+- [ ] validar o congelamento e destravamento das distribuições
+- [ ] validar as oitenta etapas obrigatórias sem pular nenhuma
+- [ ] destravar as seis distribuições congeladas por estrutura
+
+## estudo de concorrentes
+
+- [ ] ler o documento de casos do repositório com os links das referências
+- [ ] clonar as referências de código na área de estudo
+- [ ] clonar as referências de design na área de imagens
+- [ ] inspecionar os seletores das referências
+- [ ] inspecionar os tokens das referências
+- [ ] inspecionar as variáveis de estilo das referências
+- [ ] reajustar os valores no padrão da família
+- [ ] estudar os concorrentes de virtualização e sandbox
+- [ ] estudar os concorrentes de armazenamento
+- [ ] estudar os concorrentes de áudio e vídeo
+- [ ] estudar os concorrentes de gateway de inteligência
+- [ ] estudar os concorrentes de dns e rede
+- [ ] estudar os concorrentes de pipeline
+- [ ] estudar os concorrentes de execução de binários
+- [ ] estudar os concorrentes de monetização
+- [ ] registrar o estudo de cada concorrente com o que serve e o que contradiz
+- [ ] contrariar os concorrentes que tocam os recursos locais do visitante
+- [ ] aplicar o funcionamento real aprendido nas engines
+
+## higiene do repositório
+
+- [ ] confirmar a raiz com apenas as pastas da família e os dois arquivos permitidos
+- [ ] remover arquivos de log da raiz de cada aplicativo
+- [ ] remover o lançador legado da autenticação se existir
+- [ ] manter o lockfile oculto no gitignore da família
+- [ ] confirmar o arquivo de infraestrutura oculto no gitignore
+- [ ] auditar o gitignore da família cobrindo os artefatos de build
+- [ ] limpar caches do repositório antes do push final
+- [ ] validar a estrutura plana do repositório no contrato da bateria
+- [ ] validar a árvore de cada aplicativo com apenas as três pastas
+- [ ] validar os caminhos dos workflows apontando para as pastas certas

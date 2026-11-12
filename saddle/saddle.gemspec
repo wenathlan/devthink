@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/wenathlan/saddle"
   spec.license = "GPL-3.0-only"
   spec.required_ruby_version = ">= 3.1"
-  spec.files = %w[LICENSE README.md CHANGELOG.md SaddleCli.rb]
+  spec.files = %w[LICENSE SaddleCli.rb]
   spec.require_paths = ["."]
   spec.metadata = {
     "source_code_uri" => "https://github.com/wenathlan/saddle",

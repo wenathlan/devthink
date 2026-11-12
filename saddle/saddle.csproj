@@ -12,7 +12,6 @@
     <RepositoryUrl>https://github.com/wenathlan/saddle</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>distributed-computing;virtual-memory;automation;virtual-hardware;qemu;mesa;container</PackageTags>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IncludeSymbols>false</IncludeSymbols>
@@ -21,7 +20,6 @@
     <!-- The C# process adapter of the merged engine surface: explicit local
          saddle CLI invocations, no shell, no credentials, no host hardware. -->
     <Compile Include="SaddleCli.cs" />
-    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <!-- the lost-dependency recovery union (the additive mirror law) -->

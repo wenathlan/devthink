@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/wenathlan/devthink"
   spec.license = "GPL-3.0-only"
   spec.required_ruby_version = ">= 3.1"
-  spec.files = ["README.md", "runner/devthink.rb"]
+  spec.files = ["runner/devthink.rb"]
   spec.require_paths = ["runner"]
   spec.metadata["source_code_uri"] = "https://github.com/wenathlan/devthink"
   spec.metadata["homepage_uri"] = spec.homepage

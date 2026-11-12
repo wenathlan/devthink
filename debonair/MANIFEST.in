@@ -2,7 +2,6 @@
 # Mirrors the file list the debonair gemspec declares in spec.files: the
 # readme, the docs set and the tests directory; the site folder the
 # spec also declares has no folder in the app root, so it never lists.
-include README.md
 recursive-include docs *
 recursive-include test *
 graft test

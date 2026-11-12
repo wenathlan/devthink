@@ -10,12 +10,10 @@
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="/" />
     <None Include="docs/**/*" Pack="true" PackagePath="contentFiles/any/any/docs/" />
     <None Include="site/**/*" Pack="true" PackagePath="contentFiles/any/any/site/" />
     <None Include="test/**/*" Pack="true" PackagePath="contentFiles/any/any/test/" />

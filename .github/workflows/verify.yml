@@ -296,7 +296,6 @@ jobs:
           unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/index.cjs"
           unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/declarations/index.d.ts"
           unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/fixtures/example-org-pagestate.json"
-          unzip -l validation/nuget/*.nupkg | grep -F "README.md"
       - name: Run the vsix package build
         run: |
           set -euo pipefail
