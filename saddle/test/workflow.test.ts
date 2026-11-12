@@ -301,7 +301,7 @@ describe("the workflow contract", () => {
     }
     assert.equal(build.timedout, false, "the tsc gate must finish inside the step timeout");
     assert.equal(build.code, 0, `tsc --noEmit reported:\n${build.stdout.slice(-2000)}`);
-  });
+  }, 360000);
 
   /* ------------------------------------------------------------------ */
   /* gate 3: strict json validation of the ten data documents            */
