@@ -13,7 +13,6 @@ name = "wenathlan-vault"
 version = "2.0.181"
 authors = [{name = "wenathlan"}]
 description = "The supabase clone — the self-hosted database, auth and storage surface"
-readme = "README.md"
 license = {text = "GPL-3.0-only"}
 requires-python = ">=3.11"
 

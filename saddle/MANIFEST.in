@@ -2,6 +2,5 @@
 # Mirrors the file list the saddle gemspec declares in spec.files: the
 # license, the readme, the changelog and the SaddleCli adapter.
 include LICENSE
-include README.md
 include CHANGELOG.md
 include SaddleCli.rb

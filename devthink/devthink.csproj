@@ -10,7 +10,6 @@
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
@@ -18,7 +17,6 @@
     <Compile Include="ExtensionDistribution.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="/" />
     <None Include="build/devthink$(PackageVersion).zip" Pack="true" PackagePath="contentFiles/any/any/" />
     <None Include="build/cli.js" Pack="true" PackagePath="contentFiles/any/any/cli.js" />
     <None Include="build/headless.js" Pack="true" PackagePath="contentFiles/any/any/headless.js" />
