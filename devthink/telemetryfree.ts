@@ -253,8 +253,15 @@ export interface telemetryfreereport {
  * first layer: the inventory, the gates, the entries and the zero outbound
  * attempts, no timestamps, so the record replays byte identical. */
 export const telemetryfreerecord: telemetryfreereport = {
-  "release": "2.0.181",
+  "release": "2.0.182",
   "callsites": [
+    {
+      "bundle": "acquisition.js",
+      "fetch": 1,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
+    },
     {
       "bundle": "bun.js",
       "fetch": 8,
@@ -387,6 +394,13 @@ export const telemetryfreerecord: telemetryfreereport = {
       "websocket": 0,
       "beacon": 0,
       "xmlhttprequest": 0
+    },
+    {
+      "bundle": "webscrape.js",
+      "fetch": 2,
+      "websocket": 0,
+      "beacon": 0,
+      "xmlhttprequest": 0
     }
   ],
   "paths": [
@@ -428,7 +442,7 @@ export const telemetryfreerecord: telemetryfreereport = {
     {
       "name": "callsites",
       "ok": true,
-      "detail": "the bundle set carries its network call sites inventoried: 108 sites over 19 bundles — bun.js (fetch 8, websocket 0, beacon 0); cli.js (fetch 4, websocket 0, beacon 0); config.js (fetch 5, websocket 0, beacon 0); core.js (fetch 3, websocket 0, beacon 0); deno.js (fetch 8, websocket 0, beacon 0); devthink.umd.js (fetch 8, websocket 0, beacon 0); hardening.js (fetch 1, websocket 0, beacon 0); headless.js (fetch 2, websocket 0, beacon 0); index.js (fetch 8, websocket 0, beacon 0); index.neutral.js (fetch 8, websocket 0, beacon 0); mcp.js (fetch 2, websocket 0, beacon 0); memory.js (fetch 1, websocket 0, beacon 0); os.js (fetch 3, websocket 0, beacon 0); personalstore.js (fetch 4, websocket 0, beacon 0); policy.js (fetch 2, websocket 0, beacon 0); protocol.js (fetch 2, websocket 0, beacon 0); security.js (fetch 4, websocket 0, beacon 0); server.js (fetch 33, websocket 0, beacon 0); storage.js (fetch 2, websocket 0, beacon 0)"
+      "detail": "the bundle set carries its network call sites inventoried: 111 sites over 21 bundles — acquisition.js (fetch 1, websocket 0, beacon 0); bun.js (fetch 8, websocket 0, beacon 0); cli.js (fetch 4, websocket 0, beacon 0); config.js (fetch 5, websocket 0, beacon 0); core.js (fetch 3, websocket 0, beacon 0); deno.js (fetch 8, websocket 0, beacon 0); devthink.umd.js (fetch 8, websocket 0, beacon 0); hardening.js (fetch 1, websocket 0, beacon 0); headless.js (fetch 2, websocket 0, beacon 0); index.js (fetch 8, websocket 0, beacon 0); index.neutral.js (fetch 8, websocket 0, beacon 0); mcp.js (fetch 2, websocket 0, beacon 0); memory.js (fetch 1, websocket 0, beacon 0); os.js (fetch 3, websocket 0, beacon 0); personalstore.js (fetch 4, websocket 0, beacon 0); policy.js (fetch 2, websocket 0, beacon 0); protocol.js (fetch 2, websocket 0, beacon 0); security.js (fetch 4, websocket 0, beacon 0); server.js (fetch 33, websocket 0, beacon 0); storage.js (fetch 2, websocket 0, beacon 0); webscrape.js (fetch 2, websocket 0, beacon 0)"
     },
     {
       "name": "gates",

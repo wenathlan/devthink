@@ -334,7 +334,7 @@ export interface doccheckreport {
  * its fixed order with its outcome, no timestamps, so the record replays
  * byte identical. */
 export const doccheckrecord: doccheckreport = {
-  "release": "2.0.181",
+  "release": "2.0.182",
   "kindcount": 335,
   "kindentries": 335,
   "families": 12,

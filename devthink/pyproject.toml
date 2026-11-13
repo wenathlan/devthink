@@ -11,9 +11,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-devthink"
-version = "2.0.181"
+version = "2.0.182"
 authors = [{name = "wenathlan"}]
 description = "Builds explicit local DevThink CLI invocations without storing provider credentials"
+readme = "README.md"
 license = {text = "GPL-3.0-only"}
 requires-python = ">=3.11"
 

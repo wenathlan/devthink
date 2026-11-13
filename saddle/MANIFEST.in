@@ -1,6 +1,7 @@
 # saddle — the pypi file manifest of the family (the pypi channel).
 # Mirrors the file list the saddle gemspec declares in spec.files: the
 # license, the readme, the changelog and the SaddleCli adapter.
+include README.md
 include LICENSE
 include CHANGELOG.md
 include SaddleCli.rb
