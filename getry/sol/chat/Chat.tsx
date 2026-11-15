@@ -86,9 +86,12 @@ type StreamGhost = {
   reasoning: string;
 };
 
-/** draws one row id (message or conversation) — the drawn suffix keeps the keys unique. */
+/** draws one row id (message or conversation) — the drawn suffix keeps the keys unique (the crypto lane draws the bytes; Math.random never touches an id the rotation context can bind to). */
 function newid(prefix: string): string {
-  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  const draw = new Uint8Array(6);
+  globalThis.crypto.getRandomValues(draw);
+  const suffix = Array.from(draw, (byte) => byte.toString(36).padStart(2, "0")).join("").slice(0, 8);
+  return `${prefix}-${Date.now().toString(36)}-${suffix}`;
 }
 
 /** derives the conversation title from the first user message (42 chars, one line). */
