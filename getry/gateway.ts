@@ -8,6 +8,7 @@
 
 import type { gatewaydefinition, modeldef, thinkinglevel } from "./types.ts";
 import { listlevels, providerchain, type thinkingproviderrow } from "@wenathlan/getry/thinking";
+import { smartpool, sortids } from "./intelligence.ts";
 
 /**
  * gateway.ts — the gateway versions domain of getry (root layer).
@@ -210,9 +211,9 @@ export const gatewayConfig: gatewaydefinition = {
         { id: "glm-5.3-air", context: 128000, maxoutput: 16384, reasoning: true, family: "glm", free: true },
         { id: "glm-5.2", context: 200000, maxoutput: 32768, reasoning: true, family: "glm" },
         { id: "glm-5.1", context: 128000, maxoutput: 32768, reasoning: true, family: "glm" },
-        { id: "glm-5", context: 128000, maxoutput: 32768, reasoning: true, family: "glm" },
+        { id: "glm-5", context: 131072, maxoutput: 32768, reasoning: true, family: "glm" },
         { id: "glm-5v", context: 128000, maxoutput: 16384, reasoning: false, vision: true, family: "glm" },
-        { id: "glm-5-turbo", context: 128000, maxoutput: 16384, reasoning: false, family: "glm", free: true },
+        { id: "glm-5-turbo", context: 131072, maxoutput: 16384, reasoning: false, family: "glm", free: true },
         { id: "glm-4-plus", context: 128000, maxoutput: 16384, reasoning: false, family: "glm" },
         { id: "glm-4-flash", context: 128000, maxoutput: 8192, reasoning: false, family: "glm", free: true },
       ],
@@ -336,6 +337,24 @@ export const gatewayViewConfig: gatewaydefinition = {
           rank: { score: 55, tier: 1 },
         },
         {
+          id: "glm-5.3-fast",
+          context: 1048576,
+          maxoutput: 65536,
+          vision: false,
+          reasoning: true,
+          free: false,
+          rank: { score: 54, tier: 1 },
+        },
+        {
+          id: "glm-5.3-air",
+          context: 1048576,
+          maxoutput: 16384,
+          vision: false,
+          reasoning: true,
+          free: true,
+          rank: { score: 36, tier: 2 },
+        },
+        {
           id: "glm-5.2",
           context: 1048576,
           maxoutput: 131072,
@@ -352,6 +371,24 @@ export const gatewayViewConfig: gatewaydefinition = {
           reasoning: true,
           free: true,
           rank: { score: 40, tier: 2 },
+        },
+        {
+          id: "glm-5",
+          context: 131072,
+          maxoutput: 32768,
+          vision: false,
+          reasoning: true,
+          free: true,
+          rank: { score: 39, tier: 2 },
+        },
+        {
+          id: "glm-5-turbo",
+          context: 131072,
+          maxoutput: 16384,
+          vision: false,
+          reasoning: true,
+          free: true,
+          rank: { score: 38.5, tier: 2 },
         },
         {
           id: "glm-5v",
@@ -1304,3 +1341,58 @@ export const gatewayViewConfig: gatewaydefinition = {
  * the logicfold3 fold converted it to the named gatewayViewConfig seat
  * above, the default retired with the variant file.) */
 
+/* ──────────────────────────────────────────────────────────────────── */
+/* The smart-first stamp — the intelligence law of the devthink meta. */
+/* ──────────────────────────────────────────────────────────────────── */
+/**
+ * the smart-first rotation stamp (the gateway port law, 2.0.184): every
+ * devthink meta rotation pool is recomputed as the top
+ * {@link smartpoolsize} smartest backends of its own catalog — ranked by
+ * the Artificial Analysis intelligence index v5.0.1 (see
+ * ./intelligence.ts, section 7) — so the meta-model always calls the
+ * smartest backends first, rotates every 6 messages in that same smart
+ * order, and every error-code fallback (429/503/529/…) walks the pool
+ * the same way: always the next smartest seat, never a random or
+ * hardcoded pick. the stamp derives the pools from the declared catalogs
+ * (never a second literal copy of the ids), and lifts the rotation
+ * ceilings so a failing ladder can walk its whole pool.
+ */
+function stampsmartpools(config: gatewaydefinition): void {
+  for (const version of Object.values(config.versions)) {
+    if (version.id === "v2") continue; /* the paused lane keeps its honest stillness */
+    const ids = version.models.map((model) => model.id);
+    const pool = smartpool(ids);
+    if (pool.length === 0) continue;
+    /* a version the seed never gave a rotation seat (v1 zai) gains one
+     * here: the same every-6-messages walk the siblings answer. */
+    if (!version.rotation) {
+      version.rotation = {
+        mode: "persession",
+        models: pool,
+        everynmessages: 6,
+        maxmodelrotations: pool.length,
+        rotateonstatus: [404, 410, 429, 500, 502, 503, 504, 529],
+        rotateontimeout: true,
+        staggernewsessions: false,
+        sessionstore: "memory",
+      };
+      continue;
+    }
+    version.rotation.models = pool;
+    version.rotation.maxmodelrotations = pool.length;
+    /* the error law: any retryable error code rotates to the next
+     * smartest backend once the retry ladder answers — never a dead
+     * end while a smarter seat still stands. */
+    version.rotation.rotateonstatus = Array.from(
+      new Set([...(version.rotation.rotateonstatus ?? []), 404, 410, 429, 500, 502, 503, 504, 529]),
+    );
+  }
+}
+stampsmartpools(gatewayConfig);
+stampsmartpools(gatewayViewConfig);
+
+/** the smart-first pool of one served version — the ordered walk the engine and the models catalog expose (rotation_pool). */
+export function smartpoolof(config: gatewaydefinition, versionid: string): string[] {
+  const version = config.versions[versionid];
+  return version ? smartpool(version.models.map((model) => model.id)) : [];
+}

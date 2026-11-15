@@ -189,6 +189,12 @@ export default defineConfig({
         path.resolve(import.meta.dirname, "../vault"),
         path.resolve(import.meta.dirname, "../debonair"),
         path.resolve(import.meta.dirname, "../devthink"),
+        /* the out-of-repo faces seat (design pass 2-b): a preview harness
+         * whose node_modules the app symlinks answers font files outside
+         * the repository tree — GETRY_EXTRA_FS_ROOT names that root when
+         * the local seat needs it, and the shipped config stays
+         * machine-free (the path never hardcodes). */
+        ...(process.env.GETRY_EXTRA_FS_ROOT ? [path.resolve(process.env.GETRY_EXTRA_FS_ROOT)] : []),
       ],
     },
     host: true,

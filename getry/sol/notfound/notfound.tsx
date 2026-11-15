@@ -29,20 +29,30 @@ export default function NotFound() {
 
   return (
     <main className="notfound-page">
-      <section className="glass card" style={{ maxWidth: 460, margin: "8vh auto", textAlign: "center" }}>
+      <section
+        className="surface-card"
+        style={{ maxWidth: 460, margin: "8vh auto", padding: 36, borderRadius: 24, textAlign: "center" }}
+      >
         <div style={{ display: "grid", placeItems: "center", gap: 12 }}>
           <span className="badge error" style={{ gap: 8 }}>
             <ErrorCircleRegular fontSize={13} />
             404
           </span>
-          <h2 style={{ margin: 0 }}>{label("notfound.title")}</h2>
-          <p>
+          <h2 className="font-bold-tier" style={{ margin: 0 }}>
+            {label("notfound.title")}
+          </h2>
+          <p className="font-thin-tier">
             {label("notfound.lede1")}
             <br />
             {label("notfound.lede2")}
           </p>
           <div>
-            <button type="button" className="btn" onClick={handleGoHome}>
+            <button
+              type="button"
+              className="btn-tactile-3d"
+              style={{ minHeight: 44, padding: "0 24px", borderRadius: "calc(infinity * 1px)" }}
+              onClick={handleGoHome}
+            >
               <HomeRegular fontSize={15} />
               {label("notfound.backHome")}
             </button>

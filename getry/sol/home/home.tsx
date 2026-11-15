@@ -7,28 +7,29 @@
  * which now lives here as the page mount itself.
  */
 
-import { ArrowEnterRegular, ArrowRightRegular } from "@fluentui/react-icons";
+import { ArrowEnterRegular, ArrowRightRegular, ArrowSyncRegular, BrainRegular, LayerRegular, WindowConsoleRegular } from "@fluentui/react-icons";
 /**
  * HomeRegular.tsx — the LANDING page of the getry Sol theme (campaign v3 · r3):
  * the Suno-grade gateway hero — one violet light, the prompt-giga endpoint
- * field (send a completion), the replica matrix ledger (the five provider
- * gateways as the copies the meta model spins), the 01–03 deploy steps and
- * the meta-quad footer. no tabular fabrication: every replica row reads the
- * db route table lane (db.ts listversionrows over the gateway.ts family
- * seed) and the thinking ladder (thinking.ts).
+ * field (the honest route visualizer — the replica the prefix names, the
+ * route kind that follows), the open-the-chat key handing the real
+ * conversation surface the traffic, the replica matrix ledger (the five
+ * provider gateways as the copies the meta model spins), the 01–03 deploy
+ * steps and the meta-quad footer. no tabular fabrication: every replica row
+ * reads the db route table lane (db.ts listversionrows over the gateway.ts
+ * family seed) and the thinking ladder (thinking.ts).
  */
-import { type FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { listversionrows } from "../../db";
 import { familyrow } from "../../family";
 import { familyurl } from "../../familyurl";
-import { GATEWAYROUTES, type GatewayVersion } from "../../gateway";
+import { gatewayViewConfig, GATEWAYROUTES, smartpoolof, type GatewayVersion } from "../../gateway";
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { ROTATIONEVERY } from "../../sessions";
 import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
-import { BrandMark } from "../../wingets";
-import { toast } from "../toast/Toast.tsx";
+import { BrandMark, TabBridge } from "../../wingets";
 import { HomeEntrygate as EntryGate } from "../../wingets";
 
 /** the parsed endpoint: the replica the prefix names and the route kind
@@ -118,13 +119,9 @@ function HomeSurface() {
   const parsed = parseendpoint(endpoint, versions);
   const liverows = versions.filter((version) => version.badge === "live");
   const routecount = versions.reduce((sum, version) => sum + version.routes.length, 0);
-
-  /** the send key: the honest hand-off toast, never a fake fetch. */
-  function sendcompletion(event: FormEvent) {
-    event.preventDefault();
-    const target = endpoint.trim().toLowerCase() || "/v1/chat/completions";
-    toast(labelfill("home.hero.sendToast", { endpoint: target }), "info");
-  }
+  // the smart pool of the default lane — the real rotation names the meta
+  // model spins (gateway.ts, never a second catalog)
+  const smartpool = smartpoolof(gatewayViewConfig, "v1");
 
   /** a replica chip: rewrites the version segment, keeps the named route. */
   function pickversion(v: string) {
@@ -138,16 +135,36 @@ function HomeSurface() {
 
   return (
     <>
-      <section className="hero grain halftone r3-hero">
+      <section className="hero grain r3-hero sol-hero">
+        {/* the aurora bed of the reference — five stacked radial lights,
+            blurred and pulsing, behind the hero only */}
+        <div className="hero-gaussian-shader sol-hero__aurora" aria-hidden="true" />
         <p className="eyebrow reveal">{label("home.eyebrow")}</p>
         <div className="r3-hero__grid">
           <div className="r3-hero__main">
-            <h1 className="r3-headline reveal">{label("home.title")}</h1>
-            <p className="r3-phrase reveal">
+            <h1 className="r3-headline font-bold-tier reveal">
+              <span>{label("home.titleLead")}</span>{" "}
+              <span className="text-gradient-brand">{label("home.titleAccent")}</span>
+            </h1>
+            <p className="r3-phrase font-thin-tier reveal">
               {labelfill("home.lede", { count: String(routecount) })}
             </p>
 
-            <form className="r3-prompt reveal" onSubmit={sendcompletion}>
+            {/* the cta row of the reference — the tactile dark pill hands the
+                real traffic to the conversation surface first, the white card
+                points at the registry */}
+            <div className="sol-hero__ctarow reveal">
+              <Link href="/chat" className="btn-tactile-3d sol-cta">
+                {label("home.hero.openChat")}
+                <ArrowEnterRegular fontSize={15} aria-hidden="true" />
+              </Link>
+              <Link href="/versions" className="surface-card sol-cta sol-cta--ghost">
+                {label("home.cta.versions")}
+                <ArrowRightRegular fontSize={13} aria-hidden="true" />
+              </Link>
+            </div>
+
+            <div className="r3-prompt reveal">
               <div className="r3-prompt__field">
                 <span className="r3-prompt__label" aria-hidden="true">
                   {label("home.hero.label")}
@@ -160,10 +177,12 @@ function HomeSurface() {
                   autoComplete="off"
                   aria-label={label("home.hero.inputAria")}
                 />
-                <button type="submit" className="r3-prompt__key">
-                  {label("home.hero.send")}
+                {/* the honest cta: the conversation surface carries the real
+                    traffic — this landing only visualizes the route */}
+                <Link href="/chat" className="r3-prompt__key" data-tip={label("home.hero.openHint")}>
+                  {label("home.hero.openChat")}
                   <ArrowEnterRegular fontSize={13} aria-hidden="true" />
-                </button>
+                </Link>
               </div>
               <p className="r3-prompt__status" aria-live="polite">
                 {statusline(endpoint, versions)}
@@ -198,7 +217,7 @@ function HomeSurface() {
                   ))}
                 </fieldset>
               </div>
-            </form>
+            </div>
 
             <div className="importstrip reveal">
               <span className="badge">{labelfill("home.badge.live", { count: String(liverows.length) })}</span>
@@ -207,19 +226,73 @@ function HomeSurface() {
             </div>
           </div>
           <div className="r3-hero__side" aria-hidden="true">
-            <span className="r3-heromark">
+            <span className="r3-heromark animate-float-card">
               <BrandMark size={128} flow />
             </span>
           </div>
         </div>
+
+        {/* the floating trio of the reference — the ambient swing cards, all
+            real lanes: the live route count on the indigo tactile surface, the
+            devthink mask beside its smart pool on the white card, the thinking
+            ladder on the dark liquid glass */}
+        <div className="sol-hero__trio">
+          <article className="sol-triocard indigo-tactile-surface swing-card-1">
+            <div>
+              <p className="sol-triocard__label">
+                <LayerRegular fontSize={15} aria-hidden="true" />
+                {label("home.trio.routes")}
+              </p>
+              <p className="sol-triocard__big">{routecount}</p>
+            </div>
+            <div className="sol-triocard__foot" style={{ background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.16)" }}>
+              <span className="font-medium-tier">{labelfill("home.badge.live", { count: String(liverows.length) })}</span>
+              <ArrowRightRegular fontSize={14} aria-hidden="true" className="sol-triocard__arrow" />
+            </div>
+          </article>
+          <article className="sol-triocard surface-card swing-card-2">
+            <div>
+              <p className="sol-triocard__label">
+                <ArrowSyncRegular fontSize={15} aria-hidden="true" />
+                {label("home.trio.pool")}
+              </p>
+              <p className="sol-triocard__big">devthink</p>
+            </div>
+            <div className="sol-triocard__foot stat-tile">
+              <span className="mono" style={{ fontSize: "0.68rem", color: "var(--ink-2)" }}>
+                {smartpool.slice(0, 3).join(" · ")}
+              </span>
+            </div>
+          </article>
+          <article className="sol-triocard spatial-liquid-glass swing-card-3">
+            <div>
+              <p className="sol-triocard__label">
+                <BrainRegular fontSize={15} aria-hidden="true" />
+                {label("home.trio.rungs")}
+              </p>
+              <p className="sol-triocard__big">{THINKINGLEVELS.length}</p>
+            </div>
+            <div className="sol-triocard__foot" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)" }}>
+              <span className="mono" style={{ fontSize: "0.66rem", color: "#C7CEDA" }}>
+                {labelfill("home.quad.thinkingMeta", {
+                  rungs: String(THINKINGLEVELS.length),
+                  default: DEFAULTTHINKINGLEVEL,
+                  budget: formatbudget(budgetof(DEFAULTTHINKINGLEVEL)),
+                })}
+              </span>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section className="section" aria-label={label("home.matrix.aria")}>
+        <TabBridge label={label("home.matrix.title")} icon={<LayerRegular fontSize={13} />} />
         <div className="section-head reveal">
           <h2>{label("home.matrix.title")}</h2>
           <p>{label("home.matrix.lede")}</p>
         </div>
-        <table className="r3-matrix reveal">
+        <div className="tablewrap reveal">
+        <table className="r3-matrix">
           <thead>
             <tr>
               <th scope="col">{label("home.table.replica")}</th>
@@ -261,10 +334,12 @@ function HomeSurface() {
             })}
           </tbody>
         </table>
+        </div>
         <p className="r3-matrix__note reveal">{label("home.matrix.note")}</p>
       </section>
 
       <section className="section" aria-label={label("home.steps.aria")}>
+        <TabBridge label={label("home.steps.aria")} icon={<WindowConsoleRegular fontSize={13} />} />
         <div className="r3-steps">
           {STEPS.map((item) => (
             <article key={item.step} className="r3-step reveal">

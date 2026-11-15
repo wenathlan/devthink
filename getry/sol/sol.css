@@ -42,10 +42,11 @@
    0. TOKEN FOUNDATION — the one source of truth (the devthink @theme)
    ========================================================================== */
 @theme {
-  /* ---- type: the trylle ruler — Inter Variable carries the whole voice,
-     Geist Mono Variable the detail ---- */
-  --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+  /* ---- type: Urbanist Variable carries the voice of the design pass (the
+     reference desktop tiers 400/600/800), Inter Variable the fallback, Geist
+     Mono Variable the detail ---- */
+  --font-display: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
     ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
     Menlo, monospace;
@@ -92,7 +93,8 @@
   /* ---- focus rides the WINDOWS accent (the family law) ---- */
   --color-focus: var(--color-win);
 
-  /* ---- radius law: 4/6/8/10(base)/12/16/24 — inner ≤ outer ---- */
+  /* ---- radius law: 4/6/8/10(base)/12/16/24 — inner ≤ outer — extended by
+     the design pass with the reference desktop scale 20/28/30 ---- */
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -100,6 +102,9 @@
   --radius-xl: 12px;
   --radius-2xl: 16px;
   --radius-3xl: 24px;
+  --radius-4xl: 20px;
+  --radius-5xl: 28px;
+  --radius-6xl: 30px;
 
   /* ---- the Fluent shadow ladder ---- */
   --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
@@ -198,9 +203,12 @@
   --radius-xl: 12px;
   --radius-2xl: 16px;
   --radius-3xl: 24px;
+  --radius-4xl: 20px;
+  --radius-5xl: 28px;
+  --radius-6xl: 30px;
   --sol-radius: var(--radius-lg);
   --win-radius: var(--radius-md);
-  --win-radius-ctl: var(--radius-xs);
+  --win-radius-ctl: var(--radius-xl);
   /* the 4px spacing ladder */
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
   --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
@@ -215,9 +223,10 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
   --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
-  /* type — the trylle triad: Inter Variable rides every surface, Geist Mono
+  /* type — the design pass triad: Urbanist Variable rides every surface
+     (the reference desktop voice), Inter Variable the fallback, Geist Mono
      rides micro-labels and every number (tabular-nums) */
-  --font-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+  --font-sans: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
     ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
     Menlo, monospace;
@@ -297,52 +306,55 @@
   color-scheme: dark;
 }
 
-/* the light face: the devthink daylight ladder, the white sun stepping down
-   to its graphite contrast pole (the light value of the SAME semantic token
-   — one Sol, two honest variations), the windows accent follows #0067c0 */
+/* the light face: THE DESIGN PASS DEFAULT — the reference desktop ladder: the
+   window body #F2F5FC over the #DCE2EE wallpaper, white surface cards on
+   #F4F6FB stat tiles, the slate ink ladder, and the white sun stepping to
+   the INDIGO SUN of the reference (#4F46E5 — the design law: on the light
+   face the one Sol accent is the indigo the tactile surfaces wear); the
+   windows accent still follows #0067c0 for focus and chrome */
 [data-theme="light"] {
-  --color-canvas: #f3f3f3;
-  --color-deep: #ebebeb;
-  --color-s0: #f6f6f6;
-  --color-s1: #fafafa;
-  --color-s2: #fcfcfc;
-  --color-s3: #fefefe;
-  --color-s4: #fefefe;
-  --color-s5: #f1f1f2;
-  --color-s6: #e5e5e7;
-  --color-s7: #d6d6d9;
-  --color-ink: #1a1a1a;
-  --color-ink-2: #3c3c3c;
-  --color-ink-3: #555555;
-  --color-hairline: color-mix(in oklab, #1a1a1a 8%, transparent);
-  --color-hairline-strong: color-mix(in oklab, #1a1a1a 16%, transparent);
-  --color-signal: #3f434b;
-  --color-signal-strong: #18181b;
-  --color-signal-2: #52565e;
-  --color-signal-3: #8b909b;
-  --color-signal-ink: #fefefe;
+  --color-canvas: #F2F5FC;
+  --color-deep: #E7ECF6;
+  --color-s0: #FFFFFF;
+  --color-s1: #F8FAFD;
+  --color-s2: #FBFCFE;
+  --color-s3: #FFFFFF;
+  --color-s4: #FFFFFF;
+  --color-s5: #EEF2FA;
+  --color-s6: #E2E8F4;
+  --color-s7: #D3DAE8;
+  --color-ink: #0F172A;
+  --color-ink-2: #475569;
+  --color-ink-3: #64748B;
+  --color-hairline: color-mix(in oklab, #0F172A 9%, transparent);
+  --color-hairline-strong: color-mix(in oklab, #0F172A 16%, transparent);
+  --color-signal: #4F46E5;
+  --color-signal-strong: #312E81;
+  --color-signal-2: #4338CA;
+  --color-signal-3: #6E73BF;
+  --color-signal-ink: #FFFFFF;
   --color-win: #0067c0;
-  --color-win-ink: #fefefe;
+  --color-win-ink: #FFFFFF;
   --color-ok: #1e7f4f;
   --color-warn: #9a6b00;
   --color-err: #c23b2c;
   --color-info: #565e6e;
-  --bg: #f3f3f3;
-  --accent-ink: #fefefe;
-  --wash: rgb(0 0 0 / 8%); --wash-soft: rgb(0 0 0 / 4%); --scroll: rgb(0 0 0 / 35%);
-  --sol-drop: rgb(0 0 0 / 10%);
-  --sol-hi: rgb(255 255 255 / 60%);
-  --shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);
-  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
-  --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
-  --mica-local: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat;
+  --bg: #F2F5FC;
+  --accent-ink: #FFFFFF;
+  --wash: rgb(15 23 42 / 6%); --wash-soft: rgb(15 23 42 / 3%); --scroll: rgb(15 23 42 / 30%);
+  --sol-drop: rgb(15 23 42 / 10%);
+  --sol-hi: rgb(255 255 255 / 70%);
+  --shadow-window: 0 25px 80px -15px rgb(15 23 42 / 25%);
+  --shadow-flyout: 0 16px 36px -14px rgb(15 23 42 / 18%), 0 4px 10px -4px rgb(15 23 42 / 10%);
+  --mica: #DCE2EE radial-gradient(#e9eef7 32%, #DCE2EE 100%) no-repeat fixed;
+  --mica-local: #DCE2EE radial-gradient(#e9eef7 32%, #DCE2EE 100%) no-repeat;
   /* the taskbar tint flips with the face (the token union law: the master's
      light bed) */
   --win-taskbar-tint: rgb(243 243 243 / 85%);
-  --acrylic: rgb(243 243 244 / 82%);
-  --acrylic-strong: rgb(248 248 249 / 92%);
-  --bar: rgb(243 243 243 / 85%); --panel: rgb(250 250 250 / 86%);
-  --win-tip: rgb(249 249 249 / 92%);
+  --acrylic: rgb(244 246 251 / 85%);
+  --acrylic-strong: rgb(255 255 255 / 92%);
+  --bar: rgb(255 255 255 / 78%); --panel: rgb(255 255 255 / 92%);
+  --win-tip: rgb(255 255 255 / 97%);
   color-scheme: light;
 }
 
@@ -1200,6 +1212,137 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 }
 
 /* ==========================================================================
+   the chat surface — getry (task 2-a): the two-pane conversation screen
+   over the live gateway routes. the conversations rail (list, route chips,
+   model picker, origin pin) beside the thread column (reasoning
+   disclosure, markdown bodies, composer) — functionality first on the
+   foundation tokens, the design pass restyles later. Appended before the
+   family motion law so the guards (and the hard stop last) keep their
+   place below.
+   ========================================================================== */
+
+/* the two panes: the rail owns a fixed column, the thread flexes — stacked
+   on narrow windows */
+.chat { flex: 1; display: grid; grid-template-columns: 276px minmax(0, 1fr); gap: 14px; min-height: 0; }
+.chat__side { display: flex; flex-direction: column; gap: 10px; min-height: 0; padding: 12px; border: 1px solid var(--line); border-radius: var(--win-radius); background: var(--surface-1); overflow-y: auto; }
+.chat__new { width: 100%; justify-content: flex-start; }
+.chat__panel { display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); }
+.chat__routes { display: flex; flex-wrap: wrap; gap: 6px; }
+.chat__routechip { display: inline-flex; align-items: center; gap: 6px; }
+.chatdot { flex: none; width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--ink-3) 45%, transparent); }
+.chatdot[data-status="live"] { background: var(--ok); }
+.chatdot[data-status="paused"] { background: var(--warn); }
+.chatdot[data-status="error"] { background: var(--err); }
+.chat__probe { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; padding: 3px 8px; border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.68rem; cursor: pointer; transition: color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out); }
+.chat__probe:hover { color: var(--ink); background: var(--wash-soft); }
+.chat__originlabel { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
+.chat__origin { width: 100%; padding: 7px 9px; border: 1px solid var(--line-strong); border-radius: var(--win-radius-ctl); background: var(--surface-2); color: var(--ink); font-family: var(--font-mono); font-size: 0.72rem; }
+.chat__origin::placeholder { color: var(--ink-3); }
+.chat__storage { align-self: flex-start; }
+
+/* the conversation rows: the open target, the title, the meta line, the
+   delete key that appears on hover (the two-step confirm arms it red) */
+.chatconvlist { display: flex; flex-direction: column; gap: 4px; min-height: 0; }
+.chatconvlist__empty { margin: 0; padding: 10px 2px; color: var(--ink-3); font-size: 0.78rem; }
+.chatconv { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 2px; border-radius: var(--win-radius-ctl); transition: background-color var(--sol-micro) var(--sol-ease-out); }
+.chatconv:hover { background: var(--wash-soft); }
+.chatconv[data-active="true"] { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.chatconv__open { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: 8px 4px 8px 10px; border: 0; background: transparent; text-align: left; cursor: pointer; }
+.chatconv__title { overflow: hidden; color: var(--ink); font-size: 0.82rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.chatconv__meta { color: var(--ink-3); font-size: 0.68rem; }
+.chatconv__del { display: grid; place-items: center; width: 26px; height: 26px; margin: 4px 4px 0 0; border: 1px solid transparent; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-3); opacity: 0; transition: opacity var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out); }
+.chatconv:hover .chatconv__del, .chatconv__del:focus-visible { opacity: 1; }
+.chatconv__del:hover { background: var(--wash); color: var(--err); }
+.chatconv__del[data-armed="true"] { opacity: 1; color: var(--err); border-color: color-mix(in srgb, var(--err) 55%, transparent); }
+
+/* the thread column: the slim head, the scrolling exchange, the composer */
+.chat__threadcol { display: flex; flex-direction: column; gap: 10px; min-height: 0; min-width: 0; }
+.chatthread__head { display: flex; align-items: baseline; gap: 12px; padding: 2px 4px 0; }
+.chatthread__title { flex: 1; min-width: 0; margin: 0; overflow: hidden; color: var(--ink); font-size: 0.95rem; font-weight: 650; letter-spacing: -0.01em; text-overflow: ellipsis; white-space: nowrap; }
+.chatthread__lane { margin: 0; color: var(--ink-3); font-size: 0.68rem; }
+.chatthread { flex: 1; display: flex; flex-direction: column; gap: 14px; min-height: 0; overflow-y: auto; padding: 4px 4px 14px; }
+
+/* the messages: the user bubble right-aligned, the assistant block with
+   the disclosure, the body and the honest footer */
+.chatmsg { max-width: min(760px, 100%); }
+.chatmsg--user { align-self: flex-end; }
+.chatmsg__bubble { padding: 9px 14px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-2); color: var(--ink); font-size: 0.88rem; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.chatmsg--assistant { display: flex; flex-direction: column; gap: 8px; }
+.chatmsg__body { color: var(--ink-2); font-size: 0.9rem; line-height: 1.65; overflow-wrap: anywhere; }
+.chatmsg__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.chatmsg__chip { padding: 2px 7px; border: 1px solid var(--line); border-radius: var(--win-radius-ctl); color: var(--ink-3); font-size: 0.66rem; }
+.chatmsg__retry { display: inline-flex; align-items: center; gap: 5px; padding: 2px 7px; border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-3); font-size: 0.68rem; cursor: pointer; transition: color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out); }
+.chatmsg__retry:hover { background: var(--wash-soft); color: var(--ink); }
+.chatmsg__error { margin: 0; color: var(--err); font-size: 0.8rem; }
+
+/* the markdown body: paragraphs, lists, the streaming caret */
+.chatmd__para { margin: 0 0 0.7em; }
+.chatmd__para:last-child { margin-bottom: 0; }
+.chatmd__list { margin: 0 0 0.7em; padding-left: 1.3em; color: var(--ink-2); }
+.chatmd__list li { margin: 0.15em 0; }
+.chatmd__list li::marker { color: var(--accent); font-family: var(--font-mono); }
+.chatmd__pulse { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: chatCaret 1s steps(2, end) infinite; }
+@keyframes chatCaret { 0%, 45% { opacity: 1; } 50%, 95% { opacity: 0; } 100% { opacity: 1; } }
+
+/* the reasoning disclosure: the brain key over the thinking well */
+.chatthink { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-1); overflow: hidden; }
+.chatthink__key { display: flex; align-items: center; gap: 7px; width: 100%; padding: 7px 10px; border: 0; background: transparent; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.7rem; text-align: left; cursor: pointer; transition: color var(--sol-micro) var(--sol-ease-out); }
+.chatthink__key:hover { color: var(--ink-2); }
+.chatthink__label { margin-right: auto; }
+.chatthink__body { max-height: 220px; overflow-y: auto; padding: 6px 12px 10px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 0.78rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* the fenced code pane: the language label and the copy key over the deep well */
+.chatcode { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--sol-canvas-deep); overflow: hidden; }
+.chatcode__bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 5px 8px 5px 12px; border-bottom: 1px solid var(--line); }
+.chatcode__lang { font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; letter-spacing: var(--sol-track-label); text-transform: lowercase; color: var(--ink-3); }
+.chatcode__copy { display: inline-flex; align-items: center; gap: 5px; padding: 2px 7px; border: 0; border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-3); font-size: 0.68rem; cursor: pointer; transition: color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out); }
+.chatcode__copy:hover { background: var(--wash-soft); color: var(--ink); }
+.chatcode__pre { margin: 0; border: 0; border-radius: 0; }
+
+/* the starter cards of the empty thread */
+.chatstarters { display: flex; flex-direction: column; gap: 10px; width: min(640px, 100%); margin: auto 0; padding: 12px 2px; }
+.chatstarters__head { margin: 0; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: var(--sol-track-label); color: var(--ink-3); }
+.chatstarters__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.chatstarter { padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: var(--radius-md); background: var(--surface-1); color: var(--ink-2); font-size: 0.84rem; line-height: 1.5; text-align: left; cursor: pointer; transition: border-color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out), color var(--sol-micro) var(--sol-ease-out); }
+.chatstarter:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: var(--surface-2); color: var(--ink); }
+
+/* the composer: the auto-growing area, the send/stop key, the microrow */
+.chatcomposer { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: var(--win-radius); background: var(--surface-1); box-shadow: var(--shadow-1); }
+.chatcomposer__row { display: flex; align-items: flex-end; gap: 8px; }
+.chatcomposer__area { flex: 1; min-width: 0; max-height: 200px; padding: 9px 4px; border: 0; background: transparent; color: var(--ink); font: inherit; line-height: 1.55; resize: none; }
+.chatcomposer__area::placeholder { color: var(--ink-3); }
+.chatcomposer__area:focus-visible { outline: none; }
+.chatcomposer__key { flex: none; min-height: 38px; min-width: 40px; padding: 0 13px; }
+.chatcomposer__micro { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.chatcomposer__temp { color: var(--ink-3); font-size: 0.68rem; }
+
+/* the flyout: the chip trigger and the acrylic pane (up from the composer
+   floor, down from the rail panes) */
+.chatflyout { position: relative; }
+.chatflyout__trigger { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid var(--line-strong); border-radius: var(--win-radius-ctl); background: transparent; color: var(--ink-2); font-family: var(--font-mono); font-size: 0.7rem; cursor: pointer; transition: color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out); }
+.chatflyout__trigger:hover { color: var(--ink); border-color: var(--ink-3); background: var(--wash-soft); }
+.chatflyout__pane { position: absolute; bottom: calc(100% + 8px); left: 0; z-index: var(--z-menu); display: flex; flex-direction: column; min-width: 280px; max-width: min(420px, 90vw); max-height: 300px; overflow-y: auto; padding: 6px; border: 1px solid var(--line-strong); border-radius: var(--win-radius); background-color: var(--win-tip); background-image: var(--noise); box-shadow: var(--shadow-flyout); }
+.chatflyout__pane[data-up="false"] { bottom: auto; top: calc(100% + 8px); }
+.chatflyout__row { display: flex; flex-direction: column; gap: 3px; padding: 7px 9px; border: 0; border-radius: var(--win-radius-ctl); background: transparent; text-align: left; cursor: pointer; transition: background-color var(--sol-micro) var(--sol-ease-out); }
+.chatflyout__row:hover { background: var(--wash-soft); }
+.chatflyout__row[data-active="true"] { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.chatflyout__rowid { color: var(--ink); font-family: var(--font-mono); font-size: 0.74rem; }
+.chatflyout__rowbadges { display: flex; flex-wrap: wrap; gap: 4px; }
+.chatflyout__rowbadges .badge { padding: 1px 7px; font-size: 0.62rem; }
+.chatflyout__rowmeta { color: var(--ink-3); font-family: var(--font-mono); font-size: 0.66rem; }
+
+/* the chat owns a tighter stage rhythm than the ledgers */
+.winapp__stage .shell:has(> .chat) { padding: 14px clamp(12px, 2vw, 22px) 16px; }
+
+/* narrow windows: the panes stack, the starters ride one column */
+@media (max-width: 860px) {
+  .chat { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+  .chat__side { max-height: 36vh; order: 2; }
+  .chat__threadcol { order: 1; min-height: 52vh; }
+  .chatstarters__grid { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
    the family motion law: the duty cycled loops, the reduced motion and the
    pause hook. the loops ride the stepped keyframes so the compositor draws
    a handful of frames per cycle instead of repainting every vsync, the
@@ -1327,6 +1470,325 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
     -webkit-backdrop-filter: none;
   }
 }
+
+/* ==========================================================================
+   the allan design pass — getry (task 2-b): the reference desktop language
+   over the foundation. the owner's reference page (allan/.devthink/web/
+   index.html) mixed with the windows 11 grammar already in place: the
+   desktop→window metaphor (the #DCE2EE wallpaper behind ONE huge rounded
+   window #F2F5FC, a white border, the shadow 0 25px 80px -15px
+   rgb(15 23 42 / 25%)), the URBANIST tiers (400 -0.005em body, 600
+   -0.018em labels, 800 -0.035em headings — Geist Mono keeps the mono
+   seats), the tactile dark pill and the raised white icon frame, the white
+   surface-card beside the #F4F6FB stat-tile, the indigo tactile surface,
+   the dark spatial-liquid-glass rail, the saddle tab bridges at the section
+   tops, the aurora behind the hero only, the ambient floats, the win11 tray
+   clock and the pill toast. appended before the family motion law's hard
+   stop so the guards keep the last word; the tokens flip the file's way
+   (the :root literals answer the dark alternate, [data-theme="light"] the
+   reference face — the boot now starts light, App.tsx applyTheme("light")).
+   ========================================================================== */
+
+/* ---------- d0. the design tokens — dark face first, the light face below --- */
+:root {
+  /* the reference accents — theme-constant: both faces wear the same indigo */
+  --d-indigo: #4F46E5;
+  --d-indigo-2: #6366F1;
+  --d-indigo-deep: #3730A3;
+  --d-indigo-ink: #312E81;
+  --d-sky: #38BDF8;
+  /* the wallpaper + the window materials */
+  --d-wallpaper: #14161d radial-gradient(#1b2135 32%, #14161d 100%) no-repeat fixed;
+  --d-window-bg: #1B1E26;
+  --d-window-border: rgb(255 255 255 / 10%);
+  --d-window-shadow: 0 25px 80px -15px rgb(0 0 0 / 65%), 0 0 8px rgb(0 0 0 / 30%);
+  --d-window-radius: 30px;
+  /* the card / tile / glass materials */
+  --d-card-bg: #232732;
+  --d-card-border: rgb(255 255 255 / 8%);
+  --d-card-shadow: 0 16px 36px -14px rgb(0 0 0 / 45%);
+  --d-tile-bg: #1F232D;
+  --d-tile-border: rgb(255 255 255 / 7%);
+}
+[data-theme="light"] {
+  --d-wallpaper: #DCE2EE radial-gradient(#e9eef7 32%, #DCE2EE 100%) no-repeat fixed;
+  --d-window-bg: #F2F5FC;
+  --d-window-border: #ffffff;
+  --d-window-shadow: 0 25px 80px -15px rgb(15 23 42 / 25%);
+  --d-card-bg: #ffffff;
+  --d-card-border: rgba(226, 232, 240, 0.95);
+  --d-card-shadow: 0 16px 36px -14px rgb(15 23 42 / 10%);
+  --d-tile-bg: #F4F6FB;
+  --d-tile-border: rgba(226, 232, 240, 0.9);
+}
+
+/* the reference selection + the indigo focus rim (the design accents) */
+::selection { background: var(--d-indigo); color: #FFFFFF; }
+:focus-visible { outline: 2px solid rgba(99, 102, 241, 0.65); outline-offset: 2px; }
+
+/* ---------- d1. the urbanist type tiers + the gradient clip word ---------- */
+.font-thin-tier { font-family: var(--font-sans); font-weight: 400; letter-spacing: -0.005em; line-height: 1.45; }
+.font-medium-tier { font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.018em; line-height: 1.25; }
+.font-bold-tier { font-family: var(--font-sans); font-weight: 800; letter-spacing: -0.035em; line-height: 1.02; }
+.text-gradient-brand { background: linear-gradient(92deg, var(--d-indigo-2) 0%, var(--d-sky) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ---------- d2. the tactile buttons of the reference ---------------------- */
+/* the dark pill: the layered gradient body, the white hairline border, the
+   stacked drops with the inset highlight and the pressed bloom — the hover
+   lifts 2px with the indigo glow (explicit properties, never transition:all) */
+.btn-tactile-3d {
+  background: linear-gradient(180deg, #243047 0%, #090D16 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+  box-shadow: 0 14px 28px -8px rgba(9, 13, 22, 0.55), 0 4px 10px -2px rgba(9, 13, 22, 0.35),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.42), inset 0 -3px 6px rgba(0, 0, 0, 0.65);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.btn-tactile-3d:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 20px 34px -8px rgba(79, 70, 229, 0.45), inset 0 2px 3px rgba(255, 255, 255, 0.55),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.75);
+}
+.btn-tactile-3d:active { transform: translateY(0) scale(0.98); }
+.btn-tactile-3d:disabled, .btn-tactile-3d[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; transform: none; }
+/* the raised white icon frame: the light seat answers on both faces (the
+   dark face dims the glass the same law) */
+.icon-frame-3d {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(203, 213, 225, 0.85);
+  color: #0F172A;
+  box-shadow: 0 8px 18px -6px rgba(15, 23, 42, 0.10), inset 0 1px 2px rgba(255, 255, 255, 1);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease, box-shadow 0.22s ease,
+    background-color 0.22s ease;
+}
+.icon-frame-3d:hover { transform: translateY(-1.5px); border-color: rgba(99, 102, 241, 0.5); box-shadow: 0 12px 22px -6px rgba(79, 70, 229, 0.18), inset 0 1px 2px rgba(255, 255, 255, 1); }
+.icon-frame-3d:active { transform: translateY(0) scale(0.97); }
+.icon-frame-3d-active { background: #FFFFFF; border: 1px solid rgba(99, 102, 241, 0.6); box-shadow: 0 10px 22px -6px rgba(79, 70, 229, 0.24), inset 0 1px 2px rgba(255, 255, 255, 1); }
+[data-theme="dark"] .icon-frame-3d { background: rgb(255 255 255 / 8%); border-color: rgb(255 255 255 / 16%); color: var(--ink); }
+[data-theme="dark"] .icon-frame-3d:hover { background: rgb(255 255 255 / 12%); }
+[data-theme="dark"] .icon-frame-3d-active { background: rgb(255 255 255 / 10%); }
+
+/* ---------- d3. the surfaces: card · tile · indigo · liquid glass ---------- */
+.surface-card { background: var(--d-card-bg); border: 1px solid var(--d-card-border); box-shadow: var(--d-card-shadow); }
+.stat-tile { background: var(--d-tile-bg); border: 1px solid var(--d-tile-border); }
+.indigo-tactile-surface {
+  color: #FFFFFF;
+  background: linear-gradient(145deg, #4F46E5 0%, #3730A3 58%, #312E81 100%);
+  box-shadow: 0 22px 44px -12px rgba(55, 48, 163, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.32),
+    inset 0 -5px 10px rgba(15, 23, 42, 0.4);
+}
+.spatial-liquid-glass {
+  color: #F1F5F9;
+  background: linear-gradient(145deg, rgba(38, 45, 58, 0.76) 0%, rgba(18, 22, 31, 0.88) 100%);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.22);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .spatial-liquid-glass { background: #1B1F29; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+/* ---------- d4. the shell — the wallpaper, the window, the tray ----------- */
+/* the app sits on the wallpaper (the desktop metaphor) with a breath of
+   margin around ONE huge rounded window; the padded geometry rides after
+   the standalone contract so both seats answer the same face */
+.shell--standalone, .shell--embedded { padding: 10px; background: var(--d-wallpaper); }
+.winapp__body {
+  position: relative; z-index: 1;
+  border-radius: var(--d-window-radius);
+  background: var(--d-window-bg);
+  border: 1px solid var(--d-window-border);
+  box-shadow: var(--d-window-shadow);
+  overflow: hidden;
+}
+@media (max-width: 720px) {
+  .shell--standalone, .shell--embedded { padding: 6px; }
+  .winapp__body { border-radius: 22px; }
+}
+/* the rail becomes the dark acrylic vertical rail of the reference — the
+   spatial liquid glass column carrying the pins, the family dots and the
+   theme flip (the pin law of the foundation answers untouched beneath) */
+.railnav {
+  width: 56px; gap: 6px; padding: 12px 0 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+  background: linear-gradient(180deg, rgba(38, 45, 58, 0.78) 0%, rgba(18, 22, 31, 0.90) 100%);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+}
+.railnav__item { width: 40px; height: 40px; border-radius: 12px; color: #C3CAD8; }
+.railnav__item:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.10); }
+.railnav__item[aria-current="page"] { color: #FFFFFF; background: rgba(99, 102, 241, 0.24); }
+.railnav__item[aria-current="page"]::after { background: var(--d-indigo-2); }
+.railnav__foot { border-top: 1px solid rgba(255, 255, 255, 0.10); }
+.railnav__famdot { box-shadow: inset 0 0 0 1px rgb(0 0 0 / 35%), 0 0 0 1px rgb(255 255 255 / 12%); }
+.railnav .winapp__theme { color: #C3CAD8; }
+.railnav .winapp__theme:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.10); }
+/* the tray: the win11 strip over the stage — the brand seat at the left, the
+   live page lane + the real clock at the right (no fake data: time only) */
+.winapp__stagecol { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; }
+.sol-tray {
+  display: flex; align-items: center; gap: 12px; flex: none; min-height: 46px; padding: 6px 18px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--d-card-bg) 55%, transparent);
+}
+.sol-tray__brand { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
+.sol-tray__name { color: var(--ink); font-weight: 800; letter-spacing: -0.018em; font-size: 13px; white-space: nowrap; }
+.sol-tray__role { overflow: hidden; color: var(--ink-3); font-size: 11px; letter-spacing: -0.005em; text-overflow: ellipsis; white-space: nowrap; }
+.sol-tray__lane { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; color: var(--ink-3); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: lowercase; }
+.sol-tray__clock { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); font-family: var(--font-mono); font-size: 0.72rem; font-variant-numeric: tabular-nums; }
+@media (max-width: 720px) { .sol-tray__role { display: none; } }
+/* the stage: the window body shows — the old violet radial retires */
+.winapp__stage { background: transparent; }
+
+/* ---------- d5. the saddle tab bridge — the section headers ---------------- */
+/* the file-explorer tab: a colored strip with the curved tab hanging from it
+   (the reference SVG geometry), the fill answers the ink pole of the face */
+.tabbridge { --tb-fill: var(--ink); --tb-ink: var(--bg); position: relative; margin: 0 0 18px; }
+.tabbridge__strip { height: 8px; background: var(--tb-fill); border-radius: 2px; }
+.tabbridge__row { display: flex; justify-content: center; }
+.tabbridge__wing { display: block; width: clamp(44px, 7vw, 76px); height: clamp(26px, 4vw, 42px); flex: none; }
+.tabbridge__tab {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: clamp(26px, 4vw, 42px); padding: 2px 20px 6px;
+  background: var(--tb-fill); color: var(--tb-ink);
+  font-weight: 600; letter-spacing: -0.018em; font-size: 0.78rem; white-space: nowrap;
+}
+.tabbridge__tab svg { flex: none; }
+.tabbridge path { fill: var(--tb-fill); }
+
+/* ---------- d6. the hero — the aurora, the floating trio, the cta row ------ */
+.sol-hero { position: relative; overflow: hidden; }
+.sol-hero__aurora { position: absolute; inset: auto 0 -25% 0; height: 68%; z-index: 0; opacity: 0.55; pointer-events: none; }
+.sol-hero > *:not(.sol-hero__aurora) { position: relative; z-index: 1; }
+.sol-hero__ctarow { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 28px; }
+.sol-cta {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  min-height: 48px; padding: 0 26px; border-radius: calc(infinity * 1px);
+  font-weight: 800; letter-spacing: -0.018em; font-size: 0.86rem;
+}
+.sol-cta--ghost {
+  color: var(--ink);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.sol-cta--ghost:hover { transform: translateY(-1.5px); border-color: rgba(99, 102, 241, 0.5); }
+.sol-hero__trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 38px; }
+.sol-triocard { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-height: 188px; padding: 20px; border-radius: 24px; }
+.sol-triocard__big { margin: 0; font-weight: 800; letter-spacing: -0.035em; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.sol-triocard__label { display: inline-flex; align-items: center; gap: 8px; font-size: 0.78rem; letter-spacing: -0.005em; opacity: 0.88; }
+.sol-triocard__foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 16px; }
+@media (max-width: 860px) { .sol-hero__trio { grid-template-columns: 1fr; } }
+/* the aurora bed: five stacked radial lights, blurred and saturated, the 9s
+   pulse — behind the hero only */
+.hero-gaussian-shader {
+  background: radial-gradient(circle at 14% 70%, rgba(56, 189, 248, 0.82) 0%, transparent 48%),
+    radial-gradient(circle at 36% 80%, rgba(99, 102, 241, 0.78) 0%, transparent 50%),
+    radial-gradient(circle at 58% 65%, rgba(168, 85, 247, 0.78) 0%, transparent 48%),
+    radial-gradient(circle at 78% 75%, rgba(236, 72, 153, 0.78) 0%, transparent 48%),
+    radial-gradient(circle at 92% 65%, rgba(251, 146, 60, 0.82) 0%, transparent 45%);
+  filter: blur(56px) saturate(165%);
+  -webkit-filter: blur(56px) saturate(165%);
+}
+/* the ambient floats (the reference swing cards) — compositor-only transforms */
+@media (prefers-reduced-motion: no-preference) {
+  .swing-card-1 { animation: cardSwingLeft 5s ease-in-out infinite; }
+  .swing-card-2 { animation: cardSwingCenter 5.6s ease-in-out infinite; }
+  .swing-card-3 { animation: cardSwingRight 5.2s ease-in-out infinite; }
+  .animate-float-card { animation: subtleFloat 6s ease-in-out infinite; }
+  .animate-float-card-delayed { animation: subtleFloat 6.6s ease-in-out 1.2s infinite; }
+  .hero-gaussian-shader { animation: shaderPulse 9s ease-in-out infinite; }
+}
+@keyframes cardSwingLeft { 0%, 100% { transform: translateY(0px) rotate(-0.7deg); } 50% { transform: translateY(-8px) rotate(0.5deg); } }
+@keyframes cardSwingCenter { 0%, 100% { transform: translateY(10px) rotate(0.5deg); } 50% { transform: translateY(0px) rotate(-0.5deg); } }
+@keyframes cardSwingRight { 0%, 100% { transform: translateY(0px) rotate(0.7deg); } 50% { transform: translateY(-9px) rotate(-0.5deg); } }
+@keyframes subtleFloat { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-6px); } }
+@keyframes shaderPulse { 0%, 100% { transform: scale(1) translate(0px, 0px); } 50% { transform: scale(1.05) translate(10px, -8px); } }
+
+/* ---------- d7. the platform pages — cards, tiles, ledgers ----------------- */
+/* the ledgers wear the white surface-card; the meta rails wear the stat-tile */
+.tablewrap { background: var(--d-card-bg); border: 1px solid var(--d-card-border); border-radius: 20px; box-shadow: var(--d-card-shadow); overflow: hidden; }
+.railmeta { border-top: 0; background: var(--d-tile-bg); border: 1px solid var(--d-tile-border); border-radius: 16px; padding: 14px 16px; }
+.edgerow { background: var(--d-card-bg); border: 1px solid var(--d-card-border); border-radius: 12px; }
+.r3-ledger .edgerow:hover { background: var(--d-card-bg); }
+/* the 01–03 steps become surface cards on the grid */
+.r3-steps { gap: 14px; border-top: 0; }
+.r3-step { padding: 20px; background: var(--d-card-bg); border: 1px solid var(--d-card-border); border-radius: 20px; box-shadow: var(--d-card-shadow); }
+.r3-step + .r3-step { padding-left: 20px; }
+/* the gateway registry rows become cards */
+.gatelog { gap: 12px; border-top: 0; }
+.gaterow { padding: 20px; background: var(--d-card-bg); border: 1px solid var(--d-card-border); border-radius: 20px; box-shadow: var(--d-card-shadow); }
+.gaterow + .gaterow { margin-top: 0; }
+/* the page heads answer the bold tier */
+.pagehead h1 { font-weight: 800; letter-spacing: -0.035em; }
+.section-head h2 { font-weight: 800; letter-spacing: -0.03em; }
+
+/* ---------- d8. the chat face — cards, tiles, the flyout grammar ----------- */
+.chat { gap: 16px; }
+.chat__side { padding: 14px; border: 1px solid var(--d-card-border); border-radius: 20px; background: var(--d-card-bg); box-shadow: var(--d-card-shadow); }
+/* the assistant answers wear the surface-card; the user bubbles the stat-tile */
+.chatmsg--assistant { padding: 14px 16px; border: 1px solid var(--d-card-border); border-radius: 20px; background: var(--d-card-bg); box-shadow: var(--d-card-shadow); }
+.chatmsg__bubble { border: 1px solid var(--d-tile-border); border-radius: 18px; border-bottom-right-radius: 6px; background: var(--d-tile-bg); }
+.chatthink { border: 1px solid var(--d-tile-border); border-radius: 14px; background: var(--d-tile-bg); }
+/* the composer: the rounded well with the tactile send */
+.chatcomposer { border: 1px solid var(--d-card-border); border-radius: 22px; background: var(--d-card-bg); box-shadow: var(--d-card-shadow); }
+.chatcomposer__key { border-radius: calc(infinity * 1px); }
+.chat__new { border-radius: 12px; min-height: 40px; }
+/* the win11 flyout grammar: the white card pane, the hairline, the soft
+   shadow, the chevron rotation, the checkmark on the pressed row */
+.chatflyout__trigger svg { transition: transform 0.2s var(--ease-entry); }
+.chatflyout[data-open="true"] .chatflyout__trigger svg { transform: rotate(180deg); }
+.chatflyout__pane { padding: 8px; border: 1px solid var(--d-card-border); border-radius: 16px; background: var(--d-card-bg); box-shadow: 0 16px 36px -14px rgb(15 23 42 / 20%), 0 4px 10px -4px rgb(15 23 42 / 10%); }
+.chatflyout__row { border-radius: 12px; }
+.chatflyout__row[data-active="true"] { background: color-mix(in srgb, var(--d-indigo-2) 12%, transparent); }
+.chatflyout__rowcheck { margin-left: auto; color: var(--d-indigo); }
+/* the starter cards */
+.chatstarter { border: 1px solid var(--d-card-border); border-radius: 16px; background: var(--d-card-bg); }
+.chatstarter:hover { border-color: color-mix(in srgb, var(--d-indigo-2) 45%, transparent); }
+
+/* ---------- d9. the toast pill — bottom center, the dark stadium ---------- */
+.toaststack { right: auto; left: 50%; bottom: 24px; transform: translateX(-50%); }
+.toast {
+  gap: 9px; padding: 10px 10px 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: calc(infinity * 1px);
+  background: #090D16;
+  color: #F8FAFC; font-size: 13px; font-weight: 500;
+  box-shadow: 0 14px 28px -8px rgba(9, 13, 22, 0.55);
+}
+.toast button { color: #8CA0B8; }
+.toast button:hover { color: #FFFFFF; background: rgba(255, 255, 255, 0.10); }
+
+/* ---------- d10. the intro — the wallpaper, the floating window card ------- */
+.winintro { background: var(--d-wallpaper); }
+.winintro__card {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  width: min(480px, calc(100vw - 48px)); padding: clamp(28px, 6vw, 52px) clamp(24px, 6vw, 48px);
+  border: 1px solid var(--d-card-border); border-radius: 28px;
+  background: var(--d-card-bg); box-shadow: var(--d-window-shadow);
+  animation: winintroCard 700ms var(--ease-spring) backwards, subtleFloat 6s ease-in-out 900ms infinite;
+}
+.winintro__name { font-weight: 800; letter-spacing: -0.035em; }
+.winintro__role {
+  margin: 0; font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.018em;
+  text-transform: none; font-size: 15px;
+  background: linear-gradient(92deg, var(--d-indigo-2), var(--d-sky));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.winintro__manifesto { max-width: 36ch; margin: 0; text-align: center; color: var(--ink-2); font-size: 0.86rem; line-height: 1.5; letter-spacing: -0.005em; }
+@keyframes winintroCard { from { opacity: 0; transform: translateY(26px) scale(0.96); } }
+
+/* ---------- d11. the onboarding — the first-run window on the wallpaper ---- */
+.winonboard { background: var(--d-wallpaper); }
+.winonboard__card { width: min(640px, 100%); border: 1px solid var(--d-card-border); border-radius: 24px; background: var(--d-card-bg); box-shadow: var(--d-window-shadow); }
+.winonboard__body { min-height: 300px; }
+/* the connect step: the origin field, the suggestion key, the probe lane */
+.winonboard__fieldrow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.winonboard__fieldrow .chat__origin { flex: 1; min-width: 220px; }
+.winonboard__routes { display: flex; flex-wrap: wrap; gap: 8px; }
+.winonboard__routes .r3-chip { cursor: default; }
+.winonboard__saved { display: inline-flex; align-items: center; gap: 6px; color: var(--ok); font-family: var(--font-mono); font-size: 0.7rem; }
+.winonboard__pickerrow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 
 /* the hard stop: the last word of the file — every animation and transition
    collapses to 0.01ms and nothing moves */

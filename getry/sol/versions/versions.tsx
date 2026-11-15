@@ -24,6 +24,7 @@ import { type GatewayVersion, PARSERSTEPS } from "../../gateway";
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast.tsx";
+import { TabBridge } from "../../wingets";
 
 /** the quick-start calls the gateway answers out of the box (the copy law). */
 const QUICKSTART = label("versions.quickstart");
@@ -107,6 +108,7 @@ export default function Versions() {
       </section>
 
       <section className="section r3-ops" aria-label={label("versions.registry.aria")}>
+        <TabBridge label={label("versions.title")} icon={<WindowConsoleRegular fontSize={13} />} />
         <div className="r3-split">
           <div className="gatelog r3-gatelog">
             {versions.map((version) => (
@@ -148,6 +150,7 @@ export default function Versions() {
       </section>
 
       <section className="section" aria-label={label("versions.quickstart.aria")}>
+        <TabBridge label={label("versions.quickstart.title")} icon={<WindowConsoleRegular fontSize={13} />} />
         <div className="glass card reveal">
           <h2>
             <WindowConsoleRegular fontSize={18} /> {label("versions.quickstart.title")}

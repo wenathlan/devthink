@@ -139,7 +139,11 @@ describe("thinkingchain — the level-routed cross-provider chain over the catal
   it("walks the strong tier first for the default high level", () => {
     const chain = thinkingchain("high");
     assert.equal(chain[0].model.id, "glm-5.1");
+    /* the completed catalog (the gateway port, 2.0.184) seats glm-5 and
+     * glm-5-turbo beside their 5.1/5v generation — the strong-tier walk
+     * answers the four non-full-fit seats by score before the 5.3
+     * full-fit generation answers below. */
     const ids = chain.slice(0, 4).map((candidate) => candidate.model.id);
-    assert.deepEqual(ids, ["glm-5.1", "glm-5v", "glm-5.3", "glm-5.3-flash"]);
+    assert.deepEqual(ids, ["glm-5.1", "glm-5", "glm-5-turbo", "glm-5v"]);
   });
 });

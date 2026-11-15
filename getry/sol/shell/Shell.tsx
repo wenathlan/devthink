@@ -11,28 +11,30 @@
  * the SAME surface tree under the shell--embedded seat: the rail, the
  * stage and the family foot answer in both seats so the design is
  * IDENTICAL at the direct url and inside the os window (the window-era
- * law), and the OS draws the window chrome around it. The rail keeps the
- * Windows 11 hands on the pages themselves
- * (the 48px pin rail: the press at scale .7, the popintro entrance, the
- * ladder indicator, the acrylic tooltip, the family dots, the theme flip)
- * and the stage scrolls itself under the rail; the getry violet stays the
- * identity accent of the mark and the content.
+ * law), and the OS draws the window chrome around it. The design pass
+ * (task 2-b) dresses the shell in the reference desktop language: the
+ * wallpaper behind one huge rounded window, the rail as the dark acrylic
+ * column, and the win11 tray strip over the stage — the brand seat, the
+ * live page lane and the real clock (time only, never a fake reading).
  */
 
 import {
   BrainRegular,
+  ChatEmptyRegular,
   ChatMultipleRegular,
+  ClockRegular,
   HomeRegular,
   LayerRegular,
   WeatherMoonRegular,
   WeatherSunnyRegular,
 } from "@fluentui/react-icons";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { familyrow } from "../../family.ts";
 import { familyurl } from "../../familyurl.ts";
 import { label, labelfill } from "../../labels";
 import { currentTheme, type ThemeName, toggleTheme } from "../../theme.ts";
+import { BrandMark } from "../../wingets";
 
 /** one entry of the window rail: a page surface of the app with its glyph. */
 export type StartApp = {
@@ -42,11 +44,18 @@ export type StartApp = {
   icon: typeof HomeRegular;
 };
 
-/** the pages the application hosts, one rail entry each (the gateway
- * home first, then the session store, the reasoning ladder and the gateway
- * versions — the rail order of the polish pass). exported for the onboarding
- * copy beside this folder. the labels ride the copy law (labels.ts). */
+/** the pages the application hosts, one rail entry each (the devthink
+ * chat first — the flagship conversation surface over the live routes —
+ * then the gateway home, the session store, the reasoning ladder and the
+ * gateway versions). exported for the onboarding copy beside this folder.
+ * the labels ride the copy law (labels.ts). */
 export const START_APPS: readonly StartApp[] = [
+  {
+    href: "/chat",
+    label: label("shell.rail.chat"),
+    detail: label("shell.rail.chatDetail"),
+    icon: ChatEmptyRegular,
+  },
   { href: "/", label: label("shell.rail.home"), detail: label("shell.rail.homeDetail"), icon: HomeRegular },
   {
     href: "/sessions",
@@ -91,9 +100,31 @@ function ThemeToggle() {
   );
 }
 
+/** pads one clock digit (the 24h face of the tray). */
+function pad2(value: number): string {
+  return String(value).padStart(2, "0");
+}
+
 /**
- * the app surface: the Windows pin rail and the routed stage beside it,
- * owning the whole viewport.
+ * the tray clock: the REAL local time (the win11 tray seat of the design
+ * pass — a clock is real, no weather is invented), refreshed every 15s so
+ * the minute never lags.
+ *
+ * @returns the hh:mm label.
+ */
+function useTrayClock(): string {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const tick = window.setInterval(() => setNow(new Date()), 15000);
+    return () => window.clearInterval(tick);
+  }, []);
+  return `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+}
+
+/**
+ * the app surface: the wallpaper, the rounded window, the dark acrylic pin
+ * rail and the routed stage with the tray strip above it, owning the whole
+ * viewport.
  *
  * @param children the routed page.
  * @returns the app surface element.
@@ -111,10 +142,14 @@ export function Shell({ children }: { children: ReactNode }) {
   })();
 
   const [location] = useLocation();
+  const clock = useTrayClock();
 
   // the active rail entry: the bare path owns home, every other page owns its route
   const isActive = (href: string): boolean =>
     href === "/" ? location === "/" : location === href || location.startsWith(`${href}/`);
+
+  // the live page lane of the tray: the label of the route the stage hosts
+  const pagelane = START_APPS.find((app) => isActive(app.href));
 
   // the embedded seat: inside the os power clip the app rides the host
   // window chrome, but the SURFACE stays the same — the seat class answers
@@ -129,11 +164,12 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className={`shell ${seat}`}>
       <div className="winapp__body">
-        {/* the Windows pin rail — the mount pops the pins in (dtPopIntro,
-            staggered), the ladder indicator marks hover and the active page,
-            the acrylic tooltip names it and the rail foot carries the family
-            row (one accent dot per sibling, resolved through the familyurl
-            contract so every link survives any mount point) */}
+        {/* the dark acrylic pin rail of the reference — the mount pops the
+            pins in (dtPopIntro, staggered), the ladder indicator marks hover
+            and the active page, the acrylic tooltip names it and the rail
+            foot carries the family row (one accent dot per sibling,
+            resolved through the familyurl contract so every link survives
+            any mount point) */}
         <nav className="railnav railnav--enter" aria-label={label("shell.rail.aria")}>
           {START_APPS.map((app) => {
             const Icon = app.icon;
@@ -167,8 +203,27 @@ export function Shell({ children }: { children: ReactNode }) {
             <ThemeToggle />
           </fieldset>
         </nav>
-        <div className="winapp__stage">
-          <main className="shell">{children}</main>
+        <div className="winapp__stagecol">
+          {/* the win11 tray strip: the brand seat at the left, the live page
+              lane and the real clock at the right — the cosmetic desktop
+              furniture of the design pass, every value honest */}
+          <div className="sol-tray" role="contentinfo" aria-label={label("shell.tray.aria")}>
+            <span className="sol-tray__brand">
+              <BrandMark size={20} />
+              <span className="sol-tray__name">{label("ShellBrand")}</span>
+              <span className="sol-tray__role">{label("shell.role")}</span>
+            </span>
+            <span className="sol-tray__lane">
+              {pagelane ? labelfill("shell.tray.page", { page: pagelane.label }) : label("shell.rail.aria")}
+            </span>
+            <span className="sol-tray__clock" aria-label={label("shell.tray.clock")}>
+              <ClockRegular fontSize={13} aria-hidden="true" />
+              {clock}
+            </span>
+          </div>
+          <div className="winapp__stage">
+            <main className="shell">{children}</main>
+          </div>
         </div>
       </div>
     </div>

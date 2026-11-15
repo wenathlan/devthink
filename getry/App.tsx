@@ -19,6 +19,7 @@ import { Toaster } from "./sol/toast/Toast.tsx";
 import { applyTheme } from "./theme";
 import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/inter";
+import "@fontsource-variable/urbanist";
 import "./sol/sol.css";
 
 import { routerBase } from "./routerbase.ts";
@@ -52,8 +53,10 @@ class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Err
 }
 
 function App() {
-  /* the theme starts dark on every load: no storage, no visitor writes. */
-  applyTheme("dark");
+  /* the theme starts LIGHT on every load (the design pass law: the reference
+   * desktop is the light face, wallpaper + window) — still no storage, no
+   * visitor writes; the rail toggle keeps the dark face one press away. */
+  applyTheme("light");
   return (
     <ThemeErrorBoundary>
       <Toaster />

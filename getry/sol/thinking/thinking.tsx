@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
+import { TabBridge } from "../../wingets";
 
 /**
  * the thinking page.
@@ -42,6 +43,7 @@ export default function Thinking() {
       </section>
 
       <section className="section r3-ops" aria-label={label("thinking.levels.aria")}>
+        <TabBridge label={label("thinking.title")} icon={<BrainRegular fontSize={13} />} />
         <div className="r3-split">
           <div className="ladderledger r3-ladder">
             {THINKINGLEVELS.map((rung, index) => (

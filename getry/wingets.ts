@@ -12,3 +12,5 @@ export { default as ShellBrandmark } from "./sol/wingets/ShellBrandmark.tsx";
 export * from "./sol/wingets/ShellBrandmark.tsx";
 export { default as ShellEmptystate } from "./sol/wingets/ShellEmptystate.tsx";
 export * from "./sol/wingets/ShellEmptystate.tsx";
+export { default as ShellTabbridge, TabBridge } from "./sol/wingets/ShellTabbridge.tsx";
+export * from "./sol/wingets/ShellTabbridge.tsx";

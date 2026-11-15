@@ -167,3 +167,226 @@ export function metricstore(options: Record<string, any> = {}) {
   function reset() { values.clear(); durations.clear(); }
   return { count, observe, snapshot, reset };
 }
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 7: the model intelligence ranking — smart-first routing. */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * the model intelligence ranking — the single source of truth for the
+ * devthink meta-model's smart-first routing (the gateway port law, 2.0.184):
+ * the meta-model must ALWAYS call the smartest backends first, in order,
+ * rotating every 6 messages per session; on any upstream error (429/503/…)
+ * the fallback walks the pool in the same intelligence order.
+ *
+ * Sources (researched 2026-11-13, artificialanalysis.ai):
+ *  - Artificial Analysis Intelligence Index v5.0.1 (current scale, ~0–70)
+ *    https://artificialanalysis.ai/models — primary metric
+ *  - Artificial Analysis Progress Index v1 (÷ 10) — fallback for models
+ *    deprecated on the current index (GLM-4.x, Kimi K2, DeepSeek V3.x,
+ *    Qwen3, Gemini 2.5, Llama 3.x, o3, GPT-5 …)
+ *    https://artificialanalysis.ai/evaluations/artificial-analysis-progress-index
+ *  - Family estimates (marked "est") — models with no AA coverage, placed
+ *    by family/size relative to scored siblings (muse-glimmer, laguna,
+ *    nemotron lightning/bolt/nano-omni, glm fast/turbo/air variants…).
+ *
+ * Example comparison (the owner's reference):
+ *  https://artificialanalysis.ai/models/comparisons/claude-fable-5-2-vs-gemini-4-carbon
+ */
+
+/** how many of the smartest backends the devthink rotation walks */
+export const smartpoolsize = 10;
+
+/**
+ * family scores — matched as substrings of the normalized model id, longest
+ * key first (so "glm-5.3-flash" wins over "glm-5.3"). every entry carries its
+ * source: aa = intelligence index v5.0.1, pi = progress index v1 ÷ 10,
+ * est = family estimate.
+ */
+const familytable: Array<[string, number]> = [
+  // ---- 2026 frontier (aa intelligence index v5.0.1) ----
+  ["kimi-k3.1", 46], // aa — #1 open weights
+  ["kimi-k3", 32], // aa (max) / pi 319.9
+  ["deepseek-v4.1", 33], // aa
+  ["deepseek-v4", 23], // aa
+  ["glm-5.3-fast", 30], // est — fast variant of glm-5.3 (aa 32) / flash 28
+  ["glm-5.3-flash", 28], // aa
+  ["glm-5.3-air", 22], // est — air (light) variant
+  ["glm-5.3", 32], // aa — #3 open weights
+  ["glm-5.2", 30], // pi 302.5
+  ["glm-5.1", 29], // pi 286.5
+  ["glm-5v", 24], // est — vision variant of glm-5
+  ["glm-5-turbo", 25], // est — turbo variant of glm-5
+  ["glm-5", 28], // pi 280.9
+  ["glm-4.7-flash", 23], // pi 227.5
+  ["glm-4.7", 27], // pi 268.0
+  ["glm-4.6", 24], // pi 243.1
+  ["glm-4.5-air", 21], // pi 214.9
+  ["glm-4.5", 23], // pi 227.5
+  ["glm-4-plus", 22], // est — 4.x plus tier
+  ["glm-4-flash", 12], // est — 4.x flash tier
+  ["glm-4", 20], // est — 4.x base
+  // ---- minimax / stepfun (aa v5.0.1) ----
+  ["minimax-m3.1-flash", 29], // aa
+  ["minimax-m3.1", 29], // aa
+  ["minimax-m3", 27], // est — m3 generation
+  ["minimax-m2", 24], // est
+  ["minimax-m1", 20], // est
+  ["minimax", 20], // est — older generations
+  ["step-5", 29], // aa (step 5 preview)
+  ["step-3", 18], // est
+  // ---- mistral (aa v5.0.1) ----
+  ["mistral-large-4", 26], // aa (high)
+  ["mistral-medium-3.5", 5], // aa
+  ["mistral-small-4", 4], // aa
+  ["mistral-small-3", 12], // est
+  ["mistral-nemo", 10], // est
+  ["mistral", 12], // est — unspecified mistral
+  ["ministral", 8], // est
+  ["mixtral", 12], // est
+  // ---- nvidia nemotron (aa v5.0.1 + family est) ----
+  ["nemotron-3.5-super-vl", 14], // aa
+  ["nemotron-3-ultra", 12], // aa (550b-a55b reasoning)
+  ["nemotron-3.5-lightning", 8], // est — fast moe tier
+  ["nemotron-3.5-bolt", 6], // est — edge tier
+  ["nemotron-3-nano-omni", 5], // est — nano omni (aa nano 4b = 2)
+  ["nemotron-nano-9b", 20], // pi 196.1
+  ["nemotron-super-49b", 21], // pi (v1.5 215.3 / v1 188.5)
+  ["nemotron-3-nano", 2], // aa (nano 4b)
+  ["nemotron-3", 10], // est — unspecified nemotron 3
+  // ---- google gemma (aa v5.0.1 + pi) ----
+  ["gemma-4-31b", 4], // aa
+  ["gemma-4", 4], // aa
+  ["gemma-3-27b", 16], // pi 160.1
+  ["gemma-3", 15], // est
+  ["gemma-2", 10], // est
+  // ---- meta muse / llama ----
+  ["muse-wonder", 44], // aa
+  ["muse-ember", 36], // aa
+  ["muse-spark", 14], // est — muse spark (contributor) tier, under glimmer
+  ["muse-glimmer", 18], // est — muse mid tier
+  ["muse", 30], // est — unspecified muse
+  ["llama-3.2-90b-vision", 16], // est — pi llama-3.3-70b 163.2
+  ["llama-3.3-70b", 16], // pi 163.2
+  ["llama-3.1-70b", 15], // pi 151.3
+  ["llama-3.1-8b", 8], // est
+  ["llama-3.2", 14], // est — 3.2 vision family
+  ["llama-3.3", 16], // pi
+  ["llama-4-maverick", 22], // est
+  ["llama-4-scout", 19], // est
+  ["llama-4", 21], // est
+  ["llama-3", 14], // est
+  // ---- poolside (no aa coverage — code-model family est) ----
+  ["laguna", 10], // est
+  // ---- moonshot kimi (pi ÷ 10 for pre-k3) ----
+  ["kimi-k2-thinking", 26], // pi 264.7 — nov/2025 open-weights leader
+  ["kimi-k2.6", 28], // pi 284.4
+  ["kimi-k2.5", 27], // pi 270.5
+  ["kimi-k2", 21], // pi 211.5
+  // ---- deepseek (pi ÷ 10 for pre-v4) ----
+  ["deepseek-v3.2", 26], // pi 264.9
+  ["deepseek-v3.1-terminus", 25], // pi 247.9
+  ["deepseek-v3.1", 23], // pi 233.7
+  ["deepseek-r1-0528", 23], // pi 230.8
+  ["deepseek-r1", 21], // pi 208.7
+  ["deepseek-v3", 21], // est — v3 base
+  ["deepseek-coder", 18], // est
+  // ---- alibaba qwen (pi ÷ 10 + est) ----
+  ["qwen3-max", 27], // pi 265.1
+  ["qwen3-235b", 24], // pi 237.5 (2507 refresh)
+  ["qwen3-coder", 20], // pi 197.5 (480b a35b)
+  ["qwq", 20], // pi 201.9
+  ["qwen3-32b", 19], // est
+  ["qwen3-30b", 18], // est — a3b moe
+  ["qwen3-14b", 17], // est
+  ["qwen3-8b", 15], // est
+  ["qwen3-4b", 12], // est
+  ["qwen3", 19], // est — unspecified qwen3
+  ["qwen2.5-coder", 16], // est
+  ["qwen2.5-72b", 16], // est
+  ["qwen2.5", 14], // est
+  // ---- openai (aa v5.0.1 + pi) ----
+  ["gpt-oss-120b", 4], // aa v5.0.1 (pi 239.8 — deprecated scale)
+  ["gpt-oss-20b", 2], // est
+  ["gpt-5", 27], // pi 270.7
+  ["gpt-4.1", 20], // pi 198.7
+  ["o3-mini", 22], // pi 220.0 (scale anchor)
+  ["o4-mini", 24], // est
+  ["o3", 26], // pi 258.3
+  // ---- google gemini (pi ÷ 10 + aa) ----
+  ["gemini-3.8-flash", 31], // aa
+  ["gemini-3.5-flash-lite", 12], // aa
+  ["gemini-2.5-pro", 25], // pi 245.4
+  ["gemini-2.5-flash-lite", 10], // est
+  ["gemini-2.5-flash", 23], // pi 226.1
+  ["gemini-2.5", 23], // est — unspecified 2.5
+  // ---- xai grok (aa + pi) ----
+  ["grok-4.7", 35], // aa
+  ["grok-4.5", 31], // pi 312.3
+  ["grok-4", 25], // est
+  // ---- microsoft phi ----
+  ["phi-4", 17], // est
+  ["phi-3.5", 8], // est
+  ["phi-3", 5], // est — 2024 small model
+  // ---- the 2026 free-lane families the v4/v5 catalogs ride (est) ----
+  ["hy3", 17], // est — tencent hunyuan 3
+  ["inkling-small", 13], // est — thinkingmachines small tier
+  ["inkling", 20], // est — thinkingmachines base
+  ["ling-3.0-flash", 12], // est — inclusionai ling flash
+  ["ling", 14], // est — unspecified ling
+  ["north-mini-code", 11], // est — cohere north mini
+  ["north", 15], // est — cohere north family
+  ["lfm-2.5", 9], // est — liquid foundation small
+  ["lfm", 10], // est — liquid foundation family
+  ["dots-3", 12], // est — dots studio preview tier
+  ["dots", 13], // est — dots studio family
+  // ---- misc ----
+  ["command-r-plus", 14], // est
+  ["yi-1.5-34b", 12], // est
+];
+
+/** family table pre-sorted by key length (longest first — specificity wins) */
+const sortedfamilies = [...familytable].sort((a, b) => b[0].length - a[0].length);
+
+/**
+ * normalize a model id for scoring: lowercase, strip the openrouter `:free`
+ * suffix, the provider prefix (`z-ai/`, `nvidia/`, `meta/`…), the
+ * `-instruct`/`-it` suffixes and 4-digit date versions (`0528`, `2507`…).
+ */
+export function normalizeid(id: string): string {
+  let s = id.toLowerCase().trim();
+  s = s.replace(/:free$/, "");
+  s = s.replace(/^[^/]+\//, "");
+  s = s.replace(/-instruct$/, "");
+  s = s.replace(/-it$/, "");
+  s = s.replace(/-\d{4}$/, "");
+  return s;
+}
+
+/** intelligence score of a model id — 0 when no family matches (unknown models sink to the pool tail) */
+export function intelligencescore(id: string): number {
+  const n = normalizeid(id);
+  for (const [key, score] of sortedfamilies) {
+    if (n.includes(key)) return score;
+  }
+  return 0;
+}
+
+/** sort model ids by intelligence (desc), ties broken alphabetically — deterministic */
+export function sortids(ids: string[]): string[] {
+  return [...ids].sort((a, b) => intelligencescore(b) - intelligencescore(a) || a.localeCompare(b));
+}
+
+/** sort model objects ({ id }) by intelligence (desc), ties broken alphabetically — deterministic, non-mutating */
+export function sortbyscore<T extends { id: string }>(models: T[]): T[] {
+  return [...models].sort((a, b) => intelligencescore(b.id) - intelligencescore(a.id) || a.id.localeCompare(b.id));
+}
+
+/** the single smartest id of a set (multimodal routing picks the most intelligent capable backend) */
+export function smartestid(ids: string[]): string {
+  return sortids(ids)[0] ?? "";
+}
+
+/** the smart-first rotation pool of a catalog: the top {@link smartpoolsize} ids by intelligence, meta ids excluded */
+export function smartpool(ids: string[]): string[] {
+  return sortids(ids.filter((id) => !id.includes("devthink"))).slice(0, smartpoolsize);
+}

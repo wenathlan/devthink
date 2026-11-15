@@ -17,6 +17,7 @@
  * intro hands straight to /onboarding and the onboarding lands home.
  */
 import { Route, Switch } from "wouter";
+import ChatAnchor from "./chat/Chat";
 import HomeAnchor from "./home/home";
 import IntroAnchor from "./intro/intro";
 import NotFoundAnchor from "./notfound/notfound";
@@ -47,6 +48,7 @@ function Fundamentals() {
     <Shell>
       <Switch>
         <Route path="/" component={HomeAnchor} />
+        <Route path="/chat" component={ChatAnchor} />
         <Route path="/versions" component={VersionsAnchor} />
         <Route path="/thinking" component={ThinkingAnchor} />
         <Route path="/sessions" component={SessionsAnchor} />

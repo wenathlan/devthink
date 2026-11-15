@@ -268,7 +268,10 @@ export async function listkeys(): Promise<ApiKeyRow[]> {
     keyscache = rows;
     return rows;
   } catch {
-    return KEYSEED;
+    /* the honest-empty law (the gateway port, 2.0.184): a lane the transport
+     * cannot reach answers an empty list the empty states render — never
+     * the demo corpus of invented rows. */
+    return [];
   }
 }
 
@@ -289,7 +292,7 @@ export async function listmessages(): Promise<ChatMessageRow[]> {
     messagescache = rows;
     return rows;
   } catch {
-    return MESSAGESEED;
+    return [];
   }
 }
 
@@ -810,5 +813,408 @@ export async function listversionrows(): Promise<GatewayVersion[]> {
     return rows;
   } catch {
     return GATEWAYVERSIONS;
+  }
+}
+
+/* --------------------------------------------------------------------- */
+/* the chat conversations — the client persistence lane (the gateway    */
+/* port, 2.0.184): the DevThinkChat surface stores its conversations     */
+/* and messages beside the engine that serves them.                      */
+/* --------------------------------------------------------------------- */
+
+/** the sqlite mirror schema of the client conversation store — the same
+ * better-sqlite3 file the onboarding/labels/versions seats ride, so the
+ * static deploy and the hono transport answer one store. */
+const CONVERSATIONS_SCHEMA = `
+CREATE TABLE IF NOT EXISTS client_conversations (
+  id           TEXT PRIMARY KEY,
+  title        TEXT NOT NULL DEFAULT 'New conversation',
+  route        TEXT,
+  modelid      TEXT,
+  systemprompt TEXT,
+  temperature  REAL,
+  thinkinglevel TEXT,
+  sessionid    TEXT,
+  createdat    TEXT NOT NULL DEFAULT (datetime('now')),
+  updatedat    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS client_messages (
+  id              TEXT PRIMARY KEY,
+  conversationid  TEXT NOT NULL REFERENCES client_conversations(id) ON DELETE CASCADE,
+  role            TEXT NOT NULL,
+  content         TEXT NOT NULL DEFAULT '',
+  reasoning       TEXT,
+  imagesjson      TEXT,
+  generatedjson   TEXT,
+  modelid         TEXT,
+  route           TEXT,
+  provider        TEXT,
+  fallback        TEXT,
+  error           TEXT,
+  usagejson       TEXT,
+  createdat       TEXT NOT NULL DEFAULT (datetime('now')),
+  seq             INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_client_messages_conversation ON client_messages(conversationid, seq);
+`;
+
+/** one stored conversation of the chat surface. */
+export type ClientConversationRow = {
+  id: string;
+  title: string;
+  route?: string | null;
+  modelId?: string | null;
+  systemPrompt?: string | null;
+  temperature?: number | null;
+  thinkingLevel?: string | null;
+  sessionId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+/** one stored message of a conversation. */
+export type ClientMessageRow = {
+  id: string;
+  conversationId: string;
+  role: "user" | "assistant" | "system";
+  content: string;
+  reasoning?: string | null;
+  images?: unknown[];
+  generated?: unknown;
+  modelId?: string | null;
+  route?: string | null;
+  provider?: string | null;
+  fallback?: string | null;
+  error?: string | null;
+  usage?: unknown;
+  createdAt: string;
+};
+
+/** the upsert body of one conversation (messages replace whole — the
+ * client owns the full list, the store never merges). */
+export type ConversationUpsert = {
+  id: string;
+  title?: string;
+  route?: string | null;
+  modelId?: string | null;
+  systemPrompt?: string | null;
+  temperature?: number | null;
+  thinkingLevel?: string | null;
+  sessionId?: string | null;
+  messages?: Array<Partial<ClientMessageRow> & { role: string; content?: string }>;
+};
+
+/* the mirror extension — prepared statements for the conversation seats */
+type ConversationStatements = {
+  selectAll: import("better-sqlite3").Statement;
+  selectOne: import("better-sqlite3").Statement;
+  selectMessages: import("better-sqlite3").Statement;
+  deleteMessages: import("better-sqlite3").Statement;
+  deleteOne: import("better-sqlite3").Statement;
+  upsert: import("better-sqlite3").Statement;
+  insertMessage: import("better-sqlite3").Statement;
+};
+
+/** opens (idempotently) the conversation statements of the mirror. */
+async function conversationslane(): Promise<ConversationStatements | null> {
+  if (!isnode()) return null;
+  const seat = await openMirror();
+  seat.db.exec(CONVERSATIONS_SCHEMA);
+  return {
+    selectAll: seat.db.prepare(
+      "SELECT id, title, route, modelid, systemprompt, temperature, thinkinglevel, sessionid, createdat, updatedat FROM client_conversations ORDER BY updatedat DESC LIMIT 200",
+    ),
+    selectOne: seat.db.prepare(
+      "SELECT id, title, route, modelid, systemprompt, temperature, thinkinglevel, sessionid, createdat, updatedat FROM client_conversations WHERE id = ?",
+    ),
+    selectMessages: seat.db.prepare(
+      "SELECT id, conversationid, role, content, reasoning, imagesjson, generatedjson, modelid, route, provider, fallback, error, usagejson, createdat FROM client_messages WHERE conversationid = ? ORDER BY seq ASC, createdat ASC LIMIT 400",
+    ),
+    deleteMessages: seat.db.prepare("DELETE FROM client_messages WHERE conversationid = ?"),
+    deleteOne: seat.db.prepare("DELETE FROM client_conversations WHERE id = ?"),
+    upsert: seat.db.prepare(
+      `INSERT INTO client_conversations (id, title, route, modelid, systemprompt, temperature, thinkinglevel, sessionid, createdat, updatedat)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
+       ON CONFLICT(id) DO UPDATE SET
+         title = excluded.title,
+         route = excluded.route,
+         modelid = excluded.modelid,
+         systemprompt = excluded.systemprompt,
+         temperature = excluded.temperature,
+         thinkinglevel = excluded.thinkinglevel,
+         sessionid = excluded.sessionid,
+         updatedat = datetime('now')`,
+    ),
+    insertMessage: seat.db.prepare(
+      `INSERT INTO client_messages (id, conversationid, role, content, reasoning, imagesjson, generatedjson, modelid, route, provider, fallback, error, usagejson, createdat, seq)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)`,
+    ),
+  };
+}
+
+/** maps one raw conversation row to the client shape. */
+function mapconversation(row: Record<string, unknown>): ClientConversationRow {
+  return {
+    id: String(row.id),
+    title: String(row.title ?? "New conversation"),
+    route: (row.route as string) ?? null,
+    modelId: (row.modelid as string) ?? null,
+    systemPrompt: (row.systemprompt as string) ?? null,
+    temperature: row.temperature == null ? null : Number(row.temperature),
+    thinkingLevel: (row.thinkinglevel as string) ?? null,
+    sessionId: (row.sessionid as string) ?? null,
+    createdAt: String(row.createdat ?? ""),
+    updatedAt: String(row.updatedat ?? ""),
+  };
+}
+
+/** maps one raw message row to the client shape. */
+function mapmessage(row: Record<string, unknown>): ClientMessageRow {
+  const parse = (value: unknown): unknown => {
+    if (typeof value !== "string" || !value) return value === "" ? undefined : value;
+    try {
+      return JSON.parse(value as string);
+    } catch {
+      return value;
+    }
+  };
+  return {
+    id: String(row.id),
+    conversationId: String(row.conversationid),
+    role: (row.role as "user" | "assistant" | "system") ?? "user",
+    content: String(row.content ?? ""),
+    reasoning: (row.reasoning as string) ?? null,
+    images: parse(row.imagesjson) as unknown[] | undefined,
+    generated: parse(row.generatedjson),
+    modelId: (row.modelid as string) ?? null,
+    route: (row.route as string) ?? null,
+    provider: (row.provider as string) ?? null,
+    fallback: (row.fallback as string) ?? null,
+    error: (row.error as string) ?? null,
+    usage: parse(row.usagejson),
+    createdAt: String(row.createdat ?? ""),
+  };
+}
+
+/**
+ * Lists every stored conversation with its messages (server side — the
+ * hono lane serves this over GET /api/v1/conversations).
+ *
+ * @returns the conversations, newest updated first, messages oldest first.
+ */
+export async function listconversationrows(): Promise<Array<ClientConversationRow & { messages: ClientMessageRow[] }>> {
+  const lane = await conversationslane();
+  if (!lane) return [];
+  const rows = lane.selectAll.all() as Array<Record<string, unknown>>;
+  return rows.map((row) => {
+    const conversation = mapconversation(row);
+    const messages = (lane.selectMessages.all(conversation.id) as Array<Record<string, unknown>>).map(mapmessage);
+    return { ...conversation, messages };
+  });
+}
+
+/**
+ * Upserts one conversation whole — the metadata ride the seen-wins upsert,
+ * the messages replace the stored set (the client owns the full list).
+ *
+ * @param upsert the conversation body the client sent.
+ * @returns the stored conversation with its messages.
+ */
+export async function saveconversation(upsert: ConversationUpsert): Promise<ClientConversationRow & { messages: ClientMessageRow[] }> {
+  const lane = await conversationslane();
+  const id = upsert.id || `conv-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  if (!lane) {
+    return {
+      id,
+      title: upsert.title ?? "New conversation",
+      route: upsert.route ?? null,
+      modelId: upsert.modelId ?? null,
+      systemPrompt: upsert.systemPrompt ?? null,
+      temperature: upsert.temperature ?? null,
+      thinkingLevel: upsert.thinkingLevel ?? null,
+      sessionId: upsert.sessionId ?? null,
+      createdAt: "",
+      updatedAt: "",
+      messages: [],
+    };
+  }
+  lane.upsert.run(
+    id,
+    upsert.title ?? "New conversation",
+    upsert.route ?? null,
+    upsert.modelId ?? null,
+    upsert.systemPrompt ?? null,
+    upsert.temperature ?? null,
+    upsert.thinkingLevel ?? null,
+    upsert.sessionId ?? null,
+  );
+  lane.deleteMessages.run(id);
+  const messages = (upsert.messages ?? []).slice(-400);
+  let seq = 0;
+  for (const message of messages) {
+    lane.insertMessage.run(
+      message.id ?? `msg-${id}-${seq}`,
+      id,
+      message.role,
+      message.content ?? "",
+      message.reasoning ?? null,
+      message.images == null ? null : JSON.stringify(message.images),
+      message.generated == null ? null : JSON.stringify(message.generated),
+      message.modelId ?? null,
+      message.route ?? null,
+      message.provider ?? null,
+      message.fallback ?? null,
+      message.error ?? null,
+      message.usage == null ? null : JSON.stringify(message.usage),
+      seq,
+    );
+    seq += 1;
+  }
+  const row = lane.selectOne.get(id) as Record<string, unknown>;
+  const stored = (lane.selectMessages.all(id) as Array<Record<string, unknown>>).map(mapmessage);
+  return { ...mapconversation(row), messages: stored };
+}
+
+/**
+ * Deletes one stored conversation (its messages cascade).
+ *
+ * @param id the conversation id.
+ */
+export async function deleteconversationrow(id: string): Promise<void> {
+  const lane = await conversationslane();
+  if (!lane) return;
+  lane.deleteMessages.run(id);
+  lane.deleteOne.run(id);
+}
+
+/* --------------------------------------------------------------------- */
+/* the real gateway state readers — the lanes the sol surface serves     */
+/* (the honest-data law: the sessions/keys/messages pages read the live  */
+/* engine tables the prisma lane writes, never invented rows)           */
+/* --------------------------------------------------------------------- */
+
+/** reads the recent chat log from the engine's ChatMessage table (newest first). */
+export async function recentmessagerows(limit = 50): Promise<ChatMessageRow[]> {
+  const lane = await conversationslane();
+  if (!lane) return [];
+  try {
+    const seat = await openMirror();
+    const rows = seat.db
+      .prepare(
+        "SELECT id, chatId, provider, route, model, role, content, reasoningcontent, prompttokens, outputtokens, httpstatus, sessionid, rotationindex, createdat FROM ChatMessage ORDER BY createdat DESC LIMIT ?",
+      )
+      .all(limit) as Array<Record<string, unknown>>;
+    return rows.map((row) => ({
+      id: String(row.id),
+      chatId: String(row.chatId ?? row.sessionid ?? ""),
+      provider: String(row.provider ?? ""),
+      route: String(row.route ?? ""),
+      model: String(row.model ?? ""),
+      role: (row.role as "user" | "assistant" | "system") ?? "assistant",
+      content: String(row.content ?? ""),
+      reasoningContent: (row.reasoningcontent as string) ?? null,
+      promptTokens: Number(row.prompttokens ?? 0),
+      completionTokens: Number(row.outputtokens ?? 0),
+      totalTokens: Number(row.prompttokens ?? 0) + Number(row.outputtokens ?? 0),
+      createdAt: String(row.createdat ?? ""),
+    }));
+  } catch {
+    /* the engine tables answer on the transport's own database — a fresh
+     * deploy carries none yet, the empty state renders. */
+    return [];
+  }
+}
+
+/** reads the live session contexts (the rotation state the engine keeps). */
+export async function sessioncontextrows(): Promise<Array<Record<string, unknown>>> {
+  try {
+    const lane = await conversationslane();
+    if (!lane) return [];
+    const seat = await openMirror();
+    return seat.db
+      .prepare(
+        "SELECT id, sessionId, provider, route, model, modelVariant, messageCount, lastMessageAt, contextWindow, rotationIndex, thinkingLevel, thinkingBudget, thinkingEnabled, updatedAt FROM SessionContext ORDER BY updatedAt DESC LIMIT 100",
+      )
+      .all() as Array<Record<string, unknown>>;
+  } catch {
+    return [];
+  }
+}
+
+/** reads the live key pools, masked — every provider the store carries. */
+export async function maskedkeyrows(): Promise<ApiKeyRow[]> {
+  try {
+    const lane = await conversationslane();
+    if (!lane) return [];
+    const seat = await openMirror();
+    const rows = seat.db
+      .prepare(
+        "SELECT id, provider, key, label, active, status, useCount, rotationCount, errorCount, rateLimitHit, createdAt, expiresAt FROM ApiKey ORDER BY provider ASC, createdAt ASC LIMIT 200",
+      )
+      .all() as Array<Record<string, unknown>>;
+    const mask = (value: unknown): string => {
+      const s = String(value ?? "");
+      return s.length <= 8 ? "****" : `${s.slice(0, 4)}…${s.slice(-4)}`;
+    };
+    return rows.map((row) => ({
+      id: String(row.id),
+      provider: String(row.provider ?? ""),
+      key: mask(row.key),
+      label: (row.label as string) ?? null,
+      active: Boolean(row.active),
+      status: (row.status as "active" | "revoked" | "expired") ?? "active",
+      useCount: Number(row.useCount ?? 0),
+      rotationCount: Number(row.rotationCount ?? 0),
+      errorCount: Number(row.errorCount ?? 0),
+      rateLimitHit: Boolean(row.rateLimitHit),
+      createdAt: String(row.createdAt ?? ""),
+      expiresAt: (row.expiresAt as string) ?? null,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+/* --------------------------------------------------------------------- */
+/* the browser accessors — the chat surface calls these over the         */
+/* transport's own /api/v1/conversations lane                            */
+/* --------------------------------------------------------------------- */
+
+/** lists the stored conversations from the transport (browser side). */
+export async function listconversations(): Promise<Array<ClientConversationRow & { messages: ClientMessageRow[] }>> {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), fetchbudget);
+    const response = await fetch("/api/v1/conversations", { signal: controller.signal });
+    clearTimeout(timer);
+    if (!response.ok) throw new Error(`conversations answered ${response.status}`);
+    return (await response.json()) as Array<ClientConversationRow & { messages: ClientMessageRow[] }>;
+  } catch {
+    return [];
+  }
+}
+
+/** upserts one conversation (browser side). */
+export async function saveconversationremote(upsert: ConversationUpsert): Promise<ClientConversationRow & { messages: ClientMessageRow[] } | null> {
+  try {
+    const response = await fetch("/api/v1/conversations", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(upsert),
+    });
+    if (!response.ok) throw new Error(`conversations answered ${response.status}`);
+    return (await response.json()) as ClientConversationRow & { messages: ClientMessageRow[] };
+  } catch {
+    return null;
+  }
+}
+
+/** deletes one conversation (browser side). */
+export async function deleteconversationremote(id: string): Promise<boolean> {
+  try {
+    const response = await fetch(`/api/v1/conversations?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+    return response.ok;
+  } catch {
+    return false;
   }
 }

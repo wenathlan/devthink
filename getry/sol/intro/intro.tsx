@@ -111,12 +111,18 @@ export default function Intro() {
       role="status"
       aria-label={label("intro.aria")}
     >
+      {/* the floating window card of the design pass — the brand mark, the
+          name in the bold urbanist tier, the gradient-clip role and the
+          one-line manifesto, holding the same 1.6s law before the hand-over */}
       <div className="winintro__stage">
-        <span className="winintro__mark" aria-hidden="true">
-          <BrandMark size={96} />
-        </span>
-        <h1 className="winintro__name">{label("intro.name")}</h1>
-        <p className="winintro__role">{label("intro.role")}</p>
+        <div className="winintro__card">
+          <span className="winintro__mark" aria-hidden="true">
+            <BrandMark size={96} flow />
+          </span>
+          <h1 className="winintro__name">{label("intro.name")}</h1>
+          <p className="winintro__role">{label("intro.role")}</p>
+          <p className="winintro__manifesto font-thin-tier">{label("intro.manifesto")}</p>
+        </div>
       </div>
       <p className="winintro__skip" aria-hidden="true">
         {label("intro.skip")}

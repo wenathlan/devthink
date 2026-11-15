@@ -189,8 +189,11 @@ describe("design contract — the guards", () => {
 
 describe("flow contract — intro → onboarding → the platform", () => {
   it("mounts every route of the application (entry flow before the fundamentals)", () => {
-    expect(TOML).toMatch(/pages = \["home", "versions", "thinking", "sessions", "notfound"\]/);
-    for (const route of ['"/intro"', '"/onboarding"', '"/versions"', '"/thinking"', '"/sessions"', '"/404"']) {
+    /* the chat surface (task 2-a) joined the page catalog as the flagship —
+    the toml and the route table both carry it now, home first among the
+    fundamentals, chat beside it */
+    expect(TOML).toMatch(/pages = \["home", "chat", "versions", "thinking", "sessions", "notfound"\]/);
+    for (const route of ['"/intro"', '"/onboarding"', '"/chat"', '"/versions"', '"/thinking"', '"/sessions"', '"/404"']) {
       expect(SOL.includes(`path=${route}`), `route ${route} must mount`).toBe(true);
     }
   });

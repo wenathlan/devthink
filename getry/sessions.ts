@@ -124,7 +124,8 @@ export async function listsessions(): Promise<SessionContextRow[]> {
     sessionscache = rows;
     return rows;
   } catch {
-    return SESSIONSEED;
+    /* the honest-empty law (the gateway port, 2.0.184): no invented sessions. */
+    return [];
   }
 }
 

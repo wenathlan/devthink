@@ -93,13 +93,21 @@ function parseRegisteredLevels(raw: string): ThinkingLevel[] | null {
 
 /** the live ladder: the registered rungs, or the family seed when no
  * registration ever landed. resolved once at import from the environment
- * so the load-time budget maps capture the registered ladder too. */
-let ladder: ThinkingLevel[] = parseRegisteredLevels(process.env[LEVELS_ENV] ?? "") ?? THINKINGLEVELS;
+ * so the load-time budget maps capture the registered ladder too — the
+ * browser-safe environment read below guards the static sol surface. */
+/** the browser-safe environment read: the browser graph carries no
+ * process (the static sol surface), so the ladder resolves its registered
+ * rungs only where an environment exists — the family seed answers
+ * everywhere else. */
+const envof = (name: string): string | undefined =>
+  typeof process !== "undefined" && process && typeof process.env === "object" ? process.env[name] : undefined;
+
+let ladder: ThinkingLevel[] = parseRegisteredLevels(envof(LEVELS_ENV) ?? "") ?? THINKINGLEVELS;
 
 /** the live default rung: a registered default that names a real rung, or
  * the family seed default. */
 let ladderDefault: ThinkingLevelName | null = (() => {
-  const raw = process.env[DEFAULT_ENV];
+  const raw = envof(DEFAULT_ENV);
   if (typeof raw !== "string" || raw.trim() === "") return null;
   const name = raw.toLowerCase().trim();
   return ladder.some((rung) => rung.level === name) ? name : null;

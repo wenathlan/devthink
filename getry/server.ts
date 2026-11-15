@@ -61,7 +61,15 @@ import { cors } from "hono/cors";
 import { createversion } from "@wenathlan/getry/engine";
 import type { gatewayconfig, gatewaydefinition } from "@wenathlan/getry/types";
 import { corsheaders, ctndjson, ctsse, safejsonparse, safestringify } from "@wenathlan/getry/utils";
-import { GATEWAYROUTES } from "./gateway.js";
+import { GATEWAYROUTES, gatewayViewConfig, type GatewayRoute } from "./gateway.js";
+import {
+  deleteconversationrow,
+  listconversationrows,
+  maskedkeyrows,
+  recentmessagerows,
+  saveconversation,
+  sessioncontextrows,
+} from "./db.js";
 import { resolvegatewaybind } from "./binddraw.js";
 
 // ---------------------------------------------------------------------------
@@ -558,6 +566,46 @@ async function createserver(): Promise<Hono> {
     }),
   );
 
+  // ── the sol data lanes (the honest-data law, the gateway port 2.0.184) ──
+  // the surface reads the live engine state over these seats: the sessions
+  // registry, the masked key pools, the chat log, the version catalog and
+  // the chat conversation store — real rows the engine and prisma lane
+  // write, never invented seeds.
+  app.get("/api/v1/gateway/versions", (c: Context) =>
+    c.json(
+      Object.values(gatewayViewConfig.versions).map((version) => ({
+        v: version.id,
+        provider: version.providername,
+        pattern: version.note,
+        badge: version.id === "v2" ? ("paused" as const) : ("live" as const),
+        models: String(version.models.length),
+        note: version.note,
+        routes: GATEWAYROUTES as readonly GatewayRoute[],
+      })),
+    ),
+  );
+  app.get("/api/v1/sessions", async (c: Context) => c.json(await sessioncontextrows()));
+  app.get("/api/v1/keys", async (c: Context) => c.json(await maskedkeyrows()));
+  app.get("/api/v1/messages", async (c: Context) => c.json(await recentmessagerows()));
+  app.get("/api/v1/conversations", async (c: Context) => c.json(await listconversationrows()));
+  app.post("/api/v1/conversations", async (c: Context) => {
+    try {
+      const body = await c.req.json();
+      if (!body || typeof body !== "object" || typeof body.id !== "string") {
+        return c.json({ error: "the conversation body needs its id" }, 400);
+      }
+      return c.json(await saveconversation(body));
+    } catch (error) {
+      return c.json({ error: error instanceof Error ? error.message : "the conversation body never parsed" }, 400);
+    }
+  });
+  app.delete("/api/v1/conversations", async (c: Context) => {
+    const id = c.req.query("id");
+    if (!id) return c.json({ error: "the conversation id query rides the delete" }, 400);
+    await deleteconversationrow(id);
+    return c.json({ deleted: id });
+  });
+
   // register routes for every configured version
   for (const [versionid, versionconfig] of Object.entries(definition.versions)) {
     const handlers = createversion(versionconfig);
@@ -677,11 +725,17 @@ export { createserver, main, main as runserver };
 /** loaded definition cache */
 let loaded: gatewaydefinition | null = null;
 
-/** builtin default — empty definition when no user config exists
- * the library is dry — user customization lives in config.mjs
- * the cli scaffolds a fresh config.mjs for new users */
+/** builtin default — the full five-version family catalog
+ *
+ * the serve-anywhere law (the gateway port, 2.0.184): a transport with no
+ * user config serves the whole v1–v5 catalog out of the box — the five
+ * provider gateways, the 35 OpenAI-compatible routes, the 7-level
+ * thinking ladder and the smart-first rotation pools — so `bun cli.ts
+ * serve` (or any consumer importing main()) answers live routes the
+ * moment it boots. user customization still wins: a config.mjs the cli
+ * scaffolds overrides every seat. */
 async function builtindefault(): Promise<gatewaydefinition> {
-  return { versions: {} };
+  return gatewayViewConfig;
 }
 
 /** try import from a path — returns null when not found */

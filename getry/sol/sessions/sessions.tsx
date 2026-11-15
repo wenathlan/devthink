@@ -7,7 +7,7 @@
  * which now lives here as the page mount itself.
  */
 
-import { ArrowSyncRegular, ChatMultipleRegular } from "@fluentui/react-icons";
+import { ArrowSyncRegular, ChatMultipleRegular, WindowConsoleRegular } from "@fluentui/react-icons";
 /**
  * Sessions.tsx — the sessions page of the getry Sol theme: the session
  * registry as one editorial ledger — the session contexts as the dominant
@@ -21,7 +21,7 @@ import { type ApiKeyRow, type ChatMessageRow, listkeys, listmessages, maskkey, r
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { contextshare, freshestfirst, listsessions, rotationindex, type SessionContextRow } from "../../sessions";
-import { ShellEmptystate as EmptyState } from "../../wingets";
+import { ShellEmptystate as EmptyState, TabBridge } from "../../wingets";
 import { toast } from "../toast/Toast.tsx";
 
 /** the rungs of the rotation ladder the dots walk (one per rotation step). */
@@ -82,6 +82,7 @@ export default function Sessions() {
       </section>
 
       <section className="section r3-ops" aria-label={label("sessions.registry.aria")}>
+        <TabBridge label={label("sessions.registry.head")} icon={<ChatMultipleRegular fontSize={13} />} />
         <div className="ledger r3-ledger">
           <div className="ledger__main">
             <p className="railmeta__head reveal">{label("sessions.registry.head")}</p>
@@ -224,6 +225,7 @@ export default function Sessions() {
       </section>
 
       <section className="section r3-log" aria-label={label("sessions.log.aria")}>
+        <TabBridge label={label("sessions.log.title")} icon={<WindowConsoleRegular fontSize={13} />} />
         <div className="section-head reveal">
           <h2>
             <ChatMultipleRegular fontSize={17} /> {label("sessions.log.title")}
