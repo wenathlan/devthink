@@ -358,7 +358,17 @@ export const LABEL_MANIFEST = {
   "ingest.phase.decode": "decode",
   "ingest.phase.decodeDetail": "file → mono pcm",
   "ingest.phase.separate": "separate",
-  "ingest.phase.separateDetail": "hpss → harmonic + percussive stems",
+  "ingest.phase.separateDetail": "demix → vocals + drums + bass + other stems",
+  // the four-way demix lane (the stream separation hub the owner's order
+  // seats): the labels the four stem cards and the audition rows read
+  "ingest.demix.eyebrow": "the four-way separation",
+  "ingest.demix.hint": "the wiener masks conserve the mix — the four stems sum back to the drop",
+  "ingest.demix.vocals": "vocals",
+  "ingest.demix.drums": "drums",
+  "ingest.demix.bass": "bass",
+  "ingest.demix.other": "other",
+  "ingest.demix.auditionHint":
+    "one bus lane — solo a stem, the others ride muted; the four sum conserves the mix",
   "ingest.phase.analyze": "analyze",
   "ingest.phase.analyzeDetail": "rhythm, key, bands, loudness",
   "ingest.phase.segment": "segment",

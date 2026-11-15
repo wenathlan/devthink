@@ -42,7 +42,7 @@ import { type BlobPointer, gatewayblobstore, sessionblobstore } from "../../blob
 import { coverPaletteFromPcm, plateAccents } from "../../coverpalette.ts";
 import { formatClock } from "../../dawview.ts";
 import type { IngestJobValue } from "../../gatewayapi.ts";
-import { separate } from "../../kathesis.ts";
+import { type DemixResult, demix, separate } from "../../kathesis.ts";
 import {
   decompose,
   deleteDocument,
@@ -165,9 +165,14 @@ async function storeWav(pcm: Float32Array, sampleRate: number): Promise<BlobPoin
   }
 }
 
-/** One audition row: the stem label and its reference take. */
+/** One audition row: the stem label and its reference take (the device walk
+ * answers the four demix stems, the server manifest the harmonic/percussive
+ * pair the schema stores — one row per stored stem). */
 interface StemAudition {
-  stem: "harmonic" | "percussive";
+  stem: string;
+  /** The row's display name (the device walk reads the label store, the
+   * server manifest answers the role the schema carries). */
+  display: string;
   take: ReferenceTake;
 }
 
@@ -178,38 +183,46 @@ interface ReferenceAudio {
   stems: StemAudition[];
 }
 
-/** Builds the reference takes of the device walk: the mix and both stems
- * encode to wavs and land in the session blob lane, each pointer becoming
- * one reference take the shared bus plays. Null answers when any lane
- * refused its bytes. */
+/** Builds the reference takes of the device walk: the mix and the four
+ * demix stems (vocals, drums, bass, other — the stream separation hub the
+ * owner's order seats) encode to wavs and land in the session blob lane,
+ * each pointer becoming one reference take the shared bus plays. Null
+ * answers when any lane refused its bytes. */
 async function buildReferenceAudio(
   name: string,
   mono: Float32Array,
-  harmonic: Float32Array,
-  percussive: Float32Array,
-  sampleRate: number,
+  four: DemixResult,
 ): Promise<ReferenceAudio | null> {
-  const [mix, harmonicPointer, percussivePointer] = await Promise.all([
-    storeWav(mono, sampleRate),
-    storeWav(harmonic, sampleRate),
-    storeWav(percussive, sampleRate),
+  const [mix, vocalsPointer, drumsPointer, bassPointer, otherPointer] = await Promise.all([
+    storeWav(mono, four.sampleRate),
+    storeWav(four.vocals.pcm, four.sampleRate),
+    storeWav(four.drums.pcm, four.sampleRate),
+    storeWav(four.bass.pcm, four.sampleRate),
+    storeWav(four.other.pcm, four.sampleRate),
   ]);
-  if (!mix || !harmonicPointer || !percussivePointer) return null;
-  const durationSeconds = mono.length / sampleRate;
+  if (!mix || !vocalsPointer || !drumsPointer || !bassPointer || !otherPointer) return null;
+  const durationSeconds = mono.length / four.sampleRate;
   const takeOf = (pointer: BlobPointer, display: string, takeId: string): ReferenceTake => ({
     kind: "reference",
     id: takeId,
     name: display,
     source: { blobId: pointer.id, mime: "audio/wav", name: display, durationSeconds },
   });
+  /** The label key of one demix stem row (the typed door — the four names
+   * the manifest carries, the cast the template literal needs). */
+  const keyOf = (stem: string) => `ingest.demix.${stem}` as LabelKey;
+  const rowOf = (stem: string, pointer: BlobPointer): StemAudition => ({
+    stem,
+    display: label(keyOf(stem)),
+    take: takeOf(pointer, `${name} ${stem}`, `reference-${pointer.id}`),
+  });
   return {
     mix: takeOf(mix, name, `reference-${mix.id}`),
     stems: [
-      { stem: "harmonic", take: takeOf(harmonicPointer, `${name} harmonic`, `reference-${harmonicPointer.id}`) },
-      {
-        stem: "percussive",
-        take: takeOf(percussivePointer, `${name} percussive`, `reference-${percussivePointer.id}`),
-      },
+      rowOf("vocals", vocalsPointer),
+      rowOf("drums", drumsPointer),
+      rowOf("bass", bassPointer),
+      rowOf("other", otherPointer),
     ],
   };
 }
@@ -250,7 +263,7 @@ async function serverAudio(origin: string, row: IngestStampRow): Promise<Referen
   const stems: StemAudition[] = [];
   for (const stem of parsed.stems) {
     if (stem && typeof stem.pointer?.id === "string" && (stem.role === "harmonic" || stem.role === "percussive")) {
-      stems.push({ stem: stem.role, take: takeOf(stem.pointer.id, `${row.name} ${stem.role}`) });
+      stems.push({ stem: stem.role, display: stem.role, take: takeOf(stem.pointer.id, `${row.name} ${stem.role}`) });
     }
   }
   return { mix, stems };
@@ -370,6 +383,7 @@ function IngestSurface() {
    * bytes never ride this machine, the honest lane declaration). */
   const [palette, setPalette] = useState<readonly string[] | null>(null);
   const [audio, setAudio] = useState<ReferenceAudio | null>(null);
+  const [demixed, setDemixed] = useState<DemixResult | null>(null);
   /** Which lane produced the rendered document (the store key is the device
    * lane's own — the server row lands through the walk). */
   const [sourceLane, setSourceLane] = useState<"server" | "device" | null>(null);
@@ -409,11 +423,13 @@ function IngestSurface() {
 
   /** The device walk: each phase yields to the paint, the document assembles
    * once, the wavs land in the blob lane and the shelf reloads after a
-   * save. The one hpss pass feeds the analysis and the stored bytes both. */
+   * save. The one hpss pass feeds the analysis and the stored bytes both,
+   * the demix pass the four-way audition the separation hub owns. */
   const ingestDevice = async (file: File): Promise<void> => {
     setDoc(null);
     setPalette(null);
     setAudio(null);
+    setDemixed(null);
     setSaved(null);
     setJob(null);
     setLaneFailure(null);
@@ -426,14 +442,16 @@ function IngestSurface() {
       setPhase("separate");
       await tick();
       const stems = separate(mono);
+      const four = demix(mono, sampleRate);
       setPhase("analyze");
       await tick();
       setPhase("segment");
       await tick();
       const name = file.name.replace(/\.[^.]+$/, "");
       const { doc: document, harmonic, percussive } = decompose(mono, stems, sampleRate, { name });
-      const takes = await buildReferenceAudio(name, mono, harmonic, percussive, sampleRate);
+      const takes = await buildReferenceAudio(name, mono, four);
       setDoc(document);
+      setDemixed(four);
       setPalette(plateAccents(coverPaletteFromPcm(mono, sampleRate)));
       setAudio(takes);
       if (takes) saveReferenceTake(takes.mix);
@@ -760,6 +778,33 @@ function IngestSurface() {
               />
             ))}
           </div>
+          {/* THE FOUR-WAY SEPARATION — the demix answer of the same drop (the
+              stream separation hub the owner's order seats): vocals, drums, bass
+              and other, every number the engine's own — the rms and the peak of
+              each stem's pcm, the wiener masks conserving the mix the hint
+              declares — zero hardcoded rows, the cards render only when the
+              device walk separated the four lanes */}
+          {demixed ? (
+            <div className="ing-cards">
+              <p className="ing-eyebrow">
+                <MusicNote2Regular fontSize={14} aria-hidden="true" />
+                {label("ingest.demix.eyebrow")}
+              </p>
+              <p className="ing-audition-hint">{label("ingest.demix.hint")}</p>
+              {demixed.stems.map((stem) => (
+                <StemCard
+                  key={stem.name}
+                  title={label(`ingest.demix.${stem.name}` as LabelKey)}
+                  icon={<MusicNote2Regular fontSize={16} aria-hidden="true" />}
+                  rms={stem.rms}
+                  peak={stem.peak}
+                  onsets={0}
+                  seconds={Math.round(stem.pcm.length / demixed.sampleRate)}
+                  hash={stem.pcm.length}
+                />
+              ))}
+            </div>
+          ) : null}
           {/* THE AUDITION — the stems the walk stored, soloed one bus lane at a
               time: the solo key presses a stem through the shared playerbus, the
               other rides muted (the honest one-lane law — nothing fakes
@@ -770,13 +815,13 @@ function IngestSurface() {
                 <MusicNote2Regular fontSize={14} aria-hidden="true" />
                 {label("ingest.audition.eyebrow")}
               </p>
-              <p className="ing-audition-hint">{label("ingest.audition.hint")}</p>
+              <p className="ing-audition-hint">{label(sourceLane === "device" ? "ingest.demix.auditionHint" : "ingest.audition.hint")}</p>
               <ul className="ing-audition-list">
-                {audio.stems.map(({ stem, take }) => {
+                {audio.stems.map(({ stem, display, take }) => {
                   const soloed = soundingId === take.id;
                   return (
                     <li key={take.id} className="ing-audition-row" data-soloed={soloed || undefined}>
-                      <span className="ing-audition-name">{stem}</span>
+                      <span className="ing-audition-name">{display}</span>
                       <span className={`ing-audition-state${soloed ? " is-solo" : ""}`}>
                         {soloed ? label("ingest.audition.solo") : label("ingest.audition.muted")}
                       </span>
