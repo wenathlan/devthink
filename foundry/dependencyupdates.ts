@@ -28,6 +28,7 @@ const declaredahead = (current: string, latest: string) => {
   );
 };
 const skippedmajors = [];
+const deadseats = [];
 const next = structuredClone(packagejson);
 for (const section of ["dependencies", "devDependencies", "optionalDependencies", "overrides"]) {
   for (const [name, declared] of Object.entries(packagejson[section] ?? {})) {
@@ -57,6 +58,17 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
      * @wenathlan specs; the ladder walks the public registry alone. */
     if (name.startsWith("@wenathlan/")) continue;
     const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`);
+    /* the dead-seat law (the owner's no-removal doctrine): a package the
+     * registry unpublished (the websocket-server seat the nine-repo union
+     * carried was unpublished in 2014 — 404 with an Unpublished body) keeps
+     * its manifest seat with a notice instead of reddening the ladder,
+     * because the union law never removes a prior dependency; a transient
+     * registry error (5xx and friends) still fails hard — only the
+     * definitive unpublish answers the dead seat. */
+    if (response.status === 404) {
+      deadseats.push({ name, reason: "unpublished" });
+      continue;
+    }
     if (!response.ok) throw new Error(`npm registry returned ${response.status} for ${name}`);
     const registry = await response.json();
     let latest = registry?.["dist-tags"]?.latest;
@@ -69,8 +81,10 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
       latest = stable.at(-1);
     }
-    if (!/^\d+\.\d+\.\d+$/.test(latest ?? ""))
-      throw new Error(`npm registry did not provide a stable version for ${name}`);
+    if (!/^\d+\.\d+\.\d+$/.test(latest ?? "")) {
+      deadseats.push({ name, reason: "no stable version" });
+      continue;
+    }
     if (breaking(declared, latest) && !allowmajors) {
       skippedmajors.push({ name, current: declared, latest });
       continue;
@@ -89,4 +103,4 @@ const drift = current !== rendered;
 if (drift && mode === "sync") await writeFile("package.json", rendered);
 if (drift && mode === "check")
   throw new Error("Non-breaking dependency updates are available. Run pnpm dependency:updates in a review branch.");
-console.log(JSON.stringify({ mode, allowmajors, skippedmajors, drift }, null, 2));
+console.log(JSON.stringify({ mode, allowmajors, skippedmajors, deadseats, drift }, null, 2));
