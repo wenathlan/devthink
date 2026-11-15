@@ -11,12 +11,15 @@ version: 2
 # security updates are not subject to the limit, so the vulnerable-dependency
 # fix PRs and the security-tab alerts keep answering for every manifest below.
 #
-# The npm entries cover every manifest of the monorepo: the pre-merge /web
-# entry pointed at a directory the grand merge retired (no web/ folder exists
-# in this tree - the static workbench lives in devthink/), so the coverage now
-# walks the eleven real application roots, each with its committed lockfile
-# (devthink pins bun, the nine family applications pin pnpm and saddle pins
-# npm; every lockfile of each root is read by the same npm ecosystem entry).
+# The entries cover every manifest of the monorepo: the pre-merge /web entry
+# pointed at a directory the grand merge retired (no web/ folder exists in
+# this tree - the static workbench lives in devthink/), so the coverage walks
+# the eleven real application roots. The ten roots that commit bun.lock alone
+# (devthink and the nine family applications - the union wave retired their
+# pnpm locks, the frozen installs ride the bun resolution) answer the bun
+# ecosystem the updater requires for a bun.lock-managed manifest, the saddle
+# engine answers npm beside its committed package-lock.json, and the envelope
+# root stays the no-op npm entry.
 updates:
   # The monorepo envelope manifest (no runtime dependencies): a no-op entry
   # kept so the root package.json stays tracked.
@@ -26,53 +29,53 @@ updates:
     schedule:
       interval: weekly
   # The DevThink OS application (bun.lock and pnpm-lock.yaml committed).
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /devthink
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
   # The nine family applications (pnpm-lock.yaml and bun.lock committed).
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /argan
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /cadria
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /debonair
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /forge
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /foundry
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /stealthhead
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /vault
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /getry
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
-  - package-ecosystem: npm
+  - package-ecosystem: bun
     directory: /cobaia
     open-pull-requests-limit: 0
     schedule:
