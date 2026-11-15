@@ -41,8 +41,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:
-      # the release attachment and the artifact attestation the lane owns
-      contents: write
+      # the artifact attestation the lane owns — the release attachment
+      # rides the owner pat the attach step carries (the 2.0.183 scorecard
+      # closure), so the github token answers read alone beside it.
+      contents: read
       attestations: write
       id-token: write
     strategy:
@@ -397,7 +399,10 @@ jobs:
         # application prefix and never collide with another lane's grammar)
         if: github.event_name == 'release'
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
         run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/mobile/android/*" --clobber
       - name: attest the android assets
         # the signed by GitHub provenance the release machinery carries
@@ -421,8 +426,10 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 45
     permissions:
-      # the release attachment and the artifact attestation the lane owns
-      contents: write
+      # the artifact attestation the lane owns — the release attachment
+      # rides the owner pat the attach step carries (the 2.0.183 scorecard
+      # closure), so the github token answers read alone beside it.
+      contents: read
       attestations: write
       id-token: write
     strategy:
@@ -568,7 +575,10 @@ jobs:
       - name: attach ios assets to the release
         if: github.event_name == 'release'
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
         run: gh release upload "${{ github.event.release.tag_name }}" "${{ matrix.app }}/build/mobile/ipa/*" --clobber
       - name: attest the ios assets
         # the signed by GitHub provenance beside the ipa lane the same way

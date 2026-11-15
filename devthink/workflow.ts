@@ -4855,7 +4855,12 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "GH_TOKEN: ${{ github.token }}",
       "bun run sync:metadata",
       "gh pr create",
-      "actions: write",
+      /* the 2.0.183 scorecard closure: the branch pushes, the cache deletes
+       * and the package retires ride the owner pat, so the job tokens
+       * answer read alone — actions: read beside contents: read — where
+       * the ladder once carried actions: write. */
+      "secrets.OWNER_PAT || github.token",
+      "actions: read",
       "NONDEFAULT_MAX_AGE_HOURS",
       "actions/caches",
       /* the 2.0.18 gap closures: the scoped retention and the second window */

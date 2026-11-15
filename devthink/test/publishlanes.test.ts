@@ -645,7 +645,12 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
       | undefined;
     expect(archive?.needs).toEqual(["saddle-vhe-resolve", "saddle-vhe-scan"]);
     expect(archive?.if).toBe("needs.saddle-vhe-resolve.outputs.proceed == 'true'");
-    expect(archive?.permissions?.contents).toBe("write");
+    /* the 2.0.183 scorecard closure trimmed the contents write the lane
+     * once carried: the archive attach and the sums umbrella patch ride
+     * the owner pat (the github token standing in when the secret does
+     * not), so the job's own token answers read alone — the least-
+     * privilege law every asset lane of the house now stamps. */
+    expect(archive?.permissions?.contents).toBe("read");
     const publish = await readworkflow("saddlelanes.yml");
     expect(publish).toContain('archive="saddle.container.${{ needs.saddle-vhe-resolve.outputs.version }}.tar.gz"');
     expect(publish).toContain('-f saddlebuildctx/saddle/Dockerfile saddlebuildctx');

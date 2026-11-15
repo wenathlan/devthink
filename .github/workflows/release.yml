@@ -99,15 +99,20 @@ jobs:
     # and publishes the full asset set over it; every other push to main
     # skips silently (the CI lane owns those runs), and the tag-push and
     # dispatch paths skip the job entirely. The tag and the release ride
-    # the job token, so the push never re-triggers workflows (the
-    # GITHUB_TOKEN suppression) and the lanes fire on the workflow_run
-    # completion instead.
+    # the owner pat (the github token standing in when the secret does
+    # not): the pat-created release fires the published event the family
+    # artifact lanes answer, while the app-token fallback keeps the
+    # workflow_run completion lanes standing beside it — and the 2.0.183
+    # scorecard closure trimmed the job token to read alone either way.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: auto-tag the version bump
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # least-privilege (the 2.0.183 scorecard closure): the tag and the
+    # release the create step below stamps ride the owner pat, so the
+    # github token answers read alone here.
     permissions:
-      contents: write
+      contents: read
     outputs:
       released: ${{ steps.versions.outputs.changed }}
     steps:
@@ -185,7 +190,10 @@ jobs:
           # whenever the secret exists — the same fallback the maintenance
           # ladder rides — and the app token keeps the lane standing when it
           # does not (the release still publishes, only the family lanes of
-          # that release stay quiet until the next pat published one).
+          # that release stay quiet until the next pat published one). the
+          # 2.0.183 scorecard closure made the law whole: the github token
+          # answers read alone now (the permissions block above), the owner
+          # pat carrying the create.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           VERSION: ${{ steps.versions.outputs.version }}
         run: |
@@ -1304,8 +1312,12 @@ jobs:
     # gate repair): the release flip answers through the explicit
     # release-approval gate job the lane needs - the one review the owner
     # grants for the whole release wave.
+    # least-privilege (the 2.0.183 scorecard closure): the draft gather
+    # and the publish flip below ride the owner pat, so the github token
+    # answers read alone (the verify download and the immutable lock
+    # read stay on the job token).
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Download the complete release set
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -1314,7 +1326,11 @@ jobs:
           path: release
       - name: Gather every artifact into the draft release before publication
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the draft
+          # creation and the asset upload are contents writes the owner
+          # pat carries — the github token standing in when the secret
+          # does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail

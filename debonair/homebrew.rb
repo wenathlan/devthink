@@ -4,8 +4,8 @@
 class WenathlanDebonair < Formula
   desc "The audio and DAW app; it houses the katexis engine at the folder root"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.181/wenathlan-debonair-2.0.181.tgz"
-  version "2.0.181"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.183/wenathlan-debonair-2.0.183.tgz"
+  version "2.0.183"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanDebonair < Formula
   end
 
   test do
-    assert_match "2.0.181", shell_output("#{bin}/wenathlan-debonair --version")
+    assert_match "2.0.183", shell_output("#{bin}/wenathlan-debonair --version")
   end
 end

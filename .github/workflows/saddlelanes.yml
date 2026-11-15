@@ -394,12 +394,14 @@ jobs:
       noderef: ${{ steps.bases.outputs.node }}
       nodedigest: ${{ steps.bases.outputs.nodedigest }}
     permissions:
-      # contents: write is required to keep the SHA256SUMS asset of the
-      # mesa-cache release in place (the GitHub-generated digest of the
-      # mirrored tarball, published as a release asset so local builds
-      # verify too). The tag and release mutations themselves live in
-      # the Release workflow.
-      contents: write
+      # least-privilege (the 2.0.183 scorecard closure): the resolver
+      # reads alone — the release view, the tagged source and the ghcr
+      # versions list — so the github token answers read (the stale
+      # contents write the retired mesa era left behind never served a
+      # write this job performs; the sums umbrella the old comment named
+      # lives in the saddle-container lane below and the publish sums
+      # lane).
+      contents: read
       # packages: read is required to query the GHCR container package
       # versions list (the pre-deploy existence check). The publish,
       # scan, verify jobs below escalate to packages: write / id-token.
@@ -2146,22 +2148,34 @@ jobs:
       run:
         shell: bash
     timeout-minutes: 10
+    # least-privilege (the 2.0.183 scorecard closure): the cache deletes
+    # below ride the owner pat, so the github token answers read alone.
     permissions:
-      actions: write
+      actions: read
       contents: read
     steps:
       - name: Delete the caches this pipeline created
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the deletes
+          # ride the owner pat — the github token standing in when the
+          # secret does not — and every delete answers best-effort below.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
+          # best-effort law (the 2.0.183 closure): a cache the delete
+          # refuses (a 403/404, the token answering no actions write)
+          # logs an honest notice and the loop walks on — the lane never
+          # reddens on the sweep, the seven-day cache auto-eviction the
+          # backstop that keeps the storage bounded either way.
           deleted=0
           while IFS=$'\t' read -r cache_id cache_key; do
             test -n "$cache_id" || continue
             if gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
               deleted=$((deleted + 1))
               echo "deleted cache id=${cache_id} key=${cache_key}"
+            else
+              echo "::notice::cache id=${cache_id} key=${cache_key} refused the delete; the seven-day cache auto-eviction is the backstop."
             fi
           done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | startswith("buildkit")) | [.id, .key] | @tsv')
           echo "cleanup: deleted ${deleted} buildkit gha caches."
@@ -2186,8 +2200,11 @@ jobs:
     # builds, riding the same 90-minute ceiling the family container
     # archive carries scaled to the node graph the runtime bakes.
     timeout-minutes: 90
+    # least-privilege (the 2.0.183 scorecard closure): the archive attach
+    # and the sums umbrella patch below ride the owner pat, so the github
+    # token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -2260,7 +2277,10 @@ jobs:
           if-no-files-found: error
       - name: attach release assets
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ needs.saddle-vhe-resolve.outputs.tag }}
         run: |
           set -euo pipefail
@@ -2276,7 +2296,11 @@ jobs:
         # retires, the fresh checksum rides the re-upload (the umbrella
         # keeps the full coverage the split never loses).
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the umbrella
+          # download reads the release while the re-upload writes it — the
+          # owner pat carries the whole seat (the github token standing in
+          # when the secret does not), the job answering read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           VERSION: ${{ needs.saddle-vhe-resolve.outputs.version }}
         run: |
           set -euo pipefail

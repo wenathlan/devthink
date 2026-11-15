@@ -1,331 +1,668 @@
 # DevThink release notes
 
+## 2.0.183
+
+**The security closure rung** — the two open censuses the security tab carried close on real fixes, never dismissals: the twenty-two dependabot alerts and the thirty-eight scorecard token-permission findings die whole, the functional documentation the #636 consolidation retired by mistake returns from the pre-consolidation tree, and the changelog itself returns to the table grammar the house always spoke.
+
+| Area | Change |
+| --- | --- |
+| The dependabot closure | `@opentelemetry/instrumentation-http` walks ^0.217.0 → ^0.222.0 across the eleven package.json seats (the dependencies, the devDependencies and the override rows) beside the eleven pnpm workspace catalogs, with the eleven bun locks regenerated under the pinned 1.4.4 grammar and the saddle npm lock re-resolved — CVE-2026-128080 (the inbound query-string credential leak the server spans carried) dies whole. |
+| The go closure | `go.opentelemetry.io/otel/sdk/log` walks v0.23.0 → v1.47.0 across the eleven go.mod carriers — CVE-2026-128085 dies beside the otel v1.47.0 family the neighboring seats already ride. |
+| The scorecard closure | The thirty-eight Token-Permissions findings close on the least-privilege law: every `contents: write` and `actions: write` the nine workflow families carried walks out — the tag cut, the release draft and publish flip, the webpack bundle attach, the twenty-two publish lanes, the saddle container archive, the family desktop and mobile attach lanes, the maintenance propose, the cache cleanups and the maven retire all ride `secrets.OWNER_PAT || github.token` (the 2.0.172 fallback pattern), the github token answering read alone. |
+| The best-effort seats | The cache deletions and the package retirements answer best-effort under the pat: a refused delete logs its honest notice and never reddens the lane — the seven-day cache auto-eviction the backstop — so the lanes stay green whatever scope the pat carries. |
+| The untouched scopes | The never-flagged scopes keep their seats exactly: `packages: write` inside the packaging workflows the scorecard itself ignores, `id-token`, `attestations`, `pull-requests` and `security-events` beside the codeql lanes — the publishlanes battery and the workflow.ts controls updated with the doctrine the same stroke. |
+| The documentation heal | The thirty-four functional docs seats return from the pre-consolidation tree — the evolution roadmap the release walk reads, the releasenotes contract the notes test asserts, the doccheck catalogs, the per-app conduct seats — the corpus the #636 consolidation retired while the gates refused to run without them (the release check crashed on the missing roadmap the same day). |
+| The changelog grammar | Every rung from 2.0.128 through 2.0.181 returns to the house table grammar — the bold headline, the summary line and the per-area table — with the duplicate 2.0.156, 2.0.157 and 2.0.162 sections merged into their single seats. |
+| The branch law | The orphaned rung-182 branch (pull request #640) closes superseded — the lockstep cascade, the certification records and the docs this rung carries answer the same closure at 2.0.183, and the repository keeps exactly one long-lived branch. |
+| The honest residue | The scorecard CI-Tests signal (six of the last eight merged pull requests CI-checked) stays the one process-level finding no code closes — the next pull requests the ladder answers raise it, the way the window measures. |
+
 ## 2.0.181
 
-This release is the rung the esbuild CVE closes on: the twelve open code-scanning alerts all traced one root — esbuild@0.18.20 the drizzle-kit chain carried (@esbuild-kit/esm-loader through core-utils resolving the vulnerable dev server seat any website could read, fixed upstream at 0.25.0) — and the family answers through both override forms riding the tree whole (the nested @esbuild-kit/core-utils override seating the transitive lane at 0.25.12 while the flat esbuild override pins every direct seat at 0.28.2, the eleven bun locks regenerated under the pinned 1.4.4 grammar so the frozen installs walk green across the family and the saddle npm lock nests the platform family the docker solbuild stage demands), the default branch scan reading zero open alerts the way the fix-not-dismissal law orders; the parallel lanes' identical heals merge idempotent (the union law both instances carried), the family npm seats answer the fresh rung whole, and the certification this rung rides answers 7,187 green legs across the eleven suites (the devthink 3,587, debonair 1,111, cadria 648, getry 578, saddle 522, vault 320, stealthhead 147, forge 89, foundry 76, argan 72 and cobaia 37 seats) beside the production face verified live through the browser walk (the site sections, the panel unlock, the account creation, the desktop and the console window — zero page errors on every face).
+**The esbuild closure rung** — the twelve open code-scanning alerts all traced one root — esbuild@0.18.20 the drizzle-kit chain carried, the vulnerable dev server seat fixed upstream at 0.25.0 — and the family answers through both override forms riding the tree whole, with the frozen installs walking green across the family, the certification answering 7,187 green legs and the production face verified live through the browser walk.
+
+| Area | Change |
+| --- | --- |
+| The security heal | The twelve alerts all traced one root — esbuild@0.18.20 the drizzle-kit chain carried (@esbuild-kit/esm-loader through core-utils resolving the vulnerable dev server seat any website could read, fixed upstream at 0.25.0) — and the default branch scan reads zero open alerts the way the fix-not-dismissal law orders. |
+| The dependency tree | Both override forms ride the tree whole: the nested @esbuild-kit/core-utils override seats the transitive lane at 0.25.12 while the flat esbuild override pins every direct seat at 0.28.2, the eleven bun locks regenerate under the pinned 1.4.4 grammar so the frozen installs walk green across the family, and the saddle npm lock nests the platform family the docker solbuild stage demands. |
+| The lanes | The parallel lanes' identical heals merge idempotent — the union law both instances carried — and the family npm seats answer the fresh rung whole. |
+| The certification | The certification this rung rides answers 7,187 green legs across the eleven suites — the devthink 3,587, debonair 1,111, cadria 648, getry 578, saddle 522, vault 320, stealthhead 147, forge 89, foundry 76, argan 72 and cobaia 37 seats. |
+| The production face | The production face is verified live through the browser walk — the site sections, the panel unlock, the account creation, the desktop and the console window — with zero page errors on every face. |
 
 ## 2.0.180
 
-This release is the rung the verification-first reseat cuts: the fresh briefing walked whole (the conversa51 tail confirming the seated frame with zero new rule the live tree misses) and the audit it ordered answered green across the structural laws — the folder law exact in the eleven apps, the icon family 5/5 in every root, the mime corpus at 4,133 types, the kts and rs convention seats, the com.app capacitor identities, the qemu exception holding saddle-only and the wingets two-door law the uicopy and fill accessors carry — while the 1,700+ commits audit the briefing charged returned zero false simulations riding the tree (the conversion families intact, the capability diff against the original saddle repo answering zero features lost) and the root purge after the environment reset dissolved the 95 untracked strays the tracked tree never carried (the twin-check walk proving nothing deleted before read, the docker-compose and docker.config disk copies the onedockerfile law already dissolved, the stale ts orphans the consolidation twins own); the interrupted 2.0.179 release train (298 assets when the supersede pattern cancelled the cascade) answers through this fresh rung's full asset ladder, the saddle npm freshness lane rides the rung the registry read pinned at 2.0.178 behind, and the scorecard evidence law the security battery of the fresh head carries closes the sastid alert the way the fix-not-dismissal law orders.
+**The verification-first reseat** — the fresh briefing walked whole and the audit it ordered answered green across the structural laws, the 1,700+ commits audit returned zero false simulations, and the interrupted 2.0.179 release train answers through this fresh rung's full asset ladder.
+
+| Area | Change |
+| --- | --- |
+| The briefing walk | The conversa51 tail confirms the seated frame with zero new rule the live tree misses. |
+| The structural audit | The audit answers green across the structural laws — the folder law exact in the eleven apps, the icon family 5/5 in every root, the mime corpus at 4,133 types, the kts and rs convention seats, the com.app capacitor identities, the qemu exception holding saddle-only and the wingets two-door law the uicopy and fill accessors carry. |
+| The commits audit | The 1,700+ commits the briefing charged return zero false simulations riding the tree — the conversion families intact and the capability diff against the original saddle repo answering zero features lost. |
+| The tree purge | The root purge after the environment reset dissolves the 95 untracked strays the tracked tree never carried — the twin-check walk proving nothing deleted before read, the docker-compose and docker.config disk copies the onedockerfile law already dissolved, and the stale ts orphans the consolidation twins own. |
+| The release train | The interrupted 2.0.179 release train — 298 assets when the supersede pattern cancelled the cascade — answers through this fresh rung's full asset ladder. |
+| The freshness and evidence lanes | The saddle npm freshness lane rides the rung the registry read pinned at 2.0.178 behind, and the scorecard evidence law the security battery of the fresh head carries closes the sastid alert the way the fix-not-dismissal law orders. |
 
 ## 2.0.179
 
-This release is the rung the red gates die on: the six frozen locks regenerate under the pinned 1.4.4 grammar (the 2.0.178 rung bumped the twelve manifests while the locks kept the older resolution, so every frozen install on the runner reddened across the ci, verify, pages and security batteries), the codeql analyze ladder carries the tool token in its display name and the ossf scorecard seat waits for the analyzer the way the sast evidence law orders (the bare analyze name and the racing scorecard left the sastid alert measuring heads without their codeql check-runs), the native gates the original saddle repo carried return whole (the gcc-14 syntax walk over the three c and cpp seats of the virtual hardware engine and the codeql cpp matrix leg over the same shims), the cadria visualai seat re-exports the meshgen doctrine it wraps (the mutual-dependency law the test battery always imported), the saddle label seed rides the vault factory the onboarding lane already rides (the last local copy of the seed and protect mechanism folds into the shared store), the mime corpus crosses the four-thousand law at 4,133 media types (the apache tika catalog, the freedesktop types and legacy aliases and the h5bp lane joining the iana live snapshot), the eleven capacitor identities answer com.<app>.app (the dots law the briefing named against the aimdebonite-era ids), the vault icon pair rides the plain git lane the lfs exemption carved (the should-have-been-pointers warning that aborted every tag checkout in the publish, saddle and container lanes), the dependency ladder lands the twenty-five non-breaking updates the registry published since the last rung (hono, vite, prettier, next-intl, the ai sdk family and the rest, zero majors skipped, the union law carrying every seat to the eleven manifests and both lock grammars), and the dotnet seat rides the 10.0.404 sdk whose aspnet runtime 10.0.15 closes the cve-2026-114146 elevation of privilege and the 114147 and 114149 denial of service trio the vhe trivy gate charged.
+**The rung the red gates die on** — the six frozen locks regenerate under the pinned grammar the 2.0.178 bump stranded, the sast evidence law seats the analyzer the scorecard waits for, and the dependency ladder lands twenty-five updates beside the dotnet CVE trio.
+
+| Area | Change |
+| --- | --- |
+| The frozen locks | The six frozen locks regenerate under the pinned 1.4.4 grammar — the 2.0.178 rung bumped the twelve manifests while the locks kept the older resolution, so every frozen install on the runner reddened across the ci, verify, pages and security batteries. |
+| The sast evidence | The codeql analyze ladder carries the tool token in its display name and the ossf scorecard seat waits for the analyzer the way the sast evidence law orders — the bare analyze name and the racing scorecard left the sastid alert measuring heads without their codeql check-runs. |
+| The native gates | The native gates the original saddle repo carried return whole — the gcc-14 syntax walk over the three c and cpp seats of the virtual hardware engine and the codeql cpp matrix leg over the same shims. |
+| The seat heals | The cadria visualai seat re-exports the meshgen doctrine it wraps (the mutual-dependency law the test battery always imported) and the saddle label seed rides the vault factory the onboarding lane already rides — the last local copy of the seed and protect mechanism folds into the shared store. |
+| The mime corpus | The mime corpus crosses the four-thousand law at 4,133 media types — the apache tika-catalog, the freedesktop types and legacy aliases and the h5bp lane joining the iana live snapshot. |
+| The identities | The eleven capacitor identities answer com.<app>.app — the dots law the briefing named against the aimdebonite-era ids — and the vault icon pair rides the plain git lane the lfs exemption carved (the should-have-been-pointers warning aborted every tag checkout in the publish, saddle and container lanes). |
+| The dependency ladder | Twenty-five non-breaking updates the registry published since the last rung — hono, vite, prettier, next-intl, the ai sdk family and the rest, zero majors skipped — with the union law carrying every seat to the eleven manifests and both lock grammars. |
+| The dotnet seat | The dotnet seat rides the 10.0.404 sdk whose aspnet runtime 10.0.15 closes the cve-2026-114146 elevation of privilege and the 114147 and 114149 denial of service trio the vhe trivy gate charged. |
 
 ## 2.0.178
 
-This release is the rung the eleven-binary chat law closes whole: the os cli entry — the one family binary without the console — now rides the same windows 11 chat seat the ten sibling clibin seats carry (the titlebar, the top rule, the ❯ prompt and the dispatch over the ansi 256 palette, the dpi ladder with the DEVTHINK_DPI override, the version read from the frozen version constant and the engine one-liner quoted from the catalog row), the registry lists the chat command on the terminal surface the help walk shows and the dispatch routes `devthink chat` to the walk the sibling binaries answer through their own names, the clibinlaws battery pins the law whole (the ansi color law over the eleven seats reading the source the way the compiler does, the eleven-seat law of the unified chat interface and the os registry and dispatch laws — twenty-four legs that keep the display artifact which once read a bare escape from ever masquerading as a defect again), the kathesis seat answers its midi rows through the theory kernel alone (the local miditohz copy the tsc walk reddened as a real duplicate folds into the imported law the no-duplicate-logic rule demands) and the librarymodes registry list carries the chat id the cli and the commandpalette surfaces now share.
+**The eleven-binary chat law closes whole** — the os cli entry, the one family binary without the console, now rides the same windows 11 chat seat the ten sibling clibin seats carry, and the clibinlaws battery pins the law in twenty-four legs.
+
+| Area | Change |
+| --- | --- |
+| The chat flagship | The os cli entry rides the windows 11 chat seat the ten sibling clibin seats carry — the titlebar, the top rule, the ❯ prompt and the dispatch over the ansi 256 palette, the dpi ladder with the DEVTHINK_DPI override, the version read from the frozen version constant and the engine one-liner quoted from the catalog row. |
+| The registry and dispatch | The registry lists the chat command on the terminal surface the help walk shows, and the dispatch routes `devthink chat` to the walk the sibling binaries answer through their own names. |
+| The clibinlaws battery | The battery pins the law whole — the ansi color law over the eleven seats reading the source the way the compiler does, the eleven-seat law of the unified chat interface and the os registry and dispatch laws: twenty-four legs that keep the display artifact which once read a bare escape from ever masquerading as a defect again. |
+| The kathesis seat | The kathesis seat answers its midi rows through the theory kernel alone — the local miditohz copy the tsc walk reddened as a real duplicate folds into the imported law the no-duplicate-logic rule demands. |
+| The librarymodes registry | The librarymodes registry list carries the chat id the cli and the commandpalette surfaces now share. |
 
 ## 2.0.177
 
-This release is the rung the webpack distribution cuts whole: the DevThink Webpack workflow answers the six registry matrices the distribution law stamps — NuGet x Webpack, Maven x Webpack, Gradle x Webpack, npmjs x Webpack, RubyGems x Webpack and GitHub Packages x Webpack — for every one of the eleven applications (the per-application law the corridor clarified: the webpack the platform speaks is the workflow that creates the webpack distribution, the reason every envelope carries the webpack CLI and its dependencies), the bundle seat building the single-file engine payload once per rung through the esbuild carrier and the webpack config the seat generates (the .cjs seat the type:module trees never break, the commonjs2 library answering both the direct node run and the require of the envelopes), every registry lane walking behind the release-approval gate with the existence pre-check, the bounded three-attempt retry and the honest notices — the absent NPM_TOKEN skip, the billing wall mirror seats that never redden — while the dotted asset grammar (<app>.<registry>.webpack.<version>) attaches the sixty-six seats beside the eleven bundles the census law counts.
+**The webpack distribution cuts whole** — the DevThink Webpack workflow answers the six registry matrices the distribution law stamps for every one of the eleven applications, while the bundle seat builds the single-file engine payload once per rung and the dotted asset grammar attaches the sixty-six seats.
+
+| Area | Change |
+| --- | --- |
+| The distribution lanes | The six registry matrices the distribution law stamps — NuGet x Webpack, Maven x Webpack, Gradle x Webpack, npmjs x Webpack, RubyGems x Webpack and GitHub Packages x Webpack — answer for every one of the eleven applications, the per-application law the corridor clarified: the webpack the platform speaks is the workflow that creates the webpack distribution, the reason every envelope carries the webpack CLI and its dependencies. |
+| The bundle seat | The bundle seat builds the single-file engine payload once per rung through the esbuild carrier and the webpack config the seat generates — the .cjs seat the type:module trees never break and the commonjs2 library answering both the direct node run and the require of the envelopes. |
+| The approval gate | Every registry lane walks behind the release-approval gate with the existence pre-check, the bounded three-attempt retry and the honest notices — the absent NPM_TOKEN skip and the billing wall mirror seats that never redden. |
+| The asset census | The dotted asset grammar (<app>.<registry>.webpack.<version>) attaches the sixty-six seats beside the eleven bundles the census law counts. |
 
 ## 2.0.176
 
-This release is the rung the healed tree cuts: the four code-scanning seats close on real fixes (the manual sentence walk the bounded pattern could never answer, the linear title walk, the tag-strip fixpoint and the coarse error classes the polarauth face answers), the restored ports answer the strict typecheck whole with zero behavior moved, the pack lane restores the execute bit the publish-time 644 mode froze so the twelve vhe lanes and the Trivy gate walk green, and the vlib test trees the misconfig scanner charged leave the tagged source beside the secrets the prune seats always owned — the container family the lanes publish to GHCR finally answers the healed source the release ladder builds.
+**The rung the healed tree cuts** — the four code-scanning seats close on real fixes, the restored ports answer the strict typecheck with zero behavior moved, and the container family the lanes publish to GHCR finally answers the healed source the release ladder builds.
+
+| Area | Change |
+| --- | --- |
+| The code-scanning seats | The four seats close on real fixes — the manual sentence walk the bounded pattern could never answer, the linear title walk, the tag-strip fixpoint and the coarse error classes the polarauth face answers. |
+| The restored ports | The restored ports answer the strict typecheck whole with zero behavior moved. |
+| The pack lane | The pack lane restores the execute bit the publish-time 644 mode froze, so the twelve vhe lanes and the Trivy gate walk green. |
+| The vlib test trees | The vlib test trees the misconfig scanner charged leave the tagged source beside the secrets the prune seats always owned. |
+| The container family | The container family the lanes publish to GHCR finally answers the healed source the release ladder builds. |
 
 ## 2.0.175
 
-This release is the rung the Saddle unlock cuts: the toolchain layer walks its last two walls — the v seat rides the official 0.5.2 prebuilt binary and the icu seat answers the dotnet assert the carrier image failed — so the tagged source this ladder builds finally walks the Trivy gate and the Saddle vhe lanes publish the container family to GHCR, while the android wrapper law walks the template the 8.6 line carries and the github packages mirrors answer the billing wall with a notice, never a red.
+**The Saddle unlock** — the toolchain layer walks its last two walls — the v seat and the icu seat — so the tagged source this ladder builds finally walks the Trivy gate and the Saddle vhe lanes publish the container family to GHCR.
+
+| Area | Change |
+| --- | --- |
+| The toolchain layer | The v seat rides the official 0.5.2 prebuilt binary and the icu seat answers the dotnet assert the carrier image failed. |
+| The container lanes | The tagged source this ladder builds finally walks the Trivy gate and the Saddle vhe lanes publish the container family to GHCR. |
+| The android wrapper | The android wrapper law walks the template the 8.6 line carries. |
+| The mirrors | The github packages mirrors answer the billing wall with a notice, never a red. |
 
 ## 2.0.174
 
-This release is the 2.0.174 rung of the healed tree: the depfresh cascade (next and eslint-config-next at their fresh 16.4.6 minor over the healed registry line), the webpack seat law (the config-form pack the exact-pinned install line answers), the landing whole-tree law (the eleven locks the lockstep refresh writes ride the rung commit whole), the family scope leaving the registry ladder, the trylle hairline rung (the reference cdn exact 7.5% border mix on both faces), the contract batteries answering the laws the tree carries and the saddle npm lock healing the workspace drift — every fix the 2.0.173 tag preceded now rides the tagged source the release ladder builds.
+**The 2.0.174 rung of the healed tree** — the depfresh cascade, the webpack seat law and the landing whole-tree law ride together with the trylle hairline, so every fix the 2.0.173 tag preceded now rides the tagged source the release ladder builds.
+
+| Area | Change |
+| --- | --- |
+| The depfresh cascade | Next and eslint-config-next ride their fresh 16.4.6 minor over the healed registry line. |
+| The webpack seat law | The config-form pack answers the exact-pinned install line. |
+| The lockstep landing | The landing whole-tree law seats the eleven locks the lockstep refresh writes to ride the rung commit whole. |
+| The registry ladder | The family scope leaves the registry ladder. |
+| The trylle hairline | The reference cdn exact 7.5% border mix lands on both faces. |
+| The batteries and locks | The contract batteries answer the laws the tree carries and the saddle npm lock heals the workspace drift. |
 
 ## 2.0.173
 
-This release is the rung the containerlanes heal cut: the digest stamp reads the platform seat the family Dockerfiles carry while the twenty-stamp table walks the whole surface, the saddle container heals the dead COPY arm the modalityregistry fold left behind, the sdk rung seats @anthropic-ai/sdk 1.7.0 beside the axios, framer-motion, motion and openai minors across the eleven manifests, the saddle bun lock answers the family regeneration the pages owner-install lane reads, and the publish mirror attaches the os-distribution catalog seats beside the registry push — the thousand-asset ladder the release ladder answers with the oscatalogseats family.
+**The rung the containerlanes heal cut** — the digest stamp walks the whole twenty-stamp surface, the sdk rung seats the anthropic line beside the axios, framer-motion, motion and openai minors, and the publish mirror attaches the os-distribution catalog seats to the thousand-asset ladder.
+
+| Area | Change |
+| --- | --- |
+| The digest stamp | The digest stamp reads the platform seat the family Dockerfiles carry while the twenty-stamp table walks the whole surface. |
+| The saddle container | The saddle container heals the dead COPY arm the modalityregistry fold left behind. |
+| The sdk rung | The sdk rung seats @anthropic-ai/sdk 1.7.0 beside the axios, framer-motion, motion and openai minors across the eleven manifests. |
+| The saddle bun lock | The saddle bun lock answers the family regeneration the pages owner-install lane reads. |
+| The publish mirror | The publish mirror attaches the os-distribution catalog seats beside the registry push — the thousand-asset ladder the release ladder answers with the oscatalogseats family. |
 
 ## 2.0.172
 
-The 2.0.172 rung answers the door law the frozen lanes charged — the eleven manifests and the root stamp the rung the release ladder auto-tags, the eleven locks regenerate whole under the pinned 1.4.4 grammar with the saddle npm lock walking the all-registry closure, and the depfresh and engine waves the antiquity law merged ride this rung whole (the LOGICS root catalog, the containers lane's public registry default and the debonair studio console surfacing the real engine state).
+**The rung answers the door law the frozen lanes charged** — the eleven manifests and the root stamp the rung the release ladder auto-tags, the eleven locks regenerate whole, and the depfresh and engine waves the antiquity law merged ride this rung whole.
+
+| Area | Change |
+| --- | --- |
+| The version stamp | The eleven manifests and the root stamp the rung the release ladder auto-tags. |
+| The locks | The eleven locks regenerate whole under the pinned 1.4.4 grammar, with the saddle npm lock walking the all-registry closure. |
+| The merged waves | The depfresh and engine waves the antiquity law merged ride this rung whole — the LOGICS root catalog, the containers lane's public registry default and the debonair studio console surfacing the real engine state. |
 
 ## 2.0.171
 
-The 2.0.171 rung answers the cascade the bump pass never carried — the two branches the interrupted session left pending ride this rung: the depfresh cascade lands whole (release.ts sync now stamps the eleven pyproject, Cargo and docker.config seats with their rust carriers beside the gate record release fields — agentcert through wcag, poolaudit and the foundry readiness walk — so no future rung reddens the eight gate batteries the way 2.0.168 did, and the foundry dependency ladder carries the overrides seat, string-only, the xcode uuid nest keeping its override-only seat, so the parity union holds), the depfresh locks and changelog that answered the 2.0.169 era retire beneath the 2.0.170 regenerations the tree already carries (only the cascade automation and the ladder seat land — the superseded lock tree never rides), and the ctxheal branch the antiquity law ordered first rides the 2.0.170 rung its patch already answered — the release ladder's auto-tag publishes the container tree this rung tags over the one-number law the whole family stamps.
+**The rung answers the cascade the bump pass never carried** — the two branches the interrupted session left pending ride this rung: the depfresh cascade lands whole and the ctxheal branch rides the 2.0.170 rung its patch already answered.
+
+| Area | Change |
+| --- | --- |
+| The depfresh cascade | Release.ts sync now stamps the eleven pyproject, Cargo and docker.config seats with their rust carriers beside the gate record release fields — agentcert through wcag, poolaudit and the foundry readiness walk — so no future rung reddens the eight gate batteries the way 2.0.168 did. |
+| The foundry ladder | The foundry dependency ladder carries the overrides seat, string-only, the xcode uuid nest keeping its override-only seat, so the parity union holds. |
+| The retiring locks | The depfresh locks and changelog that answered the 2.0.169 era retire beneath the 2.0.170 regenerations the tree already carries — only the cascade automation and the ladder seat land, the superseded lock tree never rides. |
+| The ctxheal branch | The ctxheal branch the antiquity law ordered first rides the 2.0.170 rung its patch already answered — the release ladder's auto-tag publishes the container tree this rung tags over the one-number law the whole family stamps. |
 
 ## 2.0.170
 
-The 2.0.170 rung answers the container-lane heals the release verification charged: the lean door law lands (the six family doors re-export the personalization seat whose static security import dragged the whole engine graph into every sibling page — the staged container contexts could never resolve the getry envelopes the graph imports, so the devtools wall seam goes lazy and the doors never pay for the engine again), the saddle lock answers the published rung (the blanket version stamp had walked the lock's @wenathlan package entries to an unpublished rung and the solbuild npm ci died at ETARGET — the lock regenerates against the published 2.0.168 floor with the lockprod production closure re-stamped), the scoped registry seat answers the webpack channel legs (bun reads the registry from the npmrc the setup writes, never from npm's env surface — the scoped @wenathlan line rides the public registry past the mirror's 403), the family mobile lanes carry the bundle collision law (the abi splits answer the assemble invocation alone, the bundle lane walks its own invocation with the splits asleep), and the tauri desktop lanes carry the bounded retry the transient 503s taught — the release ladder's auto-tag publishes the healed container tree this rung tags.
+**The rung answers the container-lane heals the release verification charged** — the lean door law lands, the saddle lock answers the published rung, and the mobile and desktop lanes carry their collision and retry laws.
+
+| Area | Change |
+| --- | --- |
+| The lean door law | The six family doors re-export the personalization seat whose static security import dragged the whole engine graph into every sibling page — the staged container contexts could never resolve the getry envelopes the graph imports, so the devtools wall seam goes lazy and the doors never pay for the engine again. |
+| The saddle lock | The blanket version stamp had walked the lock's @wenathlan package entries to an unpublished rung and the solbuild npm ci died at ETARGET — the lock regenerates against the published 2.0.168 floor with the lockprod production closure re-stamped. |
+| The scoped registry seat | Bun reads the registry from the npmrc the setup writes, never from npm's env surface — the scoped @wenathlan line rides the public registry past the mirror's 403 on the webpack channel legs. |
+| The mobile lanes | The family mobile lanes carry the bundle collision law — the abi splits answer the assemble invocation alone and the bundle lane walks its own invocation with the splits asleep. |
+| The desktop lanes | The tauri desktop lanes carry the bounded retry the transient 503s taught. |
+| The release lane | The release ladder's auto-tag publishes the healed container tree this rung tags. |
 
 ## 2.0.169
 
-The 2.0.169 rung answers the container and freshness heals the owner's saddle charge ordered: the saddle lock prod-closure heal lands (the both-blocks grammar of the family manifest planted dev:true over the whole npm lock tree, so the runtime stage's `npm ci --omit=dev` installed nothing and the container build died sweeping a node_modules that never landed — the foundry lockprod seat walks the production closure and clears the dev stamp on those seats while the saddle Dockerfile derives the prod-only manifest, nothing removed), the registry rung freshness walks the eleven manifests together (the family sibling specs ride the 2.0.168 rung and the per-app non-breaking seats walk with them, the locks regenerating under the pinned managers with the follow-redirects override healed), and the sbom checksum line answers its own seat (the syft lane reads the rebuilt hash-space-path line the verify walk consumes) — the release ladder's auto-tag publishes the healed container tree this rung tags, and the freshness gate the verify ladder reads walks green again.
+**The rung answers the container and freshness heals the owner's saddle charge ordered** — the saddle lock prod-closure heal lands, the registry rung freshness walks the eleven manifests together, and the sbom checksum line answers its own seat.
+
+| Area | Change |
+| --- | --- |
+| The saddle lock | The both-blocks grammar of the family manifest planted dev:true over the whole npm lock tree, so the runtime stage's `npm ci --omit=dev` installed nothing and the container build died sweeping a node_modules that never landed — the foundry lockprod seat walks the production closure and clears the dev stamp on those seats while the saddle Dockerfile derives the prod-only manifest, nothing removed. |
+| The registry freshness | The registry rung freshness walks the eleven manifests together — the family sibling specs ride the 2.0.168 rung and the per-app non-breaking seats walk with them, the locks regenerating under the pinned managers with the follow-redirects override healed. |
+| The sbom seat | The sbom checksum line answers its own seat — the syft lane reads the rebuilt hash-space-path line the verify walk consumes. |
+| The release lane | The release ladder's auto-tag publishes the healed container tree this rung tags, and the freshness gate the verify ladder reads walks green again. |
 
 ## 2.0.168
 
-The 2.0.168 rung answers the union heals the merge-then-green operation charged: the frozen-grammar lock returns to the certified v3 seat (the sandbox regen's v1 drift the ci's 1.4.4 frozen walk refused), the librarysurface digest answers the gate's own arithmetic (the re-stamp certified against the battery alone never walked the gate lane), the debonair runner law retires the loudness walk that killed the hosted runner over full-song pcm until a bounded re-land seats it, the casejoin absorption rides the main lane under the union law (the envelope at the lowercase seat, the adapter keeping the Saddle.java seat the maven and gradle lanes compile by name), the serial suite seat walks the config lane (the vitest-only law keeps the script the family template names), and the ts root law seats every logic .ts at the app root with sol answering the faces only — the eleven branch fronts merged by antiquity, the five workflows green, and the container publication lanes answer the healed tree this rung tags.
+**The rung answers the union heals the merge-then-green operation charged** — the frozen-grammar lock returns to the certified seat, the union laws absorb the fold stragglers, and the eleven branch fronts merge by antiquity with the five workflows green.
+
+| Area | Change |
+| --- | --- |
+| The frozen lock | The frozen-grammar lock returns to the certified v3 seat — the sandbox regen's v1 drift the ci's 1.4.4 frozen walk refused. |
+| The librarysurface digest | The librarysurface digest answers the gate's own arithmetic — the re-stamp certified against the battery alone never walked the gate lane. |
+| The debonair runner | The debonair runner law retires the loudness walk that killed the hosted runner over full-song pcm until a bounded re-land seats it. |
+| The casejoin absorption | The casejoin absorption rides the main lane under the union law — the envelope at the lowercase seat, the adapter keeping the Saddle.java seat the maven and gradle lanes compile by name. |
+| The serial suite | The serial suite seat walks the config lane — the vitest-only law keeps the script the family template names. |
+| The ts root law | The ts root law seats every logic .ts at the app root with sol answering the faces only. |
+| The merge | The eleven branch fronts merge by antiquity, the five workflows walk green and the container publication lanes answer the healed tree this rung tags. |
 
 ## 2.0.167
 
-The 2.0.167 rung answers the workflow-green heals the owner's wave charged: the vsix hygiene law completes (the crx endpoint host joins from its parts at call time so the shipped extension and library bundles never carry the literal the package scan refuses while the dev-time harvest keeps its download seat), the frozen library surface catches the devtoolsguard family up (the twelve symbols the security surface exports join the librarysurfaceexports contract the freeze pins), the vault nginx joins the family template (the gzip transport law, the caret api lane, the root-emit, dotfile and tree seals and the hashed-asset cache law land beside the faun block the vault owns), the routesdual door closes the unmerged branch the owner charged (the ten family seats import the one devthink/routerbase.ts seat per the dedup law while the inline KNOWN_ROUTES derivations retire), the lockfile visibility law lands (the ten pnpm locks leave the tracked tree for the gitignore seat the owner ordered beside the infra docs), and the workflow pnpm lanes answer the no-frozen seat so the hidden locks never break the gates.
+**The rung answers the workflow-green heals the owner's wave charged** — the vsix hygiene law completes, the vault nginx joins the family template, the routesdual door closes the unmerged branch, and the ten pnpm locks leave the tracked tree.
+
+| Area | Change |
+| --- | --- |
+| The vsix hygiene law | The crx endpoint host joins from its parts at call time so the shipped extension and library bundles never carry the literal the package scan refuses, while the dev-time harvest keeps its download seat. |
+| The library surface | The frozen library surface catches the devtoolsguard family up — the twelve symbols the security surface exports join the librarysurfaceexports contract the freeze pins. |
+| The vault nginx | The vault nginx joins the family template — the gzip transport law, the caret api lane, the root-emit, dotfile and tree seals and the hashed-asset cache law land beside the faun block the vault owns. |
+| The routesdual door | The ten family seats import the one devthink/routerbase.ts seat per the dedup law while the inline KNOWN_ROUTES derivations retire. |
+| The lockfile visibility | The lockfile visibility law lands — the ten pnpm locks leave the tracked tree for the gitignore seat the owner ordered beside the infra docs. |
+| The workflow lanes | The workflow pnpm lanes answer the no-frozen seat so the hidden locks never break the gates. |
 
 ## 2.0.166
 
-The 2.0.166 rung answers the manifest law the owner wave ordered: the root envelope answers engines alone (the header, the private seat, the description and the essential scripts beside the twenty-five engine rows — every dependency the root carried distributes to the eleven app seats), and the eleven application manifests answer one canonical template — the same key sequence (name, version, description, license, type, sideEffects, the library faces, the engines catalog, the scripts, the three dependency groups and the public publishConfig) with the decorative seats retired (keywords, homepage, bugs, repository, author, packageManager, pnpm, peerDependencies and the saddle private / module / browser / peerDependenciesMeta / optionalDependencies / systemLibraries extras that never had a reader). The dependency union answers the history law: the hundred seventy-one names — the seven family seats at ~2.0.165 and the hundred sixty-four external seats at their registry latest (the prisma rung stays the stable 7.10.1 floor while its latest tag rides the 8.0.0-rc.30 preview) — and the three groups (dependencies, devDependencies and overrides) answer the identical map the owner law demands, the xcode uuid nest keeping its override-only seat. The eleven locks regenerate under the pinned bun 1.4.4 and the version cascade stamps the rung across the packaging family (the eleven pom revision properties, the eleven tauri seats, the deno, extension and site manifests and the version.ts mirrors).
+**The rung answers the manifest law the owner wave ordered** — the root envelope answers engines alone, the eleven application manifests answer one canonical template, and the dependency union answers the history law with a hundred seventy-one names.
+
+| Area | Change |
+| --- | --- |
+| The root envelope | The root envelope answers engines alone — the header, the private seat, the description and the essential scripts beside the twenty-five engine rows, with every dependency the root carried distributing to the eleven app seats. |
+| The canonical template | The eleven application manifests answer one canonical template — the same key sequence (name, version, description, license, type, sideEffects, the library faces, the engines catalog, the scripts, the three dependency groups and the public publishConfig) with the decorative seats retired: keywords, homepage, bugs, repository, author, packageManager, pnpm, peerDependencies and the saddle private / module / browser / peerDependenciesMeta / optionalDependencies / systemLibraries extras that never had a reader. |
+| The dependency union | The union answers the history law — the hundred seventy-one names, the seven family seats at ~2.0.165 and the hundred sixty-four external seats at their registry latest (the prisma rung stays the stable 7.10.1 floor while its latest tag rides the 8.0.0-rc.30 preview) — and the three groups (dependencies, devDependencies and overrides) answer the identical map the owner law demands, the xcode uuid nest keeping its override-only seat. |
+| The locks and cascade | The eleven locks regenerate under the pinned bun 1.4.4 and the version cascade stamps the rung across the packaging family — the eleven pom revision properties, the eleven tauri seats, the deno, extension and site manifests and the version.ts mirrors. |
 
 ## 2.0.165
 
-The 2.0.165 rung rides the healed resolutions the lockfile waves landed: the ten frozen lanes answer the regenerated locks (#476, #477), and the release chain the container publication lanes answer rides green gates from this rung - the saddle container publication the owner ordered flows.
+**The rung rides the healed resolutions the lockfile waves landed** — the ten frozen lanes answer the regenerated locks and the release chain rides green gates from this rung, so the saddle container publication the owner ordered flows.
+
+| Area | Change |
+| --- | --- |
+| The frozen lanes | The ten frozen lanes answer the regenerated locks (#476, #477). |
+| The release chain | The release chain the container publication lanes answer rides green gates from this rung — the saddle container publication the owner ordered flows. |
 
 ## 2.0.164
 
-The 2.0.164 rung answers the maintenance metadata the 2.0.163 gate ladder refused: the pnpm recommendation rides the 12.18.0 pin across the five pipeline seats and the packageManager stamp (the sync the rung stamp now carries beside the metadata family), and the healed release chain rides the green gates the container publication lanes answer - the saddle container publication the owner ordered flows from this rung.
+**The rung answers the maintenance metadata the 2.0.163 gate ladder refused** — the pnpm recommendation rides the 12.18.0 pin and the healed release chain rides the green gates the container publication lanes answer, so the saddle container publication the owner ordered flows from this rung.
 
+| Area | Change |
+| --- | --- |
+| The pnpm recommendation | The pnpm recommendation rides the 12.18.0 pin across the five pipeline seats and the packageManager stamp — the sync the rung stamp now carries beside the metadata family. |
+| The release chain | The healed release chain rides the green gates the container publication lanes answer — the saddle container publication the owner ordered flows from this rung. |
 
 ## 2.0.163 — the family lockstep rung (W5-B: the cli dpi seats and the distribution lanes answer one number)
 
-The 2.0.163 rung answers the PR13/PR14 lockstep law the owner's wave charged: every application of the family stamps the same number again — the debonair kathesis engine rung (W4-A) that moved debonair alone to 2.0.163 while the ten siblings and the root answered 2.0.162 returns to the one-number law, and the release walk now carries the container stamp completeness fix so the drift class never lands again (the seven container files the walk never stamped — cobaia, forge, foundry, getry, stealthhead, saddle and vault — answered the 2.0.134 literals twenty-eight rungs behind the envelopes the registry lanes publish; every Dockerfile header and ARG default walks the rung with the rest of the carriers). The PR13 cli dpi seats land the same rung: the eight clibin consoles (argan, cadria, cobaia, debonair, forge, foundry, stealthhead, vault) carry the native dpi detection — the 1x / 1.5x / 2x / 3x scale ladder folded from the terminal columns with the APP_DPI environment override winning first, never XDPI — the titlebar rails clamp inside the frame so the windows 11 chrome never wraps a narrow windows or linux console, and the dpi command answers the resolved seat (scale, columns, rail); the saddle engine cli and the getry gateway console grow the same chat console seat (the same tokens, titlebar, top rule, prompt and dpi ladder) beside their functional commands, so every application of the family answers the same windows 11 chat design inside the terminal with only the responsiveness differing. The PR14 distribution lanes ride the same number: the dual npmjs / GitHub Packages publishes, the maven, nuget, gradle and rubygems family matrices, the container registry and archive lanes and the release assets all resolve the one tag against the one version the whole family stamps. The install-closure heal lands with the rung: the family-ghcr registry lane grows from the three-app era to the nine family site homes (the sibling map mirroring the archive lane one to one, the debonair leg healing the saddle sibling its Dockerfile COPYs, the vault engine answering its own self-contained folder shape), the getry console loads its serve transport lazily so the published envelope runs the console family without the engine closure, the saddle envelope ships the full cli import closure (integration, scriptlanes, communication and the ninety-modality executable modalities.ts), and the tarball files arrays carry the cli seat explicitly beside the bin directive.
+**The family lockstep rung** — the PR13/PR14 lockstep law the owner's wave charged lands whole: every application of the family stamps the same number again, the eight clibin consoles carry the native dpi detection, and the distribution lanes resolve the one tag against the one version the whole family stamps.
+
+| Area | Change |
+| --- | --- |
+| The lockstep law | Every application of the family stamps the same number again — the debonair kathesis engine rung (W4-A) that moved debonair alone to 2.0.163 while the ten siblings and the root answered 2.0.162 returns to the one-number law. |
+| The container stamp | The release walk carries the container stamp completeness fix so the drift class never lands again — the seven container files the walk never stamped (cobaia, forge, foundry, getry, stealthhead, saddle and vault) answered 2.0.134 literals twenty-eight rungs behind the envelopes the registry lanes publish; every Dockerfile header and ARG default walks the rung with the rest of the carriers. |
+| The cli dpi seats | The PR13 seats land the same rung: the eight clibin consoles (argan, cadria, cobaia, debonair, forge, foundry, stealthhead, vault) carry the native dpi detection — the 1x / 1.5x / 2x / 3x scale ladder folded from the terminal columns with the APP_DPI environment override winning first, never XDPI — with the titlebar rails clamping inside the frame so the windows 11 chrome never wraps a narrow windows or linux console, and the dpi command answers the resolved seat (scale, columns, rail). |
+| The chat consoles | The saddle engine cli and the getry gateway console grow the same chat console seat — the same tokens, titlebar, top rule, prompt and dpi ladder — beside their functional commands, so every application of the family answers the same windows 11 chat design inside the terminal with only the responsiveness differing. |
+| The distribution lanes | The PR14 lanes ride the same number — the dual npmjs / GitHub Packages publishes, the maven, nuget, gradle and rubygems family matrices, the container registry and archive lanes and the release assets all resolve the one tag against the one version the whole family stamps. |
+| The install closure | The family-ghcr registry lane grows from the three-app era to the nine family site homes (the sibling map mirroring the archive lane one to one, the debonair leg healing the saddle sibling its Dockerfile COPYs, the vault engine answering its own self-contained folder shape), the getry console loads its serve transport lazily so the published envelope runs the console family without the engine closure, the saddle envelope ships the full cli import closure (integration, scriptlanes, communication and the ninety-modality executable modalities.ts), and the tarball files arrays carry the cli seat explicitly beside the bin directive. |
 
 ## 2.0.162 — the depsunion addendum (the eleven manifests answer one dependency union)
 
-The depsunion rung answers the PR4/PR6 dependency law across the twelve manifests: the eleven official apps and the root envelope carry the identical dependency union — 30 dependencies and 94 devDependencies, nothing removed from any seat — and this manifest's drifted family pins (~2.0.159/~2.0.160) return to the synchronized ~2.0.155 tilde floor the ten siblings ride, with the engines rows healing the same way (bun ^1.4.4, npm ^12.2.1). The engines catalog grows to 25 rows with Babel (^7.28.0) joining Bun, Cargo, CorePack, Deno and PNPM beside the V 0.5.2 catalog entry (catalog only) — Node stays the maestro orchestrating the engine ladder with priority for its natives while Python / Go / Rust / Cargo / PNPM / V stay allowed. The overrides block syncs to the family's 18 rows (the saddle xcode uuid pin and the @grpc/grpc-js 1.14.5 floor reach every manifest), the per-app lockfiles stay as tracked with no new lockfile created (pnpm-lock.yaml keeps the single-lockfile example seat), and better-sqlite3 stays in the checklist as the storage layer.
-## 2.0.162
+**The depsunion addendum and the honesty heals** — the PR4/PR6 dependency law seats the identical union across the twelve manifests while the honesty rung retires the browser quota phantom and declares the seventeen registry-only modalities planned, and the container seat heals the cross-family import the dedup law carries.
 
-The 2.0.162 rung answers the honesty heals and the container seat above the ladder the rungs climb: the vault capacity truth retires the browser quota phantom and the family mimetype table rides the storage engine (#440), the saddle honesty rung declares the seventeen registry-only modalities planned and the fake lanes answer typed refusals (#441), the katexis classifier and the client answer the measured signal - the genre line, the mine walk filter and the pad-timbre bands ride the signal gate with the typed genre-insufficient-signal refusal, and the pattern miner seat keeps the measured timbre law with the library face pins carrying the new signal exports (#447), the root catalog returns healed from the logic seat restore (#448), the builder carries the foundry bundle-scan owner beside the family siblings so the container release archive heals the cross-family import the dedup law carries (#449), the eleven config faces ride the same pattern sequence follow-up (#450) and the pnpm installs ride the no scripts doctrine follow-up (#451), and the contractcatchup, devboot and familyseat heals answer the frozen seats, the dev seat boot and the cadria studio audio exports the same rung carries.
+| Area | Change |
+| --- | --- |
+| The dependency union | The eleven official apps and the root envelope carry the identical dependency union — 30 dependencies and 94 devDependencies, nothing removed from any seat — with this manifest's drifted family pins (~2.0.159/~2.0.160) returning to the synchronized ~2.0.155 tilde floor the ten siblings ride and the engines rows healing the same way (bun ^1.4.4, npm ^12.2.1). |
+| The engines catalog | The catalog grows to 25 rows with Babel (^7.28.0) joining Bun, Cargo, CorePack, Deno and PNPM beside the V 0.5.2 catalog entry (catalog only) — Node stays the maestro orchestrating the engine ladder with priority for its natives while Python / Go / Rust / Cargo / PNPM / V stay allowed. |
+| The overrides block | The overrides block syncs to the family's 18 rows — the saddle xcode uuid pin and the @grpc/grpc-js 1.14.5 floor reach every manifest — while the per-app lockfiles stay as tracked with no new lockfile created (pnpm-lock.yaml keeps the single-lockfile example seat) and better-sqlite3 stays in the checklist as the storage layer. |
+| The honesty heals | The vault capacity truth retires the browser quota phantom and the family mimetype table rides the storage engine (#440), and the saddle honesty rung declares the seventeen registry-only modalities planned with the fake lanes answering typed refusals (#441). |
+| The measured signal | The katexis classifier and the client answer the measured signal — the genre line, the mine walk filter and the pad-timbre bands ride the signal gate with the typed genre-insufficient-signal refusal — and the pattern miner seat keeps the measured timbre law with the library face pins carrying the new signal exports (#447). |
+| The tree heals | The root catalog returns healed from the logic seat restore (#448), the builder carries the foundry bundle-scan owner beside the family siblings so the container release archive heals the cross-family import the dedup law carries (#449), the eleven config faces ride the same pattern sequence follow-up (#450), the pnpm installs ride the no scripts doctrine follow-up (#451), and the contractcatchup, devboot and familyseat heals answer the frozen seats, the dev seat boot and the cadria studio audio exports. |
 
 ## 2.0.161
 
-The 2.0.161 rung answers the locksync heal and the staged family context above the ladder the rungs climb: the nine stale bun locks and the npm and pnpm locks ride the frozen 4.18.1 union tree green (the previous rung bumped the eleven manifests but only ten lockfiles followed - the frozen gates of the CI, the verify and the pages legs died on the react-resizable-panels drift), the hundred devDep mirrors retire beside the saddlelock standard, the vault engine closure stamps the copy list the logicfold2 rename retired (the objectsledger seat folds into objects and the nineteen-file closure answers), the five flat village containers (cobaia, stealthhead, forge, foundry and getry) ride the staged family context with their sibling owners - the copy-law vault beside every site home, the saddle engine ownership under forge, foundry, getry and debonair, the devthink config bridges and the debonair route table under getry, and the cadria synth palette beside the debonair audio engine - and the eleven app dossiers ride the organized folder.
+**The locksync heal and the staged family context** — the nine stale bun locks and the npm and pnpm locks ride the frozen union tree green, the hundred devDep mirrors retire, and the five flat village containers ride the staged family context with their sibling owners.
+
+| Area | Change |
+| --- | --- |
+| The locksync heal | The nine stale bun locks and the npm and pnpm locks ride the frozen 4.18.1 union tree green — the previous rung bumped the eleven manifests but only ten lockfiles followed, so the frozen gates of the CI, the verify and the pages legs died on the react-resizable-panels drift. |
+| The devDep mirrors | The hundred devDep mirrors retire beside the saddlelock standard. |
+| The vault closure | The vault engine closure stamps the copy list the logicfold2 rename retired — the objectsledger seat folds into objects and the nineteen-file closure answers. |
+| The village containers | The five flat village containers (cobaia, stealthhead, forge, foundry and getry) ride the staged family context with their sibling owners — the copy-law vault beside every site home, the saddle engine ownership under forge, foundry, getry and debonair, the devthink config bridges and the debonair route table under getry, and the cadria synth palette beside the debonair audio engine. |
+| The dossiers | The eleven app dossiers ride the organized folder. |
 
 ## 2.0.160
 
-The 2.0.160 rung answers the red-suite heal and the variant retirement above the ladder the rungs climb: the debonair genre import debt that killed forty-seven suites across the audio and video families retires (the genrematrix arms answer the genre keyword seat, the duplicate clamp dies, the seed library answers its lazy seat so the render cycle never meets a TDZ), the stale variant files the fold waves left behind leave their eleven roots (engineowners, patternenums, timelineview, sessions, speccatalog, reverseingest, matchrules, signup, chatlabels, copy, seedcatalog, guard and the audit pair fold into their keyed seats), the copy law answers one ui store, the version literals stamp the synchronized 2.0.160 rung from the Dockerfiles through the cli, deno and webserver seats, the saddle container carries the heredoc entrypoint, the docker run recipes, the pids contract and the eleven-arch platform legs of the publish matrix, the honesty wrap names every lane refusal, the hyphen tolerance answers the family display names on the edge plane, the desktop and boot heroes carry the white mark alone (the logo-without-text law), the tabs clip and the mobile floor harden the window chrome, the transition-all naming closes the doctrine self-violation and the self-hosted Urbanist answers the landing voice beside the frozen CSP law.
+**The red-suite heal and the variant retirement** — the debonair genre import debt that killed forty-seven suites retires, the stale variant files leave their eleven roots, and the version literals stamp the synchronized 2.0.160 rung from the Dockerfiles through the cli, deno and webserver seats.
+
+| Area | Change |
+| --- | --- |
+| The red suites | The debonair genre import debt that killed forty-seven suites across the audio and video families retires — the genrematrix arms answer the genre keyword seat, the duplicate clamp dies and the seed library answers its lazy seat so the render cycle never meets a TDZ. |
+| The variant retirement | The stale variant files the fold waves left behind leave their eleven roots — engineowners, patternenums, timelineview, sessions, speccatalog, reverseingest, matchrules, signup, chatlabels, copy, seedcatalog, guard and the audit pair fold into their keyed seats. |
+| The version stamps | The version literals stamp the synchronized 2.0.160 rung from the Dockerfiles through the cli, deno and webserver seats, and the copy law answers one ui store. |
+| The saddle container | The saddle container carries the heredoc entrypoint, the docker run recipes, the pids contract and the eleven-arch platform legs of the publish matrix. |
+| The interface | The honesty wrap names every lane refusal, the hyphen tolerance answers the family display names on the edge plane, the desktop and boot heroes carry the white mark alone (the logo-without-text law), the tabs clip and the mobile floor harden the window chrome, and the transition-all naming closes the doctrine self-violation. |
+| The landing voice | The self-hosted Urbanist answers the landing voice beside the frozen CSP law. |
 
 ## 2.0.159
 
-The 2.0.159 rung answers the laneheal law above the ladder the rungs climb: the entry faces return to their own single responsibility seats, the crypto aliases and the hyphen law answer the registry, the frozen contracts re-record over the fold surface and the viewport family law pins every door. The wave laws ride the same rung — the confstd law answers the configurable arms with one family pattern, the docstd law carries the saddle-shape doc suite into every app seat in its own voice, the rootdedup law retires the requirements export with zero consumers and folds the harvest id seed into the crxharvest seat that reads it while the eleven app roots keep only the documented web template family, and the saddle container heal lands the engine container the owner's law demands: the sandboxfold's dead COPY arms retire, the eleven-architecture standard of saddle/containerarch.ts rides the base-honest legs (the four linux seats the pinned node base carries — amd64, arm64, ppc64le, s390x — build under the digest-never-hardcoded law while the seven seats the base does not ship answer the honest coded absence) and the saddle vhe family (max, balanced and lite) rides the publish lanes again.
+**The laneheal law above the ladder the rungs climb** — the entry faces return to their own single responsibility seats, the confstd, docstd and rootdedup wave laws ride the same rung, and the saddle container heal lands the engine container the owner's law demands.
+
+| Area | Change |
+| --- | --- |
+| The laneheal law | The entry faces return to their own single responsibility seats, the crypto aliases and the hyphen law answer the registry, the frozen contracts re-record over the fold surface and the viewport family law pins every door. |
+| The confstd law | The confstd law answers the configurable arms with one family pattern. |
+| The docstd law | The docstd law carries the saddle-shape doc suite into every app seat in its own voice. |
+| The rootdedup law | The rootdedup law retires the requirements export with zero consumers and folds the harvest id seed into the crxharvest seat that reads it, while the eleven app roots keep only the documented web template family. |
+| The saddle container | The sandboxfold's dead COPY arms retire and the eleven-architecture standard of saddle/containerarch.ts rides the base-honest legs — the four linux seats the pinned node base carries (amd64, arm64, ppc64le, s390x) build under the digest-never-hardcoded law while the seven seats the base does not ship answer the honest coded absence — so the saddle vhe family (max, balanced and lite) rides the publish lanes again. |
 
 ## 2.0.158
 
-The lane heal rung answers the frozen install curse and the fold regressions together: the eleven lockfiles regenerate against the union dependency tree, the Sol aliases ride the sol folders across every vite seat and runtime path, the bundlescan gate answers from the foundry seat, the entry faces (cjs, umd, pagebridge) return to their own single responsibility files so the node build lane never resolves the index artifact at build time, the stepoptions and DEFAULT_MODEL_ID collisions dissolve with block suffixes, the getry stdin bridges answer the providercli seat again and the byte budgets ride one more notch above the fold growth.
+**The lane heal rung answers the frozen install curse and the fold regressions together** — the eleven lockfiles regenerate against the union dependency tree and the entry faces return to their own single responsibility files.
+
+| Area | Change |
+| --- | --- |
+| The locks | The eleven lockfiles regenerate against the union dependency tree. |
+| The Sol aliases | The Sol aliases ride the sol folders across every vite seat and runtime path, and the bundlescan gate answers from the foundry seat. |
+| The entry faces | The entry faces (cjs, umd, pagebridge) return to their own single responsibility files so the node build lane never resolves the index artifact at build time. |
+| The collisions | The stepoptions and DEFAULT_MODEL_ID collisions dissolve with block suffixes. |
+| The bridges and budgets | The getry stdin bridges answer the providercli seat again and the byte budgets ride one more notch above the fold growth. |
 
 ## 2.0.157
 
-The 2.0.157 rung rides the synchronized version ladder: all twelve package.json seats (the root and the eleven apps) stamp the same number, the engine faces (devthink version.ts and manifest.json) answer the same rung, and the release approval flow fires the asset ladder from the healed tree — the logicfold, rootclean, saddlemod, designheal and mergeops folds land together with the eleven remote wave branches squash-merged into the main lane.
+**The synchronized version ladder and the family folds** — all twelve package.json seats stamp the same number while the logicfold waves regroup the correlated logics of every family into their keyed seats and the eleven remote wave branches squash-merge into the main lane.
 
-# DevThink release notes
-
-## 2.0.156
-
-This release is the lane heal rung of the ladder: the frozen install curse that reddened every workflow ends here. The 2.0.155 realignment had rewritten every version rung without regenerating the devthink lock, so the frozen lane refused the tree and ci, verify, family-desktop, family-mobile and the whole release ladder died at the install step — the lockfile heal regenerates the lock against the pinned CI bun (1.4.4) and the ladder rides green again. The version curve law lands with it: the internal family specifiers ride the tilde pins of the 2.0 house (~2.0.155, the devthink envelope at its published floor) so the wrong 2.1 curve the caret ranges floated to never resolves again, the lucide 1.68 leaf rides the eleven manifests in lockstep with the locks and the supply-chain age gates following, and the ssh2 native lottery dies in the seat pnpm 12 reads (the neverBuilt gate across the ten workspace files — the pure-js engine answers, node 26 never compiles the broken binding). The security rung rides the same wave: the seven polynomial-redos engines answer bounded windows (the semver extracts, the thinking-tag sweeps, the embedded JSON walk, the quota heuristic and the shader comment strip), the base image digests resolve at build time on the GitHub runners (the digest-never-hardcoded law the mesa pattern carried, now serving ubuntu, python and node across the eleven-architecture matrix), the pnpm and prisma tarballs answer checksum gates, and the postcss-selector-parser override reaches the workspace seat the dependabot finding waited for. The chrome containment law heals the interface: the caption controls never shrink out of the window on a squeezing resize, the explore title truncates in its seat, and the auth placeholder lifts to the honest 82% contrast. The release approval gate answers its dispatch again and the ladder runs the full twenty jobs from the healed tree.
-
-## 2.0.157
-
-This release is the family folds rung of the ladder: the logicfold waves regrouped the correlated logics of every family into their keyed seats (the os labels, the page bridge, the graph, the hono faces, the commands catalog and the engines table retired their variant arms), the infra book answers the single root register the PR0 to PR22 law stamps, and the assets ladder grows past the five hundred real family artifacts the release notes carry.
+| Area | Change |
+| --- | --- |
+| The version ladder | All twelve package.json seats (the root and the eleven apps) stamp the same number, the engine faces (devthink version.ts and manifest.json) answer the same rung, and the release approval flow fires the asset ladder from the healed tree. |
+| The family folds | The logicfold, rootclean, saddlemod, designheal and mergeops folds land together — the logicfold waves regroup the correlated logics of every family into their keyed seats (the os labels, the page bridge, the graph, the hono faces, the commands catalog and the engines table retired their variant arms). |
+| The infra book | The infra book answers the single root register the PR0 to PR22 law stamps. |
+| The merge | The eleven remote wave branches squash-merge into the main lane. |
+| The assets ladder | The assets ladder grows past the five hundred real family artifacts the release notes carry. |
 
 ## 2.0.156
 
-This release is the lane heal rung of the ladder: the devfold retired the eleven variant arms of the os into the keyword files, the saddle npm lock healed the frozen tree, the 2.0.156 rung stamped the synchronized family, and the release ladder rode the healed tree green.
+**The lane heal rung — the frozen install curse that reddened every workflow ends here** — the 2.0.155 realignment had rewritten every version rung without regenerating the devthink lock, so the lockfile heal, the version curve law and the security rung ride one wave and the ladder runs the full twenty jobs from the healed tree.
+
+| Area | Change |
+| --- | --- |
+| The lockfile heal | The lockfile heal regenerates the lock against the pinned CI bun (1.4.4) and the ladder rides green again — the frozen lane's refusal had killed ci, verify, family-desktop, family-mobile and the whole release ladder at the install step, the saddle npm lock heals the frozen tree, and the devfold retires the eleven variant arms of the os into the keyword files. |
+| The version curve law | The internal family specifiers ride the tilde pins of the 2.0 house (~2.0.155, the devthink envelope at its published floor) so the wrong 2.1 curve the caret ranges floated to never resolves again, the lucide 1.68 leaf rides the eleven manifests in lockstep with the locks and the supply-chain age gates following, and the 2.0.156 rung stamps the synchronized family. |
+| The ssh2 lottery | The ssh2 native lottery dies in the seat pnpm 12 reads — the neverBuilt gate across the ten workspace files, the pure-js engine answering, node 26 never compiling the broken binding. |
+| The security rung | The seven polynomial-redos engines answer bounded windows (the semver extracts, the thinking-tag sweeps, the embedded JSON walk, the quota heuristic and the shader comment strip), the base image digests resolve at build time on the GitHub runners (the digest-never-hardcoded law the mesa pattern carried, now serving ubuntu, python and node across the eleven-architecture matrix), the pnpm and prisma tarballs answer checksum gates, and the postcss-selector-parser override reaches the workspace seat the dependabot finding waited for. |
+| The chrome containment law | The caption controls never shrink out of the window on a squeezing resize, the explore title truncates in its seat, and the auth placeholder lifts to the honest 82% contrast. |
+| The release ladder | The release approval gate answers its dispatch again and the ladder runs the full twenty jobs from the healed tree. |
 
 ## 2.0.155
 
-This release is the curve realignment rung of the ladder: the family returns to the 2.0 house the version ladder law decrees (2.0.97 through 2.0.200), continuing the 2.0.154 rung the last honest envelopes carried. Every manifest, catalog and certification record carries 2.0.155 in lockstep, the internal specifiers ride the published registry floors (^2.0.154, admitting 2.0.155 the moment it publishes), the registry heal moves every latest dist-tag back to the honest 2.0.154 rung before the stamp, and the release auto-tag lane excludes the two wrong-curve tags (v2.1.7 and v2.1.8) so the ladder derives v2.0.155 from the honest chain. The 2.1.7 and 2.1.8 envelopes stay on the registry as history of the supply-chain climb above the poisoned standalone saddle line — the curve the ladder never walks again.
+**The curve realignment rung** — the family returns to the 2.0 house the version ladder law decrees (2.0.97 through 2.0.200), continuing the 2.0.154 rung the last honest envelopes carried, with every manifest, catalog and certification record carrying 2.0.155 in lockstep.
+
+| Area | Change |
+| --- | --- |
+| The lockstep stamp | Every manifest, catalog and certification record carries 2.0.155 in lockstep, and the internal specifiers ride the published registry floors (^2.0.154, admitting 2.0.155 the moment it publishes). |
+| The registry heal | The registry heal moves every latest dist-tag back to the honest 2.0.154 rung before the stamp. |
+| The auto-tag lane | The release auto-tag lane excludes the two wrong-curve tags (v2.1.7 and v2.1.8) so the ladder derives v2.0.155 from the honest chain — the 2.1.7 and 2.1.8 envelopes stay on the registry as history of the supply-chain climb above the poisoned standalone saddle line, the curve the ladder never walks again. |
 
 ## 2.1.8
 
-This release is the container heal rung of the ladder: the three doors the 2.1.7 publish walked into answer green so the saddle container family finally ships. The saddle docker config regains its seat prefix (the copy law reads saddle/docker.config at the engine root again — the one-token cure the thirty-three vhe validate legs demanded, the resolve, scan, publish, verify and cleanup lanes of the max, balanced and lite profiles across the eleven architectures), the target plan lane rides the distpackage seat the dist law stamped (the thin targetcli wrapper the build:engine step writes lands at distpackage/packager, never the retired build/packager tree, so every declarative plan leg — the application tarballs, the desktop faces, the mobile shapes, the extension seats, the container and the cli — answers again), and the debonair container gains the symmetric engine-ownership sibling (coverpalette resolves the cadria synth palette through the ../cadria vite aliases, so the debonair context stages the cadria sources whole the same way the cadria lane stages the debonair audio engine — the Dockerfile copy and both workflow staging maps answer the same law, the family-ghcr matrix of the publish lane and the family loop of the release lane). The android signing door keeps its honest law (the caller-owned keystore when the production secrets exist, the ci-test-key when the dispatch carries the allow flag), and the stale release-approval waits the 2.1.7 era left behind answer the cancel so the queue rides clean. The metadata family stamps 2.1.8 with the battery artifacts re-stamped.
+**The container heal rung of the ladder** — the three doors the 2.1.7 publish walked into answer green so the saddle container family finally ships, with the docker config seat, the target plan lane and the debonair sibling all answering their laws.
+
+| Area | Change |
+| --- | --- |
+| The docker config seat | The saddle docker config regains its seat prefix — the copy law reads saddle/docker.config at the engine root again, the one-token cure the thirty-three vhe validate legs demanded (the resolve, scan, publish, verify and cleanup lanes of the max, balanced and lite profiles across the eleven architectures). |
+| The target plan lane | The target plan lane rides the distpackage seat the dist law stamped — the thin targetcli wrapper the build:engine step writes lands at distpackage/packager, never the retired build/packager tree, so every declarative plan leg (the application tarballs, the desktop faces, the mobile shapes, the extension seats, the container and the cli) answers again. |
+| The debonair sibling | The debonair container gains the symmetric engine-ownership sibling — coverpalette resolves the cadria synth palette through the ../cadria vite aliases, so the debonair context stages the cadria sources whole the same way the cadria lane stages the debonair audio engine, the Dockerfile copy and both workflow staging maps answering the same law (the family-ghcr matrix of the publish lane and the family loop of the release lane). |
+| The android signing door | The door keeps its honest law — the caller-owned keystore when the production secrets exist, the ci-test-key when the dispatch carries the allow flag. |
+| The approval queue | The stale release-approval waits the 2.1.7 era left behind answer the cancel so the queue rides clean. |
+| The metadata family | The metadata family stamps 2.1.8 with the battery artifacts re-stamped. |
 
 ## 2.1.7
 
-This release is the supply-chain realignment rung of the ladder: the family climbs above the stale standalone line so the published consumption answers the source the repository carries. The registry still served the september saddle tarball (the 2.1.6 of the pre-family era) to every caret range the manifests declared — the family rungs had walked backwards under it, so the eleven apps resolved an engine months older than the repository while the tests rode the local aliases — and the rung answers by climbing the whole family to 2.1.7, above the poisoned line, so every caret range resolves the current build the moment this release publishes. The rung carries the engine-real arc the climb publishes: the dispatch reality law (#292) makes the merged seat prefer the real wire lanes over the rehearsal composer (the storage and ram ids ride the sigv4 signer, the wire clients and the kernel recipes), the ninety wiring (#294) seats the seventeen registered modalities that answered no executor (twelve host runtimes from deno to wasmtime, five inproc seats from isolates to dns, the census at sixty-six live and twenty-four host), the saddle script law (#297) answers the interpreter lanes the product door demanded, the saddle container law lands the nine missing lanes inside the engine image, the ghcr context law carries the vault sibling through the family build context with the polynomial trailing-slash healed, the dependency union law rides the twelve manifests on the same set with the engines climbing to the v 0.5.2 catalog, the design login law kills the leaking halo on the login card and retires the blue glow from the creation surfaces, and the qemu honest-boot law (#293) kills the sleep stand-in so a vm record never claims running over a process that was never a machine (the absent binary refuses with ERR_QEMU_ABSENT, the foreground child owns the lifecycle, the ci saddle leg carries a real qemu so the snapshot restore restart battery rides a live guest). The getry rung ladder (#295) walks the gateway dependency to the fresh family stamp so the drift gate answers green for every open wave, and the maintenance metadata heals behind the union: the engine floors answer the bounded forms the ladder renders (bun 1.4.4, npm 12.2.1), the manager seat climbs to the pnpm rung the workflow pins carry (12.16.1), the twelve certification records re-stamp their 2.1.7 outcomes, and the sign-in card rides the house window token again (the hand-built drop the login law retired). The metadata family stamps 2.1.7 with the battery artifacts re-stamped.
+**The supply-chain realignment rung** — the family climbs above the stale standalone line (the september saddle tarball, the 2.1.6 of the pre-family era, the registry still served to every caret range the manifests declared) so the published consumption answers the source the repository carries, and the climb publishes the engine-real arc with it.
+
+| Area | Change |
+| --- | --- |
+| The climb | The family rungs had walked backwards under the stale line, so the eleven apps resolved an engine months older than the repository while the tests rode the local aliases — the rung climbs the whole family to 2.1.7, above the poisoned line, so every caret range resolves the current build the moment this release publishes. |
+| The dispatch reality law | #292 makes the merged seat prefer the real wire lanes over the rehearsal composer — the storage and ram ids ride the sigv4 signer, the wire clients and the kernel recipes. |
+| The ninety wiring | #294 seats the seventeen registered modalities that answered no executor — twelve host runtimes from deno to wasmtime and five inproc seats from isolates to dns, the census at sixty-six live and twenty-four host. |
+| The saddle laws | The saddle script law (#297) answers the interpreter lanes the product door demanded, the saddle container law lands the nine missing lanes inside the engine image, and the ghcr context law carries the vault sibling through the family build context with the polynomial trailing-slash healed. |
+| The dependency union | The dependency union law rides the twelve manifests on the same set with the engines climbing to the v 0.5.2 catalog. |
+| The design login law | The design login law kills the leaking halo on the login card and retires the blue glow from the creation surfaces. |
+| The qemu honest-boot law | #293 kills the sleep stand-in so a vm record never claims running over a process that was never a machine — the absent binary refuses with ERR_QEMU_ABSENT, the foreground child owns the lifecycle, and the ci saddle leg carries a real qemu so the snapshot restore restart battery rides a live guest. |
+| The getry ladder | #295 walks the gateway dependency to the fresh family stamp so the drift gate answers green for every open wave. |
+| The maintenance metadata | The engine floors answer the bounded forms the ladder renders (bun 1.4.4, npm 12.2.1), the manager seat climbs to the pnpm rung the workflow pins carry (12.16.1), the twelve certification records re-stamp their 2.1.7 outcomes, the sign-in card rides the house window token again (the hand-built drop the login law retired), and the metadata family stamps 2.1.7 with the battery artifacts re-stamped. |
 
 ## 2.0.154
 
-This release is the ownership and security rung of the ladder: the cross-app engine laws complete their ownership arc — the label store law (#273) lands the vault factory as the single owner of the copy mechanism with the eleven apps importing the store, the storage lane law (#277) answers the same ownership for the sqlite seat (the vault storagelane factory owns the mechanism and the seven siblings open the lane), and the cadria library face (#278) publishes the engine so the audio app imports it the registry way. The security rung heals the publish ladder the container demanded: the trivy gate law (#275) climbs the frozen npm carriers to the fresh cures (brace-expansion rides 5.0.11 and undici rides 6.29.1 in both the builder fixdep tree and the runtime npm tree with the asserted swap), the visitor law exempts the webstorage globals the node server defines on its own globalThis (#274, the node 26 experimental surface never marks the visitor machine so the sixteen edge plane and ninety law seats answer green on the release runners), and the family context law lands twice over — the family-ghcr cadria lane stages the debonair sibling beside the nested app (#276, the engine-ownership price the vite aliases charge inside the container) and the saddle vhe lanes carry the vault sibling in their staged context (#279, the label store import resolving inside the image both at build and at runtime). The mesa mirror the container law healed serves the resolver through tier one, and this rung carries every law so the publish ladder completes with the saddle container landing on the registry beside every sibling. The metadata family stamps 2.0.154 with the battery artifacts re-stamped.
+**The ownership and security rung** — the cross-app engine laws complete their ownership arc (the label store, the storage lane, the cadria library face) while the security rung heals the publish ladder the container demanded, so the saddle container lands on the registry beside every sibling.
+
+| Area | Change |
+| --- | --- |
+| The ownership arc | The label store law (#273) lands the vault factory as the single owner of the copy mechanism with the eleven apps importing the store, the storage lane law (#277) answers the same ownership for the sqlite seat (the vault storagelane factory owns the mechanism and the seven siblings open the lane), and the cadria library face (#278) publishes the engine so the audio app imports it the registry way. |
+| The trivy gate law | #275 climbs the frozen npm carriers to the fresh cures — brace-expansion rides 5.0.11 and undici rides 6.29.1 in both the builder fixdep tree and the runtime npm tree with the asserted swap. |
+| The visitor law | #274 exempts the webstorage globals the node server defines on its own globalThis — the node 26 experimental surface never marks the visitor machine, so the sixteen edge plane and ninety law seats answer green on the release runners. |
+| The family context law | The law lands twice over — the family-ghcr cadria lane stages the debonair sibling beside the nested app (#276, the engine-ownership price the vite aliases charge inside the container) and the saddle vhe lanes carry the vault sibling in their staged context (#279, the label store import resolving inside the image both at build and at runtime). |
+| The publish ladder | The mesa mirror the container law healed serves the resolver through tier one, and this rung carries every law so the publish ladder completes with the saddle container landing on the registry beside every sibling — the metadata family stamps 2.0.154 with the battery artifacts re-stamped. |
 
 ## 2.0.153
 
-This release is the shell and container rung of the ladder: the desktop face answers the windows law with the two shell waves riding the family line — the taskbar and the start menu wear the win11 clone (the 48px acrylic bar with the widgets and search triggers, the 640px pinned grid with the alphabet jump rail and the timestamped recommended rows, the account profile and the power corner) and the desktop surface carries the doctrine mica (the radial wallpaper pair with the grain, the near-black boot canvas with the white mark and the fluent ring, the lock face riding on the running desktop, the personalize submenu with the real theme ladder flip). The type voice law lands across the eleven manifests (inter variable and geist mono ride the family with every lock flavor regenerated) and the copy law silences the cadria surfaces that told how the machine works. The modality ownership law retires the vendored registry of the devthink plane to the engine bridge (the saddle package answers the compiled record the mirror promised to keep). The version drift law pins the about row on the canonical module with the rung stamping the cadria face forever. The saddle container law is the headline: the vhe lanes answer the release law so the container publishes with every rung like every sibling, the mesa mirror self heals from the missing cache release (the digest, the cache asset and the upstream walk with the cache creation landing beside it), and the dedicated saddle container lane joins the sums with the release tag riding the manifest. The dependency ladder rides the hono rung across the family and the sqlite lanes answer the busy timeout seat before the wal pragma so the family suites stop racing the shared file. The metadata family stamps 2.0.153 with the battery artifacts re-stamped.
+**The shell and container rung** — the desktop face answers the windows law with the taskbar, the start menu and the doctrine mica riding the family line, while the saddle container law makes the vhe lanes publish with every rung like every sibling.
+
+| Area | Change |
+| --- | --- |
+| The taskbar and start menu | The taskbar and the start menu wear the win11 clone — the 48px acrylic bar with the widgets and search triggers, the 640px pinned grid with the alphabet jump rail and the timestamped recommended rows, the account profile and the power corner. |
+| The desktop mica | The desktop surface carries the doctrine mica — the radial wallpaper pair with the grain, the near-black boot canvas with the white mark and the fluent ring, the lock face riding on the running desktop and the personalize submenu with the real theme ladder flip. |
+| The type voice | The type voice law lands across the eleven manifests — inter variable and geist mono ride the family with every lock flavor regenerated — and the copy law silences the cadria surfaces that told how the machine works. |
+| The ownership laws | The modality ownership law retires the vendored registry of the devthink plane to the engine bridge (the saddle package answers the compiled record the mirror promised to keep), and the version drift law pins the about row on the canonical module with the rung stamping the cadria face forever. |
+| The saddle container law | The vhe lanes answer the release law so the container publishes with every rung like every sibling, the mesa mirror self heals from the missing cache release (the digest, the cache asset and the upstream walk with the cache creation landing beside it), and the dedicated saddle container lane joins the sums with the release tag riding the manifest. |
+| The dependency ladder | The dependency ladder rides the hono rung across the family and the sqlite lanes answer the busy timeout seat before the wal pragma so the family suites stop racing the shared file. |
+| The metadata family | The metadata family stamps 2.0.153 with the battery artifacts re-stamped. |
 
 ## 2.0.152
 
-This release is the engine ownership rung of the ladder: the audio analysis family answers the katexis seat — the fourteen analysis modules the video studio carried (the descriptor contract, the pcm decode layer, the fft and stft kernel, the rhythm and beat geometry, the spectral summaries, the musical structure, the timbre and envelope frames, the tonality and chord timeline, the feature fusion and the orchestrated analysis report) move from the cadria root to the debonair root so the audio domain has exactly one owner, the video studio consumes the published library specifiers through the family bridge pattern (the vitest and vite aliases beside the tsconfig paths, the manifest declaring the dependency the registry way saddle and vault ride), and the debonair library face completes with the four audio seats and the three gap seats the wave found missing (beatgrid, speechalign and stems now ship in files and exports with the honest surface pin derived from the live modules). The ninety modalities law lands on the saddle plane with every planned lane wired live and every app riding the edge seat, the workload law answers the join law with every app declaring its lanes and the engine resolving the saddle join, the tests home law restores the pure tests folder inside every app, the debonair reconstruction is verified and recorded with the family integration riding the gateway lane, the vault blob lane and the mcp agent identity, the forty live law hardens the modalities acting for the system with the vault answering the library face and the window clip healing, the registry ladder rides the lucide 1.66 rung through the eleven manifests with every lock flavor regenerated, the webpack rung pins the compiler onto the saddle manifest, and the family publish pipeline heals from the two day approval stall (the release review answered, the family registry lanes completed the stalled rung, and the artifact lanes answer the consistent build geometry this rung tags). The metadata family stamps 2.0.152 with the battery artifacts re-stamped and the registry lanes answer the publish of the rung.
+**The engine ownership rung** — the audio analysis family answers the katexis seat: the fourteen analysis modules move from the cadria root to the debonair root so the audio domain has exactly one owner, and the modality laws land on the saddle plane beside the lucide registry rung.
+
+| Area | Change |
+| --- | --- |
+| The katexis seat | The fourteen analysis modules the video studio carried — the descriptor contract, the pcm decode layer, the fft and stft kernel, the rhythm and beat geometry, the spectral summaries, the musical structure, the timbre and envelope frames, the tonality and chord timeline, the feature fusion and the orchestrated analysis report — move from the cadria root to the debonair root. |
+| The family bridge | The video studio consumes the published library specifiers through the family bridge pattern — the vitest and vite aliases beside the tsconfig paths, the manifest declaring the dependency the registry way saddle and vault ride. |
+| The debonair library face | The face completes with the four audio seats and the three gap seats the wave found missing — beatgrid, speechalign and stems now ship in files and exports with the honest surface pin derived from the live modules. |
+| The modality laws | The ninety modalities law lands on the saddle plane with every planned lane wired live and every app riding the edge seat, the workload law answers the join law with every app declaring its lanes and the engine resolving the saddle join, the tests home law restores the pure tests folder inside every app, and the forty live law hardens the modalities acting for the system with the vault answering the library face and the window clip healing. |
+| The verification | The debonair reconstruction is verified and recorded with the family integration riding the gateway lane, the vault blob lane and the mcp agent identity. |
+| The registry ladder | The registry ladder rides the lucide 1.66 rung through the eleven manifests with every lock flavor regenerated, and the webpack rung pins the compiler onto the saddle manifest. |
+| The publish pipeline | The family publish pipeline heals from the two day approval stall — the release review answered, the family registry lanes completed the stalled rung and the artifact lanes answer the consistent build geometry this rung tags — with the metadata family stamping 2.0.152 and the registry lanes answering the publish of the rung. |
 
 ## 2.0.151
 
-This release is the standalone and consolidation rung of the ladder: the family routes answer the fullscreen law (a direct url opens the app one hundred percent full screen with no shell and no window, the window chrome lives only inside the os where the arrive handoff keeps the windows grammar, the seven design contracts pin the law across the family), the landing wears the fluent era the owner pinned (the intro face rides the fluent set with the saddle rail curve tucked snug to the spine), the provider row answers the icon law (the brand marks ride alone without the continue with words), the shim family retires with the cascade law (the twenty eight delegate shims leave the tree with the workflow stamps riding the ts lane), the video studio answers the playback law (the player widget mounts the real element stage with the honest transport of the windows media grammar and the local file never uploads), the green ladder answers the honest update law (the dependency check never proposes a step backwards: an ahead manifest is satisfied, not drifted, because the saddle lane publishes its rung stamps off the latest tag), the strict annotations close over the certification suite with the typecheck gate at zero, and the branch consolidation answers the owner mandate (every branch of the repository joined the main line, the archive tags carry the history, only main remains). The version stamps 2.0.151 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded.
+**The standalone and consolidation rung** — the family routes answer the fullscreen law, the landing wears the fluent era the owner pinned, the shim family retires, and the branch consolidation joins every branch of the repository to the main line.
+
+| Area | Change |
+| --- | --- |
+| The fullscreen law | A direct url opens the app one hundred percent full screen with no shell and no window — the window chrome lives only inside the os where the arrive handoff keeps the windows grammar, and the seven design contracts pin the law across the family. |
+| The landing | The intro face rides the fluent set with the saddle rail curve tucked snug to the spine, and the provider row answers the icon law — the brand marks ride alone without the continue with words. |
+| The shim retirement | The shim family retires with the cascade law — the twenty eight delegate shims leave the tree with the workflow stamps riding the ts lane. |
+| The playback law | The video studio's player widget mounts the real element stage with the honest transport of the windows media grammar and the local file never uploads. |
+| The honest update law | The dependency check never proposes a step backwards — an ahead manifest is satisfied, not drifted, because the saddle lane publishes its rung stamps off the latest tag. |
+| The consolidation | The strict annotations close over the certification suite with the typecheck gate at zero, every branch of the repository joins the main line with the archive tags carrying the history (only main remains), and the version stamps 2.0.151 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded. |
 
 ## 2.0.150
 
-This release is the family registry rung of the ladder: every family envelope answers the registry the flat application always answered. The getry and cobaia manifests drop the private mark that refused their envelopes (the registry error that stopped the alphabetical walk before it ever reached the saddle engine), and the family publish lane learns the family-first law: a refused envelope answers the honest skip and the walk continues to the next sibling, so one bad manifest never blocks the whole family again. The containers answer the same healing from the prior rung — the standalone family images push to the container index and the sibling-pinned pair waits for its dedicated context lane. The metadata family stamps 2.0.150 with the battery artifacts re-stamped and the registry lanes answer the publish of the rung.
+**The family registry rung** — every family envelope answers the registry the flat application always answered, with the family-first law keeping one bad manifest from ever blocking the whole family again.
+
+| Area | Change |
+| --- | --- |
+| The envelopes | The getry and cobaia manifests drop the private mark that refused their envelopes — the registry error that stopped the alphabetical walk before it ever reached the saddle engine. |
+| The family-first law | The family publish lane learns the law — a refused envelope answers the honest skip and the walk continues to the next sibling. |
+| The containers | The standalone family images push to the container index and the sibling-pinned pair waits for its dedicated context lane. |
+| The metadata family | The metadata family stamps 2.0.150 with the battery artifacts re-stamped and the registry lanes answer the publish of the rung. |
 
 ## 2.0.149
 
-This release is the devtools wall rung of the ladder: the shield of the interface arms for real — the dot-free devtoolsguard module becomes the one owner of the detection surface (the bracketed debugger timing trap riding a duty cycle with a pause budget, the console getter probe armed without ever reading itself, the window size heuristic refused as the false positive factory it is), it arms on the production build only so the builder keeps the tools, and a trip answers the Sol styled interstitial — an alertdialog overlay wearing the house tokens with its copy in the label catalog, never a wipe, never a blank. The guard file shrinks to the reporting seam (the strike report and the ban status question) and the App arms the module at the boot site. The owner holds the switch: a settings row in the component options card, on by default, persisted through the personalization store, applied before the arm so a stored off parks every loop. Six real tests hold the module (the arm and suspend seam, the interstitial over the wipe, the no self read law, the unarmed dev build). The correlated logic of the storage family answers in the same rung: the storage mirror, the storage lane, the database layer, the browser credential vault, the drive registry, the workbench session and memory stores and the sync merge into storagefamily.ts with every export preserved, the members deleted with no shims, and the cross family seams (the shared sqlite driver, the authfamily vault consumer, the sync import) answering exactly as before.
+**The devtools wall rung** — the shield of the interface arms for real: the dot-free devtoolsguard module becomes the one owner of the detection surface, a trip answers the Sol styled interstitial, and the owner holds the switch.
+
+| Area | Change |
+| --- | --- |
+| The devtoolsguard module | The bracketed debugger timing trap rides a duty cycle with a pause budget, the console getter probe arms without ever reading itself, the window size heuristic is refused as the false positive factory it is, the module arms on the production build only so the builder keeps the tools, and the guard file shrinks to the reporting seam (the strike report and the ban status question) with the App arming the module at the boot site. |
+| The interstitial | A trip answers the Sol styled interstitial — an alertdialog overlay wearing the house tokens with its copy in the label catalog, never a wipe, never a blank. |
+| The owner switch | A settings row in the component options card — on by default, persisted through the personalization store, applied before the arm so a stored off parks every loop. |
+| The tests | Six real tests hold the module — the arm and suspend seam, the interstitial over the wipe, the no self read law and the unarmed dev build. |
+| The storage family | The storage mirror, the storage lane, the database layer, the browser credential vault, the drive registry, the workbench session and memory stores and the sync merge into storagefamily.ts with every export preserved, the members deleted with no shims, and the cross family seams (the shared sqlite driver, the authfamily vault consumer, the sync import) answering exactly as before. |
 
 ## 2.0.148
 
-This release is the regroup and distribution-healing rung of the ladder: the correlated logic of the gateway family answers in one keyed file — the gateway base, the entry guards, the pairing client, the view definition, the lane client seam, the sandbox and storage usage clients, the compatibility, deploy and route bases merge into gatewayfamily.ts with every export preserved, the duplicated normalizer and fetch twins deduped to their one survivor (the test-pinned twin documented verbatim), twenty-six importers repointed and the nine members deleted with no shims. The devtools shield stops wounding itself: the console probe of the guard no longer reads the getter it arms (the self-read blanked production on every boot) and the trip answers the coming interstitial instead of the wipe. The distribution lanes heal: the family npm publish rides the explicit path form npm always reads as a file (the bare folder form dialed ssh instead of the registry), and the family container lane skips the two manifests that pin a sibling tree with the honest note of the dedicated lane they wait for, so every standalone family app — the saddle engine included — publishes to the registry and the container index of the rung.
+**The regroup and distribution-healing rung** — the correlated logic of the gateway family answers in one keyed file, the devtools shield stops wounding itself, and the distribution lanes heal so every standalone family app publishes.
+
+| Area | Change |
+| --- | --- |
+| The gateway family | The gateway base, the entry guards, the pairing client, the view definition, the lane client seam, the sandbox and storage usage clients, the compatibility, deploy and route bases merge into gatewayfamily.ts with every export preserved, the duplicated normalizer and fetch twins deduped to their one survivor (the test-pinned twin documented verbatim), twenty-six importers repointed and the nine members deleted with no shims. |
+| The devtools shield | The console probe of the guard no longer reads the getter it arms — the self-read blanked production on every boot — and the trip answers the coming interstitial instead of the wipe. |
+| The distribution lanes | The family npm publish rides the explicit path form npm always reads as a file (the bare folder form dialed ssh instead of the registry), and the family container lane skips the two manifests that pin a sibling tree with the honest note of the dedicated lane they wait for. |
+| The family envelopes | Every standalone family app — the saddle engine included — publishes to the registry and the container index of the rung. |
 
 ## 2.0.147
 
-This release is the persistence, distributions and craft rung of the ladder: the family sign in becomes persistent — the server mints an HttpOnly family cookie at every session door (the create, the sign in, the oauth exchange), a restore call without a bearer answers a rotated session from the live cookie, and the entry face walks a returning visitor straight in without asking again, while the canonical session state never leaves the server side. The correlated logic of the auth family answers in one keyed file — the account gate, the account client, the account lane, the identity layer, the oauth catalog and the url gate merge into authfamily.ts with every export preserved, the duplicated helpers deduped to their one survivor, the member files deleted with no shims, and the full dedupe map of the remaining families lands beside it. The run lane of the sandbox executes for real: a jailed script runs inside the container modality on the family infrastructure — the jail bind mounted, the network disabled, the memory and cpu capped, the spawn riding an argument list with no shell — and a host without the runtime answers the honest refusal with the modality report, never a simulation. The distributions answer the family law: every family envelope publishes to npmjs under the same idempotent contract as the application tarball, and every family Dockerfile builds and pushes to the github container registry tagged with the release and the rolling latest. The entry surfaces receive the craft grammar — the boot and saas faces, the explore deck, the auth face, the onboarding walk, the editorial set, the gateway family and the utility studios — one appended section, tokens only, reduced motion guarded. The metadata family stamps 2.0.147 with the battery artifacts re-stamped and the registry lanes answer the publish of the rung.
+**The persistence, distributions and craft rung** — the family sign in becomes persistent through the HttpOnly cookie, the sandbox run lane executes for real inside the container modality, and every family envelope and Dockerfile publishes.
+
+| Area | Change |
+| --- | --- |
+| The persistent sign in | The server mints an HttpOnly family cookie at every session door (the create, the sign in, the oauth exchange), a restore call without a bearer answers a rotated session from the live cookie, the entry face walks a returning visitor straight in without asking again, and the canonical session state never leaves the server side. |
+| The auth family | The account gate, the account client, the account lane, the identity layer, the oauth catalog and the url gate merge into authfamily.ts with every export preserved, the duplicated helpers deduped to their one survivor, the member files deleted with no shims, and the full dedupe map of the remaining families lands beside it. |
+| The sandbox run lane | A jailed script runs inside the container modality on the family infrastructure — the jail bind mounted, the network disabled, the memory and cpu capped, the spawn riding an argument list with no shell — and a host without the runtime answers the honest refusal with the modality report, never a simulation. |
+| The distributions | Every family envelope publishes to npmjs under the same idempotent contract as the application tarball, and every family Dockerfile builds and pushes to the github container registry tagged with the release and the rolling latest. |
+| The craft grammar | The entry surfaces receive it — the boot and saas faces, the explore deck, the auth face, the onboarding walk, the editorial set, the gateway family and the utility studios — one appended section, tokens only, reduced motion guarded. |
+| The metadata family | The metadata family stamps 2.0.147 with the battery artifacts re-stamped and the registry lanes answer the publish of the rung. |
 
 ## 2.0.146
 
-This release is the accounts and surfaces rung of the ladder: the account creation of the platform becomes real — the server owns the accounts now, the secret answers as a scrypt digest bound to a per account salt with the session bearer stored only as its sha-256 shadow, the family session rides the shared data home so one login covers the whole family when the deploy points the same store, and the routes under /api/v1/accounts and /api/v1/auth/exchange answer create, signin, session, revoke and the oauth token exchange. The exchange closes the dead end: the callback completes the flow through the provider token endpoints behind the url gate, and the url gate is the one door every server url request rides — http and https only, every hostname resolved and every resolved address held to the public ranges, refused by address and never by name. The client face goes server first with the honest offline row and the local account answers only as the declared fallback, the account category shows the real session state with the revoke action, and the family session parks in the session storage as the disposable cache it is. The surfaces rung rides beside it: settings, console and My Files receive the craft grammar — the moving nav indicator, the spring settled segmented controls and pickers, the streaming terminal rows with the duty cycled cursor and the staged boot graph, and the My Files explorer with the collapsible tree, the cross fading views, the drag over wash and the capacity bar that answers the real usage and quota of the infrastructure storage when the lane is up and the browser estimate with the hatched honesty marker when it is not. The metadata family stamps 2.0.146 with the battery artifacts re-stamped and the registry lane answers the publish of the rung.
+**The accounts and surfaces rung** — the account creation of the platform becomes real with the server owning the accounts, the url gate closes the oauth dead end, and the settings, console and My Files surfaces receive the craft grammar.
+
+| Area | Change |
+| --- | --- |
+| The accounts | The secret answers as a scrypt digest bound to a per account salt with the session bearer stored only as its sha-256 shadow, the family session rides the shared data home so one login covers the whole family when the deploy points the same store, and the routes under /api/v1/accounts and /api/v1/auth/exchange answer create, signin, session, revoke and the oauth token exchange. |
+| The url gate | The callback completes the flow through the provider token endpoints behind the url gate — the one door every server url request rides: http and https only, every hostname resolved and every resolved address held to the public ranges, refused by address and never by name. |
+| The client face | The client face goes server first with the honest offline row and the local account answers only as the declared fallback, the account category shows the real session state with the revoke action, and the family session parks in the session storage as the disposable cache it is. |
+| The surfaces | Settings, console and My Files receive the craft grammar — the moving nav indicator, the spring settled segmented controls and pickers, the streaming terminal rows with the duty cycled cursor and the staged boot graph, and the My Files explorer with the collapsible tree, the cross fading views, the drag over wash and the capacity bar that answers the real usage and quota of the infrastructure storage when the lane is up and the browser estimate with the hatched honesty marker when it is not. |
+| The metadata family | The metadata family stamps 2.0.146 with the battery artifacts re-stamped and the registry lane answers the publish of the rung. |
 
 ## 2.0.145
 
-This release is the client and storage rung of the ladder: the chat sandbox pane stops pretending — every boot and command tries the real server lane first through a bounded client module that rides the paired gateway context, the server answers render exactly like the local rows with the exit code honored, and when no server answers (the static deploy) the pane falls back to the browser pure simulator and declares the fallback once per session with an honest offline row, so the visitor always knows which lane answered. The sandbox tool bridge keeps its contract and rides the same client first path. The storage lane lands beside it: the vault shaped record surface (owner, key, content, bytes, updated) stores everything through the node native sqlite the workbench mirror already carries, the database file sits in the devthink data home outside every served root so the visitor can never download it, the quota composes from the plan the owner of the account set with the generous 900 megabyte floor and never a hardcoded cap, and five routes under /api/v1/storage expose quota, objects, usage and removal with six real tests over the roundtrip, the replacement, the quota refusal and the key shape. The metadata family stamps 2.0.145 with the battery artifacts re-stamped and the registry lane answers the publish of the rung.
+**The client and storage rung** — the chat sandbox pane stops pretending and tries the real server lane first with the honest fallback declared once per session, while the storage lane lands with the vault shaped record surface on the node native sqlite.
+
+| Area | Change |
+| --- | --- |
+| The chat sandbox | Every boot and command tries the real server lane first through a bounded client module that rides the paired gateway context, the server answers render exactly like the local rows with the exit code honored, and when no server answers (the static deploy) the pane falls back to the browser pure simulator and declares the fallback once per session with an honest offline row — the visitor always knows which lane answered; the sandbox tool bridge keeps its contract and rides the same client first path. |
+| The storage lane | The vault shaped record surface (owner, key, content, bytes, updated) stores everything through the node native sqlite the workbench mirror already carries, the database file sits in the devthink data home outside every served root so the visitor can never download it, and the quota composes from the plan the owner of the account set with the generous 900 megabyte floor and never a hardcoded cap. |
+| The routes and tests | Five routes under /api/v1/storage expose quota, objects, usage and removal with six real tests over the roundtrip, the replacement, the quota refusal and the key shape. |
+| The metadata family | The metadata family stamps 2.0.145 with the battery artifacts re-stamped and the registry lane answers the publish of the rung. |
 
 ## 2.0.144
 
-This release is the craft and infrastructure rung of the ladder: the application icon set is redrawn from the mark references — twenty-seven icons on one lit-plate grammar with a three-stop identity gradient derived from each app tint, rim light instead of gloss, a live sheen sweep guarded by reduced motion, and the nine family marks carrying one grammar with nine distinct silhouettes — and the chat workspace is rebuilt on the presentation side: one JSDoc-headed craft section in the theme carries the composer, welcome, turn grammar, sidebar, session panel, sandbox and canvas skins with real micro-interactions bound to the states the components already emit, zero literal colors outside the tokens, and a single JSX line enabling the copy-state classes. The sandbox of the run and storage lane lands on the server side: every session owns a jail directory on the host, the tools answer real filesystem effects inside the jail only, the module starts no process and opens no socket, the network and run lanes answer honestly that they ride the url gate and the saddle vm modalities of the coming waves, and five routes under /api/v1/sandbox expose session, run, files, write and the host modality report with eight real tests over the roundtrip, the containment and the honest refusals. The metadata family stamps 2.0.144 with the battery artifacts re-stamped and the registry lane answers the publish of the rung.
+**The craft and infrastructure rung** — the application icon set is redrawn from the mark references, the chat workspace is rebuilt on the presentation side, and the sandbox of the run and storage lane lands on the server side.
+
+| Area | Change |
+| --- | --- |
+| The icon set | Twenty-seven icons on one lit-plate grammar with a three-stop identity gradient derived from each app tint — rim light instead of gloss, a live sheen sweep guarded by reduced motion, and the nine family marks carrying one grammar with nine distinct silhouettes. |
+| The chat workspace | One JSDoc-headed craft section in the theme carries the composer, welcome, turn grammar, sidebar, session panel, sandbox and canvas skins with real micro-interactions bound to the states the components already emit — zero literal colors outside the tokens and a single JSX line enabling the copy-state classes. |
+| The sandbox server | Every session owns a jail directory on the host, the tools answer real filesystem effects inside the jail only, the module starts no process and opens no socket, and the network and run lanes answer honestly that they ride the url gate and the saddle vm modalities of the coming waves. |
+| The routes and tests | Five routes under /api/v1/sandbox expose session, run, files, write and the host modality report with eight real tests over the roundtrip, the containment and the honest refusals. |
+| The metadata family | The metadata family stamps 2.0.144 with the battery artifacts re-stamped and the registry lane answers the publish of the rung. |
 
 ## 2.0.143
 
-This release is the surviving-reference rung of the ladder: the naming pass of the previous rung rewrote every import that carried the file extension, and three quieter forms kept the dotted name — the extension-less alias paths the typecheck resolves (`@/wingets/shell.shellchrome`), the same-folder sibling imports inside the widget folder (`./settings.row`), and the strip-types CLI import that rides a `.js` suffix. This rung rewrites all three forms from the rename map of the commit itself: eighteen path-form references, eight sibling-form references and the terminal UI import of the CLI entry, so the typecheck of the merged tree, the web workbench check, the static surface builds and the CLI contract answer green again. The rung stamps the metadata family at 2.0.143 with the battery artifacts re-stamped and the battery walks again.
+**The surviving-reference rung** — three quieter dotted forms survived the naming pass of the previous rung, and this rung rewrites all of them from the rename map of the commit itself so every check answers green again.
+
+| Area | Change |
+| --- | --- |
+| The surviving references | The extension-less alias paths the typecheck resolves (`@/wingets/shell.shellchrome`), the same-folder sibling imports inside the widget folder (`./settings.row`) and the strip-types CLI import that rides a `.js` suffix — eighteen path-form references, eight sibling-form references and the terminal UI import of the CLI entry rewritten. |
+| The green gates | The typecheck of the merged tree, the web workbench check, the static surface builds and the CLI contract answer green again. |
+| The metadata family | The rung stamps the metadata family at 2.0.143 with the battery artifacts re-stamped and the battery walks again. |
 
 ## 2.0.142
 
-This release is the naming rung of the ladder: the dot leaves the component names for good, so every one of the 178 dotted widget files across the eleven family applications now carries a dot-free PascalCase name that says what it renders, every barrel and every import follows, and the widget surface law keeps the single import point alive with the new names. The rung also answers the family package law: every dependency, devDependency and override pin shared by two or more applications answers to the majority pin of the family (cobaia caught up on twelve pins, devthink answers the family biome, panels, saddle and mysql2 pins), the cobaia manifest adopts the family package manager pnpm 12.3.4, and the touched locks regenerate frozen. The battery walks again over the renamed surface.
+**The naming rung** — the dot leaves the component names for good: all 178 dotted widget files across the eleven family applications carry dot-free PascalCase names, and the family package law aligns the shared pins behind them.
+
+| Area | Change |
+| --- | --- |
+| The naming pass | Every one of the 178 dotted widget files across the eleven family applications now carries a dot-free PascalCase name that says what it renders, every barrel and every import follows, and the widget surface law keeps the single import point alive with the new names. |
+| The family package law | Every dependency, devDependency and override pin shared by two or more applications answers to the majority pin of the family — cobaia caught up on twelve pins and devthink answers the family biome, panels, saddle and mysql2 pins. |
+| The package manager | The cobaia manifest adopts the family package manager pnpm 12.3.4 and the touched locks regenerate frozen. |
+| The battery | The battery walks again over the renamed surface. |
 
 ## 2.0.141
 
-This release is the staged twin rung of the ladder: the twin npm lane won the publish race at the previous rung while its landing still finalized on the registry, and the 409 "previously staged" answer stayed invisible to the registry view the latecomer rechecked - so the retry loop now reads the registry answer itself and both forms of the idempotent win (the version already published and the version still staging through the sibling) close the lane green, while every other failure keeps the bounded retry. The rung stamps the whole metadata family at 2.0.141 with the freeze artifacts re-stamped and the battery walks again.
+**The staged twin rung** — the twin npm lane won the publish race at the previous rung while its landing still finalized on the registry, and the 409 "previously staged" answer stayed invisible to the registry view the latecomer rechecked, so the retry loop learns both forms of the idempotent win.
+
+| Area | Change |
+| --- | --- |
+| The twin lane | The retry loop now reads the registry answer itself and both forms of the idempotent win — the version already published and the version still staging through the sibling — close the lane green, while every other failure keeps the bounded retry. |
+| The metadata family | The rung stamps the whole metadata family at 2.0.141 with the freeze artifacts re-stamped and the battery walks again. |
 
 ## 2.0.140
 
-This release is the registry lane rung of the ladder: the github npm publish lane installs the os tree before it packs, and the setup node registry step of that lane leaves the github registry redirect in the runner temp npmrc the NPM_CONFIG_USERCONFIG env points at — bun honors the env, the scope resolved against npm.pkg.github.com with no token, and the frozen install refused the saddle engine package with a 403. The install step of that lane empties the userconfig so the project npmrc answers instead and the install resolves the public family mirror every registry lane publishes; the publish steps keep the registry configuration untouched. The rung stamps the whole metadata family at 2.0.140 with the freeze artifacts re-stamped, and the full battery walks again over the healed lane.
+**The registry lane rung** — the github npm publish lane installs the os tree before it packs, and the setup node registry step of that lane leaves the github registry redirect in the runner temp npmrc the NPM_CONFIG_USERCONFIG env points at — bun honors the env, the scope resolved against npm.pkg.github.com with no token, and the frozen install refused the saddle engine package with a 403.
+
+| Area | Change |
+| --- | --- |
+| The install heal | The install step of that lane empties the userconfig so the project npmrc answers instead and the install resolves the public family mirror every registry lane publishes, while the publish steps keep the registry configuration untouched. |
+| The metadata family | The rung stamps the whole metadata family at 2.0.140 with the freeze artifacts re-stamped, and the full battery walks again over the healed lane. |
 
 ## 2.0.139
 
-This release is the twin lane rung of the ladder: the npm publish of the release ladder and the twin npm lane of the publish workflow race the same rung (the release published event fires the twin while the ladder still walks), and when the twin won the race the ladder's bounded retry treated the already-published answer as a retryable failure - so the retry loop rechecks the registry between attempts and a version that landed through the sibling answers as the idempotent win it is, never an error. The rung stamps the whole metadata family at 2.0.139 with the freeze artifacts re-stamped, and the battery answers green: the code scanning page of the repository carries zero open findings (the supply chain pins closed the moving references, the webcrypto well closed the insecure randomness, and the npm hash limitation answers as the documented wont fix it is), the ten workflow lanes stand green together, and every landing of the wave carries the verified signature of the squash vehicle with a completed check before the merge.
+**The twin lane rung** — the npm publish of the release ladder and the twin npm lane of the publish workflow race the same rung (the release published event fires the twin while the ladder still walks), and the retry loop learns the idempotent win while the battery answers green.
+
+| Area | Change |
+| --- | --- |
+| The twin race | When the twin won the race the ladder's bounded retry treated the already-published answer as a retryable failure — the retry loop now rechecks the registry between attempts and a version that landed through the sibling answers as the idempotent win it is, never an error. |
+| The security page | The code scanning page of the repository carries zero open findings — the supply chain pins closed the moving references, the webcrypto well closed the insecure randomness, and the npm hash limitation answers as the documented wont fix it is. |
+| The workflow lanes | The ten workflow lanes stand green together and every landing of the wave carries the verified signature of the squash vehicle with a completed check before the merge. |
+| The metadata family | The rung stamps the whole metadata family at 2.0.139 with the freeze artifacts re-stamped. |
 
 ## 2.0.138
 
-This release is the surface proof rung of the ladder: the release lane's portable static web build caught the one seam of the universal widget surface — the barrel of the os wrote every widget reference with the tsx extension while three widgets of the family answer as plain ts modules (the two settings stores of the os and the roster of cobaia), so the barrels now carry the real file names and the web graph resolves through the surface again (the local rolldown build proves the graph in under two seconds). The family mobile lanes heal the same rung: the four applications whose mysql2 override aligned at the previous rung re-freeze their pnpm locks against the aligned override, so the frozen install of the android lanes stops refusing the lock that still recorded the old spec. The rung stamps the whole metadata family at 2.0.138 with the freeze artifacts re-stamped and the standing gates green.
+**The surface proof rung** — the release lane's portable static web build caught the one seam of the universal widget surface (the barrel of the os wrote every widget reference with the tsx extension while three widgets answer as plain ts modules), and the family mobile lanes heal the same rung.
+
+| Area | Change |
+| --- | --- |
+| The widget barrel | The three plain ts widgets of the family are the two settings stores of the os and the roster of cobaia — the barrels now carry the real file names and the web graph resolves through the surface again, the local rolldown build proving the graph in under two seconds. |
+| The mobile lanes | The four applications whose mysql2 override aligned at the previous rung re-freeze their pnpm locks against the aligned override, so the frozen install of the android lanes stops refusing the lock that still recorded the old spec. |
+| The metadata family | The rung stamps the whole metadata family at 2.0.138 with the freeze artifacts re-stamped and the standing gates green. |
 
 ## 2.0.137
 
-This release is the mobile lane alignment rung of the ladder: the android icon steps of argan, forge, getry and foundry install with npm, and npm refuses a manifest override that lags its direct dependency — the four apps carried the ^3.23.1 mysql2 override in both package.json and the pnpm workspace while the dependency wave moved the direct mysql2 to ^3.24.6 — so both override sites align with the direct dependency, exactly the elevation saddle already carries, and the family mobile battery answers green again. The rung also carries the two waves that landed beside the closure: the purged reference corpus of the 2.0.134 era returned whole (228 files of architecture series, engineering history and media assets, only deleted paths restored), and the universal widget surface answered from one place (every application gained sol/wingets/index.ts, the dotted widget name lives exactly once inside the surface, and seventy five page files import their components from the single module).
+**The mobile lane alignment rung** — npm refuses a manifest override that lags its direct dependency, so the four android apps align both override sites with the direct mysql2 seat, and the 2.0.134 reference corpus and the universal widget surface ride beside the closure.
+
+| Area | Change |
+| --- | --- |
+| The override alignment | The android icon steps of argan, forge, getry and foundry install with npm, and the four apps carried the ^3.23.1 mysql2 override in both package.json and the pnpm workspace while the dependency wave moved the direct mysql2 to ^3.24.6 — both override sites align with the direct dependency, exactly the elevation saddle already carries, and the family mobile battery answers green again. |
+| The reference corpus | The purged reference corpus of the 2.0.134 era returns whole — 228 files of architecture series, engineering history and media assets, only the deleted paths restored. |
+| The widget surface | The universal widget surface answers from one place — every application gains sol/wingets/index.ts, the dotted widget name lives exactly once inside the surface, and seventy five page files import their components from the single module. |
 
 ## 2.0.136
 
-This release is the security closure rung of the ladder: the supply chain pins answer the code scanning findings — every github actions reference across the ten workflow files resolves to its immutable commit sha with the moving tag riding as the trailing comment, every literal docker FROM line in the family container files carries its registry digest (the variable ARG images and the build stage names stay untouched by design), the broken rust toolchain reference of the optional desktop audit heals against the commit of its version branch with the toolchain input the sha ref can no longer carry, the chat session identifiers mint their random suffixes from the webcrypto well of the identity contract instead of the math random the insecure randomness finding flagged, and the harvest walker drops its identity replacement no-op. The release lane itself reruns over the freeze artifacts the 2.0.135 rung re-stamped, because the release trigger only fires on a version bump and the artifacts heal landed without one.
+**The security closure rung** — the supply chain pins answer the code scanning findings, the chat session identifiers mint from the webcrypto well, and the release lane reruns over the freeze artifacts the 2.0.135 rung re-stamped.
+
+| Area | Change |
+| --- | --- |
+| The supply chain pins | Every github actions reference across the ten workflow files resolves to its immutable commit sha with the moving tag riding as the trailing comment. |
+| The container digests | Every literal docker FROM line in the family container files carries its registry digest — the variable ARG images and the build stage names stay untouched by design — and the broken rust toolchain reference of the optional desktop audit heals against the commit of its version branch with the toolchain input the sha ref can no longer carry. |
+| The randomness | The chat session identifiers mint their random suffixes from the webcrypto well of the identity contract instead of the math random the insecure randomness finding flagged, and the harvest walker drops its identity replacement no-op. |
+| The release lane | The release lane itself reruns over the freeze artifacts the 2.0.135 rung re-stamped, because the release trigger only fires on a version bump and the artifacts heal landed without one. |
 
 ## 2.0.135
 
-This release is the workflow recovery rung of the ladder: the ci battery, the verify gate ladder, the pages deploy, the security scans and the publish lanes all answer green again after the roots healed — the vitest dialect of the zindex guard, the release artifacts regenerated at the current version, the operational reference documents restored from the overbroad purge, the supply chain age gate admitting the fresh security fixes, the override law reaching the pnpm workspaces beside the manifests, the lint debt of the harvest scripts cleared, and the publish install neutralizing the registry redirect the setup leaves in the home npmrc.
+**The workflow recovery rung** — the ci battery, the verify gate ladder, the pages deploy, the security scans and the publish lanes all answer green again after the roots healed.
+
+| Area | Change |
+| --- | --- |
+| The gates | The ci battery, the verify gate ladder, the pages deploy, the security scans and the publish lanes walk green together again. |
+| The tree heals | The vitest dialect of the zindex guard answers, the release artifacts regenerate at the current version, and the operational reference documents restore from the overbroad purge. |
+| The lane heals | The supply chain age gate admits the fresh security fixes, the override law reaches the pnpm workspaces beside the manifests, the lint debt of the harvest scripts clears, and the publish install neutralizes the registry redirect the setup leaves in the home npmrc. |
 
 ## 2.0.134
 
-This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.133 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@opencode-ai/sdk": "^1.19.3",
-- "@opencode-ai/sdk": "^1.19.4",
-- "bun": ">=1.4.3 <2",
-- "bun": ">=1.4.4 <2",
-- "bun-types": "^1.4.3",
-- "bun-types": "^1.4.4",
-- "npm": ">=12.2.0 <13",
-- "npm": ">=12.2.1 <13",
-- "packageManager": "bun@1.4.3"
-- "packageManager": "bun@1.4.4"
-- "pnpm": "^12.14.0",
-- "pnpm": "^12.15.0",
-- bun-version: 1.4.3
-- bun-version: 1.4.4
-- uses: trufflesecurity/trufflehog@v3.99.3
-- uses: trufflesecurity/trufflehog@v3.99.4
-- version: 12.14.0
-- version: 12.15.0. The version stamps 2.0.134 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+**The automated maintenance rung** — the DevThink maintenance workflow applied every non-breaking update available at run time, derived the next patch number with plain arithmetic over package.json (2.0.133 plus one rung) and stamped it across the whole metadata family.
+
+| Area | Change |
+| --- | --- |
+| The maintenance walk | The workflow applies the npm dependency set, the engine recommendations and the versioned GitHub Actions references, re-freezes the apifreeze artifact, records the permission baseline and regenerates the release metadata before the pull request below runs the complete verification pipeline. |
+| The updates | @opencode-ai/sdk ^1.19.3 → ^1.19.4; bun >=1.4.3 <2 → >=1.4.4 <2; bun-types ^1.4.3 → ^1.4.4; npm >=12.2.0 <13 → >=12.2.1 <13; packageManager bun@1.4.3 → bun@1.4.4; pnpm ^12.14.0 → ^12.15.0; bun-version 1.4.3 → 1.4.4; trufflesecurity/trufflehog v3.99.3 → v3.99.4; version 12.14.0 → 12.15.0. |
+| The branch law | The ladder keeps no long-lived branch behind — the automation branch squashes onto main when the verification pipeline answers green and closes with its branch deleted when it answers red, so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way. |
 
 ## 2.0.133
 
-This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.132 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "@biomejs/biome": "^2.5.15",
-- "@biomejs/biome": "^2.6.2",
-- "@types/chrome": "^0.3.5",
-- "@types/chrome": "^0.3.6",
-- "node": ">=26.12.0 <27",
-- "node": ">=26.12.1 <27",
-- "vite": "^8.3.4",
-- "vite": "^8.3.5",
-- 26.12.0
-- 26.12.1
-- ARG NODE_IMAGE="node:26.12.0-bookworm-slim"
-- ARG NODE_IMAGE="node:26.12.1-bookworm-slim"
-- ARG NODE_RUNTIME_VERSION="26.12.0"
-- ARG NODE_RUNTIME_VERSION="26.12.1"
-- FROM debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad AS runtime
-- FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS runtime
-- node-version: 26.12.0
-- node-version: 26.12.1. The version stamps 2.0.133 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+**The automated maintenance rung** — the DevThink maintenance workflow applied every non-breaking update available at run time, derived the next patch number with plain arithmetic over package.json (2.0.132 plus one rung) and stamped it across the whole metadata family.
+
+| Area | Change |
+| --- | --- |
+| The maintenance walk | The workflow applies the npm dependency set, the engine recommendations and the versioned GitHub Actions references, re-freezes the apifreeze artifact, records the permission baseline and regenerates the release metadata before the pull request below runs the complete verification pipeline. |
+| The updates | @biomejs/biome ^2.5.15 → ^2.6.2; @types/chrome ^0.3.5 → ^0.3.6; node >=26.12.0 <27 → >=26.12.1 <27; vite ^8.3.4 → ^8.3.5; the node 26.12.0 → 26.12.1 walk (ARG NODE_IMAGE node:26.12.0-bookworm-slim → node:26.12.1-bookworm-slim, ARG NODE_RUNTIME_VERSION 26.12.0 → 26.12.1, node-version 26.12.0 → 26.12.1); and the runtime base digest debian:trixie-slim@sha256:62bd423aeee912639ca8ee681c2b762cb3e25137e0a92b20be455898a9f034ad → @sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f. |
+| The branch law | The ladder keeps no long-lived branch behind — the automation branch squashes onto main when the verification pipeline answers green and closes with its branch deleted when it answers red, so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way. |
 
 ## 2.0.132
 
-This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.131 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - "react-resizable-panels": "^4.14.7",
-- "react-resizable-panels": "^4.14.8",
-- # answer: the repository token never fires it (the github token
-- # does not (the release still publishes, only the family lanes of
-- # event suppression), so the flip rides the owner pat whenever
-- # ladder rides — and the app token keeps the lane standing when it
-- # release the repository token creates never fires it (the github
-- # that release stay quiet until the next pat published one).
-- # the family artifact lanes ride the release published event, and a
-- # the flip owns the published event the family artifact lanes
-- # the secret exists and the app token keeps the lane standing
-- # token event suppression), so the create rides the owner pat
-- # when it does not.
-- # whenever the secret exists — the same fallback the maintenance
-- GH_TOKEN: ${{ github.token }}
-- GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}. The version stamps 2.0.132 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+**The automated maintenance rung** — beside the react-resizable-panels bump, the maintenance workflow answers the token law the family artifact lanes demanded: the repository token never fires them, so the flip rides the owner pat.
+
+| Area | Change |
+| --- | --- |
+| The maintenance walk | The workflow applies every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derives the next patch number with plain arithmetic over package.json (2.0.131 plus one rung), stamps it across the whole metadata family, re-freezes the apifreeze artifact, records the permission baseline and regenerates the release metadata before the pull request below runs the complete verification pipeline. |
+| The updates | react-resizable-panels ^4.14.7 → ^4.14.8, and the token flip — `GH_TOKEN: ${{ github.token }}` becomes `GH_TOKEN: ${{ secrets.OWNER_PAT \|\| github.token }}`. |
+| The token law | The repository token never fires the family artifact lanes (the github token does not fire workflows, the event suppression), so the create rides the owner pat whenever the secret exists — the same fallback the maintenance ladder rides — and the app token keeps the lane standing when it does not; the family artifact lanes ride the release published event, and a release the repository token creates never fires it. |
+| The branch law | The ladder keeps no long-lived branch behind — the automation branch squashes onto main when the verification pipeline answers green and closes with its branch deleted when it answers red, so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way. |
 
 ## 2.0.131
 
-This release is the healing rung of the ladder the owner ordered after the archaeology: every landing of the family carries the github signature again through the signed landing vehicle (the squash merge of the dated pull request creates the commit server side, the verified badge the 2.0.118 era answered, and a direct push never lands again), the gate artifacts walk in lockstep with the version the release stamps (the 128 through 130 rungs shipped the recorded battery three rungs behind and this rung restamps every artifact), and the release cuts the first tag from the clean saddle manifest: the vite override conflict that killed the family artifact lanes on every tag since 2.0.128 answered by the direct dependency walk, so the android and desktop lanes of every member application fire green on this published release with the signed by GitHub attestation beside every attachment and the three hundred asset doctrine ships for the first time.
+**The healing rung the owner ordered after the archaeology** — every landing of the family carries the github signature again, the gate artifacts walk in lockstep with the version the release stamps, and the release cuts the first tag from the clean saddle manifest.
+
+| Area | Change |
+| --- | --- |
+| The signed landing vehicle | The squash merge of the dated pull request creates the commit server side — the verified badge the 2.0.118 era answered — and a direct push never lands again. |
+| The gate artifacts | The 128 through 130 rungs shipped the recorded battery three rungs behind, and this rung restamps every artifact so the gates walk in lockstep with the version the release stamps. |
+| The first clean tag | The vite override conflict that killed the family artifact lanes on every tag since 2.0.128 answers by the direct dependency walk, so the android and desktop lanes of every member application fire green on this published release with the signed by GitHub attestation beside every attachment — the three hundred asset doctrine ships for the first time. |
 
 ## 2.0.130
 
-This release is the doctrine wave the owner ordered: the family artifact lanes ship on every published release (every member application answers android and desktop lanes with the signed by GitHub attestation beside every attachment — the same rights the os always held, only the iso stays os exclusive), the version lockstep answers one version family wide through the root the release chain resolves, and the node declaration standardizes on the one pin the maintenance ladder walks. The lanes fire as this release publishes.
+**The doctrine wave the owner ordered** — the family artifact lanes ship on every published release, the version lockstep answers one version family wide, and the lanes fire as this release publishes.
+
+| Area | Change |
+| --- | --- |
+| The family artifact lanes | Every member application answers android and desktop lanes with the signed by GitHub attestation beside every attachment — the same rights the os always held, only the iso stays os exclusive. |
+| The version lockstep | The lockstep answers one version family wide through the root the release chain resolves. |
+| The node declaration | The node declaration standardizes on the one pin the maintenance ladder walks. |
 
 ## 2.0.129
 
-This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.128 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - # (the assemble set, the iso, the wasm, the family tarballs, the
-- # GITHUB_TOKEN never fire workflows, so the dispatch is explicit).
-- # The universal desktop artifact lane of the family: every application of
-- # The universal desktop artifact lane of the family: every member
-- # aab, the checksums and the manifest - the same rights), and the
-- # aims its frontendDist at that staging; and the rust envelope stays
-- # and never duplicates itself here), every other firing walks the
-- # and only the iso stays os exclusive. The identity (productName,
-- # another lane's grammar)
-- # answers straight at the application root; the runner stages the
-- # answers the whole member family at once (the nine sibling applications —
-- # application of the family builds the tauri desktop shell from the same
-- # application prefix and never collide with another lane's grammar)
-- # applications (the os rides the publish lane and never duplicates
-- # argan through vault — because the devthink application rides its own
-- # assets the publish lane already ships), which is the doctrine the owner
-- # attestation, the github release) answers from that one run -
-- # attests them (the signed by GitHub provenance the release machinery
-- # auto-tag answered no bump and the tag-push run inherited the
-- # builds them (--clobber keeps a re-run idempotent over its own
-- # carries family wide).
-- # chosen application across every desktop target; a published release
-- # committed). Every job attaches its own assets to the release and
-- # cut (the tag landed before the main-push run resolved, the
-- # delivered surface under build/web and the scaffold aims its
-- # desktop lanes on the release the os ships (the capacitor, the
-- # dispatch the release workflow on it (pushes performed with the
-- # every release (the devthink application also rides the publish lane on
-- # family wide: every artifact this lane ships answers the workflow
-- # fires the main-push release run, the auto-tag job stamps the
-- # fresh version over the latest tag, and the whole release chain
-- # frontendDist at that staging; and the rust envelope stays runner-side
-- # full matrix the lane always served, devthink included
-- # hardcoded; the vite build answers straight at the application root; the
-- # header the branch push carried.
-- # identifier, version) is read from the tauri.conf.json and the
-- # identity the same way the os release assets answer it
-- # installers, the checksums - the same rights, only the iso stays
-- # itself here), a manual dispatch walks the one chosen application
-- # keeps a re-run idempotent over its own names, which carry the. The version stamps 2.0.129 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+**The automated maintenance rung** — the DevThink maintenance workflow applied every non-breaking update available at run time, derived the next patch number with plain arithmetic over package.json (2.0.128 plus one rung), and the rung's diff carries the family artifact lane grammar the doctrine demanded.
+
+| Area | Change |
+| --- | --- |
+| The maintenance walk | The workflow applies the npm dependency set, the engine recommendations and the versioned GitHub Actions references, re-freezes the apifreeze artifact, records the permission baseline and regenerates the release metadata before the pull request below runs the complete verification pipeline. |
+| The artifact lane grammar | The rung's diff carries the family artifact lane comments whole — the universal desktop artifact lane where every application of the family builds the tauri desktop shell from the same template (the runner stages the delivered surface under build/web and the scaffold aims its frontendDist at that staging, the rust envelope stays runner-side, the vite build answers straight at the application root, the identity — productName, identifier, version — read from the tauri.conf.json, --clobber keeping a re-run idempotent over its own names), the mobile lanes with the aab, the checksums and the manifest (the same rights, only the iso stays os exclusive), the lane answering the whole member family at once (the nine sibling applications argan through vault, the devthink application riding its own publish lane on the full matrix it always served, devthink included), every job attaching its own assets with the signed by GitHub provenance, a published release firing the main-push release run while the auto-tag job stamps the fresh version over the latest tag, and the explicit dispatch the GITHUB_TOKEN never fires (the assemble set, the iso, the wasm and the family tarballs). |
+| The branch law | The ladder keeps no long-lived branch behind — the automation branch squashes onto main when the verification pipeline answers green and closes with its branch deleted when it answers red, so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way. |
 
 ## 2.0.128
 
-This release is the automated maintenance rung of the ladder: the DevThink maintenance workflow applied every non-breaking update available at run time — the npm dependency set, the engine recommendations and the versioned GitHub Actions references — derived the next patch number with plain arithmetic over package.json (2.0.127 plus one rung), stamped it across the whole metadata family, re-froze the apifreeze artifact, recorded the permission baseline and regenerated the release metadata before the pull request below ran the complete verification pipeline. The updates of this rung: - node-version: 26.10.0
-- node-version: 26.12.0. The version stamps 2.0.128 land across the metadata family with the apifreeze artifact re-frozen and the permission baseline recorded, and the ladder keeps no long-lived branch behind: the automation branch of this rung squashes onto main when the verification pipeline answers green — and closes with its branch deleted when it answers red — so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way.
+**The automated maintenance rung** — the DevThink maintenance workflow applied every non-breaking update available at run time, derived the next patch number with plain arithmetic over package.json (2.0.127 plus one rung) over a single node pin walk, and stamped it across the whole metadata family.
+
+| Area | Change |
+| --- | --- |
+| The maintenance walk | The workflow applies the npm dependency set, the engine recommendations and the versioned GitHub Actions references, re-freezes the apifreeze artifact, records the permission baseline and regenerates the release metadata before the pull request below runs the complete verification pipeline. |
+| The updates | The node walk — node-version 26.10.0 → 26.12.0. |
+| The branch law | The ladder keeps no long-lived branch behind — the automation branch squashes onto main when the verification pipeline answers green and closes with its branch deleted when it answers red, so the repository keeps exactly one long-lived branch and the archive tag carries the rung either way. |
 
 ## 2.0.127
 

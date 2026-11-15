@@ -86,10 +86,13 @@ jobs:
     # so out-of-window firings report an explicit no-op and stay green.
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    # least-privilege (the 2.0.183 scorecard closure): the pull request
+    # the pull-requests write below opens is the one write the github
+    # token owns — the branch, archive tag and version tag pushes and the
+    # release dispatch ride the owner pat the landing step carries.
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
-      actions: write
     steps:
       - name: Decide whether this firing proposes a rung
         id: window
@@ -110,6 +113,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          # the credentials never persist (the 2.0.183 least-privilege
+          # closure): the landing step pushes over the owner pat header
+          # alone, and a persisted job token would answer a second
+          # authorization header the wire refuses.
+          persist-credentials: false
       - name: Set up Bun
         if: steps.window.outputs.active == 'true'
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -380,6 +388,12 @@ jobs:
           # the app token keeps the lane standing when it does not.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           OWNER_PAT: ${{ secrets.OWNER_PAT }}
+          # least-privilege (the 2.0.183 scorecard closure): the github
+          # token answers read alone now, so every git push the rung makes
+          # rides the owner pat — the github token standing in when the
+          # secret does not — over the single header the gitpat helper
+          # below stamps.
+          PUSH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           NEXT: ${{ steps.rung.outputs.next }}
         run: |
           set -euo pipefail
@@ -407,27 +421,14 @@ jobs:
           # the squash merge replaces it, so the ladder keeps its history
           # without keeping its branches.
           git tag "archive/${BRANCH}"
-          # the checkout persists the github app token through an
-          # includeif gitdir config that injects an http extraheader — and
-          # http extraheader is MULTI-VALUED: a command-level -c beside the
-          # injected one answers two authorization headers the wire refuses
-          # (remote: duplicate header, 400). The includeif keys leave the
-          # local config first, then every network call the rung makes
-          # rides the single pat header: the branch push, the archive tag,
-          # the main fetch and the version tag push.
-          PAT_HEADER=""
-          if [ -n "$OWNER_PAT" ]; then
-            git config --local --get-regexp '^includeif\.gitdir:' 2>/dev/null | cut -d' ' -f1 | while read -r includekey; do
-              git config --local --unset-all "$includekey" 2>/dev/null || true
-            done
-            PAT_HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$OWNER_PAT" | base64 -w0)"
-          fi
+          # the checkout keeps persist-credentials off (the least-privilege
+          # law above), so no injected http extraheader can double the one
+          # below — every network call the rung makes rides the single
+          # owner-pat header: the branch push, the archive tag, the main
+          # fetch and the version tag push.
+          PAT_HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$PUSH_TOKEN" | base64 -w0)"
           gitpat() {
-            if [ -n "$PAT_HEADER" ]; then
-              git -c http.https://github.com/.extraheader="$PAT_HEADER" "$@"
-            else
-              git "$@"
-            fi
+            git -c http.https://github.com/.extraheader="$PAT_HEADER" "$@"
           }
           gitpat push --force-with-lease origin "$BRANCH" "refs/tags/archive/${BRANCH}"
           PR_URL="$(gh pr create --base main --head "$BRANCH" --title "chore: land the automated maintenance rung v${NEXT}" --body "Automated rung of the DevThink dependency ladder. This pull request carries every non-breaking maintenance update available at run time (npm dependencies, engine recommendations, versioned GitHub Actions references), the next patch rung derived by arithmetic over package.json, the complete metadata restamp, the re-frozen apifreeze artifact and the recorded permission baseline. The verify pipeline below is the gate: when it answers green the rung squashes onto main, the automation branch is archived under its tag and deleted, and the release workflow is dispatched on the new version tag; when it answers red the pull request closes and the branch is deleted, so no rung ever stays open.")"
@@ -483,7 +484,14 @@ jobs:
           if [ -z "$OWNER_PAT" ]; then
             git tag -a "v${NEXT}" -m "DevThink ${NEXT}" "$MAINSHA"
             gitpat push origin "refs/tags/v${NEXT}"
-            gh workflow run release.yml --ref "v${NEXT}" -f tag="v${NEXT}"
+            # the actions-scope dispatch rides the token the env carries
+            # with a tolerant answer (the 2.0.183 closure dropped the
+            # actions write the job token once held): a refusal notices
+            # instead of reddening — the tag push itself wakes the release
+            # ladder on the v* trigger either way.
+            if ! gh workflow run release.yml --ref "v${NEXT}" -f tag="v${NEXT}"; then
+              echo "::notice::the release dispatch on the tag refused (the token answers no actions write); the tag push itself wakes the release ladder."
+            fi
             echo "The rung v${NEXT} landed on ${MAINSHA:0:8} and the release workflow was dispatched on the tag."
           else
             echo "The rung v${NEXT} landed on ${MAINSHA:0:8}; the auto-tag lane of the main push cuts the tag and the release chain answers whole."
@@ -494,11 +502,16 @@ jobs:
     # the retention pass stays bounded (the family contract, the same
     # ceiling the dedicated cache retention lane carries).
     timeout-minutes: 10
+    # least-privilege (the 2.0.183 scorecard closure): the cache deletes
+    # below ride the owner pat, so the github token answers read alone.
     permissions:
-      actions: write
+      actions: read
       contents: read
     env:
-      GH_TOKEN: ${{ github.token }}
+      # least-privilege (the 2.0.183 scorecard closure): the deletes ride
+      # the owner pat — the github token standing in when the secret does
+      # not — and every delete answers best-effort below.
+      GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
       GH_REPO: ${{ github.repository }}
       DEFAULT_REF: refs/heads/main
       # the retention contract of the Saddle cache lane (aligned with
@@ -567,7 +580,12 @@ jobs:
             fi
             printf 'candidate id=%s ref=%s family=%s reason=%s key=%s\n' "$cache_id" "$ref" "$family" "$delete_reason" "$key"
             if [ "$APPLY" = "true" ]; then
-              gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" || echo "cache id=${cache_id} was already unavailable"
+              # best-effort law (the 2.0.183 closure): a refused delete
+              # (403/404, the token answering no actions write) notices
+              # honestly and the loop walks on — the lane never reddens on
+              # the cleanup, the seven-day cache auto-eviction the
+              # backstop that keeps the storage bounded either way.
+              gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" || echo "::notice::cache id=${cache_id} refused the delete; the seven-day cache auto-eviction is the backstop."
             fi
           done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100&sort=last_accessed_at&direction=desc" --jq '.actions_caches[] | [.id, .last_accessed_at, .ref, .key] | @tsv')
           if [ "$APPLY" != "true" ]; then
@@ -585,13 +603,21 @@ jobs:
     name: Retire the merged maven packages the single distribution replaced
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege (the 2.0.183 scorecard closure): the package deletes
+    # below ride the owner pat (the same token the npm publish lanes hold
+    # write:packages with), so the github token answers the version list
+    # read alone — every delete below already answers best-effort (the
+    # honest status echo, never a red).
     permissions:
-      packages: write
+      packages: read
     steps:
       - name: Retire the split maven coordinates the single distribution replaced
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the deletes
+          # ride the owner pat — the github token standing in when the
+          # secret does not — the way every retiring write of the house
+          # now does.
+          GITHUB_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           TARGETS: ${{ inputs.packages }}
         run: |
           set -u

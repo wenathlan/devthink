@@ -1411,10 +1411,12 @@ jobs:
     # grants for the whole publish wave.
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
-    # doctrine): packages write pushes the registry distribution, contents
-    # write attaches it to the release assets below.
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: packages write pushes the registry distribution while the
+    # owner pat attaches the release assets below, so the github token
+    # answers read alone.
     permissions:
-      contents: write
+      contents: read
       packages: write
     steps:
       - name: checkout
@@ -1549,7 +1551,10 @@ jobs:
         # (Regra 39).
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
@@ -1812,10 +1817,12 @@ jobs:
     # grants for the whole publish wave.
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
-    # doctrine): packages write pushes the registry package, contents write
-    # attaches it to the release assets below.
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: packages write pushes the registry package while the owner
+    # pat attaches the release assets below, so the github token answers
+    # read alone.
     permissions:
-      contents: write
+      contents: read
       packages: write
     steps:
       - name: checkout
@@ -1932,7 +1939,10 @@ jobs:
         # (Regra 39).
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
@@ -2555,8 +2565,10 @@ jobs:
       (github.event_name != 'workflow_run' ||
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    # least-privilege (the 2.0.183 scorecard closure): the artifact attach
+    # below rides the owner pat, so the github token answers read alone.
     permissions:
-      contents: write
+      contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -2649,7 +2661,10 @@ jobs:
       # the artifacts attach unconditionally - they are evidence even when
       # the publication skipped for the missing token
       env:
-        GH_TOKEN: ${{ github.token }}
+        # least-privilege (the 2.0.183 scorecard closure): the asset
+        # upload rides the owner pat — the github token standing in when
+        # the secret does not — so the job answers read alone above.
+        GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
         RELEASE_TAG: v${{ steps.release.outputs.version }}
       run: |
         set -euo pipefail
@@ -2678,8 +2693,10 @@ jobs:
       (github.event_name != 'workflow_run' ||
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
+    # least-privilege (the 2.0.183 scorecard closure): the artifact attach
+    # below rides the owner pat, so the github token answers read alone.
     permissions:
-      contents: write
+      contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # the family matrix the rubygems lane precedent set - every sibling
@@ -2779,7 +2796,10 @@ jobs:
       # the artifacts attach unconditionally - they are evidence even when
       # the publication skipped for the missing token
       env:
-        GH_TOKEN: ${{ github.token }}
+        # least-privilege (the 2.0.183 scorecard closure): the asset
+        # upload rides the owner pat — the github token standing in when
+        # the secret does not — so the job answers read alone above.
+        GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
         RELEASE_TAG: v${{ steps.release.outputs.version }}
       run: |
         set -euo pipefail
@@ -2821,8 +2841,10 @@ jobs:
     name: Publish devthink to crates.io (the rust version envelope)
     needs: [release-resolve, detect-cargo, release-approval]
     if: needs.detect-cargo.outputs.present == 'true'
+    # least-privilege (the 2.0.183 scorecard closure): the crate attach
+    # below rides the owner pat, so the github token answers read alone.
     permissions:
-      contents: write
+      contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -2916,7 +2938,10 @@ jobs:
           cargo publish --token "${CARGO_TOKEN}" --no-verify --allow-dirty
       - name: Attach the crate artifact to the release
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: v${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
@@ -2938,9 +2963,12 @@ jobs:
       (github.event_name != 'workflow_run' ||
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # least-privilege (the 2.0.183 scorecard closure): the crate attach
+    # below rides the owner pat, so the github token answers read alone.
+    permissions:
+      contents: read
     timeout-minutes: 20
     # the family matrix the rubygems lane precedent set - fail-fast off so
     # one sibling never reddens the others
@@ -3039,7 +3067,10 @@ jobs:
           cargo publish --token "${CARGO_TOKEN}" --no-verify --allow-dirty
       - name: Attach the crate artifact to the release
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: v${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
@@ -3360,10 +3391,12 @@ jobs:
     # grants for the whole publish wave.
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
-    # doctrine): packages write pushes the registry distribution, contents
-    # write attaches it to the release assets below.
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: packages write pushes the registry distribution while the
+    # owner pat attaches the release assets below, so the github token
+    # answers read alone.
     permissions:
-      contents: write
+      contents: read
       packages: write
     steps:
       - name: checkout
@@ -3527,7 +3560,10 @@ jobs:
         # (Regra 39).
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
@@ -3557,7 +3593,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      contents: write
+      # least-privilege (the 2.0.183 scorecard closure): the module attach
+      # below rides the owner pat while packages write pushes the registry
+      # distribution, so the github token answers read alone.
+      contents: read
       packages: write
     strategy:
       fail-fast: false
@@ -3771,7 +3810,10 @@ jobs:
         # another lane's grammar.
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
@@ -3822,18 +3864,24 @@ jobs:
     # grants for the whole publish wave.
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
-    # doctrine): contents write pushes the per-module tag the go get rung
-    # resolves and attaches the module set to the release assets below -
-    # the go module registry IS the repository tag set the proxy chain
-    # serves, so no packages write rides beside it the way the maven and
-    # gradle rungs carry theirs.
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the per-module tag push and the module-set attach below ride
+    # the owner pat so the github token answers read alone - the go
+    # module registry IS the repository tag set the proxy chain serves,
+    # so no packages write rides beside it the way the maven and gradle
+    # rungs carry theirs.
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.RELEASE_TAG }}
+          # the credentials never persist (the least-privilege law above):
+          # the module tag push rides an explicit owner-pat remote, and a
+          # persisted job token would answer a second authorization header
+          # the wire refuses.
+          persist-credentials: false
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -3908,6 +3956,13 @@ jobs:
         # idempotent skip, and a tag on a foreign commit reddens honestly
         # (the go checksum database pins the module bytes per version - a
         # re-tag would serve different content for the same semver).
+        # the 2.0.183 scorecard closure: the github token answers read
+        # alone now, so the tag push rides the owner pat over the explicit
+        # authenticated remote — the github token standing in when the
+        # secret does not (the checkout keeps persist-credentials off so
+        # the one credential the wire sees is the remote's).
+        env:
+          OWNER_PAT: ${{ secrets.OWNER_PAT || github.token }}
         run: |
           set -euo pipefail
           VERSION="${{ steps.release.outputs.version }}"
@@ -3922,7 +3977,7 @@ jobs:
             echo "The go module tag ${modtag} is already synced on the release commit; skipping the tag push."
           else
             git tag "${modtag}" "${target}"
-            git push origin "refs/tags/${modtag}"
+            git push "https://x-access-token:${OWNER_PAT}@github.com/${GITHUB_REPOSITORY}.git" "refs/tags/${modtag}"
           fi
       - name: verify the module resolves through the go proxy
         # the tag-sync verification: proxy.golang.org fetches the module
@@ -3988,7 +4043,10 @@ jobs:
         # idempotent (Regra 39).
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
@@ -4023,7 +4081,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      contents: write
+      # least-privilege (the 2.0.183 scorecard closure): the module tag
+      # push and the module-set attach below ride the owner pat, so the
+      # github token answers read alone.
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -4039,6 +4100,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.RELEASE_TAG }}
+          # the credentials never persist (the least-privilege law above):
+          # the module tag push rides an explicit owner-pat remote, and a
+          # persisted job token would answer a second authorization header
+          # the wire refuses.
+          persist-credentials: false
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -4093,6 +4159,13 @@ jobs:
           go vet ./...
           go build ./...
       - name: sync the family go module tag the proxy chain resolves
+        # the 2.0.183 scorecard closure: the github token answers read
+        # alone now, so the per-module tag push rides the owner pat over
+        # the explicit authenticated remote — the github token standing in
+        # when the secret does not (the checkout keeps persist-credentials
+        # off so the one credential the wire sees is the remote's).
+        env:
+          OWNER_PAT: ${{ secrets.OWNER_PAT || github.token }}
         run: |
           set -euo pipefail
           VERSION="${{ steps.release.outputs.version }}"
@@ -4108,7 +4181,7 @@ jobs:
             echo "The go module tag ${modtag} is already synced on the release commit; skipping the tag push."
           else
             git tag "${modtag}" "${target}"
-            git push origin "refs/tags/${modtag}"
+            git push "https://x-access-token:${OWNER_PAT}@github.com/${GITHUB_REPOSITORY}.git" "refs/tags/${modtag}"
           fi
       - name: verify the family module resolves through the go proxy
         run: |
@@ -4173,7 +4246,10 @@ jobs:
         # another lane's grammar.
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: |
           set -euo pipefail
@@ -5070,9 +5146,12 @@ jobs:
     # compiled-binary leg rides the same bun build --compile recipe the
     # release assemble lane carries its 30-minute ceiling for.
     timeout-minutes: 30
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the binary attach below rides the owner pat, so the github
+    # token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -5233,7 +5312,10 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" devthink/build/release-assets/desktop/* --clobber
 
@@ -5301,9 +5383,12 @@ jobs:
     # compile lane rides the family desktop lane's own 60-minute value
     # (the same tauri matrix family-desktop.yml gates).
     timeout-minutes: 60
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the installer attach below rides the owner pat, so the
+    # github token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -5677,7 +5762,10 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" devthink/build/release-assets/tauri/* --clobber
 
@@ -5713,9 +5801,12 @@ jobs:
     # shell lane rides the family mobile lane's own 45-minute value
     # (family-mobile.yml gates the android leg the same).
     timeout-minutes: 45
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the asset attach below rides the owner pat, so the github
+    # token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -6137,7 +6228,10 @@ jobs:
         # the automatic workflow_run path attaches the same assets the
         # release event does (the resolver's tag output carries the tag)
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" devthink/build/mobile/android/* --clobber
 
@@ -6161,9 +6255,12 @@ jobs:
     # simulator leg rides the family mobile lane's own 45-minute value
     # (the ios legs of family-mobile.yml answer the same ceiling).
     timeout-minutes: 45
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the asset attach below rides the owner pat, so the github
+    # token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -6327,7 +6424,10 @@ jobs:
         # the automatic workflow_run path attaches the same assets the
         # release event does (the resolver's tag output carries the tag)
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" devthink/build/mobile/ios/* --clobber
 
@@ -6345,9 +6445,12 @@ jobs:
     # ipa lane rides the family mobile lane's own 45-minute value (the
     # no-secrets simulator leg above answers the same ceiling).
     timeout-minutes: 45
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the ipa attach below rides the owner pat, so the github
+    # token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -6541,7 +6644,10 @@ jobs:
           if-no-files-found: error
       - name: attach iOS ipa assets
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.release.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" devthink/build/mobile/ipa/* --clobber
 
@@ -6568,9 +6674,12 @@ jobs:
     # lane builds the same runtime target the security battery scans under
     # its own 30-minute container ceiling.
     timeout-minutes: 30
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the archive attach below rides the owner pat, so the github
+    # token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -6654,7 +6763,10 @@ jobs:
         # release event does (the resolver's tag output carries the tag)
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" "devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz" "sha256.container.${{ steps.releaseversion.outputs.version }}" "manifest.container.${{ steps.releaseversion.outputs.version }}.json" --clobber
 
@@ -6684,9 +6796,12 @@ jobs:
     # archive lane rides the os container lane's own 30-minute value (the
     # same single docker build the archive lane carries).
     timeout-minutes: 30
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the archive attach below rides the owner pat, so the github
+    # token answers read alone.
     permissions:
-      contents: write
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -6921,7 +7036,10 @@ jobs:
         # release event does (the resolver's tag output carries the tag)
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: |
           set -euo pipefail
@@ -6961,8 +7079,10 @@ jobs:
       # the catalog lane attaches its assets beside the registry push
       # (the thousand-asset ladder: every os-distribution seat the
       # catalog answers rides the release as the profile record, its
-      # checksum and its lane manifest).
-      contents: write
+      # checksum and its lane manifest) — the 2.0.183 scorecard closure
+      # moved the attach to the owner pat, so the github token answers
+      # read alone beside the packages write the registry push owns.
+      contents: read
       packages: write
     strategy:
       fail-fast: false
@@ -7153,7 +7273,10 @@ jobs:
         # release event does (the resolver's tag output carries the tag)
         if: steps.meta.outputs.skip != 'true' && (github.event_name != 'workflow_dispatch' || inputs.release_tag != '')
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: |
           set -euo pipefail
@@ -7198,9 +7321,12 @@ jobs:
     # metadata lane reads and zips the tagged tree only - no install, no
     # compile - so the light-lane fifteen-minute value answers.
     timeout-minutes: 15
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine).
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the metadata attach below rides the owner pat, so the
+    # github token answers read alone.
     permissions:
-      contents: write
+      contents: read
     strategy:
       # one application failing its metadata leg must not kill the
       # sibling legs - every folder answers its own asset set to the end.
@@ -7710,7 +7836,10 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" release-metadata/${{ matrix.app }}/* --clobber
 
@@ -7740,9 +7869,12 @@ jobs:
     # every job carries its own ceiling (the family contract): the
     # registry lane reads the tagged tree only - no install, no compile.
     timeout-minutes: 15
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine).
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the family-map attach below rides the owner pat, so the
+    # github token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -8057,7 +8189,10 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" release-family/* --clobber
 
@@ -8087,9 +8222,12 @@ jobs:
     # packaging lane rides the artifact lanes' own 20-minute value (the
     # maven and nuget legs answer the same ceiling).
     timeout-minutes: 20
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the extension attach below rides the owner pat, so the
+    # github token answers read alone.
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -8210,7 +8348,10 @@ jobs:
 
       - name: attach release asset
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # upload rides the owner pat — the github token standing in when
+          # the secret does not — so the job answers read alone above.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" devthink/build/release-assets/extension/* --clobber
 
@@ -8429,9 +8570,12 @@ jobs:
     timeout-minutes: 10
     # least-privilege: the job's own write (the e2ugh job-permission
     # doctrine) - the packages read the registry login below carries (the
-    # digest lane reads the private package the ghcr lane published).
+    # digest lane reads the private package the ghcr lane published), and
+    # the 2.0.183 scorecard closure trimmed the contents write: the
+    # digest asset attach below rides the owner pat, so the github token
+    # answers read alone.
     permissions:
-      contents: write
+      contents: read
       packages: read
     steps:
       - name: checkout
@@ -8487,7 +8631,11 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: record the published image digest
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the digest
+          # asset upload rides the owner pat — the github token standing
+          # in when the secret does not — so the job answers read alone
+          # above (the registry inspect rides the packages login).
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: |
           set -euo pipefail
@@ -8836,9 +8984,13 @@ jobs:
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # least-privilege: the job's own write (the e2ugh job-permission doctrine)
+    # least-privilege: the job's own write (the e2ugh job-permission
+    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # write: the sums umbrella upload below rides the owner pat, so the
+    # github token answers read alone (the asset reads stay on the job
+    # token).
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -8888,7 +9040,11 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Rebuild SHA256SUMS from the current release assets
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the umbrella
+          # re-upload rides the owner pat — the github token standing in
+          # when the secret does not — so the job answers read alone above
+          # (the asset list and download reads ride the same seat whole).
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: |

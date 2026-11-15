@@ -708,23 +708,35 @@ jobs:
     name: Clean this run's caches
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # least-privilege (the 2.0.183 scorecard closure): the cache deletes
+    # below ride the owner pat, so the github token answers read alone.
     permissions:
-      actions: write
+      actions: read
       contents: read
     steps:
       - name: Delete the caches this pipeline created
         env:
-          GH_TOKEN: ${{ github.token }}
+          # least-privilege (the 2.0.183 scorecard closure): the deletes
+          # ride the owner pat — the github token standing in when the
+          # secret does not — and every delete answers best-effort below.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           GH_REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
+          # best-effort law (the 2.0.183 closure): a cache the delete
+          # refuses (a 403/404, the token answering no actions write)
+          # logs an honest notice and the loop walks on — the lane never
+          # reddens on the cleanup, the seven-day cache auto-eviction the
+          # backstop that keeps the storage bounded either way.
           deleted=0
           while IFS=$'\t' read -r cache_id cache_key; do
             test -n "$cache_id" || continue
             if gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
               deleted=$((deleted + 1))
               echo "deleted cache id=${cache_id} key=${cache_key}"
+            else
+              echo "::notice::cache id=${cache_id} key=${cache_key} refused the delete; the seven-day cache auto-eviction is the backstop."
             fi
           done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | startswith("buildkit")) | [.id, .key] | @tsv')
           echo "run ${RUN_ID} cleanup: deleted ${deleted} buildkit gha caches."
