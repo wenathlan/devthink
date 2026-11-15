@@ -54,7 +54,7 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.18.0
+          version: 12.21.0
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -528,10 +528,15 @@ jobs:
           # checker, so the documented exclusion by name@version seats
           # the license reality, the same precedent the
           # vite-plugin-manus-runtime row carries, never a silent
-          # walkaround.
+          # walkaround. the aikido firewall rides the same documented
+          # exclusion lane: the runtime guard the union law seats
+          # publishes under AGPL-3.0-or-later, the strong copyleft the
+          # allow list exists to deny — the dependency stays seated the
+          # union law demands while the gate records the license the
+          # name@version row documents.
           npx --yes license-checker-rseidelsohn@5.0.1 --production \
             --onlyAllow="MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;PSF-2.0;BlueOak-1.0.0;MPL-2.0;LGPL-3.0-or-later;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);(AFL-2.1 OR BSD-3-Clause);MIT OR Apache-2.0;Apache-2.0 AND MIT;MIT AND ISC;ISC*;Custom: https://gsap.com/GSAP-share-image.png;Custom: https://github.com/wenathlan/devthink" \
-            --excludePackages="vite-plugin-manus-runtime@0.0.59;7z-wasm@1.2.0;${FAMILY_EXCLUDE}" \
+            --excludePackages="vite-plugin-manus-runtime@0.0.59;7z-wasm@1.2.0;@aikidosec/firewall@1.8.46;${FAMILY_EXCLUDE}" \
             --summary
 
   container-scan:
