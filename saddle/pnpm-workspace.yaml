@@ -3559,6 +3559,7 @@ overrides:
   "stream-to-array": "^2.3.0"
   "streamdown": "^2.7.1"
   "string-to-arraybuffer": "^1.0.2"
+  "@ionic/utils-terminal>string-width": "^4.2.3"
   "string-width": "^8.2.2"
   "string.prototype.repeat": "^1.0.0"
   "strip-ansi": "^7.2.0"
