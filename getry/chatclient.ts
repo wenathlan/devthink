@@ -85,17 +85,12 @@ export function newsessionid(): string {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID();
   }
-  /* the drawn fallback keeps the crypto lane (Math.random never draws a session
-   * id): getRandomValues seeds the hex of the uuid template the shape demands. */
-  const template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
-  const draw = new Uint8Array(32);
-  globalThis.crypto.getRandomValues(draw);
-  let seat = 0;
-  return template.replace(/[xy]/g, (char) => {
-    const nibble = draw[seat++] & 0xf;
-    const value = char === "x" ? nibble : (nibble & 0x3) | 0x8;
-    return value.toString(16);
-  });
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x3f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
 /* ===== block: route discovery ===== */
