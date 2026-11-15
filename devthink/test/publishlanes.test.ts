@@ -645,7 +645,7 @@ describe.skipIf(!inrepo)("the container distributions lane", () => {
       | undefined;
     expect(archive?.needs).toEqual(["saddle-vhe-resolve", "saddle-vhe-scan"]);
     expect(archive?.if).toBe("needs.saddle-vhe-resolve.outputs.proceed == 'true'");
-    /* the 2.0.183 scorecard closure trimmed the contents write the lane
+    /* the 2.0.184 scorecard closure trimmed the contents write the lane
      * once carried: the archive attach and the sums umbrella patch ride
      * the owner pat (the github token standing in when the secret does
      * not), so the job's own token answers read alone — the least-

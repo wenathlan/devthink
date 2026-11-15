@@ -394,7 +394,7 @@ jobs:
       noderef: ${{ steps.bases.outputs.node }}
       nodedigest: ${{ steps.bases.outputs.nodedigest }}
     permissions:
-      # least-privilege (the 2.0.183 scorecard closure): the resolver
+      # least-privilege (the 2.0.184 scorecard closure): the resolver
       # reads alone — the release view, the tagged source and the ghcr
       # versions list — so the github token answers read (the stale
       # contents write the retired mesa era left behind never served a
@@ -2148,7 +2148,7 @@ jobs:
       run:
         shell: bash
     timeout-minutes: 10
-    # least-privilege (the 2.0.183 scorecard closure): the cache deletes
+    # least-privilege (the 2.0.184 scorecard closure): the cache deletes
     # below ride the owner pat, so the github token answers read alone.
     permissions:
       actions: read
@@ -2156,14 +2156,14 @@ jobs:
     steps:
       - name: Delete the caches this pipeline created
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the deletes
+          # least-privilege (the 2.0.184 scorecard closure): the deletes
           # ride the owner pat — the github token standing in when the
           # secret does not — and every delete answers best-effort below.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          # best-effort law (the 2.0.183 closure): a cache the delete
+          # best-effort law (the 2.0.184 closure): a cache the delete
           # refuses (a 403/404, the token answering no actions write)
           # logs an honest notice and the loop walks on — the lane never
           # reddens on the sweep, the seven-day cache auto-eviction the
@@ -2200,7 +2200,7 @@ jobs:
     # builds, riding the same 90-minute ceiling the family container
     # archive carries scaled to the node graph the runtime bakes.
     timeout-minutes: 90
-    # least-privilege (the 2.0.183 scorecard closure): the archive attach
+    # least-privilege (the 2.0.184 scorecard closure): the archive attach
     # and the sums umbrella patch below ride the owner pat, so the github
     # token answers read alone.
     permissions:
@@ -2277,7 +2277,7 @@ jobs:
           if-no-files-found: error
       - name: attach release assets
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -2296,7 +2296,7 @@ jobs:
         # retires, the fresh checksum rides the re-upload (the umbrella
         # keeps the full coverage the split never loses).
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the umbrella
+          # least-privilege (the 2.0.184 scorecard closure): the umbrella
           # download reads the release while the re-upload writes it — the
           # owner pat carries the whole seat (the github token standing in
           # when the secret does not), the job answering read alone above.

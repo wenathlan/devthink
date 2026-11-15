@@ -4,4 +4,4 @@
  * literal inside a winget: the drift the cadria about row once carried is
  * the defect this module retires; the release sync stamps this entry every
  * rung so the module answers the family lockstep). */
-export const packageversion = "2.0.183" as const;
+export const packageversion = "2.0.184" as const;

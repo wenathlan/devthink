@@ -102,13 +102,13 @@ jobs:
     # the owner pat (the github token standing in when the secret does
     # not): the pat-created release fires the published event the family
     # artifact lanes answer, while the app-token fallback keeps the
-    # workflow_run completion lanes standing beside it — and the 2.0.183
+    # workflow_run completion lanes standing beside it — and the 2.0.184
     # scorecard closure trimmed the job token to read alone either way.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: auto-tag the version bump
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # least-privilege (the 2.0.183 scorecard closure): the tag and the
+    # least-privilege (the 2.0.184 scorecard closure): the tag and the
     # release the create step below stamps ride the owner pat, so the
     # github token answers read alone here.
     permissions:
@@ -191,7 +191,7 @@ jobs:
           # ladder rides — and the app token keeps the lane standing when it
           # does not (the release still publishes, only the family lanes of
           # that release stay quiet until the next pat published one). the
-          # 2.0.183 scorecard closure made the law whole: the github token
+          # 2.0.184 scorecard closure made the law whole: the github token
           # answers read alone now (the permissions block above), the owner
           # pat carrying the create.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -1312,7 +1312,7 @@ jobs:
     # gate repair): the release flip answers through the explicit
     # release-approval gate job the lane needs - the one review the owner
     # grants for the whole release wave.
-    # least-privilege (the 2.0.183 scorecard closure): the draft gather
+    # least-privilege (the 2.0.184 scorecard closure): the draft gather
     # and the publish flip below ride the owner pat, so the github token
     # answers read alone (the verify download and the immutable lock
     # read stay on the job token).
@@ -1326,7 +1326,7 @@ jobs:
           path: release
       - name: Gather every artifact into the draft release before publication
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the draft
+          # least-privilege (the 2.0.184 scorecard closure): the draft
           # creation and the asset upload are contents writes the owner
           # pat carries — the github token standing in when the secret
           # does not — so the job answers read alone above.

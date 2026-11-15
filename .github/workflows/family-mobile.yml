@@ -42,7 +42,7 @@ jobs:
     timeout-minutes: 45
     permissions:
       # the artifact attestation the lane owns — the release attachment
-      # rides the owner pat the attach step carries (the 2.0.183 scorecard
+      # rides the owner pat the attach step carries (the 2.0.184 scorecard
       # closure), so the github token answers read alone beside it.
       contents: read
       attestations: write
@@ -399,7 +399,7 @@ jobs:
         # application prefix and never collide with another lane's grammar)
         if: github.event_name == 'release'
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -427,7 +427,7 @@ jobs:
     timeout-minutes: 45
     permissions:
       # the artifact attestation the lane owns — the release attachment
-      # rides the owner pat the attach step carries (the 2.0.183 scorecard
+      # rides the owner pat the attach step carries (the 2.0.184 scorecard
       # closure), so the github token answers read alone beside it.
       contents: read
       attestations: write
@@ -575,7 +575,7 @@ jobs:
       - name: attach ios assets to the release
         if: github.event_name == 'release'
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}

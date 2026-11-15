@@ -2,6 +2,23 @@
 
 o total da operação de forma hierárquica. cada item é uma ação real verificável, agrupada por categoria, tema e aplicativo, em ordem do fácil para o difícil. o tema e a categoria de cada bloco definem diretamente o escopo da branch e do pull request correspondente. cada reclamação mapeada virou ação. nenhum item especifica código, tamanho, cor ou medida: a geometria, a composição e o espaçamento mapeiam direto nas referências clonadas na área de estudo de design.
 
+## a onda do green train 2.0.184
+
+- [x] ler integralmente as ordens, o corpus de autenticação e a conversa corrente, deduplicando os blocos repetidos
+- [x] verificar a autenticação viva contra a api do github antes de qualquer alteração
+- [x] sincronizar o head remoto no ambiente local antes da onda
+- [x] baixar e auditar os logs das cinco lanes vermelhas do stamp 2.0.183 (workflowlint, verify nas três pernas, pages no assento npm do saddle e publish)
+- [x] corrigir a chave timeout-minutes duplicada dentro do job family-cargo do publish.yml (o syntax-check que o workflowlint reddened)
+- [x] corrigir o heal do jsdom family-wide: whatwg-url ^5.0.0 → ^17.3.0, webidl-conversions ^3.0.0 → ^8.0.1 e tr46 ^0.0.3 → ^7.0.0 nos onze manifests, nos onze catálogos pnpm-workspace, nos onze bun locks (com o assento scoped tr46/punycode) e no lock npm do saddle
+- [x] restaurar o peerDependenciesMeta que o conversor bun→npm derrubou: 748 pacotes do saddle package-lock recuperam o meta verdadeiro do registro (830 assentos carregando)
+- [x] resgatar o docs/infra.md que a consolidação #636 aposentou por engano (o livro da lei do arquivo único volta do pre-consolidation tree)
+- [x] resgatar os assentos README do devthink.csproj (PackageReadmeFile e o None Include Pack)
+- [x] corrigir o consumer smoke: o distpackage declara o conjunto de runtime real que os bundles importam em vez da união family de 4.109 assentos (o stub @vue/runtime-vapor@0.0.0 do registro com deps workspace:* morre por construção)
+- [x] bumpar o rung 2.0.184 nos 169 assentos de versão da família (manifests, locks, containers, distribuições, gates, certificações e lanes)
+- [x] registrar a onda no changelog e no releasenotes com a gramática de tabela da casa
+- [x] validar o actionlint sobre a família inteira de workflows após as correções
+- [ ] acompanhar as lanes do github ficarem verdes com o stamp 2.0.184 e fechar o ciclo
+
 ## operação de leitura e sincronização
 
 - [x] ler integralmente o briefing mestre completo do topo ao fim por segmentos de linha no terminal

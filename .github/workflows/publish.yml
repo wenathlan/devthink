@@ -1411,7 +1411,7 @@ jobs:
     # grants for the whole publish wave.
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: packages write pushes the registry distribution while the
     # owner pat attaches the release assets below, so the github token
     # answers read alone.
@@ -1551,7 +1551,7 @@ jobs:
         # (Regra 39).
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -1817,7 +1817,7 @@ jobs:
     # grants for the whole publish wave.
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: packages write pushes the registry package while the owner
     # pat attaches the release assets below, so the github token answers
     # read alone.
@@ -1939,7 +1939,7 @@ jobs:
         # (Regra 39).
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -2565,7 +2565,7 @@ jobs:
       (github.event_name != 'workflow_run' ||
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
-    # least-privilege (the 2.0.183 scorecard closure): the artifact attach
+    # least-privilege (the 2.0.184 scorecard closure): the artifact attach
     # below rides the owner pat, so the github token answers read alone.
     permissions:
       contents: read
@@ -2661,7 +2661,7 @@ jobs:
       # the artifacts attach unconditionally - they are evidence even when
       # the publication skipped for the missing token
       env:
-        # least-privilege (the 2.0.183 scorecard closure): the asset
+        # least-privilege (the 2.0.184 scorecard closure): the asset
         # upload rides the owner pat — the github token standing in when
         # the secret does not — so the job answers read alone above.
         GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -2693,7 +2693,7 @@ jobs:
       (github.event_name != 'workflow_run' ||
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
-    # least-privilege (the 2.0.183 scorecard closure): the artifact attach
+    # least-privilege (the 2.0.184 scorecard closure): the artifact attach
     # below rides the owner pat, so the github token answers read alone.
     permissions:
       contents: read
@@ -2796,7 +2796,7 @@ jobs:
       # the artifacts attach unconditionally - they are evidence even when
       # the publication skipped for the missing token
       env:
-        # least-privilege (the 2.0.183 scorecard closure): the asset
+        # least-privilege (the 2.0.184 scorecard closure): the asset
         # upload rides the owner pat — the github token standing in when
         # the secret does not — so the job answers read alone above.
         GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -2841,7 +2841,7 @@ jobs:
     name: Publish devthink to crates.io (the rust version envelope)
     needs: [release-resolve, detect-cargo, release-approval]
     if: needs.detect-cargo.outputs.present == 'true'
-    # least-privilege (the 2.0.183 scorecard closure): the crate attach
+    # least-privilege (the 2.0.184 scorecard closure): the crate attach
     # below rides the owner pat, so the github token answers read alone.
     permissions:
       contents: read
@@ -2938,7 +2938,7 @@ jobs:
           cargo publish --token "${CARGO_TOKEN}" --no-verify --allow-dirty
       - name: Attach the crate artifact to the release
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -2965,11 +2965,10 @@ jobs:
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # least-privilege (the 2.0.183 scorecard closure): the crate attach
+    # least-privilege (the 2.0.184 scorecard closure): the crate attach
     # below rides the owner pat, so the github token answers read alone.
     permissions:
       contents: read
-    timeout-minutes: 20
     # the family matrix the rubygems lane precedent set - fail-fast off so
     # one sibling never reddens the others
     strategy:
@@ -3067,7 +3066,7 @@ jobs:
           cargo publish --token "${CARGO_TOKEN}" --no-verify --allow-dirty
       - name: Attach the crate artifact to the release
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -3391,7 +3390,7 @@ jobs:
     # grants for the whole publish wave.
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: packages write pushes the registry distribution while the
     # owner pat attaches the release assets below, so the github token
     # answers read alone.
@@ -3560,7 +3559,7 @@ jobs:
         # (Regra 39).
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -3593,7 +3592,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      # least-privilege (the 2.0.183 scorecard closure): the module attach
+      # least-privilege (the 2.0.184 scorecard closure): the module attach
       # below rides the owner pat while packages write pushes the registry
       # distribution, so the github token answers read alone.
       contents: read
@@ -3810,7 +3809,7 @@ jobs:
         # another lane's grammar.
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -3864,7 +3863,7 @@ jobs:
     # grants for the whole publish wave.
     timeout-minutes: 20
     # least-privilege: the job's own writes (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the per-module tag push and the module-set attach below ride
     # the owner pat so the github token answers read alone - the go
     # module registry IS the repository tag set the proxy chain serves,
@@ -3956,7 +3955,7 @@ jobs:
         # idempotent skip, and a tag on a foreign commit reddens honestly
         # (the go checksum database pins the module bytes per version - a
         # re-tag would serve different content for the same semver).
-        # the 2.0.183 scorecard closure: the github token answers read
+        # the 2.0.184 scorecard closure: the github token answers read
         # alone now, so the tag push rides the owner pat over the explicit
         # authenticated remote — the github token standing in when the
         # secret does not (the checkout keeps persist-credentials off so
@@ -4043,7 +4042,7 @@ jobs:
         # idempotent (Regra 39).
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -4081,7 +4080,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      # least-privilege (the 2.0.183 scorecard closure): the module tag
+      # least-privilege (the 2.0.184 scorecard closure): the module tag
       # push and the module-set attach below ride the owner pat, so the
       # github token answers read alone.
       contents: read
@@ -4159,7 +4158,7 @@ jobs:
           go vet ./...
           go build ./...
       - name: sync the family go module tag the proxy chain resolves
-        # the 2.0.183 scorecard closure: the github token answers read
+        # the 2.0.184 scorecard closure: the github token answers read
         # alone now, so the per-module tag push rides the owner pat over
         # the explicit authenticated remote — the github token standing in
         # when the secret does not (the checkout keeps persist-credentials
@@ -4246,7 +4245,7 @@ jobs:
         # another lane's grammar.
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -5147,7 +5146,7 @@ jobs:
     # release assemble lane carries its 30-minute ceiling for.
     timeout-minutes: 30
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the binary attach below rides the owner pat, so the github
     # token answers read alone.
     permissions:
@@ -5312,7 +5311,7 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         shell: bash
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -5384,7 +5383,7 @@ jobs:
     # (the same tauri matrix family-desktop.yml gates).
     timeout-minutes: 60
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the installer attach below rides the owner pat, so the
     # github token answers read alone.
     permissions:
@@ -5762,7 +5761,7 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         shell: bash
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -5802,7 +5801,7 @@ jobs:
     # (family-mobile.yml gates the android leg the same).
     timeout-minutes: 45
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the asset attach below rides the owner pat, so the github
     # token answers read alone.
     permissions:
@@ -6228,7 +6227,7 @@ jobs:
         # the automatic workflow_run path attaches the same assets the
         # release event does (the resolver's tag output carries the tag)
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -6256,7 +6255,7 @@ jobs:
     # (the ios legs of family-mobile.yml answer the same ceiling).
     timeout-minutes: 45
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the asset attach below rides the owner pat, so the github
     # token answers read alone.
     permissions:
@@ -6424,7 +6423,7 @@ jobs:
         # the automatic workflow_run path attaches the same assets the
         # release event does (the resolver's tag output carries the tag)
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -6446,7 +6445,7 @@ jobs:
     # no-secrets simulator leg above answers the same ceiling).
     timeout-minutes: 45
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the ipa attach below rides the owner pat, so the github
     # token answers read alone.
     permissions:
@@ -6644,7 +6643,7 @@ jobs:
           if-no-files-found: error
       - name: attach iOS ipa assets
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -6675,7 +6674,7 @@ jobs:
     # its own 30-minute container ceiling.
     timeout-minutes: 30
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the archive attach below rides the owner pat, so the github
     # token answers read alone.
     permissions:
@@ -6763,7 +6762,7 @@ jobs:
         # release event does (the resolver's tag output carries the tag)
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -6797,7 +6796,7 @@ jobs:
     # same single docker build the archive lane carries).
     timeout-minutes: 30
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the archive attach below rides the owner pat, so the github
     # token answers read alone.
     permissions:
@@ -7036,7 +7035,7 @@ jobs:
         # release event does (the resolver's tag output carries the tag)
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -7079,7 +7078,7 @@ jobs:
       # the catalog lane attaches its assets beside the registry push
       # (the thousand-asset ladder: every os-distribution seat the
       # catalog answers rides the release as the profile record, its
-      # checksum and its lane manifest) — the 2.0.183 scorecard closure
+      # checksum and its lane manifest) — the 2.0.184 scorecard closure
       # moved the attach to the owner pat, so the github token answers
       # read alone beside the packages write the registry push owns.
       contents: read
@@ -7273,7 +7272,7 @@ jobs:
         # release event does (the resolver's tag output carries the tag)
         if: steps.meta.outputs.skip != 'true' && (github.event_name != 'workflow_dispatch' || inputs.release_tag != '')
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -7322,7 +7321,7 @@ jobs:
     # compile - so the light-lane fifteen-minute value answers.
     timeout-minutes: 15
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the metadata attach below rides the owner pat, so the
     # github token answers read alone.
     permissions:
@@ -7836,7 +7835,7 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         shell: bash
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -7870,7 +7869,7 @@ jobs:
     # registry lane reads the tagged tree only - no install, no compile.
     timeout-minutes: 15
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the family-map attach below rides the owner pat, so the
     # github token answers read alone.
     permissions:
@@ -8189,7 +8188,7 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         shell: bash
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -8223,7 +8222,7 @@ jobs:
     # maven and nuget legs answer the same ceiling).
     timeout-minutes: 20
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the extension attach below rides the owner pat, so the
     # github token answers read alone.
     permissions:
@@ -8348,7 +8347,7 @@ jobs:
 
       - name: attach release asset
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -8571,7 +8570,7 @@ jobs:
     # least-privilege: the job's own write (the e2ugh job-permission
     # doctrine) - the packages read the registry login below carries (the
     # digest lane reads the private package the ghcr lane published), and
-    # the 2.0.183 scorecard closure trimmed the contents write: the
+    # the 2.0.184 scorecard closure trimmed the contents write: the
     # digest asset attach below rides the owner pat, so the github token
     # answers read alone.
     permissions:
@@ -8631,7 +8630,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: record the published image digest
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the digest
+          # least-privilege (the 2.0.184 scorecard closure): the digest
           # asset upload rides the owner pat — the github token standing
           # in when the secret does not — so the job answers read alone
           # above (the registry inspect rides the packages login).
@@ -8985,7 +8984,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # least-privilege: the job's own write (the e2ugh job-permission
-    # doctrine) — the 2.0.183 scorecard closure trimmed the contents
+    # doctrine) — the 2.0.184 scorecard closure trimmed the contents
     # write: the sums umbrella upload below rides the owner pat, so the
     # github token answers read alone (the asset reads stay on the job
     # token).
@@ -9040,7 +9039,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Rebuild SHA256SUMS from the current release assets
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the umbrella
+          # least-privilege (the 2.0.184 scorecard closure): the umbrella
           # re-upload rides the owner pat — the github token standing in
           # when the secret does not — so the job answers read alone above
           # (the asset list and download reads ride the same seat whole).

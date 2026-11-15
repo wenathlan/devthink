@@ -67,7 +67,7 @@ jobs:
     # wave owned are dead by the owner order).
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    # least-privilege (the 2.0.183 scorecard closure): the bundle attach
+    # least-privilege (the 2.0.184 scorecard closure): the bundle attach
     # below rides the owner pat, so the github token answers read alone.
     permissions:
       contents: read
@@ -198,7 +198,7 @@ jobs:
         # collide with another lane's grammar.
         if: github.event_name != 'workflow_dispatch' || inputs.release_tag != ''
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the asset
+          # least-privilege (the 2.0.184 scorecard closure): the asset
           # upload rides the owner pat — the github token standing in when
           # the secret does not — so the job answers read alone above.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}

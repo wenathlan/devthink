@@ -10,7 +10,7 @@ name: DevThink Rung Records
 on:
   workflow_dispatch:
 
-# least-privilege (the 2.0.183 scorecard closure): the records commit
+# least-privilege (the 2.0.184 scorecard closure): the records commit
 # below pushes over an explicit owner-pat remote, so the github token
 # answers read alone here.
 permissions:
@@ -70,7 +70,7 @@ jobs:
         run: cd devthink && node sweep.ts sync && bun run records:sync
 
       - name: Commit the re-stamped records to the rung branch
-        # least-privilege (the 2.0.183 scorecard closure): the github
+        # least-privilege (the 2.0.184 scorecard closure): the github
         # token answers read alone now, so the push rides the owner pat
         # over the explicit authenticated remote — the github token
         # standing in when the secret does not.

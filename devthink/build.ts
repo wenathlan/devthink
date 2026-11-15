@@ -1563,6 +1563,34 @@ const remappaths = (node: unknown): unknown => {
   }
   return node;
 };
+/** The runtime dependency set of the staged manifest: the bundles mark every registry seat they need at runtime as external (the server entry, the library modules and the webscrape toolkit), so the published tarball declares exactly those seats — the repository manifest's family mirror set (the thousands of seats the locksync law answers) never rides the tarball: a first-time embedder's `npm install` must resolve a lean runtime tree, not the whole family union, and the seats a plain npm consumer cannot resolve (the workspace-protocol stubs the registry carries, the @vue/runtime-vapor@0.0.0 placeholder whose own dependencies speak `workspace:*`) stay out by construction. The list derives from the externals the build declares below — hono, the node adapter, the fluent icons, the babel engine, the prisma stack with the libsql adapter, the ink and react of the console seats, the z-ai sdk, the playwright and jsdom optional peers, the webscrape toolkit's commander, cheerio, p-retry, p-limit, emittery and zod, and the wouter the reveal entry rides. */
+const runtimedependencies: Record<string, string> = {};
+for (const name of [
+  "hono",
+  "@hono/node-server",
+  "@fluentui/react-icons",
+  "@babel/core",
+  "@libsql/client",
+  "@prisma/client",
+  "@prisma/adapter-libsql",
+  "ink",
+  "react",
+  "z-ai-web-dev-sdk",
+  "playwright",
+  "playwright-core",
+  "jsdom",
+  "commander",
+  "cheerio",
+  "p-retry",
+  "p-limit",
+  "emittery",
+  "zod",
+  "wouter",
+]) {
+  const seat = packagejson.dependencies?.[name] ?? packagejson.devDependencies?.[name];
+  if (typeof seat === "string") runtimedependencies[name] = seat;
+  else throw new Error(`The runtime seat ${name} carries no version range in the repository manifest; the staged package cannot declare it.`);
+}
 const stagedpackage = {
   name: packagejson.name,
   version: packagejson.version,
@@ -1574,8 +1602,8 @@ const stagedpackage = {
   repository: packagejson.repository,
   bugs: packagejson.bugs,
   keywords: packagejson.keywords,
-  /** the runtime dependency set rides the staged manifest verbatim: the server subpath resolves @prisma/client and the libsql adapter at the first database touch, so a consumer that exercises the persistence path finds every runtime dependency installed with the package — the repository machinery (scripts, devDependencies, the packageManager pin) drops out, the runtime contract never does */
-  dependencies: packagejson.dependencies,
+  /** the runtime dependency set rides the staged manifest: the server subpath resolves @prisma/client and the libsql adapter at the first database touch, so a consumer that exercises the persistence path finds every runtime dependency installed with the package — the repository machinery (scripts, devDependencies, the packageManager pin) drops out, the family mirror union (the thousands of locksync seats) drops out with it, the runtime contract never does */
+  dependencies: runtimedependencies,
   engines: packagejson.engines,
   sideEffects: false,
   publishConfig: packagejson.publishConfig,

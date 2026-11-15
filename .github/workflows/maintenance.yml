@@ -86,7 +86,7 @@ jobs:
     # so out-of-window firings report an explicit no-op and stay green.
     runs-on: ubuntu-latest
     timeout-minutes: 180
-    # least-privilege (the 2.0.183 scorecard closure): the pull request
+    # least-privilege (the 2.0.184 scorecard closure): the pull request
     # the pull-requests write below opens is the one write the github
     # token owns — the branch, archive tag and version tag pushes and the
     # release dispatch ride the owner pat the landing step carries.
@@ -113,7 +113,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-          # the credentials never persist (the 2.0.183 least-privilege
+          # the credentials never persist (the 2.0.184 least-privilege
           # closure): the landing step pushes over the owner pat header
           # alone, and a persisted job token would answer a second
           # authorization header the wire refuses.
@@ -388,7 +388,7 @@ jobs:
           # the app token keeps the lane standing when it does not.
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           OWNER_PAT: ${{ secrets.OWNER_PAT }}
-          # least-privilege (the 2.0.183 scorecard closure): the github
+          # least-privilege (the 2.0.184 scorecard closure): the github
           # token answers read alone now, so every git push the rung makes
           # rides the owner pat — the github token standing in when the
           # secret does not — over the single header the gitpat helper
@@ -485,7 +485,7 @@ jobs:
             git tag -a "v${NEXT}" -m "DevThink ${NEXT}" "$MAINSHA"
             gitpat push origin "refs/tags/v${NEXT}"
             # the actions-scope dispatch rides the token the env carries
-            # with a tolerant answer (the 2.0.183 closure dropped the
+            # with a tolerant answer (the 2.0.184 closure dropped the
             # actions write the job token once held): a refusal notices
             # instead of reddening — the tag push itself wakes the release
             # ladder on the v* trigger either way.
@@ -502,13 +502,13 @@ jobs:
     # the retention pass stays bounded (the family contract, the same
     # ceiling the dedicated cache retention lane carries).
     timeout-minutes: 10
-    # least-privilege (the 2.0.183 scorecard closure): the cache deletes
+    # least-privilege (the 2.0.184 scorecard closure): the cache deletes
     # below ride the owner pat, so the github token answers read alone.
     permissions:
       actions: read
       contents: read
     env:
-      # least-privilege (the 2.0.183 scorecard closure): the deletes ride
+      # least-privilege (the 2.0.184 scorecard closure): the deletes ride
       # the owner pat — the github token standing in when the secret does
       # not — and every delete answers best-effort below.
       GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
@@ -580,7 +580,7 @@ jobs:
             fi
             printf 'candidate id=%s ref=%s family=%s reason=%s key=%s\n' "$cache_id" "$ref" "$family" "$delete_reason" "$key"
             if [ "$APPLY" = "true" ]; then
-              # best-effort law (the 2.0.183 closure): a refused delete
+              # best-effort law (the 2.0.184 closure): a refused delete
               # (403/404, the token answering no actions write) notices
               # honestly and the loop walks on — the lane never reddens on
               # the cleanup, the seven-day cache auto-eviction the
@@ -603,7 +603,7 @@ jobs:
     name: Retire the merged maven packages the single distribution replaced
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # least-privilege (the 2.0.183 scorecard closure): the package deletes
+    # least-privilege (the 2.0.184 scorecard closure): the package deletes
     # below ride the owner pat (the same token the npm publish lanes hold
     # write:packages with), so the github token answers the version list
     # read alone — every delete below already answers best-effort (the
@@ -613,7 +613,7 @@ jobs:
     steps:
       - name: Retire the split maven coordinates the single distribution replaced
         env:
-          # least-privilege (the 2.0.183 scorecard closure): the deletes
+          # least-privilege (the 2.0.184 scorecard closure): the deletes
           # ride the owner pat — the github token standing in when the
           # secret does not — the way every retiring write of the house
           # now does.
