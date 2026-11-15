@@ -43,6 +43,14 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
      * the monorepo itself, so the update pass skips them instead of
      * parsing a path as a semver. */
     if (/^(file|link|workspace):/.test(declared)) continue;
+    /* the npm alias seats (the websocket-server override answers
+     * npm:ws@^8.18.0 — a name the registry never published beside the
+     * real package the spec points at) never answer the registry
+     * ladder: the alias pins the redirect target's floor the same way
+     * the file, link and workspace specs pin the local siblings, and
+     * the real seat walks the ladder under its own name where the
+     * dependency groups carry it. */
+    if (/^npm:/.test(declared)) continue;
     /* the @wenathlan family scope never answers the registry ladder at
      * all — registry specs beside the local links: the sibling floors
      * ride the rung convention the wave stamps carry (the published
