@@ -86,9 +86,12 @@ type StreamGhost = {
   reasoning: string;
 };
 
-/** draws one row id (message or conversation) — the drawn suffix keeps the keys unique. */
+/** draws one row id (message or conversation) — the crypto suffix keeps the keys unique. */
 function newid(prefix: string): string {
-  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  const bytes = new Uint8Array(4);
+  crypto.getRandomValues(bytes);
+  const suffix = Array.from(bytes, (byte) => byte.toString(36).padStart(2, "0")).join("");
+  return `${prefix}-${Date.now().toString(36)}-${suffix}`;
 }
 
 /** derives the conversation title from the first user message (42 chars, one line). */
