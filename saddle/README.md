@@ -10,5 +10,8 @@ Saddle is a **TypeScript-first ESM engine** compiled to JavaScript, declarations
 | Surface | Files |
 | --- | --- |
 | `server.ts`, `sandbox.ts` | the zero-dependency self-hosted API of the 2.0.185 grand-merge envelope (`node server.ts`; the api answers its version at `/api/v1/health`) and the browser-pure engine port |
+| `index.html` | the static web face the deploy targets serve — the entry the GitHub Pages lane, the self-hosted console and every static host open |
+| `vercel.json` | the Vercel adapter of the app root (the deploy root carries the adapter the platform reads) |
+| `netlify.toml` | the Netlify adapter of the app root (the publish "." seat the static build answers) |
 
 The consolidated documentation of the whole operation lives in [`devthink/docs`](../devthink/docs) — the law, the operation state, the apps dossier, the security census and the checklist. This README is the envelope surface the release lane stamps; the five documents carry the whole corpus.

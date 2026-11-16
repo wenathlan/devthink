@@ -4699,7 +4699,7 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
          bill of materials. */
       "Install syft (the checksum 503 bypass lane)",
       "syft scan dir:. -o cyclonedx-json=build/security/devthink.sbom.cdx.json",
-      "license-checker@25.0.1",
+      "license-checker-rseidelsohn@5.0.1",
       "--onlyAllow=",
       /* the absorbed governance lanes of the 2.0.16 grouping pass */
       "github/codeql-action/init@",
