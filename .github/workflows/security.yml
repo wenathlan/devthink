@@ -544,14 +544,25 @@ jobs:
           # publishes under AGPL-3.0-or-later, the strong copyleft the
           # allow list exists to deny — the dependency stays seated the
           # union law demands while the gate records the license the
-          # name@version row documents. the applitools eyes seats walk
-          # the same documented exclusion lane: the visual-testing SDK
-          # the union law seats publishes its core-base transitive with
-          # a Custom: LICENSE label (the eyes sdk license text the
-          # checker reads from the tarball) — a test-time tool excluded
-          # by name@version the same precedent the vite-plugin row
-          # carries, never a silent walkaround; the lock pin builds the
-          # row so the rung bumps survive without a manual list.
+          # name@version row documents. the row reads its pin from the
+          # lock the same way the family rows do: the depfresh ladder
+          # walks the seat forward every rung (the 1.8.46 era row aged
+          # the moment the 1.9.0 seat landed), so the lock-built row
+          # survives every future bump without a manual list edit.
+          AIKIDO_EXCLUDE=$(node -e '
+            const fs = require("fs");
+            const lock = fs.readFileSync("bun.lock", "utf8");
+            const match = lock.match(/"@aikidosec\/firewall@(\d+\.\d+\.\d+)"/);
+            console.log(match ? "@aikidosec/firewall@" + match[1] : "");
+          ')
+          # the applitools eyes seats walk the same documented exclusion
+          # lane: the visual-testing SDK the union law seats publishes
+          # its core-base, utils and logger transitives with Custom:
+          # LICENSE labels (the eyes sdk license texts the checker
+          # reads from the tarballs) — test-time tools excluded by
+          # name@version the same precedent the vite-plugin row
+          # carries, never a silent walkaround; the lock pins build
+          # the rows so the rung bumps survive without a manual list.
           APPLITOOLS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
@@ -561,7 +572,7 @@ jobs:
           ')
           npx --yes license-checker-rseidelsohn@5.0.1 --production \
             --onlyAllow="MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;PSF-2.0;BlueOak-1.0.0;MPL-2.0;LGPL-3.0-or-later;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);(AFL-2.1 OR BSD-3-Clause);MIT OR Apache-2.0;Apache-2.0 AND MIT;MIT AND ISC;ISC*;Custom: https://gsap.com/GSAP-share-image.png;Custom: https://github.com/wenathlan/devthink" \
-            --excludePackages="vite-plugin-manus-runtime@0.0.59;7z-wasm@1.2.0;@aikidosec/firewall@1.8.46;${FAMILY_EXCLUDE}${APPLITOOLS_EXCLUDE:+;$APPLITOOLS_EXCLUDE}" \
+            --excludePackages="vite-plugin-manus-runtime@0.0.59;7z-wasm@1.2.0;${AIKIDO_EXCLUDE:+$AIKIDO_EXCLUDE;}${FAMILY_EXCLUDE}${APPLITOOLS_EXCLUDE:+;$APPLITOOLS_EXCLUDE}" \
             --summary
 
   container-scan:
