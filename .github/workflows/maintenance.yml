@@ -347,7 +347,18 @@ jobs:
           cd ../stealthhead && bun install --ignore-scripts
           cd ../vault && bun install --ignore-scripts
           cd ../saddle && bun install --ignore-scripts
-          npx --yes "npm@${npm_version}" install --package-lock-only --ignore-scripts --no-audit --no-fund
+          # the stale-peer fallback: the strict resolver reads the locked peer
+          # states of the rungs behind (a synced manifest ahead of its lock
+          # reddens on cohorts the fresh tree satisfies), so the refresh
+          # first walks the locked strict pass and, when it refuses, the
+          # lock retires and the strict resolver rebuilds the whole tree
+          # from the manifest alone — never --legacy-peer-deps, a genuinely
+          # conflicted manifest still fails hard.
+          if ! npx --yes "npm@${npm_version}" install --package-lock-only --ignore-scripts --no-audit --no-fund; then
+            echo "::warning::the locked strict pass refused the stale peer states; the fresh strict resolution rebuilds the lock from the manifest whole"
+            rm -f package-lock.json
+            npx --yes "npm@${npm_version}" install --package-lock-only --ignore-scripts --no-audit --no-fund
+          fi
       - name: Install the gateway and saddle family dependencies
         if: steps.window.outputs.active == 'true' && env.STOPPED != 'true'
         # the gateway family law the verify ladder carries: the
