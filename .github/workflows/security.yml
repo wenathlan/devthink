@@ -518,16 +518,16 @@ jobs:
               const match = lock.match(new RegExp("\\\"" + escaped + "@(\\d+\\.\\d+\\.\\d+)\\\""));
               return match ? [name + "@" + match[1]] : [];
             });
-            /* the claude agent sdk seats ride the same lock-built lane: the
-             * core package answers Custom README.md (the Anthropic license
-             * text the checker reads from the readme) and every platform
-             * seat (darwin, linux, win32 and the musl twins) answers
-             * Custom LICENSE.md, while the sdk rung drifts the pins per
-             * release — the lock pins build the rows so the exclusion
-             * survives every rung bump the same way the family rows
-             * survive theirs (the documented exclusion by name@version,
-             * never a silent walkaround). */
-            const platform = [...lock.matchAll(/\"(@anthropic-ai\/claude-agent-sdk(?:-[a-z0-9-]+)?)@(\d+\.\d+\.\d+)\"/g)]
+            /* the anthropic claude seats ride the same lock-built lane: the
+             * agent sdk core answers Custom README.md (the Anthropic
+             * license text the checker reads from the readme), the claude
+             * code core and every platform seat of both lines (darwin,
+             * linux, win32 and the musl twins) answer Custom LICENSE.md,
+             * while the rungs drift the pins per release — the lock pins
+             * build the rows so the exclusion survives every rung bump the
+             * same way the family rows survive theirs (the documented
+             * exclusion by name@version, never a silent walkaround). */
+            const platform = [...lock.matchAll(/\"(@anthropic-ai\/claude-(?:code|agent-sdk)(?:-[a-z0-9-]+)?)@(\d+\.\d+\.\d+)\"/g)]
               .map((match) => match[1] + "@" + match[2]);
             console.log([...rows, ...new Set(platform)].join(";"));
           ')
