@@ -4,6 +4,20 @@
 
 > **Security boundary.** DevThink uses official provider APIs and credentials supplied explicitly by the user. It does not capture browser cookies, store browser sessions, solve CAPTCHAs, automate browser authentication or bypass anti-bot controls.
 
+## The seven frozen surfaces
+
+The merged workbench ships one frozen capability contract per surface, staged as `build/caps/<surface>.json` by `node build.ts` and verified by the doccheck gate:
+
+| Surface | Contract |
+| --- | --- |
+| `background` | The extension background worker: the pairing, the gateway handoff and the lifecycle events of the bridge. |
+| `pagebridge` | The in-page bridge: the DOM message channel the workbench pages and the extension shells share. |
+| `sidepanel` | The side panel face of the extension: the chat rail the panel surfaces mount. |
+| `popup` | The popup face of the extension: the quick actions surface of the toolbar entry. |
+| `cli` | The terminal CLI surface: the commands, the terminal faces and the bin contracts the distribution ships. |
+| `library` | The library surface: the typed exports the packages publish for the family imports. |
+| `mcp` | The MCP surface: the tools, the prompts and the protocol messages the automation seat serves. |
+
 ## The consolidated documentation
 
 The whole documentation corpus of the operation — every text read, every commit audited, every group's documents — is consolidated, deduplicated and hierarchized into five documents under [`docs/`](docs/):
