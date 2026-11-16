@@ -18,6 +18,7 @@
  */
 import { Route, Switch } from "wouter";
 import ChatAnchor from "./chat/Chat";
+import StudioAnchor from "./studio/Studio";
 import HomeAnchor from "./home/home";
 import IntroAnchor from "./intro/intro";
 import NotFoundAnchor from "./notfound/notfound";
@@ -49,6 +50,7 @@ function Fundamentals() {
       <Switch>
         <Route path="/" component={HomeAnchor} />
         <Route path="/chat" component={ChatAnchor} />
+        <Route path="/studio" component={StudioAnchor} />
         <Route path="/versions" component={VersionsAnchor} />
         <Route path="/thinking" component={ThinkingAnchor} />
         <Route path="/sessions" component={SessionsAnchor} />

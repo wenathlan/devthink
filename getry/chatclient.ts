@@ -271,9 +271,18 @@ export async function discovery(origin: string = gatewayorigin()): Promise<Disco
 /* ===== block: completion lanes ===== */
 
 /** one turn of the conversation history the gateway receives (the full resend law). */
+/** one multimodal part of a user turn — the openai wire grammar the gateway
+ * routes natively (text first, the images after, the vision-capable models
+ * of the pool answer them; text-only lanes degrade them server-side). */
+export type ChatPart =
+  | { type: "text"; text: string }
+  | { type: "image_url"; image_url: { url: string } };
+
 export type ChatTurn = {
   role: "user" | "assistant" | "system";
-  content: string;
+  /** the turn body — plain prose, or the multimodal parts array when the
+   * turn carries images (the studio composer attaches up to four). */
+  content: string | ChatPart[];
 };
 
 /** the usage row the final chunk carries. */
