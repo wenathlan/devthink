@@ -8000,7 +8000,6 @@
     "@base-ui/react": "^1.7.0",
     "@bcoe/v8-coverage": "^1.0.2",
     "@better-auth/api-key": "^1.7.21",
-    "@better-auth/core": "^1.7.21",
     "@better-auth/drizzle-adapter": "^1.7.21",
     "@biomejs/biome": "^2.6.7",
     "@blackwell-systems/gcf": "^2.2.2",
