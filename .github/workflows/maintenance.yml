@@ -85,7 +85,13 @@ jobs:
     # completions; the window decision now lives in the first step below,
     # so out-of-window firings report an explicit no-op and stay green.
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    # the eleven-manifest walk of the union ladder answers ~18 minutes a
+    # manifest against the live registry (~198 minutes whole beside the
+    # installs and the stamping chain), so the three-hour ceiling the
+    # ladder once carried killed the tenth walk every full dispatch — the
+    # five-hour seat walks the whole union with the headroom the re-run
+    # never needs.
+    timeout-minutes: 300
     # least-privilege (the 2.0.184 scorecard closure): the pull request
     # the pull-requests write below opens is the one write the github
     # token owns — the branch, archive tag and version tag pushes and the
