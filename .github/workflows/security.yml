@@ -522,9 +522,9 @@ jobs:
              * lane: every platform seat (darwin, linux, win32 and the musl
              * twins) publishes under the Anthropic LICENSE.md the checker
              * answers Custom to, and the sdk rung drifts the platform pins
-             * per release — the lock's own pins build the rows so the
-             * exclusion survives every rung bump the same way the family
-             * rows survive theirs (the documented exclusion by name@version,
+             * per release — the lock pins build the rows so the exclusion
+             * survives every rung bump the same way the family rows
+             * survive theirs (the documented exclusion by name@version,
              * never a silent walkaround). */
             const platform = [...lock.matchAll(/\"(@anthropic-ai\/claude-agent-sdk-[a-z0-9-]+)@(\d+\.\d+\.\d+)\"/g)]
               .map((match) => match[1] + "@" + match[2]);
