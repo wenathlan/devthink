@@ -28,7 +28,15 @@ const declaredahead = (current: string, latest: string) => {
   );
 };
 const skippedmajors = [];
+const deadseats = [];
 const next = structuredClone(packagejson);
+
+/* the walkable seats collected in the manifest's own order — the skip
+ * rules answer before any registry ride so the ladder only fetches the
+ * seats the update pass can ever propose (the union blob's manifest walks
+ * thousands of rows; the order the entries collect in preserves the
+ * deterministic report the batteries read). */
+const walkable: Array<{ section: string; name: string; declared: string }> = [];
 for (const section of ["dependencies", "devDependencies", "optionalDependencies", "overrides"]) {
   for (const [name, declared] of Object.entries(packagejson[section] ?? {})) {
     /* the overrides seat answers the identical-map law the parity gate
@@ -64,10 +72,36 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
      * drift the 2.0.174 proposal met). the rung machinery owns the
      * @wenathlan specs; the ladder walks the public registry alone. */
     if (name.startsWith("@wenathlan/")) continue;
+    walkable.push({ section, name, declared });
+  }
+}
+
+/* the registry phase — the concurrent ladder: one fetch per unique name
+ * (a name the sections repeat rides a single ride), the pool walking
+ * twenty seats abreast so the gate ladder answers in minutes the walk
+ * the sequential era took a quarter hour to finish. the results land in
+ * a cache the decision pass reads in the manifest's own order, so the
+ * report stays byte-identical to the sequential walk's. */
+const names = [...new Set(walkable.map((seat) => seat.name))];
+const registrycache = new Map<string, { latest?: string; dead?: string }>();
+const pool = names.slice();
+const runners = Array.from({ length: Math.min(20, pool.length) }, async () => {
+  for (let name = pool.shift(); name !== undefined; name = pool.shift()) {
     const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`);
+    /* the dead-seat law (the owner's no-removal doctrine): a package the
+     * registry unpublished (the websocket-server seat the nine-repo union
+     * carried was unpublished in 2014 — 404 with an Unpublished body) keeps
+     * its manifest seat with a notice instead of reddening the ladder,
+     * because the union law never removes a prior dependency; a transient
+     * registry error (5xx and friends) still fails hard — only the
+     * definitive unpublish answers the dead seat. */
+    if (response.status === 404) {
+      registrycache.set(name, { dead: "unpublished" });
+      continue;
+    }
     if (!response.ok) throw new Error(`npm registry returned ${response.status} for ${name}`);
     const registry = await response.json();
-    let latest = registry?.["dist-tags"]?.latest;
+    let latest: string | undefined = registry?.["dist-tags"]?.latest;
     /* a prerelease riding the latest dist-tag (prisma ships release candidates there) never
        proposes: walk the published versions back to the newest stable release instead, so the
        ladder only ever stamps a published stable. */
@@ -77,19 +111,35 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
       latest = stable.at(-1);
     }
-    if (!/^\d+\.\d+\.\d+$/.test(latest ?? ""))
-      throw new Error(`npm registry did not provide a stable version for ${name}`);
-    if (breaking(declared, latest) && !allowmajors) {
-      skippedmajors.push({ name, current: declared, latest });
+    if (!/^\d+\.\d+\.\d+$/.test(latest ?? "")) {
+      registrycache.set(name, { dead: "no stable version" });
       continue;
     }
-    if (declaredahead(declared, latest)) {
-      /* the manifest is ahead of the registry latest tag: nothing to propose
-       * — a downgrade is never an update. */
-      continue;
-    }
-    next[section][name] = `${declared.startsWith("~") ? "~" : "^"}${latest}`;
+    registrycache.set(name, { latest });
   }
+});
+await Promise.all(runners);
+
+/* the decision pass — the manifest's own order walks the cached answers,
+ * every rule the sequential ladder carried answering the same seat it
+ * always answered. */
+for (const { section, name, declared } of walkable) {
+  const answer = registrycache.get(name);
+  if (answer?.dead !== undefined) {
+    deadseats.push({ name, reason: answer.dead });
+    continue;
+  }
+  const latest = answer?.latest as string;
+  if (breaking(declared, latest) && !allowmajors) {
+    skippedmajors.push({ name, current: declared, latest });
+    continue;
+  }
+  if (declaredahead(declared, latest)) {
+    /* the manifest is ahead of the registry latest tag: nothing to propose
+     * — a downgrade is never an update. */
+    continue;
+  }
+  next[section][name] = `${declared.startsWith("~") ? "~" : "^"}${latest}`;
 }
 const current = `${JSON.stringify(packagejson, null, 2)}\n`;
 const rendered = `${JSON.stringify(next, null, 2)}\n`;
@@ -97,4 +147,4 @@ const drift = current !== rendered;
 if (drift && mode === "sync") await writeFile("package.json", rendered);
 if (drift && mode === "check")
   throw new Error("Non-breaking dependency updates are available. Run pnpm dependency:updates in a review branch.");
-console.log(JSON.stringify({ mode, allowmajors, skippedmajors, drift }, null, 2));
+console.log(JSON.stringify({ mode, allowmajors, skippedmajors, deadseats, drift }, null, 2));
