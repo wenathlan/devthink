@@ -1,1558 +1,2162 @@
 /**
- * Studio.tsx — the devthink studio os surface of the getry sol theme (the
- * interface 17 grammar): the full studio window app wired to the same lanes
- * the chat surface rides — the discovery catalog of the five routes, the
- * devthink meta-models with the smart-first pool, the seven-rung thinking
- * ladder, the streaming answers with the reasoning always before the
- * content, the conversations persisted through the db lane with the
- * localStorage mirror — wearing the interface 17 chrome: the wallpaper
- * stage, the header cluster with the seamless saddle tabs, the quadro
- * flutuante (the claymorphic projects panel), the ansi art hero with the
- * "what can i help build?" stage, the tactile composer with the model
- * segmented selector and the thinking caixinha, the square starter cards,
- * the terminal drawer with the live request log and the 4-edge saddle
- * docking overlay sidebar.
+ * Studio.tsx — the devthink studio os surface of the getry sol theme, the
+ * interface 18 edition (the "devthink chat3" replacement spec): the anchor
+ * of the studio folder mounts the full studio desktop — the omni saddle
+ * rail, the seamless browser tabs, the workspace sidebar, the chat thread,
+ * the composer — wired to the GETRY LANES through sol/wingets/studio.client
+ * (the correlated-logic adapter): discovery over chatclient.discovery(),
+ * streaming over chatclient.streamchat() with the reasoning ALWAYS before
+ * the content, the devthink meta-model smart-first rotation, the thinking
+ * ladder of thinking.ts, conversations persisted through the db lane, and
+ * the getry pages one rail press away (/sessions, /versions, /chat). every
+ * feature of the interface 17 surface survives; none was removed:
  *
- * the state law rides the chat surface grammar: conversations live in react
- * state seeded from the db lane (the mirror survives offline), the
- * streaming answer is a transient ghost that commits on done, every send
- * resends the full history (the gateway rotation contract) with the images
- * riding as openai multimodal parts, and an abort keeps the partial answer.
+ *   - omni saddle rail: full / full-floating / saddle (4 dock edges) /
+ *     floating drag capsule, with edge snapping and zoom-aware math
+ *   - browser-style seamless tabs (drag reorder, rename, streaming state)
+ *   - workspaces (projects) + workspace memory + permission modes
+ *   - tasks, artifacts (code + image extraction), markdown export
+ *   - composer: templates, dictation (web speech), permission pills,
+ *     model picker with search/filter, drag-to-effort spectrum
+ *   - gtx runtime UI translation (6 languages, cached)
+ *   - FX toggles (ansi/glow/blur/transparency), UI zoom, auto-scroll
+ *   - intro 3D animation + ansi canvas hero
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  type ChatPart,
-  type ChatResult,
-  type DiscoveryRoute,
-  DISCOVERYVERSIONS,
-  completechat,
-  discovery,
-  gatewayorigin,
-  newsessionid,
-  setgatewayorigin,
-  streamchat,
-} from "../../chatclient";
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
+import { useLocation } from "wouter";
+import { setgatewayorigin } from "../../chatclient";
+import { IntroAnimation } from "../wingets/studio.visuals";
+import { OmniSaddleRail } from "../wingets/studio.rail";
 import {
-  type ClientConversationRow,
-  type ClientMessageRow,
-  type ConversationUpsert,
-  deleteconversationremote,
-  listconversations,
-  saveconversationremote,
-} from "../../db";
-import { GATEWAYVERSIONS, gatewayViewConfig, smartpoolof } from "../../gateway";
-import { type LabelKey, label } from "../../labels";
-import { DEFAULTTHINKINGLEVEL, formatbudget, listlevels } from "../../thinking";
-import { toast } from "../toast/Toast.tsx";
+  deleteConversationFromDb,
+  discoverGatewayRoutes,
+  fetchConversationsFromDb,
+  generateGatewayImage,
+  importFromGatewayDatabase,
+  runImageUnderstanding,
+  saveConversationToDb,
+  streamChatCompletion,
+  applyStreamDeltaToMessage,
+  buildUnderstandingPrompt,
+  DEFAULT_GATEWAY_BASE_URL,
+  DEFAULT_ROUTES,
+  deriveConversationTitle,
+  normalizeBaseUrl,
+  resolveThinkingLevels,
+  shouldGenerateImageInChat,
+  normalizeImageFile,
+  type ChatImageAttachment,
+  type ChatMessage,
+  type Conversation,
+  type RouteDiscoveryResult,
+  type RouteName,
+  type Workspace,
+} from "../wingets/studio.client";
+import { Sidebar, type SidebarTab } from "../wingets/studio.sidebar";
+import { TopBar } from "../wingets/studio.topbar";
+import { ChatThread } from "../wingets/studio.chatthread";
+import { Composer } from "../wingets/studio.composer";
+import { ModelInspectorModal } from "../wingets/studio.inspector";
+import { TerminalDrawer, type TerminalLogLine } from "../wingets/studio.terminal";
+import { extractConversationArtifacts, type WorkspaceTask } from "../wingets/studio.artifacts";
 import {
-  ActiveSaddleTabSurface,
-  DevThinkLogoMark,
-  DevThinkWordmark,
-  OmniSaddleBridge,
-  StudioGlyphs as G,
+  clampSidebarWidth,
+  computeZoomViewportStyle,
+  DEFAULT_SIDEBAR_WIDTH,
+  DEFAULT_UI_ZOOM,
+  formatConversationMarkdown,
+  MAX_SIDEBAR_WIDTH,
+  MIN_SIDEBAR_WIDTH,
+  nextProjectName,
+  normalizeRailMode,
+  reorderTabIds,
+  resolveEffortChroma,
+  type PermissionMode,
+  type RailMode,
+  type RailPosition,
   type SaddleDockEdge,
-} from "./StudioBrand.tsx";
-import { StudioAnsiCanvas } from "./StudioAnsi.tsx";
+} from '../wingets/studio.uiprefs';
+import { GtxLanguageProvider } from '../wingets/studio.gtx';
 
-/* ===== block: constants and local types ================================ */
+const STORAGE_CONVS_KEY = 'devthink_chat_conversations_v1';
+const STORAGE_ACTIVE_KEY = 'devthink_chat_active_id_v1';
+const STORAGE_OPEN_TABS_KEY = 'devthink_chat_open_tabs_v1';
+const STORAGE_WORKSPACES_KEY = 'devthink_chat_workspaces_v1';
+const STORAGE_ACTIVE_WORKSPACE_KEY = 'devthink_chat_active_workspace_v1';
+const STORAGE_PERMISSION_MODE_KEY = 'devthink_chat_permission_mode_v1';
+const STORAGE_MEMORY_KEY = 'devthink_chat_workspace_memory_v1';
+const STORAGE_USER_NAME_KEY = 'devthink_chat_user_name_v1';
+const STORAGE_BASE_URL_KEY = 'devthink_chat_base_url_v1';
+const STORAGE_THEME_KEY = 'devthink_chat_theme_v1';
+const STORAGE_FLOATING_RAIL_KEY = 'devthink_chat_floating_rail_v1';
+const STORAGE_RAIL_MODE_KEY = 'devthink_chat_rail_mode_v1';
+const STORAGE_RAIL_DOCK_EDGE_KEY = 'devthink_chat_rail_edge_v1';
+const STORAGE_RAIL_POS_KEY = 'devthink_chat_rail_pos_v1';
+const STORAGE_FLOATING_SIDEBAR_KEY = 'devthink_chat_floating_sidebar_v1';
+const STORAGE_SIDEBAR_WIDTH_KEY = 'devthink_chat_sidebar_width_v1';
+const STORAGE_ANSI_BG_KEY = 'devthink_chat_ansi_bg_v1';
+const STORAGE_FX_GLOW_KEY = 'devthink_chat_fx_glow_v1';
+const STORAGE_FX_BLUR_KEY = 'devthink_chat_fx_blur_v1';
+const STORAGE_FX_TRANSPARENCY_KEY = 'devthink_chat_fx_transparency_v1';
+const STORAGE_AUTO_SCROLL_KEY = 'devthink_chat_auto_scroll_v1';
+const STORAGE_PINNED_CONVS_KEY = 'devthink_chat_pinned_convs_v1';
+const STORAGE_TASKS_KEY = 'devthink_chat_tasks_v1';
 
-/** the localStorage mirror of the conversations (the same lane the chat
- * surface reads — one store, two surfaces). */
-const MIRRORKEY = "getry.chat.conversations";
+const DEFAULT_WORKSPACE_ID = 'ws_default';
 
-/** the localStorage key of the onboarding start prefs (shared with chat). */
-const PREFSKEY = "getry.chat.prefs";
-
-/** the localStorage keys of the studio projects (workspaces) and the
- * conversation→project map. */
-const WORKSPACESKEY = "getry.studio.workspaces";
-const WSMAPKEY = "getry.studio.wsmap";
-
-/** the debounce window of the db saves in milliseconds. */
-const SAVEDEBOUNCE = 1500;
-
-/** the title budget of the auto-derived conversation title. */
-const TITLEBUDGET = 42;
-
-/** the default temperature the conversations ride. */
-const DEFAULTTEMPERATURE = 0.7;
-
-/** the maximum images one user turn carries (the composer law). */
-const MAXIMAGES = 4;
-
-/** one studio message — the chat view row plus the multimodal images. */
-export type StudioMessage = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  reasoning?: string;
-  images?: string[];
-  modelId?: string;
-  route?: string;
-  provider?: string;
-  backendModel?: string;
-  fallback?: string;
-  error?: string;
-  usage?: { promptTokens?: number; completionTokens?: number; totalTokens?: number };
-  createdAt: string;
-};
-
-/** one conversation of the studio surface (the chat shape + the images). */
-export type StudioConversation = {
-  id: string;
-  title: string;
-  version: string;
-  modelId: string;
-  thinkingLevel: string;
-  temperature: number;
-  sessionId: string;
-  messages: StudioMessage[];
-  createdAt: string;
-  updatedAt: string;
-};
-
-/** one project group of the quadro flutuante. */
-type WorkspaceGroup = { id: string; name: string; expanded: boolean };
-
-/** one line of the live terminal request log. */
-type TerminalLine = {
-  id: string;
-  at: number;
-  method: string;
-  path: string;
-  status: number | string;
-  detail: string;
-  durationMs?: number;
-};
-
-/** the transient streaming ghost — the answer that has not committed yet. */
-type StreamGhost = { conversationId: string; content: string; reasoning: string };
-
-/** the tactile starters of the hero stage. */
-const STARTERS: Array<{ icon: "cube" | "bot" | "code" | "layers"; title: LabelKey; tag: LabelKey; prompt: LabelKey }> = [
-  { icon: "cube", title: "studio.starter.1.title", tag: "studio.starter.1.tag", prompt: "studio.starter.1.prompt" },
-  { icon: "bot", title: "studio.starter.2.title", tag: "studio.starter.2.tag", prompt: "studio.starter.2.prompt" },
-  { icon: "code", title: "studio.starter.3.title", tag: "studio.starter.3.tag", prompt: "studio.starter.3.prompt" },
-  { icon: "layers", title: "studio.starter.4.title", tag: "studio.starter.4.tag", prompt: "studio.starter.4.prompt" },
-];
-
-/* ===== block: pure helpers ============================================= */
-
-/** draws one row id (message or conversation). */
-function newid(prefix: string): string {
-  const bytes = new Uint8Array(4);
-  crypto.getRandomValues(bytes);
-  const suffix = Array.from(bytes, (byte) => byte.toString(36).padStart(2, "0")).join("");
-  return `${prefix}-${Date.now().toString(36)}-${suffix}`;
+function createDefaultWorkspace(): Workspace {
+  const now = Date.now();
+  return {
+    id: DEFAULT_WORKSPACE_ID,
+    name: 'devthink-principal',
+    createdAt: now,
+    updatedAt: now,
+  };
 }
 
-/** derives the conversation title from the first user message. */
-function derivetitle(text: string): string {
-  const flat = text.replace(/\s+/g, " ").trim();
-  return flat.length > TITLEBUDGET ? `${flat.slice(0, TITLEBUDGET).trimEnd()}…` : flat;
-}
-
-/** reads the localStorage mirror — the offline lane. */
-function readmirror(): StudioConversation[] {
+function loadInitialWorkspaces(): Workspace[] {
   try {
-    const raw = window.localStorage.getItem(MIRRORKEY);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter((row): row is StudioConversation => row !== null && typeof row === "object" && Array.isArray((row as { messages?: unknown }).messages));
+    const raw = localStorage.getItem(STORAGE_WORKSPACES_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.filter(
+          (w): w is Workspace =>
+            Boolean(w && typeof w.id === 'string' && typeof w.name === 'string')
+        );
+      }
+    }
   } catch {
-    return [];
+    // ignore corrupted storage
   }
+  return [createDefaultWorkspace()];
 }
 
-/** writes the localStorage mirror (best effort). */
-function writemirror(conversations: StudioConversation[]): void {
-  try {
-    window.localStorage.setItem(MIRRORKEY, JSON.stringify(conversations));
-  } catch {
-    /* a full or absent storage lane never breaks the surface */
+function makeId(prefix: string): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `${prefix}_${crypto.randomUUID()}`;
   }
+  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
 
-/** reads the onboarding start prefs. */
-function readprefs(): { version?: string; modelId?: string; thinkingLevel?: string } | null {
+function createEmptyConversation(
+  route: RouteName = 'v1',
+  modelId = '',
+  workspaceId = DEFAULT_WORKSPACE_ID
+): Conversation {
+  const now = Date.now();
+  const id = makeId('conv');
+  return {
+    id,
+    workspaceId,
+    sessionId: id,
+    title: 'New chat',
+    route,
+    modelId,
+    systemPrompt: '',
+    temperature: 0.7,
+    thinkingLevel: 'default',
+    messages: [],
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+function loadInitialConversations(): Conversation[] {
   try {
-    const raw = window.localStorage.getItem(PREFSKEY);
-    if (!raw) return null;
-    const parsed: unknown = JSON.parse(raw);
-    if (parsed === null || typeof parsed !== "object") return null;
-    return parsed as { version?: string; modelId?: string; thinkingLevel?: string };
+    const raw = localStorage.getItem(STORAGE_CONVS_KEY);
+    if (!raw) return [createEmptyConversation()];
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      return parsed.map((c) => ({
+        ...c,
+        workspaceId: c.workspaceId || DEFAULT_WORKSPACE_ID,
+        messages: Array.isArray(c.messages)
+          ? c.messages.map((m: ChatMessage) => ({ ...m, isStreaming: false }))
+          : [],
+      }));
+    }
   } catch {
+    // ignore corrupted storage
+  }
+  return [createEmptyConversation()];
+}
+
+function loadInitialOpenTabIds(): string[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_OPEN_TABS_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    if (Array.isArray(parsed)) {
+      return parsed.filter((id): id is string => typeof id === 'string');
+    }
+  } catch {
+    // ignore
+  }
+  return [];
+}
+
+function AppContent() {
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_THEME_KEY);
+      return saved === 'dark' ? 'dark' : 'light';
+    } catch {
+      return 'light';
+    }
+  });
+
+  const [baseUrl, setBaseUrl] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_BASE_URL_KEY);
+      return saved ? normalizeBaseUrl(saved) || DEFAULT_GATEWAY_BASE_URL : DEFAULT_GATEWAY_BASE_URL;
+    } catch {
+      return DEFAULT_GATEWAY_BASE_URL;
+    }
+  });
+
+  const [workspaces, setWorkspaces] = useState<Workspace[]>(loadInitialWorkspaces);
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string>(() => {
+    try {
+      return localStorage.getItem(STORAGE_ACTIVE_WORKSPACE_KEY) || DEFAULT_WORKSPACE_ID;
+    } catch {
+      return DEFAULT_WORKSPACE_ID;
+    }
+  });
+  const [permissionMode, setPermissionMode] = useState<PermissionMode>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_PERMISSION_MODE_KEY);
+      if (saved === 'full' || saved === 'assisted' || saved === 'readonly') return saved;
+    } catch {
+      // ignore
+    }
+    return 'assisted';
+  });
+  const [workspaceMemory, setWorkspaceMemory] = useState<string>(() => {
+    try {
+      return localStorage.getItem(STORAGE_MEMORY_KEY) || '';
+    } catch {
+      return '';
+    }
+  });
+  const [userDisplayName, setUserDisplayName] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_USER_NAME_KEY);
+      if (!saved || saved === 'DevThink Studio') return '';
+      return saved;
+    } catch {
+      return '';
+    }
+  });
+
+  const [conversations, setConversations] = useState<Conversation[]>(loadInitialConversations);
+  const [activeConversationId, setActiveConversationId] = useState<string>(() => {
+    try {
+      return localStorage.getItem(STORAGE_ACTIVE_KEY) || '';
+    } catch {
+      return '';
+    }
+  });
+  const [openTabIds, setOpenTabIds] = useState<string[]>(loadInitialOpenTabIds);
+
+  const [routeResults, setRouteResults] = useState<RouteDiscoveryResult[]>([]);
+  const [isDiscovering, setIsDiscovering] = useState<boolean>(true);
+  const [discoveryError, setDiscoveryError] = useState<string | null>(null);
+
+  const [isDesktop, setIsDesktop] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  );
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  );
+  const [sidebarTab, setSidebarTab] = useState<SidebarTab>('chats');
+  const [railMode, setRailMode] = useState<RailMode>(() => {
+    try {
+      const savedMode = localStorage.getItem(STORAGE_RAIL_MODE_KEY);
+      const legacyFloating = localStorage.getItem(STORAGE_FLOATING_RAIL_KEY) === 'true';
+      return normalizeRailMode(savedMode, legacyFloating);
+    } catch {
+      return 'full';
+    }
+  });
+  const [sidebarSearchOpen, setSidebarSearchOpen] = useState<boolean>(false);
+  const [floatingSidebar, setFloatingSidebar] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(STORAGE_FLOATING_SIDEBAR_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [sidebarWidth, setSidebarWidth] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_SIDEBAR_WIDTH_KEY);
+      return saved ? clampSidebarWidth(saved) : DEFAULT_SIDEBAR_WIDTH;
+    } catch {
+      return DEFAULT_SIDEBAR_WIDTH;
+    }
+  });
+  const [dragPreviewWidth, setDragPreviewWidth] = useState<number | null>(null);
+  const [isResizingSidebar, setIsResizingSidebar] = useState<boolean>(false);
+  const [ansiEnabled, setAnsiEnabled] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(STORAGE_ANSI_BG_KEY) !== 'false';
+    } catch {
+      return true;
+    }
+  });
+  const [glowEnabled, setGlowEnabled] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(STORAGE_FX_GLOW_KEY) !== 'false';
+    } catch {
+      return true;
+    }
+  });
+  const [blurEnabled, setBlurEnabled] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(STORAGE_FX_BLUR_KEY) !== 'false';
+    } catch {
+      return true;
+    }
+  });
+  const [transparencyEnabled, setTransparencyEnabled] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(STORAGE_FX_TRANSPARENCY_KEY) !== 'false';
+    } catch {
+      return true;
+    }
+  });
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(STORAGE_AUTO_SCROLL_KEY) !== 'false';
+    } catch {
+      return true;
+    }
+  });
+  const [pinnedConvIds, setPinnedConvIds] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_PINNED_CONVS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === 'string') : [];
+    } catch {
+      return [];
+    }
+  });
+  const [railDockEdge, setRailDockEdge] = useState<SaddleDockEdge>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_RAIL_DOCK_EDGE_KEY);
+      if (saved === 'left' || saved === 'right' || saved === 'top' || saved === 'bottom') {
+        return saved;
+      }
+    } catch {
+      // ignore
+    }
+    return 'left';
+  });
+  const [railPos, setRailPos] = useState<RailPosition | null>(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_RAIL_POS_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed.x === 'number' && typeof parsed.y === 'number') {
+        return { x: parsed.x, y: parsed.y };
+      }
+    } catch {
+      // ignore
+    }
     return null;
-  }
-}
+  });
+  const [workspaceTasks, setWorkspaceTasks] = useState<WorkspaceTask[]>(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_TASKS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed)
+        ? parsed.filter(
+            (t): t is WorkspaceTask =>
+              Boolean(t && typeof t.id === 'string' && typeof t.label === 'string')
+          )
+        : [];
+    } catch {
+      return [];
+    }
+  });
 
-/** reads the studio projects (workspaces) — the default group answers when
- * the storage lane is empty. */
-function readworkspaces(): WorkspaceGroup[] {
-  try {
-    const raw = window.localStorage.getItem(WORKSPACESKEY);
-    if (!raw) return [{ id: "ws-default", name: label("studio.panel.projects"), expanded: true }];
-    const parsed: unknown = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) return parsed as WorkspaceGroup[];
-  } catch {
-    /* the default group answers */
-  }
-  return [{ id: "ws-default", name: label("studio.panel.projects"), expanded: true }];
-}
+  const [inspectorOpen, setInspectorOpen] = useState(false);
 
-/** reads the conversation→project map. */
-function readwsmap(): Record<string, string> {
-  try {
-    const raw = window.localStorage.getItem(WSMAPKEY);
-    if (!raw) return {};
-    const parsed: unknown = JSON.parse(raw);
-    if (parsed !== null && typeof parsed === "object") return parsed as Record<string, string>;
-  } catch {
-    /* an empty map answers */
-  }
-  return {};
-}
-
-/** maps one stored conversation row to the studio state row. */
-function fromrow(row: ClientConversationRow & { messages: ClientMessageRow[] }): StudioConversation {
-  return {
-    id: row.id,
-    title: row.title || label("studio.panel.untitled"),
-    version: row.route ?? "v1",
-    modelId: row.modelId ?? "devthink",
-    thinkingLevel: row.thinkingLevel ?? DEFAULTTHINKINGLEVEL,
-    temperature: typeof row.temperature === "number" ? row.temperature : DEFAULTTEMPERATURE,
-    sessionId: row.sessionId ?? newsessionid(),
-    messages: (row.messages ?? []).map((message) => ({
-      id: message.id,
-      role: message.role === "assistant" ? "assistant" : "user",
-      content: message.content ?? "",
-      reasoning: message.reasoning ?? undefined,
-      images: Array.isArray(message.images) ? (message.images as { dataUrl?: string }[]).map((img) => typeof img === "string" ? img : (img.dataUrl ?? "")).filter((url) => url !== "") : undefined,
-      modelId: message.modelId ?? undefined,
-      route: message.route ?? undefined,
-      provider: message.provider ?? undefined,
-      backendModel: undefined,
-      fallback: message.fallback ?? undefined,
-      error: message.error ?? undefined,
-      usage: message.usage !== null && typeof message.usage === "object" ? (message.usage as StudioMessage["usage"]) : undefined,
-      createdAt: message.createdAt ?? "",
-    })),
-    createdAt: row.createdAt ?? "",
-    updatedAt: row.updatedAt ?? "",
-  };
-}
-
-/** builds the upsert body of one conversation. */
-function toupsert(conversation: StudioConversation): ConversationUpsert {
-  return {
-    id: conversation.id,
-    title: conversation.title,
-    route: conversation.version,
-    modelId: conversation.modelId,
-    thinkingLevel: conversation.thinkingLevel,
-    temperature: conversation.temperature,
-    sessionId: conversation.sessionId,
-    messages: conversation.messages.map((message) => ({
-      id: message.id,
-      role: message.role,
-      content: message.content,
-      reasoning: message.reasoning ?? null,
-      images: message.images ?? undefined,
-      modelId: message.modelId ?? null,
-      route: message.route ?? null,
-      provider: message.provider ?? null,
-      fallback: message.fallback ?? null,
-      error: message.error ?? null,
-      usage: message.usage ?? null,
-    })),
-  };
-}
-
-/** formats one token count the meta row renders (1.2k above a thousand). */
-function formattokens(count: number | undefined): string {
-  if (count === undefined || !Number.isFinite(count)) return "";
-  if (count < 1000) return String(count);
-  return `${(count / 1000).toFixed(1).replace(/\.0$/, "")}k`;
-}
-
-/** builds the multimodal parts of one send — the text first, the images
- * after (the openai wire grammar the gateway routes natively). */
-function turnparts(text: string, images: string[]): Array<ChatPart> | string {
-  if (images.length === 0) return text;
-  const parts: ChatPart[] = [];
-  if (text !== "") parts.push({ type: "text", text });
-  for (const url of images) parts.push({ type: "image_url", image_url: { url } });
-  return parts;
-}
-
-/* ===== block: the rich message renderer ================================ */
-
-/** one fenced block of the message body — code or prose. */
-type MessageBlock = { kind: "code"; lang: string; code: string } | { kind: "text"; text: string };
-
-/** splits one message body into fenced code blocks and prose runs. */
-function splitblocks(content: string): MessageBlock[] {
-  const blocks: MessageBlock[] = [];
-  const fence = /```([a-zA-Z0-9_-]*)\n([\s\S]*?)```/g;
-  let last = 0;
-  let match: RegExpExecArray | null;
-  while ((match = fence.exec(content)) !== null) {
-    if (match.index > last) blocks.push({ kind: "text", text: content.slice(last, match.index) });
-    blocks.push({ kind: "code", lang: match[1] || "tsx", code: match[2].replace(/\n$/, "") });
-    last = match.index + match[0].length;
-  }
-  if (last < content.length) blocks.push({ kind: "text", text: content.slice(last) });
-  return blocks;
-}
-
-/* ===== block: the studio surface ======================================= */
-
-/**
- * the studio os screen.
- *
- * @returns the studio element.
- */
-export default function Studio() {
-  /* ---- the conversation state (the chat grammar) ---- */
-  const [conversations, setConversations] = useState<StudioConversation[]>([]);
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [ghost, setGhost] = useState<StreamGhost | null>(null);
-  const [routes, setRoutes] = useState<DiscoveryRoute[] | null>(null);
-  const [probing, setProbing] = useState(false);
-  const [originField, setOriginField] = useState(() => gatewayorigin());
-  const [hydrated, setHydrated] = useState(false);
-  const [armedDelete, setArmedDelete] = useState<string | null>(null);
-
-  /* ---- the studio os state (the interface 17 grammar) ---- */
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [floatingSidebar, setFloatingSidebar] = useState(false);
-  const [dockEdge, setDockEdge] = useState<SaddleDockEdge>("left");
-  const [sidebarPos, setSidebarPos] = useState<{ x: number; y: number } | null>(null);
-  const [draggingSidebar, setDraggingSidebar] = useState(false);
-  const [sidebarSection, setSidebarSection] = useState<"projects" | "routes" | "settings">("projects");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  /* ---------------- the getry page lane + the live request log ----------- */
+  const [, navigate] = useLocation();
   const [terminalOpen, setTerminalOpen] = useState(false);
-  const [terminalLog, setTerminalLog] = useState<TerminalLine[]>([]);
-  const [workspaces, setWorkspaces] = useState<WorkspaceGroup[]>(() => readworkspaces());
-  const [wsMap, setWsMap] = useState<Record<string, string>>(() => readwsmap());
-  const [activeWorkspace, setActiveWorkspace] = useState("ws-default");
-  const [modelPickerOpen, setModelPickerOpen] = useState(false);
-  const [thinkingOpen, setThinkingOpen] = useState(false);
-  const [modelQuery, setModelQuery] = useState("");
-  const [expandedReasoning, setExpandedReasoning] = useState<Record<string, boolean>>({});
-  const [studioToast, setStudioToast] = useState<string | null>(null);
-  const [draft, setDraft] = useState("");
-  const [pendingImages, setPendingImages] = useState<string[]>([]);
+  const [terminalLog, setTerminalLog] = useState<TerminalLogLine[]>([]);
 
-  const abortRef = useRef<AbortController | null>(null);
-  const saveTimer = useRef<number | undefined>(undefined);
-  const threadRef = useRef<HTMLDivElement | null>(null);
-  const rootRef = useRef<HTMLDivElement | null>(null);
-  const overlayRef = useRef<HTMLElement | null>(null);
-  const dragRef = useRef<{ pointerId: number; startX: number; startY: number; originX: number; originY: number; moved: boolean } | null>(null);
-  const suppressClickRef = useRef(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const hydratedRef = useRef(false);
-
-  const active = useMemo(() => conversations.find((conversation) => conversation.id === activeId) ?? null, [conversations, activeId]);
-  const streaming = ghost !== null;
-
-  const showToast = useCallback((message: string) => setStudioToast(message), []);
-  useEffect(() => {
-    if (studioToast === null) return;
-    const timer = window.setTimeout(() => setStudioToast(null), 2200);
-    return () => window.clearTimeout(timer);
-  }, [studioToast]);
-
-  const logterminal = useCallback((method: string, path: string, status: number | string, detail: string, durationMs?: number) => {
-    setTerminalLog((prev) => [{ id: newid("log"), at: Date.now(), method, path, status, detail, durationMs }, ...prev].slice(0, 120));
-  }, []);
-
-  /* ---- the mount: the load, the discovery ---- */
-
-  const refreshroutes = useCallback(async () => {
-    setProbing(true);
-    const started = Date.now();
-    try {
-      const probed = await discovery(gatewayorigin());
-      setRoutes(probed);
-      const live = probed.filter((route) => route.status === "live").length;
-      const models = probed.reduce((acc, route) => acc + route.models.length, 0);
-      logterminal("GET", "/{v1..v5}/models", live > 0 ? 200 : 503, label("studio.terminal.probe").replace("{live}", String(live)).replace("{total}", String(probed.length)).replace("{models}", String(models)), Date.now() - started);
-    } finally {
-      setProbing(false);
-    }
-  }, [logterminal]);
-
-  useEffect(() => {
-    let live = true;
-    void (async () => {
-      const dbrows = await listconversations();
-      if (!live) return;
-      const localrows = readmirror();
-      const byid = new Map(localrows.map((row) => [row.id, row]));
-      for (const row of dbrows) byid.set(row.id, fromrow(row));
-      const merged = [...byid.values()].sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
-      hydratedRef.current = true;
-      setConversations(merged);
-      if (merged.length > 0) setActiveId(merged[0].id);
-      setHydrated(true);
-    })();
-    void refreshroutes();
-    try {
-      if (window.innerWidth < 1024) setSidebarOpen(false);
-    } catch {
-      /* the width probe never breaks the boot */
-    }
-    return () => {
-      live = false;
-    };
-  }, [refreshroutes]);
-
-  /* ---- the persistence: the mirror now, the db lane debounced ---- */
-
-  useEffect(() => {
-    if (!hydrated) return;
-    writemirror(conversations);
-    window.clearTimeout(saveTimer.current);
-    const conversation = conversations.find((row) => row.id === activeId);
-    if (!conversation || conversation.messages.length === 0) return;
-    saveTimer.current = window.setTimeout(() => {
-      void saveconversationremote(toupsert(conversation));
-    }, SAVEDEBOUNCE);
-    return () => window.clearTimeout(saveTimer.current);
-  }, [conversations, activeId, hydrated]);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    try {
-      window.localStorage.setItem(WORKSPACESKEY, JSON.stringify(workspaces));
-      window.localStorage.setItem(WSMAPKEY, JSON.stringify(wsMap));
-    } catch {
-      /* the project lanes never break the surface */
-    }
-  }, [workspaces, wsMap, hydrated]);
-
-  /* ---- the thread auto-scroll ---- */
-
-  useEffect(() => {
-    const thread = threadRef.current;
-    if (thread) thread.scrollTop = thread.scrollHeight;
-  }, [ghost?.content, ghost?.reasoning, active?.messages.length, activeId]);
-
-  /* ---- the overlay sidebar drag (the 4-edge saddle law) ---- */
-
-  function onOverlayPointerDown(event: React.PointerEvent<HTMLElement>) {
-    if (event.button !== 0) return;
-    const el = overlayRef.current;
-    const rootEl = rootRef.current;
-    if (!el || !rootEl) return;
-    const rootRect = rootEl.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    const originX = elRect.left - rootRect.left + elRect.width / 2;
-    const originY = elRect.top - rootRect.top + elRect.height / 2;
-    dragRef.current = { pointerId: event.pointerId, startX: event.clientX - rootRect.left, startY: event.clientY - rootRect.top, originX, originY, moved: false };
-  }
-
-  useEffect(() => {
-    const onMove = (event: PointerEvent) => {
-      const drag = dragRef.current;
-      const rootEl = rootRef.current;
-      if (!drag || drag.pointerId !== event.pointerId || !rootEl) return;
-      const rootRect = rootEl.getBoundingClientRect();
-      const mouseX = event.clientX - rootRect.left;
-      const mouseY = event.clientY - rootRect.top;
-      const dist = Math.hypot(mouseX - drag.startX, mouseY - drag.startY);
-      if (!drag.moved && dist > 5) {
-        drag.moved = true;
-        suppressClickRef.current = true;
-        setDraggingSidebar(true);
-      }
-      if (!drag.moved) return;
-      const viewW = rootEl.offsetWidth;
-      const viewH = rootEl.offsetHeight;
-      const blend = Math.min(1, dist / 36);
-      const grabX = (drag.originX - drag.startX) * (1 - blend);
-      const grabY = (drag.originY - drag.startY) * (1 - blend);
-      const rawX = Math.max(16, Math.min(viewW - 16, mouseX + grabX));
-      const rawY = Math.max(16, Math.min(viewH - 16, mouseY + grabY));
-      const distLeft = mouseX;
-      const distRight = viewW - mouseX;
-      const distTop = mouseY;
-      const distBottom = viewH - mouseY;
-      const minDist = Math.min(distLeft, distRight, distTop, distBottom);
-      if (minDist <= 26) {
-        setFloatingSidebar(false);
-        if (minDist === distLeft) {
-          setDockEdge("left");
-          setSidebarPos({ x: 0, y: Math.max(78, Math.min(viewH - 78, mouseY)) });
-        } else if (minDist === distRight) {
-          setDockEdge("right");
-          setSidebarPos({ x: viewW, y: Math.max(78, Math.min(viewH - 78, mouseY)) });
-        } else if (minDist === distTop) {
-          setDockEdge("top");
-          setSidebarPos({ x: Math.max(82, Math.min(viewW - 82, mouseX)), y: 0 });
-        } else {
-          setDockEdge("bottom");
-          setSidebarPos({ x: Math.max(82, Math.min(viewW - 82, mouseX)), y: viewH });
-        }
-      } else {
-        setFloatingSidebar(true);
-        setSidebarPos({ x: rawX, y: rawY });
-      }
-    };
-    const onUp = (event: PointerEvent) => {
-      const drag = dragRef.current;
-      if (!drag || drag.pointerId !== event.pointerId) return;
-      if (drag.moved) {
-        window.setTimeout(() => {
-          suppressClickRef.current = false;
-        }, 60);
-      } else {
-        suppressClickRef.current = false;
-      }
-      dragRef.current = null;
-      setDraggingSidebar(false);
-    };
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-    };
-  }, []);
-
-  /* ---- the catalog: live discovery with the family seed fallback ---- */
-
-  const modeloptions = useCallback(
-    (version: string): Array<{ id: string; context?: number; output?: number; meta: boolean; pool: boolean }> => {
-      const discovered = routes?.find((route) => route.version === version && route.status === "live");
-      const pool = new Set(discovered?.meta?.rotationPool ?? smartpoolof(gatewayViewConfig, version));
-      if (discovered && discovered.models.length > 0) {
-        return discovered.models.map((row) => ({ id: row.id, context: row.context, output: row.output, meta: row.id === "devthink", pool: pool.has(row.id) }));
-      }
-      const config = gatewayViewConfig.versions[version];
-      if (!config) return [];
-      return config.models.map((model) => ({ id: model.id, context: model.context, output: model.maxoutput, meta: model.id === config.metamodel?.id, pool: pool.has(model.id) }));
+  const logTerminal = useCallback(
+    (
+      method: string,
+      path: string,
+      status: number | string,
+      detail: string,
+      durationMs?: number
+    ) => {
+      setTerminalLog((prev) =>
+        [
+          {
+            id: makeId('log'),
+            at: Date.now(),
+            method,
+            path,
+            status,
+            detail,
+            durationMs,
+          },
+          ...prev,
+        ].slice(0, 120)
+      );
     },
-    [routes],
+    []
   );
 
-  const routestatus = (version: string): "live" | "paused" | "error" => {
-    const probed = routes?.find((route) => route.version === version);
-    if (probed) return probed.status;
-    return gatewayViewConfig.versions[version]?.paused === true ? "paused" : "live";
-  };
+  const [composerInput, setComposerInput] = useState('');
+  const [pendingImages, setPendingImages] = useState<ChatImageAttachment[]>([]);
+  const [streamingConvId, setStreamingConvId] = useState<string | null>(null);
+  const [isImporting, setIsImporting] = useState(false);
 
-  /** the two tactile quick models of the segmented selector: the devthink
-   * meta-models of the two best live routes. */
-  const quickmetas = useMemo(() => {
-    const metas: Array<{ version: string; pool: string[] }> = [];
-    for (const route of routes ?? []) {
-      if (route.status !== "live" || route.meta === null) continue;
-      metas.push({ version: route.version, pool: route.meta.rotationPool });
-    }
-    if (metas.length === 0) {
-      for (const version of DISCOVERYVERSIONS) {
-        if (routestatus(version) === "paused") continue;
-        if (metas.length >= 2) break;
-        metas.push({ version, pool: smartpoolof(gatewayViewConfig, version) });
-      }
-    }
-    return metas.slice(0, 2);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [routes]);
+  const [showIntro, setShowIntro] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    const params = new URLSearchParams(window.location.search);
+    return params.get('autostart') !== '1';
+  });
+  const [ansiPulseCount, setAnsiPulseCount] = useState<number>(0);
+  const [attachSignal, setAttachSignal] = useState<number>(0);
+  const [focusSignal, setFocusSignal] = useState<number>(0);
+  const [searchFocusSignal, setSearchFocusSignal] = useState<number>(0);
 
-  /* ---- the conversation actions ---- */
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const shellRef = useRef<HTMLDivElement>(null);
+  const dbHydratedRef = useRef(false);
+  const lastSavedSnapshotRef = useRef<Record<string, string>>({});
 
-  function newconversation(): StudioConversation {
-    const now = new Date().toISOString();
-    const prefs = readprefs();
-    return {
-      id: newid("conv"),
-      title: label("studio.panel.untitled"),
-      version: typeof prefs?.version === "string" && prefs.version !== "" ? prefs.version : "v1",
-      modelId: typeof prefs?.modelId === "string" && prefs.modelId !== "" ? prefs.modelId : "devthink",
-      thinkingLevel: typeof prefs?.thinkingLevel === "string" && prefs.thinkingLevel !== "" ? prefs.thinkingLevel : DEFAULTTHINKINGLEVEL,
-      temperature: DEFAULTTEMPERATURE,
-      sessionId: newsessionid(),
-      messages: [],
-      createdAt: now,
-      updatedAt: now,
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const onChange = (e: MediaQueryListEvent) => {
+      setIsDesktop(e.matches);
+      setSidebarOpen(e.matches);
     };
-  }
+    setIsDesktop(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
-  function startnew(workspaceId?: string) {
-    abortRef.current?.abort();
-    const conversation = newconversation();
-    setConversations((prev) => [conversation, ...prev]);
-    setActiveId(conversation.id);
-    setDraft("");
-    setPendingImages([]);
-    if (workspaceId) setWsMap((prev) => ({ ...prev, [conversation.id]: workspaceId }));
-  }
-
-  function removeconversation(id: string) {
-    if (armedDelete !== id) {
-      setArmedDelete(id);
-      window.setTimeout(() => setArmedDelete((current) => (current === id ? null : current)), 2600);
-      return;
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_RAIL_MODE_KEY, railMode);
+      localStorage.setItem(STORAGE_FLOATING_RAIL_KEY, String(railMode === 'floating'));
+    } catch {
+      // ignore
     }
-    setArmedDelete(null);
-    if (id === activeId) setActiveId(null);
-    setConversations((prev) => {
-      const next = prev.filter((row) => row.id !== id);
-      writemirror(next);
-      return next;
-    });
-    void deleteconversationremote(id);
-    toast(label("studio.toast.deleted"), "info");
-  }
+  }, [railMode]);
 
-  function pickversion(version: string) {
-    if (routestatus(version) === "paused") return;
-    const options = modeloptions(version);
-    setConversations((prev) =>
-      prev.map((row) =>
-        row.id === activeId
-          ? { ...row, version, modelId: options.some((option) => option.id === row.modelId) ? row.modelId : "devthink", updatedAt: new Date().toISOString() }
-          : row,
-      ),
-    );
-  }
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_FLOATING_SIDEBAR_KEY, String(floatingSidebar));
+    } catch {
+      // ignore
+    }
+  }, [floatingSidebar]);
 
-  function pickmodel(id: string) {
-    setConversations((prev) => prev.map((row) => (row.id === activeId ? { ...row, modelId: id, updatedAt: new Date().toISOString() } : row)));
-    setModelPickerOpen(false);
-  }
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_SIDEBAR_WIDTH_KEY, String(sidebarWidth));
+    } catch {
+      // ignore
+    }
+  }, [sidebarWidth]);
 
-  function pickthinking(level: string) {
-    setConversations((prev) => prev.map((row) => (row.id === activeId ? { ...row, thinkingLevel: level, updatedAt: new Date().toISOString() } : row)));
-    setThinkingOpen(false);
-  }
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_ANSI_BG_KEY, String(ansiEnabled));
+    } catch {
+      // ignore
+    }
+  }, [ansiEnabled]);
 
-  function commitorigin() {
-    const accepted = setgatewayorigin(originField);
-    setOriginField(accepted);
-    void refreshroutes();
-  }
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_FX_GLOW_KEY, String(glowEnabled));
+    } catch {
+      // ignore
+    }
+  }, [glowEnabled]);
 
-  function createworkspace() {
-    const id = `ws-${Date.now()}`;
-    const name = `Project 0${workspaces.length + 1}`;
-    setWorkspaces((prev) => [{ id, name, expanded: true }, ...prev]);
-    setActiveWorkspace(id);
-    setSidebarSection("projects");
-    setSidebarOpen(true);
-    showToast(`created ${name}`);
-  }
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_FX_BLUR_KEY, String(blurEnabled));
+    } catch {
+      // ignore
+    }
+  }, [blurEnabled]);
 
-  /* ---- the image attachments ---- */
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_FX_TRANSPARENCY_KEY, String(transparencyEnabled));
+    } catch {
+      // ignore
+    }
+  }, [transparencyEnabled]);
 
-  function attachfiles(files: FileList | null) {
-    if (!files || files.length === 0) return;
-    const images = Array.from(files).filter((file) => file.type.startsWith("image/")).slice(0, MAXIMAGES);
-    if (images.length === 0) return;
-    for (const file of images) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          setPendingImages((prev) => (prev.length >= MAXIMAGES ? prev : [...prev, reader.result as string]));
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_AUTO_SCROLL_KEY, String(autoScrollEnabled));
+    } catch {
+      // ignore
+    }
+  }, [autoScrollEnabled]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_PINNED_CONVS_KEY, JSON.stringify(pinnedConvIds));
+    } catch {
+      // ignore
+    }
+  }, [pinnedConvIds]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_RAIL_DOCK_EDGE_KEY, railDockEdge);
+    } catch {
+      // ignore
+    }
+  }, [railDockEdge]);
+
+  useEffect(() => {
+    try {
+      if (railPos) {
+        localStorage.setItem(STORAGE_RAIL_POS_KEY, JSON.stringify(railPos));
+      } else {
+        localStorage.removeItem(STORAGE_RAIL_POS_KEY);
+      }
+    } catch {
+      // ignore
+    }
+  }, [railPos]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_TASKS_KEY, JSON.stringify(workspaceTasks));
+    } catch {
+      // ignore
+    }
+  }, [workspaceTasks]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_WORKSPACES_KEY, JSON.stringify(workspaces));
+    } catch {
+      // ignore
+    }
+  }, [workspaces]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_ACTIVE_WORKSPACE_KEY, activeWorkspaceId);
+    } catch {
+      // ignore
+    }
+  }, [activeWorkspaceId]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_PERMISSION_MODE_KEY, permissionMode);
+    } catch {
+      // ignore
+    }
+  }, [permissionMode]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_MEMORY_KEY, workspaceMemory);
+    } catch {
+      // ignore
+    }
+  }, [workspaceMemory]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_USER_NAME_KEY, userDisplayName);
+    } catch {
+      // ignore
+    }
+  }, [userDisplayName]);
+
+  const handleResizePointerDown = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (!isDesktop) return;
+      e.preventDefault();
+      const startX = e.clientX;
+      const startWidth = sidebarWidth;
+      setIsResizingSidebar(true);
+      document.body.classList.add('select-none');
+
+      const onMove = (ev: PointerEvent) => {
+        const raw = startWidth + (ev.clientX - startX);
+        if (raw < 130) {
+          setDragPreviewWidth(Math.max(0, raw));
+        } else {
+          setDragPreviewWidth(null);
+          setSidebarWidth(Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, Math.round(raw))));
         }
       };
-      reader.readAsDataURL(file);
+
+      const onUp = (ev: PointerEvent) => {
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener('pointercancel', onUp);
+        document.body.classList.remove('select-none');
+
+        const raw = startWidth + (ev.clientX - startX);
+        if (raw < 130) {
+          setSidebarOpen(false);
+          setSidebarWidth(startWidth >= MIN_SIDEBAR_WIDTH ? startWidth : DEFAULT_SIDEBAR_WIDTH);
+        }
+        setDragPreviewWidth(null);
+        setIsResizingSidebar(false);
+      };
+
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+      window.addEventListener('pointercancel', onUp);
+    },
+    [isDesktop, sidebarWidth]
+  );
+
+  // Sync dark class and data-theme attribute on <html> atomically without transition ghosting
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.add('theme-switching');
+    root.classList.toggle('dark', theme === 'dark');
+    root.setAttribute('data-theme', theme);
+    void root.offsetHeight;
+    let raf1 = 0;
+    let raf2 = 0;
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        root.classList.remove('theme-switching');
+      });
+    });
+    try {
+      localStorage.setItem(STORAGE_THEME_KEY, theme);
+    } catch {
+      // ignore
     }
-  }
+    return () => {
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      root.classList.remove('theme-switching');
+    };
+  }, [theme]);
 
-  /* ---- the send, stop and retry lanes ---- */
+  // Persist conversations
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_CONVS_KEY, JSON.stringify(conversations));
+    } catch {
+      // ignore quota exceeded
+    }
+  }, [conversations]);
 
-  const appendmessage = useCallback((conversationId: string, message: StudioMessage) => {
-    setConversations((prev) => prev.map((row) => (row.id === conversationId ? { ...row, messages: [...row.messages, message], updatedAt: message.createdAt } : row)));
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_OPEN_TABS_KEY, JSON.stringify(openTabIds));
+    } catch {
+      // ignore
+    }
+  }, [openTabIds]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_BASE_URL_KEY, baseUrl);
+    } catch {
+      // ignore
+    }
+  }, [baseUrl]);
+
+  // Hydrate conversations from self-hosted SQLite on mount
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const dbConvs = await fetchConversationsFromDb();
+        if (cancelled) return;
+        const dbIds = new Set(dbConvs.map((c) => c.id));
+        const localNonEmpty = conversations.filter(
+          (c) => c.messages.length > 0 && !dbIds.has(c.id)
+        );
+        for (const c of localNonEmpty) {
+          await saveConversationToDb(c).catch(() => undefined);
+        }
+        const merged =
+          localNonEmpty.length > 0 ? [...localNonEmpty, ...dbConvs] : dbConvs;
+
+        if (merged.length > 0) {
+          for (const c of merged) {
+            lastSavedSnapshotRef.current[c.id] = JSON.stringify(c);
+          }
+          setConversations(merged);
+          const current = merged.find((c) => c.id === activeConversationId);
+          if (!current || current.messages.length === 0) {
+            const preferred =
+              merged.find((c) => c.messages.length > 0) ?? merged[0];
+            setActiveConversationId(preferred.id);
+            setOpenTabIds((prev) => {
+              const valid = prev.filter((id) => merged.some((c) => c.id === id));
+              if (valid.includes(preferred.id)) return valid;
+              return [preferred.id, ...valid].slice(0, 6);
+            });
+          }
+        }
+      } catch {
+        // Fallback to localStorage if server DB is temporarily unreachable
+      } finally {
+        if (!cancelled) {
+          dbHydratedRef.current = true;
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function assistantof(conversation: StudioConversation, result: ChatResult, createdAt: string): StudioMessage {
-    return {
-      id: newid("msg"),
-      role: "assistant",
-      content: result.content,
-      reasoning: result.reasoning !== "" ? result.reasoning : undefined,
-      modelId: result.model ?? conversation.modelId,
-      route: conversation.version,
-      provider: result.provider,
-      backendModel: result.backendModel,
-      fallback: result.fallback,
-      usage: result.usage,
-      createdAt,
-    };
-  }
+  // Persist active conversation to self-hosted SQLite when not actively streaming
+  useEffect(() => {
+    if (!dbHydratedRef.current || streamingConvId) return;
+    const conv = conversations.find((c) => c.id === activeConversationId);
+    if (!conv) return;
+    const snap = JSON.stringify(conv);
+    if (lastSavedSnapshotRef.current[conv.id] === snap) return;
+    const timer = setTimeout(() => {
+      lastSavedSnapshotRef.current[conv.id] = snap;
+      saveConversationToDb(conv).catch(() => undefined);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [conversations, activeConversationId, streamingConvId, baseUrl]);
 
-  async function send(text: string, images: string[] = []) {
-    if (ghost !== null) return;
-    let conversation = active;
-    if (!conversation) {
-      conversation = newconversation();
-      setConversations((prev) => [conversation as StudioConversation, ...prev]);
-      setActiveId(conversation.id);
+  const activeConversation = useMemo(() => {
+    return (
+      conversations.find((c) => c.id === activeConversationId) ?? conversations[0]
+    );
+  }, [conversations, activeConversationId]);
+
+  useEffect(() => {
+    if (activeConversation && activeConversation.id !== activeConversationId) {
+      setActiveConversationId(activeConversation.id);
     }
-    const now = new Date().toISOString();
-    const user: StudioMessage = { id: newid("msg"), role: "user", content: text, images: images.length > 0 ? images : undefined, createdAt: now };
-    const history = [...conversation.messages, user];
-    const titled = conversation.messages.length === 0 ? derivetitle(text) : conversation.title;
-    setConversations((prev) => prev.map((row) => (row.id === conversation?.id ? { ...row, title: titled, messages: history, updatedAt: now } : row)));
-    const lane: StudioConversation = { ...conversation, messages: history };
-    const controller = new AbortController();
-    abortRef.current = controller;
-    setGhost({ conversationId: lane.id, content: "", reasoning: "" });
-    const started = Date.now();
-    try {
-      const result = await streamchat({
-        origin: gatewayorigin(),
-        version: lane.version,
-        model: lane.modelId,
-        messages: history.map((message) => ({ role: message.role, content: turnparts(message.content, message.images ?? []) })),
-        thinkingLevel: lane.thinkingLevel,
-        temperature: lane.temperature,
-        sessionId: lane.sessionId,
-        signal: controller.signal,
-        onDelta: (chunk) => setGhost((prev) => (prev && prev.conversationId === lane.id ? { ...prev, content: prev.content + chunk } : prev)),
-        onReasoning: (chunk) => setGhost((prev) => (prev && prev.conversationId === lane.id ? { ...prev, reasoning: prev.reasoning + chunk } : prev)),
+    if (activeConversation) {
+      setOpenTabIds((prev) => {
+        const existingSet = new Set(conversations.map((c) => c.id));
+        const filtered = prev.filter((id) => existingSet.has(id));
+        if (filtered.includes(activeConversation.id)) {
+          return filtered.length === prev.length ? prev : filtered;
+        }
+        return [...filtered, activeConversation.id];
       });
-      logterminal("POST", `/${lane.version}/chat/completions`, result.content === "" && result.reasoning === "" ? 502 : 200, `${lane.modelId}${result.backendModel ? ` → ${result.backendModel}` : ""}`, Date.now() - started);
-      const empty = result.content === "" && result.reasoning === "";
-      if (!(result.aborted === true && empty)) {
-        appendmessage(lane.id, assistantof(lane, result, new Date().toISOString()));
+      try {
+        localStorage.setItem(STORAGE_ACTIVE_KEY, activeConversation.id);
+      } catch {
+        // ignore
       }
-      if (result.aborted === true && !empty) {
-        toast(label("studio.thread.stopped"), "info");
-      } else if (result.aborted !== true && empty) {
-        toast(label("studio.thread.empty"), "error");
-      }
-    } catch (error) {
-      const reason = error instanceof Error ? error.message : "the route never answered";
-      logterminal("POST", `/${lane.version}/chat/completions`, "ERR", reason, Date.now() - started);
-      appendmessage(lane.id, { id: newid("msg"), role: "assistant", content: "", error: reason, modelId: lane.modelId, route: lane.version, createdAt: new Date().toISOString() });
-    } finally {
-      abortRef.current = null;
-      setGhost(null);
     }
-  }
+  }, [activeConversation, activeConversationId, conversations]);
 
-  function senddraft() {
-    const text = draft.trim();
-    if (text === "" && pendingImages.length === 0) return;
-    const images = pendingImages;
-    setDraft("");
-    setPendingImages([]);
-    void send(text === "" ? "descreva e analise esta imagem em detalhes" : text, images);
-  }
+  const openTabs = useMemo(() => {
+    const map = new Map(conversations.map((c) => [c.id, c]));
+    const resolved = openTabIds
+      .map((id) => map.get(id))
+      .filter((c): c is Conversation => Boolean(c));
+    if (resolved.length > 0) return resolved;
+    return activeConversation ? [activeConversation] : [];
+  }, [conversations, openTabIds, activeConversation]);
 
-  function stop() {
-    abortRef.current?.abort();
-  }
-
-  async function retry() {
-    if (ghost !== null || !active) return;
-    const messages = [...active.messages];
-    while (messages.length > 0 && messages[messages.length - 1].role === "assistant") messages.pop();
-    if (messages.length === 0) return;
-    const lane: StudioConversation = { ...active, messages };
-    setConversations((prev) => prev.map((row) => (row.id === lane.id ? { ...row, messages, updatedAt: new Date().toISOString() } : row)));
-    toast(label("chat.toast.retrying"), "info");
+  const runDiscovery = useCallback(async (targetBaseUrl: string) => {
+    setIsDiscovering(true);
+    setDiscoveryError(null);
     try {
-      const result = await completechat({
-        origin: gatewayorigin(),
-        version: lane.version,
-        model: lane.modelId,
-        messages: messages.map((message) => ({ role: message.role, content: turnparts(message.content, message.images ?? []) })),
-        thinkingLevel: lane.thinkingLevel,
-        temperature: lane.temperature,
-        sessionId: lane.sessionId,
-      });
-      appendmessage(lane.id, assistantof(lane, result, new Date().toISOString()));
-    } catch (error) {
-      const reason = error instanceof Error ? error.message : "the route never answered";
-      appendmessage(lane.id, { id: newid("msg"), role: "assistant", content: "", error: reason, modelId: lane.modelId, route: lane.version, createdAt: new Date().toISOString() });
-    }
-  }
+      const t0 = Date.now();
+      const { results } = await discoverGatewayRoutes(targetBaseUrl, DEFAULT_ROUTES);
+      logTerminal(
+        'GET',
+        '/{v1..v5}/models',
+        200,
+        `${results.filter((r) => r.status === 'live').length}/${results.length} live`,
+        Date.now() - t0
+      );
+      setRouteResults(results);
 
-  /* ---- the derived render rows ---- */
+      const firstLive =
+        results.find((r) => r.status === 'live' && r.models.length > 0) ??
+        results.find((r) => r.models.length > 0);
 
-  const thinkingladder = listlevels();
-
-  const conversationsOfWorkspace = (wsId: string) => conversations.filter((row) => (wsMap[row.id] ?? "ws-default") === wsId);
-
-  const filteredConversations = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (query === "") return null;
-    return conversations.filter((row) => row.title.toLowerCase().includes(query) || row.messages.some((message) => message.content.toLowerCase().includes(query)));
-  }, [conversations, searchQuery]);
-
-  const activeThread = active ? [...active.messages] : [];
-  if (ghost !== null && active !== null && ghost.conversationId === active.id) {
-    activeThread.push({ id: "ghost", role: "assistant", content: ghost.content, reasoning: ghost.reasoning !== "" ? ghost.reasoning : undefined, modelId: active.modelId, route: active.version, createdAt: "" });
-  }
-
-  const showstarters = activeThread.length === 0;
-
-  /* the overlay sidebar style — the dock edge or the floating pill */
-  const overlayStyle: React.CSSProperties = {};
-  if (floatingSidebar) {
-    overlayStyle.left = sidebarPos ? `${sidebarPos.x}px` : "28px";
-    overlayStyle.top = sidebarPos ? `${sidebarPos.y}px` : "56%";
-    overlayStyle.transform = "translate(-50%, -50%)";
-  } else if (dockEdge === "left") {
-    overlayStyle.left = "0px";
-    overlayStyle.top = sidebarPos ? `${sidebarPos.y}px` : "56%";
-    overlayStyle.transform = "translateY(-50%)";
-  } else if (dockEdge === "right") {
-    overlayStyle.right = "0px";
-    overlayStyle.top = sidebarPos ? `${sidebarPos.y}px` : "56%";
-    overlayStyle.transform = "translateY(-50%)";
-  } else if (dockEdge === "top") {
-    overlayStyle.top = "0px";
-    overlayStyle.left = sidebarPos ? `${sidebarPos.x}px` : "50%";
-    overlayStyle.transform = "translateX(-50%)";
-  } else {
-    overlayStyle.bottom = "0px";
-    overlayStyle.left = sidebarPos ? `${sidebarPos.x}px` : "50%";
-    overlayStyle.transform = "translateX(-50%)";
-  }
-
-  const isHorizontalPill = floatingSidebar ? Boolean(sidebarPos && (sidebarPos.y < 52 || sidebarPos.y > (rootRef.current?.offsetHeight ?? 800) - 52)) : dockEdge === "top" || dockEdge === "bottom";
-
-  /** the nav buttons of the overlay rail (workspace · routes · terminal ·
-   * theme · settings) with the saddle tooltips. */
-  const navbuttons = (
-    <>
-      {(
-        [
-          { key: "projects", glyph: <G.home fontSize={14} />, text: label("studio.nav.workspace"), on: sidebarSection === "projects" && sidebarOpen },
-          { key: "routes", glyph: <G.checklist fontSize={14} />, text: label("studio.nav.routes"), on: sidebarSection === "routes" && sidebarOpen },
-          { key: "terminal", glyph: <G.terminal fontSize={14} />, text: label("studio.nav.terminal"), on: terminalOpen },
-        ] as const
-      ).map((button) => (
-        <button
-          key={button.key}
-          type="button"
-          className={`studio-overlay__btn${button.on ? " is-on" : ""}`}
-          onClick={() => {
-            if (button.key === "terminal") {
-              setTerminalOpen((open) => !open);
-              return;
+      if (firstLive) {
+        const fallbackModel = firstLive.defaultModel || firstLive.models[0]?.id || '';
+        setConversations((prev) =>
+          prev.map((c) => {
+            if (!c.modelId) {
+              return { ...c, route: firstLive.route, modelId: fallbackModel };
             }
-            setSidebarSection(button.key);
-            setSidebarOpen(true);
-          }}
-          aria-label={button.text}
-        >
-          {button.glyph}
-          <span className="studio-overlay__tip">{button.text}</span>
-        </button>
-      ))}
-      <button
-        type="button"
-        className="studio-overlay__btn"
-        onClick={() => {
-          const next = (document.documentElement.getAttribute("data-theme") ?? "light") === "dark" ? "light" : "dark";
-          document.documentElement.setAttribute("data-theme", next);
-          try {
-            window.localStorage.setItem("getry.theme", next);
-          } catch {
-            /* the theme lane never breaks the rail */
-          }
-        }}
-        aria-label={label("studio.nav.theme")}
-      >
-        <G.moon fontSize={14} />
-        <span className="studio-overlay__tip">{label("studio.nav.theme")}</span>
-      </button>
-      <button
-        type="button"
-        className={`studio-overlay__btn${sidebarSection === "settings" && sidebarOpen ? " is-on" : ""}`}
-        onClick={() => {
-          setSidebarSection((section) => (section === "settings" ? "projects" : "settings"));
-          setSidebarOpen(true);
-        }}
-        aria-label={label("studio.nav.settings")}
-      >
-        <G.settings fontSize={14} />
-        <span className="studio-overlay__tip">{label("studio.nav.settings")}</span>
-      </button>
-    </>
+            return c;
+          })
+        );
+      }
+    } catch (err) {
+      logTerminal('GET', '/{v1..v5}/models', 'ERR', String(err));
+      setDiscoveryError(
+        err instanceof Error ? err.message : 'Failed to discover models via GET.'
+      );
+    } finally {
+      setIsDiscovering(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    runDiscovery(baseUrl);
+  }, [baseUrl, runDiscovery]);
+
+  const activeRoute = activeConversation?.route || 'v1';
+  const activeModelId = activeConversation?.modelId || '';
+
+  const activeRouteInfo = useMemo(
+    () => routeResults.find((r) => r.route === activeRoute),
+    [routeResults, activeRoute]
   );
 
-  /* ===== the render ===== */
+  const activeModel = useMemo(
+    () => activeRouteInfo?.models.find((m) => m.id === activeModelId),
+    [activeRouteInfo, activeModelId]
+  );
+
+  const discoveredImageModels = useMemo(() => {
+    const list: Array<{
+      id: string;
+      sizes?: string[];
+      modality?: string;
+      route: RouteName;
+    }> = [];
+    for (const r of routeResults) {
+      if (r.imageModels) {
+        for (const im of r.imageModels) {
+          list.push({ ...im, route: r.route });
+        }
+      }
+    }
+    return list;
+  }, [routeResults]);
+
+  const fallbackUnderstandingRoutePath = useMemo(() => {
+    const v1Route = routeResults.find(
+      (r) => r.route === 'v1' && r.status === 'live' && r.understandingRoutes?.image?.route
+    );
+    if (v1Route?.understandingRoutes?.image?.route) {
+      return v1Route.understandingRoutes.image.route;
+    }
+    const anyLive = routeResults.find(
+      (r) => r.status === 'live' && r.understandingRoutes?.image?.route
+    );
+    return anyLive?.understandingRoutes?.image?.route;
+  }, [routeResults]);
+
+
+  const resolvedThinkingLevels = useMemo(
+    () => resolveThinkingLevels(activeRouteInfo, routeResults),
+    [activeRouteInfo, routeResults]
+  );
+
+  const effortChroma = useMemo(
+    () =>
+      resolveEffortChroma(
+        ['default', ...Object.keys(resolvedThinkingLevels)],
+        activeConversation?.thinkingLevel || 'default'
+      ),
+    [resolvedThinkingLevels, activeConversation?.thinkingLevel]
+  );
+
+  const discoveredModels = useMemo(() => {
+    const ordered = [...routeResults].sort((a, b) => {
+      if (a.status === 'live' && b.status !== 'live') return -1;
+      if (b.status === 'live' && a.status !== 'live') return 1;
+      return 0;
+    });
+    const seen = new Set<string>();
+    const unique: typeof routeResults[number]['models'] = [];
+    for (const r of ordered) {
+      if (r.status === 'paused' && r.models.length === 0) continue;
+      for (const m of r.models) {
+        if (!seen.has(m.id)) {
+          seen.add(m.id);
+          unique.push(m);
+        }
+      }
+    }
+    return unique;
+  }, [routeResults]);
+
+  const updateConversation = useCallback(
+    (convId: string, updater: (prev: Conversation) => Conversation) => {
+      setConversations((prev) =>
+        prev.map((c) => (c.id === convId ? updater(c) : c))
+      );
+    },
+    []
+  );
+
+  const handleSelectModel = useCallback(
+    (route: RouteName, modelId: string) => {
+      if (!activeConversation) return;
+      setAnsiPulseCount((c) => c + 1);
+      updateConversation(activeConversation.id, (c) => ({
+        ...c,
+        route,
+        modelId,
+        updatedAt: Date.now(),
+      }));
+    },
+    [activeConversation, updateConversation]
+  );
+
+  const handleSelectFallbackRoute = useCallback(
+    (route: RouteName) => {
+      const target = routeResults.find((r) => r.route === route);
+      const nextModel = target?.defaultModel || target?.models[0]?.id || '';
+      if (nextModel) {
+        handleSelectModel(route, nextModel);
+      }
+    },
+    [routeResults, handleSelectModel]
+  );
+
+  const handleSelectConversation = useCallback(
+    (id: string) => {
+      setActiveConversationId(id);
+      setOpenTabIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+      const found = conversations.find((c) => c.id === id);
+      if (found?.workspaceId && workspaces.some((w) => w.id === found.workspaceId)) {
+        setActiveWorkspaceId(found.workspaceId);
+      }
+    },
+    [conversations, workspaces]
+  );
+
+  const handleNewConversation = useCallback(
+    (targetWorkspaceId?: string) => {
+      const wsId =
+        targetWorkspaceId && workspaces.some((w) => w.id === targetWorkspaceId)
+          ? targetWorkspaceId
+          : activeWorkspaceId || workspaces[0]?.id || DEFAULT_WORKSPACE_ID;
+      setActiveWorkspaceId(wsId);
+      const newConv = createEmptyConversation(activeRoute, activeModelId, wsId);
+      setConversations((prev) => [newConv, ...prev]);
+      setOpenTabIds((prev) => [...prev, newConv.id]);
+      setActiveConversationId(newConv.id);
+      setComposerInput('');
+      setPendingImages([]);
+      setAnsiPulseCount((c) => c + 1);
+      saveConversationToDb(newConv).catch(() => undefined);
+    },
+    [activeRoute, activeModelId, baseUrl, activeWorkspaceId, workspaces]
+  );
+
+  const handleSelectWorkspace = useCallback(
+    (wsId: string) => {
+      if (!workspaces.some((w) => w.id === wsId)) return;
+      setActiveWorkspaceId(wsId);
+      if (activeConversation?.workspaceId === wsId) return;
+      const inWs = conversations.find((c) => (c.workspaceId || DEFAULT_WORKSPACE_ID) === wsId);
+      if (inWs) {
+        setActiveConversationId(inWs.id);
+        setOpenTabIds((prev) => (prev.includes(inWs.id) ? prev : [...prev, inWs.id]));
+      } else {
+        const newConv = createEmptyConversation(activeRoute, activeModelId, wsId);
+        setConversations((prev) => [newConv, ...prev]);
+        setOpenTabIds((prev) => [...prev, newConv.id]);
+        setActiveConversationId(newConv.id);
+        saveConversationToDb(newConv).catch(() => undefined);
+      }
+    },
+    [workspaces, activeConversation, conversations, activeRoute, activeModelId, baseUrl]
+  );
+
+  const handleCreateWorkspace = useCallback(
+    (name: string) => {
+      const clean = name.trim();
+      if (!clean) return;
+      const now = Date.now();
+      const ws: Workspace = {
+        id: makeId('ws'),
+        name: clean,
+        createdAt: now,
+        updatedAt: now,
+      };
+      setWorkspaces((prev) => [...prev, ws]);
+      setActiveWorkspaceId(ws.id);
+      const newConv = createEmptyConversation(activeRoute, activeModelId, ws.id);
+      setConversations((prev) => [newConv, ...prev]);
+      setOpenTabIds((prev) => [...prev, newConv.id]);
+      setActiveConversationId(newConv.id);
+      saveConversationToDb(newConv).catch(() => undefined);
+    },
+    [activeRoute, activeModelId, baseUrl]
+  );
+
+  const handleCreateProjectInstant = useCallback(() => {
+    const projectTitle = nextProjectName(workspaces);
+    handleCreateWorkspace(projectTitle);
+    setSidebarTab('chats');
+  }, [workspaces, handleCreateWorkspace]);
+
+  const handleRenameWorkspace = useCallback((wsId: string, name: string) => {
+    const clean = name.trim();
+    if (!clean) return;
+    setWorkspaces((prev) =>
+      prev.map((w) => (w.id === wsId ? { ...w, name: clean, updatedAt: Date.now() } : w))
+    );
+  }, []);
+
+  const extractedArtifacts = useMemo(
+    () => extractConversationArtifacts(conversations, workspaces),
+    [conversations, workspaces]
+  );
+
+  const handleAddTask = useCallback(
+    (label: string) => {
+      const clean = label.trim();
+      if (!clean) return;
+      const task: WorkspaceTask = {
+        id: makeId('task'),
+        workspaceId: activeWorkspaceId || DEFAULT_WORKSPACE_ID,
+        label: clean,
+        done: false,
+        createdAt: Date.now(),
+      };
+      setWorkspaceTasks((prev) => [task, ...prev]);
+    },
+    [activeWorkspaceId]
+  );
+
+  const handleToggleTask = useCallback((taskId: string) => {
+    setWorkspaceTasks((prev) =>
+      prev.map((t) => (t.id === taskId ? { ...t, done: !t.done } : t))
+    );
+  }, []);
+
+  const handleDeleteTask = useCallback((taskId: string) => {
+    setWorkspaceTasks((prev) => prev.filter((t) => t.id !== taskId));
+  }, []);
+
+
+  const handleRenameConversation = useCallback(
+    (id: string, nextTitle: string) => {
+      const cleaned = nextTitle.trim();
+      if (!cleaned) return;
+      let updatedTarget: Conversation | null = null;
+      setConversations((prev) =>
+        prev.map((c) => {
+          if (c.id !== id) return c;
+          updatedTarget = { ...c, title: cleaned, updatedAt: Date.now() };
+          return updatedTarget;
+        })
+      );
+      if (updatedTarget) {
+        saveConversationToDb(updatedTarget).catch(() => undefined);
+      }
+    },
+    [baseUrl]
+  );
+
+  const handleCloseTab = useCallback(
+    (id: string) => {
+      setOpenTabIds((prev) => {
+        const next = prev.filter((tabId) => tabId !== id);
+        if (next.length === 0) {
+          const fresh = createEmptyConversation(activeRoute, activeModelId);
+          setConversations((cPrev) => [fresh, ...cPrev]);
+          setActiveConversationId(fresh.id);
+          saveConversationToDb(fresh).catch(() => undefined);
+          return [fresh.id];
+        }
+        if (id === activeConversationId) {
+          const idx = prev.indexOf(id);
+          const fallbackId = next[Math.min(idx, next.length - 1)] || next[0];
+          setActiveConversationId(fallbackId);
+        }
+        return next;
+      });
+    },
+    [activeRoute, activeModelId, activeConversationId, baseUrl]
+  );
+
+  const handleReorderTabs = useCallback((sourceId: string, targetId: string) => {
+    setOpenTabIds((prev) => reorderTabIds(prev, sourceId, targetId));
+  }, []);
+
+  const handleDeleteConversation = useCallback(
+    (id: string) => {
+      if (streamingConvId === id) {
+        abortControllerRef.current?.abort();
+        setStreamingConvId(null);
+      }
+      deleteConversationFromDb(id).catch(() => undefined);
+      setOpenTabIds((prev) => prev.filter((tabId) => tabId !== id));
+      setConversations((prev) => {
+        const remaining = prev.filter((c) => c.id !== id);
+        if (remaining.length === 0) {
+          const fresh = createEmptyConversation(activeRoute, activeModelId);
+          setActiveConversationId(fresh.id);
+          setOpenTabIds([fresh.id]);
+          return [fresh];
+        }
+        if (id === activeConversationId) {
+          setActiveConversationId(remaining[0].id);
+        }
+        return remaining;
+      });
+    },
+    [streamingConvId, activeRoute, activeModelId, activeConversationId]
+  );
+
+  const handleImportFromGateway = useCallback(async () => {
+    if (isImporting) return;
+    setIsImporting(true);
+    try {
+      const { conversations: synced } = await importFromGatewayDatabase(baseUrl);
+      if (synced.length > 0) {
+        for (const c of synced) {
+          lastSavedSnapshotRef.current[c.id] = JSON.stringify(c);
+        }
+        setConversations(synced);
+        setSidebarTab('chats');
+        const current = synced.find((c) => c.id === activeConversationId);
+        if (!current || current.messages.length === 0) {
+          const preferred = synced.find((c) => c.messages.length > 0) ?? synced[0];
+          setActiveConversationId(preferred.id);
+          setOpenTabIds([preferred.id]);
+        }
+      }
+    } catch (err) {
+      setDiscoveryError(
+        err instanceof Error ? err.message : 'Failed to sync gateway conversations.'
+      );
+    } finally {
+      setIsImporting(false);
+    }
+  }, [isImporting, baseUrl, activeConversationId]);
+
+  const handleAddImages = useCallback(async (files: FileList) => {
+    const fileList = Array.from(files)
+      .filter((f) => f.type.startsWith('image/'))
+      .slice(0, 4);
+    if (fileList.length === 0) return;
+
+    const normalized = await Promise.all(
+      fileList.map((file) => normalizeImageFile(file))
+    );
+    setPendingImages((prev) => [
+      ...prev.slice(0, Math.max(0, 4 - normalized.length)),
+      ...normalized.map((item) => ({
+        id: makeId('img'),
+        name: item.name,
+        dataUrl: item.dataUrl,
+      })),
+    ]);
+  }, []);
+
+  const executeCompletion = useCallback(
+    async (
+      convId: string,
+      historyForApi: ChatMessage[],
+      assistantMsgId: string
+    ) => {
+      const targetConv = conversations.find((c) => c.id === convId);
+      const route = targetConv?.route || activeRoute;
+      const modelId = targetConv?.modelId || activeModelId;
+      const baseSystemPrompt = targetConv?.systemPrompt || '';
+      const systemPrompt = workspaceMemory.trim()
+        ? `${baseSystemPrompt ? `${baseSystemPrompt}\n\n` : ''}[Workspace Memory]\n${workspaceMemory.trim()}`
+        : baseSystemPrompt;
+      const temperature = targetConv?.temperature ?? 0.7;
+      const thinkingLevel = targetConv?.thinkingLevel || 'default';
+
+      const routeInfoForConv = routeResults.find((r) => r.route === route);
+      const modelInfoForConv = routeInfoForConv?.models.find((m) => m.id === modelId);
+      const lastUserMsg = historyForApi[historyForApi.length - 1];
+      const userImages = lastUserMsg?.images ?? [];
+
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+      setStreamingConvId(convId);
+
+      const finishWithUnderstanding = async () => {
+        const imageDataUrl = userImages[0]?.dataUrl;
+        if (!imageDataUrl) {
+          throw new Error('No image found to send to the understanding route.');
+        }
+
+        const preferredPath =
+          routeInfoForConv?.understandingRoutes?.image?.route ||
+          fallbackUnderstandingRoutePath ||
+          '/v1/images/understanding';
+
+        const preferredIsV1 = preferredPath.startsWith('/v1/');
+        const preferredModel =
+          preferredIsV1 && modelInfoForConv?.supportsVision ? modelId : undefined;
+        const fallbackPath = fallbackUnderstandingRoutePath || '/v1/images/understanding';
+
+        logTerminal('POST', preferredPath, '···', 'image understanding fallback');
+        const res = await runImageUnderstanding({
+          baseUrl,
+          routePath: preferredPath,
+          fallbackRoutePath: fallbackPath !== preferredPath ? fallbackPath : undefined,
+          prompt: buildUnderstandingPrompt(
+            historyForApi.slice(0, -1),
+            lastUserMsg?.content || ''
+          ),
+          imageDataUrl,
+          modelId: preferredModel,
+          timeoutMs: preferredIsV1 ? 45000 : 10000,
+          signal: controller.signal,
+        });
+
+        const resolvedRoute = (res.fallback || preferredPath)
+          .replace(/^\//, '')
+          .split('/')[0];
+
+        setStreamingConvId(null);
+        updateConversation(convId, (c) => ({
+          ...c,
+          updatedAt: Date.now(),
+          messages: c.messages.map((m) =>
+            m.id === assistantMsgId
+              ? {
+                  ...m,
+                  content: res.content,
+                  reasoning: res.reasoning,
+                  modelId: res.model || m.modelId,
+                  provider: res.provider || m.provider,
+                  fallback: res.fallback || m.fallback,
+                  usage: res.usage,
+                  route: resolvedRoute || m.route,
+                  isStreaming: false,
+                  error: undefined,
+                }
+              : m
+          ),
+        }));
+      };
+
+      try {
+        const shouldUseUnderstandingDirectly =
+          userImages.length > 0 &&
+          (route !== 'v1' || !modelInfoForConv?.supportsVision);
+
+        if (shouldUseUnderstandingDirectly) {
+          await finishWithUnderstanding();
+          return;
+        }
+
+        if (
+          userImages.length === 0 &&
+          shouldGenerateImageInChat(
+            lastUserMsg?.content || '',
+            discoveredImageModels.length > 0
+          )
+        ) {
+          const imgModel = discoveredImageModels[0];
+          const fallbackImgModel = discoveredImageModels[1]?.id;
+          const cleanPrompt =
+            lastUserMsg.content.replace(/^\/(imagem|image|img)\s+/i, '').trim() ||
+            lastUserMsg.content;
+
+          const generated = await generateGatewayImage({
+            baseUrl,
+            route: imgModel.route,
+            action: 'generations',
+            modelId: imgModel.id,
+            fallbackModelId: fallbackImgModel,
+            prompt: cleanPrompt,
+            size: imgModel.sizes?.[0],
+            signal: controller.signal,
+          });
+
+          setStreamingConvId(null);
+          updateConversation(convId, (c) => ({
+            ...c,
+            updatedAt: Date.now(),
+            messages: c.messages.map((m) =>
+              m.id === assistantMsgId
+                ? {
+                    ...m,
+                    content: generated.revisedPrompt || '',
+                    generatedImages: [generated.imageDataUrl],
+                    modelId: generated.model || imgModel.id,
+                    fallback: generated.fallback,
+                    route: imgModel.route,
+                    isStreaming: false,
+                    error: undefined,
+                  }
+                : m
+            ),
+          }));
+          return;
+        }
+
+        let streamHadText = false;
+        let streamErrorMsg: string | null = null;
+        let streamFinishedCleanly = false;
+
+        logTerminal('POST', `/${route}/chat/completions`, '···', `${modelId} · ${thinkingLevel}`);
+        const streamT0 = Date.now();
+        await streamChatCompletion(
+          {
+            baseUrl,
+            route,
+            modelId,
+            messages: historyForApi,
+            systemPrompt,
+            temperature,
+            thinkingLevel,
+            sessionId: historyForApi.length > 1 ? targetConv?.sessionId : undefined,
+            signal: controller.signal,
+          },
+          {
+            onDelta(patch) {
+              if (patch.contentDelta || patch.reasoningDelta) {
+                streamHadText = true;
+              }
+              updateConversation(convId, (c) => ({
+                ...c,
+                sessionId: patch.sessionId || c.sessionId,
+                updatedAt: Date.now(),
+                messages: c.messages.map((m) =>
+                  m.id === assistantMsgId ? applyStreamDeltaToMessage(m, patch) : m
+                ),
+              }));
+            },
+            onError(errorMsg) {
+              streamErrorMsg = errorMsg;
+            },
+            onDone() {
+              streamFinishedCleanly = true;
+            },
+          }
+        );
+
+        logTerminal(
+          'POST',
+          `/${route}/chat/completions`,
+          streamErrorMsg ? 'ERR' : 200,
+          streamErrorMsg || `${modelId} · ${(Date.now() - streamT0)}ms`,
+          Date.now() - streamT0
+        );
+
+        if (controller.signal.aborted) {
+          setStreamingConvId(null);
+          updateConversation(convId, (c) => ({
+            ...c,
+            updatedAt: Date.now(),
+            messages: c.messages.map((m) => {
+              if (m.id !== assistantMsgId) return m;
+              const empty = !m.content.trim() && !m.reasoning?.trim() && !m.error;
+              return {
+                ...m,
+                isStreaming: false,
+                content: empty ? '_Generation stopped._' : m.content,
+              };
+            }),
+          }));
+          return;
+        }
+
+        if (
+          userImages.length > 0 &&
+          (streamErrorMsg || (!streamHadText && streamFinishedCleanly))
+        ) {
+          await finishWithUnderstanding();
+          return;
+        }
+
+        setStreamingConvId(null);
+        updateConversation(convId, (c) => ({
+          ...c,
+          updatedAt: Date.now(),
+          messages: c.messages.map((m) => {
+            if (m.id !== assistantMsgId) return m;
+            if (streamErrorMsg) {
+              return { ...m, isStreaming: false, error: streamErrorMsg };
+            }
+            const empty = !m.content.trim() && !m.reasoning?.trim() && !m.error;
+            return {
+              ...m,
+              isStreaming: false,
+              error: empty ? 'The model ended the response with no content.' : m.error,
+            };
+          }),
+        }));
+      } catch (err) {
+        setStreamingConvId(null);
+        if (
+          controller.signal.aborted ||
+          (err instanceof DOMException && err.name === 'AbortError')
+        ) {
+          return;
+        }
+        updateConversation(convId, (c) => ({
+          ...c,
+          updatedAt: Date.now(),
+          messages: c.messages.map((m) =>
+            m.id === assistantMsgId
+              ? {
+                  ...m,
+                  isStreaming: false,
+                  error:
+                    err instanceof Error
+                      ? err.message
+                      : 'Unexpected error during response.',
+                }
+              : m
+          ),
+        }));
+      }
+    },
+    [
+      conversations,
+      activeRoute,
+      activeModelId,
+      workspaceMemory,
+      baseUrl,
+      routeResults,
+      discoveredImageModels,
+      fallbackUnderstandingRoutePath,
+      updateConversation,
+    ]
+  );
+
+  const handleSend = useCallback(
+    async (overridePrompt?: string) => {
+      if (!activeConversation || streamingConvId) return;
+      if (!activeModelId) return;
+
+      const text = (overridePrompt ?? composerInput).trim();
+      const images = overridePrompt ? [] : pendingImages;
+      if (!text && images.length === 0) return;
+
+      setAnsiPulseCount((c) => c + 1);
+
+      const userMsg: ChatMessage = {
+        id: makeId('msg'),
+        role: 'user',
+        content: text || 'Describe and analyze this image in detail.',
+        images: images.length > 0 ? images : undefined,
+        createdAt: Date.now(),
+      };
+
+      const assistantMsgId = makeId('msg');
+      const assistantPlaceholder: ChatMessage = {
+        id: assistantMsgId,
+        role: 'assistant',
+        content: '',
+        modelId: activeModelId,
+        route: activeRoute,
+        createdAt: Date.now(),
+        isStreaming: true,
+      };
+
+      const nextMessages = [...activeConversation.messages, userMsg];
+      const nextTitle =
+        activeConversation.messages.length === 0
+          ? deriveConversationTitle(text || 'Image analysis')
+          : activeConversation.title;
+
+      updateConversation(activeConversation.id, (c) => ({
+        ...c,
+        title: nextTitle,
+        updatedAt: Date.now(),
+        messages: [...nextMessages, assistantPlaceholder],
+      }));
+
+      if (!overridePrompt) {
+        setComposerInput('');
+        setPendingImages([]);
+      }
+
+      await executeCompletion(
+        activeConversation.id,
+        nextMessages,
+        assistantMsgId
+      );
+    },
+    [
+      activeConversation,
+      streamingConvId,
+      activeModelId,
+      activeRoute,
+      composerInput,
+      pendingImages,
+      updateConversation,
+      executeCompletion,
+    ]
+  );
+
+  const handleStopStreaming = useCallback(() => {
+    abortControllerRef.current?.abort();
+    setStreamingConvId(null);
+    if (activeConversation) {
+      updateConversation(activeConversation.id, (c) => ({
+        ...c,
+        messages: c.messages.map((m) =>
+          m.isStreaming ? { ...m, isStreaming: false } : m
+        ),
+      }));
+    }
+  }, [activeConversation, updateConversation]);
+
+  const handleRetryLast = useCallback(async () => {
+    if (!activeConversation || streamingConvId) return;
+    const msgs = activeConversation.messages;
+    if (msgs.length === 0) return;
+
+    const lastUserIndex = [...msgs]
+      .reverse()
+      .findIndex((m) => m.role === 'user');
+    if (lastUserIndex === -1) return;
+
+    const cutIndex = msgs.length - 1 - lastUserIndex;
+    const historyUpToUser = msgs.slice(0, cutIndex + 1);
+
+    const assistantMsgId = makeId('msg');
+    const assistantPlaceholder: ChatMessage = {
+      id: assistantMsgId,
+      role: 'assistant',
+      content: '',
+      modelId: activeModelId,
+      route: activeRoute,
+      createdAt: Date.now(),
+      isStreaming: true,
+    };
+
+    updateConversation(activeConversation.id, (c) => ({
+      ...c,
+      updatedAt: Date.now(),
+      messages: [...historyUpToUser, assistantPlaceholder],
+    }));
+
+    await executeCompletion(
+      activeConversation.id,
+      historyUpToUser,
+      assistantMsgId
+    );
+  }, [
+    activeConversation,
+    streamingConvId,
+    activeModelId,
+    activeRoute,
+    updateConversation,
+    executeCompletion,
+  ]);
+
+  const handleContinueLast = useCallback(async () => {
+    if (!activeConversation || streamingConvId) return;
+    const msgs = activeConversation.messages;
+    if (msgs.length === 0) return;
+    const lastMsg = msgs[msgs.length - 1];
+    if (lastMsg.role !== 'assistant' || !lastMsg.content.trim()) return;
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    setStreamingConvId(activeConversation.id);
+
+    updateConversation(activeConversation.id, (c) => ({
+      ...c,
+      updatedAt: Date.now(),
+      messages: c.messages.map((m) =>
+        m.id === lastMsg.id ? { ...m, isStreaming: true, error: undefined } : m
+      ),
+    }));
+
+    const continuationMessages: ChatMessage[] = [
+      ...msgs.slice(0, -1),
+      { ...lastMsg, error: undefined, isStreaming: false },
+      {
+        id: makeId('cont'),
+        role: 'user',
+        content:
+          'Continue exactly from where the previous text stopped without repeating what was already written.',
+        createdAt: Date.now(),
+      },
+    ];
+
+    let streamErr: string | null = null;
+    try {
+      await streamChatCompletion(
+        {
+          baseUrl,
+          route: lastMsg.route || activeRoute,
+          modelId: lastMsg.modelId || activeModelId,
+          messages: continuationMessages,
+          systemPrompt: activeConversation.systemPrompt || '',
+          temperature: activeConversation.temperature ?? 0.7,
+          thinkingLevel: activeConversation.thinkingLevel || 'default',
+          sessionId: activeConversation.sessionId,
+          signal: controller.signal,
+        },
+        {
+          onDelta(patch) {
+            updateConversation(activeConversation.id, (c) => ({
+              ...c,
+              updatedAt: Date.now(),
+              messages: c.messages.map((m) =>
+                m.id === lastMsg.id ? applyStreamDeltaToMessage(m, patch) : m
+              ),
+            }));
+          },
+          onError(msg) {
+            streamErr = msg;
+          },
+          onDone() {
+            // handled after stream completes
+          },
+        }
+      );
+    } finally {
+      setStreamingConvId(null);
+      updateConversation(activeConversation.id, (c) => ({
+        ...c,
+        updatedAt: Date.now(),
+        messages: c.messages.map((m) =>
+          m.id === lastMsg.id
+            ? { ...m, isStreaming: false, error: streamErr ?? m.error }
+            : m
+        ),
+      }));
+    }
+  }, [
+    activeConversation,
+    streamingConvId,
+    baseUrl,
+    activeRoute,
+    activeModelId,
+    updateConversation,
+  ]);
+
+  const handleApplyBaseUrl = useCallback(
+    (rawUrl: string) => {
+      const normalized = normalizeBaseUrl(rawUrl);
+      if (!normalized) return;
+      if (normalized === baseUrl) {
+        runDiscovery(normalized);
+      } else {
+        setBaseUrl(normalized);
+      }
+    },
+    [baseUrl, runDiscovery]
+  );
+
+
+  const isStreaming = Boolean(streamingConvId);
+  const isEmptyThread = (activeConversation?.messages.length || 0) === 0;
+
+  const composerElement = (
+    <Composer
+      input={composerInput}
+      onChangeInput={setComposerInput}
+      images={pendingImages}
+      onAddImages={handleAddImages}
+      onRemoveImage={(id) =>
+        setPendingImages((prev) => prev.filter((img) => img.id !== id))
+      }
+      onSend={() => handleSend()}
+      onStop={handleStopStreaming}
+      isStreaming={isStreaming}
+      activeRoute={activeRoute}
+      activeModel={activeModel}
+      activeModelId={activeModelId}
+      discoveredModels={discoveredModels}
+      routeResults={routeResults}
+      onSelectModel={handleSelectModel}
+      workspaces={workspaces}
+      activeWorkspaceId={activeWorkspaceId}
+      onSelectWorkspace={handleSelectWorkspace}
+      onCreateWorkspace={handleCreateWorkspace}
+      onNewSessionInWorkspace={(wsId) => handleNewConversation(wsId)}
+      activeSessionTitle={activeConversation?.title}
+      permissionMode={permissionMode}
+      onChangePermissionMode={setPermissionMode}
+      temperature={activeConversation?.temperature ?? 0.7}
+      onChangeTemperature={(val) =>
+        activeConversation &&
+        updateConversation(activeConversation.id, (c) => ({
+          ...c,
+          temperature: val,
+        }))
+      }
+      thinkingLevel={activeConversation?.thinkingLevel || 'default'}
+      thinkingLevels={resolvedThinkingLevels}
+      onChangeThinkingLevel={(val) =>
+        activeConversation &&
+        updateConversation(activeConversation.id, (c) => ({
+          ...c,
+          thinkingLevel: val,
+        }))
+      }
+      centered={isEmptyThread}
+      attachSignal={attachSignal}
+      focusSignal={focusSignal}
+    />
+  );
+
+  const handleToggleTheme = () => {
+    setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+    setAnsiPulseCount((c) => c + 1);
+  };
+
+  const handleTogglePinConversation = useCallback((convId: string) => {
+    setPinnedConvIds((prev) =>
+      prev.includes(convId) ? prev.filter((id) => id !== convId) : [convId, ...prev]
+    );
+  }, []);
+
+  const handleExportMarkdown = useCallback(() => {
+    if (!activeConversation || activeConversation.messages.length === 0) return;
+    const md = formatConversationMarkdown(
+      activeConversation.title,
+      activeConversation.route,
+      activeConversation.modelId,
+      activeConversation.messages
+    );
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const slug = (activeConversation.title || 'chat')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/gi, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 40);
+    a.download = `${slug || 'chat'}.md`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }, [activeConversation]);
+
+  const zoomViewportStyle = useMemo(
+    () => computeZoomViewportStyle(DEFAULT_UI_ZOOM),
+    []
+  );
+
+  const handleSyncAll = useCallback(() => {
+    runDiscovery(baseUrl);
+    handleImportFromGateway();
+  }, [baseUrl, runDiscovery, handleImportFromGateway]);
+
+  const handleRailSection = (tab: SidebarTab) => {
+    if (sidebarOpen && sidebarTab === tab) {
+      setSidebarOpen(false);
+    } else {
+      setSidebarTab(tab);
+      setSidebarOpen(true);
+    }
+  };
+
+  const handleGoHomeOrNewChat = () => {
+    setSidebarOpen(true);
+    setSidebarTab('chats');
+    const existingEmpty = openTabs.find(
+      (tTab) =>
+        tTab.messages.length === 0 &&
+        (tTab.workspaceId || DEFAULT_WORKSPACE_ID) === activeWorkspaceId
+    );
+    if (existingEmpty) {
+      setActiveConversationId(existingEmpty.id);
+      setComposerInput('');
+      setPendingImages([]);
+      setAnsiPulseCount((c) => c + 1);
+    } else {
+      handleNewConversation(activeWorkspaceId);
+    }
+  };
+
+  const handleToggleSearch = () => {
+    if (!sidebarOpen) {
+      setSidebarOpen(true);
+      setSidebarSearchOpen(true);
+      setSearchFocusSignal((n) => n + 1);
+      return;
+    }
+    setSidebarSearchOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        setSearchFocusSignal((n) => n + 1);
+      }
+      return next;
+    });
+  };
+
+  const handleToggleSidebarSearch = useCallback(() => {
+    setSidebarSearchOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        setSearchFocusSignal((n) => n + 1);
+      }
+      return next;
+    });
+  }, []);
+
+  const handleChangeRailDockEdge = useCallback((edge: SaddleDockEdge) => {
+    setRailMode('saddle');
+    setRailDockEdge(edge);
+    setRailPos(null);
+  }, []);
+
+  const handleSelectRailMode = useCallback(
+    (mode: RailMode) => {
+      setRailMode(mode);
+      if (mode === 'floating') {
+        const viewW = shellRef.current?.offsetWidth || 1200;
+        const viewH = shellRef.current?.offsetHeight || 760;
+        setRailPos((prev) => {
+          if (
+            !prev ||
+            prev.y < 56 ||
+            prev.y > viewH - 56 ||
+            prev.x < 12 ||
+            prev.x > viewW - 12
+          ) {
+            return { x: 28, y: Math.round(viewH * 0.54) };
+          }
+          return prev;
+        });
+      }
+    },
+    []
+  );
+
+  const effectiveSidebarWidth =
+    dragPreviewWidth !== null ? dragPreviewWidth : sidebarWidth;
+  const isFullFloatingRail = isDesktop && railMode === 'full-floating';
+  const isFloatingQuad = isDesktop && floatingSidebar;
+  const framePad = isFloatingQuad ? 10 : 8;
+  const railPadLeft = isFullFloatingRail ? 50 + framePad * 2 : framePad;
+  const railPadRight = framePad;
+
+  const railNode = (
+    <OmniSaddleRail
+      containerRef={shellRef}
+      railMode={railMode}
+      onChangeRailMode={handleSelectRailMode}
+      dockEdge={railDockEdge}
+      onChangeDockEdge={handleChangeRailDockEdge}
+      railPos={railPos}
+      onChangeRailPos={setRailPos}
+      sidebarOpen={sidebarOpen}
+      floatingSidebar={floatingSidebar}
+      sidebarTab={sidebarTab}
+      inspectorOpen={inspectorOpen}
+      isEmptyThread={isEmptyThread}
+      isSyncDisabled={isDiscovering || isImporting}
+      isSyncSpinning={isDiscovering || isImporting}
+      theme={theme}
+      onGoHomeOrNewChat={handleGoHomeOrNewChat}
+      onToggleSection={handleRailSection}
+      onOpenEndpoints={() => setInspectorOpen(true)}
+      onOpenKeys={() => navigate("/sessions")}
+      onOpenDashboard={() => navigate("/versions")}
+      terminalOpen={terminalOpen}
+      onToggleTerminal={() => setTerminalOpen((t) => !t)}
+      onSyncAll={handleSyncAll}
+      onToggleTheme={handleToggleTheme}
+    />
+  );
 
   return (
-    <div ref={rootRef} className="studio" aria-label={label("studio.aria")}>
-      {/* ===== 0. the overlay saddle sidebar ===== */}
-      <aside
-        ref={overlayRef}
-        className={`studio-overlay${floatingSidebar ? " is-floating" : ""}${draggingSidebar ? " is-dragging" : ""}`}
-        style={overlayStyle}
-        aria-label={label("studio.nav.workspace")}
-        onPointerDown={onOverlayPointerDown}
-        onClickCapture={(event) => {
-          if (suppressClickRef.current) {
-            event.stopPropagation();
-            event.preventDefault();
-          }
-        }}
+    <>
+      {/* 3D Intro Overlay outside zoomed desktop-shell so zero transform/frame clips it */}
+      <IntroAnimation
+        visible={showIntro}
+        darkMode={theme === 'dark'}
+        onComplete={() => setShowIntro(false)}
+      />
+
+      <div className="studio3-viewport">
+      <div
+        ref={shellRef}
+        className="desktop-shell"
+        style={zoomViewportStyle}
+        data-ui-zoom={DEFAULT_UI_ZOOM}
+        data-effort-tier={effortChroma.tier}
+        data-effort-max={effortChroma.isMax ? 'true' : 'false'}
+        data-fx-ansi={ansiEnabled ? 'true' : 'false'}
+        data-fx-glow={glowEnabled ? 'true' : 'false'}
+        data-fx-blur={blurEnabled ? 'true' : 'false'}
+        data-fx-transparency={transparencyEnabled ? 'true' : 'false'}
+        data-testid="desktop-shell"
       >
-        {floatingSidebar ? (
-          <div className={`studio-overlay__pill${isHorizontalPill ? " studio-overlay__pill--horizontal" : ""}`}>{navbuttons}</div>
-        ) : (
-          <OmniSaddleBridge edge={dockEdge} fillColor="var(--studio-stage)">
-            <div className={`omnibridge__children omnibridge__children--${dockEdge === "top" || dockEdge === "bottom" ? "horizontal" : "vertical"}`}>{navbuttons}</div>
-          </OmniSaddleBridge>
-        )}
-      </aside>
+        {/* Modalities: Full-Height Docked Left / 4-Edge Saddle / Unconstrained Floating Capsule */}
+        {!isFullFloatingRail && railNode}
 
-      {/* ===== 1. the header: the brand cluster + the saddle tabs ===== */}
-      <header className="studio__header">
-        <div className="studio-headcluster">
-          <span className="studio-brand">
-            <DevThinkLogoMark className="h-[16.5px] w-[16.5px]" />
-            <DevThinkWordmark className="h-[16.5px]" />
-          </span>
-          <button type="button" className={`studio-iconbtn${searchOpen ? " is-on" : ""}`} onClick={() => setSearchOpen((open) => !open)} aria-label={label("studio.header.search")} title={label("studio.header.search")}>
-            <G.search fontSize={14} />
-          </button>
-          <button type="button" className={`studio-iconbtn studio-iconbtn--frame${sidebarOpen ? " is-on" : ""}`} onClick={() => setSidebarOpen((open) => !open)} aria-label={label("studio.header.panel")} title={label("studio.header.panel")}>
-            <G.layers fontSize={14} />
-          </button>
-          <button type="button" className="studio-iconbtn studio-iconbtn--frame" onClick={() => startnew(activeWorkspace)} aria-label={label("studio.header.new")} title={label("studio.header.new")}>
-            <G.plus fontSize={14} />
-          </button>
-        </div>
+        <div className="flex flex-1 flex-col min-w-0 min-h-0">
+          <TopBar
+            sidebarOpen={sidebarOpen}
+            isDesktop={isDesktop}
+            effectiveSidebarWidth={effectiveSidebarWidth}
+            isResizingSidebar={isResizingSidebar}
+            floatingSidebar={floatingSidebar}
+            searchOpen={sidebarSearchOpen}
+            railPadLeft={railPadLeft}
+            railPadRight={railPadRight}
+            onToggleSidebar={() => setSidebarOpen((v) => !v)}
+            onToggleSearch={handleToggleSearch}
+            openTabs={openTabs}
+            workspaces={workspaces}
+            activeConversationId={activeConversation?.id || ''}
+            streamingConvId={streamingConvId}
+            onSelectTab={handleSelectConversation}
+            onCloseTab={handleCloseTab}
+            onNewTab={() => handleNewConversation(activeWorkspaceId)}
+            onRenameTab={handleRenameConversation}
+            onReorderTabs={handleReorderTabs}
+            onReplayIntro={() => setShowIntro(true)}
+          />
 
-        <div className="studio__tabs">
-          {conversations.slice(0, 8).map((conversation) => {
-            const isActive = conversation.id === active?.id;
-            return (
-              <button
-                key={conversation.id}
-                type="button"
-                className={`studio-tab${isActive ? " is-active" : ""}`}
-                onClick={() => setActiveId(conversation.id)}
-                title={conversation.title}
+          <div
+            className="relative z-10 flex flex-1 min-h-0 overflow-hidden max-lg:px-1.5 max-lg:pb-1.5"
+            style={
+              isDesktop
+                ? {
+                    paddingLeft: `${framePad}px`,
+                    paddingRight: `${framePad}px`,
+                    paddingBottom: `${framePad}px`,
+                    gap: isFullFloatingRail ? `${framePad}px` : undefined,
+                  }
+                : undefined
+            }
+          >
+            {/* Modality 2: Full-Floating Frosted Bar (matches Expandable Box top & bottom 1:1) */}
+            {isFullFloatingRail && railNode}
+
+            {/* Docked Unified Workspace Frame OR Detached Frosted Sidebar + Detached Main Stage */}
+            <div
+              className={isFloatingQuad ? 'workspace-frame-floating' : 'workspace-frame'}
+              data-testid="workspace-frame"
+            >
+              <Sidebar
+                isOpen={sidebarOpen}
+                isDesktop={isDesktop}
+                sidebarWidth={sidebarWidth}
+                onChangeSidebarWidth={(nextW) => setSidebarWidth(clampSidebarWidth(nextW))}
+                dragPreviewWidth={dragPreviewWidth}
+                isResizing={isResizingSidebar}
+                onResizePointerDown={handleResizePointerDown}
+                railMode={railMode}
+                onChangeRailMode={handleSelectRailMode}
+                railDockEdge={railDockEdge}
+                onChangeRailDockEdge={handleChangeRailDockEdge}
+                floatingSidebar={floatingSidebar}
+                onChangeFloatingSidebar={setFloatingSidebar}
+                searchOpen={sidebarSearchOpen}
+                onToggleSearchOpen={handleToggleSidebarSearch}
+                ansiEnabled={ansiEnabled}
+                onToggleAnsiEnabled={() => setAnsiEnabled((v) => !v)}
+                glowEnabled={glowEnabled}
+                onToggleGlowEnabled={() => setGlowEnabled((v) => !v)}
+                blurEnabled={blurEnabled}
+                onToggleBlurEnabled={() => setBlurEnabled((v) => !v)}
+                transparencyEnabled={transparencyEnabled}
+                onToggleTransparencyEnabled={() => setTransparencyEnabled((v) => !v)}
+                autoScrollEnabled={autoScrollEnabled}
+                onToggleAutoScrollEnabled={() => setAutoScrollEnabled((v) => !v)}
+                onCloseMobile={() => {
+                  if (window.innerWidth < 1024) {
+                    setSidebarOpen(false);
+                  }
+                }}
+                activeTab={sidebarTab}
+                onTabChange={setSidebarTab}
+                workspaces={workspaces}
+                activeWorkspaceId={activeWorkspaceId}
+                onSelectWorkspace={handleSelectWorkspace}
+                onCreateWorkspace={handleCreateWorkspace}
+                onCreateProjectInstant={handleCreateProjectInstant}
+                onRenameWorkspace={handleRenameWorkspace}
+                conversations={conversations}
+                pinnedConvIds={pinnedConvIds}
+                onTogglePinConversation={handleTogglePinConversation}
+                activeConversationId={activeConversation?.id || ''}
+                onSelectConversation={handleSelectConversation}
+                onNewConversation={handleNewConversation}
+                onRenameConversation={handleRenameConversation}
+                onDeleteConversation={handleDeleteConversation}
+                artifacts={extractedArtifacts}
+                onSelectArtifactConversation={(convId) => {
+                  handleSelectConversation(convId);
+                  setSidebarTab('chats');
+                }}
+                tasks={workspaceTasks}
+                onAddTask={handleAddTask}
+                onToggleTask={handleToggleTask}
+                onDeleteTask={handleDeleteTask}
+                searchFocusSignal={searchFocusSignal}
+                routeResults={routeResults}
+                discoveredModels={discoveredModels}
+                isDiscovering={isDiscovering}
+                onSyncAll={handleSyncAll}
+                isSyncing={isImporting}
+                baseUrl={baseUrl}
+                onApplyBaseUrl={handleApplyBaseUrl}
+                activeRoute={activeRoute}
+                activeModelId={activeModelId}
+                onSelectModel={handleSelectModel}
+                inspectorOpen={inspectorOpen}
+                onOpenInspector={() => setInspectorOpen(true)}
+                theme={theme}
+                onToggleTheme={handleToggleTheme}
+                systemPrompt={activeConversation?.systemPrompt || ''}
+                onChangeSystemPrompt={(val) =>
+                  activeConversation &&
+                  updateConversation(activeConversation.id, (c) => ({
+                    ...c,
+                    systemPrompt: val,
+                  }))
+                }
+                temperature={activeConversation?.temperature ?? 0.7}
+                onChangeTemperature={(val) =>
+                  activeConversation &&
+                  updateConversation(activeConversation.id, (c) => ({
+                    ...c,
+                    temperature: val,
+                  }))
+                }
+                thinkingLevel={activeConversation?.thinkingLevel || 'default'}
+                onChangeThinkingLevel={(val) =>
+                  activeConversation &&
+                  updateConversation(activeConversation.id, (c) => ({
+                    ...c,
+                    thinkingLevel: val,
+                  }))
+                }
+                thinkingLevels={resolvedThinkingLevels}
+                onResetParams={() =>
+                  activeConversation &&
+                  updateConversation(activeConversation.id, (c) => ({
+                    ...c,
+                    systemPrompt: '',
+                    temperature: 0.7,
+                    thinkingLevel: 'default',
+                  }))
+                }
+                workspaceMemory={workspaceMemory}
+                onChangeWorkspaceMemory={setWorkspaceMemory}
+                userDisplayName={userDisplayName}
+                onChangeUserDisplayName={setUserDisplayName}
+              />
+
+              <main
+                className={`${
+                  isFloatingQuad
+                    ? 'main-stage-floating '
+                    : sidebarOpen
+                      ? 'rounded-r-[10px] rounded-l-none '
+                      : 'rounded-[10px] '
+                }relative z-0 flex min-w-0 flex-1 flex-col overflow-hidden`}
               >
-                {isActive && <ActiveSaddleTabSurface fillColor="var(--studio-stage)" />}
-                <span className="studio-tab__label">{conversation.title}</span>
-                <span
-                  role="button"
-                  tabIndex={0}
-                  className="studio-tab__close"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    removeconversation(conversation.id);
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      event.stopPropagation();
-                      removeconversation(conversation.id);
-                    }
-                  }}
-                  aria-label={label("studio.tab.close")}
-                >
-                  <G.close fontSize={11} />
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </header>
 
-      {/* ===== 2. the workspace row: the quadro + the stage ===== */}
-      <div className="studio__row">
-        {sidebarOpen && (
-          <aside className="studio-quad" aria-label={label("studio.panel.projects")}>
-            <div className="studio-quad__shader hero-gaussian-shader" aria-hidden="true" />
-            <div className="studio-quad__inner">
-              {searchOpen && (
-                <div className="studio-search">
-                  <G.search fontSize={13} />
-                  <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder={label("studio.header.search")} />
-                  {searchQuery !== "" && (
-                    <button type="button" className="studio-minibtn" onClick={() => setSearchQuery("")} aria-label={label("studio.tab.close")}>
-                      <G.close fontSize={10} />
+                {discoveryError && (
+                  <div className="border-b border-red-500/30 bg-red-500/10 px-4 py-2 text-xs text-[var(--dk-danger)] flex items-center justify-between gap-3 shrink-0">
+                    <span>{discoveryError}</span>
+                    <button
+                      type="button"
+                      onClick={() => runDiscovery(baseUrl)}
+                      className="font-semibold underline cursor-pointer shrink-0"
+                    >
+                      Try again
                     </button>
-                  )}
-                </div>
-              )}
-
-              {sidebarSection === "projects" && (
-                <>
-                  <button type="button" className="studio-newchat" onClick={() => startnew(activeWorkspace)}>
-                    <span className="studio-pop__itemname">
-                      <G.plus fontSize={13} />
-                      {label("studio.panel.new")}
-                    </span>
-                    <span style={{ opacity: 0.4, fontSize: 9 }}>{conversations.length}</span>
-                  </button>
-                  <div className="studio-quad__list">
-                    {filteredConversations !== null ? (
-                      filteredConversations.length === 0 ? (
-                        <p className="studio-quad__empty">{label("studio.panel.empty")}</p>
-                      ) : (
-                        filteredConversations.map((conversation) => (
-                          <button key={conversation.id} type="button" className={`studio-conv${conversation.id === active?.id ? " is-active" : ""}`} onClick={() => setActiveId(conversation.id)}>
-                            <span className="studio-conv__label">{conversation.title}</span>
-                            <span className="studio-conv__chip">{conversation.version}</span>
-                          </button>
-                        ))
-                      )
-                    ) : (
-                      workspaces.map((workspace) => {
-                        const rows = conversationsOfWorkspace(workspace.id);
-                        return (
-                          <div key={workspace.id}>
-                            <div className="studio-wsrow">
-                              <button
-                                type="button"
-                                className="studio-wsrow__name"
-                                onClick={() => setWorkspaces((prev) => prev.map((row) => (row.id === workspace.id ? { ...row, expanded: !row.expanded } : row)))}
-                              >
-                                <G.chevronDown fontSize={10} className={`studio-wsrow__chev${workspace.expanded ? "" : " is-closed"}`} />
-                                {workspace.name}
-                              </button>
-                              <span className="studio-wsrow__actions">
-                                <button type="button" className="studio-minibtn" onClick={() => startnew(workspace.id)} aria-label={label("studio.panel.new")}>
-                                  <G.plus fontSize={11} />
-                                </button>
-                                {workspace.id !== "ws-default" && (
-                                  <button
-                                    type="button"
-                                    className="studio-minibtn"
-                                    onClick={() => {
-                                      setWorkspaces((prev) => prev.filter((row) => row.id !== workspace.id));
-                                      showToast(`${workspace.name} removido`);
-                                    }}
-                                    aria-label={label("studio.panel.delete")}
-                                  >
-                                    <G.trash fontSize={11} />
-                                  </button>
-                                )}
-                              </span>
-                            </div>
-                            {workspace.expanded &&
-                              (rows.length === 0 ? (
-                                <p className="studio-quad__empty" style={{ paddingLeft: 16 }}>
-                                  {label("studio.panel.empty")}
-                                </p>
-                              ) : (
-                                rows.map((conversation) => (
-                                  <button
-                                    key={conversation.id}
-                                    type="button"
-                                    className={`studio-conv${conversation.id === active?.id ? " is-active" : ""}`}
-                                    onClick={() => {
-                                      setActiveId(conversation.id);
-                                      setActiveWorkspace(workspace.id);
-                                    }}
-                                    title={`${conversation.title} · /${conversation.version}`}
-                                  >
-                                    <span className="studio-conv__label">{conversation.title}</span>
-                                    <span className="studio-conv__chip">{conversation.version}</span>
-                                  </button>
-                                ))
-                              ))}
-                          </div>
-                        );
-                      })
-                    )}
                   </div>
-                  <button type="button" className="studio-newproject" onClick={createworkspace}>
-                    <G.plus fontSize={13} />
-                    {label("studio.panel.newproject")}
-                  </button>
-                </>
-              )}
+                )}
 
-              {sidebarSection === "routes" && (
-                <div className="studio-quad__list">
-                  {DISCOVERYVERSIONS.map((version) => {
-                    const status = routestatus(version);
-                    const probed = routes?.find((route) => route.version === version);
-                    return (
-                      <button
-                        key={version}
-                        type="button"
-                        className={`studio-route${version === active?.version ? " is-active" : ""}`}
-                        onClick={() => pickversion(version)}
-                        title={probed ? `${probed.models.length} models · ${probed.latencyMs}ms` : label("studio.panel.probe")}
-                      >
-                        <span className="studio-route__row">
-                          <span className="studio-route__name">
-                            <i className="studiodot" data-status={status} aria-hidden="true" />
-                            /{version}
-                          </span>
-                          <span className="studio-route__meta">
-                            {probed ? `${probed.models.length} · ${probed.latencyMs}ms` : "…"}
-                          </span>
-                        </span>
-                        <span className="studio-route__provider">{GATEWAYVERSIONS.find((row) => row.v === version)?.provider ?? ""}</span>
-                      </button>
+                <ChatThread
+                  messages={activeConversation?.messages || []}
+                  activeConversationId={activeConversation?.id}
+                  sidebarOpen={sidebarOpen}
+                  onExpandSidebar={() => setSidebarOpen(true)}
+                  activeRoute={activeRoute}
+                  routeResults={routeResults}
+                  onRetryLast={handleRetryLast}
+                  onContinueLast={handleContinueLast}
+                  onSelectFallbackRoute={handleSelectFallbackRoute}
+                  onQuickPrompt={(prompt) => handleSend(prompt)}
+                  onTriggerAttachImage={() => setAttachSignal((n) => n + 1)}
+                  onPrefillImagePrompt={() => {
+                    setComposerInput((prev) =>
+                      /^\/(imagem|image|img)\b/i.test(prev.trim())
+                        ? prev
+                        : `/image ${prev}`.trimStart()
                     );
-                  })}
-                  {probing && <p className="studio-quad__empty">probing…</p>}
-                  <button type="button" className="studio-setting" onClick={() => void refreshroutes()}>
-                    <G.sparkle fontSize={13} />
-                    {label("studio.panel.probe")}
-                  </button>
-                </div>
-              )}
+                    setFocusSignal((n) => n + 1);
+                  }}
+                  onOpenParams={() => {
+                    setSidebarTab('params');
+                    setSidebarOpen(true);
+                  }}
+                  onExportMarkdown={handleExportMarkdown}
+                  centeredComposer={isEmptyThread ? composerElement : undefined}
+                  darkMode={theme === 'dark'}
+                  ansiPulseCount={ansiPulseCount}
+                  ansiEnabled={ansiEnabled}
+                  autoScrollEnabled={autoScrollEnabled}
+                  engineMode={pendingImages.length === 0}
+                  effortTier={effortChroma.tier}
+                />
 
-              {sidebarSection === "settings" && (
-                <div className="studio-quad__list">
-                  <label className="studio-route__provider" style={{ padding: "0 4px", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.08em" }}>
-                    {label("studio.panel.origin")}
-                  </label>
-                  <input className="studio-originfield" value={originField} onChange={(event) => setOriginField(event.target.value)} onBlur={commitorigin} placeholder="(same origin)" />
-                  <p className="studio-originhint">{label("studio.panel.originHint")}</p>
-                  <button type="button" className="studio-setting" onClick={() => void refreshroutes()}>
-                    <G.sparkle fontSize={13} />
-                    {label("studio.panel.probe")}
-                  </button>
-                  <a className="studio-setting" href="#/thinking">
-                    <G.pulse fontSize={13} />
-                    {label("shell.rail.thinking")}
-                  </a>
-                  <a className="studio-setting" href="#/sessions">
-                    <G.key fontSize={13} />
-                    {label("shell.rail.sessions")}
-                  </a>
-                  <a className="studio-setting" href="#/versions">
-                    <G.data fontSize={13} />
-                    {label("shell.rail.versions")}
-                  </a>
-                </div>
-              )}
+                {!isEmptyThread && composerElement}
+              </main>
             </div>
-          </aside>
-        )}
-
-        {/* ===== 3. the stage: the ansi hero + the chat ===== */}
-        <main className="studio-stage">
-          <div className="studio-stage__shader hero-gaussian-shader" aria-hidden="true" />
-          <StudioAnsiCanvas engineMode={streaming} pulseTrigger={0} />
-          <div className="studio-stage__inner">
-            {terminalOpen && (
-              <div className="studio-terminal">
-                <div className="studio-terminal__bar">
-                  <span className="studio-pop__itemname">
-                    <span className="studio-terminal__tag">{label("studio.terminal.title")}</span>
-                    <span className="studio-terminal__cmd">$ devthink studio --gateway=&quot;{gatewayorigin() || "same-origin"}&quot;</span>
-                  </span>
-                  <button type="button" className="studio-minibtn" onClick={() => setTerminalOpen(false)} aria-label={label("studio.tab.close")}>
-                    <G.close fontSize={12} />
-                  </button>
-                </div>
-                <div className="studio-terminal__log">
-                  {terminalLog.length === 0 ? (
-                    <p style={{ opacity: 0.5 }}>{label("studio.terminal.waiting")}</p>
-                  ) : (
-                    terminalLog.map((line) => (
-                      <p key={line.id} className="studio-terminal__line">
-                        <span className="studio-terminal__time">{new Date(line.at).toLocaleTimeString()}</span>
-                        <span className="studio-terminal__method">{line.method}</span>
-                        <span className="studio-terminal__path">{line.path}</span>
-                        <span className={`studio-terminal__status${typeof line.status === "number" && line.status >= 400 ? " is-bad" : ""}`}>{line.status}</span>
-                        <span className="studio-terminal__detail">{line.detail}</span>
-                        {line.durationMs !== undefined && <span className="studio-terminal__dur">{line.durationMs}ms</span>}
-                      </p>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-
-            {showstarters ? (
-              /* the hero stage */
-              <div className="studio-hero">
-                <div className="studio-hero__wrap">
-                  <div className="studio-hero__glow" aria-hidden="true" />
-                  <h1 className="studio-hero__title">{label("studio.hero.title")}</h1>
-
-                  <div className="studio-composer">
-                    {modelPickerOpen && (
-                      <div className="studio-pop" role="listbox">
-                        <div className="studio-pop__search">
-                          <G.search fontSize={12} />
-                          <input value={modelQuery} onChange={(event) => setModelQuery(event.target.value)} placeholder="model / route / provider" />
-                        </div>
-                        {DISCOVERYVERSIONS.map((version) => {
-                          const options = modeloptions(version);
-                          if (options.length === 0) return null;
-                          const query = modelQuery.toLowerCase();
-                          const matches = options.filter((option) => query === "" || option.id.toLowerCase().includes(query) || version.toLowerCase().includes(query));
-                          if (matches.length === 0) return null;
-                          return (
-                            <div key={version}>
-                              <p className="studio-pop__group">/{version}</p>
-                              {matches.slice(0, 24).map((option) => {
-                                const selected = option.id === active?.modelId && version === active?.version;
-                                return (
-                                  <button key={`${version}:${option.id}`} type="button" className={`studio-pop__item${selected ? " is-on" : ""}`} onClick={() => { pickversion(version); pickmodel(option.id); }} role="option" aria-selected={selected}>
-                                    <span className="studio-pop__itemname">
-                                      <G.sparkle fontSize={13} style={{ color: "#0EA5E9", flexShrink: 0 }} />
-                                      <span className="studio-pop__itemtext">
-                                        <span className="studio-pop__id">{option.id}</span>
-                                        <span className="studio-pop__sub">{option.meta ? `meta · pool ${option.pool ? "smart" : ""}` : option.pool ? "smart pool" : ""}</span>
-                                      </span>
-                                    </span>
-                                    <span className="studio-pop__badges">
-                                      {option.meta && <span className="studio-badge studio-badge--think">META</span>}
-                                      {option.pool && !option.meta && <span className="studio-badge studio-badge--pool">POOL</span>}
-                                      {selected && <G.check fontSize={13} style={{ color: "#0EA5E9" }} />}
-                                    </span>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    {thinkingOpen && (
-                      <div className="studio-pop studio-pop--narrow">
-                        {thinkingladder.map((rung) => {
-                          const selected = (active?.thinkingLevel ?? DEFAULTTHINKINGLEVEL) === rung.level;
-                          return (
-                            <button key={rung.level} type="button" className={`studio-pop__item${selected ? " is-on" : ""}`} onClick={() => pickthinking(rung.level)}>
-                              <span>{rung.level}</span>
-                              <span className="studio-pop__budget">{formatbudget(rung.budget)}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-
-                    <div className="studio-composer__box">
-                      {pendingImages.length > 0 && (
-                        <div className="studio-composer__thumbs">
-                          {pendingImages.map((url, index) => (
-                            <button key={index} type="button" className="studio-thumb" onClick={() => setPendingImages((prev) => prev.filter((_, at) => at !== index))} title={label("studio.composer.remove")}>
-                              <img src={url} alt={`attachment ${index + 1}`} />
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                      <textarea
-                        className="studio-composer__area"
-                        rows={3}
-                        value={draft}
-                        onChange={(event) => setDraft(event.target.value)}
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter" && !event.shiftKey) {
-                            event.preventDefault();
-                            senddraft();
-                          }
-                        }}
-                        placeholder={label("studio.composer.placeholder")}
-                      />
-                      <div className="studio-composer__row">
-                        <div className="studio-composer__left">
-                          <input ref={fileInputRef} type="file" accept="image/*" multiple hidden onChange={(event) => { attachfiles(event.target.files); event.target.value = ""; }} />
-                          <button type="button" className="studio-iconbtn studio-iconbtn--frame" onClick={() => fileInputRef.current?.click()} aria-label={label("studio.composer.attach")} title={label("studio.composer.attach")}>
-                            <G.image fontSize={15} />
-                          </button>
-                        </div>
-                        <div className="studio-composer__right">
-                          <div className="studio-seg">
-                            {quickmetas.map((meta) => {
-                              const selected = active?.version === meta.version && active?.modelId === "devthink";
-                              return (
-                                <button key={meta.version} type="button" className={`studio-seg__btn${selected ? " is-on" : ""}`} onClick={() => { pickversion(meta.version); pickmodel("devthink"); }}>
-                                  <G.sparkle fontSize={11} />
-                                  DevThink {meta.version}
-                                </button>
-                              );
-                            })}
-                            <button type="button" className={`studio-seg__btn${modelPickerOpen ? " is-on" : ""}`} onClick={() => { setModelPickerOpen((open) => !open); setThinkingOpen(false); }} aria-label={label("studio.composer.more")}>
-                              <G.chevronDown fontSize={11} />
-                            </button>
-                            <button type="button" className={`studio-seg__btn${thinkingOpen ? " is-on" : ""}`} onClick={() => { setThinkingOpen((open) => !open); setModelPickerOpen(false); }}>
-                              {active?.thinkingLevel ?? DEFAULTTHINKINGLEVEL}
-                            </button>
-                          </div>
-                          {streaming ? (
-                            <button type="button" className="studio-stop" onClick={stop} aria-label={label("studio.composer.stop")}>
-                              <G.stop fontSize={14} />
-                            </button>
-                          ) : (
-                            <button type="button" className="studio-send btn-tactile-3d" onClick={senddraft} aria-label={label("studio.composer.send")}>
-                              <G.send fontSize={14} />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="studio-starters">
-                    {STARTERS.map((starter) => (
-                      <button key={starter.title} type="button" className="studio-starter" onClick={() => void send(label(starter.prompt))}>
-                        <span className="studio-starter__top">
-                          <span className="studio-starter__well">
-                            {starter.icon === "cube" && <G.cube fontSize={19} />}
-                            {starter.icon === "bot" && <G.bot fontSize={19} />}
-                            {starter.icon === "code" && <G.code fontSize={19} />}
-                            {starter.icon === "layers" && <G.layers fontSize={19} />}
-                          </span>
-                          <G.arrowUpRight fontSize={15} className="studio-starter__arrow" />
-                        </span>
-                        <span>
-                          <span className="studio-starter__title">{label(starter.title)}</span>
-                          <span className="studio-starter__tag">{label(starter.tag)}</span>
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* the active thread */
-              <div className="studio-thread">
-                <div ref={threadRef} className="studio-thread__scroll">
-                  <div className="studio-thread__list">
-                    {activeThread.map((message) => {
-                      if (message.role === "user") {
-                        return (
-                          <div key={message.id} className="studio-msg--user">
-                            {message.images && message.images.length > 0 && (
-                              <span className="studio-msg__imgs">
-                                {message.images.map((url, index) => (
-                                  <img key={index} src={url} alt={`attachment ${index + 1}`} />
-                                ))}
-                              </span>
-                            )}
-                            <div className="studio-msg__bubble">{message.content}</div>
-                          </div>
-                        );
-                      }
-                      const reasonOpen = Boolean(expandedReasoning[message.id]);
-                      const isGhost = message.id === "ghost";
-                      return (
-                        <div key={message.id} className="studio-msg--bot">
-                          <span className="studio-msg__avatar">
-                            <G.sparkle fontSize={15} style={{ color: "#6366F1" }} />
-                          </span>
-                          <div className="studio-msg__body">
-                            {message.reasoning && message.reasoning !== "" && (
-                              <div className={`studio-reason${isGhost ? " is-live" : ""}`}>
-                                <button
-                                  type="button"
-                                  className="studio-reason__head"
-                                  onClick={() => setExpandedReasoning((prev) => ({ ...prev, [message.id]: !prev[message.id] }))}
-                                >
-                                  <span className="studio-reason__label">
-                                    <G.pulse fontSize={13} className="studio-reason__glyph" style={{ color: "#6366F1" }} />
-                                    {label("studio.thread.reasoning")}
-                                  </span>
-                                  <G.chevronDown fontSize={13} className={`studio-reason__chev${reasonOpen ? " is-open" : ""}`} />
-                                </button>
-                                {reasonOpen && <div className="studio-reason__body">{message.reasoning}</div>}
-                              </div>
-                            )}
-                            {message.error ? (
-                              <div>
-                                <p className="studio-msg__error">{message.error}</p>
-                                <button type="button" className="studio-msg__retry" onClick={() => void retry()}>
-                                  <G.pulse fontSize={12} />
-                                  {label("studio.thread.retry")}
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="studio-md">
-                                {splitblocks(message.content).map((block, index) => {
-                                  if (block.kind === "code") {
-                                    return (
-                                      <div key={index} className="studio-code">
-                                        <div className="studio-code__bar">
-                                          <span className="studio-code__lang">{block.lang}</span>
-                                          <button
-                                            type="button"
-                                            className="studio-code__copy"
-                                            onClick={() => {
-                                              void navigator.clipboard?.writeText(block.code);
-                                              showToast(label("studio.toast.copied"));
-                                            }}
-                                          >
-                                            <G.copy fontSize={12} />
-                                            Copy
-                                          </button>
-                                        </div>
-                                        <pre className="studio-code__pre">
-                                          <code>{block.code}</code>
-                                        </pre>
-                                      </div>
-                                    );
-                                  }
-                                  return (
-                                    <div key={index}>
-                                      {block.text.split("\n").map((line, lineIndex) => {
-                                        const trimmed = line.trim();
-                                        if (trimmed === "") return <div key={lineIndex} style={{ height: 4 }} />;
-                                        if (trimmed.startsWith("### ")) {
-                                          return (
-                                            <h4 key={lineIndex} className="studio-md__heading" style={{ fontSize: 17 }}>
-                                              {trimmed.slice(4)}
-                                            </h4>
-                                          );
-                                        }
-                                        if (trimmed.startsWith("## ")) {
-                                          return (
-                                            <h3 key={lineIndex} className="studio-md__heading" style={{ fontSize: 19 }}>
-                                              {trimmed.slice(3)}
-                                            </h3>
-                                          );
-                                        }
-                                        if (/^[-*] /.test(trimmed)) {
-                                          return (
-                                            <div key={lineIndex} className="studio-md__bullet">
-                                              <span className="studio-md__dot">•</span>
-                                              <p className="studio-md__para" style={{ marginBottom: 0, flex: 1 }}>
-                                                {trimmed.slice(2)}
-                                              </p>
-                                            </div>
-                                          );
-                                        }
-                                        const tokens = line.split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
-                                        return (
-                                          <p key={lineIndex} className="studio-md__para">
-                                            {tokens.map((token, tokenIndex) => {
-                                              if (token.startsWith("`") && token.endsWith("`") && token.length > 2) {
-                                                return (
-                                                  <code key={tokenIndex} className="studio-md__inline">
-                                                    {token.slice(1, -1)}
-                                                  </code>
-                                                );
-                                              }
-                                              if (token.startsWith("**") && token.endsWith("**") && token.length > 4) {
-                                                return (
-                                                  <strong key={tokenIndex} className="studio-md__strong">
-                                                    {token.slice(2, -2)}
-                                                  </strong>
-                                                );
-                                              }
-                                              return <span key={tokenIndex}>{token}</span>;
-                                            })}
-                                          </p>
-                                        );
-                                      })}
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
-                            {!isGhost && !message.error && (message.modelId || message.usage) && (
-                              <div className="studio-meta">
-                                {message.backendModel && <span className="studio-meta__backend">devthink → {message.backendModel}</span>}
-                                {message.modelId && <span>{message.modelId}</span>}
-                                {message.route && <span>· /{message.route}</span>}
-                                {message.provider && <span>· {message.provider}</span>}
-                                {message.fallback && <span className="studio-meta__lane">fallback</span>}
-                                {message.usage?.totalTokens !== undefined && (
-                                  <span>
-                                    · {label("studio.thread.tokens").replace("{n}", formattokens(message.usage.totalTokens))}
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* the bottom compact composer */}
-                <div className="studio-bottom">
-                  <div className="studio-bottom__box">
-                    {modelPickerOpen && (
-                      <div className="studio-pop studio-pop--narrow" style={{ position: "static", width: "100%", marginBottom: 8, maxHeight: 200 }}>
-                        {DISCOVERYVERSIONS.map((version) => {
-                          const options = modeloptions(version).filter((option) => modelQuery === "" || option.id.toLowerCase().includes(modelQuery.toLowerCase()));
-                          if (options.length === 0) return null;
-                          return (
-                            <div key={version}>
-                              <p className="studio-pop__group">/{version}</p>
-                              {options.slice(0, 10).map((option) => (
-                                <button key={`${version}:${option.id}`} type="button" className={`studio-pop__item${option.id === active?.modelId && version === active?.version ? " is-on" : ""}`} onClick={() => { pickversion(version); pickmodel(option.id); }}>
-                                  <span className="studio-pop__id">{option.id}</span>
-                                  {option.meta && <span className="studio-badge studio-badge--think">META</span>}
-                                </button>
-                              ))}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                    <div className="studio-bottom__row">
-                      <div className="studio-seg">
-                        <button type="button" className={`studio-seg__btn${modelPickerOpen ? " is-on" : ""}`} onClick={() => setModelPickerOpen((open) => !open)}>
-                          <G.sparkle fontSize={11} />
-                          <span style={{ maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{active?.modelId ?? "devthink"}</span>
-                          <G.chevronDown fontSize={10} />
-                        </button>
-                        <button type="button" className={`studio-seg__btn${thinkingOpen ? " is-on" : ""}`} onClick={() => setThinkingOpen((open) => !open)}>
-                          {active?.thinkingLevel ?? DEFAULTTHINKINGLEVEL}
-                        </button>
-                      </div>
-                      <span style={{ flex: 1 }} />
-                      {!streaming && activeThread.length > 0 && (
-                        <button type="button" className="studio-seg__btn" onClick={() => void retry()} style={{ opacity: 0.6 }}>
-                          retry
-                        </button>
-                      )}
-                    </div>
-                    <div className="studio-bottom__inputrow">
-                      <input ref={fileInputRef} type="file" accept="image/*" multiple hidden onChange={(event) => { attachfiles(event.target.files); event.target.value = ""; }} />
-                      <button type="button" className="studio-iconbtn studio-iconbtn--frame" style={{ width: 32, height: 32, borderRadius: 9 }} onClick={() => fileInputRef.current?.click()} aria-label={label("studio.composer.attach")}>
-                        <G.image fontSize={15} />
-                      </button>
-                      <input
-                        className="studio-bottom__input"
-                        value={draft}
-                        onChange={(event) => setDraft(event.target.value)}
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter") {
-                            event.preventDefault();
-                            senddraft();
-                          }
-                        }}
-                        placeholder={label("studio.composer.placeholder")}
-                      />
-                      {pendingImages.length > 0 && (
-                        <span className="studio-conv__chip">
-                          {pendingImages.length}/{MAXIMAGES}
-                        </span>
-                      )}
-                      {streaming ? (
-                        <button type="button" className="studio-stop" onClick={stop} aria-label={label("studio.composer.stop")}>
-                          <G.stop fontSize={14} />
-                        </button>
-                      ) : (
-                        <button type="button" className="studio-send btn-tactile-3d" onClick={senddraft} aria-label={label("studio.composer.send")}>
-                          <G.send fontSize={14} />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
-        </main>
+        </div>
+
+      <ModelInspectorModal
+          isOpen={inspectorOpen}
+          onClose={() => setInspectorOpen(false)}
+          baseUrl={baseUrl}
+          onApplyBaseUrl={handleApplyBaseUrl}
+          routeResults={routeResults}
+          isDiscovering={isDiscovering}
+          onSelectModel={handleSelectModel}
+          activeRoute={activeRoute}
+          activeModelId={activeModelId}
+        />
       </div>
 
-      {studioToast !== null && <div className="studio-toast">{studioToast}</div>}
-    </div>
+      {/* the live terminal request log of every gateway call */}
+      <TerminalDrawer
+        open={terminalOpen}
+        onClose={() => setTerminalOpen(false)}
+        lines={terminalLog}
+      />
+      </div>
+    </>
   );
 }
+
+/** the studio anchor: the interface 18 desktop inside the gtx language
+ *  provider (the runtime translation lane of the surface). */
+export default function Studio() {
+  return (
+    <GtxLanguageProvider>
+      <AppContent />
+    </GtxLanguageProvider>
+  );
+}
+

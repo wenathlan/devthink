@@ -41,6 +41,8 @@ export const LABEL_MANIFEST = {
   "shell.caption.restore": "Restore",
   "shell.caption.close": "Close",
   "shell.rail.aria": "primary",
+  "shell.rail.studio": "studio",
+  "shell.rail.studioDetail": "the devthink studio os — the interface 18 desktop",
   "shell.rail.chat": "chat",
   "shell.rail.chatDetail": "the devthink chat over the live routes",
   "shell.rail.home": "home",

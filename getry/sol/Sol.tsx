@@ -30,12 +30,17 @@ import VersionsAnchor from "./versions/versions";
 
 /** The route table of the theme: the entry flow (intro, onboarding) before
  * the fundamentals — home plus the three gateway domains and the catch-all,
- * all rendered inside the application window. */
+ * all rendered inside the application window — and the studio surface (the
+ * interface 18 desktop: the omni rail, the tabs, the sidebar) owning the
+ * whole viewport as its own full-bleed stage, the same desktop the gateway
+ * edition rides. */
 export default function Sol() {
   return (
     <Switch>
       <Route path="/intro" component={IntroAnchor} />
       <Route path="/onboarding" component={OnboardingAnchor} />
+      <Route path="/studio/:rest*" component={StudioAnchor} />
+      <Route path="/studio" component={StudioAnchor} />
       <Route component={Fundamentals} />
     </Switch>
   );
@@ -50,7 +55,6 @@ function Fundamentals() {
       <Switch>
         <Route path="/" component={HomeAnchor} />
         <Route path="/chat" component={ChatAnchor} />
-        <Route path="/studio" component={StudioAnchor} />
         <Route path="/versions" component={VersionsAnchor} />
         <Route path="/thinking" component={ThinkingAnchor} />
         <Route path="/sessions" component={SessionsAnchor} />
