@@ -72,6 +72,15 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
      * drift the 2.0.174 proposal met). the rung machinery owns the
      * @wenathlan specs; the ladder walks the public registry alone. */
     if (name.startsWith("@wenathlan/")) continue;
+    /* the frozen seats — the documented holds where the registry latest
+     * carries a defect the family tree cannot ride (the ladder proposes
+     * nothing for them until an unfreeze edit lands): the rolldown 1.3.x
+     * line panics the vite build pass (rolldown_error
+     * build_diagnostic.rs:328, "Formatting argument out of range") —
+     * the ~1.2.x floor the eleven manifests declare stays seated until
+     * a fixed release answers the panic; the freeze row retires the
+     * moment that release lands (remove the name, re-run the sync). */
+    if (name === "rolldown") continue;
     walkable.push({ section, name, declared });
   }
 }
