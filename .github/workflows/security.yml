@@ -557,16 +557,18 @@ jobs:
           ')
           # the applitools eyes seats walk the same documented exclusion
           # lane: the visual-testing SDK the union law seats publishes
-          # its core-base, utils and logger transitives with Custom:
-          # LICENSE labels (the eyes sdk license texts the checker
-          # reads from the tarballs) — test-time tools excluded by
-          # name@version the same precedent the vite-plugin row
-          # carries, never a silent walkaround; the lock pins build
-          # the rows so the rung bumps survive without a manual list.
+          # its whole scope under Custom: LICENSE labels (the eyes sdk
+          # license texts the checker reads from the tarballs — core,
+          # core-base, utils, logger, dom-capture, driver, socket and
+          # every sibling the tree resolves) — test-time tools excluded
+          # by name@version the same precedent the vite-plugin row
+          # carries, never a silent walkaround; the lock pins build the
+          # rows for the entire @applitools scope so the rung bumps
+          # survive without a manual list.
           APPLITOOLS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
-            const rows = [...lock.matchAll(/"(@applitools\/(?:core-base|utils|logger))@(\d+\.\d+\.\d+)"/g)]
+            const rows = [...lock.matchAll(/"(@applitools\/[a-z0-9-]+)@(\d+\.\d+\.\d+)"/g)]
               .map((match) => match[1] + "@" + match[2]);
             console.log([...new Set(rows)].join(";"));
           ')
