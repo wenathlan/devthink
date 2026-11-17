@@ -147,12 +147,28 @@ jobs:
             try {
               const report = JSON.parse(fs.readFileSync("build/security/pnpm-audit.json", "utf8"));
               const counts = report?.metadata?.vulnerabilities ?? {};
-              const actionable = (counts.low ?? 0) + (counts.moderate ?? 0) + (counts.high ?? 0) + (counts.critical ?? 0);
+              // the documented upstream-blocked lane (the cargo ignore
+              // precedent the audit battery carries): every id below
+              // answers an advisory whose patched line no rung can reach
+              // today — picomatch GHSA-fc5q-39xc-vjpf (the ReDoS through
+              // single-branch repeated extglobs) carries no fixed release
+              // at all (every rung through 4.0.7, the latest upstream,
+              // answers the vulnerable range — the patched_versions field
+              // the report records stays empty), so the row seats the
+              // lane the same way the cargo ignore rows seat theirs: the
+              // evidence artifact above keeps every advisory row visible
+              // while the verdict subtracts the documented set alone (the
+              // unfreeze edit retires the row the moment upstream ships
+              // the patch).
+              const upstreamblocked = new Set(["GHSA-fc5q-39xc-vjpf"]);
+              const blockedrows = Object.values(report?.advisories ?? {})
+                .filter((row) => upstreamblocked.has(row?.github_advisory_id));
+              const actionable = (counts.low ?? 0) + (counts.moderate ?? 0) + (counts.high ?? 0) + (counts.critical ?? 0) - blockedrows.length;
               if (actionable > 0) {
-                console.error(`The workbench audit reports ${actionable} advisories at or above the low severity gate.`);
+                console.error(`The workbench audit reports ${actionable} advisories at or above the low severity gate (${blockedrows.length} documented upstream-blocked rows seated).`);
                 verdict = 1;
               } else {
-                console.error(`The workbench audit reports no advisories at or above the low severity gate (pnpm status ${status}).`);
+                console.error(`The workbench audit reports no advisories at or above the low severity gate beyond the documented upstream-blocked lane (${blockedrows.length} rows seated; pnpm status ${status}).`);
                 verdict = 0;
               }
             } catch {
@@ -273,8 +289,19 @@ jobs:
           # rides the pctx_config ^0.1.5 chain the pctx family answers —
           # the direct rmcp seat walks the fixed 3.10.0 line the same rung
           # seats, the rsa seat the 0.10.0 stable and the aws family the
-          # smithy-http-client 1.5 line the rustls 0.23 floor answers). the
-          # moment the depender rung lifts, the row retires (the unfreeze
+          # smithy-http-client 1.5 line the rustls 0.23 floor answers).
+          # the zip quartet joins the same documented lane the designcraft
+          # seat already carries: the four 2026-054x advisories (the AES
+          # authentication-code skip on truncated entries, the Shrink/
+          # Reduce/Implode preallocation, the ZipStreamReader local-header
+          # name mismatch and the ZipArchive::extract path traversal)
+          # all answer the SAME transitive zip 8.6.0 seat the parents
+          # pin — the patched lines land in zip 9.0.0 and 9.0.5 the
+          # designcraft, docx-rs and umya requirement ranges (^8 lines)
+          # can never reach, so each row retires the moment a parent
+          # lifts its floor the same way every row above documents its
+          # drop condition.
+          # the moment the depender rung lifts, the row retires (the unfreeze
           # edit the trivyignore doctrine carries).
           (cd "$(dirname "$CARGO_MANIFEST")" && cargo generate-lockfile && cargo audit --json \
             --ignore RUSTSEC-2026-0459 \
@@ -288,7 +315,11 @@ jobs:
             --ignore RUSTSEC-2026-0369 \
             --ignore RUSTSEC-2026-0429 \
             --ignore RUSTSEC-2021-0119 \
-            --ignore RUSTSEC-2026-0462) > build/security/cargo-audit.json
+            --ignore RUSTSEC-2026-0462 \
+            --ignore RUSTSEC-2026-0545 \
+            --ignore RUSTSEC-2026-0546 \
+            --ignore RUSTSEC-2026-0547 \
+            --ignore RUSTSEC-2026-0548) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -650,11 +681,19 @@ jobs:
           # could walk — the lock-built pin seats the row the same way
           # every dynamic row documents its seat (the unfreeze edit
           # retires the row the moment the registry rung answers a
-          # permissive label).
+          # permissive label). the @openauthjs scope answers the same
+          # unlicensed reality: the openauth authentication toolkit
+          # rung the saddle auth surface rides (@openauthjs/openauth,
+          # the union law mirrors the seat into every family manifest)
+          # publishes its npm rungs without a license field the checker
+          # can read — the registry row answers UNKNOWN the same way
+          # the @hanzo scope rows do, so the scope seat documents the
+          # lane (the unfreeze edit retires the row the moment the
+          # upstream rung answers a permissive label).
           CUSTOM_SEATS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
-            const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@inkui-cli", "@mintlify", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
+            const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@inkui-cli", "@mintlify", "@openauthjs", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
             const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/xr", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
             const rows = new Set();
             for (const match of lock.matchAll(/"((?:@[^\/"\s]+\/)?[^@"\s]+)@(\d+\.\d+\.\d+)"/g)) {

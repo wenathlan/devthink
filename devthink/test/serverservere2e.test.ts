@@ -235,7 +235,26 @@ describe("gateway server over real http", () => {
     const data = await res.json();
     expect(data["version"]).toBe("vt");
     expect(data["provider"]).toBe("wiremock");
-    expect(data["routes"]).toHaveLength(7);
+    // the thirteen route kinds the gateway surface answers — the seven
+    // chat core kinds plus the six media lanes (images generations
+    // edits understanding, audio speech transcriptions, videos
+    // generations) the studio wave seated. the full array pins the
+    // census: a silent kind lost or gained redds here, never drifts by.
+    expect(data["routes"]).toEqual([
+      "audio/speech",
+      "audio/transcriptions",
+      "chat/completions",
+      "completions",
+      "embeddings",
+      "images/edits",
+      "images/generations",
+      "images/understanding",
+      "keys",
+      "messages",
+      "models",
+      "responses",
+      "videos/generations",
+    ]);
   });
 
   it("serves the keys payload on the action route", async () => {
