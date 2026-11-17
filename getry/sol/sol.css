@@ -42,13 +42,14 @@
    0. TOKEN FOUNDATION — the one source of truth (the devthink @theme)
    ========================================================================== */
 @theme {
-  /* ---- type: Urbanist Variable carries the voice of the design pass (the
-     reference desktop tiers 400/600/800), Inter Variable the fallback, Geist
-     Mono Variable the detail ---- */
-  --font-display: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+  /* ---- type: the studio triad of the interface-18 pass — Bricolage
+     Grotesque Variable the display voice, Outfit Variable the body, JetBrains
+     Mono Variable the micro-labels; Inter Variable + Geist Mono Variable the
+     law-pinned fallbacks ---- */
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Outfit Variable", "Outfit", "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
     ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
     Menlo, monospace;
 
   /* ---- floors and the 8-step surface ladder ---- */
@@ -223,12 +224,13 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
   --ease-silk: cubic-bezier(0.2, 0.8, 0.2, 1);
-  /* type — the design pass triad: Urbanist Variable rides every surface
-     (the reference desktop voice), Inter Variable the fallback, Geist Mono
-     rides micro-labels and every number (tabular-nums) */
-  --font-sans: "Urbanist Variable", "Urbanist", "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+  /* type — the studio triad of the interface-18 pass: Bricolage Grotesque
+     Variable rides the display seats, Outfit Variable every surface, JetBrains
+     Mono the micro-labels and every number (tabular-nums); Inter Variable and
+     Geist Mono Variable stay the law-pinned fallbacks */
+  --font-sans: "Outfit Variable", "Outfit", "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
     ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
     Menlo, monospace;
   --font-ui: var(--font-sans);
   --font-display: var(--font-sans);
@@ -1665,7 +1667,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .sol-hero__ctarow { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 28px; }
 .sol-cta {
   display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-  min-height: 48px; padding: 0 26px; border-radius: calc(infinity * 1px);
+  min-height: 48px; padding: 0 26px; border-radius: 14px;
   font-weight: 800; letter-spacing: -0.018em; font-size: 0.86rem;
 }
 .sol-cta--ghost {
@@ -1732,7 +1734,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .chatthink { border: 1px solid var(--d-tile-border); border-radius: 14px; background: var(--d-tile-bg); }
 /* the composer: the rounded well with the tactile send */
 .chatcomposer { border: 1px solid var(--d-card-border); border-radius: 22px; background: var(--d-card-bg); box-shadow: var(--d-card-shadow); }
-.chatcomposer__key { border-radius: calc(infinity * 1px); }
+.chatcomposer__key { border-radius: 10px; }
 .chat__new { border-radius: 12px; min-height: 40px; }
 /* the win11 flyout grammar: the white card pane, the hairline, the soft
    shadow, the chevron rotation, the checkmark on the pressed row */
@@ -1751,9 +1753,9 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
 .toast {
   gap: 9px; padding: 10px 10px 10px 16px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: calc(infinity * 1px);
-  background: #090D16;
-  color: #F8FAFC; font-size: 13px; font-weight: 500;
+  border-radius: 14px;
+  background: #121313;
+  color: #eceeed; font-size: 13px; font-weight: 500;
   box-shadow: 0 14px 28px -8px rgba(9, 13, 22, 0.55);
 }
 .toast button { color: #8CA0B8; }
@@ -2890,7 +2892,7 @@ button:hover .dt-morph-brand {
     box-shadow:
       inset 0 1px 1.5px rgba(255, 255, 255, 0.92),
       inset 0 -1px 2px rgba(148, 163, 184, 0.14);
-    transition: all 0.18s ease;
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   }
 
   .icon-frame-3d:hover:not(:disabled) {
@@ -2913,7 +2915,7 @@ button:hover .dt-morph-brand {
     box-shadow:
       inset 0 1px 1.5px rgba(255, 255, 255, 0.09),
       inset 0 -1px 2.5px rgba(0, 0, 0, 0.36);
-    transition: all 0.18s ease;
+    transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   }
 
   :root[data-theme="dark"] .icon-frame-3d:hover:not(:disabled),
@@ -3598,13 +3600,13 @@ button:hover .dt-morph-brand {
   }
 
   .dt-cap-reasoning {
-    background-color: rgba(37, 99, 235, 0.09);
-    color: #2563eb;
+    background-color: rgba(79, 70, 229, 0.09);
+    color: #4F46E5;
   }
 
   :root[data-theme="dark"] .dt-cap-reasoning {
-    background-color: rgba(37, 99, 235, 0.18);
-    color: #60a5fa;
+    background-color: rgba(79, 70, 229, 0.18);
+    color: #38bdf8;
   }
 
   @keyframes dtLetterReveal {
@@ -4820,4 +4822,669 @@ button:hover .dt-morph-brand {
 }
 body:has(.studio3-viewport) {
   overflow: hidden;
+}
+
+/* ==========================================================================
+   the interface-18 studio grammar pass — getry (task 8-f): the DevThink
+   Chat3 design language (the single-file studio era) worn by the gateway
+   fundamentals. The dk- token ladder already rides the studio section above
+   (the crisp-white / matte-obsidian squircle system, zero blue tint); this
+   pass points the gateway's own seats at it — the d-materials retune to the
+   obsidian and crisp-white faces, the squircle grammar (corner-shape) lands
+   on the window, the rail, the cards, the composer and the chips, the rail
+   breathes the ambient chroma mist at its foot, the window body carries the
+   chromatic stage glow behind a clean stage, the hero answers the gaussian
+   shader the studio section already owns, the chat wears the plump
+   asymmetric bubbles with the glass composer and the tier-disclosing
+   reasoning seat, the seven-rung thinking ladder rides the effort-tier
+   chroma (lime → green → purple → chromatic) with the glyph seats, and the
+   pill retires everywhere the old pass stamped it (the cta, the composer
+   key, the toast — the squircle answers). The law-pinned foundation tokens
+   (the mica literals, the 8-step ladder, the white sun, the windows accent,
+   the trylle stacks, the press laws) ride untouched beneath — every
+   declaration here wins by cascade order only, never by deletion.
+   ========================================================================== */
+
+/* ---------- k0. the grammar tokens — the d-materials answer the studio
+   faces (matte obsidian dark, crisp white light) + the tier chroma -------- */
+:root {
+  --d-wallpaper: #141515 radial-gradient(#1e1f1f 32%, #141515 100%) no-repeat fixed;
+  --d-window-bg: #121313;
+  --d-window-border: rgb(255 255 255 / 10%);
+  --d-window-shadow: 0 25px 80px -15px rgb(0 0 0 / 65%), 0 0 8px rgb(0 0 0 / 30%);
+  --d-window-radius: 22px;
+  --d-card-bg: #171818;
+  --d-card-border: rgb(255 255 255 / 10%);
+  --d-card-shadow: var(--dk-clay-shadow);
+  --d-tile-bg: #1e2020;
+  --d-tile-border: rgb(255 255 255 / 8.5%);
+  /* the effort-tier chroma of the 7-rung ladder (the spectrum the studio
+     grammar walks: lime → green → purple → chromatic) */
+  --tier-lime: rgb(163 230 53);
+  --tier-green: rgb(34 197 94);
+  --tier-purple: rgb(168 85 247);
+  --tier-cyan: rgb(56 189 248);
+  --tier-pink: rgb(244 114 182);
+}
+[data-theme="light"] {
+  --d-wallpaper: #efefee radial-gradient(#f6f6f4 32%, #efefee 100%) no-repeat fixed;
+  --d-window-bg: #ffffff;
+  --d-window-border: rgb(20 22 20 / 9%);
+  --d-window-shadow: 0 25px 80px -15px rgb(15 23 42 / 18%), 0 1px 2px rgb(15 23 42 / 5%);
+  --d-card-bg: #ffffff;
+  --d-card-border: rgb(20 22 20 / 9%);
+  --d-tile-bg: #f7f7f6;
+  --d-tile-border: rgb(20 22 20 / 7.5%);
+}
+
+/* ---------- k1. the window — the squircle body over the chromatic glow ---- */
+.winapp__body {
+  corner-shape: squircle;
+}
+/* the chromatic stage glow: three blurred lights breathing behind the clean
+   stage surface (the dt-chromatic-stage-glow treatment — the violet pole
+   carries the brand story #8b5cf6 the mark owns) */
+.winapp__body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 22% 45%, rgba(56, 189, 248, 0.24) 0%, transparent 56%),
+    radial-gradient(circle at 50% 40%, rgba(139, 92, 246, 0.22) 0%, transparent 58%),
+    radial-gradient(circle at 78% 48%, rgba(236, 72, 153, 0.22) 0%, transparent 56%);
+  filter: blur(44px) saturate(170%);
+  -webkit-filter: blur(44px) saturate(170%);
+}
+[data-theme="light"] .winapp__body::before {
+  background:
+    radial-gradient(circle at 22% 45%, rgba(56, 189, 248, 0.34) 0%, transparent 56%),
+    radial-gradient(circle at 50% 45%, rgba(139, 92, 246, 0.28) 0%, transparent 58%),
+    radial-gradient(circle at 78% 48%, rgba(236, 72, 153, 0.30) 0%, transparent 56%);
+}
+.railnav,
+.winapp__stagecol {
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 720px) {
+  .winapp__body { border-radius: 16px; }
+}
+
+/* ---------- k2. the rail — the obsidian glass column, the ambient mist,
+   the squircle seats (the pin law of the foundation answers untouched) ----- */
+.railnav {
+  border-right: 1px solid var(--dk-panel-divider);
+  background: linear-gradient(180deg, rgba(20, 22, 23, 0.72) 0%, rgba(18, 20, 19, 0.90) 100%);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+}
+[data-theme="light"] .railnav {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62) 0%, rgba(247, 247, 246, 0.84) 100%);
+}
+/* the ambient sidebar mist: three closest-side chroma lights, blurred and
+   masked toward the rail foot — never a sharp horizontal cut (the studio
+   sidebar-ambient-shader treatment) */
+.railnav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(closest-side at 24% 58%, rgba(34, 211, 238, 0.26) 0%, rgba(56, 189, 248, 0.10) 54%, rgba(56, 189, 248, 0) 100%),
+    radial-gradient(closest-side at 52% 62%, rgba(99, 102, 241, 0.22) 0%, rgba(99, 102, 241, 0.08) 56%, rgba(99, 102, 241, 0) 100%),
+    radial-gradient(closest-side at 78% 58%, rgba(236, 72, 153, 0.24) 0%, rgba(168, 85, 247, 0.09) 55%, rgba(168, 85, 247, 0) 100%);
+  filter: blur(56px) saturate(175%);
+  -webkit-filter: blur(56px) saturate(175%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.48) 36%, rgba(0, 0, 0, 0.96) 72%, rgba(0, 0, 0, 0.65) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.48) 36%, rgba(0, 0, 0, 0.96) 72%, rgba(0, 0, 0, 0.65) 100%);
+}
+[data-theme="light"] .railnav::before {
+  background:
+    radial-gradient(closest-side at 24% 58%, rgba(34, 211, 238, 0.40) 0%, rgba(56, 189, 248, 0.16) 54%, rgba(56, 189, 248, 0) 100%),
+    radial-gradient(closest-side at 52% 62%, rgba(99, 102, 241, 0.34) 0%, rgba(99, 102, 241, 0.13) 56%, rgba(99, 102, 241, 0) 100%),
+    radial-gradient(closest-side at 78% 58%, rgba(236, 72, 153, 0.36) 0%, rgba(168, 85, 247, 0.15) 55%, rgba(168, 85, 247, 0) 100%);
+}
+.railnav__item,
+.railnav__fam,
+.railnav .winapp__theme {
+  position: relative;
+  z-index: 1;
+}
+/* the squircle icon seats of the omni rail (the dt-icon-tile grammar) */
+.railnav__item {
+  border-radius: 12px;
+  corner-shape: squircle;
+  color: var(--ink-2);
+}
+.railnav__item:hover {
+  color: var(--ink);
+  background: var(--dk-raised);
+  transform: translateY(-1px) scale(1.04);
+}
+.railnav__item[aria-current="page"] {
+  color: var(--ink);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--dk-selected) 88%, #ffffff) 0%, var(--dk-selected) 100%);
+  box-shadow: var(--dk-clay-control);
+}
+.railnav__item[aria-current="page"]::after {
+  background: var(--accent);
+}
+.railnav .winapp__theme {
+  color: var(--ink-2);
+}
+.railnav .winapp__theme:hover {
+  color: var(--ink);
+  background: var(--dk-raised);
+}
+.railnav__fam:hover {
+  background: var(--dk-raised);
+}
+
+/* ---------- k3. the tray — the glass strip over the stage ---------------- */
+.sol-tray {
+  border-bottom: 1px solid var(--dk-panel-divider);
+  background: color-mix(in srgb, var(--d-card-bg) 52%, transparent);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+.sol-tray__name {
+  font-family: var(--font-display);
+}
+
+/* ---------- k4. the hero — the stage surface, the endpoint well, the trio - */
+/* the gaussian shader itself rides the studio section (the four-ellipse
+   chroma bed under the vertical mask); the aurora seat widens to carry it */
+.sol-hero__aurora {
+  inset: auto 0 -30% 0;
+  height: 82%;
+  opacity: 0.72;
+}
+/* the prompt-giga endpoint visualizer becomes the squircle glass well of the
+   composer grammar (the honest route resolver keeps working beneath) */
+.r3-prompt__field {
+  min-height: 72px;
+  padding: 0 10px 0 16px;
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 18px;
+  corner-shape: squircle;
+  background-color: var(--dk-glass-surface);
+  background-image: linear-gradient(140deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.04) 60%, rgba(167, 139, 250, 0.04) 100%);
+  box-shadow: var(--dk-clay-control);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  transition: border-color 0.28s ease, box-shadow 0.28s ease, background-color 0.22s ease;
+}
+[data-theme="dark"] .r3-prompt__field {
+  background-image: linear-gradient(140deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.006) 60%, rgba(125, 211, 252, 0.03) 100%);
+}
+.r3-prompt__field:focus-within {
+  border-color: color-mix(in srgb, var(--dk-brand) 38%, transparent);
+  box-shadow: var(--dk-clay-shadow);
+  background-color: var(--dk-glass-raised);
+}
+.r3-prompt__label {
+  top: -19px;
+  left: 4px;
+}
+.r3-prompt__key {
+  border: 0;
+  border-radius: 10px;
+  corner-shape: squircle;
+  background: var(--dk-primary-action);
+  color: var(--dk-primary-action-text);
+  box-shadow: var(--dk-clay-control);
+}
+.r3-prompt__key:hover {
+  background: var(--dk-primary-action-hover);
+  box-shadow: var(--dk-clay-control), 0 4px 10px -4px rgb(0 0 0 / 30%);
+}
+/* the replica and route chips: squircle seats (never pills) */
+.r3-chip,
+.routechip {
+  border-radius: 8px;
+  corner-shape: squircle;
+}
+.r3-chip[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%);
+}
+/* the floating trio: squircle clay cards (the capability-card grammar) */
+.sol-triocard {
+  border-radius: 20px;
+  corner-shape: squircle;
+}
+.sol-triocard__foot {
+  border-radius: 14px;
+  corner-shape: squircle;
+}
+.surface-card {
+  corner-shape: squircle;
+}
+.emptystate__glyph {
+  border-radius: 12px;
+  corner-shape: squircle;
+}
+
+/* ---------- k5. the platform ledgers — the clay squircle cards ----------- */
+.tablewrap {
+  border-radius: 20px;
+  corner-shape: squircle;
+}
+.railmeta {
+  border-radius: 16px;
+  corner-shape: squircle;
+}
+.edgerow {
+  border-radius: 12px;
+  corner-shape: squircle;
+}
+.r3-step {
+  border-radius: 20px;
+  corner-shape: squircle;
+  transition: border-color var(--sol-micro) var(--sol-ease-out), box-shadow var(--sol-micro) var(--sol-ease-out),
+    transform 0.22s var(--ease-spring);
+}
+.r3-step:hover {
+  border-color: var(--dk-matte-edge);
+  transform: translateY(-2px);
+}
+.gaterow {
+  border-radius: 20px;
+  corner-shape: squircle;
+  transition: background-color var(--sol-micro) var(--sol-ease-out), border-color var(--sol-micro) var(--sol-ease-out),
+    transform 0.22s var(--ease-spring);
+}
+.gaterow:hover {
+  transform: translateY(-2px);
+  border-color: var(--dk-matte-edge);
+}
+.glass {
+  corner-shape: squircle;
+}
+
+/* ---------- k6. the chat face — bubbles, disclosure, composer, flyouts --- */
+.chat__side {
+  border-radius: 20px;
+  corner-shape: squircle;
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+}
+/* the plump asymmetric bubbles of the studio grammar (16/5 squircle tails) */
+.chatmsg__bubble {
+  padding: 8px 14px;
+  border: 1px solid var(--dk-user-bubble-edge);
+  border-radius: 16px 5px 16px 16px;
+  corner-shape: squircle;
+  background: var(--dk-user-bubble);
+  color: var(--dk-user-bubble-text);
+  box-shadow: none;
+}
+[data-theme="dark"] .chatmsg__bubble {
+  box-shadow: 0 4px 12px -4px rgb(0 0 0 / 30%);
+}
+.chatmsg--assistant {
+  border-radius: 16px 16px 16px 5px;
+  corner-shape: squircle;
+}
+/* the reasoning disclosure: the glass seat with the breathing tier glyph */
+.chatthink {
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 14px;
+  corner-shape: squircle;
+  background: var(--dk-glass-surface);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+}
+.chatthink__key {
+  color: var(--ink-3);
+}
+.chatthink__key::before {
+  content: "";
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 3px;
+  corner-shape: squircle;
+  background: var(--tier-purple);
+  box-shadow: 0 0 8px 0 rgb(168 85 247 / 45%);
+  animation: kGlyphBreath 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.chatthink__body {
+  border-top: 1px solid var(--dk-panel-divider);
+}
+/* the live stream: the calm typographic shimmer over the thinking label */
+.chatmsg--assistant[data-streaming="true"] .chatthink__label {
+  background-image: linear-gradient(90deg, var(--ink-3) 0%, var(--ink-3) 34%, var(--ink) 50%, var(--ink-3) 66%, var(--ink-3) 100%);
+  background-size: 240% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: kTextShimmer 2s linear infinite;
+}
+/* the composer dock: the frosted claymorphic squircle of the studio grammar */
+.chatcomposer {
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 22px;
+  corner-shape: squircle;
+  background-color: var(--dk-glass-surface);
+  background-image: linear-gradient(140deg, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0.04) 60%, rgba(167, 139, 250, 0.04) 100%);
+  box-shadow: var(--dk-clay-shadow);
+  backdrop-filter: blur(22px) saturate(170%);
+  -webkit-backdrop-filter: blur(22px) saturate(170%);
+  transition: border-color 0.28s ease, box-shadow 0.28s ease;
+}
+[data-theme="dark"] .chatcomposer {
+  background-image: linear-gradient(140deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.006) 60%, rgba(125, 211, 252, 0.035) 100%);
+}
+.chatcomposer:focus-within {
+  border-color: color-mix(in srgb, var(--dk-brand) 38%, transparent);
+}
+/* the send key: the primary squircle seat (the pill retires); the stop key
+   trades for the raised glass seat */
+.chatcomposer__key {
+  border: 0;
+  border-radius: 10px;
+  corner-shape: squircle;
+  background: var(--dk-primary-action);
+  color: var(--dk-primary-action-text);
+  box-shadow: var(--dk-clay-control);
+  font-weight: 700;
+  min-height: 34px;
+  min-width: 42px;
+  padding: 0 12px;
+}
+.chatcomposer__key:hover:not(:disabled) {
+  background: var(--dk-primary-action-hover);
+  box-shadow: var(--dk-clay-control), 0 4px 10px -4px rgb(0 0 0 / 30%);
+}
+.chatcomposer__key:active {
+  transform: scale(0.95);
+}
+.chatcomposer__key:disabled {
+  opacity: 0.36;
+}
+.icon-frame-3d.chatcomposer__key {
+  border: 1px solid var(--dk-glass-edge);
+  background: var(--dk-glass-raised);
+  color: var(--ink-2);
+}
+/* the flyouts: the glass popover + the squircle chip triggers */
+.chatflyout__trigger {
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 9px;
+  corner-shape: squircle;
+  background-color: var(--dk-glass-surface);
+  box-shadow: var(--dk-clay-control);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+}
+.chatflyout__trigger:hover {
+  border-color: var(--dk-matte-edge);
+  background-color: var(--dk-glass-raised);
+}
+.chatflyout__pane {
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 18px;
+  corner-shape: squircle;
+  background-color: var(--dk-glass-popover);
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.02) 55%, rgba(167, 139, 250, 0.06) 100%);
+  box-shadow: var(--dk-clay-shadow), 0 18px 44px rgb(0 0 0 / 28%);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+}
+[data-theme="dark"] .chatflyout__pane {
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 55%, rgba(125, 211, 252, 0.05) 100%);
+}
+.chatflyout__row {
+  border-radius: 11px;
+  corner-shape: squircle;
+}
+.chatflyout__row[data-active="true"] {
+  background: color-mix(in srgb, var(--dk-brand) 10%, transparent);
+}
+/* the starter cards: the capability grammar (the spring lift) */
+.chatstarter {
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 14px;
+  corner-shape: squircle;
+  background-color: var(--dk-glass-surface);
+  box-shadow: var(--dk-clay-control);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  transition: border-color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out),
+    color var(--sol-micro) var(--sol-ease-out), transform 0.22s var(--ease-spring);
+}
+.chatstarter:hover {
+  border-color: color-mix(in srgb, var(--dk-brand) 30%, var(--dk-glass-edge));
+  background-color: var(--dk-glass-raised);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+.chatstarter:active {
+  transform: scale(0.985);
+}
+/* the keyframes of the chat grammar */
+@keyframes kGlyphBreath {
+  0%, 100% { transform: scale(0.82); opacity: 0.38; }
+  50% { transform: scale(1); opacity: 0.92; }
+}
+@keyframes kTextShimmer {
+  0% { background-position: 120% 50%; }
+  100% { background-position: -80% 50%; }
+}
+
+/* ---------- k7. the thinking ladder — the tier glyphs + spectrum budgets - */
+.ladderledger {
+  gap: 8px;
+}
+.ladderrung {
+  margin-left: calc(var(--rung-step, 0) * 18px);
+  padding: 14px 14px 14px 0;
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 16px;
+  corner-shape: squircle;
+  background-color: var(--dk-glass-surface);
+  box-shadow: var(--dk-clay-control);
+  transition: border-color var(--sol-micro) var(--sol-ease-out), background-color var(--sol-micro) var(--sol-ease-out),
+    transform 0.22s var(--ease-spring);
+}
+.ladderrung:first-child {
+  border-top: 1px solid var(--dk-glass-edge);
+}
+.ladderrung:hover {
+  background-color: var(--dk-glass-raised);
+  transform: translateX(2px);
+}
+.ladderrung.default {
+  border-left: 2px solid var(--tier-purple);
+  border-color: color-mix(in srgb, var(--tier-purple) 45%, var(--dk-glass-edge));
+  background-image: linear-gradient(90deg, rgb(168 85 247 / 10%), transparent 55%);
+}
+/* the tier mapping: rungs 01–02 lime, 03–04 green, 05–06 purple, 07 the
+   chromatic crown (the effort spectrum the studio grammar walks) */
+.ladderledger .ladderrung:nth-child(1),
+.ladderledger .ladderrung:nth-child(2) {
+  --rung-tier: var(--tier-lime);
+  --rung-tier-deep: rgb(132 204 22);
+  --rung-ink: #0b0c0c;
+}
+.ladderledger .ladderrung:nth-child(3),
+.ladderledger .ladderrung:nth-child(4) {
+  --rung-tier: var(--tier-green);
+  --rung-tier-deep: rgb(22 163 74);
+  --rung-ink: #0b0c0c;
+}
+.ladderledger .ladderrung:nth-child(5),
+.ladderledger .ladderrung:nth-child(6) {
+  --rung-tier: var(--tier-purple);
+  --rung-tier-deep: rgb(147 51 234);
+  --rung-ink: #ffffff;
+}
+.ladderledger .ladderrung:nth-child(7) {
+  --rung-tier: var(--tier-cyan);
+  --rung-tier-deep: var(--tier-pink);
+  --rung-ink: #0b0c0c;
+}
+/* the glyph seat: the squircle index tile on the tier gradient */
+.ladderrung {
+  grid-template-columns: 40px minmax(0, 1fr) auto auto;
+}
+.ladderrung__index {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  corner-shape: squircle;
+  color: var(--rung-ink, var(--ink));
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--rung-tier, var(--accent)) 0%, var(--rung-tier-deep, var(--accent)) 100%);
+  box-shadow: inset 0 1px 1.5px rgb(255 255 255 / 40%), 0 4px 10px -4px rgb(0 0 0 / 35%);
+}
+/* the budget bar becomes the spectrum fill of the tier */
+.r3-budget {
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  box-shadow: inset 0 1px 1px rgb(255 255 255 / 10%);
+}
+.r3-budget i {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--rung-tier, var(--accent)) 55%, transparent), var(--rung-tier, var(--accent)));
+  box-shadow: 0 0 8px 0 color-mix(in srgb, var(--rung-tier, var(--accent)) 45%, transparent);
+}
+.ladderdots i[data-on="true"] {
+  background: var(--rung-tier, var(--accent));
+}
+
+/* ---------- k8. the tactile buttons — the squircle seats (zero pill) ----- */
+.btn-tactile-3d {
+  border: 0.5px solid rgb(255 255 255 / 22%);
+  border-radius: 14px;
+  corner-shape: squircle;
+  background: linear-gradient(180deg, #2e3230 0%, #1a1c1b 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 16px -5px rgb(0 0 0 / 65%), inset 0 1px 1.5px rgb(255 255 255 / 24%);
+}
+.btn-tactile-3d:hover {
+  transform: translateY(-1px);
+  border-color: rgb(255 255 255 / 28%);
+  box-shadow: 0 10px 22px -6px rgb(0 0 0 / 60%), inset 0 1px 2px rgb(255 255 255 / 28%),
+    inset 0 -1.5px 3px rgb(0 0 0 / 42%);
+}
+[data-theme="light"] .btn-tactile-3d {
+  background: linear-gradient(180deg, #2a2d2b 0%, #141614 100%);
+  border-color: rgb(255 255 255 / 22%);
+  box-shadow: 0 6px 16px -5px rgb(20 22 20 / 45%), inset 0 1px 1.5px rgb(255 255 255 / 24%);
+}
+.icon-frame-3d {
+  border-radius: 11px;
+  corner-shape: squircle;
+}
+/* the cta row: the squircle answers the stadium the old pass stamped */
+.sol-cta {
+  border-radius: 14px;
+  corner-shape: squircle;
+}
+.sol-cta--ghost {
+  border: 1px solid var(--d-card-border);
+  box-shadow: var(--dk-clay-control);
+}
+
+/* ---------- k9. the toast, the intro, the onboarding ---------------------- */
+.toast {
+  gap: 9px;
+  padding: 10px 10px 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--dk-primary-action-text) 18%, transparent);
+  border-radius: 14px;
+  corner-shape: squircle;
+  background: var(--dk-primary-action);
+  color: var(--dk-primary-action-text);
+  box-shadow: var(--dk-popover-shadow), var(--dk-clay-control);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.toast button {
+  color: color-mix(in srgb, var(--dk-primary-action-text) 72%, transparent);
+}
+.toast button:hover {
+  color: var(--dk-primary-action-text);
+  background: rgb(255 255 255 / 10%);
+}
+.winintro__card {
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 28px;
+  corner-shape: squircle;
+  background-color: var(--dk-glass-popover);
+  box-shadow: var(--dk-clay-shadow), var(--dk-popover-shadow);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+}
+.winonboard__card {
+  border: 1px solid var(--dk-glass-edge);
+  border-radius: 24px;
+  corner-shape: squircle;
+  background-color: var(--dk-glass-popover);
+  box-shadow: var(--dk-clay-shadow), var(--dk-popover-shadow);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+}
+.winonboard__act {
+  border-radius: 11px;
+  corner-shape: squircle;
+}
+.winonboard__act--primary {
+  background: var(--dk-primary-action);
+  color: var(--dk-primary-action-text);
+  border-color: transparent;
+  box-shadow: var(--dk-clay-control);
+}
+.winonboard__act--primary:hover {
+  background: var(--dk-primary-action-hover);
+}
+.winonboard__segrun[data-active="true"] {
+  background: var(--tier-purple);
+}
+
+/* ---------- k10. the type triad — the last word on the font vars ---------- */
+:root {
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Outfit Variable", "Outfit", "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    Menlo, monospace;
+}
+
+/* ---------- k11. the guards — the transparency floors, the hard stop ----- */
+@media (prefers-reduced-transparency: reduce) {
+  .railnav,
+  .sol-tray,
+  .chat__side,
+  .chatthink,
+  .chatcomposer,
+  .chatflyout__trigger,
+  .chatflyout__pane,
+  .chatstarter,
+  .r3-prompt__field,
+  .ladderrung,
+  .winintro__card,
+  .winonboard__card,
+  .toast {
+    background-color: var(--d-card-bg);
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .railnav::before,
+  .winapp__body::before {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; transition-delay: 0ms !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .railnav__item:active, .winapp__theme:active, .railnav__fam:active, .btn:active, .r3-chip:active, .routechip:active { transform: none; }
+  html { scroll-behavior: auto; }
 }

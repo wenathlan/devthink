@@ -4499,7 +4499,7 @@ function yamlscalarvalue(text: string): unknown {
 /* ── Merged from the workflow yaml controls gate ── */
 
 /**
- * Workflow yaml controls gate of the merged repository: rejects missing release workflow controls without executing or publishing any artifact — every yaml of the workflow house parses, every workflow file declares both on and jobs, and the pinned control table refuses the first missing release, verify, security, lint, ci, pages, publish or maintenance control the lanes own.
+ * Workflow yaml controls gate of the merged repository: rejects missing release workflow controls without executing or publishing any artifact — every yaml of the workflow house parses, every workflow file declares both on and jobs, and the pinned control table refuses the first missing ci, security, release, publish, containers or maintenance control the lanes own.
  * The devfold wave folded the gate into the family base: the whole validation rides one async gate behind the direct entry check, so an import of the library module never reads a file and the bundled faces never resolve a platform import — the node builtins and the yaml parser arrive through computed specifiers the bundlers cannot resolve, and only the direct entry lane (`node workflow.ts`, the validate:workflow script and the verify workflow step) drives the gate.
  */
 
@@ -4539,16 +4539,20 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       throw new Error(`${file} must declare both on and jobs.`);
   }
 
-  /* The controls of the merged repository: the release workflow carries the
-     rich draft → assemble → verify → publish chain of the DevThink Release
-     (the 16-job extension lineage adapted to the standalone publish lanes),
-     the verify workflow the 22-gate ladder of the release candidate, and the
-     rubygems and maintenance workflows the workflow_run chains R1 and R3
-     restored. The keys re-stamp the extension-era spelling to the DevThink
-     layout: the tarball name, the maven artifact, the container file and the
-     registry publish jobs answer under the merged identity. */
+  /* The controls of the six-file workflow house (the consolidation pass):
+     the ci workflow carries the gate ladder the verify file owned beside
+     the push CI battery and the workflow lint lane it absorbed, the
+     release workflow the draft → assemble → verify → publish chain of the
+     DevThink Release, the publish workflow the registry lanes the release
+     completion drives, the containers workflow the container, saddle,
+     family, webpack, pages and platform artifact lanes the split files
+     carried, and the maintenance workflow the workflow_run chains R1 and
+     R3 restored beside the registry heal and the rung records. The keys
+     re-stamp the extension-era spelling to the DevThink layout: the
+     tarball name, the maven artifact, the container file and the registry
+     publish jobs answer under the merged identity. */
   const checks = {
-    "verify.yml": [
+    "ci.yml": [
       "workflow_call:",
       "ref:",
       "pull_request:",
@@ -4617,13 +4621,44 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "build/devthink-vscode-${VERSION}.vsix",
       "contentFiles/any/any/cli.js",
       "target/devthink-${VERSION}.jar",
+      /* the push CI battery the old ci file owned (the verify merger kept
+       * every control whole; the retired dispatch shim's two controls —
+       * the reusable call and its dispatch gate — answered the shim alone
+       * and never ride the merged file) */
+      "node-version: 24",
+      "Typecheck on the active LTS line",
+      "npm run check:web",
+      /* the 2.0.18 gap closure: the repository structure gate */
+      "Repository flat structure contract",
+      "nest past four directories",
+      "duplicates another",
+      /* the consolidation pass: the cross-bundler verification the retired
+       * webpack.yml workflow carried rides the CI battery as its webpack job.
+       * the 7.3.1 cli seat reds the variadic --target parse (the commander
+       * 14 argParser walks prev as the non-iterable default), so the lane
+       * answers the config-file walk: the generated webpack.config.mjs
+       * carries the same entry, output, mode and target seats the flags
+       * rode, and the -c invocation the pinned rung reads stays the law. */
+      "Pack the core bundle through webpack",
+      "npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack",
+      "webpack -c ./build/webpack.config.mjs",
+      "entry: \"./build/index.js\"",
+      "target: \"node\"",
+      "build/webpack/devthink.webpack.js",
+      /* the workflowlint merger: the workflow lint lane rides the ci file
+       * now — the security battery still duplicates no actionlint step. */
+      "reviewdog/action-actionlint@",
+      "fail_level: error",
+      /* the real actionlint flag is -config-file (the cli defines no -config
+       * short form), so the pin rides the flag the lane actually passes */
+      "actionlint_flags: -config-file .github/workflows/actionlint-config.cfg",
     ],
     "release.yml": [
       "package.json",
       "CHANGELOG.md",
       "refusing to ship an empty release body",
       "Tag $TAG does not point to the source being released.",
-      "uses: ./.github/workflows/verify.yml",
+      "uses: ./.github/workflows/ci.yml",
       "node build.ts",
       "node packageextension.ts",
       "npm pack ./distpackage --pack-destination release",
@@ -4713,50 +4748,6 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "one-workflow-file layout contract",
       /* the embedded build cache doctrine of the 2.0.16 pass */
     ],
-    "workflowlint.yml": [
-      /* the correlated grouping: the workflow lint lives in its own lane —
-         the security battery no longer duplicates the actionlint step. */
-      "reviewdog/action-actionlint@",
-      "fail_level: error",
-      /* the real actionlint flag is -config-file (the cli defines no -config
-         short form), so the pin rides the flag the lane actually passes */
-      "actionlint_flags: -config-file .github/workflows/actionlint-config.cfg",
-    ],
-    "ci.yml": [
-      "runtime: [node, bun, deno]",
-      "deno check build/deno.js",
-      "node-version: 24",
-      "Typecheck on the active LTS line",
-      "npm run check:web",
-      "uses: ./.github/workflows/verify.yml",
-      "if: github.event_name == 'workflow_dispatch'",
-      /* the 2.0.18 gap closure: the repository structure gate */
-      "Repository flat structure contract",
-      "nest past four directories",
-      "duplicates another",
-      /* the consolidation pass: the cross-bundler verification the retired
-         webpack.yml workflow carried rides the CI battery as its webpack job.
-         the 7.3.1 cli seat reds the variadic --target parse (the commander
-         14 argParser walks prev as the non-iterable default), so the lane
-         answers the config-file walk: the generated webpack.config.mjs
-         carries the same entry, output, mode and target seats the flags
-         rode, and the -c invocation the pinned rung reads stays the law. */
-      "Pack the core bundle through webpack",
-      "npx --yes -p webpack@5.112.2 -p webpack-cli@6.0.1 webpack",
-      "webpack -c ./build/webpack.config.mjs",
-      "entry: \"./build/index.js\"",
-      "target: \"node\"",
-      "build/webpack/devthink.webpack.js",
-    ],
-    "pages.yml": [
-      "VITE_BASE_PATH",
-      "404.html",
-      ".nojekyll",
-      "Boot smoke test (SPA entry and fallback page on a pinned port)",
-      "python3 -m http.server",
-      'python3 -m http.server "${SMOKE_PORT}"',
-      "Lint the delivered html pages (python html.parser well-formedness)",
-    ],
     "publish.yml": [
       /* the merged lane file of the 2.0.16 grouping pass */
       "workflow_run:",
@@ -4789,10 +4780,6 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "gem push devthink-*.gem",
       "rubygems.pkg.github.com",
       "pre-deploy existence check",
-      /* the desktop tauri lane: the portable checksum and the web tauri config */
-      "shasum -a 256",
-      "devthink/tauri.conf.json",
-      "standalone: ${{ matrix.runner != 'macos-15-intel' }}",
       /* the closing sums umbrella: the needs chain over every lane */
       "Rebuild the release SHA256SUMS umbrella",
       "target-plans",
@@ -4823,20 +4810,30 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
          the 500 KB ceiling the GitHub limit carries, so the controls
          answer from the containers checks below */
     ],
-    "saddlelanes.yml": [
-      /* the half-megabyte law (the saddlelanes split): the saddle vhe
-         family the publish workflow carried rides its own file now —
-         the publish envelope answered the 500 KB ceiling the GitHub
-         limit carries — so the vhe controls answer from the split wave
-         (the saddle manifest read, the validation lane, the vhe profile
-         stamping, the dispatch-only deep validation, the security gate
-         and the catalog law) */
+    "containers.yml": [
+      /* the merged lane file of the consolidation pass: the saddle vhe
+         family the publish split once carried, the pages deploy lanes and
+         the platform artifact seats (desktop tauri trio) the shed publish
+         block rode, all under the containers wave. */
       "JSON.parse(require('fs').readFileSync('saddle/package.json','utf8')).version",
       "Validate saddle vhe image",
       "VHE_PROFILE_CPU=",
       "if: github.event_name == 'workflow_dispatch'",
       "Saddle vhe security gate",
       "osprofiles catalog carries",
+      /* the pages deploy lanes the retired pages.yml file owned */
+      "VITE_BASE_PATH",
+      "404.html",
+      ".nojekyll",
+      "Boot smoke test (SPA entry and fallback page on a pinned port)",
+      "python3 -m http.server",
+      "${SMOKE_PORT}",
+      "Lint the delivered html pages (python html.parser well-formedness)",
+      /* the desktop tauri lane the shed publish block carried: the portable
+         checksum and the web tauri config */
+      "shasum -a 256",
+      "devthink/tauri.conf.json",
+      "standalone: ${{ matrix.runner != 'macos-15-intel' }}",
     ],
     "maintenance.yml": [
       "workflow_run:",

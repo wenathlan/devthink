@@ -1,43 +1,78 @@
 name: DevThink CI
 
-# THE CI BATTERY OF THE MERGED REPOSITORY, ONE FILE (the 2.0.16 grouping
-# pass): the runtime compatibility lanes (the CLI contract matrix over
-# node, bun and deno, the LTS typecheck leg and the static workbench
-# compatibility) answer every push and pull request beside the DevThink
-# Verify workflow the gate ladder owns, and the manual dispatch firing
-# calls the same reusable verify ladder on a chosen ref. The compatibility
-# lanes lived as their own workflow file the 2.0.15 board answered
+# THE CI BATTERY OF THE MERGED REPOSITORY, ONE FILE (the workflow
+# consolidation pass folds the DevThink Verify gate ladder and the workflow
+# syntax lint lane into the battery the 2.0.16 grouping pass built): the
+# runtime compatibility lanes (the CLI contract matrix over node, bun and
+# deno, the LTS typecheck leg and the static workbench compatibility), the
+# reusable gate ladder (the devthink, modes and consumer jobs the release
+# workflow calls over its own immutable source) and the workflow lint lane
+# answer every push and pull request from this one file, and the manual
+# dispatch firing runs the whole battery on a chosen ref. The compatibility
+# lanes lived as their own workflow files the 2.0.15 board answered
 # scattered; the merged file carries the push CI battery as one correlated
 # logic (the family doctrine: the gate ladder IS the CI, this file owns the
-# runtime legs that ladder does not repeat). The cross-bundler verification
-# of the consolidated house rides here too: the webpack job packs the same
-# core bundle the esbuild recipe produced through webpack and asserts the
-# webpack shape stays a sane, non-empty bundle (the lane lived as its own
-# workflow file until the webpack pass folded it in). The family config
-# parity and the family test matrix fold here as well (the configs workflow
-# file and the orphaned app suites answer one correlated owner), so the
-# reported check count stops swinging with the folder moves.
+# whole battery the push lanes and the called ladder answer). The
+# cross-bundler verification of the consolidated house rides here too: the
+# webpack job packs the same core bundle the esbuild recipe produced
+# through webpack and asserts the webpack shape stays a sane, non-empty
+# bundle (the lane lived as its own workflow file until the webpack pass
+# folded it in). The family config parity and the family test matrix fold
+# here as well (the configs workflow file and the orphaned app suites
+# answer one correlated owner), so the reported check count stops swinging
+# with the folder moves.
+#
+# THE REUSABLE LADDER LAW (the verify merger): the release workflow calls
+# this file as a reusable workflow over its immutable source, so the
+# workflow_call trigger seats beside the push, pull request and dispatch
+# lanes the battery always answered. The CI battery jobs carry the
+# `github.event_name != 'workflow_call'` gate the consolidation order
+# stamps - a called ladder never re-runs the push battery beside the
+# ladder it escalates (a workflow_call inherits the caller's event name,
+# the literal gate the order mandates) - and every job keeps the supersede
+# group its lane always carried: the CI jobs the devthink-ci group of the
+# old ci file (a superseded firing of the SAME event and ref is cancelled
+# to save runner minutes; the push and pull_request lanes stay distinct
+# lanes that run side by side) and the ladder jobs the devthink-verify
+# group the ref discriminator closes - a workflow_call inherits the
+# CALLER's event and ref, so the verify leg the release ladder escalates
+# over its own immutable source answered under the push-main group, and
+# every fix push to main (an event of the SAME group with
+# cancel-in-progress) killed the ladder mid-gate; with the input in the
+# key, a called verify over the release source rides its own group
+# (devthink-verify-push-<sha>) and never collides with the push lane
+# again, while a direct push or pull_request (empty input) keeps the exact
+# supersede semantics it always carried.
 
 on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Immutable commit or tag to validate when called by CI or release.
+        required: false
+        default: ""
+        type: string
+  pull_request:
   push:
     branches: [main]
-  pull_request:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: Optional git ref to validate.
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
 
-concurrency:
-  # the supersede group of the CI battery (the verify lane pattern): a
-  # superseded firing of the SAME event and ref is cancelled to save runner
-  # minutes; the push and pull_request lanes stay distinct lanes that run
-  # side by side.
-  group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   cli-runtime:
     name: CLI contract on ${{ matrix.runtime }}
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     # the runtime battery (build, the deterministic suite, the CLI
     # contract and the flat tarball check) carries the same ceiling the
@@ -145,6 +180,10 @@ jobs:
     # toolchain the lockfile resolves (typescript 7.0.2, the family
     # standard); the LTS lane only swaps the node that drives it.
     name: Typecheck on the active LTS line
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -197,6 +236,10 @@ jobs:
 
   static-web:
     name: Static workbench compatibility
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     # the workbench lane (frozen install, the check gate and the two Vite
     # base-path builds) stays bounded.
@@ -263,6 +306,10 @@ jobs:
     # duplicates the content of another outside the recorded evidence
     # trees (a copy nobody deduplicated answers this gate).
     name: Repository flat structure contract
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -336,18 +383,6 @@ jobs:
           fi
           echo "no tracked file duplicates another outside the evidence trees."
 
-  verify:
-    # the manual orchestrator entry the ci.yml file always carried: the
-    # dispatch firing answers the same reusable verify ladder the release
-    # workflow calls, over a chosen ref. The push and pull_request lanes
-    # below never call it (the verify workflow answers those events on its
-    # own trigger), so the call rides the dispatch firing only - the merged
-    # ci file never double-runs the gate ladder.
-    if: github.event_name == 'workflow_dispatch'
-    uses: ./.github/workflows/verify.yml
-    with:
-      ref: ${{ github.sha }}
-
   webpack:
     # the webpack transformation lane of the consolidated CI battery (the
     # cross-bundler verification the retired standalone workflow file
@@ -355,6 +390,10 @@ jobs:
     # through webpack - one entry, one output - and the lane asserts the
     # webpack shape stays a sane, non-empty bundle beside the esbuild one.
     name: Pack the core bundle through webpack
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -425,6 +464,10 @@ jobs:
     # family suite installs, the ignore scripts policy keeps the tree
     # lean, and the cell runs the identical walk the arm answered).
     name: Config parity across the family
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -461,6 +504,10 @@ jobs:
     # scripts policy the pages lane learned, and the empty suites answer
     # green with the guard instead of failing the matrix.
     name: Family suite on ${{ matrix.app }}
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
@@ -598,6 +645,10 @@ jobs:
 
   native:
     name: Native sources syntax check (gcc/g++ -fsyntax-only)
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
     # the e2ugh native gate restored from the original saddle repo (the
     # 2.1.2 ladder carried it until the family integration folded the
     # workflow surface): the three C/C++ shims of the virtual hardware
@@ -652,3 +703,586 @@ jobs:
           echo "saddle/gpumonitor.cpp: g++-14 -std=${CXX_STD} -fsyntax-only ok"
           g++-14 -std="${CXX_STD}" -Wall -fsyntax-only saddle/virtualizationcore.cpp
           echo "saddle/virtualizationcore.cpp: g++-14 -std=${CXX_STD} -fsyntax-only ok"
+
+  devthink:
+    # The verification chain of the DevThink release candidate: the grand merge
+    # restores the extension lane's gate ladder — every gate script of the test/
+    # family runs as its own step so a red names its gate — beside the modes
+    # matrix over the built artifacts and the static workbench check.
+    #
+    # The root build (node build.ts) runs BEFORE the deterministic suite:
+    # the protocolv2 frozen contract suite reads dist/schemas/plan.schema.json,
+    # which the build derives from test/code — the lane that ran the tests
+    # before the build failed on the missing schema.
+    #
+    # The 2.0.4 zero-loss wiring restores the gates the merge audit found off
+    # the ladder: the soak and wcag sweeps of the validate:candidate family, the
+    # release metadata lockstep of the maintenance lane, the root typecheck and
+    # biome lint lanes, and the real consumer smoke (the rule 59/132 lane of the
+    # gateway CI: npm pack into a plain npm project that installs the tarball).
+    name: The DevThink gate ladder
+    concurrency:
+      group: devthink-verify-${{ github.event_name }}-${{ inputs.ref || github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 12.21.0
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: devthink/.nvmrc
+          cache: pnpm
+          cache-dependency-path: devthink/bun.lock
+      - name: Install the npm version declared by package metadata
+        # the probe accepts every semver constraint form (>=12.2.0 <13,
+        # ^12.1.0, 12.x) so no envelope shape breaks the lane the way the
+        # >=-only probe broke the maintenance dispatch on the caret form.
+        run: |
+          set -euo pipefail
+          cd devthink
+          # the manifestemplate law seats the engines in the root manifest
+          # alone: every floor probe reads one hop up from the app root,
+          # so the app copy #501 emptied never reddens the ladder again.
+          npm_version="$(node -p "const m=String(require('../package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
+          npx --yes "npm@${npm_version}" install --global "npm@${npm_version}"
+          test "$(npm --version)" = "$npm_version"
+      - name: Install root dependencies
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the deterministic suite boots the getry gateway (the family law:
+        # the server seat answers from the getry root) — its hono runtime
+        # resolves from the getry node_modules this step materializes.
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the saddle family dependencies
+        # the gate ladder typecheck walks the sibling sources (the
+        # ../saddle/modalities.ts lane the deterministic suite reads) —
+        # the importing file's own seat resolves @libsql/client from
+        # the saddle node_modules, so the sibling install answers the
+        # resolver the same way the ci ownership bridges answer the
+        # family builds (the frozen lock the saddle locksync healed).
+        run: cd saddle && bun install --frozen-lockfile --ignore-scripts
+      - name: Build the root distribution before the deterministic suite
+        run: cd devthink && node build.ts
+      - name: Run the accessibility sweep over the built tree
+        # the readiness test the suite carries walks the committed evidence:
+        # the sweep reruns here so the recorded wcag artifact reflects the
+        # built surfaces (the committed artifact predates this build).
+        run: cd devthink && node wcag.ts
+      - name: Check secrets and run the deterministic suite
+        run: cd devthink && bun run check
+      # The gateway family json gate ported to the merged tree (the maene
+      # and e2ugh lanes carry the same battery): every tracked .json
+      # document answers a strict parse with the single JSONC tolerance
+      # tsconfig files carry, the manifests answer their structural
+      # contract and the web manifest mirrors the root version in
+      # lockstep — a broken metadata document never reaches the ladder.
+      - name: Validate every tracked JSON document of the metadata family
+        run: cd devthink && node jsongate.ts
+      - name: Verify the protocolv2 api freeze of the frozen contracts
+        run: cd devthink && node apifreeze.ts
+      - name: Run the penetration test checklist of the security hardening release
+        run: cd devthink && node pentest.ts
+      - name: Audit every content security policy of the extension surfaces
+        run: cd devthink && node build/security.js cspaudit
+      - name: Verify the permission set never grew against the previous release
+        run: cd devthink && node permdiff.ts
+      - name: Run the coordination certification checklist of the multi agent release
+        run: cd devthink && node agentcert.ts
+      - name: Run the shared accounting certification of the multi agent release
+        run: cd devthink && node costcert.ts
+      - name: Run the documentation consistency check of the documentation completion release
+        run: cd devthink && node doccheck.ts
+      - name: Sweep the recorded failures and the source defect classes of the release candidate
+        run: cd devthink && node sweep.ts
+      - name: Audit the feature pool of the crx mining evidence against the shipped surface
+        run: cd devthink && node poolaudit.ts
+      - name: Run the verification matrix of the release candidate
+        run: cd devthink && node matrixverify.ts
+      - name: Prove the telemetry free guarantees of the release candidate behind the block all proxy
+        run: cd devthink && node telemetryfree.ts
+      # The soak sweep closed the validate:candidate family of the extension
+      # lane; the merge kept the script but left it off the ladder. It reads
+      # the built dist — the soak drives the compiled engine — so it rides
+      # after the root build like every gate above it. The wcag sweep of the
+      # same family already ran right after that root build (the suite's
+      # readiness test reads the recorded evidence, and nothing between the
+      # two points rebuilds the tree), so the lane answers the sweep once,
+      # at its first use — never twice over the same built dist.
+      - name: Run the soak sweep of the retention window without drift
+        run: cd devthink && node soak.ts
+      - name: Run the example gallery recipes runner of the platform release
+        run: cd devthink && node recipes.ts
+      - name: Run the release readiness review of the platform release
+        run: cd devthink && node ../foundry/readiness.ts
+      - name: Run the maintenance metadata proposal check of the dependency ladder
+        run: cd devthink && node maintain.ts check
+      # The release metadata lockstep drifted to the maintenance lane alone
+      # after the merge; the verify chain now asserts the drift stays zero
+      # (docs/evolutionroadmap.md, CHANGELOG.md and the version catalog
+      # answer package.json in lockstep).
+      - name: Check the release metadata lockstep of the version catalog
+        run: cd devthink && node release.ts check
+      - name: Check for available non-breaking dependency updates of the ladder
+        run: cd devthink && node ../foundry/dependencyupdates.ts check
+      - name: Check the versioned GitHub Actions references of the ladder
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: cd devthink && node workflow.ts check
+      - name: Run the runtime policy gate of the declared baselines
+        run: cd devthink && node runtime.ts
+      - name: Run the release workflow npm gate
+        run: cd devthink && node ../foundry/npmgate.ts
+      - name: Run the workflow yaml and controls gate
+        run: cd devthink && node workflow.ts
+      - name: Run the native bridge smoke against a fake host process
+        run: cd devthink && node nativesmoke.ts
+      - name: Lint every example plan with the compiled CLI
+        run: cd devthink && node build/cli.js planlint build/fixtures/plans
+      - name: Dry-run every example workflow with the compiled CLI
+        run: |
+          set -euo pipefail
+          cd devthink
+          for workflow in build/fixtures/workflows/*.json; do
+            node build/cli.js runworkflow "$workflow" --dryrun --quiet
+          done
+      - name: Install the host manifest for an isolated Chromium profile and run the native checks
+        run: |
+          set -euo pipefail
+          cd devthink
+          mkdir -p smokeprofile
+          node build/cli.js native install --profile smokeprofile --host com.wenathlan.devthink.smoke --extension-id smokeextensionid0000000000000000000 --companion "$(pwd)/build/companion.js" --consent true
+          test -f "smokeprofile/NativeMessagingHosts/com.wenathlan.devthink.smoke.json"
+          grep -F "chrome-extension://smokeextensionid0000000000000000000/" "smokeprofile/NativeMessagingHosts/com.wenathlan.devthink.smoke.json"
+          grep -F "__generated_extension_id__" build/nativehost.template.json
+          node build/cli.js native diagnostics --host com.wenathlan.devthink.smoke --profile smokeprofile
+      - name: Remove the host manifest after the native smoke
+        run: |
+          set -euo pipefail
+          cd devthink
+          node build/cli.js native uninstall --profile smokeprofile --host com.wenathlan.devthink.smoke
+          test ! -e "smokeprofile/NativeMessagingHosts/com.wenathlan.devthink.smoke.json"
+          rm -rf smokeprofile
+      - name: Assert the native messaging permission stays absent from the required set
+        run: |
+          set -euo pipefail
+          cd devthink
+          node -e "const manifest = require('./manifest.json'); if ((manifest.permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission must stay absent from the required set.'); if (!(manifest.optional_permissions ?? []).includes('nativeMessaging')) throw new Error('The native messaging permission declares in the optional set only.'); console.log(JSON.stringify({ valid: true, optional: true, required: false }));"
+      - name: Run the firefox prep step offline
+        run: |
+          set -euo pipefail
+          cd devthink
+          node -e "import('./build/security.js').then(module => { const overlay = require('./manifest.json').browsers.firefox; const source = require('./manifest.json'); const adapted = module.firefoxprepadapt({ manifest: source, overlay, backgroundscripts: ['background.js'] }); if (adapted.manifest.host_permissions.length !== 0) throw new Error('The firefox overlay must keep host permissions empty.'); if (adapted.manifest.browser_specific_settings.gecko.id !== 'devthink@wenathlan') throw new Error('The firefox overlay must carry the generated extension id.'); console.log(JSON.stringify({ valid: true, browser: adapted.overlay.browser, changes: adapted.changes.length })); })"
+      - name: Run the addons linter over the xpipack output when installed
+        run: |
+          set -euo pipefail
+          cd devthink
+          if ! command -v addons-linter >/dev/null 2>&1; then
+            echo "addons-linter is not installed; skipping the linter step (the local suite covers the markers check)."
+            exit 0
+          fi
+          VERSION="$(node -p "require('./package.json').version")"
+          addons-linter "build/devthink-firefox-${VERSION}.xpi" || true
+      - name: Install firefox and run a load smoke on the xpipack build when available
+        run: |
+          set -euo pipefail
+          if ! command -v firefox >/dev/null 2>&1; then
+            echo "firefox is not installed; the load smoke runs in the release lane when the firefox addon store accepts the xpi."
+            exit 0
+          fi
+          firefox --version
+      - name: Run the package extension pack verification
+        run: cd devthink && node packageextension.ts
+      - name: Dry-run the flat package of the single distribution
+        # the root build already ran before the deterministic suite (the
+        # lane's single compile: the frozen schema the suite reads, every
+        # gate below and this staging all derive from it), and nothing
+        # between the two steps rebuilds or removes the staged distpackage
+        # — the dry-run packs the tree that build emitted, so the lane
+        # never compiles the same distribution twice.
+        run: |
+          set -euo pipefail
+          cd devthink
+          npm pack ./distpackage --dry-run
+      - uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        id: chrome-for-testing
+        with:
+          chrome-version: stable
+      - name: Load the packaged extension in an isolated Chromium profile
+        env:
+          CHROME_BIN: ${{ steps.chrome-for-testing.outputs.chrome-path }}
+          CHROME_HEADLESS: "false"
+        run: cd devthink && xvfb-run --auto-servernum bun run test:chromium
+      - name: Smoke-test the compiled CLI with the declared Bun baseline
+        run: |
+          set -euo pipefail
+          cd devthink
+          # the engine seat the manifestemplate law owns: the bun floor
+          # answers from the root manifest, one hop above the app root.
+          test "$(bun --version)" = "$(node -p "require('../package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
+          bun build/cli.js manifest
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Run the maven pack dry run over the single distribution
+        run: |
+          set -euo pipefail
+          cd devthink
+          VERSION="$(node -p "require('./package.json').version")"
+          mvn --batch-mode -Drevision="${VERSION}" package
+          test -f "target/devthink-${VERSION}.jar"
+          jar tf "target/devthink-${VERSION}.jar" | grep -F "index.js"
+          jar tf "target/devthink-${VERSION}.jar" | grep -F "cli.js"
+          jar tf "target/devthink-${VERSION}.jar" | grep -F "headless.js"
+          jar tf "target/devthink-${VERSION}.jar" | grep -F "mcp.js"
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+      - name: Run the nuget pack dry run over the content files and fixtures
+        run: |
+          set -euo pipefail
+          cd devthink
+          VERSION="$(node -p "require('./package.json').version")"
+          dotnet pack devthink.csproj --configuration Release --output validation/nuget -p:PackageVersion="${VERSION}"
+          unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/devthink${VERSION}.zip"
+          unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/cli.js"
+          unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/headless.js"
+          unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/mcp.js"
+          unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/devthink.umd.js"
+          unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/index.cjs"
+          unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/declarations/index.d.ts"
+          unzip -l validation/nuget/*.nupkg | grep -F "contentFiles/any/any/fixtures/example-org-pagestate.json"
+      - name: Run the vsix package build
+        run: |
+          set -euo pipefail
+          cd devthink
+          VERSION="$(node -p "require('./package.json').version")"
+          test -f "build/devthink-vscode-${VERSION}.vsix"
+          unzip -l "build/devthink-vscode-${VERSION}.vsix" | grep -F "extension.vsixmanifest"
+          unzip -l "build/devthink-vscode-${VERSION}.vsix" | grep -F "extension/package.json"
+          unzip -l "build/devthink-vscode-${VERSION}.vsix" | grep -F "extension/extensionhost.js"
+          unzip -l "build/devthink-vscode-${VERSION}.vsix" | grep -F "extension/webview/bridge.html"
+          unzip -l "build/devthink-vscode-${VERSION}.vsix" | grep -F "extension/index.js"
+          node -e "import('./build/pack.js').then(module => { const bytes = require('fs').readFileSync('build/devthink-vscode-${VERSION}.vsix'); const fields = module.vsixpackmanifestfields('${VERSION}'); const check = module.vsixmarketplacemetadatacheck({ fields, manifesttext: bytes.toString('utf8') }); if (!check.ok) throw new Error('The vsix failed the marketplace metadata check: ' + (check.reason ?? 'unknown')); console.log(JSON.stringify({ valid: true, name: fields.name, publisher: fields.publisher, telemetry: fields.telemetry })); })"
+      - name: Assert the artifact manifest matches the built set
+        run: |
+          set -euo pipefail
+          cd devthink
+          VERSION="$(node -p "require('./package.json').version")"
+          test -f build/artifactmanifest.json
+          node -e "const { createHash } = require('node:crypto'); const { readFile } = require('node:fs/promises'); \
+          (async () => { const manifest = JSON.parse(await readFile('build/artifactmanifest.json', 'utf8')); \
+          const module = await import('./build/pack.js'); const files = []; \
+          for (const entry of manifest.artifacts) { const bytes = await readFile(entry.name); \
+          files.push({ name: entry.name, checksum: createHash('sha256').update(bytes).digest('hex') }); } \
+          const check = module.artifactmanifestcheck({ manifest, files }); \
+          if (!check.ok) throw new Error('The built set drifted from the artifact manifest: ' + JSON.stringify(check)); \
+          const names = manifest.artifacts.map(entry => entry.name); const version = '${VERSION}'; \
+          for (const required of ['build/devthink' + version + '.zip', 'build/devthink-firefox-' + version + '.xpi', \
+          'build/devthink-safari-' + version + '.zip', 'build/devthink-vscode-' + version + '.vsix', \
+          'build/devthink-site-' + version + '.zip', 'build/devthink-declarations-' + version + '.zip']) { \
+          if (!names.includes(required)) throw new Error('The artifact manifest misses the built artifact ' + required); } \
+          console.log(JSON.stringify({ artifacts: manifest.artifacts.length, ok: true })); })();"
+      - name: Build the container image and run its smoke
+        # the context is THE REPOSITORY ROOT (the family-context law the
+        # Dockerfile header records): the dependency union pins the vault
+        # sibling as file:../vault, the flat test village owns the build
+        # engine and the suite, and the config bridges resolve the getry
+        # and saddle engines onto their sibling owners, so the image
+        # builds from the checkout geometry it mirrors.
+        run: |
+          set -euo pipefail
+          docker build -f devthink/Dockerfile -t devthink-verify:local .
+          docker run --rm devthink-verify:local --check
+      # The root typecheck lane runs the package script the build bypasses
+      # (build.ts typechecks tsconfig.build.json only, so the sources
+      # and the test suite of tsconfig.json ride this lane instead), and the
+      # biome gate restores the lint lane the saddle and the merged repos
+      # ran in CI before the merge dropped it from every workflow.
+      - name: Typecheck the root sources and the test suite
+        run: cd devthink && bun run typecheck
+      - name: Lint the repository with the biome gate
+        run: cd devthink && bun run lint
+      - name: Check the web TypeScript of the static workbench
+        run: cd devthink && npm run check:web
+      - name: Build portable static web
+        env:
+          VITE_BASE_PATH: /
+        run: cd devthink && npm run build:web
+      - name: Resolve the artifact suffix
+        # the artifact name law: a dispatched ref may carry branch slashes the
+        # artifact namespace refuses, so the suffix rides the sanitized form.
+        id: artifactsuffix
+        shell: bash
+        run: echo "name=$(echo '${{ inputs.ref || github.sha }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
+      - name: Upload the built DevThink artifacts
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: devthink-verify-${{ steps.artifactsuffix.outputs.name }}
+          path: devthink/build/devthink*.zip
+          if-no-files-found: error
+          retention-days: 14
+  modes:
+    name: The DevThink library modes on ${{ matrix.runtime }}
+    concurrency:
+      group: devthink-verify-${{ github.event_name }}-${{ inputs.ref || github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        runtime: [node, bun, deno]
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: devthink/.nvmrc
+      - name: Install root dependencies
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the deterministic suite boots the getry gateway (the family law:
+        # the server seat answers from the getry root) — its hono runtime
+        # resolves from the getry node_modules this step materializes.
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
+      - name: Build the root distribution
+        run: cd devthink && node build.ts
+      - name: Run the accessibility sweep over the built tree
+        # the readiness test the suite carries walks the committed evidence:
+        # the sweep reruns here so the recorded wcag artifact reflects the
+        # built surfaces (the committed artifact predates this build). the
+        # modes matrix carries no gate ladder around the suite, so without
+        # this rerun the readiness gate answers the pre-build artifact.
+        run: cd devthink && node wcag.ts
+      - name: Require smoke against the cjs bundle
+        if: matrix.runtime == 'node'
+        run: cd devthink && node --input-type=commonjs --eval "const library = require('./build/index.cjs'); if (typeof library.surfacepalette !== 'function') throw new Error('The cjs mode lost its public surface.'); if (library.bundlestamp().mode !== 'cjs') throw new Error('The cjs mode lost its stamp.');"
+      - name: Import smoke against the esm bundle
+        if: matrix.runtime == 'node'
+        run: cd devthink && node --input-type=module --eval "import('./build/index.js').then(library => { if (typeof library.surfacepalette !== 'function') throw new Error('The esm mode lost its public surface.'); if (library.bundlestamp().mode !== 'esm') throw new Error('The esm mode lost its stamp.'); });"
+      - name: Global smoke against the umd bundle
+        if: matrix.runtime == 'node'
+        run: |
+          set -euo pipefail
+          cd devthink
+          node --input-type=module --eval "
+          import { readFileSync } from 'node:fs';
+          new Function('self', readFileSync('./build/devthink.umd.js', 'utf8'))(globalThis);
+          if (typeof globalThis.devthink.surfacepalette !== 'function') throw new Error('The umd mode lost its global surface.');
+          if (globalThis.devthink.bundlestamp().mode !== 'umd') throw new Error('The umd mode lost its stamp.');
+          "
+      - name: Tarball content check over every mode file
+        if: matrix.runtime == 'node'
+        run: |
+          set -euo pipefail
+          cd devthink
+          mkdir -p releasecheck
+          npm pack ./distpackage --pack-destination releasecheck >/dev/null
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/index.cjs"
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/devthink.umd.js"
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/index.d.ts"
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/policy.js"
+          tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -F "package/checksums.txt"
+          if tar -tzf releasecheck/wenathlan-devthink-*.tgz | grep -E "^package/([^/]+/){3}"; then echo "The npm tarball carries a path nested past two directories; the package stays flat." >&2; exit 1; fi
+      - name: Run the vitest suite once under bun
+        if: matrix.runtime == 'bun'
+        run: |
+          set -euo pipefail
+          cd devthink
+          # the engine seat the manifestemplate law owns: the bun floor
+          # answers from the root manifest, one hop above the app root.
+          test "$(bun --version)" = "$(node -p "require('../package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
+          # the modes lane answers the runtime contract: the release truth
+          # tests ride the ladder where their gates regenerate the artifacts
+          bun x vitest run --exclude "test/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge,sweep}.test.ts"
+      - name: Bun import smoke over the bun entry
+        if: matrix.runtime == 'bun'
+        run: cd devthink && bun --eval "const library = await import('./build/bun.js'); if (typeof library.bunadapter !== 'function') throw new Error('The bun mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The bun mode lost its surface.');"
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        if: matrix.runtime == 'deno'
+        with:
+          deno-version: v2.x
+      - name: Deno check over the deno entry
+        if: matrix.runtime == 'deno'
+        run: |
+          set -euo pipefail
+          cd devthink
+          deno --version
+          deno check build/deno.js
+      - name: Deno import smoke over the deno entry
+        if: matrix.runtime == 'deno'
+        run: cd devthink && deno eval "const library = await import('./build/deno.js'); if (typeof library.denoadapter !== 'function') throw new Error('The deno mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The deno mode lost its surface.');"
+      - name: Resolve the artifact suffix
+        # the artifact name law: a dispatched ref may carry branch slashes the
+        # artifact namespace refuses, so the suffix rides the sanitized form.
+        id: artifactsuffix
+        shell: bash
+        run: echo "name=$(echo '${{ inputs.ref || github.sha }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
+      - name: Upload the mode bundles
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: mode-bundles-${{ matrix.runtime }}-${{ steps.artifactsuffix.outputs.name }}
+          path: |
+            devthink/build/index.cjs
+            devthink/build/index.js
+            devthink/build/devthink.umd.js
+            devthink/build/checksums.txt
+          if-no-files-found: error
+          retention-days: 14
+  consumer:
+    name: The DevThink consumer smoke
+    concurrency:
+      group: devthink-verify-${{ github.event_name }}-${{ inputs.ref || github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # The real consumer lane of the rule 59/132: the gateway CI packed the
+    # tarball and installed it into a plain npm project before smoking the
+    # library exactly like a first-time embedder — the merge kept
+    # devthink/consumersmoke.ts orphaned until this lane restored the mold with
+    # the devthink paths. The smoke script is copied beside the consumer
+    # package.json so its @wenathlan/devthink/server import resolves the
+    # installed tarball (the distpackage declares the runtime dependency set
+    # the server subpath imports, so the plain smoke stays provisioning-free
+    # while the persistence step below provisions the prisma context the
+    # library documents), and the scratch directory leaves /tmp clean
+    # whatever the smoke answers.
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: devthink/.nvmrc
+      - name: Pin the npm rung the consumer smoke rides
+        # the family pin law (the same seat the gate ladder answers — the
+        # codeql pinned-dependencies battery charged the consumer smoke's
+        # floating npm): the runner's default npm never walks the pack /
+        # init / install lanes below, the engines floor of the root
+        # manifest answers the one npm rung the consumer steps carry.
+        run: |
+          set -euo pipefail
+          npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
+          npx --yes "npm@${npm_version}" install --global "npm@${npm_version}"
+          echo "npm_version=${npm_version}" >> "$GITHUB_ENV"
+      - name: Install root dependencies
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+      - name: Install the gateway family dependencies
+        # the deterministic suite boots the getry gateway (the family law:
+        # the server seat answers from the getry root) — its hono runtime
+        # resolves from the getry node_modules this step materializes.
+        run: cd getry && bun install --frozen-lockfile --ignore-scripts
+      - name: Build the root distribution
+        run: cd devthink && node build.ts
+      - name: Pack the distribution tarball into a temporary directory
+        # the os distribution tarball packs alone (the runtime set law of the
+        # 2.0.184 green train): the staged manifest declares the runtime
+        # dependency set the bundles import — the getry owner rungs the
+        # server surface re-exports ride inlined through the getrybridge
+        # aliases, so no @wenathlan/getry registry seat answers from the
+        # consumer tree and the gateway family tarball the previous rungs
+        # packed beside (the registry envelope whose files allowlist once
+        # omitted every exported .ts face) retired with the seat it covered.
+        run: |
+          set -euo pipefail
+          cd devthink
+          rm -rf /tmp/devthink-consumer-smoke
+          mkdir -p /tmp/devthink-consumer-smoke/pack /tmp/devthink-consumer-smoke/consumer
+          npm pack ./distpackage --pack-destination /tmp/devthink-consumer-smoke/pack
+      - name: Create the consumer project and install the tarball
+        run: |
+          set -euo pipefail
+          cd /tmp/devthink-consumer-smoke/consumer
+          npm init -y >/dev/null
+          npx --yes "npm@${npm_version}" install ../pack/wenathlan-devthink-*.tgz
+      - name: Run the library smoke as the consumer
+        run: |
+          set -euo pipefail
+          cd devthink
+          cp consumersmoke.ts /tmp/devthink-consumer-smoke/consumer/consumersmoke.mts
+          cd /tmp/devthink-consumer-smoke/consumer
+          node consumersmoke.mts
+      - name: Exercise the persistence path of the consumer
+        env:
+          DEVTHINK_DATABASE_URL: file:/tmp/devthink-consumer-smoke/consumer/prisma/devthink.db
+        run: |
+          set -euo pipefail
+          cd /tmp/devthink-consumer-smoke/consumer
+          mkdir -p prisma
+          cp "$GITHUB_WORKSPACE/devthink/schema.prisma" prisma/schema.prisma
+          cp "$GITHUB_WORKSPACE/devthink/prismaconfig.ts" prismaconfig.ts
+          # the pinned-dependencies law of the supply-chain gate: the pinned
+          # prisma@7.10.0 CLI provisions through bun (the registry answers
+          # the integrity), and the npx pair resolves it from the tree.
+          bun add prisma@7.10.0
+          npx prisma db push --config prismaconfig.ts
+          npx prisma generate --config prismaconfig.ts
+          DEVTHINK_CONSUMER_DB=1 node consumersmoke.mts
+      - name: Remove the consumer scratch directory after the smoke
+        if: always()
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/devthink-consumer-smoke
+
+  lint:
+    # THE WORKFLOW LINT LANE (the workflowlint merger): verifies GitHub
+    # Actions syntax, expressions, action inputs and reusable workflow
+    # calls across every workflow file of the repository. A malformed
+    # workflow must never reach main, so the gate fails on errors. The
+    # actions ride immutable commit digests annotated with their release
+    # tags: the maintenance ladder refreshes them through the
+    # workflow:updates pass, and no artifact sha256 ever lives baked
+    # inside a workflow file (the family policy). The lane lived as its
+    # own workflow file until the consolidation pass folded it in here;
+    # the merged file answers every pull request and push (the bare
+    # pull_request trigger the CI battery carries - no paths filter, the
+    # superset the standalone lane's workflows-folder filter served),
+    # and no composite actions folder exists anymore (the
+    # one-workflow-file standard retired it).
+    name: workflow syntax and policy lint
+    if: github.event_name != 'workflow_call'
+    concurrency:
+      group: devthink-ci-${{ github.event_name }}-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: lint workflows
+        # actionlint validates GitHub Actions workflow syntax, expression
+        # contexts, action inputs and reusable workflow call graphs; the
+        # check reporter answers both the pull request and the push lanes
+        # (the pr-check reporter has no pull request to annotate on a push)
+        # and the shellcheck noise the house deliberately carries (the
+        # single-quoted node scripts, the typed copy loops) stays out
+        # through the shellcheck exclusions of actionlint-config.cfg.
+        uses: reviewdog/action-actionlint@d290e336d5a743810aef4404f757dc862276d2ae # v1.73.4
+        with:
+          reporter: github-check
+          fail_level: error
+          actionlint_flags: -config-file .github/workflows/actionlint-config.cfg

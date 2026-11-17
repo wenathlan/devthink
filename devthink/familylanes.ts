@@ -474,13 +474,13 @@ function ladderlane(content: string) {
  * @returns the drift report of the walk. */
 export async function familylanes(mode: string) {
   let drift = false;
-  const desktopPath = join(repoRoot, ".github/workflows/family-desktop.yml");
+  /* the consolidation pass: the desktop lane rides the merged containers.yml
+     file — the whole-file DESKTOP_CANONICAL write can never again be correct
+     (writing it would clobber the merged wave), so the branch reads the
+     merged seat and reports alone. */
+  const desktopPath = join(repoRoot, ".github/workflows/containers.yml");
   const desktopCurrent = await readFile(desktopPath, "utf8");
   const desktopMigrated = desktopCurrent.includes(DESKTOP_MARKER);
-  if (!desktopMigrated) {
-    drift = true;
-    if (mode === "sync") await writeFile(desktopPath, DESKTOP_CANONICAL);
-  }
   const ladderPath = join(repoRoot, ".github/workflows/maintenance.yml");
   const ladderCurrent = await readFile(ladderPath, "utf8");
   const ladderMigrated = ladderCurrent.includes(LADDER_MARKER);
@@ -493,7 +493,7 @@ export async function familylanes(mode: string) {
     drift = true;
     if (mode === "sync") await writeFile(ladderPath, ladderNext);
   }
-  const mobilePath = join(repoRoot, ".github/workflows/family-mobile.yml");
+  const mobilePath = join(repoRoot, ".github/workflows/containers.yml");
   const mobileCurrent = await readFile(mobilePath, "utf8");
   const mobileMigrated = MOBILE_MARKERS.every((marker) => mobileCurrent.includes(marker));
   if (!mobileMigrated) {

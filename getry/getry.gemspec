@@ -3,8 +3,8 @@ Gem::Specification.new do |spec|
   spec.version = ENV.fetch("GETRY_VERSION", "2.0.185")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
-  spec.summary = "The getry documentation and tests envelope (the AI gateway — five provider gateways serving 35 OpenAI-compatible routes)."
-  spec.description = "Distributes the getry documentation set and the tests directory as one Ruby gem. getry is the AI gateway — five provider gateways serving 35 OpenAI-compatible routes."
+  spec.summary = "The getry documentation and tests envelope (the AI gateway — five provider gateways serving 65 registered route lanes (13 route kinds per version — the seven chat core kinds plus the six media lanes))."
+  spec.description = "Distributes the getry documentation set and the tests directory as one Ruby gem. getry is the AI gateway — five provider gateways serving 65 registered route lanes (13 route kinds per version — the seven chat core kinds plus the six media lanes)."
   spec.homepage = "https://github.com/wenathlan/devthink"
   spec.license = "GPL-3.0-only"
   spec.required_ruby_version = ">= 3.1"

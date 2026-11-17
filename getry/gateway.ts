@@ -13,27 +13,134 @@ import { smartpool, sortids } from "./intelligence.ts";
 /**
  * gateway.ts — the gateway versions domain of getry (root layer).
  *
- * the five provider gateways the app serves (v1 through v5), the seven
- * OpenAI-compatible route kinds each one answers, and the canonical
- * parser pattern the streaming routes follow. the rows below are the
- * in-memory catalog of the route map: the self-hosted gateway answers
- * the real traffic over HTTPS, the static build falls back to this
- * catalog without ever touching the visitor machine.
+ * the five provider gateways the app serves (v1 through v5), the thirteen
+ * OpenAI-compatible route kinds each one answers (the seven chat core
+ * kinds plus the six media lanes), and the canonical parser pattern the
+ * streaming routes follow. the rows below are the in-memory catalog of
+ * the route map: the self-hosted gateway answers the real traffic over
+ * HTTPS, the static build falls back to this catalog without ever
+ * touching the visitor machine.
  */
 
-/** the seven OpenAI-compatible route kinds every gateway version carries. */
+/** the thirteen OpenAI-compatible route kinds every gateway version
+ * carries — the seven chat core kinds plus the six media lanes (images
+ * audio video) the studio surface rides. */
 export const GATEWAYROUTES = [
+  "audio/speech",
+  "audio/transcriptions",
   "chat/completions",
   "completions",
   "embeddings",
+  "images/edits",
+  "images/generations",
+  "images/understanding",
   "keys",
   "messages",
   "models",
   "responses",
+  "videos/generations",
 ] as const;
 
 /** one route kind of the gateway surface. */
 export type GatewayRoute = (typeof GATEWAYROUTES)[number];
+
+/** one image model row of the media catalog. */
+export type mediaimagemodel = {
+  id: string;
+  sizes: string[];
+  modality: string;
+};
+
+/** one video model row of the media catalog. */
+export type mediavideomodel = {
+  id: string;
+  modality: string;
+  sizes: string[];
+  fps: number[];
+  durations: number[];
+  with_audio: boolean;
+};
+
+/** one audio model row of the media catalog. */
+export type mediaaudiomodel = {
+  id: string;
+  modality: string;
+  voices?: string[];
+  formats?: string[];
+  inputs?: string[];
+  maxinputchars?: number;
+};
+
+/** the media lane catalog of the zai sdk transport — the image audio and
+ * video families the six media route kinds serve, the ids and parameter
+ * vocabularies exactly as the upstream sdk speaks them (ported from the
+ * devthink gateway v1 media lanes: cogview cogvideox glm-tts glm-asr).
+ * only the zai sdk transport carries these lanes — a fetch version
+ * answers the honest 503, never a pretend media catalog. */
+export type gatewaymediacatalog = {
+  imagemodels: mediaimagemodel[];
+  videomodels: mediavideomodel[];
+  audiomodels: mediaaudiomodel[];
+  visionmodels: string[];
+  imagesizes: string[];
+  ttsvoices: string[];
+  openaivoices: Record<string, string>;
+  ttsformats: string[];
+};
+
+/** the media lane catalog — the one owner of the media vocabularies the
+ * engine media handlers validate against and the models discovery
+ * metadata serves. */
+export const GATEWAYMEDIA: gatewaymediacatalog = {
+  imagemodels: [
+    {
+      id: "cogview-4",
+      sizes: ["1024x1024", "768x1344", "864x1152", "1344x768", "1152x864", "1440x720", "720x1440"],
+      modality: "text-to-image",
+    },
+    {
+      id: "cogview-4-plus",
+      sizes: ["1024x1024", "768x1344", "864x1152", "1344x768", "1152x864", "1440x720", "720x1440"],
+      modality: "text-to-image",
+    },
+  ],
+  videomodels: [
+    {
+      id: "cogvideox",
+      modality: "text-to-video / image-to-video",
+      sizes: ["720x480", "1024x576", "1920x1080"],
+      fps: [30, 60],
+      durations: [5, 10],
+      with_audio: true,
+    },
+  ],
+  audiomodels: [
+    {
+      id: "glm-tts",
+      modality: "text-to-speech",
+      voices: ["tongtong", "chuichui", "xiaochen", "jam", "kazi", "douji", "luodo"],
+      formats: ["wav", "pcm", "mp3"],
+      maxinputchars: 1024,
+    },
+    { id: "glm-asr", modality: "speech-to-text", inputs: ["file", "file_base64"] },
+  ],
+  visionmodels: ["glm-5v", "glm-5.3-flash"],
+  imagesizes: ["1024x1024", "768x1344", "864x1152", "1344x768", "1152x864", "1440x720", "720x1440"],
+  ttsvoices: ["tongtong", "chuichui", "xiaochen", "jam", "kazi", "douji", "luodo"],
+  openaivoices: {
+    alloy: "tongtong",
+    echo: "jam",
+    fable: "xiaochen",
+    onyx: "kazi",
+    nova: "chuichui",
+    shimmer: "douji",
+    coral: "luodo",
+    ballad: "tongtong",
+    sage: "xiaochen",
+    verse: "jam",
+  },
+  ttsformats: ["wav", "pcm", "mp3"],
+};
 
 /** the lifecycle badge a gateway version carries. */
 export type GatewayBadge = "live" | "paused";
@@ -75,7 +182,7 @@ export const GATEWAYVERSIONS: GatewayVersion[] = [
     provider: "nvidia nim",
     pattern: "rebuild per family reasoning control pure byte passthrough",
     badge: "live",
-    models: "17 chat models kimi-k3 deepseek-v4 nemotron-3 muse-glimmer laguna gpt-oss gemma-4 mistral llama-3.2",
+    models: "16 chat models plus the devthink meta kimi-k3 deepseek-v4 nemotron-3 muse-glimmer laguna gpt-oss gemma-4 mistral llama-3.2",
     routes: [...GATEWAYROUTES],
     note: "22 keys round robin devthink meta model rotates every 6 messages",
   },
@@ -271,8 +378,10 @@ export const gatewayConfig: gatewaydefinition = {
  *   thinking — two-calls pattern and budgets
  *
  * create as many versions as you want — v1 through v9 and beyond
- * each version gets all 7 routes generated automatically:
+ * each version gets all 13 routes generated automatically:
  *   chat/completions completions messages responses embeddings keys models
+ *   images/generations images/edits images/understanding audio/speech
+ *   audio/transcriptions videos/generations
  *
  * the engine config loader (gateway-configloader.ts) probes the standard
  * sol/config.mjs|ts|js locations of the working directory for the definition

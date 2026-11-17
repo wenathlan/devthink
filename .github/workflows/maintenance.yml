@@ -33,6 +33,11 @@ on:
         required: false
         default: com.wenathlan.extension-mcp,com.wenathlan.extension-headless,com.wenathlan.extension-cli,com.wenathlan.extension-library
         type: string
+      confirm:
+        description: Type healtags to confirm the registry heal (the absorbed registryheal lane input).
+        required: true
+        default: ""
+        type: string
   issues:
     # the first-interaction lane (the automation category pass): the
     # greeting answers the first issue an author ever opens the same way
@@ -49,10 +54,6 @@ on:
 
 permissions:
   contents: read
-
-concurrency:
-  group: maintain-versions
-  cancel-in-progress: false
 
 # the automated dependency ladder of the merged repository: every run
 # applies every non-breaking update available at run time (npm dependencies
@@ -77,6 +78,18 @@ concurrency:
 # fire other workflows, the run creates the version tag itself and
 # dispatches the release workflow on that tag explicitly, so every
 # automatic bump publishes exactly the way the manual rungs always did.
+
+#
+# THE CONSOLIDATION PASS (the seventeen-to-six workflow fold): the
+# emergency registry heal and the one-shot rung records lanes the
+# standalone files carried ride this file as its closing jobs - the heal
+# keeps its release-approval environment, its healtags confirmation and
+# its registry-heal group while answering the confirmed dispatch alone,
+# and the records walk keeps its dispatch-only shape. The maintain-versions
+# group the workflow-level block once declared rides the ladder jobs it
+# serialized (propose, cachecleanup, retire, npmtag); the stale, labeler
+# and greeting lanes keep the groups of their own they always carried.
+
 jobs:
   propose:
     # every firing runs this job for real (Regra 124: nothing skipped):
@@ -84,6 +97,12 @@ jobs:
     # board for the daily cache pass and the DevThink Security
     # completions; the window decision now lives in the first step below,
     # so out-of-window firings report an explicit no-op and stay green.
+    # the ladder group (the workflow-level block the standalone file
+    # carried): the dependency proposals serialize and a superseded rung
+    # never cancels a walk already landing.
+    concurrency:
+      group: maintain-versions
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     # the eleven-manifest walk of the union ladder answers ~18 minutes a
     # manifest against the live registry (~198 minutes whole beside the
@@ -515,6 +534,10 @@ jobs:
           fi
   cachecleanup:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    # the maintain-versions group the ladder serializes under.
+    concurrency:
+      group: maintain-versions
+      cancel-in-progress: false
     runs-on: ubuntu-24.04
     # the retention pass stays bounded (the family contract, the same
     # ceiling the dedicated cache retention lane carries).
@@ -618,6 +641,10 @@ jobs:
   # input the standalone file declared.
   retire:
     name: Retire the merged maven packages the single distribution replaced
+    # the maintain-versions group the ladder serializes under.
+    concurrency:
+      group: maintain-versions
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 15
     # least-privilege (the 2.0.184 scorecard closure): the package deletes
@@ -815,6 +842,10 @@ jobs:
     # dispatch the operator can fire any time the registry drifts.
     name: Realign the npmjs latest dist-tags of the family
     if: github.event_name == 'workflow_dispatch'
+    # the maintain-versions group the ladder serializes under.
+    concurrency:
+      group: maintain-versions
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -882,3 +913,173 @@ jobs:
             npm dist-tag add "@wenathlan/${package}@${rung}" latest
             echo "the latest dist-tag of ${package} moved from ${current} to ${rung} (the ${package} manifest rung)."
           done
+
+  heal:
+    # THE EMERGENCY REGISTRY LANE: the 2.1.7 envelopes the publish wave
+    # stamped from the stale v2.1.7 tag (a tag cut before twenty-one rungs
+    # landed on main) shipped broken tarballs — the saddle envelope declares
+    # the dist entry points the package never carries, so every consumer the
+    # caret range resolves answers "Cannot find module". The unpublish lane
+    # the first heal carried answered E403 (the granular token that bypasses
+    # two-factor authentication may never unpublish), so the heal moves the
+    # latest dist-tag of every poisoned package back to the last honest rung
+    # the manifests of main already resolve — the rung reads each app's own
+    # package.json live at dispatch time (the dynamic rung law: the emergency
+    # era froze 2.0.154 in the script and the frozen pin regressed every later
+    # rung — the heal reads the synchronized manifest instead, so the honest
+    # rung rides the version cascade and the lane never lags the curve). The ladder then walks the ordinary flow: the
+    # maintenance rung derives the next rung, the release cuts the tag from
+    # the healed main, and the publish answers envelopes the tree actually
+    # builds — the fresh latest supersedes every caret range the same hour.
+    #
+    # The lane is dispatch-only, owner-gated through the release-approval
+    # environment, and answers one idempotent pass: a dist-tag already
+    # pointing at the honest rung is a green skip, never a failure.
+    name: move the latest dist-tags back to the honest rungs
+    # the dispatch-only seat the standalone lane owned, confirm-gated:
+    # the heal answers the manual dispatch that types healtags alone -
+    # the routine maintenance dispatches (the ladder, the cache passes,
+    # the records) never redden the refusal step the lane carries.
+    if: github.event_name == 'workflow_dispatch' && inputs.confirm == 'healtags'
+    concurrency:
+      group: registry-heal
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: release-approval
+    steps:
+      - name: Refuse the accidental dispatch
+        if: github.event.inputs.confirm != 'healtags'
+        run: |
+          echo "The confirm input must read healtags (the lane refuses to run by accident)."
+          exit 1
+      - name: Check out the synchronized manifests
+        # the dynamic rung law: the honest rung reads the app manifests of
+        # main at dispatch time, so the heal needs the working tree (the
+        # pinned family checkout the release lanes carry).
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Move every poisoned latest back to the honest rung, idempotently
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          heal() {
+            package="$1"
+            honest="$(node -p "require('./${package}/package.json').version")"
+            test -n "$honest"
+            echo "::group::@wenathlan/$package latest -> $honest (the ${package} manifest rung)"
+            current="$(npm view "@wenathlan/$package" dist-tags.latest || echo absent)"
+            if [ "$current" = "$honest" ]; then
+              echo "the latest tag already answers $honest — skipping"
+            else
+              npm dist-tag add "@wenathlan/$package@$honest" latest
+              echo "moved @wenathlan/$package latest from $current to $honest"
+            fi
+            echo "::endgroup::"
+          }
+          # the full eleven: cobaia and getry join the heal set (the report
+          # loop already walked them — a heal that skips a published seat
+          # leaves the poison the lane exists to clear).
+          for package in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
+            heal "$package"
+          done
+      - name: Report the healed dist-tags
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          for package in argan cadria cobaia debonair devthink forge foundry getry saddle stealthhead vault; do
+            latest="$(npm view "@wenathlan/$package" dist-tags.latest || echo absent)"
+            echo "@wenathlan/$package latest = ${latest}"
+          done
+
+  records:
+    # the one-shot rung records lane: a manual rung that lands by hand (the
+    # security closure rung 2.0.182) carries the same re-stamp the automated
+    # ladder performs before its pull request — the build, the re-frozen
+    # apifreeze artifact, the recorded permission baseline and the twelve
+    # certification records — executed on the runner the local seats cannot
+    # seat (the 14,500-package tree the sandbox memory cannot hold). the lane
+    # runs on the dispatched ref, commits the re-stamped records back to the
+    # same ref and leaves the pull request wave to the owner's merge law.
+    name: Re-stamp the certification records at the rung
+    # the one-shot rung records lane stays dispatch-only (the mission
+    # guard): the schedules, the security completions and the issue
+    # firings of the merged file never reach the re-stamp walk.
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout the rung branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          # the credentials never persist (the least-privilege law above):
+          # the commit step pushes over an explicit owner-pat remote, and a
+          # persisted job token would answer a second authorization header
+          # the wire refuses.
+          persist-credentials: false
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          # the repo-declared Node line (the family runtime doctrine,
+          # Regra 54: never the mutable `node`/latest alias)
+          node-version-file: devthink/.nvmrc
+
+      - name: Install the locked tree
+        # the ladder lanes never touch the native sqlite binding: the
+        # scripts stay off so the frozen install never rides the prebuild
+        # mirror or the broken bunx node-gyp fallback the flaky lanes hit
+        # — the prisma client the validation reads generates inside
+        # build.ts itself.
+        run: cd devthink && bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build the tree the records read
+        run: cd devthink && node build.ts
+
+      - name: Re-freeze the apifreeze artifact and record the permission baseline
+        run: |
+          set -euo pipefail
+          cd devthink
+          bun run apifreeze:sync
+          bun run permdiff:sync
+
+      - name: Re-stamp the certification records at the rung
+        # the sweep seat walks FIRST (the matrixverify cell of the chain
+        # reads the committed sweep record and refuses a record that
+        # still stamps the previous rung), then the full chain re-stamps
+        # the rest — the same order the automated ladder carries.
+        run: cd devthink && node sweep.ts sync && bun run records:sync
+
+      - name: Commit the re-stamped records to the rung branch
+        # least-privilege (the 2.0.184 scorecard closure): the github
+        # token answers read alone now, so the push rides the owner pat
+        # over the explicit authenticated remote — the github token
+        # standing in when the secret does not.
+        env:
+          OWNER_PAT: ${{ secrets.OWNER_PAT || github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "iakadion"
+          git config user.email "iakadion@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "the records already answer the rung — nothing to commit"
+          else
+            git add -A
+            git commit -m "release: the 2.0.182 rung records — the certification seats answer the fresh rung whole (the build, the re-frozen apifreeze artifact, the recorded permission baseline and the twelve gate records the validation suite reads)"
+            git push "https://x-access-token:${OWNER_PAT}@github.com/${GITHUB_REPOSITORY}.git" HEAD:"${GITHUB_REF_NAME}"
+          fi

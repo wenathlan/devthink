@@ -31,7 +31,7 @@ const repoRoot = resolve(process.cwd(), "..");
  * (the workflow files and the sibling manifests) answer only where the
  * whole repository rides beside the suite, so the battery skips
  * honestly there instead of reading paths that never exist. */
-const inrepo = existsSync(join(repoRoot, ".github", "workflows", "webpack.yml"));
+const inrepo = existsSync(join(repoRoot, ".github", "workflows", "containers.yml"));
 const workflowdir = join(repoRoot, ".github", "workflows");
 
 const readworkflow = async (file: string) => await readFile(join(workflowdir, file), "utf8");
@@ -80,9 +80,9 @@ type lanejob = {
 
 describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", () => {
   it("the workflow exists with the bundle seat alone — the variant registry lanes are dead", async () => {
-    const webpack = await parseworkflow("webpack.yml");
+    const webpack = await parseworkflow("containers.yml");
     expect(webpack.jobs).toBeTruthy();
-    expect(webpack.jobs?.["webpackseats"], "the bundle seat answers in webpack.yml").toBeTruthy();
+    expect(webpack.jobs?.["webpackseats"], "the bundle seat answers in containers.yml").toBeTruthy();
     for (const lane of DEADVARIANTLANES) {
       expect(webpack.jobs?.[lane], `the ${lane} variant lane is dead by the fusion order`).toBeUndefined();
     }
@@ -90,7 +90,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the bundle seat walks every application — the per-application webpack law", async () => {
-    const webpack = await parseworkflow("webpack.yml");
+    const webpack = await parseworkflow("containers.yml");
     const job = webpack.jobs?.["webpackseats"] as lanejob | undefined;
     const family = job?.strategy?.matrix?.package ?? [];
     expect(
@@ -100,7 +100,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the bundle seat builds through the webpack CLI beside the esbuild carrier", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     const seats = text.split("  webpackseats:")[1] ?? "";
     expect(seats, "the seat transpiles the typescript entry through the esbuild carrier").toContain(
       "npx esbuild cli.ts",
@@ -117,7 +117,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the workflow never names a variant registry seat — the .webpack package grammar is dead", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     /* the fusion law the corridor sealed: the registry publication of the
      * bundle rides INSIDE the original packages, so no variant package
      * name (the @wenathlan/<app>.webpack npm envelope, the
@@ -131,7 +131,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the asset grammar rides the dotted law and never an underscore", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     /* the release assets the bundle seat attaches: the cjs bundle beside
      * its sha256 twin, the dotted law, never an underscore. */
     const grammars = ["webpack.${VERSION}.cjs", "sha256.webpack.${VERSION}"];
@@ -155,7 +155,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the resolver validates the version lockstep of the seat", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     const resolvers = text.split("resolve release version").length - 1;
     expect(resolvers, "the bundle seat resolves the release version").toBe(1);
     expect(text, "every resolver validates the envelope version against the tag").toContain(
@@ -164,7 +164,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("every action rides the sha pin the house stamps", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     const uses = [...text.matchAll(/uses:\s*([^\s]+)/g)].map((match) => match[1]);
     expect(uses.length, "the workflow uses pinned actions").toBeGreaterThanOrEqual(3);
     for (const use of uses) {

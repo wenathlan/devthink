@@ -1,7 +1,7 @@
 {
   "name": "getry",
   "short_name": "getry",
-  "description": "The AI gateway of the wenathlan family: five provider gateways, 35 OpenAI-compatible routes, the 7-level thinking system and the session store running on the shared Sol theme.",
+  "description": "The AI gateway of the wenathlan family: five provider gateways, 65 registered route lanes (13 route kinds per version — the seven chat core kinds plus the six media lanes), the registerable thinking ladder (7 seeded rungs) and the session store running on the shared Sol theme.",
   "start_url": "/",
   "id": "/",
   "display": "standalone",
@@ -37,13 +37,13 @@
     {
       "name": "Versions",
       "short_name": "Versions",
-      "description": "See the five provider gateways and their 35 routes.",
+      "description": "See the five provider gateways and their 65 route lanes.",
       "url": "/versions"
     },
     {
       "name": "Thinking",
       "short_name": "Thinking",
-      "description": "Read the 7-level reasoning ladder and its budgets.",
+      "description": "Read the registerable reasoning ladder (7 seeded rungs) and its budgets.",
       "url": "/thinking"
     },
     {

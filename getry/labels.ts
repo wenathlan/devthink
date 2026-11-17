@@ -50,7 +50,7 @@ export const LABEL_MANIFEST = {
   "shell.rail.sessions": "sessions",
   "shell.rail.sessionsDetail": "the session store and key rotation",
   "shell.rail.thinking": "thinking",
-  "shell.rail.thinkingDetail": "the 7-level reasoning ladder",
+  "shell.rail.thinkingDetail": "the registerable reasoning ladder (7 seeded rungs)",
   "shell.rail.versions": "versions",
   "shell.rail.versionsDetail": "five provider gateways and their routes",
   "shell.family.aria": "the wenathlan family",
@@ -110,7 +110,7 @@ export const LABEL_MANIFEST = {
   "home.steps.deploy.phrase":
     "the same self-hosted gateway serves every deploy — this site runs the same routes.",
   "home.steps.route.title": "name a route",
-  "home.steps.route.phrase": "35 OpenAI-compatible endpoints answer on the self-hosted lanes — the seven kinds ride every replica.",
+  "home.steps.route.phrase": "65 registered route lanes answer on the self-hosted lanes — the seven chat kinds ride every replica, the six media kinds ride the zai sdk transport.",
   "home.steps.mask.title": "ride the mask",
   "home.steps.mask.phrase":
     "the parser re-emits every chunk as devthink — reasoning deltas before content, keepalives holding the stream.",
@@ -179,7 +179,7 @@ export const LABEL_MANIFEST = {
   "sessions.action.how": "how the rows arrive",
   // the thinking page anchor (the reasoning ladder)
   "thinking.eyebrow": "getry · thinking",
-  "thinking.title": "the 7-level thinking system",
+  "thinking.title": "the registerable thinking ladder (7 seeded rungs)",
   "thinking.lede":
     "Every chat route accepts a thinking level; the gateway resolves it to the budget the provider receives and carries the choice on the session context. Requests that name no level ride the deep-reasoning default.",
   "thinking.levels.aria": "thinking levels",

@@ -323,7 +323,7 @@ jobs:
     # release source resolved, and a no-op push (metadata skipped, no
     # version bump) still leaves the lane skipped below it.
     if: always() && needs.metadata.result == 'success'
-    uses: ./.github/workflows/verify.yml
+    uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ needs.metadata.outputs.ref }}
     permissions:

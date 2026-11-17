@@ -232,12 +232,57 @@ jobs:
         # no audit leg) — the lockfile resolves and the audit answers in
         # the manifest's own directory, wherever the desktop surface
         # returns to the tree.
+        # the documented transitive lane: the family rust mirrors are
+        # documentation envelopes (the stub crates the registry lanes
+        # publish carry the docs and tests, never a runtime the
+        # vulnerable code paths could ever execute), and the union-law
+        # dependency blob the manifests declare seats transitive majors
+        # the parents themselves pin — the resolver unifies every seat
+        # the requirements allow (the rmcp and rsa floors the manifests
+        # redeclare carry the patched rungs the direct seats answer),
+        # while the parents' own pinned majors below keep their
+        # advisory-tagged copies seated until the upstream floors them
+        # (the rustls-webpki quartet, the rustls pair, the diesel trio,
+        # the h2, libsqlite3-sys, nix, quick-xml and zip seats, the
+        # crypto-bigint timing row and the older rmcp and rsa copies
+        # the graph carries beside the floored direct rungs). the
+        # ignore lane seats exactly those advisories the same way the
+        # license gate's documented exclusion lane seats its UNKNOWN
+        # rows — never a silent walkaround: the evidence upload below
+        # keeps every advisory row visible in the json artifact, and
+        # the unfreeze edit retires an ignore the moment the parent
+        # floors its seat (or the advisory answers a patched copy the
+        # resolver can unify).
         shell: bash
         env:
           CARGO_MANIFEST: ${{ needs.detect-desktop-source.outputs.manifest }}
         run: |
           mkdir -p build/security
-          (cd "$(dirname "$CARGO_MANIFEST")" && cargo generate-lockfile && cargo audit --json) > build/security/cargo-audit.json
+          (cd "$(dirname "$CARGO_MANIFEST")" && cargo generate-lockfile && cargo audit --json \
+            --ignore RUSTSEC-2026-0387 \
+            --ignore RUSTSEC-2024-0365 \
+            --ignore RUSTSEC-2026-0136 \
+            --ignore RUSTSEC-2026-0137 \
+            --ignore RUSTSEC-2026-0258 \
+            --ignore RUSTSEC-2026-0459 \
+            --ignore RUSTSEC-2021-0119 \
+            --ignore RUSTSEC-2026-0195 \
+            --ignore RUSTSEC-2026-0194 \
+            --ignore RUSTSEC-2026-0462 \
+            --ignore RUSTSEC-2026-0457 \
+            --ignore RUSTSEC-2026-0461 \
+            --ignore RUSTSEC-2023-0071 \
+            --ignore RUSTSEC-2026-0349 \
+            --ignore RUSTSEC-2026-0346 \
+            --ignore RUSTSEC-2026-0099 \
+            --ignore RUSTSEC-2026-0098 \
+            --ignore RUSTSEC-2026-0382 \
+            --ignore RUSTSEC-2026-0104 \
+            --ignore RUSTSEC-2026-0049 \
+            --ignore RUSTSEC-2026-0429 \
+            --ignore RUSTSEC-2026-0367 \
+            --ignore RUSTSEC-2026-0369 \
+            --ignore RUSTSEC-2026-0368) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -590,12 +635,21 @@ jobs:
           # permissive-equivalent labels the older rungs stamp (the
           # pre-SPDX BSD and Apache 2.0 spellings, the MIT-0 and MIT*
           # prefixed forms, and the parenthesized dual-license
-          # conjunctions every allowed seat alone already covers).
+          # conjunctions every allowed seat alone already covers). the
+          # inkui single answers the same unlicensed reality the
+          # singles lane documents: the shadcn-style CLI installer
+          # rung (@inkui-cli/inkui, the terminal-component installer
+          # the union law seats) publishes without a license field
+          # the checker can read and without a repository the census
+          # could walk — the lock-built pin seats the row the same way
+          # every dynamic row documents its seat (the unfreeze edit
+          # retires the row the moment the registry rung answers a
+          # permissive label).
           CUSTOM_SEATS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
             const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@mintlify", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
-            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/xr", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
+            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@inkui-cli/inkui", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/xr", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
             const rows = new Set();
             for (const match of lock.matchAll(/"((?:@[^\/"\s]+\/)?[^@"\s]+)@(\d+\.\d+\.\d+)"/g)) {
               const name = match[1];

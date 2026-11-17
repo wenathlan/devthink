@@ -3,7 +3,7 @@
  * one file one responsibility — the generic request pipeline for all versions
  * 0 to 100 correlated logics grouped in this one file
  *
- * consumes a gatewayconfig produces all 7 route handlers
+ * consumes a gatewayconfig produces all 13 route handlers
  * supports any llm any baseurl any api key via configuration
  * v1 zai sdk v2 babel v3 nvidia v4 opencode kilo v5 openrouter are all
  * just config objects feeding this single engine
@@ -17,6 +17,14 @@
  *   6 streaming — byte passthrough sse parsing heartbeat discard masking
  *   7 persistence — savemsg with version specific fields
  *   8 response building — chat completion anthropic message response formats
+ *
+ * the six media lanes (images generations edits understanding audio
+ * speech transcriptions videos generations) ride the same pipeline with
+ * one honest law: only the zai sdk transport carries media lanes — every
+ * other version answers the paused-shaped 503 with the v1 fallback, and
+ * the sdk call bodies follow the devthink gateway media contracts
+ * exactly (cogview sizes and models, glm-tts voice aliases and formats,
+ * glm-asr base64 input, cogvideox async task create plus poll)
  */
 
 /* the seams of the ownership waves: the gateway auth family (the request
@@ -31,6 +39,7 @@
 import { buildauthheaders, extractrequestid, extractsessionid, resolvekeys } from "./auth.js";
 import { getsessionmessages, savemsg } from "@wenathlan/devthink/storage";
 import { listlevels, TWOCALLSTHRESHOLD, twocallspattern } from "@wenathlan/getry/thinking";
+import { GATEWAYMEDIA, GATEWAYROUTES } from "./gateway.js";
 import { makechunk, makefinalchunk, makestreamresponse } from "./server.js";
 import type {
   gatewayconfig,
@@ -124,6 +133,195 @@ async function getzai() {
     zaipromise = ZAI.create();
   }
   return zaipromise;
+}
+
+/** the zai sdk media surface — the typed lanes the six media route kinds
+ * ride (the chat vision lane, the cogview image lanes, the glm tts and
+ * asr lanes, the cogvideox async task lane), the exact method grammar
+ * the devthink gateway media routes spoke. */
+type zaimediasurface = {
+  chat: {
+    completions: {
+      create: (p: Record<string, unknown>) => Promise<unknown>;
+      createVision: (p: Record<string, unknown>) => Promise<unknown>;
+    };
+  };
+  images: {
+    generations: {
+      create: (p: Record<string, unknown>) => Promise<{ data?: Array<{ base64: string }> } | null>;
+      edit: (p: Record<string, unknown>) => Promise<{ data?: Array<{ base64: string }> } | null>;
+    };
+  };
+  audio: {
+    tts: { create: (p: Record<string, unknown>) => Promise<unknown> };
+    asr: { create: (p: Record<string, unknown>) => Promise<unknown> };
+  };
+  video: {
+    generations: {
+      create: (p: Record<string, unknown>) => Promise<{ id?: string; task_status?: string; request_id?: string }>;
+    };
+  };
+  async: {
+    result: { query: (taskId: string) => Promise<Record<string, unknown>> };
+  };
+};
+
+/** resolve the zai sdk media lanes — the typed accessor the media routes
+ * ride on top of the shared keyless singleton */
+async function zaimedia(): Promise<zaimediasurface> {
+  return (await getzai()) as zaimediasurface;
+}
+
+// ---------------------------------------------------------------------------
+// media lane vocabularies — the validation sets derived from the catalog
+// ---------------------------------------------------------------------------
+
+/** the cogview image model ids the generations lane accepts */
+const imagemodelids = new Set(GATEWAYMEDIA.imagemodels.map((m) => m.id));
+/** the cogview sizes the image lanes accept */
+const imagesizeids = new Set(GATEWAYMEDIA.imagesizes);
+/** the glm tts voices that pass through unmapped */
+const ttsvoiceids = new Set(GATEWAYMEDIA.ttsvoices);
+/** the tts response formats the speech lane accepts */
+const ttsformatids = new Set(GATEWAYMEDIA.ttsformats);
+/** the vision backends the understanding lane routes to */
+const visionmodelids = new Set(GATEWAYMEDIA.visionmodels);
+/** the model aliases that mean "the gateway decides" — stripped so the
+ * vision lane auto-routes to the vision pool */
+const understandingaliases = new Set([
+  "",
+  "image-understanding",
+  "image_understanding",
+  "understanding",
+  "devthink",
+  "vision",
+  "auto",
+]);
+
+// ---------------------------------------------------------------------------
+// media body collectors — the tolerant image harvesting of the
+// understanding lane (openai anthropic gemini shapes normalized)
+// ---------------------------------------------------------------------------
+
+/** one collected understanding body — the harvested image urls, the detail
+ * hint, the text fragments and the system prompt */
+interface collectedimages {
+  urls: string[];
+  detail: string | null;
+  texts: string[];
+  system: string | null;
+}
+
+/** push one image reference (string or {url, detail}) into the collector */
+function pushimage(collected: collectedimages, v: unknown): void {
+  if (typeof v === "string" && v.length > 0) {
+    collected.urls.push(v);
+  } else if (v !== null && typeof v === "object") {
+    const o = v as { url?: unknown; image_url?: unknown; detail?: unknown };
+    const raw =
+      typeof o.url === "string"
+        ? o.url
+        : typeof o.image_url === "string"
+          ? o.image_url
+          : o.image_url !== null && typeof o.image_url === "object"
+            ? (o.image_url as { url?: unknown }).url
+            : undefined;
+    if (typeof raw === "string" && raw.length > 0) {
+      collected.urls.push(raw);
+      if (typeof o.detail === "string") collected.detail = o.detail;
+    }
+  }
+}
+
+/** walk an openai style content field collecting text and image parts
+ * (anthropic image blocks and gemini inline_data parts normalized) */
+function walkcontent(collected: collectedimages, content: unknown): void {
+  if (typeof content === "string") {
+    if (content.trim().length > 0) collected.texts.push(content);
+    return;
+  }
+  if (!Array.isArray(content)) return;
+  for (const part of content) {
+    if (typeof part === "string") {
+      if (part.trim().length > 0) collected.texts.push(part);
+    } else if (part !== null && typeof part === "object") {
+      const p = part as Record<string, unknown>;
+      if (p["type"] === "text" && typeof p["text"] === "string" && p["text"].trim().length > 0) {
+        collected.texts.push(p["text"]);
+      } else if (p["type"] === "image_url" && p["image_url"]) {
+        pushimage(collected, p["image_url"]);
+      } else if (p["type"] === "input_image" && typeof p["image_url"] === "string") {
+        collected.urls.push(p["image_url"]);
+      } else if (p["type"] === "image") {
+        // anthropic style block: source {type:"base64", media_type, data} | {type:"url", url}
+        const src = p["source"] as Record<string, unknown> | undefined;
+        if (src && src["type"] === "base64" && typeof src["data"] === "string" && typeof src["media_type"] === "string") {
+          collected.urls.push(`data:${src["media_type"]};base64,${src["data"]}`);
+        } else if (src && src["type"] === "url" && typeof src["url"] === "string") {
+          collected.urls.push(src["url"]);
+        } else if (typeof p["data"] === "string") {
+          // gemini sdk style: {type:"image", data, mime_type}
+          collected.urls.push(`data:${typeof p["mime_type"] === "string" ? p["mime_type"] : "image/png"};base64,${p["data"]}`);
+        }
+      }
+      // gemini rest style: {inline_data: {mime_type, data}}
+      const inline = p["inline_data"] as Record<string, unknown> | undefined;
+      if (inline && typeof inline["data"] === "string") {
+        collected.urls.push(
+          `data:${typeof inline["mime_type"] === "string" ? inline["mime_type"] : "image/png"};base64,${inline["data"]}`,
+        );
+      }
+    }
+  }
+}
+
+/** collect every image reference from every accepted body shape — direct
+ * fields, array fields, chat messages and prompt fields */
+function collectimages(body: Record<string, unknown>): collectedimages {
+  const collected: collectedimages = { urls: [], detail: null, texts: [], system: null };
+
+  // direct fields — image/image_url/url/file accept string or {url, detail}
+  for (const k of ["image", "image_url", "url", "file"]) {
+    if (body[k] !== undefined) pushimage(collected, body[k]);
+  }
+  // array fields — images[]/image_urls[]
+  for (const k of ["images", "image_urls", "urls", "files"]) {
+    const v = body[k];
+    if (Array.isArray(v)) {
+      for (const item of v) pushimage(collected, item);
+    } else if (v !== undefined) {
+      pushimage(collected, v);
+    }
+  }
+  // messages — openai chat shape (system extracted, image_url parts collected)
+  if (Array.isArray(body["messages"])) {
+    for (const msg of body["messages"]) {
+      if (msg === null || typeof msg !== "object") continue;
+      const m = msg as { role?: unknown; content?: unknown };
+      if (m["role"] === "system" && !collected.system) {
+        collected.system = typeof m["content"] === "string" ? m["content"] : null;
+      } else {
+        walkcontent(collected, m["content"]);
+      }
+    }
+  }
+  // prompt fields
+  for (const k of ["prompt", "question", "instruction", "text"]) {
+    if (typeof body[k] === "string" && (body[k] as string).trim().length > 0) collected.texts.push(body[k] as string);
+  }
+  return collected;
+}
+
+/** extract the video url from an async result payload — the video_result
+ * array first, then the single-string dialects */
+function extractvideourl(r: Record<string, unknown>): string | null {
+  const vr = r["video_result"] as Array<{ url?: string }> | undefined;
+  if (Array.isArray(vr) && vr.length > 0 && typeof vr[0].url === "string") return vr[0].url;
+  for (const k of ["video_url", "url", "video"]) {
+    const v = r[k];
+    if (typeof v === "string" && v) return v;
+  }
+  return null;
 }
 
 /** call the zai sdk chat completions with messages and options */
@@ -648,18 +846,82 @@ function makeinfopayload(cfg: gatewayconfig): Record<string, unknown> {
       maxoutput: cfg.metamodel.maxoutput ?? 32768,
       ...(cfg.metamodel.pattern ? { pattern: cfg.metamodel.pattern } : {}),
     },
-    routes: ["chat/completions", "completions", "messages", "responses", "embeddings", "keys", "models"],
+    routes: [...GATEWAYROUTES],
     ...(cfg.note ? { note: cfg.note } : {}),
   };
 }
 
 // ---------------------------------------------------------------------------
-// engine — createversion produces all 7 handlers
+// media discovery metadata — the honest media rows of the models payload
+// ---------------------------------------------------------------------------
+
+/** build the media discovery metadata of one version — null when the
+ * version rides a transport that carries no media lanes (the honest
+ * absence law: only the zai sdk transport speaks cogview glm-tts glm-asr
+ * and cogvideox, a fetch version never pretends otherwise). the rows
+ * answer both grammars the surfaces read: the snake_case block the
+ * devthink gateway served and the camelCase mirrors the studio surface
+ * RouteDiscoveryResult grammar expects. */
+function mediadiscovery(cfg: gatewayconfig): Record<string, unknown> | null {
+  if (cfg.transport?.type !== "zai-sdk") return null;
+  const visionids = GATEWAYMEDIA.visionmodels;
+  const understanding = {
+    route: "/v1/images/understanding",
+    models: visionids,
+    note: "normalizes openai image_url parts anthropic image blocks and gemini inline_data parts into the zai vision lane",
+  };
+  return {
+    image_models: {
+      note: "served by POST /v1/images/generations and POST /v1/images/edits",
+      data: GATEWAYMEDIA.imagemodels,
+    },
+    video_models: {
+      note: "served by POST /v1/videos/generations (async — poll with GET ?id=<task_id>)",
+      data: GATEWAYMEDIA.videomodels,
+    },
+    audio_models: {
+      note: "speech: POST /v1/audio/speech (tts) — transcriptions: POST /v1/audio/transcriptions (asr)",
+      data: GATEWAYMEDIA.audiomodels,
+    },
+    vision_models: {
+      note: "multimodal input via image_url parts in messages (routed to the vision lane) — convenience route: POST /v1/images/understanding",
+      data: visionids,
+    },
+    understanding_routes: { image: understanding },
+    audio_routes: [
+      {
+        route: "/v1/audio/speech",
+        kind: "tts",
+        models: GATEWAYMEDIA.audiomodels.filter((m) => m.modality === "text-to-speech").map((m) => m.id),
+        note: "text-to-speech — voices resolve openai aliases, formats wav pcm mp3",
+      },
+      {
+        route: "/v1/audio/transcriptions",
+        kind: "asr",
+        models: GATEWAYMEDIA.audiomodels.filter((m) => m.modality === "speech-to-text").map((m) => m.id),
+        note: "speech-to-text — file_base64 or file (data url or remote url)",
+      },
+    ],
+    video_routes: [
+      {
+        route: "/v1/videos/generations",
+        models: GATEWAYMEDIA.videomodels.map((m) => m.id),
+        note: "async — POST creates the task (202), GET ?id= polls until SUCCESS or FAIL",
+      },
+    ],
+    // the camelCase mirrors — the meta grammar the studio surface reads
+    imageModels: GATEWAYMEDIA.imagemodels,
+    understandingRoutes: { image: understanding },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// engine — createversion produces all 13 handlers
 // ---------------------------------------------------------------------------
 
 /**
  * createversion — the universal engine entry
- * consumes one gatewayconfig produces all 7 route handlers
+ * consumes one gatewayconfig produces all 13 route handlers
  * every behavior is config driven — nothing hardcoded
  */
 export function createversion(cfg: gatewayconfig): versionhandlers {
@@ -727,11 +989,14 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
   }
 
   // ---------------------------------------------------------------------
-  // handlemodels — post models returns the catalog
+  // handlemodels — post models returns the catalog (the media discovery
+  // metadata rides the meta row and the payload top level when the
+  // version carries the media lanes)
   // ---------------------------------------------------------------------
   async function handlemodels(req: Request): Promise<Response> {
     const cors = handlecors(req);
     if (cors) return cors;
+    const media = mediadiscovery(cfg);
     const models = cfg.models.map((m) => ({
       id: m.id,
       object: "model",
@@ -768,9 +1033,10 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
       meta: {
         provider: cfg.providername,
         ...(cfg.rotation?.models.length ? { rotationbackends: cfg.rotation.models } : {}),
+        ...(media ? media : {}),
       },
     };
-    return new Response(safestringify({ object: "list", data: [metaentry, ...models] }), {
+    return new Response(safestringify({ object: "list", data: [metaentry, ...models], ...(media ? media : {}) }), {
       headers: jsonheaders(),
     });
   }
@@ -1483,6 +1749,416 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
     }
   }
 
+  // ---------------------------------------------------------------------
+  // media lanes — the six media route kinds (images audio video). the
+  // honest absence law: only the zai sdk transport carries media lanes;
+  // every other version answers the paused-shaped 503 with the v1
+  // fallback, and the sdk call bodies follow the devthink gateway media
+  // contracts exactly (cogview sizes and models, glm-tts voice aliases
+  // and formats, glm-asr base64 input, cogvideox async task create plus
+  // poll).
+  // ---------------------------------------------------------------------
+
+  /** the v1 fallback seat of one media lane */
+  function mediafallback(resource: string): string {
+    return `/v1/${resource}`;
+  }
+
+  /** the honest absence — versions without the zai sdk transport never
+   * pretend to carry media lanes */
+  function mediapaused(resource: string): Response | null {
+    if (cfg.transport?.type === "zai-sdk") return null;
+    return new Response(
+      safestringify({
+        error: `${cfg.id} ${cfg.providername} carries no media lanes — the zai sdk transport alone speaks them`,
+        fallback: mediafallback(resource),
+        object: "error",
+        code: "media_unavailable",
+      }),
+      { status: 503, headers: jsonheaders() },
+    );
+  }
+
+  /** resolve an openai voice alias to the glm-tts voice it means */
+  function resolvettsvoice(voice: unknown): string {
+    if (typeof voice !== "string" || voice.length === 0) return "tongtong";
+    const lower = voice.toLowerCase();
+    if (ttsvoiceids.has(lower)) return lower;
+    const alias = GATEWAYMEDIA.openaivoices[lower as keyof typeof GATEWAYMEDIA.openaivoices];
+    return alias ?? "tongtong";
+  }
+
+  // handleimagesgenerations — the cogview text-to-image lane
+  // ---------------------------------------------------------------------
+  async function handleimagesgenerations(req: Request): Promise<Response> {
+    const cors = handlecors(req);
+    if (cors) return cors;
+    const paused = mediapaused("images/generations");
+    if (paused) return paused;
+    const startedat = Date.now();
+    try {
+      const body = await parsebody(req);
+      if (body === null) return invalidbody("request body is not valid json");
+      const prompt = typeof body["prompt"] === "string" ? (body["prompt"] as string).trim() : "";
+      if (!prompt) return invalidbody("prompt is required");
+      const model =
+        typeof body["model"] === "string" && imagemodelids.has(body["model"] as string) ? (body["model"] as string) : "cogview-4";
+      const size = typeof body["size"] === "string" && imagesizeids.has(body["size"] as string) ? (body["size"] as string) : "1024x1024";
+      const n = typeof body["n"] === "number" && (body["n"] as number) > 0 ? Math.min(body["n"] as number, 4) : 1;
+      const zai = await zaimedia();
+      const data: Array<{ b64_json: string }> = [];
+      for (let i = 0; i < n; i++) {
+        const r = await zai.images.generations.create({ model, prompt, size });
+        const b64 = r?.data?.[0]?.base64 ?? "";
+        if (b64) data.push({ b64_json: b64 });
+      }
+      if (data.length === 0) throw new Error("the image lane returned no frames");
+      await persist(cfg, {
+        sessionid: `s_${Date.now()}_${randombase36(6)}`,
+        requestid: genid("img"),
+        route: "images/generations",
+        model,
+        status: "completed",
+        stream: false,
+        startedat,
+        content: prompt.slice(0, 2000),
+      });
+      return new Response(safestringify({ created: Math.floor(Date.now() / 1000), model, size, data }), { headers: jsonheaders() });
+    } catch (err) {
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "image generation failed" }), {
+        status: 502,
+        headers: jsonheaders(),
+      });
+    }
+  }
+
+  // handleimagesedits — the cogview image edit lane
+  // ---------------------------------------------------------------------
+  async function handleimagesedits(req: Request): Promise<Response> {
+    const cors = handlecors(req);
+    if (cors) return cors;
+    const paused = mediapaused("images/edits");
+    if (paused) return paused;
+    const startedat = Date.now();
+    try {
+      const body = await parsebody(req);
+      if (body === null) return invalidbody("request body is not valid json");
+      const prompt = typeof body["prompt"] === "string" ? (body["prompt"] as string).trim() : "";
+      if (!prompt) return invalidbody("prompt is required");
+      const image = typeof body["image"] === "string" ? (body["image"] as string) : "";
+      if (!image) return invalidbody("image is required (base64 or data url)");
+      const model =
+        typeof body["model"] === "string" && imagemodelids.has(body["model"] as string) ? (body["model"] as string) : "cogview-4";
+      const size = typeof body["size"] === "string" && imagesizeids.has(body["size"] as string) ? (body["size"] as string) : "1024x1024";
+      const zai = await zaimedia();
+      const payload: Record<string, unknown> = { model, prompt, size, image: image.replace(/^data:[^,]+,/, "") };
+      const r = await zai.images.generations.edit(payload);
+      const b64 = r?.data?.[0]?.base64 ?? "";
+      if (!b64) throw new Error("the edit lane returned no frames");
+      await persist(cfg, {
+        sessionid: `s_${Date.now()}_${randombase36(6)}`,
+        requestid: genid("img"),
+        route: "images/edits",
+        model,
+        status: "completed",
+        stream: false,
+        startedat,
+        content: prompt.slice(0, 2000),
+      });
+      return new Response(safestringify({ created: Math.floor(Date.now() / 1000), model, size, data: [{ b64_json: b64 }] }), {
+        headers: jsonheaders(),
+      });
+    } catch (err) {
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "image edit failed" }), {
+        status: 502,
+        headers: jsonheaders(),
+      });
+    }
+  }
+
+  // handleimagesunderstanding — the vision lane (openai image_url parts,
+  // anthropic image blocks and gemini inline_data parts normalized)
+  // ---------------------------------------------------------------------
+  async function handleimagesunderstanding(req: Request): Promise<Response> {
+    const cors = handlecors(req);
+    if (cors) return cors;
+    const paused = mediapaused("images/understanding");
+    if (paused) return paused;
+    const startedat = Date.now();
+    try {
+      const body = await parsebody(req);
+      if (body === null) return invalidbody("request body is not valid json");
+      const collected = collectimages(body);
+      if (collected.urls.length === 0) return invalidbody("no image found — send image_url parts, an image field or a data url");
+      const question = collected.texts.join("\n").trim() || "describe this image";
+      const requested = typeof body["model"] === "string" ? (body["model"] as string).toLowerCase() : "";
+      const model = !understandingaliases.has(requested) && visionmodelids.has(requested) ? requested : GATEWAYMEDIA.visionmodels[0];
+      const messages = [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: question },
+            ...collected.urls.map((url) => ({ type: "image_url", image_url: { url } })),
+          ],
+        },
+      ];
+      const zai = await zaimedia();
+      const result = (await zai.chat.completions.createVision({
+        model,
+        messages,
+        ...(collected.system ? { system: collected.system } : {}),
+        stream: false,
+      })) as Record<string, unknown> | null;
+      const choices = (result?.["choices"] as Array<{ message?: { content?: unknown; reasoning_content?: unknown } }>) ?? [];
+      const content = String(choices[0]?.message?.content ?? "");
+      const reasoning = String(choices[0]?.message?.reasoning_content ?? "");
+      if (!content) throw new Error("the vision lane returned no content");
+      await persist(cfg, {
+        sessionid: `s_${Date.now()}_${randombase36(6)}`,
+        requestid: genid("chatcmpl"),
+        route: "images/understanding",
+        model,
+        status: "completed",
+        stream: false,
+        startedat,
+        content: content.slice(0, 2000),
+        reasoningcontent: reasoning.slice(0, 2000),
+      });
+      return new Response(
+        safestringify({
+          id: genid("chatcmpl"),
+          object: "chat.completion",
+          created: Math.floor(Date.now() / 1000),
+          model,
+          choices: [{ index: 0, message: { role: "assistant", content, ...(reasoning ? { reasoning_content: reasoning } : {}) }, finish_reason: "stop" }],
+          usage: { prompt_tokens: 0, completion_tokens: Math.ceil(content.length / 4), total_tokens: Math.ceil(content.length / 4) },
+        }),
+        { headers: jsonheaders() },
+      );
+    } catch (err) {
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "image understanding failed" }), {
+        status: 502,
+        headers: jsonheaders(),
+      });
+    }
+  }
+
+  // handleaudiospeech — the glm-tts text-to-speech lane
+  // ---------------------------------------------------------------------
+  async function handleaudiospeech(req: Request): Promise<Response> {
+    const cors = handlecors(req);
+    if (cors) return cors;
+    const paused = mediapaused("audio/speech");
+    if (paused) return paused;
+    const startedat = Date.now();
+    try {
+      const body = await parsebody(req);
+      if (body === null) return invalidbody("request body is not valid json");
+      const input = typeof body["input"] === "string" ? (body["input"] as string) : "";
+      if (!input) return invalidbody("input is required");
+      if (input.length > 1024) return invalidbody(`input is ${input.length} chars — the glm-tts ceiling is 1024`);
+      const voice = resolvettsvoice(body["voice"]);
+      const speed = typeof body["speed"] === "number" ? Math.min(Math.max(body["speed"] as number, 0.5), 2.0) : 1.0;
+      const format = typeof body["response_format"] === "string" ? (body["response_format"] as string).toLowerCase() : "wav";
+      if (!ttsformatids.has(format)) {
+        return new Response(safestringify({ error: `invalid response_format ${format} — available: wav, pcm, mp3`, object: "error" }), {
+          status: 400,
+          headers: jsonheaders(),
+        });
+      }
+      const model = typeof body["model"] === "string" ? (body["model"] as string) : "glm-tts";
+      const zai = await zaimedia();
+      const result = await zai.audio.tts.create({ input, voice, speed, response_format: format, stream: false });
+      await persist(cfg, {
+        sessionid: `s_${Date.now()}_${randombase36(6)}`,
+        requestid: genid("tts"),
+        route: "audio/speech",
+        model,
+        status: "completed",
+        stream: false,
+        startedat,
+        content: input.slice(0, 2000),
+      });
+      // the sdk answers a raw response — extract the binary audio
+      if (result && typeof result === "object" && "arrayBuffer" in (result as Record<string, unknown>)) {
+        const buf = Buffer.from(await (result as Response).arrayBuffer());
+        const mime = format === "mp3" ? "audio/mpeg" : format === "pcm" ? "audio/pcm" : "audio/wav";
+        const wantjson = (body["response_format"] as string) === "json_b64" || new URL(req.url).searchParams.get("format") === "json";
+        if (wantjson) {
+          return new Response(
+            safestringify({ created: Math.floor(Date.now() / 1000), model, voice, speed, format, bytes: buf.length, b64_audio: buf.toString("base64") }),
+            { headers: jsonheaders() },
+          );
+        }
+        return new Response(new Uint8Array(buf), { headers: { "content-type": mime, "cache-control": "no-store" } });
+      }
+      return new Response(
+        safestringify({ created: Math.floor(Date.now() / 1000), model, voice, speed, format, raw: safestringify(result) }),
+        { headers: jsonheaders() },
+      );
+    } catch (err) {
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "tts failed" }), {
+        status: 502,
+        headers: jsonheaders(),
+      });
+    }
+  }
+
+  // handleaudiotranscriptions — the glm-asr speech-to-text lane
+  // ---------------------------------------------------------------------
+  async function handleaudiotranscriptions(req: Request): Promise<Response> {
+    const cors = handlecors(req);
+    if (cors) return cors;
+    const paused = mediapaused("audio/transcriptions");
+    if (paused) return paused;
+    const startedat = Date.now();
+    try {
+      const contenttype = req.headers.get("content-type") ?? "";
+      let filebase64 = "";
+      let filename = "audio";
+      if (contenttype.includes("multipart/form-data")) {
+        const form = await req.formData();
+        const file = form.get("file");
+        if (file && typeof file !== "string") {
+          filename = file.name || filename;
+          filebase64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+        } else if (typeof form.get("file_base64") === "string") {
+          filebase64 = form.get("file_base64") as string;
+        }
+      } else {
+        const body = await parsebody(req);
+        if (body === null) return invalidbody("request body is not valid json");
+        if (typeof body["file_base64"] === "string" && body["file_base64"]) {
+          filebase64 = body["file_base64"] as string;
+        } else if (typeof body["file"] === "string" && body["file"]) {
+          const file = body["file"] as string;
+          if (file.startsWith("data:")) {
+            filebase64 = file.slice(file.indexOf(",") + 1);
+          } else {
+            const res = await fetch(file, { signal: AbortSignal.timeout(60000) });
+            if (!res.ok) throw new Error(`the audio url answered ${res.status}`);
+            filebase64 = Buffer.from(await res.arrayBuffer()).toString("base64");
+            try {
+              filename = new URL(file).pathname.split("/").pop() || filename;
+            } catch {
+              /* keep the default */
+            }
+          }
+        }
+      }
+      if (!filebase64) {
+        return new Response(
+          safestringify({
+            error: "provide file_base64 (base64 audio), file (data: URL or remote URL) or multipart form-data with a file field",
+            object: "error",
+          }),
+          { status: 400, headers: jsonheaders() },
+        );
+      }
+      const model = "glm-asr";
+      const zai = await zaimedia();
+      const result = (await zai.audio.asr.create({ file_base64: filebase64, stream: false })) as Record<string, unknown> | null;
+      let text = "";
+      if (result && typeof result === "object") {
+        text =
+          (result["text"] as string) ||
+          ((result["choices"] as Array<{ message?: { content?: string } }>)?.[0]?.message?.content as string) ||
+          safestringify(result);
+      } else if (typeof result === "string") {
+        text = result;
+      }
+      await persist(cfg, {
+        sessionid: `s_${Date.now()}_${randombase36(6)}`,
+        requestid: genid("asr"),
+        route: "audio/transcriptions",
+        model,
+        status: "completed",
+        stream: false,
+        startedat,
+        content: text.slice(0, 4000),
+      });
+      return new Response(safestringify({ text, model, filename, duration_ms: Date.now() - startedat }), { headers: jsonheaders() });
+    } catch (err) {
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "asr failed" }), {
+        status: 502,
+        headers: jsonheaders(),
+      });
+    }
+  }
+
+  // handlevideosgenerations — the cogvideox async lane (POST creates the
+  // task answering 202, GET ?id= polls until SUCCESS or FAIL)
+  // ---------------------------------------------------------------------
+  async function handlevideosgenerations(req: Request): Promise<Response> {
+    const cors = handlecors(req);
+    if (cors) return cors;
+    const paused = mediapaused("videos/generations");
+    if (paused) return paused;
+    const startedat = Date.now();
+    try {
+      // the poll seat — GET ?id= rides the same handler the mounting
+      // loop dispatches for the async question
+      const pollid = new URL(req.url).searchParams.get("id");
+      const zai = await zaimedia();
+      if (req.method === "GET" && pollid) {
+        const r = await zai.async.result.query(pollid);
+        const status = String(r["task_status"] ?? r["status"] ?? "PROCESSING");
+        const videourl = extractvideourl(r);
+        return new Response(
+          safestringify({
+            id: pollid,
+            status,
+            ...(videourl ? { video_url: videourl } : {}),
+            ...(status === "SUCCESS" || status === "FAIL" ? { done: true } : { done: false }),
+          }),
+          { headers: jsonheaders() },
+        );
+      }
+      const body = await parsebody(req);
+      if (body === null) return invalidbody("request body is not valid json");
+      const prompt = typeof body["prompt"] === "string" ? (body["prompt"] as string).trim() : "";
+      if (!prompt) return invalidbody("prompt is required");
+      const model = typeof body["model"] === "string" && body["model"] === "cogvideox" ? "cogvideox" : "cogvideox";
+      const payload: Record<string, unknown> = {
+        model,
+        prompt,
+        ...(typeof body["size"] === "string" ? { size: body["size"] } : {}),
+        ...(typeof body["fps"] === "number" ? { fps: body["fps"] } : {}),
+        ...(typeof body["duration"] === "number" ? { duration: body["duration"] } : {}),
+        ...(typeof body["quality"] === "string" ? { quality: body["quality"] } : {}),
+        ...(typeof body["with_audio"] === "boolean" ? { with_audio: body["with_audio"] } : {}),
+        ...(typeof body["image"] === "string" ? { image: (body["image"] as string).replace(/^data:[^,]+,/, "") } : {}),
+      };
+      const r = await zai.video.generations.create(payload);
+      const taskid = r.id ?? "";
+      if (!taskid) throw new Error("the video lane returned no task id");
+      await persist(cfg, {
+        sessionid: `s_${Date.now()}_${randombase36(6)}`,
+        requestid: genid("vid"),
+        route: "videos/generations",
+        model,
+        status: "completed",
+        stream: false,
+        startedat,
+        content: prompt.slice(0, 2000),
+      });
+      return new Response(
+        safestringify({
+          id: taskid,
+          task_status: r.task_status ?? "PROCESSING",
+          ...(r.request_id ? { request_id: r.request_id } : {}),
+          poll: { method: "GET", url: `/${cfg.id}/videos/generations?id=${taskid}` },
+        }),
+        { status: 202, headers: jsonheaders() },
+      );
+    } catch (err) {
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "video generation failed" }), {
+        status: 502,
+        headers: jsonheaders(),
+      });
+    }
+  }
+
   return {
     handleinfo,
     handlekeys,
@@ -1492,6 +2168,12 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
     handlemessages,
     handleresponses,
     handleembeddings,
+    handleimagesgenerations,
+    handleimagesedits,
+    handleimagesunderstanding,
+    handleaudiospeech,
+    handleaudiotranscriptions,
+    handlevideosgenerations,
   };
 }
 
