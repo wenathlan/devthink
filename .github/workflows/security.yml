@@ -555,26 +555,42 @@ jobs:
             const match = lock.match(/"@aikidosec\/firewall@(\d+\.\d+\.\d+)"/);
             console.log(match ? "@aikidosec/firewall@" + match[1] : "");
           ')
-          # the applitools eyes seats walk the same documented exclusion
-          # lane: the visual-testing SDK the union law seats publishes
-          # its whole scope under Custom: LICENSE labels (the eyes sdk
-          # license texts the checker reads from the tarballs — core,
-          # core-base, utils, logger, dom-capture, driver, socket and
-          # every sibling the tree resolves) — test-time tools excluded
-          # by name@version the same precedent the vite-plugin row
-          # carries, never a silent walkaround; the lock pins build the
-          # rows for the entire @applitools scope so the rung bumps
-          # survive without a manual list.
-          APPLITOOLS_EXCLUDE=$(node -e '
+          # the custom seats walk the same documented exclusion lane the
+          # aikido row carries: the union law seats the whole manifest
+          # the eleven apps declare (the forty-thousand-declaration union
+          # the family carries), and the scopes below answer labels the
+          # permissive allow list never covers — the custom SEE-LICENSE
+          # SDK seats (the ckeditor, remotion, stream, cursor, vscode,
+          # github copilot and ffmpeg-installer families), the copyleft
+          # decoder seats the audio and video engines ride (the @audio
+          # wasm family, essentia, stockfish, dragselect, emulators,
+          # ffmpeg-static, the LGPL seats p5 and soundtouchjs carry),
+          # the platform binary seats the toolchains carry (@seydx
+          # node-av, @vscode vsce-sign) and the odd-label singles
+          # (agentation, mintlify, pandas, pitchfinder, geist, gojs,
+          # handsontable, mapbox-gl, tinymce, tldraw, ua-parser-js).
+          # the dependency stays seated the union law demands while the
+          # gate records every license the name@version rows document —
+          # never a silent walkaround; the lock pins build the rows so
+          # every future rung bump survives without a manual list edit
+          # (the unfreeze edit retires any row the moment its upstream
+          # answers a permissive label).
+          CUSTOM_SEATS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
-            const rows = [...lock.matchAll(/"(@applitools\/[a-z0-9-]+)@(\d+\.\d+\.\d+)"/g)]
-              .map((match) => match[1] + "@" + match[2]);
-            console.log([...new Set(rows)].join(";"));
+            const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@ffmpeg-installer", "@github", "@mintlify", "@pierre", "@pmndrs", "@remotion", "@seydx", "@stream-io", "@upsetjs", "@vscode"];
+            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/xr", "@sveltejs/svelte-repl", "@tldraw/editor", "@turf/jsts", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
+            const rows = new Set();
+            for (const match of lock.matchAll(/"((?:@[^\/"\s]+\/)?[^@"\s]+)@(\d+\.\d+\.\d+)"/g)) {
+              const name = match[1];
+              const scope = name.includes("/") ? name.slice(0, name.indexOf("/")) : null;
+              if ((scope && scopes.includes(scope)) || exacts.has(name)) rows.add(name + "@" + match[2]);
+            }
+            console.log([...rows].join(";"));
           ')
           npx --yes license-checker-rseidelsohn@5.0.1 --production \
             --onlyAllow="MIT;Apache-2.0;ISC;BSD-2-Clause;BSD-3-Clause;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;PSF-2.0;BlueOak-1.0.0;MPL-2.0;LGPL-3.0-or-later;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);(AFL-2.1 OR BSD-3-Clause);MIT OR Apache-2.0;Apache-2.0 AND MIT;MIT AND ISC;ISC*;Custom: https://gsap.com/GSAP-share-image.png;Custom: https://github.com/wenathlan/devthink" \
-            --excludePackages="vite-plugin-manus-runtime@0.0.59;7z-wasm@1.2.0;${AIKIDO_EXCLUDE:+$AIKIDO_EXCLUDE;}${FAMILY_EXCLUDE}${APPLITOOLS_EXCLUDE:+;$APPLITOOLS_EXCLUDE}" \
+            --excludePackages="vite-plugin-manus-runtime@0.0.59;7z-wasm@1.2.0;${AIKIDO_EXCLUDE:+$AIKIDO_EXCLUDE;}${FAMILY_EXCLUDE}${CUSTOM_SEATS_EXCLUDE:+;$CUSTOM_SEATS_EXCLUDE}" \
             --summary
 
   container-scan:
