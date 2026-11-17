@@ -258,31 +258,37 @@ jobs:
           CARGO_MANIFEST: ${{ needs.detect-desktop-source.outputs.manifest }}
         run: |
           mkdir -p build/security
+          # the documented upstream-blocked lane (the trivyignore precedent
+          # the saddle container seat carries): every row below answers an
+          # advisory whose patched line the tracked seats cannot reach —
+          # the dependers pin the vulnerable ranges and no newer release
+          # exists upstream today, so each row documents its drop condition
+          # the same way the trivyignore entries do, never a silent
+          # walkaround: libsqlite3-sys 0.37 rides the sqlx 0.9.0 sys cap
+          # <0.38.0 the links law freezes (the rusqlite 0.39 floor the
+          # pairing demands); diesel 1.4.8 rides the test_utils 0.4.0
+          # ^1.4.8 pin; quick-xml 0.38.4 rides the designcraft 0.7.1 line;
+          # zip 8.6.0 rides the designcraft, docx-rs 0.4.22 and umya 3.1.1
+          # pins; nix 0.19.1 rides the battery 0.7.8 ~0.19 pin; rmcp 1.8.0
+          # rides the pctx_config ^0.1.5 chain the pctx family answers —
+          # the direct rmcp seat walks the fixed 3.10.0 line the same rung
+          # seats, the rsa seat the 0.10.0 stable and the aws family the
+          # smithy-http-client 1.5 line the rustls 0.23 floor answers). the
+          # moment the depender rung lifts, the row retires (the unfreeze
+          # edit the trivyignore doctrine carries).
           (cd "$(dirname "$CARGO_MANIFEST")" && cargo generate-lockfile && cargo audit --json \
-            --ignore RUSTSEC-2026-0387 \
+            --ignore RUSTSEC-2026-0459 \
             --ignore RUSTSEC-2024-0365 \
             --ignore RUSTSEC-2026-0136 \
             --ignore RUSTSEC-2026-0137 \
-            --ignore RUSTSEC-2026-0258 \
-            --ignore RUSTSEC-2026-0459 \
-            --ignore RUSTSEC-2021-0119 \
-            --ignore RUSTSEC-2026-0195 \
             --ignore RUSTSEC-2026-0194 \
-            --ignore RUSTSEC-2026-0462 \
-            --ignore RUSTSEC-2026-0457 \
-            --ignore RUSTSEC-2026-0461 \
-            --ignore RUSTSEC-2023-0071 \
-            --ignore RUSTSEC-2026-0349 \
-            --ignore RUSTSEC-2026-0346 \
-            --ignore RUSTSEC-2026-0099 \
-            --ignore RUSTSEC-2026-0098 \
-            --ignore RUSTSEC-2026-0382 \
-            --ignore RUSTSEC-2026-0104 \
-            --ignore RUSTSEC-2026-0049 \
-            --ignore RUSTSEC-2026-0429 \
+            --ignore RUSTSEC-2026-0195 \
             --ignore RUSTSEC-2026-0367 \
+            --ignore RUSTSEC-2026-0368 \
             --ignore RUSTSEC-2026-0369 \
-            --ignore RUSTSEC-2026-0368) > build/security/cargo-audit.json
+            --ignore RUSTSEC-2026-0429 \
+            --ignore RUSTSEC-2021-0119 \
+            --ignore RUSTSEC-2026-0462) > build/security/cargo-audit.json
       - name: Upload cargo audit evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -648,8 +654,8 @@ jobs:
           CUSTOM_SEATS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
-            const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@mintlify", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
-            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@inkui-cli/inkui", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/xr", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
+            const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@inkui-cli", "@mintlify", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
+            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/xr", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
             const rows = new Set();
             for (const match of lock.matchAll(/"((?:@[^\/"\s]+\/)?[^@"\s]+)@(\d+\.\d+\.\d+)"/g)) {
               const name = match[1];

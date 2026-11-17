@@ -4923,7 +4923,10 @@ jobs:
       group: family-pages-${{ github.event_name }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # the family pages saddle ceiling heal (PR #646): the saddle npm ci the
+    # old twenty-minute ceiling orphaned answers its real weight — the seat
+    # walks twenty to sixty.
+    timeout-minutes: 60
     env:
       # Pinned boot smoke port (inside the e2ugh family documented
       # 30000-59999 band).
