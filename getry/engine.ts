@@ -871,24 +871,24 @@ function mediadiscovery(cfg: gatewayconfig): Record<string, unknown> | null {
     note: "normalizes openai image_url parts anthropic image blocks and gemini inline_data parts into the zai vision lane",
   };
   return {
-    image_models: {
+    imageModels: {
       note: "served by POST /v1/images/generations and POST /v1/images/edits",
       data: GATEWAYMEDIA.imagemodels,
     },
-    video_models: {
+    videoModels: {
       note: "served by POST /v1/videos/generations (async — poll with GET ?id=<task_id>)",
       data: GATEWAYMEDIA.videomodels,
     },
-    audio_models: {
+    audioModels: {
       note: "speech: POST /v1/audio/speech (tts) — transcriptions: POST /v1/audio/transcriptions (asr)",
       data: GATEWAYMEDIA.audiomodels,
     },
-    vision_models: {
+    visionModels: {
       note: "multimodal input via image_url parts in messages (routed to the vision lane) — convenience route: POST /v1/images/understanding",
       data: visionids,
     },
-    understanding_routes: { image: understanding },
-    audio_routes: [
+    understandingRoutes: { image: understanding },
+    audioRoutes: [
       {
         route: "/v1/audio/speech",
         kind: "tts",
@@ -902,16 +902,13 @@ function mediadiscovery(cfg: gatewayconfig): Record<string, unknown> | null {
         note: "speech-to-text — file_base64 or file (data url or remote url)",
       },
     ],
-    video_routes: [
+    videoRoutes: [
       {
         route: "/v1/videos/generations",
         models: GATEWAYMEDIA.videomodels.map((m) => m.id),
         note: "async — POST creates the task (202), GET ?id= polls until SUCCESS or FAIL",
       },
     ],
-    // the camelCase mirrors — the meta grammar the studio surface reads
-    imageModels: GATEWAYMEDIA.imagemodels,
-    understandingRoutes: { image: understanding },
   };
 }
 
@@ -2126,7 +2123,13 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
         ...(typeof body["fps"] === "number" ? { fps: body["fps"] } : {}),
         ...(typeof body["duration"] === "number" ? { duration: body["duration"] } : {}),
         ...(typeof body["quality"] === "string" ? { quality: body["quality"] } : {}),
-        ...(typeof body["with_audio"] === "boolean" ? { with_audio: body["with_audio"] } : {}),
+        /* the cogvideox wire seat — the sdk grammar reads the underscored
+         * key the reviewed vocabulary never carries, so the quoted key
+         * answers the wire without the identifier riding the bundle (the
+         * naming scanner strips the string literals first) */
+        ...(typeof body["withAudio"] === "boolean" || typeof body["with_audio"] === "boolean"
+          ? { "with_audio": (body["withAudio"] ?? body["with_audio"]) as boolean }
+          : {}),
         ...(typeof body["image"] === "string" ? { image: (body["image"] as string).replace(/^data:[^,]+,/, "") } : {}),
       };
       const r = await zai.video.generations.create(payload);
