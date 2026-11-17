@@ -6,7 +6,7 @@
   <version>${revision}</version>
   <packaging>jar</packaging>
   <name>getry single distribution</name>
-  <description>The single getry maven distribution: the documentation set and the tests directory embedded as jar resources in the one com.wenathlan.getry artifact. getry is the AI gateway — five provider gateways serving 65 registered route lanes (13 route kinds per version — the seven chat core kinds plus the six media lanes).</description>
+  <description>The single getry maven distribution: the documentation set and the tests directory embedded as jar resources in the one com.wenathlan.getry artifact. getry is the AI gateway — five provider gateways serving 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes).</description>
   <url>https://github.com/wenathlan/devthink</url>
   <licenses><license><name>GPL-3.0-only</name><url>https://www.gnu.org/licenses/gpl-3.0.html</url></license></licenses>
   <scm><url>https://github.com/wenathlan/devthink</url><connection>scm:git:https://github.com/wenathlan/devthink.git</connection></scm>

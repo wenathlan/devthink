@@ -40,8 +40,8 @@
  *  Version: 2.0.185 — the ownership wave server family extraction
  *
  *  Related modules:
- *   - gateway.ts — GATEWAYROUTES (the canonical thirteen route kinds — the
- *     seven chat core kinds plus the six media lanes)
+ *   - gateway.ts — GATEWAYROUTES (the canonical fourteen route kinds — the
+ *     seven chat core kinds plus the seven media lanes)
  *   - engine.ts — createversion (the version loop mounts its handlers)
  *   - types.ts — gatewayconfig, gatewaydefinition (the config surface)
  *   - utils.ts — corsheaders, ctsse, ctndjson, the safe json family
@@ -495,8 +495,8 @@ export function trackwrite(): number {
 // gateway routes — the version loop mounts the engine handlers per version
 // ---------------------------------------------------------------------------
 
-/** route resources per version — the canonical 13 (the seven chat core
- * kinds plus the six media lanes) */
+/** route resources per version — the canonical 14 (the seven chat core
+ * kinds plus the seven media lanes) */
 const resources = GATEWAYROUTES;
 
 /** map resource name to its engine handler */
@@ -529,6 +529,8 @@ function handlermap(
       return handlers.handleaudiospeech;
     case "audio/transcriptions":
       return handlers.handleaudiotranscriptions;
+    case "audio/understanding":
+      return handlers.handleaudiounderstanding;
     case "videos/generations":
       return handlers.handlevideosgenerations;
     default:
@@ -750,7 +752,7 @@ let loaded: gatewaydefinition | null = null;
  *
  * the serve-anywhere law (the gateway port, 2.0.184): a transport with no
  * user config serves the whole v1–v5 catalog out of the box — the five
- * provider gateways, the 65 registered route lanes (13 route kinds per version — the seven chat core kinds plus the six media lanes), the 7-level
+ * provider gateways, the 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes), the 7-level
  * thinking ladder and the smart-first rotation pools — so `bun cli.ts
  * serve` (or any consumer importing main()) answers live routes the
  * moment it boots. user customization still wins: a config.mjs the cli

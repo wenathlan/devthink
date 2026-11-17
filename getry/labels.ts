@@ -110,7 +110,7 @@ export const LABEL_MANIFEST = {
   "home.steps.deploy.phrase":
     "the same self-hosted gateway serves every deploy — this site runs the same routes.",
   "home.steps.route.title": "name a route",
-  "home.steps.route.phrase": "65 registered route lanes answer on the self-hosted lanes — the seven chat kinds ride every replica, the six media kinds ride the zai sdk transport.",
+  "home.steps.route.phrase": "70 registered route lanes answer on the self-hosted lanes — the seven chat kinds ride every replica, the seven media kinds ride the zai sdk transport.",
   "home.steps.mask.title": "ride the mask",
   "home.steps.mask.phrase":
     "the parser re-emits every chunk as devthink — reasoning deltas before content, keepalives holding the stream.",

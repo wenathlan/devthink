@@ -507,10 +507,10 @@ describe("handleinfo — version descriptor", () => {
     expect(data["version"]).toBe("vt");
     expect(data["provider"]).toBe("mock");
     expect(data["models"]).toBe(2);
-    /* the thirteen route kinds — the seven chat core kinds plus the six
+    /* the fourteen route kinds — the seven chat core kinds plus the seven
      * media lanes the zai sdk transport serves (every other version
      * answering the paused 503 v1 fallback) */
-    expect(data["routes"]).toHaveLength(13);
+    expect(data["routes"]).toHaveLength(14);
     expect(data["fusioncontext"]).toBe(8192 + 4096);
     expect(data["metamodel"]["id"]).toBe("meta");
     expect(data["paused"]).toBe(false);

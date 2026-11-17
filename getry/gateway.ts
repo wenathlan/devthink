@@ -13,21 +13,23 @@ import { smartpool, sortids } from "./intelligence.ts";
 /**
  * gateway.ts — the gateway versions domain of getry (root layer).
  *
- * the five provider gateways the app serves (v1 through v5), the thirteen
+ * the five provider gateways the app serves (v1 through v5), the fourteen
  * OpenAI-compatible route kinds each one answers (the seven chat core
- * kinds plus the six media lanes), and the canonical parser pattern the
+ * kinds plus the seven media lanes), and the canonical parser pattern the
  * streaming routes follow. the rows below are the in-memory catalog of
  * the route map: the self-hosted gateway answers the real traffic over
  * HTTPS, the static build falls back to this catalog without ever
  * touching the visitor machine.
  */
 
-/** the thirteen OpenAI-compatible route kinds every gateway version
- * carries — the seven chat core kinds plus the six media lanes (images
- * audio video) the studio surface rides. */
+/** the fourteen OpenAI-compatible route kinds every gateway version
+ * carries — the seven chat core kinds plus the seven media lanes (images
+ * generations edits understanding, audio speech transcriptions
+ * understanding, videos generations) the studio surface rides. */
 export const GATEWAYROUTES = [
   "audio/speech",
   "audio/transcriptions",
+  "audio/understanding",
   "chat/completions",
   "completions",
   "embeddings",
@@ -72,7 +74,7 @@ export type mediaaudiomodel = {
 };
 
 /** the media lane catalog of the zai sdk transport — the image audio and
- * video families the six media route kinds serve, the ids and parameter
+ * video families the seven media route kinds serve, the ids and parameter
  * vocabularies exactly as the upstream sdk speaks them (ported from the
  * devthink gateway v1 media lanes: cogview cogvideox glm-tts glm-asr).
  * only the zai sdk transport carries these lanes — a fetch version
@@ -378,10 +380,10 @@ export const gatewayConfig: gatewaydefinition = {
  *   thinking — two-calls pattern and budgets
  *
  * create as many versions as you want — v1 through v9 and beyond
- * each version gets all 13 routes generated automatically:
+ * each version gets all 14 routes generated automatically:
  *   chat/completions completions messages responses embeddings keys models
  *   images/generations images/edits images/understanding audio/speech
- *   audio/transcriptions videos/generations
+ *   audio/transcriptions audio/understanding videos/generations
  *
  * the engine config loader (gateway-configloader.ts) probes the standard
  * sol/config.mjs|ts|js locations of the working directory for the definition

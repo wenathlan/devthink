@@ -1,6 +1,6 @@
 // Package getry carries the go module identity of the getry envelope —
 // the AI gateway of the wenathlan family: five provider gateways
-// serving 65 registered route lanes (13 route kinds per version — the seven chat core kinds plus the six media lanes) with the session store and the
+// serving 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes) with the session store and the
 // key rotation.
 //
 // The goget wave seats the go module rung beside the maven, nuget,
@@ -20,4 +20,4 @@ const ModulePath = "github.com/wenathlan/devthink/getry/v2"
 const Family = "wenathlan"
 
 // Description is the envelope summary the registry metadata carries.
-const Description = "The getry documentation and tests envelope (the AI gateway — five provider gateways serving 65 registered route lanes (13 route kinds per version — the seven chat core kinds plus the six media lanes))."
+const Description = "The getry documentation and tests envelope (the AI gateway — five provider gateways serving 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes))."

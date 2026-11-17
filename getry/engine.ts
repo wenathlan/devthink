@@ -3,7 +3,7 @@
  * one file one responsibility — the generic request pipeline for all versions
  * 0 to 100 correlated logics grouped in this one file
  *
- * consumes a gatewayconfig produces all 13 route handlers
+ * consumes a gatewayconfig produces all 14 route handlers
  * supports any llm any baseurl any api key via configuration
  * v1 zai sdk v2 babel v3 nvidia v4 opencode kilo v5 openrouter are all
  * just config objects feeding this single engine
@@ -18,8 +18,8 @@
  *   7 persistence — savemsg with version specific fields
  *   8 response building — chat completion anthropic message response formats
  *
- * the six media lanes (images generations edits understanding audio
- * speech transcriptions videos generations) ride the same pipeline with
+ * the seven media lanes (images generations edits understanding audio
+ * speech transcriptions understanding videos generations) ride the same pipeline with
  * one honest law: only the zai sdk transport carries media lanes — every
  * other version answers the paused-shaped 503 with the v1 fallback, and
  * the sdk call bodies follow the devthink gateway media contracts
@@ -135,7 +135,7 @@ async function getzai() {
   return zaipromise;
 }
 
-/** the zai sdk media surface — the typed lanes the six media route kinds
+/** the zai sdk media surface — the typed lanes the seven media route kinds
  * ride (the chat vision lane, the cogview image lanes, the glm tts and
  * asr lanes, the cogvideox async task lane), the exact method grammar
  * the devthink gateway media routes spoke. */
@@ -887,7 +887,14 @@ function mediadiscovery(cfg: gatewayconfig): Record<string, unknown> | null {
       note: "multimodal input via image_url parts in messages (routed to the vision lane) — convenience route: POST /v1/images/understanding",
       data: visionids,
     },
-    understandingRoutes: { image: understanding },
+    understandingRoutes: {
+      image: understanding,
+      audio: {
+        route: "/v1/audio/understanding",
+        models: ["audio-understanding"],
+        note: "the asr+chat chain — the glm-asr transcription feeds the glm chat analysis",
+      },
+    },
     audioRoutes: [
       {
         route: "/v1/audio/speech",
@@ -901,6 +908,12 @@ function mediadiscovery(cfg: gatewayconfig): Record<string, unknown> | null {
         models: GATEWAYMEDIA.audiomodels.filter((m) => m.modality === "speech-to-text").map((m) => m.id),
         note: "speech-to-text — file_base64 or file (data url or remote url)",
       },
+      {
+        route: "/v1/audio/understanding",
+        kind: "understanding",
+        models: ["audio-understanding"],
+        note: "audio understanding — the glm-asr transcription feeds the glm chat analysis (asr+chat chain)",
+      },
     ],
     videoRoutes: [
       {
@@ -913,12 +926,12 @@ function mediadiscovery(cfg: gatewayconfig): Record<string, unknown> | null {
 }
 
 // ---------------------------------------------------------------------------
-// engine — createversion produces all 13 handlers
+// engine — createversion produces all 14 handlers
 // ---------------------------------------------------------------------------
 
 /**
  * createversion — the universal engine entry
- * consumes one gatewayconfig produces all 13 route handlers
+ * consumes one gatewayconfig produces all 14 route handlers
  * every behavior is config driven — nothing hardcoded
  */
 export function createversion(cfg: gatewayconfig): versionhandlers {
@@ -1747,7 +1760,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
   }
 
   // ---------------------------------------------------------------------
-  // media lanes — the six media route kinds (images audio video). the
+  // media lanes — the seven media route kinds (images audio video). the
   // honest absence law: only the zai sdk transport carries media lanes;
   // every other version answers the paused-shaped 503 with the v1
   // fallback, and the sdk call bodies follow the devthink gateway media
@@ -2083,6 +2096,137 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
     }
   }
 
+  // handleaudiounderstanding — the asr+chat chain lane (glm-asr transcribes,
+  // glm chat answers the prompt over the transcript)
+  // ---------------------------------------------------------------------
+  async function handleaudiounderstanding(req: Request): Promise<Response> {
+    const cors = handlecors(req);
+    if (cors) return cors;
+    const paused = mediapaused("audio/understanding");
+    if (paused) return paused;
+    const startedat = Date.now();
+    try {
+      const contenttype = req.headers.get("content-type") ?? "";
+      let filebase64 = "";
+      let prompt = "";
+      let requestedmodel = "";
+      if (contenttype.includes("multipart/form-data")) {
+        const form = await req.formData();
+        const file = form.get("file");
+        if (file && typeof file !== "string") {
+          filebase64 = Buffer.from(await file.arrayBuffer()).toString("base64");
+        } else if (typeof form.get("file_base64") === "string") {
+          filebase64 = form.get("file_base64") as string;
+        }
+        const formprompt = form.get("prompt");
+        if (typeof formprompt === "string" && formprompt.trim()) prompt = formprompt.trim();
+        const formmodel = form.get("model");
+        if (typeof formmodel === "string" && formmodel) requestedmodel = formmodel;
+      } else {
+        const body = await parsebody(req);
+        if (body === null) return invalidbody("request body is not valid json");
+        if (typeof body["file_base64"] === "string" && body["file_base64"]) {
+          filebase64 = body["file_base64"] as string;
+        } else if (typeof body["file"] === "string" && body["file"]) {
+          const file = body["file"] as string;
+          if (file.startsWith("data:")) {
+            filebase64 = file.slice(file.indexOf(",") + 1);
+          } else {
+            const res = await fetch(file, { signal: AbortSignal.timeout(60000) });
+            if (!res.ok) throw new Error(`the audio url answered ${res.status}`);
+            filebase64 = Buffer.from(await res.arrayBuffer()).toString("base64");
+          }
+        }
+        if (typeof body["prompt"] === "string" && (body["prompt"] as string).trim()) {
+          prompt = (body["prompt"] as string).trim();
+        }
+        if (typeof body["model"] === "string" && body["model"]) requestedmodel = body["model"] as string;
+      }
+      const model = requestedmodel || "audio-understanding";
+      const question = prompt || "Transcreva e explique este áudio.";
+      if (!filebase64) {
+        // the usage-doc answer — a lane with no audio explains its grammar
+        // (the 200 doc the composed understanding lane serves instead of a
+        // bare 400: the caller learns the chain and the input seats)
+        return new Response(
+          safestringify({
+            ok: true,
+            route: "/v1/audio/understanding",
+            input: {
+              file_base64: "a base64 audio string",
+              file: "a data: URL (split at the first comma) or a remote URL the lane fetches with a 60s timeout",
+              multipart: "form-data with a file field plus an optional prompt field",
+              prompt: `the question the chat pass answers over the transcript (default "${question}")`,
+            },
+            chain: "asr+chat",
+            related: ["/v1/audio/transcriptions", "/v1/images/understanding"],
+          }),
+          { headers: jsonheaders() },
+        );
+      }
+      // the asr pass — the same extraction the transcriptions lane rides
+      const zai = await zaimedia();
+      const asr = (await zai.audio.asr.create({ file_base64: filebase64, stream: false })) as Record<string, unknown> | null;
+      let transcript = "";
+      if (asr && typeof asr === "object") {
+        transcript =
+          (asr["text"] as string) ||
+          ((asr["choices"] as Array<{ message?: { content?: string } }>)?.[0]?.message?.content as string) ||
+          "";
+      } else if (typeof asr === "string") {
+        transcript = asr;
+      }
+      if (!transcript) throw new Error("the asr lane returned no transcript");
+      // the chat pass — glm answers the prompt over the transcript
+      const chat = (await zai.chat.completions.create({
+        model: "glm-4.6",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You analyze transcribed audio. Answer the user's prompt about the transcript concisely, in the language the prompt uses.",
+          },
+          { role: "user", content: `${question}\n\n--- transcript ---\n${transcript}` },
+        ],
+        stream: false,
+      })) as Record<string, unknown> | null;
+      const chatchoices = (chat?.["choices"] as Array<{ message?: { content?: unknown } }>) ?? [];
+      const content = String(chatchoices[0]?.message?.content ?? "") || transcript;
+      await persist(cfg, {
+        sessionid: `s_${Date.now()}_${randombase36(6)}`,
+        requestid: genid("chatcmpl"),
+        route: "audio/understanding",
+        model,
+        status: "completed",
+        stream: false,
+        startedat,
+        content: content.slice(0, 4000),
+      });
+      return new Response(
+        safestringify({
+          id: genid("chatcmpl"),
+          object: "chat.completion",
+          created: Math.floor(Date.now() / 1000),
+          model,
+          choices: [{ index: 0, message: { role: "assistant", content }, finish_reason: "stop" }],
+          usage: {
+            prompt_tokens: Math.ceil(transcript.length / 4),
+            completion_tokens: Math.ceil(content.length / 4),
+            total_tokens: Math.ceil((transcript.length + content.length) / 4),
+          },
+          transcript,
+          chain: "asr+chat",
+        }),
+        { headers: { ...jsonheaders(), "x-understanding-chain": "asr+chat" } },
+      );
+    } catch (err) {
+      return new Response(safestringify({ error: err instanceof Error ? err.message : "audio understanding failed" }), {
+        status: 502,
+        headers: jsonheaders(),
+      });
+    }
+  }
+
   // handlevideosgenerations — the cogvideox async lane (POST creates the
   // task answering 202, GET ?id= polls until SUCCESS or FAIL)
   // ---------------------------------------------------------------------
@@ -2176,6 +2320,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
     handleimagesunderstanding,
     handleaudiospeech,
     handleaudiotranscriptions,
+    handleaudiounderstanding,
     handlevideosgenerations,
   };
 }

@@ -1,7 +1,7 @@
 /**
  * gatewayversions.test.ts — the data-driven route table of the gateway: the
- * family seed counts (5 providers, 13 route kinds, 65 route lanes — the
- * seven chat core kinds plus the six media lanes only the zai sdk
+ * family seed counts (5 providers, 14 route kinds, 70 route lanes — the
+ * seven chat core kinds plus the seven media lanes only the zai sdk
  * transport serves, every other version answering the paused 503 with
  * the v1 fallback), the sqlite mirror rows the node runtime serves
  * (seed-on-first-run, registration-safe upsert) and the thinking chain the
@@ -29,10 +29,10 @@ afterAll(() => {
 });
 
 // ---------------------------------------------------------------------------
-// the family seed counts — the pr19 by-example law: 5 providers, 65 lanes
+// the family seed counts — the pr19 by-example law: 5 providers, 70 lanes
 // ---------------------------------------------------------------------------
 
-describe("the family seed route table (5 providers, 65 route lanes)", () => {
+describe("the family seed route table (5 providers, 70 route lanes)", () => {
   it("carries the five provider gateways", () => {
     assert.equal(GATEWAYVERSIONS.length, 5);
     assert.deepEqual(
@@ -41,15 +41,15 @@ describe("the family seed route table (5 providers, 65 route lanes)", () => {
     );
   });
 
-  it("serves the thirteen route kinds per gateway (the seven chat core kinds plus the six media lanes)", () => {
-    assert.equal(GATEWAYROUTES.length, 13);
+  it("serves the fourteen route kinds per gateway (the seven chat core kinds plus the seven media lanes)", () => {
+    assert.equal(GATEWAYROUTES.length, 14);
     for (const version of GATEWAYVERSIONS) {
-      assert.deepEqual(version.routes, [...GATEWAYROUTES], `${version.v} carries the thirteen route kinds`);
+      assert.deepEqual(version.routes, [...GATEWAYROUTES], `${version.v} carries the fourteen route kinds`);
     }
   });
 
-  it("totals the sixty-five route lanes the gateway registers", () => {
-    assert.equal(totalroutes(), 65);
+  it("totals the seventy route lanes the gateway registers", () => {
+    assert.equal(totalroutes(), 70);
   });
 });
 
@@ -65,7 +65,7 @@ describe("the gateway_versions mirror (the data-driven route table)", () => {
       rows.map((row) => row.v),
       ["v1", "v2", "v3", "v4", "v5"],
     );
-    assert.equal(rows.reduce((sum, row) => sum + row.routes.length, 0), 65);
+    assert.equal(rows.reduce((sum, row) => sum + row.routes.length, 0), 70);
     // the routes ride the json cell and parse back to the route kinds
     assert.deepEqual(rows[0].routes, [...GATEWAYROUTES]);
   });

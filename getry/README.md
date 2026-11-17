@@ -11,7 +11,7 @@ Gradle and Go module envelopes all ship beside the source.
 
 | version | provider | state | notes |
 | --- | --- | --- | --- |
-| `v1` | zai (GLM, keyless via `z-ai-web-dev-sdk`) | live | 11 GLM models, chat + the six media lanes |
+| `v1` | zai (GLM, keyless via `z-ai-web-dev-sdk`) | live | 11 GLM models, chat + the seven media lanes |
 | `v2` | babel town | paused | every route answers 503 with a `fallbackroute` to the `v1` equivalent |
 | `v3` | nvidia nim | live | 16 chat models plus the `devthink` meta mask, 22-key round robin, rotates every 6 messages |
 | `v4` | opencode zen + kilo | live | 24 free-tag models, anonymous, two upstreams with mutual fallback |
@@ -19,8 +19,8 @@ Gradle and Go module envelopes all ship beside the source.
 
 ## Route surface
 
-Each version registers the same thirteen route kinds at `/vN/*` and `/api/vN/*`
-(descriptors on GET, handlers on POST) — 65 registered route lanes:
+Each version registers the same fourteen route kinds at `/vN/*` and `/api/vN/*`
+(descriptors on GET, handlers on POST) — 70 registered route lanes:
 
 **The seven chat core kinds** (serving on every version):
 
@@ -33,7 +33,7 @@ Each version registers the same thirteen route kinds at `/vN/*` and `/api/vN/*`
 - `embeddings` — **disabled in every shipped config** (each POST answers
   "`<provider>` has no embeddings endpoint")
 
-**The six media lanes** (the honest absence law: only the zai sdk transport of
+**The seven media lanes** (the honest absence law: only the zai sdk transport of
 v1 serves them — every other version answers the paused-shaped 503 with the
 `/v1/*` fallback):
 
@@ -44,11 +44,14 @@ v1 serves them — every other version answers the paused-shaped 503 with the
 - `audio/speech` — glm-tts text-to-speech (openai voice aliases resolved)
 - `audio/transcriptions` — glm-asr speech-to-text (`file_base64`, `file` data
   url or remote url, or multipart form-data)
+- `audio/understanding` — the asr+chat chain (glm-asr transcribes the audio,
+  glm chat answers the prompt over the transcript; openai chat.completion
+  shape with the transcript at the top level)
 - `videos/generations` — cogvideox async lane (POST creates the task answering
   202, `GET ?id=<task_id>` polls until SUCCESS or FAIL)
 
-The numbers are pinned by `test/gatewayversions.test.ts` (5 providers × 13
-kinds = 65 lanes). The store behind the routes (`schema.prisma`):
+The numbers are pinned by `test/gatewayversions.test.ts` (5 providers × 14
+kinds = 70 lanes). The store behind the routes (`schema.prisma`):
 `ChatMessage`, `NvidiaKey`, `TownKey`, `ApiKey`, `SessionContext`,
 `OnboardingState`.
 
