@@ -193,6 +193,35 @@ export function wireformatnames(name: string): boolean {
       "context_length",
       "unstable_filterCSSRule",
 
+      /* the openai-compatible media and audio wire grammar the gateway
+       * media lanes speak (the studio-os wave): the multimodal content
+       * parts (input_audio, input_image, image_url, audio_url, inline_data
+       * with their media_type and mime_type hints), the transcription and
+       * speech envelopes (file_base64, response_format, b64_json, b64_audio,
+       * duration_ms), the async video task shapes the cogvideox lane
+       * answers (task_status, task_id, request_id, video_url, video_result,
+       * with_audio) — the names belong to the protocols the media routes
+       * proxy, never to the reviewed identifier vocabulary, exactly the
+       * way the chat envelope fields above belong to theirs */
+      "input_audio",
+      "input_image",
+      "image_url",
+      "audio_url",
+      "inline_data",
+      "media_type",
+      "mime_type",
+      "file_base64",
+      "response_format",
+      "b64_json",
+      "b64_audio",
+      "duration_ms",
+      "task_status",
+      "task_id",
+      "request_id",
+      "video_url",
+      "video_result",
+      "with_audio",
+
       "allowed_origins",
       "browser_specific_settings",
       "strict_min_version",
