@@ -4563,7 +4563,12 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
       "CHROME_BIN: ${{ steps.chrome-for-testing.outputs.chrome-path }}",
       "oven-sh/setup-bun@",
       "bun build/cli.js manifest",
-      "bun run check",
+      /* the gate ladder step the wrapper stub cure re-seated: the secret
+       * scan walks the runner bun directly (the .bin stub the
+       * --ignore-scripts install leaves shadows every bun the script
+       * shells spawn), the deterministic suite keeps the vitest script. */
+      "bun security.ts checksecrets",
+      "bun run test",
       "node apifreeze.ts",
       "node pentest.ts",
       /* the securitytooling consolidation moved the csp audit into the
