@@ -75,7 +75,7 @@ const declaredbun = floorof(rootmanifest.engines?.bun);
 const declaredrootpm = floorof(rootmanifest.engines?.pnpm);
 const pnpmpin =
   /pnpm\/action-setup@.*\s*?\r?\n(?:.*\r?\n){0,3}?.*version: (\d+\.\d+\.\d+)/.exec(
-    await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8"),
+    await readFile(join(repoRoot, ".github/workflows/ci.yml"), "utf8"),
   )?.[1] ?? "11.22.0";
 const declaredpnpm = pnpmpin.split(".")[0];
 if (!declarednode || !declarednpm || !declaredbun || !declaredrootpm)
@@ -111,13 +111,9 @@ const nodepin = next.engines.node.match(/^>=(\d+\.\d+\.\d+)/)[1];
 const pnmpattern = /(pnpm\/action-setup@.*\s*?\r?\n(?:.*\r?\n){0,3}?.*version: )\d+\.\d+\.\d+/;
 const bunpattern = /bun-version: \d+\.\d+\.\d+/g;
 const workflowpins: [string, [RegExp, string][]][] = [
-  [
-    join(repoRoot, ".github/workflows/verify.yml"),
-    [
-      [pnmpattern, `$1${pnpmnext}`],
-      [bunpattern, `bun-version: ${bunnext}`],
-    ],
-  ],
+  /* the consolidation pass: the verify and workflowlint lanes ride the merged
+     ci.yml entry below (the pins the retired files carried answer the superset
+     the merged file stamps) */
   [
     join(repoRoot, ".github/workflows/ci.yml"),
     [
@@ -126,11 +122,15 @@ const workflowpins: [string, [RegExp, string][]][] = [
       [bunpattern, `bun-version: ${bunnext}`],
     ],
   ],
+  /* the consolidation pass: the pages, family-desktop and family-mobile lanes
+     ride the merged containers.yml seat (the pnpm+node+bun superset covers
+     the pages/family/shed-job pins the three retired files carried) */
   [
-    join(repoRoot, ".github/workflows/pages.yml"),
+    join(repoRoot, ".github/workflows/containers.yml"),
     [
       [pnmpattern, `$1${pnpmnext}`],
       [/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`],
+      [bunpattern, `bun-version: ${bunnext}`],
     ],
   ],
   [
@@ -147,14 +147,6 @@ const workflowpins: [string, [RegExp, string][]][] = [
      node pin every other lane answers (the bun and pnpm pins of those
      lanes stay deliberate: each leg installs against the lockfile its
      package manager generated, so the ladder walks the node pin alone) */
-  [
-    join(repoRoot, ".github/workflows/family-desktop.yml"),
-    [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
-  ],
-  [
-    join(repoRoot, ".github/workflows/family-mobile.yml"),
-    [[/node-version: \d+\.\d+\.\d+/g, `node-version: ${nodepin}`]],
-  ],
   /* the 2.0.16 grouping pass: every post-release lane (the registry publishes, the platform artifacts and the sums umbrella) rides the merged publish.yml - the pins sync the one file */
   [
     join(repoRoot, ".github/workflows/publish.yml"),

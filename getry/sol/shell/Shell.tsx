@@ -25,6 +25,7 @@ import {
   ClockRegular,
   HomeRegular,
   LayerRegular,
+  ProjectionScreenRegular,
   WeatherMoonRegular,
   WeatherSunnyRegular,
 } from "@fluentui/react-icons";
@@ -50,6 +51,12 @@ export type StartApp = {
  * gateway versions). exported for the onboarding copy beside this folder.
  * the labels ride the copy law (labels.ts). */
 export const START_APPS: readonly StartApp[] = [
+  {
+    href: "/studio",
+    label: label("shell.rail.studio"),
+    detail: label("shell.rail.studioDetail"),
+    icon: ProjectionScreenRegular,
+  },
   {
     href: "/chat",
     label: label("shell.rail.chat"),

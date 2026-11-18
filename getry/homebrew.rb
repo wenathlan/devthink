@@ -2,7 +2,7 @@
 # The lane stamps the version and sha256 at push time (the sums derive from
 # the release tarball assets the release lane builds, never hardcoded).
 class WenathlanGetry < Formula
-  desc "The AI gateway — five provider gateways serving 35 OpenAI-compatible routes"
+  desc "The AI gateway — five provider gateways serving 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes)"
   homepage "https://github.com/wenathlan/devthink"
   url "https://github.com/wenathlan/devthink/releases/download/v2.0.185/wenathlan-getry-2.0.185.tgz"
   version "2.0.185"

@@ -50,7 +50,7 @@ export default function NotFound() {
             <button
               type="button"
               className="btn-tactile-3d"
-              style={{ minHeight: 44, padding: "0 24px", borderRadius: "calc(infinity * 1px)" }}
+              style={{ minHeight: 44, padding: "0 24px", borderRadius: 14 }}
               onClick={handleGoHome}
             >
               <HomeRegular fontSize={15} />

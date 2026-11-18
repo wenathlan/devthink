@@ -154,7 +154,7 @@ function HomeSurface() {
                 real traffic to the conversation surface first, the white card
                 points at the registry */}
             <div className="sol-hero__ctarow reveal">
-              <Link href="/chat" className="btn-tactile-3d sol-cta">
+              <Link href="/studio" className="btn-tactile-3d sol-cta">
                 {label("home.hero.openChat")}
                 <ArrowEnterRegular fontSize={15} aria-hidden="true" />
               </Link>

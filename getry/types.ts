@@ -796,7 +796,8 @@ export interface sessionstate {
   model: string;
 }
 
-/** the 7 route handlers produced by the engine for one version */
+/** the 14 route handlers produced by the engine for one version — the
+ * seven chat core kinds plus the seven media lanes (images audio video). */
 export interface versionhandlers {
   handleinfo: (req: Request) => Promise<Response>;
   handlekeys: (req: Request) => Promise<Response>;
@@ -806,4 +807,11 @@ export interface versionhandlers {
   handlemessages: (req: Request) => Promise<Response>;
   handleresponses: (req: Request) => Promise<Response>;
   handleembeddings: (req: Request) => Promise<Response>;
+  handleimagesgenerations: (req: Request) => Promise<Response>;
+  handleimagesedits: (req: Request) => Promise<Response>;
+  handleimagesunderstanding: (req: Request) => Promise<Response>;
+  handleaudiospeech: (req: Request) => Promise<Response>;
+  handleaudiotranscriptions: (req: Request) => Promise<Response>;
+  handleaudiounderstanding: (req: Request) => Promise<Response>;
+  handlevideosgenerations: (req: Request) => Promise<Response>;
 }

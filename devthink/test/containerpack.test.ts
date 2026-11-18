@@ -196,9 +196,15 @@ describe("containerpack", () => {
   });
 
   it("builds the release container archive from THE Dockerfile", async () => {
-    /* the forge rides outside the application container */
-    if (!existsSync(join(repoRoot, ".github/workflows/publish.yml"))) return;
-    const container = await readFile(join(repoRoot, ".github/workflows/publish.yml"), "utf8");
+    /* the forge rides outside the application container — the archive
+     * lane answers the containers workflow the consolidation split
+     * carried (the 2.0.16 grouping pass moved every container build
+     * seat out of publish into its own correlated file, so the
+     * docker build / build-arg / save triple the release archive
+     * stamps lives where the container lanes live). */
+    const containerspath = join(repoRoot, ".github/workflows/containers.yml");
+    if (!existsSync(containerspath)) return;
+    const container = await readFile(containerspath, "utf8");
     expect(container).toContain("docker build");
     expect(container).toContain("--build-arg DEVTHINK_VERSION=");
     expect(container).toContain("docker save");

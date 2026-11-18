@@ -479,8 +479,8 @@ describe("the library modes of 1.1.81", () => {
     const nvmversion = (await readFile(".nvmrc", "utf8")).trim();
     expect(rootmanifest.engines.node).toContain(nvmversion);
     /* the forge rides outside the application container: the image builds from the application tree alone */
-    if (!existsSync(join(repoRoot, ".github/workflows/verify.yml"))) return;
-    const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8");
+    if (!existsSync(join(repoRoot, ".github/workflows/ci.yml"))) return;
+    const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/ci.yml"), "utf8");
     /* the dependency union law rides the engine floors on the caret forms
      * beside the bounded >= shapes: the floor derivation walks both floor
      * spellings the family manifests carry (the caret form ^1.4.2, the

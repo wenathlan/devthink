@@ -47,7 +47,7 @@ publishing {
             from(components["java"])
             pom {
                 name.set("getry single distribution")
-                description.set("The single getry gradle distribution: the documentation set and the tests directory embedded as jar resources in the one com.wenathlan.getry artifact. getry is the AI gateway — five provider gateways serving 35 OpenAI-compatible routes.")
+                description.set("The single getry gradle distribution: the documentation set and the tests directory embedded as jar resources in the one com.wenathlan.getry artifact. getry is the AI gateway — five provider gateways serving 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes).")
                 url.set("https://github.com/wenathlan/devthink")
                 licenses {
                     license {

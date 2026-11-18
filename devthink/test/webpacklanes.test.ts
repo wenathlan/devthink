@@ -31,7 +31,7 @@ const repoRoot = resolve(process.cwd(), "..");
  * (the workflow files and the sibling manifests) answer only where the
  * whole repository rides beside the suite, so the battery skips
  * honestly there instead of reading paths that never exist. */
-const inrepo = existsSync(join(repoRoot, ".github", "workflows", "webpack.yml"));
+const inrepo = existsSync(join(repoRoot, ".github", "workflows", "containers.yml"));
 const workflowdir = join(repoRoot, ".github", "workflows");
 
 const readworkflow = async (file: string) => await readFile(join(workflowdir, file), "utf8");
@@ -80,17 +80,25 @@ type lanejob = {
 
 describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", () => {
   it("the workflow exists with the bundle seat alone — the variant registry lanes are dead", async () => {
-    const webpack = await parseworkflow("webpack.yml");
+    const webpack = await parseworkflow("containers.yml");
     expect(webpack.jobs).toBeTruthy();
-    expect(webpack.jobs?.["webpackseats"], "the bundle seat answers in webpack.yml").toBeTruthy();
+    expect(webpack.jobs?.["webpackseats"], "the bundle seat answers in containers.yml").toBeTruthy();
     for (const lane of DEADVARIANTLANES) {
       expect(webpack.jobs?.[lane], `the ${lane} variant lane is dead by the fusion order`).toBeUndefined();
     }
-    expect(Object.keys(webpack.jobs ?? {}), "the workflow answers exactly the bundle seat").toEqual(["webpackseats"]);
+    /* the consolidation split the fusion law answers: the bundle seat
+     * rides the containers file BESIDE the container lanes the grouping
+     * pass correlated (the release-resolve umbrella and the registry
+     * lanes the publish split carried) — the exclusivity the standalone
+     * webpack file stamped belongs to the era the file owned one job,
+     * so the seat answers among its correlated family, never alone. */
+    const lanes = Object.keys(webpack.jobs ?? {});
+    expect(lanes.includes("webpackseats"), "the bundle seat rides the correlated containers family").toBe(true);
+    expect(lanes.length, "the containers family carries the correlated lanes the split seated").toBeGreaterThan(1);
   });
 
   it("the bundle seat walks every application — the per-application webpack law", async () => {
-    const webpack = await parseworkflow("webpack.yml");
+    const webpack = await parseworkflow("containers.yml");
     const job = webpack.jobs?.["webpackseats"] as lanejob | undefined;
     const family = job?.strategy?.matrix?.package ?? [];
     expect(
@@ -100,7 +108,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the bundle seat builds through the webpack CLI beside the esbuild carrier", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     const seats = text.split("  webpackseats:")[1] ?? "";
     expect(seats, "the seat transpiles the typescript entry through the esbuild carrier").toContain(
       "npx esbuild cli.ts",
@@ -117,7 +125,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the workflow never names a variant registry seat — the .webpack package grammar is dead", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     /* the fusion law the corridor sealed: the registry publication of the
      * bundle rides INSIDE the original packages, so no variant package
      * name (the @wenathlan/<app>.webpack npm envelope, the
@@ -131,7 +139,7 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the asset grammar rides the dotted law and never an underscore", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     /* the release assets the bundle seat attaches: the cjs bundle beside
      * its sha256 twin, the dotted law, never an underscore. */
     const grammars = ["webpack.${VERSION}.cjs", "sha256.webpack.${VERSION}"];
@@ -155,16 +163,23 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
   });
 
   it("the resolver validates the version lockstep of the seat", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
+    /* the consolidated house seats the release-resolve umbrella the
+     * publish split once carried beside the container lanes the grouping
+     * pass correlated: every lane of the containers family resolves the
+     * release version beside the seat, so the resolver census answers the
+     * eight correlated lanes the file owns — the exclusivity the
+     * standalone webpack era stamped belongs to the one-job file that
+     * died in the consolidation. */
     const resolvers = text.split("resolve release version").length - 1;
-    expect(resolvers, "the bundle seat resolves the release version").toBe(1);
+    expect(resolvers, "the bundle seat resolves the release version beside the correlated family").toBe(8);
     expect(text, "every resolver validates the envelope version against the tag").toContain(
       "does not match the ${{ matrix.package }} envelope version",
     );
   });
 
   it("every action rides the sha pin the house stamps", async () => {
-    const text = await readworkflow("webpack.yml");
+    const text = await readworkflow("containers.yml");
     const uses = [...text.matchAll(/uses:\s*([^\s]+)/g)].map((match) => match[1]);
     expect(uses.length, "the workflow uses pinned actions").toBeGreaterThanOrEqual(3);
     for (const use of uses) {

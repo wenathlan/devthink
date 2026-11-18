@@ -58,9 +58,9 @@ import {
   CURRENT_GAPI_CLIENT_VERSION,
   CURRENT_GEMINI_CLI_VERSION,
   CURRENT_GL_NODE_VERSION,
-  FINGERPRINT_IDE_TYPES,
-  FINGERPRINT_PLATFORMS,
-  FINGERPRINT_PLUGIN_TYPES,
+  type FINGERPRINT_IDE_TYPES,
+  type FINGERPRINT_PLATFORMS,
+  type FINGERPRINT_PLUGIN_TYPES,
   FINGERPRINT_USER_AGENT_SOURCES,
   GAPI_CLIENT_VERSION_POOL,
   GEMINI_CLI_OAUTH_CLIENT_ID as OAUTH_CLIENT_ID,
@@ -435,7 +435,6 @@ export async function fetchRemoteAntigravityVersion(): Promise<string | null> {
         }
         if (json?.latest && /^\d+\.\d+\.\d+/.test(json.latest)) return json.latest;
       } catch {
-        continue;
       }
     }
     return null;

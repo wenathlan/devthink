@@ -17,9 +17,16 @@ import { label, seedLabels } from "./labels";
 import Sol from "./sol/Sol";
 import { Toaster } from "./sol/toast/Toast.tsx";
 import { applyTheme } from "./theme";
+/* the studio type triad (interface 18): Bricolage Grotesque Variable rides the
+ * display seats, Outfit Variable the body, JetBrains Mono Variable the
+ * micro-labels and the numbers — Inter Variable and Geist Mono Variable stay
+ * the offline fallbacks of the two prose seats (the entry carries the same
+ * triad from Google Fonts; whichever lane answers first wins) */
+import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/inter";
-import "@fontsource-variable/urbanist";
+import "@fontsource-variable/jetbrains-mono";
+import "@fontsource-variable/outfit";
 import "./sol/sol.css";
 
 import { routerBase } from "./routerbase.ts";

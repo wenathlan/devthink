@@ -97,7 +97,33 @@ try {
 
   const info = await handlers.handleinfo(new Request("http://x.invalid/api/vt"));
   const infodata = await info.json();
-  check("handleinfo answers the 7 routes", infodata.routes?.length === 7);
+  // the fourteen route kinds the engine answers — the seven chat core
+  // kinds plus the seven media lanes (images generations edits
+  // understanding, audio speech transcriptions understanding, videos
+  // generations). the full array pins the census the way the e2e
+  // battery pins it: a silent kind lost or gained fails here, never
+  // drifts by.
+  check(
+    "handleinfo answers the 14 routes",
+    JSON.stringify(infodata.routes) ===
+      JSON.stringify([
+        "audio/speech",
+        "audio/transcriptions",
+        "audio/understanding",
+        "chat/completions",
+        "completions",
+        "embeddings",
+        "images/edits",
+        "images/generations",
+        "images/understanding",
+        "keys",
+        "messages",
+        "models",
+        "responses",
+        "videos/generations",
+      ]),
+    `got ${JSON.stringify(infodata.routes)}`,
+  );
 
   const res = await handlers.handlechatcompletions(
     new Request("http://x.invalid/api/vt/chat/completions", {

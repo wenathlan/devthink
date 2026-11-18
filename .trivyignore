@@ -1,0 +1,15 @@
+# .trivyignore — the documented upstream-blocked lane of the trivy
+# filesystem scan (the precedent the saddle container seat founded and
+# the cargo ignore rows carry: every row below answers a finding whose
+# patched line no rung can reach today, each row documenting its drop
+# condition — never a silent walkaround, and the unfreeze edit retires
+# a row the moment its upstream ships the patch).
+
+# picomatch 2.3.2 — the ReDoS through single-branch repeated extglobs
+# (CVE-2026-112366, the HIGH seat the gate stops on). no fixed release
+# exists upstream today: the vulnerable range spans every rung through
+# 4.0.7 — the latest version the registry carries — so the dev-time
+# glob chains that seat the package (vite, vitest, tinyglobby, the
+# parcel watcher line) can never walk past the range. the row retires
+# the moment upstream ships a patched rung the overrides can reach.
+CVE-2026-112366

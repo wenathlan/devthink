@@ -42,8 +42,8 @@ const viteconfig = readFileSync(join(import.meta.dirname, "..", "vite.config.ts"
  * container context (the container carries the application tree alone, never
  * the repository workflows folder), where the workflow contract check below
  * skips the same way the other checkout-only gates skip on absent files. */
-const pagesworkflow = existsSync(join(import.meta.dirname, "..", "..", ".github", "workflows", "pages.yml"))
-  ? readFileSync(join(import.meta.dirname, "..", "..", ".github", "workflows", "pages.yml"), "utf8")
+const pagesworkflow = existsSync(join(import.meta.dirname, "..", "..", ".github", "workflows", "containers.yml"))
+  ? readFileSync(join(import.meta.dirname, "..", "..", ".github", "workflows", "containers.yml"), "utf8")
   : null;
 
 /** the repository root of the monorepo (the sibling apps live beside the

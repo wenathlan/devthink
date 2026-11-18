@@ -6,7 +6,7 @@
     <PackageId>getry</PackageId>
     <Version>2.0.185</Version>
     <Authors>wenathlan</Authors>
-    <Description>Distribution package containing the getry documentation set and the tests directory. getry is the AI gateway — five provider gateways serving 35 OpenAI-compatible routes.</Description>
+    <Description>Distribution package containing the getry documentation set and the tests directory. getry is the AI gateway — five provider gateways serving 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes).</Description>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/wenathlan/devthink</PackageProjectUrl>
     <RepositoryUrl>https://github.com/wenathlan/devthink</RepositoryUrl>

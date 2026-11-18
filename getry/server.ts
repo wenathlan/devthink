@@ -37,10 +37,11 @@
  *     private builtindefault / tryimport / searchbases helpers moved with
  *     loadconfig the same way
  *
- *  Version: 2.1.8 — the ownership wave server family extraction
+ *  Version: 2.0.185 — the ownership wave server family extraction
  *
  *  Related modules:
- *   - gateway.ts — GATEWAYROUTES (the canonical seven route kinds)
+ *   - gateway.ts — GATEWAYROUTES (the canonical fourteen route kinds — the
+ *     seven chat core kinds plus the seven media lanes)
  *   - engine.ts — createversion (the version loop mounts its handlers)
  *   - types.ts — gatewayconfig, gatewaydefinition (the config surface)
  *   - utils.ts — corsheaders, ctsse, ctndjson, the safe json family
@@ -494,7 +495,8 @@ export function trackwrite(): number {
 // gateway routes — the version loop mounts the engine handlers per version
 // ---------------------------------------------------------------------------
 
-/** route resources per version — the canonical 7 */
+/** route resources per version — the canonical 14 (the seven chat core
+ * kinds plus the seven media lanes) */
 const resources = GATEWAYROUTES;
 
 /** map resource name to its engine handler */
@@ -517,6 +519,20 @@ function handlermap(
       return handlers.handleresponses;
     case "embeddings":
       return handlers.handleembeddings;
+    case "images/generations":
+      return handlers.handleimagesgenerations;
+    case "images/edits":
+      return handlers.handleimagesedits;
+    case "images/understanding":
+      return handlers.handleimagesunderstanding;
+    case "audio/speech":
+      return handlers.handleaudiospeech;
+    case "audio/transcriptions":
+      return handlers.handleaudiotranscriptions;
+    case "audio/understanding":
+      return handlers.handleaudiounderstanding;
+    case "videos/generations":
+      return handlers.handlevideosgenerations;
     default:
       return null;
   }
@@ -614,9 +630,16 @@ async function createserver(): Promise<Hono> {
     // carried, so the registered gateway base of the chat (same origin or a
     // deployed copy of the family) answers one contract everywhere
     for (const prefix of [`/api/${versionid}`, `/${versionid}`]) {
-      // info routes — get returns the version descriptor
+      // info routes — get returns the version descriptor (the videos
+      // lane answers the async poll instead when an id rides the query)
       for (const resource of resources) {
-        app.get(`${prefix}/${resource}`, (c: Context) => handlers.handleinfo(c.req.raw));
+        app.get(`${prefix}/${resource}`, (c: Context) => {
+          if (resource === "videos/generations" && new URL(c.req.url).searchParams.get("id")) {
+            const poll = handlermap(handlers, resource);
+            if (poll) return poll(c.req.raw);
+          }
+          return handlers.handleinfo(c.req.raw);
+        });
       }
 
       // action routes — post dispatches to the resource handler
@@ -729,7 +752,7 @@ let loaded: gatewaydefinition | null = null;
  *
  * the serve-anywhere law (the gateway port, 2.0.184): a transport with no
  * user config serves the whole v1–v5 catalog out of the box — the five
- * provider gateways, the 35 OpenAI-compatible routes, the 7-level
+ * provider gateways, the 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes), the 7-level
  * thinking ladder and the smart-first rotation pools — so `bun cli.ts
  * serve` (or any consumer importing main()) answers live routes the
  * moment it boots. user customization still wins: a config.mjs the cli
