@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "getry"
-  spec.version = ENV.fetch("GETRY_VERSION", "2.0.185")
+  spec.version = ENV.fetch("GETRY_VERSION", "2.0.186")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The getry documentation and tests envelope (the AI gateway — five provider gateways serving 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes))."
