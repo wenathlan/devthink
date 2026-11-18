@@ -65,19 +65,20 @@ on:
 
 permissions:
   contents: read
-  # the supersede law the job-level seats always meant, answered at the
-  # run level the syntax reads honestly: a superseded firing of the SAME
-  # event and ref is cancelled whole to save runner minutes (the job
-  # seats shared one group across sibling jobs, so every lane that came
-  # after its needs cancelled the lane before it — the battery answered
-  # its own cascade), while a called ladder (the release escalation over
-  # its own immutable source) rides the input discriminator and never
-  # collides with the push lane — a workflow_call inherits the CALLER's
-  # event and ref, and the input in the key seats the called verify under
-  # its own group (ci-push-<sha>) beside the push lane it complements.
-  concurrency:
-    group: ci-${{ github.event_name }}-${{ inputs.ref || github.ref }}
-    cancel-in-progress: true
+
+# the supersede law the job-level seats always meant, answered at the
+# run level the syntax reads honestly: a superseded firing of the SAME
+# event and ref is cancelled whole to save runner minutes (the job
+# seats shared one group across sibling jobs, so every lane that came
+# after its needs cancelled the lane before it — the battery answered
+# its own cascade), while a called ladder (the release escalation over
+# its own immutable source) rides the input discriminator and never
+# collides with the push lane — a workflow_call inherits the CALLER's
+# event and ref, and the input in the key seats the called verify under
+# its own group (ci-push-<sha>) beside the push lane it complements.
+concurrency:
+  group: ci-${{ github.event_name }}-${{ inputs.ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   cli-runtime:
