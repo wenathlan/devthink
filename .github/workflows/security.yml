@@ -60,10 +60,14 @@ jobs:
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        # THE PACKAGEMANAGER LAW (the 2026-11-18 cure): the version input
+        # stays empty so the packageManager stamp the root manifest carries
+        # is the single source of truth - the immutable tag envelopes (the
+        # 2.0.185 rung cut before the pnpm ladder walked) and the main head
+        # both answer their own stamp without the multiple-versions conflict
+        # the action-setup refused (version input vs packageManager key).
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
-          version: 12.21.0
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -729,7 +733,7 @@ jobs:
           CUSTOM_SEATS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
-            const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@inkui-cli", "@mintlify", "@openauthjs", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
+            const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@inkui-cli", "@mintlify", "@openauthjs", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@splinetool", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
             const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/rapier", "@react-three/xr", "@sdk-it/core", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
             const rows = new Set();
             for (const match of lock.matchAll(/"((?:@[^\/"\s]+\/)?[^@"\s]+)@(\d+\.\d+\.\d+)"/g)) {
@@ -755,7 +759,7 @@ jobs:
             console.log(match ? "@giscus/react@" + match[1] : "");
           ')
           npx --yes license-checker-rseidelsohn@5.0.1 --production \
-            --onlyAllow="MIT;MIT*;MIT-0;Apache-2.0;Apache 2.0;ISC;BSD-2-Clause;BSD-3-Clause;BSD;BSD*;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;PSF-2.0;BlueOak-1.0.0;MPL-2.0;LGPL-3.0-or-later;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);(AFL-2.1 OR BSD-3-Clause);MIT OR Apache-2.0;(MIT OR Apache-2.0);Apache-2.0 AND MIT;MIT AND ISC;MIT and ISC;(MIT AND Zlib);(MIT AND CC-BY-3.0);(BSD-3-Clause AND Apache-2.0);(MIT OR WTFPL);(WTFPL OR MIT);(Unlicense OR Apache-2.0);ISC*;Custom: https://gsap.com/GSAP-share-image.png;Custom: https://github.com/wenathlan/devthink" \
+            --onlyAllow="MIT;MIT*;MIT-0;Apache-2.0;Apache 2.0;ISC;BSD-2-Clause;BSD-3-Clause;BSD;BSD*;0BSD;Unlicense;CC0-1.0;CC-BY-4.0;Zlib;Python-2.0;PSF-2.0;BlueOak-1.0.0;MPL-2.0;Public Domain;LGPL-3.0-or-later;GPL-3.0-only;EPL-2.0;OFL-1.1;(MIT OR CC0-1.0);(AFL-2.1 OR BSD-3-Clause);MIT OR Apache-2.0;(MIT OR Apache-2.0);Apache-2.0 AND MIT;MIT AND ISC;MIT and ISC;(MIT AND Zlib);(MIT AND CC-BY-3.0);(BSD-3-Clause AND Apache-2.0);(MIT OR WTFPL);(WTFPL OR MIT);(Unlicense OR Apache-2.0);ISC*;Custom: https://gsap.com/GSAP-share-image.png;Custom: https://github.com/wenathlan/devthink" \
             --excludePackages="vite-plugin-manus-runtime@0.0.59;7z-wasm@1.2.0;${AIKIDO_EXCLUDE:+$AIKIDO_EXCLUDE;}${GISCUS_EXCLUDE:+$GISCUS_EXCLUDE;}${FAMILY_EXCLUDE}${CUSTOM_SEATS_EXCLUDE:+;$CUSTOM_SEATS_EXCLUDE}" \
             --summary
 
