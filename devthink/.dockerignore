@@ -39,3 +39,23 @@ __pycache__
 *.pyc
 *.pyo
 test/tmp
+
+# the monorepo geometry (the 2.0.186 cure): the merged repository carries
+# eleven sibling app trees whose node_modules, dist and staging the runner
+# installs beside the sources — the family-context law keeps the sibling
+# SOURCES (the vault file: pins, the getry and saddle bridges) while their
+# dependency trees never enter the transfer (the 22.8GB context the smoke
+# lane measured never rides again; the deps stage installs the frozen
+# locks itself).
+*/node_modules
+*/dist
+*/distpackage
+*/build
+*/release
+*/staging
+*/sol/dist
+*/sol/node_modules
+*/test/tmp
+*/mobile
+**/__pycache__
+tool-results

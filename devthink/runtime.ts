@@ -544,7 +544,11 @@ async function validateruntimebaselines(): Promise<void> {
   const packagejson = JSON.parse(await readFile("package.json", "utf8"));
   const nvmversion = (await readFile(".nvmrc", "utf8")).trim();
   const containerfile = await readFile("Dockerfile", "utf8");
-  const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/verify.yml"), "utf8");
+  /* THE SIX-FILE HOUSE CONSOLIDATION (the 2026-11-18 cure): the verify
+   * ladder the standalone verify.yml carried rides the ci.yml gate ladder
+   * now (the 87b2624a fold) — the baseline validator reads the house file
+   * the api freeze gate actually answers from. */
+  const verifyworkflow = await readFile(join(repoRoot, ".github/workflows/ci.yml"), "utf8");
   const semver = /^\d+\.\d+\.\d+$/;
 
   /* the 1.1.91 protocolv2 negotiation paths: the runtime baselines accept the frozen protocol major, the library pin and the mcp negotiation seam */

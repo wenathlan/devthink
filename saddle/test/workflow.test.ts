@@ -200,7 +200,7 @@ describe("the workflow contract", () => {
     for (const app of apps) {
       const lint = await rungate(
         "npx",
-        ["--yes", "@biomejs/biome@2.6.4", "lint", "--diagnostic-level=error", "."],
+        ["--yes", "@biomejs/biome@2.6.8", "lint", "--diagnostic-level=error", "."],
         180000,
         join(reporoot, "..", app),
         {

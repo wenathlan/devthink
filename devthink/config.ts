@@ -3100,8 +3100,10 @@ export function runparitygate(): void {
   const identicalFiles = ["biome.jsonc", ".nvmrc"];
 
   /** the saddle vm pins the family overrides never inherit (the saddle
-   * exceptions the standardization law keeps). */
-  const saddleExempt = ["@grpc/grpc-js", "xcode"];
+   * exceptions the standardization law keeps): the npm toolchain seat rides
+   * the saddle package-lock the family lock never carries — the embedded npm
+   * override the picomatch closure seated answers the saddle npm seat alone). */
+  const saddleExempt = ["@grpc/grpc-js", "xcode", "npm"];
 
   const appDirs = readdirSync(repoRoot, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && existsSync(join(repoRoot, entry.name, "package.json")))
