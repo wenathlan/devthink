@@ -997,6 +997,21 @@ jobs:
           'build/devthink-site-' + version + '.zip', 'build/devthink-declarations-' + version + '.zip']) { \
           if (!names.includes(required)) throw new Error('The artifact manifest misses the built artifact ' + required); } \
           console.log(JSON.stringify({ artifacts: manifest.artifacts.length, ok: true })); })();"
+      # The root typecheck lane runs the package script the build bypasses
+      # (build.ts typechecks tsconfig.build.json only, so the sources
+      # and the test suite of tsconfig.json ride this lane instead), and the
+      # biome gate restores the lint lane the saddle and the merged repos
+      # ran in CI before the merge dropped it from every workflow.
+      - name: Typecheck the root sources and the test suite
+        run: cd devthink && bun run typecheck
+      - name: Lint the repository with the biome gate
+        run: cd devthink && bun run lint
+      - name: Check the web TypeScript of the static workbench
+        run: cd devthink && npm run check:web
+      - name: Build portable static web
+        env:
+          VITE_BASE_PATH: /
+        run: cd devthink && npm run build:web
       - name: Build the container image and run its smoke
         # the context is THE REPOSITORY ROOT (the family-context law the
         # Dockerfile header records): the dependency union pins the vault
@@ -1038,21 +1053,6 @@ jobs:
           docker build -f devthink/Dockerfile -t devthink-verify:local .
           rm -f .dockerignore
           docker run --rm devthink-verify:local --check
-      # The root typecheck lane runs the package script the build bypasses
-      # (build.ts typechecks tsconfig.build.json only, so the sources
-      # and the test suite of tsconfig.json ride this lane instead), and the
-      # biome gate restores the lint lane the saddle and the merged repos
-      # ran in CI before the merge dropped it from every workflow.
-      - name: Typecheck the root sources and the test suite
-        run: cd devthink && bun run typecheck
-      - name: Lint the repository with the biome gate
-        run: cd devthink && bun run lint
-      - name: Check the web TypeScript of the static workbench
-        run: cd devthink && npm run check:web
-      - name: Build portable static web
-        env:
-          VITE_BASE_PATH: /
-        run: cd devthink && npm run build:web
       - name: Resolve the artifact suffix
         # the artifact name law: a dispatched ref may carry branch slashes the
         # artifact namespace refuses, so the suffix rides the sanitized form.
