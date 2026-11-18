@@ -43,6 +43,15 @@ jobs:
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
         with:
           fail-on-severity: low
+          # the documented upstream-blocked seat the osv battery carries
+          # in its own grammar: the picomatch ReDoS advisory
+          # (GHSA-fc5q-39xc-vjpf / CVE-2026-112366) has no fixed release
+          # upstream today — the vulnerable range spans every rung through
+          # 4.0.7, the latest the registry carries — so every tree the
+          # eleven bun locks resolve stays inside the range no matter the
+          # bump. the row retires the moment upstream ships a patched rung
+          # (the same unfreeze law the osv-scanner.toml row documents).
+          allow-ghsas: GHSA-fc5q-39xc-vjpf
 
   pnpm-audit:
     name: pnpm audit
@@ -343,7 +352,17 @@ jobs:
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@6e4298ebc4db23e847df9b2e2de2939d6f066c67 # v2.5.1
     with:
       fail-on-vuln: true
+      # the config flag seats the root toml the documented ignore lane
+      # carries: the recursive scan walks every family folder, and the
+      # scanner reads the osv-scanner.toml of the directory each lockfile
+      # lives in — the eleven app folders carry no toml of their own, so
+      # the root file the repository maintains never applied. the explicit
+      # --config flag points every recursive walk at the root toml, so the
+      # documented upstream-blocked rows (the picomatch ReDoS seat with no
+      # fixed release upstream, the minimatch globparts seat bundled inside
+      # the aws-cdk-lib tarball) ride every lock the battery scans.
       scan-args: |-
+        --config=osv-scanner.toml
         --recursive
         ./
     permissions:
@@ -698,12 +717,20 @@ jobs:
           # row documents its MIT), so the exact seat documents the
           # lane while the dependency stays seated the union law
           # demands (the unfreeze edit retires the row the moment the
-          # registry rung answers a permissive label).
+          # registry rung answers a permissive label). the sdk-it
+          # single answers the same unlicensed reality the inkui row
+          # documents: the schema analysis utilities the schema-utils
+          # 4.6 floor the heal line seats publishes its npm rungs
+          # without a license field the checker can read and without a
+          # repository the census could walk — the lock-built pin seats
+          # the row the same way every dynamic row documents its seat
+          # (the unfreeze edit retires the row the moment the registry
+          # rung answers a permissive label).
           CUSTOM_SEATS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
             const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@inkui-cli", "@mintlify", "@openauthjs", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
-            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/rapier", "@react-three/xr", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
+            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/rapier", "@react-three/xr", "@sdk-it/core", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
             const rows = new Set();
             for (const match of lock.matchAll(/"((?:@[^\/"\s]+\/)?[^@"\s]+)@(\d+\.\d+\.\d+)"/g)) {
               const name = match[1];
