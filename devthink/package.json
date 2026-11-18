@@ -2,7 +2,7 @@
   "name": "@wenathlan/devthink",
   "version": "2.0.185",
   "private": false,
-  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI \u2014 one product, one binary, one metadata.",
+  "description": "DevThink is the merged AI development workbench: the provider-owned gateway engine, the DevThink browser extension (the agent surface), the Antigravity engine and the workbench CLI — one product, one binary, one metadata.",
   "license": "GPL-3.0-only",
   "scripts": {
     "antigravity": "bun --watch llm.ts",
@@ -3202,7 +3202,7 @@
     "phaser": "^4.2.1",
     "pi-tui": "^0.0.1",
     "picocolors": "^1.1.1",
-    "picomatch": "^2.3.2",
+    "picomatch": "^4.0.2",
     "pidtree": "^1.0.0",
     "pino": "^10.4.0",
     "pino-abstract-transport": "^3.0.0",
@@ -3489,7 +3489,7 @@
     "satteri": "^0.11.7",
     "sax": "^1.6.1",
     "scheduler": "^0.28.0",
-    "schema-utils": "^3.1.1",
+    "schema-utils": "^4.6.0",
     "seedrandom": "^3.0.5",
     "selenium-webdriver": "^4.52.0",
     "selfsigned": "^5.5.0",
@@ -7090,7 +7090,7 @@
     "phaser": "^4.2.1",
     "pi-tui": "^0.0.1",
     "picocolors": "^1.1.1",
-    "picomatch": "^2.3.2",
+    "picomatch": "^4.0.2",
     "pidtree": "^1.0.0",
     "pino": "^10.4.0",
     "pino-abstract-transport": "^3.0.0",
@@ -7377,7 +7377,7 @@
     "satteri": "^0.11.7",
     "sax": "^1.6.1",
     "scheduler": "^0.28.0",
-    "schema-utils": "^3.1.1",
+    "schema-utils": "^4.6.0",
     "seedrandom": "^3.0.5",
     "selenium-webdriver": "^4.52.0",
     "selfsigned": "^5.5.0",
@@ -10978,7 +10978,7 @@
     "phaser": "^4.2.1",
     "pi-tui": "^0.0.1",
     "picocolors": "^1.1.1",
-    "picomatch": "^2.3.2",
+    "picomatch": "^4.0.2",
     "pidtree": "^1.0.0",
     "pino": "^10.4.0",
     "pino-abstract-transport": "^3.0.0",
@@ -11970,7 +11970,7 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "devthink": {
-    "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) \u2014 family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root. The ownership law (pr16) rides the owner field: one engine, one owner, the family consumes \u2014 the manifest of record is engines.ts at the app root.",
+    "maestro": "node.js is the orchestrator: every engine below answers to the maestro (devthink.ts) — family engines ride the published library packages, never a sibling-folder path; native engines ride the flat .ts files at the app root. The ownership law (pr16) rides the owner field: one engine, one owner, the family consumes — the manifest of record is engines.ts at the app root.",
     "engines": [
       {
         "name": "versawaze",
@@ -11998,7 +11998,7 @@
         "owner": "getry",
         "source": "library",
         "library": "@wenathlan/getry",
-        "role": "the universal gateway: the engine (engine.ts), the llm family, the streaming parser, the model catalog, the provider surface, the request helpers, the auth family and the json family \u2014 the os imports every family through the published library specifiers (@wenathlan/getry/engine and siblings) and derives its thinking budgets from the owner's ladder through @wenathlan/getry/thinking."
+        "role": "the universal gateway: the engine (engine.ts), the llm family, the streaming parser, the model catalog, the provider surface, the request helpers, the auth family and the json family — the os imports every family through the published library specifiers (@wenathlan/getry/engine and siblings) and derives its thinking budgets from the owner's ladder through @wenathlan/getry/thinking."
       },
       {
         "name": "argan",
