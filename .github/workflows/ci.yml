@@ -995,7 +995,30 @@ jobs:
         # builds from the checkout geometry it mirrors.
         run: |
           set -euo pipefail
+          # THE TRANSIENT CONTEXT IGNORE (the 2.0.186 cure): the dockerignore
+          # semantics anchor the patterns beside the Dockerfile, so the
+          # sibling dependency trees the runner installs (the getry and
+          # saddle node_modules the family installs walk) never matched —
+          # the step writes the monorepo geometry ignore at the workspace
+          # root the transfer actually reads, the tree law keeping the
+          # repository root clean (the transient copy never lands in git).
+          cat > .dockerignore <<'IGNORE'
+          */node_modules
+          */node_modules/**
+          */sol/node_modules
+          */dist
+          */distpackage
+          */build
+          */release
+          */staging
+          */sol/dist
+          */test/tmp
+          */mobile
+          node_modules
+          .git
+          IGNORE
           docker build -f devthink/Dockerfile -t devthink-verify:local .
+          rm -f .dockerignore
           docker run --rm devthink-verify:local --check
       # The root typecheck lane runs the package script the build bypasses
       # (build.ts typechecks tsconfig.build.json only, so the sources
