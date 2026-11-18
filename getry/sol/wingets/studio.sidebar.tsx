@@ -570,6 +570,7 @@ export function Sidebar({
               onBlur={commitRename}
               onKeyDown={handleRenameKey}
               onClick={(e) => e.stopPropagation()}
+              // biome-ignore lint/a11y/noAutofocus: the rename input answers ready to type — the inline edit the row opens exists to type into immediately
               autoFocus
               aria-label="Rename session"
               data-testid={`rename-input-${conv.id}`}
@@ -1395,6 +1396,7 @@ export function Sidebar({
                       }}
                       placeholder="Workspace name..."
                       aria-label="New workspace name"
+                      // biome-ignore lint/a11y/noAutofocus: the new-workspace field answers ready to type — the creation row the sidebar opens exists to type the name into immediately
                       autoFocus
                       className="min-w-0 flex-1 rounded-[9px] squircle border border-[var(--dk-matte-edge)] bg-[var(--dk-surface-2)] px-2.5 py-1 text-xs text-[var(--dk-text)] placeholder:text-[var(--dk-text-3)] focus:border-[var(--dk-brand)] focus:outline-none"
                     />
@@ -1468,6 +1470,7 @@ export function Sidebar({
                                   setEditingWorkspaceId(null);
                                 }
                               }}
+                              // biome-ignore lint/a11y/noAutofocus: the rename input answers ready to type — the inline edit the row opens exists to type into immediately
                               autoFocus
                               aria-label="Rename workspace"
                               className="min-w-0 flex-1 rounded border border-[var(--dk-matte-edge)] bg-[var(--dk-surface)] px-1.5 py-0.5 text-xs text-[var(--dk-text)] outline-none"

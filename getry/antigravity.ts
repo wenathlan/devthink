@@ -194,7 +194,7 @@ function stripTrailingSlashes(value: string): string {
 
 // --- optional internal modules (they themselves only use node:* + fetch) ---
 // The observer tries to reuse them when present, but v2 is self-contained to guarantee bypass logic.
-let __AccountManagerCtor: any = null;
+const __AccountManagerCtor: any = null;
 try {
   // dynamic import via top-level await not allowed here, will lazy import in init
 } catch {
@@ -724,7 +724,6 @@ export class AntigravityPlugin {
         return candidate as Account;
       } catch (e) {
         lastErr = e;
-        continue;
       }
     }
     // fallback any
@@ -1137,7 +1136,6 @@ export class AntigravityPlugin {
               buildOpts.accessToken = accessToken;
               buildOpts.projectId = (account as any).projectId ?? projectId;
               buildResult = builder(buildOpts);
-              continue;
             }
           }
         }

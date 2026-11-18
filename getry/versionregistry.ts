@@ -739,7 +739,6 @@ async function fetchFromChangelog(): Promise<AntigravityVersionInfo | null> {
         url,
       };
     } catch {
-      continue;
     }
   }
   return null;
@@ -849,8 +848,6 @@ export async function fetchLatestVersion(opts: FetchOptions = {}): Promise<strin
 
       return parsedVersion;
     } catch {
-      // Per-URL failure swallowed - continue down the chain.
-      continue;
     }
   }
 

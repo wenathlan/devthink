@@ -86,7 +86,15 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
     for (const lane of DEADVARIANTLANES) {
       expect(webpack.jobs?.[lane], `the ${lane} variant lane is dead by the fusion order`).toBeUndefined();
     }
-    expect(Object.keys(webpack.jobs ?? {}), "the workflow answers exactly the bundle seat").toEqual(["webpackseats"]);
+    /* the consolidation split the fusion law answers: the bundle seat
+     * rides the containers file BESIDE the container lanes the grouping
+     * pass correlated (the release-resolve umbrella and the registry
+     * lanes the publish split carried) — the exclusivity the standalone
+     * webpack file stamped belongs to the era the file owned one job,
+     * so the seat answers among its correlated family, never alone. */
+    const lanes = Object.keys(webpack.jobs ?? {});
+    expect(lanes.includes("webpackseats"), "the bundle seat rides the correlated containers family").toBe(true);
+    expect(lanes.length, "the containers family carries the correlated lanes the split seated").toBeGreaterThan(1);
   });
 
   it("the bundle seat walks every application — the per-application webpack law", async () => {

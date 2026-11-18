@@ -7,12 +7,12 @@
  */
 
 import { BACKOFF_BASE_MS, BACKOFF_FACTOR, BACKOFF_MAX_MS, CLIENT_METADATA_RAW, CLOUDCODE_PA_BASE, GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, GEMINI_CLI_USER_AGENT, LRU_THINKING_CACHE_SIZE, MAX_RETRIES, PROJECT_FALLBACK, RETRYABLE_STATUS_CODES } from "./constants.js";
-import { ApiKeyRow } from "./db.ts";
+import type { ApiKeyRow } from "./db.ts";
 import { X_GOOG_API_CLIENT } from "./fingerprint.js";
-import { MODELS_2026, ModelId2026, UA_DEFAULT_MODEL } from "./models.js";
+import { MODELS_2026, type ModelId2026, UA_DEFAULT_MODEL } from "./models.js";
 import { JITTER_MAX_MS, JITTER_MIN_MS } from "@wenathlan/devthink/constants";
 import { fnv1a32, getJitter, thinkingCache } from "@wenathlan/devthink/core";
-import { RetryConfig, delayForAttempt, parseRetryAfterMs, sleepMs } from "@wenathlan/devthink/queue";
+import { type RetryConfig, delayForAttempt, parseRetryAfterMs, sleepMs } from "@wenathlan/devthink/queue";
 import { createHash, randomUUID } from "node:crypto";
 
 /* ===== block: streaming ===== */
@@ -375,7 +375,7 @@ export function parseSSEChunk(chunk: string, state: SSEParserState): ParsedSSEEv
     const nextStart = delimiterIdx + 2;
     // Parse block lines
     const lines = block.split("\n");
-    let dataLines: string[] = [];
+    const dataLines: string[] = [];
     let eventType: string | undefined;
     let id: string | undefined;
     let retry: number | undefined;
@@ -673,7 +673,7 @@ export function normalizePart(part: unknown): {
     const nameRaw = fc.name || fc.functionName || p.name || "unknown_tool";
     // Sanitize name: must start with letter or underscore for gemini, but we normalize
     const name = String(nameRaw).replace(/[^a-zA-Z0-9_.-]/g, "_");
-    let argsRaw = fc.args || fc.arguments || fc.input || {};
+    const argsRaw = fc.args || fc.arguments || fc.input || {};
     let argsJson: string;
     let argsParsed: unknown = argsRaw;
 
@@ -1666,7 +1666,7 @@ export async function fetchWithExponentialRetry(
 
     // Backoff before next attempt
     if (attempt < maxRetries) {
-      const delay = Math.min(baseMs * Math.pow(factor, attempt), maxMs);
+      const delay = Math.min(baseMs * factor ** attempt, maxMs);
       await sleepWithJitter(delay);
     }
 
@@ -1739,7 +1739,7 @@ export async function withAutoRecoveryStreaming(
         throw err;
       }
       const delay = Math.min(
-        (retryOpts.baseMs ?? BACKOFF_BASE_MS) * Math.pow(retryOpts.factor ?? BACKOFF_FACTOR, attempt),
+        (retryOpts.baseMs ?? BACKOFF_BASE_MS) * (retryOpts.factor ?? BACKOFF_FACTOR) ** attempt,
         retryOpts.maxMs ?? BACKOFF_MAX_MS,
       );
       await sleepWithJitter(delay);
@@ -1755,7 +1755,7 @@ export async function withAutoRecoveryStreaming(
           // ignore
         }
         const delay = Math.min(
-          (retryOpts.baseMs ?? BACKOFF_BASE_MS) * Math.pow(retryOpts.factor ?? BACKOFF_FACTOR, attempt),
+          (retryOpts.baseMs ?? BACKOFF_BASE_MS) * (retryOpts.factor ?? BACKOFF_FACTOR) ** attempt,
           retryOpts.maxMs ?? BACKOFF_MAX_MS,
         );
         await sleepWithJitter(delay);
@@ -1795,13 +1795,11 @@ export async function withAutoRecoveryStreaming(
         throw streamErr;
       }
       const delay = Math.min(
-        (retryOpts.baseMs ?? BACKOFF_BASE_MS) * Math.pow(retryOpts.factor ?? BACKOFF_FACTOR, attempt),
+        (retryOpts.baseMs ?? BACKOFF_BASE_MS) * (retryOpts.factor ?? BACKOFF_FACTOR) ** attempt,
         retryOpts.maxMs ?? BACKOFF_MAX_MS,
       );
       await sleepWithJitter(delay);
       attempt++;
-      // Continue retry loop — will re-fetch and continue? Note: we lost progress but tracker preserves sent state for dedup
-      continue;
     }
   }
 }
@@ -2406,7 +2404,7 @@ function safeJsonParseArray(text: string): { objects: CloudCodeRawChunk[]; remai
   // Trim BOM
   if (remainder.charCodeAt(0) === 0xfeff) remainder = remainder.slice(1);
 
-  let buffer = remainder;
+  const buffer = remainder;
   remainder = "";
 
   const lines = buffer.split(/\r?\n/);
@@ -3043,7 +3041,6 @@ export function transformToOpenAIChunks(payloads: NormalizedPayload[], state: St
           ],
         });
       } else if (part.kind === "thought_signature") {
-        continue;
       }
     }
 
@@ -3594,7 +3591,7 @@ const DEFAULT_RETRY_ON = [429, 500, 502, 503, 504];
  * @param jitter - apply jitter
  */
 export function computeExponentialDelay(attempt: number, base: number, max: number, jitter: boolean): number {
-  let delay = base * Math.pow(2, attempt);
+  let delay = base * 2 ** attempt;
   if (delay > max) delay = max;
   if (jitter) {
     const jitterFactor = 0.7 + Math.random() * 0.6;

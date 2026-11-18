@@ -9,10 +9,10 @@
 import { getDefaultAccountManager } from "./accounts.js";
 import { ANTIGRAVITY_VERSION_FALLBACK, ANTIGRAVITY_VERSION_MIN_SUPPORTED, CLIENT_METADATA_STRING, CLOUDCODE_BASE_URL, CLOUDCODE_DAILY_BASE, CODE_ASSIST_PATH_MAP, ENDPOINTS, FALLBACK_PROJECT_ID, FILE_PATHS, GEMINI_CLI_OAUTH_CLIENT_ID, GEMINI_CLI_OAUTH_CLIENT_SECRET, GEMINI_CLI_SCOPES, GEMINI_CLI_USER_AGENT, OAUTH_REVOKE_URL, OAUTH_TOKEN_URL, PLUGIN_VERSION, PROJECT_FALLBACK } from "./constants.js";
 import { X_GOOG_API_CLIENT_GEMINI_CLI } from "./fingerprint.js";
-import { ENDPOINT_ORDER, MODELS_2026_CATALOG, DEFAULT_MODEL_ID, MODEL_BY_ID, ModelCatalogEntry, SEARCH_MODEL_PREVIEW, buildGoogleProviderModelConfigs, buildOpenCodeModelDefinitions, detectTargetProvider } from "./models.js";
+import { ENDPOINT_ORDER, MODELS_2026_CATALOG, DEFAULT_MODEL_ID, MODEL_BY_ID, type ModelCatalogEntry, SEARCH_MODEL_PREVIEW, buildGoogleProviderModelConfigs, buildOpenCodeModelDefinitions, detectTargetProvider } from "./models.js";
 import { ANTIGRAVITY_CLI_CLIENT_ID, ANTIGRAVITY_CLI_CLIENT_SECRET, ANTIGRAVITY_CLI_GRPC_VERSION, ANTIGRAVITY_CLI_OAUTH_SCOPES, ANTIGRAVITY_CLI_REDIRECT_OFFICIAL, ANTIGRAVITY_CLI_VERSION_LATEST, GEMINI_OAUTH_CLIENT_ID, GEMINI_OAUTH_CLIENT_SECRET } from "./oauth.js";
-import { ChatEvent, parseEventStream } from "./streaming.js";
-import { DevThinkConfig, DevThinkPaths, VERSION_FALLBACK, atomicWrite, cfgDir, fetchVersionChain, loadConfigRaw, resolveCredential, saveConfigRaw, validateEmail, validateModelId, validateModelIdCharset, validateProjectId, validateSemver } from "@wenathlan/devthink/config";
+import { type ChatEvent, parseEventStream } from "./streaming.js";
+import { type DevThinkConfig, type DevThinkPaths, VERSION_FALLBACK, atomicWrite, cfgDir, fetchVersionChain, loadConfigRaw, resolveCredential, saveConfigRaw, validateEmail, validateModelId, validateModelIdCharset, validateProjectId, validateSemver } from "@wenathlan/devthink/config";
 import { FETCH_TIMEOUT_MS } from "@wenathlan/devthink/constants";
 import { debugLogger, logsDir, redactSecrets } from "@wenathlan/devthink/core";
 import { osStringRows } from "@wenathlan/devthink/os";

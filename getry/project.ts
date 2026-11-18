@@ -665,7 +665,7 @@ async function pollOperation(opts: PollOperationOptions): Promise<string | null>
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     if (attempt > 0) {
-      const delayMs = Math.min(500 * Math.pow(2, attempt - 1), 8000);
+      const delayMs = Math.min(500 * 2 ** (attempt - 1), 8000);
       await new Promise((r) => setTimeout(r, delayMs));
     }
     try {
@@ -686,7 +686,6 @@ async function pollOperation(opts: PollOperationOptions): Promise<string | null>
         return null;
       }
     } catch {
-      continue;
     }
   }
   return null;
@@ -760,9 +759,7 @@ export async function fetchAvailableModels(opts: FetchModelsOptions): Promise<Av
 // 13. resolveProjectId ORCHESTRATOR (v2 canonical)
 // ---------------------------------------------------------------------------
 
-export interface AccountMetadataSaver {
-  (projectId: string): Promise<void> | void;
-}
+export type AccountMetadataSaver = (projectId: string) => Promise<void> | void
 
 export interface ResolveProjectIdOptions {
   accessToken: string;
@@ -967,7 +964,6 @@ export async function resolveProjectId(opts: ResolveProjectIdOptions): Promise<R
         500,
         endpoint,
       );
-      continue;
     }
   }
 
@@ -1093,7 +1089,6 @@ export async function resolveProjectIdAsGeminiCliBypass(
         }
       } catch (e: any) {
         if (e instanceof ProjectDiscoveryError && !isRetryable(e.status ?? 0) && e.status !== 0) throw e;
-        continue;
       }
     }
   }
@@ -1164,7 +1159,6 @@ export async function resolveProjectIdAsGeminiCliBypass(
         continue;
       }
       lastError = new ProjectDiscoveryError(`unexpected at ${ep}: ${String(e?.message ?? e)}`, 500, ep, true);
-      continue;
     }
   }
 

@@ -19,17 +19,17 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const exec = promisify(execFile);
 
-/** the bunx resolution law: the runner's own binary answers first. the
- * schema-utils 4.6 floor seats the bun-plugin-tailwind peer chain, and the
- * resolved graph carries the npm wrapper seat (bun@1.4.4, the bin pair the
- * wrapper publishes) — an --ignore-scripts install leaves that wrapper's
- * postinstall unbuilt, so a node_modules/.bin/bunx walk would shadow the
- * real bun the runner pins with a broken stub. under the bun runtime the
- * running binary IS the answer (the execPath of this very process), and
- * every other runtime keeps the plain PATH walk. */
-const [bunxbin, ...bunxargs] = process.versions.bun
-  ? [process.execPath, "x"]
-  : ["bunx"];
+/** the prisma resolution law: the cli seat the install materializes
+ * answers first, no PATH walk. the schema-utils 4.6 floor seats the
+ * bun-plugin-tailwind peer chain whose resolved graph carries the npm
+ * wrapper seat (bun@1.4.4, the bin pair the wrapper publishes), and an
+ * --ignore-scripts install leaves that wrapper's postinstall unbuilt
+ * — every bunx walk (the .bin the runners inject ahead of the system
+ * PATH, the vitest child under node, the shell the scripts spawn)
+ * resolves the broken stub before the real bun. the prisma cli is a
+ * node binary the seat materializes beside the manifest, so the direct
+ * path answers under every runtime the suite rides. */
+const prismabin = join(import.meta.dirname, "..", "node_modules", ".bin", process.platform === "win32" ? "prisma.cmd" : "prisma");
 
 const persistdir = mkdtempSync(join(tmpdir(), "gateway-persist-"));
 process.env.DEVTHINK_DATABASE_URL = `file:${join(persistdir, "test.db")}`;
@@ -46,7 +46,7 @@ beforeAll(async () => {
   // the storage lane persists (the ownership wave moved the masters to
   // getry/schema.prisma; the os mirror keeps the engine seam writing).
   const appdir = join(import.meta.dirname, "..");
-  await exec(bunxbin, [...bunxargs, "prisma", "generate", "--schema", "schema.prisma"], {
+  await exec(prismabin, ["generate", "--schema", "schema.prisma"], {
     cwd: appdir,
     timeout: 120000,
   });
@@ -60,8 +60,8 @@ beforeAll(async () => {
   // prismaconfig.ts — the bare db push never finds the datasource url
   // without one of the two flags)
   await exec(
-    bunxbin,
-    [...bunxargs, "prisma", "db", "push", "--schema", "schema.prisma", "--url", process.env.DEVTHINK_DATABASE_URL ?? ""],
+    prismabin,
+    ["db", "push", "--schema", "schema.prisma", "--url", process.env.DEVTHINK_DATABASE_URL ?? ""],
     {
       cwd: appdir,
       env: { ...process.env, DEVTHINK_DATABASE_URL: process.env.DEVTHINK_DATABASE_URL },

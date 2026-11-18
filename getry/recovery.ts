@@ -1151,7 +1151,6 @@ export function stripInvalidSignatures(
         // removal: for Claude 2026, dropping thinking must not break downstream tool_use.
         // Strategy: strip it here; it gets reinjected later when keep_thinking is active.
         removedCount++;
-        continue;
       } else {
         // valid - store into the cache
         if (typeof b.thinking === "string" && b.thinking.length > 0) {
@@ -1188,7 +1187,7 @@ export function ensureThinkingBeforeToolUse(
     const msg = out[mi]!;
     if (msg.role !== "assistant") continue;
     const blocks = extractBlocks(msg);
-    let hasThinking = blocks.some(
+    const hasThinking = blocks.some(
       (b: any) => b?.type === "thinking" && typeof b.thinking === "string" && b.thinking.trim().length > 0,
     );
     const hasToolUse = blocks.some((b: any) => b?.type === "tool_use");
@@ -1587,7 +1586,7 @@ export function preserveThinkingFromResponse(
 // ============================================================================
 
 export function exponentialBackoff(attempt: number, baseMs: number, maxMs: number, jitter: boolean): number {
-  const exp = Math.min(maxMs, baseMs * Math.pow(2, attempt));
+  const exp = Math.min(maxMs, baseMs * 2 ** attempt);
   if (!jitter) return Math.floor(exp);
   // full jitter would be random 0..exp; we use decorrelated jitter around the
   // base to avoid thundering herds
@@ -2273,7 +2272,7 @@ export async function withAutoRecoverySimple<T>(fn: (attempt: number) => Promise
       } catch {
         jitterMs = Math.floor(Math.random() * (JITTER_MAX_MS_SIMPLE - JITTER_MIN_MS_SIMPLE + 1));
       }
-      const delay = Math.min(250 * Math.pow(2, i) + jitterMs, 10000);
+      const delay = Math.min(250 * 2 ** i + jitterMs, 10000);
       await new Promise((r) => setTimeout(r, delay));
     }
   }

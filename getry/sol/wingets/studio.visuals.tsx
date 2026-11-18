@@ -751,6 +751,7 @@ export const IntroAnimation: React.FC<{
   if (!visible) return null;
 
   return (
+    // biome-ignore lint/a11y/useKeyWithClickEvents: click-through is a deliberate mouse-only convenience — the intro overlay is a timed cinematic the pointer advances and every keyboard user reaches the same completion through the timeout, so a keyboard handler here would be dead code
     <div
       role="dialog"
       aria-label="Introdução 3D DevThink"

@@ -573,6 +573,7 @@ export function Composer({
             onChange={(e) => setModelQuery(e.target.value)}
             placeholder="Search model or route..."
             aria-label="Search model"
+            // biome-ignore lint/a11y/noAutofocus: the immediate focus is the flow the picker opens for — the search field answers ready to type the same way every command palette does
             autoFocus
             className="w-full rounded-[10px] squircle border border-[var(--dk-matte-edge)] bg-[var(--dk-surface-2)] py-1.5 pl-8 pr-7 text-xs text-[var(--dk-text)] placeholder:text-[var(--dk-text-3)] focus:border-[var(--dk-brand)] focus:outline-none"
           />
@@ -886,10 +887,12 @@ export function Composer({
           {permissionsOpen &&
             typeof document !== 'undefined' &&
             createPortal(
+              // biome-ignore lint/a11y/useKeyWithClickEvents: click-to-dismiss is a deliberate mouse-only convenience — the dialog the backdrop seats owns the keyboard lane, so a keyboard handler here would be dead code
               <div
                 onClick={() => setPermissionsOpen(false)}
                 className="dt-center-modal-backdrop fixed inset-0 z-[90] flex items-center justify-center p-4"
               >
+                {/* biome-ignore lint/a11y/useKeyWithClickEvents: the dialog pane stops the backdrop dismissal without owning a click action — the controls inside carry the keyboard lane, so a keyboard handler here would be dead code */}
                 <div
                   role="dialog"
                   aria-modal="true"
@@ -997,10 +1000,12 @@ export function Composer({
           {templatesOpen &&
             typeof document !== 'undefined' &&
             createPortal(
+              // biome-ignore lint/a11y/useKeyWithClickEvents: click-to-dismiss is a deliberate mouse-only convenience — the dialog the backdrop seats owns the keyboard lane, so a keyboard handler here would be dead code
               <div
                 onClick={() => setTemplatesOpen(false)}
                 className="dt-center-modal-backdrop fixed inset-0 z-[90] flex items-center justify-center p-4"
               >
+                {/* biome-ignore lint/a11y/useKeyWithClickEvents: the dialog pane stops the backdrop dismissal without owning a click action — the controls inside carry the keyboard lane, so a keyboard handler here would be dead code */}
                 <div
                   role="dialog"
                   aria-modal="true"
@@ -1055,10 +1060,12 @@ export function Composer({
             (centered ? (
               typeof document !== 'undefined' &&
               createPortal(
+                // biome-ignore lint/a11y/useKeyWithClickEvents: click-to-dismiss is a deliberate mouse-only convenience — the dialog the backdrop seats owns the keyboard lane, so a keyboard handler here would be dead code
                 <div
                   onClick={() => setPopoverOpen(false)}
                   className="dt-center-modal-backdrop fixed inset-0 z-[90] flex items-center justify-center p-4"
                 >
+                  {/* biome-ignore lint/a11y/useKeyWithClickEvents: the dialog pane stops the backdrop dismissal without owning a click action — the controls inside carry the keyboard lane, so a keyboard handler here would be dead code */}
                   <div
                     role="dialog"
                     aria-modal="true"

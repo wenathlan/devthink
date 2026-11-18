@@ -236,7 +236,9 @@ function getSyncChannel(): BroadcastChannel | null {
         hydratedLanguages.clear();
         dirtyLanguages.clear();
       } else if (msg.type === 'lang-change' && isSupportedLanguage(msg.lang)) {
-        externalSyncListeners.forEach((cb) => cb(msg));
+        externalSyncListeners.forEach((cb) => {
+          cb(msg);
+        });
       }
     };
   } catch {
@@ -867,7 +869,9 @@ export async function translateContainer(
   if (items.length === 0) return;
 
   if (targetLang === DEFAULT_UI_LANGUAGE) {
-    items.forEach((item) => applyItemTranslation(item, item.original));
+    items.forEach((item) => {
+      applyItemTranslation(item, item.original);
+    });
     return;
   }
 

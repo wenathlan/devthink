@@ -65,6 +65,7 @@ export function ModelInspectorModal({
     routeResults[0];
 
   return (
+    // biome-ignore lint/a11y/useKeyWithClickEvents: click-to-dismiss is a deliberate mouse-only convenience — the inspector dialog owns the keyboard lane, so a keyboard handler here would be dead code
     <div
       role="dialog"
       aria-modal="true"
@@ -72,6 +73,7 @@ export function ModelInspectorModal({
       className="dt-center-modal-backdrop fixed inset-0 z-[90] flex items-center justify-center p-4"
       onClick={onClose}
     >
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: the pane stops the backdrop dismissal without owning a click action — the controls inside carry the keyboard lane, so a keyboard handler here would be dead code */}
       <div
         style={{ boxShadow: 'var(--dk-popover-shadow)' }}
         className="flex max-h-[86vh] w-full max-w-4xl flex-col overflow-hidden rounded-[22px] squircle border border-[var(--dk-matte-edge)] bg-[var(--dk-popover)] text-[var(--dk-text)]"

@@ -177,7 +177,7 @@ function AssistantMessageRow({
                     >
                       <img
                         src={src}
-                        alt={`Generated image ${index + 1}`}
+                        alt={`Imagem gerada ${index + 1}`}
                         className="w-full max-h-[380px] object-contain bg-[var(--dk-surface-2)]"
                       />
                     </button>
@@ -665,6 +665,7 @@ export function ChatThread({
       {lightbox &&
         typeof document !== 'undefined' &&
         createPortal(
+          // biome-ignore lint/a11y/useKeyWithClickEvents: click-to-dismiss is a deliberate mouse-only convenience — the dialog the backdrop seats owns the keyboard lane, so a keyboard handler here would be dead code
           <div
             role="dialog"
             aria-modal="true"
@@ -673,6 +674,7 @@ export function ChatThread({
             onClick={() => setLightbox(null)}
             className="fixed inset-0 z-[90] flex items-center justify-center bg-black/75 backdrop-blur-md p-4"
           >
+            {/* biome-ignore lint/a11y/useKeyWithClickEvents: the inner pane stops the backdrop dismissal without owning a click action — the image inside carries the click-through, so a keyboard handler here would be dead code */}
             <div
               onClick={(e) => e.stopPropagation()}
               className="relative max-w-4xl max-h-[88vh] overflow-hidden rounded-[18px] squircle border border-[var(--dk-matte-edge)] bg-[var(--dk-surface)]"

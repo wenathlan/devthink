@@ -161,6 +161,8 @@ export const ActiveSaddleTabSurface: FC<{ fillColor: string }> = ({ fillColor })
   return (
     <div ref={hostRef} aria-hidden="true" className="saddletab-surface">
       <svg
+        aria-hidden="true"
+        focusable="false"
         width={totalW}
         height={h + 1.5}
         viewBox={`0 0 ${totalW} ${h + 1.5}`}

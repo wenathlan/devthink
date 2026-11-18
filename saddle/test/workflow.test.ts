@@ -552,7 +552,12 @@ describe("the workflow contract", () => {
     const workflows = readdirSync(workflowdir)
       .filter((name) => name.endsWith(".yml") || name.endsWith(".yaml"))
       .sort();
-    assert.ok(workflows.length >= 8, `the consolidated workflow set must stay populated (found ${workflows.length})`);
+    /* the consolidation contract: the six-file house the grouping pass
+     * seated (ci, containers, maintenance, publish, release, security) is
+     * the correlated set the repository answers — the floor keeps the
+     * guard against an emptied set while walking the six the house
+     * declared. */
+    assert.ok(workflows.length >= 6, `the consolidated workflow set must stay populated (found ${workflows.length})`);
     for (const workflow of workflows) {
       const text = readFileSync(join(workflowdir, workflow), "utf8");
       for (const forbidden of ["web/android", "web/ios", "web/desktop", "web/extension"]) {

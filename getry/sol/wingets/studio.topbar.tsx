@@ -80,6 +80,8 @@ function ActiveSaddleTabSurface({ fillColor }: { fillColor: string }) {
       className="pointer-events-none select-none absolute inset-y-0 -left-[10px] -right-[10px] z-0"
     >
       <svg
+        aria-hidden="true"
+        focusable="false"
         width={totalW}
         height={h}
         viewBox={`0 0 ${totalW} ${h}`}
@@ -429,6 +431,7 @@ export function TopBar({
                       onBlur={commitRename}
                       onKeyDown={handleRenameKey}
                       onClick={(e) => e.stopPropagation()}
+                      // biome-ignore lint/a11y/noAutofocus: the rename input answers ready to type — the inline edit the row opens exists to type into immediately
                       autoFocus
                       aria-label="Rename tab"
                       className="relative z-10 min-w-0 flex-1 rounded bg-[var(--dk-surface-2)] px-1 py-0.5 text-[11.5px] font-semibold text-[var(--dk-text)] outline-none border border-[var(--dk-matte-edge)]"

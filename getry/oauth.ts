@@ -1762,7 +1762,6 @@ export const retrieveQuota = async (
         used: Number(j.used ?? 0),
       };
     } catch {
-      continue;
     }
   }
   return null;

@@ -985,7 +985,7 @@ export async function retrieveUserQuotaSummary(
 
       // Timeout / network - retry while attempts remain
       if (attempt < retries) {
-        const backoff = 200 * Math.pow(2, attempt) + Math.random() * 200;
+        const backoff = 200 * 2 ** attempt + Math.random() * 200;
         await new Promise((r) => setTimeout(r, backoff));
         continue;
       }
@@ -1098,7 +1098,7 @@ function saveFileCacheSync(entries: Record<string, QuotaCacheEntry>): void {
 }
 
 let _memoryFileCache: Record<string, QuotaCacheEntry> | null = null;
-let _inflightFetches: Map<string, Promise<QuotaSummaryParsed>> = new Map();
+const _inflightFetches: Map<string, Promise<QuotaSummaryParsed>> = new Map();
 
 function getFileCache(): Record<string, QuotaCacheEntry> {
   if (_memoryFileCache) return _memoryFileCache;
