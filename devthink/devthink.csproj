@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
     <AssemblyName>devthink</AssemblyName>
     <RootNamespace>DevThink</RootNamespace>
     <PackageId>devthink</PackageId>
@@ -103,9 +103,15 @@
     <PackageReference Include="Tokenizers.DotNet.runtime.osx-arm64" Version="1.4.1" />
     <PackageReference Include="Tokenizers.DotNet.runtime.osx-x64" Version="1.4.1" />
     <PackageReference Include="Tokenizers.DotNet.runtime.win-x64" Version="1.4.1" />
-    <PackageReference Include="WebScene" Version="1.0.23" />
-    <PackageReference Include="WebScene.Backend.Avalonia" Version="1.0.23" />
-    <PackageReference Include="WebScene.Sdk.Avalonia" Version="1.0.23" />
+    <!-- THE TFM CONDITIONAL SEAT (the 2.0.186 cure): the WebScene family
+         publishes its rungs against net8.0 and net10.0 alone (the NU1202 the
+         netstandard restore refused), so the references ride the net8.0 leg
+         the multi-target now carries while the netstandard legs keep the
+         content-file envelope the nupkg lane always shipped — the union seat
+         stays whole, the restore walks green on every leg. -->
+    <PackageReference Include="WebScene" Version="1.0.23" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="WebScene.Backend.Avalonia" Version="1.0.23" Condition="'$(TargetFramework)' == 'net8.0'" />
+    <PackageReference Include="WebScene.Sdk.Avalonia" Version="1.0.23" Condition="'$(TargetFramework)' == 'net8.0'" />
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
