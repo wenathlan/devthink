@@ -3924,3 +3924,15 @@ overrides:
   "zundo": "^2.3.0"
   "zustand": "^5.1.0"
   "zx": "^8.8.5"
+
+# the strictDepBuilds seat (the pnpm 12.3 strict era): pnpm 12.3.x fails
+# every install whose dependency build scripts stay ignored — the
+# ERR_PNPM_IGNORED_BUILDS wall the container lanes hit the moment the
+# bootstrapper crossed the 12.3 line. the family doctrine keeps scripts
+# ignored on every leg (the ignore-scripts law the engine seats) and the
+# runtime seats ride the prebuilds the tarballs ship (the better-sqlite3
+# 13.x family answers every platform from its prebuilds directory), so
+# the strict wall answers nothing the lanes need — the seat returns the
+# install to the warning lane the pnpm 11 era rode while the scripts
+# stay ignored the doctrine demands.
+strictDepBuilds: false
