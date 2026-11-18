@@ -11758,7 +11758,8 @@
     "cli": "^1.0.1",
     "@koa/router": "^15.7.1",
     "@modelcontextprotocol/node": "^2.1.2",
-    "@vanilla-extract/integration": "^8.0.11"
+    "@vanilla-extract/integration": "^8.0.11",
+    "npm": "^12.2.3"
   },
   "trustedDependencies": [
     "@parcel/watcher",
