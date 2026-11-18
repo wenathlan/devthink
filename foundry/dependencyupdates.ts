@@ -92,7 +92,7 @@ for (const section of ["dependencies", "devDependencies", "optionalDependencies"
  * a cache the decision pass reads in the manifest's own order, so the
  * report stays byte-identical to the sequential walk's. */
 const names = [...new Set(walkable.map((seat) => seat.name))];
-const registrycache = new Map<string, { latest?: string; dead?: string }>();
+const registrycache = new Map<string, { latest?: string; latestTime?: string; dead?: string }>();
 const pool = names.slice();
 const runners = Array.from({ length: Math.min(20, pool.length) }, async () => {
   for (let name = pool.shift(); name !== undefined; name = pool.shift()) {
@@ -133,7 +133,7 @@ const runners = Array.from({ length: Math.min(20, pool.length) }, async () => {
      * the date-stamped family) reddened every check the moment the registry
      * moved. the treadmill closes: the gate demands exactly the seats a
      * review branch can actually land. */
-    registrycache.set(name, { latest, latestTime: registry?.time?.[latest] });
+    registrycache.set(name, { latest, latestTime: latest ? registry?.time?.[latest] : undefined });
   }
 });
 await Promise.all(runners);
