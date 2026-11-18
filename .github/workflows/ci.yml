@@ -542,6 +542,17 @@ jobs:
           bun-version: 1.4.4
           cache: false
 
+      - name: Seat the java runtime the language lanes answer
+        # the edgeplane battery the saddle leg runs executes the languagejava
+        # lane in single-file source mode — the runner image's ambient java
+        # varies across the pool (the lane reddened on the images that carry
+        # none), so the leg seats temurin twenty-one the same rung the
+        # maven lanes pin, and the java lane answers deterministically on
+        # every runner of the family queue.
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
       - name: Guard the suite presence
         id: suite
         shell: bash
