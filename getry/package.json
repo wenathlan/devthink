@@ -3906,7 +3906,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",
     "@fluentui/react-icons": "^2.0.346",
-    "@hono/node-server": "^2.1.8",
+    "@hono/node-server": "^2.1.9",
     "@prisma/client": "^7.10.1",
     "@tailwindcss/vite": "^4.3.5",
     "@types/node": "^26.6.6",
