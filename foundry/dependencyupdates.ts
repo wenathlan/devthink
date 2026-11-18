@@ -124,7 +124,16 @@ const runners = Array.from({ length: Math.min(20, pool.length) }, async () => {
       registrycache.set(name, { dead: "no stable version" });
       continue;
     }
-    registrycache.set(name, { latest });
+    /* THE MINIMUM AGE LAW (the 2.0.186 cure): the resolved latest carries its
+     * publish time beside it — the decision pass below only proposes a seat
+     * the registry has carried a full seven-day week (the npm minimum the
+     * house doctrine seats; the 3d bun/pnpm/uv rows ride their own lanes),
+     * so a version published inside the quarantine window never reddens the
+     * gate the way the daily-tagged packages (@cloudflare/workers-types and
+     * the date-stamped family) reddened every check the moment the registry
+     * moved. the treadmill closes: the gate demands exactly the seats a
+     * review branch can actually land. */
+    registrycache.set(name, { latest, latestTime: registry?.time?.[latest] });
   }
 });
 await Promise.all(runners);
@@ -139,6 +148,13 @@ for (const { section, name, declared } of walkable) {
     continue;
   }
   const latest = answer?.latest as string;
+  /* THE MINIMUM AGE LAW (the 2.0.186 cure): the quarantine window — an
+   * update published inside seven days stays unseen by the ladder (the
+   * doctrine the minimum-ages law always carried: 7d npm, 3d bun/pnpm/uv),
+   * so the gate check stops demanding registry seats no review branch can
+   * land before the registry moves again. */
+  const latestTime = answer?.latestTime as string | undefined;
+  if (latestTime && Date.now() - Date.parse(latestTime) < 7 * 24 * 60 * 60 * 1000) continue;
   if (breaking(declared, latest) && !allowmajors) {
     skippedmajors.push({ name, current: declared, latest });
     continue;
