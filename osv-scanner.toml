@@ -6,7 +6,7 @@
 # never a silent walkaround, and the unfreeze edit retires a row the
 # moment its upstream ships the patch).
 
-[[Ignored]]
+[[IgnoredVulns]]
 # picomatch — the ReDoS through single-branch repeated extglobs
 # (GHSA-fc5q-39xc-vjpf / CVE-2026-112366, the high severity seat).
 # no fixed release exists upstream today: the vulnerable range spans
@@ -18,7 +18,7 @@
 # reach.
 id = "GHSA-fc5q-39xc-vjpf"
 
-[[Ignored]]
+[[IgnoredVulns]]
 # minimatch — the potential denial of service via globparts
 # amplification (GHSA-g3hv-75wg-m249, the 6.9 seat). the vulnerable
 # 10.2.6 rung rides INSIDE the aws-cdk-lib tarball: the seat is

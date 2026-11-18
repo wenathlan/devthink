@@ -689,12 +689,21 @@ jobs:
           # can read — the registry row answers UNKNOWN the same way
           # the @hanzo scope rows do, so the scope seat documents the
           # lane (the unfreeze edit retires the row the moment the
-          # upstream rung answers a permissive label).
+          # upstream rung answers a permissive label). the rapier
+          # physics seat answers the same unlicensed reality the xr
+          # exact already documents: the react-three family publishes
+          # its npm rungs without a license field the checker can read
+          # (the pmndrs repository carries the MIT LICENSE the source
+          # tree stamps — the upstream reality the same way the giscus
+          # row documents its MIT), so the exact seat documents the
+          # lane while the dependency stays seated the union law
+          # demands (the unfreeze edit retires the row the moment the
+          # registry rung answers a permissive label).
           CUSTOM_SEATS_EXCLUDE=$(node -e '
             const fs = require("fs");
             const lock = fs.readFileSync("bun.lock", "utf8");
             const scopes = ["@applitools", "@audio", "@ckeditor", "@cursor", "@dmitryrechkin", "@ffmpeg-installer", "@generaltranslation", "@github", "@hanzo", "@hanzogui", "@inkui-cli", "@mintlify", "@openauthjs", "@pierre", "@pmndrs", "@remotion", "@sentry", "@seydx", "@sqliteai", "@stream-io", "@tldraw", "@upsetjs", "@vscode"];
-            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/xr", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
+            const exacts = new Set(["@adobe/react-spectrum-workflow", "@fluentui/react-icons-mdl2-branded", "@gsap/react", "@hanzo/font", "@janhq/core", "@ltd/j-toml", "@netlify/redirect-matcher", "@plotly/mapbox-gl", "@react-three/rapier", "@react-three/xr", "@sveltejs/svelte-repl", "@turf/jsts", "arraydiff-async", "arraydiff-papandreou", "ascii-art-braille", "buffers", "chai-as-promised", "cli-table", "collaborative-editor", "collaborative-input", "deep-freeze", "deffy", "delayed-stream", "exif-parser", "fast-extend", "fast-shallow-equal", "flexible-input", "generaltranslation", "gt-i18n", "gt-react", "jschardet", "jsonc-simple-parser", "libreact", "node-bitmap", "precond", "process", "queue", "react-universal-interface", "sentry", "stack-trace", "valid-url", "vec2", "v8-argv", "agentation", "apex-commons", "apexcharts", "binaryextensions", "callbag", "cfonts", "ckeditor5", "command-code", "create-video", "dns-client", "dragselect", "editions", "emulators", "emulators-ui", "errlop", "essentia.js", "ffmpeg-static", "focus-visible", "geist", "gif-encoder-2", "gl-vec3", "gojs", "gsap", "handsontable", "heic-to", "istextorbinary", "jsonify", "jsts", "lamejs", "libtess", "mapbox-gl", "mintlify", "node-liblzma", "node-waf", "npm", "p5", "pandas", "pitchfinder", "remotion", "soundtouchjs", "spawndamnit", "spdx-exceptions", "splaytree-ts", "stockfish", "svg-path-reverse", "textextensions", "tinymce", "tldraw", "truncate-utf8-bytes", "ua-parser-js", "version-range", "webidl2"]);
             const rows = new Set();
             for (const match of lock.matchAll(/"((?:@[^\/"\s]+\/)?[^@"\s]+)@(\d+\.\d+\.\d+)"/g)) {
               const name = match[1];
