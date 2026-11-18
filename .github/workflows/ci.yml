@@ -767,8 +767,14 @@ jobs:
         # the sweep reruns here so the recorded wcag artifact reflects the
         # built surfaces (the committed artifact predates this build).
         run: cd devthink && node wcag.ts
+      # the wrapper stub the --ignore-scripts install leaves shadows the
+      # runner bun inside every script shell (node_modules/.bin rides the
+      # PATH the script execution prepends), so the ladder step walks the
+      # real bun the runner seats: the secret scan lane runs the typescript
+      # file directly and the deterministic suite rides the vitest script
+      # whose body spawns no bun of its own.
       - name: Check secrets and run the deterministic suite
-        run: cd devthink && bun run check
+        run: cd devthink && bun security.ts checksecrets && bun run test
       # The gateway family json gate ported to the merged tree (the maene
       # and e2ugh lanes carry the same battery): every tracked .json
       # document answers a strict parse with the single JSONC tolerance
