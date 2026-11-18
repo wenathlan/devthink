@@ -19,3 +19,12 @@ CVE-2026-56862
 CVE-2026-78667
 CVE-2026-78669
 CVE-2026-97031
+
+# the picomatch seat — CVE-2026-112366 (the ReDoS through single-branch
+# repeated extglob patterns) spans every version the registry carries
+# (2.3.2 through 4.0.7 alike — no fixed release exists upstream today);
+# the family manifests seat the 4.0.7 rung and the toolchains the locks
+# embed still carry the 2.x line inside npm itself. the row retires the
+# day picomatch ships a fixed release (never broaden, never silently
+# suppress — this seat alone documents the upstream-blocked lane).
+CVE-2026-112366
