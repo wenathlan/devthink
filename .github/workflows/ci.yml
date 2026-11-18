@@ -1012,22 +1012,41 @@ jobs:
         env:
           VITE_BASE_PATH: /
         run: cd devthink && npm run build:web
+      - name: Resolve the artifact suffix
+        # the artifact name law: a dispatched ref may carry branch slashes the
+        # artifact namespace refuses, so the suffix rides the sanitized form.
+        id: artifactsuffix
+        shell: bash
+        run: echo "name=$(echo '${{ inputs.ref || github.sha }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
+      - name: Upload the built DevThink artifacts
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: devthink-verify-${{ steps.artifactsuffix.outputs.name }}
+          path: devthink/build/devthink*.zip
+          if-no-files-found: error
+          retention-days: 14
+  containersmoke:
+    # THE CONTAINER SMOKE RUNNER (the 2.0.186 cure): the docker build asks a
+    # disk and a memory envelope the shared gate ladder runner never carried
+    # whole (the workspace trees beside the image layers beside the validation
+    # suite delivered the shutdown signal three lanes in a row), so the smoke
+    # answers a dedicated job on a fresh runner: the checkout alone, the
+    # transient-context ignore, the image build and the --check the ladder
+    # demanded — the family battery keeps its whole coverage at a fraction of
+    # the shared-runner pressure.
+    name: The DevThink container smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout DevThink source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.sha }}
       - name: Build the container image and run its smoke
-        # the context is THE REPOSITORY ROOT (the family-context law the
-        # Dockerfile header records): the dependency union pins the vault
-        # sibling as file:../vault, the flat test village owns the build
-        # engine and the suite, and the config bridges resolve the getry
-        # and saddle engines onto their sibling owners, so the image
-        # builds from the checkout geometry it mirrors.
         run: |
           set -euo pipefail
-          # THE TRANSIENT CONTEXT IGNORE (the 2.0.186 cure): the dockerignore
-          # semantics anchor the patterns beside the Dockerfile, so the
-          # sibling dependency trees the runner installs (the getry and
-          # saddle node_modules the family installs walk) never matched —
-          # the step writes the monorepo geometry ignore at the workspace
-          # root the transfer actually reads, the tree law keeping the
-          # repository root clean (the transient copy never lands in git).
           cat > .dockerignore <<'IGNORE'
           */node_modules
           */node_modules/**
@@ -1043,29 +1062,10 @@ jobs:
           node_modules
           .git
           IGNORE
-          # THE DISK RECLAIM (the 2.0.186 cure): the deps stage installs the
-          # frozen tree inside the image itself, so the workspace dependency
-          # trees the earlier steps materialized (the twelve gigabytes the
-          # runner disk carries) leave the disk before the build's own layers
-          # ask their space — the runner shutdown the full-disk pressure
-          # delivered never stops the smoke lane again.
-          rm -rf devthink/node_modules getry/node_modules saddle/node_modules
           docker build -f devthink/Dockerfile -t devthink-verify:local .
           rm -f .dockerignore
           docker run --rm devthink-verify:local --check
-      - name: Resolve the artifact suffix
-        # the artifact name law: a dispatched ref may carry branch slashes the
-        # artifact namespace refuses, so the suffix rides the sanitized form.
-        id: artifactsuffix
-        shell: bash
-        run: echo "name=$(echo '${{ inputs.ref || github.sha }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
-      - name: Upload the built DevThink artifacts
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: devthink-verify-${{ steps.artifactsuffix.outputs.name }}
-          path: devthink/build/devthink*.zip
-          if-no-files-found: error
-          retention-days: 14
+
   modes:
     name: The DevThink library modes on ${{ matrix.runtime }}
     runs-on: ubuntu-latest
