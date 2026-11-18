@@ -60,10 +60,15 @@ jobs:
     steps:
       - name: Checkout DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        # THE PACKAGEMANAGER LAW (the 2026-11-18 cure): the version input
+        # stays empty so the packageManager stamp the root manifest carries
+        # is the single source of truth - the immutable tag envelopes (the
+        # 2.0.185 rung cut before the pnpm ladder walked) and the main head
+        # both answer their own stamp without the multiple-versions conflict
+        # the action-setup refused (version input vs packageManager key).
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:

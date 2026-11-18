@@ -3872,7 +3872,6 @@ jobs:
         if: ${{ matrix.app != 'devthink' && matrix.app != 'saddle' }}
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: install linux webkit dependencies
         if: runner.os == 'Linux'
         shell: bash
@@ -4194,7 +4193,6 @@ jobs:
         if: matrix.pm == 'pnpm'
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
@@ -4585,7 +4583,6 @@ jobs:
         if: matrix.pm == 'pnpm'
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: install the dependencies (bun leg)
         if: matrix.pm == 'bun'
         run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
@@ -4957,7 +4954,6 @@ jobs:
         if: matrix.pm == 'pnpm'
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: Set up Node (pnpm leg)
         if: matrix.pm == 'pnpm'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -5699,7 +5695,6 @@ jobs:
         # identity gate.
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
           # the standalone @pnpm/exe binary answers a Node.js SEA bug on
           # the Intel macOS runners (the upstream issue the pnpm error
           # names: no working darwin-x64 binary), so the intel leg falls
@@ -6119,9 +6114,14 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 26.13.1
+        # THE PACKAGEMANAGER LAW (the 2026-11-18 cure): the version input
+        # stays empty so the packageManager stamp the root manifest carries
+        # is the single source of truth - the immutable tag envelopes (the
+        # 2.0.185 rung cut before the pnpm ladder walked) and the main head
+        # both answer their own stamp without the multiple-versions conflict
+        # the action-setup refused (version input vs packageManager key).
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # pnpm invocations that touch it delegate to this exact bun build.
@@ -6576,7 +6576,6 @@ jobs:
           node-version: 26.13.1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # pnpm invocations that touch it delegate to this exact bun build.
@@ -6766,7 +6765,6 @@ jobs:
           node-version: 26.13.1
       - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: set up bun
         # the devthink application pins bun (packageManager bun@1.4.2), so the
         # pnpm invocations that touch it delegate to this exact bun build.
@@ -7037,3 +7035,54 @@ jobs:
           GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
           RELEASE_TAG: ${{ steps.releaseversion.outputs.tag }}
         run: gh release upload "$RELEASE_TAG" "devthink.container.${{ steps.releaseversion.outputs.version }}.tar.gz" "sha256.container.${{ steps.releaseversion.outputs.version }}" "manifest.container.${{ steps.releaseversion.outputs.version }}.json" --clobber
+
+  cleanup:
+    # THE HOUSE CLEANUP LAW (the owner cache directive, 2026-11-18): every
+    # process cleans the caches it created the moment it ends - the run
+    # reuses its caches while it works (the registry buildcache image the
+    # container lanes carry rides GHCR storage, not the gha quota), the
+    # vacuum closes the run so the gha storage the 10GB ceiling polices
+    # never clogs the machine pool the family queue rides (the maintenance
+    # ladder's daily retention pass stays the deep sweep; this job is the
+    # per-run hygiene the security lane modeled first - the sweep-vhe
+    # precedent the standalone era carried rides house-level now).
+    needs: [deploy, devthink-container, saddle-vhe-cleanup, webpackseats]
+    if: always()
+    name: Clean this run's caches
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # least-privilege (the 2.0.184 scorecard closure): the cache deletes
+    # below ride the owner pat, so the github token answers read alone.
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Delete the caches this pipeline created
+        env:
+          # least-privilege (the 2.0.184 scorecard closure): the deletes
+          # ride the owner pat — the github token standing in when the
+          # secret does not — and every delete answers best-effort below.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # best-effort law (the 2.0.184 closure): a cache the delete
+          # refuses (a 403/404, the token answering no actions write)
+          # logs an honest notice and the loop walks on — the lane never
+          # reddens on the cleanup, the seven-day cache auto-eviction the
+          # backstop that keeps the storage bounded either way. The tool
+          # families these lanes create (buildkit stragglers, the setup
+          # node/java/dotnet/go legs) are the sweep scope; the codeql
+          # overlays stay with the security lane.
+          deleted=0
+          while IFS=$'\t' read -r cache_id cache_key; do
+            test -n "$cache_id" || continue
+            if gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
+              deleted=$((deleted + 1))
+              echo "deleted cache id=${cache_id} key=${cache_key}"
+            else
+              echo "::notice::cache id=${cache_id} key=${cache_key} refused the delete; the seven-day cache auto-eviction is the backstop."
+            fi
+          done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | test("^(buildkit|bun-|node-cache-|Linux-(node|jdk|dotnet|go)-)")) | [.id, .key] | @tsv')
+          echo "run ${RUN_ID} cleanup: deleted ${deleted} gha caches."

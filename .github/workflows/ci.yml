@@ -205,10 +205,15 @@ jobs:
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.4
+        # THE PACKAGEMANAGER LAW (the 2026-11-18 cure): the version input
+        # stays empty so the packageManager stamp the root manifest carries
+        # is the single source of truth - the immutable tag envelopes (the
+        # 2.0.185 rung cut before the pnpm ladder walked) and the main head
+        # both answer their own stamp without the multiple-versions conflict
+        # the action-setup refused (version input vs packageManager key).
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: Install the devthink dependencies
         # the merged application carries one package.json pinned to bun: the
         # single frozen install covers the engine and the web workbench alike
@@ -255,7 +260,6 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: Set up Bun
         # the merged application pins bun (packageManager bun@1.4.2): the
         # frozen install and the build scripts run through the pinned bun
@@ -563,7 +567,6 @@ jobs:
         if: steps.suite.outputs.present == 'true' && hashFiles(format('{0}/pnpm-lock.yaml', matrix.app)) != ''
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
 
       - name: Install the locked tree
         if: steps.suite.outputs.present == 'true'
@@ -725,7 +728,6 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
         with:
-          version: 12.21.0
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -1270,3 +1272,51 @@ jobs:
           reporter: github-check
           fail_level: error
           actionlint_flags: -config-file .github/workflows/actionlint-config.cfg
+
+  cleanup:
+    # THE HOUSE CLEANUP LAW (the owner cache directive, 2026-11-18): every
+    # process cleans the caches it created the moment it ends - the run
+    # reuses its caches while it works, the vacuum closes the run so the
+    # gha storage the 10GB ceiling polices never clogs the machine pool
+    # the family queue rides (the maintenance ladder's daily retention
+    # pass stays the deep sweep; this job is the per-run hygiene the
+    # security lane modeled first).
+    needs: [family-tests, lint]
+    if: always() && github.event_name != 'pull_request'
+    name: Clean this run's caches
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # least-privilege (the 2.0.184 scorecard closure): the cache deletes
+    # below ride the owner pat, so the github token answers read alone.
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Delete the caches this pipeline created
+        env:
+          # least-privilege (the 2.0.184 scorecard closure): the deletes
+          # ride the owner pat — the github token standing in when the
+          # secret does not — and every delete answers best-effort below.
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # best-effort law (the 2.0.184 closure): a cache the delete
+          # refuses (a 403/404, the token answering no actions write)
+          # logs an honest notice and the loop walks on — the lane never
+          # reddens on the cleanup, the seven-day cache auto-eviction the
+          # backstop that keeps the storage bounded either way. The node
+          # family this battery creates (the setup-node pnpm legs) is the
+          # sweep scope; the codeql overlays stay with the security lane.
+          deleted=0
+          while IFS=$'\t' read -r cache_id cache_key; do
+            test -n "$cache_id" || continue
+            if gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
+              deleted=$((deleted + 1))
+              echo "deleted cache id=${cache_id} key=${cache_key}"
+            else
+              echo "::notice::cache id=${cache_id} key=${cache_key} refused the delete; the seven-day cache auto-eviction is the backstop."
+            fi
+          done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | test("^(bun-|node-cache-|Linux-node-)")) | [.id, .key] | @tsv')
+          echo "run ${RUN_ID} cleanup: deleted ${deleted} gha caches."
