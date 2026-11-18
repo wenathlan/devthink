@@ -77,7 +77,10 @@ describe("nugetpack", () => {
     /* the csproj packs the declarations as a directory include and the readme at the package root */
     expect(csproj).toContain('build/*.d.ts" Pack="true" PackagePath="contentFiles/any/any/declarations/"');
     expect(csproj).toContain('<None Include="README.md" Pack="true" PackagePath="/" />');
-    /* the framework targets match the profile */
-    expect(csproj).toContain("<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>");
+    /* the framework targets match the profile — the net8.0 leg joined the
+     * profile the webscene seats demand (the net8/net10-only rungs the
+     * NU1202 restore refused ride their conditioned references on it
+     * while the netstandard legs keep the content-file envelope) */
+    expect(csproj).toContain("<TargetFrameworks>netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>");
   });
 });
