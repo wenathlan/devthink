@@ -1028,6 +1028,13 @@ jobs:
           node_modules
           .git
           IGNORE
+          # THE DISK RECLAIM (the 2.0.186 cure): the deps stage installs the
+          # frozen tree inside the image itself, so the workspace dependency
+          # trees the earlier steps materialized (the twelve gigabytes the
+          # runner disk carries) leave the disk before the build's own layers
+          # ask their space — the runner shutdown the full-disk pressure
+          # delivered never stops the smoke lane again.
+          rm -rf devthink/node_modules getry/node_modules saddle/node_modules
           docker build -f devthink/Dockerfile -t devthink-verify:local .
           rm -f .dockerignore
           docker run --rm devthink-verify:local --check
