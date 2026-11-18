@@ -164,8 +164,15 @@ describe.skipIf(!inrepo)("the webpack distribution workflow (the fusion law)", (
 
   it("the resolver validates the version lockstep of the seat", async () => {
     const text = await readworkflow("containers.yml");
+    /* the consolidated house seats the release-resolve umbrella the
+     * publish split once carried beside the container lanes the grouping
+     * pass correlated: every lane of the containers family resolves the
+     * release version beside the seat, so the resolver census answers the
+     * eight correlated lanes the file owns — the exclusivity the
+     * standalone webpack era stamped belongs to the one-job file that
+     * died in the consolidation. */
     const resolvers = text.split("resolve release version").length - 1;
-    expect(resolvers, "the bundle seat resolves the release version").toBe(1);
+    expect(resolvers, "the bundle seat resolves the release version beside the correlated family").toBe(8);
     expect(text, "every resolver validates the envelope version against the tag").toContain(
       "does not match the ${{ matrix.package }} envelope version",
     );

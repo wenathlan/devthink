@@ -573,7 +573,9 @@ describe("the workflow contract", () => {
     /* the consolidated mobile lane owns no tracked wrapper: it runs
      * `cap add` on the runner into <app>/android and <app>/ios
      * (gitignored) and builds the artifacts from the generated staging. */
-    const mobile = readFileSync(join(reporoot, "..", ".github", "workflows", "family-mobile.yml"), "utf8");
+    /* the consolidated house the grouping pass seated: the mobile lane rides
+     * the containers file (family-mobile.yml died in the six-file split). */
+    const mobile = readFileSync(join(reporoot, "..", ".github", "workflows", "containers.yml"), "utf8");
     for (const needle of ["cap add android", "cap add ios", "android/app/src/main/res"]) {
       assert.ok(
         mobile.includes(needle),
@@ -586,7 +588,9 @@ describe("the workflow contract", () => {
     /* the consolidated desktop lane scaffolds the tauri envelope (Cargo.toml,
      * main.rs, lib.rs, build.rs) on the runner into the app build/native
      * staging and reads the tracked tauri.conf.json from the app root. */
-    const desktop = readFileSync(join(reporoot, "..", ".github", "workflows", "family-desktop.yml"), "utf8");
+    /* the consolidated house the grouping pass seated: the desktop lane rides
+     * the containers file (family-desktop.yml died in the six-file split). */
+    const desktop = readFileSync(join(reporoot, "..", ".github", "workflows", "containers.yml"), "utf8");
     assert.ok(
       desktop.includes("build/native/desktop"),
       "family-desktop.yml must scaffold the tauri shell into build/native/desktop — the wrapper is generated at build time, never tracked",
