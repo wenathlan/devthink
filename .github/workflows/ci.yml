@@ -213,7 +213,6 @@ jobs:
         # the action-setup refused (version input vs packageManager key).
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
       - name: Install the devthink dependencies
         # the merged application carries one package.json pinned to bun: the
         # single frozen install covers the engine and the web workbench alike
@@ -259,7 +258,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
       - name: Set up Bun
         # the merged application pins bun (packageManager bun@1.4.2): the
         # frozen install and the build scripts run through the pinned bun
@@ -566,7 +564,6 @@ jobs:
       - name: Set up the family package manager
         if: steps.suite.outputs.present == 'true' && hashFiles(format('{0}/pnpm-lock.yaml', matrix.app)) != ''
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
 
       - name: Install the locked tree
         if: steps.suite.outputs.present == 'true'
@@ -727,7 +724,6 @@ jobs:
           bun-version: 1.4.4
       - name: Set up pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
-        with:
       - name: Set up Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
