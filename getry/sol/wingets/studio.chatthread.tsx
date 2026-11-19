@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import type { ChatMessage, RouteDiscoveryResult, RouteName } from './studio.client';
-import type { EffortChromaTier } from './studio.uiprefs';
+import type { ChatMessage, RouteDiscoveryResult, RouteName } from '../../studio.client';
+import type { EffortChromaTier } from '../../studio.uiprefs';
 import { MarkdownRenderer } from './studio.markdown';
 import { DevThinkAnsiCanvas } from './studio.visuals';
 import {

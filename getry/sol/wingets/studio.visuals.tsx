@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { EffortChromaTier } from './studio.uiprefs';
+import type { EffortChromaTier } from '../../studio.uiprefs';
 import {
   DEVTHINK_HEX_PATH,
   DEVTHINK_STAR_PATH,

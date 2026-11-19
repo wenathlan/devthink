@@ -13,7 +13,7 @@ import {
   resolveEffortChroma,
   snapRatioToStepIndex,
   stepReasoningLevelByDelta,
-} from './studio.uiprefs';
+} from '../../studio.uiprefs';
 
 interface TranslucentMeterSliderProps {
   value: number;

@@ -1673,7 +1673,7 @@ export {
   WorkIq20Regular,
   Wrench20Regular,
 } from '@fluentui/react-icons';
-import type { CountryFlagCode } from './studio.gtx';
+import type { CountryFlagCode } from '../../studio.gtx';
 
 export const FluentBolt: React.FC<IconProps> = ({ className = 'w-4 h-4' }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">

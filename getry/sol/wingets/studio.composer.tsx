@@ -8,14 +8,14 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { formatCompactTokens } from './studio.client';
+import { formatCompactTokens } from '../../studio.client';
 import type {
   ChatImageAttachment,
   DiscoveredModel,
   RouteDiscoveryResult,
   RouteName,
   Workspace
-} from './studio.client';
+} from '../../studio.client';
 import {
   formatEffortDynamicLabel,
   getReasoningStepIndex,
@@ -23,8 +23,8 @@ import {
   resolveEffortChroma,
   stepReasoningLevelByDelta,
   type PermissionMode,
-} from './studio.uiprefs';
-import { isDefaultEmptyConversationTitle, useGtxLanguage } from './studio.gtx';
+} from '../../studio.uiprefs';
+import { isDefaultEmptyConversationTitle, useGtxLanguage } from '../../studio.gtx';
 import {
   TranslucentEffortSpectrum,
   TranslucentMeterSlider,
