@@ -14,7 +14,7 @@ import {
   type RailMode,
   type RailPosition,
   type SaddleDockEdge,
-} from './studio.uiprefs';
+} from '../../studio.uiprefs';
 import {
   FluentArrowSync,
   FluentChartBar,

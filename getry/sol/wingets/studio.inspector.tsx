@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { formatCompactTokens } from './studio.client';
+import { formatCompactTokens } from '../../studio.client';
 import type {
   RouteDiscoveryResult,
   RouteName
-} from './studio.client';
+} from '../../studio.client';
 import {
   FluentArrowSync,
   FluentCheck,

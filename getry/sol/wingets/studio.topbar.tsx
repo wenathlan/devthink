@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
-import type { Conversation, Workspace } from './studio.client';
-import { useGtxLanguage } from './studio.gtx';
+import type { Conversation, Workspace } from '../../studio.client';
+import { useGtxLanguage } from '../../studio.gtx';
 import {
   DevThinkLogoMark,
   DevThinkWordmark,
