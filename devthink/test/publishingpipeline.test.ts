@@ -106,6 +106,11 @@ describe("the publishing pipeline", () => {
       "family",
       "familynpmjs",
       "familyghcr",
+      /* the house cache law seat (the 2026-11-19 closure): the cleanup job
+       * the owner cache directive stamps rides the terminal needs row so
+       * the release train vacuums the buildkit/bun/node caches its family
+       * container and assemble lanes created the moment the wave ends */
+      "cleanup",
     ]);
     /* the draft → assemble → verify → publish chain the readiness gate walks */
     for (const control of ["--draft", "sha256sum --check SHA256SUMS.txt", "draft=false"])

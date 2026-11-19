@@ -1853,3 +1853,51 @@ jobs:
             docker push "${image}:${RELEASE_VERSION}"
             echo "${app}: pushed ${image}:${RELEASE_VERSION}"
           done
+
+  cleanup:
+    name: Clean this run's caches
+    # THE HOUSE CLEANUP LAW (the owner cache directive, 2026-11-18) closes the
+    # release lane too: the sixth seat of the per-run hygiene — the family
+    # container lanes above build the ghcr images (the buildkit overlays the
+    # machine pool rides), and the assemble lanes stamp the bun/node legs —
+    # so the release train vacuums the caches it created the moment the wave
+    # ends, the maintenance ladder's daily retention pass staying the deep
+    # sweep this per-run vacuum complements (the ci, containers, publish and
+    # security lanes already carry their own seats).
+    needs: [npmjs, githubrelease, familynpmjs, familyghcr]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # least-privilege (the 2.0.184 scorecard closure): the cache reads ride
+    # the actions scope, the deletes ride the owner pat the github token
+    # standing in when the secret does not — read alone answers the list.
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Delete the caches this pipeline created
+        env:
+          GH_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # best-effort law (the 2.0.184 closure): a cache the delete
+          # refuses (a 403/404, the token answering no actions write)
+          # logs an honest notice and the loop walks on — the lane never
+          # reddens on the cleanup, the seven-day cache auto-eviction the
+          # backstop that keeps the storage bounded either way. The tool
+          # families this train creates (the buildkit overlays the ghcr
+          # lanes stamp, the setup node/java/dotnet/go legs) are the sweep
+          # scope; the codeql overlays stay with the security lane.
+          deleted=0
+          while IFS=$'\t' read -r cache_id cache_key; do
+            test -n "$cache_id" || continue
+            if gh api -X DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
+              deleted=$((deleted + 1))
+              echo "deleted cache id=${cache_id} key=${cache_key}"
+            else
+              echo "::notice::cache id=${cache_id} key=${cache_key} refused the delete; the seven-day cache auto-eviction is the backstop."
+            fi
+          done < <(gh api --paginate "repos/${GH_REPO}/actions/caches?per_page=100" --jq '.actions_caches[] | select(.key | test("^(buildkit|bun-|node-cache-|Linux-(node|jdk|dotnet|go)-)")) | [.id, .key] | @tsv')
+          echo "run ${RUN_ID} cleanup: deleted ${deleted} gha caches."
