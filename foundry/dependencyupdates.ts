@@ -96,7 +96,26 @@ const registrycache = new Map<string, { latest?: string; latestTime?: string; de
 const pool = names.slice();
 const runners = Array.from({ length: Math.min(20, pool.length) }, async () => {
   for (let name = pool.shift(); name !== undefined; name = pool.shift()) {
-    const response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`);
+    /* THE BOUNDED FETCH LAW (the 2026-11-19 stall cure): every registry
+     * ride carries its own abort clock and a bounded retry — the train 433
+     * ladder hung forty-six minutes on a single stalled registry
+     * connection the keep-alive pool never answered (the runner died
+     * silently, no error annotation, the gate never concluded), so each
+     * fetch now aborts at twenty seconds, retries three times with the
+     * linear backoff, and the lane fails fast and honest when the
+     * registry stays unreachable instead of hanging the whole battery. */
+    let response: Response | undefined;
+    for (let attempt = 0; attempt < 3 && !response; attempt++) {
+      try {
+        response = await fetch(`https://registry.npmjs.org/${encodeURIComponent(name)}`, {
+          signal: AbortSignal.timeout(20_000),
+        });
+      } catch (err) {
+        if (attempt === 2) throw new Error(`npm registry fetch stalled for ${name}: ${(err as Error).message}`);
+        await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
+      }
+    }
+    if (!response) throw new Error(`npm registry fetch stalled for ${name}`);
     /* the dead-seat law (the owner's no-removal doctrine): a package the
      * registry unpublished (the websocket-server seat the nine-repo union
      * carried was unpublished in 2014 — 404 with an Unpublished body) keeps
