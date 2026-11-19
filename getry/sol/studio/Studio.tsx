@@ -3,7 +3,7 @@
  * interface 18 edition (the "devthink chat3" replacement spec): the anchor
  * of the studio folder mounts the full studio desktop — the omni saddle
  * rail, the seamless browser tabs, the workspace sidebar, the chat thread,
- * the composer — wired to the GETRY LANES through sol/wingets/studio.client
+ * the composer — wired to the GETRY LANES through getry/studio.client
  * (the correlated-logic adapter): discovery over chatclient.discovery(),
  * streaming over chatclient.streamchat() with the reasoning ALWAYS before
  * the content, the devthink meta-model smart-first rotation, the thinking
@@ -59,14 +59,14 @@ import {
   type RouteDiscoveryResult,
   type RouteName,
   type Workspace,
-} from "../wingets/studio.client";
+} from "../../studio.client";
 import { Sidebar, type SidebarTab } from "../wingets/studio.sidebar";
 import { TopBar } from "../wingets/studio.topbar";
 import { ChatThread } from "../wingets/studio.chatthread";
 import { Composer } from "../wingets/studio.composer";
 import { ModelInspectorModal } from "../wingets/studio.inspector";
 import { TerminalDrawer, type TerminalLogLine } from "../wingets/studio.terminal";
-import { extractConversationArtifacts, type WorkspaceTask } from "../wingets/studio.artifacts";
+import { extractConversationArtifacts, type WorkspaceTask } from "../../studio.artifacts";
 import {
   clampSidebarWidth,
   computeZoomViewportStyle,
@@ -83,8 +83,8 @@ import {
   type RailMode,
   type RailPosition,
   type SaddleDockEdge,
-} from '../wingets/studio.uiprefs';
-import { GtxLanguageProvider } from '../wingets/studio.gtx';
+} from '../../studio.uiprefs';
+import { GtxLanguageProvider } from '../../studio.gtx';
 
 const STORAGE_CONVS_KEY = 'devthink_chat_conversations_v1';
 const STORAGE_ACTIVE_KEY = 'devthink_chat_active_id_v1';

@@ -33,7 +33,7 @@ import {
   gatewayorigin,
   newsessionid,
   streamchat,
-} from "../../chatclient";
+} from "./chatclient";
 import {
   type ClientConversationRow,
   type ClientMessageRow,
@@ -41,9 +41,9 @@ import {
   deleteconversationremote,
   listconversations,
   saveconversationremote,
-} from "../../db";
-import { GATEWAYVERSIONS } from "../../gateway";
-import { listlevels } from "../../thinking";
+} from "./db";
+import { GATEWAYVERSIONS } from "./gateway";
+import { listlevels } from "./thinking";
 
 /* ===== block: the surface types (the interface-18 grammar) ============= */
 

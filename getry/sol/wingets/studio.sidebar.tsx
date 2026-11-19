@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
-import { formatCompactTokens } from './studio.client';
+import { formatCompactTokens } from '../../studio.client';
 import type {
   Conversation,
   DiscoveredModel,
   RouteDiscoveryResult,
   RouteName,
   Workspace
-} from './studio.client';
+} from '../../studio.client';
 import {
   CountryFlag,
   FluentArrowSync,
@@ -61,8 +61,8 @@ import {
   NewChatMorphLogo,
 } from './studio.icons';
 import { TranslucentEffortSpectrum, TranslucentMeterSlider } from './studio.sliders';
-import { SUPPORTED_LANGUAGES, useGtxLanguage } from './studio.gtx';
-import type { ExtractedArtifact, WorkspaceTask } from './studio.artifacts';
+import { SUPPORTED_LANGUAGES, useGtxLanguage } from '../../studio.gtx';
+import type { ExtractedArtifact, WorkspaceTask } from '../../studio.artifacts';
 import {
   computeUsageStatistics,
   formatEffortDynamicLabel,
@@ -72,7 +72,7 @@ import {
   sortConversationsWithPins,
   type RailMode,
   type SaddleDockEdge,
-} from './studio.uiprefs';
+} from '../../studio.uiprefs';
 
 export type SidebarTab = 'chats' | 'artifacts' | 'tasks' | 'models' | 'params' | 'settings';
 
