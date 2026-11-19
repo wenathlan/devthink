@@ -220,7 +220,7 @@ export const APPS: AppMeta[] = [
     domain: "getry.devthink.pro",
     slug: "getry",
     role: "the ai gateway of the os",
-    accent: "#8b5cf6",
+    accent: "#4cc2ff",
     tag: "ai, routes",
     target: "os",
     desc: "The family registry: five provider gateways (v1 zai, v2 babel, v3 nvidia, v4 opencode+kilo, v5 openrouter) serving 35 OpenAI-compatible routes with the 7-level thinking system and key rotation.",

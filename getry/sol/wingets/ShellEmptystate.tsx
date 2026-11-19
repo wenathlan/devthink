@@ -4,7 +4,7 @@
  * and why, one real action hands the operator the way out). Never a dry
  * "nothing here": every state names the cause and carries the escape hatch.
  * The glyph rides the same lucide set the rail uses, the wash mixes the
- * reasoning violet of the theme, and the action is a plain anchor or button
+ * signal accent of the theme, and the action is a plain anchor or button
  * the caller composes — the component owns only the frame.
  */
 import type { ReactNode } from "react";

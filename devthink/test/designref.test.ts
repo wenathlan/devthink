@@ -208,9 +208,10 @@ describe("the blue glow purge (the one sanctioned glow lives in the landing bloc
     }
   });
 
-  it("the sanctioned indigo hover of the tactile keys survives inside the landing block", () => {
+  it("the sanctioned focus hover of the tactile keys survives inside the landing block", () => {
     const after = solcss.slice(landingAt);
-    expect(after).toContain("rgba(79, 70, 229, 0.45)");
+    expect(after).toContain("rgba(76, 194, 255, 0.45)");
+    expect(after, "the indigo hover the doctrine bans never returns").not.toContain("rgba(79, 70, 229, 0.45)");
   });
 });
 

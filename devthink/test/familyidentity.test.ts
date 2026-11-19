@@ -25,7 +25,7 @@ const SPEC_ACCENTS: Record<string, string> = {
   forge: "#a2cb3a", // lime-brasa
   foundry: "#2fb8b5", // têmpera
   vault: "#a3d7e6", // gelo-de-cofre
-  getry: "#8b5cf6", // violeta
+  getry: "#4cc2ff", // o foco (a violeta aposentada pela lei do ban — spec-12 revisada)
 };
 
 describe("the family accent table", () => {

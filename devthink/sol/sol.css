@@ -4522,7 +4522,7 @@ legend.cmd-group {
   --chat-r-sm: 4px;
   --sol-traj-user: #60a5fa;
   --sol-traj-assistant: #2dd4bf;
-  --sol-traj-reasoning: #a78bfa;
+  --sol-traj-reasoning: #4cc2ff;
   --sol-traj-tool: #f59e0b;
   --sol-traj-result: #38bdf8;
   --chat-input-border: rgb(255 255 255 / 10%);
@@ -5849,7 +5849,7 @@ legend.cmd-group {
 }
 
 .dtc-cog {
-  /* the reasoning trace (the zcode trajectory semantics): the violet
+  /* the reasoning trace (the zcode trajectory semantics): the focus
    * ramp at the hairline and the wash — the cognition expander is the
    * one surface the reasoning hue owns. */
   width: 100%;
@@ -8248,9 +8248,9 @@ tint, the grain and the fluent shadows keep their exact values */
  * lightens to the 82 percent white, and the rail hairline flips to the ink
  * alpha. */
 [data-theme="light"] .chat-root {
-  --sol-traj-user: #2563eb;
+  --sol-traj-user: #0067c0;
   --sol-traj-assistant: #0f766e;
-  --sol-traj-reasoning: #7c3aed;
+  --sol-traj-reasoning: #0067c0;
   --sol-traj-tool: #d97706;
   --sol-traj-result: #0284c7;
   --chat-input-border: rgb(13 13 13 / 10%);
@@ -12903,8 +12903,8 @@ html[data-density="compact"] {
 
 /* ==== the image.css skins — merged from the app folder, the folder carries tsx only ==== */
 /* image app skins — the stills rows over the dtw kit. merges into the kit
- * section of sol.css. the app scope retunes the kit accents: the violet
- * identity (#c084fc, the registry tint) rides the active-indicator pill
+ * section of sol.css. the app scope retunes the kit accents: the focus
+ * identity (#4cc2ff, the registry tint) rides the active-indicator pill
  * and the Render content CTA (dark slate ink for the AA pair), while the
  * hover washes stay neutral slate — the identity never rides the chrome,
  * and the indigo trident defaults never enter this window. the render
@@ -12912,7 +12912,7 @@ html[data-density="compact"] {
  * focus ring. */
 .dtw-image {
   --dtv3-sig: var(--dtv3-ink-1);
-  --color-win: #c084fc;
+  --color-win: #4cc2ff;
 }
 .dtw-image .dtw-action {
   min-height: 44px;
@@ -12925,11 +12925,11 @@ html[data-density="compact"] {
 }
 .dtw-image .dtw-action--primary {
   border-color: transparent;
-  background: #c084fc;
+  background: #4cc2ff;
   color: #0f172a;
 }
 .dtw-image .dtw-action--primary:hover {
-  background: color-mix(in srgb, #c084fc 88%, var(--color-veil));
+  background: color-mix(in srgb, #4cc2ff 88%, var(--color-veil));
 }
 .dtw-image .dtw-action:focus-visible {
   outline: 2px solid var(--dtv3-ink-1);
@@ -15451,7 +15451,7 @@ html[data-density="compact"] {
 
 /* ---- the turn timeline grammar (w3 b) ---- */
 
-/* the cognition live label — the violet gradient sweep while the trace
+/* the cognition live label — the focus gradient sweep while the trace
    streams (the decided shimmer law) */
 .cognition-live {
   background: linear-gradient(
@@ -15473,7 +15473,7 @@ html[data-density="compact"] {
   to { background-position: -200% 0; }
 }
 
-/* the live cognition surface: the violet border lifts a step while the
+/* the live cognition surface: the focus border lifts a step while the
    trace streams */
 .dtc-cog[data-live="true"] {
   border-color: color-mix(in srgb, var(--sol-traj-reasoning) 34%, transparent);
@@ -22691,7 +22691,7 @@ button.dtc-recents__row {
   --saas-face: #fefefe;
 }
 .saas-root ::selection {
-  background: #7c3aed;
+  background: #0067c0;
   color: var(--saas-face);
 }
 .saas-root button:focus,
@@ -22699,7 +22699,7 @@ button.dtc-recents__row {
   outline: none;
 }
 .saas-root button:focus-visible {
-  outline: 2px solid rgba(124, 58, 237, 0.65);
+  outline: 2px solid rgba(0, 103, 192, 0.65);
   outline-offset: 2px;
 }
 .saas-root img {
@@ -22730,7 +22730,8 @@ button.dtc-recents__row {
 }
 
 /* the tactile keys: the dark gradient with the double drop and the inset
-   rims (the reference indigo hover is the one sanctioned glow of the face) */
+   rims (the focus-blue hover is the one sanctioned glow of the face — the
+   indigo the doctrine bans never returns) */
 .btn-tactile-3d {
   background: linear-gradient(180deg, #243047 0%, #090d16 100%);
   box-shadow:
@@ -22746,7 +22747,7 @@ button.dtc-recents__row {
 .btn-tactile-3d:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow:
-    0 20px 34px -8px rgba(79, 70, 229, 0.45),
+    0 20px 34px -8px rgba(76, 194, 255, 0.45),
     inset 0 2px 3px rgba(255, 255, 255, 0.55),
     inset 0 -3px 6px rgba(0, 0, 0, 0.75);
 }
@@ -22773,20 +22774,20 @@ button.dtc-recents__row {
 }
 .icon-frame-3d:hover {
   transform: translateY(-1.5px);
-  border-color: rgba(124, 58, 237, 0.5);
+  border-color: rgba(0, 103, 192, 0.5);
   box-shadow:
-    0 12px 22px -6px rgba(79, 70, 229, 0.18),
+    0 12px 22px -6px rgba(76, 194, 255, 0.18),
     inset 0 1px 2px rgba(255, 255, 255, 1);
 }
 .icon-frame-3d-active {
   background: var(--saas-face);
-  border: 1px solid rgba(124, 58, 237, 0.6);
+  border: 1px solid rgba(0, 103, 192, 0.6);
   box-shadow:
-    0 10px 22px -6px rgba(79, 70, 229, 0.24),
+    0 10px 22px -6px rgba(76, 194, 255, 0.24),
     inset 0 1px 2px rgba(255, 255, 255, 1);
 }
 
-/* the era surfaces: the card, the stat tile and the indigo slab */
+/* the era surfaces: the card, the stat tile and the sky slab */
 .surface-card {
   background: var(--saas-face);
   border: 1px solid rgba(226, 232, 240, 0.95);
@@ -22796,22 +22797,23 @@ button.dtc-recents__row {
   background: #f4f6fb;
   border: 1px solid rgba(226, 232, 240, 0.9);
 }
-.violet-tactile-surface {
-  background: linear-gradient(145deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%);
+
+/* the tactile slab re-tuned to the sky family (the violet ramp the
+ * doctrine bans never returns): the AI Teams card surface the saas
+ * content layer seats — deep sky ramp, the ice inset, the slate floor */
+.sky-tactile-surface {
+  background: linear-gradient(145deg, #0067c0 0%, #0369a1 58%, #075985 100%);
   box-shadow:
-    0 22px 44px -12px rgba(91, 33, 182, 0.5),
+    0 22px 44px -12px rgba(7, 89, 133, 0.5),
     inset 0 2px 5px rgba(255, 255, 255, 0.32),
     inset 0 -5px 10px rgba(15, 23, 42, 0.4);
 }
-
-/* the hero engine switch: the four-stop drift of the reference */
+/* the hero engine switch re-tuned to the focus family (the violet
+ * ramp the doctrine bans never returns) */
 .hero-inline-switch {
-  /* the no-blue law of the hero inline switch: the gradient rides the
-   * warm family only (violet, pink, orange) — the sky-blue head the
-   * first cut carried never returns (the owner order: no blue glows). */
-  background: linear-gradient(125deg, #a855f7 0%, #ec4899 55%, #f97316 100%);
+  background: linear-gradient(125deg, #4cc2ff 0%, #ec4899 55%, #f97316 100%);
   box-shadow:
-    0 12px 26px -6px rgba(168, 85, 247, 0.45),
+    0 12px 26px -6px rgba(76, 194, 255, 0.45),
     inset 0 2px 4px rgba(255, 255, 255, 0.55);
 }
 .hero-switch-thumb {
@@ -22832,13 +22834,13 @@ button.dtc-recents__row {
   }
 }
 .hero-gaussian-shader {
-  /* the five radiais answer the warm family only (violet, rose, purple,
-   * pink, orange) — the sky and indigo glows the owner reported never
-   * return (the no-blue-glow law of the hero field). */
+  /* the five radiais answer the focus family with the warm accents
+   * (pink, orange) — the violet and purple glows the doctrine bans
+   * never return (the violet purge of the hero field). */
   background:
-    radial-gradient(circle at 14% 70%, rgba(139, 92, 246, 0.78) 0%, transparent 48%),
+    radial-gradient(circle at 14% 70%, rgba(76, 194, 255, 0.78) 0%, transparent 48%),
     radial-gradient(circle at 36% 80%, rgba(244, 114, 182, 0.75) 0%, transparent 50%),
-    radial-gradient(circle at 58% 65%, rgba(168, 85, 247, 0.78) 0%, transparent 48%),
+    radial-gradient(circle at 58% 65%, rgba(56, 189, 248, 0.78) 0%, transparent 48%),
     radial-gradient(circle at 78% 75%, rgba(236, 72, 153, 0.78) 0%, transparent 48%),
     radial-gradient(circle at 92% 65%, rgba(251, 146, 60, 0.82) 0%, transparent 45%);
   filter: blur(56px) saturate(165%);
@@ -22850,7 +22852,7 @@ button.dtc-recents__row {
   background: conic-gradient(
     from 180deg at 50% 50%,
     #ec4899 0deg,
-    #8b5cf6 72deg,
+    #4cc2ff 72deg,
     #3b82f6 144deg,
     #38bdf8 216deg,
     #f59e0b 288deg,
@@ -23029,9 +23031,9 @@ button.dtc-recents__row {
   -ms-overflow-style: none;
 }
 
-/* the brand gradient word: indigo to sky, the reference pair */
+/* the brand gradient word: focus to sky, the family pair */
 .text-gradient-brand {
-  background: linear-gradient(92deg, #6366f1 0%, #38bdf8 100%);
+  background: linear-gradient(92deg, #4cc2ff 0%, #38bdf8 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

@@ -9,7 +9,7 @@
  * The ten entries are the decided accents of the campaign (spec section
  * 2.3/12): devthink Sol-amber · argan jade · cadria pink · debonair brass
  * · stealthhead ember · saddle leather-ember · forge ember-lime · foundry
- * temper · vault ice-box · getry violet. None is a banned blue
+ * temper · vault ice-box · getry focus (the violet retired by the ban law). None is a banned blue
  * (#3B82F6/#2563EB) or the banned orange (#F97316), and the hue gaps
  * between neighbors stay over 20°.
  */
@@ -25,7 +25,7 @@ export const FAMILY_ACCENT: Record<string, string> = {
   forge: "#a2cb3a", // ember lime — "only runs" (GO)
   foundry: "#2fb8b5", // temper — steel that runs and stores
   vault: "#a3d7e6", // ice-box — stores only, sealed
-  getry: "#8b5cf6", // violet — phosphor terminal
+  getry: "#4cc2ff", // o foco — phosphor terminal (the violet retired by the ban law)
 };
 
 /** the one glyph motion per app (the HeroGlyph timeline key). */

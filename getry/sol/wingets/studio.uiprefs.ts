@@ -218,7 +218,7 @@ export function getEffortGlowIntensity(levels: readonly string[], current: strin
   return Number(Math.min(1, Math.max(0.25, ratio)).toFixed(2));
 }
 
-export type EffortChromaTier = 'neutral' | 'lime' | 'green' | 'purple' | 'chromatic';
+export type EffortChromaTier = 'neutral' | 'lime' | 'green' | 'azure' | 'chromatic';
 
 export interface EffortChromaSpec {
   tier: EffortChromaTier;
@@ -253,16 +253,16 @@ const RADIOACTIVE_CHROMA_MAP: Record<Exclude<EffortChromaTier, 'neutral'>, Omit<
     border: 'rgba(34, 197, 94, 0.58)',
     glow: 'transparent',
   },
-  purple: {
-    primary: '#a855f7',
-    secondary: '#c084fc',
-    border: 'rgba(168, 85, 247, 0.60)',
+  azure: {
+    primary: '#4cc2ff',
+    secondary: '#a3d7e6',
+    border: 'rgba(76, 194, 255, 0.60)',
     glow: 'transparent',
   },
   chromatic: {
     primary: '#38bdf8',
-    secondary: '#c084fc',
-    border: 'rgba(167, 139, 250, 0.64)',
+    secondary: '#a3d7e6',
+    border: 'rgba(163, 215, 230, 0.64)',
     glow: 'transparent',
   },
 };
@@ -303,7 +303,7 @@ export function resolveEffortChroma(
   } else if (norm === 'medium' || norm === 'low' || ratio <= 0.55) {
     tier = 'green';
   } else {
-    tier = 'purple';
+    tier = 'azure';
   }
 
   return {
@@ -585,7 +585,7 @@ export function runUiPrefsSelfTests(): number {
 
   assertEqUi(resolveEffortChroma(keys, 'minimal').tier, 'lime', 'chroma lime');
   assertEqUi(resolveEffortChroma(keys, 'medium').tier, 'green', 'chroma green');
-  assertEqUi(resolveEffortChroma(keys, 'high').tier, 'purple', 'chroma purple');
+  assertEqUi(resolveEffortChroma(keys, 'high').tier, 'azure', 'chroma azure');
   assertEqUi(resolveEffortChroma(keys, 'max').tier, 'chromatic', 'chroma max');
   assertEqUi(stepReasoningLevelByDelta(keys, 'default', -1, { wrap: true }), 'max', 'step wrap');
 

@@ -24,7 +24,7 @@ export function Studiomark({ app, className = "w-11 h-11" }: { app: studiomarkid
             <stop offset="100%" stopColor="#E2E8F2" />
           </linearGradient>
           <linearGradient id="dtcadbk" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#8B5CF6" />
+            <stop offset="0%" stopColor="#4cc2ff" />
             <stop offset="100%" stopColor="#22D3EE" />
           </linearGradient>
         </defs>
@@ -147,8 +147,8 @@ export function Studiomark({ app, className = "w-11 h-11" }: { app: studiomarkid
           </linearGradient>
           <radialGradient id="dtgeto" cx="35%" cy="30%" r="75%">
             <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="25%" stopColor="#EDE9FE" />
-            <stop offset="55%" stopColor="#8B5CF6" />
+            <stop offset="25%" stopColor="#a3d7e6" />
+            <stop offset="55%" stopColor="#4cc2ff" />
             <stop offset="100%" stopColor="#22D3EE" />
           </radialGradient>
         </defs>
@@ -213,8 +213,8 @@ export function Studiomark({ app, className = "w-11 h-11" }: { app: studiomarkid
         </linearGradient>
         <radialGradient id="dtdooo" cx="35%" cy="30%" r="75%">
           <stop offset="0%" stopColor="#FFFFFF" />
-          <stop offset="35%" stopColor="#E0E7FF" />
-          <stop offset="65%" stopColor="#A78BFA" />
+          <stop offset="35%" stopColor="#a3d7e6" />
+          <stop offset="65%" stopColor="#4cc2ff" />
           <stop offset="100%" stopColor="#F97316" />
         </radialGradient>
       </defs>

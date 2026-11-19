@@ -644,12 +644,12 @@ export const CalculatorIcon: ComponentType<AppIconProps> = (props: AppIconProps)
   <FluentIconFace {...props} uid="dti-calculator" plate={CalculatorIcon_PLATE} />
 );
 
-/** Image — the native image studio: a violet plate carrying the photo —
+/** Image — the native image studio: a sky plate carrying the photo —
  *  the filled frame, its interior cut back to the plate tone and its
  *  landscape redrawn in white inside the cut. */
 const PhotosIcon_PLATE: AppIconPlate = {
-  top: "#c795f7",
-  bottom: "#9a5fe0",
+  top: "#4cc2ff",
+  bottom: "#0067c0",
   glyph: (tone) => (
     <>
       <rect x="12.9" y="14.3" width="22.2" height="19.4" rx="3.7" fill={GLYPH_INK} stroke="none" />

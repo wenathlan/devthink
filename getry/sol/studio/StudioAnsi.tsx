@@ -43,10 +43,10 @@ export const StudioAnsiCanvas: FC<{ engineMode: boolean; pulseTrigger: number }>
 
     const SS = 2;
     const PALETTES = {
-      auto: { a: [56, 189, 248], b: [139, 92, 246], tempo: 1.0, size: 1.0 },
-      think: { a: [236, 72, 153], b: [99, 102, 241], tempo: 0.95, size: 1.08 }
+      auto: { a: [56, 189, 248], b: [163, 215, 230], tempo: 1.0, size: 1.0 },
+      think: { a: [236, 72, 153], b: [76, 194, 255], tempo: 0.95, size: 1.08 }
     };
-    const ACCENTS = ['#f472b6', '#38bdf8', '#a855f7', '#818cf8'];
+    const ACCENTS = ['#f472b6', '#38bdf8', '#a3d7e6', '#4cc2ff'];
     const RAMP = [
       ['.', '·'],
       [':', '.'],
