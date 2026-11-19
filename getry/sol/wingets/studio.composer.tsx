@@ -1229,7 +1229,7 @@ export function Composer({
                         ? 'Attach image (Vision)'
                         : 'Attach image'
                     }
-                    className="icon-frame-3d inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle text-[var(--dk-text-2)] hover:text-[var(--dk-text)] shrink-0 cursor-pointer"
+                    className="icon-frame-3d inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle text-[var(--dk-text-2)] hover:text-[var(--dk-text)] shrink-0 cursor-pointer"
                   >
                     {images.length > 0 ? (
                       <FluentImageAdd className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 text-[var(--dk-brand)]" />
@@ -1254,7 +1254,7 @@ export function Composer({
                     aria-label="Prompt Templates"
                     data-testid="prompt-templates-btn"
                     title="Prompt Templates"
-                    className={`icon-frame-3d inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle shrink-0 cursor-pointer ${
+                    className={`icon-frame-3d inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle shrink-0 cursor-pointer ${
                       templatesOpen
                         ? 'bg-[var(--dk-selected)] text-[var(--dk-text)]'
                         : 'text-[var(--dk-text-2)] hover:text-[var(--dk-text)]'
@@ -1280,7 +1280,7 @@ export function Composer({
                     aria-label={`Modality: ${permissionLabel}`}
                     data-testid="composer-tools-toggle"
                     title={`Modality: ${permissionLabel}`}
-                    className={`icon-frame-3d inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle shrink-0 cursor-pointer ${
+                    className={`icon-frame-3d inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle shrink-0 cursor-pointer ${
                       permissionsOpen || permissionMode !== 'assisted'
                         ? 'bg-[var(--dk-selected)] text-[var(--dk-text)]'
                         : 'text-[var(--dk-text-2)] hover:text-[var(--dk-text)]'
@@ -1325,7 +1325,7 @@ export function Composer({
                     title={`${compactModelName} · /${activeRoute} · Hold & drag up/down or scroll wheel for Effort`}
                     data-testid="model-selector-trigger"
                     data-effort-tier={effortChroma.tier}
-                    className={`inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle transition shrink-0 select-none touch-none ${
+                    className={`inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle transition shrink-0 select-none touch-none ${
                       isDraggingModelEffort ? 'cursor-ns-resize scale-105' : 'cursor-pointer'
                     } ${
                       popoverOpen
@@ -1350,7 +1350,7 @@ export function Composer({
                   aria-pressed={isDictating}
                   title={isDictating ? 'Stop dictation' : 'Dictate by voice'}
                   data-testid="composer-mic-btn"
-                  className={`icon-frame-3d inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle shrink-0 cursor-pointer ${
+                  className={`icon-frame-3d inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle shrink-0 cursor-pointer ${
                     isDictating
                       ? 'bg-[var(--dk-selected)] border-[var(--dk-brand)] text-[var(--dk-brand)] animate-pulse'
                       : 'text-[var(--dk-text-2)] hover:text-[var(--dk-text)]'
@@ -1365,7 +1365,7 @@ export function Composer({
                     onClick={onStop}
                     aria-label="Stop generation"
                     title="Stop"
-                    className="inline-flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle bg-red-600 text-white hover:bg-red-500 transition-colors cursor-pointer shrink-0"
+                    className="inline-flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-[10px] sm:rounded-[11px] squircle bg-red-600 text-white hover:bg-red-500 transition-colors cursor-pointer shrink-0"
                   >
                     <FluentStop className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
                   </button>
@@ -1377,7 +1377,7 @@ export function Composer({
                     aria-label="Send message"
                     title="Send"
                     data-testid="composer-send-btn"
-                    className="send-key h-7 w-7 sm:h-8 sm:w-8 px-0 shrink-0"
+                    className="send-key h-11 w-11 px-0 shrink-0"
                   >
                     {canSend ? (
                       <FluentSend className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />

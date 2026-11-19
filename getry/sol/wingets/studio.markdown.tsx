@@ -25,23 +25,23 @@ function CodeBlock({ language, value }: CodeBlockProps) {
     <div className="my-3 overflow-hidden rounded-[18px] squircle border border-[var(--dk-matte-edge)] bg-[var(--dk-surface)]">
       <div className="flex items-center justify-between border-b border-[var(--dk-panel-divider)] bg-[var(--dk-surface-2)] px-3.5 py-2 text-xs text-[var(--dk-text-2)]">
         <span className="font-mono font-medium text-[var(--dk-text)]">
-          {language || 'código'}
+          {language || 'code'}
         </span>
         <button
           type="button"
           onClick={handleCopy}
-          aria-label="Copiar bloco de código"
+          aria-label="Copy code block"
           className="dk-icon-btn h-6 px-2 text-[11px]"
         >
           {copied ? (
             <>
               <FluentCheck className="h-3 w-3 text-[var(--dk-brand)]" />
-              <span>Copiado</span>
+              <span>Copied</span>
             </>
           ) : (
             <>
               <FluentCopy className="h-3 w-3" />
-              <span>Copiar</span>
+              <span>Copy</span>
             </>
           )}
         </button>

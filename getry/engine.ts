@@ -2143,7 +2143,7 @@ export function createversion(cfg: gatewayconfig): versionhandlers {
         if (typeof body["model"] === "string" && body["model"]) requestedmodel = body["model"] as string;
       }
       const model = requestedmodel || "audio-understanding";
-      const question = prompt || "Transcreva e explique este áudio.";
+      const question = prompt || "Transcribe and explain this audio.";
       if (!filebase64) {
         // the usage-doc answer — a lane with no audio explains its grammar
         // (the 200 doc the composed understanding lane serves instead of a

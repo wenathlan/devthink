@@ -23,7 +23,7 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 5;
+export const LABEL_REVISION = 6;
 
 /** the english manifest: the page.widget.key path answers the surface text.
  * every entry is the verbatim string the wingets and page anchors rendered
@@ -242,8 +242,8 @@ export const LABEL_MANIFEST = {
   "chat.storage.db": "db",
   "chat.storage.local": "local",
   "chat.thread.aria": "conversation thread",
-  "chat.thread.thinking": "Raciocínio do modelo",
-  "chat.thread.thinkingLive": "raciocinando…",
+  "chat.thread.thinking": "model reasoning",
+  "chat.thread.thinkingLive": "reasoning…",
   "chat.thread.copy": "copy",
   "chat.thread.copied": "copied",
   "chat.thread.codePlain": "code",
@@ -301,16 +301,16 @@ export const LABEL_MANIFEST = {
   "studio.terminal.probe": "{live}/{total} routes live · {models} models",
   "studio.starter.1.title": "Landing Page 3D",
   "studio.starter.1.tag": "Interface & Shader",
-  "studio.starter.1.prompt": "Crie uma landing page com estética DevThink OS, cartões recortados e animações suaves.",
+  "studio.starter.1.prompt": "create a landing page with devthink os aesthetics, cut-out cards and smooth animations.",
   "studio.starter.2.title": "Multi-Agent",
   "studio.starter.2.tag": "Autonomous Flow",
-  "studio.starter.2.prompt": "Estruture um fluxo de agentes autônomos para revisar e publicar componentes React.",
+  "studio.starter.2.prompt": "structure an autonomous agent flow to review and publish React components.",
   "studio.starter.3.title": "Full-Stack App",
   "studio.starter.3.tag": "React & TypeScript",
-  "studio.starter.3.prompt": "Construa uma aplicação modular em React com arquitetura limpa e componentes interativos.",
+  "studio.starter.3.prompt": "build a modular React application with clean architecture and interactive components.",
   "studio.starter.4.title": "Cloud System",
   "studio.starter.4.tag": "Edge & Streaming",
-  "studio.starter.4.prompt": "Configure uma arquitetura full-stack de baixa latência com streaming SSE.",
+  "studio.starter.4.prompt": "set up a low-latency full-stack architecture with SSE streaming.",
   "studio.toast.copied": "code copied",
   "studio.toast.deleted": "conversation deleted",
   "studio.meta.model": "model {id}",

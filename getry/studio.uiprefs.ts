@@ -61,19 +61,19 @@ export function formatConversationMarkdown(
   modelId: string,
   messages: ExportableMessage[]
 ): string {
-  const safeTitle = (title || 'Nova conversa').trim();
+  const safeTitle = (title || 'New conversation').trim();
   const lines: string[] = [
     `# ${safeTitle}`,
     '',
-    `Rota: /${route || 'v1'} | Modelo: ${modelId || 'auto'}`,
+    `Route: /${route || 'v1'} | Model: ${modelId || 'auto'}`,
     '',
   ];
   for (const msg of messages) {
-    const label = msg.role === 'user' ? 'Usuário' : msg.modelId || 'Assistente';
+    const label = msg.role === 'user' ? 'User' : msg.modelId || 'Assistant';
     lines.push(`## ${label}`);
     lines.push('');
     if (msg.reasoning?.trim()) {
-      lines.push('> Raciocínio');
+      lines.push('> Reasoning');
       lines.push(`> ${msg.reasoning.trim().replace(/\n/g, '\n> ')}`);
       lines.push('');
     }
@@ -131,7 +131,7 @@ export function formatEffortDynamicLabel(
   if (norm === 'default') return 'auto';
   const budget = budgets?.[level];
   if (typeof budget === 'number' && Number.isFinite(budget) && budget > 0) {
-    const formatted = new Intl.NumberFormat('pt-BR').format(budget);
+    const formatted = new Intl.NumberFormat('en-US').format(budget);
     return `${norm} ${formatted}`;
   }
   return norm;
@@ -140,9 +140,9 @@ export function formatEffortDynamicLabel(
 export type PermissionMode = 'full' | 'assisted' | 'readonly';
 
 export function formatPermissionLabel(mode: PermissionMode): string {
-  if (mode === 'full') return 'Acesso total';
-  if (mode === 'assisted') return 'Assistido';
-  return 'Somente leitura';
+  if (mode === 'full') return 'Full access';
+  if (mode === 'assisted') return 'Assisted';
+  return 'Read-only';
 }
 
 export function groupSessionsByWorkspace<
@@ -534,11 +534,11 @@ export function runUiPrefsSelfTests(): number {
   assertEqUi(clampSidebarWidth(260), 260, 'clampSidebarWidth mid');
   assertEqUi(clampSidebarWidth(500), MAX_SIDEBAR_WIDTH, 'clampSidebarWidth max');
 
-  const md = formatConversationMarkdown('Arquitetura UI', 'v1', 'gpt-4o', [
-    { role: 'user', content: 'Explique os componentes.' },
-    { role: 'assistant', content: 'Aqui está o resumo.', reasoning: 'Passo 1', modelId: 'gpt-4o' },
+  const md = formatConversationMarkdown('UI architecture', 'v1', 'gpt-4o', [
+    { role: 'user', content: 'Explain the components.' },
+    { role: 'assistant', content: 'Here is the summary.', reasoning: 'Step 1', modelId: 'gpt-4o' },
   ]);
-  assertUi(md.includes('# Arquitetura UI') && md.includes('> Passo 1'), 'formatConversationMarkdown');
+  assertUi(md.includes('# UI architecture') && md.includes('> Step 1'), 'formatConversationMarkdown');
 
   const sorted = sortConversationsWithPins(
     [
@@ -556,7 +556,7 @@ export function runUiPrefsSelfTests(): number {
   assertEqUi(snapRatioToStepIndex(0.5, 8), 4, 'snapRatio mid');
   assertEqUi(snapRatioToStepIndex(1.4, 8), 7, 'snapRatio high');
   assertEqUi(formatReasoningStepShortLabel('xhigh'), 'Xh', 'shortLabel xhigh');
-  assertEqUi(formatEffortDynamicLabel('max', { max: 98000 }), 'max 98.000', 'effortDynamic');
+  assertEqUi(formatEffortDynamicLabel('max', { max: 98000 }), 'max 98,000', 'effortDynamic');
   assertEqUi(isMaxEffortLevel(keys, 'max'), true, 'isMaxEffortLevel');
   assertEqUi(getEffortGlowIntensity(keys, 'max'), 1, 'getEffortGlowIntensity');
 
@@ -581,7 +581,7 @@ export function runUiPrefsSelfTests(): number {
     { workspaceCount: 2, sessionCount: 2, messageCount: 3, totalTokens: 200 },
     'computeUsageStatistics'
   );
-  assertEqUi(formatPermissionLabel('full'), 'Acesso total', 'formatPermissionLabel');
+  assertEqUi(formatPermissionLabel('full'), 'Full access', 'formatPermissionLabel');
 
   assertEqUi(resolveEffortChroma(keys, 'minimal').tier, 'lime', 'chroma lime');
   assertEqUi(resolveEffortChroma(keys, 'medium').tier, 'green', 'chroma green');
