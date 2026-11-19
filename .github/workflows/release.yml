@@ -104,7 +104,19 @@ jobs:
     # artifact lanes answer, while the app-token fallback keeps the
     # workflow_run completion lanes standing beside it — and the 2.0.184
     # scorecard closure trimmed the job token to read alone either way.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # THE RECOVERY-PATH SEAT (the 2026-11-19 transitive-skip cure): the
+    # dispatch and the tag-push trains carry the graph the whole house
+    # walks — a skipped auto-tag on those paths inherited its skip through
+    # every needs closure downstream (the train 433 evidence: the ladder
+    # green, the assemble green, the whole channel chain skipped), so the
+    # job now seats on the recovery paths too — its steps ride the changed
+    # gate the versions step stamps (the tag exists, changed answers
+    # false, the cutting steps skip inside the job) and the job concludes
+    # a clean no-op success the closure never inherits.
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
     name: auto-tag the version bump
     runs-on: ubuntu-latest
     timeout-minutes: 10
