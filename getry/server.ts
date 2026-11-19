@@ -37,7 +37,7 @@
  *     private builtindefault / tryimport / searchbases helpers moved with
  *     loadconfig the same way
  *
- *  Version: 2.0.185 — the ownership wave server family extraction
+ *  Version: 2.0.186 — the ownership wave server family extraction
  *
  *  Related modules:
  *   - gateway.ts — GATEWAYROUTES (the canonical fourteen route kinds — the
