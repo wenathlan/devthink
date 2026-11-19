@@ -141,10 +141,18 @@ function loadInitialWorkspaces(): Workspace[] {
 }
 
 function makeId(prefix: string): string {
+  /* the CSPRNG law (the insecure-randomness cure, alert #5130): the id
+   * draws through the crypto random the platform grants — the randomUUID
+   * path first, the getRandomValues suffix the Chat lane's newid pattern
+   * stamps when the uuid shape is unavailable; the Math.random string the
+   * CodeQL gate refused never answers. */
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return `${prefix}_${crypto.randomUUID()}`;
   }
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  const bytes = new Uint8Array(4);
+  crypto.getRandomValues(bytes);
+  const suffix = Array.from(bytes, (byte) => byte.toString(36).padStart(2, '0')).join('');
+  return `${prefix}_${Date.now().toString(36)}_${suffix}`;
 }
 
 function createEmptyConversation(
