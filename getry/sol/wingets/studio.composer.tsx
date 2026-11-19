@@ -771,8 +771,8 @@ export function Composer({
   const modelTriggerToneClass =
     effortChroma.tier === 'chromatic'
       ? 'icon-frame-3d !border-sky-400/45 text-sky-500 dark:text-sky-300'
-      : effortChroma.tier === 'purple'
-        ? 'icon-frame-3d !border-purple-500/40 text-purple-500'
+      : effortChroma.tier === 'azure'
+        ? 'icon-frame-3d !border-sky-500/40 text-sky-600'
         : effortChroma.tier === 'green'
           ? 'icon-frame-3d !border-emerald-500/40 text-emerald-500'
           : effortChroma.tier === 'lime'
@@ -782,8 +782,8 @@ export function Composer({
   const modelIconColorClass =
     effortChroma.tier === 'chromatic'
       ? 'text-sky-500 dark:text-sky-300'
-      : effortChroma.tier === 'purple'
-        ? 'text-purple-500'
+      : effortChroma.tier === 'azure'
+        ? 'text-sky-600'
         : effortChroma.tier === 'green'
           ? 'text-emerald-500'
           : effortChroma.tier === 'lime'

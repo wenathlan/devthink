@@ -220,7 +220,7 @@ export default function Onboarding() {
               <TabBridge
                 label={STEPS[0].label}
                 icon={<HomeRegular fontSize={13} />}
-                fill="#4F46E5"
+                fill="#0067c0"
                 ink="#FFFFFF"
               />
               <p className="winonboard__eyebrow">
@@ -248,7 +248,7 @@ export default function Onboarding() {
               <TabBridge
                 label={STEPS[1].label}
                 icon={<PlugConnectedRegular fontSize={13} />}
-                fill="#4F46E5"
+                fill="#0067c0"
                 ink="#FFFFFF"
               />
               <p className="winonboard__eyebrow">
@@ -298,7 +298,7 @@ export default function Onboarding() {
               <TabBridge
                 label={STEPS[2].label}
                 icon={<ChatEmptyRegular fontSize={13} />}
-                fill="#4F46E5"
+                fill="#0067c0"
                 ink="#FFFFFF"
               />
               <p className="winonboard__eyebrow">

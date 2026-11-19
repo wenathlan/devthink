@@ -6,7 +6,7 @@
  * speaks flat on the floor (the zero-contrast canvas IS the assistant
  * surface — the synara law), the markdown renderer beside it
  * (markdown.tsx), the collapsible cognition drawer owning the reasoning
- * violet, and the meta line (time · model, the action keys) answering the
+ * focus, and the meta line (time · model, the action keys) answering the
  * hover — opacity 0 until the row lifts, the way both references hold
  * their action rails. The user turn carries the edit affordance (the
  * cascading checkpoint law): the pencil rides the hover, the field is
@@ -173,13 +173,13 @@ function useStreamPhase(turn: ChatTurn): {
 }
 
 /** Cognition — the reasoning drawer of the assistant turn: the trajectory
- * reasoning violet owns the expander (the head glyph, the label, the
- * rotating chevron) and the body reads the trace on the violet-tinted
+ * reasoning focus owns the expander (the head glyph, the label, the
+ * rotating chevron) and the body reads the trace on the focus-tinted
  * quiet, capped at the max-h-96 scroller that follows the live stream
  * unless the reader scrolled away from the edge. Collapsed by default —
  * the reference law: the reasoning never shouts over the answer. The
  * w3-b head grammar: while the trace streams the label shimmers
- * (cognition-live, the violet gradient sweep) beside the ticking count
+ * (cognition-live, the focus gradient sweep) beside the ticking count
  * and the one-line rolling summary with the edge masks; once the answer
  * begins the label freezes to the honest thought-for-Ns chip (tabular),
  * the plain reasoning label standing in whenever no duration is known;

@@ -6,8 +6,8 @@
 // the devthink foundation (mica #202020 over the 8-step ladder #242424→
 // #494949, Inter Variable + Geist Mono, the 13px/450 body, the trylle shadow
 // ladder), the windows hands (press .7 pins, dtPopIntro, the win11
-// scrollbar), the two-accent contract (the getry violet identity beside the
-// windows accent), the FAMILY STANDALONE LAW (the shell answers the direct
+// scrollbar), the two-accent contract (the white sun / focus-azure identity
+// beside the windows accent), the FAMILY STANDALONE LAW (the shell answers the direct
 // url full-bleed, the window chrome lives only inside the os embed), the
 // entry-flow law (intro → onboarding → the platform over the catalogued seen
 // state) and the banned list (no pill, no all-properties transition, no
@@ -90,12 +90,12 @@ describe("design contract — the devthink foundation", () => {
 
   it("keeps the two-accent contract (the white sun beside the windows accent)", () => {
     expect(CSS).toContain("--color-signal: #ffffff");
-    expect(CSS).toContain("--violet-500: var(--color-signal)");
-    expect(CSS).toContain("--accent: var(--violet-500)");
+    expect(CSS).toContain("--sky-500: var(--color-signal)");
+    expect(CSS).toContain("--accent: var(--sky-500)");
     expect(CSS).toContain("--win-accent: var(--color-win)");
     expect(CSS).toContain("--color-win: #4cc2ff");
     expect(CSS).toContain("--focus: var(--color-win)");
-    expect(MARK).toContain("#8b5cf6");
+    expect(MARK).toContain("#4cc2ff");
   });
 
   it("ships no banned hue in the stylesheet, the entry, the mark or the icons", () => {

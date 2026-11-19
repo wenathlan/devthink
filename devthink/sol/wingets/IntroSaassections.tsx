@@ -60,7 +60,7 @@ function herocopy() {
 
 /** Section 1 — the hero: the OS statement with the activity tile, the
  * inline engine switch riding inside the headline on the four-stop drift
- * (blue, violet, pink, orange), the mode words that answer the switch, the
+ * (blue, pink, orange), the mode words that answer the switch, the
  * sub line, the two keys of the reference (the tactile Get Started and the
  * surface Why DevThink?) and the three scooped proof cards floating over
  * the gaussian shader field. */
@@ -96,7 +96,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
               className={`hero-switch-thumb block h-9 w-9 rounded-full transition-transform duration-300 sm:h-11 sm:w-11 ${agentsmode ? "translate-x-12 sm:translate-x-14" : "translate-x-0"}`}
             />
           </button>
-          <span className={agentsmode ? "text-slate-950" : "text-purple-600"}>
+          <span className={agentsmode ? "text-slate-950" : "text-sky-700"}>
             {agentsmode ? hero.modeagents : hero.modestudios}
           </span>
         </h1>
@@ -126,12 +126,12 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
           </button>
         </div>
 
-        {/* the three scooped proof cards of the reference: the violet rating
+        {/* the three scooped proof cards of the reference: the sky rating
             slab, the surface time card and the dark neural core card */}
         <div className="mt-20 grid w-full grid-cols-1 items-stretch gap-6 text-left lg:grid-cols-12">
           <ScoopedCard
             className="animate-float-card lg:col-span-4"
-            surfaceClassName="violet-tactile-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
+            surfaceClassName="sky-tactile-surface flex min-h-[300px] flex-col justify-between p-8 text-white"
             topRightContent={
               <button
                 type="button"
@@ -150,12 +150,12 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
             <div className="mt-8 flex items-center justify-between gap-4 rounded-2xl border border-white/15 bg-white/10 p-4">
               <h3 className="text-sm leading-snug font-bold-tier text-white">{saasherocards.ratingline}</h3>
               {/* the two reader chips of the reference photos — gradient
-                  initials over the violet ring, no external image */}
+                  initials over the sky ring, no external image */}
               <div className="flex shrink-0 -space-x-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-violet-300 to-fuchsia-500 text-[10px] font-bold-tier text-white ring-2 ring-violet-500">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-sky-200 to-cyan-400 text-[10px] font-bold-tier text-white ring-2 ring-sky-500">
                   A
                 </span>
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-rose-500 text-[10px] font-bold-tier text-white ring-2 ring-violet-500">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-rose-500 text-[10px] font-bold-tier text-white ring-2 ring-sky-500">
                   N
                 </span>
               </div>
@@ -190,7 +190,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
                   <span
                     key={bar}
                     style={{ height: `${bar}%` }}
-                    className={`w-1.5 rounded-full ${bar === 100 || bar === 92 ? "bg-violet-600" : "bg-slate-300"}`}
+                    className={`w-1.5 rounded-full ${bar === 100 || bar === 92 ? "bg-sky-700" : "bg-slate-300"}`}
                   />
                 ))}
               </div>
@@ -206,14 +206,14 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
                 className="icon-frame-3d flex h-10 w-10 items-center justify-center rounded-full text-slate-950"
                 aria-label={saasherocards.coretitle}
               >
-                <Waves className="h-4 w-4 text-violet-600" aria-hidden="true" />
+                <Waves className="h-4 w-4 text-sky-700" aria-hidden="true" />
               </button>
             }
           >
             <div
               className="pointer-events-none absolute top-10 right-6 h-16 w-16 rounded-full opacity-90"
               style={{
-                background: "radial-gradient(circle at 30% 30%, var(--saas-face), #C084FC 55%, #4F46E5)",
+                background: "radial-gradient(circle at 30% 30%, var(--saas-face), #a3d7e6 55%, #4cc2ff)",
                 boxShadow: "inset 0 3px 6px rgba(255,255,255,0.85), 0 10px 20px rgba(0,0,0,0.45)",
               }}
               aria-hidden="true"
@@ -230,7 +230,7 @@ export function SaasHero({ scrollto }: { scrollto: (id: string) => void }) {
 }
 
 /** Section 2 — the creators deck: the doo statement with the gradient
- * word, the three swing cards (the violet AI Teams slab between the two
+ * word, the three swing cards (the sky AI Teams slab between the two
  * surface cards, each on its own swing idle) and the two creator profiles
  * with the follow pill, the conic rainbow ring and the three stat tiles. */
 export function SaasCreators({ scrollto, ontoast }: { scrollto: (id: string) => void; ontoast: (m: string) => void }) {
@@ -300,9 +300,9 @@ export function SaasCreators({ scrollto, ontoast }: { scrollto: (id: string) => 
                     >
                       {followed[profile.key] ? "Following" : "Follow"}
                       {followed[profile.key] ? (
-                        <Check className="h-3 w-3 text-violet-600" aria-hidden="true" />
+                        <Check className="h-3 w-3 text-sky-700" aria-hidden="true" />
                       ) : (
-                        <Plus className="h-3 w-3 text-violet-600" aria-hidden="true" />
+                        <Plus className="h-3 w-3 text-sky-700" aria-hidden="true" />
                       )}
                     </button>
                   </div>
@@ -477,7 +477,7 @@ export function SaasWorkspace({ scrollto }: { scrollto: (id: string) => void }) 
             <span>
               {saasworkspace.openkey} {open.name} {saasworkspace.studiokey}
             </span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-violet-600">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-sky-700">
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </span>
           </button>

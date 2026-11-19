@@ -1,9 +1,9 @@
 /**
  * BrandMark.tsx — the drawn brand mark of the getry theme, one hand-drawn
  * SVG icon in the house finishing (the devthink/sol/shell/app.icons.tsx
- * standard): a gradient squircle face over the reasoning-violet story
- * (#8b5cf6 — the ONE identity accent of the app, unified in wave 6-a: the
- * residual sky retired and the banned blues with it), a soft
+ * standard): a gradient squircle face over the focus-azure story
+ * (#4cc2ff — the ONE identity accent of the app, unified in the ban wave:
+ * the retired hue is gone, the house tokens answer), a soft
  * top gloss, a mid layer of blurred story orbs over a pedestal band, two
  * blurred inner contours, a blurred contact ellipse at the base, a
  * discrete film grain, and the glyph itself — the cataloged stack of
@@ -29,10 +29,10 @@ const IVORY = "#fbf5ea";
 /** the backing translucency of outlined glyph shapes */
 const BACKING = "rgba(255,255,255,.14)";
 
-/** the story palette of the mark (the reasoning violet of getry) */
-const STORY = "#8b5cf6";
-const DEEP = "#6d28d9";
-const SOFT = "#ddd6fe";
+/** the story palette of the mark (the focus azure of the house) */
+const STORY = "#4cc2ff";
+const DEEP = "#0067c0";
+const SOFT = "#a3d7e6";
 
 /** the asymmetric squircle of the mark face: tighter shoulders, heavier base */
 const SQUIRCLE = "M22 0 L74 0 Q96 0 96 22 L96 66 Q96 96 66 96 L30 96 Q0 96 0 66 L0 22 Q0 0 22 0 Z";

@@ -518,7 +518,7 @@ export function SaasDebonair({ scrollto, ontoast }: { scrollto: (id: string) => 
 
 /** Section 8 — the doo advisor: the dark bridge with the doo mark, the
  * statement, the two keys, the three stat tiles and the demo chat on the
- * scooped dark card — the question bubble, the violet reply and the input
+ * scooped dark card — the question bubble, the sky reply and the input
  * pill that answers with the visitor's own words. */
 export function SaasAdvisor({ scrollto, ontoast }: { scrollto: (id: string) => void; ontoast: (m: string) => void }) {
   const [dooinput, setDooinput] = useState("");
@@ -545,7 +545,7 @@ export function SaasAdvisor({ scrollto, ontoast }: { scrollto: (id: string) => v
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 items-center gap-12 lg:grid-cols-12">
         <div className="lg:col-span-6">
           <div className="stat-tile mb-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-medium-tier text-slate-600">
-            <MessageSquare className="h-3.5 w-3.5 text-violet-600" aria-hidden="true" />
+            <MessageSquare className="h-3.5 w-3.5 text-sky-700" aria-hidden="true" />
             <span>{saasadvisor.badge}</span>
           </div>
           <h2 className="text-4xl leading-[1.02] font-bold-tier text-slate-950 sm:text-[56px]">
@@ -593,7 +593,7 @@ export function SaasAdvisor({ scrollto, ontoast }: { scrollto: (id: string) => v
                 <div className="max-w-[85%] rounded-2xl rounded-tl-md border border-white/10 bg-white/10 p-4 text-sm font-thin-tier">
                   {saasadvisor.chat.question}
                 </div>
-                <div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-md bg-violet-600 p-4 text-sm font-medium-tier">
+                <div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-md bg-sky-700 p-4 text-sm font-medium-tier">
                   {dooreply}
                 </div>
               </div>

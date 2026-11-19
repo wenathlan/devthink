@@ -123,7 +123,7 @@ export type ExploreData = {
  * of the surface it opens (the chrome stays neutral graphite). */
 const CATEGORY_TINT: Record<ExploreCategoryId, string> = {
   video: "#f472b6",
-  image: "#c084fc",
+  image: "#4cc2ff",
   audio: "#d9962e",
   model3d: "#ec4899",
   code: "#4ade80",
@@ -144,7 +144,7 @@ const CATEGORY_ICONS: Record<ExploreCategoryId, FluentIcon> = {
 /** the studio tints of the made assets (the origin surfaces of the registry) */
 const STUDIO_TINT: Record<string, string> = {
   video: "#f472b6",
-  image: "#c084fc",
+  image: "#4cc2ff",
   music: "#d9962e",
   model3d: "#ec4899" };
 

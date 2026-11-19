@@ -75,26 +75,26 @@ export const DevThinkAnsiCanvas: React.FC<{
             : ['#15803d', '#22c55e', '#16a34a', '#4ade80'],
         };
       }
-      if (tier === 'purple') {
+      if (tier === 'azure') {
         return {
-          a: darkMode ? [192, 132, 252] : [126, 34, 206],
-          b: darkMode ? [216, 180, 254] : [168, 85, 247],
+          a: darkMode ? [76, 194, 255] : [0, 103, 192],
+          b: darkMode ? [163, 215, 230] : [76, 194, 255],
           tempo,
           size,
           accents: darkMode
-            ? ['#c084fc', '#a855f7', '#e9d5ff', '#ffffff']
-            : ['#7e22ce', '#9333ea', '#a855f7', '#6b21a8'],
+            ? ['#4cc2ff', '#a3d7e6', '#767676', '#ffffff']
+            : ['#0067c0', '#005a9e', '#4cc2ff', '#004578'],
         };
       }
       if (tier === 'chromatic') {
         return {
           a: darkMode ? [125, 211, 252] : [14, 165, 233],
-          b: darkMode ? [244, 114, 182] : [168, 85, 247],
+          b: darkMode ? [244, 114, 182] : [76, 194, 255],
           tempo,
           size,
           accents: darkMode
-            ? ['#7dd3fc', '#c4b5fd', '#f9a8d4', '#ffffff']
-            : ['#0284c7', '#7c3aed', '#db2777', '#38bdf8'],
+            ? ['#7dd3fc', '#a3d7e6', '#f9a8d4', '#ffffff']
+            : ['#0284c7', '#0067c0', '#db2777', '#38bdf8'],
         };
       }
       return {

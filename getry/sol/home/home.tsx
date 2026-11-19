@@ -10,7 +10,7 @@
 import { ArrowEnterRegular, ArrowRightRegular, ArrowSyncRegular, BrainRegular, LayerRegular, WindowConsoleRegular } from "@fluentui/react-icons";
 /**
  * HomeRegular.tsx — the LANDING page of the getry Sol theme (campaign v3 · r3):
- * the Suno-grade gateway hero — one violet light, the prompt-giga endpoint
+ * the Suno-grade gateway hero — one signal light, the prompt-giga endpoint
  * field (the honest route visualizer — the replica the prefix names, the
  * route kind that follows), the open-the-chat key handing the real
  * conversation surface the traffic, the replica matrix ledger (the five
@@ -89,7 +89,7 @@ export function HomeRegular() {
 
 /**
  * The home surface the gate reveals: the Suno-grade gateway hero — one
- * violet light, the prompt-giga endpoint field (send a completion), the
+ * signal light, the prompt-giga endpoint field (send a completion), the
  * replica matrix ledger (the five provider gateways as the copies the meta
  * model spins), the 01–03 deploy steps and the meta-quad footer. no tabular
  * fabrication: every row reads the root gateway registry (gateway.ts) and
@@ -233,11 +233,11 @@ function HomeSurface() {
         </div>
 
         {/* the floating trio of the reference — the ambient swing cards, all
-            real lanes: the live route count on the indigo tactile surface, the
+            real lanes: the live route count on the tactile surface, the
             devthink mask beside its smart pool on the white card, the thinking
             ladder on the dark liquid glass */}
         <div className="sol-hero__trio">
-          <article className="sol-triocard indigo-tactile-surface swing-card-1">
+          <article className="sol-triocard tactile-surface swing-card-1">
             <div>
               <p className="sol-triocard__label">
                 <LayerRegular fontSize={15} aria-hidden="true" />

@@ -236,7 +236,7 @@ const APP_BINDINGS: AppBinding[] = [
   },
   {
     id: "getry",
-    tint: "#8b5cf6",
+    tint: "#4cc2ff",
     icon: Boxes,
     iconset: "getry",
     target: { kind: "external", slug: "getry" },

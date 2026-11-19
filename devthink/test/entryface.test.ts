@@ -200,20 +200,21 @@ describe("the hero (the reference statement)", () => {
     expect(seed["intro.hero.keysecondary"]).toBe("Why DevThink?");
   });
 
-  it("the switch track rides the warm stops — the blue head never returns", () => {
+  it("the switch track rides the focus head and the warm stops — the violet head never returns", () => {
     const track = landingrule(".hero-inline-switch");
-    for (const hex of ["#a855f7", "#ec4899", "#f97316"]) {
-      expect(track, `the switch carries the warm stop ${hex}`).toContain(hex);
+    for (const hex of ["#4cc2ff", "#ec4899", "#f97316"]) {
+      expect(track, `the switch carries the ${hex} stop`).toContain(hex);
     }
-    expect(track, "the sky-blue head the owner reported never rides the switch").not.toContain("#60a5fa");
+    expect(track, "the stale tailwind-blue head never rides the switch").not.toContain("#60a5fa");
+    expect(track, "the violet head the doctrine bans never returns").not.toContain("#a855f7");
   });
 
   it("the gaussian field rides the five warm radiais with the blur and the pulse", () => {
     const field = landingrule(".hero-gaussian-shader");
     for (const hex of [
-      "rgba(139, 92, 246, 0.78)",
+      "rgba(76, 194, 255, 0.78)",
       "rgba(244, 114, 182, 0.75)",
-      "rgba(168, 85, 247, 0.78)",
+      "rgba(56, 189, 248, 0.78)",
       "rgba(236, 72, 153, 0.78)",
       "rgba(251, 146, 60, 0.82)",
     ]) {
@@ -237,7 +238,7 @@ describe("the hero (the reference statement)", () => {
     expect(cards).toHaveLength(4);
     expect(sections).toContain("animate-float-card");
     expect(sections).toContain("animate-float-card-delayed");
-    expect(sections).toContain("violet-tactile-surface");
+    expect(sections).toContain("sky-tactile-surface");
     // the forbidden blues stay banned in the data layer the wingets read
     expect(saascontent, "the indigo seats retired onto the violet family").not.toContain("indigo");
     expect(saascontent, "the neural core copy rides the data layer").toContain("Neural Shader Core");
@@ -378,24 +379,24 @@ describe("the surfaces (the era kit restored)", () => {
     expect(key).toContain("inset 0 -3px 6px rgba(0, 0, 0, 0.65)");
   });
 
-  it("the one sanctioned glow is the reference violet hover of the tactile keys", () => {
+  it("the one sanctioned glow is the reference focus hover of the tactile keys", () => {
     const hover = landingrule(".btn-tactile-3d:hover");
-    expect(hover).toContain("rgba(79, 70, 229, 0.45)");
+    expect(hover).toContain("rgba(76, 194, 255, 0.45)");
     const frame = landingrule(".icon-frame-3d:hover");
-    expect(frame).toContain("rgba(79, 70, 229, 0.18)");
+    expect(frame).toContain("rgba(76, 194, 255, 0.18)");
     const active = landingrule(".icon-frame-3d-active");
-    expect(active).toContain("rgba(79, 70, 229, 0.24)");
+    expect(active).toContain("rgba(76, 194, 255, 0.24)");
   });
 
   it("the era surfaces ride the reference values", () => {
     expect(landingrule(".surface-card")).toContain("0 16px 36px -14px rgba(15, 23, 42, 0.1)");
     expect(landingrule(".stat-tile")).toContain("#f4f6fb");
-    expect(landingrule(".violet-tactile-surface")).toContain(
-      "linear-gradient(145deg, #7c3aed 0%, #6d28d9 58%, #5b21b6 100%)",
+    expect(landingrule(".sky-tactile-surface")).toContain(
+      "linear-gradient(145deg, #0067c0 0%, #0369a1 58%, #075985 100%)",
     );
     expect(landingrule(".obsidian-grid-bg")).toContain("background-size: 60px 60px");
     expect(landingrule(".netflix-rank-num")).toContain("-webkit-text-stroke: 2px rgba(255, 255, 255, 0.35)");
-    expect(landingrule(".text-gradient-brand")).toContain("#6366f1");
+    expect(landingrule(".text-gradient-brand")).toContain("#4cc2ff");
     expect(landingrule(".text-gradient-brand")).toContain("#38bdf8");
   });
 

@@ -24,7 +24,7 @@ export const FAMILY_SLUGS: readonly string[] = [
 export type FamilyMember = { slug: string; accent: string; dotInk: string };
 
 /** the spec §12 accent table for the eight siblings (getry's own violet
- * #8b5cf6 lives in the theme tokens, never in this row). */
+ * #4cc2ff lives in the theme tokens, never in this row). */
 export const FAMILY_ACCENTS: Readonly<Record<string, FamilyMember>> = {
   argan: { slug: "argan", accent: "#34d8a8", dotInk: "#04231a" },
   cadria: { slug: "cadria", accent: "#f472b6", dotInk: "#2a0715" },

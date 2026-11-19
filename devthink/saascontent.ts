@@ -107,9 +107,9 @@ export const saasswingcards: readonly saasswingcard[] = [
     copy: "Cocreate with autonomous agents in sync",
     tag: "Getry & Doo",
     tagclass: "text-white",
-    surface: "violet-tactile-surface text-white p-6",
+    surface: "sky-tactile-surface text-white p-6",
     titleclass: "text-white",
-    copyclass: "text-violet-100",
+    copyclass: "text-sky-100",
     target: "advisor-dark",
     swing: "swing-card-2",
   },
@@ -150,8 +150,8 @@ export const saascreators: readonly saascreatorrow[] = [
     role: "3D World Creator",
     logo: "cadria",
     ring: false,
-    banner: "from-teal-200 via-violet-100 to-pink-100",
-    avatar: "from-teal-400 to-violet-600",
+    banner: "from-teal-200 via-sky-100 to-cyan-100",
+    avatar: "from-teal-400 to-sky-600",
     initial: "A",
     stats: [
       ["2,1K", "Likes"],
@@ -165,8 +165,8 @@ export const saascreators: readonly saascreatorrow[] = [
     role: "Spatial Audio Director",
     logo: "debonair",
     ring: true,
-    banner: "from-violet-200 via-purple-100 to-teal-100",
-    avatar: "from-violet-400 to-purple-600",
+    banner: "from-sky-200 via-cyan-100 to-teal-100",
+    avatar: "from-sky-400 to-cyan-600",
     initial: "N",
     stats: [
       ["2,4K", "Likes"],
@@ -210,8 +210,8 @@ export const saasfandeck: readonly saasfanapp[] = [
     name: "Getry",
     subtitle: "Multi Agent Gateway",
     rating: "4,9",
-    gradient: "from-[#C4B5FD] via-[#8B5CF6] to-[#22D3EE]",
-    glow: "#8B5CF6",
+    gradient: "from-[#A3D7E6] via-[#4CC2FF] to-[#22D3EE]",
+    glow: "#4CC2FF",
     badge: "35 AI Routes",
     target: "advisor-dark",
   },
@@ -317,7 +317,7 @@ export const saascadriarail: readonly saascadriaitem[] = [
     tag: "3D FILM",
     match: "99% Match",
     duration: "1h 48m",
-    art: "radial-gradient(circle at 70% 20%, rgba(139,92,246,0.55), transparent 55%), linear-gradient(150deg, #0F172A 0%, #312E81 70%, #6D28D9 100%)",
+    art: "radial-gradient(circle at 70% 20%, rgba(76,194,255,0.55), transparent 55%), linear-gradient(150deg, #0F172A 0%, #005A9E 70%, #004578 100%)",
     category: "3d",
   },
   {
@@ -388,7 +388,7 @@ export const saascadriarail: readonly saascadriaitem[] = [
 /** The hero art of the cadria original (the css treatment of the banned
  * reference photo). */
 export const saascadriaheroart =
-  "radial-gradient(circle at 30% 25%, rgba(56,189,248,0.4), transparent 55%), radial-gradient(circle at 75% 80%, rgba(139,92,246,0.35), transparent 50%), linear-gradient(150deg, #090D16 0%, #1E1B4B 60%, #312E81 100%)";
+  "radial-gradient(circle at 30% 25%, rgba(56,189,248,0.4), transparent 55%), radial-gradient(circle at 75% 80%, rgba(76,194,255,0.35), transparent 50%), linear-gradient(150deg, #090D16 0%, #1E2536 60%, #005A9E 100%)";
 
 /** The art of the live tv banner. */
 export const saascadrialiveart =
@@ -417,7 +417,7 @@ export const saasreels: readonly saasreelrow[] = [
     title: "Neon Ramen 3D",
     creator: "@alan Cadria",
     tag: "3D Mesh",
-    art: "radial-gradient(circle at 70% 25%, rgba(129,140,248,0.6), transparent 55%), linear-gradient(140deg, #1E1B4B, #4338CA)",
+    art: "radial-gradient(circle at 70% 25%, rgba(76,194,255,0.6), transparent 55%), linear-gradient(140deg, #1E2536, #005A9E)",
   },
   {
     title: "Afro Synth Live",
@@ -508,7 +508,7 @@ export const saasdebonairrail: readonly saastrackrow[] = [
     title: "Dracula",
     artist: "Tame Impala",
     total: "3:26",
-    art: "radial-gradient(circle at 60% 30%, rgba(167,139,250,0.45), transparent 55%), linear-gradient(135deg, #1E1B4B, #4C1D95)",
+    art: "radial-gradient(circle at 60% 30%, rgba(163,215,230,0.45), transparent 55%), linear-gradient(135deg, #1E2536, #004578)",
     index: 3,
   },
   {

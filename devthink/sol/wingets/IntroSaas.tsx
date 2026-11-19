@@ -19,8 +19,8 @@
  * wore (the lucide import itself is purged from the shell). The materials
  * ride
  * the landing block of sol.css — the tactile keys with the one
- * sanctioned violet hover of the reference, never a blue glow elsewhere
- * and never a solid blue key in the hero. The launch paths funnel to the
+ * sanctioned hover glow of the reference — the focus blue the Win11 law
+ * pins, the violet the doctrine bans retired — and never a solid blue key in the hero. The launch paths funnel to the
  * login face: the panel is the last page of the chain.
  */
 
@@ -71,13 +71,13 @@ function ensureSaasCss(): void {
 ensureSaasCss();
 
 /** The fluent glyph and the ink color each header tab wears — the semantic
- * parity of the reference pair (the OS spark in violet, the explorer compass
- * in sky, the creators team in purple, the cadria film in pink, the debonair
- * note in blue). */
+ * parity of the reference pair (the OS spark in sky, the explorer compass
+ * in teal, the creators team in sky, the cadria film in pink, the sonic
+ * note in amber). */
 const TABICON: Record<string, { icon: LucideIcon; color: string }> = {
-  "hero-os": { icon: Sparkles, color: "text-violet-600" },
+  "hero-os": { icon: Sparkles, color: "text-sky-700" },
   "workspace-subapps": { icon: Compass, color: "text-teal-600" },
-  "creators-doo": { icon: Users, color: "text-purple-600" },
+  "creators-doo": { icon: Users, color: "text-sky-700" },
   "spatial-bento": { icon: Film, color: "text-pink-600" },
   "sonic-deck": { icon: Music, color: "text-amber-600" },
 };
@@ -131,7 +131,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
     <div className="saas-root min-h-screen w-full overflow-x-hidden bg-[#DCE2EE] p-[2.5px] text-slate-900 select-none sm:select-auto">
       {/* the left rail: the vertical saddle slab at the screen edge — the
           hairline divider and the six mandate stops with the reference
-          violet-to-teal active pill (the saddle cloud key retired by the
+          sky-to-cyan active pill (the saddle cloud key retired by the
           owner order: the six stops are the only keys of the rail) */}
       <aside className="fixed top-1/2 left-0 z-50 hidden -translate-y-1/2 flex-col items-center p-0 lg:flex">
         <VerticalSaddleBridge fillColor="#0A0B0E" className="py-2">
@@ -147,7 +147,7 @@ export default function Saas({ onDone }: { onDone: () => void }) {
                   onClick={() => scrollto(item.id)}
                   aria-label={item.label}
                   aria-pressed={current}
-                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,background-color,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-purple-600 to-rose-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
+                  className={`group relative flex h-10 w-10 items-center justify-center rounded-full transition-[transform,background-color,color] duration-300 ${current ? "scale-105 bg-gradient-to-tr from-sky-700 to-cyan-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white"}`}
                 >
                   {Glyph ? <Glyph className="h-4 w-4" aria-hidden="true" /> : null}
                   <span className="pointer-events-none absolute left-14 rounded-lg border border-white/10 bg-slate-950 px-2.5 py-1 text-[11px] font-medium-tier whitespace-nowrap text-white opacity-0 transition group-hover:opacity-100">
