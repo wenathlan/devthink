@@ -160,8 +160,9 @@ describe("the chrome keys (the reference grammar)", () => {
     }
   });
 
-  it("the rail active pill rides the warm family — the no-blue law the owner ordered", () => {
-    expect(saas).toContain("from-purple-600 to-rose-500");
+  it("the rail active pill rides the focus-to-cyan family — the no-violet law the ban ordered", () => {
+    expect(saas).toContain("from-sky-700 to-cyan-500");
+    expect(saas).not.toContain("from-purple-600 to-rose-500");
     expect(saas).not.toContain("from-indigo-600 to-sky-500");
   });
 
