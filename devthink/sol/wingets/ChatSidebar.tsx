@@ -31,6 +31,7 @@ import {
 import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { chatBuckets, chatNav } from "../../labels.ts";
+import { chatText } from "../../uistore.ts";
 import { checkpointCount, type ChatSession, cx } from "../../chatstate.ts";
 import { arrayOf, isString, useStoredState } from "../../usestoredstate.ts";
 import { SolBotIcon, type SolBotState } from "./ChatSolboticon.tsx";
@@ -223,7 +224,9 @@ export function Sidebar({
            * tech, so a quiet status line carries the state the dot draws. */
           <span className="dtc-item__status" data-state={status} role="status">
             <i className={status === "running" ? "dtc-item__spin" : "dtc-item__dot"} aria-hidden="true" />
-            <span className="sr-only">{status === "running" ? "round running" : "round failed"}</span>
+            <span className="sr-only">
+              {status === "running" ? chatText("chat.sidebar.roundRunning") : chatText("chat.sidebar.roundFailed")}
+            </span>
           </span>
         ) : null}
         <button
@@ -244,13 +247,15 @@ export function Sidebar({
                   {tag}
                 </span>
               ))}
-              {s.tags.length > 2 ? <span className="dtc-rail__tag">+{s.tags.length - 2}</span> : null}
+              {s.tags.length > 2 ? (
+                <span className="dtc-rail__tag">{chatText("chat.sidebar.tagOverflow").replace("{n}", String(s.tags.length - 2))}</span>
+              ) : null}
             </span>
           ) : null}
           {s.editOf ? (
             /* the honest edit ordinal of the branch — the ladder size the
              * record carries, mono uppercase. */
-            <span className="dtc-rail__branch">e{checkpointCount(s)}</span>
+            <span className="dtc-rail__branch">{chatText("chat.sidebar.editOrdinal").replace("{n}", String(checkpointCount(s)))}</span>
           ) : null}
         </button>
         <button
@@ -258,8 +263,12 @@ export function Sidebar({
           className={cx("dtc-item__pin", isPinned && "is-on")}
           onClick={() => togglePin(s.id)}
           aria-pressed={isPinned}
-          aria-label={isPinned ? `Unpin conversation ${s.title}` : `Pin conversation ${s.title}`}
-          title={isPinned ? "Unpin conversation" : "Pin conversation"}
+          aria-label={
+            isPinned
+              ? chatText("chat.sidebar.unpinAria").replace("{title}", s.title)
+              : chatText("chat.sidebar.pinAria").replace("{title}", s.title)
+          }
+          title={isPinned ? chatText("chat.sidebar.unpinTitle") : chatText("chat.sidebar.pinTitle")}
         >
           <Pin fontSize={14} aria-hidden="true" />
         </button>
@@ -267,8 +276,8 @@ export function Sidebar({
           type="button"
           className="dtc-item__del"
           onClick={() => onDelete(s.id)}
-          aria-label={`Delete conversation ${s.title}`}
-          title="Delete conversation"
+          aria-label={chatText("chat.sidebar.deleteAria").replace("{title}", s.title)}
+          title={chatText("chat.sidebar.deleteTitle")}
         >
           <Trash2 fontSize={14} aria-hidden="true" />
         </button>
@@ -279,17 +288,22 @@ export function Sidebar({
   return (
     <aside className="dtc-rail" data-collapsed={collapsed ? "true" : "false"}>
       <div className="dtc-rail__top">
-        <Link href="/" className="dtc-rail__brand" title="DevThink home" aria-label="DevThink home">
+        <Link
+          href="/"
+          className="dtc-rail__brand"
+          title={chatText("chat.sidebar.brandHome")}
+          aria-label={chatText("chat.sidebar.brandHome")}
+        >
           <SolBotIcon size={22} state={state} />
-          <span className="dtc-rail__word dtc-rail__hide">DevThink</span>
+          <span className="dtc-rail__word dtc-rail__hide">{chatText("chat.sidebar.brandWord")}</span>
         </Link>
         <button
           type="button"
           className="dtc-rail__collapse"
           onClick={onToggleCollapsed}
           aria-expanded={!collapsed}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? chatText("chat.sidebar.expand") : chatText("chat.sidebar.collapse")}
+          title={collapsed ? chatText("chat.sidebar.expand") : chatText("chat.sidebar.collapse")}
         >
           <PanelLeft fontSize={17} aria-hidden="true" />
         </button>
@@ -297,9 +311,9 @@ export function Sidebar({
 
       {/* the label span folds under the collapsed rail (display none), so
        * the aria-label keeps the key named in both rail states. */}
-      <button type="button" className="dtc-rail__new" onClick={onNew} aria-label="New chat">
+      <button type="button" className="dtc-rail__new" onClick={onNew} aria-label={chatText("chat.sidebar.newChat")}>
         <Plus fontSize={17} aria-hidden="true" />
-        <span className="dtc-rail__hide">New chat</span>
+        <span className="dtc-rail__hide">{chatText("chat.sidebar.newChat")}</span>
       </button>
 
       <div className="dtc-rail__search dtc-rail__hide">
@@ -310,8 +324,8 @@ export function Sidebar({
             className="dtc-rail__input"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search"
-            aria-label="Search conversations"
+            placeholder={chatText("chat.sidebar.searchPlaceholder")}
+            aria-label={chatText("chat.sidebar.searchAria")}
             spellCheck={false}
           />
           {query ? (
@@ -319,8 +333,8 @@ export function Sidebar({
               type="button"
               className="dtc-rail__clear"
               onClick={() => setQuery("")}
-              aria-label="Clear search"
-              title="Clear search"
+              aria-label={chatText("chat.sidebar.clearSearch")}
+              title={chatText("chat.sidebar.clearSearch")}
             >
               <Dismiss fontSize={12} aria-hidden="true" />
             </button>
@@ -328,15 +342,17 @@ export function Sidebar({
         </div>
         {needle ? (
           <p className="dtc-rail__count" aria-live="polite">
-            {visible.length} of {sessions.length}
+            {chatText("chat.sidebar.count")
+              .replace("{visible}", String(visible.length))
+              .replace("{total}", String(sessions.length))}
           </p>
         ) : null}
       </div>
 
-      <nav className="dtc-rail__scroll" aria-label="Conversation history">
+      <nav className="dtc-rail__scroll" aria-label={chatText("chat.sidebar.historyAria")}>
         {pinnedRows.length > 0 ? (
           <section key="pinned">
-            <p className="dtc-rail__label dtc-rail__label--pin">pinned</p>
+            <p className="dtc-rail__label dtc-rail__label--pin">{chatText("chat.sidebar.pinnedLabel")}</p>
             {pinnedRows.map(renderRow)}
           </section>
         ) : null}
@@ -348,14 +364,14 @@ export function Sidebar({
         ))}
         {needle ? (
           visible.length === 0 ? (
-            <p className="dtc-rail__empty">No matches</p>
+            <p className="dtc-rail__empty">{chatText("chat.sidebar.noMatches")}</p>
           ) : null
         ) : sessions.length === 0 ? (
-          <p className="dtc-rail__empty">No conversations yet</p>
+          <p className="dtc-rail__empty">{chatText("chat.sidebar.noConversations")}</p>
         ) : null}
       </nav>
 
-      <nav className="dtc-rail__nav" aria-label="Theme pages">
+      <nav className="dtc-rail__nav" aria-label={chatText("chat.sidebar.themePagesAria")}>
         {CHAT_NAV.map((item) => {
           const Icon = item.icon;
           const current = location === item.href;

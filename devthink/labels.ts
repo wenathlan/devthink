@@ -15,7 +15,7 @@
 
 /** the label revision of the manifest: bump on every copy wave so the seed
  * refreshes the store rows of the changed strings. */
-export const LABEL_REVISION = 7;
+export const LABEL_REVISION = 8;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
@@ -392,6 +392,71 @@ export const seedChatStrings: ChatStringRow[] = [
   { id: "panel.addTagAria", text: "Add a tag" },
   { id: "canvas.defaultTitle", text: "canvas" },
   { id: "canvas.empty", text: "the canvas is empty — the edit key begins the buffer." },
+  /* ---------------- the second residual sweep (w07-chatlabels2) ----------------
+   * the session panel heads and the sidebar rail leave no raw literal
+   * behind: every section head, readout term, tooltip, placeholder, button
+   * and template the two surfaces render rides a row here. */
+  { id: "panel.headTitle", text: "Session" },
+  { id: "panel.closeTitle", text: "Close panel" },
+  { id: "panel.contextLabel", text: "Context" },
+  { id: "panel.serviceOn", text: "service on" },
+  { id: "panel.serviceOff", text: "service off" },
+  { id: "panel.turnsLabel", text: "Turns" },
+  { id: "panel.conversationsLabel", text: "Conversations" },
+  { id: "panel.persistenceLabel", text: "Persistence" },
+  { id: "panel.persistenceLocal", text: "local" },
+  { id: "panel.toolsLabel", text: "Tools" },
+  { id: "panel.toolsNone", text: "none" },
+  { id: "panel.identityLabel", text: "Identity" },
+  { id: "panel.identitySpace", text: "space" },
+  { id: "panel.identitySandbox", text: "sandbox" },
+  { id: "panel.identitySession", text: "session" },
+  { id: "panel.identityHint", text: "session ids are created with the first message" },
+  { id: "panel.projectLabel", text: "Project" },
+  { id: "panel.memoryLabel", text: "Memory" },
+  { id: "panel.deleteFactTitle", text: "Delete this fact" },
+  { id: "panel.tagsLabel", text: "Tags" },
+  { id: "panel.removeTagTitle", text: "Remove this tag" },
+  { id: "panel.addTagPlaceholder", text: "add a tag" },
+  { id: "panel.tagsCapHint", text: "{n} tags is the cap" },
+  { id: "panel.tagsReadonlyHint", text: "editing opens in the panel" },
+  { id: "panel.connectionAria", text: "Assistant connection" },
+  { id: "panel.connectionLabel", text: "Connection" },
+  { id: "panel.addressPlaceholder", text: "https://chat.example.com" },
+  { id: "panel.addressAria", text: "Service address" },
+  { id: "panel.testing", text: "Testing" },
+  { id: "panel.connect", text: "Connect" },
+  { id: "panel.confirmAria", text: "Confirm disconnect" },
+  { id: "panel.confirmPrompt", text: "Disconnect the service" },
+  { id: "panel.disconnect", text: "Disconnect" },
+  { id: "panel.keep", text: "Keep" },
+  { id: "panel.test", text: "Test" },
+  { id: "panel.quickLinksLabel", text: "Quick links" },
+  { id: "panel.themePagesAria", text: "Theme pages" },
+  { id: "chat.sidebar.roundRunning", text: "round running" },
+  { id: "chat.sidebar.roundFailed", text: "round failed" },
+  { id: "chat.sidebar.pinAria", text: "Pin conversation {title}" },
+  { id: "chat.sidebar.unpinAria", text: "Unpin conversation {title}" },
+  { id: "chat.sidebar.pinTitle", text: "Pin conversation" },
+  { id: "chat.sidebar.unpinTitle", text: "Unpin conversation" },
+  { id: "chat.sidebar.deleteAria", text: "Delete conversation {title}" },
+  { id: "chat.sidebar.deleteTitle", text: "Delete conversation" },
+  { id: "chat.sidebar.brandHome", text: "DevThink home" },
+  { id: "chat.sidebar.brandWord", text: "DevThink" },
+  { id: "chat.sidebar.expand", text: "Expand sidebar" },
+  { id: "chat.sidebar.collapse", text: "Collapse sidebar" },
+  { id: "chat.sidebar.newChat", text: "New chat" },
+  { id: "chat.sidebar.searchPlaceholder", text: "Search" },
+  { id: "chat.sidebar.searchAria", text: "Search conversations" },
+  { id: "chat.sidebar.clearSearch", text: "Clear search" },
+  { id: "chat.sidebar.count", text: "{visible} of {total}" },
+  { id: "chat.sidebar.historyAria", text: "Conversation history" },
+  { id: "chat.sidebar.pinnedLabel", text: "pinned" },
+  { id: "chat.sidebar.noMatches", text: "No matches" },
+  { id: "chat.sidebar.noConversations", text: "No conversations yet" },
+  { id: "chat.sidebar.themePagesAria", text: "Theme pages" },
+  { id: "chat.sidebar.tagOverflow", text: "+{n}" },
+  { id: "chat.sidebar.editOrdinal", text: "e{n}" },
 ];
 
 export type ChatStringId = (typeof seedChatStrings)[number]["id"];
