@@ -879,8 +879,8 @@
         "@nx/workspace": "^22.7.9",
         "@nyariv/sandboxjs": "^0.9.7",
         "@observablehq/plot": "^0.6.19",
-        "@octanejs/adapter-cloudflare": "^0.0.67",
-        "@octanejs/vite-plugin": "^0.5.0",
+        "@octanejs/adapter-cloudflare": "^0.0.68",
+        "@octanejs/vite-plugin": "^0.6.4",
         "@octokit/auth-app": "^8.3.1",
         "@octokit/graphql": "^9.0.5",
         "@octokit/rest": "^22.0.1",
@@ -3057,7 +3057,7 @@
         "object-assign": "^4.1.1",
         "object-hash": "^3.0.0",
         "object-inspect": "^1.13.4",
-        "octane": "^0.16.7",
+        "octane": "^0.21.0",
         "office-ui-fabric-core": "^11.1.0",
         "ogl": "^1.0.11",
         "oh-my-logo": "^0.5.0",
@@ -4767,8 +4767,8 @@
         "@nx/workspace": "^22.7.9",
         "@nyariv/sandboxjs": "^0.9.7",
         "@observablehq/plot": "^0.6.19",
-        "@octanejs/adapter-cloudflare": "^0.0.67",
-        "@octanejs/vite-plugin": "^0.5.0",
+        "@octanejs/adapter-cloudflare": "^0.0.68",
+        "@octanejs/vite-plugin": "^0.6.4",
         "@octokit/auth-app": "^8.3.1",
         "@octokit/graphql": "^9.0.5",
         "@octokit/rest": "^22.0.1",
@@ -6945,7 +6945,7 @@
         "object-assign": "^4.1.1",
         "object-hash": "^3.0.0",
         "object-inspect": "^1.13.4",
-        "octane": "^0.16.7",
+        "octane": "^0.21.0",
         "office-ui-fabric-core": "^11.1.0",
         "ogl": "^1.0.11",
         "oh-my-logo": "^0.5.0",
@@ -8687,8 +8687,8 @@
     "@nx/workspace": "^22.7.9",
     "@nyariv/sandboxjs": "^0.9.7",
     "@observablehq/plot": "^0.6.19",
-    "@octanejs/adapter-cloudflare": "^0.0.67",
-    "@octanejs/vite-plugin": "^0.5.0",
+    "@octanejs/adapter-cloudflare": "^0.0.68",
+    "@octanejs/vite-plugin": "^0.6.4",
     "@octokit/auth-app": "^8.3.1",
     "@octokit/graphql": "^9.0.5",
     "@octokit/rest": "^22.0.1",
@@ -10880,7 +10880,7 @@
     "object-assign": "^4.1.1",
     "object-hash": "^3.0.0",
     "object-inspect": "^1.13.4",
-    "octane": "^0.16.7",
+    "octane": "^0.21.0",
     "office-ui-fabric-core": "^11.1.0",
     "ogl": "^1.0.11",
     "oh-my-logo": "^0.5.0",
@@ -17581,11 +17581,11 @@
 
     "@observablehq/plot": ["@observablehq/plot@0.6.19", "", { "dependencies": { "d3": "^7.9.2", "interval-tree-1d": "^1.0.4", "isoformat": "^0.2.1" } }, "sha512-8Tg8+doIBDKTG6gL9Px7Tws+Tuni+bwjhaJufAKR3V8HFi2dtGQf57fH0UKwOrMYgjmEdX2PP1E4LIi7gyhgYw=="],
 
-    "@octanejs/adapter-cloudflare": ["@octanejs/adapter-cloudflare@0.0.67", "", { "peerDependencies": { "@octanejs/app-core": "0.3.3" } }, "sha512-nAmxuSRRgXrs6GdNX8S7vVxTUZhMY6q4W7DVx2ZNuHyR6gml5DN2J0byU4LitDgD5YATW8EXP2q+8i4uSVE5Gw=="],
+    "@octanejs/adapter-cloudflare": ["@octanejs/adapter-cloudflare@0.0.68", "", { "peerDependencies": { "@octanejs/app-core": "0.3.4" } }, "sha512-0nQMI/xAjAIxbcGaKnKbdMzdModMyiPcq0x+pOvoivKx683RfzRc3l9QdbnFQwwtvkxntJtv5BVlTeTqqFKhPw=="],
 
-    "@octanejs/app-core": ["@octanejs/app-core@0.2.0", "", { "dependencies": { "@ripple-ts/adapter": "^0.4.0", "esbuild": "^0.28.1" }, "peerDependencies": { "octane": "^0.16.0" } }, "sha512-Vr6UB4cHsItpRaT9pz8nksacqK3f0/eUzoceyTRI/LAJP2qEcVpjiqa6PiqOPGDUYhfH9n+bHvZbVHO3xcxSMw=="],
+    "@octanejs/app-core": ["@octanejs/app-core@0.3.4", "", { "dependencies": { "@ripple-ts/adapter": "^0.4.0", "esbuild": "^0.28.1" }, "peerDependencies": { "octane": "^0.21.0" } }, "sha512-vtncNWSw+BdaTyR2D+Lk2F5lsnRLzTkugB2ykIsUmrScMFzHfV7OxUOxrDoR8CPRPxYoo/5T38V9cDrQz/iuEw=="],
 
-    "@octanejs/vite-plugin": ["@octanejs/vite-plugin@0.5.0", "", { "dependencies": { "@octanejs/app-core": "0.2.0", "@ripple-ts/adapter": "^0.4.0" }, "peerDependencies": { "octane": "^0.16.0", "vite": "^8.0.16" }, "bin": { "octane-preview": "src/bin/preview.js" } }, "sha512-QURhtxdvtno2gm6Lmgl47Jl2UBMy2oqRWFNR1CiknRasD+skggQmI1NFVg3XlKMCvmdMxoHCfw/6y52WUlBefQ=="],
+    "@octanejs/vite-plugin": ["@octanejs/vite-plugin@0.6.4", "", { "dependencies": { "@octanejs/app-core": "0.3.4", "@ripple-ts/adapter": "^0.4.0" }, "peerDependencies": { "octane": "^0.21.0", "vite": "^8.0.16" }, "bin": { "octane-preview": "src/bin/preview.js" } }, "sha512-+dm2NqAFj6h819a2iUJMO97vquQm5+9bv6QPimlJ1z8kLfcsxORvZijJEmTRH9FqMszNA22MWsRE1bNyhLDoVA=="],
 
     "@octokit/auth-app": ["@octokit/auth-app@8.3.1", "", { "dependencies": { "@octokit/auth-oauth-app": "^9.0.5", "@octokit/auth-oauth-user": "^6.0.4", "@octokit/request": "^10.0.16", "@octokit/request-error": "^7.1.2", "@octokit/types": "^18.0.0", "toad-cache": "^3.7.0", "universal-github-app-jwt": "^2.2.0", "universal-user-agent": "^7.0.0" } }, "sha512-XHWxZsF4mvGTQCv7AOxgby9t9OjVO19FBuKq+QmyBxFrf+B2hR/P5j/MTF8g95bITf8cRtR17KIXThpFNqiKbg=="],
 
@@ -30739,7 +30739,7 @@
 
     "ocache": ["ocache@0.1.5", "", { "dependencies": { "ohash": "^2.0.11" } }, "sha512-kNNnkkVQup/QDvmTz8Q84wc2ntiyoVHDxa6eHWKt5qdGAmFRBIxy83rxgCYEjW0x06UJ9E3P6VgM2yY4rOBH4w=="],
 
-    "octane": ["octane@0.16.7", "", { "dependencies": { "@tsrx/core": "^0.5.5", "@types/react": "^19.2.17", "@volar/language-core": "2.4.28", "@volar/typescript": "2.4.28", "csstype": "3.2.3", "devalue": "^6.0.3", "es-module-lexer": "^1.7.0", "esrap": "^2.3.2" }, "peerDependencies": { "@tsrx/oxc": "0.23.0", "react": "^19.0.0", "react-dom": "^19.0.0", "typescript": "^5.9.3 || ^6.0.0 || >=7.1.0-0", "vite": "^8.0.16" }, "optionalPeers": ["@tsrx/oxc", "react", "react-dom", "typescript", "vite"] }, "sha512-pTVGYiyFKyFR91jkmybBlVkDMMOX09k3dcZWjf0Vp9sSmoRmc6wng7mJg0KeSMod7OFxeMGWDT0R6msXOEk5Jg=="],
+    "octane": ["octane@0.21.0", "", { "dependencies": { "@tsrx/core": "^0.5.5", "@types/react": "^19.2.17", "@volar/language-core": "2.4.28", "@volar/typescript": "2.4.28", "csstype": "3.2.3", "devalue": "^6.0.3", "es-module-lexer": "^1.7.0", "esrap": "^2.3.2" }, "peerDependencies": { "@tsrx/oxc": "0.23.0", "react": "^19.0.0", "react-dom": "^19.0.0", "typescript": "^5.9.3 || ^6.0.0 || >=7.1.0-0", "vite": "^8.0.16" }, "optionalPeers": ["@tsrx/oxc", "react", "react-dom", "typescript", "vite"] }, "sha512-BHExrlqN9Yv4BzGNxYilZqkSaQucLtC/9VA/PLomMYwpJ2GnlE1AWhrwaCa5UsVX0ZpA2WS+e74GcSz5QcayYg=="],
 
     "ofetch": ["ofetch@1.5.1", "", { "dependencies": { "destr": "^2.0.5", "node-fetch-native": "^1.6.7", "ufo": "^1.6.1" } }, "sha512-2W4oUZlVaqAPAil6FUg/difl6YhqhUR7x2eZY4bQCko22UXg3hptq9KLQdqFClV+Wu85UX7hNtdGTngi/1BxcA=="],
 
