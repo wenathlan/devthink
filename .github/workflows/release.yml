@@ -326,8 +326,20 @@ jobs:
     uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ needs.metadata.outputs.ref }}
+    # THE NESTED PERMISSION LAW (the 2026-11-19 release startup cure): the
+    # caller job grants every scope the called house requests or GitHub
+    # refuses the whole workflow at startup - the ci.yml cleanup job the
+    # 2026-11-18 cache law seated rides `actions: read` beside its
+    # contents scope, and the reusable call answered "the nested job
+    # 'cleanup' is requesting 'actions: read', but is only allowed
+    # 'actions: none'" for every release firing since the 2.0.186 rung
+    # (runs 428-431). The caller grants the union the nested ladder may
+    # draw: contents read (the checkout floor) and actions read (the cache
+    # list the cleanup vacuum reads; the deletes themselves ride the
+    # OWNER_PAT the called job stamps).
     permissions:
       contents: read
+      actions: read
 
   assemble:
     name: Assemble the complete DevThink release set
