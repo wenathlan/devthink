@@ -234,7 +234,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -574,7 +574,7 @@ jobs:
       - name: setup bun for the webpack seat
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: bundle the webpack seat inside the original envelope (the fusion law)
         # the owner order the corridor sealed: the webpack distribution
         # rides INSIDE the original package — the envelope packs the
@@ -805,7 +805,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: setup node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -1098,7 +1098,7 @@ jobs:
       - name: setup bun for the webpack seat
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: bundle the webpack seat inside the original envelope (the fusion law)
         # the same embed the npmjs family lane packs: the webpack
         # distribution rides INSIDE the original package (the files
@@ -1454,7 +1454,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the jar embeds
@@ -1631,7 +1631,7 @@ jobs:
       - name: setup bun for the webpack seat
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: bundle the webpack seat inside the original envelope (the fusion law)
         # the owner order (the normal name the maven seat carries): the
         # webpack distribution rides INSIDE the original artifact — the
@@ -1860,7 +1860,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the content package carries
@@ -2011,7 +2011,7 @@ jobs:
       - name: setup bun for the webpack seat
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: bundle the webpack seat inside the original envelope (the fusion law)
         # the owner order the corridor sealed: the webpack distribution
         # rides INSIDE the original package — never a variant registry
@@ -2427,7 +2427,7 @@ jobs:
       - name: setup bun for the webpack seat
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: bundle the webpack seat inside the original envelope (the fusion law)
         # the owner order the corridor sealed: the webpack distribution
         # rides INSIDE the original package — never a variant registry
@@ -3433,7 +3433,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: install locked dependencies
         run: cd devthink && bun install --frozen-lockfile --ignore-scripts
       - name: assemble the rich dist set the module embeds
@@ -3666,7 +3666,7 @@ jobs:
       - name: setup bun for the webpack seat
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: bundle the webpack seat inside the original envelope (the fusion law)
         # the owner order the corridor sealed: the webpack distribution
         # rides INSIDE the original package — never a variant registry
@@ -6579,7 +6579,7 @@ jobs:
       - name: setup bun
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
 
       # the reality gate: the flat interface files answer at the
       # web root (the dead folder gate of the
@@ -6761,7 +6761,7 @@ jobs:
         if: steps.selected.outputs.enabled == 'true'
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.4.4
+          bun-version: 1.4.5
       - name: Set up Node
         if: steps.selected.outputs.enabled == 'true'
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
