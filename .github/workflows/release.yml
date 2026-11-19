@@ -1893,7 +1893,7 @@ jobs:
           deleted=0
           while IFS=$'\t' read -r cache_id cache_key; do
             test -n "$cache_id" || continue
-            if gh api --method DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
+            if gh api -X DELETE "repos/${GH_REPO}/actions/caches/${cache_id}" 2>/dev/null; then
               deleted=$((deleted + 1))
               echo "deleted cache id=${cache_id} key=${cache_key}"
             else
