@@ -343,6 +343,21 @@ jobs:
 
   assemble:
     name: Assemble the complete DevThink release set
+    # THE CALLED-SKIP INHERITANCE GATE (the 2026-11-19 dispatch cure): a
+    # job whose needs graph carries the reusable caller inherits the skip
+    # the caller entry reports even though the called ladder ran green —
+    # the auto-tag seat stays skipped on the dispatch and the tag-push
+    # recovery paths, so the caller entry answers skipped and the whole
+    # assemble chain below inherited the skip for every dispatch train
+    # since the seat landed (the runs 425/432 evidence). The explicit gate
+    # pins the real evidence: the metadata resolve succeeded and the
+    # ladder never failed (the caller reports success when the ladder is
+    # green and failure when it is red; the skipped artifact the caller
+    # entry carries on the recovery paths never blocks the wave again).
+    if: >-
+      always() &&
+      needs.metadata.result == 'success' &&
+      (needs.verify.result == 'success' || needs.verify.result == 'skipped')
     needs: [metadata, verify]
     runs-on: ubuntu-latest
     timeout-minutes: 30
