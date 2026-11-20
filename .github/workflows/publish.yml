@@ -390,7 +390,7 @@ jobs:
         if: steps.token.outputs.available != 'true'
         run: |
           echo "::notice::No live npm secret seats the ladder (NODE_AUTH_TOKEN or NPM_TOKEN); the npmjs.com publication is skipped with this warning. Add or rotate either secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
-      - name: verify npm identity (the probe the publish answers)
+      - name: verify npm identity
         if: steps.token.outputs.available == 'true'
         run: cd devthink && npm whoami || echo "::notice::the identity probe answered 401 (the granular seat); the publish step answers the final truth."
       - name: publish the flat distribution tarball when absent
@@ -681,7 +681,7 @@ jobs:
         if: steps.token.outputs.available != 'true'
         run: |
           echo "::notice::Secret NPM_TOKEN is not configured or was rejected by registry.npmjs.org; the npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped with this warning. Add or rotate the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the family envelope."
-      - name: verify npm identity (the probe the publish answers)
+      - name: verify npm identity
         if: steps.token.outputs.available == 'true'
         run: cd "${{ matrix.package }}" && npm whoami || echo "::notice::the identity probe answered 401 (the granular seat); the publish step answers the final truth."
       - name: build the saddle engine envelope (the exports promise)
