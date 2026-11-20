@@ -1,15 +1,14 @@
 // # family — the family table of argan, housed at the argan root.
 // The deploy units of the wenathlan family with the one accent each carries
 // (the spec §12 table, mirrored from the devthink familyidentity wave and
-// from the cadria contract) and the slugs in rail order. Pure data, zero
-// imports: the chrome (the shell rail foot), the landing footer and the
-// vitest suite all consume this one table, so the family row can never
+// from the cadria contract) and the slugs in rail order. Pure data beside
+// the one familyurl door: the chrome (the shell rail foot), the landing footer
+// and the vitest suite all consume this one table, so the family row can never
 // drift between surfaces. The file carries the whole family keyword under
 // the fold law (every file that starts with the same keyword is one file):
-// the table lane this header describes and the retired familyurl arm as
-// the section below — the relative url resolver that keeps every
-// cross-app link mount-proof, every export of the family one export of
-// this file.
+// the table lane this header describes and the familyurl arm as the section
+// below — a thin door onto the devthink owner seat (the familyurl x10 collapse
+// wave), every export of the family one export of this file.
 
 /** the sibling deploy units beside argan, rail order (argan itself is not
  * listed — the row links OUT, never back). */
@@ -52,38 +51,11 @@ export function familyrow(): readonly FamilyMember[] {
   return row;
 }
 
-/* ===== the familyurl lane — familyurl.ts retires into the keyword file ===== */
+/* ===== the familyurl lane — familyurl.ts retired into the keyword file, the math onto the family owner ===== */
 
-/**
- * familyurl.ts — the url of a family application beside this one (root
- * layer).
- *
- * the family deploys as sibling folders on one host: argan lives at
- * /argan/, the other deploy units at /<slug>/, and every cross-application
- * link must survive any mount point (project pages, self-hosted domains,
- * bare local preview servers) without trusting a build constant or reading
- * the live location. the helper therefore builds a RELATIVE url — one level
- * up from the current deploy unit, then into the sibling folder — so the
- * chrome of the window resolves the family from wherever the app is
- * mounted. the os itself answers at the family root of the host (the pages
- * site root — the real deploy of the os), never one segment deep, so the
- * devthink slug resolves to the root while every other slug resolves to
- * the sibling folder beside this one. pure and multi-mode: the same call
- * runs in the browser and in node (the unit tests), with zero storage.
- */
-
-/** resolves the url of a family deploy unit that shares this host.
- *
- * @param slug the deploy unit segment (the app folder name); decorative
- *   slashes are stripped.
- * @returns the relative path of the family application, slash-terminated.
- */
-export function familyurl(slug: string): string {
-  const clean = slug.replace(/^\/+|\/+$/g, "");
-  // the os answers at the family root itself: the devthink slug resolves to
-  // the root (the real deploy of the os), every other slug to the sibling
-  // folder one level up from this deploy unit
-  if (clean === "devthink") return "../";
-  // biome-ignore lint/style/useTemplate: the family contract body stays verbatim — every app of the family copies this exact line
-  return "../" + clean + "/";
-}
+// the familyurl door of the fold law: the arm keeps the export answering
+// from this keyword file (every export of the family one export of this
+// file) while the member url derivation itself answers from the one
+// devthink owner seat the sibling familyurl.ts doors ride (the familyurl
+// x10 collapse wave — the relative climb-one-level recipe lives once).
+export { familyurl } from "../devthink/familyurl.ts";

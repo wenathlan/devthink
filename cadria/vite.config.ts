@@ -102,10 +102,14 @@ export default defineConfig({
    * the engine files (versawase.ts and the data layer) across the theme boundary
    * from the same project root, and the audio analysis family answers from the
    * debonair sibling root (the engine ownership law), so the dev server allows
-   * both roots. */
+   * those roots — and the familyurl door law (the x10 collapse wave) rides the
+   * devthink root beside them: the root familyurl.ts seat re-exports the family
+   * resolver from ../devthink/familyurl.ts (the same sibling-crossing grammar
+   * routerbase.ts already rides), so the dev server may serve the owner seat
+   * the theme graph reaches. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../debonair"), path.resolve(import.meta.dirname, "../vault")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../debonair"), path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../devthink")],
     },
     host: true,
     strictPort: false,
