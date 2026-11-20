@@ -80,6 +80,9 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
+User-agent: PerplexityBot
+Disallow: /
+
 # ads relevance crawlers keep full access — the site runs honest ad slots
 User-agent: Mediapartners-Google
 Allow: /

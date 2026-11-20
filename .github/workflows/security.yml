@@ -356,17 +356,15 @@ jobs:
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@6e4298ebc4db23e847df9b2e2de2939d6f066c67 # v2.5.1
     with:
       fail-on-vuln: true
-      # the config flag seats the root toml the documented ignore lane
-      # carries: the recursive scan walks every family folder, and the
-      # scanner reads the osv-scanner.toml of the directory each lockfile
-      # lives in — the eleven app folders carry no toml of their own, so
-      # the root file the repository maintains never applied. the explicit
-      # --config flag points every recursive walk at the root toml, so the
-      # documented upstream-blocked rows (the picomatch ReDoS seat with no
-      # fixed release upstream, the minimatch globparts seat bundled inside
-      # the aws-cdk-lib tarball) ride every lock the battery scans.
+      # the retirement law of the suppression seats: the root toml the
+      # ignore lane carried left the tree with the suppression purge (the
+      # owner deleted osv-scanner.toml root and branch), so the scan walks
+      # the recursive battery with the default grammar — the documented
+      # upstream-blocked rows (the picomatch ReDoS seat with no fixed
+      # release upstream, the minimatch globparts seat bundled inside the
+      # aws-cdk-lib tarball) ride the dependency-review allow-ghsas row
+      # and the comments the battery carries, never a config file.
       scan-args: |-
-        --config=osv-scanner.toml
         --recursive
         ./
     permissions:
