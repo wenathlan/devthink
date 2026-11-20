@@ -4914,7 +4914,7 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
      text the strip keeps whole. */
   const releasetext = (await readFile(`${workflowdirectory}/release.yml`, "utf8"))
     .split("\n")
-    .map((line) => line.replace(/\s#.*$/, ""))
+    .map((line: string) => line.replace(/\s#.*$/, ""))
     .join("\n");
   for (const duplicated of [
     "mvn --batch-mode",
