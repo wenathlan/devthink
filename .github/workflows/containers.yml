@@ -4487,7 +4487,13 @@ jobs:
               printf 'keyPassword=%s\n' "$ANDROID_KEY_PASSWORD"
             } > "${{ matrix.app }}/android/keystore.properties"
             echo "FAMILY_SIGNING=caller-owned" >> "$GITHUB_ENV"
-          elif [ "${{ github.event_name }}" = "release" ] || [ "${{ inputs.allow_test_signing }}" = "true" ]; then
+          # the automated workflow_run firing (the release ladder
+          # completion the dual trigger carries) walks the ci-test-key seat
+          # exactly like the release event — the devthink mobile lane below
+          # already carries the condition; the family lane answers the
+          # same law (an automated firing never demands the manual-build
+          # signing secrets).
+          elif [ "${{ github.event_name }}" = "release" ] || [ "${{ github.event_name }}" = "workflow_run" ] || [ "${{ inputs.allow_test_signing }}" = "true" ]; then
             keytool -genkeypair -v -keystore "$RUNNER_TEMP/family-test.jks" -storepass changeit -keypass changeit -alias family-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Family CI Test,O=DevThink Family,C=US"
             {
               printf 'storeFile=%s\n' "$RUNNER_TEMP/family-test.jks"
