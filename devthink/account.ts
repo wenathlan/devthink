@@ -933,7 +933,7 @@ export function detectProviderFromState(state: string | null | undefined): OAuth
   const provider = rest.slice(0, separator);
   const random = rest.slice(separator + 1);
   if (!random) return null;
-  if (provider !== "google" && provider !== "github") return null;
+  if (provider !== "google" && provider !== "github" && provider !== "gitlab") return null;
   return provider;
 }
 
