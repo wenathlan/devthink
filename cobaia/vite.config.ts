@@ -60,10 +60,16 @@ export default defineConfig({
       external: [/better-sqlite3/, /@hono\/node-server/, /@wenathlan\/getry\//, /@babel\/core/, /@libsql\/client/],
     },
   },
-  /** the theme (sol/) and the root logics (checkoutlinks, posts, adsconfig) share one app root, so the dev server allows the app root. */
+  /** the theme (sol/) and the root logics (checkoutlinks, posts, adsconfig) share
+   * one app root, so the dev server allows the app root — and the familyurl door
+   * law (the x10 collapse wave) rides the devthink root beside it: the root
+   * familyurl.ts seat re-exports the family resolver from
+   * ../devthink/familyurl.ts (the same sibling-crossing grammar routerbase.ts
+   * already rides), so the dev server may serve the owner seat the theme graph
+   * reaches. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../devthink")],
     },
     host: true,
     strictPort: false,

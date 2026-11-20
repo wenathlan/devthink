@@ -99,10 +99,15 @@ export default defineConfig({
   },
   /** the config lives at the app root beside the engine: the theme pages import the
    * root logic files (katexis.ts and the data layer) and the "@" alias points into
-   * the Sol folder of this same root, so the dev server allows this single root. */
+   * the Sol folder of this same root, so the dev server allows this single root
+   * — and the familyurl door law (the x10 collapse wave) rides the devthink root
+   * beside the others: the root familyurl.ts seat re-exports the family resolver
+   * from ../devthink/familyurl.ts (the same sibling-crossing grammar
+   * routerbase.ts already rides), so the dev server may serve the owner seat
+   * the theme graph reaches. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../cadria"), path.resolve(import.meta.dirname, "../saddle")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../cadria"), path.resolve(import.meta.dirname, "../saddle"), path.resolve(import.meta.dirname, "../devthink")],
     },
     host: true,
     strictPort: false,

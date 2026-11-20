@@ -1,13 +1,14 @@
 // # family — the family table of forge, housed at the forge root.
 // The deploy units of the wenathlan family with the one accent each carries
 // (the spec §12 table, mirrored from the devthink familyidentity wave) and
-// the slugs in rail order. Pure data, zero imports: the chrome (the shell rail
-// foot), the landing footer and the node tests all consume this one table,
-// so the family row can never drift between surfaces. The file carries the
-// whole family keyword under the fold law (every file that starts with the
-// same keyword is one file): the table lane this header describes and the
-// retired familyurl arm as the section below — the relative url resolver of
-// the rail foot links, every export of the family one export of this file.
+// the slugs in rail order. Pure data beside the one familyurl door: the
+// chrome (the shell rail foot), the landing footer and the node tests all
+// consume this one table, so the family row can never drift between
+// surfaces. The file carries the whole family keyword under the fold law
+// (every file that starts with the same keyword is one file): the table
+// lane this header describes and the familyurl arm as the section below
+// — a thin door onto the devthink owner seat (the familyurl x10 collapse
+// wave), every export of the family one export of this file.
 
 /** the sibling deploy units beside forge, rail order (forge itself is not
  * listed — the row links OUT, never back). */
@@ -59,34 +60,11 @@ export function familyrow(): readonly FamilyMember[] {
   return row;
 }
 
-/* ===== the familyurl lane — familyurl.ts retires into the keyword file ===== */
+/* ===== the familyurl lane — familyurl.ts retired into the keyword file, the math onto the family owner ===== */
 
-/**
- * familyurl.ts — the cross-application resolver of the forge (root layer).
- * The rail foot of the application window links every sibling deploy unit
- * of the family; each sibling is mounted one level up from this app, so the
- * helper builds the relative url from the slug directly. The DevThink OS
- * itself answers at the family root of the host (the pages site root — the
- * real deploy of the os), never one segment deep, so the devthink slug
- * resolves to the root while every other slug resolves to the sibling
- * folder beside this one. Pure and side-effect free: no storage, no
- * location read — the same call runs in the browser (the rail links) and
- * in node (unit tests).
- */
-
-/**
- * Resolves the url of a family deploy unit beside this application.
- *
- * @param slug the deploy unit segment (the app folder name, e.g. "cadria").
- * @returns the relative url of the family application, with the trailing
- * slash so the sibling's clean-url doctrine answers the request.
- */
-export function familyurl(slug: string): string {
-  const clean = slug.replace(/^\/+|\/+$/g, "");
-  // the os answers at the family root itself: the devthink slug resolves to
-  // the root (the real deploy of the os), every other slug to the sibling
-  // folder one level up from this deploy unit
-  if (clean === "devthink") return "../";
-  // biome-ignore lint/style/useTemplate: the verbatim family form of the recipe
-  return "../" + clean + "/";
-}
+// the familyurl door of the fold law: the arm keeps the export answering
+// from this keyword file (every export of the family one export of this
+// file) while the member url derivation itself answers from the one
+// devthink owner seat the sibling familyurl.ts doors ride (the familyurl
+// x10 collapse wave — the relative climb-one-level recipe lives once).
+export { familyurl } from "../devthink/familyurl.ts";

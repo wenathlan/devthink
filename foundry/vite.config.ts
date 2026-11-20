@@ -107,10 +107,10 @@ export default defineConfig({
       external: [/better-sqlite3/, /@hono\/node-server/, /@wenathlan\/getry\//, "@babel/core", "webpack", "@libsql/client"],
     },
   },
-  /** the theme (sol/) and the root logics (runner, api, utils, db) share one app root, so the dev server allows the app root — and the ownership bridges (wave 3) resolve the saddle engine modules the sandbox page and the runner seam import, so the saddle root rides the allow list beside the vault root. */
+  /** the theme (sol/) and the root logics (runner, api, utils, db) share one app root, so the dev server allows the app root — and the ownership bridges (wave 3) resolve the saddle engine modules the sandbox page and the runner seam import, so the saddle root rides the allow list beside the vault root, and the familyurl door law (the x10 collapse wave) rides the devthink root beside them: the root familyurl.ts seat re-exports the family resolver from ../devthink/familyurl.ts (the same sibling-crossing grammar routerbase.ts already rides), so the dev server may serve the owner seat the theme graph reaches. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../saddle")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../saddle"), path.resolve(import.meta.dirname, "../devthink")],
     },
     host: true,
     strictPort: false,

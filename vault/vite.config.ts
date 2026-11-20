@@ -62,10 +62,15 @@ export default defineConfig({
   },
   /** the theme sources live in the Sol folder of this app root: the pages import
    * the root logics (api, db, storage, utils) across the theme boundary from
-   * the same project root, so the dev server allows this single root. */
+   * the same project root, so the dev server allows this single root — and the
+   * familyurl door law (the x10 collapse wave) rides the devthink root beside it:
+   * the family.ts familyurl arm re-exports the family resolver from
+   * ../devthink/familyurl.ts (the fold-law door the sibling familyurl.ts seats
+   * answer the same way), so the dev server may serve the owner seat the theme
+   * graph reaches. */
   server: {
     fs: {
-      allow: [import.meta.dirname],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../devthink")],
     },
     host: true,
     strictPort: false,

@@ -56,10 +56,14 @@ export default defineConfig({
   /** the theme sources live in the sol folder of this app root: the pages import
    * the root engine logics (api, auth, db, mesh, sandbox) across the theme
    * boundary, and the playground consumes the root isolation module, so the
-   * dev server allows this single root. */
+   * dev server allows this single root — and the familyurl door law (the x10
+   * collapse wave) rides the devthink root beside it: the root familyurl.ts
+   * seat re-exports the family resolver from ../devthink/familyurl.ts (the
+   * same sibling-crossing grammar routerbase.ts already rides), so the dev
+   * server may serve the owner seat the theme graph reaches. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../devthink")],
     },
     host: true,
     strictPort: false,
