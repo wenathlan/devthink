@@ -581,7 +581,19 @@ jobs:
         run: |
           set -euo pipefail
           cd vault
-          npx --yes npm@11.20.0 install --no-save --ignore-scripts --no-audit --no-fund esbuild@0.28.2
+          # the isolated carrier (the EOVERRIDE wall the manifest union
+          # answers: the vault envelope declares the esbuild seat in the
+          # dependencies union beside its dev pin and override - npm
+          # refuses any in-tree install of that manifest shape (override
+          # versus the direct dependency the union carries), so the seat
+          # installs under an isolated prefix and lands in the tree as a
+          # plain copy: no manifest resolution, no lock drift, the union
+          # law whole).
+          npx --yes npm@11.20.0 install --prefix /tmp/vault-esbuild-seat --no-save --ignore-scripts --no-audit --no-fund esbuild@0.28.2
+          mkdir -p node_modules
+          rm -rf node_modules/esbuild node_modules/@esbuild
+          cp -a /tmp/vault-esbuild-seat/node_modules/esbuild node_modules/esbuild
+          cp -a /tmp/vault-esbuild-seat/node_modules/@esbuild node_modules/@esbuild
           node --experimental-strip-types build.ts
           test -s build/onboardingstore.js
           test -s build/labelstore.js
