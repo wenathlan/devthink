@@ -34,7 +34,7 @@
  * built-ins first, zero runtime dependencies, no loopback endpoint.
  */
 
-import { createHash } from 'node:crypto';
+import { sha256Hex } from '../vault/sha.ts';
 import { EventEmitter } from 'node:events';
 import { availableParallelism } from 'node:os';
 import {
@@ -46,10 +46,11 @@ import {
   tenantqosmap,
 } from './virtual.ts';
 
-/** stable short sha256 digest for cache keys and reload detection. */
+/** stable short sha256 digest for cache keys and reload detection
+ * (the vault owner's hex seat, never a second copy). */
 function digest(input: string | Uint8Array): string {
   try {
-    return createHash('sha256').update(input).digest('hex').slice(0, 16);
+    return sha256Hex(input).slice(0, 16);
   } catch {
     return input.toString().length.toString(16);
   }

@@ -177,7 +177,15 @@
        * published library specifier ("@wenathlan/vault/onboardingstore"),
        * and this program resolves it to the sibling source the same way
        * the label store seat above rides. */
-      "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"]
+      "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
+      /* the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): the account lane and the admin gate ride the vault digest
+       * owner through the published library specifier
+       * ("@wenathlan/vault/sha"), and this program resolves it to the
+       * sibling source the same way the seats above ride — the digest
+       * is never duplicated inside devthink. the entry retires when the
+       * published envelope carries the sha seat. */
+      "@wenathlan/vault/sha": ["../vault/sha.ts"]
     }
   },
   /* the foundry gate wave: the four ci gates ride the foundry seat, the os typecheck still walks their declarations. */

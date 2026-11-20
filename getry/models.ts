@@ -96,7 +96,7 @@
  *             Wikipedia Gemini 3.6 Flash July 21 2026
  */
 
-import * as nodecrypto from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 // v2.1.15 Phase A: models.ts owns every model substrate locally (flat id
 // lists, rich definition lists, the v1 routing catalog). Only generic
 // non-model constants come from constants.ts (layer 0).
@@ -1708,7 +1708,7 @@ export type ModelDef = modelDef;
 
 function hashToken(token: string): string {
   try {
-    return nodecrypto.createHash("sha256").update(token).digest("hex").slice(0, 32);
+    return sha256Hex(token).slice(0, 32);
   } catch {
     return fnv1a32(token).toString(16).padStart(8, "0");
   }

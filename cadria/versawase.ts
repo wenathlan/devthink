@@ -9,7 +9,7 @@
 import { EffectProgram, SHADER_EFFECTS, ShaderEffectId, compileEffectProgram } from "./shadercomp.ts";
 import { FrameRate, frameat, frameratefromf64, tickofframe, ticksfromseconds } from "./motion.ts";
 import { ImageInput, MeshGeometry } from "./visualize.ts";
-import { createHash } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 
 /* ===== block: versawase ===== */
 // # versawase — the image, video, animation and 3D engine of the family, housed at the cadria root.
@@ -1031,9 +1031,10 @@ export function serializeComposition(composition: VideoComposition): string {
   return JSON.stringify(compositionJson(composition));
 }
 
-/** the sha-256 of the serialized payload — the identity the render lane dedupes by. */
+/** the sha-256 of the serialized payload — the identity the render lane dedupes by
+ * (the vault owner's hex seat, never a second copy). */
 export function compositionFingerprint(composition: VideoComposition): string {
-  return createHash("sha256").update(serializeComposition(composition), "utf8").digest("hex");
+  return sha256Hex(serializeComposition(composition));
 }
 
 /**
@@ -2432,8 +2433,9 @@ function transition(job: RenderJob, from: RenderJob["status"], to: RenderJob["st
 // catalog cross-checks itself (validateCatalogShaders) and the compositor
 // library (validateLibraryEffects folds every shadercomp effect program
 // through the same gate), so a broken body is refused before any manifest
-// row ships. Pure node-side TypeScript: the sha-256 stamps ride node:crypto
-// exactly like shadercomp, nothing here touches the GPU.
+// row ships. Pure node-side TypeScript: the sha-256 stamps ride the vault
+// owner's hex seat (@wenathlan/vault/sha, node:crypto underneath) exactly
+// like shadercomp, nothing here touches the GPU.
 
 
 
@@ -2806,8 +2808,8 @@ export function compileMaterialProgram(id: string): MaterialProgram | null {
     fragmentStage: material.id,
     vertexSource: vertex.glsl,
     fragmentSource: material.glsl,
-    vertexSha256: createHash("sha256").update(vertex.glsl, "utf8").digest("hex"),
-    fragmentSha256: createHash("sha256").update(material.glsl, "utf8").digest("hex"),
+    vertexSha256: sha256Hex(vertex.glsl),
+    fragmentSha256: sha256Hex(material.glsl),
     uniforms: [...vertex.uniforms, ...material.uniforms],
   };
 }

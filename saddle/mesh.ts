@@ -23,11 +23,11 @@
 import {
   createCipheriv,
   createDecipheriv,
-  createHash,
   createHmac,
   randomBytes,
   timingSafeEqual,
 } from 'node:crypto';
+import { sha256Hex } from '../vault/sha.ts';
 import type { IncomingMessage } from 'node:http';
 import process from 'node:process';
 
@@ -135,7 +135,7 @@ const noncelimit = 1024;
  * @returns the hex body hash.
  */
 export function bodyhash(body: string): string {
-  return createHash('sha256').update(String(body)).digest('hex');
+  return sha256Hex(String(body));
 }
 
 /**

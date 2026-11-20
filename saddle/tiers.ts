@@ -34,7 +34,7 @@
  * (free pool and quotas), 898-913 (VDR design). Toolchain TS 7.0.2.
  */
 
-import { createHash } from 'node:crypto';
+import { sha256Hex } from '../vault/sha.ts';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -841,7 +841,7 @@ export type npmchunkoptions = {
 };
 
 function sha256hex(data: Uint8Array): string {
-  return createHash('sha256').update(data).digest('hex');
+  return sha256Hex(data);
 }
 
 function sanitizescope(scope: string): string {

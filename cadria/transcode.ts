@@ -7,6 +7,7 @@
  */
 
 import { chachaopen, chachaseal } from "@wenathlan/saddle/security";
+import { sha256Hex } from "@wenathlan/vault/sha";
 import { KeyObject, createHash, generateKeyPairSync, sign as cryptosign, verify as cryptoverify } from "node:crypto";
 
 /* ===== block: transcodeengine ===== */
@@ -80,10 +81,7 @@ export class mediapipelineerror extends Error {
     this.code = params.code;
     this.stage = params.stage;
     this.recoverable = params.recoverable ?? false;
-    this.traceid = createHash("sha256")
-      .update(`${params.code}:${params.stage ?? "pipeline"}:${params.message}`)
-      .digest("hex")
-      .slice(0, 8);
+    this.traceid = sha256Hex(`${params.code}:${params.stage ?? "pipeline"}:${params.message}`).slice(0, 8);
   }
 }
 

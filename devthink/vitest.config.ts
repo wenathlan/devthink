@@ -42,6 +42,14 @@ export default defineConfig({
        * retires when the published envelope carries the built ui store. */
       "@wenathlan/vault/uistore": path.resolve(import.meta.dirname, "../vault/uistore.ts"),
 
+      /** the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): the account lane and the admin gate ride the vault digest
+       * owner through the published library specifier
+       * ("@wenathlan/vault/sha"), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * digest is never duplicated inside devthink. the entry retires when
+       * the published envelope carries the sha seat. */
+      "@wenathlan/vault/sha": path.resolve(import.meta.dirname, "../vault/sha.ts"),
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published
        * library specifier ("@wenathlan/saddle/workloadlaw"), and this

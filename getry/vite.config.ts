@@ -24,6 +24,14 @@ export default defineConfig({
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+      /** the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): every sha-256 hex seat of the gateway rides the vault digest
+       * owner through the published library specifier
+       * ("@wenathlan/vault/sha"), and this bridge resolves the specifier to
+       * the monorepo source the sibling engine carries — the digest is never
+       * duplicated inside getry. the entry retires when the published
+       * envelope carries the sha seat. */
+      "@wenathlan/vault/sha": path.resolve(import.meta.dirname, "../vault/sha.ts"),
       /** the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from vitest.config.ts: the moved
        * engine graph leans on the os server seam whose sandbox lane reads
