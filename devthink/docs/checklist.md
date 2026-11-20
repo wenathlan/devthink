@@ -1035,3 +1035,31 @@ o total da operação de forma hierárquica. cada item é uma ação real verifi
 - [ ] validar a estrutura plana do repositório no contrato da bateria
 - [ ] validar a árvore de cada aplicativo com apenas as três pastas
 - [ ] validar os caminhos dos workflows apontando para as pastas certas
+
+## a onda da consolidação final 2.0.186 (2026-11-20)
+
+- [x] ler integralmente os novos uploads (checklist, cauda da conversa52, cauda do ordens1, cauda do polarauth)
+- [x] verificar a autenticação viva (token iakadion, escopos plenos)
+- [x] mesclar os PRs pendentes (#676-#682 — zero PRs abertos)
+- [x] mesclar/deletar todas as branches (só main resta)
+- [x] cancelar as runs ativas e as runs órfãs de branches mortas
+- [x] documentar os 27 runs fantasma (anomalia do lado do GitHub)
+- [x] retirar a lane helm do publish (o pacote charts/devthink nunca foi ordenado)
+- [x] deletar o pacote charts/devthink do GHCR
+- [x] verificar os assentos .webpack zerados nos 54 pacotes dos registros
+- [x] curar o mistune ==3.3.4 nos onze manifests (22 alertas dependabot a fechar no re-scan)
+- [x] clarificação dos crons (sandbox zai zero crons; crons do repo ficam)
+- [ ] acompanhar as lanes do main ficarem verdes no stamp pós-consolidação
+- [ ] fechar o buraco npmjs 181→186 (a cascata do publish)
+- [ ] fechar os 2 alertas do code-scanning (scorecard CITests/SAST)
+- [ ] restaurar o deploy do GitHub Pages (R09)
+- [ ] approval do release como iakadion (R05)
+- [ ] releases com 1.000+ assets (R06 — v2.0.186 está em 840)
+- [ ] bump para a próxima versão UMA vez, no fim, com tudo verde
+- [ ] engines kathesis (debonair) e versawaze (cadria) por último, com cuidado
+
+## a onda dos relatórios
+
+- [x] complementar o ownerdirectives.md (cânon completo, nomes corrigidos)
+- [x] unificar e desduplicar os textos espalhados neste checklist preservando o existente
+- [ ] mapear cada regra dos seis documentos contra o código para auditar cumprimento
