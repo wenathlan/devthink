@@ -19,6 +19,18 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * onboarding store. */
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+      /** the storage lane bridge of the ownership law (the
+       * wave/db-vault-subpath seat): the gateway's sqlite mirror rides the
+       * vault factory owner through the published library specifier
+       * ("@wenathlan/vault/storagelane" — the keyed file the seat owns),
+       * and this bridge resolves the specifier to the monorepo source the
+       * sibling engine carries — the open, the pragma ladder and the
+       * statement cache are never duplicated inside getry (the mirror
+       * boots the lane through the computed dynamic import behind the
+       * process guard, and the runtime resolution answers this bridge).
+       * the entry retires when the published envelope carries the built
+       * storage lane owner. */
+      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
 
       /** the debonair route table bridge of the ownership law: the
        * debonair lane rides the owner's route table through the published
