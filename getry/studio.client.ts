@@ -199,12 +199,12 @@ export function normalizeBaseUrl(rawUrl: string): string {
   }
 }
 
-/** 1048576 → "1.0M" · 131072 → "131k" · absent → "—" (the catalog grammar). */
+/** 1048576 → "~1.0M" · 131072 → "~131k" · absent → "—" (the catalog grammar; the approximate symbol rides every count — the windows are quotas the meters estimate, the wave/getry-jury tilde law). */
 export function formatCompactTokens(value?: number): string {
   if (value === undefined || !Number.isFinite(value) || value <= 0) return "—";
-  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
-  if (value >= 1_000) return `${Math.round(value / 1_000)}k`;
-  return String(value);
+  if (value >= 1_000_000) return `~${(value / 1_000_000).toFixed(1)}M`;
+  if (value >= 1_000) return `~${Math.round(value / 1_000)}k`;
+  return `~${value}`;
 }
 
 /** derives the conversation title from the first user prompt (42 budget). */
