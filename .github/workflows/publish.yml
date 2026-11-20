@@ -373,13 +373,24 @@ jobs:
           if [[ -z "$token" ]]; then
             echo "available=false" >> "$GITHUB_OUTPUT"
           else
-            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
-            echo "available=true" >> "$GITHUB_OUTPUT"
+            # the identity probe (the 401 wall the dead secret answers):
+            # a token the registry REJECTS is not available either (the
+            # Regra 54 contract extended to the rejected secret - the
+            # npmjs envelopes stopped shipping at 2.0.181 when the token
+            # died; the notice hands the rotation to the owner while the
+            # family mirror on npm.pkg.github.com carries the rung).
+            if curl -fsSL --max-time 20 -H "Authorization: Bearer ${token}" "https://registry.npmjs.org/-/whoami" >/dev/null 2>&1; then
+              printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+              echo "available=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "available=false" >> "$GITHUB_OUTPUT"
+              echo "::warning::The NPM_TOKEN secret was REJECTED by registry.npmjs.org (the 401 wall - the npmjs envelopes have not shipped since 2.0.181). The npmjs.com publication is skipped until the secret rotates: Settings > Secrets and variables > Actions > NPM_TOKEN. The GitHub family mirror (npm.pkg.github.com) carries the rung meanwhile."
+            fi
           fi
       - name: skip notice when NPM_TOKEN is not configured
         if: steps.token.outputs.available != 'true'
         run: |
-          echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com publication is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
+          echo "::notice::Secret NPM_TOKEN is not configured or was rejected by registry.npmjs.org; the npmjs.com publication is skipped with this warning. Add or rotate the secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
       - name: verify npm identity
         if: steps.token.outputs.available == 'true'
         run: cd devthink && npm whoami
@@ -638,13 +649,23 @@ jobs:
           if [[ -z "$token" ]]; then
             echo "available=false" >> "$GITHUB_OUTPUT"
           else
-            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
-            echo "available=true" >> "$GITHUB_OUTPUT"
+            # the identity probe (the 401 wall the dead secret answers):
+            # a token the registry REJECTS is not available either (the
+            # Regra 54 contract extended to the rejected secret — the
+            # notice hands the rotation to the owner; the family mirror
+            # on npm.pkg.github.com carries the envelope meanwhile).
+            if curl -fsSL --max-time 20 -H "Authorization: Bearer ${token}" "https://registry.npmjs.org/-/whoami" >/dev/null 2>&1; then
+              printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+              echo "available=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "available=false" >> "$GITHUB_OUTPUT"
+              echo "::warning::The NPM_TOKEN secret was REJECTED by registry.npmjs.org (the 401 wall). The npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped until the secret rotates: Settings > Secrets and variables > Actions > NPM_TOKEN. The GitHub family mirror (npm.pkg.github.com) carries the envelope meanwhile."
+            fi
           fi
       - name: skip notice when NPM_TOKEN is not configured
         if: steps.token.outputs.available != 'true'
         run: |
-          echo "::notice::Secret NPM_TOKEN is not configured; the npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped with this warning. Add the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the family envelope."
+          echo "::notice::Secret NPM_TOKEN is not configured or was rejected by registry.npmjs.org; the npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped with this warning. Add or rotate the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the family envelope."
       - name: verify npm identity
         if: steps.token.outputs.available == 'true'
         run: cd "${{ matrix.package }}" && npm whoami
@@ -3918,7 +3939,12 @@ jobs:
         # ships declare no go.sum at all.
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: 1.27.3
+          # the 1.27.4 floor the eleven go.mod markers declare (the 1.27.3
+          # pin the goget wave froze on answered "go.mod requires go >= 1.27.4
+          # (running go 1.27.3; GOTOOLCHAIN=local)" on every goget lane of
+          # the 2.0.186 publish — the pin now rides the module floor the
+          # tree itself carries, still never a floating `go` alias).
+          go-version: 1.27.4
           cache: false
       - name: verify the go module builds clean
         # the module validity gate: the go.mod marker and the doc carrier
@@ -4130,13 +4156,13 @@ jobs:
             echo "version=$version"
           } >> "$GITHUB_OUTPUT"
       - name: setup go
-        # the pinned 1.27.3 line the single goget lane carries: every
+        # the pinned 1.27.4 line the single goget lane carries: every
         # family leg answers the same interpreter the application lane
         # resolves, so the go rung answers one line across the whole
-        # family.
+        # family — the floor the eleven go.mod markers declare.
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: 1.27.3
+          go-version: 1.27.4
           cache: false
       - name: verify the family go module builds clean
         run: |
@@ -7094,7 +7120,12 @@ jobs:
         (github.event.workflow_run.conclusion == 'success' &&
           (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')))
     permissions:
-      contents: read
+      # contents: write rides the gh release upload call that attaches the
+      # chart tarball to the release draft (the contents: read-only grant
+      # the 2.0.186 publish answered "HTTP 403: Resource not accessible by
+      # integration" on uploads.github.com — the lane could never attach
+      # its asset); packages: write covers the ghcr OCI push.
+      contents: write
       packages: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
