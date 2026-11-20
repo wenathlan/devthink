@@ -4905,7 +4905,17 @@ async function verifyworkflowyamlcontrols(): Promise<void> {
      release workflow must not duplicate a lane another workflow owns — the
      release lane carries the assembly, the verification, the github release
      chain and the npmjs publication the npm gate demands, nothing else. */
-  const releasetext = await readFile(`${workflowdirectory}/release.yml`, "utf8");
+  /* The duplication and identity walks scan the EXECUTABLE text alone: the
+     YAML comment tails (the lane documentation the dead-token gates carry —
+     the family-mirror explanations) never answer as a control, so the scan
+     strips every comment tail before the forbidden-term walk. A real
+     control still trips: the strip touches the comment tails only, the
+     registry-url and command lines the lanes execute ride the executable
+     text the strip keeps whole. */
+  const releasetext = (await readFile(`${workflowdirectory}/release.yml`, "utf8"))
+    .split("\n")
+    .map((line) => line.replace(/\s#.*$/, ""))
+    .join("\n");
   for (const duplicated of [
     "mvn --batch-mode",
     "dotnet nuget push",
