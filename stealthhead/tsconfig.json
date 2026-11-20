@@ -19,7 +19,15 @@
       "@wenathlan/devthink/reveal": ["../devthink/reveal.ts"],
       "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
-      "@wenathlan/vault/storage": ["../vault/storage.ts"]
+      "@wenathlan/vault/storage": ["../vault/storage.ts"],
+      /* the storagelane bridge of the ownership law: the game store (db.ts)
+       * rides the vault sqlite factory owner through the published library
+       * specifier ("@wenathlan/vault/storagelane" — the keyed file the
+       * wave/db-vault-subpath seat owns), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries. the
+       * entry retires when the published envelope carries the built
+       * storage lane owner. */
+      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],

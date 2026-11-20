@@ -10,17 +10,20 @@
  * HTTPS accessors the static interface calls — the visitor machine stores
  * nothing and falls back to the seeds when the endpoint is absent.
  *
- * The sqlite mirror (better-sqlite3, the local runtime of the gateway)
- * lives at the foot of this file: prepared statements only, never
+ * The sqlite mirror (the local runtime of the gateway) rides the vault
+ * storage lane factory owner through the published library subpath
+ * ("@wenathlan/vault/storagelane"): prepared statements only, never
  * concatenated SQL, DATABASE_URL env, idempotent schema on first use. The
- * driver is loaded through a computed dynamic import that vite never
- * bundles — the Sol pages reach this module, so the node layer stays behind
- * a process guard and the browser never fetches the addon.
+ * lane module loads only in a node process through a computed dynamic
+ * import that vite never bundles — the Sol pages reach this module, so
+ * the node layer stays behind a process guard and the browser never
+ * fetches the native binding.
  */
 
 /// <reference types="better-sqlite3" />
 
-import { createOnboardingStore, type OnboardingLane, type OnboardingStore } from "@wenathlan/vault/onboardingstore";
+import { createOnboardingStore, type OnboardingStore } from "@wenathlan/vault/onboardingstore";
+import type { StorageLane, StorageLaneOptions } from "@wenathlan/vault/storagelane";
 import { GATEWAYROUTES, GATEWAYVERSIONS, type GatewayRoute, type GatewayVersion } from "./gateway";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels";
 
@@ -347,23 +350,21 @@ export function nextkeyrow(keys: readonly ApiKeyRow[], cursor = 0, now = Date.no
 }
 
 /* ============================== sqlite mirror ==============================
-   the local runtime of the gateway: better-sqlite3 over DATABASE_URL (the
-   family convention), prepared statements only — every statement is bound,
-   no sql is ever assembled by string concatenation. The schema mirrors
+   the local runtime of the gateway: the vault storage lane factory owner
+   ("@wenathlan/vault/storagelane") opened over DATABASE_URL (the family
+   convention), prepared statements only — every statement is bound, no sql
+   is ever assembled by string concatenation. The schema mirrors
    schema.prisma (the onboarding_states table) and is created idempotently on
    first use; the gateway layer serves the same rows over /api/v1/*. The
-   driver loads only in a node process: the browser graph reaches this
+   lane module loads only in a node process: the browser graph reaches this
    module, so the import rides a computed specifier with @vite-ignore behind
-   a process guard — vite never bundles the addon.
+   a process guard — vite never bundles the native binding.
    ========================================================================== */
 
 /** true when this module runs inside a node process (the gateway runtime). */
 function isnode(): boolean {
   return typeof process !== "undefined" && process.versions?.node != null;
 }
-
-/** the database url of the local runtime (DATABASE_URL env, file: default). */
-const DATABASE_URL = (typeof process !== "undefined" && process.env?.DATABASE_URL) || "file:./local.db";
 
 /** the onboarding_states schema of the sqlite mirror (idempotent, mirrors the prisma model). */
 const ONBOARDING_SCHEMA = `
@@ -416,7 +417,7 @@ type VersionStatements = {
   upsert: import("better-sqlite3").Statement;
 };
 
-/** the cached driver bundle (null until the first node call). */
+/** the cached lane bundle (null until the first node call). */
 let mirror: {
   db: import("better-sqlite3").Database;
   onboarding: OnboardingStore;
@@ -424,12 +425,23 @@ let mirror: {
   versions: VersionStatements;
 } | null = null;
 
+/** the computed library subpath of the vault storage lane factory owner
+ * ("@wenathlan/vault/storagelane" — the keyed file the
+ * wave/db-vault-subpath seat owns): the specifier is computed at runtime
+ * so vite never resolves it into the browser graph, and the node layer
+ * resolves it through the alias bridges the vite and vitest configs
+ * carry — the native binding never rides the bundle. */
+const storagelanesubpath = ["@wenathlan/vault", "storagelane"].join("/");
+
 /**
- * Boots the sqlite mirror exactly once per process: opens DATABASE_URL
- * (creating parent folders), rides WAL and the busy timeout, creates the
- * onboarding_states, labels and gateway_versions tables when absent
- * (idempotent seed-on-first-run) and prepares every statement — never
- * concatenated SQL.
+ * Boots the sqlite mirror exactly once per process: opens the vault
+ * storage lane over DATABASE_URL (the url resolution, the parent folder
+ * creation, the pragma ladder — busy_timeout before WAL, foreign keys
+ * armed — and the stampede retry law all ride the shared factory, never
+ * a local copy of the engine), creates the onboarding_states, labels and
+ * gateway_versions tables when absent (idempotent seed-on-first-run) and
+ * prepares every statement through the lane cache — never concatenated
+ * SQL.
  *
  * @returns the open database with its prepared statements.
  */
@@ -440,47 +452,30 @@ async function openMirror(): Promise<{
   versions: VersionStatements;
 }> {
   if (mirror) return mirror;
-  const nodefs = await import(/* @vite-ignore */ "node:fs");
-  const nodepath = await import(/* @vite-ignore */ "node:path");
-  const driver = "better-sqlite3";
-  const Database = (await import(/* @vite-ignore */ driver)).default;
-  const file = DATABASE_URL.startsWith("file:") ? DATABASE_URL.slice("file:".length) : DATABASE_URL;
-  nodefs.mkdirSync(nodepath.dirname(nodepath.resolve(file)), { recursive: true });
-  const db = new Database(file);
-  db.pragma("busy_timeout = 5000");
-  db.pragma("journal_mode = WAL");
-  db.exec(ONBOARDING_SCHEMA);
-  db.exec(LABELS_SCHEMA);
-  db.exec(GATEWAYVERSIONS_SCHEMA);
+  const lanemodule = (await import(/* @vite-ignore */ storagelanesubpath)) as {
+    openStorageLane: (options?: StorageLaneOptions) => StorageLane;
+  };
+  const lane = lanemodule.openStorageLane({ defaultFile: "./local.db" });
+  lane.exec(ONBOARDING_SCHEMA);
+  lane.exec(LABELS_SCHEMA);
+  lane.exec(GATEWAYVERSIONS_SCHEMA);
   /* the onboarding store rides the vault factory over the mirror's own
-   * connection (the structural lane — execute, queryOne, exec — answered
-   * through one memoized prepare cache, so every statement stays prepared
-   * once per process): the seen-wins upsert —
+   * lane (the structural lane the StorageLane satisfies whole — execute,
+   * queryOne, exec answered through the lane's memoized statement cache,
+   * so every statement stays prepared once per process): the seen-wins
+   * upsert —
    * ON CONFLICT(visitor) DO UPDATE SET introseen = MAX(introseen, excluded.introseen),
    * onboardingseen = MAX(onboardingseen, excluded.onboardingseen) — rides
    * the shared mechanism, never a local copy of the sql, and the browser
    * graph never gains a storage import — the factory module owns zero
    * imports (the labelstore precedent). */
-  const prepared = new Map<string, import("better-sqlite3").Statement>();
-  const prepareCached = (sql: string): import("better-sqlite3").Statement => {
-    const cached = prepared.get(sql);
-    if (cached) return cached;
-    const statement = db.prepare(sql);
-    prepared.set(sql, statement);
-    return statement;
-  };
-  const onboardinglane: OnboardingLane = {
-    execute: (sql, params = []) => prepareCached(sql).run(...params),
-    queryOne: (sql, params = []) => prepareCached(sql).get(...params),
-    exec: (ddl) => db.exec(ddl),
-  };
   mirror = {
-    db,
-    onboarding: createOnboardingStore(onboardinglane),
+    db: lane.db,
+    onboarding: createOnboardingStore(lane),
     labels: {
-      select: db.prepare("SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?"),
-      selectAll: db.prepare("SELECT id, text, revision, updatedAt, translated FROM labels ORDER BY id ASC"),
-      upsert: db.prepare(
+      select: lane.prepare("SELECT id, text, revision, updatedAt, translated FROM labels WHERE id = ?"),
+      selectAll: lane.prepare("SELECT id, text, revision, updatedAt, translated FROM labels ORDER BY id ASC"),
+      upsert: lane.prepare(
         `INSERT INTO labels (id, text, revision, updatedAt, translated) VALUES (?, ?, ?, datetime('now'), ?)
          ON CONFLICT(id) DO UPDATE SET
            text = excluded.text,
@@ -490,10 +485,10 @@ async function openMirror(): Promise<{
       ),
     },
     versions: {
-      selectAll: db.prepare(
+      selectAll: lane.prepare(
         "SELECT v, provider, pattern, badge, models, note, routes FROM gateway_versions ORDER BY v ASC",
       ),
-      upsert: db.prepare(
+      upsert: lane.prepare(
         `INSERT INTO gateway_versions (v, provider, pattern, badge, models, note, routes)
          VALUES (?, ?, ?, ?, ?, ?, ?)
          ON CONFLICT(v) DO UPDATE SET

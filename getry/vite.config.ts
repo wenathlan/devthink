@@ -24,6 +24,18 @@ export default defineConfig({
        * when the published envelope carries the built label store. */
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+      /** the storage lane bridge of the ownership law (the
+       * wave/db-vault-subpath seat): the gateway's sqlite mirror rides the
+       * vault factory owner through the published library specifier
+       * ("@wenathlan/vault/storagelane" — the keyed file the seat owns),
+       * and this bridge resolves the specifier to the monorepo source the
+       * sibling engine carries — the open, the pragma ladder and the
+       * statement cache are never duplicated inside getry (the mirror
+       * boots the lane through the computed dynamic import behind the
+       * process guard, so the browser graph never reaches the native
+       * binding). the entry retires when the published envelope carries
+       * the built storage lane owner. */
+      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
       /** the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from vitest.config.ts: the moved
        * engine graph leans on the os server seam whose sandbox lane reads
