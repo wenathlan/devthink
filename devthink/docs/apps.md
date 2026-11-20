@@ -85,7 +85,7 @@ o dossiê completo dos onze aplicativos da superplataforma e suas engines, conso
 - a biblioteca de rede, borda e gateway dns
 - concorrente de cloudflare e aws
 - zonas dns com registro raiz, subdomínios, dnssec com rotação, transportes completos, cluster de réplicas, email self-hosted, meta buscador próprio, publicação de domínios em sete passos
-- dona de cleanurl, mimetypes, familyurl e keywords
+- dona de cleanurl, mimetypes e keywords (a math da familyurl mudou pro dono devthink familyurl.ts na onda do colapso, os assentos respondem pela porta)
 - registros nunca excluem, apenas alteram
 - pendências: domínios suspensos publicados, gateway real
 
