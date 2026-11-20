@@ -373,18 +373,17 @@ jobs:
           if [[ -z "$token" ]]; then
             echo "available=false" >> "$GITHUB_OUTPUT"
           else
-            # the identity probe (the 401 wall the dead secret answers):
-            # a token the registry REJECTS is not available either (the
-            # Regra 54 contract extended to the rejected secret - the
-            # npmjs envelopes stopped shipping at 2.0.181 when the token
-            # died; the notice hands the rotation to the owner while the
-            # family mirror on npm.pkg.github.com carries the rung).
-            if curl -fsSL --max-time 20 -H "Authorization: Bearer ${token}" "https://registry.npmjs.org/-/whoami" >/dev/null 2>&1; then
-              printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
-              echo "available=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "available=false" >> "$GITHUB_OUTPUT"
-              echo "::warning::The npm token (NODE_AUTH_TOKEN or NPM_TOKEN) was REJECTED by registry.npmjs.org (the 401 wall - the npmjs envelopes have not shipped since 2.0.181). The npmjs.com publication is skipped until a live secret seats the ladder: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN. The GitHub family mirror (npm.pkg.github.com) carries the rung meanwhile."
+            # the publish-capability law (the granular seat the 07:03
+            # landing proved: the identity probe answers 401 for tokens
+            # the registry still honors for scoped publishes - whoami
+            # reads the account, the publish writes the scope - so the
+            # probe demotes to a notice and the publish attempt itself
+            # answers the final truth; a publish the registry rejects
+            # with 401 skips with the warning the loop carries).
+            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            if ! curl -fsSL --max-time 20 -H "Authorization: Bearer ${token}" "https://registry.npmjs.org/-/whoami" >/dev/null 2>&1; then
+              echo "::notice::The npm token identity probe was rejected by registry.npmjs.org (the 401 wall the granular seats answer: whoami reads the account, the publish writes the scope). The publish attempt below answers the final truth - a registry-rejected publish skips with the warning the lane carries."
             fi
           fi
       - name: skip notice when NPM_TOKEN is not configured
@@ -393,7 +392,7 @@ jobs:
           echo "::notice::No live npm secret seats the ladder (NODE_AUTH_TOKEN or NPM_TOKEN); the npmjs.com publication is skipped with this warning. Add or rotate either secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
       - name: verify npm identity
         if: steps.token.outputs.available == 'true'
-        run: cd devthink && npm whoami
+        run: cd devthink && npm whoami || echo "::notice::the identity probe answered 401 (the granular seat); the publish step answers the final truth."
       - name: publish the flat distribution tarball when absent
         # the extension family release doctrine (the 2.0.16 fix of the
         # badly built package): the lane publishes the PACKED flat
@@ -451,6 +450,10 @@ jobs:
               # the npm view check below cannot see a staged version, so the
               # registry's own twin answer is the win (the 2.0.151 release
               # burned three attempts on the lag and reddened the lane).
+              if printf '%s' "${publish_output}" | grep -qiE "ENEEDAUTH|E401|401 .*[Uu]nauthorized|authentication required"; then
+                echo "::warning::The registry REJECTED the publish with 401 (the dead-secret wall): the npmjs.com publication is skipped until a live secret seats the ladder: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN."
+                exit 0
+              fi
               if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
                 echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
                 published=1
@@ -578,7 +581,19 @@ jobs:
         run: |
           set -euo pipefail
           cd vault
-          npx --yes npm@11.20.0 install --no-save --ignore-scripts --no-audit --no-fund esbuild@0.28.2
+          # the isolated carrier (the EOVERRIDE wall the manifest union
+          # answers: the vault envelope declares the esbuild seat in the
+          # dependencies union beside its dev pin and override - npm
+          # refuses any in-tree install of that manifest shape (override
+          # versus the direct dependency the union carries), so the seat
+          # installs under an isolated prefix and lands in the tree as a
+          # plain copy: no manifest resolution, no lock drift, the union
+          # law whole).
+          npx --yes npm@11.20.0 install --prefix /tmp/vault-esbuild-seat --no-save --ignore-scripts --no-audit --no-fund esbuild@0.28.2
+          mkdir -p node_modules
+          rm -rf node_modules/esbuild node_modules/@esbuild
+          cp -a /tmp/vault-esbuild-seat/node_modules/esbuild node_modules/esbuild
+          cp -a /tmp/vault-esbuild-seat/node_modules/@esbuild node_modules/@esbuild
           node --experimental-strip-types build.ts
           test -s build/onboardingstore.js
           test -s build/labelstore.js
@@ -649,17 +664,17 @@ jobs:
           if [[ -z "$token" ]]; then
             echo "available=false" >> "$GITHUB_OUTPUT"
           else
-            # the identity probe (the 401 wall the dead secret answers):
-            # a token the registry REJECTS is not available either (the
-            # Regra 54 contract extended to the rejected secret — the
-            # notice hands the rotation to the owner; the family mirror
-            # on npm.pkg.github.com carries the envelope meanwhile).
-            if curl -fsSL --max-time 20 -H "Authorization: Bearer ${token}" "https://registry.npmjs.org/-/whoami" >/dev/null 2>&1; then
-              printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
-              echo "available=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "available=false" >> "$GITHUB_OUTPUT"
-              echo "::warning::The npm token (NODE_AUTH_TOKEN or NPM_TOKEN) was REJECTED by registry.npmjs.org (the 401 wall). The npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped until a live secret seats the ladder: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN. The GitHub family mirror (npm.pkg.github.com) carries the envelope meanwhile."
+            # the publish-capability law (the granular seat the 07:03
+            # landing proved: the identity probe answers 401 for tokens
+            # the registry still honors for scoped publishes - whoami
+            # reads the account, the publish writes the scope - so the
+            # probe demotes to a notice and the publish attempt itself
+            # answers the final truth; a publish the registry rejects
+            # with 401 skips with the warning the loop carries).
+            printf 'NODE_AUTH_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            if ! curl -fsSL --max-time 20 -H "Authorization: Bearer ${token}" "https://registry.npmjs.org/-/whoami" >/dev/null 2>&1; then
+              echo "::notice::The npm token identity probe was rejected by registry.npmjs.org (the 401 wall the granular seats answer: whoami reads the account, the publish writes the scope). The publish attempt below answers the final truth for @wenathlan/${{ matrix.package }} - a registry-rejected publish skips with the warning the lane carries."
             fi
           fi
       - name: skip notice when NPM_TOKEN is not configured
@@ -668,7 +683,7 @@ jobs:
           echo "::notice::Secret NPM_TOKEN is not configured or was rejected by registry.npmjs.org; the npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped with this warning. Add or rotate the secret in Settings > Secrets and variables > Actions and re-run this workflow to ship the family envelope."
       - name: verify npm identity
         if: steps.token.outputs.available == 'true'
-        run: cd "${{ matrix.package }}" && npm whoami
+        run: cd "${{ matrix.package }}" && npm whoami || echo "::notice::the identity probe answered 401 (the granular seat); the publish step answers the final truth."
       - name: build the saddle engine envelope (the exports promise)
         # the saddle leg is the one ENGINE envelope of the family matrix:
         # its main/types/bin and the whole exports map promise ./dist/*
@@ -762,6 +777,10 @@ jobs:
               # below cannot see a staged version, so the registry's own
               # twin answer is the win (the 2.0.151 release reddened the
               # debonair and forge legs on the lag).
+              if printf '%s' "${publish_output}" | grep -qiE "ENEEDAUTH|E401|401 .*[Uu]nauthorized|authentication required"; then
+                echo "::warning::The registry REJECTED the publish with 401 (the dead-secret wall): the npmjs.com publication is skipped until a live secret seats the ladder: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN."
+                exit 0
+              fi
               if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
                 echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
                 published=1
