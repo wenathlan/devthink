@@ -111,7 +111,7 @@ o total da operação de forma hierárquica. cada item é uma ação real verifi
 
 ### 1.4 A cadeia de cura (o mapa linear descoberto nesta onda)
 
-```
+```text
 depfresh gate vermelho no main (atualizações disponíveis)
   → PR #649 (ladder nos 11 manifests + locks + overrides + parity + newline)
     → CI verde no main
