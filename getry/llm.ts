@@ -60,6 +60,8 @@ import { secretleakscan, vaultdelete, vaultstore, vaultvaluefor } from "@wenathl
 // 2-c dedup, documented on gatewayretryafterof below (the request queue family
 // owns the retry backoff discipline of the family).
 import { parseRetryAfterMs } from "@wenathlan/devthink/queue";
+/* the intelligence domain root supplies the estimator, the honesty law line and the tilde meter of the wave/getry-jury laws: the oversized context slicer below reads the estimator, every task prompt of this file seats the anti sycophancy constraint line (the system text bans flattery and false confidence), and every token estimate the request family surfaces presents through the tilde meter — one law, one source, never copied into the request family (intelligence.ts carries zero imports, so the seat stays cycle free). */
+import { estimatetokens, intelligencehonestyline, tokenmeter } from "./intelligence.js";
 
 /**
  * Llm integration logics of the 1.1.57 family.
@@ -572,6 +574,239 @@ export async function streammodel(input: {
   return { text: tokens.map((token) => token.text).join(""), tokens: tokens.length, request: shaped };
 }
 
+/* ── @section the oversized context slicer (the 30k law) ───────────── */
+
+/**
+ * The oversized context slicer of the wave/getry-jury law: a context
+ * larger than the model window — the family's million token ambition
+ * (the 1,048,576 token windows of the catalog) — never rides one call. The
+ * slicer cuts it into pieces of at most thirty thousand tokens each with a
+ * 1,536 token overlap, the request path processes every piece in order and
+ * the boundary aware merge stitches the answers back. Zero dependencies,
+ * pure TypeScript: the estimator rides the intelligence domain token
+ * helpers (never a provider tokenizer) and every surfaced number presents
+ * through the tilde meter (an estimate never presents as an exact count).
+ */
+
+/** The piece ceiling of the house context law (LAW, not a parameter): every piece of an oversized context carries at most thirty thousand tokens, so even the million token ambition answers as ~35 ordered pieces a window of any size can process. */
+export const slicetokenlimit = 30000;
+
+/** The overlap every piece after the first carries from its predecessor: 1,536 tokens (~5 percent of a piece). At the house estimation ratio of ~4 characters per token the overlap spans ~6,000 characters — enough to carry a heading path plus a paragraph or two across a seam (so the boundary aware merge always finds its anchor and a semantic unit never splits blind) while the re processing tax stays bounded; the 1,536 rides the power of two scale the context windows already speak. */
+export const sliceoverlap = 1536;
+
+/** One sliced piece of an oversized context: the ordered text, the estimated size, the exact overlap echoed from the predecessor and the boundary the cut landed on. */
+export interface contextpiece {
+  /** The piece index, zero based, in processing order. */
+  index: number;
+  /** The piece text (the overlap head included). */
+  text: string;
+  /** The estimated token size of the piece — the meter surfaces it with the approximate symbol, never as an exact count. */
+  tokenestimate: number;
+  /** The exact head characters the piece echoes from its predecessor (empty on the first piece): the merge strips this known head before the boundary aware fallback runs. */
+  overlaptext: string;
+  /** The boundary the cut landed on: a paragraph break when the cut found one, a line break when only a line boundary fit, a cut when the text forced a mid line split. */
+  boundary: "paragraph" | "line" | "cut";
+}
+
+/**
+ * slicecontext — slices one oversized context into 30k overlapping pieces:
+ * every piece is an exact slice of the original (the walk tracks character
+ * offsets, never reassembling lines, so the merge reconstructs the context
+ * losslessly), the fresh content of a piece ends at the furthest line
+ * boundary its budget reaches (a blank line after the cut answers a
+ * paragraph boundary, a lone newline answers a line boundary), a line
+ * longer than the whole budget forces a hard cut, and every later piece
+ * opens with the recorded overlap head — the last ~1,536 tokens of its
+ * predecessor snapped to a line start when one sits in the window, and
+ * never more than half the piece (a caller's tiny window shrinks the overlap
+ * with it, so every piece always carries fresh content). A context that
+ * already fits answers one piece carrying the whole text (the caller's
+ * single call path never changes).
+ *
+ * @param context the raw context text.
+ * @param windowtokens the model window the pieces must fit (absent rides the 30k law ceiling directly; a smaller window lowers it, a larger window never raises it past the law).
+ * @returns the ordered pieces with their overlap records and boundary marks.
+ */
+export function slicecontext(context: string, windowtokens?: number): contextpiece[] {
+  const text = String(context ?? "");
+  const ceiling = Math.max(
+    1,
+    Math.min(slicetokenlimit, Number.isFinite(windowtokens) && (windowtokens as number) > 0 ? Math.floor(windowtokens as number) : slicetokenlimit),
+  );
+  if (estimatetokens(text) <= ceiling)
+    return [{ index: 0, text, tokenestimate: estimatetokens(text), overlaptext: "", boundary: "paragraph" }];
+  const budget = ceiling * 4; // the character budget of one piece at the house ~4 characters per token ratio
+  const ovtarget = Math.max(1, Math.min(sliceoverlap * 4, Math.floor(budget / 2))); // the overlap never swallows half a piece
+  const pieces: contextpiece[] = [];
+  let cut = 0; // the exclusive end of the last piece's fresh content (0 opens the first piece)
+  while (cut < text.length) {
+    /* the overlap head: the window before the running cut, snapped to the first line start it carries (a window without a line start — or one whose only line start lands at the cut itself — keeps its raw position, so the echo never degenerates to empty and the merge always strips exactly) */
+    let start = 0;
+    if (cut > 0) {
+      const raw = Math.max(0, cut - ovtarget);
+      const snap = text.indexOf("\n", raw);
+      start = snap === -1 || snap + 1 >= cut ? raw : snap + 1;
+    }
+    /* the fresh tail: the furthest line boundary the budget reaches beyond the running cut, a hard cut when no boundary fits */
+    const windowend = Math.min(start + budget, text.length);
+    const newline = text.lastIndexOf("\n", windowend - 1);
+    let end: number;
+    let boundary: contextpiece["boundary"];
+    if (newline > cut) {
+      end = newline + 1;
+      boundary = end >= text.length || text.charCodeAt(end) === 10 ? "paragraph" : "line";
+    } else {
+      end = windowend;
+      boundary = "cut";
+    }
+    if (end >= text.length) {
+      end = text.length;
+      boundary = "paragraph";
+    }
+    pieces.push({
+      index: pieces.length,
+      text: text.slice(start, end),
+      tokenestimate: estimatetokens(text.slice(start, end)),
+      overlaptext: text.slice(start, cut),
+      boundary,
+    });
+    cut = end;
+  }
+  return pieces;
+}
+
+/**
+ * mergecontextpieces — stitches the pieces back with a boundary aware
+ * merge: the recorded overlap head strips exactly when the incoming text
+ * echoes it (the piece texts reconstruct the context losslessly); a loose
+ * echo (a processed answer that re reads the overlap region) stitches at
+ * the longest line aligned anchor the merged tail and the incoming head
+ * share — never mid word; a piece with no anchor at all joins through a
+ * single newline seam and counts as unstitched, because the merge never
+ * invents a stitch the boundaries do not carry.
+ *
+ * @param pieces the ordered pieces (or processed answers) with their overlap records.
+ * @returns the stitched text with the seam counts (stitched and unstitched).
+ */
+export function mergecontextpieces(pieces: ReadonlyArray<{ text: string; overlaptext?: string | undefined }>): {
+  text: string;
+  seams: number;
+  unstitched: number;
+} {
+  if (pieces.length === 0) return { text: "", seams: 0, unstitched: 0 };
+  /* the parts accumulate and join once — a growing concatenated string would re copy the whole merged text per piece and turn the stitch quadratic on a million token ambition */
+  const parts: string[] = [(pieces[0] as { text: string }).text];
+  let seams = 0;
+  let unstitched = 0;
+  let tailtext = (pieces[0] as { text: string }).text;
+  for (let index = 1; index < pieces.length; index += 1) {
+    const piece = pieces[index] as { text: string; overlaptext?: string | undefined };
+    const head = piece.overlaptext ?? "";
+    let attached = piece.text;
+    if (head !== "" && attached.startsWith(head)) {
+      attached = attached.slice(head.length);
+      seams += 1;
+    } else {
+      /* the boundary aware fallback: the longest line aligned anchor shared by the merged tail and the incoming head (bounded to the overlap window so the scan stays cheap) */
+      const window = Math.min(sliceoverlap * 4 + 1024, tailtext.length, attached.length);
+      const taillines = tailtext.slice(tailtext.length - window).split("\n");
+      let stitched = false;
+      for (let count = taillines.length; count >= 1; count -= 1) {
+        const anchor = taillines.slice(-count).join("\n");
+        if (anchor !== "" && attached.startsWith(anchor)) {
+          attached = attached.slice(anchor.length);
+          seams += 1;
+          stitched = true;
+          break;
+        }
+      }
+      if (!stitched) {
+        /* no anchor: the piece joins through a single newline seam — an attached text that already opens with its own newline never doubles it */
+        if (!attached.startsWith("\n")) parts.push("\n");
+        parts.push(attached);
+        unstitched += 1;
+        tailtext = attached;
+        continue;
+      }
+    }
+    parts.push(attached);
+    tailtext = attached;
+  }
+  return { text: parts.join(""), seams, unstitched };
+}
+
+/** Reads the slicing plan as one tilde metered line — every number the meter surfaces carries the approximate symbol, so a token estimate never presents as an exact count. */
+export function contextmeter(pieces: readonly contextpiece[]): string {
+  const total = pieces.reduce((sum, piece) => sum + piece.tokenestimate - estimatetokens(piece.overlaptext), 0);
+  const largest = pieces.length > 0 ? Math.max(...pieces.map((piece) => piece.tokenestimate)) : 0;
+  return `${tokenmeter(total)} tokens in ${pieces.length} piece${pieces.length === 1 ? "" : "s"} of ${tokenmeter(largest)} (overlap ${tokenmeter(sliceoverlap)})`;
+}
+
+/**
+ * callmodeloversized — the request path seat of the 30k law: the question
+ * rides every piece (each piece is processed as its own call so the model
+ * always sees the question beside the material), the pieces run in order
+ * (the stitch depends on the order and one provider answers its rate
+ * limits honestly rather than three at once), every call passes the same
+ * consent gates callmodel already enforces, the usages accumulate across
+ * the pieces and the boundary aware merge stitches the answers back with
+ * the tilde metered plan riding the answer.
+ *
+ * @param input the provider, the model, the question, the oversized context, the window and the call options.
+ * @returns the stitched answer, the pieces, the accumulated usage and the metered plan.
+ */
+export async function callmodeloversized(input: {
+  provider: providerconfig;
+  model: string;
+  question: string;
+  context: string;
+  windowtokens?: number;
+  apikey?: string;
+  temperature?: number;
+  maxtokens?: number;
+  options?: { timeout?: number; retries?: number; backoff?: number; follow?: number };
+  transport: fetchtransport;
+  sleep?: (milliseconds: number) => Promise<void>;
+  now?: () => number;
+}): Promise<{ text: string; pieces: contextpiece[]; usage?: modelusage; meter: string }> {
+  if (input.question.trim() === "") throw new Error("The oversized context call needs the question that rides every piece.");
+  if (input.context.trim() === "") throw new Error("The oversized context call needs the context the slicer cuts.");
+  const pieces = slicecontext(input.context, input.windowtokens);
+  let prompttokens = 0;
+  let completiontokens = 0;
+  let totaltokens = 0;
+  const answers: Array<{ text: string; overlaptext?: string | undefined }> = [];
+  for (const piece of pieces) {
+    const answer = await callmodel({
+      provider: input.provider,
+      model: input.model,
+      messages: [{ role: "user", content: `${input.question}\n\n${piece.text}` }],
+      ...(input.apikey !== undefined ? { apikey: input.apikey } : {}),
+      ...(input.temperature !== undefined ? { temperature: input.temperature } : {}),
+      ...(input.maxtokens !== undefined ? { maxtokens: input.maxtokens } : {}),
+      ...(input.options !== undefined ? { options: input.options } : {}),
+      transport: input.transport,
+      ...(input.sleep !== undefined ? { sleep: input.sleep } : {}),
+      ...(input.now !== undefined ? { now: input.now } : {}),
+    });
+    if (answer.usage !== undefined) {
+      prompttokens += answer.usage.prompttokens;
+      completiontokens += answer.usage.completiontokens;
+      totaltokens += answer.usage.totaltokens;
+    }
+    answers.push({ text: answer.text, ...(piece.overlaptext !== "" ? { overlaptext: piece.overlaptext } : {}) });
+  }
+  const merged = mergecontextpieces(answers);
+  return {
+    text: merged.text,
+    pieces,
+    ...(prompttokens > 0 || completiontokens > 0 || totaltokens > 0
+      ? { usage: { prompttokens, completiontokens, totaltokens } }
+      : {}),
+    meter: contextmeter(pieces),
+  };
+}
+
 /** The command parse guard schema: the intent kind, the entities array and the confidence number the parsed command answer carries. */
 export const commandguard: parseguard = {
   schema: {
@@ -634,7 +869,8 @@ export async function parsecommand(input: {
       {
         role: "system",
         content:
-          "Parse the user command into json with the fields intent (one of navigate, extract, fill, monitor, automate, ask), entities (an array of { name, value } objects) and confidence (a number between 0 and 1). Answer with the json object only.",
+          "Parse the user command into json with the fields intent (one of navigate, extract, fill, monitor, automate, ask), entities (an array of { name, value } objects) and confidence (a number between 0 and 1). Answer with the json object only. " +
+          intelligencehonestyline,
       },
       { role: "user", content: input.text },
     ],
@@ -699,7 +935,7 @@ export async function draftplan(input: {
     messages: [
       {
         role: "system",
-        content: `Draft a browser agent plan as json with the fields goal (string), steps (an array of { kind, target, value, summary } objects using browser action kinds) and openquestions (an array of strings for what stays unclear).${lessons.length > 0 ? ` The running lessons of the earlier steps: ${lessons.join(" | ")}.` : ""} Answer with the json object only.`,
+        content: `Draft a browser agent plan as json with the fields goal (string), steps (an array of { kind, target, value, summary } objects using browser action kinds) and openquestions (an array of strings for what stays unclear).${lessons.length > 0 ? ` The running lessons of the earlier steps: ${lessons.join(" | ")}.` : ""} Answer with the json object only. ${intelligencehonestyline}`,
       },
       { role: "user", content: input.goal },
     ],
@@ -774,7 +1010,7 @@ export async function replannonfail(input: {
     messages: [
       {
         role: "system",
-        content: `The plan ${input.draft.goal} failed at the steps ${failed.map((step) => step.summary).join("; ") || "unknown"} with the reason: ${input.reason}. The completed steps stay: ${completed.map((step) => step.summary).join("; ") || "none"}.${lessons.length > 0 ? ` The running lessons: ${lessons.join(" | ")}.` : ""} Draft the revised tail steps of the plan as json with the field steps (an array of { kind, target, value, summary } objects using browser action kinds). Answer with the json object only.`,
+        content: `The plan ${input.draft.goal} failed at the steps ${failed.map((step) => step.summary).join("; ") || "unknown"} with the reason: ${input.reason}. The completed steps stay: ${completed.map((step) => step.summary).join("; ") || "none"}.${lessons.length > 0 ? ` The running lessons: ${lessons.join(" | ")}.` : ""} Draft the revised tail steps of the plan as json with the field steps (an array of { kind, target, value, summary } objects using browser action kinds). Answer with the json object only. ${intelligencehonestyline}`,
       },
       { role: "user", content: input.draft.goal },
     ],
@@ -836,7 +1072,7 @@ export async function reflectstep(input: {
     messages: [
       {
         role: "system",
-        content: `Reflect on the executed step ${input.stepid} of the run ${input.runid} with the outcome: ${input.outcome}.${lessons.length > 0 ? ` The running lessons of the earlier steps: ${lessons.join(" | ")}.` : ""} Answer as json with the fields outcome (string), lesson (string) and advice (string) for the next step. Answer with the json object only.`,
+        content: `Reflect on the executed step ${input.stepid} of the run ${input.runid} with the outcome: ${input.outcome}.${lessons.length > 0 ? ` The running lessons of the earlier steps: ${lessons.join(" | ")}.` : ""} Answer as json with the fields outcome (string), lesson (string) and advice (string) for the next step. Answer with the json object only. ${intelligencehonestyline}`,
       },
       { role: "user", content: input.outcome },
     ],
@@ -2580,37 +2816,41 @@ export function gatewaytemplates(now: number): prompttemplate[] {
     {
       id: randomid(),
       name: "gateway.parsecommand",
-      body: "Parse the user command into json with the fields intent (one of navigate, extract, fill, monitor, automate, ask), entities (an array of { name, value } objects) and confidence (a number between 0 and 1). The command: {{command}}. Answer with the json object only.",
+      body: "Parse the user command into json with the fields intent (one of navigate, extract, fill, monitor, automate, ask), entities (an array of { name, value } objects) and confidence (a number between 0 and 1). The command: {{command}}. Answer with the json object only. " +
+        intelligencehonestyline,
       variables: ["command"],
       version: 1,
-      notes: "The gateway parsecommand template of the 1.1.83 family.",
+      notes: "The gateway parsecommand template of the 1.1.83 family (the wave/getry-jury honesty law line rides the body).",
       createdat: now,
     },
     {
       id: randomid(),
       name: "gateway.draftplan",
-      body: "Draft a browser agent plan for the goal {{goal}} as json with the fields goal (string), steps (an array of { kind, target, value, summary } objects using browser action kinds) and openquestions (an array of strings for what stays unclear). The tool catalog: {{tools}}. Answer with the json object only.",
+      body: "Draft a browser agent plan for the goal {{goal}} as json with the fields goal (string), steps (an array of { kind, target, value, summary } objects using browser action kinds) and openquestions (an array of strings for what stays unclear). The tool catalog: {{tools}}. Answer with the json object only. " +
+        intelligencehonestyline,
       variables: ["goal", "tools"],
       version: 1,
-      notes: "The gateway draftplan template of the 1.1.83 family.",
+      notes: "The gateway draftplan template of the 1.1.83 family (the wave/getry-jury honesty law line rides the body).",
       createdat: now,
     },
     {
       id: randomid(),
       name: "gateway.replan",
-      body: "The plan for {{goal}} failed at the steps {{failed}} with the reason {{reason}}. The completed steps stay: {{completed}}. Draft the revised tail steps as json with the field steps (an array of { kind, target, value, summary } objects using browser action kinds). Answer with the json object only.",
+      body: "The plan for {{goal}} failed at the steps {{failed}} with the reason {{reason}}. The completed steps stay: {{completed}}. Draft the revised tail steps as json with the field steps (an array of { kind, target, value, summary } objects using browser action kinds). Answer with the json object only. " +
+        intelligencehonestyline,
       variables: ["goal", "failed", "reason", "completed"],
       version: 1,
-      notes: "The gateway replan template of the 1.1.83 family.",
+      notes: "The gateway replan template of the 1.1.83 family (the wave/getry-jury honesty law line rides the body).",
       createdat: now,
     },
     {
       id: randomid(),
       name: "gateway.reflect",
-      body: "Reflect on the executed step {{stepid}} of the run {{runid}} with the outcome: {{outcome}}. Answer as json with the fields outcome (string), lesson (string) and advice (string) for the next step. Answer with the json object only.",
+      body: "Reflect on the executed step {{stepid}} of the run {{runid}} with the outcome: {{outcome}}. Answer as json with the fields outcome (string), lesson (string) and advice (string) for the next step. Answer with the json object only. " +
+        intelligencehonestyline,
       variables: ["stepid", "runid", "outcome"],
       version: 1,
-      notes: "The gateway reflect template of the 1.1.83 family.",
+      notes: "The gateway reflect template of the 1.1.83 family (the wave/getry-jury honesty law line rides the body).",
       createdat: now,
     },
     {

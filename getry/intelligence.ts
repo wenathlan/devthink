@@ -85,8 +85,10 @@ export function mergeprovenance(records: provenancerecord[] = []) {
 const ratios = Object.freeze({ default: 4, gpt: 3.5, claude: 3.2, gemini: 3.5 });
 
 export function estimatetokens(text: any, model = "default") { const ratio = (ratios as Record<string, number>)[model] ?? ratios.default; return Math.ceil(String(text ?? "").length / ratio); }
+/** the token meter: every estimation surface reads this formatter so a token estimate never presents as an exact count (the wave/getry-jury approximate symbol law — the tilde rides every number the meters show). */
+export function tokenmeter(estimate: any) { if (!Number.isFinite(Number(estimate))) return "~0"; return `~${Math.max(0, Math.round(Number(estimate)))}`; }
 export function fitscontext(text: any, context: any, model = "default") { return estimatetokens(text, model) <= context; }
-export function tokenbudget(text: any, options: Record<string, any> = {}) { const tokens = estimatetokens(text, options.model); return { tokens, context: options.context ?? null, fits: options.context == null ? true : tokens <= options.context, remaining: options.context == null ? null : Math.max(0, options.context - tokens) }; }
+export function tokenbudget(text: any, options: Record<string, any> = {}) { const tokens = estimatetokens(text, options.model); return { tokens, meter: tokenmeter(tokens), context: options.context ?? null, fits: options.context == null ? true : tokens <= options.context, remaining: options.context == null ? null : Math.max(0, options.context - tokens) }; }
 export function settokenratios(values: Record<string, any> = {}) { Object.assign(ratios, values); return { ...ratios }; }
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -389,4 +391,66 @@ export function smartestid(ids: string[]): string {
 /** the smart-first rotation pool of a catalog: the top {@link smartpoolsize} ids by intelligence, meta ids excluded */
 export function smartpool(ids: string[]): string[] {
   return sortids(ids.filter((id) => !id.includes("devthink"))).slice(0, smartpoolsize);
+}
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 8: the intelligence honesty laws — the anti sycophancy constraint line, the flattery scan and the approximate symbol meter (the wave/getry-jury laws: flattery and false confidence banned on every prompt the family builds, the jury aggregation never rewards agreement seeking answers, and every token estimate presents through the tilde meter). */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * the intelligence honesty laws: one shared constraint line, one flattery
+ * scan and one approximate symbol meter. the laws seat at the intelligence
+ * domain root (this file carries zero imports, so every consumer — the json
+ * decision domain, the llm request family, the jury seat — reads one law
+ * with no import cycle, never three copies).
+ */
+
+/**
+ * the one shared anti sycophancy constraint line: every prompt builder of
+ * the family (the json decision instructions, the gateway command, plan and
+ * reflection prompts, the jury member rounds) seats this exact line on the
+ * system side, so no model seat ever answers a question whose greeting the
+ * flattery scan would reward.
+ */
+export const intelligencehonestyline =
+  "House law: no flattery and no false confidence — answer only what the evidence supports, and grade the confidence the evidence earns.";
+
+/**
+ * the flattery markers the scan reads (lowercase, matched case
+ * insensitively against the model answer): the agreement seeking openers
+ * the chat models reach for when they would rather please the reader than
+ * weigh the evidence. the list stays small and specific — a marker that
+ * fires on ordinary prose would punish honest answers.
+ */
+export const flatterymarkers: string[] = [
+  "you're absolutely right",
+  "you are absolutely right",
+  "you've put it perfectly",
+  "great question",
+  "excellent question",
+  "great point",
+  "excellent point",
+  "brilliant observation",
+  "wonderful observation",
+  "astute observation",
+  "keen observation",
+  "i completely agree",
+  "i couldn't agree more",
+  "fantastic idea",
+  "as you wisely",
+];
+
+/**
+ * detectsycophancy — scans one model answer for the flattery markers: a
+ * member whose answer carries praise answers agreement seeking, and the
+ * jury aggregation discounts it (the position still counts as evidence,
+ * the self graded confidence does not). pure, deterministic, case
+ * insensitive.
+ */
+export function detectsycophancy(text: any): { sycophancy: boolean; marker?: string } {
+  const haystack = String(text ?? "").toLowerCase();
+  if (haystack.trim() === "") return { sycophancy: false };
+  for (const marker of flatterymarkers) {
+    if (haystack.includes(marker)) return { sycophancy: true, marker };
+  }
+  return { sycophancy: false };
 }

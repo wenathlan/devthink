@@ -6,6 +6,9 @@
  * retired into this seat with every export preserved under the same name.
  */
 
+/* the intelligence domain root supplies the anti sycophancy constraint line of the wave/getry-jury laws: every instruction this file builds (the default decision instructions and the compiled schema headers) seats the law on the system side — no flattery, no false confidence — from one source (intelligence.ts carries zero imports, so the decision domain never grows a cycle). */
+import { intelligencehonestyline } from "./intelligence.js";
+
 /* ===== block: json ===== */
 /* ── @section jsonparse ───────────────────────────────────────────── */
 
@@ -270,12 +273,12 @@ export type DecisionTrail = {
  */
 export function defaultinstruction(request: DecisionRequest): string {
   if (request.kind === "choice")
-    return `Answer only a JSON object {"value": one of [${(request.options ?? []).join(" | ")}], "confidence": 0..1}. No prose.`;
+    return `Answer only a JSON object {"value": one of [${(request.options ?? []).join(" | ")}], "confidence": 0..1}. No prose. ${intelligencehonestyline}`;
   if (request.kind === "score")
     return `Answer only a JSON object {"value": a number between ${(request.range ?? { min: 0, max: 1 }).min} and ${
       (request.range ?? { min: 0, max: 1 }).max
-    }, "confidence": 0..1}. No prose.`;
-  return 'Answer only a JSON object {"value": true or false, "confidence": 0..1}. No prose.';
+    }, "confidence": 0..1}. No prose. ${intelligencehonestyline}`;
+  return `Answer only a JSON object {"value": true or false, "confidence": 0..1}. No prose. ${intelligencehonestyline}`;
 }
 
 /**
@@ -781,7 +784,7 @@ export function compilejsonschema(schema: JsonObjectSchema): CompiledSchema {
     validfield(name, schema.properties[name]);
   }
 
-  const header = `Answer only a JSON object with exactly these properties${schema.instructions ? ` — ${schema.instructions}` : ""}. No prose, no fences.`;
+  const header = `Answer only a JSON object with exactly these properties${schema.instructions ? ` — ${schema.instructions}` : ""}. No prose, no fences. ${intelligencehonestyline}`;
   const lines = names.map((name) => `- "${name}": ${describefield(schema.properties[name])}`);
   if (!names.includes("confidence")) lines.push('- "confidence": a number between 0 and 1 — your self graded confidence in the answer.');
   const instruction = [header, ...lines].join("\n");
