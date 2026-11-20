@@ -11,9 +11,9 @@
  */
 
 import { sha256 } from "./foundation.ts";
+import { sha256Hex } from "@wenathlan/vault/sha";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
-import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 /* ════════════════════════════════════════════════════════════════════ */
@@ -478,9 +478,9 @@ export function createprovenance(packagejson, subjects = [], options = {}) {
   return { _type: "https://in-toto.io/Statement/v1", subject: normalized, predicateType: "https://slsa.dev/provenance/v1", predicate: { buildDefinition: { buildType: String(options.buildtype ?? "caller-defined"), externalParameters: { package: String(packagejson.name), version: String(options.version ?? packagejson.version) }, internalParameters: {} }, runDetails: { builder: { id: String(options.builder ?? "caller-defined") }, metadata: { invocationId: stableuuid(`${packagejson.name}@${options.version ?? packagejson.version}:${normalized.map((subject) => subject.name).join(",")}`) } } } };
 }
 
-async function assetsha256(path) { const hash = createHash("sha256"); hash.update(await readFile(path)); return hash.digest("hex"); }
+async function assetsha256(path) { return sha256Hex(await readFile(path)); }
 
-function stableuuid(value) { const hex = createHash("sha256").update(String(value)).digest("hex").slice(0, 32); return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-${(8 + (Number.parseInt(hex.slice(16, 17), 16) % 4).toString(16))}${hex.slice(17, 20)}-${hex.slice(20)}`; }
+function stableuuid(value) { const hex = sha256Hex(String(value)).slice(0, 32); return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-${(8 + (Number.parseInt(hex.slice(16, 17), 16) % 4).toString(16))}${hex.slice(17, 20)}-${hex.slice(20)}`; }
 
 /** Normalizes the public release surface used in metadata filenames. */
 function normalizeSurface(value) { const normalized = String(value).trim().toLowerCase(); if (!/^[a-z0-9]+(?:[.-][a-z0-9]+)*$/.test(normalized)) throw new TypeError(`invalid release surface: ${value}`); return normalized; }
@@ -605,11 +605,9 @@ function safepath(root, name) {
   return artifact;
 }
 
-/** Computes a SHA-256 digest with the Node.js standard library. */
+/** Computes a SHA-256 digest with the vault owner's hex seat. */
 async function verifysha256(path) {
-  const hash = createHash("sha256");
-  hash.update(await readFile(path));
-  return hash.digest("hex");
+  return sha256Hex(await readFile(path));
 }
 
 /** Parses the standalone verification command used by release automation. */

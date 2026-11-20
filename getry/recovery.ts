@@ -29,6 +29,7 @@
  */
 
 import * as crypto from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 
 // ============================================================================
 // 00. CANONICAL BYPASS CONSTANTS (identical values are imported from the
@@ -355,7 +356,7 @@ export interface ThinkingSignatureEntry {
 export function hashThinkingContent(thinking: string): string {
   // truncated sha256 for low collision chance + fnv as fast fallback
   try {
-    const sha = crypto.createHash("sha256").update(thinking, "utf8").digest("hex").slice(0, 16);
+    const sha = sha256Hex(thinking).slice(0, 16);
     const fnv = fnv1a32(thinking).toString(16).padStart(8, "0");
     return `${sha}_${fnv}`;
   } catch {

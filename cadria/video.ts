@@ -9,7 +9,7 @@
 import { encodeGif, GifEncodeOptions, GifError, encodePng, PngError, encodeWebmFrames, WebmError } from "./encoders.ts";
 import { PixelImage } from "./color.ts";
 import { DEFAULT_FRAME_RATE, FrameRate, addticks, clampticks, formattimecode, frameat, frameduration, framelabel, framerate, snaptick, ticksfromseconds, tickstoseconds } from "./motion.ts";
-import { createHash } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 
 /* ===== block: videodecode ===== */
 // # videodecode — the video decode arm of the versawase engine, housed at the
@@ -377,7 +377,8 @@ export function ratelabel(session: DecodeSession): string {
 // webmencoder (the EBML container lane — Info/Tracks/Clusters over the
 // cadria lossless frame codec). Every artifact answers the real bytes,
 // the byte length, the frame count, the mime type and the real sha-256
-// digest (node:crypto — the native lane), so a caller never trusts a
+// digest (the vault owner's hex seat — @wenathlan/vault/sha, node:crypto
+// underneath), so a caller never trusts a
 // digest without the bytes it names. Refusal is typed and honest (the
 // VideoEncodeIssue taxonomy): no fake claim, no placeholder blob, no
 // mock buffer. The estimate model of imageexport.ts stays beside this
@@ -452,9 +453,10 @@ export const VIDEO_EXTENSION: Record<VideoEncodeFormat, string> = {
   gif: "gif",
 };
 
-/** the real sha-256 digest of the bytes (hex, the native node:crypto lane). */
+/** the real sha-256 digest of the bytes — the vault owner's hex seat
+ * (@wenathlan/vault/sha), the one digest engine the family answers. */
 export function videoSha256(bytes: Uint8Array): string {
-  return createHash("sha256").update(bytes).digest("hex");
+  return sha256Hex(bytes);
 }
 
 /** validates the frame list against the stream shape; answers the refusal or null. */

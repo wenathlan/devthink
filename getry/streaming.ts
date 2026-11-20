@@ -13,7 +13,8 @@ import { MODELS_2026, type ModelId2026, UA_DEFAULT_MODEL } from "./models.js";
 import { JITTER_MAX_MS, JITTER_MIN_MS } from "@wenathlan/devthink/constants";
 import { fnv1a32, getJitter, thinkingCache } from "@wenathlan/devthink/core";
 import { type RetryConfig, delayForAttempt, parseRetryAfterMs, sleepMs } from "@wenathlan/devthink/queue";
-import { createHash, randomUUID } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
+import { randomUUID } from "node:crypto";
 
 /* ===== block: streaming ===== */
 /**
@@ -113,7 +114,7 @@ export const SSE_DONE_SENTINEL = "[DONE]" as const;
  */
 export function hashThinkingText(text: string): string {
   try {
-    return createHash("sha256").update(text, "utf8").digest("hex").slice(0, 32);
+    return sha256Hex(text).slice(0, 32);
   } catch {
     return fnv1a32(text).toString(16).padStart(8, "0");
   }
@@ -1132,10 +1133,7 @@ export interface OpenAIChunkOptions {
 
 function generateChatId(): string {
   try {
-    const bytes = createHash("sha256")
-      .update(String(Date.now()) + Math.random())
-      .digest("hex")
-      .slice(0, 12);
+    const bytes = sha256Hex(String(Date.now()) + Math.random()).slice(0, 12);
     return `chatcmpl-${bytes}`;
   } catch {
     return `chatcmpl-${fnv1a32(String(Date.now())).toString(16)}`;

@@ -19,6 +19,14 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * onboarding store. */
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+      /** the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): the gateway's sha-256 hex seats ride the vault digest owner
+       * through the published library specifier ("@wenathlan/vault/sha"),
+       * and this bridge resolves the specifier to the monorepo source the
+       * sibling engine carries — the digest is never duplicated inside
+       * getry. the entry retires when the published envelope carries the
+       * sha seat. */
+      "@wenathlan/vault/sha": path.resolve(import.meta.dirname, "../vault/sha.ts"),
 
       /** the debonair route table bridge of the ownership law: the
        * debonair lane rides the owner's route table through the published

@@ -40,7 +40,7 @@ import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import * as crypto from "node:crypto";
-import { createHash } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 
 // Deduplicated against the frozen owners (constants.ts / models.ts) and the
 // canonical in-set file (project.ts): symbols whose local definitions were
@@ -1824,7 +1824,7 @@ export const QUOTA_METHOD = QUOTA_ENDPOINT;
  */
 export function hashToken(token: string): string {
   try {
-    return createHash("sha256").update(token).digest("hex").slice(0, 32);
+    return sha256Hex(token).slice(0, 32);
   } catch {
     return String(fnv1a32(token)).padStart(8, "0");
   }

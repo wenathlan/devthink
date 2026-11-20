@@ -50,11 +50,11 @@ import type { CipherGCM, DecipherGCM, KeyObject } from 'node:crypto';
 import {
   createCipheriv,
   createDecipheriv,
-  createHash,
   generateKeyPairSync,
   randomBytes,
   timingSafeEqual,
 } from 'node:crypto';
+import { sha256Hex } from '@wenathlan/vault/sha';
 import { EventEmitter } from 'node:events';
 import { readFileSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -1316,10 +1316,11 @@ export {
 /* (pqkeyfactory, pqsecurecontext), so only these two were missing     */
 /* ------------------------------------------------------------------ */
 
-/** short sha256 digest for the audit hash chain. */
+/** short sha256 digest for the audit hash chain (the vault owner's hex
+ * seat, never a second copy). */
 function pqdigest(input: string): string {
   try {
-    return createHash('sha256').update(input).digest('hex').slice(0, 16);
+    return sha256Hex(input).slice(0, 16);
   } catch {
     return input.length.toString(16);
   }

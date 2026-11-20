@@ -25,6 +25,7 @@
 
 import { execFileSync, execSync } from "node:child_process";
 import { createHash, randomInt, randomUUID } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { availableParallelism, cpus, tmpdir, totalmem } from "node:os";
@@ -4065,9 +4066,10 @@ export function removeVirtualCpu(model: string): boolean {
   return (cpuRegistry as Map<string, virtualcpuspec>).delete(normalizemodel(model));
 }
 
-/** Derives a stable, deterministic identifier for a model name via sha256. */
+/** Derives a stable, deterministic identifier for a model name via sha256
+ * (the vault owner's hex seat, never a second copy). */
 export function stableModelId(model: string): string {
-  return createHash('sha256').update(`virtualengine:${model}`).digest('hex').slice(0, 12);
+  return sha256Hex(`virtualengine:${model}`).slice(0, 12);
 }
 
 /* ------------------------------------------------------------------ */

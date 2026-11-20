@@ -8,6 +8,8 @@ export default defineConfig({
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
       /** the onboardingstore bridge (the family door law): the entry retires when the published envelope carries the surface. */
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+      /** the digest bridge (the family door law, the sha collapse of mandate 0658): every sha-256 hex seat of the engine reads the vault digest owner through the published specifier ("@wenathlan/vault/sha") — the entry retires when the published envelope carries the surface. */
+      "@wenathlan/vault/sha": path.resolve(import.meta.dirname, "../vault/sha.ts"),
 
       // the theme sources live in the sol folder of this app root.
       "@": path.resolve(import.meta.dirname, "sol"),

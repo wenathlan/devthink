@@ -53,8 +53,8 @@
  * @license MIT
  */
 
-import * as crypto from "node:crypto";
 import * as os from "node:os";
+import { sha256Hex } from "@wenathlan/vault/sha";
 
 // Deduplicated against the frozen owners: symbols whose local definitions were
 // value-identical to constants.ts / models.ts are imported here and re-exported
@@ -311,7 +311,7 @@ const projectIdCache = new Map<string, CacheEntry>();
 
 function hashToken(token: string): string {
   try {
-    return crypto.createHash("sha256").update(token).digest("hex").slice(0, 32);
+    return sha256Hex(token).slice(0, 32);
   } catch {
     return fnv1a32(token).toString(16);
   }

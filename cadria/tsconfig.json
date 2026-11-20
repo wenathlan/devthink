@@ -23,6 +23,14 @@
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
       "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
+      /* the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): every sha-256 hex seat of the engine rides the vault digest
+       * owner through the published library specifier
+       * ("@wenathlan/vault/sha"), and this bridge resolves the specifier to
+       * the monorepo source the sibling engine carries — the digest is never
+       * duplicated inside cadria. the entry retires when the published
+       * envelope carries the sha seat. */
+      "@wenathlan/vault/sha": ["../vault/sha.ts"],
       /* the storage lane bridge of the ownership law (the tsconfig arm — the
        * vitest arm already carries the same bridge): the app's sqlite seat
        * (db.ts) rides the vault factory through the published library

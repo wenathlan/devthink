@@ -34,7 +34,8 @@
  * @section 6  accountclient — the browser client of the account lane
  */
 
-import { createHash, randomBytes, randomInt, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
+import { randomBytes, randomInt, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 import { lookup } from "node:dns/promises";
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { mkdir } from "node:fs/promises";
@@ -185,10 +186,11 @@ export function normalizePublicUserId(value: string): string {
 /**
  * Sha-256 hex digest — the only form secrets (codes, tokens) take on disk.
  * The one survivor of the family: the pairing ledger (this section) and the
- * account lane session digests (§5) share it.
+ * account lane session digests (§5) share it, and the vault owner's hex seat
+ * answers the digest itself (@wenathlan/vault/sha) — never a second copy.
  */
 function sha256hex(value: string): string {
-  return createHash("sha256").update(value).digest("hex");
+  return sha256Hex(value);
 }
 
 /** Atomic 0600 json write: tmp file beside the target, then rename over it. */
