@@ -1301,10 +1301,22 @@ jobs:
           RELEASE_VERSION: ${{ needs.assemble.outputs.version }}
         run: |
           set -euo pipefail
-          test -n "$NODE_AUTH_TOKEN" || { echo "NODE_AUTH_TOKEN or NPM_TOKEN is required for automatic npmjs publishing." >&2; exit 1; }
+          # the graceful-skip gate (the family contract, Regra 54, seated on
+          # the release train lanes too): a missing OR registry-rejected
+          # token skips the npmjs publication with a warning instead of
+          # reddening the release train — the npmjs envelopes have not
+          # shipped since 2.0.181 (the dead-secret wall); the rotation
+          # hands the owner the Settings > Secrets and variables > Actions
+          # > NPM_TOKEN step and re-running the release republishes the
+          # public mirror; the GitHub family mirror (npm.pkg.github.com)
+          # carries the rung meanwhile.
+          test -n "$NODE_AUTH_TOKEN" || { echo "::warning::NODE_AUTH_TOKEN or NPM_TOKEN is not configured; the npmjs publication of @wenathlan/devthink@${RELEASE_VERSION} skips (Regra 54)."; exit 0; }
+          if ! npm whoami >/dev/null 2>&1; then
+            echo "::warning::The npmjs token was REJECTED by registry.npmjs.org (the 401 wall — the dead-secret wall behind the npmjs 2.0.181 freeze). The npmjs publication of @wenathlan/devthink@${RELEASE_VERSION} skips until the NPM_TOKEN secret rotates: Settings > Secrets and variables > Actions. The GitHub family mirror carries the rung meanwhile."
+            exit 0
+          fi
           test -f "./release/wenathlan-devthink-${RELEASE_VERSION}.tgz"
           test ! -e "./release/wenathlan-extension-${RELEASE_VERSION}.tgz"
-          npm whoami
           PACKAGE="@wenathlan/devthink@${RELEASE_VERSION}"
           if npm view "$PACKAGE" version --registry=https://registry.npmjs.org >/dev/null 2>&1; then
             echo "npmjs version already exists; skipping publish."
@@ -1687,8 +1699,16 @@ jobs:
           RELEASE_VERSION: ${{ needs.assemble.outputs.version }}
         run: |
           set -euo pipefail
-          test -n "$NODE_AUTH_TOKEN" || { echo "NODE_AUTH_TOKEN or NPM_TOKEN is required for automatic npmjs publishing." >&2; exit 1; }
-          npm whoami
+          # the graceful-skip gate (the family contract, Regra 54, seated on
+          # the family release train lane too): a missing OR rejected
+          # token skips the npmjs family wave with a warning — never a
+          # red train (the dead-secret wall behind the npmjs 2.0.181
+          # freeze); the GitHub family mirror carries the rung meanwhile.
+          test -n "$NODE_AUTH_TOKEN" || { echo "::warning::NODE_AUTH_TOKEN or NPM_TOKEN is not configured; the npmjs family publication skips (Regra 54)."; exit 0; }
+          if ! npm whoami >/dev/null 2>&1; then
+            echo "::warning::The npmjs token was REJECTED by registry.npmjs.org (the 401 wall). The npmjs family publication of ${RELEASE_VERSION} skips until the NPM_TOKEN secret rotates: Settings > Secrets and variables > Actions. The GitHub family mirror carries the envelopes meanwhile."
+            exit 0
+          fi
           publish_one() {
             tarball="$1"
             # the ./ prefix keeps npm reading the path as a file: a bare

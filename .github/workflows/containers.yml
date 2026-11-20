@@ -366,28 +366,68 @@ jobs:
         # its already-published floor), bounded to a 60 minute patience
         # window, 30 seconds apart - then every install walks against
         # envelopes that truly exist.
+        #
+        # THE MIRROR FALLBACK (the npmjs outage window heal): the public
+        # npmjs mirror stopped answering at 2.0.181 when the NPM_TOKEN
+        # secret died (the 401 wall) - the family mirror on
+        # npm.pkg.github.com carries the same envelopes the githubnpm
+        # lanes publish with the built-in token, so the gate accepts an
+        # envelope that answers EITHER source. When an envelope answers
+        # the mirror alone, the log says so (the npmjs public mirror
+        # heals the moment the owner rotates the NPM_TOKEN secret - the
+        # warning the publish lanes emit hands that rotation over); the
+        # installs below resolve the @wenathlan seats from their pinned
+        # floors the manifests already carry, so the mirror answer is a
+        # sufficient existence proof for every lane that follows.
         shell: bash
         env:
           WAIT_VERSION: ${{ steps.release.outputs.version }}
+          MIRROR_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
         run: |
           set -euo pipefail
           packages=(argan cadria cobaia debonair forge foundry getry saddle stealthhead vault)
+          probe_mirror() {
+            # the family mirror carries no version-scoped REST door (the
+            # 405 the version URL answers): the package document lists
+            # the versions - the token reads the org packages the same
+            # repo owns.
+            curl -fsSL --max-time 20 \
+              -H "Authorization: Bearer ${MIRROR_TOKEN}" \
+              -H "Accept: application/json" \
+              "https://npm.pkg.github.com/@wenathlan%2F${1}" 2>/dev/null \
+              | grep -q "\"${WAIT_VERSION}\"" 2>/dev/null
+          }
           deadline=$(( $(date +%s) + 3600 ))
           while [ "$(date +%s)" -lt "$deadline" ]; do
             missing=0
+            mirror_only=0
             for pkg in "${packages[@]}"; do
-              if ! curl -fsSL --max-time 20 "https://registry.npmjs.org/@wenathlan%2F${pkg}/${WAIT_VERSION}" >/dev/null 2>&1; then
+              public=""
+              mirror=""
+              if curl -fsSL --max-time 20 "https://registry.npmjs.org/@wenathlan%2F${pkg}/${WAIT_VERSION}" >/dev/null 2>&1; then
+                public=1
+              elif probe_mirror "${pkg}"; then
+                mirror=1
+              fi
+              if [ -z "$public" ] && [ -z "$mirror" ]; then
                 missing=1
-                echo "still waiting: @wenathlan/${pkg}@${WAIT_VERSION}"
+                echo "still waiting: @wenathlan/${pkg}@${WAIT_VERSION} (neither the public npmjs mirror nor the family mirror answers)"
+              elif [ -z "$public" ]; then
+                mirror_only=1
+                echo "@wenathlan/${pkg}@${WAIT_VERSION} answers the family mirror (the npmjs public mirror heals when the NPM_TOKEN secret rotates)"
               fi
             done
             if [ "$missing" -eq 0 ]; then
-              echo "all ten sibling envelopes answer ${WAIT_VERSION} on npmjs"
+              if [ "$mirror_only" -eq 1 ]; then
+                echo "all ten sibling envelopes answer ${WAIT_VERSION} on the family mirror (npmjs public propagation pending the NPM_TOKEN rotation)"
+              else
+                echo "all ten sibling envelopes answer ${WAIT_VERSION} on npmjs"
+              fi
               exit 0
             fi
             sleep 30
           done
-          echo "the family envelopes never answered ${WAIT_VERSION} on npmjs within the patience window" >&2
+          echo "the family envelopes never answered ${WAIT_VERSION} on npmjs or the family mirror within the patience window" >&2
           exit 1
       - name: login ghcr
         uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
@@ -1292,28 +1332,64 @@ jobs:
         # version (the devthink os seat stays off the list: the
         # distpackage lane publishes it a rung late by doctrine), bounded
         # to a 60 minute patience window, 30 seconds apart.
+        #
+        # THE MIRROR FALLBACK (the npmjs outage window heal, the same
+        # law the app-containers gate carries): the public npmjs mirror
+        # stopped answering at 2.0.181 when the NPM_TOKEN secret died -
+        # the family mirror on npm.pkg.github.com carries the same
+        # envelopes the githubnpm lanes publish, so the gate accepts an
+        # envelope that answers EITHER source (the public mirror heals
+        # when the owner rotates the secret; the log says which source
+        # answered).
         shell: bash
         env:
           WAIT_VERSION: ${{ steps.resolve.outputs.version }}
+          MIRROR_TOKEN: ${{ secrets.OWNER_PAT || github.token }}
         run: |
           set -euo pipefail
           packages=(argan cadria cobaia debonair forge foundry getry saddle stealthhead vault)
+          probe_mirror() {
+            # the family mirror carries no version-scoped REST door (the
+            # 405 the version URL answers): the package document lists
+            # the versions - the token reads the org packages the same
+            # repo owns.
+            curl -fsSL --max-time 20 \
+              -H "Authorization: Bearer ${MIRROR_TOKEN}" \
+              -H "Accept: application/json" \
+              "https://npm.pkg.github.com/@wenathlan%2F${1}" 2>/dev/null \
+              | grep -q "\"${WAIT_VERSION}\"" 2>/dev/null
+          }
           deadline=$(( $(date +%s) + 3600 ))
           while [ "$(date +%s)" -lt "$deadline" ]; do
             missing=0
+            mirror_only=0
             for pkg in "${packages[@]}"; do
-              if ! curl -fsSL --max-time 20 "https://registry.npmjs.org/@wenathlan%2F${pkg}/${WAIT_VERSION}" >/dev/null 2>&1; then
+              public=""
+              mirror=""
+              if curl -fsSL --max-time 20 "https://registry.npmjs.org/@wenathlan%2F${pkg}/${WAIT_VERSION}" >/dev/null 2>&1; then
+                public=1
+              elif probe_mirror "${pkg}"; then
+                mirror=1
+              fi
+              if [ -z "$public" ] && [ -z "$mirror" ]; then
                 missing=1
-                echo "still waiting: @wenathlan/${pkg}@${WAIT_VERSION}"
+                echo "still waiting: @wenathlan/${pkg}@${WAIT_VERSION} (neither the public npmjs mirror nor the family mirror answers)"
+              elif [ -z "$public" ]; then
+                mirror_only=1
+                echo "@wenathlan/${pkg}@${WAIT_VERSION} answers the family mirror (the npmjs public mirror heals when the NPM_TOKEN secret rotates)"
               fi
             done
             if [ "$missing" -eq 0 ]; then
-              echo "all ten sibling envelopes answer ${WAIT_VERSION} on npmjs"
+              if [ "$mirror_only" -eq 1 ]; then
+                echo "all ten sibling envelopes answer ${WAIT_VERSION} on the family mirror (npmjs public propagation pending the NPM_TOKEN rotation)"
+              else
+                echo "all ten sibling envelopes answer ${WAIT_VERSION} on npmjs"
+              fi
               exit 0
             fi
             sleep 30
           done
-          echo "the family envelopes never answered ${WAIT_VERSION} on npmjs within the patience window" >&2
+          echo "the family envelopes never answered ${WAIT_VERSION} on npmjs or the family mirror within the patience window" >&2
           exit 1
 
       - name: Set up QEMU (the emulated legs of the build index)
