@@ -72,7 +72,7 @@
  */
 
 import { createHash, createHmac, randomUUID } from 'node:crypto';
-import { sha256Hex } from '@wenathlan/vault/sha';
+import { sha256Hex } from '../vault/sha.ts';
 
 /** stable short sha256 digest for shader cache keys and canary hashes
  * (the vault owner's hex seat, never a second copy). */

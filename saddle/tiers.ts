@@ -34,7 +34,7 @@
  * (free pool and quotas), 898-913 (VDR design). Toolchain TS 7.0.2.
  */
 
-import { sha256Hex } from '@wenathlan/vault/sha';
+import { sha256Hex } from '../vault/sha.ts';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';

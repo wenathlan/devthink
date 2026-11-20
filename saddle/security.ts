@@ -54,7 +54,7 @@ import {
   randomBytes,
   timingSafeEqual,
 } from 'node:crypto';
-import { sha256Hex } from '@wenathlan/vault/sha';
+import { sha256Hex } from '../vault/sha.ts';
 import { EventEmitter } from 'node:events';
 import { readFileSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';

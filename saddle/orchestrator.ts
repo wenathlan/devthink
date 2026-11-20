@@ -60,7 +60,7 @@
 import type { ChildProcess } from 'node:child_process';
 import { execFile, spawn } from 'node:child_process';
 import { randomInt, randomUUID } from 'node:crypto';
-import { sha256Hex } from '@wenathlan/vault/sha';
+import { sha256Hex } from '../vault/sha.ts';
 import { accessSync, constants, existsSync, mkdirSync, watch, writeFileSync } from 'node:fs';
 import { appendFile, mkdir, readFile, stat } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';

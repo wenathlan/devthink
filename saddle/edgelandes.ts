@@ -24,7 +24,7 @@
 
 import { type ChildProcess, spawn, spawnSync } from "node:child_process";
 import { createHmac } from "node:crypto";
-import { sha256Hex } from "@wenathlan/vault/sha";
+import { sha256Hex } from '../vault/sha.ts';
 import { Resolver } from "node:dns/promises";
 import { existsSync } from "node:fs";
 import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";

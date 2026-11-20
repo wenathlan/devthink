@@ -47,7 +47,7 @@ import {
   scryptSync,
   timingSafeEqual,
 } from 'node:crypto';
-import { sha256Hex } from '@wenathlan/vault/sha';
+import { sha256Hex } from '../vault/sha.ts';
 import type { IncomingMessage } from 'node:http';
 import store from './db.ts';
 import { adminusernames } from './authbrowser.ts';

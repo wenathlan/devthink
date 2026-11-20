@@ -25,7 +25,7 @@
 
 import { execFileSync, execSync } from "node:child_process";
 import { createHash, randomInt, randomUUID } from "node:crypto";
-import { sha256Hex } from "@wenathlan/vault/sha";
+import { sha256Hex } from '../vault/sha.ts';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { availableParallelism, cpus, tmpdir, totalmem } from "node:os";

@@ -11,7 +11,7 @@
  */
 
 import { sha256 } from "./foundation.ts";
-import { sha256Hex } from "@wenathlan/vault/sha";
+import { sha256Hex } from '../vault/sha.ts';
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";

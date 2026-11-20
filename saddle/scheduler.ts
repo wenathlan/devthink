@@ -34,7 +34,7 @@
  * built-ins first, zero runtime dependencies, no loopback endpoint.
  */
 
-import { sha256Hex } from '@wenathlan/vault/sha';
+import { sha256Hex } from '../vault/sha.ts';
 import { EventEmitter } from 'node:events';
 import { availableParallelism } from 'node:os';
 import {

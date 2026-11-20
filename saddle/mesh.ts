@@ -27,7 +27,7 @@ import {
   randomBytes,
   timingSafeEqual,
 } from 'node:crypto';
-import { sha256Hex } from '@wenathlan/vault/sha';
+import { sha256Hex } from '../vault/sha.ts';
 import type { IncomingMessage } from 'node:http';
 import process from 'node:process';
 
