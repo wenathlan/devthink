@@ -81,6 +81,9 @@ Disallow: /
 User-agent: Bytespider
 Disallow: /
 
+User-agent: PerplexityBot
+Disallow: /
+
 User-agent: IsraBot
 Disallow: /
 
