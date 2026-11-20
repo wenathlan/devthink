@@ -1657,7 +1657,7 @@ export function Sidebar({
                   disabled={!newTaskText.trim()}
                   aria-label="Add task"
                   data-testid="task-add-btn"
-                  className="send-key !h-7 !w-7 !p-0 shrink-0"
+                  className="send-key h-11 w-11 px-0 shrink-0"
                 >
                   <FluentPlus className="h-3.5 w-3.5" />
                 </button>

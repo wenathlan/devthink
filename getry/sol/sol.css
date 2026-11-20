@@ -4486,12 +4486,13 @@ button:hover .dt-morph-brand {
     top: calc(100% + 10px);
   }
 
-  /* Primary Send Key */
+  /* Primary Send Key — the ≥44px hit-cell law of the house (the visible
+     face rides inside; the cell is the touch target, never below 44px) */
   .send-key {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 30px;
+    height: 44px;
     padding: 0 10px;
     border-radius: 10px;
     corner-shape: squircle;

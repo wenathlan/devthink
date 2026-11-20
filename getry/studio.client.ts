@@ -239,22 +239,22 @@ export function buildUnderstandingPrompt(
     (m) => !m.error && (m.content.trim() || (m.generatedImages && m.generatedImages.length > 0))
   );
   if (prior.length === 0) {
-    return currentQuestion || "Descreva detalhadamente o que há nesta imagem.";
+    return currentQuestion || "Describe in detail what is in this image.";
   }
   const transcript = prior
     .map((m) => {
-      const who = m.role === "user" ? "Usuário" : "Assistente";
+      const who = m.role === "user" ? "User" : "Assistant";
       const media =
         m.role === "user" && m.images && m.images.length > 0
-          ? " [anexou imagem]"
+          ? " [attached image]"
           : m.generatedImages && m.generatedImages.length > 0
-            ? " [gerou imagem]"
+            ? " [generated image]"
             : "";
-      const text = m.content.trim() || "(sem texto)";
+      const text = m.content.trim() || "(no text)";
       return `${who}${media}: ${text.length > 1200 ? `${text.slice(0, 1200)}…` : text}`;
     })
     .join("\n\n");
-  return `Transcrição anterior da conversa:\n${transcript}\n\nPergunta atual do usuário sobre a imagem anexada:\n${currentQuestion}`;
+  return `Previous conversation transcript:\n${transcript}\n\nCurrent user question about the attached image:\n${currentQuestion}`;
 }
 
 /** immutable stream-delta merge: content/reasoning concatenate, the meta
@@ -293,7 +293,7 @@ export function shouldGenerateImageInChat(
   if (!text) return false;
   if (/^\/(image|imagem|img)\b/i.test(text)) return true;
   const intentRe =
-    /\b(crie|cria|gere|gera|desenhe|desenha|fa[cç]a|make|create|generate|draw|design|render|illustrate|produce)\b[\s\S]{0,48}\b(imagem|imagens|foto|fotos|arte|logo|logotipo|banner|poster|ilustra[cç][aã]o|picture|pictures|image|images|photo|photos|art|artwork|drawing|painting|illustration)\b/i;
+    /\b(crie|cria|gere|gera|desenhe|desenha|fa[c\u00e7]a|make|create|generate|draw|design|render|illustrate|produce)\b[\s\S]{0,48}\b(imagem|imagens|foto|fotos|arte|logo|logotipo|banner|poster|ilustra[c\u00e7][a\u00e3]o|picture|pictures|image|images|photo|photos|art|artwork|drawing|painting|illustration)\b/i;
   return intentRe.test(text);
 }
 
@@ -493,7 +493,7 @@ export async function runImageUnderstanding(params: {
 }): Promise<UnderstandingResult> {
   const attempt = async (path: string, withModel: boolean): Promise<UnderstandingResult> => {
     const body: Record<string, unknown> = {
-      prompt: params.prompt.trim() || "Descreva detalhadamente o que há nesta imagem.",
+      prompt: params.prompt.trim() || "Describe in detail what is in this image.",
       image: params.imageDataUrl,
     };
     if (withModel && params.modelId) body.model = params.modelId;
@@ -517,7 +517,7 @@ export async function runImageUnderstanding(params: {
       const msg =
         (typeof errObj === "object" && errObj && typeof errObj.message === "string"
           ? errObj.message
-          : typeof errObj === "string" ? errObj : text.trim().slice(0, 300)) || `Erro HTTP ${response.status}`;
+          : typeof errObj === "string" ? errObj : text.trim().slice(0, 300)) || `HTTP error ${response.status}`;
       throw new Error(msg);
     }
     const choices = Array.isArray(json?.choices) ? json.choices : [];
@@ -530,7 +530,7 @@ export async function runImageUnderstanding(params: {
     const reasoning =
       typeof message?.reasoning_content === "string" && message.reasoning_content.trim()
         ? message.reasoning_content : undefined;
-    if (!content.trim() && !reasoning) throw new Error("A rota de entendimento respondeu sem conteúdo.");
+    if (!content.trim() && !reasoning) throw new Error("The understanding route answered with no content.");
     return {
       content,
       reasoning,
@@ -598,12 +598,12 @@ export async function generateGatewayImage(params: {
   if (!response.ok || json?.error) {
     const errObj = json?.error as Record<string, unknown> | string | undefined;
     const cleanText = text.trim().startsWith("<")
-      ? `O gateway retornou HTTP ${response.status} ao gerar a imagem.`
+      ? `The gateway answered HTTP ${response.status} while generating the image.`
       : text.trim().slice(0, 300);
     const msg =
       (typeof errObj === "object" && errObj && typeof errObj.message === "string" ? errObj.message
        : typeof errObj === "string" ? errObj
-       : typeof json?.message === "string" ? json.message : cleanText) || `Erro HTTP ${response.status}`;
+       : typeof json?.message === "string" ? json.message : cleanText) || `HTTP error ${response.status}`;
     throw new Error(msg);
   }
   const dataArr = Array.isArray(json?.data) ? json.data : Array.isArray(json?.images) ? json.images : [];
@@ -627,7 +627,7 @@ export async function generateGatewayImage(params: {
   const imageDataUrl = rawB64
     ? rawB64.startsWith("data:") ? rawB64 : `data:image/png;base64,${rawB64}`
     : rawUrl;
-  if (!imageDataUrl) throw new Error("O endpoint de imagem não retornou imagem.");
+  if (!imageDataUrl) throw new Error("The image endpoint returned no image.");
   return {
     imageDataUrl,
     revisedPrompt: typeof first?.revised_prompt === "string" ? first.revised_prompt : undefined,
@@ -687,7 +687,7 @@ function mapmessage(row: ClientMessageRow): ChatMessage {
 function mapconversation(row: ClientConversationRow & { messages: ClientMessageRow[] }): Conversation {
   return {
     id: row.id,
-    title: row.title ?? "Nova conversa",
+    title: row.title ?? "New conversation",
     route: (row.route as RouteName) ?? "v1",
     modelId: row.modelId ?? "",
     systemPrompt: row.systemPrompt ?? "",
