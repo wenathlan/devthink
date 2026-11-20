@@ -30,6 +30,31 @@ if (typeof window !== "undefined") void seedLabels().catch(() => {});
 
 initTheme();
 
+/* the zoom lock law (the faun pattern the owner pinned in the reference):
+   the viewport meta rides every html entry and pins the touch door, but the
+   desktop page zoom never reads the meta — the browser scales the whole
+   document on the ctrl wheel (and the trackpad pinch reports itself as one),
+   and the zone tables break. the resolver answers at its own door: one
+   capture listener eats the default of every ctrl wheel before the browser
+   owns it. no surface of the resolver rides the browser zoom — the zone
+   tables and the dnssec panels scroll, nothing listens for the ctrl wheel —
+   so the guard never steals a gesture the app serves: a plain wheel stays a
+   scroll, the propagation never stops for the widgets above. the window
+   flag arms once per page: the hot reload re-executes this module and never
+   stacks a second listener */
+type ZoomLockHost = Window & { __arganzoomlock?: boolean };
+const zoomlockhost = (typeof window === "undefined" ? undefined : (window as ZoomLockHost));
+if (zoomlockhost && !zoomlockhost.__arganzoomlock) {
+  zoomlockhost.__arganzoomlock = true;
+  zoomlockhost.addEventListener(
+    "wheel",
+    (event) => {
+      if (event.ctrlKey) event.preventDefault();
+    },
+    { passive: false, capture: true },
+  );
+}
+
 class ThemeErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state: { error: Error | null } = { error: null };
 
