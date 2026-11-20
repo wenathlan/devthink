@@ -168,3 +168,202 @@ cada reclamação do dono é ordem imediata. estado verificado na onda de 2026-1
 - nada pula: nem linha, nem etapa, nem reclamação, nem onda
 - a hierarquia é linear: do mais fácil ao mais difícil, um por um, por categoria, até terminar
 - tudo numa onda só: pendência não fica para a próxima, prometer para depois é defeito
+
+## o apêndice das lacunas fechadas (a extensão do cânon)
+
+o apêndice fecha as lacunas que o dono apontou no relatório básico: as features exigidas por aplicativo, o estado medido do repositório, o worklog da onda lockheal, os números-âncora faltantes e as âncoras do cânon integral. o conteúdo vem da leitura integral do corpus consolidado (conversa52 114.615 linhas, ordens1 2.579, checklist gen-2 6.920) e nada do que já vivia no documento é repetido — a lei é somar sem apagar, desduplicando.
+# ownerdirectives — extensão
+
+este rascunho fecha as cinco lacunas apontadas pelo dono no ownerdirectives.md do repo: as features exigidas por aplicativo, a fotografia do repositório na medição via api de 2026-11-16, o worklog da onda lockheal, os números-âncora que faltavam e as âncoras do cânon integral consolidado. as fontes são a segunda geração do checklist de upload (seções 4, 5, 9, 10, 11 e 14) e o consolidado integral, das leis mãe à ordem de execução. nada do que já vive no documento do repo se repete aqui; a mescla final no arquivo vivo cabe à frente de docs do repo.
+
+## 1. as features exigidas por aplicativo
+
+os mandados categorizados por aplicativo, na ordem da seção 9 do owner directives pt. os números são números-base, pisos mínimos, praticamente ilimitados; exemplo citado é ilustração, nunca obrigação de copiar igual.
+
+### devthink
+
+- 35 páginas nativas, 45 telas e 3.420 componentes, a onda profunda do os já diferida no documento vivo
+- janelas windows 11 reais: taskbar, start, snap, alt-tab e jump lists; boot verificado; menu iniciar com avatar e power acrílico sticky; explorador win11; snap com 8 alças
+- chat flagship com 7 subagentes e o oitavo sumarizador; checkpoints em cascata com prevalência da última edição; sandbox provisionada no nascimento da conversa
+- store de modelos, plugins, temas e runners; mcp e automação em todos os aplicativos
+- enxame de agentes com leader, workers e critics; o verdict engine tem 16 membros: porter, júri, cache, gates, weights, cascade, evidence, guard, slicer, doctree, retrieve, summarizer, memory, trainer e calibration
+- explore público com rail; navegador embedded com consent gates
+- planos free, pro e enterprise existem exclusivamente no devthink; cadastro único sincronizado entre todos os aplicativos
+- extensão de navegador, tv e mobile com o mesmo design; oauth google, github e gitlab com continue with devthink e pkce s256
+- my files estilo este computador, com hds e barra de capacidade real; página de pagamento com 2 visões
+- gtx language picker com 12 idiomas; verificação via browser no site público wenathlan.github.io/devthink
+
+### saddle
+
+- 90 modalidades de vm, sandbox e microvm (81 live e 9 host): wasm, webpack, babel, virtual file, docker, aws, node, vfs, container dock, e2b, daytona, wasme, exe, binário, shs, yml e yaml, vgpu, vcpu, gpu, cpu, portas, sandbox, microvm, runner e hardware virtual
+- rodar docker, exe e binário via queuebinarylaunch; executar shs, yml e yaml via babel; qemu com firecracker, gvisor, nsjail e wasmtime
+- perfis max, balanced e lite: 2vcpu com 2gb, 4 com 0.5gpu e 8, 8 com 1gpu e 16 com 100gb
+- 15+ lanes de container emulando grapheneos, omarchy, maru os, vanilla os, v, linux, windows e android
+- hypervisor com snapshot, live migration sub-segundo, warm pool de 1250ms a cold, restore de 3 a 5ms e 150 máquinas por segundo
+- concorre com oracle, virtualbox, e2b e firecracker; nunca toca gpu, cpu, navegador ou disco do usuário
+- o container docker do saddle precisa ser consertado e publicado, hoje defeituoso
+- comparar com o projeto original github.com/wenathlan/saddle restaurando recursos, excluindo funções alheias a run, vm e sandbox
+- o web scraper sai do saddle para o devthink
+
+### vault
+
+- cadastro com id próprio; download do db bloqueado, a falha fa1.db vira decoy database cifrada em probes anônimos
+- bucket self-host de borda, concorrente de supabase, s3 e drizzle
+- blobs por sha256 em chunks de 1mib; aes-256-gcm; quórum de replicação; objetos de 1mib; 4 tiers de memória
+- 5 pilares: raiz interna, apis internas, mimetypes, https e better sqlite
+- banco de dados próprio para cada aplicativo, mais o dedicado do vault; my files real escalando de 2gb para 900mb, 900gb e terabytes, com ~50gb por plano
+- console de projects, buckets, objects, keys e audit
+
+### getry
+
+- 5 provedores por 7 endpoints, 35 rotas openai-compatíveis; raciocínio de 7 níveis sempre ligado; meta-modelo mascarando o upstream
+- rotação de chaves real no db, de 22 a 25 chaves
+- 5 lanes: keyless, fallback, pool rotativo least-used-first, free proxy e réplica unificada
+- júri de 3; anti-sycophancy; fatiador de milhão de tokens, com 2.262.144 de contexto e 524.288 de saída
+- anti-throttle com backoff de 2 a 8 e circuit breaker; cofre de chaves; console de 54 telas
+
+### debonair
+
+- daw completa com 8 páginas e 100 rotas
+- ingestão v1, v2 e v3 para payload json com reconstrução reversa na sandbox, sem tocar navegador nem gpu
+- 4-stem demix com stems hpss; classificação de gênero pelo sinal real, 15 famílias de dna; determinismo por seed
+- render de 48khz, 24bit wav, -14 lufs e -1 dbtp no saddle; lyric ghostwriter
+- 24 módulos, 108 libs dsp de cdn, 154 library catalog e 223 module tests
+
+### cadria
+
+- rasterização por software no servidor, o heavy processing sai do navegador
+- mesh generator heightmap rec.709; 12 shaders glsl
+- pipeline de pixels: brilho, contraste, saturação, sépia, grayscale, convolução 3x3, box blur e resize bilinear
+- timeline determinística; render em fatias de 10s com preview igual ao final; player universal
+- exportadores obj, stl, usda e gltf; webcodecs encoder real, porque transcodeplan nunca executa; ia visual concorrente de capcut e after effects
+
+### argan
+
+- zonas autoritativas soa e ns; dnssec; handshake; transportes udp, tcp, dot, doh, doq e odoh
+- cluster gossip hmac; 101 modalidades de resolução; 10 famílias de registro; 30 resolvedores redundantes
+- cleanurl, familyurl e keywords; registros nunca deletados, só alterados; concorrente da cloudflare
+
+### forge
+
+- executa qualquer binário em sandbox na fronteira do saddle, como call-of-duty, blender, brave e steam via queuebinarylaunch
+- zero storage próprio; zero binários nos assets; the floor is live honesto
+
+### foundry
+
+- estágios e artefatos content-addressed no vault; yml em chunks; tar.xz -9e e brotli 11
+- console clone de e2b e docker; geração de bancos com cron; trio de clones: storage, execução e execução com storage
+
+### stealthhead
+
+- mundo pré-compilado com shaders, bvh, grids e probes; banco como gpu e cpu virtuais; física determinística
+- ranking elo e glicko; 12hz de multiplayer com fallback bot; menos de 120 draw calls; gaussian splatting abaixo de 2mb; jogo 100% em inglês com tradução gtx em tempo real via settings
+- 6 armas no mandado categorizado desta geração (o placar integral sobe para 50+); os alvos de 5 mapas, 10+ personagens, 5 modos e 15 veículos já vivem nos diferimentos do documento
+- hoje apenas jogo em construção, honesto
+
+### cobaia
+
+- planos mrr; ad slots honestos, vazios até aprovação, com label advertisement
+- github sponsors e ko-fi; billing e churn; cashback vira crédito de loja, nunca dinheiro de volta
+- checkout honesto, stripe ainda não integrado; 40 formas de monetização catalogadas
+- zero click fraud, iframe oculto e bot traffic
+
+### transversais
+
+- cli binária por aplicativo com ~104mb e o mesmo design do windows no terminal: abas branquinhas e dpi 1x, 1.5x, 2x e 3x
+- pwa e apk offline-first em build único; 60+ tools e 60+ skills
+- extensão mv3 com 335 action kinds, 12 famílias e 23 protocol messages; roadmap 1.1.10 até 2.0.0 fechado com 328 itens
+- extensão baixável dos assets de release para o navegador do dono; infraestrutura da extensão praticamente igual à do github, com código autorizado
+- ícones em icon.svg, svg.icon, icon.ico e png servidos nos domínios estáticos e armazenados no banco
+- deploy universal estático em netlify, vercel, cloudflare e pages sincronizado no mesmo banco via apis internas; templates deployáveis
+- devthink.pro com 30+ subdomínios por aplicativo; music generation no hugging face spaces como feature a implementar; 15 engines self-hosted
+
+## 2. o estado do repositório na medição de 2026-11-16
+
+fotografia da api viva em 2026-11-16, anterior à onda lockheal e ao estado de 2026-11-20 já registrado nas reclamações r01 a r25. as pendências medidas alimentam as reclamações; aqui fica o número cru da medição:
+
+| frente | estado medido |
+|---|---|
+| autenticação | verificada e ativa, iakadion, rate de 5000 por hora, escopos repo, workflow, delete_repo e packages |
+| branches remotas | main protegida com 9 checks; studio-os 1 commit à frente, com 9 arquivos de getry e studio |
+| branches locais | refs stale de wave já mescladas e backup/c6b70d89; ação: fetch com prune e decidir studio-os com merge via pr e squash, depois arquivar |
+| pull requests | 0 abertos; 13 mesclados recentes de #623 a #642; #640 do rung 2.0.182 fechado sem merge, o buraco de 181 até 183 |
+| workflows | 18 ativos (15 yaml e 3 dinâmicos); 15.368 runs históricos; os últimos 100 somam 26 success, 39 failure e 35 cancelled; publish.yml com 484kb, 47 vezes a média, a reagrupar por contexto |
+| releases | v2.0.185 última; v2.0.182 inexistente; 3 releases no teto de 1000 |
+| packages | só saddle no github npm, assentos 1.0.0, 1.7.0, 1.8.0 e 1.8.1 de agosto; nenhum .webpack; publicar os rungs 2.0.x atuais nos 60+ assentos |
+| code-scanning | 0 abertos; 5.069 históricos, sendo 4.533 fixed e 536 dismissed; análises ativas no dia |
+| pages | build_type workflow; último deploy de sucesso em 11-12; 9 runs seguintes sem sucesso, 2 failure e 7 cancelled; site desatualizado contra a main de 11-16, a restaurar |
+| issues | 0 abertas |
+
+- a decomposição dos 39 runs vermelhos da medição: security 13, verify 12, ci 6, maintenance 3, family pages 2, publish 1, saddle lanes 1 e workflowlint 1, a corrigir no head 7a0c04fd
+
+## 3. o worklog da onda lockheal
+
+registro da onda de 2026-11-16, com o worklog vivo fora do repo, como manda a lei:
+
+- 2026-11-16 por volta das 21:20z: autenticação verificada, iakadion com rate de 5000 por hora; corpus de upload deduplicado por md5, de 1.12 milhões de linhas para o conteúdo único coberto; leitura integral concluída por 18 grupos de subagentes com prova de cobertura em readingcoverage.md
+- 2026-11-16 por volta das 23:00z: owner directives reconstruído na edição 2 e backlog mestre com 156 fases e 6.120 ações
+- 2026-11-16 entre 22:50z e 23:59z: onda wave/lockheal no pr #643; o diagnóstico dos 39 vermelhos apontou 4 causas-raiz: o bun.lock congelado pelo override better-auth retirado sem regen, o gate de licença com seats custom, a ladder exigindo sync de dependências e o conflito pnpm duplicado já resolvido no head
+
+os commits da onda:
+
+| commit | conteúdo |
+|---|---|
+| f1a185aa | sync dos 11 manifests e regen dos 11 bun.lock no bun 1.4.4, com exclusão de licença |
+| b36c2252 | freeze documentado do rolldown 1.3.x com pânico no vite build; manifests de volta ao ~1.2.x e regen dos 11 locks |
+| f88ed44a | exclusões de licença construídas do lock: aikido e applitools |
+| 1d6c1a6c | cargo aws-smithy-types pinado em 1.6.4 nos 11 cargo.toml, interseção exigida pelos pins kms, secretsmanager e eventstream, com o escopo @applitools completo na exclusão |
+
+- pendências vivas no fechamento do registro: regen do saddle/package-lock.json no assento npm, árvore de 13k pacotes em resolução via daemon double-fork; dependency review com server error do github, a reexecutar; merge de studio-os pendente após o lockheal; reexecuções via workflow_dispatch e restauração do pages após o merge
+
+## 4. os números-âncora faltantes
+
+âncoras citadas pelo dono que faltavam no documento vivo. como toda âncora do cânon, são números-base, pisos mínimos, praticamente ilimitados:
+
+- o checklist mestre carrega 945 ações em 6 fases; a escala do plano cita 950 passos e 12 fases, com as 102 ondas datadas já registradas na tabela de metas do documento vivo
+- a leitura de blobs e dots fica por último, em background: 645 commits da pasta dots (restaurar docs, docks e dots antes de excluir, com rename em colisão, sem perda), 286 globs, 206+300 commits, 1.252 commits de dependências e conversa.md com 23k linhas
+- o corpus briefing exige 90.000+ linhas lidas integralmente; o repos.case.md do estudo soma 204.140+ linhas, 25.085 pacotes e 143.000+ links, citado também como repo.case.md na lista de concorrentes do design
+- concorrência a clonar: 125 a 200 repositórios de concorrentes em neo.temp, nunca temp, com 125+ exemplos já clonados e 569 sites mapeados em designeer; o placar inglês resume como 100 a 200+
+- os gates de verde do rung: biome 0, tsc 0, vitest 900 a 1000, matrix 18 de 18 e readiness 27 de 27 com go; os três primeiros já vivem nas leis de engenharia do documento, matrix e readiness são os faltantes
+- as 10 lanes canônicas a deixar verdes em simultâneo: ci, verify, release, publish, pages, maintenance, security, family mobile, family desktop e workflowlint; skips condicionais by design são aceitáveis (5 lanes vhe dispatch-only, ios com DEVTHINK_IOS_ENABLED, rubygems dedup e cache)
+- a doutrina gh013 e o pat: o GITHUB_TOKEN não dispara eventos, a parede gh013 bloqueia workflow via token e as atualizações de arquivos de workflow seguem o caminho do owner pat, com o ladder e o OWNER_PAT como únicas vias; o publish roda com OWNER_PAT no create e no flip, o familylanes.mjs dispara no evento release published e o approval acontece via pending_deployments, com publish só após approval de environment; o assento 0232 registra o gh013 landing documentado como o caminho do owner pat para atualizar arquivos de workflow
+
+## 5. as âncoras do cânon integral (polar auth, provedores, engines de áudio e vídeo, branding)
+
+âncoras do consolidado integral que não vivem no documento do repo:
+
+### polar auth e identidade
+
+- o client_id do device flow do github no polar auth é 178c6fc778ccc68e1d6a
+- o token não tem expiração, com 17 escopos, e vive vitalício em upload/github-auth/data/, sobrevivendo a resets
+- a gpg pública de assinatura fica em .github/commitkey.asc
+
+### as correções de nome que faltavam
+
+- hoshios, archeos, acos e archos decodificam para archos, a aba os/arch no ghcr; grhcr decodifica para ghcr; nugget decodifica para nuget; faun e fa1 apontam o repositório wenathlan/faun; conversa mb é conversa.md
+
+### provedores e rotas do getry
+
+- o gateway cita 43 provedores openai-compatible e 352 modelos, além do mandado por aplicativo de 5 provedores por 7 endpoints com 35 rotas e 12 auth methods
+- as 18 rotas ratificadas: 6 de v1 zai keyless, 6 de v2 babel town e 6 de v3 nvidia; 7 níveis de thinking com default high; 22 a 31 chaves nvidia rotativas, rotação obrigatória e prioridade máxima
+- o meta-modelo devthink soma 2.262.144 de contexto e 524.288 de saída, a soma de janelas; o modelo troca a cada 6 mensagens; deepseek-r1 proibido; middleware e a quarta biblioteca proibidos; guerra de oom, import top-level mata memória
+
+### engines de áudio e vídeo, os gaps ranqueados
+
+- debonair v2.27: já tem síntese, beatgrid, bs.1770 e remixplan; faltam análise externa, stems como produto, key e pitch detectados, vad com whisper, fingerprint, embeddings e loop fechado entre geração e referência; recon-v1 até recon-v8 com 82 parâmetros congelados; recon a 44.100 hz contra render a 48 khz; anti-base64 e anti-pcm inline; 108 libs dsp de cdn e assentos 76 e 66
+- a geração de música é a feature eleita número um, com infraestrutura de banco; extensão de navegador e apk com emulador android autorizados
+- cadria: o encoder de vídeo real com webcodecs é o gap ranqueado; a navegação horrorosa a refazer
+- stealthhead: plano-5.2 e uniplano-5.2; ~50 veículos, personagens e armas; 40+ formatos; editor.ts absorve física, engine e combate; hud por dispositivo com capacitor e bun 1.4.2; db por colunas c1 até c4; o app de 1 a 2mb baixa o db do site, com o full de 900mb
+
+### branding e infra de domínio
+
+- o branding do devthink é let it think
+- o github app devtinker-app tem o id 5108223; auth.devthink.pro; devthink.pro com 30+ subdomínios no cloudflare
+- site no ar é servidor no ar: clones estáticos multiplataforma em netlify, vercel, cloudflare e domínio próprio interligados ao mesmo banco via apis internas, com código coringa
+
+### marcos de commit e guinchos curados
+
+- commit ea655f2c: as 10 lanes do container do saddle ficaram verdes pela primeira vez desde 7 de novembro nesse commit, com o container ainda preso no 2.1.6 no ghcr antes disso
+- os 9.041 mds do allan reduzem a 3 finais: package.json com 22.687 pacotes, links.md com 22.137 links e infraestrutura.md no estilo manual de avião; a leitura de blobs e dots corre por último, em background
+- guincho de guard.ts: a probe de console stringificada sincronamente disparava blank para todo visitante; a política final é trap de 1200ms, toggle do dono, intersticial e sem heurística de tamanho
+- guincho de deploybase.ts: o familyurl colapsado por dez resolvido ao corrigir o caminho relativo do slug para a rota canônica /devthink/ por aplicativo; o mesmo cânon registra o boot branco do os vindo do node:crypto em ids.ts, trocado por webcrypto
