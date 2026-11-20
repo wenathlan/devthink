@@ -365,7 +365,7 @@ jobs:
         id: token
         shell: bash
         env:
-          RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          RAW_NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN || secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
           token="${RAW_NPM_TOKEN//$'\r'/}"
@@ -384,13 +384,13 @@ jobs:
               echo "available=true" >> "$GITHUB_OUTPUT"
             else
               echo "available=false" >> "$GITHUB_OUTPUT"
-              echo "::warning::The NPM_TOKEN secret was REJECTED by registry.npmjs.org (the 401 wall - the npmjs envelopes have not shipped since 2.0.181). The npmjs.com publication is skipped until the secret rotates: Settings > Secrets and variables > Actions > NPM_TOKEN. The GitHub family mirror (npm.pkg.github.com) carries the rung meanwhile."
+              echo "::warning::The npm token (NODE_AUTH_TOKEN or NPM_TOKEN) was REJECTED by registry.npmjs.org (the 401 wall - the npmjs envelopes have not shipped since 2.0.181). The npmjs.com publication is skipped until a live secret seats the ladder: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN. The GitHub family mirror (npm.pkg.github.com) carries the rung meanwhile."
             fi
           fi
       - name: skip notice when NPM_TOKEN is not configured
         if: steps.token.outputs.available != 'true'
         run: |
-          echo "::notice::Secret NPM_TOKEN is not configured or was rejected by registry.npmjs.org; the npmjs.com publication is skipped with this warning. Add or rotate the secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
+          echo "::notice::No live npm secret seats the ladder (NODE_AUTH_TOKEN or NPM_TOKEN); the npmjs.com publication is skipped with this warning. Add or rotate either secret in Settings > Secrets and variables > Actions and re-run this workflow (or re-publish the release) to ship @wenathlan/devthink@${{ steps.release.outputs.version }} to the public registry."
       - name: verify npm identity
         if: steps.token.outputs.available == 'true'
         run: cd devthink && npm whoami
@@ -641,7 +641,7 @@ jobs:
         id: token
         shell: bash
         env:
-          RAW_NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          RAW_NPM_TOKEN: ${{ secrets.NODE_AUTH_TOKEN || secrets.NPM_TOKEN }}
         run: |
           set -euo pipefail
           token="${RAW_NPM_TOKEN//$'\r'/}"
@@ -659,7 +659,7 @@ jobs:
               echo "available=true" >> "$GITHUB_OUTPUT"
             else
               echo "available=false" >> "$GITHUB_OUTPUT"
-              echo "::warning::The NPM_TOKEN secret was REJECTED by registry.npmjs.org (the 401 wall). The npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped until the secret rotates: Settings > Secrets and variables > Actions > NPM_TOKEN. The GitHub family mirror (npm.pkg.github.com) carries the envelope meanwhile."
+              echo "::warning::The npm token (NODE_AUTH_TOKEN or NPM_TOKEN) was REJECTED by registry.npmjs.org (the 401 wall). The npmjs.com publication of @wenathlan/${{ matrix.package }} is skipped until a live secret seats the ladder: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN. The GitHub family mirror (npm.pkg.github.com) carries the envelope meanwhile."
             fi
           fi
       - name: skip notice when NPM_TOKEN is not configured
