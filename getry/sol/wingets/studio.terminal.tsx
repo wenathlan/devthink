@@ -54,7 +54,7 @@ export function TerminalDrawer({ open, onClose, lines }: TerminalDrawerProps) {
 
   return (
     <section
-      aria-label="Terminal — log de requisições do gateway"
+      aria-label="Terminal — gateway request log"
       data-testid="terminal-drawer"
       className="pointer-events-auto absolute inset-x-0 bottom-0 z-40 px-3 pb-3"
     >
@@ -82,7 +82,7 @@ export function TerminalDrawer({ open, onClose, lines }: TerminalDrawerProps) {
           <button
             type="button"
             onClick={onClose}
-            aria-label="Fechar terminal"
+            aria-label="Close terminal"
             className="dk-icon-btn"
           >
             <FluentDismiss className="h-3.5 w-3.5" />
@@ -98,7 +98,7 @@ export function TerminalDrawer({ open, onClose, lines }: TerminalDrawerProps) {
         >
           {lines.length === 0 ? (
             <p className="font-mono text-[11.5px] text-[var(--dk-text-muted)]">
-              aguardando chamadas ao gateway… tudo que o estúdio pedir aparece aqui.
+              waiting for gateway calls — everything the studio asks shows up here.
             </p>
           ) : (
             <ul className="flex flex-col gap-[5px]">
