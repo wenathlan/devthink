@@ -94,3 +94,63 @@ updates:
     open-pull-requests-limit: 0
     schedule:
       interval: weekly
+  # The docker image coverage of the family (the audit rescue of the lost
+  # seat: the eleven application Dockerfiles walked uncovered since the
+  # first consolidation folded the docker entry away - the base image
+  # references the container lanes pin need the update watch the rest of
+  # the manifests answer).
+  - package-ecosystem: docker
+    directory: /devthink
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /argan
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /cadria
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /debonair
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /forge
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /foundry
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /stealthhead
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /vault
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /getry
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /cobaia
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /saddle
+    open-pull-requests-limit: 0
+    schedule:
+      interval: weekly
