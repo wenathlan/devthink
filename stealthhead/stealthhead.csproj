@@ -35,10 +35,10 @@
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="MUXCustomBuildTasks" Version="1.0.48" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
-    <PackageReference Include="Microsoft.Build" Version="15.8.166" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
-    <PackageReference Include="Microsoft.Build.Framework" Version="15.8.166" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
-    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.8.166" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.1" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
+    <PackageReference Include="Microsoft.Build" Version="17.6.3" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
+    <PackageReference Include="Microsoft.Build.Framework" Version="17.6.3" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.6.3" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.1.17" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
@@ -54,7 +54,6 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4365-prerelease" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Microsoft.Windows.Apps.Test" Version="1.0.181205002" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
-    <PackageReference Include="Microsoft.Windows.CSWinRT" Version="3.0.0-preview.261104.1" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="3.0.0-preview.261104.1" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Microsoft.Windows.EventTracing.Processing.All" Version="1.12.10" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1839" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
@@ -78,8 +77,8 @@
     <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.16" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="Svg.Skia" Version="5.2.2" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="System.CodeDom" Version="8.0.0" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
-    <PackageReference Include="System.IO.Packaging" Version="6.0.1" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
-    <PackageReference Include="System.Reflection.Metadata" Version="8.0.0" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
+    <PackageReference Include="System.IO.Packaging" Version="8.0.1" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
+    <PackageReference Include="System.Reflection.Metadata" Version="9.0.0" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.1.2" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="System.Security.Permissions" Version="8.0.0" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" Condition="'$(EnableUnionPackageReferences)' == 'true'" />
