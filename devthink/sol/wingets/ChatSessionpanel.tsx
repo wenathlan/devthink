@@ -116,7 +116,7 @@ export function SessionPanel({
       ? CHAT_TOOLS.filter((t) => tools.includes(t.id))
           .map((t) => t.label)
           .join(", ")
-      : "none";
+      : chatText("panel.toolsNone");
   const testing = gateway.status === "connecting";
   /* local draft so the field only commits validated values on submit; it
    * starts empty — the endpoint is never pre-filled by default */
@@ -200,13 +200,13 @@ export function SessionPanel({
   return (
     <aside className="dtc-session" data-open={open ? "true" : "false"} aria-hidden={!open} aria-label={chatText("panel.sessionAria")}>
       <div className="dtc-session__head">
-        <h2>Session</h2>
+        <h2>{chatText("panel.headTitle")}</h2>
         <button
           type="button"
           className="dtc-tb-btn"
           onClick={onClose}
           aria-label={chatText("panel.closeAria")}
-          title="Close panel"
+          title={chatText("panel.closeTitle")}
           tabIndex={open ? 0 : -1}
         >
           <PanelRightClose fontSize={18} aria-hidden="true" />
@@ -214,55 +214,55 @@ export function SessionPanel({
       </div>
 
       <section className="dtc-session__sec">
-        <p className="dtc-session__label">Context</p>
+        <p className="dtc-session__label">{chatText("panel.contextLabel")}</p>
         <div className="dtc-modelcard">
           <strong>{model}</strong>
-          <small>{gateway.base ? "service on" : "service off"}</small>
+          <small>{gateway.base ? chatText("panel.serviceOn") : chatText("panel.serviceOff")}</small>
         </div>
         <dl className="dtc-readouts">
           <div className="dtc-readout">
-            <dt>Turns</dt>
+            <dt>{chatText("panel.turnsLabel")}</dt>
             <dd>{turnCount}</dd>
           </div>
           <div className="dtc-readout">
-            <dt>Conversations</dt>
+            <dt>{chatText("panel.conversationsLabel")}</dt>
             <dd>{sessionCount}</dd>
           </div>
           <div className="dtc-readout">
-            <dt>Persistence</dt>
-            <dd>local</dd>
+            <dt>{chatText("panel.persistenceLabel")}</dt>
+            <dd>{chatText("panel.persistenceLocal")}</dd>
           </div>
           <div className="dtc-readout">
-            <dt>Tools</dt>
+            <dt>{chatText("panel.toolsLabel")}</dt>
             <dd>{toolLabel}</dd>
           </div>
         </dl>
       </section>
 
       <section className="dtc-session__sec" aria-label={chatText("panel.identityAria")}>
-        <p className="dtc-session__label">Identity</p>
+        <p className="dtc-session__label">{chatText("panel.identityLabel")}</p>
         {session?.birth ? (
           <dl className="dtc-ident">
-            <dt className="dtc-ident__key">space</dt>
+            <dt className="dtc-ident__key">{chatText("panel.identitySpace")}</dt>
             <dd className="dtc-ident__val" title={session.birth.spaceId}>
               {session.birth.spaceId}
             </dd>
-            <dt className="dtc-ident__key">sandbox</dt>
+            <dt className="dtc-ident__key">{chatText("panel.identitySandbox")}</dt>
             <dd className="dtc-ident__val" title={session.birth.sandboxId}>
               {session.birth.sandboxId}
             </dd>
-            <dt className="dtc-ident__key">session</dt>
+            <dt className="dtc-ident__key">{chatText("panel.identitySession")}</dt>
             <dd className="dtc-ident__val" title={session.birth.sessionId}>
               {session.birth.sessionId}
             </dd>
           </dl>
         ) : (
-          <p className="dtc-gw__hint">session ids are created with the first message</p>
+          <p className="dtc-gw__hint">{chatText("panel.identityHint")}</p>
         )}
       </section>
 
       <section className="dtc-session__sec" aria-label={chatText("panel.projectAria")}>
-        <p className="dtc-session__label">Project</p>
+        <p className="dtc-session__label">{chatText("panel.projectLabel")}</p>
         <textarea
           className="dtc-project__input"
           value={instructionDraft}
@@ -279,7 +279,7 @@ export function SessionPanel({
 
       {PANEL_FEATURES.memory ? (
         <section className="dtc-session__sec" aria-label={chatText("panel.memoryAria")}>
-          <p className="dtc-session__label">Memory</p>
+          <p className="dtc-session__label">{chatText("panel.memoryLabel")}</p>
           {memoryDraft.length > 0 ? (
             <ul className="dtc-memory__list">
               {memoryDraft.map((fact, index) => (
@@ -290,7 +290,7 @@ export function SessionPanel({
                     className="dtc-memory__del"
                     onClick={() => forgetFact(index)}
                     aria-label={chatText("panel.deleteFact").replace("{fact}", fact)}
-                    title="Delete this fact"
+                    title={chatText("panel.deleteFactTitle")}
                     tabIndex={open ? 0 : -1}
                   >
                     <Dismiss fontSize={13} aria-hidden="true" />
@@ -306,7 +306,7 @@ export function SessionPanel({
 
       {session ? (
         <section className="dtc-session__sec" aria-label={chatText("panel.tagsAria")}>
-          <p className="dtc-session__label">Tags</p>
+          <p className="dtc-session__label">{chatText("panel.tagsLabel")}</p>
           {onTagsChange ? (
             <form className="dtc-tags" onSubmit={submitTag}>
               {sessionTags.map((tag) => (
@@ -317,7 +317,7 @@ export function SessionPanel({
                     className="dtc-tag__del"
                     onClick={() => dropTag(tag)}
                     aria-label={chatText("panel.removeTagAria")}
-                    title="Remove this tag"
+                    title={chatText("panel.removeTagTitle")}
                     tabIndex={open ? 0 : -1}
                   >
                     <Dismiss fontSize={13} aria-hidden="true" />
@@ -328,7 +328,7 @@ export function SessionPanel({
                 className="dtc-tags__input"
                 value={tagDraft}
                 onChange={(event) => setTagDraft(event.target.value)}
-                placeholder="add a tag"
+                placeholder={chatText("panel.addTagPlaceholder")}
                 aria-label={chatText("panel.addTagAria")}
                 spellCheck={false}
                 autoComplete="off"
@@ -346,16 +346,16 @@ export function SessionPanel({
           )}
           {onTagsChange ? (
             sessionTags.length >= tagsCap ? (
-              <p className="dtc-gw__hint">{tagsCap} tags is the cap</p>
+              <p className="dtc-gw__hint">{chatText("panel.tagsCapHint").replace("{n}", String(tagsCap))}</p>
             ) : null
           ) : (
-            <p className="dtc-gw__hint">editing opens in the panel</p>
+            <p className="dtc-gw__hint">{chatText("panel.tagsReadonlyHint")}</p>
           )}
         </section>
       ) : null}
 
-      <section className="dtc-session__sec dtc-gw" aria-label="Assistant connection">
-        <p className="dtc-session__label">Connection</p>
+      <section className="dtc-session__sec dtc-gw" aria-label={chatText("panel.connectionAria")}>
+        <p className="dtc-session__label">{chatText("panel.connectionLabel")}</p>
         <p className="dtc-gw__pill" data-state={gateway.status} role="status">
           {gatewayStatusLabel(gateway.status)}
         </p>
@@ -374,8 +374,8 @@ export function SessionPanel({
                   setEndpointDraft(event.target.value);
                   if (gateway.formError) gateway.clearFormError();
                 }}
-                placeholder="https://chat.example.com"
-                aria-label="Service address"
+                placeholder={chatText("panel.addressPlaceholder")}
+                aria-label={chatText("panel.addressAria")}
                 spellCheck={false}
                 autoComplete="off"
                 disabled={testing}
@@ -390,10 +390,10 @@ export function SessionPanel({
                 {testing ? (
                   <>
                     <i className="dtc-gw__spinner" aria-hidden="true" />
-                    Testing
+                    {chatText("panel.testing")}
                   </>
                 ) : (
-                  "Connect"
+                  chatText("panel.connect")
                 )}
               </button>
             </form>
@@ -413,8 +413,8 @@ export function SessionPanel({
         ) : null}
 
         {(gateway.status === "connected" || gateway.status === "error") && confirmArmed ? (
-          <fieldset className="dtc-gw__confirm" aria-label="Confirm disconnect">
-            <p>Disconnect the service</p>
+          <fieldset className="dtc-gw__confirm" aria-label={chatText("panel.confirmAria")}>
+            <p>{chatText("panel.confirmPrompt")}</p>
             <div className="dtc-gw__actions">
               <button
                 type="button"
@@ -425,7 +425,7 @@ export function SessionPanel({
                 }}
                 tabIndex={open ? 0 : -1}
               >
-                Disconnect
+                {chatText("panel.disconnect")}
               </button>
               <button
                 type="button"
@@ -433,7 +433,7 @@ export function SessionPanel({
                 onClick={() => setConfirmArmed(false)}
                 tabIndex={open ? 0 : -1}
               >
-                Keep
+                {chatText("panel.keep")}
               </button>
             </div>
           </fieldset>
@@ -447,7 +447,7 @@ export function SessionPanel({
               onClick={() => setConfirmArmed(true)}
               tabIndex={open ? 0 : -1}
             >
-              Disconnect
+              {chatText("panel.disconnect")}
             </button>
           </div>
         ) : null}
@@ -460,7 +460,7 @@ export function SessionPanel({
               onClick={() => void gateway.retryProbe()}
               tabIndex={open ? 0 : -1}
             >
-              Test
+              {chatText("panel.test")}
             </button>
             <button
               type="button"
@@ -468,15 +468,15 @@ export function SessionPanel({
               onClick={() => setConfirmArmed(true)}
               tabIndex={open ? 0 : -1}
             >
-              Disconnect
+              {chatText("panel.disconnect")}
             </button>
           </div>
         ) : null}
       </section>
 
       <section className="dtc-session__sec">
-        <p className="dtc-session__label">Quick links</p>
-        <nav className="dtc-session__links" aria-label="Theme pages">
+        <p className="dtc-session__label">{chatText("panel.quickLinksLabel")}</p>
+        <nav className="dtc-session__links" aria-label={chatText("panel.themePagesAria")}>
           {CHAT_NAV.map((item) => {
             const Icon = item.icon;
             return (
