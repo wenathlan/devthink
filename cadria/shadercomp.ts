@@ -10,7 +10,7 @@
 // dissolve planner answers the lap-dissolve/raccord tension of the family as
 // pure per-step opacity ramps, deterministic over any step count.
 
-import { createHash } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 import { type PrecompiledShader, shaderManifestComplete } from "./versawase.ts";
 
 /** Every named effect of the compositor library. */
@@ -277,7 +277,8 @@ export function compileEffectProgram(effectId: string, amount: number): EffectPr
     : effect.defaultAmount;
   const normalized = Number(bounded.toFixed(6));
   const program = FRAGMENT_HEADER + effect.glsl + FRAGMENT_FOOTER;
-  const sha256 = createHash("sha256").update(program, "utf8").digest("hex");
+  // the digest law: the program sha rides the vault owner's hex seat, never a second copy.
+  const sha256 = sha256Hex(program);
   return { effectId: effect.id, amount: normalized, program, sha256 };
 }
 

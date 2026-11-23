@@ -59,7 +59,8 @@
 
 import type { ChildProcess } from 'node:child_process';
 import { execFile, spawn } from 'node:child_process';
-import { createHash, randomInt, randomUUID } from 'node:crypto';
+import { randomInt, randomUUID } from 'node:crypto';
+import { sha256Hex } from '../vault/sha.ts';
 import { accessSync, constants, existsSync, mkdirSync, watch, writeFileSync } from 'node:fs';
 import { appendFile, mkdir, readFile, stat } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';
@@ -4278,10 +4279,7 @@ class orchestrator {
       const routes = [...this.#passageroutes.values()].filter(
         (route) => route.srcvm === id || route.dstvm === id,
       );
-      const checksum = createHash('sha256')
-        .update(JSON.stringify(routes))
-        .digest('hex')
-        .slice(0, 16);
+      const checksum = sha256Hex(JSON.stringify(routes)).slice(0, 16);
       const checkpoint: vmcheckpoint = {
         id: checkpointid,
         vmid: id,

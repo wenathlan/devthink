@@ -470,6 +470,16 @@ const familybridges = {
    * declared). retires when the published envelope carries the built ui
    * store. */
   "@wenathlan/vault/uistore": join(root, "..", "vault", "uistore.ts"),
+  /** the digest bridge of the ownership law (the sha collapse, mandate
+   * 0658): the account lane hex seats the server entry pulls in ride the
+   * vault digest owner through the published library specifier
+   * ("@wenathlan/vault/sha"), and the server bundles inline the owner's
+   * digest the same way the label store rides above — the sha-256 hex call
+   * is never duplicated inside devthink and the lockfile stays untouched
+   * (no registry dependency is declared; the companion plain-node recipe
+   * stays on node:crypto directly, it ships without bridges). retires when
+   * the published envelope carries the sha seat. */
+  "@wenathlan/vault/sha": join(root, "..", "vault", "sha.ts"),
 };
 const libraryexternals = [
   "hono",

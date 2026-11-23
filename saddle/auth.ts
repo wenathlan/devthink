@@ -43,11 +43,11 @@
  */
 
 import {
-  createHash,
   randomBytes,
   scryptSync,
   timingSafeEqual,
 } from 'node:crypto';
+import { sha256Hex } from '../vault/sha.ts';
 import type { IncomingMessage } from 'node:http';
 import store from './db.ts';
 import { adminusernames } from './authbrowser.ts';
@@ -228,13 +228,14 @@ export function sessiontoken(): string {
 
 /**
  * derives the sha256 hex digest stored in the sessions table; the raw
- * token never touches the database.
+ * token never touches the database (the digest rides the vault owner's
+ * hex seat, never a second copy).
  *
  * @param token the raw session token.
  * @returns the hex token hash.
  */
 export function tokenhash(token: string): string {
-  return createHash('sha256').update(String(token)).digest('hex');
+  return sha256Hex(String(token));
 }
 
 /**

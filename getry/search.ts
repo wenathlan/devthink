@@ -45,7 +45,7 @@ import * as net from "node:net";
 import * as tls from "node:tls";
 import * as http from "node:http";
 import * as https from "node:https";
-import { createHash } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 import { join as pathJoin } from "node:path";
 import { mkdirSync, writeFileSync } from "node:fs";
 
@@ -358,7 +358,7 @@ function buildClientMetadata(version?: string): string {
 
 function hashToken(token: string): string {
   try {
-    return createHash("sha256").update(token).digest("hex").slice(0, 16);
+    return sha256Hex(token).slice(0, 16);
   } catch {
     return fnv1a32(token).toString(16);
   }

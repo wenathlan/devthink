@@ -26,6 +26,14 @@
     "paths": {
       "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
       "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
+      /* the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): every sha-256 hex seat of the engine rides the vault digest
+       * owner through the published library specifier
+       * ("@wenathlan/vault/sha"), and this bridge resolves the specifier to
+       * the monorepo source the sibling engine carries — the digest is never
+       * duplicated inside saddle. the entry retires when the published
+       * envelope carries the sha seat. */
+      "@wenathlan/vault/sha": ["../vault/sha.ts"],
 
       "@/*": ["./sol/*", "./*"],
       "@saddle/isolation": ["./isolation.ts"]

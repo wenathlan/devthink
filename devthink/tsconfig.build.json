@@ -17,6 +17,14 @@
        * node_modules tree may carry behind the published rung. */
       "@wenathlan/vault/labelstore": ["../getry/dist/types/vault/labelstore.d.ts"],
       "@wenathlan/vault/onboardingstore": ["../getry/dist/types/vault/onboardingstore.d.ts"],
+      /* the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): the account lane hex seats the server entry pulls in answer
+       * through the published subpath ("@wenathlan/vault/sha"), and the
+       * declaration pass resolves it onto the generated vault face the
+       * getry types emit carries — the same face law the labelstore and
+       * onboardingstore seats above ride, while the bundle pass inlines the
+       * owner source through its own alias table. */
+      "@wenathlan/vault/sha": ["../getry/dist/types/vault/sha.d.ts"],
       "@wenathlan/foundry/bundlescan": ["../foundry/bundlescan.ts"],
       "@wenathlan/foundry/readiness": ["../foundry/readiness.ts"],
       /* the uistore factory seat of the consolidation wave: the os port

@@ -22,6 +22,14 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * onboarding store. */
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
+      /** the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): the engine's sha-256 hex seats ride the vault digest owner
+       * through the published library specifier ("@wenathlan/vault/sha"),
+       * and this bridge resolves the specifier to the monorepo source the
+       * sibling engine carries — the digest is never duplicated inside
+       * cadria. the entry retires when the published envelope carries the
+       * sha seat. */
+      "@wenathlan/vault/sha": path.resolve(import.meta.dirname, "../vault/sha.ts"),
       /** the aead seal bridge of the ownership law: the transcode engine
        * channel imports the rfc 8439 seal the virtualization engine owns
        * ("@wenathlan/saddle/security"); this bridge resolves the specifier

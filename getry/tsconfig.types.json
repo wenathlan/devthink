@@ -51,6 +51,13 @@
        * typecheck resolves the monorepo source beside its labelstore
        * precedent until the next rung publishes the export. */
       "@wenathlan/vault/uistore": ["../vault/uistore.ts"],
+      /* the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): the gateway's sha-256 hex seats ride the vault digest owner
+       * through the published specifier the same way the uistore seat does,
+       * and the installed envelope the declaration pass resolves carries no
+       * ./sha export yet — the typecheck resolves the monorepo source beside
+       * its uistore precedent until the next rung publishes the export. */
+      "@wenathlan/vault/sha": ["../vault/sha.ts"],
       /* the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from the devthink side: the moved
        * engine graph leans on the os server seam whose sandbox lane reads
@@ -165,6 +172,11 @@
      * resolves through its generated .d.ts bridge — the same face law
      * the labelstore and onboardingstore seats ride from the db chain. */
     "../vault/uistore.ts",
+    /* the vault sha face entry (the sha collapse of mandate 0658): the
+     * declaration pass emits the vault digest owner's face the devthink
+     * build resolves through its generated .d.ts bridge — the same face law
+     * the labelstore, onboardingstore and uistore seats ride. */
+    "../vault/sha.ts",
     "thinking.ts",
     "engine.ts",
     "llm.ts",

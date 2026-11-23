@@ -641,6 +641,15 @@ export default defineConfig({
       "@wenathlan/devthink/tools": path.resolve(import.meta.dirname, "tools.ts"),
       "@wenathlan/vault/routes": path.resolve(import.meta.dirname, "../vault/routes.ts"),
       "@wenathlan/vault/utils": path.resolve(import.meta.dirname, "../vault/utils.ts"),
+      /** the digest bridge of the ownership law (the sha collapse, mandate
+       * 0658): the account lane hex seats (the browser graph imports them
+       * from account.ts) ride the vault digest owner through the published
+       * specifier ("@wenathlan/vault/sha"), and this bridge resolves it to
+       * the monorepo source the sibling engine carries — the digest is never
+       * duplicated inside devthink, and the node:crypto stub below keeps the
+       * browser lane throwing the same honest refusal it always threw. the
+       * entry retires when the published envelope carries the sha seat. */
+      "@wenathlan/vault/sha": path.resolve(import.meta.dirname, "../vault/sha.ts"),
       /** the storage lane bridge of the ownership law: the lazy db chunk
        * the browser never loads imports the vault factory through the
        * published specifier ("@wenathlan/vault/storage") — the node seats

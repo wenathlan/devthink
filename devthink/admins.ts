@@ -5,7 +5,8 @@
 // statements (bound parameters only — never a concatenated string) and the
 // password never lands in the database, only its scrypt digest.
 import Database from "better-sqlite3";
-import { createHash, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { sha256Hex } from "@wenathlan/vault/sha";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -182,5 +183,6 @@ export function audit(lines = 100): AuditEntry[] {
 }
 
 function sha256(value: string): string {
-  return createHash("sha256").update(value).digest("hex");
+  // the digest law: the site hash rides the vault owner's hex seat, never a second copy.
+  return sha256Hex(value);
 }

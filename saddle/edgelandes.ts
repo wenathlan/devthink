@@ -23,7 +23,8 @@
 // of the virtual section — so both surfaces stay live in one file.
 
 import { type ChildProcess, spawn, spawnSync } from "node:child_process";
-import { createHash, createHmac } from "node:crypto";
+import { createHmac } from "node:crypto";
+import { sha256Hex } from '../vault/sha.ts';
 import { Resolver } from "node:dns/promises";
 import { existsSync } from "node:fs";
 import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
@@ -967,7 +968,7 @@ function s3signer(credentials: { key: string; secret: string; region: string }) 
     const url = new URL(path, request.endpoint);
     for (const [name, value] of Object.entries(request.query ?? {})) url.searchParams.set(name, String(value));
     const payload = request.body instanceof Uint8Array ? Buffer.from(request.body) : Buffer.alloc(0);
-    const payloadhash = createHash("sha256").update(payload).digest("hex");
+    const payloadhash = sha256Hex(payload);
     const amzdate = new Date().toISOString().replace(/[:-]|\.\d{3}/g, "");
     const datestamp = amzdate.slice(0, 8);
     const canonicalquery = [...url.searchParams.entries()]
@@ -989,7 +990,7 @@ function s3signer(credentials: { key: string; secret: string; region: string }) 
       "AWS4-HMAC-SHA256",
       amzdate,
       scope,
-      createHash("sha256").update(canonicalrequest).digest("hex"),
+      sha256Hex(canonicalrequest),
     ].join("\n");
     const signingkey = hmac(hmac(hmac(hmac(`AWS4${credentials.secret}`, datestamp), credentials.region), "s3"), "aws4_request");
     const signature = createHmac("sha256", signingkey).update(stringtosign).digest("hex");
@@ -4780,7 +4781,7 @@ async function virtualfilelane(code: string, inputs: unknown, _deadline: number)
   }
   const path = typeof manifest.path === "string" && manifest.path.length > 0 ? manifest.path : "payload";
   const bytes = utf8.encode(code);
-  const sha256 = createHash("sha256").update(bytes).digest("hex");
+  const sha256 = sha256Hex(bytes);
   virtualfilestorelane.set(path, { path, bytes, sha256 });
   return lanereport(
     VIRTUALMIME.vfs,
