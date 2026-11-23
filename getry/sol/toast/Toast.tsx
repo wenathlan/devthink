@@ -58,7 +58,7 @@ export function dismiss(id: number): void {
   });
 }
 
-/** the icon per tone, lucide family, stroke 1.8. */
+/** the icon per tone, the fluent set the Win11 law pins. */
 const toneicon: Record<ToastTone, typeof InfoRegular> = {
   success: CheckmarkCircleRegular,
   error: ErrorCircleRegular,

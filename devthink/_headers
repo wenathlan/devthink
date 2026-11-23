@@ -1,3 +1,32 @@
+# the strict content security policy of the static face (the csp law of
+# the wave/csp-ratelaw, the checklist mandate 1222): every directive reads
+# its evidence off the face the build ships, never a permissive default.
+# script-src stays 'self' plus the two sha256 pins of the inline boot
+# scripts of index.html — the animated favicon rasterizer and the boot
+# lamp — because a static host mints no nonce; no unsafe-inline and no
+# eval ever rides the script lane, so a hash change on those two scripts
+# renews the pin (the pin is the strict answer a static face carries).
+# style-src carries 'unsafe-inline' for styles only: the react face
+# composes its inline style attributes (ninety-seven of them across the
+# sol wingets) and the boot lamp paints its fallback div with an inline
+# style, so the style lane is the one lane the face genuinely inlines —
+# a style never executes, the script lane stays pinned. img-src adds
+# data: for the favicon frames the boot script rasterizes through
+# canvas.toDataURL and the svg noise backgrounds of sol.css. media-src
+# adds blob: for the video stage object urls of local files. font-src
+# rides the woff2 faces of sol/fonts. connect-src seats the same-origin
+# api lanes plus the loopback pairing hosts (the workbench gateway of
+# server.ts binds 127.0.0.1 and the panel and the auth screen pair with
+# it over http) — a build that registers a remote gateway base or a
+# remote onboarding base widens connect-src with that origin at deploy.
+# frame-src keeps the family frames same-origin (every sibling rides the
+# same site subpath), frame-ancestors answers none beside the frame
+# denial, and base-uri, form-action and object-src stay self, self and
+# none — the face carries no base tag, no external form and no plugin.
+# the design reference design.html rides the same header unscripted by
+# design: its inline chatbridge and its extension module references are
+# the artifacts of the reference document, not the served face, and the
+# strict policy seals exactly that lane.
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -5,6 +34,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'sha256-oAxelmRCo5CjXDucEBa6SvKnkpo4kn9aRqshkxsRXr8=' 'sha256-CHObiyx9GsDtEYorPF+IKPJ9LO1nWPot3wu3cSHF4OQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' blob:; font-src 'self'; connect-src 'self' http://127.0.0.1:* http://localhost:*; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
 /*.js
   Cache-Control: public, max-age=31536000, immutable
 /*.css
