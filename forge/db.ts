@@ -2,7 +2,7 @@
  * better-sqlite3 with prepared statements only — every external input rides a
  * bound parameter, never a concatenated string (the parameterized query rule). */
 import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
-import { openStorageLane } from "@wenathlan/vault/storage";
+import { openStorageLane } from "@wenathlan/vault/storagelane";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 
 export type Runner = { id: string; name: string; kind: string; boundary: string; status: string };

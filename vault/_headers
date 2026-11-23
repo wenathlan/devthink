@@ -1,7 +1,25 @@
+# the strict content security policy of the static face (the csp family
+# law of the wave/csp-ratelaw, the checklist mandate 1222): the same
+# directive shape rides every app root of the family and the sources
+# read their evidence off this face. script-src stays 'self' alone — the
+# external module script of index.html is the only script tag the face
+# carries, no inline boot script rides this app, so no hash, no
+# unsafe-inline and no eval ever enters the script lane. style-src
+# carries 'unsafe-inline' for styles only, because the react face
+# composes its inline style attributes (a style never executes, the
+# script lane stays sealed). img-src adds data: for the svg noise
+# backgrounds of sol.css. media-src, font-src and frame-src stay 'self'.
+# connect-src stays 'self' — the /api lanes ride this origin (the
+# container lane proxies them same-origin through the nginx face; the
+# engine origin a build declares under the vite env law widens
+# connect-src with that origin at deploy, the away verdict answers
+# otherwise). frame-ancestors answers none beside the frame denial,
+# base-uri and form-action stay self, object-src answers none.
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self'; frame-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'
 
 # the faun seal of the deploy lanes: the engine keeps its runtime sqlite
 # stores beside the working directory (vault-storage.db, uistore.db, the

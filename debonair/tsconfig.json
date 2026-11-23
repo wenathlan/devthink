@@ -25,6 +25,14 @@
        * source tree owns openStorageLane and the SqlParam bind type. the
        * entry retires when the published envelope carries the lane. */
       "@wenathlan/vault/storage": ["../vault/storage.ts"],
+      /* the storagelane bridge of the ownership law: the site store (db.ts)
+       * rides the vault sqlite factory owner through the published library
+       * specifier ("@wenathlan/vault/storagelane" — the keyed file the
+       * wave/db-vault-subpath seat owns), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries. the
+       * entry retires when the published envelope carries the built
+       * storage lane owner. */
+      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
       "@wenathlan/cadria/synth": ["../cadria/synth.ts"],
       "@wenathlan/debonair/audio": ["./audio.ts"],
       "@wenathlan/debonair/audioattributes": ["./audio.ts"],

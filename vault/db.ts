@@ -21,7 +21,7 @@
  */
 
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
-import { openStorageLane } from "./storage.ts";
+import { openStorageLane } from "./storagelane.ts";
 import { ensureEnvelopeSchema } from "./envelope.ts";
 
 /* the at-rest envelope face (aes-256-gcm, enveloped per-project keys): the
@@ -53,7 +53,7 @@ export const db = lane.db;
 export const { execute, queryAll, queryOne } = lane;
 
 /** the parameter types the helpers bind (sqlite stores them narrow — re-exported seat of the lane). */
-export type { SqlParam } from "./storage.ts";
+export type { SqlParam } from "./storagelane.ts";
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS keys (

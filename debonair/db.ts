@@ -5,7 +5,7 @@
 // serves the same tables to the Sol pages over HTTPS (see catalog.ts).
 
 import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
-import { openStorageLane } from "@wenathlan/vault/storage";
+import { openStorageLane } from "@wenathlan/vault/storagelane";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 import {
   seedGenres,
@@ -27,7 +27,7 @@ export const db = lane.db;
 export const { execute, queryAll, queryOne } = lane;
 
 /** the parameter types the helpers bind (re-exported seat of the lane). */
-export type { SqlParam } from "@wenathlan/vault/storage";
+export type { SqlParam } from "@wenathlan/vault/storagelane";
 
 
 const SCHEMA = `
