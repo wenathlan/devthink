@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@wenathlan/cobaia",
+      "name": "@wenathlan/pulse",
       "dependencies": {
         "3d-force-graph": "^1.80.2",
         "7z-wasm": "^1.2.0",
