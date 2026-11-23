@@ -23,7 +23,7 @@
  * client-safe by construction: zero imports — no react, no wouter, no node
  * builtins, no storage, no network — so every static bundle of every app
  * can carry the door without dragging anything into the graph. The os
- * envelope (devthink/App.tsx) keeps its own door: the os mounts at the
+ * envelope (devthink/app.tsx) keeps its own door: the os mounts at the
  * site root where any folder prefix is the base at a cold boot (the
  * dispatcher parks deep links at the application root first) — a law the
  * slug-bearing apps never need, so the two seats stay honest to their

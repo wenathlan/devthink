@@ -4,7 +4,7 @@
  * stage orchestration — the lock -> signin state machine, the account
  * contract of the root accountgate.ts, the invitation params and the
  * navigation after the auth — and mounts the loose components that live
- * in sol/wingets. Only the theme anchor (sol/Sol.tsx) consumes
+ * in sol/widgets. Only the theme anchor (sol/sol.tsx) consumes
  * this file.
  *
  * Sign in — the windows 11 sequence: the lock face first (the big clock
@@ -48,11 +48,11 @@ import {
 import { copy, loadcopy } from "../../uistore.ts";
 import { afterAuthTarget, pairingReadiness, safegatewayurl } from "../../gateway.ts";
 import { readBrowserPreferences } from "../../storage.ts";
-import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } from "../../wingets";
+import { LockFace, PowerMenu, type SignInEntryFields, SignInForm, StatusLine } from "../../widgets";
 
 export * from "../../account.ts";
 export * from "../../gateway.ts";
-export * from "../../wingets";
+export * from "../../widgets";
 
 type PairingResponse = { token: string; userId: string; expiresAt: number };
 

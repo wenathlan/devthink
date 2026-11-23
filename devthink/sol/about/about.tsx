@@ -2,7 +2,7 @@
  * about page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  */
@@ -30,10 +30,10 @@ import {
   mediaSlots,
   type Principle,
   principleTable } from "../../catalog";
-import { InstitutionalChrome, InstitutionalFooter } from "../../wingets";
-import { AboutFamily } from "../../wingets";
-import { AboutHero } from "../../wingets";
-import { AboutTimeline } from "../../wingets";
+import { InstitutionalChrome, InstitutionalFooter } from "../../widgets";
+import { AboutFamily } from "../../widgets";
+import { AboutHero } from "../../widgets";
+import { AboutTimeline } from "../../widgets";
 
 /* --------------------------------------------------------------------------
  * the about page-app stylesheet — the r2-a editorial pass of this folder:

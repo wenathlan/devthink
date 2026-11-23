@@ -608,7 +608,7 @@ export const seedStudioTracks: StudioTrack[] = [];
 /** the display language ladder of the settings card, native names per the
  * windows grammar — the reviewed seed rows the paired database serves over
  * the catalog seam; the language winget reads them through the accessor
- * and never restates them (2026: no fixed data in wingets). */
+ * and never restates them (2026: no fixed data in widgets). */
 export const seedLanguages: LanguageRow[] = [
   { code: "en", native: "English (United States)" },
   { code: "pt", native: "Português (Brasil)" },

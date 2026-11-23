@@ -1,0 +1,122 @@
+/**
+ * widgets.ts — the universal winget surface of devthink, living at the app
+ * root (the owner's law: .ts files stay outside sol/) answering the
+ * sol/widgets folder: every winget re-exports from this one module, so the
+ * pages import their components from a single place — the components stay
+ * complete independent files beside this surface.
+ */
+export * from "./sol/widgets/AboutFamily.tsx";
+export * from "./sol/widgets/AboutHero.tsx";
+export * from "./sol/widgets/AboutTimeline.tsx";
+export * from "./sol/widgets/AudioMusicengine.tsx";
+export * from "./sol/widgets/AudioMusictracks.tsx";
+export * from "./sol/widgets/AuthLockface.tsx";
+export * from "./sol/widgets/AuthPowermenu.tsx";
+export * from "./sol/widgets/AuthProviderrow.tsx";
+export * from "./sol/widgets/AuthSignin.tsx";
+export * from "./sol/widgets/AuthStatusline.tsx";
+export * from "./sol/widgets/CalculatorDisplay.tsx";
+export * from "./sol/widgets/CalculatorHistory.tsx";
+export * from "./sol/widgets/CalculatorKeypad.tsx";
+export { default as ChatBody } from "./sol/widgets/ChatBody.tsx";
+export * from "./sol/widgets/ChatCanvaspane.tsx";
+export * from "./sol/widgets/ChatComposer.tsx";
+export * from "./sol/widgets/ChatMarkdown.tsx";
+export * from "./sol/widgets/ChatSandboxpane.tsx";
+export * from "./sol/widgets/ChatSessionpanel.tsx";
+export * from "./sol/widgets/ChatSidebar.tsx";
+export * from "./sol/widgets/ChatSolboticon.tsx";
+export * from "./sol/widgets/ChatTurn.tsx";
+export * from "./sol/widgets/ChatWelcome.tsx";
+export { default as ConsoleGraphview } from "./sol/widgets/ConsoleGraphview.tsx";
+export * from "./sol/widgets/ConsoleGraphview.tsx";
+export * from "./sol/widgets/ConsoleReference.tsx";
+export { default as Terminal } from "./sol/widgets/ConsoleTerminal.tsx";
+export * from "./sol/widgets/ConsoleTerminal.tsx";
+export * from "./sol/widgets/Constructionface.tsx";
+export * from "./sol/widgets/Controlshell.tsx";
+/* the ink terminal ui never rides the web barrel: the CLI entry imports it
+ * directly (devthink.ts), and the browser bundle would otherwise link the
+ * terminal renderer into the page graph — the one interface law keeps the
+ * terminal variant on its own build lane. */
+export * from "./sol/widgets/DocsCard.tsx";
+export * from "./sol/widgets/DocsModules.tsx";
+export * from "./sol/widgets/DocsNav.tsx";
+export * from "./sol/widgets/ExploreDownloadrail.tsx";
+export * from "./sol/widgets/ExploreLaunchdeck.tsx";
+export * from "./sol/widgets/ExploreSections.tsx";
+export * from "./sol/widgets/ExploreSidebar.tsx";
+export * from "./sol/widgets/ExploreWaves.tsx";
+export * from "./sol/widgets/ExploreWindowchrome.tsx";
+export * from "./sol/widgets/FilesFoldericons.tsx";
+export * from "./sol/widgets/GamesList.tsx";
+export * from "./sol/widgets/GamesNav.tsx";
+export * from "./sol/widgets/HistoryLadder.tsx";
+export * from "./sol/widgets/Imageengine.tsx";
+export * from "./sol/widgets/Imagestills.tsx";
+export { default as Boot } from "./sol/widgets/IntroBoot.tsx";
+export { default as Saas } from "./sol/widgets/IntroSaas.tsx";
+export * from "./sol/widgets/IntroSaaskit.tsx";
+export * from "./sol/widgets/IntroSaasrails.tsx";
+export * from "./sol/widgets/IntroSaassections.tsx";
+export * from "./sol/widgets/IntroShaderhero.tsx";
+export * from "./sol/widgets/OnboardingSteps.tsx";
+export * from "./sol/widgets/PanelBoot.tsx";
+export * from "./sol/widgets/PanelDesktop.tsx";
+export * from "./sol/widgets/PanelDesktoplock.tsx";
+export * from "./sol/widgets/PanelDesktopmenu.tsx";
+export * from "./sol/widgets/PanelLogo.tsx";
+export * from "./sol/widgets/PanelPalette.tsx";
+export * from "./sol/widgets/PanelTabs.tsx";
+export * from "./sol/widgets/PanelWindowframe.tsx";
+export * from "./sol/widgets/PanelWorkspace.tsx";
+export * from "./sol/widgets/ProjectsRows.tsx";
+export * from "./sol/widgets/ProvidersCard.tsx";
+export * from "./sol/widgets/ProvidersList.tsx";
+export * from "./sol/widgets/SettingsAbout.tsx";
+export * from "./sol/widgets/SettingsAccentrow.tsx";
+export * from "./sol/widgets/SettingsAccountscategory.tsx";
+export * from "./sol/widgets/SettingsAutomationmcp.tsx";
+export * from "./sol/widgets/SettingsBackgroundpicker.tsx";
+export * from "./sol/widgets/SettingsComponentoptions.tsx";
+export * from "./sol/widgets/SettingsGatewaycard.tsx";
+export * from "./sol/widgets/SettingsGatewaypairing.tsx";
+export * from "./sol/widgets/SettingsHarddrives.tsx";
+export * from "./sol/widgets/SettingsIdentity.tsx";
+export * from "./sol/widgets/SettingsLanguagecard.tsx";
+export * from "./sol/widgets/SettingsNav.tsx";
+export * from "./sol/widgets/SettingsNavbarposition.tsx";
+export * from "./sol/widgets/SettingsPairing.tsx";
+export * from "./sol/widgets/SettingsPersonalization.tsx";
+export * from "./sol/widgets/SettingsRow.tsx";
+export * from "./settingstypes.ts";
+export * from "./sol/widgets/ShellAlttabswitcher.tsx";
+export * from "./sol/widgets/ShellAppicons.tsx";
+export * from "./sol/widgets/ShellApptile.tsx";
+export * from "./sol/widgets/ShellAutomationnote.tsx";
+export { default as ShellAvatar } from "./sol/widgets/ShellAvatar.tsx";
+export * from "./sol/widgets/ShellAvatar.tsx";
+export { default as ShellBanner } from "./sol/widgets/ShellBanner.tsx";
+export * from "./sol/widgets/ShellBanner.tsx";
+export { default as ShellChip } from "./sol/widgets/ShellChip.tsx";
+export * from "./sol/widgets/ShellChip.tsx";
+export * from "./sol/widgets/Shellchrome.tsx";
+export { default as ShellConn } from "./sol/widgets/ShellConn.tsx";
+export * from "./sol/widgets/ShellConn.tsx";
+export * from "./sol/widgets/ShellDockmagnify.tsx";
+export { default as ShellDot } from "./sol/widgets/ShellDot.tsx";
+export * from "./sol/widgets/ShellDot.tsx";
+export * from "./sol/widgets/ShellFamilyframe.tsx";
+export * from "./sol/widgets/ShellInstitutionalchrome.tsx";
+export * from "./sol/widgets/ShellJumpmenu.tsx";
+export { default as ShellKbd } from "./sol/widgets/ShellKbd.tsx";
+export * from "./sol/widgets/ShellKbd.tsx";
+export * from "./sol/widgets/ShellRoutesurface.tsx";
+export { default as ShellSegmented } from "./sol/widgets/ShellSegmented.tsx";
+export * from "./sol/widgets/ShellSegmented.tsx";
+export * from "./sol/widgets/ShellTrayflyouts.tsx";
+export * from "./sol/widgets/TermsLegalkit.tsx";
+export * from "./sol/widgets/UsageMeasures.tsx";
+export * from "./sol/widgets/VideoAssets.tsx";
+export * from "./sol/widgets/VideoEngine.tsx";
+export * from "./sol/widgets/VideoPlayer.tsx";

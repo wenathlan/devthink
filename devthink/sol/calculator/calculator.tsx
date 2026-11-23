@@ -2,7 +2,7 @@
  * calculator page anchor — layer 3 of the anchor architecture. The file
  * carrying the folder's own name is the path manager of the page: it mounts
  * the page surface and stays the binding target of the window registry
- * (sol/wingets/PanelWorkspace.tsx) and the route table (sol/Sol.tsx). Only
+ * (sol/widgets/PanelWorkspace.tsx) and the route table (sol/sol.tsx). Only
  * the theme anchor and the window registry consume this file.
  *
  * The honest face law of the family: the calculator is not one of the
@@ -16,9 +16,9 @@
  * instrument returns mounted on them the day the library wave builds the
  * real app. The route and the window binding never move.
  */
-import { ShellChrome } from "../wingets/Shellchrome";
+import { ShellChrome } from "../widgets/Shellchrome";
 import { osAppLabels } from "../../catalog";
-import { Constructionface } from "../../wingets";
+import { Constructionface } from "../../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

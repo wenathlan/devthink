@@ -8,7 +8,7 @@ import { agentcertrecord } from "./agentcert.ts";
 import { costcertrecord } from "./costcert.ts";
 import { doccheckrecord } from "./doccheck.ts";
 import { pentestrecord } from "./pentest.ts";
-import { reviewedorigins } from "./test/reviewedorigins.ts";
+import { reviewedorigins } from "./tests/reviewedorigins.ts";
 import type { agentrecord } from "./types.ts";
 
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));

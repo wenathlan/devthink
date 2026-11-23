@@ -1,5 +1,5 @@
 // # uistore — the ui store of the os (root layer): every user-visible
-// string the wingets render rides the database — the uicopy table of the
+// string the widgets render rides the database — the uicopy table of the
 // app's own better-sqlite3 store, served same-origin over /api/v1/ui/copy
 // (and one row over /api/v1/ui/copy/:key) — and the component never
 // hardcodes text. Wave 14, the uistore consolidation (the audit ranking
@@ -57,7 +57,7 @@ const SEED: Readonly<Record<string, string>> = Object.freeze({
   /* ------------- the os statement + the real studios ----------------
    * the redesign order: the mock decks died and the landing presents the
    * real studios of the monorepo — one name and one line each, the words
-   * ride these rows and the wingets never hardcode them. */
+   * ride these rows and the widgets never hardcode them. */
   "intro.os.bridge": "Native Studios",
   "intro.os.titlea": "Six real studios,",
   "intro.os.titleb": "one OS",
@@ -577,7 +577,7 @@ const labelStore = createLabelStore({
 });
 
 /* ===== block: chatlabelseat ===== */
-/** the chat label store of the copy law: the chat wingets read every chat
+/** the chat label store of the copy law: the chat widgets read every chat
  * string through this store door — the indexeddb rows the boot seed loads
  * answer the overrides first (the translated rows the person chose and the
  * refreshed rows the revision waves carry) while the flattened seed stays
@@ -651,7 +651,7 @@ const osseat = createuistore({
 
 /* the mount hook of the os face (module level the react law demands —
  * the core hook rides the vault engine, the os seat binds its own load
- * lane, the importers keep the same zero-argument call the wingets
+ * lane, the importers keep the same zero-argument call the widgets
  * always made). */
 export function useUicopy(): void {
   useUicopyCore(osseat.loaduicopy);

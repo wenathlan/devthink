@@ -2,8 +2,8 @@
  * games page anchor — layer 3 of the anchor architecture. The file carrying
  * the folder's own name is the path manager of the page: it imports the
  * loose components beside it, mounts the page and re-exports the public
- * component surface. Only the theme anchor (sol/Sol.tsx) and the window
- * registry (sol/wingets/PanelWorkspace.tsx) consume this file.
+ * component surface. Only the theme anchor (sol/sol.tsx) and the window
+ * registry (sol/widgets/PanelWorkspace.tsx) consume this file.
  *
  * Games — the runner app in the Windows 11 grammar: a nav pane beside the
  * content deck, the runner binaries as hairline rows and the launch queue
@@ -15,12 +15,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "../wingets/Shellchrome";
+import { ShellChrome } from "../widgets/Shellchrome";
 import { osAppLabels, type RunnerBinary, runnerBinaries } from "../../catalog";
 import { osText } from "../../os.ts";
 import { queuebinarylaunch } from "../../runner";
-import { Constructionface, GamesList } from "../../wingets";
-import { type GamesFilter, GamesNav } from "../../wingets";
+import { Constructionface, GamesList } from "../../widgets";
+import { type GamesFilter, GamesNav } from "../../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */
