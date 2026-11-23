@@ -16991,6 +16991,23 @@ button.dtc-recents__row:focus-visible {
   width: 100%;
   padding: 12px 0 0;
 }
+/* the single sign-on label of the row: the owner label law seats the
+ * "Continue with DevThink" words here — a quiet centered line over the
+ * brand marks, never on the buttons themselves */
+.dt-oauthrow__label {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 0;
+  color: var(--dtc-ink-2, #a9a9b4);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 1.4;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+[data-theme="light"] .dt-oauthrow__label { color: #6d6d78; }
 .dt-oauthrow__btns {
   display: flex;
   align-items: center;

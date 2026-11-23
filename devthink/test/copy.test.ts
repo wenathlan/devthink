@@ -28,33 +28,43 @@ describe("the copy store", () => {
     }
   });
 
-  it("the provider row answers the icon law — the brand marks ride alone, the continue with words stay as the accessible names", () => {
+  it("the provider row answers the label law — the row says continue with devthink, the buttons never say continue with google", () => {
     const brandnames = { google: "Google", github: "GitHub", gitlab: "GitLab" } as Record<string, string>;
+    // the owner label law (the owner directives canon): the row says
+    // "continue with devthink" while every button carries the brand mark
+    // name alone — the continue-with words never ride a provider button
+    assert.equal(copy("auth.oauth.row"), "Continue with DevThink", "the row label carries the single sign-on words");
     for (const provider of ["google", "github", "gitlab"]) {
       const label = copy(`auth.oauth.${provider}`);
       assert.equal(
         label,
-        `Continue with ${brandnames[provider]}`,
-        `the ${provider} name carries the standard button grammar`,
+        brandnames[provider],
+        `the ${provider} accessible name is the brand mark alone`,
+      );
+      assert.ok(
+        !/continue with/i.test(label),
+        `the ${provider} button never says continue with ${provider}`,
       );
       assert.ok(!label.includes("·"), `the ${provider} name never carries the separator ornament`);
     }
     // the gitlab provider answers the row again — the owner law keeps the
     // github and the gitlab acceptance side by side; the unconfigured hover
     // phrase stays gone
-    assert.equal(copy("auth.oauth.gitlab"), "Continue with GitLab");
+    assert.equal(copy("auth.oauth.gitlab"), "GitLab");
     assert.equal(copy("auth.oauth.unconfigured"), "auth.oauth.unconfigured");
-    // the cli pairing row answers the same simple grammar the owner ordered
-    assert.equal(copy("auth.cli"), "Continue with CLI");
-    // the continue-with headline dies with the icon-only row — the words
-    // never print again (the row group keeps its own accessible name)
+    // the cli pairing button answers the same brand-mark grammar
+    assert.equal(copy("auth.cli"), "CLI");
+    assert.ok(!/continue with/i.test(copy("auth.cli")), "the cli button never says continue with cli");
     assert.equal(copy("auth.oauth.headline"), "auth.oauth.headline");
-    assert.ok(copy("auth.oauth.row").length > 0, "the row group keeps its accessible name");
-    // the component renders the marks alone: zero visible label element,
+    // the component renders the single sign-on label over the marks alone:
+    // the visible label element carries the continue-with-devthink words,
     // zero headline element, and every icon button carries its accessible
     // name from the copy store (an icon without a name is banned)
     const source = readFileSync(join(import.meta.dirname, "..", "sol", "wingets", "AuthProviderrow.tsx"), "utf8");
-    assert.ok(!source.includes("dt-oauthrow__label"), "the visible label element is gone from the row");
+    assert.ok(
+      source.includes('className="dt-oauthrow__label"'),
+      "the visible row label element carries the continue with devthink words",
+    );
     assert.ok(!source.includes("dt-oauthrow__headline"), "the headline element is gone from the row");
     assert.ok(
       source.includes("aria-label={copy(`auth.oauth.${entry.provider}`)}"),
