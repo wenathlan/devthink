@@ -300,7 +300,7 @@ function AssistantMessageRow({
 
             {msg.usage?.total_tokens !== undefined && (
               <span className="font-mono opacity-80 pl-1">
-                {msg.usage.total_tokens} tokens
+                ~{msg.usage.total_tokens} tokens
               </span>
             )}
           </div>
@@ -408,7 +408,7 @@ export function ChatThread({
       <div className="relative z-10 flex h-10 items-center justify-between gap-2 px-3 sm:px-4 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <span className="notranslate hidden sm:inline font-mono text-[11px] text-[var(--dk-text-3)] tabular-nums whitespace-nowrap">
-            {messages.length} msgs{totalThreadTokens > 0 ? ` / ${totalThreadTokens} tok` : ''}
+            {messages.length} msgs{totalThreadTokens > 0 ? ` / ~${totalThreadTokens} tok` : ''}
           </span>
         </div>
 

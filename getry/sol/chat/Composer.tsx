@@ -205,11 +205,11 @@ export function ThinkingPicker({ level, onPick }: { level: string; onPick: (leve
   );
 }
 
-/** formats one token count the compact way (68k, 1.2m). */
+/** formats one token count the compact way (~68k, ~1.2m) — the approximate symbol rides every count, because the context windows and output ceilings are quotas the meters estimate, never exact budgets (the wave/getry-jury tilde law). */
 function formattokens(count: number): string {
-  if (count < 1000) return String(count);
-  if (count < 1_000_000) return `${(count / 1000).toFixed(count < 10_000 ? 1 : 0).replace(/\.0$/, "")}k`;
-  return `${(count / 1_000_000).toFixed(1).replace(/\.0$/, "")}m`;
+  if (count < 1000) return `~${count}`;
+  if (count < 1_000_000) return `~${(count / 1000).toFixed(count < 10_000 ? 1 : 0).replace(/\.0$/, "")}k`;
+  return `~${(count / 1_000_000).toFixed(1).replace(/\.0$/, "")}m`;
 }
 
 /* ===== block: the composer ===== */

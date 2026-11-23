@@ -1077,7 +1077,8 @@ export function Sidebar({
                 { label: 'Workspaces', val: usageStats.workspaceCount },
                 { label: 'Sessions', val: usageStats.sessionCount },
                 { label: 'Messages', val: usageStats.messageCount },
-                { label: 'Tokens recorded', val: usageStats.totalTokens },
+                /* the token meter carries the approximate symbol — the recorded totals are estimated usage, never exact counts (the wave/getry-jury tilde law) */
+                { label: 'Tokens recorded', val: `~${usageStats.totalTokens}` },
               ].map((stat, idx) => (
                 <div
                   key={stat.label}

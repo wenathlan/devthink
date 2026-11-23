@@ -42,11 +42,11 @@ export type ChatMessageView = {
   createdAt: string;
 };
 
-/** formats one token count the way the meta row renders it (1.2k above a thousand). */
+/** formats one token count the way the meta row renders it (~1.2k above a thousand) — the approximate symbol rides every count, because the usage numbers the local engine answers are estimates and the provider reported ones are metered through the same row (the wave/getry-jury tilde law: an estimate never presents as an exact count). */
 function formattokens(count: number | undefined): string {
   if (count === undefined || !Number.isFinite(count)) return "—";
-  if (count < 1000) return String(count);
-  return `${(count / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+  if (count < 1000) return `~${count}`;
+  return `~${(count / 1000).toFixed(1).replace(/\.0$/, "")}k`;
 }
 
 /* ===== block: the in-house markdown mini renderer ===== */
