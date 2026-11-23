@@ -2984,3 +2984,53 @@ part one ends at action 0500. waves w05 through w19 continue in the sections bel
 - [ ] os dois alertas do scorecard fechando com os runs verdes
 - [ ] a bateria de testes verde e o disparo manual validando a versão corrente
 - [ ] o bump seguinte aplicado somente após tudo verde (a lei do dono)
+
+## a onda da consolidação integral de 2026-11-23 (a leitura integral do corpus completo)
+
+> Consolidada por 18 leitores paralelos (R1-R18) cobrindo INTEGRALMENTE todo o /upload
+> via bash/sed/grep por segmentos de linha, sem pular linha: ordens.txt (1.903), ordens1.txt
+> (3.811), polarauth.txt (10.463), fedsd.txt (1.564), feedssd.txt (1.828), checklist (1).txt
+> (6.920), conversa19.txt (85.022), conversa50.txt (86.534), conversa51.txt (97.281),
+> conversa52.txt (114.615 integral), unificado.outro.txt (173.492 mapeado: 32 constituintes,
+> 13 duplicatas identificadas por md5, conteúdo único lido), devtyhink.txt (1.138), Pasted
+> Content (33.162 chars), extract/ (67 arquivos verificados), docs-reading/ (6 relatórios
+> cross-checkados). Nada removido; duplicatas registradas com contagem.
+
+### o estado vivo auditado nesta onda (2026-11-23)
+
+- [x] a leitura integral do corpus completo concluída por 18 leitores em faixas contíguas com desduplicação por md5 e registro de repetições
+- [x] a autenticação verificada contra o remoto (fetch/ls-remote verdes; token embutido ativo)
+- [x] o polar canônico extraído da variante definitiva (polarauth.txt linhas 1-305, corrected build Rev A/D/G) e lançado em background com poller+watchdog destacados (código 5C8F-A789 pendente de autorização do dono em github.com/login/device; janela 6h renovável; rule 45 respeitada; captura em tempo real para .github-token 0600)
+- [x] o sincronismo remoto para local concluído (main em 4b62682f; o commit local de relatórios preservado no branch backup/docs-reading e restaurado como worklog não rastreado fora do repo, conforme a lei)
+- [x] o stash auditado (stash@{0} "vue scrub": remove @vue/runtime-vapor@0.0.0 quebrado com workspace:* irreal de 11 bun.lock + argan/package.json; base antiga; conflita com a frente ocupada dos locks; preservado intacto como mapa de feature)
+- [x] os commits novos do remoto mapeados (17 commits de 2026-11-20 a 2026-11-22: PRs #683-#704, lucide retirado da família, familyurl colapsado no dono devthink, escopo granular + skip honesto, consolidação histórica massiva, docs raiz deletado conforme a árvore)
+- [x] as frentes ocupadas identificadas (6 PRs abertas #696-#702: db-vault-subpath, getry-devdeps-union, getry-jury, jsdoc-2026-pass, sha-collapse, vault-encryption — CI in_progress; lei: ignorar e avançar à próxima sem interferir)
+
+### as lacunas descobertas pela leitura integral (a acrescentar às ondas)
+
+- [ ] W20-001. o módulo pulse (12º módulo oficial da mega-onda final de ordens1.txt linhas 3635-3720 e do devtyhink.txt bloco A) NÃO existe na árvore: criar o scaffold honesto (sol/, tests/, docs/ + .ts de lógica na raiz) com o rótulo "Em construção" — estúdio aberto Voice-First dono único de automação e gestão 24/7 de redes sociais e canais (X, Instagram via Graph API oficial/MCP com renovação de token, Facebook, YouTube), operável por humanos e enxames nas VMs, consumindo getry, saddle, cadria, debonair, vault e cobaia via package.json
+- [ ] W20-002. a IA nativa doo (dois "o") onipresente definida no cânon como usuário IA oficial dos criadores do CODEOWNERS: registrar no mapa de identidade e no plano de features do devthink
+- [ ] W20-003. a lei Voice-First: todos os 12 aplicativos oferecem a experiência principal por voz (Voice-First Ao Vivo multi-persona zero texto no getry; ditação por áudio; auto-treinamento/destilação cross-sandbox) — mapear as lacunas por aplicativo
+- [ ] W20-004. a lei 100% internet para binários: mesmo como aplicativo desktop nativo o binário NÃO executa processamento local, conectando direto aos hosts remotos — auditar as faces desktop/ISO do devthink contra esta lei
+- [ ] W20-005. a meta-regra dos valores ilustrativos (ordens1.txt L3635): todo número citado é piso/opt-in, nunca teto — já refletida no preâmbulo, reafirmar nos números-âncora
+- [ ] W20-006. as 3 leis do NETLIFY ROAD do gateway v2 (unificado.outro.txt constituinte gateway.txt linhas 10389-10460): lei do SSO (sso_login false em todo site de toda conta viva, toda rodada, public by law), lei do refresh (todo gatethinkN existente é redesplantado com o build fresco da v2), lei da numeração sem traço (conta sem gatethinkN recebe o próximo número, namespace global) — sincronizar com a frente do gateway quando liberar
+- [ ] W20-007. as regras de máquina da session7 (unificado.outro.txt constituinte session7-so-user (2).txt): escrita de fonte SOMENTE via ferramentas de edição (hook Mimosa bloqueia bash para escrever), nenhuma pasta assets/ (árvore é sol/+docs/+tests/ com ícones como única exceção binária), apps nascem em inglês com tradução só via configuração — validar conformidade da árvore atual
+- [ ] W20-008. o mapa de consolidação nominal de arquivos por palavra-chave do DOC-u1 de conversa52 (edgelandes.ts, sandbox.ts, modalities.ts, virtual.ts, objects.ts, storage.ts, dns.ts, catalog.ts, thinking.ts, gateway.ts, runner.ts, match.ts, ranking.ts, world.ts, monetization.ts, agents.ts, security.ts, dashboard.ts) — cruzar com o estado real de cada raiz de app e completar os assentos faltantes
+- [ ] W20-009. os detalhes canônicos do devtyhink.txt ainda não sentados no tracker: getry adiciona Kimi K3.1 pro 1M de contexto (registro vivo já feito pela frente paralela em todas as 6 rotas v3 — verificar e marcar); cores oficiais por app (devthink âmbar solar, saddle tan #d6b483, vault gelo #a3d7e6, getry violeta #9a7ce0, debonair âmbar #bd7a1a, cadria magenta #e04f9f, argan jade #14b98c, forge lime #a2cb3a, foundry azul #4d8edd, stealthhead coral #f4694f); baseline de testes 7.192 pernas em 477 arquivos + 700 torture + 30 agentcert + 9 costcert + 21 pentest; devthink 35 páginas/45 telas/3.420 componentes; WebSocket porta 3003 rate 1.200 req/min timeout 900s; debonair RECON 76 header/66 frame/4 correlações/82 parâmetros; cadria ticks 254.016.000.000/s e 126 rotas; argan DoH porta 81 EDNS 1232 bytes 101 modalidades 30 resolvedores 15 idiomas; stealthhead física 120Hz gravidade -9.82 <120 draw calls Monte Carlo 1.000 runs splatting <2MB 12 tabelas
+- [ ] W20-010. o inventário de links oficiais do devtyhink.txt (113 URLs únicas incluindo os 12 wormholes do bloco B, os 6 modelos HuggingFace exclusivos, storytold/* 8 repos, freebuff, 2 artifacts Claude) — portar para o links.md da consolidação documental
+- [ ] W20-011. as discrepâncias canônicas resolvidas pela leitura: 11 aplicativos (Pasted) vs 12 módulos (mega-onda final + devtyhink bloco A: pulse é o 12º) — o cânon mais novo vence; Supabase é CONCORRENTE do vault nunca SDK (a frase "via Supabase" do Pasted é distorção corrigida); chaves NVIDIA 25 vs 31 (rotacionar TODAS as encontradas); lógicas por arquivo 7.000 vs 9.000 (o teto é ilustrativo); devtyhink.txt contém ~28% de duplicação interna apesar de "desduplicado" (blocos D e links repetidos) — registrado, nada descartado
+- [ ] W20-012. o vue scrub do stash aplicado quando a frente dos locks liberar (remover @vue/runtime-vapor@0.0.0 dos 11 bun.lock + argan/package.json; base do stash é antiga, regenerar contra o main curado)
+- [ ] W20-013. a cauda de conversa51.txt linhas 87.909-97.281 lida integralmente por R16 (a dedup prévia de 12 nov estava 3 dias defasada; conteúdo único já coberto pelo conversa52 — registrado para a eternidade)
+- [ ] W20-014. o skill.md Ghostwriter Mirror (conversa51 L96614) e o cronograma pessoal de estudos de 14 dias do dono (conversa52 L30056) identificados como conteúdo PESSOAL alheio ao ecossistema: excluídos do corpus de regras do projeto, preservados no arquivo original
+- [ ] W20-015. os números de ouro da leitura: corpus total lido ~584.571 linhas de upload + relatórios; 12 módulos oficiais; 2.986 linhas de checklist vivo antes desta onda; 6 PRs abertas; 12 commits wave não mesclados; 1 stash preservado; 13 duplicatas internas do unificado identificadas por md5
+
+### a fila linear desta onda (a execução imediata, do mais fácil ao mais difícil)
+
+- [ ] E-01. o checklist consolidado commitado na branch datada da onda com squash via PR (a lei do veículo assinado; identidade iakadion)
+- [ ] E-02. a verificação por browser da produção (wenathlan.github.io/devthink/ e /panel, desktop 1280x800 e mobile 390x844, claro e escuro) registrando o estado real sem depender da sandbox
+- [ ] E-03. o scaffold honesto do pulse (W20-001) com PR própria por tema (nunca por app)
+- [ ] E-04. o mapa Voice-First por aplicativo (W20-003) documentando as lacunas
+- [ ] E-05. a validação das regras de máquina da session7 contra a árvore (W20-007)
+- [ ] E-06. o cruzamento do mapa nominal de consolidação (W20-008) com as raízes reais
+- [ ] E-07. o porto dos links oficiais (W20-010) para o arquivo de links da consolidação
+- [ ] E-08. as ondas w00-w19 restantes executadas na ordem da seção 7 quando as frentes ocupadas liberarem (workflows verdes, pages, npmjs cascade, saddle, vault, design, engines deferidas)
