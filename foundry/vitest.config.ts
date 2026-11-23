@@ -29,6 +29,16 @@ export default defineConfig({
        * storage lane. */
       "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
 
+      /** the storagelane bridge of the ownership law: the app's sqlite
+       * factory rides the vault factory owner through the published library
+       * specifier ("@wenathlan/vault/storagelane" — the keyed file the
+       * wave/db-vault-subpath seat owns), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * open, the pragma ladder and the helpers are never duplicated
+       * inside foundry. the entry retires when the published envelope
+       * carries the built storage lane owner. */
+      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
+
       /** the route catalog bridge of the ownership law: the app's http
        * surface rides the vault route catalog through the published
        * library specifier ("@wenathlan/vault/routes"), and this bridge

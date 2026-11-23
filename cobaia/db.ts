@@ -9,7 +9,7 @@
  * no server route lives here.
  */
 import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
-import { openStorageLane } from "@wenathlan/vault/storage";
+import { openStorageLane } from "@wenathlan/vault/storagelane";
 import { CONTENTKINDS, type contentrow, seedAdsLabel, seedAdsEmpty, seedAdsSlots, seedPlans, seedPosts, seedRoster, seedSupportLinks } from "./content";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels";
 
@@ -26,7 +26,7 @@ export const db = lane.db;
 export const { execute, queryAll, queryOne } = lane;
 
 /** the parameter types the helpers bind (re-exported seat of the lane). */
-export type { SqlParam } from "@wenathlan/vault/storage";
+export type { SqlParam } from "@wenathlan/vault/storagelane";
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS onboarding_states (

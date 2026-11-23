@@ -11789,9 +11789,9 @@
       "default": "./labelstore.ts"
     },
     "./storagelane": {
-      "types": "./storage.ts",
-      "import": "./storage.ts",
-      "default": "./storage.ts"
+      "types": "./storagelane.ts",
+      "import": "./storagelane.ts",
+      "default": "./storagelane.ts"
     },
     "./objects": {
       "types": "./objects.ts",
@@ -11895,6 +11895,7 @@
     "sha.ts",
     "storage.ts",
     "storageface.ts",
+    "storagelane.ts",
     "uistore.ts",
     "utils.ts",
     "vaultclient.ts",

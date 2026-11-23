@@ -12,7 +12,7 @@
  */
 
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
-import { openStorageLane } from "./storage.ts";
+import { openStorageLane } from "./storagelane.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
 export const tables = [
@@ -36,7 +36,7 @@ export const db = lane.db;
 export const { execute, queryAll, queryOne } = lane;
 
 /** the parameter types the helpers bind (sqlite stores them narrow — re-exported seat of the lane). */
-export type { SqlParam } from "./storage.ts";
+export type { SqlParam } from "./storagelane.ts";
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS keys (

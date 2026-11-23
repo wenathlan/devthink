@@ -54,6 +54,15 @@ export default defineConfig({
        * so the chunk compiles against the workspace truth (the native
        * binding stays external below, the chunk answers the node runtime). */
       "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
+      /** the storagelane bridge of the ownership law: the lazy db chunk the
+       * browser never loads imports the vault factory owner through the
+       * published library specifier ("@wenathlan/vault/storagelane" — the
+       * keyed file the wave/db-vault-subpath seat owns), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the published envelope predates the storagelane seat,
+       * so the chunk compiles against the workspace truth (the native
+       * binding stays external below, the chunk answers the node runtime). */
+      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
     /** the single-instance law (the PR12 renderparity heal): the family
