@@ -14,7 +14,13 @@
  * the parent directory is created inside open, and the connection stays
  * reachable for the close the runtime wants. the node-only doctrine rides
  * the import: better-sqlite3 is a native binding, the browser graph never
- * reaches this file (the browser accessors stay in their own modules).
+ * reaches this file (the browser accessors stay in their own modules), and
+ * the family seat resolves lazily at open — never by import — because the
+ * raw sibling seats (the forked webserver graph reading
+ * ../vault/storagelane.ts outside every node_modules tree of this file)
+ * would fail the whole module load the moment a static import sat outside
+ * their resolution walk (the fork boot law: a lane the roots cannot reach
+ * falls to the node builtin instead of failing the boot).
  *
  * the seat answers under the published library subpath "./storagelane" (the
  * wave/db-vault-subpath envelope): the seven siblings already riding the
@@ -28,7 +34,8 @@
  *  first, the node:sqlite and bun:sqlite drivers behind the driver seats).
  */
 
-import Database from "better-sqlite3";
+import type Database from "better-sqlite3";
+import { createRequire } from "node:module";
 import { chmodSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
@@ -177,13 +184,14 @@ const sleepsync = (ms: number): void => {
  */
 /** resolves the constructor of the named driver: the seat wins (tests and
  * the os workbench inject their own resolution), the family seat answers
- * the static import, the node builtin resolves through the builtin module
- * loader (no static import — the graph the browser bundles carry stays
- * clean) and bun answers the computed require the runtime alone reads. */
+ * the lazy require ladder below, the node builtin resolves through the
+ * builtin module loader (no static import — the graph the browser bundles
+ * carry stays clean) and bun answers the computed require the runtime
+ * alone reads. */
 const driverConstructor = (options: StorageLaneOptions): { name: string; open: SqliteDatabaseConstructor } => {
   if (options.driverSeat) return { name: "seat", open: options.driverSeat() };
   const driver = options.driver ?? "better-sqlite3";
-  if (driver === "better-sqlite3") return { name: driver, open: Database as unknown as SqliteDatabaseConstructor };
+  if (driver === "better-sqlite3") return familySeat();
   if (driver === "node:sqlite") {
     const builtin = (process as unknown as { getBuiltinModule?: (id: string) => unknown }).getBuiltinModule?.("node:sqlite") as
       | { DatabaseSync?: SqliteDatabaseConstructor }
@@ -196,6 +204,36 @@ const driverConstructor = (options: StorageLaneOptions): { name: string; open: S
   const bunsqlite = requirefn?.(["bun", "sqlite"].join(":")) as { Database?: SqliteDatabaseConstructor } | undefined;
   if (!bunsqlite?.Database) throw new Error("the bun:sqlite driver is absent on this runtime");
   return { name: driver, open: bunsqlite.Database };
+};
+
+/** resolves the family seat binding lazily: the native binding lives in
+ * the installed envelopes of the family apps, and this file's own roots
+ * (the vault directory walking up) never reach it on the sibling lanes
+ * where only the consuming app carries the install — the seat resolves
+ * once per open, first from this file's roots, then from the process
+ * working directory roots (the forked webserver and the vitest banners
+ * both run with the consuming app as the working directory, so the
+ * resolution lands in the app's node_modules the same way the static
+ * import landed), and a binding no anchor reaches falls to the node
+ * builtin the zero dependency engines ride instead of failing the boot
+ * (the fork boot law). */
+const familySeat = (): { name: StorageDriverName; open: SqliteDatabaseConstructor } => {
+  const anchors = [import.meta.url, path.resolve(process.cwd(), "package.json")];
+  for (const anchor of anchors) {
+    try {
+      const requirefn = createRequire(anchor);
+      const binding = requirefn("better-sqlite3") as { default?: SqliteDatabaseConstructor } | SqliteDatabaseConstructor;
+      const open = (binding as { default?: SqliteDatabaseConstructor }).default ?? (binding as SqliteDatabaseConstructor);
+      return { name: "better-sqlite3", open };
+    } catch {
+      /* the anchor's roots never carry the binding — the next anchor answers */
+    }
+  }
+  const builtin = (process as unknown as { getBuiltinModule?: (id: string) => unknown }).getBuiltinModule?.("node:sqlite") as
+    | { DatabaseSync?: SqliteDatabaseConstructor }
+    | undefined;
+  if (builtin?.DatabaseSync) return { name: "node:sqlite", open: builtin.DatabaseSync };
+  throw new Error("the better-sqlite3 binding is unreachable from every root and the node:sqlite driver is absent on this runtime");
 };
 
 /** walks the pragma ladder once on the open connection: the better-sqlite3
