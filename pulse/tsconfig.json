@@ -1,0 +1,29 @@
+// the pulse typescript baseline (the web theme compilerOptions over the
+// studio surface: one project covers the app root and the Sol theme —
+// while the studio is in construction the surface is the one
+// under-construction face and the theme carries only the wingets folder).
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "noEmit": true,
+    "module": "ESNext",
+    "strict": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "bundler",
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@/*": ["./sol/*", "./*"],
+      "@wenathlan/devthink/personalstore": ["../devthink/personalstore.ts"],
+      "@wenathlan/devthink/reveal": ["../devthink/reveal.ts"],
+      "@wenathlan/saddle/workloadlaw": ["../saddle/workloadlaw.ts"],
+      "@wenathlan/vault/labelstore": ["../vault/labelstore.ts"],
+      "@wenathlan/vault/storage": ["../vault/storage.ts"]
+    }
+  },
+  "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "test"]
+}

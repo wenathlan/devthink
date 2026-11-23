@@ -1,0 +1,1017 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   PULSE SOL.CSS — the windows canvas wearing the windows hands (the 8-g
+   foundation pass, the stealthhead essence seated for the twelfth module).
+   The stylesheet is built on one foundation and one ruler, in this order:
+   · TRYLLE FOUNDATION — the family ruler over the windows hands: canvas
+     #0a0a0b (deep #060607), the eight trylle surface steps #171717→#484848,
+     color-mix hairlines off --sol-ink (5%/10%), the Linear shadow ladder (a
+     1px ring plus doubling layers topping at 0 96px 96px -48px) beside the
+     flat fluent window shadow (0 32px 64px rgb(0 0 0/24%), 0 0 8px
+     rgb(0 0 0/20%)) and flyout (0 4px 8px rgb(0 0 0/14%), 0 0 2px
+     rgb(0 0 0/12%)), Inter Variable at 13px/450 with Geist Mono detail,
+     display tracking -0.02em and label tracking .14em, H1
+     clamp(2.25rem,5vw,3.75rem), the .625rem radius law, 150ms micro motion
+     on cubic-bezier(0.22,1,0.36,1), the feTurbulence grain (.86, 2 octaves,
+     6%, soft-light, 140px), the win11 scrollbar and the selection
+     rgb(76 194 255/38%).
+   · WINDOWS HANDS — the press rides the 100ms exit curve, focus speaks the
+     2px Windows accent underline/ring, the scrollbar is the Win11 lane
+     (hidden until hover, 10px lane, thumb 4→6px) and the machined button
+     rides the trylle tone stack (inset highlight + top sheen + ring +
+     two-level drop).
+   · PULSE IDENTITY — the studio answers the single-theme law: the ONE Sol
+     accent is the WHITE SUN (pure #ffffff on the dark ladder, the graphite
+     contrast pole on the light face), the same white light every app of
+     the family wears; the Windows accent #4cc2ff governs focus. No channel
+     hue, no invented brand color rides the theme while the studio is in
+     construction.
+   · THE CONSTRUCTION FACE — the one surface of the in-development studio:
+     the drawn voice waveform hologram behind the glass panel, the white
+     sun light over the deep canvas, the pulsing construction chip, the
+     60ms reveal stagger. The owner's law rides the sheet: the studio is in
+     construction — clean everything, ONE component — so the pages, the
+     window chrome, the entry flow and the channel boards of the future
+     pass carry no rule here; only the foundation, the button and glass
+     vocabulary, the waveform and the face stay.
+   Guards: prefers-reduced-transparency solid floors, and the
+   prefers-reduced-motion hard stop (.01ms !important) closes the file —
+   last rule wins. Prohibitions hold by construction: zero all-property
+   transitions, zero stadium-radius pills, zero pure #000/#FFF fills
+   (alpha shadows only), zero glow and loading dots, motion on
+   transform/opacity only. The @theme block mirrors the canonical :root
+   tokens for the Tailwind utility layer; the plain :root literals keep the
+   zero-build static face rendering without the plugin.
+   Sections: 0 foundation · tokens · themes · base · controls (buttons) ·
+   surfaces · grain · voicewave · failure · motion · guards ·
+   the construction face.
+   ========================================================================== */
+
+/* the light-theme variant: the theme flips on the html[data-theme] class,
+   not on the OS preference — components use light: utilities */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+/* hover-or-focus-visible: the compound state the chrome answers everywhere */
+@custom-variant hcf (&:is(:hover, :focus-visible));
+
+/* ==========================================================================
+   0. TOKEN FOUNDATION — the one source of truth (the devthink @theme)
+   ========================================================================== */
+@theme {
+  /* ---- type: the trylle ruler ---- */
+  --font-display: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    Menlo, monospace;
+
+  /* ---- floors and the 8-step trylle surface ladder ---- */
+  --color-canvas: #0a0a0b;
+  --color-deep: #060607;
+  --color-s0: #171717;
+  --color-s1: #1e1e1e;
+  --color-s2: #252525;
+  --color-s3: #2c2c2c;
+  --color-s4: #333333;
+  --color-s5: #3a3a3a;
+  --color-s6: #414141;
+  --color-s7: #484848;
+
+  /* ---- the ink ladder and the hairlines ---- */
+  --color-ink: #fafafa;
+  --color-ink-2: #c3c3c3;
+  --color-ink-3: #999999;
+  --color-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
+  --color-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+
+  /* ---- the signal: THE WHITE SUN — one Sol, one light; the name is Sol
+     but the sun is WHITE, never yellow. Pure #ffffff on the dark ladder
+     (it glows); the quiet poles carry the penumbra ---- */
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
+
+  /* ---- the WINDOWS accents ---- */
+  --color-win: #4cc2ff;
+  --color-win-ink: #0a0a0a;
+  --color-close: rgb(232, 17, 35);
+  --color-close-deep: rgb(139, 10, 20);
+
+  /* ---- status: semantic accents for dots and labels ---- */
+  --color-ok: #7fd1a8;
+  --color-warn: #e2c26a;
+  --color-err: #f08a7a;
+  --color-info: #b9c2d0;
+
+  /* ---- focus rides the WINDOWS accent (the family law) ---- */
+  --color-focus: var(--color-win);
+
+  /* ---- radius law: 4/6/8/10(base)/12/16/24 ---- */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
+  /* ---- the Fluent shadow ladder ---- */
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+  --shadow-lt: 0 1px 1px rgb(0 0 0 / 25%);
+
+  /* ---- motion curves ---- */
+  --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --ease-micro: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --ease-fluent: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  --ease-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+
+  /* ---- the scale floors ---- */
+  --floor-modal: 0.95;
+  --floor-menu: 0.97;
+  --floor-tooltip: 0.98;
+
+  /* ---- the acrylic blur bed ---- */
+  --blur-chrome: 20px;
+}
+
+/* ---- 1. TOKENS — the canonical literals + the pulse alias layer --------- */
+:root {
+  color-scheme: dark;
+
+  /* the doctrine tokens as plain literals — the zero-build static face
+     renders these without the tailwind plugin; the @theme above mirrors
+     them for the utility layer */
+  --color-canvas: #0a0a0b;
+  --color-deep: #060607;
+  --color-s0: #171717;
+  --color-s1: #1e1e1e;
+  --color-s2: #252525;
+  --color-s3: #2c2c2c;
+  --color-s4: #333333;
+  --color-s5: #3a3a3a;
+  --color-s6: #414141;
+  --color-s7: #484848;
+  --color-ink: #fafafa;
+  --color-ink-2: #c3c3c3;
+  --color-ink-3: #999999;
+  --color-hairline: color-mix(in oklab, var(--sol-ink) 5%, transparent);
+  --color-hairline-strong: color-mix(in oklab, var(--sol-ink) 10%, transparent);
+  --color-signal: #ffffff;
+  --color-signal-strong: #ffffff;
+  --color-signal-2: #c9cdd6;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #14161a;
+  --color-win: #4cc2ff;
+  --color-win-ink: #0a0a0a;
+  --color-close: rgb(232, 17, 35);
+  --color-close-deep: rgb(139, 10, 20);
+  --color-ok: #7fd1a8;
+  --color-warn: #e2c26a;
+  --color-err: #f08a7a;
+  --color-info: #b9c2d0;
+  --color-focus: var(--color-win);
+  /* the ice-vault accent of the family spec (PR9): the #a3d7e6 lane the
+     vault surfaces borrow — focus stays the windows #4cc2ff */
+  --accent-ice-vault: #a3d7e6;
+
+  /* the doctrine radius law and motion curves as literals (the aliases
+     below and the sections resolve them without the plugin) */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+  --ease-window: cubic-bezier(0.85, 0.14, 0.14, 0.85);
+  --ease-micro: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-entry: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --ease-exit: cubic-bezier(0.7, 0, 1, 0.5);
+  --ease-fluent: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+  --ease-spring: cubic-bezier(0.2, 1.2, 0.4, 1);
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 24%), 0 0 8px rgb(0 0 0 / 20%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 14%), 0 0 2px rgb(0 0 0 / 12%);
+
+  /* runtime materials: the trylle canvas, the acrylic beds, the grain */
+  --dur-1: 100ms;
+  --dur-2: 150ms;
+  --dur-3: 250ms;
+  --focus-ring: 2px solid var(--color-win);
+  --acrylic: rgb(32 34 38 / 78%);
+  --acrylic-strong: rgb(43 45 50 / 88%);
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23w)' opacity='0.06'/%3E%3C/svg%3E");
+  /* the mica wall (the token union law: the master's radial bed) */
+  --mica: #202020 radial-gradient(#1a1f35 25%, #202020 100%) no-repeat fixed;
+  --scrollbar-thumb: rgb(255 255 255 / 45%);
+
+  /* z bands: atmosphere 0 · content 10 · float 20 · bar 50 · menu 60 ·
+     overlay 100 · dock 150 · modal 200 · toast 300 · tooltip 400 */
+  --z-atmosphere: 0;
+  --z-content: 10;
+  --z-float: 20;
+  --z-bar: 50;
+  --z-menu: 60;
+  --z-overlay: 100;
+  --z-dock: 150;
+  --z-modal: 200;
+  --z-toast: 300;
+  --z-tooltip: 400;
+
+  /* the sol vocabulary the sections compose — the trylle literals the
+     family contract pins (the test reads these exact values) */
+  --sol-canvas: #0a0a0b;
+  --sol-canvas-deep: #060607;
+  --sol-ink: #fafafa;
+  --sol-text: var(--color-ink);
+  --sol-muted: var(--color-ink-2);
+  --sol-faint: var(--color-ink-3);
+  --sol-surface-1: #171717;
+  --sol-surface-2: #1e1e1e;
+  --sol-surface-3: #252525;
+  --sol-surface-4: #2c2c2c;
+  --sol-surface-5: #333333;
+  --sol-surface-6: #3a3a3a;
+  --sol-surface-7: #414141;
+  --sol-surface-8: #484848;
+  --sol-hairline: var(--color-hairline);
+  --sol-hairline-strong: var(--color-hairline-strong);
+  --sol-track-display: -0.02em;
+  --sol-track-label: 0.14em;
+  --sol-text-h1: clamp(2.25rem, 5vw, 3.75rem);
+  --sol-text-h2: clamp(1.65rem, 3vw, 2rem);
+  --sol-text-h3: clamp(1.3rem, 2vw, 1.5rem);
+
+  /* typography: Inter Variable rides every surface, Geist Mono the detail */
+  --font-sans: "Inter Variable", "Inter", "Segoe UI Variable Text", "Segoe UI", "Selawik",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Fira Code", ui-monospace, SFMono-Regular,
+    Menlo, monospace;
+  --sol-sans: var(--font-sans);
+  --sol-mono: var(--font-mono);
+
+  /* radius: the doctrine law — the window wears 8 (the 11), the controls
+     wear 4 (the 10) */
+  --sol-radius: var(--radius-lg);
+  --sol-radius-sm: var(--radius-md);
+  --sol-radius-lg: var(--radius-xl);
+  --sol-radius-xl: var(--radius-2xl);
+  --sol-radius-2xl: var(--radius-2xl);
+  --sol-radius-3xl: var(--radius-3xl);
+  --win-radius-window: var(--radius-md);
+  --win-radius-control: var(--radius-xs);
+
+  /* motion: 150ms micro unit on the doctrine ease-out, the fluent windows
+     curves beside it */
+  --sol-micro: 150ms;
+  --sol-ease-out: var(--ease-micro);
+  --win-ease-entry: var(--ease-entry);
+  --win-ease-exit: var(--ease-exit);
+  --win-ease-window: var(--ease-window);
+  --win-ease-leave: cubic-bezier(0.76, 0, 0.24, 1);
+  /* the win shell doctrine tokens (the token union law — the master's
+     numbers): taskbar 48px over the saturate(3) blur(20px) acrylic bed,
+     tint rgb(32 32 32 / 75%) dark / rgb(243 243 243 / 85%) light; the side
+     panel curve cubic-bezier(0.62,0,0.32,1) beside the start curve
+     cubic-bezier(0.79,0.14,0.15,0.86) */
+  --win-taskbar-h: 48px;
+  --win-taskbar-tint: rgb(32 32 32 / 75%);
+  --win-taskbar-filter: saturate(3) blur(20px);
+  --win-ease-panel: cubic-bezier(0.62, 0, 0.32, 1);
+  --win-ease-start: cubic-bezier(0.79, 0.14, 0.15, 0.86);
+
+  /* the windows accent: focus and the chrome speak it (the literal the
+     family contract pins) */
+  --win-accent: #4cc2ff;
+  --win-accent-ink: var(--color-win-ink);
+  --win-close: var(--color-close);
+  --win-close-hot: var(--color-close-deep);
+
+  /* the acrylic surfaces, their washes and the scroll thumb */
+  --win-bar: rgb(32 32 32 / 75%);
+  --win-panel: rgb(36 36 36 / 80%);
+  --win-wash: rgb(255 255 255 / 10%);
+  --win-page-wash: rgb(255 255 255 / 6%);
+  --win-scroll: rgb(255 255 255 / 45%);
+  --win-noise: var(--noise);
+
+  /* the windows shadows: the focused window and the flyout */
+  --win-shadow-window: var(--shadow-window);
+  --win-shadow-flyout: var(--shadow-flyout);
+
+  /* the pulse identity answers the white sun (the one Sol) — the studio
+     mark, the content CTAs of the day the studio wakes and the active
+     indicators; no channel hue rides the theme while it is in construction */
+  --pu-accent: var(--color-signal);
+  --pu-accent-ink: var(--color-signal-ink);
+  --sol-accent: var(--color-signal);
+  --sol-primary: var(--color-signal);
+  --sol-primary-ink: var(--color-signal-ink);
+  /* the waveform keeps its one rim light over the deep canvas */
+  --pu-light: radial-gradient(1200px 700px at 78% -12%, color-mix(in srgb, var(--pu-accent) 7%, transparent), transparent 62%);
+
+  /* semantic states (the family discipline) */
+  --sol-success: var(--color-ok);
+  --sol-error: var(--color-err);
+  --sol-warning: var(--color-warn);
+  --sol-info: var(--color-info);
+
+  /* the trylle shadow ladder: the 1px ring + the doubling layers; levels
+     5+ resolve to the flat fluent window shadow */
+  --sol-ring: var(--color-hairline);
+  --sol-shadow-1: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 30%);
+  --sol-shadow-2: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 28%),
+    0 2px 4px -1px rgb(0 0 0 / 26%);
+  --sol-shadow-3: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 26%),
+    0 2px 4px -1px rgb(0 0 0 / 24%), 0 4px 8px -2px rgb(0 0 0 / 20%),
+    inset 0 1px 0 rgb(255 255 255 / 5%);
+  --sol-shadow-4: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 24%),
+    0 2px 4px -1px rgb(0 0 0 / 22%), 0 4px 8px -2px rgb(0 0 0 / 20%),
+    0 8px 16px -4px rgb(0 0 0 / 18%), inset 0 1px 0 rgb(255 255 255 / 5%);
+  --sol-shadow-5: var(--shadow-window);
+  --sol-shadow-6: var(--shadow-window);
+  --sol-shadow-7: var(--shadow-window);
+  /* the trylle ceiling: the doubling ladder tops at the 96px layer (the
+     floats and the window keep the flat fluent shadow) */
+  --sol-shadow-8: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 24%),
+    0 2px 4px -1px rgb(0 0 0 / 22%), 0 4px 8px -2px rgb(0 0 0 / 20%),
+    0 8px 16px -4px rgb(0 0 0 / 18%), 0 16px 32px -8px rgb(0 0 0 / 16%),
+    0 32px 64px -16px rgb(0 0 0 / 14%), 0 96px 96px -48px rgb(0 0 0 / 24%),
+    inset 0 1px 0 rgb(255 255 255 / 5%);
+}
+
+/* the light face: the trylle daylight ladder, the win10 accent #0067c0,
+   the white sun stepping down to its graphite contrast pole (the light
+   value of the SAME semantic token — one Sol, two honest variations) */
+[data-theme="light"] {
+  color-scheme: light;
+  --color-canvas: #f4f4f5;
+  --color-deep: #e4e4e7;
+  --color-s0: #f4f4f5;
+  --color-s1: #fafafa;
+  --color-s2: #fcfcfc;
+  --color-s3: #ffffff;
+  --color-s4: #f1f1f2;
+  --color-s5: #e5e5e7;
+  --color-s6: #d6d6d9;
+  --color-s7: #c8c8cc;
+  --color-ink: #1a1a1a;
+  --color-ink-2: #3c3c3c;
+  --color-ink-3: #555555;
+  --color-signal: #3f434b;
+  --color-signal-strong: #18181b;
+  --color-signal-2: #52565e;
+  --color-signal-3: #8b909b;
+  --color-signal-ink: #fefefe;
+  --color-win: #0067c0;
+  --color-win-ink: #fefefe;
+  --color-ok: #1e7f4f;
+  --color-warn: #9a6b00;
+  --color-err: #c23b2c;
+  --color-info: #565e6e;
+  --shadow-window: 0 32px 64px rgb(0 0 0 / 14%), 0 0 8px rgb(0 0 0 / 8%);
+  --shadow-flyout: 0 4px 8px rgb(0 0 0 / 10%), 0 0 2px rgb(0 0 0 / 8%);
+  --scrollbar-thumb: rgb(0 0 0 / 35%);
+  --win-wash: rgb(0 0 0 / 6%);
+  --win-page-wash: rgb(0 0 0 / 4%);
+  --win-scroll: rgb(0 0 0 / 35%);
+  --win-bar: rgb(243 243 243 / 85%);
+  --win-panel: rgb(250 250 250 / 86%);
+  /* the mica wall flips with the face (the token union law: the master's
+     light radial bed) */
+  --mica: #f3f3f3 radial-gradient(#eff4f9 75%, #f3f3f3 100%) no-repeat fixed;
+  /* the taskbar tint flips with the face (the token union law: the master's
+     light bed) */
+  --win-taskbar-tint: rgb(243 243 243 / 85%);
+  /* the trylle daylight aliases: the sol vocabulary flips with the face */
+  --sol-canvas: #f4f4f5;
+  --sol-canvas-deep: #e4e4e7;
+  --sol-ink: #1a1a1a;
+  --sol-surface-1: #f4f4f5;
+  --sol-surface-2: #fafafa;
+  --sol-surface-3: #fcfcfc;
+  --sol-surface-4: #ffffff;
+  --sol-surface-5: #f1f1f2;
+  --sol-surface-6: #e5e5e7;
+  --sol-surface-7: #d6d6d9;
+  --sol-surface-8: #c8c8cc;
+  --pu-light: radial-gradient(1200px 700px at 78% -12%, color-mix(in srgb, var(--pu-accent) 9%, transparent), transparent 62%);
+  --sol-ring: var(--color-hairline);
+  --sol-shadow-1: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 10%);
+  --sol-shadow-2: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 10%),
+    0 2px 4px -1px rgb(0 0 0 / 8%);
+  --sol-shadow-3: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 10%),
+    0 2px 4px -1px rgb(0 0 0 / 8%), 0 4px 8px -2px rgb(0 0 0 / 6%),
+    inset 0 1px 0 rgb(255 255 255 / 60%);
+  --sol-shadow-4: 0 0 0 1px var(--sol-ring), 0 1px 1px -0.5px rgb(0 0 0 / 10%),
+    0 2px 4px -1px rgb(0 0 0 / 8%), 0 4px 8px -2px rgb(0 0 0 / 6%),
+    0 8px 16px -4px rgb(0 0 0 / 6%), inset 0 1px 0 rgb(255 255 255 / 60%);
+}
+
+/* ---- 2. BASE — the deep canvas, the 13px body, the windows focus ---------- */
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    var(--pu-light),
+    var(--sol-canvas);
+  background-attachment: fixed;
+  color: var(--sol-text);
+  font-family: var(--sol-sans);
+  font-size: 13px;
+  font-weight: 450;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--sol-micro) var(--sol-ease-out);
+}
+main {
+  display: block;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  color: var(--win-accent);
+}
+h1,
+h2,
+h3,
+h4 {
+  margin: 0 0 0.5em;
+  color: var(--sol-text);
+  line-height: 1.15;
+  letter-spacing: var(--sol-track-display);
+}
+p {
+  margin: 0 0 1em;
+  color: var(--sol-muted);
+  text-wrap: pretty;
+}
+::selection {
+  background: color-mix(in srgb, var(--win-accent) 38%, transparent);
+  color: var(--sol-text);
+}
+:focus-visible {
+  outline: 2px solid var(--win-accent);
+  outline-offset: 2px;
+}
+kbd,
+code {
+  font-family: var(--sol-mono);
+  font-size: 0.85em;
+  background: var(--sol-surface-2);
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--win-radius-control);
+  padding: 1px 6px;
+  font-variant-numeric: tabular-nums;
+}
+.mono {
+  font-family: var(--sol-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the win11 scrollbar: invisible until the surface is hovered, the thin
+   4px thumb breathing to 6px under the pointer */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover,
+*:focus-within {
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  visibility: hidden;
+  background: var(--scrollbar-thumb);
+  border: 3px solid transparent;
+  border-radius: 6px;
+  background-clip: padding-box;
+}
+*:hover::-webkit-scrollbar-thumb,
+*:focus-within::-webkit-scrollbar-thumb {
+  visibility: visible;
+}
+*::-webkit-scrollbar-thumb:hover {
+  border-width: 2px;
+}
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* the screen-only caption (the seat table label) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- 4. CONTROLS ----------------------------------------------------------- */
+/* buttons: the real trylle tone stack (inset highlight + top sheen + ring +
+   two-level drop) on the white sun CTA; the windows hover wash, no lift */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px; /* touch-friendly */
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--win-radius-control);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--pu-accent-ink);
+  background: var(--pu-accent);
+  box-shadow:
+    inset 0 1.2px 0 0 #ffffff73,
+    inset 0 8px 14px -6px #ffffff38,
+    0 0 0 1px rgb(0 0 0 / 32%),
+    0 1px 1px -0.5px rgb(0 0 0 / 44%),
+    0 8px 16px -6px rgb(0 0 0 / 36%);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out),
+    transform 100ms var(--win-ease-exit);
+}
+.btn:hover {
+  background-color: color-mix(in oklab, var(--pu-accent) 90%, #fefefe);
+  box-shadow:
+    inset 0 1.2px 0 0 #ffffff80,
+    inset 0 8px 14px -6px #ffffff40,
+    0 0 0 1px rgb(0 0 0 / 32%),
+    0 1px 1px -0.5px rgb(0 0 0 / 44%),
+    0 10px 20px -6px rgb(0 0 0 / 42%);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn.secondary {
+  color: var(--sol-text);
+  background: var(--sol-surface-4);
+  box-shadow:
+    inset 0 1.2px 0 0 #ffffff1f,
+    0 0 0 1px rgb(0 0 0 / 32%),
+    0 1px 1px -0.5px rgb(0 0 0 / 44%),
+    0 4px 10px -4px rgb(0 0 0 / 32%);
+}
+.btn.secondary:hover {
+  background-color: var(--sol-surface-5);
+}
+.btn.small {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+/* ---- 5. SURFACES — the step material over the deep canvas ----------------- */
+.glass {
+  padding: 22px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius-2xl);
+  background: var(--sol-surface-2);
+  box-shadow: var(--sol-shadow-3);
+  transition:
+    background-color var(--sol-micro) var(--sol-ease-out),
+    border-color var(--sol-micro) var(--sol-ease-out),
+    box-shadow var(--sol-micro) var(--sol-ease-out);
+}
+.glass-hover:hover {
+  background-color: var(--sol-surface-3);
+  border-color: var(--sol-hairline);
+  box-shadow: var(--sol-shadow-4);
+}
+.card {
+  padding: 22px;
+}
+/* the film grain: the doctrine feTurbulence tile (.86, 2 octaves, 6%,
+   soft-light, 140px) over the face */
+.grain {
+  position: relative;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--win-noise);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+/* the voicewave: the drawn waveform — one machined signal band, the bars
+   breathing in a slow stagger (the hologram of the construction face
+   hangs it) */
+.puv-root {
+  position: relative;
+  display: block;
+  width: clamp(280px, 36vw, 560px);
+  aspect-ratio: 320 / 120;
+}
+.puv-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.puv-guide {
+  stroke: color-mix(in oklab, var(--sol-ink) 12%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+}
+.puv-bar {
+  fill: color-mix(in oklab, var(--pu-accent) 46%, transparent);
+}
+
+/* ---- 14. PANELS — the failure boundary (the app boundary face) ----------- */
+.failure {
+  min-height: 60vh;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  color: var(--sol-muted);
+  text-align: center;
+}
+.failure pre {
+  max-width: min(680px, 90vw);
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid var(--sol-hairline);
+  border-radius: var(--sol-radius-lg);
+  background: var(--sol-canvas-deep);
+  color: var(--sol-faint);
+  font-size: 0.75rem;
+  text-align: left;
+}
+/* ---- 15. MOTION — the reveal stagger and the press ------------------------ */
+.press {
+  transition: transform 100ms var(--win-ease-exit);
+}
+.press:active {
+  transform: scale(0.96);
+}
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.reveal.in {
+  animation: riseIn 560ms var(--win-ease-entry) forwards;
+}
+.reveal.in:nth-child(2) {
+  animation-delay: 60ms;
+}
+.reveal.in:nth-child(3) {
+  animation-delay: 120ms;
+}
+.reveal.in:nth-child(4) {
+  animation-delay: 180ms;
+}
+.reveal.in:nth-child(5) {
+  animation-delay: 240ms;
+}
+.reveal.in:nth-child(6) {
+  animation-delay: 300ms;
+}
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* the ambient loop of the face: the voicewave breathe (the only one) —
+   every third bar breathes on its own beat so the band reads as one slow
+   traveling utterance, transform only */
+@media (prefers-reduced-motion: no-preference) {
+  .puv-bar {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: puvBreathe 2.6s var(--sol-ease-out) infinite;
+  }
+  .puv-bar:nth-child(3n + 1) {
+    animation-delay: 0ms;
+  }
+  .puv-bar:nth-child(3n + 2) {
+    animation-delay: 220ms;
+  }
+  .puv-bar:nth-child(3n) {
+    animation-delay: 440ms;
+  }
+}
+@keyframes puvBreathe {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.72);
+  }
+}
+
+/* ==========================================================================
+   MICRO-WINDOWS PASS — pulse: the honest disabled face and the 60ms
+   stagger on the face entries. Appended after the foundation passes; the
+   guards below (and the reduced-motion hard stop last) stay the final word.
+   ========================================================================== */
+
+/* the disabled hand: an honest control rests at half ink and never points */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* the 60ms stagger: every list and card entry follows the last by one
+   micro beat (the windows dwell), capped at the twelfth row */
+.reveal.in:nth-child(7) {
+  animation-delay: 360ms;
+}
+.reveal.in:nth-child(8) {
+  animation-delay: 420ms;
+}
+.reveal.in:nth-child(9) {
+  animation-delay: 480ms;
+}
+.reveal.in:nth-child(10) {
+  animation-delay: 540ms;
+}
+.reveal.in:nth-child(11) {
+  animation-delay: 600ms;
+}
+.reveal.in:nth-child(12) {
+  animation-delay: 660ms;
+}
+/* ---- 17. GUARDS ------------------------------------------------------------- */
+/* reduced transparency: the acrylic floors go solid (the windows values on
+   the step ladder), the blur leaves */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background-color: var(--sol-surface-2);
+    background-image: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* reduced motion: the entry state still resolves — nothing stays invisible.
+   Layer 1: the reveals land immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Layer 2: the ambient loop and the presses stop — the interface answers
+   without traveling. */
+@media (prefers-reduced-motion: reduce) {
+  .puv-bar {
+    animation: none !important;
+  }
+  .press:active,
+  .btn:active {
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* the hard stop: the reduced-motion opt-out closes the file — last rule
+   wins, nothing outlives it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- 18. THE CONSTRUCTION FACE — the honest page of the in-development studio
+   (this block stays after the guards by design: it carries no media query of
+   its own, so the reduced-motion hard stop above remains the closing rule
+   the design contract pins — every pass of the face is stilled by it) ---- */
+/* the one face the whole surface wears while the studio is in development:
+   one white sun light over the deep canvas, the drawn voice waveform
+   hanging behind the panel as a faint breathing hologram (the speaking
+   identity of the studio), the glass panel centered in the viewport (the
+   face owns the full-bleed stage — no shell, no route, no chrome)
+   carrying the studio's own mark (the graphite squircle with the fluent
+   pulse glyph — the namesake voice-first signal), the studio title, the
+   pulsing construction chip and one honest line. the white answers
+   --pu-accent (never a second hue), the radius and shadow steps answer
+   the sol ladders, and the reveal stagger rides the shared observer of
+   the design engine. */
+/* the seat law (the family contract the one-component face keeps): the two
+   doors the face rides — the embedded seat inside the os power clip and
+   the standalone seat at the typed url — both measure their door with the
+   viewport token, never a fixed pixel literal, while the face grid the
+   .puconstr rule owns keeps its own design above them (the seat answers
+   the mount, the design answers the theme). */
+.shell--embedded {
+  width: 100%;
+  height: 100vh;
+}
+
+.shell--standalone {
+  width: 100%;
+  height: 100vh;
+}
+
+.puconstr {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: clamp(16px, 3vw, 32px) 0;
+}
+/* the ONE light of the face: the white sun bloom high over the panel */
+.puconstr__light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    560px 420px at 50% 0%,
+    color-mix(in srgb, var(--pu-accent) 12%, transparent),
+    transparent 70%
+  );
+}
+/* the hologram of the face: the drawn voice waveform (the Voicewave winget)
+   hanging behind the panel at construction opacity — the same drawing the
+   future channel surfaces will seat, its bars breathing on their own
+   staggered beats (puvBreathe, guarded by the no-preference block far
+   above) and the whole band breathing between two faint tints so the
+   stage never sits dead */
+.puconstr__wave {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0.34;
+  animation: puconstrHolo 9s var(--sol-ease-out) 1.2s infinite alternate;
+}
+.puconstr__wave .puv-root {
+  width: min(64vmin, 560px);
+}
+.puconstr__panel {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  width: min(620px, 100%);
+  padding: clamp(26px, 5vw, 44px);
+  overflow: hidden;
+}
+/* the hologram scan of the panel: hairline rows drifting down the glass
+   at construction tempo — a whisper of the hologram pattern over the
+   whole surface (mark, copy and buttons read as one projected material),
+   fading at the top and bottom edges so the pass reads as material,
+   never as texture */
+.puconstr__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 2px,
+    color-mix(in oklab, var(--sol-ink) 3%, transparent) 2px 3px
+  );
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+  opacity: 0.7;
+  animation: puconstrScan 3.2s linear infinite;
+}
+/* the studio's own mark seated on the panel — the graphite squircle
+   carrying the fluent pulse glyph (the namesake voice-first signal, the
+   one icon of the surface; the white sun keeps the ink, no channel hue,
+   no invented brand color while the studio is in construction) */
+.puconstr__mark {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border-radius: var(--sol-radius-3xl);
+  background: linear-gradient(180deg, var(--sol-surface-5), var(--sol-surface-2));
+  border: 1px solid var(--sol-hairline);
+  box-shadow: var(--sol-shadow-3);
+}
+.puconstr__glyph {
+  display: grid;
+  place-items: center;
+  color: var(--pu-accent);
+}
+/* the construction chip: the quiet status of the face — a mono rail with
+   the pulsing white dot, never a second hue, never a pill */
+.puconstr__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 5px 12px;
+  border: 1px solid color-mix(in srgb, var(--pu-accent) 32%, transparent);
+  border-radius: var(--sol-radius-sm);
+  color: var(--sol-muted);
+  font: 600 11px var(--sol-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--pu-accent) 8%, transparent);
+}
+.puconstr__pulsedot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pu-accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--pu-accent) 60%, transparent);
+  animation: puconstrPulse 2.8s var(--sol-ease-out) infinite;
+}
+.puconstr__title {
+  margin: 0;
+  color: var(--sol-text);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: var(--sol-track-display);
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.puconstr__lede {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--sol-muted);
+  font-size: clamp(0.92rem, 1.4vw, 1rem);
+  text-wrap: pretty;
+}
+@keyframes puconstrScan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 3px;
+  }
+}
+@keyframes puconstrPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+@keyframes puconstrHolo {
+  from {
+    opacity: 0.26;
+  }
+  to {
+    opacity: 0.4;
+  }
+}
+
+/* the zoom lock (the owner law, wave designheal): the viewport pins the
+   scale and the touch lane answers pan-x pan-y only — no pinch may
+   rescale the interface on any host. */
+html {
+  touch-action: pan-x pan-y;
+}

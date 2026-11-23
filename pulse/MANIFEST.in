@@ -1,0 +1,6 @@
+# pulse — the pypi file manifest of the family (the pypi channel).
+# Mirrors the file list the pulse gemspec declares in spec.files: the
+# readme, the docs set and the tests directory.
+recursive-include docs *
+recursive-include test *
+graft test

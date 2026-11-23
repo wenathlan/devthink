@@ -1,0 +1,3 @@
+# local wrangler dev secrets (never committed; copy to .dev.vars)
+PULSE_DB_URL=placeholder
+PULSE_RUNNER_TOKEN=placeholder

@@ -1,0 +1,5 @@
+# application identity on the platform
+app = "pulse"
+role = "the voice-first social studio of the family, the twelfth module — 24/7 social automation and channel management (X, Instagram through the official Graph API, Facebook, YouTube) for humans and swarms on the family VMs; the studio is in construction: the surface shows the one under-construction component and no automation logic is seeded yet"
+theme = "Sol"
+pages = ["construction"]

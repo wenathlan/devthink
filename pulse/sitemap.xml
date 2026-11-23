@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- pulse — the voice-first social studio. No domain is hardcoded. The loc
+     entries are relative and resolve against whichever origin serves this
+     sitemap; the canonical domain binds on the deploy platform. While the
+     studio is in construction the one honest face is the whole public
+     surface. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

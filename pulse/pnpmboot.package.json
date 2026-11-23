@@ -1,0 +1,6 @@
+{
+  "name": "pnpmboot",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": { "pnpm": "12.3.4" }
+}
