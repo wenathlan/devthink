@@ -5,7 +5,7 @@
 // serves the same tables to the Sol pages over HTTPS (see catalog.ts).
 
 import { createOnboardingStore } from "@wenathlan/vault/onboardingstore";
-import { openStorageLane } from "@wenathlan/vault/storage";
+import { openStorageLane } from "@wenathlan/vault/storagelane";
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
 import {
   seedConfigBlocks,
@@ -23,6 +23,9 @@ import {
   seedZones,
 } from "./seed.ts";
 
+/** the storage lane the whole store rides — the vault factory opens the
+ * sqlite connection once and the re-exported seats below answer it (the
+ * bootstrap never forks a second connection inside this file). */
 const lane = openStorageLane({ defaultFile: "./local.db" });
 
 /** the one sqlite connection of the runtime (re-exported seat of the lane). */
@@ -32,9 +35,12 @@ export const db = lane.db;
 export const { execute, queryAll, queryOne } = lane;
 
 /** the parameter types the helpers bind (re-exported seat of the lane). */
-export type { SqlParam } from "@wenathlan/vault/storage";
+export type { SqlParam } from "@wenathlan/vault/storagelane";
 
 
+/** the schema literal the ensureSchema seat installs — the table set the
+ * prisma schema mirrors, kept as one template the idempotent creator
+ * replays on every boot. */
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS zones (
   origin TEXT PRIMARY KEY,

@@ -34,6 +34,15 @@
        * the typecheck resolves the monorepo source beside its labelstore
        * precedent until the next rung publishes the export. */
       "@wenathlan/vault/onboardingstore": ["../vault/onboardingstore.ts"],
+      /* the storagelane bridge of the vault subpath seat (the
+       * wave/db-vault-subpath law): the gateway db seat (db.ts) rides the
+       * vault sqlite factory owner through the published specifier the
+       * same way the labelstore and onboardingstore seats do, and the
+       * installed envelope the declaration pass resolves carries no
+       * ./storagelane export yet — the typecheck resolves the monorepo
+       * source beside its labelstore precedent until the next rung
+       * publishes the export. */
+      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
       /* the uistore bridge of the os copy seat (the wave 14 uistore
        * consolidation): the createuistore factory the vault owns answers
        * through the published specifier the same way the labelstore and

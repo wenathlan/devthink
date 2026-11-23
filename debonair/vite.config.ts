@@ -35,6 +35,15 @@ export default defineConfig({
        * the entry retires when the published envelope carries the built
        * storage lane. */
       "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
+      /** the storagelane bridge of the ownership law: the app's sqlite
+       * factory rides the vault factory owner through the published library
+       * specifier ("@wenathlan/vault/storagelane" — the keyed file the
+       * wave/db-vault-subpath seat owns), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * open, the pragma ladder and the helpers are never duplicated
+       * inside debonair. the entry retires when the published envelope
+       * carries the built storage lane owner. */
+      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
       /** the workload law bridge of the family: the app battery pins the
        * lane mirror against the engine catalog through the published library
        * specifier ("@wenathlan/saddle/workloadlaw"), and this bridge
@@ -99,10 +108,15 @@ export default defineConfig({
   },
   /** the config lives at the app root beside the engine: the theme pages import the
    * root logic files (katexis.ts and the data layer) and the "@" alias points into
-   * the Sol folder of this same root, so the dev server allows this single root. */
+   * the Sol folder of this same root, so the dev server allows this single root
+   * — and the familyurl door law (the x10 collapse wave) rides the devthink root
+   * beside the others: the root familyurl.ts seat re-exports the family resolver
+   * from ../devthink/familyurl.ts (the same sibling-crossing grammar
+   * routerbase.ts already rides), so the dev server may serve the owner seat
+   * the theme graph reaches. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../cadria"), path.resolve(import.meta.dirname, "../saddle")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../cadria"), path.resolve(import.meta.dirname, "../saddle"), path.resolve(import.meta.dirname, "../devthink")],
     },
     host: true,
     strictPort: false,

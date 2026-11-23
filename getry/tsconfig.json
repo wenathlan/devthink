@@ -25,6 +25,16 @@
        * duplicated inside getry. the entry retires when the published
        * envelope carries the sha seat. */
       "@wenathlan/vault/sha": ["../vault/sha.ts"],
+      /* the storagelane bridge of the ownership law: the gateway db seat
+       * (db.ts) rides the vault sqlite factory owner through the published
+       * library specifier ("@wenathlan/vault/storagelane" — the keyed file
+       * the wave/db-vault-subpath seat owns), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * installed envelope predates the storagelane seat, so the typecheck
+       * (and the type-only import the db module carries) reads the
+       * workspace truth. the entry retires when the published envelope
+       * carries the built storage lane owner. */
+      "@wenathlan/vault/storagelane": ["../vault/storagelane.ts"],
       /* the modality registry bridge of the ownership wave
        * (wave/ownership.getry), mirrored from the devthink side: the moved
        * engine graph leans on the os server seam whose sandbox lane reads

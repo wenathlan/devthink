@@ -28,6 +28,15 @@ export default defineConfig({
       "@wenathlan/vault/labelstore": path.resolve(import.meta.dirname, "../vault/labelstore.ts"),
       "@wenathlan/vault/onboardingstore": path.resolve(import.meta.dirname, "../vault/onboardingstore.ts"),
       "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
+      /** the storagelane bridge of the ownership law: the game store imports
+       * the vault factory owner through the published library specifier
+       * ("@wenathlan/vault/storagelane" — the keyed file the
+       * wave/db-vault-subpath seat owns), and this bridge resolves the
+       * specifier to the monorepo source the sibling engine carries — the
+       * open, the pragma ladder and the helpers are never duplicated
+       * inside stealthhead. the entry retires when the published envelope
+       * carries the built storage lane owner. */
+      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
     /** the single-instance law (the PR12 renderparity heal): the family

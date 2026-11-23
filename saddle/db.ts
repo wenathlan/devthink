@@ -2,26 +2,31 @@
  * db.ts — node:sqlite data layer for the saddle web node (v7-BACK).
  *
  * the whole persistence surface of a node (main or clone) lives in this
- * module: one sqlite database opened through the native node:sqlite
- * DatabaseSync driver, the embedded migrations (executeschema), prepared
- * statements memoized once per process and one small function api per
- * table. the file is created with mode 0o600 right after open because it
- * carries password hashes and session token hashes.
+ * module: one sqlite database opened through the vault storage lane
+ * factory owner ("../vault/storagelane.ts" — the keyed file the
+ * wave/db-vault-subpath seat owns, the published library subpath behind
+ * the family bridges) riding the native node:sqlite driver, the embedded
+ * migrations (executeschema), prepared statements memoized once per
+ * process through the lane cache and one small function api per table.
+ * the file is created with mode 0o600 right after open (the lane's
+ * fileMode seat) because it carries password hashes and session token
+ * hashes, and the pragma ladder — busy_timeout before WAL, foreign keys
+ * armed — rides the shared factory, never a local copy of the engine.
  *
  * contexts (13): dbopen, filemode, rowtypes, executeschema, users,
  * sessions, nodes, sandboxes, sandboxfiles, events, audit, labels, counts.
  *
  * rules: lowercase identifiers, english jsdoc in third person, no emoji,
  * try/catch on every fallible path with the standardized {code,message}
- * error shape, node:* modules only, zero dependencies.
+ * error shape, node:* modules only beside the vault factory seat, zero
+ * dependencies of its own.
  */
 
-import { chmodSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
-import { DatabaseSync } from 'node:sqlite';
 import type { StatementSync } from 'node:sqlite';
 import { resolve } from 'node:path';
 import process from 'node:process';
+import { openStorageLane, type StorageLane } from '../vault/storagelane.ts';
 import { createOnboardingStore, type OnboardingLane } from '../vault/onboardingstore.ts';
 import { createLabelStore, type LabelRowStore } from '../vault/labelstore.ts';
 import { LABEL_REVISION, labelmanifest } from './labels.ts';
@@ -231,18 +236,24 @@ export type WriteReceipt = {
 };
 
 /* ------------------------------------------------------------------ */
-/* context: dbopen and filemode                                        */
+/* context: dbopen and filemode (the vault storage lane seat)           */
 /* ------------------------------------------------------------------ */
 
 /**
- * resolves the database file location on demand: the saddle_db
+ * resolves the database file location the storage lane opens (the
+ * reporting seat the boot log and the store getter read): the saddle_db
  * environment variable wins, then ./saddle.db relative to the current
- * working directory. the special value ":memory:" keeps the database in
- * ram (used by tests and throwaway boots).
+ * working directory — the same precedence the vault storage lane walks
+ * through its envName and defaultFile seats (the lane owns the real
+ * resolution; this mirror only reports the path, and under the vitest
+ * banner the lane isolates the default file per worker while the report
+ * keeps the unsuffixed name — the report never feeds the open). the
+ * special value ":memory:" keeps the database in ram (used by tests and
+ * throwaway boots).
  *
- * @returns the database path handed to databasesync.
+ * @returns the database path the lane opens.
  */
-function resolvedbpath(): string {
+function dbpath(): string {
   try {
     const fromenv = process.env.SADDLE_DB ?? '';
     if (fromenv.length > 0) {
@@ -252,24 +263,6 @@ function resolvedbpath(): string {
     /* the env seat is absent on exotic runtimes; the relative default stands */
   }
   return resolve('./saddle.db');
-}
-
-/**
- * the database file path memoized on first use: the module must stay
- * loadable inside the platform-portable bundles where the browser stubs
- * the node builtins behind the seam, so the path driver never runs in a
- * runtime without the node seat — the lazy law of the family (the
- * devthink storage seam, the vault driver precedent).
- *
- * @returns the memoized database path.
- */
-let dbpathmemo: string | null = null;
-
-function dbpathseat(): string {
-  if (dbpathmemo === null) {
-    dbpathmemo = resolvedbpath();
-  }
-  return dbpathmemo;
 }
 
 /**
@@ -321,26 +314,6 @@ function dberror(code: string, message: string): DbError {
     configurable: false,
   });
   return err;
-}
-
-/**
- * opens the database, applies the pragma profile and tightens the file
- * mode to 0o600 (skipped for the in-memory database).
- *
- * @param path the resolved database path.
- * @returns the opened database.
- */
-function opendatabase(path: string): DatabaseSync {
-  const database = new DatabaseSync(path);
-  database.exec('pragma busy_timeout = 2000;');
-  if (path !== ':memory:') {
-    try {
-      chmodSync(path, 0o600);
-    } catch {
-      /* the mode is best effort on exotic filesystems */
-    }
-  }
-  return database;
 }
 
 /**
@@ -467,10 +440,10 @@ create table if not exists labels (
  * "duplicate column name" failure of a second boot is swallowed so the
  * migration is idempotent on any node age.
  *
- * @param target the database handle.
+ * @param target the database handle (any seat answering the exec door).
  * @returns void.
  */
-function migrateusagecolumns(target: DatabaseSync): void {
+function migrateusagecolumns(target: { exec(sql: string): unknown }): void {
   for (const column of ['files', 'bytes', 'quotabytes']) {
     try {
       target.exec(`alter table sandboxes add column ${column} integer;`);
@@ -485,49 +458,51 @@ function migrateusagecolumns(target: DatabaseSync): void {
 /* ------------------------------------------------------------------ */
 
 /**
- * the single database connection owned by this module, opened lazily on
- * first use: the browser graph imports this module for the store seat
- * without ever touching the node driver (the family vault is the engine,
- * the browser never stores — the no storage law).
+ * the single storage lane owned by this module, opened lazily on first
+ * use through the vault factory owner: the lane answers the native
+ * node:sqlite driver, the family pragma ladder (busy_timeout before WAL,
+ * foreign keys armed), the 0o600 file mode and the memoized statement
+ * cache — the open, the ladder and the cache are the shared mechanism,
+ * never a local copy (the storage lane law of the family).
  */
-let database: DatabaseSync | null = null;
+let lane: StorageLane | null = null;
 
 /**
- * returns the single connection, opening it once on first use with the
- * schema and the label seed riding the same boot (the very first request
- * finds the tables in place — the import time doctrine preserved whole
- * under the lazy law, a boot failure surfacing at first use instead of
- * the module evaluation the browser walks).
+ * returns the single lane, opening it once on first use with the schema
+ * and the label seed riding the same boot (the very first request finds
+ * the tables in place — the import time doctrine preserved whole under
+ * the lazy law, a boot failure surfacing at first use instead of the
+ * module evaluation; no node driver call ever runs at import time — the
+ * sol surface never imports this module, the node seats are the only
+ * importers).
  *
- * @returns the open database connection.
+ * @returns the open storage lane.
  */
-function connection(): DatabaseSync {
-  if (database === null) {
-    database = opendatabase(dbpathseat());
-    executeschema(database);
+function storagelane(): StorageLane {
+  if (lane === null) {
+    lane = openStorageLane({
+      envName: 'SADDLE_DB',
+      defaultFile: './saddle.db',
+      driver: 'node:sqlite',
+      fileMode: 0o600,
+    });
+    executeschema();
     void seedlabelrows().catch(() => {});
   }
-  return database;
+  return lane;
 }
 
-/** memoized prepared statements keyed by their sql text. */
-const statements = new Map<string, StatementSync>();
-
 /**
- * returns the prepared statement for one sql text, preparing it once and
- * reusing it for the whole process lifetime.
+ * returns the prepared statement for one sql text through the lane cache
+ * (the same sql answers the same statement object for the whole process
+ * lifetime — the cache rides the shared factory, never a local map).
  *
  * @param sql the sql text.
  * @returns the prepared statement.
  */
 function stmt(sql: string): StatementSync {
   try {
-    let prepared = statements.get(sql);
-    if (prepared === undefined) {
-      prepared = connection().prepare(sql);
-      statements.set(sql, prepared);
-    }
-    return prepared;
+    return storagelane().prepare(sql) as unknown as StatementSync;
   } catch (error) {
     throw dberror(
       'db-prepare-failed',
@@ -1200,16 +1175,16 @@ export function listaudit(limit: number = 200): AuditRow[] {
 /* context: onboarding — the entry-flow state                          */
 /* ------------------------------------------------------------------ */
 
-/** the structural lane seat the vault onboarding store rides: the memoized
- * statement cache and the connection this module already own answer the
- * execute, queryOne and exec doors (the vault factory owns the seen-flags
- * mechanism — the onboarding_states table stays the saddle schema's own
- * seat and the seen-wins upsert stays the shared sql, never a local copy;
- * the storage lane law of the family, the labelstore precedent). */
+/** the structural lane seat the vault onboarding store rides: the storage
+ * lane this module already owns answers the execute, queryOne and exec
+ * doors whole (the vault factory owns the seen-flags mechanism — the
+ * onboarding_states table stays the saddle schema's own seat and the
+ * seen-wins upsert stays the shared sql, never a local copy; the storage
+ * lane law of the family, the labelstore precedent). */
 const onboardinglane: OnboardingLane = {
-  execute: (sql, params = []) => stmt(sql).run(...params),
-  queryOne: (sql, params = []) => stmt(sql).get(...params),
-  exec: (ddl) => connection().exec(ddl),
+  execute: (sql, params = []) => storagelane().execute(sql, params),
+  queryOne: (sql, params = []) => storagelane().queryOne(sql, params),
+  exec: (ddl) => storagelane().exec(ddl),
 };
 
 /** the onboarding store of the node: the vault factory over the structural
@@ -1450,10 +1425,10 @@ export function healthcheck(): boolean {
  * that want to reset or verify the schema explicitly.
  *
  * @param target an optional database handle (defaults to the module
- *   connection).
+ *   storage lane — any handle answering the exec door rides).
  * @returns void.
  */
-export function executeschema(target: DatabaseSync = connection()): void {
+export function executeschema(target: { exec(sql: string): unknown } = storagelane()): void {
   try {
     target.exec(schema);
     migrateusagecolumns(target);
@@ -1465,7 +1440,7 @@ export function executeschema(target: DatabaseSync = connection()): void {
 /** the store singleton: every api function plus close and dispose. */
 const store = {
   get dbpath() {
-    return dbpathseat();
+    return dbpath();
   },
   createuser,
   finduserbyname,
@@ -1508,8 +1483,8 @@ const store = {
   /** closes the connection (idempotent). */
   close() {
     try {
-      if (database !== null) {
-        database.close();
+      if (lane !== null) {
+        lane.close();
       }
     } catch {
       /* closing twice or after dispose is a no-op */
@@ -1521,10 +1496,11 @@ const store = {
   },
 };
 
-/* the schema and the label seed ride the lazy boot inside connection():
+/* the schema and the label seed ride the lazy boot inside storagelane():
  * the very first use finds the tables in place, a failure is fatal by
  * design (bad path, locked file) and surfaces as a boot error instead of
- * a runtime 500 — the module evaluation stays side effect free so the
- * browser bundles load it whole (the resolve crash of the deployed face
- * answered: no node driver call ever runs at import time). */
+ * a runtime 500 — the module evaluation never runs a node driver call
+ * (the storage lane opens on first use, the lazy law of the family; the
+ * sol surface never imports this module, the node seats — webserver and
+ * auth — are the only importers). */
 export default store;

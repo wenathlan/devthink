@@ -9,15 +9,32 @@
  * open, always. The platform gateway serves the same tables to the Sol
  * pages over HTTPS (GET/POST /api/v1/onboarding — the browser accessor is
  * onboardingstate.ts); no server route lives here.
+ *
+ * The at-rest envelope rides the same boot (the wave/vault-encryption
+ * seat): envelope.ts owns the aes-256-gcm pipeline — the master key (KEK)
+ * from the environment, the per-project data keys (DEKs) wrapped at rest
+ * in the project_envelopes table, and the write boundary the keys and
+ * payloads secret seats ride — and this seat lays its table beside the
+ * schema and re-exports its face whole, so the family consumers reach the
+ * envelope through the site-store door (the storageface re-export
+ * precedent).
  */
 
 import { LABEL_MANIFEST, LABEL_REVISION } from "./labels.ts";
-import { openStorageLane } from "./storage.ts";
+import { openStorageLane } from "./storagelane.ts";
+import { ensureEnvelopeSchema } from "./envelope.ts";
+
+/* the at-rest envelope face (aes-256-gcm, enveloped per-project keys): the
+ * pure seats, the serial forms, the lane boundary and the rotations answer
+ * from envelope.ts — the one owner of the cipher law — re-exported whole
+ * so every published export keeps answering under the same door. */
+export * from "./envelope.ts";
 
 /** the correlated tables the runtime keeps (the family sync contract names). */
 export const tables = [
   "keys",
   "payloads",
+  "project_envelopes",
   "onboarding_states",
   "state_states",
   "labels",
@@ -36,7 +53,7 @@ export const db = lane.db;
 export const { execute, queryAll, queryOne } = lane;
 
 /** the parameter types the helpers bind (sqlite stores them narrow — re-exported seat of the lane). */
-export type { SqlParam } from "./storage.ts";
+export type { SqlParam } from "./storagelane.ts";
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS keys (
@@ -101,6 +118,10 @@ CREATE TABLE IF NOT EXISTS apikeys (
 /** Creates the tables when they do not exist (idempotent, mirrors the prisma schema). */
 export function ensureSchema(): void {
   lane.exec(SCHEMA);
+  /* the at-rest envelope table (the wrapped per-project data keys) rides
+   * the same idempotent boot: the project_envelopes rows exist from the
+   * first open, always — the keys stay encrypted at rest (aes-256-gcm). */
+  ensureEnvelopeSchema(lane);
 }
 
 // the boot seed: the tables exist from the first open, always (idempotent).

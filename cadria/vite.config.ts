@@ -62,6 +62,15 @@ export default defineConfig({
        * so the chunk compiles against the workspace truth (the native
        * binding stays external below, the chunk answers the node runtime). */
       "@wenathlan/vault/storage": path.resolve(import.meta.dirname, "../vault/storage.ts"),
+      /** the storagelane bridge of the ownership law: the lazy db chunk the
+       * browser never loads imports the vault factory owner through the
+       * published library specifier ("@wenathlan/vault/storagelane" — the
+       * keyed file the wave/db-vault-subpath seat owns), and this bridge
+       * resolves the specifier to the monorepo source the sibling engine
+       * carries — the published envelope predates the storagelane seat,
+       * so the chunk compiles against the workspace truth (the native
+       * binding stays external below, the chunk answers the node runtime). */
+      "@wenathlan/vault/storagelane": path.resolve(import.meta.dirname, "../vault/storagelane.ts"),
       "@": path.resolve(import.meta.dirname, "sol"),
     },
     /** the single-instance law (the PR12 renderparity heal): the family
@@ -110,10 +119,14 @@ export default defineConfig({
    * the engine files (versawase.ts and the data layer) across the theme boundary
    * from the same project root, and the audio analysis family answers from the
    * debonair sibling root (the engine ownership law), so the dev server allows
-   * both roots. */
+   * those roots — and the familyurl door law (the x10 collapse wave) rides the
+   * devthink root beside them: the root familyurl.ts seat re-exports the family
+   * resolver from ../devthink/familyurl.ts (the same sibling-crossing grammar
+   * routerbase.ts already rides), so the dev server may serve the owner seat
+   * the theme graph reaches. */
   server: {
     fs: {
-      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../debonair"), path.resolve(import.meta.dirname, "../vault")],
+      allow: [import.meta.dirname, path.resolve(import.meta.dirname, "../debonair"), path.resolve(import.meta.dirname, "../vault"), path.resolve(import.meta.dirname, "../devthink")],
     },
     host: true,
     strictPort: false,

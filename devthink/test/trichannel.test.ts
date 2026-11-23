@@ -148,8 +148,11 @@ describe.skipIf(!inrepo)("the tri-channel wave (the PR12 eleven-channel law)", (
     const source = await readworkflow("publish.yml");
     /* the sha256 derives on the runner from the real downloaded release
      * asset (the #540 law: never from a constant, never hardcoded in the
-     * workflow), and the length guard keeps the derivation honest */
-    expect(source).toContain('sha256sum "/tmp/asset/wenathlan-devthink-${RELEASE_TAG#v}.tgz"');
+     * workflow), and the length guard keeps the derivation honest; the
+     * asset variable carries the bounded wait the cascade race law seats
+     * (the tap lanes wait for the release upload instead of failing it) */
+    expect(source).toContain('asset="wenathlan-devthink-${RELEASE_TAG#v}.tgz"');
+    expect(source).toContain('sha256sum "/tmp/asset/$asset"');
     expect(source).toContain('test "${#ASSET_SHA256}" -eq 64');
     /* the stamp step exists: the sed rewrites the 64-hex placeholder the
      * template carries and the grep guard proves the derived checksum

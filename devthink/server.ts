@@ -555,6 +555,11 @@ import { uistoreget, uistoreingest, uistorelist } from "./uistore.ts";
    barrel moved to the getry owner with the provider console, so the os
    lane reads its label source through its own declaration now. */
 import { osStringRows } from "./os.js";
+/* the rate limit law seat (wave/csp-ratelaw): the window, the session key
+   derivation and the hono middleware live in their own root module so the
+   law answers one surface — the composed createserver below registers the
+   middleware, and the battery lanes import the pure pieces directly. */
+import { ratelimitmiddleware } from "./ratelimit.ts";
 
 /** createoslanes — register the nine os lanes of the workbench surface on
  * the hono app the gateway transport built (the os owns the lanes, the
@@ -934,6 +939,23 @@ async function createserver(): Promise<Hono> {
   // the wire); the os lanes register on the same app after it, so one
   // surface answers both families in the order the merged lanes carried
   const app = await getrycreateserver();
+  // the rate limit law (wave/csp-ratelaw, the checklist mandates 0803,
+  // 0838 and 1224) seats between the transport and the os lanes: one
+  // sliding window of 1200 admitted requests a minute per session key —
+  // the DEVTHINK_RATE_LIMIT env seats the ceiling when a heavier deploy
+  // lawfully draws the thousands of requests a minute the mandate 0838
+  // names — keyed on the credential the request itself carries (the
+  // authorization bearer or the devthinkfamily cookie, never the ip —
+  // the cgnat law: carrier grade nat folds whole households behind one
+  // address), a refusal answering 429 with the honest Retry-After of the
+  // window. the visitor report lanes (onboarding, plan) and every future
+  // /api lane ride this seat the day they land; the gateway transport
+  // lanes the getry owner registered above the seat stay outside this
+  // wave's law (the transport owns its own guard), and the loopback
+  // workbench server of startserver stays outside it by design — one
+  // person's single-user 127.0.0.1 workbench never rides the cgnat
+  // population the law exists for.
+  app.use("*", ratelimitmiddleware());
   await createoslanes(app);
   return app;
 }

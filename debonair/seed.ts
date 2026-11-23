@@ -19,6 +19,8 @@ import type {
 } from "./katexis.ts";
 import { GENRES } from "./theory.ts";
 
+/** the genre chips the prompt stage offers: the fifteen ids the theory
+ * engine owns, one marked selected for the first paint. */
 export const seedGenres: readonly GenreConfig[] = [
   { id: "trap", label: "Trap" },
   { id: "pop", label: "Pop" },
@@ -37,6 +39,8 @@ export const seedGenres: readonly GenreConfig[] = [
   { id: "latin", label: "Latin" },
 ];
 
+/** the timeline tracks the studio stage renders: the four track groups
+ * with their clips — the offline arrangement the landing rehearses. */
 export const seedTimelineTracks: readonly TimelineTrack[] = [
   {
     name: "Drums",
@@ -81,6 +85,8 @@ export const seedTimelineTracks: readonly TimelineTrack[] = [
   },
 ];
 
+/** the mixer strips the desk renders: the channel rows with their meters
+ * and faders, the master strip flagged. */
 export const seedMixerStrips: readonly MixerStripRow[] = [
   { name: "Drums", meterPercent: 68, faderDb: -4 },
   { name: "Bass", meterPercent: 54, faderDb: -6 },
@@ -89,6 +95,8 @@ export const seedMixerStrips: readonly MixerStripRow[] = [
   { name: "Master", meterPercent: 72, faderDb: -2, master: true },
 ];
 
+/** the transport readouts the shell player bar carries: the bpm, key,
+ * position, bar and swing the offline take answers with. */
 export const seedReadouts: readonly ReadoutRow[] = [
   { label: "BPM", value: "140" },
   { label: "Key", value: "C min" },
@@ -137,6 +145,9 @@ export const seedLibraryTracks: readonly LibraryTrackRow[] = [
  * empty markers until the truth answers. */
 export const seedVitrineTracks: readonly VitrineTrackRow[] = [];
 
+/** the home stage cards: the four pipeline rows the features shelf
+ * renders (generation, editing, mastering, export), badge and detail
+ * verbatim. */
 export const seedStageCards: readonly FeatureCard[] = [
   {
     group: "home-stages",
@@ -168,6 +179,8 @@ export const seedStageCards: readonly FeatureCard[] = [
   },
 ];
 
+/** the hero badges: the tone-coded chips the landing hero carries
+ * (the studio engine, the sample rate, the multitrack law). */
 export const seedHeroBadges: readonly SignalBadge[] = [
   { group: "hero", label: "studio engine", tone: "default" },
   { group: "hero", label: "48 kHz", tone: "success" },
@@ -195,6 +208,8 @@ export const seedGenreProfileCards: readonly GenreProfileCard[] = GENRES.map((ge
   updatedAt: "",
 }));
 
+/** the language options the settings select offers (the copy law keeps
+ * the labels in the label store — these rows carry the values alone). */
 export const seedLocaleChoices: readonly OptionChoice[] = [
   { group: "locale", value: "en", label: "English", selected: true },
   { group: "locale", value: "pt", label: "Portuguese (BR)" },

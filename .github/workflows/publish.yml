@@ -454,6 +454,17 @@ jobs:
                 echo "::warning::The registry REJECTED the publish with 401 (the dead-secret wall): the npmjs.com publication is skipped until a live secret seats the ladder: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN."
                 exit 0
               fi
+              # the granular-scope wall (the 2.0.186 publish evidence: a
+              # granular token whose package selection hides the scoped
+              # package behind a 404-PUT answer - the registry says "could
+              # not be found or you do not have permission" because the
+              # token's scope never lists the package): the honest answer
+              # is the same skip the 401 wall carries, never a retry burn on
+              # a permission the ladder cannot grant itself.
+              if printf '%s' "${publish_output}" | grep -qiE "could not be found or you do not have permission|E404 .*PUT"; then
+                echo "::warning::The registry HID the package behind the granular token's scope (the 404-PUT wall): the npmjs.com publication is skipped until the NPM_TOKEN grants read-and-write on the @wenathlan/* scope: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN."
+                exit 0
+              fi
               if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
                 echo "the twin lane already owns ${RELEASE_VERSION}; the publish race resolved with the registry's own answer."
                 published=1
@@ -779,6 +790,15 @@ jobs:
               # debonair and forge legs on the lag).
               if printf '%s' "${publish_output}" | grep -qiE "ENEEDAUTH|E401|401 .*[Uu]nauthorized|authentication required"; then
                 echo "::warning::The registry REJECTED the publish with 401 (the dead-secret wall): the npmjs.com publication is skipped until a live secret seats the ladder: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN."
+                exit 0
+              fi
+              # the granular-scope wall (the 2.0.186 family evidence: the
+              # same 404-PUT hide the application lane guards above - the
+              # family envelopes ride the identical honest-skip law, the
+              # eleven legs stopped burning three attempts each on a
+              # permission the token's own scope never carried).
+              if printf '%s' "${publish_output}" | grep -qiE "could not be found or you do not have permission|E404 .*PUT"; then
+                echo "::warning::The registry HID the package behind the granular token's scope (the 404-PUT wall): the npmjs.com publication is skipped until the NPM_TOKEN grants read-and-write on the @wenathlan/* scope: Settings > Secrets and variables > Actions > NODE_AUTH_TOKEN or NPM_TOKEN."
                 exit 0
               fi
               if printf '%s' "${publish_output}" | grep -qiE "cannot publish over previously (published|staged)"; then
@@ -3173,10 +3193,24 @@ jobs:
           RELEASE_TAG: v${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
-          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "wenathlan-devthink-${RELEASE_TAG#v}.tgz" --dir /tmp/asset
+          # the brew lane races the release cascade's asset upload (the
+          # 2.0.186 evidence: the tap leg ran at 17:21 while the tarball
+          # assets only land when the release lanes finish their uploads
+          # hours later): the lane waits for the asset the envelopes law
+          # carries instead of hard-failing on the race - bounded to eight
+          # minutes inside the fifteen the job owns, then the honest miss.
+          asset="wenathlan-devthink-${RELEASE_TAG#v}.tgz"
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' 2>/dev/null | grep -qxF "$asset"; then
+              break
+            fi
+            echo "the $asset answer is still on its way (attempt ${attempt}/12); the lane waits for the release cascade's upload."
+            sleep 45
+          done
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "$asset" --dir /tmp/asset
           # the checksum derives from the real downloaded asset on the runner (the
           # #540 law: never from a constant, never hardcoded in the workflow)
-          ASSET_SHA256="$(sha256sum "/tmp/asset/wenathlan-devthink-${RELEASE_TAG#v}.tgz" | awk '{print $1}')"
+          ASSET_SHA256="$(sha256sum "/tmp/asset/$asset" | awk '{print $1}')"
           test "${#ASSET_SHA256}" -eq 64
           echo "ASSET_SHA256=${ASSET_SHA256}" >> "$GITHUB_ENV"
           echo "the devthink formula checksum answers ${ASSET_SHA256}"
@@ -3309,10 +3343,22 @@ jobs:
           RELEASE_TAG: v${{ steps.release.outputs.version }}
         run: |
           set -euo pipefail
-          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "wenathlan-${{ matrix.package }}-${RELEASE_TAG#v}.tgz" --dir /tmp/asset
+          # the same cascade race the devthink tap lane guards above: the
+          # family tarballs land when the release lanes finish uploading,
+          # the family tap legs wait for their asset the same bounded law
+          # carries - never a hard fail on a lane that has not uploaded.
+          asset="wenathlan-${{ matrix.package }}-${RELEASE_TAG#v}.tgz"
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' 2>/dev/null | grep -qxF "$asset"; then
+              break
+            fi
+            echo "the $asset answer is still on its way (attempt ${attempt}/12); the lane waits for the release cascade's upload."
+            sleep 45
+          done
+          gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "$asset" --dir /tmp/asset
           # the checksum derives from the real downloaded asset on the runner (the
           # #540 law: never from a constant, never hardcoded in the workflow)
-          ASSET_SHA256="$(sha256sum "/tmp/asset/wenathlan-${{ matrix.package }}-${RELEASE_TAG#v}.tgz" | awk '{print $1}')"
+          ASSET_SHA256="$(sha256sum "/tmp/asset/$asset" | awk '{print $1}')"
           test "${#ASSET_SHA256}" -eq 64
           echo "ASSET_SHA256=${ASSET_SHA256}" >> "$GITHUB_ENV"
           echo "the ${{ matrix.package }} formula checksum answers ${ASSET_SHA256}"
