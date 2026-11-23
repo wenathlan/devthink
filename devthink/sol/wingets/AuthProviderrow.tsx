@@ -1,19 +1,20 @@
 /**
- * providerrow.tsx — the icon-only provider row of the sign-in face:
- * the providers the auth contract carries (google, github and gitlab
- * over the oauthrow.ts contract — the bots are ready on the owner
- * accounts, the client ids ride the env, the single callback page detects
- * the origin by state), plus the cli pairing row under the same icon
- * grammar — the owner order: the brand marks ride alone, the
- * continue-with words never print on the face. The official svg glyphs of
- * each provider (the four color google g, the octocat mark, the tanuki)
- * and the console glyph of the cli draw inline at 18px inside 44px
- * square cells; the words survive as the accessible names only
+ * providerrow.tsx — the provider row of the sign-in face: the single
+ * sign-on label "Continue with DevThink" over the icon-only provider
+ * buttons — the auth contract carries google, github and gitlab over the
+ * oauthrow.ts contract (the bots are ready on the owner accounts, the
+ * client ids ride the env, the single callback page detects the origin
+ * by state), plus the cli pairing row under the same icon grammar. The
+ * owner law: the row says "continue with devthink" while the buttons
+ * never say "continue with google" — the brand marks ride alone in 44px
+ * square cells carrying only the brand name as the accessible name
  * (aria-label and title from the copy store, auth.oauth.*, auth.cli.* —
  * an icon without an accessible name is banned by the house a11y law).
- * The marks map is keyed by the provider id string, so the row wears
- * whatever provider the auth logic carries without the design ever
- * touching the logic. Loose component of the auth page, riding the
+ * The official svg glyphs of each provider (the four color google g, the
+ * octocat mark, the tanuki) and the console glyph of the cli draw inline
+ * at 18px. The marks map is keyed by the provider id string, so the row
+ * wears whatever provider the auth logic carries without the design
+ * ever touching the logic. Loose component of the auth page, riding the
  * dt-oauthrow kit.
  */
 import { PersonRegular, WindowConsoleRegular } from "@fluentui/react-icons";
@@ -94,15 +95,17 @@ export interface ProviderRowProps {
   onPair: () => void;
 }
 
-/** ProviderRow — the icon-only provider row under the password well: the
- * provider buttons wearing the official brand marks alone in 44px
- * square cells, the cli pairing button under the same grammar. The
- * continue-with words never print — they ride the accessible names of the
- * buttons (an icon without a name is banned). Zero manual fields: the
+/** ProviderRow — the provider row under the password well: the single
+ * sign-on label "Continue with DevThink" over the provider buttons
+ * wearing the official brand marks alone in 44px square cells, the cli
+ * pairing button under the same grammar. The buttons carry only the
+ * brand name as the accessible name — the continue-with words live on
+ * the row label alone (the owner label law). Zero manual fields: the
  * pairing consumes the invitation link by itself. */
 export function ProviderRow({ row, busy, onBegin, onPair }: ProviderRowProps) {
   return (
     <div className="dt-oauthrow" role="group" aria-label={copy("auth.oauth.row")}>
+      <span className="dt-oauthrow__label">{copy("auth.oauth.row")}</span>
       <div className="dt-oauthrow__btns">
         {row.providers.map((entry) => {
           const Mark = PROVIDER_MARKS[entry.provider] ?? FallbackMark;
