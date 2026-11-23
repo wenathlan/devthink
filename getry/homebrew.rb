@@ -4,8 +4,8 @@
 class WenathlanGetry < Formula
   desc "The AI gateway — five provider gateways serving 70 registered route lanes (14 route kinds per version — the seven chat core kinds plus the seven media lanes)"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.186/wenathlan-getry-2.0.186.tgz"
-  version "2.0.186"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.187/wenathlan-getry-2.0.187.tgz"
+  version "2.0.187"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanGetry < Formula
   end
 
   test do
-    assert_match "2.0.186", shell_output("#{bin}/wenathlan-getry --version")
+    assert_match "2.0.187", shell_output("#{bin}/wenathlan-getry --version")
   end
 end

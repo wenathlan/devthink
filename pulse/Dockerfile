@@ -1,4 +1,4 @@
-# pulse 2.0.186 — THE STUDIO CONTAINER FILE
+# pulse 2.0.187 — THE STUDIO CONTAINER FILE
 #
 # The family container doctrine in the sol shape: one versioned static
 # container per site. The sol theme builds inside the container — stage one
@@ -14,7 +14,7 @@
 # the nginx base the multi-arch lane carries).
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS solbuild
 
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 
 # The family context fix (the staged shape the site containers read): the
 # application rides the context nested under app/ with the sibling sources
@@ -51,7 +51,7 @@ RUN pnpm build
 # the catalog lanes ride before the runtime stage so the default build keeps answering the runtime target (the family builds never pass --target — the saddle lanes always do, the os seats close the saddle file the same law).
 # ════════════════════════════════════════════════════════════════════
 FROM scratch AS osgrapheneos
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="grapheneos"
 ENV PULSE_OS_PROFILE=grapheneos
 LABEL org.opencontainers.image.title="pulse (the grapheneos os-distribution catalog lane)" \
@@ -62,7 +62,7 @@ LABEL org.opencontainers.image.title="pulse (the grapheneos os-distribution cata
 COPY osprofiles/grapheneos.json /pulse/osprofile.json
 
 FROM scratch AS osmaruos
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="maruos"
 ENV PULSE_OS_PROFILE=maruos
 LABEL org.opencontainers.image.title="pulse (the maruos os-distribution catalog lane)" \
@@ -73,7 +73,7 @@ LABEL org.opencontainers.image.title="pulse (the maruos os-distribution catalog 
 COPY osprofiles/maruos.json /pulse/osprofile.json
 
 FROM scratch AS osv
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="v"
 ENV PULSE_OS_PROFILE=v
 LABEL org.opencontainers.image.title="pulse (the v os-distribution catalog lane)" \
@@ -84,7 +84,7 @@ LABEL org.opencontainers.image.title="pulse (the v os-distribution catalog lane)
 COPY osprofiles/v.json /pulse/osprofile.json
 
 FROM scratch AS oswindows
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="windows"
 ENV PULSE_OS_PROFILE=windows
 LABEL org.opencontainers.image.title="pulse (the windows os-distribution catalog lane)" \
@@ -95,7 +95,7 @@ LABEL org.opencontainers.image.title="pulse (the windows os-distribution catalog
 COPY osprofiles/windows.json /pulse/osprofile.json
 
 FROM scratch AS ospostmarketos
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="postmarketos"
 ENV PULSE_OS_PROFILE=postmarketos
 LABEL org.opencontainers.image.title="pulse (the postmarketos os-distribution catalog lane)" \
@@ -106,7 +106,7 @@ LABEL org.opencontainers.image.title="pulse (the postmarketos os-distribution ca
 COPY osprofiles/postmarketos.json /pulse/osprofile.json
 
 FROM scratch AS oslineageos
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="lineageos"
 ENV PULSE_OS_PROFILE=lineageos
 LABEL org.opencontainers.image.title="pulse (the lineageos os-distribution catalog lane)" \
@@ -117,7 +117,7 @@ LABEL org.opencontainers.image.title="pulse (the lineageos os-distribution catal
 COPY osprofiles/lineageos.json /pulse/osprofile.json
 
 FROM scratch AS oscalyxos
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="calyxos"
 ENV PULSE_OS_PROFILE=calyxos
 LABEL org.opencontainers.image.title="pulse (the calyxos os-distribution catalog lane)" \
@@ -128,7 +128,7 @@ LABEL org.opencontainers.image.title="pulse (the calyxos os-distribution catalog
 COPY osprofiles/calyxos.json /pulse/osprofile.json
 
 FROM scratch AS osarchlinux
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="archlinux"
 ENV PULSE_OS_PROFILE=archlinux
 LABEL org.opencontainers.image.title="pulse (the archlinux os-distribution catalog lane)" \
@@ -139,7 +139,7 @@ LABEL org.opencontainers.image.title="pulse (the archlinux os-distribution catal
 COPY osprofiles/archlinux.json /pulse/osprofile.json
 
 FROM scratch AS osalpine
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="alpine"
 ENV PULSE_OS_PROFILE=alpine
 LABEL org.opencontainers.image.title="pulse (the alpine os-distribution catalog lane)" \
@@ -150,7 +150,7 @@ LABEL org.opencontainers.image.title="pulse (the alpine os-distribution catalog 
 COPY osprofiles/alpine.json /pulse/osprofile.json
 
 FROM scratch AS osdebian
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="debian"
 ENV PULSE_OS_PROFILE=debian
 LABEL org.opencontainers.image.title="pulse (the debian os-distribution catalog lane)" \
@@ -161,7 +161,7 @@ LABEL org.opencontainers.image.title="pulse (the debian os-distribution catalog 
 COPY osprofiles/debian.json /pulse/osprofile.json
 
 FROM scratch AS osfedora
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="fedora"
 ENV PULSE_OS_PROFILE=fedora
 LABEL org.opencontainers.image.title="pulse (the fedora os-distribution catalog lane)" \
@@ -172,7 +172,7 @@ LABEL org.opencontainers.image.title="pulse (the fedora os-distribution catalog 
 COPY osprofiles/fedora.json /pulse/osprofile.json
 
 FROM scratch AS osnixos
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="nixos"
 ENV PULSE_OS_PROFILE=nixos
 LABEL org.opencontainers.image.title="pulse (the nixos os-distribution catalog lane)" \
@@ -183,7 +183,7 @@ LABEL org.opencontainers.image.title="pulse (the nixos os-distribution catalog l
 COPY osprofiles/nixos.json /pulse/osprofile.json
 
 FROM scratch AS osvoid
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="void"
 ENV PULSE_OS_PROFILE=void
 LABEL org.opencontainers.image.title="pulse (the void os-distribution catalog lane)" \
@@ -194,7 +194,7 @@ LABEL org.opencontainers.image.title="pulse (the void os-distribution catalog la
 COPY osprofiles/void.json /pulse/osprofile.json
 
 FROM scratch AS oslinux
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="linux"
 ENV PULSE_OS_PROFILE=linux
 LABEL org.opencontainers.image.title="pulse (the linux os-distribution catalog lane)" \
@@ -205,7 +205,7 @@ LABEL org.opencontainers.image.title="pulse (the linux os-distribution catalog l
 COPY osprofiles/linux.json /pulse/osprofile.json
 
 FROM scratch AS osomarchy
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 ARG PULSE_OS_PROFILE="omarchy"
 ENV PULSE_OS_PROFILE=omarchy
 LABEL org.opencontainers.image.title="pulse (the omarchy os-distribution catalog lane)" \
@@ -218,7 +218,7 @@ COPY osprofiles/omarchy.json /pulse/osprofile.json
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6
 
-ARG PULSE_VERSION=2.0.186
+ARG PULSE_VERSION=2.0.187
 
 LABEL org.opencontainers.image.title="pulse" \
       org.opencontainers.image.description="pulse — the voice-first social studio: the 24/7 social automation and channel management of X, Instagram, Facebook and YouTube, in construction." \

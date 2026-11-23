@@ -12,7 +12,7 @@
 // compile it locally.
 
 /** The version of the saddle envelope — the release lockstep re-stamps this literal every rung. */
-val envelopeVersion = "2.0.186"
+val envelopeVersion = "2.0.187"
 
 /** The publishing group the maven and gradle lanes share. */
 val envelopeGroup = "com.wenathlan"

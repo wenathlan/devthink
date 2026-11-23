@@ -10,7 +10,7 @@ package com.wenathlan.pulse;
  */
 final class Pulse {
   /** The version of the pulse envelope (the twelfth-module wave). */
-  public static final String VERSION = "2.0.186";
+  public static final String VERSION = "2.0.187";
   private Pulse() {
   }
 }

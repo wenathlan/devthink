@@ -143,7 +143,7 @@ const runners = Array.from({ length: Math.min(20, pool.length) }, async () => {
       registrycache.set(name, { dead: "no stable version" });
       continue;
     }
-    /* THE MINIMUM AGE LAW (the 2.0.186 cure): the resolved latest carries its
+    /* THE MINIMUM AGE LAW (the 2.0.187 cure): the resolved latest carries its
      * publish time beside it — the decision pass below only proposes a seat
      * the registry has carried a full seven-day week (the npm minimum the
      * house doctrine seats; the 3d bun/pnpm/uv rows ride their own lanes),
@@ -167,7 +167,7 @@ for (const { section, name, declared } of walkable) {
     continue;
   }
   const latest = answer?.latest as string;
-  /* THE MINIMUM AGE LAW (the 2.0.186 cure): the quarantine window — an
+  /* THE MINIMUM AGE LAW (the 2.0.187 cure): the quarantine window — an
    * update published inside seven days stays unseen by the ladder (the
    * doctrine the minimum-ages law always carried: 7d npm, 3d bun/pnpm/uv),
    * so the gate check stops demanding registry seats no review branch can

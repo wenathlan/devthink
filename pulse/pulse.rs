@@ -5,4 +5,4 @@
 //! lane packages it, the registry lanes never compile it locally.
 
 /// The version of the pulse envelope (the twelfth-module wave).
-pub const VERSION: &str = "2.0.186";
+pub const VERSION: &str = "2.0.187";

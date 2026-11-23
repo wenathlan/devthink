@@ -1,5 +1,23 @@
 # DevThink release notes
 
+## 2.0.187
+
+**The family chain closure rung** — the wave that merges the nine-lane chain whole: the vault storage lane owns the sqlite engine, the vault seats answer the encryption envelope law, the sha sites collapse to their owner, the getry jury answers the honesty laws, the pulse module seats as the twelfth official application and the residual tag and release lines retire for the single consolidated line.
+
+| Area | Change |
+| --- | --- |
+| The storagelane factory | The storagelane factory owns the sqlite engine whole and the ten sibling db seats answer the vault subpath law — the lazy family seat bridges the getry tsconfig.types union and every sibling database opens through the single factory seat (#696). |
+| The envelope law | The vault seats answer the aes256gcm envelope law whole: the per-project wrapped data keys encrypt at rest, the master key rides the environment and the wrapped key rows stay the single key material the vault stores (#697). |
+| The jsdoc markers | The argan, debonair, forge, foundry and vault roots answer the jsdoc 2026 section marker law — the documentation seats walk the same section grammar the five radicals carry (#698). |
+| The getry devdeps union | The getry devdependencies seat answers the family union whole — the lockstep law keeps every dev seat the manifests declare in the single union (#699). |
+| The jury of three | The getry jury of three answers the inverse calibration law and the oversized context rides the thirty thousand token slicer — the honesty laws seat the three-judge verdict with calibrated dissent and the context slicer keeps oversized prompts honest (#701). |
+| The sha collapse | The twenty nine sha256 hex sites answer the vault sha owner whole — the dedup law keeps one hash owner, the bridges seat the family graphs and every sibling imports the single digest seat (#702). |
+| The integral checklist | The integral corpus consolidation lands — the parallel readers covered every upload file whole via the terminal law and the living checklist seats the audited state, the reading gaps and the linear queue of the wave (#705). |
+| The provider row law | The sign-in provider row answers the owner label law whole — the row says continue with devthink and the provider buttons never say continue with google (#706). |
+| The pulse module | The pulse module seats as the twelfth official application: the honest scaffold carries the sol theme, the tests, the docs and the root logic files with the in-construction label — the family gates answer the flat structure and the config parity laws whole (#707). |
+| The tag line retirement | The residual tag and release lines retire for good: the two hundred eight tag seats leave the tag tree (the per-app rungs of the eleven siblings, the archive and arquivo anchors, the old-scheme v1.1.x line, the mesa cache seat, the untagged seat and the test tag) beside the eighteen old-scheme releases — deleted with the owner's delete scope and the tag tree answers the single consolidated v2.0.x line the family walks, zero seats outside it. |
+| The lockstep | The 2.0.187 stamp walks the one hundred eighty-four version-seat files (the thirteen manifests, the twelve bun locks, cargo, csproj, gemspec, java, kts, rs, pom, homebrew, pyproject, tauri and Dockerfile carriers and the version modules) — the lockstep cascade the release ladder asserts; the historical narrative keeps the rungs that named it. |
+
 ## 2.0.186
 
 **The green train closure rung** — the maintenance wave that returns the whole house to green: the dependency ladder walks the eleven manifests whole, the cache law seats every lane's own-run cleanup, the security gates answer their upstream-blocked lanes with documented seats, and the retired .webpack twins leave the four registries for good.

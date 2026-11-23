@@ -5,7 +5,7 @@
  *  The jury of three diverse members with inverse calibration weighting —
  *  the wave/getry-jury intelligence honesty laws of the getry family.
  *
- *  v2.0.186 wave/getry-jury seat (2026-11-20): every trust decision the
+ *  v2.0.187 wave/getry-jury seat (2026-11-20): every trust decision the
  *  intelligence pipeline makes routes through a jury of THREE DIVERSE
  *  members — three different provider families from the configured pool,
  *  never three calls to one model — and the verdict answers as a weighted
@@ -40,7 +40,7 @@
  *
  * @author devthink
  * @license GPL-3.0-only
- * @version 2.0.186
+ * @version 2.0.187
  * @date 2026-11-20
  */
 

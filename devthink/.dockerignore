@@ -40,7 +40,7 @@ __pycache__
 *.pyo
 test/tmp
 
-# the monorepo geometry (the 2.0.186 cure): the merged repository carries
+# the monorepo geometry (the 2.0.187 cure): the merged repository carries
 # eleven sibling app trees whose node_modules, dist and staging the runner
 # installs beside the sources — the family-context law keeps the sibling
 # SOURCES (the vault file: pins, the getry and saddle bridges) while their

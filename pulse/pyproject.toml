@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wenathlan-pulse"
-version = "2.0.186"
+version = "2.0.187"
 authors = [{name = "wenathlan"}]
 description = "The voice-first social studio — 24/7 social automation and channel management (X, Instagram, Facebook, YouTube)"
 license = {text = "GPL-3.0-only"}

@@ -4,8 +4,8 @@
 class WenathlanPulse < Formula
   desc "The voice-first social studio — 24/7 social automation and channel management (X, Instagram, Facebook, YouTube)"
   homepage "https://github.com/wenathlan/devthink"
-  url "https://github.com/wenathlan/devthink/releases/download/v2.0.186/wenathlan-pulse-2.0.186.tgz"
-  version "2.0.186"
+  url "https://github.com/wenathlan/devthink/releases/download/v2.0.187/wenathlan-pulse-2.0.187.tgz"
+  version "2.0.187"
   # sha256 stamped by the lane from the release asset (never hardcoded)
   sha256 "0000000000000000000000000000000000000000000000000000000000000000"
 
@@ -20,6 +20,6 @@ class WenathlanPulse < Formula
   end
 
   test do
-    assert_match "2.0.186", shell_output("#{bin}/wenathlan-pulse --version")
+    assert_match "2.0.187", shell_output("#{bin}/wenathlan-pulse --version")
   end
 end

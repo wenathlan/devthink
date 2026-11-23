@@ -276,7 +276,7 @@ export interface poolcoveragereport {
  * of the 626 item pool, no timestamps, so the record replays byte
  * identical. */
 export const poolcoveragerecord: poolcoveragereport = {
-  "release": "2.0.186",
+  "release": "2.0.187",
   "corpus": 4498,
   "pool": {
     "total": 626,

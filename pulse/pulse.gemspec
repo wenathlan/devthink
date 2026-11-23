@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "pulse"
-  spec.version = ENV.fetch("PULSE_VERSION", "2.0.186")
+  spec.version = ENV.fetch("PULSE_VERSION", "2.0.187")
   spec.authors = ["wenathlan"]
   spec.email = ["support@users.noreply.github.com"]
   spec.summary = "The pulse documentation and tests envelope (the voice-first social studio — 24/7 social automation and channel management of X, Instagram, Facebook and YouTube)."
