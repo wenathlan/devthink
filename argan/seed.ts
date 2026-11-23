@@ -15,6 +15,9 @@ import type {
   ZoneSnapshot,
 } from "./argan";
 
+/** the zones-under-management table the home page renders: the family
+ * origins, kinds, serials and signed states — fake data, the offline shape
+ * the static build answers and the first-run rows the sqlite lane seeds. */
 export const seedZones: readonly ZoneSnapshot[] = [
   { origin: "devthink.pro", kind: "master", serial: "2026011203", state: "signed" },
   { origin: "wenathlan.net", kind: "master", serial: "2026011210", state: "signed" },
@@ -35,6 +38,9 @@ export const seedZones: readonly ZoneSnapshot[] = [
  * from the home face — the type universe is catalog data, not widget copy). */
 export const seedRecordTypes: readonly string[] = ["A", "AAAA", "MX", "NS", "TXT", "SOA", "CAA"];
 
+/** the verbatim zone-file snapshot rows the apex pre renders — the
+ * directives, blanks and records of devthink.pro exactly as the zone
+ * reads, reassembled by the rebuild helper when the page edits them. */
 export const seedRecordSets: readonly RecordSetRow[] = [
   { kind: "directive", line: "; devthink.pro — zone snapshot (fake data, serial 2026011203)" },
   { kind: "directive", line: "$ORIGIN devthink.pro." },
@@ -119,6 +125,8 @@ export const seedRecordSets: readonly RecordSetRow[] = [
   },
 ];
 
+/** the numbered steps of the publish flow the home stepper draws —
+ * validate, write zone, persist, republish, serve, one card per move. */
 export const seedPublicationSteps: readonly PublicationStep[] = [
   {
     ordinal: "01",
@@ -148,6 +156,8 @@ export const seedPublicationSteps: readonly PublicationStep[] = [
   },
 ];
 
+/** the home library cards: the gateway capability rows the features shelf
+ * renders (zones and records, the resolver seats, the transfer lanes). */
 export const seedLibraryCards: readonly FeatureCard[] = [
   {
     group: "home-library",
@@ -187,6 +197,8 @@ export const seedLibraryCards: readonly FeatureCard[] = [
   },
 ];
 
+/** the dnssec key cards: the KSK and ZSK rows the keys shelf renders,
+ * each carrying its rollover window and its verbatim DS/dnskey line. */
 export const seedDnssecKeyCards: readonly FeatureCard[] = [
   {
     group: "dnssec-keys",
@@ -208,6 +220,8 @@ export const seedDnssecKeyCards: readonly FeatureCard[] = [
   },
 ];
 
+/** the doh-first cards: the probe, switch and serve rows the transport
+ * shelf renders, the fallback story the landing tells in order. */
 export const seedDohFirstCards: readonly FeatureCard[] = [
   {
     group: "doh-first",
@@ -229,12 +243,16 @@ export const seedDohFirstCards: readonly FeatureCard[] = [
   },
 ];
 
+/** the hero badges: the tone-coded chips the landing hero carries
+ * (dnssec, DoH and the relay law the family rides). */
 export const seedHeroBadges: readonly SignalBadge[] = [
   { group: "hero", label: "DNSSEC ED25519", tone: "default", dot: true },
   { group: "hero", label: "DoH RFC 8484", tone: "info" },
   { group: "hero", label: "PKARR", tone: "success" },
 ];
 
+/** the dnssec algorithm badges the keys shelf lists — one chip per
+ * algorithm the validator answers for. */
 export const seedDnssecAlgorithms: readonly SignalBadge[] = [
   { group: "dnssec-alg", label: "ED25519 · alg 15", tone: "success" },
   { group: "dnssec-alg", label: "ECDSA P-256 · alg 13", tone: "info" },
@@ -242,6 +260,8 @@ export const seedDnssecAlgorithms: readonly SignalBadge[] = [
   { group: "dnssec-alg", label: "NSEC3 · SHA-256 digest", tone: "warning" },
 ];
 
+/** the DNS transport rows the gateway table renders — classic, DoT, DoH,
+ * DoQ and the planned lanes, with the spec each rides. */
 export const seedTransports: readonly DnsTransport[] = [
   {
     name: "Classic DNS (UDP + TCP)",
@@ -259,6 +279,8 @@ export const seedTransports: readonly DnsTransport[] = [
   { name: "ODoH", port: "443", spec: "RFC 9230", state: "planned", tone: "default" },
 ];
 
+/** the verbatim configuration blocks the settings pre renders — the
+ * Corefile and the sign pipeline output, kept as the tools print them. */
 export const seedConfigBlocks: readonly ConfigBlock[] = [
   {
     key: "corefile",
@@ -301,6 +323,8 @@ export const seedConfigBlocks: readonly ConfigBlock[] = [
   },
 ];
 
+/** the key-rollover timeline the dnssec page renders — pre-publish,
+ * switch, retire, remove, one move per row with its window. */
 export const seedRolloverSteps: readonly RolloverStep[] = [
   {
     title: "Pre-publish",
@@ -326,6 +350,8 @@ export const seedRolloverSteps: readonly RolloverStep[] = [
   },
 ];
 
+/** the resolver options the settings select offers (the argan gateway
+ * first, the public resolvers, the system fallback). */
 export const seedResolverChoices: readonly OptionChoice[] = [
   { group: "resolver", value: "argan", label: "argan gateway (DoH · dns.devthink.pro)", selected: true },
   { group: "resolver", value: "quad9", label: "Quad9 (DoT · 9.9.9.9)" },
@@ -334,6 +360,8 @@ export const seedResolverChoices: readonly OptionChoice[] = [
   { group: "resolver", value: "system", label: "System resolver (fallback 8.8.8.8)" },
 ];
 
+/** the language options the settings select offers (the copy law keeps
+ * the labels in the label store — these rows carry the values alone). */
 export const seedLocaleChoices: readonly OptionChoice[] = [
   { group: "locale", value: "en", label: "English", selected: true },
   { group: "locale", value: "pt", label: "Portuguese (BR)" },

@@ -1,3 +1,18 @@
+/**
+ * vitest.config.ts — the test harness seat of the debonair battery (root
+ * layer): the node lane over the test/*.test.ts corpus, the ownership
+ * bridges that resolve every published library specifier the sources
+ * import onto the monorepo sibling that owns the surface (the argan dns
+ * door, the vault label/onboarding/storage factories, the saddle
+ * workload law, the cadria synth engine and the legacy audio subpath
+ * family the consolidated keyword file answers at one root), and the two
+ * runner laws the hosted memory ceiling taught — the file lane rides
+ * single-file so the dsp workers never overlap into the ceiling, and the
+ * timeout scales through the env the emulated arm64 container leg sets —
+ * the bridges retire the day the published envelopes carry the built
+ * surfaces, the battery keeps answering from the reviewed repository
+ * sources alone.
+ */
 import path from "node:path";
 import { defineConfig } from "vitest/config";
 

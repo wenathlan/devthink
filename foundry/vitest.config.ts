@@ -1,3 +1,14 @@
+/**
+ * vitest.config.ts — the test harness seat of the foundry battery (root
+ * layer): the node lane over the test/*.test.ts corpus, the ownership
+ * bridges that resolve every published library specifier the sources
+ * import onto the monorepo sibling that owns the surface (the vault
+ * label/onboarding/storage/routes/utils factories, the saddle workload
+ * law, the sandbox seat and the mode ladder), and the timeout law the
+ * emulated arm64 container leg scales through its env — the bridges
+ * retire the day the published envelopes carry the built surfaces, the
+ * battery keeps answering from the reviewed repository sources alone.
+ */
 import path from "node:path";
 import { defineConfig } from "vitest/config";
 

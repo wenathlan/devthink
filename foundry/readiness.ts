@@ -29,6 +29,10 @@ import { readinessmigratetabular } from "../devthink/test/readinesstabular.ts";
 import { readinessmigrateuivision } from "../devthink/test/readinessuivision.ts";
 import { readinessmigratev1 } from "../devthink/test/readinessv1.ts";
 
+/** the harness consts the review rides — the promisified exec, the repo
+ * root of the audited tree, the argv mode word, the stamped release the
+ * package.json answers, the record document and the fixed epoch the report
+ * stamps so the committed record never carries a wall clock. */
 const execute = promisify(execFile);
 const repoRoot = resolve(process.cwd(), "..");
 const mode = process.argv[2] ?? "check";
@@ -623,6 +627,9 @@ export const readinessrecord: readinessreport = {
   "godecision": "go"
 };
 
+/** the direct-invocation guard of the review seat: the module answers its
+ * exported suite for the library callers, and only the node process
+ * running the file itself walks the sync/verify/report lanes below. */
 const invokeddirectly = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (invokeddirectly) {
   const report = await runreadinesssuite();

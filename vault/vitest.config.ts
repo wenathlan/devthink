@@ -1,3 +1,14 @@
+/**
+ * vitest.config.ts — the test harness seat of the vault battery (root
+ * layer): the node lane over the test/*.test.ts corpus, the ownership
+ * bridges that resolve every published library specifier the sources
+ * import onto the monorepo sibling that owns the surface (the vault's own
+ * label store, the saddle workload law and the argan mimetypes corpus
+ * engine the media-type pillar rides), and the timeout law the emulated
+ * arm64 container leg scales through its env — the bridges retire the day
+ * the published envelopes carry the built surfaces, the battery keeps
+ * answering from the reviewed repository sources alone.
+ */
 import path from "node:path";
 import { defineConfig } from "vitest/config";
 
