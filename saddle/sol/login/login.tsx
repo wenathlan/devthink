@@ -2,7 +2,7 @@
  * login page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  */
@@ -15,9 +15,9 @@
 // carries the real session facts; 44px inputs, the sand focus ring.
 import { Link } from 'wouter';
 import { label } from '../../labels.ts';
-import { LoginForm as LoginForm } from '../../wingets';
+import { LoginForm as LoginForm } from '../../widgets';
 
-export * from '../../wingets';
+export * from '../../widgets';
 
 /** meta description carried by the absorbed static page. */
 export const loginpagedescription =

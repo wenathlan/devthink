@@ -1,8 +1,8 @@
 /**
  * labels.ts — the copy law of saddle: every interface string lives in the
- * label store, the wingets read through this typed accessor, and a
+ * label store, the widgets read through this typed accessor, and a
  * hardcoded string inside a widget is a defect. the manifest below is the
- * english source of truth extracted from the real strings of the Sol wingets
+ * english source of truth extracted from the real strings of the Sol widgets
  * and the page anchors; the seed ingests it into the labels store (the site
  * db through db.ts on the server, the browser rows cache in the visitor
  * machine) and the seed never overwrites a translated row.
@@ -24,7 +24,7 @@ import { createLabelStore } from "../vault/labelstore.ts";
 export const LABEL_REVISION = 7;
 
 /** the english manifest: the page.widget.key path answers the surface text.
- * every entry is the verbatim string the wingets and page anchors rendered
+ * every entry is the verbatim string the widgets and page anchors rendered
  * before the copy wave — zero invented copy. */
 export const labelmanifest = {
   // the console page anchor (the sandbox surface)
@@ -336,7 +336,7 @@ export const labelmanifest = {
   'login.noAccount': 'no account? ',
   'login.link.create': 'create one',
   'login.link.backConsole': 'back to the sandbox',
-  // the register page anchor and form wingets
+  // the register page anchor and form widgets
   'register.brand': 'saddle',
   'register.tagline': 'create account',
   'register.panel.title': 'username + password only',
@@ -603,7 +603,7 @@ export const labelmanifest = {
     'The interface never touches the visitor browser, gpu or cpu: the sandbox and the saddle modalities act for the system over the internet.',
   'compute.note.eyebrow': 'SERVED / NEVER SHIPPED',
   'compute.note.body':
-    'The catalog dies with the engine, not with the page: the wingets consume the db through the internal apis, so a row changes when the engine changes it — never when the bundle ships.',
+    'The catalog dies with the engine, not with the page: the widgets consume the db through the internal apis, so a row changes when the engine changes it — never when the bundle ships.',
   // the modality catalog widget (the plan table the engine api serves)
   'compute.catalog.aria': 'the modality catalog served by the saddle api',
   'compute.catalog.eyebrow': 'MODALITY CATALOG / THE PLAN',
@@ -817,7 +817,7 @@ export type LabelKey = keyof typeof labelmanifest & string;
 
 /** the store mechanism rides the vault factory (the storage law of the
  * family: the vault owns the store, the app owns the manifest — the
- * mechanism is imported, never duplicated). the cache key keeps the browser mirror the wingets already read. */
+ * mechanism is imported, never duplicated). the cache key keeps the browser mirror the widgets already read. */
 const store = createLabelStore({
   manifest: labelmanifest,
   revision: LABEL_REVISION,

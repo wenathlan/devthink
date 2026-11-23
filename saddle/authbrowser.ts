@@ -2,7 +2,7 @@
  * authbrowser.ts — the browser account seat of the auth family (the
  * cadastro law owner). the section the auth node lane carried since the
  * localauth wave rides its own family member: every seat the sol faces
- * and the dashboard wingets import owns ZERO node builtins (the browser
+ * and the dashboard widgets import owns ZERO node builtins (the browser
  * bundle law — the auth.ts module scope carried node:crypto and the db
  * store the browser world never executes, and the bundled node:path
  * resolve the db chain pulled reddened the whole saddle face on the
@@ -16,7 +16,7 @@
 /* ══════════════════════════════════════════════════════════════════════ */
 /* SECTION: localauth.ts — the browser account seat (the cadastro law:   */
 /* the browser never holds an account — the exported surface the faces   */
-/* and the dashboard wingets import rides verbatim; the one duplicated   */
+/* and the dashboard widgets import rides verbatim; the one duplicated   */
 /* datum the census found, the CODEOWNERS adminlist, dropped in favor    */
 /* of the adminusernames export the first section answers; the localauth */
 /* wave is browser-pure and imports nothing, so no intra-group import    */
@@ -39,7 +39,7 @@
  * never saves in the browser).
  *
  * this module keeps the exported surface the faces and the dashboard
- * wingets import (the binding point contract), now answering the law:
+ * widgets import (the binding point contract), now answering the law:
  *   probe(base)          - true when the api answers (the only door the faces need)
  *   available()          - false: the browser never holds accounts (the law)
  *   register(u, p)       - refuses: the registration answers the database alone
@@ -109,7 +109,7 @@ const API_AWAY =
         'the api lane is away — accounts answer the database alone, never this browser (the cadastro law).';
 
 /**
- * Reads the local account names through the one binding point (the wingets
+ * Reads the local account names through the one binding point (the widgets
  * never touch the browser's local storage directly — the raw reads the
  * dashboards carried retired with the privacy law).
  *

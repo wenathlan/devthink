@@ -2,7 +2,7 @@
  * dashboard page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  */
@@ -20,14 +20,14 @@ import { label, labelfill } from '../../labels.ts';
  * typed ES module that replaced the window-global localauth.js of the static edge (the original
  * beside the typed module - the same convention the Login page uses. */
 import { logout, probe, session as readlocalsession } from '../../authbrowser.ts';
-import type { LocalSessionView } from '../../wingets';
-import { AccountPanel as AccountPanel } from '../../wingets';
-import { AdminPanel as AdminPanel } from '../../wingets';
-import { CreateSandboxForm as CreateSandboxForm } from '../../wingets';
-import { DashboardEventstimeline as EventsTimeline } from '../../wingets';
-import { SandboxList as SandboxList } from '../../wingets';
+import type { LocalSessionView } from '../../widgets';
+import { AccountPanel as AccountPanel } from '../../widgets';
+import { AdminPanel as AdminPanel } from '../../widgets';
+import { CreateSandboxForm as CreateSandboxForm } from '../../widgets';
+import { DashboardEventstimeline as EventsTimeline } from '../../widgets';
+import { SandboxList as SandboxList } from '../../widgets';
 
-export * from '../../wingets';
+export * from '../../widgets';
 
 /** which surface answers: the node api or the static-edge local engine. */
 type Phase = 'booting' | 'api' | 'local';

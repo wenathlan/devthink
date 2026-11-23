@@ -36,16 +36,16 @@ describe("the compute face design law", () => {
     );
   });
 
-  it("the compute page keeps the shell anchor and mounts the two api wingets", () => {
+  it("the compute page keeps the shell anchor and mounts the two api widgets", () => {
     const page = source("sol", "compute", "compute.tsx");
     assert.ok(page.includes("PageShell"), "the page keeps the PageShell frame");
     assert.ok(page.includes("ComputeModalitycatalog"), "the catalog winget is mounted");
     assert.ok(page.includes("ComputeBootladder"), "the boot ladder winget is mounted");
-    assert.ok(/from ["']\.\.\/\.\.\/wingets["']/.test(page), "the wingets arrive through the shared winget barrel");
+    assert.ok(/from ["']\.\.\/\.\.\/widgets["']/.test(page), "the widgets arrive through the shared winget barrel");
   });
 
   it("the catalog winget rides the api and carries no fixed records", () => {
-    const winget = source("sol", "wingets", "ComputeModalitycatalog.tsx");
+    const winget = source("sol", "widgets", "ComputeModalitycatalog.tsx");
     assert.ok(/fetchmodalities|apifetch/.test(winget), "the winget fetches through the api surface");
     assert.ok(!/\{\s*id:\s*["']/.test(winget), "no fixed record literals inside the winget");
     assert.ok(winget.includes("dash-skeleton"), "loading renders skeleton rows");
@@ -55,7 +55,7 @@ describe("the compute face design law", () => {
   });
 
   it("the boot ladder computes its ceilings from the fetched records", () => {
-    const winget = source("sol", "wingets", "ComputeBootladder.tsx");
+    const winget = source("sol", "widgets", "ComputeBootladder.tsx");
     assert.ok(/fetchmodalities|apifetch/.test(winget), "the ladder fetches the plan");
     assert.ok(/Math\.min/.test(winget), "the floor comes from the records");
     assert.ok(/Math\.max/.test(winget), "the ceiling comes from the records");
@@ -69,7 +69,7 @@ describe("the compute face design law", () => {
       page.indexOf("ConsoleEdgelaw") < page.indexOf("console-section"),
       "the banner lands above the console surface",
     );
-    const banner = source("sol", "wingets", "ConsoleEdgelaw.tsx");
+    const banner = source("sol", "widgets", "ConsoleEdgelaw.tsx");
     assert.ok(
       banner.includes("the saddle edge engine executes every pass"),
       "the banner carries the first half of the law sentence",
@@ -95,7 +95,7 @@ describe("the compute face design law", () => {
   });
 
   it("the winget barrel exports all three new surfaces", () => {
-    const barrel = source("wingets.ts");
+    const barrel = source("widgets.ts");
     assert.ok(/export \{ default as ComputeModalitycatalog \}/.test(barrel));
     assert.ok(/export \{ default as ComputeBootladder \}/.test(barrel));
     assert.ok(/export \{ default as ConsoleEdgelaw \}/.test(barrel));

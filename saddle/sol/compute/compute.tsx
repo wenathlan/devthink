@@ -2,7 +2,7 @@
  * compute page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  */
@@ -16,7 +16,7 @@
 import { BoxRegular as Box } from "@fluentui/react-icons";
 import { PageShell } from "../shell/Shell.tsx";
 import { label } from "../../labels.ts";
-import { ComputeBootladder, ComputeModalitycatalog } from "../../wingets";
+import { ComputeBootladder, ComputeModalitycatalog } from "../../widgets";
 
 export default function Compute() {
   return (

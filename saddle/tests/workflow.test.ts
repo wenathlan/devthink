@@ -229,8 +229,8 @@ describe("the workflow contract", () => {
         "@biomejs/biome@2.5.11",
         "check",
         "--diagnostic-level=error",
-        "test/workflow.test.ts",
-        "test/simulation.test.ts",
+        "tests/workflow.test.ts",
+        "tests/simulation.test.ts",
       ],
       180000,
       reporoot,
@@ -398,7 +398,7 @@ describe("the workflow contract", () => {
      * family) and the engine root keeps only the PWA manifest
      * (manifest.webmanifest) of the console. */
     for (const required of [
-      "App.tsx",
+      "app.tsx",
       "index.html",
       "sol/sol.css",
       "api.ts",
@@ -421,26 +421,26 @@ describe("the workflow contract", () => {
     assert.equal(
       existsSync(join(reporoot, "main.tsx")),
       false,
-      "main.tsx is retired — App.tsx carries the createRoot bootstrap (the one-entry doctrine)",
+      "main.tsx is retired — app.tsx carries the createRoot bootstrap (the one-entry doctrine)",
     );
-    const appsource = readFileSync(join(reporoot, "App.tsx"), "utf8");
+    const appsource = readFileSync(join(reporoot, "app.tsx"), "utf8");
     assert.match(
       appsource,
       /createRoot\(/,
-      "App.tsx must carry the createRoot self-mount left behind by the retired main.tsx",
+      "app.tsx must carry the createRoot self-mount left behind by the retired main.tsx",
     );
     assert.match(
       appsource,
       /import ['"]\.\/sol\/sol\.css['"]/,
-      "App.tsx must import the sol/sol.css stylesheet left behind by the retired main.tsx",
+      "app.tsx must import the sol/sol.css stylesheet left behind by the retired main.tsx",
     );
     /* every route is a page folder inside the Sol theme, fronted by its own
      * anchor file (the anchor architecture: folder/<folder>.tsx carries the
      * page mount and re-exports the loose components beside it; the theme
-     * anchor sol/Sol.tsx owns the route table and App.tsx consumes only it). */
+     * anchor sol/sol.tsx owns the route table and app.tsx consumes only it). */
     assert.ok(
-      existsSync(join(reporoot, "sol", "Sol.tsx")),
-      "sol/Sol.tsx — the theme anchor owns the route table (the anchor architecture)",
+      existsSync(join(reporoot, "sol", "sol.tsx")),
+      "sol/sol.tsx — the theme anchor owns the route table (the anchor architecture)",
     );
     for (const page of [
       "home",

@@ -2,7 +2,7 @@
  * console page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file. This anchor carries the former main component of the folder,
  * which now lives here as the page mount itself.
  */
@@ -21,17 +21,17 @@ import { apibase, apifetch, fetchhealth } from '../../api';
 import { label, labelfill } from '../../labels.ts';
 import type { SandboxState } from '../../sandbox.ts';
 import { bootSequence, cpudata, createSandboxState, dispatch, gpudata } from '../../sandbox.ts';
-import { ApiBadge as ApiBadge } from '../../wingets';
-import { ConsoleEdgelaw as ConsoleEdgelaw } from '../../wingets';
-import type { SandboxEvent, SandboxEventKind } from '../../wingets';
-import { EventsTimeline as EventsTimeline } from '../../wingets';
-import { SnapshotControls as SnapshotControls } from '../../wingets';
-import type { SandboxSpecSelection } from '../../wingets';
-import { SpecPanel as SpecPanel } from '../../wingets';
-import type { TerminalRow, TerminalState } from '../../wingets';
-import { Terminal as Terminal } from '../../wingets';
+import { ApiBadge as ApiBadge } from '../../widgets';
+import { ConsoleEdgelaw as ConsoleEdgelaw } from '../../widgets';
+import type { SandboxEvent, SandboxEventKind } from '../../widgets';
+import { EventsTimeline as EventsTimeline } from '../../widgets';
+import { SnapshotControls as SnapshotControls } from '../../widgets';
+import type { SandboxSpecSelection } from '../../widgets';
+import { SpecPanel as SpecPanel } from '../../widgets';
+import type { TerminalRow, TerminalState } from '../../widgets';
+import { Terminal as Terminal } from '../../widgets';
 
-export * from '../../wingets';
+export * from '../../widgets';
 
 /** display cap for very large payloads such as cpuinfo at 192 vcpus. */
 const displaycap = 120000;
