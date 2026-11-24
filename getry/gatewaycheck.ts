@@ -6,7 +6,7 @@
  * retired into this seat with every behavior preserved under the same name.
  */
 
-import { startgatewayfixtureserver } from "./test/gatewayserver.ts";
+import { startgatewayfixtureserver } from "./tests/gatewayserver.ts";
 import type { baseurlconfig } from "./types.ts";
 
 /**

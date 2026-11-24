@@ -5,7 +5,7 @@
 # external module script of index.html is the only script tag the face
 # carries, no inline boot script rides this app, so no hash, no
 # unsafe-inline and no eval ever enters the script lane. style-src
-# carries 'unsafe-inline' for styles only, because the brandmark winget
+# carries 'unsafe-inline' for styles only, because the brandmark widget
 # composes its css variable style attribute (a style never executes,
 # the script lane stays sealed). img-src adds data: for the svg noise
 # backgrounds of sol.css. media-src, font-src and frame-src stay 'self'.

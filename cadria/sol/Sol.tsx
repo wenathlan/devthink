@@ -3,10 +3,10 @@
  * The file carrying the theme folder's own name (sol/Sol.tsx, beside
  * sol/sol.css) is the path manager of the pages: it imports one anchor per
  * page folder (`folder/folder.tsx`, each beside the loose components its
- * folder keeps) and mounts every route and subroute of the theme. App.tsx
+ * folder keeps) and mounts every route and subroute of the theme. app.tsx
  * consumes only this file and the theme stylesheet; no page component is
  * ever imported outside this layer. When a theme folder changes its name
- * (Moon, Aqua), this file follows the new name and App.tsx keeps importing
+ * (Moon, Aqua), this file follows the new name and app.tsx keeps importing
  * the anchor by the folder path.
  *
  * The route table mirrors the eight official pages of the family. The intro
@@ -26,7 +26,7 @@ import NotFoundAnchor from "./notfound/notfound.tsx";
 import OnboardingAnchor from "./onboarding/onboarding.tsx";
 import PlayerAnchor from "./player/player.tsx";
 import SettingsAnchor from "./settings/settings.tsx";
-import { EntryGate as EntryGate } from "../wingets";
+import { EntryGate as EntryGate } from "../widgets";
 import Shell from "./shell/Shell.tsx";
 import StudioAnchor from "./studio/studio.tsx";
 

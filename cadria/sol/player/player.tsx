@@ -8,7 +8,7 @@
  *
  * player — the detailed engine wave (the owner order of the waves,
  * landed): the disc player rides the real engine lanes again — the
- * PlayerViewer composite winget (one mount: the stored frame viewer over
+ * PlayerViewer composite widget (one mount: the stored frame viewer over
  * the gateway read and the demo compute, the offline wall) answers the
  * route with the construction face carried as its arming face. The
  * engine logics the player rode (gateway, image, video) never left their
@@ -17,7 +17,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface, PlayerViewer } from "../../wingets";
+import { Constructionface, PlayerViewer } from "../../widgets";
 
 /**
  * the player page: the real artwork viewer under the player eyebrow.

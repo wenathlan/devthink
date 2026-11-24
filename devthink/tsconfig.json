@@ -110,7 +110,7 @@
       "@wenathlan/getry/nodeshim": ["../getry/shims.ts"],
       "@wenathlan/getry/types": ["../getry/types.ts"],
       "@wenathlan/getry/constants": ["../getry/constants.ts"],
-      "@wenathlan/getry/test/researchfixtures": ["../getry/test/researchfixtures.ts"],
+      "@wenathlan/getry/tests/researchfixtures": ["../getry/tests/researchfixtures.ts"],
       /* the getry owner faces of the gateway ownership wave
        * (wave/ownership.gateway), mirrored from vite.config.ts: the
        * embedded gateway surfaces the grand merge interned in server.ts
@@ -189,6 +189,6 @@
     }
   },
   /* the foundry gate wave: the four ci gates ride the foundry seat, the os typecheck still walks their declarations. */
-  "include": ["*.ts", "test/**/*.ts", "sol/**/*.ts", "sol/**/*.tsx", "../foundry/readiness.ts", "../foundry/dependencyupdates.ts", "../foundry/npmgate.ts", "../foundry/bundlescan.ts"],
-  "exclude": ["test/code", "dist", "node_modules"]
+  "include": ["*.ts", "tests/**/*.ts", "sol/**/*.ts", "sol/**/*.tsx", "../foundry/readiness.ts", "../foundry/dependencyupdates.ts", "../foundry/npmgate.ts", "../foundry/bundlescan.ts"],
+  "exclude": ["tests/code", "dist", "node_modules"]
 }

@@ -50,7 +50,7 @@ v1 serves them — every other version answers the paused-shaped 503 with the
 - `videos/generations` — cogvideox async lane (POST creates the task answering
   202, `GET ?id=<task_id>` polls until SUCCESS or FAIL)
 
-The numbers are pinned by `test/gatewayversions.test.ts` (5 providers × 14
+The numbers are pinned by `tests/gatewayversions.test.ts` (5 providers × 14
 kinds = 70 lanes). The store behind the routes (`schema.prisma`):
 `ChatMessage`, `NvidiaKey`, `TownKey`, `ApiKey`, `SessionContext`,
 `OnboardingState`.

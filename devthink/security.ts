@@ -6192,7 +6192,7 @@ export function apimapstructerrorof(input: {
  * @section trip the trip convergence (the prongs meet here, once)
  * @section surface install / suspend / listener surface (the toggle seam)
  * @depends-on os.ts (the interstitial copy rows), sol/sol.css §AA (the wall skin)
- * @consumed-by App.tsx (the arm site), personalstore.ts (the owner toggle)
+ * @consumed-by app.tsx (the arm site), personalstore.ts (the owner toggle)
  */
 
 /* the guard wall text seat: the four strings the devtools wall renders ride
@@ -6529,7 +6529,7 @@ export function suspenddevtoolsguard(suspended: boolean): void {
  * @section strike the strike report (the wall's trip listener calls it)
  * @section status the ban status question of the boot
  * @depends-on devtoolsguard.ts (the caller of the strike, the owner of the response)
- * @consumed-by App.tsx (the boot wiring)
+ * @consumed-by app.tsx (the boot wiring)
  */
 
 /** @section base — the catalog base of the site api (empty means offline:

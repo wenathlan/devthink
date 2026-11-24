@@ -3,13 +3,13 @@ import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
-import { permdiffbaseline as recordedbaseline } from "./test/permbaseline.ts";
+import { permdiffbaseline as recordedbaseline } from "./tests/permbaseline.ts";
 
 const execute = promisify(execFile);
 const mode = process.argv[2] ?? "check";
 const packagejson = JSON.parse(await readFile("package.json", "utf8"));
 const release = String(packagejson.version);
-const baselinepath = "test/permbaseline.ts";
+const baselinepath = "tests/permbaseline.ts";
 const justificationdoc = "docs/extensionpermissions.md";
 const tableheading = "## permdiff justification table";
 const failures: string[] = [];

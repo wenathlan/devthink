@@ -27,7 +27,7 @@ tasks.jar {
         include("stealthhead.kts")
         include("README.md")
         include("docs/**")
-        include("test/**")
+        include("tests/**")
     }
 }
 

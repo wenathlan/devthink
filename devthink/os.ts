@@ -1852,7 +1852,7 @@ export const seedOsGatewayStructure = `devthink/
   gatewayviewconfig.ts      # the shipped v1–v5 definitions (data only)
   gatewayviewdefinition.ts  # the view-side structural contract
   sol/                      # the design room of the whole project
-    App.tsx                 # the workbench entry — one router, one mount
+    app.tsx                 # the workbench entry — one router, one mount
     gatewayview/            # this console — the embedded gateway face
       gatewayview.tsx       # this page (self-contained, no main.tsx)
     schema.prisma           # the database schema

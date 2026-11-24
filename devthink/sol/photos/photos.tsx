@@ -2,8 +2,8 @@
  * photos page anchor — layer 3 of the anchor architecture. The file carrying
  * the folder's own name is the path manager of the page: it imports the
  * loose components beside it, mounts the page and re-exports the public
- * component surface. Only the theme anchor (sol/Sol.tsx) and the window
- * registry (sol/wingets/PanelWorkspace.tsx) consume this file.
+ * component surface. Only the theme anchor (sol/sol.tsx) and the window
+ * registry (sol/widgets/PanelWorkspace.tsx) consume this file.
  *
  * Photos — the image studio in the Windows 11 grammar (the image app of
  * Windows 11 is Photos, so the keyword follows the app): a nav pane beside
@@ -19,12 +19,12 @@
  */
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ShellChrome } from "../wingets/Shellchrome";
+import { ShellChrome } from "../widgets/Shellchrome";
 import { type NativeApp, nativeApps, osAppLabels, type StudioAsset, studioAssets } from "../../catalog";
 import { osText } from "../../os.ts";
 import { queuestudiorender } from "../../runner";
-import { Constructionface, ImageEngine } from "../../wingets";
-import { ImageStills } from "../../wingets";
+import { Constructionface, ImageEngine } from "../../widgets";
+import { ImageStills } from "../../widgets";
 
 /** the window title rides the catalog label row, never a hardcoded literal
  * (the bare id keeps the heading honest if the row is missing). */

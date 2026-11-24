@@ -50,7 +50,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["test/*.test.ts"],
+    include: ["tests/*.test.ts"],
     environment: "node",
     /* the timeout stays five seconds on every native runner and scales through the env the emulated arm64 container leg sets (a qemu-interpreted second answers the same green suite many times slower), so an emulated runner never fails a test a native runner passed */
     testTimeout: Number(process.env.COBAIA_TEST_TIMEOUT_MS ?? 5000),

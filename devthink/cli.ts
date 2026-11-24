@@ -411,7 +411,7 @@ async function cmdrecipes(
   state: { config: cliconfiguration; verbosity: "quiet" | "normal" | "verbose"; json: boolean },
 ): Promise<void> {
   const { positional, flags } = parseflags(args);
-  const candidates = ["gallery.json", "build/gallery.json", "test/code/recipes/gallery.json"];
+  const candidates = ["gallery.json", "build/gallery.json", "tests/code/recipes/gallery.json"];
   let gallery:
     | {
         entries: Array<{
@@ -526,7 +526,7 @@ async function cmdrecipes(
         planpath,
         options: {
           format: "human",
-          outputdir: "test/artifacts",
+          outputdir: "tests/artifacts",
           interactive: false,
           dryrun: true,
           grantspath: "gallery",

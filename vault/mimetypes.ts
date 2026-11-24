@@ -7,7 +7,7 @@
 // mappings — the apache tika catalog, the freedesktop shared-mime-info types
 // and legacy aliases, and the h5bp augmented nginx lane joined the iana live
 // snapshot — every type and every extension mapping the family's own mime lane
-// carries rides this corpus, the golden-table battery of test/mimetypes.test.ts
+// carries rides this corpus, the golden-table battery of tests/mimetypes.test.ts
 // pins the coverage — with the family law rows pinned: .ts answers video/mp2t
 // and .tsx answers application/typescript). Real types only, no filler: every
 // row answers a registration a real registry carries.

@@ -8,12 +8,12 @@
  *
  * studio — the detailed engine wave remount (the owner's order): the DAW
  * console returns, mounted on the REAL engine seats through the composite
- * StudioConsole winget — the stage stepper, the arrangement timeline, the
+ * StudioConsole widget — the stage stepper, the arrangement timeline, the
  * piano roll, the channel rack, the mixer strips and the master scope, all
  * fed by the take the playerbus shelf carries (the demo take of the seed)
  * and driven by the real TakeEngine transport. The anchor itself stays the
  * thin face the construction law pins: it owns no state and imports no
- * engine module — the console winget owns the mount, and while the bus arms
+ * engine module — the console widget owns the mount, and while the bus arms
  * (the first paint before the shelf lands its snapshot) the route answers
  * the construction face it wore. The engine logics (arrangement, audio,
  * dawview, mixergraph, pianoroll, playerbus, timelinemodel) keep riding
@@ -22,8 +22,8 @@
 
 import { label } from "../../labels.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
-import { StudioConsole } from "../wingets/StudioConsole.tsx";
-import { Constructionface } from "../../wingets";
+import { StudioConsole } from "../widgets/StudioConsole.tsx";
+import { Constructionface } from "../../widgets";
 
 /**
  * the studio page: the remounted DAW console under the studio eyebrow.

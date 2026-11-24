@@ -4,15 +4,15 @@
  * sol/sol.css) is the path manager of the pages: it imports one anchor per
  * page folder (`folder/folder.tsx`, the only file each folder keeps since
  * the components centralization — the loose components ride
- * `wingets/<page>.<name>.tsx`, flat) and mounts every route and subroute
- * of the theme. App.tsx
+ * `widgets/<page>.<name>.tsx`, flat) and mounts every route and subroute
+ * of the theme. app.tsx
  * consumes only this file and the theme stylesheet; no page component is
  * ever imported outside this layer. Since FAM-APPS-B the theme is an
  * APPLICATION: the entry flow opens the route table — /intro (the
  * akash-floor splash), /onboarding (the first-run frames) — and every other
  * route renders as the content of the ONE application window (the Shell
  * hosts the fundamentals; there is no OS chrome anymore). The flow contract
- * rides the home anchor's entry gate (sol/wingets/HomeEntrygate.tsx): "/"
+ * rides the home anchor's entry gate (sol/widgets/HomeEntrygate.tsx): "/"
  * consults the seen flags (onboardingstate.ts) before anything shows, the
  * intro hands straight to /onboarding and the onboarding lands home.
  */

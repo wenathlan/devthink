@@ -202,11 +202,11 @@
       "@wenathlan/getry/nodeshim": ["./shims.ts"],
       "@wenathlan/getry/types": ["./types.ts"],
       "@wenathlan/getry/constants": ["./constants.ts"],
-      "@wenathlan/getry/test/researchfixtures": ["./test/researchfixtures.ts"],
+      "@wenathlan/getry/tests/researchfixtures": ["./tests/researchfixtures.ts"],
       "@wenathlan/debonair/routetable": ["../debonair/routetable.ts"],
       "@wenathlan/devthink/queue": ["../devthink/queue.ts"]
     }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "test"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "tests"]
 }

@@ -28,7 +28,7 @@ tasks.jar {
         include("README.md")
         include("docs/**")
         include("site/**")
-        include("test/**")
+        include("tests/**")
     }
 }
 

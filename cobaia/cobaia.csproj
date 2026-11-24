@@ -15,7 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="docs/**/*" Pack="true" PackagePath="contentFiles/any/any/docs/" />
-    <None Include="test/**/*" Pack="true" PackagePath="contentFiles/any/any/test/" />
+    <None Include="tests/**/*" Pack="true" PackagePath="contentFiles/any/any/tests/" />
   </ItemGroup>
   <ItemGroup>
     <!-- the lost-dependency recovery union (the additive mirror law) -->

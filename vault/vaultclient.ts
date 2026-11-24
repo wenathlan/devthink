@@ -1,5 +1,5 @@
 // # vaultclient — the engine door of the vault face: the one client the
-// wingets ride to talk the vault's own /api/v1 surface. Until this module
+// widgets ride to talk the vault's own /api/v1 surface. Until this module
 // the product face lived entirely on the rehearsal shelf (the deterministic
 // seed rows the offline build answers) — the engine (the http api over the
 // sealed ledger) ran real but nothing in the face ever called it. The
@@ -1100,7 +1100,7 @@ export function useVaultObjects(reloadKey = 0): { live: ObjectRow[] | null; lane
  * useVaultPillars — the mount hook of the catalog lane: it loads the
  * storage pillars catalog (LibGit2, MySQL2, the prisma schema, drizzle,
  * git lfs, blobs, bigint, pointers) once per mount through the public
- * /api/v1/pillars door, so the wingets render the catalog the engine
+ * /api/v1/pillars door, so the widgets render the catalog the engine
  * answered — never a hardcoded pillar list inside a tsx (the winget law:
  * the data rides the internal api, the surface stays empty of fixed
  * rows).

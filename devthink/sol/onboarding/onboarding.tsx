@@ -2,7 +2,7 @@
  * onboarding page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file. The onboarding is the second page of the owner flow (intro →
  * onboarding → explore): a frame-a-frame tour — 4 frames — dressed in the
  * window grammar and dressed in the trylle card system: the tour window is a
@@ -23,10 +23,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { writeonboardingstage } from "../../onboardingstate";
 import { osText } from "../../os.ts";
-import { SolLogoMark } from "../../wingets";
-import { ONBOARDING_STEPS, StepArt } from "../../wingets";
+import { SolLogoMark } from "../../widgets";
+import { ONBOARDING_STEPS, StepArt } from "../../widgets";
 
-export * from "../../wingets";
+export * from "../../widgets";
 
 /** The finish target of the flow: explore is the free SaaS surface. */
 export const ONBOARDING_HANDOVER = "/explore";

@@ -664,13 +664,13 @@ const copytree = (from: string, to: string, comlock: boolean) =>
   });
 
 const themefolder = (root: string): string => {
-  const base = path.join(INSIDE(root), "App.tsx");
+  const base = path.join(INSIDE(root), "app.tsx");
   if (existsSync(base)) return ".";
   return (
     readdirSync(INSIDE(root)).filter((n: string) => {
       if (!/^[A-Za-z0-9.]+$/.test(n)) return false;
       const p = path.join(INSIDE(root), n);
-      return statSync(p).isDirectory() && existsSync(path.join(p, "App.tsx"));
+      return statSync(p).isDirectory() && existsSync(path.join(p, "app.tsx"));
     })[0] || ""
   );
 };
@@ -2685,13 +2685,13 @@ main().catch((e) => {
 if (scriptslane === "scaffoldtemplates") {
 // scaffoldtemplates.ts — generates the deployable clones (vault, forge, foundry)
 // on the official house tree: one folder per app, no src/. The app root carries
-// the loose .ts logics, the theme root files (App.tsx the global anchor,
+// the loose .ts logics, the theme root files (app.tsx the global anchor,
 // index.html, the platform deploy copies, the manifest and the drizzle schema)
 // and the theme stylesheet lives inside the theme as sol/sol.css, docs/ and
 // test/ exist beside it, and the sol/ folder carries the component folders:
 // one folder per page with loose TSX components beside the shared shell and
-// toast folders. The anchor architecture rides the tree: App.tsx imports only
-// the theme anchor (sol/Sol.tsx, the file named after the theme folder) and
+// toast folders. The anchor architecture rides the tree: app.tsx imports only
+// the theme anchor (sol/sol.tsx, the file named after the theme folder) and
 // the stylesheet, the theme anchor consumes the page anchors and every page
 // folder fronts its loose components with its own anchor
 // (sol/<folder>/<folder>.tsx — the former main component lives in the anchor
@@ -2720,15 +2720,15 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   const tema = path.join(root, "sol");
   w(
     path.join(root, "README.md"),
-    `# ${nome}\n\n${papel}.\n\nHouse tree: one folder per app, no src/ — the app root carries the loose .ts logics and the theme root files (App.tsx the router, index.html, the platform deploy copies, the manifest and the schema), the theme stylesheet lives inside the theme as sol/sol.css, docs/ and test/ exist beside it, and the sol/ folder carries the component folders: one folder per page with loose TSX components beside the shared shell. The complete site archive and the Next conversions (done by the workflow, no folder duplication) travel as tar.xz assets in the release.\n`,
+    `# ${nome}\n\n${papel}.\n\nHouse tree: one folder per app, no src/ — the app root carries the loose .ts logics and the theme root files (app.tsx the router, index.html, the platform deploy copies, the manifest and the schema), the theme stylesheet lives inside the theme as sol/sol.css, docs/ and test/ exist beside it, and the sol/ folder carries the component folders: one folder per page with loose TSX components beside the shared shell. The complete site archive and the Next conversions (done by the workflow, no folder duplication) travel as tar.xz assets in the release.\n`,
   );
   w(
-    path.join(root, "App.tsx"),
-    `/**\n * App — the global anchor (layer 1 of the anchor architecture) and the only\n * TSX outside the theme. The root manages the themes as single files: it\n * imports only the theme anchor (sol/Sol.tsx — the file named after the theme\n * folder, beside sol/sol.css) and the theme stylesheet and renders the theme.\n * Every page and component lives behind the anchor chain (App → Sol → the\n * page anchors → the loose components); nothing is imported directly.\n */\nimport Sol from './sol/Sol';\nimport './sol/sol.css';\n\nexport default function App() {\n  return <Sol />;\n}\n`,
+    path.join(root, "app.tsx"),
+    `/**\n * App — the global anchor (layer 1 of the anchor architecture) and the only\n * TSX outside the theme. The root manages the themes as single files: it\n * imports only the theme anchor (sol/sol.tsx — the file named after the theme\n * folder, beside sol/sol.css) and the theme stylesheet and renders the theme.\n * Every page and component lives behind the anchor chain (App → Sol → the\n * page anchors → the loose components); nothing is imported directly.\n */\nimport Sol from './sol/sol';\nimport './sol/sol.css';\n\nexport default function App() {\n  return <Sol />;\n}\n`,
   );
   w(
     path.join(root, "index.html"),
-    `<!doctype html>\n<!-- web entry of the theme -->\n<html lang="pt-BR">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <meta name="theme-color" content="#0f172a" />\n    <meta name="description" content="${papel}" />\n    <link rel="icon" href="./favicon.svg" />\n    <link rel="stylesheet" href="./sol/sol.css" />\n    <link rel="manifest" href="./manifest.webmanifest" />\n    <title>${nome}</title>\n  </head>\n  <body>\n    <div id="root"></div>\n    <script type="module" src="./App.tsx"></script>\n  </body>\n</html>\n`,
+    `<!doctype html>\n<!-- web entry of the theme -->\n<html lang="pt-BR">\n  <head>\n    <meta charset="utf-8" />\n    <meta name="viewport" content="width=device-width, initial-scale=1" />\n    <meta name="theme-color" content="#0f172a" />\n    <meta name="description" content="${papel}" />\n    <link rel="icon" href="./favicon.svg" />\n    <link rel="stylesheet" href="./sol/sol.css" />\n    <link rel="manifest" href="./manifest.webmanifest" />\n    <title>${nome}</title>\n  </head>\n  <body>\n    <div id="root"></div>\n    <script type="module" src="./app.tsx"></script>\n  </body>\n</html>\n`,
   );
   w(
     path.join(tema, "sol.css"),
@@ -2824,8 +2824,8 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
     `// the drizzle kit config of the application database\nexport default {};\n`,
   );
   w(
-    path.join(tema, "Sol.tsx"),
-    `/**\n * Sol theme anchor — layer 2 of the anchor architecture.\n * The file carrying the theme folder's own name (sol/Sol.tsx, beside\n * sol/sol.css) is the path manager of the pages: it imports one anchor per\n * page folder (\`folder/folder.tsx\`, each beside the loose components its\n * folder keeps) and mounts the page surface of the theme. App.tsx consumes\n * only this file and the theme stylesheet; no page component is ever\n * imported outside this layer. When a theme folder changes its name (Moon,\n * Aqua), this file follows the new name and App.tsx keeps importing the\n * anchor by the folder path.\n */\nimport HomeAnchor from './home/home';\n\n/** Mounts the theme surface through the page anchors. */\nexport default function Sol() {\n  return <HomeAnchor />;\n}\n`,
+    path.join(tema, "sol.tsx"),
+    `/**\n * Sol theme anchor — layer 2 of the anchor architecture.\n * The file carrying the theme folder's own name (sol/sol.tsx, beside\n * sol/sol.css) is the path manager of the pages: it imports one anchor per\n * page folder (\`folder/folder.tsx\`, each beside the loose components its\n * folder keeps) and mounts the page surface of the theme. app.tsx consumes\n * only this file and the theme stylesheet; no page component is ever\n * imported outside this layer. When a theme folder changes its name (Moon,\n * Aqua), this file follows the new name and app.tsx keeps importing the\n * anchor by the folder path.\n */\nimport HomeAnchor from './home/home';\n\n/** Mounts the theme surface through the page anchors. */\nexport default function Sol() {\n  return <HomeAnchor />;\n}\n`,
   );
   w(
     path.join(tema, "shell", "Shell.tsx"),
@@ -2833,7 +2833,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   );
   w(
     path.join(tema, "home", "home.tsx"),
-    `/**\n * home page anchor — layer 3 of the anchor architecture.\n * The file carrying the folder's own name is the path manager of the page:\n * it imports the loose components beside it, mounts the page and re-exports\n * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes\n * this file. This anchor carries the former main component of the folder,\n * which now lives here as the page mount itself.\n */\nimport { Entry } from './entry';\nimport { Tabs } from './tabs';\nimport type { HomeProps } from './types';\n\nexport * from './entry';\nexport * from './tabs';\n\nexport function Home(props: HomeProps) {\n  return (\n    <main className="page">\n      <h1>Home</h1>\n      <p>{props.input}</p>\n      <Entry />\n      <Tabs />\n    </main>\n  );\n}\n\nexport default Home;\n`,
+    `/**\n * home page anchor — layer 3 of the anchor architecture.\n * The file carrying the folder's own name is the path manager of the page:\n * it imports the loose components beside it, mounts the page and re-exports\n * the public component surface. Only the theme anchor (sol/sol.tsx) consumes\n * this file. This anchor carries the former main component of the folder,\n * which now lives here as the page mount itself.\n */\nimport { Entry } from './entry';\nimport { Tabs } from './tabs';\nimport type { HomeProps } from './types';\n\nexport * from './entry';\nexport * from './tabs';\n\nexport function Home(props: HomeProps) {\n  return (\n    <main className="page">\n      <h1>Home</h1>\n      <p>{props.input}</p>\n      <Entry />\n      <Tabs />\n    </main>\n  );\n}\n\nexport default Home;\n`,
   );
   w(
     path.join(tema, "home", "entry.tsx"),
@@ -2849,7 +2849,7 @@ const casa = (nome: string, papel: string, logicas: string[]) => {
   );
   w(
     path.join(tema, "notfound", "notfound.tsx"),
-    `/**\n * notfound page anchor — layer 3 of the anchor architecture.\n * The file carrying the folder's own name is the path manager of the page:\n * it imports the loose components beside it, mounts the page and re-exports\n * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes\n * this file. This anchor carries the former main component of the folder,\n * which now lives here as the page mount itself.\n */\n\nexport function NotFound() {\n  return <main className="page"><h1>404</h1></main>;\n}\n\nexport default NotFound;\n`,
+    `/**\n * notfound page anchor — layer 3 of the anchor architecture.\n * The file carrying the folder's own name is the path manager of the page:\n * it imports the loose components beside it, mounts the page and re-exports\n * the public component surface. Only the theme anchor (sol/sol.tsx) consumes\n * this file. This anchor carries the former main component of the folder,\n * which now lives here as the page mount itself.\n */\n\nexport function NotFound() {\n  return <main className="page"><h1>404</h1></main>;\n}\n\nexport default NotFound;\n`,
   );
   const corpo: Record<string, string> = {
     "api.ts": `// api — correlated logic of the site HTTP surface\nexport const routes = {\n  health: '/api/health',\n} as const;\n`,

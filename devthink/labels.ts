@@ -1,6 +1,6 @@
 /**
  * labels.ts — the copy law of the os app: every interface string lives in
- * the label store, the wingets read through the store accessor (the label
+ * the label store, the widgets read through the store accessor (the label
  * seat of uistore.ts — the seat comment below), and a hardcoded string
  * inside a widget is a defect. the manifest below is the english source
  * of truth the seed ingests into the labels store of the database; the
@@ -228,7 +228,7 @@ export type LabelKey = keyof typeof labelManifest & string;
 
 /**
  * label — the pure manifest answer: the dot id quotes the seed row the
- * store mirrors. the wingets read the store accessor instead (the label
+ * store mirrors. the widgets read the store accessor instead (the label
  * seat of uistore.ts — the acyclic law keeps the manifest pure data here
  * while the store owns the overrides the seed loads), and the manifest
  * text stays the offline answer through both doors. an unknown id renders
@@ -392,6 +392,14 @@ export const seedChatStrings: ChatStringRow[] = [
   { id: "panel.addTagAria", text: "Add a tag" },
   { id: "canvas.defaultTitle", text: "canvas" },
   { id: "canvas.empty", text: "the canvas is empty — the edit key begins the buffer." },
+  /* the canvas and sandbox pane tooltips (the w07 title sweep: the last
+   * raw title attributes of the chat panes leave the widgets) */
+  { id: "canvas.previousVersion", text: "previous version" },
+  { id: "canvas.nextVersion", text: "next version" },
+  { id: "canvas.saveVersion", text: "save a new version (ctrl+s)" },
+  { id: "canvas.editBuffer", text: "edit the buffer" },
+  { id: "canvas.closeTitle", text: "Close pane" },
+  { id: "sandbox.closeTitle", text: "Close pane" },
   /* ---------------- the second residual sweep (w07-chatlabels2) ----------------
    * the session panel heads and the sidebar rail leave no raw literal
    * behind: every section head, readout term, tooltip, placeholder, button
@@ -462,7 +470,7 @@ export const seedChatStrings: ChatStringRow[] = [
 export type ChatStringId = (typeof seedChatStrings)[number]["id"];
 
 /** chatText — the pure seed answer: the dot id quotes the row the chat
- * store mirrors. the chat wingets read the store accessor instead (the
+ * store mirrors. the chat widgets read the store accessor instead (the
  * chat label seat of uistore.ts — the same two-door law the shell label
  * rides: the manifest text stays the offline answer while the store owns
  * the overrides the boot seed loads from the database lane, and the

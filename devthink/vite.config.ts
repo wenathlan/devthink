@@ -83,7 +83,7 @@ function familydevbridge(): Plugin {
               // transform keeps untouched (the module scripts, the
               // stylesheets, the icons and the manifests all serve through
               // the fs allow list). the root-absolute arm matters: a
-              // sibling entry that drifts to "/App.tsx" (the debonair
+              // sibling entry that drifts to "/app.tsx" (the debonair
               // drift of the window era) would otherwise load the OS entry
               // itself inside the family window — the os mounts in the
               // frame, answers its own family route and re-embeds the app

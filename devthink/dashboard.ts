@@ -1061,7 +1061,7 @@ export function navbarDragVerdict(stance: NavbarStance, dx: number, dy: number):
 /* ------------------------------------------------------------------ */
 /* the desktop lock — the lock state of the desktop surface. The win11 */
 /* chain: boot → desktop, and the lock rides ON the desktop (the lock  */
-/* overlay of sol/wingets/PanelDesktoplock.tsx) instead of gating the  */
+/* overlay of sol/widgets/PanelDesktoplock.tsx) instead of gating the  */
 /* entry: no screen ever blocks the desktop. The state persists on the */
 /* session (a reload of a locked tab stays locked, a fresh tab does    */
 /* not inherit it) and the dt-desktop-lock event re-faces the shell    */

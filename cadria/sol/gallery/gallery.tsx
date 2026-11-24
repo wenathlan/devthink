@@ -8,7 +8,7 @@
  *
  * gallery — the detailed engine wave (the owner order of the waves,
  * landed): the render wall rides the real gateway lane again — the
- * GalleryWall composite winget (one mount: the style chips from the
+ * GalleryWall composite widget (one mount: the style chips from the
  * imagestyles table, the generations of listGatewayProjects, the
  * per-item renderSvg thumbnails and the honest deletes) answers the route
  * with the construction face carried as its arming face. The engine
@@ -17,7 +17,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface, GalleryWall } from "../../wingets";
+import { Constructionface, GalleryWall } from "../../widgets";
 
 /**
  * the gallery page: the real render wall under the gallery eyebrow.

@@ -904,7 +904,7 @@ code {
     transparent 70%
   );
 }
-/* the hologram of the face: the drawn scope reticle (the HomeScope winget)
+/* the hologram of the face: the drawn scope reticle (the HomeScope widget)
    hanging behind the panel at construction opacity — the same drawing of
    the retired landing, slow-sweeping ±2° by its own ambient pass (shsSweep,
    guarded by the no-preference block far above) and breathing between two

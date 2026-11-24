@@ -1,6 +1,6 @@
 /**
  * vitest.config.ts — the test harness seat of the vault battery (root
- * layer): the node lane over the test/*.test.ts corpus, the ownership
+ * layer): the node lane over the tests/*.test.ts corpus, the ownership
  * bridges that resolve every published library specifier the sources
  * import onto the monorepo sibling that owns the surface (the vault's own
  * label store, the saddle workload law and the argan mimetypes corpus
@@ -44,7 +44,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["test/*.test.ts"],
+    include: ["tests/*.test.ts"],
     environment: "node",
     /* the timeout stays five seconds on every native runner and scales through the env the emulated arm64 container leg sets (a qemu-interpreted second answers the same green suite many times slower), so an emulated runner never fails a test a native runner passed */
     testTimeout: Number(process.env.VAULT_TEST_TIMEOUT_MS ?? 5000),

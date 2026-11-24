@@ -29,8 +29,8 @@ import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { ROTATIONEVERY } from "../../sessions";
 import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
-import { BrandMark, TabBridge } from "../../wingets";
-import { HomeEntrygate as EntryGate } from "../../wingets";
+import { BrandMark, TabBridge } from "../../widgets";
+import { HomeEntrygate as EntryGate } from "../../widgets";
 
 /** the parsed endpoint: the replica the prefix names and the route kind
  * that follows — the replica resolves against the loaded route table rows

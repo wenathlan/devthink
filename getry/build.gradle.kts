@@ -27,7 +27,7 @@ tasks.jar {
         include("getry.kts")
         include("README.md")
         include("docs/**")
-        include("test/**")
+        include("tests/**")
     }
 }
 
