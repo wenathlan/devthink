@@ -179,7 +179,7 @@ export default defineConfig({
       "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "shims.ts"),
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "constants.ts"),
-      "@wenathlan/getry/test/researchfixtures": path.resolve(import.meta.dirname, "test/researchfixtures.ts"),
+      "@wenathlan/getry/tests/researchfixtures": path.resolve(import.meta.dirname, "tests/researchfixtures.ts"),
       /** the devthink queue bridge of the ownership law: the streaming
        * fallback rides the house retry.backoff discipline (the doubling
        * curve, the ±20% jitter, the retry-after hint parsing, the abortable
@@ -195,7 +195,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["test/*.test.ts"],
+    include: ["tests/*.test.ts"],
     environment: "node",
     /* the timeout floor moves to thirty seconds with the ownership wave
      * (wave/ownership.getry): the moved gateway battery (the property walks

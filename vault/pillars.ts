@@ -9,7 +9,7 @@
 // loudly instead of pretending. The route law: every pillar answers its
 // own static-safe route (GET /api/v1/pillars/<key>) beside the list lane —
 // read-only, no storage truth, no query execution — the same open registry
-// law the protocols pillar rides, so the wingets and the sibling apps pull
+// law the protocols pillar rides, so the widgets and the sibling apps pull
 // the catalog through the internal api instead of hardcoding it.
 //
 // The catalog is authored, not generated: eight rows, each the distilled
