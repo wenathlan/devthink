@@ -347,7 +347,7 @@ Cada cura expõe a próxima camada latente (as "6k+ erros desde 29c24c4"):
 
 - [ ] 0101 audit root layer: list every file outside the eleven apps and .github
 - [ ] 0102 delete logs.ts and every stray file from the repo root
-- [ ] 0103 audit each app folder: only sol, tests, docs allowed inside
+- [x] 0103 audit each app folder: only sol, tests, docs allowed inside (PR #712)
 - [ ] 0104 remove src, scripts, artifacts, terminal, dist, images, assets, build folders from every app
 - [ ] 0105 remove .md files from inside .github (keep codeowners, commitkey, dependabot, workflows)
 - [ ] 0106 verify .gitignore hides pnpm-lock.yaml and infra docs
@@ -360,7 +360,7 @@ Cada cura expõe a próxima camada latente (as "6k+ erros desde 29c24c4"):
 - [ ] 0113 wrangler.toml present per app
 - [ ] 0114 build ghosts swept: no index-*.js, no committed dist, no stray webmanifest
 - [ ] 0115 page folders inside sol carry only anchors
-- [ ] 0116 wingets flat, alphabetical, zero nesting in every app
+- [x] 0116 widgets flat, alphabetical, zero nesting in every app (the wingets spelling retired whole, PR #712)
 - [ ] 0117 stutter renames finished (imagerepeat family gone)
 - [ ] 0118 variant logic files merged (script.chat.browser.prov cohort into one)
 - [ ] 0119 ts files never inside sol (tsx components only)
@@ -370,7 +370,7 @@ Cada cura expõe a próxima camada latente (as "6k+ erros desde 29c24c4"):
 - [ ] 0123 english-only audit of code, jsdoc, ui strings, names
 - [ ] 0124 jsdoc 2026 blocks with section markers on every root ts file
 - [ ] 0125 biome config identical across the family
-- [ ] 0126 tests folder inside every app (never outside)
+- [x] 0126 tests folder inside every app (never outside) (PR #712)
 - [ ] 0127 tests only .ts: no json, mjs, cjs, images anywhere in tests
 - [ ] 0128 tests/artifacts/wcag.json class removed
 - [ ] 0129 test images moved to allan/organizado by extension
@@ -389,7 +389,7 @@ Cada cura expõe a próxima camada latente (as "6k+ erros desde 29c24c4"):
 - [ ] 0142 drift workflow: fails when the fifteen standard files diverge
 - [ ] 0143 script names identical (dev, build, preview, test, lint, format, typecheck)
 - [ ] 0144 structure law test: find app -mindepth 3 -type d returns zero pages deep
-- [ ] 0145 structure wave landed via signed vehicle (branch, PR, squash, verified)
+- [x] 0145 structure wave landed via signed vehicle (branch, PR, squash, verified) (PR #712 ladder 9/9)
 
 ## w02 workflows regroup (60 actions)
 
@@ -746,8 +746,8 @@ part one ends at action 0500. waves w05 through w19 continue in the sections bel
 - [ ] 0616 helix-db reference cloned and studied (db-us-east-1)
 - [ ] 0617 direct db download blocked (faun law)
 - [ ] 0618 vaulthandoff refuses .db / .sqlite
-- [ ] 0619 decoy database answers anonymous probes
-- [ ] 0620 decoy download returns the encrypted decoy, real base sealed
+- [x] 0619 decoy database answers anonymous probes
+- [x] 0620 decoy download returns the encrypted decoy, real base sealed
 - [ ] 0621 aes-256-gcm at rest with enveloped per-project keys
 - [ ] 0622 fresh vectors per write
 - [ ] 0623 access keys hash-only with constant-time compare
@@ -953,7 +953,7 @@ part one ends at action 0500. waves w05 through w19 continue in the sections bel
 - [ ] 0816 key rotation pool (22-25 keys, least-used first)
 - [ ] 0817 model rotation every six messages per session
 - [ ] 0818 meta-model masking the upstream name (answers say devthink)
-- [ ] 0819 jury of three diverse members with inverse-calibration weighting
+- [x] 0819 jury of three diverse members with inverse-calibration weighting
 - [ ] 0820 gray zone 0.30-0.70 never auto-acts
 - [ ] 0821 anti-sycophancy: flattery and false confidence banned
 - [ ] 0822 confidence below floor returns explicit unknown
@@ -1990,7 +1990,7 @@ part one ends at action 0500. waves w05 through w19 continue in the sections bel
 - [ ] implementar o raciocínio em sete níveis
 - [ ] implementar as trinta e cinco rotas compatíveis com o padrão openai
 - [ ] implementar os cinco provedores conforme cadastro
-- [ ] implementar o júri de três com regra anti bajulação
+- [x] implementar o júri de três com regra anti bajulação
 - [ ] implementar o cofre de chaves
 
 ### forge
@@ -2238,7 +2238,7 @@ part one ends at action 0500. waves w05 through w19 continue in the sections bel
 - [ ] implementar a autenticação dos provedores
 - [ ] implementar a rotação de chaves
 - [ ] implementar o raciocínio nos sete níveis
-- [ ] implementar o júri de três modelos
+- [x] implementar o júri de três modelos
 - [ ] implementar a regra anti bajulação
 - [ ] implementar o cofre de chaves
 - [ ] rodar a suíte do getry verde
