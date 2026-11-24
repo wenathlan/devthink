@@ -2144,7 +2144,7 @@ export class VersaRender {
     gl.disable(gl.BLEND);
   }
 
-  /** the compile cache telemetry surface (the wingets never need this). */
+  /** the compile cache telemetry surface (the widgets never need this). */
   cacheStats(): { hits: number; misses: number } {
     return this.cache.stats();
   }

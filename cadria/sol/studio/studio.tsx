@@ -8,7 +8,7 @@
  *
  * studio — the detailed engine wave (the owner order of the waves,
  * landed): the generation panes ride the real engine seats again — the
- * StudioBench composite winget (one mount: the source rail over the dual
+ * StudioBench composite widget (one mount: the source rail over the dual
  * decode path, the generation through the style-biased project chain, the
  * stage art breathing the descriptor's beat grid, the export row and the
  * visualize panel of the versawase engine) answers the route with the
@@ -21,7 +21,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface, PipelineBench, StudioBench } from "../../wingets";
+import { Constructionface, PipelineBench, StudioBench } from "../../widgets";
 
 /**
  * the studio page: the real generation bench and the transcode pipeline

@@ -41,7 +41,7 @@ import { label, labelfill } from "../../labels.ts";
 import { type BusTake, busFeature, busPlay, busSubscribe, type ReferenceTake } from "../../playerbus.ts";
 import { PROMPT_DRAFT_KEY, type PromptDraft } from "../generate/generate.tsx";
 import { DebonairMark, type NavLink, Shell } from "../shell/Shell.tsx";
-import { HomeEntrygate as EntryGate, GenreCard, SongCard, SongCardSkeleton } from "../../wingets";
+import { HomeEntrygate as EntryGate, GenreCard, SongCard, SongCardSkeleton } from "../../widgets";
 
 /** one deterministic bar of the hero waveform strip: the stable id the list
  * keys read plus the fixed amplitude (the same walk every render) */

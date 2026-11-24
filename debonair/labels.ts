@@ -1,9 +1,9 @@
 /**
  * labels.ts — the copy law of debonair: every interface string lives in the
- * label store, the wingets and page anchors read through this typed accessor,
+ * label store, the widgets and page anchors read through this typed accessor,
  * and a hardcoded string inside a widget is a defect. the manifest below is
  * the english source of truth extracted from the real strings of the Sol
- * wingets and the page anchors; the seed ingests it into the labels store
+ * widgets and the page anchors; the seed ingests it into the labels store
  * (the site db through db.ts on the server, the browser rows cache in the
  * visitor machine) and the seed never overwrites a translated row.
  *
@@ -20,7 +20,7 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 export const LABEL_REVISION = 8;
 
 /** the english manifest: the page.widget.key path answers the surface text.
- * every entry is the verbatim string the wingets and page anchors rendered
+ * every entry is the verbatim string the widgets and page anchors rendered
  * before the copy wave — zero invented copy. data stays data: bpm values,
  * timecodes, instrument and genre names, channel ids and module identifiers
  * keep flowing from the engine tables; the prose around them rides here. */
@@ -30,7 +30,7 @@ export const LABEL_MANIFEST = {
   "nav.generate": "Generate",
   "nav.library": "Library",
   "nav.settings": "Settings",
-  // the app boundary (App.tsx, the boot anchor)
+  // the app boundary (app.tsx, the boot anchor)
   "app.boundary.body": "debonair could not render this page frame.",
   "app.boundary.reload": "reload the page",
   // the construction face (the in-construction pass of every platform
@@ -121,7 +121,7 @@ export const LABEL_MANIFEST = {
   "shell.playerbar.referenceLine": "reference · {mime} · {clock}",
   "shell.playerbar.renderLine": "render · {mime} · {clock}",
   "shell.playerbar.openBenchTitle": "{name} — open the ingest bench",
-  // the studio page anchor and its wingets
+  // the studio page anchor and its widgets
   "studio.cta": "Generate a track",
   "studio.eyebrow": "debonair · studio",
   "studio.title": "Studio",
@@ -208,7 +208,7 @@ export const LABEL_MANIFEST = {
   "studio.notice.deskReset": "the desk reset — the seeded take answers again",
   "studio.notice.exported": "exported {files}",
   "studio.notice.exportRefused": "the export refused this take",
-  // the fader, vu meter and spectrum wingets of the mixer desk
+  // the fader, vu meter and spectrum widgets of the mixer desk
   "studio.fader.aria": "{name} fader",
   "studio.fader.valueText": "{value} decibels",
   "studio.vu.aria": "{name} level",
@@ -553,7 +553,7 @@ export type LabelKey = keyof typeof LABEL_MANIFEST & string;
 
 /** the store mechanism rides the vault factory (the storage law of the
  * family: the vault owns the store, the app owns the manifest — the
- * mechanism is imported, never duplicated). the cache key keeps the browser mirror the wingets already read. */
+ * mechanism is imported, never duplicated). the cache key keeps the browser mirror the widgets already read. */
 const store = createLabelStore({
   manifest: LABEL_MANIFEST,
   revision: LABEL_REVISION,

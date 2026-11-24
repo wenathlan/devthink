@@ -44,7 +44,7 @@ import {
 } from "../../take.ts";
 import { type NavLink, Shell } from "../shell/Shell.tsx";
 import { useToast } from "../toast/Toast.tsx";
-import { CoverArt } from "../../wingets";
+import { CoverArt } from "../../widgets";
 
 /** the demo plan the studio also opens (real engine output, fixed seed) */
 const DEMO_PROMPT = "midnight studio take, warm sub bass, dusty keys, brass light";

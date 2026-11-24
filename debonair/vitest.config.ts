@@ -1,6 +1,6 @@
 /**
  * vitest.config.ts — the test harness seat of the debonair battery (root
- * layer): the node lane over the test/*.test.ts corpus, the ownership
+ * layer): the node lane over the tests/*.test.ts corpus, the ownership
  * bridges that resolve every published library specifier the sources
  * import onto the monorepo sibling that owns the surface (the argan dns
  * door, the vault label/onboarding/storage factories, the saddle
@@ -108,7 +108,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["test/*.test.ts"],
+    include: ["tests/*.test.ts"],
     environment: "node",
     /* the serial suite seat (the runner's memory law the remote forensics
      * walked): the battery died three runs straight at the runner's own

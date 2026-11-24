@@ -8,7 +8,7 @@
  *
  * edit — the detailed engine wave (the owner order of the waves, landed):
  * the DAW-grade timeline rides the real edit algebra again — the
- * EditTimeline composite winget (one mount: the ruler scrub, the slate
+ * EditTimeline composite widget (one mount: the ruler scrub, the slate
  * bin, the split, lift, extract, trim and slide algebra of the timeline
  * engine) answers the route with the construction face carried as its
  * arming face (the first paint before the engine seats land). The engine
@@ -18,7 +18,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface, EditTimeline } from "../../wingets";
+import { Constructionface, EditTimeline } from "../../widgets";
 
 /**
  * the edit page: the real timeline under the edit eyebrow.

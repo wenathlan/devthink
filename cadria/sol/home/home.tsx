@@ -8,7 +8,7 @@
  *
  * home — the detailed engine wave (the owner order of the waves, landed):
  * the greeting home rides the real gateway strip again — the HomeSurface
- * composite winget (one mount: the hour greeting, the generation entry,
+ * composite widget (one mount: the hour greeting, the generation entry,
  * the recent-generations strip of listGatewayProjects, the quick links)
  * answers the route behind the same entry gate, with the construction
  * face carried as its arming face (the first paint before the gateway
@@ -19,7 +19,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface, HomeEntrygate as EntryGate, HomeSurface } from "../../wingets";
+import { Constructionface, HomeEntrygate as EntryGate, HomeSurface } from "../../widgets";
 
 /**
  * the home anchor: the entry gate decides first (intro unseen hands to

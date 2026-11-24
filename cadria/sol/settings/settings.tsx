@@ -8,7 +8,7 @@
  *
  * settings — the detailed engine wave (the owner order of the waves,
  * landed): the platform preferences ride the real engine lanes again —
- * the SettingsSurface composite winget (one mount: the theme flip, the
+ * the SettingsSurface composite widget (one mount: the theme flip, the
  * gateway url field, the motion switch and the about ledger whose version
  * row reads the canonical version module the manifest carries — never a
  * hand-synced literal, the drift gate walks it) answers the route with
@@ -18,7 +18,7 @@
  */
 
 import { label } from "../../labels.ts";
-import { Constructionface, SettingsSurface } from "../../wingets";
+import { Constructionface, SettingsSurface } from "../../widgets";
 
 /**
  * the settings page: the real preferences surface under the settings
