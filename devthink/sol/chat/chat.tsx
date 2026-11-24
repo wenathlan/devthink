@@ -2,7 +2,7 @@
  * chat page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file; no module outside the folder imports the folder members
  * directly. The page mount is the shell chrome plus the shared conversation
  * body (chatbody.tsx) — the same body the os chat window mounts, so the
@@ -16,11 +16,11 @@
  * handoff slot.
  */
 
-import { ChatBody, ShellChrome } from "../../wingets";
+import { ChatBody, ShellChrome } from "../../widgets";
 
 export * from "../../chatstate.ts";
 export * from "../../useismobile.ts";
-export * from "../../wingets";
+export * from "../../widgets";
 
 export default function Chat() {
   return (

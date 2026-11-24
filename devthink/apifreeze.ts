@@ -5,7 +5,7 @@
  * The api freeze gate lane rides at the bottom of this file: the verification script the release chain runs when node loads this module as the main script (validate:apifreeze, apifreeze:sync, the matrix cell and the workflow gates), while the library and the browser surfaces import the frozen contracts above without ever executing the lane.
  */
 
-import type { apifreezebaseline } from "./test/freezebaseline.ts";
+import type { apifreezebaseline } from "./tests/freezebaseline.ts";
 import { actionkindids, protocolmajorversion, protocolversion } from "./types.ts";
 import { packageversion, protocolfloormajor } from "./version.ts";
 
@@ -4079,7 +4079,7 @@ async function runapifreezesuite() {
   const { apifreezebaseline: storedbaseline } = await import(/* @vite-ignore */ freezeimport);
   const packagejson = JSON.parse(await readFile("package.json", "utf8"));
   const release = String(packagejson.version);
-  const baselinepath = "test/freezebaseline.ts";
+  const baselinepath = "tests/freezebaseline.ts";
   const capsdirectory = "build/caps";
   const schemadirectory = "build/schemas";
   const schemalabel = "schemas";

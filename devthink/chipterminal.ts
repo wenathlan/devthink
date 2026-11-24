@@ -1,5 +1,5 @@
 /**
- * GENERATED FILE — the terminal face of sol/wingets/ShellChip.tsx.
+ * GENERATED FILE — the terminal face of sol/widgets/ShellChip.tsx.
  * emitter: devthink/buildterminal.ts (the tsx→terminal conversion of wave
  * 2-c / PR11): the same design, the same tokens, the cell as the unit. The
  * prop slots the web widget answers survive verbatim (`string`, `string`) — the
@@ -29,7 +29,7 @@ const ir: IrNode = {
 
 export type ChipTerminalProps = Record<string, unknown>;
 
-/** renders the sol/wingets/ShellChip.tsx face into terminal rows (ANSI, headless) */
+/** renders the sol/widgets/ShellChip.tsx face into terminal rows (ANSI, headless) */
 export function ChipTerminal(props: ChipTerminalProps = {}, options: RenderOptions = {}): string {
   return render(ir, props, options);
 }

@@ -2,7 +2,7 @@
  * callback page anchor — layer 3 of the anchor architecture. The file
  * carrying the folder's own name is the path manager of the page: it
  * imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx)
+ * the public component surface. Only the theme anchor (sol/sol.tsx)
  * consumes this file.
  *
  * The single callback page of the provider row — one page for all

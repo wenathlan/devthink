@@ -15,7 +15,7 @@ import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 import { build } from "esbuild";
 import type { platformtarget } from "./types.ts";
-import { stripstrings, underscorednames } from "../foundry/bundlescan.ts";
+import { stripstrings, underscorednames } from "@wenathlan/foundry/bundlescan.ts";
 import { cjswrap } from "./cjswrap.ts";
 import {
   changelogdigestworkflow,
@@ -24,12 +24,12 @@ import {
   forminventoryplan,
   formsurveyworkflow,
   releasenotesplan,
-} from "./test/fixtureset.ts";
-import { bunshellexample, denoshellexample, mcpclientexample } from "./test/codefixtures.ts";
-import { importersamples } from "./test/importerfixtures.ts";
-import { fixturepages, umdexample } from "./test/pagefixtures.ts";
-import { gallery as gallerytext, recipeplans } from "./test/recipesfixtures.ts";
-import { frozenschemas } from "./test/schemafixtures.ts";
+} from "./tests/fixtureset.ts";
+import { bunshellexample, denoshellexample, mcpclientexample } from "./tests/codefixtures.ts";
+import { importersamples } from "./tests/importerfixtures.ts";
+import { fixturepages, umdexample } from "./tests/pagefixtures.ts";
+import { gallery as gallerytext, recipeplans } from "./tests/recipesfixtures.ts";
+import { frozenschemas } from "./tests/schemafixtures.ts";
 import { pxToCellX, pxToCellY } from "./dashboard.ts";
 import { umdwrap } from "./umdwrap.ts";
 import type { IrNode } from "./runtime.ts";
@@ -2153,7 +2153,7 @@ export function parseJsxRoot(source: string): JsxElement | undefined {
 }
 
 /* ---------------------------------------------------------------------------
- * the style contracts (the exported CSSProperties objects of the wingets)
+ * the style contracts (the exported CSSProperties objects of the widgets)
  * ------------------------------------------------------------------------- */
 
 /** scans one value until the next comma/brace at depth zero */
@@ -2248,7 +2248,7 @@ export function collectStyleContracts(source: string): Record<string, StyleDict>
  * the conversion (jsx + styles + tokens → the terminal IR)
  * ------------------------------------------------------------------------- */
 
-/** the conversion context: the contracts of the imported wingets, the css
+/** the conversion context: the contracts of the imported widgets, the css
  * tokens, the discovered prop slots and the item binding of a map scope */
 export type ConvertContext = {
   contracts: Record<string, StyleDict>;
@@ -2260,9 +2260,9 @@ export type ConvertContext = {
 /** the widgets the pipeline converts today (the shell + the two proof
  * widgets — the map generalizes to every winget) */
 export const TERMINAL_WIDGETS: ReadonlyArray<{ source: string; output: string; exportName: string }> = [
-  { source: "sol/wingets/Controlshell.tsx", output: "shellterminal.ts", exportName: "ControlShellTerminal" },
-  { source: "sol/wingets/ShellChip.tsx", output: "chipterminal.ts", exportName: "ChipTerminal" },
-  { source: "sol/wingets/ShellKbd.tsx", output: "kbdterminal.ts", exportName: "KbdTerminal" },
+  { source: "sol/widgets/Controlshell.tsx", output: "shellterminal.ts", exportName: "ControlShellTerminal" },
+  { source: "sol/widgets/ShellChip.tsx", output: "chipterminal.ts", exportName: "ChipTerminal" },
+  { source: "sol/widgets/ShellKbd.tsx", output: "kbdterminal.ts", exportName: "KbdTerminal" },
 ];
 
 function attrValue(element: JsxElement, name: string): JsxAttr | undefined {
@@ -2451,7 +2451,7 @@ export function convertElement(element: JsxElement, ctx: ConvertContext): IrNode
 export function convertWidget(source: string, cssTokens: Map<string, string>): { ir: IrNode; slots: string[] } {
   const contracts: Record<string, StyleDict> = {};
   for (const match of source.matchAll(/from\s+"\.\/([\w]+)\.tsx"/g)) {
-    const sibling = path.resolve(import.meta.dirname ?? ".", "sol", "wingets", `${match[1]}.tsx`);
+    const sibling = path.resolve(import.meta.dirname ?? ".", "sol", "widgets", `${match[1]}.tsx`);
     if (existsSync(sibling)) Object.assign(contracts, collectStyleContracts(readFileSync(sibling, "utf8")));
   }
   const root = parseJsxRoot(source);

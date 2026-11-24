@@ -2,8 +2,8 @@
  * settings page anchor — layer 3 of the anchor architecture. The file
  * carrying the folder's own name is the path manager of the page: it
  * imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) and
- * the window registry (sol/wingets/PanelWorkspace.tsx) consume this file. The
+ * the public component surface. Only the theme anchor (sol/sol.tsx) and
+ * the window registry (sol/widgets/PanelWorkspace.tsx) consume this file. The
  * home anchor consumes the pairing panel through this surface.
  *
  * Settings — the Windows 11 Settings app: the left navigation rail (the
@@ -13,13 +13,13 @@
  * Drives, Automation & MCP, About — routed by internal state. The anchor
  * owns only the data machine (the gateway snapshot, the browser-local
  * identity and preference stores, the save / revoke actions) and the
- * category routing; every card lives in sol/wingets. The
+ * category routing; every card lives in sol/widgets. The
  * personalization pass paints its stored choices onto the document root
  * once at module load, so the wallpaper, the theme ladder, the accent and
  * the behavior flags hold before the lock screen or the desktop mount.
  */
 import { useEffect, useState } from "react";
-import { ShellChrome } from "../wingets/Shellchrome";
+import { ShellChrome } from "../widgets/Shellchrome";
 import {
   type AccountSessionState,
   accountbearer,
@@ -42,7 +42,7 @@ import {
   loadThemeMirror,
   syncThemeFromPreference,
 } from "../../personalstore.ts";
-import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../../wingets";
+import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../../widgets";
 import {
   AboutSettings,
   AccountsCategory,
@@ -51,9 +51,9 @@ import {
   HardDrives,
   Personalization,
   SettingsNav,
-} from "../../wingets";
+} from "../../widgets";
 
-export * from "../../wingets";
+export * from "../../widgets";
 
 /** paints the stored personalization choices before any route mounts (the
  * same law the display preference rides at the settings card). */

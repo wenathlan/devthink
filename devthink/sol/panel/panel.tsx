@@ -2,7 +2,7 @@
  * panel page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file; no module outside the folder imports the folder members
  * directly. This anchor carries the former main component of the folder
  * (the desktop workspace of the OS), which now lives here as the page mount
@@ -22,7 +22,7 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLocation, useRoute } from "wouter";
-import { PairingPanel } from "../wingets/SettingsPairing";
+import { PairingPanel } from "../widgets/SettingsPairing";
 import { islocalunlocked, restoreonce } from "../../account.ts";
 import { writeChatHandoff } from "../../chatstate.ts";
 import { copy } from "../../uistore.ts";
@@ -37,9 +37,9 @@ import {
   readBrowserPreferences,
 } from "../../storage.ts";
 import type { WorkspaceDestination } from "../../workspace.ts";
-import { BootScreen, CommandPalette, ShellWorkspace, SolLogoMark, shouldBoot } from "../../wingets";
+import { BootScreen, CommandPalette, ShellWorkspace, SolLogoMark, shouldBoot } from "../../widgets";
 
-export * from "../../wingets";
+export * from "../../widgets";
 
 /** The old persisted shell stage ("identity" / "entry" / "shell") is no
  * longer a gate: every value lands on the desktop. The key is retired from

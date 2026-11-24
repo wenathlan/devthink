@@ -2,7 +2,7 @@
  * explore page anchor — layer 3 of the anchor architecture.
  * The file carrying the folder's own name is the path manager of the page:
  * it imports the loose components beside it, mounts the page and re-exports
- * the public component surface. Only the theme anchor (sol/Sol.tsx) consumes
+ * the public component surface. Only the theme anchor (sol/sol.tsx) consumes
  * this file.
  */
 
@@ -54,22 +54,22 @@ import { DESKTOP_APPS, isFamilyApp } from "../../appregistry.ts";
 import { label } from "../../uistore.ts";
 import { peekonboardingstate } from "../../onboardingstate";
 import { osText } from "../../os.ts";
-import { SolLogoMark } from "../../wingets";
-import { ShellChrome } from "../../wingets";
-import { DownloadRail } from "../../wingets";
-import { ExploreSidebar } from "../../wingets";
+import { SolLogoMark } from "../../widgets";
+import { ShellChrome } from "../../widgets";
+import { DownloadRail } from "../../widgets";
+import { ExploreSidebar } from "../../widgets";
 import {
   CategoryDeck,
   CategorySectionDeck,
   exploreCategories,
   exploreRecents,
   type ExploreCategoryId,
-  type ExploreData } from "../../wingets";
-import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../../wingets";
-import { HeroWaves } from "../../wingets";
-import { WindowEdgeChrome } from "../../wingets";
+  type ExploreData } from "../../widgets";
+import { LaunchDeck, OsSigil, TRYLLE_PRIMARY_STACK } from "../../widgets";
+import { HeroWaves } from "../../widgets";
+import { WindowEdgeChrome } from "../../widgets";
 
-export * from "../../wingets";
+export * from "../../widgets";
 
 type LandingState = "open" | "minimized";
 type FrameState = "windowed" | "maximized";
