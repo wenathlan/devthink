@@ -230,4 +230,4 @@ flowchart TD
   checksums -- match --> publish[the github release publishes]
 ```
 
-modules: test/build.ts, test/release.ts, .github/workflows/ci.yml, .github/workflows/release.yml
+modules: tests/build.ts, tests/release.ts, .github/workflows/ci.yml, .github/workflows/release.yml

@@ -6319,9 +6319,9 @@ Changes:
 83. docs/configuration.md documents the thumbnail generation setting
 84. docs/configuration.md documents the console spam filter setting
 85. the snapshot schema version bump joins the protocol compatibility notes
-86. test/poolaudit.test.ts verifies the ledger covers exactly 626 items
-87. test/poolaudit.test.ts verifies every refusal carries a nonempty reason
-88. test/poolaudit.test.ts verifies the ledger counts match the docs report
+86. tests/poolaudit.test.ts verifies the ledger covers exactly 626 items
+87. tests/poolaudit.test.ts verifies every refusal carries a nonempty reason
+88. tests/poolaudit.test.ts verifies the ledger counts match the docs report
 89. policy tests cover the four new kinds and their consent classes
 90. protocol tests cover the option schemas of the new kinds
 91. memory tests cover session search across saved sessions
@@ -6434,8 +6434,8 @@ Changes:
 91. protocol tests cover strict mode rejection of unknown fields
 92. policy tests verify the option grammar matches the frozen plan schema
 93. manifest tests verify the permissions match the capmanifest declarations
-94. test/apifreeze.test.ts verifies the schema hash artifact stays stable
-95. test/apifreeze.test.ts verifies every capmanifest matches its surface
+94. tests/apifreeze.test.ts verifies the schema hash artifact stays stable
+95. tests/apifreeze.test.ts verifies every capmanifest matches its surface
 96. chromiumsmoke run exercises version negotiation end to end
 97. runtimepolicy check accepts the protocolv2 negotiation paths
 98. validateextension verifies the served capmanifest files
@@ -6545,10 +6545,10 @@ Changes:
 93. docs/todo.md records the migration tooling completion
 94. changelog entry lists the importers and the migrate command
 95. readme gains a migration section pointing at the guide
-96. test/migrateplan.test.ts covers the conversion of every fixture plan
-97. test/importautoma.test.ts covers every mapped automa block type
-98. test/importselenium.test.ts covers every mapped selenium command
-99. test/importuivision.test.ts covers the csv macro conversion
+96. tests/migrateplan.test.ts covers the conversion of every fixture plan
+97. tests/importautoma.test.ts covers every mapped automa block type
+98. tests/importselenium.test.ts covers every mapped selenium command
+99. tests/importuivision.test.ts covers the csv macro conversion
 100. protocol tests verify converted plans validate against the frozen schemas
 
 ## 1.1.93 performance hardening
@@ -6647,8 +6647,8 @@ Changes:
 88. changelog entry summarizes the measured improvements
 89. readme notes the performance budgets and the coldstart result
 90. docs/featureflowmatrix.md gains the parallel read wave rows
-91. test/coldstart.test.ts verifies the startup budget against the artifact
-92. test/membudget.test.ts verifies budget enforcement and pause behavior
+91. tests/coldstart.test.ts verifies the startup budget against the artifact
+92. tests/membudget.test.ts verifies budget enforcement and pause behavior
 93. policy tests cover the batteryaware deferral gates
 94. policy tests cover the netaware scheduling gates
 95. protocol tests cover the parallel read wave messages
@@ -6749,9 +6749,9 @@ Changes:
 83. docs/configuration.md documents the quarantine and scanning options
 84. docs/referencecatalog.md records the security artifact inventory
 85. the transparency page copy is reviewed for plain language
-86. test/pentest.test.ts verifies the checklist artifact covers every entry
-87. test/cspaudit.test.ts verifies the policy set matches the manifest
-88. test/permdiff.test.ts verifies the diff logic against fixture manifests
+86. tests/pentest.test.ts verifies the checklist artifact covers every entry
+87. tests/cspaudit.test.ts verifies the policy set matches the manifest
+88. tests/permdiff.test.ts verifies the diff logic against fixture manifests
 89. manifest tests cover the strict content security policy
 90. policy tests cover the review mode pause on new domains
 91. protocol tests cover the quarantine review flow messages
@@ -6856,8 +6856,8 @@ Changes:
 83. the scenario docs reference the fake tab provider setup
 84. the scenario docs state the consent model of each topology
 85. the certification doc maps scenarios to pool items 469 through 502
-86. test/agentcert.test.ts verifies the artifact covers every scenario
-87. test/costcert.test.ts verifies the reconciliation invariants
+86. tests/agentcert.test.ts verifies the artifact covers every scenario
+87. tests/costcert.test.ts verifies the reconciliation invariants
 88. protocol tests cover coordination messages against the frozen schemas
 89. policy tests cover the per agent scope gates
 90. memory tests cover the blackboard merge and lessons stores
@@ -6963,7 +6963,7 @@ Changes:
 83. the onboarding walkthrough text joins the docs review
 84. every example plan in kinddocs validates against the frozen plan schema
 85. every flow diagram renders in the docs build
-86. test/doccheck.test.ts verifies the report covers every check family
+86. tests/doccheck.test.ts verifies the report covers every check family
 87. doccheck verifies kinddocs coverage of the whole tool catalog
 88. protocol tests cover the example plan fragments
 89. policy tests cross reference the kinddocs risk classes
@@ -7075,7 +7075,7 @@ Changes:
 86. the gallery doc includes troubleshooting for every recipe family
 87. the gallery doc includes the expected export outputs per recipe
 88. the gallery doc covers recipe customization with plan variables
-89. test/recipes.test.ts verifies the artifact covers every gallery entry
+89. tests/recipes.test.ts verifies the artifact covers every gallery entry
 90. policy tests cover the recipe policy checks end to end
 91. protocol tests verify recipe plans against the frozen schemas
 92. memory tests cover recipe import and reimport behavior
@@ -7179,8 +7179,8 @@ Changes:
 83. docs/poolcoverage.md refreshes its counts for the candidate
 84. docs/perfbudgets.md records the candidate measurements
 85. docs/migrationguide.md finalizes its candidate revision
-86. test/sweep.test.ts verifies the sweep artifact holds no open blockers
-87. test/matrixverify.test.ts verifies the matrix covers every declared cell
+86. tests/sweep.test.ts verifies the sweep artifact holds no open blockers
+87. tests/matrixverify.test.ts verifies the matrix covers every declared cell
 88. the telemetry free assertions join the verify workflow
 89. protocol tests cover the envelope fixes from the sweep
 90. policy tests cover the converted configuration bounds
@@ -7281,7 +7281,7 @@ Changes:
 78. docs/poolcoverage.md freezes the final coverage counts for 2.0.0
 79. docs/referencecatalog.md freezes the artifact inventory for 2.0.0
 80. the 2.0.0 roadmap outline joins the docs as the only open planning item
-81. test/readiness.test.ts verifies every gate holds a verdict in the artifact
+81. tests/readiness.test.ts verifies every gate holds a verdict in the artifact
 82. the readiness run joins the release pipeline as the final gate
 83. protocol tests verify the version one sunset notice behavior
 84. policy tests cover the migration prompt consent flow
