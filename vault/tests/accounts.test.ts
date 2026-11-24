@@ -564,3 +564,38 @@ describe("the accounts-wave ladder (a legacy store climbs on boot)", () => {
     }
   });
 });
+
+/* ── the decoy download leg (the raw-database law's probe face) ─────────── */
+
+describe("the raw database decoy download leg", () => {
+  it("answers the browser-shaped probe with the encrypted decoy bytes — never the real base", async () => {
+    const answer = await fetch(`${base}/vault.db`, { headers: { accept: "text/html" } });
+    assert.equal(answer.status, 200);
+    const bytes = new Uint8Array(await answer.arrayBuffer());
+    /* the plausible store face: the sqlite magic prefix every probe greps. */
+    const magic = Buffer.from(bytes.slice(0, 16)).toString("latin1");
+    assert.equal(magic, "SQLite format 3\0");
+    /* the content disposition names the download and the cache never stores it. */
+    assert.match(answer.headers.get("content-disposition") ?? "", /attachment/);
+    assert.equal(answer.headers.get("cache-control"), "no-store");
+    /* the decoy ledger carries zero truth: the real accounts never ride. */
+    assert.ok(!Buffer.from(bytes).includes(Buffer.from(OPERATOR)));
+    assert.ok(answer.headers.get("content-type")?.includes("application/octet-stream"));
+  });
+
+  it("keeps the honest refusal for every non-probe shape — the api contract never fakes a download", async () => {
+    for (const accept of [undefined, "application/json", "*/*", "text/plain"]) {
+      const headers: Record<string, string> = {};
+      if (accept !== undefined) headers.accept = accept;
+      const answer = await fetch(`${base}/vault.db`, { headers });
+      assert.equal(answer.status, 403);
+      const body = (await answer.json()) as { error?: { code?: string } };
+      assert.equal(body.error?.code, "VAULT_DBFILE");
+    }
+    /* the faun spelling rides the same gate. */
+    const faun = await fetch(`${base}/faun.db`, { headers: { accept: "text/html" } });
+    assert.equal(faun.status, 200);
+    const bytes = new Uint8Array(await faun.arrayBuffer());
+    assert.equal(Buffer.from(bytes.slice(0, 16)).toString("latin1"), "SQLite format 3\0");
+  });
+});

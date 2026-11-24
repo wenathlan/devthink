@@ -11867,6 +11867,16 @@
       "types": "./constants.ts",
       "import": "./constants.ts",
       "default": "./constants.ts"
+    },
+    "./chatstate": {
+      "types": "./chatstate.ts",
+      "import": "./chatstate.ts",
+      "default": "./chatstate.ts"
+    },
+    "./jury": {
+      "types": "./jury.ts",
+      "import": "./jury.ts",
+      "default": "./jury.ts"
     }
   },
   "files": [
