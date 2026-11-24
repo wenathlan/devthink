@@ -1,5 +1,5 @@
 /**
- * App.tsx — the root anchor of the pulse Sol theme (layer 1 of the anchor
+ * app.tsx — the root anchor of the pulse Sol theme (layer 1 of the anchor
  * architecture) and the only TSX outside the theme: one static react mount,
  * one error boundary and the theme anchor. pulse is the twelfth module of
  * the wenathlan family — the open VOICE-FIRST SOCIAL STUDIO, the single
@@ -34,7 +34,7 @@ import "./sol/sol.css";
 
 // the copy law rides the boot: the seed refreshes the label store rows from
 // the manifest (the browser cache mirrors the site db rows) before the theme
-// renders — best effort, the manifest always answers the wingets.
+// renders — best effort, the manifest always answers the widgets.
 if (typeof window !== "undefined") void seedlabels().catch(() => {});
 
 /* the zoom lock law (the faun pattern the owner pinned in the reference,

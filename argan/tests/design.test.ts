@@ -70,8 +70,8 @@ describe("design contract", () => {
     expect(ENTRY).toMatch(/Geist\+Mono/);
   });
 
-  it("keeps the entry on the source face (./App.tsx, canonical assets, no hashed ghosts)", () => {
-    expect(ENTRY).toMatch(/script[^>]*\.\/App\.tsx/);
+  it("keeps the entry on the source face (./app.tsx, canonical assets, no hashed ghosts)", () => {
+    expect(ENTRY).toMatch(/script[^>]*\.\/app\.tsx/);
     expect(/-[0-9a-f]{8}\.(js|css)/.test(ENTRY), "no hashed bundle rides the entry").toBe(false);
     expect(ENTRY).toMatch(/href="\.\/favicon\.svg"/);
     expect(ENTRY).toMatch(/href="\.\/manifest\.webmanifest"/);
@@ -122,7 +122,7 @@ describe("design contract", () => {
   });
 
   it("carries the flow contract sources (the entry gate behind the home anchor, the shared state module)", () => {
-    const GATE = read("../sol/wingets/HomeEntrygate.tsx");
+    const GATE = read("../sol/widgets/HomeEntrygate.tsx");
     const STATE = read("../onboardingstate.ts");
     const HOME = read("../sol/home/home.tsx");
     const ONBOARDING = read("../sol/onboarding/onboarding.tsx");

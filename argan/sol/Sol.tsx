@@ -3,10 +3,10 @@
  * The file carrying the theme folder's own name (sol/Sol.tsx, beside
  * sol/sol.css) is the path manager of the pages: it imports one anchor per
  * page folder (`folder/folder.tsx`, each beside the loose components its
- * folder keeps) and mounts every route and subroute of the theme. App.tsx
+ * folder keeps) and mounts every route and subroute of the theme. app.tsx
  * consumes only this file and the theme stylesheet; no page component is
  * ever imported outside this layer. When a theme folder changes its name
- * (Moon, Aqua), this file follows the new name and App.tsx keeps importing
+ * (Moon, Aqua), this file follows the new name and app.tsx keeps importing
  * the anchor by the folder path. Since F-argan the theme is an
  * APPLICATION: the entry flow opens the route table — /intro (the splash),
  * /onboarding (the first-run frames) — and every other route renders as
