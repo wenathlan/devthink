@@ -7,7 +7,7 @@
  * The laws the battery pins:
  *  1. no browser persistence on the account path — the account surfaces
  *     (localauth.ts, the register face, the login form, the dashboard
- *     wingets) carry no localStorage / sessionStorage / indexedDB /
+ *     widgets) carry no localStorage / sessionStorage / indexedDB /
  *     localforage call: no account record, no password hash and no session
  *     row may persist in the visitor's browser (the owner's order: cadastro
  *     never saves in the browser);
@@ -46,11 +46,11 @@ const reporoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ACCOUNT_SURFACES = [
         'auth.ts',
         'sol/register/register.tsx',
-        'sol/wingets/LoginForm.tsx',
+        'sol/widgets/LoginForm.tsx',
         'sol/dashboard/dashboard.tsx',
-        'sol/wingets/DashboardAccountpanel.tsx',
-        'sol/wingets/DashboardUserstable.tsx',
-        'sol/wingets/DashboardAdminpanel.tsx',
+        'sol/widgets/DashboardAccountpanel.tsx',
+        'sol/widgets/DashboardUserstable.tsx',
+        'sol/widgets/DashboardAdminpanel.tsx',
 ] as const;
 
 /** the browser-persistence surfaces the account path forbids: a real
@@ -79,7 +79,7 @@ describe('the cadastro law (the registration answers the database alone)', () =>
         it('rides the internal api for the register and the login (never a browser account)', () => {
                 const registerface = source('sol/register/register.tsx');
                 assert.match(registerface, /\/api\/v1\/auth\/register/, 'the register face posts the internal door');
-                const loginform = source('sol/wingets/LoginForm.tsx');
+                const loginform = source('sol/widgets/LoginForm.tsx');
                 assert.match(loginform, /\/api\/v1\/auth\/login/, 'the login form posts the internal door');
         });
 

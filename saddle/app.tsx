@@ -1,7 +1,7 @@
 /**
  * App — the global anchor (layer 1 of the anchor architecture) and the only
  * TSX outside the theme. The root manages the themes as single files: it
- * imports only the theme anchor (sol/Sol.tsx — the file named after the theme
+ * imports only the theme anchor (sol/sol.tsx — the file named after the theme
  * folder, beside sol/sol.css) and the theme stylesheet, wraps the anchor in
  * the global concerns it owns (the error boundary, the theme and tooltip
  * providers, the toaster and the wouter router provider) and renders it. The
@@ -10,7 +10,7 @@
  */
 import { createRoot } from 'react-dom/client';
 import { Router as WouterRouter } from 'wouter';
-import Sol from './sol/Sol';
+import Sol from './sol/sol';
 import { ErrorBoundary, ThemeProvider, Toaster, TooltipProvider } from './sol/shell/Shell.tsx';
 import '@fontsource-variable/geist-mono';
 import '@fontsource-variable/inter';

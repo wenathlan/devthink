@@ -1,7 +1,7 @@
 // Signal & Ledger: the compute face — the modality catalog the engine
 // states about itself. The winget carries zero fixed records: the plan
 // counts and every table row arrive from /api/v1/modalities on mount (the
-// wingets consume the db through the api, never a shipped array), and
+// widgets consume the db through the api, never a shipped array), and
 // when the engine does not answer the surface says so in one line
 // instead of painting rows it does not have. Every word the winget itself
 // speaks rides the label store (labels.ts — the copy law). The honest
