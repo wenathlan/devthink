@@ -15,7 +15,7 @@ describe("the workbench entry html rides the source face", () => {
     const html = await readFile(join(import.meta.dirname, "..", "index.html"), "utf8");
     const entry = /<script[^>]*type="module"[^>]*src="([^"]+)"[^>]*>/.exec(html);
     expect(entry, "the module entry script exists").not.toBeNull();
-    expect(entry![1], "the entry rides the app.tsx source face").toMatch(/App\.tsx$/);
+    expect(entry![1], "the entry rides the app.tsx source face").toMatch(/app\.tsx$/);
     expect(html, "no hashed bundle reference rides the entry").not.toMatch(
       /(?:src|href)="\/index-[A-Za-z0-9_-]+\./,
     );
