@@ -591,3 +591,168 @@ export function createjury(config: {
     };
   };
 }
+
+/* ════════════════════════════════════════════════════════════════════ */
+/* Section 6: the cascade — the deeper bench the gray verdict escalates to. */
+/* ════════════════════════════════════════════════════════════════════ */
+/**
+ * the jury cascade: the family law seats the jury of three with the
+ * inverse calibration AND the cascade — a gray verdict (needs review or
+ * unknown) never ends the walk while the pool carries a deeper bench. the
+ * pool divides into two tiers of three: the primary tier seats the best
+ * member of each provider family, the secondary tier seats the runner-up
+ * of those same families (a different model per seat, the diversity law
+ * holds inside every tier). the primary jury answers first; an act verdict
+ * closes the walk, and a gray verdict escalates: the secondary tier
+ * answers the same question and the combined six positions decide — the
+ * aggregate the family weights carry, the same honesty states on top.
+ * nothing about the escalation hides: the trail names both tiers, every
+ * member position and the combined aggregate.
+ */
+
+/** one tier of the cascade: the seated members and the calibration weights the tier rides. */
+export type jurytier = {
+  /** the tier rank (1 = the primary bench, 2 = the deeper bench). */
+  rank: number;
+  /** the seated members of this tier (three distinct provider families). */
+  members: seatedmember[];
+  /** the calibration weights of this tier's members. */
+  weights: juryweight[];
+};
+
+/**
+ * selectjurypooltiers — divides the candidate pool into the two cascade
+ * tiers: per provider family the candidates rank by the intelligence score
+ * (ties break by the id so the selection is deterministic), the primary
+ * tier seats the best candidate of the three top families and the
+ * secondary tier seats the runner-up of those same families, pulling the
+ * best remaining candidate of a later family when a top family carries no
+ * runner-up (one seat per family inside every tier — the diversity law
+ * holds inside both benches). a pool that cannot seat both tiers refuses
+ * loudly: the cascade needs the deeper bench, a single tier rides
+ * {@link createjury} directly.
+ *
+ * @param pool the candidate pool (six candidates across at least three families for the full bench).
+ * @returns the two tiers with their members and weights.
+ */
+export function selectjurypooltiers(pool: readonly jurypoolumember[]): { primary: jurytier; secondary: jurytier } {
+  if (!Array.isArray(pool) || pool.length < 6)
+    throw new juryerror("bad-pool", String(pool?.length ?? 0), "the cascade pool carries fewer than six candidates — the deeper bench never seats");
+  const validated = selectjurymembers(pool); /* rides the candidate validation and the family floor */
+  void validated;
+  const families = new Map<string, jurypoolumember[]>();
+  for (const candidate of pool) {
+    const family = familyof(candidate);
+    const roster = families.get(family) ?? [];
+    roster.push(candidate);
+    families.set(family, roster);
+  }
+  const rankof = (candidate: jurypoolumember): number => -intelligencescore(candidate.model);
+  const ranked = [...families.entries()]
+    .map(([family, roster]) => ({
+      family,
+      roster: [...roster].sort((one, two) => rankof(one) - rankof(two) || one.id.localeCompare(two.id)),
+    }))
+    .sort((one, two) => rankof(one.roster[0]) - rankof(two.roster[0]) || one.family.localeCompare(two.family));
+  const primaries: seatedmember[] = [];
+  const runnerups: seatedmember[] = [];
+  const spares: seatedmember[] = [];
+  for (const entry of ranked) {
+    const [best, runner, ...others] = entry.roster;
+    void others;
+    if (primaries.length < 3) {
+      primaries.push({ ...best, family: entry.family });
+      if (runner !== undefined) runnerups.push({ ...runner, family: entry.family });
+    } else if (spares.length < 3) {
+      spares.push({ ...(runner ?? best), family: entry.family });
+    }
+  }
+  /* the secondary bench seats the runner-up of each primary family first
+   * (the honest deeper bench of the same families), the best remaining
+   * candidates of the later families filling whatever seat stays open —
+   * one seat per family inside the tier, the diversity law holds. */
+  const secondaries: seatedmember[] = [];
+  const secondaryfamilies = new Set<string>();
+  for (const candidate of [...runnerups, ...spares]) {
+    if (secondaries.length >= 3) break;
+    if (!secondaryfamilies.has(candidate.family)) {
+      secondaries.push(candidate);
+      secondaryfamilies.add(candidate.family);
+    }
+  }
+  if (primaries.length < 3)
+    throw new juryerror("bad-pool", `${primaries.length}`, "the primary tier seats fewer than three families");
+  if (secondaries.length < 3)
+    throw new juryerror(
+      "bad-pool",
+      `${secondaries.length}`,
+      "the secondary tier seats fewer than three candidates — the deeper bench never seats",
+    );
+  const primarytier: jurytier = { rank: 1, members: primaries, weights: juryweights(primaries) };
+  const secondarytier: jurytier = { rank: 2, members: secondaries, weights: juryweights(secondaries) };
+  return { primary: primarytier, secondary: secondarytier };
+}
+
+/**
+ * createjurycascade — the cascading jury seat: the caller configures the
+ * candidate pool (six candidates across at least three provider families),
+ * the optional measured calibration packs and the optional recipe table;
+ * the returned decide runs the primary bench first and escalates every
+ * gray verdict to the deeper bench, the combined six positions deciding
+ * the final state under the same honesty laws.
+ *
+ * @param config the pool, the calibration packs and the recipe table.
+ * @returns the decide function (the verdict, the per tier positions and the trail with both tiers).
+ */
+export function createjurycascade(config: {
+  pool: readonly jurypoolumember[];
+  calibration?: readonly calibrationpack[] | undefined;
+  recipes?: readonly DecisionRecipe[] | undefined;
+}): (request: DecisionRequest) => Promise<{
+  verdict: juryverdict;
+  members: jurymemberverdict[];
+  trail: jurytrail & { tiers: number[]; escalated: boolean };
+}> {
+  const { primary, secondary } = selectjurypooltiers(config.pool);
+  const calibrations = config.calibration;
+  const tierdecide = (tier: jurytier) =>
+    createjury({
+      pool: tier.members,
+      ...(calibrations !== undefined ? { calibration: calibrations } : {}),
+      ...(config.recipes !== undefined ? { recipes: config.recipes } : {}),
+    });
+  const primarydecide = tierdecide(primary);
+  const secondarydecide = tierdecide(secondary);
+  return async (request) => {
+    const first = await primarydecide(request);
+    if (first.verdict.state === "act") {
+      return {
+        verdict: first.verdict,
+        members: first.members,
+        trail: { ...first.trail, tiers: [1], escalated: false },
+      };
+    }
+    /* the gray verdict escalates: the deeper bench answers the same
+     * question and the combined six positions decide under the same laws. */
+    const second = await secondarydecide(request);
+    const combined = aggregatejury({
+      kind: first.verdict.kind,
+      members: [...first.members, ...second.members],
+      weights: [...primary.weights, ...secondary.weights],
+      /* the score kind keeps its bounds through the escalation: the
+       * request's own range rides the combined aggregate (the validated
+       * seat already refused a score without one). */
+      ...(first.verdict.kind === "score" && request.range !== undefined ? { range: request.range } : {}),
+    });
+    const verdict = juryverdictof({ kind: first.verdict.kind, aggregate: combined });
+    const trail: jurytrail & { tiers: number[]; escalated: boolean } = {
+      instruction: first.trail.instruction,
+      rounds: { ...first.trail.rounds, ...second.trail.rounds },
+      meters: { ...first.trail.meters, ...second.trail.meters },
+      weights: [...primary.weights, ...secondary.weights],
+      tiers: [1, 2],
+      escalated: true,
+    };
+    return { verdict, members: [...first.members, ...second.members], trail };
+  };
+}
