@@ -34,7 +34,7 @@ import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { db, execute, getVisitorState, putVisitorState, queryAll, queryOne } from "./db.ts";
-import { decoyledger, isprobe } from "./decoy.ts";
+import { decoyledger, encrypteddecoy, isprobe } from "./decoy.ts";
 import { accounts, projectKeys, projects, storage, storageDriverKind } from "./drizzle.ts";
 import { internalRootDir, serveInternal } from "./internalroot.ts";
 import {
@@ -1470,6 +1470,23 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
      * spelling — refuses before the health probe, the api surface and
      * the static faces are ever consulted. The bytes never leave. */
     if (rawDatabaseRequest(pathname) || rawDatabaseRequest(safeDecode(pathname))) {
+      /* the decoy download leg of the raw-database law: the probe shape (the
+       * browser/scanner accept header the lost humans and the crawlers send)
+       * receives the encrypted decoy bytes — a plausible store face with the
+       * sqlite magic prefix and zero truth inside — while every other shape
+       * (bare, json, star-slash-star: the shape no browser ever sends) keeps
+       * the honest refusal contract. The real bytes never leave either way. */
+      if (isprobe(req.headers.accept)) {
+        const bytes = encrypteddecoy();
+        res.writeHead(200, {
+          "content-type": "application/octet-stream",
+          "content-length": String(bytes.length),
+          "content-disposition": 'attachment; filename="vault.db"',
+          "cache-control": "no-store",
+        });
+        res.end(bytes);
+        return;
+      }
       sendError(
         res,
         403,

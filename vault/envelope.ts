@@ -457,6 +457,23 @@ export function ensureEnvelopeSchema(lane: EnvelopeLane): void {
   createdAt TEXT NOT NULL DEFAULT (datetime('now')),
   updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
 )`);
+  /* the keys and payloads seats the envelope writes ride — laid down here
+   * beside the wrapped-DEK table so the envelope stays self-contained
+   * (the db boot lays the same shapes first; CREATE IF NOT EXISTS keeps
+   * the two idempotent beside each other, no conflict ever). */
+  lane.execute(`CREATE TABLE IF NOT EXISTS keys (
+  id        TEXT PRIMARY KEY,
+  scope     TEXT NOT NULL DEFAULT 'store',
+  payload   TEXT NOT NULL DEFAULT '',
+  createdAt TEXT NOT NULL DEFAULT (datetime('now'))
+)`);
+  lane.execute(`CREATE TABLE IF NOT EXISTS payloads (
+  id        TEXT PRIMARY KEY,
+  keyId     TEXT,
+  bytes     BLOB,
+  size      INTEGER NOT NULL DEFAULT 0,
+  createdAt TEXT NOT NULL DEFAULT (datetime('now'))
+)`);
 }
 
 /** one row of the envelope table as sqlite answers it (the blob cells). */
