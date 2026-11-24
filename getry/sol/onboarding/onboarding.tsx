@@ -40,7 +40,7 @@ import { gatewayViewConfig, smartpoolof } from "../../gateway";
 import { label, labelfill } from "../../labels";
 import { markOnboardingSeen } from "../../onboardingstate.ts";
 import { DEFAULTTHINKINGLEVEL } from "../../thinking";
-import { BrandMark, TabBridge } from "../../wingets";
+import { BrandMark, TabBridge } from "../../widgets";
 import { ModelPicker, type ModelOption, ThinkingPicker } from "../chat/Composer.tsx";
 import { START_APPS } from "../shell/Shell.tsx";
 

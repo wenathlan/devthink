@@ -3,7 +3,7 @@
  * surface (the "devthink chat3" replacement spec): every lane the surface
  * rides — types, discovery, streaming, understanding, image generation and
  * the conversation store — lives in THIS one file, wired to the root getry
- * logics (chatclient.ts, db.ts, gateway.ts, thinking.ts) so the wingets stay
+ * logics (chatclient.ts, db.ts, gateway.ts, thinking.ts) so the widgets stay
  * pure interface and the anchor stays pure wiring.
  *
  * the contract mirrors the gateway (Next) edition of the surface: the same

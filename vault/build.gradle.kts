@@ -27,7 +27,7 @@ tasks.jar {
         include("vault.kts")
         include("README.md")
         include("docs/**")
-        include("test/**")
+        include("tests/**")
     }
 }
 

@@ -24,7 +24,7 @@ import { type GatewayVersion, PARSERSTEPS } from "../../gateway";
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { toast } from "../toast/Toast.tsx";
-import { TabBridge } from "../../wingets";
+import { TabBridge } from "../../widgets";
 
 /** the quick-start calls the gateway answers out of the box (the copy law). */
 const QUICKSTART = label("versions.quickstart");

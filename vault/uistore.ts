@@ -137,7 +137,7 @@ export interface uistoreseat {
   uistoreseedrows(): Readonly<Record<string, string>>;
   /** Loads the live ui rows over the seat's validated base. */
   loaduicopy(): Promise<void>;
-  /** The typed accessor the wingets render through. */
+  /** The typed accessor the widgets render through. */
   uicopy(key: string): string;
   /** The placeholder door: fills the {token} slots of one format key. */
   uicopyfill(key: string, values: Record<string, string>): string;

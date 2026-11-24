@@ -1488,7 +1488,7 @@ kbd, code { font-family: var(--font-mono); font-size: 0.85em; background: var(--
    clock and the pill toast. appended before the family motion law's hard
    stop so the guards keep the last word; the tokens flip the file's way
    (the :root literals answer the dark alternate, [data-theme="light"] the
-   reference face — the boot now starts light, App.tsx applyTheme("light")).
+   reference face — the boot now starts light, app.tsx applyTheme("light")).
    ========================================================================== */
 
 /* ---------- d0. the design tokens — dark face first, the light face below --- */
@@ -2326,7 +2326,7 @@ html {
 /* ==========================================================================
    THE INTERFACE 18 LAYER — the devthink chat3 studio desktop (crisp white
    & matte obsidian squircle system, zero blue tint): the design grammar of
-   the studio surface (sol/studio/Studio.tsx + the studio.* wingets). the
+   the studio surface (sol/studio/Studio.tsx + the studio.* widgets). the
    tokens ride the --dk-* namespace (no clash with the family tokens); the
    theme flips on <html data-theme>; the fx switches (glow/blur/transparency)
    and the effort-tier chroma remap ride the .desktop-shell data attributes.

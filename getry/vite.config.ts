@@ -148,7 +148,7 @@ export default defineConfig({
       "@wenathlan/getry/nodeshim": path.resolve(import.meta.dirname, "shims.ts"),
       "@wenathlan/getry/types": path.resolve(import.meta.dirname, "types.ts"),
       "@wenathlan/getry/constants": path.resolve(import.meta.dirname, "constants.ts"),
-      "@wenathlan/getry/test/researchfixtures": path.resolve(import.meta.dirname, "test/researchfixtures.ts"),
+      "@wenathlan/getry/tests/researchfixtures": path.resolve(import.meta.dirname, "tests/researchfixtures.ts"),
 
       /** the debonair route table bridge of the ownership law: the
        * debonair lane rides the owner's route table through the published

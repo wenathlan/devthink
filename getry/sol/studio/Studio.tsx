@@ -33,8 +33,8 @@ import {
 } from "react";
 import { useLocation } from "wouter";
 import { setgatewayorigin } from "../../chatclient";
-import { IntroAnimation } from "../wingets/studio.visuals";
-import { OmniSaddleRail } from "../wingets/studio.rail";
+import { IntroAnimation } from "../widgets/studio.visuals";
+import { OmniSaddleRail } from "../widgets/studio.rail";
 import {
   deleteConversationFromDb,
   discoverGatewayRoutes,
@@ -60,12 +60,12 @@ import {
   type RouteName,
   type Workspace,
 } from "../../studio.client";
-import { Sidebar, type SidebarTab } from "../wingets/studio.sidebar";
-import { TopBar } from "../wingets/studio.topbar";
-import { ChatThread } from "../wingets/studio.chatthread";
-import { Composer } from "../wingets/studio.composer";
-import { ModelInspectorModal } from "../wingets/studio.inspector";
-import { TerminalDrawer, type TerminalLogLine } from "../wingets/studio.terminal";
+import { Sidebar, type SidebarTab } from "../widgets/studio.sidebar";
+import { TopBar } from "../widgets/studio.topbar";
+import { ChatThread } from "../widgets/studio.chatthread";
+import { Composer } from "../widgets/studio.composer";
+import { ModelInspectorModal } from "../widgets/studio.inspector";
+import { TerminalDrawer, type TerminalLogLine } from "../widgets/studio.terminal";
 import { extractConversationArtifacts, type WorkspaceTask } from "../../studio.artifacts";
 import {
   clampSidebarWidth,

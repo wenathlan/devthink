@@ -19,7 +19,7 @@ import { useEffect } from "react";
 import { label, labelfill } from "../../labels";
 import { observeReveals } from "../../reveal";
 import { budgetof, DEFAULTTHINKINGLEVEL, formatbudget, THINKINGLEVELS } from "../../thinking";
-import { TabBridge } from "../../wingets";
+import { TabBridge } from "../../widgets";
 
 /**
  * the thinking page.
