@@ -19,10 +19,10 @@ function read(path: string): string {
 
 const CSS = read("../sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../sol/wingets/ShellBrandmark.tsx");
+const MARK = read("../sol/widgets/ShellBrandmark.tsx");
 const TOML = read("../devthink.toml");
 const SOL = read("../sol/Sol.tsx");
-const GATE = read("../sol/wingets/HomeEntrygate.tsx");
+const GATE = read("../sol/widgets/HomeEntrygate.tsx");
 const STATE = read("../onboardingstate.ts");
 const ONBOARDING = read("../sol/onboarding/onboarding.tsx");
 const INTRO = read("../sol/intro/intro.tsx");
@@ -98,8 +98,8 @@ describe("design contract", () => {
     assert.match(ENTRY, /Geist\+Mono/);
   });
 
-  it("keeps the entry on the source face (./App.tsx, canonical assets, no hashed ghosts)", () => {
-    assert.match(ENTRY, /script[^>]*\.\/App\.tsx/);
+  it("keeps the entry on the source face (./app.tsx, canonical assets, no hashed ghosts)", () => {
+    assert.match(ENTRY, /script[^>]*\.\/app\.tsx/);
     assert.ok(!/-[0-9a-f]{8}\.(js|css)/.test(ENTRY), "no hashed bundle rides the entry");
     assert.match(ENTRY, /href="\.\/favicon\.svg"/);
   });

@@ -1,9 +1,9 @@
 /**
  * labels.ts — the copy law of forge: every interface string lives in the
- * label store, the wingets and page anchors read through this typed
+ * label store, the widgets and page anchors read through this typed
  * accessor, and a hardcoded string inside a widget is a defect. the
  * manifest below is the english source of truth extracted from the real
- * strings of the Sol wingets and the page anchors; the seed ingests it into
+ * strings of the Sol widgets and the page anchors; the seed ingests it into
  * the labels store (the app db through db.ts on the server, the browser rows
  * cache in the visitor machine) and the seed never overwrites a translated
  * row.
@@ -21,12 +21,12 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 export const LABEL_REVISION = 3;
 
 /** the english manifest: the page.widget.key path answers the surface text.
- * every entry is the verbatim string the wingets and page anchors rendered
+ * every entry is the verbatim string the widgets and page anchors rendered
  * before the copy wave — zero invented copy. data stays data: runner names
  * and modes, queue lanes and depths, seeds, run clocks and log lines keep
  * flowing from the engine tables; the prose around them rides here. */
 export const LABEL_MANIFEST = {
-  // the app boundary (App.tsx, the boot anchor)
+  // the app boundary (app.tsx, the boot anchor)
   "app.boundary.body": "forge could not render this page frame.",
   "app.boundary.reload": "reload the page",
   // the shared rail labels of the window pin rail (the shell, the onboarding facts)
@@ -283,7 +283,7 @@ export type LabelKey = keyof typeof LABEL_MANIFEST & string;
 
 /** the store mechanism rides the vault factory (the storage law of the
  * family: the vault owns the store, the app owns the manifest — the
- * mechanism is imported, never duplicated). the cache key keeps the browser mirror the wingets already read. */
+ * mechanism is imported, never duplicated). the cache key keeps the browser mirror the widgets already read. */
 const store = createLabelStore({
   manifest: LABEL_MANIFEST,
   revision: LABEL_REVISION,

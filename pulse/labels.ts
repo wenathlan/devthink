@@ -1,5 +1,5 @@
 /**
- * labels.ts — every interface string lives in the label store, the wingets
+ * labels.ts — every interface string lives in the label store, the widgets
  * and page anchors read through this typed accessor, and a hardcoded string
  * inside a widget is a defect. the manifest below is the english source of
  * truth for the honest under-construction face of pulse — the twelfth
@@ -28,10 +28,10 @@ import { createLabelStore } from "@wenathlan/vault/labelstore";
 export const LABELREVISION = 1;
 
 /** the english manifest: the page.widget.key path answers the surface text.
- * every entry is the verbatim string the wingets of the honest face render
+ * every entry is the verbatim string the widgets of the honest face render
  * — zero invented copy. */
 export const LABELMANIFEST = {
-  // the app boundary (App.tsx, the boot anchor)
+  // the app boundary (app.tsx, the boot anchor)
   "app.boundary.body": "pulse could not render this frame.",
   "app.boundary.reload": "reload the interface",
   // the studio identity row (the name the drawn mark speaks to screen
@@ -51,7 +51,7 @@ export type LabelKey = keyof typeof LABELMANIFEST & string;
 
 /** the store mechanism rides the vault factory (the storage law of the
  * family: the vault owns the store, the app owns the manifest — the
- * mechanism is imported, never duplicated). the cache key keeps the browser mirror the wingets already read. */
+ * mechanism is imported, never duplicated). the cache key keeps the browser mirror the widgets already read. */
 const store = createLabelStore({
   manifest: LABELMANIFEST,
   revision: LABELREVISION,

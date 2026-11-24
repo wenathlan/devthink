@@ -223,7 +223,7 @@ function labelRowOf(row: {
 /* the copy law rides the db boot: the label seed ingests the english manifest
  * of labels.ts beside the schema (the interface strings land in the store,
  * the translated rows protected from the overwrite). best effort: a sealed
- * store never blocks the boot, the manifest always answers the wingets. */
+ * store never blocks the boot, the manifest always answers the widgets. */
 try {
   seedLabelRows();
 } catch {

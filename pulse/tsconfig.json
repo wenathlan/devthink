@@ -1,7 +1,7 @@
 // the pulse typescript baseline (the web theme compilerOptions over the
 // studio surface: one project covers the app root and the Sol theme —
 // while the studio is in construction the surface is the one
-// under-construction face and the theme carries only the wingets folder).
+// under-construction face and the theme carries only the widgets folder).
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -25,5 +25,5 @@
     }
   },
   "include": ["*.ts", "*.tsx", "sol/**/*.ts", "sol/**/*.tsx"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "test"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "tests"]
 }
