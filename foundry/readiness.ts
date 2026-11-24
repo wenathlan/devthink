@@ -8,9 +8,9 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 /* the foundry seat carries the gate; every evidence read crosses back to the devthink tree it audits (the gate wave moved the machinery, not the walks). */
-import { apifreezebaseline } from "../devthink/test/freezebaseline.ts";
-import { permdiffbaseline } from "../devthink/test/permbaseline.ts";
-import { frozenschemas } from "../devthink/test/schemafixtures.ts";
+import { apifreezebaseline } from "../devthink/tests/freezebaseline.ts";
+import { permdiffbaseline } from "../devthink/tests/permbaseline.ts";
+import { frozenschemas } from "../devthink/tests/schemafixtures.ts";
 import { syncmode, syncrecord } from "../devthink/records.ts";
 import { agentcertrecord } from "../devthink/agentcert.ts";
 import { costcertrecord } from "../devthink/costcert.ts";
@@ -23,11 +23,11 @@ import { soakrecord } from "../devthink/soak.ts";
 import { sweeprecord } from "../devthink/sweep.ts";
 import { telemetryfreerecord } from "../devthink/telemetryfree.ts";
 import { wcagrecord } from "../devthink/wcag.ts";
-import { readinessmigrateautoma } from "../devthink/test/readinessautoma.ts";
-import { readinessmigrateselenium } from "../devthink/test/readinessselenium.ts";
-import { readinessmigratetabular } from "../devthink/test/readinesstabular.ts";
-import { readinessmigrateuivision } from "../devthink/test/readinessuivision.ts";
-import { readinessmigratev1 } from "../devthink/test/readinessv1.ts";
+import { readinessmigrateautoma } from "../devthink/tests/readinessautoma.ts";
+import { readinessmigrateselenium } from "../devthink/tests/readinessselenium.ts";
+import { readinessmigratetabular } from "../devthink/tests/readinesstabular.ts";
+import { readinessmigrateuivision } from "../devthink/tests/readinessuivision.ts";
+import { readinessmigratev1 } from "../devthink/tests/readinessv1.ts";
 
 /** the harness consts the review rides — the promisified exec, the repo
  * root of the audited tree, the argv mode word, the stamped release the

@@ -110,7 +110,7 @@
       "@wenathlan/getry/nodeshim": ["../getry/shims.ts"],
       "@wenathlan/getry/types": ["../getry/types.ts"],
       "@wenathlan/getry/constants": ["../getry/constants.ts"],
-      "@wenathlan/getry/test/researchfixtures": ["../getry/test/researchfixtures.ts"],
+      "@wenathlan/getry/tests/researchfixtures": ["../getry/tests/researchfixtures.ts"],
       /* the getry owner faces of the gateway ownership wave
        * (wave/ownership.gateway), mirrored from vite.config.ts: the
        * embedded gateway surfaces the grand merge interned in server.ts

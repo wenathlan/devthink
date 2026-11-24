@@ -255,7 +255,7 @@ export async function runsweepsuite() {
   const commandstext = await readFile("commands.ts", "utf8");
   const catalogorigins = [...commandstext.matchAll(/origin:\s*"https:\/\/([a-z0-9.-]+)"/g)].map((match) => match[1]);
   const reservedsuffixes = [".example", ".invalid", ".test", ".localhost"];
-  /* the reviewed provider endpoint catalog of the merged lineages reads its data module (devthink/test/reviewedorigins.ts, migrated from devthink/artifacts/reviewedorigins.json when the flat folder law dissolved the artifacts folder) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
+  /* the reviewed provider endpoint catalog of the merged lineages reads its data module (devthink/tests/reviewedorigins.ts, migrated from devthink/artifacts/reviewedorigins.json when the flat folder law dissolved the artifacts folder) so the reviewed origins stay data rows, never code literals — the same doctrine the gateway api coverage table carries. */
   const reviewedoriginhosts = reviewedorigins.origins;
   const allowlist = [
     "example.com",

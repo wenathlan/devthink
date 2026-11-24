@@ -1803,7 +1803,7 @@ if (buildlane === "researchcatalog") {
  * matrix) land back inside the researchfixtures module the corpus ships.
  * The ownership wave (wave/ownership.getry) moved the corpus fixtures to the
  * gateway owner: the import rides the library specifier
- * @wenathlan/getry/test/researchfixtures (bridged to the monorepo source) and
+ * @wenathlan/getry/tests/researchfixtures (bridged to the monorepo source) and
  * the in-place rewrite targets the getry copy — the corpus is never duplicated
  * inside devthink.
  */
@@ -1811,8 +1811,8 @@ if (buildlane === "researchcatalog") {
    fixtures rides a dynamic import inside the lane so the root build entry
    (`node build.ts`) never loads the corpus module — the lane loads it at
    exactly the moment the standalone script loaded it. */
-const { reposources } = await import("@wenathlan/getry/test/researchfixtures");
-const modulepath = join(process.cwd(), "..", "getry", "test", "researchfixtures.ts");
+const { reposources } = await import("@wenathlan/getry/tests/researchfixtures");
+const modulepath = join(process.cwd(), "..", "getry", "tests", "researchfixtures.ts");
 const sourcefiles = Object.keys(reposources)
   .filter((name) => /^repos.*\.json$/i.test(name))
   .sort();

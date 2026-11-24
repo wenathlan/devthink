@@ -372,7 +372,7 @@ jobs:
           # family law the static lanes serve — while the vault seal and the
           # devthink site rows stay app-specific above it).
           duplicates="$(
-            git ls-files | grep -vE '^(devthink/test/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$|/protocols\.types$|/mime\.types$|/svg\.icon$|/_headers$' | while IFS= read -r file; do
+            git ls-files | grep -vE '^(devthink/tests/code/|devthink/docs/antigravity/)' | grep -vE '(^|/)LICENSE$' | grep -vE 'engine\.(css|js)$|clean-url\.(js|ts)$|/pnpm-lock\.yaml$|/biome\.jsonc$|/pnpm-workspace\.yaml$|/pnpmboot\.package-lock\.json$|^devthink/modalities\.ts$|/protocols\.types$|/mime\.types$|/svg\.icon$|/_headers$' | while IFS= read -r file; do
               test -f "${file}" || continue
               size="$(wc -c < "${file}")"
               if [ "${size}" -gt 512 ]; then
@@ -491,7 +491,7 @@ jobs:
 
       - name: Run the config parity gate
         working-directory: devthink
-        run: bunx vitest run test/configparity.test.ts
+        run: bunx vitest run tests/configparity.test.ts
 
   family-tests:
     # the family test lane: the ten family apps carry their own vitest
@@ -1055,7 +1055,7 @@ jobs:
           */release
           */staging
           */sol/dist
-          */test/tmp
+          */tests/tmp
           */mobile
           node_modules
           .git
@@ -1141,7 +1141,7 @@ jobs:
           test "$(bun --version)" = "$(node -p "require('../package.json').engines.bun.match(/[\^~>=< ]*([0-9][^ ]*)/)[1]")"
           # the modes lane answers the runtime contract: the release truth
           # tests ride the ladder where their gates regenerate the artifacts
-          bun x vitest run --exclude "test/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge,sweep}.test.ts"
+          bun x vitest run --exclude "tests/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge,sweep}.test.ts"
       - name: Bun import smoke over the bun entry
         if: matrix.runtime == 'bun'
         run: cd devthink && bun --eval "const library = await import('./build/bun.js'); if (typeof library.bunadapter !== 'function') throw new Error('The bun mode lost its adapter.'); if (typeof library.surfacepalette !== 'function') throw new Error('The bun mode lost its surface.');"

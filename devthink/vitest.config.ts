@@ -99,13 +99,13 @@ export default defineConfig({
       /** the getry research corpus bridge of the ownership law (the build
        * family consolidation carried it): the researchcatalog lane of the
        * one build file reads the corpus fixtures through the published
-       * library specifier ("@wenathlan/getry/test/researchfixtures"),
+       * library specifier ("@wenathlan/getry/tests/researchfixtures"),
        * and this bridge resolves the specifier to the monorepo source the
        * sibling app carries — the corpus is never duplicated inside
        * devthink, the lane answers from its one owner. */
-      "@wenathlan/getry/test/researchfixtures": path.resolve(
+      "@wenathlan/getry/tests/researchfixtures": path.resolve(
         import.meta.dirname,
-        "../getry/test/researchfixtures.ts",
+        "../getry/tests/researchfixtures.ts",
       ),
       /** the queue self-bridge of the ownership law: the getry owner's llm
        * module (imported through the family bridges) walks the house
