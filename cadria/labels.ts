@@ -1,8 +1,8 @@
 /**
  * labels.ts — the copy law of cadria: every interface string lives in the
- * label store, the wingets read through this typed accessor, and a
+ * label store, the widgets read through this typed accessor, and a
  * hardcoded string inside a widget is a defect. the manifest below is the
- * english source of truth extracted from the real strings of the Sol wingets
+ * english source of truth extracted from the real strings of the Sol widgets
  * and the page anchors; the seed ingests it into the labels store (the site
  * db through db.ts on the server, the browser rows cache in the visitor
  * machine) and the seed never overwrites a translated row.
@@ -21,7 +21,7 @@ export const LABEL_REVISION = 4;
 
 /** the english manifest: the page.widget.key path answers the surface text. */
 export const labelManifest = {
-  // the root entry (the error boundary of App.tsx)
+  // the root entry (the error boundary of app.tsx)
   "app.boot.failed": "cadria could not render this page frame.",
   "app.boot.reload": "reload the page",
   // the construction face (the in-construction pass of every platform
@@ -603,7 +603,7 @@ export type LabelKey = keyof typeof labelManifest & string;
 
 /** the store mechanism rides the vault factory (the storage law of the
  * family: the vault owns the store, the app owns the manifest — the
- * mechanism is imported, never duplicated). the cache key keeps the browser mirror the wingets already read. */
+ * mechanism is imported, never duplicated). the cache key keeps the browser mirror the widgets already read. */
 const store = createLabelStore({
   manifest: labelManifest,
   revision: LABEL_REVISION,
