@@ -1,7 +1,7 @@
 // # entryflow.test — the construction-flow contract of the cobaia: the
 // standardized family law (intro → onboarding → entrada) the owner ordered
 // and the db-backed content law behind it. Run: pnpm vitest run
-// test/entryflow.test.ts
+// tests/entryflow.test.ts
 //
 // The suite watches three promises:
 // 1. the flow — the intro mounts before the onboarding, the onboarding
@@ -28,7 +28,7 @@ const SOL = read("../sol/Sol.tsx");
 const HOME = read("../sol/home/home.tsx");
 const INTRO = read("../sol/intro/intro.tsx");
 const ONBOARDING = read("../sol/onboarding/onboarding.tsx");
-const GATE = read("../sol/wingets/HomeEntrygate.tsx");
+const GATE = read("../sol/widgets/HomeEntrygate.tsx");
 const STATE = read("../onboardingstate.ts");
 const DB = read("../db.ts");
 const CSS = read("../sol/sol.css");

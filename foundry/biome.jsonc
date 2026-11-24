@@ -21,8 +21,8 @@
       "!**/bun.lock",
       "!**/*.min.js",
       "!**/docs",
-      "!**/test/tmp",
-      "!**/test/code",
+      "!**/tests/tmp",
+      "!**/tests/code",
       "!**/sol/dist",
       "!**/sol/.vite",
       "!**/sol/node_modules",
@@ -113,7 +113,7 @@
       }
     },
     {
-      "includes": ["test/workflowcheck.ts", "test/publishlanes.test.ts"],
+      "includes": ["tests/workflowcheck.ts", "tests/publishlanes.test.ts"],
       "linter": {
         "rules": {
           "suspicious": {

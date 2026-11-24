@@ -1,5 +1,5 @@
 // # adsconfig.test — the honest ad slot registry of the family site.
-// Run: pnpm vitest run test/adsconfig.test.ts
+// Run: pnpm vitest run tests/adsconfig.test.ts
 // The suite watches the promise the ad slot makes: one reserved slot per
 // content page (home, apps, blog), every slot id shipping EMPTY (no ad
 // network script, no id, no key is ever committed — the loader enters after

@@ -3,7 +3,7 @@
  * the one checkoutlinks table the pricing page reads — never restated, never
  * rounded, never invented. The billing values (ids, prices, links) answer
  * from checkoutlinks and every plan sentence (name, blurb, features) rides
- * the label store — zero hardcoded copy in the winget. A configured
+ * the label store — zero hardcoded copy in the widget. A configured
  * checkout href renders a live anchor; an empty one renders the disabled
  * button with the honest note "checkout not configured yet" — the
  * not-configured state stays honest, exactly like /pricing. The studio plan

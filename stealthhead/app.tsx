@@ -1,5 +1,5 @@
 /**
- * App.tsx — the root anchor of the stealthhead Sol theme (layer 1 of the
+ * app.tsx — the root anchor of the stealthhead Sol theme (layer 1 of the
  * anchor architecture) and the only TSX outside the theme: one static react
  * mount, one error boundary and the theme anchor. The root imports only the
  * theme anchor (sol/Sol.tsx — the file named after the theme folder, beside
@@ -26,7 +26,7 @@ import "./sol/sol.css";
 
 // the copy law rides the boot: the seed refreshes the label store rows from
 // the manifest (the browser cache mirrors the site db rows) before the theme
-// renders — best effort, the manifest always answers the wingets.
+// renders — best effort, the manifest always answers the widgets.
 if (typeof window !== "undefined") void seedlabels().catch(() => {});
 
 /* the zoom lock law (the faun pattern the owner pinned in the reference):

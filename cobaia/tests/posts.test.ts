@@ -1,5 +1,5 @@
 // # posts.test — the seed blog of the family site.
-// Run: pnpm vitest run test/posts.test.ts
+// Run: pnpm vitest run tests/posts.test.ts
 // The suite watches the promise the blog page makes: the index is sorted
 // newest first no matter the array order, the slugs are unique and url-safe,
 // every seed post carries a real ~300 word body (the ad networks approve

@@ -1,5 +1,5 @@
 // # familyurl.test — the address book contract of the family deploy units.
-// Run: pnpm vitest run test/familyurl.test.ts
+// Run: pnpm vitest run tests/familyurl.test.ts
 // The suite watches the promise the directory and the footer make: every
 // family member resolves one level above this application, always with the
 // trailing slash, and pasted segments or stray slashes land on the same

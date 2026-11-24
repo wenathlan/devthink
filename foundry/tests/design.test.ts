@@ -1,6 +1,6 @@
 // # design.test — the design contract of the foundry surface, runnable with
 // the house vitest suite:
-//   bunx vitest run test/design.test.ts
+//   bunx vitest run tests/design.test.ts
 // The file reads the shipped sources (css, entry face, brand mark, app
 // identity) and pins the family laws of the reform wave: no banned hue, no
 // pill, no transition:all, the trylle type triad, the source-face entry,
@@ -16,7 +16,7 @@ function read(path: string): string {
 
 const CSS = read("../sol/sol.css");
 const ENTRY = read("../index.html");
-const MARK = read("../sol/wingets/ShellBrandmark.tsx");
+const MARK = read("../sol/widgets/ShellBrandmark.tsx");
 const SHELL = read("../sol/shell/Shell.tsx");
 const TOML = read("../devthink.toml");
 const SOL = read("../sol/Sol.tsx");
@@ -95,8 +95,8 @@ describe("design contract", () => {
     assert.match(ENTRY, /Geist\+Mono/);
   });
 
-  it("keeps the entry on the source face (./App.tsx, no hashed ghosts)", () => {
-    assert.match(ENTRY, /script[^>]*\.\/App\.tsx/);
+  it("keeps the entry on the source face (./app.tsx, no hashed ghosts)", () => {
+    assert.match(ENTRY, /script[^>]*\.\/app\.tsx/);
     assert.ok(!/-[0-9a-f]{8}\.(js|css)/.test(ENTRY), "no hashed bundle rides the entry");
     assert.match(ENTRY, /href="\.\/favicon\.svg"/);
   });
@@ -141,7 +141,7 @@ describe("design contract", () => {
   });
 
   it("carries the flow contract sources (the entry gate behind the home anchor)", () => {
-    const GATE = read("../sol/wingets/HomeEntrygate.tsx");
+    const GATE = read("../sol/widgets/HomeEntrygate.tsx");
     const HOME = read("../sol/home/home.tsx");
     const INTRO = read("../sol/intro/intro.tsx");
     const ONBOARDING = read("../sol/onboarding/onboarding.tsx");

@@ -27,7 +27,7 @@ tasks.jar {
         include("foundry.kts")
         include("README.md")
         include("docs/**")
-        include("test/**")
+        include("tests/**")
     }
 }
 

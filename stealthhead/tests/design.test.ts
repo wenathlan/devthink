@@ -19,9 +19,9 @@ function read(path: string): string {
 
 const CSS = read("../sol/sol.css");
 const ENTRY = read("../index.html");
-const APP = read("../App.tsx");
+const APP = read("../app.tsx");
 const SOL = read("../sol/Sol.tsx");
-const MARK = read("../sol/wingets/ShellBrandmark.tsx");
+const MARK = read("../sol/widgets/ShellBrandmark.tsx");
 const TOML = read("../devthink.toml");
 const FAVICON = read("../favicon.svg");
 const ICON = read("../icon.svg");
@@ -69,8 +69,8 @@ describe("design contract", () => {
     expect(CSS).toMatch(/font-weight: 450/);
   });
 
-  it("keeps the entry on the source face (./App.tsx, canonical assets, no hashed ghosts)", () => {
-    expect(ENTRY).toMatch(/script[^>]*\.\/App\.tsx/);
+  it("keeps the entry on the source face (./app.tsx, canonical assets, no hashed ghosts)", () => {
+    expect(ENTRY).toMatch(/script[^>]*\.\/app\.tsx/);
     expect(/-[0-9a-f]{8}\.(js|css)/.test(ENTRY), "no hashed bundle rides the entry").toBe(false);
     expect(ENTRY).toMatch(/href="\.\/favicon\.svg"/);
     expect(ENTRY).toMatch(/href="\.\/manifest\.webmanifest"/);
@@ -96,8 +96,8 @@ describe("design contract", () => {
     expect(APP.includes("wouter"), "the app rides no router any more").toBe(false);
     expect(APP.includes("Toaster"), "the toast surface retired with the pages").toBe(false);
     expect(APP.includes("routerBase"), "the routerbase door retired with the routes").toBe(false);
-    // the theme anchor mounts the face from the root winget barrel — nothing else
-    expect(SOL).toMatch(/import \{ Constructionface \} from "\.\.\/wingets"/);
+    // the theme anchor mounts the face from the root widget barrel — nothing else
+    expect(SOL).toMatch(/import \{ Constructionface \} from "\.\.\/widgets"/);
     expect(SOL).toMatch(/<Constructionface \/>/);
     expect(SOL.includes("wouter"), "no route table rides the theme").toBe(false);
     expect(SOL.includes("Switch"), "no route switch rides the theme").toBe(false);
