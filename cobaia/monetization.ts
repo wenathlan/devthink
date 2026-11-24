@@ -11,7 +11,7 @@
 // content lane), so the one import the four sources repeated — the
 // content.ts door of the uistore chain — rides once at the top; and no two
 // sources double-declared a const or a decl under one name, so every export
-// keeps the exact name the importers always read (the wingets index
+// keeps the exact name the importers always read (the widgets index
 // re-exports the roster pair by name so its surface stays identical). The
 // four source files are deleted; every importer reads this one seat.
 

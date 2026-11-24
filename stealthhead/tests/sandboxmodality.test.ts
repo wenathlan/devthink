@@ -9,7 +9,7 @@
 // modality id pins the seat for the platform's join to validate at
 // dispatch — this module never judges engine vocabulary). runnable with
 // vitest:
-//   pnpm vitest run test/sandboxmodality.test.ts
+//   pnpm vitest run tests/sandboxmodality.test.ts
 import assert from "node:assert/strict";
 import { describe, it } from "vitest";
 import { lanesof } from "@wenathlan/saddle/workloadlaw";

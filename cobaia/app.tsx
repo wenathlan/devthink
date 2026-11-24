@@ -27,7 +27,7 @@ import { seedLabels } from "./labels";
 import { routerBase } from "./routerbase.ts";
 // the copy law rides the boot: the seed refreshes the label store rows from
 // the manifest (the browser cache mirrors the site db rows) before the theme
-// renders — best effort, the manifest always answers the wingets.
+// renders — best effort, the manifest always answers the widgets.
 if (typeof window !== "undefined") void seedLabels().catch(() => {});
 
 /* the zoom lock law (the faun pattern the owner pinned in the reference):

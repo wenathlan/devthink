@@ -1,7 +1,7 @@
 // # gameface.test — the under-construction law of stealthhead (the owner
 //   order of the waves, pinned): the FPS game is in construction — clean
 //   everything, ONE component saying "game in construction", never a dry
-//   text notice. The whole surface is the Constructionface winget (the
+//   text notice. The whole surface is the Constructionface widget (the
 //   drawn scene: brand mark, scope hologram, coral light, status chip) and
 //   the game logics no longer surface: the page faces, the shell chrome and
 //   the entry flow are retired from the tree, no surface file imports an
@@ -17,7 +17,7 @@ function read(path: string): string {
   return readFileSync(new URL(path, import.meta.url), "utf8");
 }
 
-/** every source file of the sol tree (the topic modules, the wingets, the
+/** every source file of the sol tree (the topic modules, the widgets, the
  * stylesheet) — the walk the emoji ban sweeps over. */
 function solSources(): { path: string; source: string }[] {
   const found: { path: string; source: string }[] = [];
@@ -36,19 +36,19 @@ function solSources(): { path: string; source: string }[] {
   return found;
 }
 
-const FACE = read("../sol/wingets/Constructionface.tsx");
-const BARREL = read("../wingets.ts");
+const FACE = read("../sol/widgets/Constructionface.tsx");
+const BARREL = read("../widgets.ts");
 const LABELS = read("../labels.ts");
-const SCOPE = read("../sol/wingets/HomeScope.tsx");
+const SCOPE = read("../sol/widgets/HomeScope.tsx");
 const CSS = read("../sol/sol.css");
 
 /** the exact sol tree of the under-construction theme: the preserved engine
- * topic folders (alphabetical — the folder law), the wingets barrel, the
+ * topic folders (alphabetical — the folder law), the widgets barrel, the
  * theme anchor and the stylesheet. no page folder survives. */
 const SOL_TREE = [
   "Sol.tsx",
   "sol.css",
-  "wingets",
+  "widgets",
 ];
 
 /** the engine logics (and their retired doors) — no surface file imports
@@ -75,8 +75,8 @@ describe("the under-construction law", () => {
     expect([...sol].sort()).toEqual(SOL_TREE);
   });
 
-  it("serves the face from the winget barrel — the dotted name lives once", () => {
-    expect(BARREL).toMatch(/export \{ default as Constructionface \} from "\.\/sol\/wingets\/Constructionface\.tsx"/);
+  it("serves the face from the widget barrel — the dotted name lives once", () => {
+    expect(BARREL).toMatch(/export \{ default as Constructionface \} from "\.\/sol\/widgets\/Constructionface\.tsx"/);
     for (const name of ["Constructionface", "HomeScope", "ShellBrandmark"]) {
       expect(BARREL.includes(name), `the barrel answers ${name}`).toBe(true);
     }
@@ -85,15 +85,15 @@ describe("the under-construction law", () => {
 
   it("the game logics no longer surface — no surface file imports the engine", () => {
     const surface = [
-      { path: "../App.tsx", source: read("../App.tsx") },
+      { path: "../app.tsx", source: read("../app.tsx") },
       { path: "../sol/Sol.tsx", source: read("../sol/Sol.tsx") },
       { path: "../labels.ts", source: LABELS },
       { path: "../theme.ts", source: read("../theme.ts") },
       { path: "../reveal.ts", source: read("../reveal.ts") },
-      { path: "../sol/wingets/Constructionface.tsx", source: FACE },
-      { path: "../sol/wingets/ShellBrandmark.tsx", source: read("../sol/wingets/ShellBrandmark.tsx") },
-      { path: "../sol/wingets/HomeScope.tsx", source: SCOPE },
-      { path: "../wingets.ts", source: BARREL },
+      { path: "../sol/widgets/Constructionface.tsx", source: FACE },
+      { path: "../sol/widgets/ShellBrandmark.tsx", source: read("../sol/widgets/ShellBrandmark.tsx") },
+      { path: "../sol/widgets/HomeScope.tsx", source: SCOPE },
+      { path: "../widgets.ts", source: BARREL },
     ];
     for (const { path, source } of surface) {
       for (const engine of ENGINE_MODULES) {
@@ -168,7 +168,7 @@ describe("the under-construction law", () => {
   it("holds the design bans on the face — fluent icons, label-store copy, no emoji", () => {
     // every icon import of the surface rides the fluent family (the app
     // boundary carries the icons; the drawn scene rides the brand law)
-    const surface = [...solSources(), { path: "../App.tsx", source: read("../App.tsx") }];
+    const surface = [...solSources(), { path: "../app.tsx", source: read("../app.tsx") }];
     const iconCarriers = surface.filter((f) => f.source.includes("@fluentui/react-icons"));
     expect(iconCarriers.length >= 1, "the surface carries the fluent icon law").toBe(true);
     for (const { path, source } of iconCarriers) {

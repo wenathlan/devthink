@@ -1,6 +1,6 @@
 // # sandbox.test — the sandbox state machine of the /sandboxes page,
 // runnable with the house vitest suite:
-//   bunx vitest run test/sandbox.test.ts
+//   bunx vitest run tests/sandbox.test.ts
 // The machine never lies: the ladder is cold → warm → hot with the cooling
 // paths back, every refusal is an honest string, the herd replays from the
 // seed and the census counts exactly.

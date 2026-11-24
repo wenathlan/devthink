@@ -1,5 +1,5 @@
 // # checkoutlinks.test — the billing configuration of the family site.
-// Run: pnpm vitest run test/checkoutlinks.test.ts
+// Run: pnpm vitest run tests/checkoutlinks.test.ts
 // The suite watches the promise the pricing page makes: the three plans
 // exist with the placeholder prices (US$0 / 5 / 19 a month), every checkout
 // href ships EMPTY so the interface renders the honest empty state instead

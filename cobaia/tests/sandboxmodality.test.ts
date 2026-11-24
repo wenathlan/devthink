@@ -1,7 +1,7 @@
-// # sandboxmodality.test — the workload lane declaration of foundry (wave
+// # sandboxmodality.test — the workload lane declaration of cobaia (wave
 // WL1): the mirrored rows answer the engine catalog byte for byte (the
 // lockstep pin — every lane, role, demand and honest today the engine
-// FAMILYLANES table carries for foundry, compared through the library
+// FAMILYLANES table carries for cobaia, compared through the library
 // bridge so the vendor can never drift in silence), every row names the
 // app slug, and the seat law answers the deploy's opt-in (absent or blank
 // answers the declared local default, "join" opts the lanes onto the
@@ -9,23 +9,16 @@
 // modality id pins the seat for the platform's join to validate at
 // dispatch — this module never judges engine vocabulary). runnable with
 // vitest:
-//   pnpm vitest run test/sandboxmodality.test.ts
+//   pnpm vitest run tests/sandboxmodality.test.ts
 import assert from "node:assert/strict";
-import { describe, it } from "vitest";
 import { lanesof } from "@wenathlan/saddle/workloadlaw";
-import {
-  APPSLUG,
-  SANDBOXLANEENV,
-  WORKLOADLANES,
-  laneof,
-  lanesandbox,
-  lanesandboxfromenv,
-} from "../pipeline.ts";
+import { describe, it } from "vitest";
+import { APPSLUG, laneof, lanesandbox, lanesandboxfromenv, SANDBOXLANEENV, WORKLOADLANES } from "../sandboxmodality.ts";
 
 describe("the workload lane mirror (the engine catalog lockstep)", () => {
-  it("answers the engine catalog rows for foundry — the byte pin", () => {
-    const engine = lanesof("foundry");
-    assert.equal(engine.length, WORKLOADLANES.length, "the mirror carries every foundry lane");
+  it("answers the engine catalog rows for cobaia — the byte pin", () => {
+    const engine = lanesof("cobaia");
+    assert.equal(engine.length, WORKLOADLANES.length, "the mirror carries every cobaia lane");
     for (let index = 0; index < engine.length; index += 1) {
       const row = engine[index];
       const mirror = WORKLOADLANES[index];
@@ -41,7 +34,7 @@ describe("the workload lane mirror (the engine catalog lockstep)", () => {
     for (const row of WORKLOADLANES) {
       assert.equal(row.app, APPSLUG);
     }
-    const first = laneof("pipeline-graph");
+    const first = laneof("plan-checkout");
     assert.ok(first !== undefined);
     assert.equal(first.today, "app-lane");
     assert.equal(laneof("no-such-lane"), undefined);
@@ -75,7 +68,7 @@ describe("the sandbox lane seat (the deploy decides)", () => {
   });
 
   it("reads the seat off the environment lookup the deploy pins", () => {
-    assert.equal(SANDBOXLANEENV, "FOUNDRY_SANDBOX_LANE");
+    assert.equal(SANDBOXLANEENV, "COBAIA_SANDBOX_LANE");
     const unset = lanesandboxfromenv(() => undefined);
     assert.deepEqual(unset, { ok: true, seat: "local", sandboxed: false });
     const set = lanesandboxfromenv((key) => (key === SANDBOXLANEENV ? "join" : undefined));

@@ -1,7 +1,7 @@
 /**
  * Sol theme anchor — layer 2 of the anchor architecture.
  * The file carrying the theme folder's own name (sol/Sol.tsx, beside
- * sol/sol.css) is the path manager of the theme: App.tsx consumes only this
+ * sol/sol.css) is the path manager of the theme: app.tsx consumes only this
  * file and the theme stylesheet; no component of the theme is ever imported
  * outside this layer. The owner's law rides the theme (PR19): the FPS game
  * is in construction — clean everything, leave ONE component saying "game
@@ -13,7 +13,7 @@
  * weapons.ts, world.ts) — the surface imports none of them; the root keeps
  * the logics real for the day the game wakes up.
  */
-import { Constructionface } from "../wingets";
+import { Constructionface } from "../widgets";
 
 /** The one surface of the theme: the under-construction face, full-bleed on
  * every path — there is no route table any more, only the face. */

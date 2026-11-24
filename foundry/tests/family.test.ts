@@ -1,6 +1,6 @@
 // # family.test — the family table the chrome rides, runnable with the
 // house vitest suite:
-//   bunx vitest run test/family.test.ts
+//   bunx vitest run tests/family.test.ts
 // Every test watches the promise the row makes: the nine siblings beside
 // foundry are listed once, every slug resolves through the familyurl
 // contract into a climb-one-level url, every member carries the spec §12

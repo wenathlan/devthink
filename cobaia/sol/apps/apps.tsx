@@ -17,7 +17,7 @@ import { useContent } from "../../content.ts";
 import { familyurl } from "../../familyurl";
 import { label, labelfill } from "../../labels";
 import { roster } from "../../monetization.ts";
-import { AdSlot } from "../../wingets";
+import { AdSlot } from "../../widgets";
 
 export function Apps() {
   useContent();
