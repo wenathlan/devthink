@@ -99,7 +99,7 @@ describe("generated release notes", () => {
     expect(releasenotes).toContain("11 applications × 15 forms");
     expect(releasenotes).toContain("11 applications × 7 seats");
     expect(releasenotes).toContain("8 site homes × 7 arch legs × 3 records");
-    expect(releasenotes).toContain("test/publishlanes.test.ts");
+    expect(releasenotes).toContain("tests/publishlanes.test.ts");
     /* the github channel section enumerates the walk catalog: the family
      * seat names, the container seats and the channel umbrellas answer
      * beside the os names */
