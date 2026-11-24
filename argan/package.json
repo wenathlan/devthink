@@ -11717,7 +11717,7 @@
   "files": [
     "README.md",
     "docs",
-    "test",
+    "tests",
     "cli.ts",
     "dns.ts",
     "mimetypes.ts",

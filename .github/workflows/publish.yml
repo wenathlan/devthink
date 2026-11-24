@@ -695,34 +695,22 @@ jobs:
       - name: verify npm identity
         if: steps.token.outputs.available == 'true'
         run: cd "${{ matrix.package }}" && npm whoami || echo "::notice::the identity probe answered 401 (the granular seat); the publish step answers the final truth."
-      - name: build the saddle engine envelope (the exports promise)
-        # the saddle leg is the one ENGINE envelope of the family matrix:
-        # its main/types/bin and the whole exports map promise ./dist/*
-        # files, and the 2.0.151 rung published the registry envelope with
-        # NO dist at all — the saddle .npmrc carries ignore-scripts for the
-        # install lanes (the better-sqlite3 gyp lottery), so npm publish
-        # from the folder never runs the prepublishOnly → pack:check →
-        # build:engine gate the manifest declares. the engine compiles
-        # HERE, explicitly, and the lane asserts the entries the exports
-        # map, the bin and the main/types pair promise before any publish
-        # touches the registry — the documentation envelopes keep their
-        # zero-build doctrine, and the build rides the token gate so a
-        # tokenless firing never installs a toolchain it cannot ship.
-        if: matrix.package == 'saddle' && steps.token.outputs.available == 'true'
+      - name: assert the saddle engine envelope sources (the exports promise)
+        # the source-is-library law the vault doctrine brought: the saddle
+        # envelope ships the TypeScript sources the main/types pair, the
+        # bin and the whole exports map declare (the files field carries
+        # them — the dist era the 2.0.151 lesson closed retired with the
+        # union), so the leg asserts the entries against the checkout and
+        # no registry install answers it: the npm install the leg once
+        # carried resolved the 7,766-package unified tree no publish step
+        # ever read, and the token gate existed only to keep a tokenless
+        # firing from paying it (the 2.0.187 lesson — the twin family lane
+        # of the release ladder died on the same dead install four full
+        # batteries straight). the documentation envelopes keep their
+        # zero-build doctrine, and the source assertions are free, so the
+        # leg drops the gate and always answers.
         run: |
           set -euo pipefail
-          # the family pin law (the same seat the gate ladder answers — the
-          # codeql pinned-dependencies battery charged the saddle engine
-          # build's floating npm): the engines floor of the root manifest
-          # answers the one npm rung the engine install below carries.
-          npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
-          npx --yes "npm@${npm_version}" install --global "npm@${npm_version}"
-          # the manifest law (#498) answers one dependency rung through the
-          # bun lock alone — the npm package-lock the ci lane froze on
-          # retired with the union, so the engine build resolves the
-          # manifest live (install, never the frozen ci) and the compile
-          # walks the same 172-name floor the bun lane pins.
-          npx --yes "npm@${npm_version}" --prefix saddle install --ignore-scripts --no-audit --no-fund
           test -f saddle/index.ts
           test -f saddle/cli.ts
           test -f saddle/browser.ts

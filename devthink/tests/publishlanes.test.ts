@@ -1054,12 +1054,17 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     const release = await parseworkflow("release.yml");
     const steps = stepsof(release, "family");
     const names = steps.map((step) => step.name ?? "");
-    const buildindex = names.indexOf("Build the saddle engine envelope (the exports promise)");
+    const buildindex = names.indexOf("Assert the saddle engine envelope sources (the exports promise)");
     const packindex = names.indexOf("Pack every family envelope beside the application tarball");
     expect(buildindex).toBeGreaterThan(-1);
-    expect(packindex).toBeGreaterThan(buildindex); /* the build precedes every pack */
+    expect(packindex).toBeGreaterThan(buildindex); /* the assertions precede every pack */
     const build = steps[buildindex];
-    expect(build?.run).toContain("npm --prefix saddle ci --ignore-scripts");
+    /* the 2.0.187 lesson: the envelope ships sources (the source-is-library
+     * law above), so the lane installs nothing — the dead npm ci once
+     * carried the 7,766-package unified tree no pack step ever read and
+     * died on the fifteen-minute ceiling four full batteries straight. */
+    expect(build?.run).not.toContain("npm --prefix saddle ci");
+    expect(build?.run).not.toContain("--prefix saddle install");
     for (const entry of LANEASSERTIONS) expect(build?.run).toContain(`test -f saddle/${entry}`);
   });
 
@@ -1067,34 +1072,36 @@ describe.skipIf(!inrepo)("the built envelope law (the exports promise)", () => {
     const publish = await parseworkflow("publish.yml");
     const steps = stepsof(publish, "family-npmjs");
     const names = steps.map((step) => step.name ?? "");
-    const buildindex = names.indexOf("build the saddle engine envelope (the exports promise)");
+    const buildindex = names.indexOf("assert the saddle engine envelope sources (the exports promise)");
     expect(buildindex).toBeGreaterThan(-1);
-    /* the build rides between the identity check and the publish, and only
-     * the saddle leg with the token present ever installs the toolchain. */
+    /* the assertions ride between the identity check and the publish —
+     * the 2.0.187 lesson retired the token gate with the dead install it
+     * guarded: the source assertions are free, so every firing answers
+     * them, token or not. */
     const identityindex = names.indexOf("verify npm identity");
     const publishindex = names.indexOf("publish the family envelope when absent");
     expect(identityindex).toBeGreaterThan(-1);
     expect(buildindex).toBeGreaterThan(identityindex);
     expect(publishindex).toBeGreaterThan(buildindex);
     const build = steps[buildindex];
-    expect(build?.if).toBe("matrix.package == 'saddle' && steps.token.outputs.available == 'true'");
-    /* the npmjsprovenance heal (#513) retired the frozen ci lane — the
-     * engine build resolves the manifest live (install, never the frozen
-     * ci the retired package-lock froze on), so the expectation walks the
-     * install command the publish mirror stamps — the npx carrier walking
-     * the declared rung the codeql pinned-dependencies battery answers. */
-    expect(build?.run).toContain(
-      'npx --yes "npm@${npm_version}" --prefix saddle install --ignore-scripts --no-audit --no-fund',
-    );
+    expect(build?.if).toBeUndefined();
+    /* the source-is-library law: the leg installs nothing (the
+     * npmjsprovenance heal #513 once resolved the manifest live for the
+     * dist-era engine build — the union retired both, and the dead
+     * install outlived them until the 2.0.187 lesson closed it). */
+    expect(build?.run).not.toContain("--prefix saddle install");
+    expect(build?.run).not.toContain("npm --prefix saddle ci");
     for (const entry of LANEASSERTIONS) expect(build?.run).toContain(`test -f saddle/${entry}`);
   });
 
   it("the release ladder's familynpmjs loop publishes the tarball the built family job packs", async () => {
     /* the twin lane publishes familypack/*.tgz — the tarballs the family
-     * job packs AFTER its build step: publishing a tarball never runs
-     * lifecycle scripts, so the build-before-pack of the family job is the
-     * only thing that puts dist inside the twin's envelope. both lanes
-     * fixed means whichever wins the race carries the built set. */
+     * job packs AFTER its source assertion step: publishing a tarball
+     * never runs lifecycle scripts, so the assertion-before-pack of the
+     * family job is the gate that proves the envelope the twin ships (the
+     * source-is-library law — the sources the assertions walk ARE the
+     * library). both lanes fixed means whichever wins the race carries
+     * the asserted set. */
     const release = await readworkflow("release.yml");
     expect(release).toContain('publish_output="$(npm publish "./${tarball}"');
     expect(release).toContain("for tarball in familypack/*.tgz; do");

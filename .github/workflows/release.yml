@@ -1615,17 +1615,20 @@ jobs:
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.sha }}
           fetch-depth: 1
-      - name: Build the saddle engine envelope (the exports promise)
-        # the saddle manifest gates publish on the built dist through
-        # prepublishOnly → pack:check → check → build:engine, but npm pack
-        # never runs that gate and the saddle .npmrc carries ignore-scripts
-        # for the install lanes (the better-sqlite3 gyp lottery), so the
-        # engine compiles HERE, explicitly, before any pack touches the
-        # folder — the lane asserts what it ships: the entries the exports
-        # map, the bin and the main/types pair declare.
+      - name: Assert the saddle engine envelope sources (the exports promise)
+        # the source-is-library law the vault doctrine brought: the saddle
+        # envelope ships the TypeScript sources the main/types pair, the
+        # bin and the whole exports map declare (the files field carries
+        # them — the dist era the 2.0.151 lesson closed retired with the
+        # union), so no registry install answers the pack: the assertions
+        # below run against the checkout, and the CI lanes prove the
+        # installability of the saddle lockfile on every push (the bun
+        # install --frozen-lockfile matrix over the same tree). the npm ci
+        # this lane once carried installed the 7,766-package unified tree
+        # no pack step ever read and died on the fifteen-minute ceiling in
+        # four straight full batteries (the 2.0.187 lesson).
         run: |
           set -euo pipefail
-          npm --prefix saddle ci --ignore-scripts
           test -f saddle/index.ts
           test -f saddle/cli.ts
           test -f saddle/browser.ts

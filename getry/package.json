@@ -11882,7 +11882,7 @@
   "files": [
     "README.md",
     "docs",
-    "test",
+    "tests",
     "accounts.ts",
     "antigravity.ts",
     "auth.ts",

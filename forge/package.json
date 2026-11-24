@@ -11706,7 +11706,7 @@
   },
   "files": [
     "docs",
-    "test",
+    "tests",
     "README.md",
     "cli.ts",
     "forge.webpack.cjs"

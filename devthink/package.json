@@ -45,7 +45,6 @@
     "test": "vitest run",
     "test:runtime": "vitest run --exclude \"tests/{doccheck,matrixverify,package,readiness,releasenotes,publishingpipeline,librarymodes,nativebridge,sweep}.test.ts\"",
     "test:chromium": "node chromiumsmoke.ts",
-    "test:node": "node --experimental-strip-types --test test/core.test.ts",
     "typecheck": "tsc --noEmit",
     "validate": "pnpm check:metadata && pnpm validate:runtime && pnpm check && pnpm build && pnpm validate:security && pnpm validate:agents && pnpm validate:workflow && pnpm validate:apifreeze && pnpm validate:docs && pnpm validate:candidate && node recipes.ts && pnpm test && node build/cli.js manifest && node build/cli.js help && node packageextension.ts",
     "validate:agents": "node agentcert.ts && node costcert.ts",
