@@ -1518,6 +1518,7 @@ jobs:
             cadria
             debonair
             vault
+            package.json
             devthink/.nvmrc
             devthink/package.json
             devthink/bun.lock
@@ -1553,8 +1554,14 @@ jobs:
           # node_modules the walk-up resolution reads (the lane stages the
           # exact pin the cadria lock carries — the cores' closure turned
           # external on the 488507fc fold, and the lane never answered an
-          # install step, so the bundle died unresolved ever since).
-          npm install --prefix . --no-save --no-package-lock --ignore-scripts three@0.187.0
+          # install step, so the bundle died unresolved ever since). the
+          # family pin law (the same seat the publish mirror's saddle leg
+          # answered — the codeql pinned-dependencies battery charged the
+          # floating npm): the install rides the npx carrier pinned to the
+          # npm rung the root engines floor declares, never the runner's
+          # floating npm.
+          npm_version="$(node -p "const m=String(require('./package.json').engines.npm).match(/\d+(?:\.\d+)*/); if(!m) throw new Error('no npm floor'); m[0]")"
+          npx --yes "npm@${npm_version}" install --prefix . --no-save --no-package-lock --ignore-scripts three@0.187.0
           # the neutral crypto alias answers the node:crypto imports the
           # javy quickjs runtime carries no builtin for: the pure
           # wasmcrypto seam reproduces the sha256 and sha1 digests the

@@ -1175,7 +1175,7 @@ export function isSecureRemoteEndpoint(value: string | undefined): boolean {
 /** Normalizes a static-site base path for repository-scoped GitHub Pages deployments. */
 export function normalizeBasePath(value: string | undefined, repository: string): string {
   const candidate = value?.trim() || `/${repository}/`;
-  return `/${candidate.replace(/^\/+|\/+$/g, "")}/`;
+  return `/${candidate.replace(/^\/+/, "").replace(/\/+$/, "")}/`;
 }
 
 /* ============================================================================
@@ -1283,7 +1283,7 @@ export function deploybase(): string {
  * @returns the in-site url of the family application ("/<root>/<slug>/").
  */
 export function familyurl(slug: string): string {
-  const clean = slug.replace(/^\/+|\/+$/g, "");
+  const clean = slug.replace(/^\/+/, "").replace(/\/+$/, "");
   const buildbase = import.meta.env.BASE_URL;
   const root = buildbase && buildbase !== "/" && buildbase !== "./" ? buildbase.replace(/\/+$/, "") : "";
   // the os IS the family root: the devthink slug resolves to the root the

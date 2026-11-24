@@ -13,7 +13,7 @@ function pagesBasePath(value: string | undefined): string {
    * poisons the emitted html (the /C:/Git bundles), so the value falls back
    * to the site root */
   if (/^([a-z]:[\\/]|\\\\|file:)/i.test(candidate) || candidate.includes("\\")) return "/";
-  return candidate === "/" ? candidate : `/${candidate.replace(/^\/+|\/+$/g, "")}/`;
+  return candidate === "/" ? candidate : `/${candidate.replace(/^\/+/, "").replace(/\/+$/, "")}/`;
 }
 
 /** the release version the site is built from, read once from the root

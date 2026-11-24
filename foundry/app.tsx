@@ -98,7 +98,7 @@ function routerBase(): string {
   if (KNOWN_ROUTES.some((route) => path === route || path.startsWith(`${route}/`))) return "";
   // a lone first segment that is no known route is a mount prefix (the
   // power clip and the family stage serve this app under its slug)
-  const segments = path.replace(/^\/+|\/+$/g, "").split("/").filter(Boolean);
+  const segments = path.replace(/^\/+/, "").replace(/\/+$/, "").split("/").filter(Boolean);
   if (segments.length === 1) return `/${segments[0]}`;
   // otherwise the mount prefix is whatever precedes the first known segment
   // (the static hosting case: the deep link still lands on its page)

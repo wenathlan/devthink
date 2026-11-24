@@ -43,7 +43,7 @@
  * @returns the relative path of the family application, slash-terminated.
  */
 export function familyurl(slug: string): string {
-  const clean = slug.replace(/^\/+|\/+$/g, "");
+  const clean = slug.replace(/^\/+/, "").replace(/\/+$/, "");
   // the os answers at the family root itself: the devthink slug resolves to
   // the root (the real deploy of the os), every other slug to the sibling
   // folder one level up from this deploy unit

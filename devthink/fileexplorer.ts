@@ -85,7 +85,7 @@ export type Crumb = { label: string; location: ExplorerLocation };
 /** resolves the location a path string answers — the inverse of
  * locationpath, used by the address bar handoff and the deep links */
 export function parsepath(path: string): ExplorerLocation {
-  const clean = path.replace(/^\/+|\/+$/g, "");
+  const clean = path.replace(/^\/+/, "").replace(/\/+$/, "");
   if (!clean || clean === "thispc") return { kind: "thispc" };
   const segments = clean.split("/");
   if (segments[0] !== "thispc" || segments.length < 2) return { kind: "thispc" };
