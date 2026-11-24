@@ -168,9 +168,9 @@ export async function runsweepsuite() {
   /* the flat tests village: the suites answer from the app tests folder
    * beside the sources (the old in-app tests home died with the flat move,
    * the village moved back inside the app tree with the tests migration). */
-  const testfiles = (await readdir("test"))
+  const testfiles = (await readdir("tests"))
     .filter((file) => file.endsWith(".ts"))
-    .map((file) => join("test", file))
+    .map((file) => join("tests", file))
     .sort();
   const scanfiles = [...rootsources, ...solsources, ...testfiles];
 

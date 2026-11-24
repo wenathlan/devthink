@@ -4075,7 +4075,7 @@ async function runapifreezesuite() {
    * carry init_freezebaseline into index.js) — the node runtime resolves
    * the module relative to this file the same way the standalone gate
    * always did. */
-  const freezeimport = ["./test", "freezebaseline.ts"].join("/");
+  const freezeimport = ["./tests", "freezebaseline.ts"].join("/");
   const { apifreezebaseline: storedbaseline } = await import(/* @vite-ignore */ freezeimport);
   const packagejson = JSON.parse(await readFile("package.json", "utf8"));
   const release = String(packagejson.version);
