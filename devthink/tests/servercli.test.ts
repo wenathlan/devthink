@@ -293,7 +293,7 @@ describe("cli init with db keys", () => {
     );
     expect(keyscode).toBe(0);
     expect(stdout).toContain("register keys");
-    const seed = join(dbworkdir, "test", "seedkeys.mjs");
+    const seed = join(dbworkdir, "tests", "seedkeys.mjs");
     expect(existsSync(seed)).toBe(true);
     const content = readFileSync(seed, "utf8");
     expect(content).toContain("key-aaaaaaaaaa");
