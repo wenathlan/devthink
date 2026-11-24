@@ -1547,8 +1547,19 @@ jobs:
           set -euo pipefail
           VERSION="${{ needs.assemble.outputs.version }}"
           mkdir -p wasmwork release
-          (cd devthink && bunx esbuild ../cadria/versawase.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/versawase.js)
-          (cd devthink && bunx esbuild ../debonair/katexis.ts --bundle --format=esm --platform=neutral --outfile=../wasmwork/katexis.js)
+          # the three seat the versawase core imports rides the root
+          # node_modules the walk-up resolution reads (the lane stages the
+          # exact pin the cadria lock carries — the cores' closure turned
+          # external on the 488507fc fold, and the lane never answered an
+          # install step, so the bundle died unresolved ever since).
+          npm install --prefix . --no-save --no-package-lock --ignore-scripts three@0.187.0
+          # the neutral crypto alias answers the node:crypto imports the
+          # javy quickjs runtime carries no builtin for: the pure
+          # wasmcrypto seam reproduces the sha256 and sha1 digests the
+          # vault owner seat produces, byte for byte (verified against
+          # node:crypto across hex and base64 shapes).
+          (cd devthink && bunx esbuild ../cadria/versawase.ts --bundle --format=esm --platform=neutral --alias:node:crypto=./wasmcrypto.ts --outfile=../wasmwork/versawase.js)
+          (cd devthink && bunx esbuild ../debonair/katexis.ts --bundle --format=esm --platform=neutral --alias:node:crypto=./wasmcrypto.ts --outfile=../wasmwork/katexis.js)
           bunx javy-cli@3.0.1 compile wasmwork/versawase.js -o wasmwork/versawase.wasm
           bunx javy-cli@3.0.1 compile wasmwork/katexis.js -o wasmwork/katexis.wasm
           {
@@ -1899,6 +1910,14 @@ jobs:
             esac
             docker push "${image}:${RELEASE_VERSION}"
             echo "${app}: pushed ${image}:${RELEASE_VERSION}"
+            # the disk law between the family builds: the runner answers a
+            # single job the eleven images ride, and the buildkit overlays
+            # of consecutive builds filled the disk to the wall (the
+            # GHCR publish died at No space left on device) — each pushed
+            # image vacuums its own build cache before the next builds, so
+            # the loop never accumulates more than one image's weight.
+            docker system prune -af --volumes > /dev/null 2>&1 || true
+            docker builder prune -af > /dev/null 2>&1 || true
           done
 
   cleanup:
