@@ -3099,3 +3099,27 @@ Esta onda responde:
 - [ ] W20.15 Bump 2.0.188 em lockstep SÓ APÓS tudo verde (12 manifests, changelog, release)
 - [ ] W20.16 Monitorar a autorização polarauth (código de dispositivo) e sincronizar o token
   delete:packages quando o dono autorizar
+
+## a fila da onda 21 (a honestidade da página pública — R11 contra a restauração do acervo)
+
+A verificação ao vivo da onda 20 achou a página pública publicada carregando prova social
+fabricada (a restauração PR8 P1 do acervo de referência trouxe o conteúdo junto com a
+gramática visual): a onda 21 separa os dois mandatos — a gramática visual do acervo fica
+(héro, seções, cartões, trilhos, tratamentos CSS), a prova social falsa sai (a lei R11 fecha
+definitivo: zero avaliações falsas, criadores fictícios, métricas infinitas).
+
+- [ ] W21.01 O cartão de nota do hero ("4,9", "The perfect organizer and team builder") vira
+  declaração honesta de capacidade (sem número inventado)
+- [ ] W21.02 O deck de criadores ("Alan Neres"/"Nato" com likes/posts/views inventados) vira o
+  estado honesto declarado (os estúdios da família como perfis reais, zero métricas falsas)
+- [ ] W21.03 As notas por app do fan deck (4,9/4,8/4,9/4,9/4,7) saem (os badges reais ficam:
+  35 AI Routes, Kathesis DSP, VersaWaze 3D, Zero Local GPU, Instant Sync)
+- [ ] W21.04 O catálogo do bento Cadria ("LAST COLONY", TOP 10 com filmes inventados,
+  "99% Match", live TV "38 watching now") vira vitrine declarada de conceito sem prova
+  social falsa
+- [ ] W21.05 O muro explorer ("Join over 100,000 human and AI creators", reels com criadores
+  @ falsos) vira o estado honesto
+- [ ] W21.06 Os contratos de teste da entryface/entryflow andam junto (a bateria pinava o
+  acervo restaurado; a nova lei R11 vence e os testes pinam o estado honesto)
+- [ ] W21.07 Verificação ao vivo pós-cura: screenshots claro/escuro desktop/mobile da página
+  pública sem um número de prova social inventado
