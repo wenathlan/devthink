@@ -5045,7 +5045,15 @@ jobs:
       pages: write
       id-token: write
     concurrency:
-      group: family-pages-${{ github.event_name }}
+      # the per-leg lane scope (the starvation cure the mobile, desktop and
+      # webpack matrices answered): the shared family-pages group let every
+      # queued build sibling replace the pending one at birth — of the twelve
+      # theme legs only the first to catch a runner survived and the pages
+      # deploy starved since the consolidation folded the split file. the
+      # per-application scope keeps the cross-run replacement honest per leg
+      # while the same-run matrix walks whole; the single-seat assemble and
+      # deploy jobs keep the shared family-pages group below.
+      group: family-pages-${{ matrix.app }}-${{ github.event_name }}
       cancel-in-progress: true
     runs-on: ubuntu-latest
     # the family pages saddle ceiling heal (PR #646): the saddle npm ci the
