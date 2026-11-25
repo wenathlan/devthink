@@ -3123,3 +3123,11 @@ definitivo: zero avaliações falsas, criadores fictícios, métricas infinitas)
   acervo restaurado; a nova lei R11 vence e os testes pinam o estado honesto)
 - [ ] W21.07 Verificação ao vivo pós-cura: screenshots claro/escuro desktop/mobile da página
   pública sem um número de prova social inventado
+- [ ] W21.08 A deleção do pacote buildcache aposentado (76 versões residuais do
+  devthink-buildcache da era 2.0.15) via escopo delete:packages assim que o polar auth
+  capturar a autorização (a diretiva 2.0.16 aposentou o pacote; as versões antigas ficaram)
+- [ ] W21.09 A questão arquitetural da indireção por expressão: as lanes vhe ainda empurram
+  cache de registro pelo env CACHE_IMAGE com a expressão do repositório enquanto o contrato
+  bane o nome literal (5 pontos cache-to: type=registry) — a decisão do dono: aposentar o
+  cache de registro por inteiro (embed no run) ou reassentar o contrato na realidade das
+  lanes
