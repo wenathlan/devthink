@@ -3072,9 +3072,22 @@ Esta onda responde:
 - [x] W20.09 Alerta 1759 (scorecard SAST): mecanismo de autocura confirmado — o buraco é um
   commit histórico sem evidência CodeQL que sai da janela conforme cabeças com evidência
   acumulam (a bateria analyze carimba cada push; monitorar a próxima segunda-feira)
-- [ ] W20.10 Containers: investigar o timeout de 45min da lane android saddle (run 113 morreu
-  no teto) e despachar a publicação das lanes irmãs no GHCR (só saddle publicado hoje;
-  despacho por alvo para não saturar a cota de runners)
+- [x] W20.10 Containers: a autópsia do run 113 achou a raiz — os grupos de concorrência
+  compartilhados (family-mobile, family-desktop, devthink-webpack) deixavam cada leg em fila
+  substituir a pendente anterior (dos 108 jobs da onda só um punhado respondeu runner): a
+  cura escopa cada grupo por leg da matriz (por app, por app+plataforma, por pacote), as
+  legs móveis do saddle andam no carregador bun.lock congelado (o npm ci de 16k pacotes
+  anda 20-60min frio) e os tetos móveis sobem ao 60 curado que a lei PR #646 registra
+  (PR #713)
+- [x] W20.10b GHCR: a lei do buildcache limitado aterrissa como passo de retenção no
+  cachecleanup do maintenance (mantém as 3 mais novas de devthink-buildcache,
+  saddle-buildcache e e2ugh-buildcache, deletando as antigas via API best-effort no
+  OWNER_PAT — 76/100+/30 versões acumuladas hoje)
+- [x] W20.10c Tema: a verificação ao vivo pegou a página publicada presa na escada clara
+  com sistema escuro (matchMedia true, data-theme light) — a cura anda no padrão da casa:
+  pré-pintura no html de entrada (espelho primeiro, preferência do sistema depois, zero
+  escritas), systemThemeLadder no personalstore, o watcher seguindo os flips ao vivo até a
+  primeira escolha explícita, e o snapshot de settings consultando o sistema (PR #713)
 - [ ] W20.11 buildcache: conferir versões do saddle-buildcache e e2ugh-buildcache no GHCR (a lei
   do cache veda cache ilimitado em registro de containers, deletando versões antigas via API)
 - [ ] W20.12 Dispatch manual da casa inteira (ci, containers, maintenance, publish, release,
