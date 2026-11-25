@@ -3131,3 +3131,184 @@ definitivo: zero avaliações falsas, criadores fictícios, métricas infinitas)
   bane o nome literal (5 pontos cache-to: type=registry) — a decisão do dono: aposentar o
   cache de registro por inteiro (embed no run) ou reassentar o contrato na realidade das
   lanes
+
+## a onda da retomada da especificação isolada (2026-11-25, a leitura integral do dfffD e a sincronização com o head v2.0.187)
+
+> Gerada 2026-11-25T20:55Z. Consolida a onda corrente: a leitura integral do
+> dfffD.txt (a especificação isolada vigente, trinta cópias, a última lida por
+> completo), a sincronização com o head remoto, a auditoria tripla (workflows,
+> árvore, delta dos uploads) e o estado vivo medido via API. Lei do arquivo
+> mantida: nada removido, adições incrementais, duplicatas desduplicadas por
+> síntese com referência cruzada às ondas anteriores.
+
+### feito e verificado nesta onda (estado medido via API 2026-11-25T20:55Z)
+
+- [x] R100.1 Sincronização com o head remoto (fetch + fast-forward para o
+  4d53247f, o PR 714 da matriz de build das páginas) antes de qualquer alteração
+- [x] R100.2 Token iakadion validado ativo (escopos: repo, workflow,
+  write:packages, delete_repo, read:org, user, gist, notifications,
+  write:discussion — a lacuna delete:packages segue mapeada)
+- [x] R100.3 Autenticador polar relançado em segundo plano com a escada
+  completa de escopos incluindo delete:packages, estado único na raiz
+  (.ops/), watchdog de renovação de código, Regra 45 cumprida (código
+  vigente emitido, captura em tempo real assim que o dono autorizar)
+- [x] R100.4 Leitura integral da especificação isolada dfffD.txt (a última
+  cópia, a vigente, lida por completo de cima a baixo via terminal)
+- [x] R100.5 Auditoria arqueológica dos workflows concluída (432 commits que
+  tocaram workflows, 56 arquivos que existiram, 8 restantes, veredito: a casa
+  de 6 é fiel à doutrina do reagrupamento por funcionalidade)
+- [x] R100.6 Auditoria do contrato da árvore concluída (raiz commitada exata,
+  zero pastas aninhadas, zero campos banidos nos manifestes, zero arquivos
+  .md dentro do github, zero supressões na raiz)
+- [x] R100.7 Delta dos arquivos de ordens extraído (ordens1, devtyhink e a
+  cauda da conversa52 lidos via terminal, os itens novos abaixo)
+- [x] R100.8 Branch já mergeado wave/pages-build-starvation deletado (o diff
+  vazio contra o main comprovava o squash do PR 714)
+- [x] R100.9 Causa raiz do ci.yml vermelho no main depurada (a lei de idade
+  mínima de dependências: o manifeste do devthink driftou atrás do registro)
+- [x] R100.10 PR 715 aberto com a cura da frescura (o sync do manifeste do
+  devthink, o lockfile congelado no carregador do bun da linha do CI)
+- [x] R100.11 Causa raiz da paridade familiar depurada (o drift do lockstep:
+  vinte e oito devDependencies do devthink atualizadas sozinhas, os irmãos
+  ficaram para trás — a lei um do gate de paridade respondeu com trinta e
+  oito falhas)
+- [x] R100.12 Cura atômica do lockstep familiar (os doze manifestes
+  sincronizados na mesma passada, os doze lockfiles regenerados, as leis um
+  e dois verificadas verdes localmente contra a árvore commitada)
+- [x] R100.13 Containers re-disparados no main (a lane cancelada da manhã)
+- [x] R100.14 Cadeia de release do v2.0.187 re-disparada (o run 450, o gate
+  de aprovação do dono no ambiente release-approval esperando a revisão)
+- [x] R100.15 Triagem dos alertas de segurança (dependabot zero, secret
+  scanning zero, code scanning dois: o zstd upstream-blocked e o SAST do
+  scorecard sarando por evidência)
+- [x] R100.16 Lei do cache por processo verificada nas seis casas (o job de
+  limpeza dos caches da execução presente em todas as seis, o item herdado
+  da onda anterior já curado)
+
+### a fila imediata herdada desta onda
+
+- [ ] R101.1 Merge do PR 715 assim que o CI responder verde (squash assinado
+  sob iakadion, a curva de versão intocada — a frescura não bumpa versão)
+- [ ] R101.2 Re-disparo manual de cada um dos seis workflows no main novo
+  após o merge (a doutrina do re-run pós-consolidação)
+- [ ] R101.3 Exceção documentada do zstd no lane upstream-blocked do
+  saddle/.trivyignore (a CVE-2026-124851, a divulgação de informação do
+  zstandard por buffer não inicializado — o @mongodb-js/zstd é peer opcional
+  do mongodb, não instalado no disco, sem correção upstream na data; condição
+  exata de remoção: a linha aposenta o dia em que o registro publicar a
+  versão corrigida acima da 7.0.0)
+- [ ] R101.4 O alerta SAST do scorecard fecha por evidência (a janela de
+  dezenove commits: um por cento sem codeql rola para fora à medida que os
+  pushes verdes chegam — nunca uma dispensa)
+- [ ] R101.5 Aprovação do dono no gate de liberação do run 450 (o ambiente
+  release-approval espera a revisão do dono para a onda de publicação do
+  v2.0.187)
+- [ ] R101.6 Deleção dos vinte e cinco assentos .webpack nos quatro
+  registros (o npm saddle-webpack, o nuget Saddle.Webpack, os onze maven
+  com.wenathlan.*.webpack, os doze rubygems *.webpack) via escopo
+  delete:packages assim que o polar capturar a autorização
+- [ ] R101.7 Deleção do pacote charts/devthink (o assento helm que o dono
+  nunca pediu) no mesmo bolo do delete:packages
+- [ ] R101.8 Deleção das versões residuais do buildcache (as setenta e seis
+  da era aposentada) no mesmo bolo
+- [ ] R101.9 O diretório de estado único entra no .gitignore (o .ops/ da
+  raiz, o estado do autenticador — nunca visível ao git)
+- [ ] R101.10 Purga do node_modules do devthink do disco ao final da sessão
+  (a higiene da sandbox de 10GB, o disco mediu cheio durante a onda)
+
+### da auditoria arqueológica dos workflows (as restaurações)
+
+- [ ] R102.1 Restaurar as linhas de release por aplicativo (o autotag da
+  familyrelease extinta: a tag de cada app, o release dedicado por app com o
+  tar.xz fonte e as quatro shapes next — o consumidor volta a poder assinar
+  o feed de release de um app só)
+- [ ] R102.2 Assentar o assento do autotag por app no release.yml (a
+  sub-etapa de tag do auto-tag mais a criação por app no familyseats — a
+  doutrina da casa de 6 manda o assento viver no dono da cadeia de release)
+- [ ] R102.3 Avaliar o retorno do compose.yml de execução local (o
+  read_only, o cap_drop, o pids_limit do serviço do saddle — a conveniência
+  do docker compose local que a consolidação aposentou sem ordem)
+- [ ] R102.4 Registrar as aposentadorias intencionais para nunca restaurar
+  por engano (o helm do publish aposentado no PR 682, o assento variante do
+  saddle-webpack fundido nos envelopes, o nuget-cleanup de uso único)
+- [ ] R102.5 Os seis crons oficiais seguem intocáveis (o codeql de
+  quarta, o scorecard de segunda, os dois de cache diários, o depfresh de
+  segunda, o stale diário — verdes na medição desta onda)
+
+### do delta dos arquivos de ordens (as regras e os bugs novos)
+
+- [ ] R103.1 Rotação P0 dos segredos expostos no corpus (as chaves nvapi, o
+  certificado do backloop, os pares de token-plan, os códigos de recuperação
+  do github, os pares de app do github e do gitlab, os tokens do R2, as
+  credenciais de admin, os cookies de sessão)
+- [ ] R103.2 Os três backdoors documentados saem do acervo (a remoção real
+  dos três caminhos documentados no corpus)
+- [ ] R103.3 O robots.txt bloqueia os rastreadores de IA definidos (o gptbot,
+  o claudebot, o ccbot, o bytespider, o perplexitybot)
+- [ ] R103.4 O domínio pessoal do dono nunca aparece em arquivos do repo (a
+  regra do domínio privado fora dos arquivos públicos)
+- [ ] R103.5 Os dados pessoais do dono saem dos repos públicos (os IPs, a
+  geolocalização, as capturas TLS)
+- [ ] R103.6 Revisão dos quinhentos e trinta e seis alertas dispensados (os
+  quinhentos e vinte e dois won't fix — cada dispensa com evidência
+  documentada, a revisão dos arquivamentos da onda anterior)
+- [ ] R103.7 Os bugs do gateway V2 curados (a tela travada do estúdio
+  carregando, o token inesperado do json vindo do html, o 502 do alb, as
+  completions paradas no thinking, o contexto perdido na troca de rota com
+  imagem anexada, as chaves nvidia do pool, o arquivo de configuração do
+  agente ausente)
+- [ ] R103.8 Os bugs do debonair curados (o upload que falha no fetch, o
+  congelamento, o erro de rede local, o erro offline do removedor, o seletor
+  de arquivos que não abre)
+- [ ] R103.9 Os bugs de design curados (o scroll que mostra o vazio antes do
+  side A, o calendário longe da navbar flutuante, o familyurl que retorna a
+  rota errada, o indicador de mais quatro, o dado voador preso na
+  restauração, o login preto contra o sistema branco, a sombra que vaza)
+- [ ] R103.10 A feature de geração de música estudada e implementada (os
+  espaços de geração de música do huggingface, a feature migrou do saddle
+  para o devthink)
+- [ ] R103.11 A extensão MV3 com pareamento por código de dispositivo (o
+  modelo do authkit: código de cinco minutos, token rotativo, sem permissão
+  de debugger, o zip nos assets de release)
+- [ ] R103.12 O fluxo de deploy do netlify (os tokens de deploy, os sites
+  nomeados sem hífen, a lista branca de arquivos publicados)
+- [ ] R103.13 O canon de decodificação dos termos do dono registrado (a
+  tabela de erros de digitação para o cânon técnico oficial — o devtink, o
+  seddle, o valt, o gettryy, o cadre, o aimdebonite, o windjets)
+- [ ] R103.14 O canon de design registrado (a barra de título, o vermelho do
+  fechar, a barra de tarefas acrílica, o menu iniciar, os alvos de toque, as
+  animações curtas, a escada z nomeada, a lista de banidos, as cores de
+  identidade por app)
+- [ ] R103.15 O trava-zoom via meta do viewport antes do primeiro render (a
+  lei do faun, os gates de QA com screenshots em duas resoluções, a revisão
+  por VLM em claro e escuro, a página branca como falha número um)
+- [ ] R103.16 A verificação ao vivo da produção após cada deploy (a página
+  pública e o painel no domínio do github pages — a sandbox mente, a
+  produção mostra a tela branca)
+
+### da auditoria da árvore (os ajustes de padronização)
+
+- [ ] R104.1 Padronizar os dezenove scripts ausentes (os sete lint, os dez
+  format, os dois preview — cada app responde ao conjunto padrão completo)
+- [ ] R104.2 Unificar o caso do arquivo de tema (o cânon minúsculo sol.tsx,
+  os dez apps em maiúsculo convergem)
+- [ ] R104.3 Definir a política de README e LICENSE nos apps (os nove sem
+  README raiz, os dez sem LICENSE raiz — os documentos templateáveis do
+  github por app)
+- [ ] R104.4 Resolver a tensão do manifeste raiz (os campos de gerenciador
+  de pacote e de scripts contra a lei do apenas-engines — a decisão sem
+  quebrar o setup que lê o carimbo do gerenciador)
+
+### as prioridades do dono reafirmadas nesta onda (a ordem de execução)
+
+- [ ] R105.1 Saddle e Vault primeiro (as engines número um e número dois da
+  fase um — os dossiês das ondas w05 e w06 seguem vigentes)
+- [ ] R105.2 DevThink e os estudos de design em segundo (o casco, a
+  calibração pelas referências clonadas)
+- [ ] R105.3 Os outros apps em sequência (a ordem das ondas w08 a w15)
+- [ ] R105.4 As engines profundas do debonair e do cadria por último (o dono
+  deixou para depois — os cascos seguem, as engines kathesis e versawaze
+  esperam a onda final)
+- [ ] R105.5 A conversão para rust depois (a estrutura pronta, a conversão
+  adiada por ordem do dono)
+
