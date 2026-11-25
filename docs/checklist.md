@@ -3312,3 +3312,88 @@ definitivo: zero avaliações falsas, criadores fictícios, métricas infinitas)
 - [ ] R105.5 A conversão para rust depois (a estrutura pronta, a conversão
   adiada por ordem do dono)
 
+
+## a onda dos dossiês auditados (2026-11-25, as missões de saddle e vault medidas no estado vivo)
+
+> Gerada 2026-11-25T23:30Z. As auditorias de dossiê (subagentes dedicados)
+> mediram o estado real dos dois motores da fase um contra a missão do dono.
+> Cada veredito vira ação: o feito marcado, o parcial e o faltante na fila.
+
+### o dossiê de saddle (prioridade número um da fase um, medido no vivo)
+
+- [x] R106.1 A lei das noventa modalidades verifica (noventa registros,
+  oitenta e uma vivas, nove de host, zero planejadas — os testes
+  ninetylaw, modalitycounttruth, modalityregistry e executemodality
+  pinam o censo no código)
+- [x] R106.2 As cinco superfícies falsas: quatro mortas (o boot honesto do
+  firecracker com socket unix real, o banner do qemu lido do binário
+  instalado, o doc.go com documentação real, o drift de versão curado)
+- [x] R106.3 O playwright resgatado (o adaptador de peer opcional no
+  browser.ts, a sonda do edgelandes)
+- [x] R106.4 Os perfis máximo, balanceado e leve (o tiers.ts com os testes
+  do sandboxprofile)
+- [x] R106.5 A lei do visitante (nada roda na máquina do visitante — o
+  teste do edgeplane pinã)
+- [x] R106.6 O container no GHCR com a matriz ampla (doze lanes de
+  arquitetura, as quatro exóticas com recusa documentada, a matriz de
+  trinta e seis pernas)
+- [x] R106.7 Os dezesseis assentos de sistema operacional (o teste do
+  osdistrib pinã de grapheneos a nixos)
+- [x] R106.8 O interpretador RV64IM de fallback que nunca finge um boot (o
+  vmcore honesto)
+- [ ] R106.9 O withretry resgatado do repositório original (zero ocorrências
+  hoje — o porto com testes)
+- [ ] R106.10 O agent context resgatado (zero ocorrências no repo inteiro —
+  o porto com testes)
+- [ ] R106.11 O web scraper migra para o getry (o devthink/webscrape.ts com
+  seu teste — a diretiva do dono diz getry, não devthink)
+- [ ] R106.12 O queuebinarylaunch migra para o saddle (hoje vive no
+  devthink/runner.ts — a lane de binário de host do edgelandes é o
+  assento, o games.tsx re-aponta)
+- [ ] R106.13 A cohorte de dependências sem uso (três mil e oitocentas e
+  oitenta e três declarações contra trinta e seis imports reais — a lei
+  da união familiar institucionalizou os fantasmas; a cura divide o
+  catálogo por módulo)
+- [ ] R106.14 O teste da lei de privacidade das vms (nenhum argv carrega
+  identificação de usuário — o pinã no teste)
+- [ ] R106.15 As pernas de host do ci estendem (wine, nsjail, wasmtime ao
+  lado do qemu — ou a recusa codificada documenta)
+- [ ] R106.16 O destino do alternatives.ts decidido (os dez motores como
+  executores reais de provedor ou a aposentadoria para a tabela de
+  comparação — a recusa tiposa já pousou no pr da onda)
+
+### o dossiê de vault (prioridade número dois da fase um, medido no vivo)
+
+- [x] R107.1 O envelope AES-256-GCM em repouso verifica (o envelope.ts com
+  as chaves enroladas por projeto)
+- [x] R107.2 O banco isca que nunca repete (a semente por boot, a porta
+  selada contra download, o teste do nobrowserstorage)
+- [x] R107.3 A trava de dois gigabytes morta (o quota.ts com o nulo igual a
+  ilimitado)
+- [x] R107.4 A lane /v2/query com o cabeçalho de banco (o querylane.ts no
+  estilo do concorrente direto)
+- [x] R107.5 A chave API exibida uma única vez e guardada só em hash (o
+  formato de quarenta e oito hexadecimais)
+- [x] R107.6 A recusa em tempo constante pousa (o pr da onda: o caminho do
+  timingSafeEqual que os assentos de senha e sessão já cavalgavam)
+- [ ] R107.7 As dependências fantasma do concorrente saem do manifeste (as
+  cinco entradas supabase com zero imports — a lei diz concorrente
+  jamais dependência)
+- [ ] R107.8 O tamanho do chunk reconciliado (a janela de duzentos e
+  cinquenta e seis kilobytes contra o dossiê de um mebibyte — ou a janela
+  sobe ou o dossiê emenda com a razão documentada)
+- [ ] R107.9 Os níveis de memória estendem (quente, morno, frio e arquivo
+  com os orçamentos de latência — hoje só morno e frio existem)
+- [ ] R107.10 O login único entre aplicativos (a exportação de verificação
+  de sessão compartilhada — os irmãos e clones verificam um login)
+- [ ] R107.11 A cota padrão sobe (o piso de novecentos megabytes contra o
+  dossiê de cinquenta gigabytes — ou o desvio se documenta)
+- [ ] R107.12 O teste de não-repetição do banco isca entre boots (a
+  asserção de duas inicializações no decoy.test)
+- [ ] R107.13 A auditoria de runtime do my files (a primeira visita da
+  conta nova sem erros, o livro-razão vazio por desenho)
+- [ ] R107.14 O quórum de replicação (os assentos de réplica e o quórum de
+  escrita — o item de infraestrutura mais difícil do dossiê)
+- [ ] R107.15 A hospedagem git completa (o servidor smart-http de
+  upload-pack e receive-pack consumindo o saddle — o pilar faltante
+  maior da missão)
