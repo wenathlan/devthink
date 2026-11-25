@@ -508,7 +508,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [argan, cadria, cobaia, debonair, forge, foundry, getry, saddle, stealthhead, vault]
+        app: [argan, cadria, cobaia, debonair, forge, foundry, getry, pulse, saddle, stealthhead, vault]
     steps:
       - name: Checkout the DevThink source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

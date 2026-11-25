@@ -24,7 +24,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { parseAllDocuments } from "yaml";
 
-/** the eleven application folders of the monorepo (the os beside the family) */
+/** the twelve application folders of the monorepo (the os beside the family) */
 const APPS = [
   "argan",
   "cadria",
@@ -34,6 +34,7 @@ const APPS = [
   "forge",
   "foundry",
   "getry",
+  "pulse",
   "saddle",
   "stealthhead",
   "vault",
