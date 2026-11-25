@@ -234,9 +234,19 @@ export function syncThemeFromPreference(value: string | undefined): void {
   saveThemeMirror(value);
 }
 
+/** reads the os color scheme preference (the owner law: light and dark
+ * follow the system including at the login) — an unavailable match media
+ * falls back to light because the persisted mirror and the preference
+ * machine always answer beside it. */
+export function systemThemeLadder(): ThemeChoice {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
 /** the theme ladder the shell currently wears: the panel root copy of the
  * attribute first (the .devthink-app root carries it), then the document
- * root, then the persisted mirror, then the dark default. The tray quick
+ * root, then the persisted mirror, then the system preference (the os
+ * sync the owner law seats — never a hardcoded face). The tray quick
  * settings tile and the desktop Personalize menu read the face through it
  * so their radio states answer the real system, never a local guess. */
 export function currentThemeLadder(): ThemeChoice {
@@ -244,7 +254,22 @@ export function currentThemeLadder(): ThemeChoice {
   const themed = document.querySelector<HTMLElement>(".devthink-app")?.dataset.theme;
   if (themed === "light" || themed === "dark") return themed;
   if (document.documentElement.dataset.theme === "light") return "light";
-  return loadThemeMirror() ?? "dark";
+  return loadThemeMirror() ?? systemThemeLadder();
+}
+
+/** follows the live os color scheme flips while no explicit choice owns
+ * the ladder (the pre-paint pass of the entry html paints the boot face;
+ * this seam keeps the anonymous surface glued to the system for the whole
+ * session — the first explicit choice writes the mirror and the seam
+ * retires itself on its next read). */
+export function watchSystemTheme(): void {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+  const query = window.matchMedia("(prefers-color-scheme: dark)");
+  const follow = () => {
+    if (loadThemeMirror() !== null) return;
+    applyTheme(query.matches ? "dark" : "light");
+  };
+  query.addEventListener?.("change", follow);
 }
 
 /** flips the theme ladder to the other face: the choice persists on the

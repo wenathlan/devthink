@@ -4,6 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#ffffff" />
+    <script>
+      /* the os theme sync (the owner law: light and dark follow the system
+         including at the login): the static ladder ships light and this
+         pre-paint pass flips it before the first style — the persisted
+         mirror wins when a choice exists (the preference machine owns the
+         truth), the system preference answers otherwise, and the private
+         browsing failure keeps the static light. zero writes: the pass
+         only reads. */
+      (function () {
+        try {
+          var mirror = window.localStorage.getItem("dt.theme.v1");
+          var theme = mirror === "dark" || mirror === "light"
+            ? mirror
+            : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          var root = document.documentElement;
+          root.dataset.theme = theme;
+          root.className = theme;
+        } catch (storageUnavailable) {
+          /* the static light ladder stays: the sync never blocks the boot */
+        }
+      })();
+    </script>
     <meta name="description" content="DevThink the thinking OS" />
     <title>DevThink OS for every AI</title>
     <link rel="icon" id="devthink-favicon" href="./favicon.ico" sizes="any" />

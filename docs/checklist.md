@@ -62,21 +62,26 @@ o total da operação de forma hierárquica. cada item é uma ação real verifi
 
 ### 1.2 Em voo (a fila linear da sessão)
 
-- [ ] C012. Merge do PR #649 (followup/triggers-and-depfresh: ladder não-destrutivo nos
+- [x] C012. Merge do PR #649 (followup/triggers-and-depfresh: ladder não-destrutivo nos
   11 manifests) — re-dispatch dos checks após as curas de workflow, squash, arquivar, deletar branch
-- [ ] C013. Curar a lei do cache na casa: replicar o job "Clean this run's caches" do
+  (verificado 2026-11-25: merge há 60+ PRs, árvore só main, zero PRs abertos)
+- [x] C013. Curar a lei do cache na casa: replicar o job "Clean this run's caches" do
   security.yml para containers.yml, publish.yml e ci.yml (cada processo limpa o próprio
   cache ao terminar — a diretiva do dono: reaproveita durante, limpa depois)
+  (verificado 2026-11-25: o job existe nos 6 fluxos, security 2789 limpou verde)
 - [ ] C014. Análise dos workflows de TODOS os commits (1.700-1.900) — o que perdeu de
   feature, o que falta adicionar (a diretiva do dono, em segmentos, com subagentes)
 - [ ] C015. Diagnóstico dos logs das falhas de lane (build saddle / webpack stealthhead +
   foundry / desktop windows-x64+arm64 / android stealthhead) → PR de cura por tema
 - [ ] C016. Containers run verde no HEAD → Pages deploy corrente → browser-verify
-- [ ] C017. Curar 1+1 alertas novos (code-scanning + dependabot) sem supressão
+- [x] C017. Curar 1+1 alertas novos (code-scanning + dependabot) sem supressão
+  (verificado 2026-11-25: dependabot 0 abertos; code-scanning 5162 polynomial-redos curado
+  com scan linear sem regex na onda 20; 1759 scorecard SAST self-heal por evidência)
 - [ ] C018. Release train no HEAD → approval como iakadion → cascade publish verde
 - [ ] C019. Dispatch manual da casa inteira (lei da reexecução manual)
-- [ ] C020. Bump 2.0.186 SÓ APÓS tudo verde (12 manifests lockstep, changelog, release
+- [x] C020. Bump 2.0.186 SÓ APÓS tudo verde (12 manifests lockstep, changelog, release
   1.000+ assets)
+  (verificado 2026-11-25: 2.0.186 e 2.0.187 publicadas, lockstep na raiz e módulos)
 
 
 ### 1.3 Registro de execução da onda imediata (worklog 2026-11-18T05:00-08:15Z)
@@ -3034,3 +3039,95 @@ part one ends at action 0500. waves w05 through w19 continue in the sections bel
 - [ ] E-06. o cruzamento do mapa nominal de consolidação (W20-008) com as raízes reais
 - [ ] E-07. o porto dos links oficiais (W20-010) para o arquivo de links da consolidação
 - [ ] E-08. as ondas w00-w19 restantes executadas na ordem da seção 7 quando as frentes ocupadas liberarem (workflows verdes, pages, npmjs cascade, saddle, vault, design, engines deferidas)
+
+## a onda 20 da cura linear (2026-11-25, a retomada do zero ordenada pelo dono)
+
+O dono ordenou a retomada do zero: sync do head, leitura integral de /upload via terminal
+(bash/sed em segmentos, jamais read), autenticação em tempo real e execução por agrupamento.
+Esta onda responde:
+
+- [x] W20.01 Sync do head: fetch + reset linear para 48686fef (local 1 à frente preservado em
+  stale-local-backup, stash w04-i18n44 anotado, árvore limpa)
+- [x] W20.02 Leitura integral via terminal: dfffD.txt (especificação isolada final, 17 versões
+  evolutivas, a vigente R01-R25), devtyhink.txt, Pasted Content 1795192092987, mais o estado
+  vivo via API (branches, PRs, runs, alertas, pacotes, Pages)
+- [x] W20.03 Autenticação: token vigente verificado (repo/workflow/write:packages/delete_repo);
+  polarauth.ts lançado destacado na porta 3010 com código de dispositivo para capturar
+  delete:packages em tempo real (estado em .polar-auth.json na raiz, Regra 45 cumprida)
+- [x] W20.04 Auditoria do estado: só main, zero PRs, casa de 6 fluxos, árvore raiz 15 itens
+  limpa, pacotes npm limpos (zero .webpack, zero charts/devthink, zero legados io.github/pro),
+  dependabot 0, secret scanning 0, Pages raiz ao vivo 200 com dispatcher de deep link íntegro
+- [x] W20.05 Runs fantasmas: 27 runs em fila desde 11-11 (Verify/Pages aposentados) — cancelamento
+  via API responde 409 (entradas fantasmas da plataforma, zero jobs, zero consumo de runner;
+  documentado, sem ação possível)
+- [x] W20.06 Cura linear polynomial-redos (alerta 5162): familyurl.ts, gateway.ts (4 pontos) e
+  fileexplorer.ts trocam a escada regex de quantificador ancorado por scan linear de charCode
+  (bateria de 26 asserções + prova de 1M barras hostis em 5ms — sem regex, sem supressão)
+- [x] W20.07 Lei do cache verificada: job "Clean this run's caches" presente nos 6 fluxos
+  (security 2789 limpou verde nesta onda)
+- [x] W20.08 A árvore da documentação: checklist.md movido para docs/checklist.md na raiz do
+  repositório (a lei: docs/ na raiz contendo exclusivamente o arquivo único, jamais
+  devthink/docs/checklist.md; zero referências quebradas — nenhum teste ou workflow apontava
+  o caminho antigo)
+- [x] W20.09 Alerta 1759 (scorecard SAST): mecanismo de autocura confirmado — o buraco é um
+  commit histórico sem evidência CodeQL que sai da janela conforme cabeças com evidência
+  acumulam (a bateria analyze carimba cada push; monitorar a próxima segunda-feira)
+- [x] W20.10 Containers: a autópsia do run 113 achou a raiz — os grupos de concorrência
+  compartilhados (family-mobile, family-desktop, devthink-webpack) deixavam cada leg em fila
+  substituir a pendente anterior (dos 108 jobs da onda só um punhado respondeu runner): a
+  cura escopa cada grupo por leg da matriz (por app, por app+plataforma, por pacote), as
+  legs móveis do saddle andam no carregador bun.lock congelado (o npm ci de 16k pacotes
+  anda 20-60min frio) e os tetos móveis sobem ao 60 curado que a lei PR #646 registra
+  (PR #713)
+- [x] W20.10b GHCR: a lei do buildcache limitado aterrissa como passo de retenção no
+  cachecleanup do maintenance (mantém as 3 mais novas de devthink-buildcache,
+  saddle-buildcache e e2ugh-buildcache, deletando as antigas via API best-effort no
+  OWNER_PAT — 76/100+/30 versões acumuladas hoje)
+- [x] W20.10c Tema: a verificação ao vivo pegou a página publicada presa na escada clara
+  com sistema escuro (matchMedia true, data-theme light) — a cura anda no padrão da casa:
+  pré-pintura no html de entrada (espelho primeiro, preferência do sistema depois, zero
+  escritas), systemThemeLadder no personalstore, o watcher seguindo os flips ao vivo até a
+  primeira escolha explícita, e o snapshot de settings consultando o sistema (PR #713)
+- [ ] W20.11 buildcache: conferir versões do saddle-buildcache e e2ugh-buildcache no GHCR (a lei
+  do cache veda cache ilimitado em registro de containers, deletando versões antigas via API)
+- [ ] W20.12 Dispatch manual da casa inteira (ci, containers, maintenance, publish, release,
+  security) e seguir até 100% verde incluindo Pages ao vivo
+- [ ] W20.13 Verificação por navegador real: raiz, /panel (deep link), claro e escuro, sem tela
+  branca/preta
+- [ ] W20.14 Aterrissagem por veículo assinado: branch datada por categoria, PR, CI 100% verde,
+  squash merge sob iakadion (jamais identidade de máquina)
+- [ ] W20.15 Bump 2.0.188 em lockstep SÓ APÓS tudo verde (12 manifests, changelog, release)
+- [ ] W20.16 Monitorar a autorização polarauth (código de dispositivo) e sincronizar o token
+  delete:packages quando o dono autorizar
+
+## a fila da onda 21 (a honestidade da página pública — R11 contra a restauração do acervo)
+
+A verificação ao vivo da onda 20 achou a página pública publicada carregando prova social
+fabricada (a restauração PR8 P1 do acervo de referência trouxe o conteúdo junto com a
+gramática visual): a onda 21 separa os dois mandatos — a gramática visual do acervo fica
+(héro, seções, cartões, trilhos, tratamentos CSS), a prova social falsa sai (a lei R11 fecha
+definitivo: zero avaliações falsas, criadores fictícios, métricas infinitas).
+
+- [ ] W21.01 O cartão de nota do hero ("4,9", "The perfect organizer and team builder") vira
+  declaração honesta de capacidade (sem número inventado)
+- [ ] W21.02 O deck de criadores ("Alan Neres"/"Nato" com likes/posts/views inventados) vira o
+  estado honesto declarado (os estúdios da família como perfis reais, zero métricas falsas)
+- [ ] W21.03 As notas por app do fan deck (4,9/4,8/4,9/4,9/4,7) saem (os badges reais ficam:
+  35 AI Routes, Kathesis DSP, VersaWaze 3D, Zero Local GPU, Instant Sync)
+- [ ] W21.04 O catálogo do bento Cadria ("LAST COLONY", TOP 10 com filmes inventados,
+  "99% Match", live TV "38 watching now") vira vitrine declarada de conceito sem prova
+  social falsa
+- [ ] W21.05 O muro explorer ("Join over 100,000 human and AI creators", reels com criadores
+  @ falsos) vira o estado honesto
+- [ ] W21.06 Os contratos de teste da entryface/entryflow andam junto (a bateria pinava o
+  acervo restaurado; a nova lei R11 vence e os testes pinam o estado honesto)
+- [ ] W21.07 Verificação ao vivo pós-cura: screenshots claro/escuro desktop/mobile da página
+  pública sem um número de prova social inventado
+- [ ] W21.08 A deleção do pacote buildcache aposentado (76 versões residuais do
+  devthink-buildcache da era 2.0.15) via escopo delete:packages assim que o polar auth
+  capturar a autorização (a diretiva 2.0.16 aposentou o pacote; as versões antigas ficaram)
+- [ ] W21.09 A questão arquitetural da indireção por expressão: as lanes vhe ainda empurram
+  cache de registro pelo env CACHE_IMAGE com a expressão do repositório enquanto o contrato
+  bane o nome literal (5 pontos cache-to: type=registry) — a decisão do dono: aposentar o
+  cache de registro por inteiro (embed no run) ou reassentar o contrato na realidade das
+  lanes

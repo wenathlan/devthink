@@ -41,6 +41,7 @@ import {
   initPersonalization,
   loadThemeMirror,
   syncThemeFromPreference,
+  systemThemeLadder,
 } from "../../personalstore.ts";
 import type { PreferenceKey, SettingsCategoryId, SettingsSnapshot } from "../../widgets";
 import {
@@ -69,8 +70,9 @@ export default function Settings({ embedded }: { embedded?: boolean }) {
   const [localIdentity, setLocalIdentity] = useState<{ userId: string; deviceId: string }>();
   const [localPreferences, setLocalPreferences] = useState<SettingsSnapshot["preferences"]>(() => ({
     // the theme mirror answers before the async store does (the preference
-    // machine heals it on its first read)
-    theme: loadThemeMirror() ?? "dark",
+    // machine heals it on its first read); with no mirror the system
+    // preference owns the face (the os sync law, never a hardcoded one)
+    theme: loadThemeMirror() ?? systemThemeLadder(),
     railMode: "auto",
     interfaceZoom: "100",
   }));

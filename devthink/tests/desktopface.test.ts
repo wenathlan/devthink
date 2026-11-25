@@ -303,10 +303,14 @@ describe("the personalize face (the real theme ladder in the desktop menu)", () 
     expect(desktop).toContain('shortcut: currentThemeLadder() === "dark" ? "radio" : undefined');
   });
 
-  it("currentThemeLadder reads the panel root, then the document root, then the mirror", () => {
+  it("currentThemeLadder reads the panel root, then the document root, then the mirror, then the system", () => {
     expect(personalstore).toContain("export function currentThemeLadder(): ThemeChoice {");
     expect(personalstore).toContain('document.querySelector<HTMLElement>(".devthink-app")?.dataset.theme');
-    expect(personalstore).toContain('return loadThemeMirror() ?? "dark";');
+    // the os sync law (the owner order: light and dark follow the system
+    // including at the login) — the anonymous ladder consults the system
+    // preference before any hardcoded face
+    expect(personalstore).toContain("return loadThemeMirror() ?? systemThemeLadder();");
+    expect(personalstore).toContain("export function systemThemeLadder(): ThemeChoice {");
     // the node answer (no document) is the dark default
     expect(currentThemeLadder()).toBe("dark");
   });

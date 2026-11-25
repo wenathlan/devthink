@@ -84,6 +84,34 @@ export const GATEWAY_REQUIRED_COPY = chatText("gw.notRegistered");
 /** The direct one-line notice the composer shows while disconnected. */
 export const GATEWAY_SEND_NOTICE = chatText("gw.notRegistered");
 
+/** trims the decorative trailing slashes without the regex ladder — the
+ * linear law the polynomial-redos battery answers family wide: an
+ * end-anchored quantifier pattern walks the engine once per start
+ * position, the scan walks each char once. private to the gateway seat:
+ * the os resolver keeps its own contract and never consults the
+ * familyurl seat.
+ *
+ * @param value the string whose trailing slashes (char code 47) trim off.
+ * @returns the value with every trailing slash removed. */
+function trimendslashes(value: string): string {
+  let end = value.length;
+  while (end > 0 && value.charCodeAt(end - 1) === 47) end -= 1;
+  return value.slice(0, end);
+}
+
+/** trims the decorative slashes of both edges without the regex ladder
+ * (the same linear law — one pass per direction, zero backtracking).
+ *
+ * @param value the string whose edge slashes (char code 47) trim off.
+ * @returns the value with leading and trailing slashes removed. */
+function trimedgeslashes(value: string): string {
+  let start = 0;
+  let end = value.length;
+  while (start < end && value.charCodeAt(start) === 47) start += 1;
+  while (end > start && value.charCodeAt(end - 1) === 47) end -= 1;
+  return value.slice(start, end);
+}
+
 /**
  * normalizeGatewayBase — trims the stored endpoint and strips trailing
  * slashes; accepts only http(s) absolute origins. Anything else falls back
@@ -92,7 +120,7 @@ export const GATEWAY_SEND_NOTICE = chatText("gw.notRegistered");
  * preference reads of the lane seam (§5) ride this one.
  */
 export function normalizeGatewayBase(raw: string): string {
-  const clean = raw.trim().replace(/\/+$/, "");
+  const clean = trimendslashes(raw.trim());
   if (clean === "") return "";
   return /^https?:\/\//.test(clean) ? clean : "";
 }
@@ -126,7 +154,7 @@ export type GatewayEndpointCheck = { ok: true; base: string } | { ok: false; rea
  * into the registration. Returns the normalized base on success.
  */
 export function validateGatewayEndpoint(raw: string): GatewayEndpointCheck {
-  const clean = raw.trim().replace(/\/+$/, "");
+  const clean = trimendslashes(raw.trim());
   if (clean === "") return { ok: false, reason: "Enter the gateway base url you want to register." };
   let url: URL;
   try {
@@ -1175,7 +1203,7 @@ export function isSecureRemoteEndpoint(value: string | undefined): boolean {
 /** Normalizes a static-site base path for repository-scoped GitHub Pages deployments. */
 export function normalizeBasePath(value: string | undefined, repository: string): string {
   const candidate = value?.trim() || `/${repository}/`;
-  return `/${candidate.replace(/^\/+/, "").replace(/\/+$/, "")}/`;
+  return `/${trimedgeslashes(candidate)}/`;
 }
 
 /* ============================================================================
@@ -1212,7 +1240,7 @@ export function normalizeBasePath(value: string | undefined, repository: string)
  * @returns the base with no trailing slash; an empty string at the root.
  */
 export function derivebase(pathname: string): string {
-  let stripped = pathname.replace(/index\.html$/, "").replace(/\/+$/, "");
+  let stripped = trimendslashes(pathname.replace(/index\.html$/, ""));
   /* a session restore boots through the workspace route (/w/...): the mount
    * base ends where that route begins, never inside it. */
   const workspace = stripped.indexOf("/w/");
@@ -1283,9 +1311,9 @@ export function deploybase(): string {
  * @returns the in-site url of the family application ("/<root>/<slug>/").
  */
 export function familyurl(slug: string): string {
-  const clean = slug.replace(/^\/+/, "").replace(/\/+$/, "");
+  const clean = trimedgeslashes(slug);
   const buildbase = import.meta.env.BASE_URL;
-  const root = buildbase && buildbase !== "/" && buildbase !== "./" ? buildbase.replace(/\/+$/, "") : "";
+  const root = buildbase && buildbase !== "/" && buildbase !== "./" ? trimendslashes(buildbase) : "";
   // the os IS the family root: the devthink slug resolves to the root the
   // running build declares, never to a "/<root>/devthink/" path no deploy
   // carries (the pages site serves the os at the site root itself)

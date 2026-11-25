@@ -23,7 +23,7 @@ import {
 } from "./security.ts";
 import { seedChatLabels, seedLabels } from "./uistore.ts";
 import Sol from "./sol/sol.tsx";
-import { loadDevtoolsWall } from "./personalstore.ts";
+import { loadDevtoolsWall, watchSystemTheme } from "./personalstore.ts";
 import "@fontsource-variable/geist-mono";
 import "@fontsource-variable/inter";
 import "./sol/sol.css";
@@ -35,6 +35,11 @@ import "./sol/sol.css";
 if (typeof window !== "undefined") {
   void seedLabels().catch(() => {});
   void seedChatLabels().catch(() => {});
+  // the os theme seam (the owner law: light and dark follow the system
+  // including at the login): the pre-paint pass of the entry html already
+  // painted the boot face — this watcher keeps the anonymous surface glued
+  // to the live system flips until the first explicit choice owns the ladder.
+  watchSystemTheme();
 }
 
 /* the zoom lock law (the faun pattern the owner pinned in the reference):
