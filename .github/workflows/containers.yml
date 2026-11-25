@@ -3897,7 +3897,11 @@ jobs:
     name: desktop ${{ matrix.app }} ${{ matrix.platform }}
     if: github.event_name != 'push'
     concurrency:
-      group: family-desktop-${{ github.event_name }}
+      # the per-leg lane scope (the starvation cure): the shared
+      # family-desktop group let every queued matrix sibling replace the
+      # pending one at birth, so each app-platform leg owns its group now
+      # and the cross-run replacement stays honest per leg.
+      group: family-desktop-${{ matrix.app }}-${{ matrix.platform }}
       cancel-in-progress: false
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
@@ -4225,11 +4229,21 @@ jobs:
     # repository variable is true or the dispatch carries build_ios.
     name: android ${{ matrix.app }}
     if: github.event_name != 'push'
+    # the matrix-scoped lane law (the starvation cure): one group per
+    # application leg — a shared family-mobile group let every queued
+    # matrix sibling replace the pending one before a runner answered
+    # (only the last-queued leg survived, the rest cancelled at birth),
+    # so the per-app scope keeps the cross-run replacement honest (a
+    # newer firing of the same app replaces the older pending leg alone)
+    # while the same-run matrix walks whole.
     concurrency:
-      group: family-mobile
+      group: family-mobile-${{ matrix.app }}
       cancel-in-progress: true
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    # the healed saddle ceiling (the PR #646 law the pages build already
+    # answers): the union install walks long cold, the mobile lanes walk
+    # sixty so no honest leg orphans mid-install again.
+    timeout-minutes: 60
     permissions:
       # the artifact attestation the lane owns — the release attachment
       # rides the owner pat the attach step carries (the 2.0.184 scorecard
@@ -4244,7 +4258,7 @@ jobs:
         # the nine member applications (the os rides its own publish lane
         # and never duplicates itself here), every other firing walks the
         # full matrix the lane always served, devthink included
-        include: ${{ github.event_name == 'release' && fromJson('[{"app":"argan","pm":"pnpm"},{"app":"cadria","pm":"pnpm"},{"app":"debonair","pm":"pnpm"},{"app":"forge","pm":"pnpm"},{"app":"foundry","pm":"pnpm"},{"app":"getry","pm":"pnpm"},{"app":"saddle","pm":"npm"},{"app":"stealthhead","pm":"pnpm"},{"app":"vault","pm":"pnpm"}]') || fromJson('[{"app":"devthink","pm":"bun"},{"app":"argan","pm":"pnpm"},{"app":"cadria","pm":"pnpm"},{"app":"debonair","pm":"pnpm"},{"app":"forge","pm":"pnpm"},{"app":"foundry","pm":"pnpm"},{"app":"getry","pm":"pnpm"},{"app":"saddle","pm":"npm"},{"app":"stealthhead","pm":"pnpm"},{"app":"vault","pm":"pnpm"}]') }}
+        include: ${{ github.event_name == 'release' && fromJson('[{"app":"argan","pm":"pnpm"},{"app":"cadria","pm":"pnpm"},{"app":"debonair","pm":"pnpm"},{"app":"forge","pm":"pnpm"},{"app":"foundry","pm":"pnpm"},{"app":"getry","pm":"pnpm"},{"app":"saddle","pm":"bunsaddle"},{"app":"stealthhead","pm":"pnpm"},{"app":"vault","pm":"pnpm"}]') || fromJson('[{"app":"devthink","pm":"bun"},{"app":"argan","pm":"pnpm"},{"app":"cadria","pm":"pnpm"},{"app":"debonair","pm":"pnpm"},{"app":"forge","pm":"pnpm"},{"app":"foundry","pm":"pnpm"},{"app":"getry","pm":"pnpm"},{"app":"saddle","pm":"bunsaddle"},{"app":"stealthhead","pm":"pnpm"},{"app":"vault","pm":"pnpm"}]') }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: resolve the application version
@@ -4264,7 +4278,7 @@ jobs:
         with:
           node-version: 26.13.1
       - name: Set up Bun
-        if: matrix.pm == 'bun'
+        if: matrix.pm == 'bun' || matrix.pm == 'bunsaddle'
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.5
@@ -4295,6 +4309,15 @@ jobs:
       - name: install the dependencies (npm leg)
         if: matrix.pm == 'npm'
         run: npm --prefix "${{ matrix.app }}" ci --ignore-scripts
+      - name: install the dependencies (bunsaddle leg)
+        # the mobile starvation cure: the saddle npm ci of the
+        # sixteen-thousand-package union tree walks twenty to sixty
+        # minutes cold (the healed pages ceiling the PR #646 law
+        # records) and the forty-five-minute mobile ceiling orphaned it
+        # mid-install — the frozen bun.lock rides the same tree in
+        # minutes, so the mobile lanes answer the fast binary carrier.
+        if: matrix.pm == 'bunsaddle'
+        run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
       - name: build the web surface (bun leg)
         if: matrix.pm == 'bun'
         run: cd "${{ matrix.app }}" && npm run build:web
@@ -4304,6 +4327,9 @@ jobs:
       - name: build the web surface (npm leg)
         if: matrix.pm == 'npm'
         run: npm --prefix "${{ matrix.app }}" run web:build:pages
+      - name: build the web surface (bunsaddle leg)
+        if: matrix.pm == 'bunsaddle'
+        run: cd "${{ matrix.app }}" && npm run web:build:pages
       - name: stage the web surface and aim the capacitor config
         # the build answers straight at the application root: the staging
         # copies the entry and the hashed bundles into build/web, and the
@@ -4617,11 +4643,15 @@ jobs:
     # every application carries, so the secrets stay shared and the choice
     # stays explicit.
     if: ${{ github.event_name != 'push' && ((github.event_name == 'workflow_dispatch' && inputs.build_ios == true) || vars.FAMILY_IOS_ENABLED == 'true') }}
+    # the per-app lane scope (the same starvation cure the android matrix
+    # answers): the shared family-mobile group starved sibling legs at
+    # birth, the per-application scope serializes one lane across runs.
     concurrency:
-      group: family-mobile
+      group: family-mobile-ios-${{ matrix.app }}
       cancel-in-progress: true
     runs-on: macos-15
-    timeout-minutes: 45
+    # the healed saddle ceiling (the same sixty the android twin answers).
+    timeout-minutes: 60
     permissions:
       # the artifact attestation the lane owns — the release attachment
       # rides the owner pat the attach step carries (the 2.0.184 scorecard
@@ -4640,7 +4670,7 @@ jobs:
           - { app: forge, pm: pnpm }
           - { app: foundry, pm: pnpm }
           - { app: getry, pm: pnpm }
-          - { app: saddle, pm: npm }
+          - { app: saddle, pm: bunsaddle }
           - { app: stealthhead, pm: pnpm }
           - { app: vault, pm: pnpm }
     steps:
@@ -4659,7 +4689,7 @@ jobs:
         with:
           node-version: 26.13.1
       - name: Set up Bun
-        if: matrix.pm == 'bun'
+        if: matrix.pm == 'bun' || matrix.pm == 'bunsaddle'
         uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: 1.4.5
@@ -4675,6 +4705,13 @@ jobs:
       - name: install the dependencies (npm leg)
         if: matrix.pm == 'npm'
         run: npm --prefix "${{ matrix.app }}" ci --ignore-scripts
+      - name: install the dependencies (bunsaddle leg)
+        # the mobile starvation cure (the android lane twin): the frozen
+        # bun.lock rides the saddle union tree in minutes where the npm
+        # ci walks twenty to sixty cold under the forty-five-minute
+        # mobile ceiling — the fast binary carrier keeps the lane honest.
+        if: matrix.pm == 'bunsaddle'
+        run: cd "${{ matrix.app }}" && bun install --frozen-lockfile --ignore-scripts
       - name: build the web surface (bun leg)
         if: matrix.pm == 'bun'
         run: cd "${{ matrix.app }}" && npm run build:web
@@ -4684,6 +4721,9 @@ jobs:
       - name: build the web surface (npm leg)
         if: matrix.pm == 'npm'
         run: npm --prefix "${{ matrix.app }}" run web:build:pages
+      - name: build the web surface (bunsaddle leg)
+        if: matrix.pm == 'bunsaddle'
+        run: cd "${{ matrix.app }}" && npm run web:build:pages
       - name: stage the web surface and aim the capacitor config
         run: |
           set -euo pipefail
@@ -4816,7 +4856,12 @@ jobs:
     name: webpack ${{ matrix.package }}
     if: github.event_name != 'push'
     concurrency:
-      group: devthink-webpack-${{ github.event_name }}-${{ github.ref }}
+      # the per-package lane scope (the starvation cure): the shared
+      # event+ref group let every queued package sibling replace the
+      # pending one at birth (only two legs of the matrix ever ran), so
+      # the package axis scopes the group and the event+ref axes keep
+      # the Regra 52 cross-run replacement honest per package.
+      group: devthink-webpack-${{ matrix.package }}-${{ github.event_name }}-${{ github.ref }}
       cancel-in-progress: false
     # the bundle lane: every application walks the esbuild carrier (the
     # typescript sources to the plain commonjs script, the packages

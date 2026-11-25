@@ -85,7 +85,13 @@ export type Crumb = { label: string; location: ExplorerLocation };
 /** resolves the location a path string answers — the inverse of
  * locationpath, used by the address bar handoff and the deep links */
 export function parsepath(path: string): ExplorerLocation {
-  const clean = path.replace(/^\/+/, "").replace(/\/+$/, "");
+  // the linear law (the polynomial-redos cure, family wide): anchored
+  // char scans on both edges, never the backtracking regex ladder.
+  let start = 0;
+  let end = path.length;
+  while (start < end && path.charCodeAt(start) === 47) start += 1;
+  while (end > start && path.charCodeAt(end - 1) === 47) end -= 1;
+  const clean = path.slice(start, end);
   if (!clean || clean === "thispc") return { kind: "thispc" };
   const segments = clean.split("/");
   if (segments[0] !== "thispc" || segments.length < 2) return { kind: "thispc" };

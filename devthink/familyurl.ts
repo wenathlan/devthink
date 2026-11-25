@@ -43,7 +43,15 @@
  * @returns the relative path of the family application, slash-terminated.
  */
 export function familyurl(slug: string): string {
-  const clean = slug.replace(/^\/+/, "").replace(/\/+$/, "");
+  // the linear law (the polynomial-redos cure, family wide): the
+  // end-anchored quantifier ladder the codeql battery flags walks the
+  // engine once per start position on uncontrolled data — the scan walks
+  // each char once, both edges, zero regex.
+  let start = 0;
+  let end = slug.length;
+  while (start < end && slug.charCodeAt(start) === 47) start += 1;
+  while (end > start && slug.charCodeAt(end - 1) === 47) end -= 1;
+  const clean = slug.slice(start, end);
   // the os answers at the family root itself: the devthink slug resolves to
   // the root (the real deploy of the os), every other slug to the sibling
   // folder one level up from this deploy unit

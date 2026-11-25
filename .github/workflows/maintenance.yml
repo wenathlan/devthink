@@ -632,6 +632,44 @@ jobs:
             echo "Dry run complete; no cache was deleted."
           fi
 
+      - name: Retain bounded registry buildcache versions
+        # the GHCR cache law (the unlimited-buildcache ban the owner
+        # ordered): the registry buildcache images the family lanes push
+        # (devthink-buildcache from this repository's consolidated lanes,
+        # saddle-buildcache and e2ugh-buildcache the analysis repositories
+        # still answer) accumulate one version per build with no ceiling
+        # — this pass keeps the newest three of each and deletes the
+        # older versions through the org packages api, riding the owner
+        # pat the maven retire carries (a refused delete without the
+        # packages delete scope notices honestly and never reddens the
+        # lane, the same best-effort law every retiring write walks).
+        shell: bash
+        run: |
+          set -euo pipefail
+          keep=3
+          for image in devthink-buildcache saddle-buildcache e2ugh-buildcache; do
+            echo "::group::buildcache ${image}"
+            ids="$(gh api --paginate "orgs/wenathlan/packages/container/${image}/versions?per_page=100" --jq '.[].id' 2>/dev/null || true)"
+            if [ -z "${ids}" ]; then
+              echo "no versions answered for ${image}; the lane walks on."
+              echo "::endgroup::"
+              continue
+            fi
+            count="$(printf '%s\n' ${ids} | wc -l)"
+            echo "${image} answers ${count} versions; the retention keeps the newest ${keep}."
+            if [ "${count}" -gt "${keep}" ]; then
+              printf '%s\n' ${ids} | tail -n +"$((keep + 1))" | while read -r version_id; do
+                test -n "${version_id}" || continue
+                if gh api --method DELETE "orgs/wenathlan/packages/container/${image}/versions/${version_id}" 2>/dev/null; then
+                  echo "deleted ${image} version ${version_id}"
+                else
+                  echo "::notice::${image} version ${version_id} refused the delete (the token answers no delete:packages); the retention walks on."
+                fi
+              done
+            fi
+            echo "::endgroup::"
+          done
+
   # ---------------------------------------------------------------------
   # THE ABSORBED PACKAGE CLEANUP LANE (the 2.0.16 grouping pass): the
   # retire job lived as its own workflow file (DevThink Package Cleanup,
