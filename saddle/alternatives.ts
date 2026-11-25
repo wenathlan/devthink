@@ -191,15 +191,11 @@ abstract class BaseEngine implements SandboxEngine {
     if (!record.running) {
       throw new SandboxEngineError(this.id, `sandbox ${sandboxId} is not running`);
     }
-    const baseMs = 2 + command.join(' ').length * 0.05 + record.cpus * 0.1;
-    const durationMs = baseMs * (1 + this.execOverheadRatio);
     record.executions += 1;
-    record.totalExecMs += durationMs;
-    return {
-      exitCode: 0,
-      stdout: `${this.id} exec ok: ${command.join(' ')}`,
-      durationMs: Number(durationMs.toFixed(2)),
-    };
+    throw new SandboxEngineError(
+      this.id,
+      'this seat documents the engine — no real adapter executes here (the fabricated exit zero retired)',
+    );
   }
 
   async snapshot(sandboxId: string): Promise<SnapshotRef> {
