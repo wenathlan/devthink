@@ -791,11 +791,17 @@ COPY --from=nodefetch /out /usr/local
 # container lane charged (gzip, the libc pair, liblzma5, the sqlite
 # runtime and perl-base beside the pcre seat already named): naming each
 # one upgrades it to the trixie-security candidate the digest froze
-# behind, so no container cve answers the scanned image.
+# behind, so no container cve answers the scanned image. the zstd seat
+# the 2026-11-26 closure adds: the libzstd1 1.5.7+dfsg-1 the frozen
+# digest carries answers CVE-2026-124851 (the code-scanning alert #5163
+# the security lane charged) and the trixie-security candidate
+# 1.5.7+dfsg-1+deb13u1 exists — naming it upgrades the base seat inside
+# the same retry loop, the cure without any suppression the alert law
+# demands.
 RUN set -eux; \
     apt_update_tries=5; \
     while [ "$apt_update_tries" -gt 0 ]; do \
-        if apt-get update && apt-get install -y --no-install-recommends apt libapt-pkg7.0 zlib1g gzip libc-bin libc6 liblzma5 libpcre2-8-0 libsqlite3-0 perl-base libstdc++6 libatomic1 libssl3t64 openssl; then break; fi; \
+        if apt-get update && apt-get install -y --no-install-recommends apt libapt-pkg7.0 zlib1g gzip libc-bin libc6 liblzma5 libpcre2-8-0 libsqlite3-0 perl-base libstdc++6 libatomic1 libssl3t64 openssl libzstd1; then break; fi; \
         apt_update_tries=$((apt_update_tries - 1)); \
         echo "apt-get update/install failed (mirror sync?), $apt_update_tries retries left"; \
         sleep 10; \
