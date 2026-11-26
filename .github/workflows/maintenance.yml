@@ -170,7 +170,7 @@ jobs:
       - name: Propose latest non-breaking direct npm dependency updates
         if: steps.window.outputs.active == 'true'
         # the family lockstep law the config parity gate owns: the
-        # eleven manifests carry the same dependency union, so the
+        # twelve manifests carry the same dependency union, so the
         # proposal walks every app root — the foundry gate reads the
         # manifest of the tree it runs from, and a devthink-only pass
         # reddens the parity cell the validate step walks (the sibling
@@ -192,6 +192,7 @@ jobs:
           cd ../saddle && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
           cd ../stealthhead && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
           cd ../vault && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
+          cd ../pulse && node ../foundry/dependencyupdates.ts sync ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
       - name: Update package-manager and Node engine recommendations
         if: steps.window.outputs.active == 'true'
         run: cd devthink && bun run sync:maintenance ${{ inputs.allow_major_updates && '--allow-majors' || '' }}
@@ -365,6 +366,7 @@ jobs:
           cd ../getry && bun install --ignore-scripts
           cd ../stealthhead && bun install --ignore-scripts
           cd ../vault && bun install --ignore-scripts
+          cd ../pulse && bun install --ignore-scripts
           cd ../saddle && bun install --ignore-scripts
           # the stale-peer fallback: the strict resolver reads the locked peer
           # states of the rungs behind (a synced manifest ahead of its lock
