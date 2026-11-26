@@ -510,3 +510,7 @@ webpackdist/
 # root first-layer law counts only the twelve folders and the two files while
 # the gateway config answers the polar lane's machine-local doctrine
 Caddyfile
+
+# the authenticator state seat (the single root state directory the polar
+# daemon owns: token, pairing state and logs never ride the git tree)
+.ops/
