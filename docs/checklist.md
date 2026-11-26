@@ -28,6 +28,88 @@ o total da operação de forma hierárquica. cada item é uma ação real verifi
 6. Seção 6 = os números-âncora (o placar do dono).
 7. Seção 7 = a ordem de execução linear hierárquica (o passo a passo vigente).
 
+## 0.5 A espinha de execução definitiva (2026-11-26, a retomada ordenada pelo dono)
+
+A escada linear do mais fácil ao mais difícil. Cada degrau = um checkpoint
+sequencial com critério de conclusão verificável. Os detalhes vivem nas ondas
+(w00-w22) e nos registros por frente; esta espinha ordena a fila inteira.
+
+- CP-A. sincronização e higiene imediata — FEITO nesta onda (main em a5430fa8,
+  stash residual descartável diagnosticado, 5 branches wave preservadas e
+  mescladas pelo dono como #719-#723). Critério: árvore limpa + head igual ao
+  remoto. [x]
+- [ ] CP-B. a fila e os fantasmas — cancelar o que responde, desabilitar os
+  workflows extintos que ainda geram runs (ids 337577534, 372583460,
+  372583462, 337960690), documentar os 16 imortais para o GitHub Support.
+  Critério: zero runs queued sem jobs vivos.
+- [ ] CP-C. a cura do containers (o primeiro verde da casa) — as seis curas
+  da auditoria C4: cache npm real no build (cache: npm +
+  saddle/package-lock.json), cache-dependency-path do pnpm corrigido para
+  **/pnpm-lock.yaml, teto saddle 120 min, github.run_id nos grupos
+  family-pages-*/family-mobile-* (fim do cancel cross-run), retry 3x com
+  backoff no gradlew (429 do Maven Central), o wait do npm best-effort
+  (warn + continue) enquanto os irmãos não voltam ao npmjs, timeout 120 min
+  + rust-cache nas pernas desktop. Critério: containers.yml verde inteiro.
+- [ ] CP-D. o pages vivo — proteger o run em voo até completar (não pushar
+  durante a lane), verificar /pages/builds/latest 200 + deployment novo >
+  12/11; se a lane morrer, dispatch manual via API. Critério: deploy novo
+  publicado e navegável no browser.
+- [ ] CP-E. o CVE e a segurança corretiva — adicionar libzstd1 à lista apt
+  do estágio runtime do devthink/Dockerfile (fix 1.5.7+dfsg-1+deb13u1 fecha
+  o alerta 5163 sem supressão); triar o P0 da rotação de segredos (as 22-31
+  chaves nvapi-, NPM_TOKEN, PATs — ação do dono, manter o lembrete vivo).
+  Critério: alerta 5163 fechado por fix real; plano de rotação documentado.
+- [ ] CP-F. as releases lineares — descartar o draft v2.0.187 (regressão vs
+  2.1.7, árvore 14 commits atrás), documentar o anacronismo da v2.1.7
+  (842 commits atrás, publicado 21:27Z 26/11), cortar a v2.1.8 do main
+  curado com o CVE fix embutido. Critério: latest release = árvore corrente.
+- [ ] CP-G. o alinhamento npmjs/ghcr — republicar @wenathlan/saddle (181) e
+  @wenathlan/vault (180) na ponta corrente (o buraco do devthink 181-186
+  já fechou); revisar os containers GHCR congelados desde agosto.
+  Critério: os 12 módulos npm na mesma rung do main.
+- [ ] CP-H. a lei do cache — replicar o job "clean this run's caches" do
+  security.yml nos ci/containers/publish (C013). Critério: cada workflow
+  limpa o próprio cache ao terminar.
+- [ ] CP-I. a estrutura e a árvore — conferir a primeira camada (.github +
+  12 módulos + 2 arquivos), interior sol/tests/docs, TS na raiz; limpar as
+  23 lanes locais + 5 worktrees prunable. Critério: árvore conforme a lei
+  sem lanes mortas.
+- [ ] CP-J. as leis dos workflows — SLA do gate release-approval (não
+  recriar filas sem job); decidir a restauração das funcionalidades
+  arqueológicas (compose endurecido do saddle fora de workflows, releases
+  por aplicação, pipeline gitlab). Critério: decisões sentadas + curas.
+- [ ] CP-K. o design sol/windows (w04 + R25) — do mais fácil: ban list
+  auditada por grep; depois: gramatura milimétrica, rota standalone,
+  janela cortada. Critério: 97-99% do index.html original.
+- [ ] CP-L. o saddle (w05 + dossiê) — foco exclusivo pós-infra: as 90
+  modalidades reais (81 live + 9 host), matar as 5 superfícies falsas,
+  15+ lanes GHCR Max/Balanced/Lite. Critério: dossiê saddle 100%.
+- [ ] CP-M. o vault (w06 + dossiê R107) — do zero estilo supabase: decoy
+  database, fim do teto 2GB (900MB/900GB/50GB por plano), 4 tiers de
+  memória, quórum de replicação, hospedagem git smart-http.
+  Critério: dossiê vault 100%.
+- [ ] CP-N. o devthink os (w07) — rotas/standalone, wingets via DB,
+  my files sem teto, explorer duplicado, calendário magnético.
+  Critério: R25 fechada no browser.
+- [ ] CP-O. o getry/gateway (w08 + netlify road) — v2: loop de carregamento,
+  502 alb, cortes no thinking, pool vazio, clones gatethinkN sso_login:false.
+  Critério: gateway v2 estável nos clones.
+- [ ] CP-P. os demais apps (w09-w15) — cadria, debonair, stealthhead,
+  argan, forge, foundry, cobaia, pulse (o 12º, scaffold da W20-001).
+  Critério: cada app com dossiê próprio verde.
+- [ ] CP-Q. os testes e gates (w18) — baseline 7.192 pernas em 477
+  arquivos + torture + agentcert + costcert + pentest.
+  Critério: 900-1000 vitest verdes antes de cada push.
+- [ ] CP-R. a distribuição (w03 + w19) — 11 arquiteturas, 11 canais, 60
+  pacotes, 1.000+ assets por release, ISO exclusivo do os.
+  Critério: curva de assets na meta.
+- [ ] CP-S. a documentação e a consolidação final (w16) — por último:
+  tudo num arquivo só, leitura histórica completa, links.md, apagar docs
+  antigos só após validar 100%. Critério: este arquivo é a única fonte.
+- [ ] CP-T. as engines por último com mais cuidado (fase L) — kathesis
+  (debonair, RECON), versawaze (cadria), ts-rust futuro.
+  Critério: ordem explícita do dono cumprida.
+
 ## as ondas imediatas de 2026-11-18
 
 ## 1. ONDA IMEDIATA (estado medido via API 2026-11-18T05:00Z)
@@ -3397,3 +3479,109 @@ definitivo: zero avaliações falsas, criadores fictícios, métricas infinitas)
 - [ ] R107.15 A hospedagem git completa (o servidor smart-http de
   upload-pack e receive-pack consumindo o saddle — o pilar faltante
   maior da missão)
+
+## a onda 22 da retomada completa (2026-11-26, o sync do head, a leitura integral do corpus e a auditoria viva)
+
+A retomada ordenada pelo dono: sync com o head primeiro, leitura integral de
+todo o conteúdo enviado e dos arquivos em upload (exclusivamente bash sed
+grep em segmentos de linha, jamais ferramentas diretas de leitura), cada
+instrução tratada como missão oficial, subagentes em paralelo sem ociosidade,
+ambiente identificado automaticamente (sandbox linux de 10GB, token válido do
+autenticador polar validado em tempo real, login iakadion administrador).
+
+### o que foi feito e verificado nesta onda (2026-11-26T21:00-22:00Z)
+
+- [x] W22-001. o sync com o head: fetch + fast-forward de 30a6afd4 até
+  a5430fa8 (os PRs #713-#724 + o changelog do closure rung), stash residual
+  pré-sync diagnosticado como 100% já no main (aplicar reverteria a cura
+  #714 — descartável, preservado no stash até a limpeza da CP-I)
+- [x] W22-002. o token do autenticador validado em tempo real (iakadion,
+  uid 174824991, escada completa de escopos; o polarauth.txt é corpus de
+  scripts, não log de runtime — a versão canônica é o bloco L1-306 com o
+  client_id 178c6fc778ccc68e1d6a; o variant com client divergente
+  178c165fc8655e59a4d0 NÃO é canônico)
+- [x] W22-003. a leitura integral do corpus novo (frota de subagentes T1-T6
+  + B1-B3, todos 100% bash sed grep, zero read): dfffD 14.955 linhas, a
+  cauda do conversa52 (97.280-114.615), devtyhink + de + pasted + ordens1
+  (4.510), polarauth (10.463), pasted 18nov + ddedffr (2.082), os dois
+  checklists do dono (13.499), o par session7 (32.603), o catálogo canônico
+  de 4.297 regras + ofical1 + feedssd, polar.sh direto (1.118), os dois
+  pastes mestres únicos de novembro (as diretivas PR0-PR23 completas)
+- [x] W22-004. a verificação de contenção por provas (o corpus de outubro e
+  os pastes de novembro provados contidos nas conversas cumulativas já
+  lidas; duplicatas md5 documentadas: ofical1==ofical2, dff==sdff,
+  mapeamento==pasted 1794419210510, conversa14==conversa19)
+- [x] W22-005. a auditoria do repositório (C1): 12 módulos uniformes,
+  devthink domina com 518 TS, pulse é o irmão magro honesto, casa de 6
+  workflows com 20.264 linhas e ~153 jobs, 462 arquivos de teste vitest,
+  1.379 TS (~628k linhas), versão 2.0.187 em lockstep
+- [x] W22-006. a auditoria viva do github (C2): 0 PRs abertos, pr #647
+  fechado (ordem do dono executada), tag v2.0.186 + release publicada com
+  859 assets, os 25 assentos .webpack deletados (só restam saddle npm 4
+  versões + saddle ghcr 4 versões), npmjs @wenathlan/devthink na 2.0.186
+  (buraco 181-186 fechado), cache 178MB de 10GB (2% do teto)
+- [x] W22-007. a arqueologia dos workflows fase 1 (C3): 56 paths que já
+  existiram, 48 deletados, 7 ondas de consolidação, ~65 jobs absorvidos
+  (94%), 2 parciais (familyrelease-autotag, gitlab-ci), o compose
+  endurecido perdido como artefato, a casa cresceu ~3% na consolidação
+  (nada descartado wholesale)
+- [x] W22-008. a purga dos fantasmas (C4): 1 purgado (containers #122,
+  http 202), 16 imortais documentados (409 no cancel, 403 no delete —
+  registros órfãos de workflows extintos, só github support remove),
+  restam 23 queued (16 imortais + 7 vivos de hoje)
+- [x] W22-009. a causa-raiz do containers (C4): zero verdes em 130 runs
+  por três mecanismos encadeados — cancel cross-run nos grupos
+  family-pages-*/family-mobile-* sem run_id, timeouts de 60 min em pernas
+  pesadas sem cache (npm ci frio do saddle, pnpm cacheado no lockfile
+  errado **/bun.lock), e o wait do npm bloqueando nos 10 irmãos parados
+  desde 2.0.181; o #117 morreu no 429 do maven central sem retry
+- [x] W22-010. a triagem pages/drafts/cve (C5): pages congelado desde
+  12/11 (deployer extinto na consolidação, lane vive no containers.yml mas
+  a casa nunca ficou verde), o run 45896237764 (#128) com 10/11 builds
+  verdes e saddle em curso no momento da auditoria; v2.1.7 publicado pelo
+  dono às 21:27Z durante a auditoria (árvore 842 commits atrás —
+  anacronismo materializado), draft v2.0.187 aponta 14 commits atrás
+  (perde o zstd #717, o pulse #719 e o constant-time #720 — descartar);
+  cve-2026-124851 = libzstd1 do debian:trixie-slim no scan image (fix
+  1.5.7+dfsg-1+deb13u1 existe — adicionar ao apt do runtime stage)
+- [x] W22-011. o falso positivo do "branches: ain]" resolvido por od -c
+  (a linha 104 contém [main] intacto — artefato de display ansi que come o
+  [m; nenhuma correção necessária; terceira confirmação independente)
+- [x] W22-012. as 5 branches wave preservadas localmente antes do merge do
+  dono (checklist-dossiers, pulse-family-lanes, saddle-alt-honesty2,
+  vault-keylaw, vault-supabase-purge — todas entraram no main como
+  #719-#723; preservação de seguro registrada)
+- [x] W22-013. a espinha de execução definitiva CP-A..CP-T sentada na
+  seção 0.5 (a escada linear do mais fácil ao mais difícil com critérios
+  de conclusão verificáveis)
+
+### a fila imediata desta onda (do mais fácil ao mais difícil, espelhada na espinha)
+
+- [ ] W22-014. desabilitar os 4 workflows extintos que ainda geram runs
+  fantasmas (put disable nos ids 337577534, 372583460, 372583462,
+  337960690 — pages/verify/family-mobile/family-desktop velhos)
+- [ ] W22-015. aguardar o run #128 completar (sem push durante a lane —
+  cada push mata as pernas por cancel-in-progress) e verificar o deploy do
+  pages: builds/latest 200 + deployment novo
+- [ ] W22-016. o fix do cve no devthink/Dockerfile (libzstd1 na lista apt
+  do runtime stage — o alerta 5163 fecha no scan seguinte sem supressão)
+- [ ] W22-017. descartar o draft v2.0.187 (delete via api — regressão vs
+  2.1.7 com árvore 14 commits atrás) e limpar as tags órfãs do rung
+  abortado se existirem
+- [ ] W22-018. as seis curas do containers (CP-C) num PR único por tema:
+  cache npm real, cache-dependency-path do pnpm, teto saddle 120, run_id
+  nos grupos de concorrência, retry do gradlew, wait do npm best-effort,
+  timeouts desktop 120 + rust-cache
+- [ ] W22-019. cortar a v2.1.8 do main curado (com o cve fix embutido)
+  documentando o anacronismo da v2.1.7
+- [ ] W22-020. republicar saddle e vault no npmjs na rung corrente (o
+  dono precisa rotacionar o npm_token primeiro — 401 no whoami, 38
+  falhas no run 493; lembrete vivo do P0)
+- [ ] W22-021. replicar o job de limpeza de cache nos ci/containers/publish
+  (a lei C013 — cada workflow limpa o próprio cache ao terminar)
+- [ ] W22-022. a limpeza das 23 lanes locais + 5 worktrees prunable (CP-I)
+- [ ] W22-023. as restaurações arqueológicas decisíveis: compose endurecido
+  do saddle (fora de workflows), releases por aplicação (familyrelease),
+  pipeline gitlab (CP-J — decisões a sentar)
+- [ ] W22-024. o documento para o github support dos 16 imortais (owner
+  action — preparar o texto com ids e timestamps)
