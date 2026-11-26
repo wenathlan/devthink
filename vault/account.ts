@@ -1106,11 +1106,20 @@ export type ApiKeyLookup = { key: ApiKeyRow; database: DatabaseRow } | { refusal
  * @returns the live key row with its database, or the refusal.
  */
 export function apiKeyLookup(presentedKey: string): ApiKeyLookup {
+  /* the constant-time seat (the dossier law: the key saves as hash with
+   * constant-time comparison): the digest never rides a sql equality —
+   * the walk reads every stored digest and answers the same
+   * timingSafeEqual lane the password and session seats ride, so the
+   * lookup timing leaks no match signal an index scan would. */
   const digest = sha256Hex(presentedKey);
-  const row = queryOne<ApiKeyRowSql>(
-    "SELECT id, databaseId, label, keyDigest, createdAt, lastUsedAt, revokedAt FROM apikeys WHERE keyDigest = ?",
-    [digest],
-  );
+  const presented = Buffer.from(digest, "utf8");
+  let row: ApiKeyRowSql | undefined;
+  for (const candidate of queryAll<ApiKeyRowSql>(
+    "SELECT id, databaseId, label, keyDigest, createdAt, lastUsedAt, revokedAt FROM apikeys",
+  )) {
+    const stored = Buffer.from(candidate.keyDigest, "utf8");
+    if (presented.length === stored.length && timingSafeEqual(presented, stored)) row = candidate;
+  }
   if (row === undefined) {
     return { refusal: { kind: "absent", why: "the key answers no vault" } };
   }
