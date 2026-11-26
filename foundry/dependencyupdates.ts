@@ -167,13 +167,21 @@ for (const { section, name, declared } of walkable) {
     continue;
   }
   const latest = answer?.latest as string;
-  /* THE MINIMUM AGE LAW (the 2.0.187 cure): the quarantine window — an
-   * update published inside seven days stays unseen by the ladder (the
-   * doctrine the minimum-ages law always carried: 7d npm, 3d bun/pnpm/uv),
-   * so the gate check stops demanding registry seats no review branch can
-   * land before the registry moves again. */
+  /* THE MINIMUM AGE LAW (the 2.0.187 cure, the 2.0.188 margin): the
+   * quarantine window — an update published inside the window stays unseen
+   * by the ladder (the doctrine the minimum-ages law always carried: 7d
+   * npm, 3d bun/pnpm/uv), so the gate check stops demanding registry seats
+   * no review branch can land before the registry moves again. the
+   * treadmill measurement of 2026-11-25 closed the gap the seven-day seat
+   * carried: the review-branch latency (the ci battery plus the merge
+   * queue) answers hours, and a release crossing the seven-day line
+   * mid-flight reddens the gate the moment the rung lands — the @applitools
+   * seat crossed one point seven hours before the 2.0.187 cure merged and
+   * the fresh main failed its own gate within minutes. the eight-day seat
+   * keeps the doctrine whole with a full day of landing headroom: the
+   * ladder demands only the seats a review branch can actually land. */
   const latestTime = answer?.latestTime as string | undefined;
-  if (latestTime && Date.now() - Date.parse(latestTime) < 7 * 24 * 60 * 60 * 1000) continue;
+  if (latestTime && Date.now() - Date.parse(latestTime) < 8 * 24 * 60 * 60 * 1000) continue;
   if (breaking(declared, latest) && !allowmajors) {
     skippedmajors.push({ name, current: declared, latest });
     continue;
