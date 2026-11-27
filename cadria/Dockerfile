@@ -12,7 +12,7 @@
 # law: the vite output is arch-independent, so the 8-arch runtime index
 # below never waits on the 2-arch node alpine base — each leg resolves only
 # the nginx base the multi-arch lane carries).
-FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:8996bb5821d62a8fd9bb27c1cb07462f3fdce6e47d640c6a881ead0b064ce216 AS solbuild
+FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS solbuild
 
 ARG CADRIA_VERSION=2.0.187
 
