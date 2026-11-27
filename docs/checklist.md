@@ -3468,9 +3468,12 @@ definitivo: zero avaliações falsas, criadores fictícios, métricas infinitas)
 - [ ] R108.15 Os dois pedidos de mudança do dono desbloqueados (as ondas
   de fechamento de inanição e de restauração legal rebasadas sobre o
   principal curado, a escada verde e o squash do mais antigo ao mais novo)
-- [ ] R108.16 As dezenove tags residuais por aplicativo aposentadas (a lei
-  da linha única de tags do monorepo — os rótulos por módulo das duas
-  rungs recentes saem depois da rung pendente pousar)
+- [x] R108.16 Os rótulos por módulo confirmados como assentos vivos do go
+  (a pista de módulo da publicação sincroniza o rótulo por aplicativo em
+  cada rung com a verificação idempotente no commit do release — o que a
+  rung aposentou foram as linhas de release por aplicativo, jamais os
+  rótulos de módulo; a auditoria da matriz provou a cobertura e o item
+  nasce fechado)
 - [ ] R108.17 Os nove envelopes familiares presos na rung antiga do
   registro da organização avançarem (as pistas familiares publicam com a
   rung pendente; o décimo segundo módulo sem envelope ganha o seu)
