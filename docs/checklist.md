@@ -3397,3 +3397,92 @@ definitivo: zero avaliações falsas, criadores fictícios, métricas infinitas)
 - [ ] R107.15 A hospedagem git completa (o servidor smart-http de
   upload-pack e receive-pack consumindo o saddle — o pilar faltante
   maior da missão)
+
+## a onda de 2026-11-27 (o realinhamento da linha de versão e a cura do degrau de dependências)
+
+> Medido ao vivo via API 2026-11-27T15:00Z, sob a ordem direta do dono desta
+> data: a linha canônica avança a partir da rung publicada mais recente da
+> casa honesta, jamais a faixa de minor que o latest exibia como regressão.
+> Nada foi removido deste arquivo; a onda acrescenta o estado verificado.
+
+### o realinhamento da linha de versão (verificado)
+
+- [x] R108.1 A publicação órfã da faixa errada eliminada por completo (o
+  release com seus trezentos e quarenta e três anexos, a tag e o rascunho
+  fora de sequência — a página de releases responde a rung honesta como a
+  mais recente, apontando o commit antigo que a forquilha carregava)
+- [x] R108.2 A etiqueta de latest do registro da organização realinhada (a
+  dist-tag do pacote principal aponta o envelope da rung publicada, não o
+  da forquilha aposentada)
+- [x] R108.3 Os envelopes da forquilha deletados do registro da organização
+  (as duas versões da faixa errada em dois módulos, quatro exclusões
+  definitivas com a credencial de pacotes que o fluxo watchdog capturou)
+- [x] R108.4 A sincronização com a cabeça remota antes de qualquer mudança
+  (doze commits de atraso alinhados por avanço linear, o stash da onda
+  anterior preservado e depois confirmado obsoleto pela onda já pousada)
+- [x] R108.5 A leitura integral da especificação isolada concluída (a
+  primeira instância completa, as dezenove variantes únicas deduplicadas
+  por soma de verificação com leitura integral das novidades e a prova
+  byte a byte do bloco embutido já coberto pelo corpus irmão)
+- [x] R108.6 A arquitetura de workflows confirmada como a casa corrente (os
+  arquivos aposentados de verificação, páginas, empacotador e limpeza de
+  registro saíram da árvore; a casa de seis com as duas frentes de família
+  desabilitadas manualmente e as análises de dependência em pé)
+
+### a cura do degrau de dependências (verificado)
+
+- [x] R108.7 A causa raiz da porta vermelha no principal diagnosticada (a
+  verificação de atualização disponível recusava porque dez assentos do
+  registro cruzaram a janela de quarentena de oito dias sem uma onda de
+  revisão pousar os assentos)
+- [x] R108.8 A onda de revisão aberta com os doze manifestos sincronizados
+  (os dez assentos comuns e o conjunto extra do módulo de jogo, os
+  especificadores trocados dentro dos assentos de espaço de trabalho de
+  cada bloqueio — as resoluções novas já viviam no grafo travado, o padrão
+  da onda anterior de atualização confirmado)
+- [x] R108.9 O bloqueio do módulo de execução atualizado pela via do
+  registro (os assentos raiz e as entradas de módulos com os metadados
+  vivos da plataforma pública)
+- [x] R108.10 O contrato de sincronia de bloqueios verificado inteiro (a
+  réplica da bateria confirma zero desvio entre manifestos e bloqueios
+  nos doze aplicativos, e a verificação de atualização responde verde
+  em todos)
+- [x] R108.11 Os resumos de imagem da família restampados na mesma onda (a
+  reconstrução do sistema base que carrega a correção da biblioteca de
+  compressão — a vaga de alta gravidade que o escaneio de contêiner
+  apontava, com a maré de node alpinas da família junto)
+- [x] R108.12 A vaga de alta gravidade rastreada na pista bloqueada por
+  montante (a mesma soma da biblioteca de compressão já carrega a condição
+  exata de remoção no arquivo de exceção do módulo de virtualização para o
+  vetor de pacote; o vetor de contêiner fecha quando a reconstrução
+  restampada escaneia verde na próxima onda)
+
+### os estados pendentes medidos (a fila da onda)
+
+- [ ] R108.13 O pull request da onda de dependências verde e squashed (a
+  escada completa correndo sobre a onda — o merge destrava o principal)
+- [ ] R108.14 A rung não publicada completa o ciclo (a tag recortada sobre
+  o commit curado pós-merge, a cascata de release despachada, a porta de
+  aprovação respondida e os envelopes da rung pousando nos registros com
+  a etiqueta de latest pinada na linha honesta)
+- [ ] R108.15 Os dois pedidos de mudança do dono desbloqueados (as ondas
+  de fechamento de inanição e de restauração legal rebasadas sobre o
+  principal curado, a escada verde e o squash do mais antigo ao mais novo)
+- [x] R108.16 Os rótulos por módulo confirmados como assentos vivos do go
+  (a pista de módulo da publicação sincroniza o rótulo por aplicativo em
+  cada rung com a verificação idempotente no commit do release — o que a
+  rung aposentou foram as linhas de release por aplicativo, jamais os
+  rótulos de módulo; a auditoria da matriz provou a cobertura e o item
+  nasce fechado)
+- [ ] R108.17 Os nove envelopes familiares presos na rung antiga do
+  registro da organização avançarem (as pistas familiares publicam com a
+  rung pendente; o décimo segundo módulo sem envelope ganha o seu)
+- [ ] R108.18 A etiqueta de latest do módulo de virtualização superada (a
+  linha da era do repositório isolado cede ao envelope da casa honesta
+  com a etiqueta explícita na publicação)
+- [ ] R108.19 A vaga de pontuação baixa da cobertura de integração
+  contínua (a métrica dos dezenove pedidos mesclados — dezoito verificados
+  — sobe com a escada respondendo todos os pedidos da fila)
+- [ ] R108.20 O worklog da sessão arquivado fora do repositório (o critério
+  de conclusão da onda — o registro em acréscimo com as evidências das
+  eliminações e das ondas abertas)
