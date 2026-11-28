@@ -5299,6 +5299,11 @@ jobs:
       - name: Boot smoke test (SPA entry and fallback page on a pinned port)
         if: matrix.app == 'devthink'
         shell: bash
+        env:
+          # the pinned port the step name always promised but never set —
+          # the unbound variable the 2026-11-28 build leg exposed (the
+          # starvation had kept the leg from ever reaching this far)
+          SMOKE_PORT: "4319"
         run: |
           set -euo pipefail
           cd staging
